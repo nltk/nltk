@@ -220,7 +220,7 @@ class SupervisedBreakpoints(UserList.UserList):
         """
         breakpoints= []
         for index in range(len(self.klass_values) - 1):
-            if self.klass_values[index] != self.klass_values[index + 1]:
+            if not self.klass_values[index] == self.klass_values[index + 1]:
                 breakpoints.append(index)
         return breakpoints
     
@@ -239,28 +239,24 @@ class SupervisedBreakpoints(UserList.UserList):
             self.remove(item)
     
     def adjust_for_equal_values(self):
-        to_be_removed = []
-        for index in range(len(self.data)):
-            i = index
-            while i < len(self.data) - 1 and (self.attr_values[self.data[i]] == self.attr_values[self.data[i] + 1]):
-                #The last and second last elements have the same attribute value or is equal to next breakpoint?
-                if self.data[i] == len(self.attr_values) - 2 or (index < len(self.data) - 1 and self.data[i] == self.data[index + 1]):
-                    to_be_removed.append(self.data[i])
-                    break
-                self.data[i] += 1
-                i += 1
-            if index == len(self.data) - 1:#last breakpoint
-                breakpoint = self.data[index]
-                while breakpoint < len(self.attr_values) - 1 and self.attr_values[breakpoint] == self.attr_values[breakpoint + 1]:
+        index = 0
+        to_be_deleted = []
+        while(index < len(self.data) - 1):
+            if self.attr_values[self.data[index]] == self.attr_values[self.data[index + 1]]:
+                to_be_deleted.append(index)
+            else:
+                while(self.data[index] < self.data[index + 1] and self.attr_values[self.data[index]] == self.attr_values[self.data[index] + 1]):
                     self.data[index] += 1
-                    if self.data[index] == len(self.attr_values) - 1:
-                        to_be_removed.append(self.data[index])
-                        break
-                    breakpoint = self.data[index]    
-        for breakpoint in to_be_removed:
-            print ("data " + str(self.data))
-            print ("breakpoint " + str(breakpoint))
-            self.data.remove(breakpoint)
+            index += 1
+        to_be_deleted.sort()
+        to_be_deleted.reverse()
+        for index in to_be_deleted:
+            self.data.__delitem__(index)
+        last = self.data[-1]
+        while (last < len(self.attr_values) - 1 and self.attr_values[last] == self.attr_values[last + 1]):
+            self.data[-1] += 1
+            last = self.data[-1]
+        if last == len(self.attr_values) - 1: del self.data[-1]
     
     def as_ranges(self):
         ranges, lower = [], self.attr_values[0]
