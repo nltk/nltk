@@ -34,8 +34,7 @@ class FeatureSelectTestCase(unittest.TestCase):
         feat_sel = FeatureSelectStub()
         self.assertFalse(feat_sel.error_called)        
         feat_sel.run(['-a', 'RNK', '-t', 'path', '-o', 'IG,4'])
-        self.assertTrue(feat_sel.error_called)
-        self.assertEqual('Invalid arguments. One or more required arguments are not present.', feat_sel.message)
+        self.assertFalse(feat_sel.error_called) # should not throw error this situation can exist if there is only one dataset
 
         feat_sel = FeatureSelectStub()
         self.assertFalse(feat_sel.error_called)        

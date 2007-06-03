@@ -22,6 +22,9 @@ def process(path, log_path):
     training = fmt.C45_FORMAT.get_training_instances(path)
     has_continuous = False
     disc_suffixes,filter_suffixes = [], []
+    cross_validate = False
+    if not os.path.exists(path + '.test') and not os.path.exists(path + '.gold'):
+        cross_validate = True
     if attributes.has_continuous():
         has_continuous = True
         indices = attributes.continuous_attribute_indices()
@@ -82,8 +85,8 @@ def process(path, log_path):
         all.extend(wrapper_suffixes)
         
         for each in all:
-            
-            c.Classify().run(['-a', classification_alg, '-vf', path + each, '-l', log_path])    
+            if cross_validate: c.Classify().run(['-a', classification_alg, '-f', path + each, '-l', log_path, '-c', 5])    
+            else: c.Classify().run(['-a', classification_alg, '-vf', path + each, '-l', log_path])    
             
 
 def get_number_of_filter_attributes(len_attrs):
