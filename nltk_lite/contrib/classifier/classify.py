@@ -1,10 +1,10 @@
 from nltk_lite.contrib.classifier import commandline as cl
-from nltk_lite.contrib.classifier import oner, zeror, decisiontree, format
+from nltk_lite.contrib.classifier import oner, zeror, decisiontree, format, naivebayes
 import sys
 
 a_help = "Selects the classification algorithm                  " \
         + "Options: 0R for Zero R, 1R for One R, DT for Decision" \
-        + " Trees.                                              " \
+        + " Trees, NB for Naive Bayes.                                              " \
         + "Default: 0R."
 
 f_help = "Specifies the base name of test, training or gold files." \
@@ -55,8 +55,9 @@ w_help = "Writes resulting gold file with a modified base name  " \
 ZERO_R = '0R'
 ONE_R = '1R'
 DECISION_TREE = 'DT'
+NAIVE_BAYES = 'NB'
 
-ALGORITHM_MAPPINGS = {ZERO_R:zeror.ZeroR, ONE_R:oner.OneR, DECISION_TREE:decisiontree.DecisionTree}
+ALGORITHM_MAPPINGS = {ZERO_R:zeror.ZeroR, ONE_R:oner.OneR, DECISION_TREE:decisiontree.DecisionTree, NAIVE_BAYES:naivebayes.NaiveBayes}
 
 VERIFY='verify'
 ACCURACY='accuracy'
