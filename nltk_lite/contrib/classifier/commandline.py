@@ -76,7 +76,7 @@ class CommandLineInterface(OptionParser):
         if self.log is not None: self.log.close()
         
     def validate_basic_arguments_are_present(self):
-        if self.algorithm is None or self.files is None and (self.training_path is None or (self.test_path is None and self.gold_path is None)): 
+        if self.algorithm is None or self.files is None and self.training_path is None : 
             self.required_arguments_not_present_error()
             
     def validate_files_arg_is_exclusive(self):

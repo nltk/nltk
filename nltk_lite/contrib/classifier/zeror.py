@@ -14,21 +14,12 @@ class ZeroR(Classifier):
         self.__majority_class = None
         self.__klassCount = {}
         
-    def test(self, test_instances):
-        self.test_instances = test_instances
-        self.classify(self.test_instances)
-    
     def classify(self, instances):
         if self.__majority_class == None: 
             self.__majority_class = self.majority_class()
         for instance in instances:
             instance.set_klass(self.__majority_class)
         
-    def verify(self, gold_instances):
-        self.gold_instances = gold_instances
-        self.classify(self.gold_instances)
-        return self.gold_instances.confusion_matrix(self.klass)
-
     def majority_class(self):
         for instance in self.training:
             self.update_count(instance)

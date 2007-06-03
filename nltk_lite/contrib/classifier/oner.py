@@ -14,10 +14,6 @@ class OneR(Classifier):
         Classifier.__init__(self, training, attributes, klass, internal)
         self.__best_decision_stump = None
         
-    def test(self, test_instances):
-        self.test_instances = test_instances
-        self.classify(self.test_instances)
-        
     def classify(self, instances):
         self.convert_continuous_values_to_numbers(instances)
         if self.__best_decision_stump == None:
@@ -25,11 +21,6 @@ class OneR(Classifier):
         for instance in instances:
             klass = self.__best_decision_stump.klass(instance)
             instance.set_klass(klass)
-
-    def verify(self, gold_instances):
-        self.gold_instances = gold_instances
-        self.classify(self.gold_instances)
-        return self.gold_instances.confusion_matrix(self.klass)
 
     def best_decision_stump(self, instances, ignore_attributes = [], algorithm = 'minimum_error'):
         self.decision_stumps = self.attributes.empty_decision_stumps(ignore_attributes, self.klass);

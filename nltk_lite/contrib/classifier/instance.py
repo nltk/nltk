@@ -10,7 +10,7 @@
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
 from nltk_lite.contrib.classifier.exceptions import systemerror as system, invaliddataerror as inv
-import item
+import item, copy
 
 class Instance:
     def __init__(self):
@@ -87,7 +87,7 @@ class TrainingInstance(Instance):
         return klass.__contains__(self.klass_value) and attributes.has_values(self.attrs)
     
     def as_gold(self):
-        return GoldInstance(self.attrs, self.klass_value)
+        return GoldInstance(copy.copy(self.attrs), self.klass_value)
     
     def __str__(self):
         return self.str_attrs() + self.str_class()

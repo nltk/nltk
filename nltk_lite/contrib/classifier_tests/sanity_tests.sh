@@ -34,3 +34,8 @@ echo 'Backward Elimination'
 python ../classifier/featureselect.py -a BE -f datasets/minigolf/weather -o 1R,4,0.1
 echo 'Naive Bayes test'
 python ../classifier/classify.py -a NB -f datasets/loan/loan
+echo 'Classification with cross validation and files option'
+python ../classifier/classify.py -a NB -f datasets/numerical/weather -c 2
+echo 'Classification with cross validation and training option'
+python ../classifier/classify.py -a NB -t datasets/numerical/weather -c 2
+

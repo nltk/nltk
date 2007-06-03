@@ -1,4 +1,6 @@
 import re
+from nltk_lite.contrib.classifier import format
+import os, os.path
 
 def convert_and_shift(file_path, ext, suffix = 'conv'):
     """
@@ -74,7 +76,18 @@ def convert_log_to_csv(path):
     csvf = open(path + '.csv', 'w')
     for each in classifications:
         print >>csvf, each.algorithm + ',' + each.training + ',' + each.test + ',' + each.gold + ',' + each.accuracy + ',' + each.f_score
-            
+
+def create_CV_datasets(path, fold):
+    training = format.C45_FORMAT.get_training_instances(path)
+    datasets = training.cross_validation_datasets(fold)
+    slash = path.rindex(os.path.sep)
+    parent_path = path[:slash]
+    name = path[slash + 1:]
+    for i in range(len(datasets)):
+        os.makedirs(parent_path + os.path.sep + str(i + 1))
+        format.C45_FORMAT.write_training_to_file(datasets[i][0], parent_path + os.path.sep + str(i + 1) + os.path.sep + name)
+        format.C45_FORMAT.write_gold_to_file(datasets[i][1], parent_path + os.path.sep + str(i + 1) + os.path.sep + name)
+    
 class LogEntry:
     pass
 

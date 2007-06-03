@@ -69,7 +69,7 @@ class FeatureSelect(cl.CommandLineInterface):
             self.required_arguments_not_present_error()
         self.options = split_ignore_space(self.get_value('options'))
         if self.algorithm == RANK and rank_options_invalid(self.options):
-            self.error("Invalid options for Rank based Feature selection. Options Found: " + str(self.options))
+            self.error("Invalid options for Rank based Feature selection.")
         if (self.algorithm == FORWARD_SELECTION or self.algorithm == BACKWARD_ELIMINATION) and wrapper_options_invalid(self.options):
             self.error("Invalid options for Wrapper based Feature selection. Options Found: " + str(self.options))
         self.log_common_params('FeatureSelection')
