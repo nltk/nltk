@@ -74,7 +74,7 @@ class Instance:
     def attr_values_as_str(self):
         strn = ''
         for attr in self.attrs:
-            strn += attr
+            strn += str(attr)
             strn += ','
         return strn[:-1]
     
