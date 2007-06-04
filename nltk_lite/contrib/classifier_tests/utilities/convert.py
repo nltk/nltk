@@ -2,7 +2,7 @@ import re
 from nltk_lite.contrib.classifier import format
 import os, os.path
 
-def convert_and_shift(file_path, ext, suffix = 'conv'):
+def convert_and_shift(file_path, ext, suffix = 'conv', sep = ' '):
     """
     converts elements separated by a blank space into comma separated data
     also changes the position of the class element from the first element 
@@ -11,7 +11,8 @@ def convert_and_shift(file_path, ext, suffix = 'conv'):
     lines = []
     f = open(file_path, 'r')
     for line in f:        
-        words = line.split()
+        words = line.split(sep)
+        words[-1] = words[-1].strip()
         words = words[1:] + [words[0]]
         lines.append(','.join(words))
     f.close()
@@ -25,7 +26,7 @@ def convert_and_shift(file_path, ext, suffix = 'conv'):
         f.write(line + '\n')
     f.close()    
     
-def values(file_path, index):
+def values(file_path, index, sep = " "):
     """
     returns a comma separated list of all values that an 
     element at index 'index' can take in a file at 'file_path'
@@ -33,7 +34,10 @@ def values(file_path, index):
     values = set([])
     f = open(file_path, 'r')
     for line in f:        
-        words = line.split()
+        words = line.split(sep)
+        if not index < len(words):
+            print "Warning! omitting line " + str(line)
+            continue
         values.add(words[index])
     return ','.join(values)
     

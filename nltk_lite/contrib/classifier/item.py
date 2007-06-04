@@ -21,7 +21,7 @@ class NameItem(Item):
         Item.__init__(self, line)
     
     def processed(self):
-        return re.compile('\.').sub('', self.stripNewLineAndWhitespace())
+        return re.compile('\.$').sub('', self.stripNewLineAndWhitespace())
     
     def isAttribute(self):
         return self.line.find(':') != -1

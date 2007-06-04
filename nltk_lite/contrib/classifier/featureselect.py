@@ -94,7 +94,7 @@ class FeatureSelect(cl.CommandLineInterface):
             
     def get_suffix(self):
         if self.options is None: return '-' + self.algorithm
-        suf = '-' + self.algorithm
+        suf = '-f_' + self.algorithm
         for option in self.options:
             suf += '_' + option.replace('.','-')
         return suf
