@@ -243,11 +243,11 @@ class FeatureSelectTestCase(unittest.TestCase):
     def test_get_suffix_replaces_decimal_point_in_options_with_hyphen(self):
         feat_sel = FeatureSelectStub()
         feat_sel.run(['-a', 'RNK', '-f', 'path', '-o', 'IG,4'])
-        self.assertEqual('-RNK_IG_4', feat_sel.get_suffix())
+        self.assertEqual('-f_RNK_IG_4', feat_sel.get_suffix())
 
         feat_sel = FeatureSelectStub()
         feat_sel.run(['-a', 'FS', '-f', 'path', '-o', '0R,4,0.34'])
-        self.assertEqual('-FS_0R_4_0-34', feat_sel.get_suffix())
+        self.assertEqual('-f_FS_0R_4_0-34', feat_sel.get_suffix())
         
     def verify_number_of_attributes(self, instances, number):
         for instance in instances:

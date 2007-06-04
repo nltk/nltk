@@ -280,6 +280,10 @@ class PosteriorProbabilities(UserDict.UserDict):
         return self.freq_dists[attribute][value].freq(klass_value)
         
 def calc_prob_based_on_distrbn(mean, sd, value):
+    if sd == 0: 
+        if value == mean:
+            return 1
+        else: return 0
     return (1.0 / math.sqrt(2 * math.pi * sd)) * math.exp(-pow((value - mean), 2)/ (2 * pow(sd, 2)))
 
 class StatList(UserList.UserList):

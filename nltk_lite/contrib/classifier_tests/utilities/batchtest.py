@@ -31,62 +31,74 @@ def process(path, log_path):
 
         options = [len(training) / 10] * len(indices)
         disc = d.Discretise()
-        disc.run(['-a', d.UNSUPERVISED_EQUAL_FREQUENCY, '-f', path, '-A', int_array_to_string(indices), '-o', int_array_to_string(options), '-l', log_path])
+        params = ['-a', d.UNSUPERVISED_EQUAL_FREQUENCY, '-f', path, '-A', int_array_to_string(indices), '-o', int_array_to_string(options), '-l', log_path]
+        print "Params " + str(params)
+        disc.run(params)
         disc_suffixes.append(disc.get_suffix())
 
         options = [10] * len(indices)    
         disc = d.Discretise()
-        disc.run(['-a', d.UNSUPERVISED_EQUAL_WIDTH , '-f', path, '-A', int_array_to_string(indices), '-o', int_array_to_string(options), '-l', log_path])
+        params = ['-a', d.UNSUPERVISED_EQUAL_WIDTH , '-f', path, '-A', int_array_to_string(indices), '-o', int_array_to_string(options), '-l', log_path]
+        print "Params " + str(params)
+        disc.run(params)
         disc_suffixes.append(disc.get_suffix())
         
         disc = d.Discretise()
-        disc.run(['-a', d.NAIVE_SUPERVISED, '-f', path, '-A', int_array_to_string(indices), '-l', log_path])
+        params = ['-a', d.NAIVE_SUPERVISED, '-f', path, '-A', int_array_to_string(indices), '-l', log_path]
+        print "Params " + str(params)
+        disc.run(params)
         disc_suffixes.append(disc.get_suffix())
 
         for naive_mod_alg in [d.NAIVE_SUPERVISED_V1, d.NAIVE_SUPERVISED_V2]:
             disc = d.Discretise()
-            disc.run(['-a', naive_mod_alg, '-f', path, '-A', int_array_to_string(indices), '-o', int_array_to_string(options), '-l', log_path])
+            params = ['-a', naive_mod_alg, '-f', path, '-A', int_array_to_string(indices), '-o', int_array_to_string(options), '-l', log_path]
+            print "Params " + str(params)
+            disc.run(params)
             disc_suffixes.append(disc.get_suffix())
     
     filter_inputs = ['']
     filter_inputs.extend(disc_suffixes)
     for each in filter_inputs:
-        feat_sel = f.FeatureSelect()
-        feat_sel.run(['-a', f.RANK, '-f', path + each, '-o', f.INFORMATION_GAIN + ',' + str(get_number_of_filter_attributes(len(attributes))), '-l', log_path])
-        filter_suffixes.append(feat_sel.get_suffix())
-        
-        feat_sel = f.FeatureSelect()
-        feat_sel.run(['-a', f.RANK, '-f', path + each, '-o', f.GAIN_RATIO + ',' + str(get_number_of_filter_attributes(len(attributes))), '-l', log_path])
-        filter_suffixes.append(feat_sel.get_suffix())
+        if has_continuous and each == '': continue
+        for selection_criteria in [f.INFORMATION_GAIN, f.GAIN_RATIO]:
+            feat_sel = f.FeatureSelect()
+            params = ['-a', f.RANK, '-f', path + each, '-o', selection_criteria + ',' + str(get_number_of_filter_attributes(len(attributes))), '-l', log_path]
+            print "Params " + str(params)
+            feat_sel.run(params)
+            filter_suffixes.append(each + feat_sel.get_suffix())
         
     suffixes = ['']
     suffixes.extend(disc_suffixes)
     suffixes.extend(filter_suffixes)
-
+    
     for classification_alg in c.ALGORITHM_MAPPINGS.keys():
         wrapper_inputs = ['']
         wrapper_inputs.extend(disc_suffixes)
-        if has_continuous and not classification_alg.can_handle_continuous_attributes():
+        if has_continuous and not c.ALGORITHM_MAPPINGS[classification_alg].can_handle_continuous_attributes():
             del wrapper_inputs[0]
         wrapper_suffixes = []
         
         for each in wrapper_inputs:
-            feat_sel = f.FeatureSelect()
-            feat_sel.run(['-a', f.FORWARD_SELECTION, '-f', path + each, '-o', classification_alg + ',25,0.1', '-l', log_path])
-            wrapper_suffixes.append(feat_sel.get_suffix())
-            
-            feat_sel = f.FeatureSelect()
-            feat_sel.run(['-a', f.BACKWARD_ELIMINATION, '-f', path + each, '-o', classification_alg + ',25,0.1', '-l', log_path])
-            wrapper_suffixes.append(feat_sel.get_suffix())
+            for alg in [f.FORWARD_SELECTION, f.BACKWARD_ELIMINATION]:
+                feat_sel = f.FeatureSelect()
+                params = ['-a', alg, '-f', path + each, '-o', classification_alg + ',25,0.1', '-l', log_path]
+                print "Params " + str(params)
+                feat_sel.run(params)
+                wrapper_suffixes.append(each + feat_sel.get_suffix())
             
         all = suffixes[:]
-        if has_continuous and not classification_alg.can_handle_continuous_attributes():
-            del wrapper_inputs[0]
+        if has_continuous and not c.ALGORITHM_MAPPINGS[classification_alg].can_handle_continuous_attributes():
+            all.remove('')
         all.extend(wrapper_suffixes)
-        
         for each in all:
-            if cross_validate: c.Classify().run(['-a', classification_alg, '-f', path + each, '-l', log_path, '-c', 5])    
-            else: c.Classify().run(['-a', classification_alg, '-vf', path + each, '-l', log_path])    
+            if cross_validate: 
+                params = ['-a', classification_alg, '-f', path + each, '-l', log_path, '-c', 5]
+                print "Params " + str(params)
+                c.Classify().run(params)    
+            else:
+                params = ['-a', classification_alg, '-vf', path + each, '-l', log_path]
+                print "Params " + str(params) 
+                c.Classify().run(params)    
             
 
 def get_number_of_filter_attributes(len_attrs):
