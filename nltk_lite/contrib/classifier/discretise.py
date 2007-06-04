@@ -87,7 +87,7 @@ class Discretise(cl.CommandLineInterface):
         indices = self.attributes_indices.split(',')
         for index in indices:
             indices_str += '_' + str(index.strip())
-        return '-d' + indices_str
+        return '-d' + '_' + self.algorithm + indices_str
 
 class Discretiser:
     def __init__(self, training, attributes, klass, test, gold, attribute_indices, options = None):

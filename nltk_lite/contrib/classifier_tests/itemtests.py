@@ -20,6 +20,13 @@ class ItemTestCase(unittest.TestCase):
     def testNameItemRemovesDotAndNewLine(self):
         i = item.NameItem('a,b,c.\n')
         self.assertEqual('a,b,c', i.processed(), 'dot and slash should be removed')
+
+    def testNameItemSouldNotRemoveDotBetweenFloats(self):
+        i = item.NameItem('foo: 1.0,2.0.\n')
+        self.assertEqual('foo:1.0,2.0', i.processed(), 'should not remove dot in float')        
+        i = item.NameItem('foo: 1.0,2.0\n')
+        self.assertEqual('foo:1.0,2.0', i.processed(), 'should not remove dot in float')        
+
         
     def testIsAttributeReturnsFalseForClasses(self):
         i = item.NameItem('a,b,c.\n')
