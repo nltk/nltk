@@ -1278,6 +1278,7 @@ class EarleyChartParse(AbstractParse):
         AbstractParse.__init__(self)
 
     def get_parse_list(self, tokens, tree_class=Tree):
+        self._check_coverage(tokens)
         chart = Chart(list(tokens))
         grammar = self._grammar
 
@@ -1357,6 +1358,7 @@ class ChartParse(AbstractParse):
         AbstractParse.__init__(self)
 
     def get_parse_list(self, tokens, tree_class=Tree):
+        self._check_coverage(tokens)
         chart = Chart(list(tokens))
         grammar = self._grammar
 
@@ -1524,6 +1526,8 @@ class SteppingChartParse(ChartParse):
     #////////////////////////////////////////////////////////////
 
     def get_parse_list(self, token, tree_class=Tree):
+        self._check_coverage(tokens)
+        
         # Initialize ourselves.
         self.initialize(token)
 

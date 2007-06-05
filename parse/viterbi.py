@@ -102,6 +102,8 @@ class ViterbiParse(AbstractParse):
 
     def get_parse_list(self, tokens):
         # Inherit docs from ParseI
+        
+        self._check_coverage(tokens)
 
         # The most likely constituent table.  This table specifies the
         # most likely constituent for a given span and type.
@@ -340,7 +342,7 @@ def demo():
     from nltk_lite.parse import cfg, pcfg, ViterbiParse
 
     # Define two demos.  Each demo has a sentence and a grammar.
-    demos = [('I saw John with my cookie', pcfg.toy1),
+    demos = [('I saw the man with my telescope', pcfg.toy1),
              ('the boy saw Jack with Bob under the table with a telescope',
               pcfg.toy2)]
 

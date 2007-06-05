@@ -9,7 +9,7 @@
 from nltk_lite.contrib.classifier import instance as ins, item, cfile, confusionmatrix as cm, numrange as r
 from nltk_lite.contrib.classifier.exceptions import systemerror as system, invaliddataerror as inv
 from nltk_lite import probability as prob
-import operator, UserList
+import operator, UserList, UserDict, math
 
 class Instances(UserList.UserList):
     def __init__(self, instances):
@@ -29,9 +29,14 @@ class Instances(UserList.UserList):
         for instance in self.data:
             instance.remove_attributes(attributes)
             
+    def convert_to_float(self, indices):
+        for instance in self.data:
+            instance.convert_to_float(indices)
+            
 class TrainingInstances(Instances):
     def __init__(self, instances):
         Instances.__init__(self, instances)
+        self.prior_probabilities = None
             
     def filter(self, attribute, attr_value):
         new_instances = TrainingInstances([])
@@ -99,6 +104,11 @@ class TrainingInstances(Instances):
         self.data.sort(lambda x, y: cmp(x.value(attribute), y.value(attribute)))
         
     def cross_validation_datasets(self, fold):
+        """
+        Gold instances are completely new objects except for attribute value objects,
+        we wont be changing the attribute value objects in the gold instances anyway 
+        unless something really weird is happening!
+        """
         if fold > len(self): fold = len(self)
         stratified = self.stratified_bunches(fold)
         datasets = []
@@ -115,15 +125,39 @@ class TrainingInstances(Instances):
         self.data.sort(key=lambda instance: instance.klass_value)
         for index in range(len(self.data)): stratified[index % fold].append(self.data[index])
         return stratified
-        
+    
+    def posterior_probablities(self, attributes, klass_values):
+        freq_dists = attributes.empty_freq_dists()
+        for attribute in attributes:
+            for value in attribute.values:
+                for klass_value in klass_values:
+                    freq_dists[attribute][value].inc(klass_value) #Laplacian smoothing
+        stat_list_values = {}
+        cont_attrs = filter(lambda attr: attr.is_continuous(), attributes)
+        if attributes.has_continuous():
+            for attribute in cont_attrs:
+                stat_list_values[attribute] = {}
+                for klass_value in klass_values:
+                    stat_list_values[attribute][klass_value] = StatList()
+        for instance in self.data:
+            for attribute in attributes:
+                if attribute.is_continuous():
+                    stat_list_values[attribute][instance.klass_value].append(instance.value(attribute))
+                else:
+                    freq_dists[attribute][instance.value(attribute)].inc(instance.klass_value)
+        return PosteriorProbabilities(freq_dists, stat_list_values)
+                
+    def class_freq_dist(self):
+        class_freq_dist = prob.FreqDist()
+        for instance in self.data:
+            class_freq_dist.inc(instance.klass_value)
+        return class_freq_dist
+            
+#todo remove this      
 class TestInstances(Instances):
     def __init__(self, instances):
         Instances.__init__(self, instances)
-        
-    def print_all(self):
-        for instance in self.data:
-            print instance
-            
+                    
 class GoldInstances(Instances):
     def __init__(self, instances):
         Instances.__init__(self, instances)
@@ -186,7 +220,7 @@ class SupervisedBreakpoints(UserList.UserList):
         """
         breakpoints= []
         for index in range(len(self.klass_values) - 1):
-            if self.klass_values[index] != self.klass_values[index + 1]:
+            if not self.klass_values[index] == self.klass_values[index + 1]:
                 breakpoints.append(index)
         return breakpoints
     
@@ -205,26 +239,24 @@ class SupervisedBreakpoints(UserList.UserList):
             self.remove(item)
     
     def adjust_for_equal_values(self):
-        to_be_removed = []
-        for index in range(len(self.data)):
-            i = index
-            while i < len(self.data) - 1 and (self.attr_values[self.data[i]] == self.attr_values[self.data[i] + 1]):
-                #The last and second last elements have the same attribute value or is equal to next breakpoint?
-                if self.data[i] == len(self.attr_values) - 2 or (index < len(self.data) - 1 and self.data[i] == self.data[index + 1]):
-                    to_be_removed.append(self.data[i])
-                    break
-                self.data[i] += 1
-                i += 1
-            if index == len(self.data) - 1:#last breakpoint
-                breakpoint = self.data[index]
-                while breakpoint < len(self.attr_values) - 1 and self.attr_values[breakpoint] == self.attr_values[breakpoint + 1]:
+        index = 0
+        to_be_deleted = []
+        while(index < len(self.data) - 1):
+            if self.attr_values[self.data[index]] == self.attr_values[self.data[index + 1]]:
+                to_be_deleted.append(index)
+            else:
+                while(self.data[index] < self.data[index + 1] and self.attr_values[self.data[index]] == self.attr_values[self.data[index] + 1]):
                     self.data[index] += 1
-                    if self.data[index] == len(self.attr_values) - 1:
-                        to_be_removed.append(self.data[index])
-                        break
-                    breakpoint = self.data[index]    
-        for breakpoint in to_be_removed:
-            self.data.remove(breakpoint)
+            index += 1
+        to_be_deleted.sort()
+        to_be_deleted.reverse()
+        for index in to_be_deleted:
+            self.data.__delitem__(index)
+        last = self.data[-1]
+        while (last < len(self.attr_values) - 1 and self.attr_values[last] == self.attr_values[last + 1]):
+            self.data[-1] += 1
+            last = self.data[-1]
+        if last == len(self.attr_values) - 1: del self.data[-1]
     
     def as_ranges(self):
         ranges, lower = [], self.attr_values[0]
@@ -235,7 +267,47 @@ class SupervisedBreakpoints(UserList.UserList):
             lower = mid
         ranges.append(r.Range(lower, self.attr_values[-1], True))
         return ranges
+
+class PosteriorProbabilities(UserDict.UserDict):
+    def __init__(self, freq_dists, stat_list_values):
+        self.freq_dists = freq_dists
+        self.stat_list_values = stat_list_values
+        
+    def value(self, attribute, value, klass_value):
+        if attribute.is_continuous():
+            stat_list = self.stat_list_values[attribute][klass_value]
+            return calc_prob_based_on_distrbn(stat_list.mean(), stat_list.std_dev(), value)
+        return self.freq_dists[attribute][value].freq(klass_value)
+        
+def calc_prob_based_on_distrbn(mean, sd, value):
+    if sd == 0: 
+        if value == mean:
+            return 1
+        else: return 0
+    return (1.0 / math.sqrt(2 * math.pi * sd)) * math.exp(-pow((value - mean), 2)/ (2 * pow(sd, 2)))
+
+class StatList(UserList.UserList):
+    def __init__(self, values=None):
+        UserList.UserList.__init__(self, values)
+        
+    def mean(self):
+        sum = 0
+        if len(self.data) == 0: return 0
+        for each in self.data:
+            sum += each
+        return float(sum) / len(self.data)
     
+    def variance(self):
+        _mean = self.mean()
+        if len(self.data) < 2: return 0
+        sum = 0
+        for each in self.data:
+            sum += pow((each - _mean), 2)
+        return float(sum) / (len(self.data) - 1)
+    
+    def std_dev(self):
+        return math.sqrt(self.variance())
+        
 def training_as_gold(instances):
     gold = []
     for instance in instances:

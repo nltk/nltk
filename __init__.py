@@ -1,4 +1,4 @@
-# Natural Language Toolkit (NLTK-Lite)
+# Natural Language Toolkit (NLTK)
 #
 # Copyright (C) 2001-2007 University of Pennsylvania
 # Authors: Steven Bird <sb@csse.unimelb.edu.au>
@@ -7,23 +7,11 @@
 # For license information, see LICENSE.TXT
 
 """
-NLTK-Lite is a collection of lightweight NLP modules designed for
-maximum simplicity and efficiency.  NLTK-Lite only covers the simple
-variants of standard data structures and tasks.  It makes extensive
-use of iterators so that large tasks generate output as early as
-possible.
+NLTK -- the Natural Language Toolkit -- is a suite of open source
+Python modules, data sets and tutorials supporting research and
+development in natural language processing.
 
-Key differences from NLTK are as follows:
- - tokens are represented as strings, tuples, or trees
- - all tokenizers are iterators
- - less object orientation
-
-NLTK-Lite is primarily intended to facilitate teaching NLP to students
-having limited programming experience.  The focus is on teaching
-Python together with the help of NLP recipes, instead of teaching
-students to use a large set of specialized classes.
-
-@version: 0.7.5
+@version: 0.8b1
 
 """
 
@@ -33,7 +21,7 @@ students to use a large set of specialized classes.
 
 # Version.  For each new release, the version number should be updated
 # here and in the Epydoc comment (above).
-__version__ = "0.7.5"
+__version__ = "0.8b1"
 
 # Copyright notice
 __copyright__ = """\

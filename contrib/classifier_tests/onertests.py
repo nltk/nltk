@@ -21,7 +21,7 @@ class OneRTestCase(unittest.TestCase):
         self.assertAlmostEqual(0.2222222, minError.error())
         
     def test_classifies_test_with_stump(self):
-        self.classifier.test(format.C45_FORMAT.get_test_instances(self.WEATHER), False)
+        self.classifier.test(format.C45_FORMAT.get_test_instances(self.WEATHER))
         self.assertTrue(self.classifier.test_instances[0].classified_klass is not None)
         self.assertEqual('yes', self.classifier.test_instances[0].classified_klass)
         

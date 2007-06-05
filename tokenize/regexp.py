@@ -229,6 +229,42 @@ def treebank(s):
     """
     return regexp(s, pattern=TREEBANK, advanced=True)
 
+# These rules are based on Punkt original implementation 
+# with some omission of symbols that are usually not found in English text
+# (e.g. chevrons).
+
+def pword(s):
+    """
+    Tokenize a string using the rules from the Punkt word tokenizer.
+    """
+
+    # Separate punctuation (except period) from words:
+    s = re.sub(r'(?=[\(\"\`{\[:;&\#\*@])(.)', r'\1 ', s)
+    
+    s = re.sub(r'(.)(?=[?!)\";}\]\*:@\'])', r'\1 ', s)
+    s = re.sub(r'(?=[\)}\]])(.)', r'\1 ', s)
+    s = re.sub(r'(.)(?=[({\[])', r'\1 ', s)
+    s = re.sub(r'((^|\s)\-)(?=[^\-])', r'\1 ', s)
+
+    # Treat double-hyphen as one token:
+    s = re.sub(r'([^-])(\-\-+)([^-])', r'\1 \2 \3', s)
+    s = re.sub(r'(\s|^)(,)(?=(\S))', r'\1\2 ', s)
+
+    # Only separate comma if space follows:
+    s = re.sub(r'(.)(,)(\s|$)', r'\1 \2\3', s)
+
+    # Combine dots separated by whitespace to be a single token:
+    s = re.sub(r'\.\s\.\s\.', r'...', s)
+
+# Separate "No.6" (These 2 commented lines are left uncommented in original system)
+##  s = re.sub(r'([A-Za-z]\.)(\d+)', r'\1 \2', s)        
+##  s = re.sub(r'(.|^)(\.{2,})(.)?', r'\1 \2 \3', s)     #Separate words from ellipses
+
+    s = re.sub(r'(^|\s)(\.{2,})([^\.\s])', r'\1\2 \3', s)
+    s = re.sub(r'([^\.\s])(\.{2,})($|\s)', r'\1 \2\3', s)
+    
+    return iter(s.split())
+
 ##//////////////////////////////////////////////////////
 ##  Demonstration
 ##//////////////////////////////////////////////////////
@@ -267,6 +303,9 @@ def demo():
     print
     print 'Tokenize sequences of letters and sequences of nonletters:'
     _display(tokenize.wordpunct(s))
+    print
+    print 'Tokenize words according to the rules of the Punkt system:'
+    _display(tokenize.punkt(s))
     print
     print 'Tokenize by lines:'
     _display(tokenize.line(s))

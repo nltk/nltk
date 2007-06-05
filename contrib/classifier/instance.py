@@ -10,7 +10,7 @@
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
 from nltk_lite.contrib.classifier.exceptions import systemerror as system, invaliddataerror as inv
-import item
+import item, copy
 
 class Instance:
     def __init__(self):
@@ -43,6 +43,10 @@ class Instance:
         to_be_removed.reverse()
         for r in to_be_removed:
             self.attrs.__delitem__(r)
+            
+    def convert_to_float(self, indices):
+        for index in indices:
+            self.attrs[index] = float(self.attrs[index])
     
     def __eq__(self, other):
         if other is None: return False
@@ -70,7 +74,7 @@ class Instance:
     def attr_values_as_str(self):
         strn = ''
         for attr in self.attrs:
-            strn += attr
+            strn += str(attr)
             strn += ','
         return strn[:-1]
     
@@ -83,7 +87,7 @@ class TrainingInstance(Instance):
         return klass.__contains__(self.klass_value) and attributes.has_values(self.attrs)
     
     def as_gold(self):
-        return GoldInstance(self.attrs, self.klass_value)
+        return GoldInstance(copy.copy(self.attrs), self.klass_value)
     
     def __str__(self):
         return self.str_attrs() + self.str_class()
@@ -98,7 +102,7 @@ class TestInstance(Instance):
         
     def is_valid(self, klass, attributes):
         return attributes.has_values(self.attrs)
-    
+        
     def __str__(self):
         return self.str_attrs() + self.str_klassified_klass()
         

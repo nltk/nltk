@@ -34,8 +34,7 @@ class FeatureSelectTestCase(unittest.TestCase):
         feat_sel = FeatureSelectStub()
         self.assertFalse(feat_sel.error_called)        
         feat_sel.run(['-a', 'RNK', '-t', 'path', '-o', 'IG,4'])
-        self.assertTrue(feat_sel.error_called)
-        self.assertEqual('Invalid arguments. One or more required arguments are not present.', feat_sel.message)
+        self.assertFalse(feat_sel.error_called) # should not throw error this situation can exist if there is only one dataset
 
         feat_sel = FeatureSelectStub()
         self.assertFalse(feat_sel.error_called)        
@@ -244,11 +243,11 @@ class FeatureSelectTestCase(unittest.TestCase):
     def test_get_suffix_replaces_decimal_point_in_options_with_hyphen(self):
         feat_sel = FeatureSelectStub()
         feat_sel.run(['-a', 'RNK', '-f', 'path', '-o', 'IG,4'])
-        self.assertEqual('-RNK_IG_4', feat_sel.get_suffix())
+        self.assertEqual('-f_RNK_IG_4', feat_sel.get_suffix())
 
         feat_sel = FeatureSelectStub()
         feat_sel.run(['-a', 'FS', '-f', 'path', '-o', '0R,4,0.34'])
-        self.assertEqual('-FS_0R_4_0-34', feat_sel.get_suffix())
+        self.assertEqual('-f_FS_0R_4_0-34', feat_sel.get_suffix())
         
     def verify_number_of_attributes(self, instances, number):
         for instance in instances:
@@ -265,6 +264,7 @@ class FeatureSelectStub(fs.FeatureSelect):
         fs.FeatureSelect.__init__(self)
         self.error_called = False
         self.message = None
+        self.log = open('test_log', 'w') # w to over write previous logs.. is append mode in code
         
     def error(self, message):
         #in reality error will display usage and quit

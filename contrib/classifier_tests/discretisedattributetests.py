@@ -45,13 +45,10 @@ class DiscretisedAttributeTestCase(unittest.TestCase):
         self.assertEqual('c', disc_attr.mapping(10))
         self.assertEqual('e', disc_attr.mapping(40))
         
-    def test_finding_mapping_for_value_out_of_range_raises_error(self):
+    def test_finding_mapping_for_value_out_of_range_returns_nearest_match(self):
         ranges = nr.Range(-10, 40, True).split(5)
         disc_attr = da.DiscretisedAttribute('temperature', ranges, 1)
-        try:
-            disc_attr.mapping(50)
-            self.fail('should throw error')
-        except inv.InvalidDataError:
-            pass
+        self.assertEqual('e', disc_attr.mapping(50))
+        self.assertEqual('a', disc_attr.mapping(-20))
         
 
