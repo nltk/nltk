@@ -133,8 +133,8 @@ class AbstractParse(ParseI):
         if self.__class__ == AbstractParse:
             raise AssertionError, "Abstract classes can't be instantiated"
 
-    def parse(self, tokens):
-        return self.get_parse(list(tokens))
+    def parse(self, sentence):
+        return self.get_parse_list(sentence.split())
 
     def grammar(self):
         return self._grammar
@@ -152,6 +152,19 @@ class AbstractParse(ParseI):
     def _check_coverage(self, tokens):
         if not self._grammar.covers(tokens):
             raise ValueError, "Grammar does not cover some of the input words"
+
+    def batch_test(self, filename):
+        f = open(filename)
+        for line in f:
+            line = line.strip()
+            if not line: continue 
+            if line.startswith('#'):
+                print line
+                continue
+            print "Sentence:", line
+            parses = self.parse(line)
+            print "%d parses." % len(parses)
+            for tree in parses: print tree
 
 from cfg import *
 from tree import *

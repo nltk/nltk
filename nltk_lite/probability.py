@@ -60,17 +60,28 @@ class FreqDist(object):
     
         >>> fdist = FreqDist()
         >>> for word in tokenize.whitespace(sent):
-        ...    fdist.inc(word)
+        ...    fdist.inc(word.lower())
+    
+    An equivalent way to do this is with the initializer:
+    
+        >>> fdist = FreqDist(word.lower() for word in tokenize.whitespace(sent))
+        
     """
-    def __init__(self):
+    def __init__(self, samples=None):
         """
         Construct a new empty, C{FreqDist}.  In particular, the count
         for every sample is zero.
+        
+        @param samples: The samples to initialize the frequency distribution with
+        @type samples: Sequence
         """
         self._count = {}
         self._N = 0
         self._Nr_cache = None
         self._max_cache = None
+        if samples:
+            for sample in samples:
+                self.inc(sample)
 
     def inc(self, sample, count=1):
         """
@@ -1110,14 +1121,25 @@ class ConditionalFreqDist(object):
         >>> for word in tokenize.whitespace(sent):
         ...     condition = len(word)
         ...     cfdist[condition].inc(word)
+    
+    An equivalent way to do this is with the initializer:
+    
+        >>> cfdist = ConditionalFreqDist((len(word), word) for word in tokenize.whitespace(sent))
+        
     """
-    def __init__(self):
+    def __init__(self, cond_samples=None):
         """
         Construct a new empty conditional frequency distribution.  In
         particular, the count for every sample, under every condition,
         is zero.
+
+        @param cond_samples: The samples to initialize the conditional frequency distribution with
+        @type cond_samples: Sequence of (condition, sample) tuples
         """
         self._fdists = {}
+        if samples:
+            for (condition, sample) in cond_samples:
+                self[condition].inc(sample)
 
     def __getitem__(self, condition):
         """
@@ -1137,9 +1159,8 @@ class ConditionalFreqDist(object):
         @type condition: any
         """
         # Create the conditioned freq dist, if it doesn't exist
-        if not self._fdists.has_key(condition):
+        if condition not in self._fdists:
             self._fdists[condition] = FreqDist()
-            
         return self._fdists[condition]
 
     def conditions(self):

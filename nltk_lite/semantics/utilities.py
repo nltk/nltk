@@ -15,7 +15,6 @@ a first-order model.
 
 from nltk_lite import tokenize
 from nltk_lite.parse.category import *
-from nltk_lite.parse.grammarfile import *
 from nltk_lite.parse.tree import Tree
 from evaluate import *
 from logic import *
