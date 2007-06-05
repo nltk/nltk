@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Categories
 #
 # Copyright (C) 2001-2007 University of Pennsylvania
-# Author: Contributed by Rob Speer (NLTK version)
+# Author: Contributed by Rob Speer <rspeer@mit.edu> 
 #         Steven Bird <sb@csse.unimelb.edu.au> (NLTK-Lite Port)
 #         Ewan Klein <ewan@inf.ed.ac.uk> (Hooks for semantics)
 #         Peter Wang <wangp@csse.unimelb.edu.au> (Overhaul)
@@ -10,12 +10,12 @@
 #
 # $Id$
 
-from semantics import logic
-from cfg import *
-from kimmo import kimmo
-import string
+from nltk_lite.semantics import logic
+#from cfg import *
+from nltk_lite.parse import *
+import filebroker
 
-from featurelite import *
+#from featurelite import *
 from copy import deepcopy
 import yaml
 # import nltk_lite.yamltags
@@ -668,7 +668,7 @@ class GrammarFile(object):
             if line[0] == '%':
                 parts = line[1:].split()
                 directive = parts[0]
-                args = string.join(parts[1:])
+                args = " ".join(parts[1:])
                 if directive == 'start':
                     self.start = GrammarCategory.parse(args).freeze()
                 elif directive == 'include':
@@ -691,16 +691,18 @@ class GrammarFile(object):
                     else:
                         self.grammatical_productions.append(rule)
 
-    def apply_file(self, filename):
-        f = open(filename)
-        lines = f.readlines()
-        self.apply_lines(lines)
-        f.close()
-    
+    def apply_file(self, filename, verbose=False):
+ 
+        lines = filebroker.load(filename, verbose=verbose)
+        if lines:
+            self.apply_lines(lines)
+        else:
+            return None
+
     @staticmethod
-    def read_file(filename):
+    def read_file(filename, verbose=False):
         result = GrammarFile()
-        result.apply_file(filename)
+        result.apply_file(filename, verbose=verbose)
         return result
 
 yaml.add_representer(Category, Category.to_yaml)
@@ -727,7 +729,16 @@ def demo():
     print GrammarCategory.parse('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]')
     print repr(GrammarCategory.parse('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]'))
     print
-    g = GrammarFile.read_file("speer.cfg")
+    print "Find grammar file name in 'grammars.yml' and fetch from Sourceforge:"
+    g = GrammarFile.read_file("sem2.cfg")
+    print g.grammar()
+    print
+    print "Attempt to find nonexistent grammar file:"   
+    g = GrammarFile.read_file("missing.cfg")
+    print g.grammar()
+    print
+    print "Find locally:"   
+    g = GrammarFile.read_file("gazdar6.cfg")
     print g.grammar()
     
 if __name__ == '__main__':

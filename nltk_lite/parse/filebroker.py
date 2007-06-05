@@ -219,13 +219,13 @@ def demo():
     b = Broker()
     print
     print "Open a file:"
-    broker('feat0.cfg', verbose=True)
+    load('feat0.cfg', verbose=True)
     print
     print "Try to find a file that doesn't exist:"
-    broker('missing.cfg', verbose=True)
+    load('missing.cfg', verbose=True)
     print
     print "Find locally:"   
-    broker("broker_test.cfg", verbose=True)
+    load("broker_test.cfg", verbose=True)
 
     
 if __name__ == '__main__':

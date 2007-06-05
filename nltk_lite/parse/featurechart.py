@@ -13,8 +13,8 @@ feature structures as nodes.
 """
 
 import yaml
-import ncategory
-from chart import *
+from nltk_lite.parse import *
+#from chart import *
 import cfg
 
 from featurelite import *

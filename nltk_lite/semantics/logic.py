@@ -24,8 +24,9 @@ The class of C{Expression} has various subclasses:
 """
 
 from nltk_lite.utilities import Counter
-from featurelite import SubstituteBindingsMixin, FeatureI
-from featurelite import Variable as FeatureVariable
+from nltk_lite.parse.featurelite import SubstituteBindingsMixin, FeatureI
+from nltk_lite.parse.featurelite import Variable as FeatureVariable
+
 _counter = Counter()
 
 def unique_variable(counter=None):

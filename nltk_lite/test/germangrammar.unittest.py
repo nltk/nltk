@@ -1,4 +1,4 @@
-from parse import *
+from nltk_lite.parse import *
 import unittest
 
 class TestGermanGrammar(unittest.TestCase):

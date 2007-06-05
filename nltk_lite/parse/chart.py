@@ -9,8 +9,8 @@
 #
 # $Id$
 
-from parse import *
-from tree import Tree
+from nltk_lite.parse import *
+# from tree import Tree
 import cfg
 
 """
