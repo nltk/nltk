@@ -46,7 +46,7 @@ demotest:
 dist: codedist docdist exampledist corporadist
 	touch .dist.done
 
-codedist: clean_code INSTALL.txt
+codedist: clean_code
 	$(PYTHON) setup.py -q sdist --format=gztar
 	$(PYTHON) setup.py -q sdist --format=zip
 	$(PYTHON) setup.py -q bdist --format=rpm
@@ -64,56 +64,54 @@ corporadist:
 nightlydist: codedist
 	REVISION = `svn info | grep Revision: | sed "s/Revision: //"`
         
-
-# Get the version number.
-INSTALL.txt: INSTALL.txt.in
-	cat $< | sed "s/??\.??/$(NLTK_VERSION)/g" >$@
-
 ########################################################################
 # ISO Image
 ########################################################################
 
-.PHONY: iso python wordnet numpy
-.PHONY: .python.done .rsync.done .wordnet.done .numpy.done
+.PHONY: iso python numpy pylab
+.PHONY: .python.done .rsync.done .numpy.done .pylab.done
 
-SFNETMIRROR = http://superb-west.dl.sourceforge.net/sourceforge
-PYTHON25 = http://www.python.org/ftp/python/2.5.1
-NUMPY = $(SFNETMIRROR)/numpy
-WN21 = http://wordnet.princeton.edu/2.1/
+SFNET = http://superb-west.dl.sourceforge.net/sourceforge
+PYFTP = http://www.python.org/ftp/python/2.5.1
+PYMAC = http://pythonmac.org/packages/py25-fat/dmg
+NUMPY = $(SFNET)/numpy
+PYLAB = $(SFNET)/matplotlib
 
 python:
 	mkdir -p python/{mac,win,unix}
-	wget -N -P python/mac/  $(PYTHON25)/python-2.5.1-macosx.dmg
-	wget -N -P python/win/  $(PYTHON25)/python-2.5.1.msi
-	wget -N -P python/unix/ $(PYTHON25)/Python-2.5.1.tgz
+	wget -N -P python/mac  $(PYFTP)/python-2.5.1-macosx.dmg
+	wget -N -P python/win  $(PYFTP)/python-2.5.1.msi
+	wget -N -P python/unix $(PYFTP)/Python-2.5.1.tgz
 	touch .python.done
 
 numpy:
 	mkdir -p python/{mac,win,unix}
-	wget -N -P python/mac/  http://pythonmac.org/packages/py25-fat/dmg/numpy-1.0.2-py2.5-macosx10.4-2007-04-04.dmg
-	wget -N -P python/win/  $(NUMPY)/numpy-1.0.2.win32-py2.5.exe?download
-	wget -N -P python/unix/ $(NUMPY)/numpy-1.0.2.tar.gz?download
-	mv python/win/numpy-1.0.2.win32-py2.5.exe?download python/win/numpy-1.0.2.win32-py2.5.exe
-	mv python/unix/numpy-1.0.2.tar.gz?download python/unix/numpy-1.0.2.tar.gz
+	wget -N -P python/mac  $(PYMAC)/numpy-1.0.2-py2.5-macosx10.4-2007-04-04.dmg
+	wget -N -P python/win  $(NUMPY)/numpy-1.0.3.win32-py2.5.exe?download
+	wget -N -P python/unix $(NUMPY)/numpy-1.0.3-2.tar.gz?download
+	mv python/win/numpy-1.0.3.win32-py2.5.exe?download python/win/numpy-1.0.3.win32-py2.5.exe
+	mv python/unix/numpy-1.0.3-2.tar.gz?download python/unix/numpy-1.0.3-2.tar.gz
 	touch .numpy.done
-
-wordnet:
+	
+pylab:
 	mkdir -p python/{mac,win,unix}
-	wget -N -P python/mac/  $(WN21)/WordNet-2.1.tar.gz
-	wget -N -P python/win/  $(WN21)/WordNet-2.1.exe
-	cp python/mac/WordNet-2.1.tar.gz python/unix
-	touch .wordnet.done
+	wget -N -P python/mac  $(PYMAC)/matplotlib-0.90.1-py2.5-macosx10.4-2007-06-04.dmg
+	wget -N -P python/win  $(PYLAB)/matplotlib-0.90.1.win32-py2.5.exe?download
+	wget -N -P python/unix $(PYLAB)/matplotlib-0.90.1.tar.gz?download
+	mv python/win/matplotlib-0.90.1.win32-py2.5.exe?download python/win/matplotlib-0.90.1.win32-py2.5.exe
+	mv python/unix/matplotlib-0.90.1.tar.gz?download python/unix/matplotlib-0.90.1.tar.gz
+	touch .pylab.done
 
-iso:	.dist.done .python.done .numpy.done .wordnet.done
+iso:	.dist.done .python.done .numpy.done .pylab.done
 	rm -rf iso nltk_lite-$(NLTK_VERSION)
-	mkdir -p iso/mac iso/win iso/unix
-	cp dist/nltk_lite-$(NLTK_VERSION).tar.gz	iso/mac/
-	cp dist/nltk_lite-$(NLTK_VERSION).win32.exe	iso/win/
-	cp dist/nltk_lite-$(NLTK_VERSION).tar.gz	iso/unix/
-	cp dist/nltk_lite-$(NLTK_VERSION)-1.noarch.rpm	iso/unix/
-	cp dist/nltk_lite-corpora-$(NLTK_VERSION).zip	iso
-	cp dist/nltk_lite-doc-$(NLTK_VERSION).zip	iso
-	cp *.txt *.html					iso
+	mkdir -p iso/{mac,win,unix}
+	cp dist/nltk_lite-$(NLTK_VERSION).tar.gz        iso/mac/
+	cp dist/nltk_lite-$(NLTK_VERSION).win32.exe     iso/win/
+	cp dist/nltk_lite-$(NLTK_VERSION).tar.gz        iso/unix/
+	cp dist/nltk_lite-$(NLTK_VERSION)-1.noarch.rpm  iso/unix/
+	cp dist/nltk_lite-corpora-$(NLTK_VERSION).zip   iso
+	cp dist/nltk_lite-doc-$(NLTK_VERSION).zip       iso
+	cp *.txt *.html                                 iso
 	cp python/mac/*                                 iso/mac/
 	cp python/win/*                                 iso/win/
 	cp python/unix/*                                iso/unix/
