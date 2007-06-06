@@ -384,7 +384,7 @@ class DictionaryProbDist(ProbDistI):
             if log:
                 value_sum = sum_logs(self._prob_dict.values())
                 if value_sum <= _NINF:
-                    logp = math.log(1.0/len(prob_dict.keys()))
+                    logp = math.log(1.0/len(prob_dict))
                     for x in prob_dict.keys():
                         self._prob_dict[x] = logp
                 else:
@@ -393,8 +393,8 @@ class DictionaryProbDist(ProbDistI):
             else:
                 value_sum = sum(self._prob_dict.values())
                 if value_sum == 0:
-                    p = 1.0/len(prob_dict.keys())
-                    for x in prob_dict.keys():
+                    p = 1.0/len(prob_dict)
+                    for x in prob_dict:
                         self._prob_dict[x] = p
                 else:
                     norm_factor = 1.0/value_sum
@@ -699,7 +699,7 @@ class HeldoutProbDist(ProbDistI):
         @rtype: C{list} of C{float}
         """
         Tr = [0.0] * (self._max_r+1)
-        for sample in self._heldout_fdist.keys():
+        for sample in self._heldout_fdist:
             r = self._base_fdist[sample]
             Tr[r] += self._heldout_fdist[sample]
         return Tr
@@ -1133,9 +1133,9 @@ class ConditionalFreqDist(object):
         @type cond_samples: Sequence of (condition, sample) tuples
         """
         self._fdists = {}
-        if samples:
-            for (condition, sample) in cond_samples:
-                self[condition].inc(sample)
+        if cond_samples:
+            for (cond, sample) in cond_samples:
+                self[cond].inc(sample)
 
     def __getitem__(self, condition):
         """
