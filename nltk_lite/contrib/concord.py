@@ -801,7 +801,7 @@ class Aggregator(object):
             print name
             print "-"*(maxKeyLength + 7)
             # for each key:
-            for key in dist.sorted_samples():
+            for key in dist.sorted():
                 # keep track of how many samples shown, if using the showFirstX
                 # option
                 #if showFirstX > 0 and x >= showFirstX:
@@ -809,10 +809,10 @@ class Aggregator(object):
 
                 # get and format the sample's frequency
                 if normalise:
-                    count = 1.0 * dist.count(key) / dist.N()
+                    count = 1.0 * dist[key] / dist.N()
                     countString = str(count)[0:decimalPlaces + 2]
                 else:
-                    count = dist.count(key)
+                    count = dist[key]
                     countString = str(count)
 
                 total += count

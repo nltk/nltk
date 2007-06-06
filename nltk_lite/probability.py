@@ -42,7 +42,7 @@ import types, math
 ##  Frequency Distributions
 ##//////////////////////////////////////////////////////
 
-class FreqDist(object):
+class FreqDist(dict):
     """
     A frequency distribution for the outcomes of an experiment.  A
     frequency distribution records the number of times each outcome of
@@ -75,7 +75,7 @@ class FreqDist(object):
         @param samples: The samples to initialize the frequency distribution with
         @type samples: Sequence
         """
-        self._count = {}
+        dict.__init__(self)
         self._N = 0
         self._Nr_cache = None
         self._max_cache = None
@@ -99,7 +99,7 @@ class FreqDist(object):
         if count == 0: return
         
         self._N += count
-        self._count[sample] = self._count.get(sample,0) + count
+        self[sample] = self.get(sample,0) + count
 
         # Invalidate the Nr cache and max cache.
         self._Nr_cache = None
@@ -122,7 +122,7 @@ class FreqDist(object):
             number of sample outcomes recorded, use C{FreqDist.N()}.
         @rtype: C{int}
         """
-        return len(self._count)
+        return len(self)
 
     def samples(self):
         """
@@ -131,7 +131,7 @@ class FreqDist(object):
             to determine the count for each sample.
         @rtype: C{list}
         """
-        return self._count.keys()
+        return self.keys()
 
     def Nr(self, r, bins=None):
         """
@@ -163,8 +163,8 @@ class FreqDist(object):
 
     def _cache_Nr_values(self):
         Nr = [0]
-        for sample in self.samples():
-            c = self._count.get(sample, 0)
+        for sample in self:
+            c = self.get(sample, 0)
             if c >= len(Nr):
                 Nr += [0]*(c+1-len(Nr))
             Nr[c] += 1
@@ -175,7 +175,8 @@ class FreqDist(object):
         Return the count of a given sample.  The count of a sample is
         defined as the number of times that sample outcome was
         recorded by this C{FreqDist}.  Counts are non-negative
-        integers.
+        integers.  This method has been replaced by conventional
+        dictionary indexing; use fd[item] instead of fd.count(item).
         
         @return: The count of a given sample.
         @rtype: C{int}
@@ -183,7 +184,7 @@ class FreqDist(object):
                should be returned.
         @type sample: any.
         """
-        return self._count.get(sample, 0)
+        raise AttributeError, "Use indexing to look up an entry in a FreqDist, e.g. fd[item]"
 
     def freq(self, sample):
         """
@@ -201,8 +202,9 @@ class FreqDist(object):
                should be returned.
         @type sample: any
         """
-        if self._N is 0: return 0
-        return float(self._count.get(sample, 0)) / self._N
+        if self._N is 0:
+            return 0
+        return float(self[sample]) / self._N
 
     def max(self):
         """
@@ -219,14 +221,17 @@ class FreqDist(object):
         if self._max_cache is None:
             best_sample = None
             best_count = -1
-            for sample in self._count.keys():
-                if self._count[sample] > best_count:
+            for sample in self:
+                if self[sample] > best_count:
                     best_sample = sample
-                    best_count = self._count[sample]
+                    best_count = self[sample]
             self._max_cache = best_sample
         return self._max_cache
 
     def sorted_samples(self):
+        raise AttributeError, "Use FreqDist.sorted() to get the sorted samples"
+
+    def sorted(self):
         """
         Return the samples sorted in decreasing order of frequency.  Instances
         with the same count will be arbitrarily ordered.  Instances with a
@@ -236,9 +241,8 @@ class FreqDist(object):
         @return: The set of samples in sorted order.
         @rtype: sequence of any
         """
-        items = [(-count,sample) for (sample,count) in self._count.items()]
-        items.sort()
-        return [sample for (neg_count,sample) in items]
+        from operator import itemgetter
+        return sorted(self.items(), key=itemgetter(1), reverse=True)
 
     def __repr__(self):
         """
@@ -252,19 +256,11 @@ class FreqDist(object):
         @return: A string representation of this C{FreqDist}.
         @rtype: string
         """
-        samples = self.sorted_samples()
-        items = ['%r: %r' % (s, self._count[s]) for s in samples]
+        items = ['%r: %r' % (s, self[s]) for s in self.sorted()]
         return '<FreqDist: %s>' % ', '.join(items)
 
-    def __contains__(self, sample):
-        """
-        @return: True if the given sample occurs one or more times in
-            this frequency distribution.
-        @rtype: C{boolean}
-        @param sample: The sample to search for.
-        @type sample: any
-        """
-        return self._count.has_key(sample)
+    def __getitem__(self, sample):
+        return self.get(sample, 0)
 
 ##//////////////////////////////////////////////////////
 ##  Probability Distributions
@@ -466,7 +462,7 @@ class MLEProbDist(ProbDistI):
         return self._freqdist.max()
     
     def samples(self):
-        return self._freqdist.samples()
+        return self._freqdist.keys()
     
     def __repr__(self):
         """
@@ -534,7 +530,7 @@ class LidstoneProbDist(ProbDistI):
         return self._freqdist
     
     def prob(self, sample):
-        c = self._freqdist.count(sample)
+        c = self._freqdist[sample]
         return (c + self._gamma) / (self._N + self._bins * self._gamma)
     
     def max(self):
@@ -544,7 +540,7 @@ class LidstoneProbDist(ProbDistI):
         return self._freqdist.max()
     
     def samples(self):
-        return self._freqdist.samples()
+        return self._freqdist.keys()
 
     def __repr__(self):
         """
@@ -684,7 +680,7 @@ class HeldoutProbDist(ProbDistI):
         self._heldout_fdist = heldout_fdist
 
         # The max number of times any sample occurs in base_fdist.
-        self._max_r = base_fdist.count(base_fdist.max())
+        self._max_r = base_fdist[base_fdist.max()]
 
         # Calculate Tr, Nr, and N.
         Tr = self._calculate_Tr()
@@ -703,9 +699,9 @@ class HeldoutProbDist(ProbDistI):
         @rtype: C{list} of C{float}
         """
         Tr = [0.0] * (self._max_r+1)
-        for sample in self._heldout_fdist.samples():
-            r = self._base_fdist.count(sample)
-            Tr[r] += self._heldout_fdist.count(sample)
+        for sample in self._heldout_fdist.keys():
+            r = self._base_fdist[sample]
+            Tr[r] += self._heldout_fdist[sample]
         return Tr
 
     def _calculate_estimate(self, Tr, Nr, N):
@@ -752,7 +748,7 @@ class HeldoutProbDist(ProbDistI):
     
     def prob(self, sample):
         # Use our precomputed probability estimate.
-        r = self._base_fdist.count(sample)
+        r = self._base_fdist[sample]
         return self._estimate[r]
 
     def max(self):
@@ -887,7 +883,7 @@ class WittenBellProbDist(ProbDistI):
 
     def prob(self, sample):
         # inherit docs from ProbDistI
-        c = self._freqdist.count(sample)
+        c = self._freqdist[sample]
         if c == 0:
             return self._T / float(self._Z * (self._N + self._T))
         else:
@@ -897,7 +893,7 @@ class WittenBellProbDist(ProbDistI):
         return self._freqdist.max()
     
     def samples(self):
-        return self._freqdist.samples()
+        return self._freqdist.keys()
 
     def freqdist(self):
         return self._freqdist
@@ -958,7 +954,7 @@ class GoodTuringProbDist(ProbDistI):
 
     def prob(self, sample):
         # inherit docs from FreqDist
-        c = self._freqdist.count(sample)
+        c = self._freqdist[sample]
         nc = self._freqdist.Nr(c, self._bins)
         ncn = self._freqdist.Nr(c + 1, self._bins)
 
@@ -972,7 +968,7 @@ class GoodTuringProbDist(ProbDistI):
         return self._freqdist.max()
     
     def samples(self):
-        return self._freqdist.samples()
+        return self._freqdist.keys()
 
     def freqdist(self):
         return self._freqdist
@@ -1077,7 +1073,7 @@ class MutableProbDist(ProbDistI):
 def log_likelihood(test_pdist, actual_pdist):
     # Is this right?
     return sum(actual_pdist.prob(s) * math.log(test_pdist.prob(s))
-                for s in actual_pdist.samples())
+                for s in actual_pdist.keys())
 
 ##//////////////////////////////////////////////////////
 ##  Conditional Distributions
@@ -1102,7 +1098,7 @@ class ConditionalFreqDist(object):
         <FreqDist with 73 outcomes>
         >>> cfdist[3].freq('the')
         0.4
-        >>> cfdist[3].count('dog')
+        >>> cfdist[3]['dog']
         2
 
     When the indexing operator is used to access the frequency
@@ -1292,7 +1288,7 @@ class ConditionalProbDist(ConditionalProbDistI):
             self._pdists[c] = pdist
 
     def __getitem__(self, condition):
-        if not self._pdists.has_key(condition):
+        if condition not in self._pdists:
             # If it's a condition we haven't seen, create a new prob
             # dist from the empty freq dist.  Typically, this will
             # give a uniform prob dist.

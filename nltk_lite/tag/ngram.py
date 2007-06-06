@@ -78,7 +78,7 @@ class Ngram(SequentialBackoff):
         for context in fd.conditions():
             best_tag = fd[context].max()
             backoff_tag = self._backoff_tag_one(token, tuple(self._history))
-            hits = fd[context].count(best_tag)
+            hits = fd[context][best_tag]
 
             # is the tag we would assign different from the backoff tagger
             # and do we have sufficient evidence?
