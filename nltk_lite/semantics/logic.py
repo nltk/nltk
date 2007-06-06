@@ -25,7 +25,7 @@ The class of C{Expression} has various subclasses:
 
 from nltk_lite.utilities import Counter
 from nltk_lite.parse.featurelite import SubstituteBindingsMixin, FeatureI
-from nltk_lite.parse.featurelite import Variable as FeatureVariable
+from nltk_lite.parse.featurelite import Variable as FeatureVariablep
 
 _counter = Counter()
 
@@ -310,7 +310,7 @@ class Operator(ConstantExpression):
     """
     def __init__(self, operator):
         Expression.__init__(self)
-        assert operator in Parser.OPS
+        assert operator in LogicParser.OPS
         self.constant = operator
         self.operator = operator
 
@@ -596,7 +596,7 @@ class SomeExpressionSubst(SomeExpression, SubstituteBindingsMixin):
 class AllExpressionSubst(AllExpression, SubstituteBindingsMixin):
     pass
 
-class Parser:
+class LogicParser:
     """A lambda calculus expression parser."""
 
     
@@ -673,24 +673,24 @@ class Parser:
 
     def isVariable(self, token):
         """Is this token a variable (that is, not one of the other types)?"""
-        TOKENS = [Parser.LAMBDA, Parser.SOME, Parser.ALL,
-               Parser.DOT, Parser.OPEN, Parser.CLOSE, Parser.EQ]
+        TOKENS = [LogicParser.LAMBDA, LogicParser.SOME, LogicParser.ALL,
+               LogicParser.DOT, LogicParser.OPEN, LogicParser.CLOSE, LogicParser.EQ]
         TOKENS.extend(self.constants)
-        TOKENS.extend(Parser.BOOL)
+        TOKENS.extend(LogicParser.BOOL)
         return token not in TOKENS 
 
     def next(self):
         """Parse the next complete expression from the stream and return it."""
         tok = self.token()
         
-        if tok in [Parser.LAMBDA, Parser.SOME, Parser.ALL]:
+        if tok in [LogicParser.LAMBDA, LogicParser.SOME, LogicParser.ALL]:
             # Expression is a lambda expression: \x.M
             # or a some expression: some x.M
-            if tok == Parser.LAMBDA:
+            if tok == LogicParser.LAMBDA:
                 factory = self.make_LambdaExpression
-            elif tok == Parser.SOME:
+            elif tok == LogicParser.SOME:
                 factory = self.make_SomeExpression
-            elif tok == Parser.ALL:
+            elif tok == LogicParser.ALL:
                 factory = self.make_AllExpression
             else:
                 raise ValueError(tok)
@@ -702,7 +702,7 @@ class Parser:
                 vars.append(self.token())
             tok = self.token()
 
-            if tok != Parser.DOT:
+            if tok != LogicParser.DOT:
                 raise Error, "parse error, unexpected token: %s" % tok
             term = self.next()
             accum = factory(Variable(vars.pop()), term)
@@ -710,16 +710,16 @@ class Parser:
                 accum = factory(Variable(vars.pop()), accum)
             return accum
             
-        elif tok == Parser.OPEN:
+        elif tok == LogicParser.OPEN:
             # Expression is an application expression: (M N)
             first = self.next()
             second = self.next()
             exps = []
-            while self.token(0) != Parser.CLOSE:
+            while self.token(0) != LogicParser.CLOSE:
                 # Support expressions like: (M N P) == ((M N) P)
                 exps.append(self.next())
             tok = self.token() # swallow the close token
-            assert tok == Parser.CLOSE
+            assert tok == LogicParser.CLOSE
             if isinstance(second, Operator):
                 accum = self.make_ApplicationExpression(second, first)
             else:
@@ -733,7 +733,7 @@ class Parser:
             # Expression is a simple constant expression: a
             return ConstantExpression(Constant(tok))
 
-        elif tok in Parser.OPS:
+        elif tok in LogicParser.OPS:
             # Expression is a boolean operator or the equality symbol
             return Operator(tok)
 
@@ -787,7 +787,7 @@ def expressions():
             ApplicationExpression(XZ, Y))))
     O = LambdaExpression(x, LambdaExpression(y, XY))
     N = ApplicationExpression(LambdaExpression(x, XA), I)
-    T = Parser('\\x y.(x y z)').next()
+    T = LogicParser('\\x y.(x y z)').next()
     return [X, XZ, XYZ, I, K, L, S, B, C, O, N, T]
 
 def demo():
@@ -804,7 +804,7 @@ def demo():
         la = ApplicationExpression(ApplicationExpression(l, P), Q)
         las = la.simplify()
         print "Apply and simplify: %s -> %s" % (la, las)
-        ll = Parser(str(l)).next()
+        ll = LogicParser(str(l)).next()
         print 'l is:', l
         print 'll is:', ll
         assert l.equals(ll)
