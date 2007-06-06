@@ -73,7 +73,7 @@ def propogate_frequencies(freq_dist, synset):
     hyponyms = set(synset[HYPONYM]) | set(synset[INSTANCE_HYPONYM])
     for hyponym in hyponyms:
         freq_dist.inc(node, propogate_frequencies(freq_dist, hyponym))
-    return freq_dist.count(node)
+    return freq_dist[node]
 
 def brown_information_content(output_filename, compounds_filename, \
         stopwords_filename=None, smoothing=True):
@@ -314,11 +314,11 @@ def brown_information_content(output_filename, compounds_filename, \
     root = N['entity'][0].synset
 
     for sample in noun_fd.samples():
-        noun_dict[sample.offset] = (noun_fd.count(sample), noun_fd.count(root))
+        noun_dict[sample.offset] = (noun_fd[sample], noun_fd[root])
 
     for sample in verb_fd.samples():
         root = sample.hypernym_paths()[0][0]
-        verb_dict[sample.offset] = (verb_fd.count(sample), verb_fd.count(root))
+        verb_dict[sample.offset] = (verb_fd[sample], verb_fd[root])
 
     sys.stdout.write(" done.\n")
     sys.stdout.write("Writing probability hashes to file %s..." % (output_filename))

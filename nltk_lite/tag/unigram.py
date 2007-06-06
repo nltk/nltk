@@ -69,7 +69,7 @@ class Unigram(SequentialBackoff):
         for token in fd.conditions():
             best_tag = fd[token].max()
             backoff_tag = self._backoff_tag_one(token)
-            hits = fd[token].count(best_tag)
+            hits = fd[token][best_tag]
 
             # is the tag we would assign different from the backoff tagger
             # and do we have sufficient evidence?
@@ -176,7 +176,7 @@ class Affix(SequentialBackoff):
                         fd[affix].inc(tag)
         for affix in fd.conditions():
             best_tag = fd[affix].max()
-            if fd[affix].count(best_tag) > self._cutoff:
+            if fd[affix][best_tag] > self._cutoff:
                 self._model[affix] = best_tag
         # generate stats
         if verbose:
