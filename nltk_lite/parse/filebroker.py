@@ -226,6 +226,9 @@ def demo():
     print
     print "Find locally:"   
     load("broker_test.cfg", verbose=True)
+    print
+    print "Time to clean up"
+    b.empty_cache(registry=True, verbose=True)
 
     
 if __name__ == '__main__':

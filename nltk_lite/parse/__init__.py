@@ -170,11 +170,10 @@ class AbstractParse(ParseI):
 # semantics/logic imports from parse/featurelite, which tries to
 # import everything from parse, including category.
 #from category import *
+# from featurechart import *
 from cfg import *
 from chart import *
-from featurechart import *
 from featurelite import *
-#from filebroker import *
 from pcfg import *
 from pchart import *
 from rd import *

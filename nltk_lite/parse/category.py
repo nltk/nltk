@@ -12,6 +12,7 @@
 
 # from nltk_lite.semantics import *
 from nltk_lite.semantics.logic import LogicParser, ApplicationExpression
+#from nltk_lite.semantics.logic import 
 from nltk_lite.parse.cfg import *
 from nltk_lite.parse.featurelite import *
 from nltk_lite.parse import *
@@ -742,6 +743,9 @@ def demo():
     print "Find locally:"   
     g = GrammarFile.read_file("broker_test.cfg")
     print g.grammar()
+    print
+    b = filebroker.Broker()
+    b.empty_cache(registry=True, verbose=True)
     
 if __name__ == '__main__':
     demo()
