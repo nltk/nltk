@@ -10,8 +10,10 @@
 #
 # $Id$
 
-from nltk_lite.semantics import logic
-#from cfg import *
+# from nltk_lite.semantics import *
+from nltk_lite.semantics.logic import LogicParser, ApplicationExpression
+from nltk_lite.parse.cfg import *
+from nltk_lite.parse.featurelite import *
 from nltk_lite.parse import *
 import filebroker
 
@@ -596,7 +598,7 @@ class SubstituteBindingsI:
         """
         raise NotImplementedError
 
-class ParserSubstitute(logic.Parser):
+class ParserSubstitute(LogicParser):
     """
     A lambda calculus expression parser, extended to create application
     expressions which support the SubstituteBindingsI interface.
@@ -604,7 +606,7 @@ class ParserSubstitute(logic.Parser):
     def make_ApplicationExpression(self, first, second):
         return ApplicationExpressionSubst(first, second)
 
-class ApplicationExpressionSubst(logic.ApplicationExpression, SubstituteBindingsI):
+class ApplicationExpressionSubst(ApplicationExpression, SubstituteBindingsI):
     """
     A lambda application expression, extended to implement the
     SubstituteBindingsI interface.
@@ -738,7 +740,7 @@ def demo():
     print g.grammar()
     print
     print "Find locally:"   
-    g = GrammarFile.read_file("gazdar6.cfg")
+    g = GrammarFile.read_file("broker_test.cfg")
     print g.grammar()
     
 if __name__ == '__main__':

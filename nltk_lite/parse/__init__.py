@@ -166,11 +166,15 @@ class AbstractParse(ParseI):
             print "%d parses." % len(parses)
             for tree in parses: print tree
 
-from category import *
+# Creates circular import problem -- category imports semantics/logic,
+# semantics/logic imports from parse/featurelite, which tries to
+# import everything from parse, including category.
+#from category import *
 from cfg import *
 from chart import *
 from featurechart import *
-from filebroker import *
+from featurelite import *
+#from filebroker import *
 from pcfg import *
 from pchart import *
 from rd import *

@@ -14,10 +14,10 @@ feature structures as nodes.
 
 import yaml
 from nltk_lite.parse import *
-#from chart import *
-import cfg
+from nltk_lite.parse.category import GrammarFile, GrammarCategory
+from nltk_lite.parse import cfg
 
-from featurelite import *
+# from featurelite import *
 
 def load_earley(filename, trace=1):
     """
@@ -36,7 +36,7 @@ def load_earley(filename, trace=1):
        including those with cached results.
     """
 
-    grammar = ncategory.GrammarFile.read_file(filename)
+    grammar = GrammarFile.read_file(filename)
     return grammar.earley_parser(trace)
 
 class FeatureTreeEdge(TreeEdge):
@@ -347,8 +347,7 @@ def demo():
 
     sent = 'I saw John with a dog with my cookie'
     print "Sentence:\n", sent
-    #from nltk_lite import tokenize	
-    import tokenize
+    from nltk_lite import tokenize	
     tokens = list(tokenize.whitespace(sent))
     t = time.time()
     cp = FeatureEarleyChartParse(earley_grammar, lexicon, trace=1)

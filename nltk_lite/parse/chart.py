@@ -10,7 +10,7 @@
 # $Id$
 
 from nltk_lite.parse import *
-# from tree import Tree
+from tree import Tree
 import cfg
 
 """
@@ -1583,8 +1583,7 @@ def demo():
     # Tokenize a sample sentence.
     sent = 'I saw John with a dog with my cookie'
     print "Sentence:\n", sent
-    #from nltk_lite import tokenize
-    import tokenize
+    from nltk_lite import tokenize
     tokens = list(tokenize.whitespace(sent))
 
     print tokens
