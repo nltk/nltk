@@ -1,0 +1,374 @@
+In general, when we are trying to develop even a very small grammar,
+it is convenient to put the rules in a file where they can be edited,
+tested and revised. Assuming we have saved feat0cfg_ as a file named
+``'feat0.cfg'``, the function ``GrammarFile.read_file()`` allows us to
+read the grammar into NLTK, ready for use in parsing.
+
+    >>> from nltk_lite.parse import *
+    >>> from nltk_lite.parse.featurechart import *
+    >>> import nltk_lite.tokenize
+    >>> cp = load_earley('feat0.cfg', trace=2)
+    >>> sent = 'Kim likes children'
+    >>> tokens = list(tokenize.whitespace(sent))
+    >>> tokens 
+    ['Kim', 'likes', 'children']
+    >>> trees = cp.parse(tokens)
+              |.K.l.c.|
+    Processing queue 0
+    Predictor |> . . .| S -> * NP[NUM=?n] VP[NUM=?n] {} 
+    Predictor |> . . .| NP[NUM=?n] -> * N[NUM=?n] {} 
+    Predictor |> . . .| NP[NUM=?n] -> * PropN[NUM=?n] {} 
+    Predictor |> . . .| NP[NUM=?n] -> * Det[NUM=?n] N[NUM=?n] {} 
+    Predictor |> . . .| NP[NUM='pl'] -> * N[NUM='pl'] {} 
+    Processing queue 1
+    Scanner   |[-] . .| PropN[NUM='sg'] -> Kim * {} 
+    Completer |[-] . .| NP[NUM='sg'] -> PropN[NUM='sg'] * {'n': 'sg'} 
+    Completer |[-> . .| S -> NP[NUM='sg'] * VP[NUM='sg'] {'n': 'sg'} 
+    Predictor |. > . .| VP[NUM=?n, TENSE=?t] -> * IV[NUM=?n, TENSE=?t] {} 
+    Predictor |. > . .| VP[NUM=?n, TENSE=?t] -> * TV[NUM=?n, TENSE=?t] NP {} 
+    Processing queue 2
+    Scanner   |. [-] .| TV[NUM='sg', TENSE='pres'] -> likes * {} 
+    Completer |. [-> .| VP[NUM='sg', TENSE='pres'] -> TV[NUM='sg', TENSE='pres'] * NP {'t': 'pres', 'n': 'sg'} 
+    Predictor |. . > .| NP[NUM=?n] -> * N[NUM=?n] {} 
+    Predictor |. . > .| NP[NUM=?n] -> * PropN[NUM=?n] {} 
+    Predictor |. . > .| NP[NUM=?n] -> * Det[NUM=?n] N[NUM=?n] {} 
+    Predictor |. . > .| NP[NUM='pl'] -> * N[NUM='pl'] {} 
+    Processing queue 3
+    Scanner   |. . [-]| N[NUM='pl'] -> children * {} 
+    Completer |. . [-]| NP[NUM='pl'] -> N[NUM='pl'] * {'n': 'pl'} 
+    Completer |. [---]| VP[NUM='sg', TENSE='pres'] -> TV[NUM='sg', TENSE='pres'] NP * {'t': 'pres', 'n': 'sg'} 
+    Completer |[=====]| S -> NP[NUM='sg'] VP[NUM='sg'] * {'n': 'sg'} 
+    Completer |[=====]| [INIT] -> S * {} 
+    >>> for tree in trees: print tree
+    (S:
+      (NP[NUM='sg']: (PropN[NUM='sg']: 'Kim'))
+      (VP[NUM='sg', TENSE='pres']:
+        (TV[NUM='sg', TENSE='pres']: 'likes')
+        (NP[NUM='pl']: (N[NUM='pl']: 'children'))))
+
+Feature structures in NLTK are ... Atomic feature values can be strings or
+integers.
+
+    >>> fs1 = dict(TENSE='past', NUM='sg') 
+    >>> print fs1
+    {'NUM': 'sg', 'TENSE': 'past'}
+
+We can think of a feature structure as being like a Python dictionary,
+and access its values by indexing in the usual way.
+
+    >>> fs1 = dict(PER=3, NUM='pl', GND='fem')
+    >>> print fs1['GND']
+    fem
+
+We can also define feature structures which have complex values, as
+discussed earlier.
+
+    >>> fs2 = dict(POS='N', AGR=fs1)
+    >>> print fs2
+    {'AGR': {'NUM': 'pl', 'GND': 'fem', 'PER': 3}, 'POS': 'N'}
+    >>> print fs2['AGR']
+    {'NUM': 'pl', 'GND': 'fem', 'PER': 3}
+    >>> print fs2['AGR']['PER']
+    3
+
+An alternative method of specifying feature structures in NLTK is to
+use the ``load`` method of ``yaml``. This gives us the
+facility to use square bracket notation for embedding one feature
+structure within another.
+
+Representing dictionaries in YAML form is useful for making feature
+structures readable:
+    
+    >>> from nltk_lite.parse.featurelite import *
+    >>> f1 = yaml.load("NUMBER: SINGULAR")
+    >>> f2 = yaml.load("PERSON: 3")
+    >>> print show(unify(f1, f2))
+    NUMBER: SINGULAR
+    PERSON: 3
+
+    >>> f1 = yaml.load('''
+    ... A:
+    ...   B: b
+    ...   D: d
+    ... ''')
+    >>> f2 = yaml.load('''
+    ... A:
+    ...   C: c
+    ...   D: d
+    ... ''')
+    >>> print show(unify(f1, f2))
+    A:
+      B: b
+      C: c
+      D: d
+
+
+Feature Structures as Graphs
+----------------------------
+
+Feature structures are not inherently tied to linguistic objects; they are
+general purpose structures for representing knowledge. For example, we
+could encode information about a person in a feature structure:
+
+    >>> person01 = yaml.load('''
+    ... NAME: 'Lee'
+    ... TELNO: '01 27 86 42 96'
+    ... AGE: 33
+    ... ''')
+    >>> print show(person01)
+    AGE: 33
+    NAME: Lee
+    TELNO: 01 27 86 42 96
+
+There are a number of notations for representing reentrancy in
+matrix-style representations of feature structures. In NLTK, we adopt
+the following convention: the first occurrence of a shared feature structure 
+is prefixed with an integer in parentheses, such as ``(1)``, and any
+subsequent reference to that structure uses the notation
+``->(1)``, as shown below.
+
+    >>> fs=yaml.load("""
+    ... NAME: 'Lee'
+    ... ADDRESS: &1
+    ...   NUMBER: 74
+    ...   STREET: 'rue Pascal'
+    ... SPOUSE:
+    ...   NAME: 'Kim'
+    ...   ADDRESS: *1
+    ... """)
+    >>> print show(fs)
+    ADDRESS: &id001
+      NUMBER: 74
+      STREET: rue Pascal
+    NAME: Lee
+    SPOUSE:
+      ADDRESS: *id001
+      NAME: Kim
+
+There can be any number of tags within a single feature structure.
+
+    >>> fs3 = yaml.load("""
+    ... A: 'a'
+    ... B: &1
+    ...   C: 'c'
+    ... D: *1
+    ... E: *1
+    ... """)
+    >>> print show(fs3)
+    A: a
+    B: &id001
+      C: c
+    D: *id001
+    E: *id001
+
+
+    >>> fs1 = yaml.load("""
+    ... NUMBER: 74
+    ... STREET: 'rue Pascal'
+    ... """)
+    >>> fs2 = yaml.load("CITY: Paris")
+    >>> print show(unify(fs1, fs2))
+    CITY: Paris
+    NUMBER: 74
+    STREET: rue Pascal
+
+Unification is symmetric:
+
+    >>> unify(fs1, fs2) == unify(fs2, fs1)
+    True
+
+Unification is commutative:
+
+    >>> fs3 = yaml.load("TELNO: 01 27 86 42 96")
+    >>> unify(unify(fs1, fs2), fs3) == unify(fs1, unify(fs2, fs3))
+    True
+
+Unification between `FS`:math:\ :subscript:`0` and `FS`:math:\
+:subscript:`1` will fail if the two feature structures share a path |pi|,
+but the value of |pi| in `FS`:math:\ :subscript:`0` is a distinct
+atom from the value of |pi| in `FS`:math:\ :subscript:`1`. In NLTK,
+this is implemented by setting the result of unification to be
+``None``.
+
+    >>> fs0 = dict(A='a')
+    >>> fs1 = dict(A='b')
+    >>> unify(fs0, fs1)
+    Traceback (most recent call last):
+    ...
+    UnificationFailure
+
+Now, if we look at how unification interacts with structure-sharing,
+things become really interesting.
+
+    >>> fs0 = yaml.load("""
+    ... NAME: Lee
+    ... ADDRESS: 
+    ...   NUMBER: 74 
+    ...   STREET: 'rue Pascal'
+    ... SPOUSE:  
+    ...   NAME: Kim
+    ...   ADDRESS: 
+    ...     NUMBER: 74
+    ...     STREET: 'rue Pascal'
+    ... """)
+    >>> print show(fs0)
+    ADDRESS:
+      NUMBER: 74
+      STREET: rue Pascal
+    NAME: Lee
+    SPOUSE:
+      ADDRESS:
+        NUMBER: 74
+        STREET: rue Pascal
+      NAME: Kim
+
+    >>> fs1 = yaml.load("""
+    ... SPOUSE: 
+    ...   ADDRESS: 
+    ...     CITY: Paris
+    ... """)
+    >>> print show(unify(fs0, fs1))
+    ADDRESS:
+      NUMBER: 74
+      STREET: rue Pascal
+    NAME: Lee
+    SPOUSE:
+      ADDRESS:
+        CITY: Paris
+        NUMBER: 74
+        STREET: rue Pascal
+      NAME: Kim
+
+    >>> fs0 = yaml.load("""
+    ... NAME: Lee
+    ... ADDRESS: &1
+    ...   NUMBER: 74 
+    ...   STREET: 'rue Pascal'
+    ... SPOUSE:  
+    ...   NAME: Kim
+    ...   ADDRESS: *1
+    ... """)
+    >>> print show(fs0)
+    ADDRESS: &id001
+      NUMBER: 74
+      STREET: rue Pascal
+    NAME: Lee
+    SPOUSE:
+      ADDRESS: *id001
+      NAME: Kim
+
+    >>> print show(unify(fs0, fs1))
+    ADDRESS: &id001
+      CITY: Paris
+      NUMBER: 74
+      STREET: rue Pascal
+    NAME: Lee
+    SPOUSE:
+      ADDRESS: *id001
+      NAME: Kim
+
+    >>> fs1 = yaml.load("""
+    ... ADDRESS1: 
+    ...   NUMBER: 74
+    ...   STREET: 'rue Pascal'
+    ... """)
+
+    >>> fs2 = yaml.load("""
+    ... ADDRESS1: ?x
+    ... ADDRESS2: ?x
+    ... """)
+
+    >>> print show(unify(fs1, fs2))
+    ADDRESS1: &id001
+      NUMBER: 74
+      STREET: rue Pascal
+    ADDRESS2: *id001
+
+
+    >>> sent = 'who do you claim that you like'
+    >>> tokens = list(tokenize.whitespace(sent))
+    >>> cp = load_earley('feat1.cfg', trace=1)
+    >>> trees = cp.parse(tokens)
+              |.w.d.y.c.t.y.l.|
+    Scanner   |[-] . . . . . .| NP[+WH] -> who * {} 
+    Completer |[-> . . . . . .| S[-INV] -> NP * S/NP {} 
+    Completer |[-> . . . . . .| S[-INV]/?x -> NP * VP/?x {} 
+    Scanner   |. [-] . . . . .| V[+AUX, SUBCAT=3] -> do * {} 
+    Completer |. [-> . . . . .| S[+INV]/?x -> V[+AUX] * NP VP/?x {} 
+    Completer |. [-> . . . . .| VP/?x -> V[+AUX, SUBCAT=3] * VP/?x {} 
+    Scanner   |. . [-] . . . .| NP[-WH] -> you * {} 
+    Completer |. [---> . . . .| S[+INV]/?x -> V[+AUX] NP * VP/?x {} 
+    Scanner   |. . . [-] . . .| V[-AUX, SUBCAT=2] -> claim * {} 
+    Completer |. . . [-> . . .| VP/?x -> V[-AUX, SUBCAT=2] * S-BAR/?x {} 
+    Scanner   |. . . . [-] . .| Comp -> that * {} 
+    Completer |. . . . [-> . .| S-BAR/?x -> Comp * S[-INV]/?x {} 
+    Scanner   |. . . . . [-] .| NP[-WH] -> you * {} 
+    Completer |. . . . . [-> .| S[-INV] -> NP * S/NP {} 
+    Completer |. . . . . [-> .| S[-INV]/?x -> NP * VP/?x {} 
+    Scanner   |. . . . . . [-]| V[-AUX, SUBCAT=1] -> like * {} 
+    Completer |. . . . . . [->| VP/?x -> V[-AUX, SUBCAT=1] * NP/?x {} 
+    Completer |. . . . . . [-]| VP/NP -> V[-AUX, SUBCAT=1] NP/NP * {'x': {'pos': 'NP'}} 
+    Completer |. . . . . [---]| S[-INV]/NP -> NP VP/NP * {'x': {'pos': 'NP'}} 
+    Completer |. . . . [-----]| S-BAR/NP -> Comp S[-INV]/NP * {'x': {'pos': 'NP'}} 
+    Completer |. . . [-------]| VP/NP -> V[-AUX, SUBCAT=2] S-BAR/NP * {'x': {'pos': 'NP'}} 
+    Completer |. [-----------]| S[+INV]/NP -> V[+AUX] NP VP/NP * {'x': {'pos': 'NP'}} 
+    Completer |[=============]| S[-INV] -> NP S/NP * {} 
+    Completer |[=============]| [INIT] -> S * {} 
+    >>> for tree in trees: print tree
+      (S[-INV]:
+        (NP[+WH]: 'who')
+        (S[+INV]/NP:
+          (V[+AUX, SUBCAT=3]: 'do')
+          (NP[-WH]: 'you')
+          (VP/NP:
+            (V[-AUX, SUBCAT=2]: 'claim')
+            (S-BAR/NP:
+              (Comp: 'that')
+              (S[-INV]/NP:
+                (NP[-WH]: 'you')
+                (VP/NP: (V[-AUX, SUBCAT=1]: 'like') (NP/NP: )))))))
+
+
+
+Let's load a German grammar:
+
+    >>> cp = load_earley('german0.cfg', trace=0)
+    >>> sent = 'die katze sieht den hund'
+    >>> tokens = list(tokenize.whitespace(sent))
+    >>> trees = cp.parse(tokens)
+    >>> for tree in trees: print tree
+    (S:
+      (NP[AGR=[GND='fem', NUM='sg', PER=3], CASE='nom']:
+        (Det[AGR=[GND='fem', NUM='sg', PER=3], CASE='nom']: 'die')
+        (N[AGR=[GND='fem', NUM='sg', PER=3]]: 'katze'))
+      (VP[AGR=[NUM='sg', PER=3]]:
+        (TV[AGR=[NUM='sg', PER=3], OBJCASE='acc']: 'sieht')
+        (NP[AGR=[GND='masc', NUM='sg', PER=3], CASE='acc']:
+          (Det[AGR=[GND='masc', NUM='sg', PER=3], CASE='acc']: 'den')
+          (N[AGR=[GND='masc', NUM='sg', PER=3]]: 'hund'))))
+
+First attempt at doing semantics with features:
+
+    >>> cp = load_earley('sem3.cfg', trace=2)
+    >>> sent = 'Kim barks'
+    >>> tokens = list(tokenize.whitespace(sent))
+    >>> trees = cp.parse(tokens)
+              |.K.b.|
+    Processing queue 0
+    Predictor |> . .| S[sem=?vp] -> * NP[sem=?np] VP[sem=?vp, subj=?np] {} 
+    Processing queue 1
+    Scanner   |[-] .| NP[sem=[index='k', name='kim']] -> Kim * {} 
+    Completer |[-> .| S[sem=?vp] -> NP[sem=[index='k', name='kim']] * VP[sem=?vp, subj=[index='k', name='kim']] {'np': {'index': 'k', 'name': 'kim'}} 
+    Predictor |. > .| VP[sem=?v, subj=?np] -> * IV[sem=?v, subj=?np] {} 
+    Processing queue 2
+    Scanner   |. [-]| IV[sem=[arg=?i, rel='bark'], subj=[sem=[index=?i]]] -> barks * {} 
+    Completer |. [-]| VP[sem=[arg=?i, rel='bark'], subj=[sem=[index=?i]]] -> IV[sem=[arg=?i, rel='bark'], subj=[sem=[index=?i]]] * {'np': {'sem': {'index': ?i}}, 'v': {'rel': 'bark', 'arg': ?i}} 
+    Completer |[===]| S[sem=[arg=?i, rel='bark']] -> NP[sem=[index='k', name='kim']] VP[sem=[arg=?i, rel='bark'], subj=[index='k', name='kim']] * {'np': {'index': 'k', 'sem': {'index': ?i}, 'name': 'kim'}, 'vp': {'rel': 'bark', 'arg': ?i}} 
+    Completer |[===]| [INIT] -> S * {} 
+    >>> for tree in trees: print tree
+    (S[sem=[arg=?i, rel='bark']]:
+      (NP[sem=[index='k', name='kim']]: 'Kim')
+      (VP[sem=[arg=?i, rel='bark'], subj=[sem=[index=?i]]]:
+        (IV[sem=[arg=?i, rel='bark'], subj=[sem=[index=?i]]]: 'barks')))
+
+
