@@ -19,7 +19,7 @@ from nltk_lite.parse import cfg
 
 # from featurelite import *
 
-def load_earley(filename, trace=1):
+def load_earley(filename, trace=1, verbose=False):
     """
     Load a grammar from a file, and build an Earley feature parser based on
     that grammar.
@@ -34,9 +34,12 @@ def load_earley(filename, trace=1):
     4: Show all edges, plus the results of all attempted unifications.
     5: Show all edges, plus the results of all attempted unifications,
        including those with cached results.
+       
+    If C{verbose} is set to C{True}, then more diagnostic information about
+    grammar-loading is displayed.
     """
 
-    grammar = GrammarFile.read_file(filename)
+    grammar = GrammarFile.read_file(filename, verbose=verbose)
     return grammar.earley_parser(trace)
 
 class FeatureTreeEdge(TreeEdge):
