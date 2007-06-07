@@ -6,7 +6,7 @@ TMPPREFIX = 'tmp_'
 
 class Broker(object):
     
-    def __init__(self):
+    def __init__(self, verbose=False):
         #name of the registry file
         self.reg_name = 'grammars.yml'
         
@@ -17,7 +17,7 @@ class Broker(object):
         self.reg_qualifier = 'http://nltk.svn.sourceforge.net/viewvc/*checkout*/nltk/trunk/nltk/examples/'
         
         try:
-            reg_localname = self.resolve_filename(self.reg_name, qualifier=self.reg_qualifier, verbose=True)
+            reg_localname = self.resolve_filename(self.reg_name, qualifier=self.reg_qualifier, verbose=verbose)
             if self._safe_open(reg_localname):
                 self.registry = yaml.load(open(reg_localname))
 
