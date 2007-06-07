@@ -1,4 +1,5 @@
 from nltk_lite.parse import *
+from nltk_lite.parse.featurechart import *
 import unittest
 
 class TestGermanGrammar(unittest.TestCase):

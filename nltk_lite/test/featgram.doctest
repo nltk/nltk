@@ -5,6 +5,7 @@ tested and revised. Assuming we have saved feat0cfg_ as a file named
 read the grammar into NLTK, ready for use in parsing.
 
     >>> from nltk_lite.parse import *
+    >>> from nltk_lite.parse.featurechart import *
     >>> import nltk_lite.tokenize
     >>> cp = load_earley('feat0.cfg', trace=2)
     >>> sent = 'Kim likes children'
