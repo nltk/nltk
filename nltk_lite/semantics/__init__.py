@@ -12,7 +12,7 @@ set-theoretic models.
 
 """
 
-
-from evaluate import *
+# Following triggers circular import
+#from evaluate import *
 from logic import *
 from utilities import *

@@ -12,7 +12,7 @@ This module provides data structures for representing first-order
 models. 
 """
 
-from nltk_lite.semantics import logic
+from nltk_lite.semantics import LogicParser, Variable, is_indvar
 
 from pprint import pformat
 
@@ -189,7 +189,7 @@ class Valuation(dict):
         dict.__init__(self)
         if valuation:
             for k in valuation.keys():
-                if logic.is_indvar(k):
+                if is_indvar(k):
                     raise Error, "This looks like an individual variable: '%s'" % k
                 # Check if the valuation is of the form {'p': True}
                 if isinstance(valuation[k], bool):
@@ -215,7 +215,7 @@ class Valuation(dict):
         """
         d = dict(seq)
         for k in d.keys():
-            if logic.is_indvar(k):
+            if is_indvar(k):
                 raise Error, "This looks like an individual variable: '%s'" % k
             val = d[k]
             if isinstance(val, str):
@@ -269,7 +269,7 @@ class Assignment(dict):
                 val = assignment[var]
                 assert val in self.domain,\
                        "'%s' is not in the domain: %s" % (val, self.domain)
-                assert logic.is_indvar(var),\
+                assert is_indvar(var),\
                        "Wrong format for an Individual Variable: '%s'" % var
             self.update(assignment)
         self._addvariant()
@@ -330,7 +330,7 @@ class Assignment(dict):
         """
         assert val in self.domain,\
                "%s is not in the domain %s" % (val, self.domain)
-        assert logic.is_indvar(var),\
+        assert is_indvar(var),\
                "Wrong format for an Individual Variable: '%s'" % var
         self[var] = val
         self._addvariant()
@@ -613,8 +613,8 @@ class Model:
         @param expr: an C{Expression} of L{logic}.
         @rtype: C{bool}
         """
-        parsed = logic.Parser().parse(expr)
-        variable = logic.Variable(var)
+        parsed = LogicParser().parse(expr)
+        variable = Variable(var)
         return variable in parsed.free()
         
     def satisfiers(self, expr, var, g, trace=False, nesting=0):
@@ -683,7 +683,7 @@ class Model:
         """
 
         try:
-            parsed = logic.Parser(constants=self.valuation.symbols).parse(expr)
+            parsed = LogicParser(constants=self.valuation.symbols).parse(expr)
         except TypeError:
             print "Cannot parse %s" % expr
             
