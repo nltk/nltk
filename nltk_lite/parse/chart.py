@@ -9,6 +9,10 @@
 #
 # $Id$
 
+from nltk_lite.parse import *
+from nltk_lite.parse.tree import Tree
+from nltk_lite.parse import cfg
+
 """
 Data classes and parser implementations for \"chart parsers\", which
 use dynamic programming to efficiently parse a text.  A X{chart
@@ -42,7 +46,6 @@ defines three chart parsers:
 """
 
 import re
-from nltk_lite.parse import *
 
 ########################################################################
 ##  Edges
@@ -275,7 +278,7 @@ class TreeEdge(EdgeI):
 
     # Comparisons & hashing
     def __cmp__(self, other):
-	if self.__class__ != other.__class__: return -1
+        if self.__class__ != other.__class__: return -1
         return cmp((self._span, self.lhs(), self.rhs(), self._dot),
                    (other._span, other.lhs(), other.rhs(), other._dot))
     def __hash__(self):
@@ -886,15 +889,6 @@ class AbstractChartRule(object):
       - A default implementation for C{__str__}, which returns a
         name basd on the rule's class name.
     """
-    def __init__(self):
-        # This is a sanity check, to make sure that NUM_EDGES is
-        # consistant with apply() and  apply_iter():
-        for method in self.apply, self.apply_iter:
-            num_args = method.im_func.func_code.co_argcount
-            has_vararg = method.im_func.func_code.co_flags & 4
-            if num_args != self.NUM_EDGES+3 and not has_vararg:
-                raise AssertionError('NUM_EDGES is incorrect in for %s.%s' %
-                                     (self.__class__, func.__name__))
 
     # Subclasses must define apply_iter.
     def apply_iter(self, chart, grammar, *edges):
@@ -1010,9 +1004,25 @@ class SingleEdgeFundamentalRule(AbstractChartRule):
 
     def __str__(self): return 'Fundamental Rule'
     
+class BottomUpInitRule(AbstractChartRule):
+    """
+    A rule licensing any edges corresponding to terminals in the
+    text.  In particular, this rule licenses the leaf edge:
+        - [wS{->}*][i:i+1]
+    for C{w} is a word in the text, where C{i} is C{w}'s index.
+    """
+    NUM_EDGES = 0
+    def apply_iter(self, chart, grammar):
+        for index in range(chart.num_leaves()):
+            new_edge = LeafEdge(chart.leaf(index), index)
+            if chart.insert(new_edge, ()):
+                yield new_edge
+
 #////////////////////////////////////////////////////////////
 # Top-Down Parsing
 #////////////////////////////////////////////////////////////
+    
+
 class TopDownInitRule(AbstractChartRule):
     """
     A rule licensing edges corresponding to the grammar productions for
