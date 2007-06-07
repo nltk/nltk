@@ -133,6 +133,9 @@ class AbstractParse(ParseI):
         if self.__class__ == AbstractParse:
             raise AssertionError, "Abstract classes can't be instantiated"
 
+#    def parse(self, sentence):
+#         return self.get_parse_list(sentence.split())
+
     def parse(self, tokens):
         return self.get_parse(list(tokens))
 
@@ -148,17 +151,35 @@ class AbstractParse(ParseI):
         tree = self.get_parse(tokens)
         if tree is None: return []
         else: return [tree]
-    
+
     def _check_coverage(self, tokens):
         if not self._grammar.covers(tokens):
             raise ValueError, "Grammar does not cover some of the input words"
 
+    def batch_test(self, filename):
+        f = open(filename)
+        for line in f:
+            line = line.strip()
+            if not line: continue 
+            if line.startswith('#'):
+                print line
+                continue
+            print "Sentence:", line
+            parses = self.parse(line)
+            print "%d parses." % len(parses)
+            for tree in parses: print tree
+
+# Commented out imports create circular import problem:
+# category imports semantics.logic, semantics.logic imports from
+# parse.featurelite, which tries to import everything from parse,
+# including category.
 from cfg import *
 from tree import *
-from category import *
+#from category import *
 from chart import *
-from featurechart import *
+# from featurechart import *
 from treetransforms import *
+from featurelite import *
 from pcfg import *
 from sr import *
 from rd import *
