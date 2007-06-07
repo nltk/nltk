@@ -1,5 +1,4 @@
-from parse import *
-import cfg
+from nltk_lite.parse import cfg
 
 def generate(grammar, start=None):
     if not start:
