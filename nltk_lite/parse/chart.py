@@ -10,8 +10,8 @@
 # $Id$
 
 from nltk_lite.parse import *
-from tree import Tree
-import cfg
+from nltk_lite.parse.tree import Tree
+from nltk_lite.parse import cfg
 
 """
 Data classes and parser implementations for \"chart parsers\", which
