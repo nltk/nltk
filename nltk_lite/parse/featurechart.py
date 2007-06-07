@@ -14,7 +14,7 @@ feature structures as nodes.
 
 import yaml
 from nltk_lite.parse import *
-from nltk_lite.parse.category import GrammarFile, GrammarCategory
+from nltk_lite.parse.category import Category, GrammarFile, GrammarCategory
 from nltk_lite.parse import cfg
 
 # from featurelite import *
@@ -249,7 +249,7 @@ class FeatureEarleyChartParse(EarleyChartParse):
         EarleyChartParse.__init__(self, grammar, lexicon, trace)
         
     def get_parse_list(self, tokens):
-        self._check_coverage(tokens)
+        #self._check_coverage(tokens)
         chart = Chart(tokens)
         grammar = self._grammar
 
