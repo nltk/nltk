@@ -13,8 +13,9 @@ feature structures as nodes.
 """
 
 import yaml
-from chart import *
-from category import *
+from parse import *
+#from chart import *
+#from category import *
 import cfg
 
 from featurelite import *
