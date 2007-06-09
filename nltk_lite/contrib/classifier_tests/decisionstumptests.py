@@ -122,7 +122,7 @@ class DecisionStumpTestCase(unittest.TestCase):
         entropy = -(5.0/9 * math.log(5.0/9, 2))  + -(4.0/9 * math.log(4.0/9, 2))
         mean_info = 4.0/9 * (-(1.0/4 * math.log(1.0/4, 2)) + -(3.0/4 * math.log(3.0/4, 2))) + 3.0/9 * (-(2.0/3 * math.log(2.0/3, 2))  + -(1.0/3 * math.log(1.0/3, 2))) 
         info_gain = entropy - mean_info
-        split_info = -(1.0/3 * math.log(1.0/3, 2)) * 3 # outlook attribute has 3 values
+        split_info = -(5.0/12 * math.log(5.0/12, 2)) + -(3.0/12 * math.log(3.0/12, 2))+ -(4.0/12 * math.log(4.0/12, 2))#with smoothing, actual occurances are 4,2,3
         expected = float(info_gain) / split_info
         
         self.assertAlmostEqual(expected, self.outlook_stump.gain_ratio(), 6)
@@ -146,3 +146,31 @@ class DecisionStumpTestCase(unittest.TestCase):
         self.assertAlmostEqual(0.102187, stumps[1].information_gain(), 6)
         self.assertAlmostEqual(0.091091, stumps[2].information_gain(), 6)
         self.assertAlmostEqual(0.072780, stumps[3].information_gain(), 6)
+        
+    def test_split_info_with_equal_distribution(self):
+        self.outlook_stump.update_count(instance.TrainingInstance(['sunny','mild','normal','true'],'yes'))
+        self.outlook_stump.update_count(instance.TrainingInstance(['overcast','mild','normal','true'],'no'))
+        self.outlook_stump.update_count(instance.TrainingInstance(['sunny','hot','normal','true'],'yes'))
+        self.outlook_stump.update_count(instance.TrainingInstance(['overcast','hot','normal','true'],'yes'))
+        self.outlook_stump.update_count(instance.TrainingInstance(['rainy','mild','normal','true'],'yes'))
+        self.outlook_stump.update_count(instance.TrainingInstance(['rainy','mild','normal','false'],'yes'))
+        expected = -(3.0/9 * math.log(3.0/9, 2)) * 3 #3.0/9 and not 2.0/6 because of smoothing
+        self.assertEqual(expected, self.outlook_stump.split_info())
+        
+    def test_split_info_greater_for_higher_arity_attributes(self):
+        self.outlook_stump.update_count(instance.TrainingInstance(['sunny','mild','normal','true'],'yes'))
+        self.outlook_stump.update_count(instance.TrainingInstance(['overcast','mild','normal','true'],'no'))
+        self.outlook_stump.update_count(instance.TrainingInstance(['sunny','hot','normal','false'],'yes'))
+        self.outlook_stump.update_count(instance.TrainingInstance(['overcast','hot','normal','false'],'yes'))
+        self.outlook_stump.update_count(instance.TrainingInstance(['rainy','mild','normal','true'],'yes'))
+        self.outlook_stump.update_count(instance.TrainingInstance(['rainy','mild','normal','false'],'yes'))
+        
+        windy_stump = ds.DecisionStump(self.attributes[3], self.klass)
+        windy_stump.update_count(instance.TrainingInstance(['sunny','mild','normal','true'],'yes'))
+        windy_stump.update_count(instance.TrainingInstance(['overcast','mild','normal','true'],'no'))
+        windy_stump.update_count(instance.TrainingInstance(['sunny','hot','normal','false'],'yes'))
+        windy_stump.update_count(instance.TrainingInstance(['overcast','hot','normal','false'],'yes'))
+        windy_stump.update_count(instance.TrainingInstance(['rainy','mild','normal','true'],'yes'))
+        windy_stump.update_count(instance.TrainingInstance(['rainy','mild','normal','false'],'yes'))
+
+        self.assertTrue(self.outlook_stump.split_info() > windy_stump.split_info())

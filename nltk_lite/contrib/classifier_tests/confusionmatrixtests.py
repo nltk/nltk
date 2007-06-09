@@ -5,14 +5,13 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier import confusionmatrix as cm, format
+from nltk_lite.contrib.classifier import confusionmatrix as cm
 from nltk_lite.contrib.classifier.exceptions import systemerror as se
 from nltk_lite.contrib.classifier_tests import *
 
 class ConfusionMatrixTestCase(unittest.TestCase):
     def setUp(self):
-        weather = format.C45_FORMAT.get_klass(datasetsDir(self) + 'minigolf' + SEP + 'weather')
-        self.c = cm.ConfusionMatrix(weather)
+        self.c = cm.ConfusionMatrix(['yes', 'no'])
         self.pos = 'yes'
         self.neg = 'no'
         
@@ -96,6 +95,35 @@ class ConfusionMatrixTestCase(unittest.TestCase):
         self.assertEqual(0, self.c.recall())
         self.assertEqual(0, self.c.fscore())
         self.assertEqual(0.5, self.c.accuracy())
+        
+    def test_more_klass_values(self):
+        c = cm.ConfusionMatrix(['1', '2', '3', '4', '5', 'U'])
+        c.count('1', '2')
+        c.count('2', '2')
+        c.count('2', '3')
+        c.count('3', '3')
+        c.count('4', '2')
+        c.count('5', '5')
+        c.count('2', '2')
+        c.count('3', '2')
+        #matrix values for class '1'
+        self.assertEqual(0, c.tp(0))
+        self.assertEqual(7, c.tn(0))
+        self.assertEqual(1, c.fn(0))
+        self.assertEqual(0, c.fp(0))
+        #matrix values for class 'U'
+        self.assertEqual(0, c.tp(5))
+        self.assertEqual(8, c.tn(5))
+        self.assertEqual(0, c.fn(5))
+        self.assertEqual(0, c.fp(5))
+        
+        
+        self.assertEqual(0.875, c.accuracy())#accuracy for class '1'(default accuracy)
+        self.assertEqual(1, c.accuracy(index=5))#accuracy for 'U'
+        self.assertEqual(0, c.fscore())#f-score for '1'(default f-score)
+        self.assertEqual(0, c.fscore(index=5))#f-score for 'U'
+        self.assertEqual(0.5, c.fscore(index=1))#f-score for '2'
+        
         
     def __assert_matrix(self, tp, fn, fp, tn):
         self.assertEqual(tp, self.c.tp())

@@ -15,7 +15,6 @@ class OneR(Classifier):
         self.__best_decision_stump = None
         
     def classify(self, instances):
-        self.convert_continuous_values_to_numbers(instances)
         if self.__best_decision_stump == None:
             self.__best_decision_stump = self.best_decision_stump(self.training)
         for instance in instances:
