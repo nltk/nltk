@@ -560,3 +560,4 @@ from cache import *
 from lexname import *
 from similarity import *
 from wordnet import *
+from browse import *
