@@ -4,7 +4,7 @@ import sys
 
 a_help = "Selects the classification algorithm                  " \
         + "Options: 0R for Zero R, 1R for One R, DT for Decision" \
-        + " Trees, NB for Naive Bayes.                                              " \
+        + " Trees, NB for Naive Bayes.                           " \
         + "Default: 0R."
 
 f_help = "Specifies the base name of test, training or gold files." \

@@ -34,10 +34,6 @@ class Attribute:
     def is_continuous(self):
         return self.type == CONTINUOUS
     
-    def split_info(self):
-        from nltk_lite.contrib.classifier import entropy
-        return entropy(self.values)
-
     def __eq__(self, other):
         if other is None: return False
         if self.__class__ != other.__class__: return False

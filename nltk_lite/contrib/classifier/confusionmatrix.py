@@ -19,11 +19,11 @@ class ConfusionMatrix:
     def count(self, actual, predicted):
         self.matrix[self.index[actual]][self.index[predicted]] += 1
         
-    def accuracy(self):
-        return self.__div(self.tp() + self.tn(), self.tp() + self.fp() + self.fn() + self.tn())
+    def accuracy(self, index = 0):
+        return self.__div(self.tp(index) + self.tn(index), self.tp(index) + self.fp(index) + self.fn(index) + self.tn(index))
         
-    def error(self):
-        return 1 - self.accuracy()
+    def error(self, index=0):
+        return 1 - self.accuracy(index)
     
     def tpr(self, index = 0):
         return self.__div(self.tp(index), self.tp(index) + self.fn(index))

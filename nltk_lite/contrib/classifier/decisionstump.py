@@ -92,7 +92,17 @@ class DecisionStump:
         return entropy_of_key_counts(self.root) - self.mean_information()
     
     def gain_ratio(self):
-        return float(self.information_gain()) / self.attribute.split_info()
+        return float(self.information_gain()) / self.split_info()
+    
+    def split_info(self):
+        instance_distrbn = FreqDist()
+        for attribute_value in self.counts:
+            instance_distrbn.inc(attribute_value)#laplacian smoothing
+            class_values = self.counts[attribute_value]
+            for class_value in class_values:
+                instance_distrbn.inc(attribute_value, self.counts[attribute_value][class_value])
+        from nltk_lite.contrib.classifier import entropy_of_freq_dist
+        return entropy_of_freq_dist(instance_distrbn)
     
     def __str__(self):
         _str = 'Decision stump for attribute ' + self.attribute.name

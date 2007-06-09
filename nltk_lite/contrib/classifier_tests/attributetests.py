@@ -38,16 +38,6 @@ class AttributeTestCase(unittest.TestCase):
         self.assertEqual(a.DISCRETE, disc_attr.type)
         self.assertFalse(disc_attr.is_continuous())
                 
-    def test_split_info(self):
-        attr = a.Attribute('foo', ['a','b','c'], 0)
-        expected = -(1.0/3 * math.log(1.0/3, 2)) * 3
-        self.assertAlmostEqual(expected, attr.split_info(), 6)
-        
-    def test_split_info_is_higher_for_higher_arity_attributes(self):
-        attr = a.Attribute('foo', ['a','b','c'], 0)
-        higher_arity = a.Attribute('foo', ['a','b','c', 'd', 'e', 'f', 'g', 'h'], 0)
-        self.assertTrue(higher_arity.split_info() > attr.split_info())
-        
     def test_empty_freq_dists(self):
         attr = a.Attribute('foo', ['a','b','c'], 0)
         freq_dists = attr.empty_freq_dists()
