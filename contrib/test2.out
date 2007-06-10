@@ -1,0 +1,111 @@
+Grammar with 1 productions (start state = S[])
+    S[sem='(?vp ?subj)'] -> NP[sem=?subj] V[sem=?v]
+          |.K.s.|
+Processing queue 0
+  ? S == S[sem='(?vp ?subj)']
+  |   
+  | Unify "pos" feature:
+  |   ? 'S' == 'S'
+  |   > 'S'
+  |   
+  | Unify "/" feature:
+  |   ? None == None
+  |   > None
+  |
+  > S[sem='(?vp ?subj)']
+Predictor |> . .| S[sem='(?vp ?subj)'] -> * NP[sem=?subj] V[sem=?v] 
+  ? NP[sem=?subj] == S[sem='(?vp ?subj)']
+  | Bound var: ?subj
+  |   
+  | Unify "sem" feature:
+  |   ? ?subj == (?vp ?subj)
+  |   > ?subj
+  |   
+  | Unify "pos" feature:
+  X <-- FAIL
+Processing queue 1
+Scanner   |[-] .| NP[sem='kim'] -> 'Kim' * 
+  ? S == NP[sem='kim']
+  |   
+  | Unify "pos" feature:
+  X <-- FAIL
+  ? NP[sem=?subj] == NP[sem='kim']
+  | Bound var: ?subj
+  |   
+  | Unify "sem" feature:
+  |   ? ?subj == kim
+  |   > ?subj
+  |   
+  | Unify "pos" feature:
+  |   ? 'NP' == 'NP'
+  |   > 'NP'
+  |   
+  | Unify "/" feature:
+  |   ? None == None
+  |   > None
+  |
+  > NP[sem=?subj]
+      <Bindings: ?subj=kim>
+Completer |[-> .| S[sem='(?vp kim)'] -> NP[sem='kim'] * V[sem=?v] 
+  ? V[sem=?v] == S[sem='(?vp ?subj)']
+  | Bound var: ?v
+  |   
+  | Unify "sem" feature:
+  |   ? ?v == (?vp ?subj)
+  |   > ?v
+  |   
+  | Unify "pos" feature:
+  X <-- FAIL
+Processing queue 2
+Scanner   |. [-]| V[sem='\\x.(sleeps x)'] -> 'sleeps' * 
+  ? V[sem=?v] == V[sem='\\x.(sleeps x)']
+  | Bound var: ?v
+  |   
+  | Unify "sem" feature:
+  |   ? ?v == <church.LambdaExpression instance at 0x406aca0c>
+  |   > ?v
+  |   
+  | Unify "pos" feature:
+  |   ? 'V' == 'V'
+  |   > 'V'
+  |   
+  | Unify "/" feature:
+  |   ? None == None
+  |   > None
+  |
+  > V[sem=?v]
+      <Bindings: ?subj=kim, ?v=<church.LambdaExpression instance at 0x406aca0c>>
+Completer |[===]| S[sem='(?vp kim)'] -> NP[sem='kim'] V[sem='\\x.(sleeps x)'] * 
+  ? S == S[sem='(?vp kim)']
+  |   
+  | Unify "pos" feature:
+  |   ? 'S' == 'S'
+  |   > 'S'
+  |   
+  | Unify "/" feature:
+  |   ? None == None
+  |   > None
+  |
+  > S[sem='(?vp kim)']
+  ? NP[sem=?subj] == S[sem='(?vp kim)']
+  | Bound var: ?subj
+  |   
+  | Unify "sem" feature:
+  |   ? ?subj == (?vp kim)
+  |   > ?subj
+  |   
+  | Unify "pos" feature:
+  X <-- FAIL
+Completer |[===]| [INIT] -> S * 
+  ? S == [INIT]
+  |   
+  | Unify "pos" feature:
+  X <-- FAIL
+  ? NP[sem=?subj] == [INIT]
+  |   
+  | Unify "pos" feature:
+  X <-- FAIL
+([INIT]:
+  (S[sem='(?vp kim)']:
+    (NP[sem='kim']: 'Kim')
+    (V[sem='\\x.(sleeps x)']: 'sleeps')))

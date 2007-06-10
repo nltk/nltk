@@ -1,0 +1,97 @@
+\lx	lexeme
+\hm	homonym number (subscripted)
+\lc	lexical citation
+\ph	phonetic [...] (only one for all languages)
+\se	subentry
+\ps	part of speech 
+\pn	part of speech-national language 
+\sn	sense number
+\gv	gloss-vernacular 
+\dv	definition-vernacular 
+\ge	gloss-English (supplanted by a \de)
+\re	reverse-English
+\we	word level gloss-English
+\de	definition-English 
+\gn	gloss-national language (supplanted by a \dn)
+\rn	reverse-national language
+\wn	word level gloss-national language
+\dn	definition-national language 
+\gr	gloss-regional lang. (with \gn)
+\rr	reverse-regional lang. (with \rn)
+\wr	word-level gloss-regional (with \wn)
+\dr	definition-regional lang. (with \dn)
+\lt	literal meaning
+\sc	scientific name (no label, but text as underlined italics)
+\rf	reference for example Ref: (only one for all languages)
+\xv	example sentence-vernacular 
+\xe	example sentence-English 
+\xn	example sentence-national language 
+\xr	example sent.-regional (with \xn)
+\xg	example sentence-interlinear gloss
+\uv	usage-vernacular
+\ue	usage-English
+\un	usage-national language
+\ur	usage-regional (combines with \un)
+\ev	encyclopedic-vernacular 
+\ee	encyclopedic-English 
+\en	encyclopedic-national language 
+\er	encyclopedic-regional language
+\ov	only (restrictions)-vernacular
+\oe	only (restrictions)-English
+\on	only (restrictions)-national language
+\or	only (restrictions)-regional
+\lf	lexical function
+\le	lexical function-English (combines with \lf)
+\ln	lexical function-national language (combines with \lf)
+\lr	lexical function-regional language (combines with \lf)
+\sy	synonym
+\an	antonym
+\mr	morphemic representation
+\cf	cross-reference
+\ce	cross-reference-English gloss (combines with \cf)
+\cn	cross-reference-national gloss (combines with \cf)
+\cr	cross-reference-regional gloss (combines with \cf)
+\mn	main entry form See main entry: Lihatlah kata induk:
+\va	variant form
+\ve	variant comment-English
+\vn	variant comment-national language
+\vr	variant comment-regional language
+\bw	borrowed word
+\et	etymology
+\eg	etymology-gloss (combines with \et)
+\es	etymology-source (combines with \et)
+\ec	etymology-comment (combines with \et)
+\pd	paradigm
+\sg	singular form
+\pl	plural form
+\rd	reduplication
+\1s	1st person singular
+\2s	2nd person singular
+\3s	3rd person singular
+\4s	singular non-human/non-animate
+\1d	1st person dual
+\2d	2nd person dual
+\3d	3rd person dual
+\4d	dual non-human/non-animate
+\1p	1st person plural-general
+\1e	1st person plural-exclusive
+\1i	1st person plural-inclusive
+\2p	2nd person plural
+\3p	3rd person plural
+\4p	plural non-human/non-animate
+\tb	table 
+\sd	semantic domain
+\is	index of semantics
+\th	thesaurus
+\bb	bibliographic reference
+\pc	picture (...) (parentheses, or a graphic link)
+\nt	notes-general
+\np	notes-phonology
+\ng	notes-grammar
+\nd	notes-discourse
+\na	notes-anthropology
+\ns	notes-sociolinguistics
+\nq	notes-questions
+\so	source
+\st	status
+\dt	datestamp (a SHOEBOX field)

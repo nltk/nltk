@@ -1,0 +1,153 @@
+--------------------------------------------------------------------------------
+Unit tests for the utility stem functions.
+--------------------------------------------------------------------------------
+
+    >>> from nltk_lite.stem import *
+
+--------------------------------------------------------------------------------
+Unit tests for the Porter stemmer
+--------------------------------------------------------------------------------
+
+    >>> from nltk_lite.stem.porter import * 
+
+Create a new Porter stemmer.
+
+    >>> stemmer = Porter()
+
+Test the cons() (consonant) method.
+
+    >>> stemmer.b = "ready"
+    >>> stemmer.k = len("ready") - 1
+
+    >>> bool(stemmer.cons(0))
+    True
+
+    >>> bool(stemmer.cons(1))
+    False
+
+    >>> bool(stemmer.cons(4))
+    False
+
+    >>> stemmer.b = "yield"
+    >>> stemmer.k = len("yield") - 1
+
+    >>> bool(stemmer.cons(0))
+    True
+
+    >>> stemmer.b = "abeyance"
+    >>> stemmer.k = len("abeyance") - 1
+
+    >>> bool(stemmer.cons(3))
+    True
+
+Test the m() (number of vowel/consonant sequences from the start of a word to
+some offset) method.
+
+    >>> stemmer.m()		# 0 offset into the string
+    0
+
+    >>> stemmer.j = stemmer.k	# Set the offset to be the final string char
+    >>> stemmer.m()
+    3
+
+Test the vowelinstem() method (checks for a vowel within the first j chars).
+
+    >>> stemmer.b = "ready"
+    >>> stemmer.k = len("ready") - 1
+    >>> stemmer.j = 0
+
+    >>> stemmer.vowelinstem()
+    0
+
+    >>> stemmer.j = stemmer.k
+    >>> stemmer.vowelinstem()
+    1
+
+Test the doublec() (identical double consonant) method.
+
+    >>> stemmer.b = "riddle"
+    >>> stemmer.k = len("riddle") - 1
+
+    >>> stemmer.doublec(0)	# Can't use at the first char
+    0
+
+    >>> stemmer.doublec(4)	# Chars at j and j-1 not identical
+    0
+
+    >>> stemmer.doublec(3)
+    1
+
+Test the cvc() method.
+
+    >>> stemmer.cvc(0)		# Can't use at the first char
+    0
+
+    >>> stemmer.cvc(1)		# Sequence not vowel, consonant
+    0
+
+    >>> stemmer.b = "away"
+
+
+    >>> stemmer.cvc(1)
+    1
+
+    >>> stemmer.cvc(2)		# Sequence not consonant, vowel, consonant
+    0
+
+    >>> stemmer.cvc(3)		# Final consonant is a member of {'w', 'x', 'y'}
+    0
+
+    >>> stemmer.b = "trace"
+    >>> stemmer.k = len("trace") - 1
+
+    >>> stemmer.cvc(3)
+    1
+
+Test the ends() (end substring matching) method.
+
+    >>> stemmer.ends("verylongstring")	# Supplied string longer than buffer
+    0
+
+    >>> stemmer.ends("ice")		# String doesn't match
+    0
+
+    >>> stemmer.ends("ace")
+    1
+
+Test the setto() method (replaces the suffix of the buffered string).
+
+    >>> stemmer.j = 3
+    >>> stemmer.setto("ing")
+    >>> stemmer.b
+    'tracing'
+
+Test the stemmer on various pluralised words.
+
+    >>> plurals = ['caresses', 'flies', 'dies', 'mules', 'denied', 'died', 'agreed', 'owned', 'humbled', 'sized', 'meeting', 'stating', 'siezing', 'itemization', 'sensational', 'traditional', 'reference', 'colonizer', 'plotted']
+    >>> singles = []
+
+    >>> for plural in plurals:
+    ...     singles.append(stemmer.stem(plural))
+
+    >>> singles
+    ['caress', 'fli', 'die', 'mule', 'deni', 'die', 'agre', 'own', 'humbl', 'size', 'meet', 'state', 'siez', 'item', 'sensat', 'tradit', 'refer', 'colon', 'plot']
+
+--------------------------------------------------------------------------------
+Unit tests for Regexp stemmer
+--------------------------------------------------------------------------------
+
+    >>> patterns = "ed$|ing$|able$|s$"
+
+    >>> stemmer = Regexp(patterns, 4)
+
+    >>> stemmer.stem("red")
+    'red'
+
+    >>> stemmer.stem("hurried")
+    'hurri'
+
+    >>> stemmer.stem("advisable")
+    'advis'
+
+    >>> stemmer.stem("impossible")
+    'impossible'

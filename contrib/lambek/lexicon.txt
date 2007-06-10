@@ -1,0 +1,54 @@
+# Lexicon for the Lambek calculus theorem prover.
+#
+# Created [12/11/00 02:52 AM]
+#
+# Words are normalized to lower case.
+# Expressions and types are not.
+#
+# Format:
+#   <word> : <expr> : <type>
+
+# Noun phrases
+john: john: np
+tom: tom: np
+mary: mary: np
+
+# Determiner
+the: the: np/n
+a: a: np/n
+
+# Nouns
+cat: cat: n
+dog: dog: n
+house: house: n
+kid: kid: n
+city: city: n
+
+# Intransitive verbs
+runs: runs: np\s
+eats: eats: np\s
+sleeps: sleeps: np\s
+
+# Adjectives
+big: big: n/n
+green: green: n/n
+
+# NP-modifiying Prepositions
+under: under: (np\np)/np
+near: near: (np\np)/np
+
+# Transitive verbs
+knows: knows: (np\s)/np
+likes: likes: (np\s)/np
+
+# Bitransitive
+gives: gives: (np\s)/np/np
+gives2: gives2: (np\s)/(np*np)
+
+# Other verbs
+believes: blvs: np\s/s
+
+
+#### MISC
+
+foo: C(?x): a

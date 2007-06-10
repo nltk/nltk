@@ -1,0 +1,15 @@
+   >>> from nltk_lite.semantics import *
+
+Test for equality under alpha-conversion. 
+
+   >>> lp = Parser()
+   >>> e1 = lp.parse('some x.(P x)')
+   >>> print e1
+   some x.(P x)
+   >>> e2 = e1.alpha_convert(Variable('z'))
+   >>> print e2
+   some z.(P z)
+   >>> e1.equals(e2)
+   True
+   >>> e1 == e2
+   True
