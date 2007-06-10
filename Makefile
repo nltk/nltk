@@ -52,7 +52,7 @@ codedist: clean_code
 	$(PYTHON) setup.py -q bdist --format=rpm
 	$(PYTHON) setup.py -q bdist --format=wininst
 
-docdist: doc
+docdist:
 	find doc -print | egrep -v '.svn' | zip dist/nltk_lite-doc-$(NLTK_VERSION).zip -@
 
 exampledist:
