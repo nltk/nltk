@@ -50,7 +50,7 @@ item_name = {
     'e': 'skill and hobbies',
     'f': 'popular lore',
     'g': 'belles-lettres',
-    'h': 'miscellaneous: government & house organs',
+    'h': 'government',
     'j': 'learned',
     'k': 'fiction: general',
     'l': 'fiction: mystery',
@@ -71,9 +71,11 @@ def _read(files, conversion_function):
                 yield conversion_function(sent)
 
 def raw(files = items):
+    """Read text from the Brown Corpus."""
     return _read(files, string2words)
 
 def tagged(files = items):
+    """Read tagged text from the Brown Corpus."""
     return _read(files, string2tags)
 
 def demo():

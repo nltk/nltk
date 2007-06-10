@@ -76,12 +76,12 @@ items = [
     '1998-Clinton',
     '1999-Clinton',
     '2000-Clinton',
-    '2001-Bush-1',
-    '2001-Bush-2',
-    '2002-Bush',
-    '2003-Bush',
-    '2004-Bush',
-    '2005-Bush'
+    '2001-GWBush-1',
+    '2001-GWBush-2',
+    '2002-GWBush',
+    '2003-GWBush',
+    '2004-GWBush',
+    '2005-GWBush'
 ]
 
 def raw(files = items):
