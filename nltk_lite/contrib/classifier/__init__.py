@@ -15,10 +15,14 @@ class Classifier:
         When classifiers are invoked from command line this parameter is set to the default value of False.
         """
         self.attributes = attributes
-        self.klass = klass
         self.training = training
         self.internal = internal
         self.convert_continuous_values_to_numbers(self.training)
+        sorted_klass_values = self.training.class_freq_dist().sorted_samples()
+        for each in klass:
+            if not sorted_klass_values.__contains__(each):
+                sorted_klass_values.append(each)
+        self.klass = sorted_klass_values
         if not self.internal:
             self.validate_training()
         
