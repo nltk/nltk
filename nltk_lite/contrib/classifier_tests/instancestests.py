@@ -283,6 +283,13 @@ class InstancesTestCase(unittest.TestCase):
         self.assertEqual(4, class_freq_dist.count('yes'))
         self.assertEqual(2, class_freq_dist.count('no'))
         
+    def test_class_freq_dist_in_reverse_to_store_classes(self):
+        path = datasetsDir(self) + 'numerical' + SEP + 'person'
+        training = format.C45_FORMAT.get_training_instances(path)
+        class_freq_dist = training.class_freq_dist()
+        self.assertEqual(['yes', 'no'], class_freq_dist.sorted_samples())
+        
+        
     def test_posterior_probablities_with_discrete_values(self):
         path = datasetsDir(self) + 'test_phones' + SEP + 'phoney'
         training = format.C45_FORMAT.get_training_instances(path)
