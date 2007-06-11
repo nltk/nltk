@@ -58,3 +58,8 @@ else:
 from itertools import islice
 def extract(n, i):
     return list(islice(i, n, n+1))[0]
+
+import abc, brown, chat80, cmudict, conll2000, conll2002, genesis, gutenberg
+import ieer, inaugural, indian, names, ppattach, senseval, shakespeare
+import sinica_treebank, state_union, stopwords, timit, toolbox, treebank
+import web, webtext, words, ycoe
