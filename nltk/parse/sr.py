@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 from types import *
-from nltk import tokenize
+from nltk import tokenize, cfg
 from nltk.tree import *
 from nltk.parse import *
 import string

@@ -15,7 +15,7 @@ feature structures as nodes.
 import yaml
 from nltk.parse import *
 from nltk.parse.category import Category, GrammarFile, GrammarCategory
-from nltk.parse import cfg
+from nltk import cfg
 
 # from featurelite import *
 
