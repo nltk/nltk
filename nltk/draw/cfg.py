@@ -634,6 +634,7 @@ class CFGDemo(object):
         if self._treelet is not None: self._treelet.destroy()
 
         # Convert the production to a tree.
+        from nltk import Tree
         rhs = production.rhs()
         for (i, elt) in enumerate(rhs):
             if isinstance(elt, Nonterminal): elt = Tree(elt)
