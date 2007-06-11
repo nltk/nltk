@@ -600,7 +600,7 @@ class RegexpChunk(ChunkParseI, AbstractParse):
             rule.apply(chunkstr)
         
     def parse(self, chunk_struct, trace=None):
-        from nltk.parse.tree import Tree
+        from nltk import Tree
         """
         @type chunk_struct: C{Tree}
         @param chunk_struct: the chunk structure to be (further) chunked
@@ -843,13 +843,11 @@ def demo_eval(chunkparser, text):
     @type text: C{string}
     """
     
-    from nltk import chunk
+    from nltk import chunk, Tree
 
     # Evaluate our chunk parser.
     chunkscore = chunk.ChunkScore()
 
-    from nltk.parse.tree import Tree
-    
     for sentence in text.split('\n'):
         print sentence
         sentence = sentence.strip()
@@ -896,9 +894,8 @@ def demo():
     and strategies.
     """
 
-    from nltk import chunk
+    from nltk import chunk, Tree
     from nltk.tag import string2tags
-    from nltk.parse.tree import Tree
 
     text = """\
     [ the/DT little/JJ cat/NN ] sat/VBD on/IN [ the/DT mat/NN ] ./.

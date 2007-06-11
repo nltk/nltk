@@ -11,9 +11,8 @@ A module for finite state automata.
 Operations are based on Aho, Sethi & Ullman (1986) Chapter 3.
 """
 
-from nltk import tokenize
-from nltk.parse.tree import Tree
-from nltk.parse import cfg, pcfg, pchart
+from nltk import tokenize, Tree, cfg, pcfg
+from nltk.parse import pchart
 import yaml
 
 epsilon = None

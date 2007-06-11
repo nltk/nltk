@@ -13,7 +13,7 @@ C{filler}.
 """
 
 from nltk.corpora import ieer, conll2002
-from nltk.parse import tree, Tree
+from nltk import tree, Tree
 from nltk.tag import tag2tuple
 from string import join
 import re

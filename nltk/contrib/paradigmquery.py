@@ -25,9 +25,7 @@
 #  </parse-tree>
 #</document>
 
-from nltk import tokenize
-from nltk import parse
-from nltk.parse import cfg
+from nltk import tokenize, parse, cfg
 from re import *
 
 class ParadigmQuery(object):

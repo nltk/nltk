@@ -314,7 +314,7 @@ def demo():
     """  
       
     from nltk.draw.tree import draw_trees
-    from nltk.parse import bracket_parse
+    from nltk.tree import bracket_parse
     from nltk.parse import treetransforms
     from copy import deepcopy
     
