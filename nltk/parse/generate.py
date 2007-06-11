@@ -1,4 +1,4 @@
-from nltk.parse import cfg
+from nltk import cfg
 
 def generate(grammar, start=None):
     if not start:

@@ -52,9 +52,9 @@ Operations:
 """
 
 from nltk.draw import *
-from nltk.parse.cfg import *
+from nltk.cfg import *
 from Tkinter import *
-from nltk.parse.tree import *
+from nltk.tree import *
 from nltk.draw.tree import *
 
 

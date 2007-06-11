@@ -11,7 +11,7 @@
 
 from nltk.parse import *
 from nltk.tree import Tree
-from nltk.parse import cfg
+from nltk import cfg
 
 """
 Data classes and parser implementations for \"chart parsers\", which

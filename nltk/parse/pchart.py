@@ -382,8 +382,8 @@ def demo():
     summary of the results are displayed.
     """
     import sys, time
-    from nltk import tokenize
-    from nltk.parse import cfg, pcfg, pchart
+    from nltk import tokenize, cfg, pcfg
+    from nltk.parse import pchart
 
     # Define two demos.  Each demo has a sentence and a grammar.
     demos = [('I saw John with my telescope', pcfg.toy1),
