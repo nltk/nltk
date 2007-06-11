@@ -14,7 +14,7 @@ bugs.
 
 Each module in this package tests a specific aspect of NLTK.  Modules
 are typically named for the module or class that they test (e.g.,
-L{nltk.test.tree} performs tests on the L{nltk.parse.tree}
+L{nltk.test.tree} performs tests on the L{nltk.tree}
 module).
 
 Use doctest_driver.py to run the tests:

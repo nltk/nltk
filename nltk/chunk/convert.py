@@ -7,8 +7,7 @@
 # For license information, see LICENSE.TXT
 
 from nltk.chunk import *
-from nltk import tokenize
-from nltk.parse.tree import Tree
+from nltk import tokenize, Tree
 import re, string
 
 def tagstr2tree(s, chunk_node="NP", top_node="S"):

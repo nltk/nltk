@@ -45,9 +45,7 @@ import math, string
 import os.path
 
 from nltk.parse.chart import *
-from nltk.parse import cfg
-from nltk import tokenize
-from nltk.parse.tree import Tree
+from nltk import tokenize, Tree, cfg
 from nltk.draw import ShowText, EntryDialog, in_idle
 from nltk.draw import MutableOptionMenu
 from nltk.draw import ColorizedList, SymbolWidget, CanvasFrame

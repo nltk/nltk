@@ -870,7 +870,7 @@ def demo():
     Create a recursive descent parser demo, using a simple grammar and
     text.
     """    
-    from nltk.parse import cfg
+    from nltk import cfg
     grammar = cfg.parse_cfg("""
     # Grammatical productions.
         S -> NP VP

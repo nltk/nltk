@@ -72,9 +72,8 @@ Chunk Parse:
 """
 
 from nltk.corpora import get_basedir
-from nltk import tokenize
+from nltk import tokenize, tree
 from nltk.tag import string2tags, string2words
-from nltk.parse import tree
 from string import split
 import os
 import re

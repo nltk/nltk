@@ -11,7 +11,7 @@
 Graphically display a C{Tree}.
 """
 from Tkinter import *
-from nltk.parse import tree
+from nltk import tree
 from nltk.draw import *
 import sys
 
