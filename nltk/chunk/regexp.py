@@ -6,8 +6,8 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk_lite.chunk import *
-from nltk_lite.parse import AbstractParse
+from nltk.chunk import *
+from nltk.parse import AbstractParse
 
 class RegexpChunkRule(object):
     """
@@ -600,7 +600,7 @@ class RegexpChunk(ChunkParseI, AbstractParse):
             rule.apply(chunkstr)
         
     def parse(self, chunk_struct, trace=None):
-        from nltk_lite.parse.tree import Tree
+        from nltk.parse.tree import Tree
         """
         @type chunk_struct: C{Tree}
         @param chunk_struct: the chunk structure to be (further) chunked
@@ -734,7 +734,7 @@ class Regexp(ChunkParseI, AbstractParse):
             C{1} will generate normal tracing output; and C{2} or
             higher will generate verbose tracing output.
         """
-        from nltk_lite import chunk
+        from nltk import chunk
         self._trace = trace
         self._stages = []
         self._grammar = grammar
@@ -843,12 +843,12 @@ def demo_eval(chunkparser, text):
     @type text: C{string}
     """
     
-    from nltk_lite import chunk
+    from nltk import chunk
 
     # Evaluate our chunk parser.
     chunkscore = chunk.ChunkScore()
 
-    from nltk_lite.parse.tree import Tree
+    from nltk.parse.tree import Tree
     
     for sentence in text.split('\n'):
         print sentence
@@ -896,9 +896,9 @@ def demo():
     and strategies.
     """
 
-    from nltk_lite import chunk
-    from nltk_lite.tag import string2tags
-    from nltk_lite.parse.tree import Tree
+    from nltk import chunk
+    from nltk.tag import string2tags
+    from nltk.parse.tree import Tree
 
     text = """\
     [ the/DT little/JJ cat/NN ] sat/VBD on/IN [ the/DT mat/NN ] ./.
@@ -948,7 +948,7 @@ def demo():
 
 # Evaluation
 
-    from nltk_lite.corpora import conll2000
+    from nltk.corpora import conll2000
 
     print
     print "Demonstration of empty grammar:"

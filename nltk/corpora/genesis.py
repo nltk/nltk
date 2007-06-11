@@ -20,8 +20,8 @@ swedish - Genesis, Gamla och Nya Testamentet, 1917 (Project Runeberg)
 finnish - Genesis, Suomen evankelis-luterilaisen kirkon kirkolliskokouksen vuonna 1992 kayttoon ottama suomennos
 """
 
-from nltk_lite.corpora import get_basedir
-from nltk_lite import tokenize
+from nltk.corpora import get_basedir
+from nltk import tokenize
 import os
 
 items = [
@@ -58,7 +58,7 @@ def raw(files = 'english-kjv'):
             yield t
 
 def demo():
-    from nltk_lite.corpora import genesis
+    from nltk.corpora import genesis
     from itertools import islice
 
     print 'English:'

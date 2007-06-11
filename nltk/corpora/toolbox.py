@@ -15,11 +15,11 @@ Module for reading, writing and manipulating Toolbox databases.
 """
 
 import os, re
-from nltk_lite.corpora import get_basedir
+from nltk.corpora import get_basedir
 from string import split
 from itertools import imap
 from StringIO import StringIO
-from nltk_lite.etree.ElementTree import TreeBuilder, Element
+from nltk.etree.ElementTree import TreeBuilder, Element
 
 class StandardFormat(object):
     """
@@ -383,7 +383,7 @@ def dict_list(files='rotokas.dic', include_header=False) :
         yield _dict_list_entry(entry)
 
 def demo():
-    from nltk_lite.corpora import toolbox
+    from nltk.corpora import toolbox
     from itertools import islice
     from pprint import pprint
 

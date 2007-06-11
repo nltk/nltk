@@ -13,8 +13,8 @@ Naive Bayes Classifier -- Beta version
 """
 
 from operator import itemgetter
-from nltk_lite.probability import *
-from nltk_lite.contrib.classify import *
+from nltk.probability import *
+from nltk.contrib.classify import *
 
 class NaiveBayes(AbstractClassify):
     """
@@ -35,13 +35,13 @@ class NaiveBayes(AbstractClassify):
         holds a list of classes supplied during training
     _cls_prob_dist:
         hols a Probability Distribution, namely GoodTuringProbDist
-        this structure is defined in probabilty.py in nltk_lite
+        this structure is defined in probabilty.py in nltk
         this structure is indexed by classnames
     _feat_prob_dist:
         holds Conditional Probability Distribution, conditions are 
         class name, and feature type name
         these probability distributions are indexed by feature values
-        this structure is defined in probabilty.py in nltk_lite
+        this structure is defined in probabilty.py in nltk
     """
 
     def __init__(self, feature_detector):
@@ -136,8 +136,8 @@ class NaiveBayes(AbstractClassify):
 
 
 def demo():
-    from nltk_lite.contrib import classify
-    from nltk_lite import detect
+    from nltk.contrib import classify
+    from nltk import detect
   
     fd = detect.feature({"1-tup": lambda t: list(t)})
 
@@ -167,8 +167,8 @@ def demo():
 
 
 def demo2():
-    from nltk_lite.contrib import classify
-    from nltk_lite import detect
+    from nltk.contrib import classify
+    from nltk import detect
  
     fd = detect.feature({"2-tup": lambda t: [t[n:n+2] for n in range(len(t))]})
 
@@ -201,8 +201,8 @@ def demo2():
 
 
 def demo3():
-    from nltk_lite.contrib import classify
-    from nltk_lite import detect
+    from nltk.contrib import classify
+    from nltk import detect
   
     fd = detect.feature({"1-tup": lambda t: [t[n] for n in range(len(t))],
                           "2-tup": lambda t: [t[n:n+2] for n in range(len(t))]})
@@ -241,10 +241,10 @@ def demo3():
     """
 
 def demo4():
-    from nltk_lite.contrib import classify
-    from nltk_lite import detect
+    from nltk.contrib import classify
+    from nltk import detect
 
-    from nltk_lite.corpora import genesis
+    from nltk.corpora import genesis
     from itertools import islice
   
     fd = detect.feature({"2-tup": lambda t: [' '.join(t)[n:n+2] for n in range(len(' '.join(t))-1)],

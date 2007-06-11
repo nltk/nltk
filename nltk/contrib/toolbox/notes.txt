@@ -1,6 +1,6 @@
 1. Background
--------------
-The package nltk_lite.contrib.shoebox contains functionality for manipulating Shoebox
+o-------------
+The package nltk.contrib.shoebox contains functionality for manipulating Shoebox
 files. These come in two types: settings files and database files. Database files are
 either lexicon databases or text databases.
 

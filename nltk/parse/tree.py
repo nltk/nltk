@@ -12,9 +12,9 @@ syntax trees and morphological trees.
 """
 
 import re, types, string
-from nltk_lite import tokenize
-from nltk_lite.probability import ProbabilisticMixIn
-from nltk_lite.parse import *
+from nltk import tokenize
+from nltk.probability import ProbabilisticMixIn
+from nltk.parse import *
 
 ######################################################################
 ## Trees
@@ -272,7 +272,7 @@ class Tree(list):
         """
         Open a new window containing a graphical diagram of this tree.
         """
-        from nltk_lite.draw.tree import draw_trees
+        from nltk.draw.tree import draw_trees
         draw_trees(self)
 
     def __repr__(self):
@@ -550,7 +550,7 @@ def demo():
     and shows the results of calling several of their methods.
     """
     
-    from nltk_lite.parse import tree
+    from nltk.parse import tree
 
     # Demonstrate tree parsing.
     s = '(S (NP (DT the) (NN cat)) (VP (VBD ate) (NP (DT a) (NN cookie))))'

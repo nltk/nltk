@@ -6,7 +6,7 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier import instances as ins, Classifier
+from nltk.contrib.classifier import instances as ins, Classifier
 
 class ZeroR(Classifier):
     def __init__(self, training, attributes, klass, internal = False):

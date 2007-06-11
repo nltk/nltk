@@ -13,8 +13,8 @@ Annual US presidential addresses 1945-2005
 http://www.c-span.org/executive/stateoftheunion.asp
 """       
 
-from nltk_lite.corpora import get_basedir
-from nltk_lite import tokenize
+from nltk.corpora import get_basedir
+from nltk import tokenize
 import os, re
 
 items = [
@@ -96,7 +96,7 @@ def raw(files = items):
             yield t
 
 def demo():
-    from nltk_lite.corpora import state_union
+    from nltk.corpora import state_union
 
     for speech in state_union.items:
         year = speech[:4]

@@ -5,7 +5,7 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier import instance as ins, attribute, discretisedattribute as da, numrange as r
+from nltk.contrib.classifier import instance as ins, attribute, discretisedattribute as da, numrange as r
 import unittest
 
 class InstanceTestCase(unittest.TestCase):

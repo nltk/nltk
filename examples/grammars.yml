@@ -12,4 +12,4 @@ sem1.cfg: examples/semantics/
 sem2.cfg: examples/semantics/
 sem3.cfg: examples/semantics/
 
-test.cfg: nltk_lite/parse/
+test.cfg: nltk/parse/

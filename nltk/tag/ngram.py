@@ -14,8 +14,8 @@ the L{TagI} interface.
 """
 
 import types, re
-from nltk_lite.probability import FreqDist, ConditionalFreqDist
-from nltk_lite.tag import *
+from nltk.probability import FreqDist, ConditionalFreqDist
+from nltk.tag import *
 
 ##############################################################
 # N-GRAM TAGGERS: these make use of history
@@ -147,7 +147,7 @@ class Trigram(Ngram):
 ##//////////////////////////////////////////////////////
 
 def _demo_tagger(tagger, gold):
-    from nltk_lite.tag import accuracy
+    from nltk.tag import accuracy
     acc = accuracy(tagger, gold)
     print 'Accuracy = %4.1f%%' % (100.0 * acc)
 
@@ -158,7 +158,7 @@ def demo():
     unigram tagger and a default tagger.  It trains and tests the
     tagger using the Brown corpus.
     """
-    from nltk_lite.corpora import brown
+    from nltk.corpora import brown
     import sys
 
     print 'Training taggers.'

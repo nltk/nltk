@@ -14,7 +14,7 @@ Read tokens from a webpage
 
 from urllib import urlopen
 from HTMLParser import HTMLParser
-from nltk_lite import tokenize
+from nltk import tokenize
 import string
 
 skip = ['script']   # non-nesting tags to skip
@@ -48,7 +48,7 @@ def raw(urls):
             yield token
 
 def demo():
-    from nltk_lite.corpora import web
+    from nltk.corpora import web
     from textwrap import wrap
 
     constitution = "http://www.archives.gov/national-archives-experience/charters/constitution_transcript.html"

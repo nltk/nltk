@@ -41,7 +41,7 @@ implementations with elements from any other implementation.  Doing so
 may result in incorrect parent pointers and ValueError exceptions.
 """
 
-from nltk_lite.etree import ElementTree as ET
+from nltk.etree import ElementTree as ET
 
 __all__ = ['Tree',
            'ParentedTree',
@@ -464,9 +464,9 @@ MultiParentedTree = ElementTreeImplementation(_MultiParentedElement)
 
 
 def demo():
-    import nltk_lite.contrib.tree
-    reload(nltk_lite.contrib.tree)
-    from nltk_lite.contrib.tree import ParentedTree as PT
+    import nltk.contrib.tree
+    reload(nltk.contrib.tree)
+    from nltk.contrib.tree import ParentedTree as PT
 
     TREE = ("<s><np><jj>Snow</jj><nn>flakes</nn></np>"
             "<vp tense='past'><v>fell</v>"

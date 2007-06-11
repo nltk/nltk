@@ -1,2 +1,2 @@
 # placeholder
-from nltk_lite.parse.tree import *
+from nltk.parse.tree import *

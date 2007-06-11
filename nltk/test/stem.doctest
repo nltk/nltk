@@ -2,13 +2,13 @@
 Unit tests for the utility stem functions.
 --------------------------------------------------------------------------------
 
-    >>> from nltk_lite.stem import *
+    >>> from nltk.stem import *
 
 --------------------------------------------------------------------------------
 Unit tests for the Porter stemmer
 --------------------------------------------------------------------------------
 
-    >>> from nltk_lite.stem.porter import * 
+    >>> from nltk.stem.porter import * 
 
 Create a new Porter stemmer.
 

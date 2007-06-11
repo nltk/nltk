@@ -14,8 +14,8 @@ Marked up in XML by Jon Bosak, CSS stylesheet by Ajay Juneja.
 """       
 
 import os
-from nltk_lite.corpora import get_basedir
-from nltk_lite.etree import ElementTree
+from nltk.corpora import get_basedir
+from nltk.etree import ElementTree
 
 items = ['a_and_c',  # Antony and Cleopatra
          'dream',    # A Midsummer Night's Dream
@@ -38,7 +38,7 @@ def xml(file):
     return ElementTree.parse(path).getroot()
 
 def demo():
-    from nltk_lite.corpora import shakespeare
+    from nltk.corpora import shakespeare
     from pprint import pprint
     import re
 

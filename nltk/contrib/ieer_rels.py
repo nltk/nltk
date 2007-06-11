@@ -12,9 +12,9 @@ Subsequent processing can try to identify interesting relations expressed in
 C{filler}.
 """
 
-from nltk_lite.corpora import ieer, conll2002
-from nltk_lite.parse import tree, Tree
-from nltk_lite.tag import tag2tuple
+from nltk.corpora import ieer, conll2002
+from nltk.parse import tree, Tree
+from nltk.tag import tag2tuple
 from string import join
 import re
 from itertools import islice

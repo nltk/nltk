@@ -21,8 +21,8 @@ singles: Singles ads  http://search.classifieds.news.com.au/
 
 """       
 
-from nltk_lite.corpora import get_basedir
-from nltk_lite import tokenize
+from nltk.corpora import get_basedir
+from nltk import tokenize
 import os, re
 
 items = [
@@ -51,7 +51,7 @@ def raw(files = items):
                 yield t
 
 def demo():
-    from nltk_lite.corpora import webtext
+    from nltk.corpora import webtext
     from itertools import islice
 
     for word in islice(webtext.raw('wine'), 0, 100):

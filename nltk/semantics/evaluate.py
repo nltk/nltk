@@ -12,7 +12,7 @@ This module provides data structures for representing first-order
 models. 
 """
 
-from nltk_lite.semantics import LogicParser, Variable, is_indvar
+from nltk.semantics import LogicParser, Variable, is_indvar
 
 from pprint import pformat
 

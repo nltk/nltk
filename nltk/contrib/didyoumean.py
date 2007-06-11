@@ -1,9 +1,9 @@
 # Spelling corrector by Maxime Biais http://www.biais.org/blog/
 # http://snippets.dzone.com/posts/show/3395
 
-from nltk_lite.stem.porter import Porter
-from nltk_lite.corpora import brown
-from nltk_lite import tokenize
+from nltk.stem.porter import Porter
+from nltk.corpora import brown
+from nltk import tokenize
  
 import sys
 from collections import defaultdict

@@ -5,7 +5,7 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk_lite.wordnet import *
+from nltk.wordnet import *
 from textwrap import TextWrapper
 from string import join
 from random import randint

@@ -4,8 +4,8 @@
 #
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
-from nltk_lite.contrib.classifier_tests import *
-from nltk_lite.contrib.classifier import format, instance as ins, attribute as a
+from nltk.contrib.classifier_tests import *
+from nltk.contrib.classifier import format, instance as ins, attribute as a
 
 class FormatTestCase(unittest.TestCase):
     def test_get_c45_name(self):

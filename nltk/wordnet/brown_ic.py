@@ -4,10 +4,10 @@ import sys
 
 from itertools import islice
 
-from nltk_lite.corpora import brown
-from nltk_lite.probability import *
-from nltk_lite.tokenize import *
-from nltk_lite.wordnet import *
+from nltk.corpora import brown
+from nltk.probability import *
+from nltk.tokenize import *
+from nltk.wordnet import *
 
 def substr_binary_search(item, list):
 

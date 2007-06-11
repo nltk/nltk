@@ -119,7 +119,7 @@ pairs = (
       "i wish i was a kitty!! kekekeke ^_^"))
     )
 
-from nltk_lite.chat import Chat, converse
+from nltk.chat import Chat, converse
 
 iesha = Chat(pairs, reflections)
 

@@ -5,9 +5,9 @@
 #
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
-from nltk_lite.contrib.classifier import split_ignore_space
-from nltk_lite.contrib.classifier import instances as ins, discretisedattribute as da, cfile as f, numrange as r, format, commandline as cl
-from nltk_lite.contrib.classifier.exceptions import filenotfounderror as fnf, invaliddataerror as inv
+from nltk.contrib.classifier import split_ignore_space
+from nltk.contrib.classifier import instances as ins, discretisedattribute as da, cfile as f, numrange as r, format, commandline as cl
+from nltk.contrib.classifier.exceptions import filenotfounderror as fnf, invaliddataerror as inv
 import sys
 
 a_help = "Selects the discretisation algorithm                 " \

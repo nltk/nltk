@@ -2,7 +2,7 @@
 Unit tests for the FeatureLite classes
 -----------------------------
 
-    >>> from nltk_lite.contrib.featurelite import *
+    >>> from nltk.contrib.featurelite import *
 
 
 Returns true/false whether the supplied object can be used as a feature

@@ -1,6 +1,6 @@
-from nltk_lite.parse import Tree
+from nltk.parse import Tree
 from fsa import FSA
-from nltk_lite import tokenize
+from nltk import tokenize
 from pairs import KimmoPair, sort_subsets
 from copy import deepcopy
 import re, yaml

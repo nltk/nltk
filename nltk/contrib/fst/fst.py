@@ -86,8 +86,8 @@ Possible future changes:
 
 import re, os, random, tempfile
 from subprocess import Popen, PIPE
-from nltk_lite.draw import *
-from nltk_lite.contrib.fst.draw_graph import *
+from nltk.draw import *
+from nltk.contrib.fst.draw_graph import *
 
 ######################################################################
 # CONTENTS

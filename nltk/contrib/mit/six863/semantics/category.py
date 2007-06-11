@@ -17,7 +17,7 @@ from kimmo import kimmo
 from featurelite import *
 from copy import deepcopy
 import yaml
-# import nltk_lite.yamltags
+# import nltk.yamltags
 
 class Category(Nonterminal, FeatureI, SubstituteBindingsI):
     """
@@ -654,7 +654,7 @@ class GrammarFile(object):
                     filename = args.strip('"')
                     self.apply_file(filename)
                 elif directive == 'tagger_file':
-                    import yaml, nltk_lite.yamltags
+                    import yaml, nltk.yamltags
                     filename = args.strip('"')
                     tagger = yaml.load(filename)
                     self.tagproc = chart_tagger(tagger)

@@ -8,7 +8,7 @@ A L{Word} is an index into the database. More specifically, a list of
 the Senses of the supplied word string. These senses can be accessed
 via index notation ``word[n]`` or via the ``word.getSenses()`` method.
 
-    >>> from nltk_lite.wordnet import *
+    >>> from nltk.wordnet import *
     
     >>> N['dog']
     dog (noun)

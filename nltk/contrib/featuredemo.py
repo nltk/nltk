@@ -1,6 +1,6 @@
-from nltk_lite.parse import GrammarFile
-from nltk_lite.parse.featurechart import *
-from nltk_lite import tokenize
+from nltk.parse import GrammarFile
+from nltk.parse.featurechart import *
+from nltk import tokenize
 
 """
 An interactive interface to the feature-based parser. Run "featuredemo.py -h" for

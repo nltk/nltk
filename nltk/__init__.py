@@ -34,9 +34,8 @@ License, which is included by reference.
 __license__ = "GNU Public License"
 # Description of the toolkit, keywords, and the project's primary URL.
 __longdescr__ = """\
-The Natural Langauge Toolkit (NLTK-Lite) is a Python package for
-processing natural language text.  It was developed as a simpler,
-lightweight version of NLTK.  NLTK-Lite requires Python 2.4 or higher."""
+The Natural Langauge Toolkit (NLTK) is a Python package for
+processing natural language text.  NLTK requires Python 2.4 or higher."""
 __keywords__ = ['NLP', 'CL', 'natural language processing',
                 'computational linguistics', 'parsing', 'tagging',
                 'tokenizing', 'syntax', 'linguistics', 'language',

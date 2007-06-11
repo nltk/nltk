@@ -4,8 +4,8 @@
 #
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
-from nltk_lite.contrib.classifier_tests import *
-from nltk_lite.contrib.classifier import commandline as cl
+from nltk.contrib.classifier_tests import *
+from nltk.contrib.classifier import commandline as cl
 
 class CommandLineTestCase(unittest.TestCase):
     def test_converts_an_array_into_integer_array(self):

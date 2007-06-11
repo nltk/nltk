@@ -5,8 +5,8 @@
 #
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
-from nltk_lite.contrib.classifier import attribute, autoclass
-from nltk_lite.contrib.classifier.exceptions import invaliddataerror as inv
+from nltk.contrib.classifier import attribute, autoclass
+from nltk.contrib.classifier.exceptions import invaliddataerror as inv
 
 class DiscretisedAttribute(attribute.Attribute):
     def __init__(self, name, ranges, index):

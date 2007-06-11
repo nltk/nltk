@@ -71,10 +71,10 @@ Chunk Parse:
 
 """
 
-from nltk_lite.corpora import get_basedir
-from nltk_lite import tokenize
-from nltk_lite.tag import string2tags, string2words
-from nltk_lite.parse import tree
+from nltk.corpora import get_basedir
+from nltk import tokenize
+from nltk.tag import string2tags, string2words
+from nltk.parse import tree
 from string import split
 import os
 import re
@@ -347,7 +347,7 @@ def _chunk_parse(files, chunk_types, top_node, partial_match, collapse_partials,
 Demonstrates the functionality available in the corpus reader.
 """
 def demo():
-    from nltk_lite.corpora import ycoe
+    from nltk.corpora import ycoe
     from itertools import islice
     from pprint import pprint
 

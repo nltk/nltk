@@ -6,7 +6,7 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk_lite.cluster import *
+from nltk.cluster import *
 
 class EM(VectorSpace):
     """
@@ -183,7 +183,7 @@ def demo():
     Non-interactive demonstration of the clusterers with simple 2-D data.
     """
 
-    from nltk_lite import cluster
+    from nltk import cluster
 
     # example from figure 14.10, page 519, Manning and Schutze
 

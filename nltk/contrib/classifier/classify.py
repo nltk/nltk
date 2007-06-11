@@ -1,5 +1,5 @@
-from nltk_lite.contrib.classifier import commandline as cl
-from nltk_lite.contrib.classifier import oner, zeror, decisiontree, format, naivebayes
+from nltk.contrib.classifier import commandline as cl
+from nltk.contrib.classifier import oner, zeror, decisiontree, format, naivebayes
 import sys
 
 a_help = "Selects the classification algorithm                  " \

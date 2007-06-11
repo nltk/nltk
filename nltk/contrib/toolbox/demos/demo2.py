@@ -14,7 +14,7 @@ corresponds to
 in http://nltk.sourceforge.net/lite/doc/en/data.html
 """
 
-from nltk_lite.corpora import toolbox
+from nltk.corpora import toolbox
 
 lexicon = toolbox.parse_corpus('rotokas.dic')
 lexemes = []

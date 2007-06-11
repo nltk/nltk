@@ -347,7 +347,7 @@ def demo():
 
     sent = 'I saw John with a dog with my cookie'
     print "Sentence:\n", sent
-    from nltk_lite import tokenize
+    from nltk import tokenize
     tokens = list(tokenize.whitespace(sent))
     t = time.time()
     cp = FeatureEarleyChartParse(earley_grammar, lexicon, trace=1)

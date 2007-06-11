@@ -162,4 +162,4 @@ class AbstractParse(ParseI):
             print "%d parses." % len(parses)
             for tree in parses: print tree
 
-from nltk_lite.parse import *
+from nltk.parse import *

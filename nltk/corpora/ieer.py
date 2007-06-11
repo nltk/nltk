@@ -21,8 +21,8 @@ The corpus contains the following files: APW_19980314, APW_19980424,
 APW_19980429, NYT_19980315, NYT_19980403, and NYT_19980407.
 """
 
-from nltk_lite.corpora import get_basedir, extract
-from nltk_lite import chunk
+from nltk.corpora import get_basedir, extract
+from nltk import chunk
 import os
 
 items = ['APW_19980314', 'APW_19980424', 'APW_19980429',
@@ -52,7 +52,7 @@ def dictionary(files = items):
         yield chunk.ieerstr2tree(doc)
 
 def demo():
-    from nltk_lite.corpora import ieer
+    from nltk.corpora import ieer
     from itertools import islice
     from pprint import pprint
 

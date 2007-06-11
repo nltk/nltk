@@ -18,9 +18,9 @@ Contents:
 - Telugu: IIIT Hyderabad
 """       
 
-from nltk_lite.corpora import get_basedir
-from nltk_lite import tokenize
-from nltk_lite.tag import string2tags, string2words
+from nltk.corpora import get_basedir
+from nltk import tokenize
+from nltk.tag import string2tags, string2words
 import os
 
 items = list(['bangla', 'hindi', 'marathi', 'telugu'])
@@ -50,7 +50,7 @@ def tagged(files = items):
 
 
 def sample(language):
-    from nltk_lite.corpora import indian, extract
+    from nltk.corpora import indian, extract
     print language.capitalize() + ":",
     for word, tag in extract(8, indian.tagged(language)):
         print word + "/" + `tag`,

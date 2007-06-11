@@ -6,9 +6,9 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk_lite.chunk import *
-from nltk_lite import tokenize
-from nltk_lite.parse.tree import Tree
+from nltk.chunk import *
+from nltk import tokenize
+from nltk.parse.tree import Tree
 import re, string
 
 def tagstr2tree(s, chunk_node="NP", top_node="S"):
@@ -218,7 +218,7 @@ def ieerstr2tree(s, chunk_types = ['LOCATION', 'ORGANIZATION', 'PERSON', 'DURATI
 def demo():
 
     s = "[ Pierre/NNP Vinken/NNP ] ,/, [ 61/CD years/NNS ] old/JJ ,/, will/MD join/VB [ the/DT board/NN ] ./."
-    from nltk_lite import chunk
+    from nltk import chunk
     t = chunk.tagstr2tree(s, chunk_node='NP')
     print t.pp()
     print

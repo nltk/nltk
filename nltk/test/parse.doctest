@@ -2,13 +2,13 @@
 Unit tests for the utility parse functions.
 --------------------------------------------------------------------------------
 
-    >>> from nltk_lite import tokenize
+    >>> from nltk import tokenize
 
 --------------------------------------------------------------------------------
 Unit tests for the CFG (Context Free Grammar) class
 --------------------------------------------------------------------------------
 
-    >>> from nltk_lite.parse import cfg
+    >>> from nltk.parse import cfg
 
     >>> nt1 = cfg.Nonterminal('NP')
     >>> nt2 = cfg.Nonterminal('VP')
@@ -64,7 +64,7 @@ Unit tests for the rd (Recursive Descent Parser) class
 Create and run a recursive descent parser over both a syntactically ambiguous
 and unambiguous sentence.
 
-    >>> from nltk_lite.parse import RecursiveDescent
+    >>> from nltk.parse import RecursiveDescent
     >>> rd = RecursiveDescent(grammar)
 
     >>> sentence1 = list(tokenize.whitespace('the cat chased the dog'))
@@ -84,7 +84,7 @@ Create and run a shift reduce parser over both a syntactically ambiguous
 and unambiguous sentence. Note that unlike the recursive descent parser, one
 and only one parse is ever returned.
 
-    >>> from nltk_lite.parse import ShiftReduce
+    >>> from nltk.parse import ShiftReduce
     >>> sr = ShiftReduce(grammar)
 
     >>> sentence1 = list(tokenize.whitespace('the cat chased the dog'))
@@ -104,7 +104,7 @@ grammar clearly the wrong operation is selected.
 Unit tests for the Chart parser class
 --------------------------------------------------------------------------------
 
-    >>> from nltk_lite.parse import ChartParse, EarleyChartParse, BU_STRATEGY, TD_STRATEGY
+    >>> from nltk.parse import ChartParse, EarleyChartParse, BU_STRATEGY, TD_STRATEGY
 
 Define a grammar.
 
@@ -186,7 +186,7 @@ Create and test the Earley variant chart parser. This requires a lexicon.
 GrammarFile class
 ------------------
 
-    >>> from nltk_lite.parse import GrammarFile
+    >>> from nltk.parse import GrammarFile
     >>> g = GrammarFile.read_file('../parse/test.cfg')
     >>> print g.earley_grammar()
     Grammar with 3 productions (start state = S[])
@@ -201,9 +201,9 @@ GrammarFile class
 Unit tests for the Probabilistic CFG class
 --------------------------------------------------------------------------------
 
-    >>> from nltk_lite.corpora import treebank
+    >>> from nltk.corpora import treebank
     >>> from itertools import islice
-    >>> from nltk_lite.parse import pcfg
+    >>> from nltk.parse import pcfg
 
 Create a set of probabilistic CFG productions.
 
@@ -280,7 +280,7 @@ Unit tests for the Probabilistic Chart Parse classes
 Create several parsers using different queuing strategies and show the
 resulting parses.
 
-    >>> from nltk_lite.parse import pchart
+    >>> from nltk.parse import pchart
     
     >>> parser = pchart.InsideParse(grammar)
     >>> parser.get_parse_list(tokens)
@@ -306,7 +306,7 @@ resulting parses.
 Unit tests for the Viterbi Parse classes
 ----------------------------------------
 
-    >>> from nltk_lite.parse import ViterbiParse
+    >>> from nltk.parse import ViterbiParse
     >>> tokens = list(tokenize.whitespace("Jack saw Bob with my cookie"))
     >>> grammar = pcfg.toy2
 
@@ -337,7 +337,7 @@ actually a specialized subclass of C{list} that:
 Trees are created from a node and a list (or any iterable) of
 children:
 
-    >>> from nltk_lite.parse import Tree
+    >>> from nltk.parse import Tree
     >>> Tree(1, [2, 3, 4])
     (1: 2 3 4)
     >>> Tree('S', [Tree('NP', ['I']), 
@@ -503,7 +503,7 @@ tree object to one of several standard tree encodings:
 
 Trees can be parsed from treebank strings with the C{bracket_parse} method:
 
-    >>> from nltk_lite.parse import bracket_parse
+    >>> from nltk.parse import bracket_parse
     >>> tree2 = bracket_parse('(S (NP I) (VP (V enjoyed) (NP my cookie)))')
     >>> print tree2
     (S: (NP: 'I') (VP: (V: 'enjoyed') (NP: 'my' 'cookie')))
@@ -540,7 +540,7 @@ Unit tests for the TreeTransformation class
 --------------------------------------------------------------------------------
 
     >>> from copy import deepcopy
-    >>> from nltk_lite.parse.treetransforms import *
+    >>> from nltk.parse.treetransforms import *
 
     >>> sentence = "(TOP (S (S (VP (VBN Turned) (ADVP (RB loose)) (PP (IN in) (NP (NP (NNP Shane) (NNP Longman) (POS 's)) (NN trading) (NN room))))) (, ,) (NP (DT the) (NN yuppie) (NNS dealers)) (VP (AUX do) (NP (NP (RB little)) (ADJP (RB right)))) (. .)))"
 
@@ -592,7 +592,7 @@ Convert the transformed tree back to its original form
 Unit tests for the Category class
 --------------------------------------------------------------------------------
 
-    >>> from nltk_lite.parse import Category, GrammarCategory
+    >>> from nltk.parse import Category, GrammarCategory
     >>> Category(pos='n', agr=Category(number='pl', gender='f'))
     [agr=[gender='f', number='pl'], pos='n']
 
@@ -603,7 +603,7 @@ Unit tests for the Category class
 Unit tests for FeatureStructure classes
 --------------------------------------------------------------------------------
 
-    >>> from nltk_lite.featurestructure import *
+    >>> from nltk.featurestructure import *
 
 Copying from self to other.
 

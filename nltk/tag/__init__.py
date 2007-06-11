@@ -83,7 +83,7 @@ class Default(SequentialBackoff):
 # UTILITY FUNCTIONS
 ##################################################################
 
-from nltk_lite import tokenize
+from nltk import tokenize
 
 def tag2tuple(s, sep='/'):
     loc = s.rfind(sep)
@@ -108,7 +108,7 @@ def string2words(s, sep='/'):
 # EVALUATION
 ##################################################################
 
-from nltk_lite import evaluate
+from nltk import evaluate
 def accuracy(tagger, gold):
     """
     Score the accuracy of the tagger against the gold standard.

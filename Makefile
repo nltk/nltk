@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 PYTHON = python
-NLTK_VERSION = $(shell python -c 'import nltk_lite; print nltk_lite.__version__')
+NLTK_VERSION = $(shell python -c 'import nltk; print nltk.__version__')
 
 .PHONY: usage all doc clean clean_code clean_up
 
@@ -27,15 +27,15 @@ doc:
 # TESTING
 ########################################################################
 
-DOCTEST_DRIVER = nltk_lite/test/doctest_driver.py
+DOCTEST_DRIVER = nltk/test/doctest_driver.py
 DOCTEST_FLAGS = --ellipsis --normalize_whitespace
-DOCTEST_FILES = nltk_lite/test/*.doctest
+DOCTEST_FILES = nltk/test/*.doctest
 
 doctest:
 	$(PYTHON) $(DOCTEST_DRIVER) $(DOCTEST_FLAGS) $(DOCTEST_FILES)
 
 demotest:
-	find nltk_lite -name "*.py" -exec python '{}' \;
+	find nltk -name "*.py" -exec python '{}' \;
 
 ########################################################################
 # DISTRIBUTIONS
@@ -53,13 +53,13 @@ codedist: clean_code
 	$(PYTHON) setup.py -q bdist --format=wininst
 
 docdist:
-	find doc -print | egrep -v '.svn' | zip dist/nltk_lite-doc-$(NLTK_VERSION).zip -@
+	find doc -print | egrep -v '.svn' | zip dist/nltk-doc-$(NLTK_VERSION).zip -@
 
 exampledist:
-	find examples -print | egrep -v '.svn' | zip dist/nltk_lite-examples-$(NLTK_VERSION).zip -@
+	find examples -print | egrep -v '.svn' | zip dist/nltk-examples-$(NLTK_VERSION).zip -@
 
 corporadist:
-	find corpora -print | egrep -v '.svn' | zip dist/nltk_lite-corpora-$(NLTK_VERSION).zip -@
+	find corpora -print | egrep -v '.svn' | zip dist/nltk-corpora-$(NLTK_VERSION).zip -@
 
 nightlydist: codedist
 	REVISION = `svn info | grep Revision: | sed "s/Revision: //"`
@@ -92,7 +92,7 @@ numpy:
 	mv python/win/numpy-1.0.3.win32-py2.5.exe?download python/win/numpy-1.0.3.win32-py2.5.exe
 	mv python/unix/numpy-1.0.3-2.tar.gz?download python/unix/numpy-1.0.3-2.tar.gz
 	touch .numpy.done
-	
+
 pylab:
 	mkdir -p python/{mac,win,unix}
 	wget -N -P python/mac  $(PYMAC)/matplotlib-0.90.1-py2.5-macosx10.4-2007-06-04.dmg
@@ -103,20 +103,20 @@ pylab:
 	touch .pylab.done
 
 iso:	.dist.done .python.done .numpy.done .pylab.done
-	rm -rf iso nltk_lite-$(NLTK_VERSION)
+	rm -rf iso nltk-$(NLTK_VERSION)
 	mkdir -p iso/{mac,win,unix}
-	cp dist/nltk_lite-$(NLTK_VERSION).tar.gz        iso/mac/
-	cp dist/nltk_lite-$(NLTK_VERSION).win32.exe     iso/win/
-	cp dist/nltk_lite-$(NLTK_VERSION).tar.gz        iso/unix/
-	cp dist/nltk_lite-$(NLTK_VERSION)-1.noarch.rpm  iso/unix/
-	cp dist/nltk_lite-corpora-$(NLTK_VERSION).zip   iso
-	cp dist/nltk_lite-doc-$(NLTK_VERSION).zip       iso
+	cp dist/nltk-$(NLTK_VERSION).tar.gz        iso/mac/
+	cp dist/nltk-$(NLTK_VERSION).win32.exe     iso/win/
+	cp dist/nltk-$(NLTK_VERSION).tar.gz        iso/unix/
+	cp dist/nltk-$(NLTK_VERSION)-1.noarch.rpm  iso/unix/
+	cp dist/nltk-corpora-$(NLTK_VERSION).zip   iso
+	cp dist/nltk-doc-$(NLTK_VERSION).zip       iso
 	cp *.txt *.html                                 iso
 	cp python/mac/*                                 iso/mac/
 	cp python/win/*                                 iso/win/
 	cp python/unix/*                                iso/unix/
-	ln -f -s iso nltk_lite-$(NLTK_VERSION)
-	mkisofs -f -r -o dist/nltk_lite-$(NLTK_VERSION).iso nltk_lite-$(NLTK_VERSION)
+	ln -f -s iso nltk-$(NLTK_VERSION)
+	mkisofs -f -r -o dist/nltk-$(NLTK_VERSION).iso nltk-$(NLTK_VERSION)
 
 ########################################################################
 # RSYNC
@@ -130,7 +130,7 @@ RSYNC_OPTS = -arvz -e ssh --relative --cvs-exclude
 rsync:	clean_up
 	$(MAKE) -C web rsync
 	$(MAKE) -C doc rsync
-	rsync $(RSYNC_OPTS) nltk_lite examples $(WEB)
+	rsync $(RSYNC_OPTS) nltk examples $(WEB)
 	touch .rsync.done
 
 ########################################################################

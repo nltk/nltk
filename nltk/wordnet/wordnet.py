@@ -10,7 +10,7 @@
 import math, pickle, string, re
 
 from pos import *
-from nltk_lite.wordnet import *
+from nltk.wordnet import *
 
 class Word(object):
     def __init__(self, line):
@@ -32,7 +32,7 @@ class Word(object):
         """
         Get a sequence of the L{synsets}s of this word.
 
-        >>> from nltk_lite.wordnet import *
+        >>> from nltk.wordnet import *
         >>> N['dog'].synsets()
         [{noun: dog, domestic dog, Canis familiaris}, {noun: frump, dog}, {noun: dog}, {noun: cad, bounder, blackguard, dog, hound, heel}, {noun: frank, frankfurter, hotdog, hot dog, dog, wiener, wienerwurst, weenie}, {noun: pawl, detent, click, dog}, {noun: andiron, firedog, dog, dog-iron}]
 
@@ -49,7 +49,7 @@ class Word(object):
 
     def isTagged(self):
         """
-        >>> from nltk_lite.wordnet import *
+        >>> from nltk.wordnet import *
         >>> N['dog'].isTagged()
         1
 
@@ -59,7 +59,7 @@ class Word(object):
     
     def getAdjectivePositions(self):
         """
-        >>> from nltk_lite.wordnet import *
+        >>> from nltk.wordnet import *
         >>> ADJ['clear'].getAdjectivePositions()
         [None, 'predicative']
 
@@ -106,7 +106,7 @@ class Synset(object):
     synset.getPointerTargets(pointerType), which are equivalent to
     map(Pointer.getTarget(), synset.getPointerTargets(...)).
 
-    >>> from nltk_lite.wordnet import *
+    >>> from nltk.wordnet import *
     >>> V['think'][0].synset.verbFrames
     (5, 9)
 
@@ -211,7 +211,7 @@ class Synset(object):
 #        """
 #        Return a sequence of Words.
 #
-#         >>> from nltk_lite.wordnet import *
+#         >>> from nltk.wordnet import *
 #         >>> N['dog'].words
 #         ['dog', 'domestic dog', 'Canis familiaris']
 #         @return: A list of the L{Word}s in this L{Synset}.
@@ -281,7 +281,7 @@ class Synset(object):
     ### BROKEN:
     def isTagged(self):
         """
-        >>> from nltk_lite.wordnet import *
+        >>> from nltk.wordnet import *
         >>> N['dog'][0].isTagged()
         1
 
@@ -296,7 +296,7 @@ class Synset(object):
         """
         Return a human-readable representation.
 
-        >>> from nltk_lite.wordnet import *
+        >>> from nltk.wordnet import *
         >>> str(N['dog'][0].synset)
         '{noun: dog, domestic dog, Canis familiaris}'
         """
@@ -331,7 +331,7 @@ class Synset(object):
     
     def __len__(self):
         """
-        >>> from nltk_lite.wordnet import *
+        >>> from nltk.wordnet import *
         >>> len(N['dog'][0].synset)
         3
         """
@@ -374,7 +374,7 @@ class Synset(object):
         >>> dog.closure(HYPERNYM)
         [{noun: dog, domestic dog, Canis familiaris}, {noun: canine, canid}, {noun: carnivore}, {noun: placental, placental mammal, eutherian, eutherian mammal}, {noun: mammal, mammalian}, {noun: vertebrate, craniate}, {noun: chordate}, {noun: animal, animate being, beast, brute, creature, fauna}, {noun: organism, being}, {noun: living thing, animate thing}, {noun: object, physical object}, {noun: physical entity}, {noun: entity}]
         """
-        from nltk_lite.utilities import breadth_first
+        from nltk.utilities import breadth_first
         synset_offsets = []
         for synset in breadth_first(self, lambda s:s[rel], depth):
             if synset.offset != self.offset and synset.offset not in synset_offsets:
@@ -922,7 +922,7 @@ def _equalsIgnoreCase(a, b):
 
 
 def demo():
-    from nltk_lite.wordnet import N, V, ADJ, ADV, HYPERNYM
+    from nltk.wordnet import N, V, ADJ, ADV, HYPERNYM
     from pprint import pprint
     
     dog = N['dog']

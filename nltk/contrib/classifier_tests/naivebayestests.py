@@ -5,8 +5,8 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier import instances as ins, instance, attribute as a, naivebayes, format
-from nltk_lite.contrib.classifier_tests import *
+from nltk.contrib.classifier import instances as ins, instance, attribute as a, naivebayes, format
+from nltk.contrib.classifier_tests import *
 
 class NaiveBayesTestCase(unittest.TestCase):
     def test_naive_bayes_classification(self):

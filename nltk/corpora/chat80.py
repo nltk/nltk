@@ -20,7 +20,7 @@ files.
 This module contains functions to extract data from the Chat-80
 relation files ('the world database'), and convert then into a format
 that can be incorporated in the FOL models of
-L{nltk_lite.semantics.evaluate}. The code assumes that the Prolog
+L{nltk.semantics.evaluate}. The code assumes that the Prolog
 input files are available in the NLTK corpora directory.
 
 The Chat-80 World Database consists of the following files::
@@ -124,9 +124,9 @@ current directory.
 """
 
 import re
-import nltk_lite.semantics.evaluate as evaluate
+import nltk.semantics.evaluate as evaluate
 import shelve, os, sys
-from nltk_lite.corpora import get_basedir
+from nltk.corpora import get_basedir
 
 ###########################################################################
 # Chat-80 relation metadata bundles needed to build the valuation

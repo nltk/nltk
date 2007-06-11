@@ -1,11 +1,11 @@
 ===============================
 Unit test cases for ``toolbox``
 ===============================
-    >>> from nltk_lite.contrib.toolbox.language import Language
+    >>> from nltk.contrib.toolbox.language import Language
 
 --------------------------
 ``Language``
 --------------------------
-    >>> from nltk_lite.corpora import get_basedir
+    >>> from nltk.corpora import get_basedir
     >>> import os.path
     >>> lang = Language(os.path.join(get_basedir(), 'toolbox', 'MDF', 'English.lng'))

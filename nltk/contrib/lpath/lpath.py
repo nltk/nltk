@@ -4,8 +4,8 @@ T0 = time.time()
 
 import sys
 import re
-from nltk_lite.parse import cfg, Tree
-from nltk_lite import parse
+from nltk.parse import cfg, Tree
+from nltk import parse
 
 __all__ = ["translate", "get_profile", "get_grammar", "get_base_grammar", "tokenize"]
 

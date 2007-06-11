@@ -1,5 +1,5 @@
 import glue
-from nltk_lite.utilities import Counter
+from nltk.utilities import Counter
 
 class Error(Exception): pass
 
