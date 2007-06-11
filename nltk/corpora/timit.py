@@ -120,14 +120,13 @@ The 4 functions are as follows.
 from nltk.corpora import get_basedir
 from nltk import tokenize
 from itertools import islice
-import ossaudiodev, time
 import sys, os, re
 
 if sys.platform.startswith('linux') or sys.platform.startswith('freebsd'):
     PLAY_ENABLED = True
 else:
     PLAY_ENABLED = False
-    
+
 __all__ = ["items", "raw", "phonetic", "speakers", "dictionary", "spkrinfo",
            "audiodata", "play"]
 
@@ -252,6 +251,7 @@ def play(data):
         print >>sys.stderr, "sorry, currently we don't support audio playback on this platform:", sys.platform
         return
 
+    import ossaudiodev
     try:
         dsp = ossaudiodev.open('w')
     except IOError, e:
@@ -267,6 +267,7 @@ def play(data):
     
 def demo():
     from nltk.corpora import timit
+    import time
 
     print "6th item (timit.items[5])"
     print "-------------------------"
