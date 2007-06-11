@@ -8,6 +8,7 @@
 
 from types import *
 from nltk import tokenize
+from nltk.tree import *
 from nltk.parse import *
 import string
 

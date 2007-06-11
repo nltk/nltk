@@ -7,6 +7,7 @@
 # For license information, see LICENSE.TXT
 
 import types
+from nltk.tree import *
 from nltk.parse import *
 
 ##//////////////////////////////////////////////////////
@@ -107,7 +108,7 @@ class ViterbiParse(AbstractParse):
 
         # The most likely constituent table.  This table specifies the
         # most likely constituent for a given span and type.
-        # Constituents can be either Trees or Tokens.  For
+        # Constituents can be either Trees or tokens.  For
         # Trees, the "type" is the Nonterminal for the tree's
         # root node value.  For Tokens, the "type" is the token's
         # type.  The table is stored as a dictionary, since it is
@@ -338,8 +339,8 @@ def demo():
     summary of the results are displayed.
     """
     import sys, time
-    from nltk import tokenize
-    from nltk.parse import cfg, pcfg, ViterbiParse
+    from nltk import tokenize, cfg, pcfg
+    from nltk.parse import ViterbiParse
 
     # Define two demos.  Each demo has a sentence and a grammar.
     demos = [('I saw the man with my telescope', pcfg.toy1),

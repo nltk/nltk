@@ -10,7 +10,7 @@
 # $Id$
 
 from nltk.parse import *
-from nltk.parse.tree import Tree
+from nltk.tree import Tree
 from nltk.parse import cfg
 
 """
