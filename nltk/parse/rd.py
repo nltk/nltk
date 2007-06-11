@@ -7,8 +7,8 @@
 # For license information, see LICENSE.TXT
 
 from types import *
-from nltk_lite import tokenize
-from nltk_lite.parse import *
+from nltk import tokenize
+from nltk.parse import *
 import string
 
 ##//////////////////////////////////////////////////////
@@ -636,7 +636,7 @@ def demo():
     A demonstration of the recursive descent parser.
     """
 
-    from nltk_lite import parse
+    from nltk import parse
     
     grammar = parse.cfg.parse_cfg("""
     S -> NP VP

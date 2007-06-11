@@ -11,8 +11,8 @@ contents of a Toolbox lexicon without reference to its metadata.
 """
 
 import os, re, sys
-from nltk_lite.corpora import get_basedir
-from nltk_lite.corpora.toolbox import StandardFormat
+from nltk.corpora import get_basedir
+from nltk.corpora.toolbox import StandardFormat
 from utilities import Field, SequentialDictionary
 
 

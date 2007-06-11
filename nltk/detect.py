@@ -51,8 +51,8 @@ def stem_feature(stemmer):
 ######################################################################
 
 def demo():
-    from nltk_lite.corpora import brown
-    from nltk_lite import detect
+    from nltk.corpora import brown
+    from nltk import detect
 
     detector = detect.feature({'initial': lambda t:[t[0]], 'len': lambda t:[len(t)]})
 

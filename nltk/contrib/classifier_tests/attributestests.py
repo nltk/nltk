@@ -5,8 +5,8 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier import attribute as a, discretisedattribute as da, numrange as nr, format
-from nltk_lite.contrib.classifier_tests import *
+from nltk.contrib.classifier import attribute as a, discretisedattribute as da, numrange as nr, format
+from nltk.contrib.classifier_tests import *
 
 class AttributesTestCase(unittest.TestCase):
     def setUp(self):

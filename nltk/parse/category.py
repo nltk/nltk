@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2001-2007 University of Pennsylvania
 # Author: Contributed by Rob Speer <rspeer@mit.edu> 
-#         Steven Bird <sb@csse.unimelb.edu.au> (NLTK-Lite Port)
+#         Steven Bird <sb@csse.unimelb.edu.au> (NLTK Port)
 #         Ewan Klein <ewan@inf.ed.ac.uk> (Hooks for semantics)
 #         Peter Wang <wangp@csse.unimelb.edu.au> (Overhaul)
 # URL: <http://nltk.sourceforge.net>
@@ -10,18 +10,18 @@
 #
 # $Id$
 
-# from nltk_lite.semantics import *
-from nltk_lite.semantics.logic import LogicParser, ApplicationExpression
-#from nltk_lite.semantics.logic import 
-from nltk_lite.parse.cfg import *
-from nltk_lite.parse.featurelite import *
-from nltk_lite.parse import *
+# from nltk.semantics import *
+from nltk.semantics.logic import LogicParser, ApplicationExpression
+#from nltk.semantics.logic import 
+from nltk.parse.cfg import *
+from nltk.parse.featurelite import *
+from nltk.parse import *
 import filebroker
 
 #from featurelite import *
 from copy import deepcopy
 import yaml
-# import nltk_lite.yamltags
+# import nltk.yamltags
 
 def makevar(varname):
     """
@@ -678,7 +678,7 @@ class GrammarFile(object):
                     filename = args.strip('"')
                     self.apply_file(filename)
                 elif directive == 'tagger_file':
-                    import yaml, nltk_lite.yamltags
+                    import yaml, nltk.yamltags
                     filename = args.strip('"')
                     tagger = yaml.load(filename)
                     self.tagproc = chart_tagger(tagger)

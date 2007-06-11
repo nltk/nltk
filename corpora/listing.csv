@@ -1,5 +1,5 @@
 #nltk_directory,short_name,long_name,contents,derived_from,reader,licenser1,licenser2,see_also,contact_name,contact_email
-#in nltk/corpora,for use in book,,,,in nltk/nltk_lite/corpora,,for derived works,,,
+#in nltk/corpora,for use in book,,,,in nltk/nltk/corpora,,for derived works,,,
 abc,abc,Australian Broadcasting Commission 2006,Science News::Rural News,,,,,,,
 biocreative_ppi,BioCreAtIvE-PPI,BioCreAtIvE Protein-Protein Interaction Corpus,BioCreatIve Task 1a,,,,NCBI,http://www2.informatik.hu-berlin.de/~hakenber/corpora/::http://www.mitre.org/public/biocreative/,,
 brown,brown,Brown Corpus,,,brown.py,,,,,

@@ -1,5 +1,5 @@
-from nltk_lite.semantics import *
-from nltk_lite.semantics import logic
+from nltk.semantics import *
+from nltk.semantics import logic
 
 import unittest
 

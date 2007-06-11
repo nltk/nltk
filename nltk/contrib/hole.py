@@ -1,9 +1,9 @@
 # Contributed by Peter Wang
 
-from nltk_lite import tokenize
-from nltk_lite.parse.featurechart import *
-from nltk_lite.parse import GrammarFile, bracket_parse, tree
-from nltk_lite.draw.tree import draw_trees
+from nltk import tokenize
+from nltk.parse.featurechart import *
+from nltk.parse import GrammarFile, bracket_parse, tree
+from nltk.draw.tree import draw_trees
 
 """
 An implementation of the Hole Semantics model, following Blackburn and Bos,

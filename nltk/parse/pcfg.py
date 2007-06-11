@@ -8,8 +8,8 @@
 # For license information, see LICENSE.TXT
 
 import re
-from nltk_lite.parse import *
-from nltk_lite.probability import ImmutableProbabilisticMixIn
+from nltk.parse import *
+from nltk.probability import ImmutableProbabilisticMixIn
 
 class WeightedProduction(Production, ImmutableProbabilisticMixIn):
     """
@@ -230,8 +230,8 @@ def demo():
     A demonstration showing how PCFG C{Grammar}s can be created and used.
     """
 
-    from nltk_lite.corpora import treebank, extract
-    from nltk_lite.parse import cfg, pcfg, pchart, treetransforms
+    from nltk.corpora import treebank, extract
+    from nltk.parse import cfg, pcfg, pchart, treetransforms
     from itertools import islice
 
     pcfg_prods = pcfg.toy1.productions()

@@ -9,9 +9,9 @@
 #
 # $Id$
 
-from nltk_lite.parse import *
-from nltk_lite.parse.tree import Tree
-from nltk_lite.parse import cfg
+from nltk.parse import *
+from nltk.parse.tree import Tree
+from nltk.parse import cfg
 
 """
 Data classes and parser implementations for \"chart parsers\", which
@@ -1583,7 +1583,7 @@ def demo():
     # Tokenize a sample sentence.
     sent = 'I saw John with a dog with my cookie'
     print "Sentence:\n", sent
-    from nltk_lite import tokenize
+    from nltk import tokenize
     tokens = list(tokenize.whitespace(sent))
 
     print tokens

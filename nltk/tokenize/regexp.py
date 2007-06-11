@@ -288,7 +288,7 @@ def demo():
     tokenizers on the same string.
     """
 
-    from nltk_lite import tokenize
+    from nltk import tokenize
 
     # Define the test string.
     s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."

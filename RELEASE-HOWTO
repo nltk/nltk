@@ -1,4 +1,4 @@
-Building an NLTK-Lite distribution
+Building an NLTK distribution
 ----------------------------------
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -7,7 +7,7 @@ Building an NLTK-Lite distribution
 
 A. ERROR CHECKING
 
-  1. make doctest (run the tests in nltk_lite.test)
+  1. make doctest (run the tests in nltk.test)
   2. make demotest (run the demonstration code included in many modules)
   3. API docs (cd doc; make api)  (check latest version of epydoc is installed)
   4. Tutorial examples (cd doc/en; make errs)
@@ -21,7 +21,7 @@ B. CHANGELOG AND RELEASE ANNOUNCEMENT
 
 C. NLTK VERSION NUMBERS
 
-  1. Modify nltk_lite/__init__.py with the version number (2 places)
+  1. Modify nltk/__init__.py with the version number (2 places)
   2. Edit doc/definitions.txt with new version number
   3. Edit wiki installation instructions with new version number
   5. Commit these changes

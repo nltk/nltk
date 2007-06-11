@@ -5,7 +5,7 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier_tests import \
+from nltk.contrib.classifier_tests import \
         attributestests as attributes, instancestests as instances, \
         attributetests as attribute, instancetests as instance, \
         itemtests as item, zerortests as zeror, \

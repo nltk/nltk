@@ -1,7 +1,7 @@
 ###############################################################
-###           Natural Language Toolkit (NLTK-LITE)          ###
+###             Natural Language Toolkit (NLTK)             ###
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
-### Copyright (C) 2006 University of Pennsylvania           ###
+### Copyright (C) 2007 University of Pennsylvania           ###
 ### Author: Steven Bird <sb@csse.unimelb.edu.au>            ###
 ###         Edward Loper <edloper@gradient.cis.upenn.edu>   ###
 ### URL: <http://nltk.sourceforge.net>                      ###
@@ -13,7 +13,7 @@ Introduction
 
     NLTK, the Natural Language Toolkit, is a suite of program
     modules, data sets and tutorials supporting research and teaching in
-    computational linguistics and natural language processing.</p>
+    computational linguistics and natural language processing.
 
     NLTK is ideally suited to students who are learning NLP (natural
     language processing) or conducting research in NLP or closely
@@ -21,13 +21,13 @@ Introduction
     artificial intelligence, information retrieval, and machine
     learning.  NLTK has been used successfully as a teaching tool, as an
     individual study tool, and as a platform for prototyping and
-    building research systems. </p>
+    building research systems.
 
 Documentation
 ~~~~~~~~~~~~~
 
     A substantial amount of documentation about how to use NLTK is
-    available from the nltk homepage: http://nltk.sourceforge.net
+    available from the nltk homepage: http://nltk.sourceforge.net/
 
     In particular, the NLTK homepage contains three types of
     documentation:
@@ -35,22 +35,13 @@ Documentation
       - Tutorials teach students how to use the toolkit, in the
         context of performing specific tasks. They are appropriate for
         anyone who wishes to learn how to use the toolkit.
-        http://nltk.sourceforge.net/lite/doc/en/
+        http://nltk.sourceforge.net/index.php/Book
 
       - The toolkit's reference documentation describes every module,
         interface, class, method, function, and variable in the
         toolkit. This documentation should be useful to both users and
         developers.  
-        http://nltk.sourceforge.net/lite/doc/api/
-
-      - A number of technical reports are available. These reports
-        explain and justify the toolkit's design and
-        implementation. They are used by the developers of the toolkit
-        to guide and document the toolkit's construction. Students can
-        consult these reports if they would like further information
-        about how the toolkit is designed and why it is designed that
-        way.  
-        http://nltk.sourceforge.net/tech/
+        http://nltk.sourceforge.net/doc/api/
 
 Mailing Lists
 ~~~~~~~~~~~~~
@@ -76,9 +67,8 @@ Mailing Lists
 Contributing
 ~~~~~~~~~~~~
 
-    If you are interested in contributing to NLTK, please email
-    Steven Bird <sb@csse.unimelb.edu.au> and Edward Loper
-    <edloper@gradient.cis.upenn.edu>
+    If you would like to contribute to NLTK, please see
+    http://nltk.sourceforge.net/index.php/Contribute
 
 
 Redistributing
@@ -93,5 +83,5 @@ Citing
 ~~~~~~
 
     Please cite NLTK as follows:
-    Bird, Steven and Edward Loper (2006).  Natural Language Toolkit.
+    Bird, Steven, Edward Loper and Ewan Klein (2007).  Natural Language Toolkit.
     http://nltk.sourceforge.net/

@@ -9,8 +9,8 @@
 from itertools import islice
 import re
 
-import nltk_lite.tag as tag
-from nltk_lite.corpora import brown
+import nltk.tag as tag
+from nltk.corpora import brown
 
 # marshal-classes
 

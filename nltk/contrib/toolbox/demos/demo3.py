@@ -12,9 +12,9 @@
 demonstration of grammar parsing
 """
 
-from nltk_lite.etree.ElementTree import ElementTree
-from nltk_lite.contrib import toolbox
-from nltk_lite.corpora import get_basedir
+from nltk.etree.ElementTree import ElementTree
+from nltk.contrib import toolbox
+from nltk.corpora import get_basedir
 import os.path
 
 grammar = {

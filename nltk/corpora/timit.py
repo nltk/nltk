@@ -117,8 +117,8 @@ The 4 functions are as follows.
 
 """       
 
-from nltk_lite.corpora import get_basedir
-from nltk_lite import tokenize
+from nltk.corpora import get_basedir
+from nltk import tokenize
 from itertools import islice
 import ossaudiodev, time
 import sys, os, re
@@ -266,7 +266,7 @@ def play(data):
     dsp.close()
     
 def demo():
-    from nltk_lite.corpora import timit
+    from nltk.corpora import timit
 
     print "6th item (timit.items[5])"
     print "-------------------------"

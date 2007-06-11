@@ -13,7 +13,7 @@ Note that this demo currently processes the whole input file
 before delivering any results, consequently there may be a significant initial delay.
 """
 
-from nltk_lite.semantics import *
+from nltk.semantics import *
 
 
 def read_sents(file):
@@ -79,7 +79,7 @@ Parse and evaluate some sentences.
     
     sents = read_sents(sentsfile)
     
-    # NB. GrammarFile is imported indirectly via nltk_lite.semantics
+    # NB. GrammarFile is imported indirectly via nltk.semantics
     gram = GrammarFile.read_file(gramfile)
 
     m = model.m

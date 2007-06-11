@@ -22,8 +22,8 @@ Each instance of the ambiguous words "hard", "interest", "line", and "serve"
 is tagged with a sense identifier, and supplied with context.
 """       
 
-from nltk_lite.corpora import get_basedir
-from nltk_lite import tokenize
+from nltk.corpora import get_basedir
+from nltk import tokenize
 import os, re, xml.sax
 
 items = ["hard", "interest", "line", "serve"]
@@ -115,7 +115,7 @@ def raw(files = items):
             yield entry
 
 def demo():
-    from nltk_lite.corpora import senseval
+    from nltk.corpora import senseval
     from itertools import islice
     import string
 

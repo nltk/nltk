@@ -5,8 +5,8 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 from optparse import OptionParser
-from nltk_lite.contrib.classifier.exceptions import filenotfounderror as fnf, invaliddataerror as inv
-from nltk_lite.contrib.classifier import format
+from nltk.contrib.classifier.exceptions import filenotfounderror as fnf, invaliddataerror as inv
+from nltk.contrib.classifier import format
 import time
 
 D_help = "Used to specify the data format.                      " \

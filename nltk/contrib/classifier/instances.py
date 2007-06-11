@@ -6,9 +6,9 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier import instance as ins, item, cfile, confusionmatrix as cm, numrange as r
-from nltk_lite.contrib.classifier.exceptions import systemerror as system, invaliddataerror as inv
-from nltk_lite import probability as prob
+from nltk.contrib.classifier import instance as ins, item, cfile, confusionmatrix as cm, numrange as r
+from nltk.contrib.classifier.exceptions import systemerror as system, invaliddataerror as inv
+from nltk import probability as prob
 import operator, UserList, UserDict, math
 
 class Instances(UserList.UserList):
@@ -203,7 +203,7 @@ class SupervisedBreakpoints(UserList.UserList):
     def __find_breakpoints(self, klass_values, depth = 0):
         breakpoints = []
         if len(klass_values) <= 1: return breakpoints
-        from nltk_lite.contrib.classifier import min_entropy_breakpoint
+        from nltk.contrib.classifier import min_entropy_breakpoint
         position, entropy = min_entropy_breakpoint(klass_values)
         if abs(entropy) == 0: return breakpoints
         breakpoints.append(position)

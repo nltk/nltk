@@ -8,7 +8,7 @@
 # For license information, see LICENSE.TXT
 
 from pos import *
-from nltk_lite.wordnet import *
+from nltk.wordnet import *
 
 # Lexname class
 

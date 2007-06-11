@@ -13,8 +13,8 @@ This module provides functionality for reading language settings files for
 Toolbox. 
 """
 
-from nltk_lite.etree.ElementTree import TreeBuilder
-from nltk_lite.contrib.toolbox.settings import ToolboxSettings
+from nltk.etree.ElementTree import TreeBuilder
+from nltk.contrib.toolbox.settings import ToolboxSettings
 import re
 
 class Letter(object):

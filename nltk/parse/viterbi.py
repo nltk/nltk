@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 import types
-from nltk_lite.parse import *
+from nltk.parse import *
 
 ##//////////////////////////////////////////////////////
 ##  Viterbi PCFG Parser
@@ -338,8 +338,8 @@ def demo():
     summary of the results are displayed.
     """
     import sys, time
-    from nltk_lite import tokenize
-    from nltk_lite.parse import cfg, pcfg, ViterbiParse
+    from nltk import tokenize
+    from nltk.parse import cfg, pcfg, ViterbiParse
 
     # Define two demos.  Each demo has a sentence and a grammar.
     demos = [('I saw the man with my telescope', pcfg.toy1),
@@ -395,7 +395,7 @@ def demo():
     print
     print 'Draw parses (y/n)? ',
     if sys.stdin.readline().strip().lower().startswith('y'):
-        from nltk_lite.draw.tree import draw_trees
+        from nltk.draw.tree import draw_trees
         print '  please wait...'
         draw_trees(*parses)
 

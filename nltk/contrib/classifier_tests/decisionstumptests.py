@@ -5,8 +5,8 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier import decisionstump as ds, instances as ins, instance, format
-from nltk_lite.contrib.classifier_tests import *
+from nltk.contrib.classifier import decisionstump as ds, instances as ins, instance, format
+from nltk.contrib.classifier_tests import *
 import math
 
 class DecisionStumpTestCase(unittest.TestCase):

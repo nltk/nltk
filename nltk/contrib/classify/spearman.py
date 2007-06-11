@@ -12,8 +12,8 @@ Spearman Classifier -- Beta version
 """
 
 from math import pow
-from nltk_lite.probability import *
-from nltk_lite.contrib.classify import *
+from nltk.probability import *
+from nltk.contrib.classify import *
 
 class Spearman(AbstractClassify):
     """
@@ -149,8 +149,8 @@ class Spearman(AbstractClassify):
 ###########################################################
 
 def demo():
-    from nltk_lite.contrib import classify
-    from nltk_lite import detect
+    from nltk.contrib import classify
+    from nltk import detect
     
     fd = detect.feature({"1-tup": lambda t: [t[n] for n in range(len(t))]})
 
@@ -177,8 +177,8 @@ def demo():
 
 
 def demo2():
-    from nltk_lite.contrib import classify
-    from nltk_lite import detect
+    from nltk.contrib import classify
+    from nltk import detect
   
     fd = detect.feature({"2-tup": lambda t: [t[n:n+2] for n in range(len(t)-1)]})
 
@@ -210,8 +210,8 @@ def demo2():
 
 
 def demo3():
-    from nltk_lite.contrib import classify
-    from nltk_lite import detect
+    from nltk.contrib import classify
+    from nltk import detect
   
     fd = detect.feature({"1-tup": lambda t: [t[n] for n in range(len(t))],
                           "2-tup": lambda t: [t[n:n+2] for n in range(len(t)-1)]})
@@ -249,10 +249,10 @@ def demo3():
 
 
 def demo4():
-    from nltk_lite.contrib import classify
-    from nltk_lite import detect
+    from nltk.contrib import classify
+    from nltk import detect
 
-    from nltk_lite.corpora import genesis
+    from nltk.corpora import genesis
     from itertools import islice
 
     fd = detect.feature({"2-tup": lambda t: [' '.join(t)[n:n+2] for n in range(len(' '.join(t))-1)],

@@ -5,9 +5,9 @@
 #
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
-from nltk_lite.contrib.classifier import split_ignore_space
-from nltk_lite.contrib.classifier import format, cfile, commandline as cl, attribute as attr, classify as cy
-from nltk_lite.contrib.classifier.exceptions import invaliddataerror as inv
+from nltk.contrib.classifier import split_ignore_space
+from nltk.contrib.classifier import format, cfile, commandline as cl, attribute as attr, classify as cy
+from nltk.contrib.classifier.exceptions import invaliddataerror as inv
 import copy
 
 import sys

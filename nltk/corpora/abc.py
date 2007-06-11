@@ -15,8 +15,8 @@ Contents:
 * Science News  http://www.abc.net.au/science/news/
 """       
 
-from nltk_lite.corpora import get_basedir
-from nltk_lite import tokenize
+from nltk.corpora import get_basedir
+from nltk import tokenize
 import os, re
 
 items = [
@@ -41,7 +41,7 @@ def raw(files = items):
                 yield t
 
 def demo():
-    from nltk_lite.corpora import abc
+    from nltk.corpora import abc
     from itertools import islice
 
     for word in islice(abc.raw('science'), 0, 100):

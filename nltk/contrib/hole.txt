@@ -65,7 +65,7 @@ Features and parsing
 --------------------
 
 In this project I made use of a feature-based parser available in the
-NLTK-Lite contrib area.  Features are key-value pairs associated with
+NLTK contrib area.  Features are key-value pairs associated with
 symbols in the grammar, and the semantics will be stored as a feature.
 Parsing is done with chart parsing, with the only difference being
 that the feature structures (sets of features) of two edges in the
@@ -178,7 +178,7 @@ The implementation can be divided into three parts.
 * the driver program and plugging algorithm (``hole.py``)
 
 The work on the feature parser was to try to integrate it better with
-NLTK-Lite.  I have attempted some of this, although it's not clear
+NLTK.  I have attempted some of this, although it's not clear
 that it's particularly better.  I think more extensive changes need to
 be made to reduce code duplication.
 
@@ -273,7 +273,7 @@ labels in every hole so all legal pluggings are found.
 Running
 -------
 
-The program currently requires a patch to be applied to NLTK-Lite.
+The program currently requires a patch to be applied to NLTK.
 After that the program can be executed using ``python hole.py``.  By
 default it reads the grammar from the file ``hole.cfg`` but it can
 selected at the command line.  ``python hole.py -h`` gives the usage.

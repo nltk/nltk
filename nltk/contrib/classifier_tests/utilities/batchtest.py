@@ -1,6 +1,6 @@
 import os
 import os.path
-from nltk_lite.contrib.classifier import format as fmt, discretise as d, featureselect as f, classify as c
+from nltk.contrib.classifier import format as fmt, discretise as d, featureselect as f, classify as c
 import sys
 
 def run(root_path, log_path):

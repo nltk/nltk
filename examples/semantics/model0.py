@@ -9,7 +9,7 @@ This is a sample model to accompany the U{sem2.cfg} grammar, and is
 intended to be imported as a module.
 """
 
-from nltk_lite.semantics import *
+from nltk.semantics import *
 
 val = Valuation()
 #Initialize a valuation of non-logical constants."""

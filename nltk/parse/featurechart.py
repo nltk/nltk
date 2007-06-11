@@ -13,9 +13,9 @@ feature structures as nodes.
 """
 
 import yaml
-from nltk_lite.parse import *
-from nltk_lite.parse.category import Category, GrammarFile, GrammarCategory
-from nltk_lite.parse import cfg
+from nltk.parse import *
+from nltk.parse.category import Category, GrammarFile, GrammarCategory
+from nltk.parse import cfg
 
 # from featurelite import *
 
@@ -350,7 +350,7 @@ def demo():
 
     sent = 'I saw John with a dog with my cookie'
     print "Sentence:\n", sent
-    from nltk_lite import tokenize	
+    from nltk import tokenize	
     tokens = list(tokenize.whitespace(sent))
     t = time.time()
     cp = FeatureEarleyChartParse(earley_grammar, lexicon, trace=1)

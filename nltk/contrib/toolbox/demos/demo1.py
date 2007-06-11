@@ -14,7 +14,7 @@ corresponds to
 in http://nltk.sourceforge.net/lite/doc/en/data.html
 """
 
-from nltk_lite.corpora import toolbox
+from nltk.corpora import toolbox
 
 lexicon = toolbox.parse_corpus('rotokas.dic')
 
@@ -25,7 +25,7 @@ for entry in lexicon.findall('record'):
 print sum_size/num_entries
 
 
-from nltk_lite.etree.ElementTree import ElementTree
+from nltk.etree.ElementTree import ElementTree
 import sys
 fourth_entry = lexicon.findall('record')[3]
 tree = ElementTree(fourth_entry)

@@ -4,9 +4,9 @@
 #
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
-from nltk_lite.contrib.classifier_tests import *
-from nltk_lite.contrib.classifier import featureselect as fs, decisionstump as ds, format, attribute as attr
-from nltk_lite.contrib.classifier.exceptions import invaliddataerror as inv
+from nltk.contrib.classifier_tests import *
+from nltk.contrib.classifier import featureselect as fs, decisionstump as ds, format, attribute as attr
+from nltk.contrib.classifier.exceptions import invaliddataerror as inv
 import copy
 
 class FeatureSelectTestCase(unittest.TestCase):

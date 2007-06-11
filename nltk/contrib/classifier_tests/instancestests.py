@@ -5,9 +5,9 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier import instances as ins, instance, attribute as a, discretisedattribute as da, numrange as nr, format
-from nltk_lite.contrib.classifier.exceptions import systemerror as system, invaliddataerror as inv
-from nltk_lite.contrib.classifier_tests import *
+from nltk.contrib.classifier import instances as ins, instance, attribute as a, discretisedattribute as da, numrange as nr, format
+from nltk.contrib.classifier.exceptions import systemerror as system, invaliddataerror as inv
+from nltk.contrib.classifier_tests import *
 import math
 
 class InstancesTestCase(unittest.TestCase):

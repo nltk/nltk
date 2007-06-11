@@ -1,5 +1,5 @@
 # Natural Language Toolkit: Logic
-from nltk_lite.utilities import Counter
+from nltk.utilities import Counter
 from featurelite import SubstituteBindingsMixin, FeatureI
 from featurelite import Variable as FeatureVariable
 _counter = Counter()

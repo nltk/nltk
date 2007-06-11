@@ -35,9 +35,9 @@ p. fiction: romance
 r. humor
 """       
 
-from nltk_lite.corpora import get_basedir
-from nltk_lite import tokenize
-from nltk_lite.tag import string2tags, string2words
+from nltk.corpora import get_basedir
+from nltk import tokenize
+from nltk.tag import string2tags, string2words
 import os
 
 items = list('abcdefghjklmnpr')
@@ -79,7 +79,7 @@ def tagged(files = items):
     return _read(files, string2tags)
 
 def demo():
-    from nltk_lite.corpora import brown
+    from nltk.corpora import brown
     from itertools import islice
     from pprint import pprint
 

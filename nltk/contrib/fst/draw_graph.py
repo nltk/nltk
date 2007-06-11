@@ -37,7 +37,7 @@ attempting to minimize crossing edges.
 """
 
 import math
-from nltk_lite.draw import *
+from nltk.draw import *
 
 class GraphEdgeWidget(CanvasWidget):
     """

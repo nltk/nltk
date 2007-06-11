@@ -14,7 +14,7 @@ with an implementation of Ted Pedersen's Wordnet::Similarity package.
 Usage
 -----
 
-    >>> from nltk_lite.wordnet import *
+    >>> from nltk.wordnet import *
 
 Retrieve words from the database
 
@@ -56,7 +56,7 @@ Get those synsets of which 'dog' is a member meronym:
 import os
 import string
 from os import environ
-from nltk_lite.corpora import get_basedir
+from nltk.corpora import get_basedir
 from types import IntType, StringType
 
 ANTONYM = 'antonym'
@@ -460,7 +460,7 @@ class IndexFile(object):
 # For license information, see LICENSE.TXT
 
 from pos import *
-from nltk_lite.wordnet import *
+from nltk.wordnet import *
 import os
 
 #

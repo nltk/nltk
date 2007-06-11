@@ -6,7 +6,7 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier.exceptions import filenotfounderror as fnf, invaliddataerror as inv
+from nltk.contrib.classifier.exceptions import filenotfounderror as fnf, invaliddataerror as inv
 import os, os.path
 
 DOT = '.'

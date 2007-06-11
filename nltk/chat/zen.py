@@ -36,7 +36,7 @@ respond to a question by asking a different question, in much the same way
 as Eliza.
 """
 
-from nltk_lite.chat import *
+from nltk.chat import *
 
 # responses are matched top to bottom, so non-specific matches occur later
 # for each match, a list of possible responses is provided

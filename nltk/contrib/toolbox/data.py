@@ -11,8 +11,8 @@
 """module for reading Toolbox data files
 """
 
-from nltk_lite.etree.ElementTree import Element, SubElement, TreeBuilder
-from nltk_lite.corpora import toolbox
+from nltk.etree.ElementTree import Element, SubElement, TreeBuilder
+from nltk.corpora import toolbox
 import re
 
 class ToolboxData(toolbox.ToolboxData):
@@ -20,7 +20,7 @@ class ToolboxData(toolbox.ToolboxData):
         super(toolbox.ToolboxData, self).__init__()
 
     def _tree2etree(self, parent, no_blanks):
-        from nltk_lite.parse import Tree
+        from nltk.parse import Tree
 
         root = Element(parent.node)
         for child in parent:
@@ -50,8 +50,8 @@ class ToolboxData(toolbox.ToolboxData):
         @rtype:   ElementTree._ElementInterface
         @return:  Contents of toolbox data parsed according to the rules in grammar
         """
-        from nltk_lite import chunk
-        from nltk_lite.parse import Tree
+        from nltk import chunk
+        from nltk.parse import Tree
 
         cp = chunk.Regexp(grammar)
         db = self.parse(**kwargs)
@@ -266,7 +266,7 @@ def _to_sfm_string(node, l, **kwargs):
     return
 
 def demo_flat():
-    from nltk_lite.etree.ElementTree import ElementTree    
+    from nltk.etree.ElementTree import ElementTree    
     import sys
 
     tree = ElementTree(toolbox.parse_corpus('iu_mien_samp.db', key='lx', encoding='utf8'))

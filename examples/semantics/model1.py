@@ -9,8 +9,8 @@ This is a sample model to accompany the U{chat80.cfg} grammar} and is
 intended to be imported as a module.
 """
 
-from nltk_lite.semantics import *
-import nltk_lite.corpora.chat80 as chat80
+from nltk.semantics import *
+from nltk.corpora import chat80
 
 rels = chat80.rels
 concept_map = chat80.process_bundle(rels)

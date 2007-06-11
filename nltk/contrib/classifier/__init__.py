@@ -4,8 +4,8 @@
 #
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
-from nltk_lite.contrib.classifier.exceptions import invaliddataerror as inv
-from nltk_lite import probability as prob
+from nltk.contrib.classifier.exceptions import invaliddataerror as inv
+from nltk import probability as prob
 import math
 
 class Classifier:

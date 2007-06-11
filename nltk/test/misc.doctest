@@ -3,7 +3,7 @@ Unit tests for the miscellaneous sort functions.
 --------------------------------------------------------------------------------
 
     >>> from copy import deepcopy
-    >>> from nltk_lite.misc.sort import *
+    >>> from nltk.misc.sort import *
 
 A (very) small list of unsorted integers.
 

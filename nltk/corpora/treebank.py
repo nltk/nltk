@@ -6,10 +6,10 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk_lite.corpora import get_basedir
-from nltk_lite import tokenize, chunk
-from nltk_lite.tag import tag2tuple
-from nltk_lite.parse import tree
+from nltk.corpora import get_basedir
+from nltk import tokenize, chunk
+from nltk.tag import tag2tuple
+from nltk.parse import tree
 import os
 
 """
@@ -147,7 +147,7 @@ def raw(files = 'raw', basedir = None):
 
 
 def demo():
-    from nltk_lite.corpora import treebank
+    from nltk.corpora import treebank
     from itertools import islice
 
     print "Parsed:"

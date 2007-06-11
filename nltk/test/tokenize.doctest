@@ -2,7 +2,7 @@
 Unit test cases for the simple tokenizer class
 --------------------------------------------------------------------------------
 
-    >>> from nltk_lite.tokenize.simple import *
+    >>> from nltk.tokenize.simple import *
 
 Perform some simple tokenizing tests: split the example string at
 whitespace, at newlines, and at paragraphs (two consecutive newline
@@ -30,7 +30,7 @@ Unit test cases for the regexp tokenizer class
 --------------------------------------------------------------------------------
 
     >>> import re, sre_parse, sre_constants, sre_compile
-    >>> from nltk_lite.tokenize.regexp import *
+    >>> from nltk.tokenize.regexp import *
 
 Some additional test strings.
 

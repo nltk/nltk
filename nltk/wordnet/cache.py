@@ -19,7 +19,7 @@
 # The LRUCache approximates a weak dict in the case where temporal
 # locality is good.
 
-from nltk_lite.wordnet import *
+from nltk.wordnet import *
 
 DEFAULT_CACHE_CAPACITY = 1000
 

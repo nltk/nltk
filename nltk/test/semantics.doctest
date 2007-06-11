@@ -1,4 +1,4 @@
-   >>> from nltk_lite.semantics import *
+   >>> from nltk.semantics import *
 
 Characteristic Functions
 ========================
