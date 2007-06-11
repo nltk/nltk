@@ -48,4 +48,20 @@ __maintainer_email__ = "sb@csse.unimelb.edu.au"
 __author__ = __maintainer__
 __author_email__ = __maintainer_email__
 
+#######################################################################
+# Import core NLTK into top-level namespace
+#######################################################################
 
+# top-level utilities
+
+from compat import *
+from detect import *
+from evaluate import *
+from featurestructure import *
+from probability import *
+from utilities import *
+from yamltags import *
+
+# core packages
+
+import chat, chunk, cluster, corpora, draw, parse, semantics, stem, tag, tokenize, wordnet

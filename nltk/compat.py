@@ -3,7 +3,6 @@
 # Copyright (C) 2001-2007 University of Pennsylvania
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
-#         Yoav Goldberg <yoav.goldberg@gmail.com>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
@@ -31,6 +30,7 @@ except ImportError:
     from nltk.etree import ElementTree
 
 # collections.defaultdict
+# contributed by Yoav Goldberg <yoav.goldberg@gmail.com>
 
 try:
     from collections import defaultdict
