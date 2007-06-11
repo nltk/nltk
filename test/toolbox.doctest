@@ -1,7 +1,7 @@
 ===============================
 Unit test cases for ``toolbox``
 ===============================
-    >>> from nltk_lite.corpora import toolbox
+    >>> from nltk.corpora import toolbox
 
 --------------------------
 ``toolbox.StandardFormat``
@@ -241,7 +241,7 @@ Consecutive whitespace characters (except newline) are treated the same as one:
 -------------------------------
 check that normal parsing works:
 
-    >>> from nltk_lite.etree import ElementTree
+    >>> from nltk.etree import ElementTree
     >>> td = toolbox.ToolboxData()
     >>> s = """\\_sh v3.0  400  Rotokas Dictionary
     ... \\_DateStampHasFourDigitYear
@@ -269,7 +269,7 @@ check that normal parsing works:
 
 check that guessing the key marker works:
 
-    >>> from nltk_lite.etree import ElementTree
+    >>> from nltk.etree import ElementTree
     >>> td = toolbox.ToolboxData()
     >>> s = """\\_sh v3.0  400  Rotokas Dictionary
     ... \\_DateStampHasFourDigitYear

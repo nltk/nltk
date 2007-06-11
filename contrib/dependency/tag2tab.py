@@ -2,8 +2,8 @@
 Utilities for converting chunked treebank into format that can be 
 input to Nivre's MaltParser.
 """
-from nltk_lite.corpora import get_basedir
-from nltk_lite import tokenize
+from nltk.corpora import get_basedir
+from nltk import tokenize
 from itertools import islice
 import os
 
@@ -41,7 +41,7 @@ def tabtagged(files = 'chunked', basedir= None):
             yield l
 
 def demo():
-    from nltk_lite.corpora import treebank
+    from nltk.corpora import treebank
     #f = open('ptb_input.tab', 'w')
     #s = ''
     for sent in islice(tabtagged(), 3):

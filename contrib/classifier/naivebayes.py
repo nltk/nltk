@@ -6,8 +6,8 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier import instances as ins, decisionstump as ds, Classifier
-from nltk_lite.contrib.classifier.exceptions import invaliddataerror as inv
+from nltk.contrib.classifier import instances as ins, decisionstump as ds, Classifier
+from nltk.contrib.classifier.exceptions import invaliddataerror as inv
 
 class NaiveBayes(Classifier):
     def __init__(self, training, attributes, klass, internal = False):

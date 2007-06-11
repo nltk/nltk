@@ -39,7 +39,7 @@ class ClassifyI:
         """
         @param tokens: sample to be classified
         @ret: DictionaryProbDist of class name and probability
-              see nltk_lite.probability.py
+              see nltk.probability.py
         """
         raise NotImplementedError()
 

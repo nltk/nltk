@@ -5,7 +5,7 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk_lite.chat import Chat, reflections, converse
+from nltk.chat import Chat, reflections, converse
 
 """
 Tsu bot responds to all queries with a Sun Tsu sayings

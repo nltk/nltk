@@ -10,14 +10,14 @@
 #
 # $Id: category.py 4162 2007-03-01 00:46:05Z stevenbird $
 
-from nltk_lite.semantics import logic
+from nltk.semantics import logic
 from cfg import *
 from kimmo import kimmo
 
 from featurelite import *
 from copy import deepcopy
 import yaml
-# import nltk_lite.yamltags
+# import nltk.yamltags
 
 def makevar(varname):
     """
@@ -674,7 +674,7 @@ class GrammarFile(object):
                     filename = args.strip('"')
                     self.apply_file(filename)
                 elif directive == 'tagger_file':
-                    import yaml, nltk_lite.yamltags
+                    import yaml, nltk.yamltags
                     filename = args.strip('"')
                     tagger = yaml.load(filename)
                     self.tagproc = chart_tagger(tagger)

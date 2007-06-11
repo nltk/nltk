@@ -5,10 +5,10 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk_lite.corpora import get_basedir
-from nltk_lite import tokenize
-from nltk_lite.tag import tag2tuple
-from nltk_lite.parse import tree
+from nltk.corpora import get_basedir
+from nltk import tokenize
+from nltk.tag import tag2tuple
+from nltk.parse import tree
 import os, re
 
 """
@@ -99,8 +99,8 @@ def parsed(files = 'parsed'):
 
 
 def demo():
-    from nltk_lite.corpora import sinica_treebank
-    from nltk_lite.draw.tree import draw_trees
+    from nltk.corpora import sinica_treebank
+    from nltk.draw.tree import draw_trees
     from itertools import islice
     
     print "Raw:"

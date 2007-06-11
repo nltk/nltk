@@ -5,10 +5,10 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk_lite.corpora import brown
+from nltk.corpora import brown
 from math import *
 import re, string
-from nltk_lite.probability import *
+from nltk.probability import *
 
 class SentencesIndex(object):
     """Class implementing an index of a collection of sentences.

@@ -11,9 +11,9 @@
 Read Named Entity tagged data as chunk structures from the CONLL-2002 Corpus
 """       
 
-from nltk_lite.corpora import get_basedir
-from nltk_lite import tokenize, chunk
-from nltk_lite.parse import tree
+from nltk.corpora import get_basedir
+from nltk import tokenize, chunk
+from nltk.parse import tree
 import os
 
 esp = ['esp.train', 'esp.testa', 'esp.testb']	
@@ -69,7 +69,7 @@ def ne_chunked(files = ['ned.train', 'esp.train'], chunk_types=('LOC','ORG','PER
             yield chunk.conllstr2tree(sent, chunk_types)
 
 def demo():
-    from nltk_lite.corpora import conll2002
+    from nltk.corpora import conll2002
     from itertools import islice
 
     print "CONLL2002 NE data\n"

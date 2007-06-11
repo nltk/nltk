@@ -4,9 +4,9 @@
 #
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
-from nltk_lite.contrib.classifier_tests import *
-from nltk_lite.contrib.classifier import *
-from nltk_lite.probability import FreqDist
+from nltk.contrib.classifier_tests import *
+from nltk.contrib.classifier import *
+from nltk.probability import FreqDist
 
 class InitTestCase(unittest.TestCase):
     def test_split_file_names(self):

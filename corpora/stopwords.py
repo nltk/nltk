@@ -10,7 +10,7 @@
 Read tokens from the Stopwords Corpus.
 """       
 
-from nltk_lite.corpora import get_basedir
+from nltk.corpora import get_basedir
 import os
 
 items = ['danish', 'dutch', 'english', 'french', 'german', 'italian',
@@ -39,7 +39,7 @@ def raw(files = 'english'):
             yield word.strip()
 
 def demo():
-    from nltk_lite.corpora import stopwords
+    from nltk.corpora import stopwords
     from itertools import islice
     from pprint import pprint
 

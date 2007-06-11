@@ -13,13 +13,13 @@ synset tag.  This task, which is known as X{tagging}, is defined by
 the L{TagI} interface.
 """
 
-from nltk_lite.probability import FreqDist, ConditionalFreqDist
+from nltk.probability import FreqDist, ConditionalFreqDist
 
 ##############################################################
 # UNIGRAM TAGGERS: only use information about the current word
 ##############################################################
 
-from nltk_lite.tag import *
+from nltk.tag import *
 import re
 
 class Unigram(SequentialBackoff):
@@ -271,7 +271,7 @@ class Lookup(SequentialBackoff):
 ##//////////////////////////////////////////////////////
 
 def _demo_tagger(tagger, gold):
-    from nltk_lite.tag import accuracy
+    from nltk.tag import accuracy
     acc = accuracy(tagger, gold)
     print 'Accuracy = %4.1f%%' % (100.0 * acc)
 
@@ -282,8 +282,8 @@ def demo():
     unigram tagger and a default tagger.  It trains and tests the
     tagger using the Brown corpus.
     """
-    from nltk_lite.corpora import brown
-    from nltk_lite import tag
+    from nltk.corpora import brown
+    from nltk import tag
     import sys
 
     print 'Training taggers.'

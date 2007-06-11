@@ -156,7 +156,7 @@ zero-length assertions).
 
 import re, types
 import types
-from nltk_lite.parse import ParseI
+from nltk.parse import ParseI
 from convert import tree2conlltags
 
 ##//////////////////////////////////////////////////////
@@ -412,7 +412,7 @@ class ChunkString(object):
 ## EVALUATION
 ##//////////////////////////////////////////////////////
 
-from nltk_lite import evaluate
+from nltk import evaluate
 def accuracy(chunker, gold):
     """
     Score the accuracy of the chunker against the gold standard.
@@ -441,7 +441,7 @@ def accuracy(chunker, gold):
 # Patched for increased performance by Yoav Goldberg <yoavg@cs.bgu.ac.il>, 2006-01-13
 #  -- statistics are evaluated only on demand, instead of at every sentence evaluation
 #
-# SB: use nltk_lite.evaluate for precision/recall scoring?
+# SB: use nltk.evaluate for precision/recall scoring?
 #
 class ChunkScore(object):
     """

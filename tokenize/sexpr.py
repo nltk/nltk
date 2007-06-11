@@ -45,7 +45,7 @@ def sexpr(s):
             s = s[space_pos:]
 
 def demo():
-    from nltk_lite import tokenize
+    from nltk import tokenize
 
     example = "a b d (d e (f)) r (t i) (iu a"
     print 'Input text:'

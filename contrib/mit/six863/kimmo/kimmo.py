@@ -1,4 +1,4 @@
-# pykimmo 3.0.0 -- a two-level morphology tool for nltk_lite 1.7
+# pykimmo 3.0.0 -- a two-level morphology tool for nltk 1.7
 # by Rob Speer (rspeer@mit.edu)
 # based on code from Carl de Marcken, Beracah Yankama, and Rob Speer
 

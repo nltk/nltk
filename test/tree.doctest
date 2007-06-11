@@ -1,6 +1,6 @@
 Unit test cases for L{tree.Tree}.
 
-    >>> from nltk_lite.parse.tree import *
+    >>> from nltk.parse.tree import *
 
 C{Trees} are used to encode hierarchical structures.  Each C{Tree}
 object encodes a single grouping in the hierarchy.  A C{Tree} is

@@ -2,7 +2,7 @@
 Unit tests for the utility tag functions.
 --------------------------------------------------------------------------------
 
-    >>> from nltk_lite.tag import *
+    >>> from nltk.tag import *
 
 The base Tag class is an interface and trying to use it should result in an
 error.
@@ -73,8 +73,8 @@ Test the accuracy() method using the naive Default tagger.
 Unit tests for the Unigram, Affix, Regexp and Lookup taggers
 --------------------------------------------------------------------------------
 
-    >>> from nltk_lite.tag.unigram import *
-    >>> from nltk_lite.corpora import brown 
+    >>> from nltk.tag.unigram import *
+    >>> from nltk.corpora import brown 
 
 Unigram tagger
 
@@ -192,7 +192,7 @@ Unit tests for the Brill tagger
 --------------------------------------------------------------------------------
 
     >>> from itertools import islice
-    >>> from nltk_lite.tag.brill import *
+    >>> from nltk.tag.brill import *
 
 Flatten the test data from a list of lists into a single list, and split it
 into training and evaluating sections.
@@ -235,7 +235,7 @@ Create and train the Brill tagger.
 Unit tests for the HMM tagger
 --------------------------------------------------------------------------------
 
-    >>> from nltk_lite.tag.hmm import *
+    >>> from nltk.tag.hmm import *
 
 Demo code lifted more or less directly from the HMM class.
 

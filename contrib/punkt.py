@@ -10,7 +10,7 @@ Kiss, Tibor and Strunk, Jan (2006): Unsupervised Multilingual Sentence
 
 import sys, re
 
-from nltk_lite import tokenize
+from nltk import tokenize
 
 # Parameters
 

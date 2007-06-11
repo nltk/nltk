@@ -192,7 +192,7 @@ class Paradigm(object):
         self.data[6]['content']     # content for the sixth data object
         """
 
-        from nltk_lite.corpora import get_basedir
+        from nltk.corpora import get_basedir
         basedir = get_basedir()
 
         # Look for the file

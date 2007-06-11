@@ -75,11 +75,11 @@ Possible future improvements:
     responsible for that.
 """
 
-from nltk_lite.draw.tree import *
-from nltk_lite.draw import *
-from nltk_lite import parse
-from nltk_lite.draw.cfg import CFGEditor
-from nltk_lite import tokenize
+from nltk.draw.tree import *
+from nltk.draw import *
+from nltk import parse
+from nltk.draw.cfg import CFGEditor
+from nltk import tokenize
 import string
 from Tkinter import *
 import tkFont
@@ -772,7 +772,7 @@ def demo():
     text. 
     """
     
-    from nltk_lite.parse import cfg
+    from nltk.parse import cfg
     nonterminals = 'S VP NP PP P N Name V Det'
     (S, VP, NP, PP, P, N, Name, V, Det) = [cfg.Nonterminal(s)
                                            for s in nonterminals.split()]

@@ -15,9 +15,9 @@ such as which fields are found within them and what kind of values those
 fields can have.
 """
 
-from nltk_lite.etree.ElementTree import TreeBuilder
-from nltk_lite.corpora.toolbox import StandardFormat
-#from nltk_lite.parse.tree import Tree
+from nltk.etree.ElementTree import TreeBuilder
+from nltk.corpora.toolbox import StandardFormat
+#from nltk.parse.tree import Tree
 
 class ToolboxSettings(StandardFormat):
     """This class is the base class for settings files."""
@@ -534,7 +534,7 @@ class TextSettings(ToolboxSettings) :
             return None
 
 def demo():
-    from nltk_lite.etree.ElementTree import ElementTree
+    from nltk.etree.ElementTree import ElementTree
     
     settings = ToolboxSettings()
     settings.open('demos/MDF_AltH.typ')

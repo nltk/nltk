@@ -1,6 +1,6 @@
 # put this into unittest format
 
-from nltk_lite.semantics import *
+from nltk.semantics import *
 
 def runtests():
     # Test a beta-reduction which used to be wrong

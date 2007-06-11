@@ -10,7 +10,7 @@
 Read tokens from the Wordlist Corpus.
 """       
 
-from nltk_lite.corpora import get_basedir
+from nltk.corpora import get_basedir
 import os
 
 items = ['en']
@@ -28,7 +28,7 @@ def raw(files = items):
             yield word.strip()
 
 def demo():
-    from nltk_lite.corpora import words
+    from nltk.corpora import words
     from itertools import islice
     from pprint import pprint
 

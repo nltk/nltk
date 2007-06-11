@@ -22,8 +22,8 @@ This corpus contains selected texts from Project Gutenberg:
 * Walt Whitman
 """       
 
-from nltk_lite.corpora import get_basedir
-from nltk_lite import tokenize
+from nltk.corpora import get_basedir
+from nltk import tokenize
 import os, re
 
 items = [
@@ -76,7 +76,7 @@ def raw(files = items):
                 preamble = False
 
 def demo():
-    from nltk_lite.corpora import gutenberg
+    from nltk.corpora import gutenberg
     from itertools import islice
 
     for word in islice(gutenberg.raw('bible-kjv'), 0, 100):

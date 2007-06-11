@@ -7,7 +7,7 @@ feature unification.
 Main challenge is to find way of encoding morphosyntactic rules. Current idea is to let a concatenated form such as 'walk + s' be encoded as a dictionary C{'stem': 'walk', 'affix': 's'}. This allows the morpho-phonological representation to undergo unification in the normal way.
 """
 
-from nltk_lite.contrib.featurelite import *
+from nltk.contrib.featurelite import *
 import re
 
 class Phon(dict):

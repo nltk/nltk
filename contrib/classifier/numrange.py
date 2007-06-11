@@ -6,7 +6,7 @@
 #
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
-from nltk_lite.contrib.classifier.exceptions import systemerror as se
+from nltk.contrib.classifier.exceptions import systemerror as se
 DELTA = 0.000001
 
 class Range:

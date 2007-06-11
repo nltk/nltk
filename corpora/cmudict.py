@@ -45,7 +45,7 @@ Y       yield   Y IY L D       Z       zee     Z IY
 ZH      seizure S IY ZH ER
 """
 
-from nltk_lite.corpora import get_basedir
+from nltk.corpora import get_basedir
 import os
 
 items = [
@@ -81,7 +81,7 @@ def dictionary(files='cmudict'):
     return d
 
 def demo():
-    from nltk_lite.corpora import cmudict
+    from nltk.corpora import cmudict
     from itertools import islice
 
     print "raw method:"

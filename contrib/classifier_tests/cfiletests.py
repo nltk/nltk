@@ -5,8 +5,8 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_lite.contrib.classifier import cfile, item, format
-from nltk_lite.contrib.classifier_tests import *
+from nltk.contrib.classifier import cfile, item, format
+from nltk.contrib.classifier_tests import *
 
 class FileTestCase(unittest.TestCase):
     def test_file_read_operation(self):

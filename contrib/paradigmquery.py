@@ -25,9 +25,9 @@
 #  </parse-tree>
 #</document>
 
-from nltk_lite import tokenize
-from nltk_lite import parse
-from nltk_lite.parse import cfg
+from nltk import tokenize
+from nltk import parse
+from nltk.parse import cfg
 from re import *
 
 class ParadigmQuery(object):
@@ -56,7 +56,7 @@ class ParadigmQuery(object):
         Parses a string and stores the resulting hierarchy of "domains"
         "hierarchies" and "tables"
 
-        For the sake of NLP I've parsed the string using the nltk_lite 
+        For the sake of NLP I've parsed the string using the nltk 
         context free grammar library.
 
         A query is a "sentence" and can either be a domain, hierarchy or a table.
@@ -64,7 +64,7 @@ class ParadigmQuery(object):
         A hierarchy is expressed as "domain/domain"
         A table is exressed as "table(sentence, sentence, sentence)"
 
-        Internally the query is represented as a nltk_lite.parse.tree
+        Internally the query is represented as a nltk.parse.tree
 
         Process:
           1. string is tokenized
@@ -128,12 +128,12 @@ class ParadigmQuery(object):
             print "Could not parse query."
             return
 
-        # Set the nltk_lite.parse.tree tree for this query to the global sentence
+        # Set the nltk.parse.tree tree for this query to the global sentence
         string = str(self.parseList)
         string2 = string.replace(":","").replace("')'","").replace("table(","").replace("','","").replace("'","").replace("/","")
         self.nltktree = parse.tree.bracket_parse(string2)
         
-        # Store the resulting nltk_lite.parse.tree tree
+        # Store the resulting nltk.parse.tree tree
         self.parseTree = QuerySentence(self.nltktree)
         self.xml = self.parseTree.toXML()
 

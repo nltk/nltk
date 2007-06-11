@@ -82,7 +82,7 @@ import string
 
 ## --NLTK--
 ## Import the nltk.stemmer module, which defines the stemmer interface
-from nltk_lite.stem import *
+from nltk.stem import *
 
 class Porter(StemI):
 
@@ -573,8 +573,8 @@ def demo():
     the Penn Treebank corpus.
     """
 
-    from nltk_lite.corpora import treebank
-    from nltk_lite import stem
+    from nltk.corpora import treebank
+    from nltk import stem
 
     stemmer = stem.Porter()
 

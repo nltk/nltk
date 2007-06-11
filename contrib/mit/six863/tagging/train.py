@@ -1,5 +1,5 @@
-from nltk_lite import tag
-from nltk_lite.corpora import brown
+from nltk import tag
+from nltk.corpora import brown
 import yaml
 
 t0 = tag.Default('nn')

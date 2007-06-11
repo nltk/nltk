@@ -7,7 +7,7 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk_lite.stem import *
+from nltk.stem import *
 
 class Regexp(StemI):
     """
@@ -41,7 +41,7 @@ class Regexp(StemI):
         return '<Regexp Stemmer: %r>' % self._regexp.pattern
 
 def demo():
-    from nltk_lite import tokenize, stem
+    from nltk import tokenize, stem
 
     # Create a simple regular expression based stemmer
     stemmer = stem.Regexp('ing$|s$|e$', min=4)

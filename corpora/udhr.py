@@ -14,8 +14,8 @@ from the Universal Declaration of Human Rights
 """
 
 import os
-from nltk_lite import tokenize
-from nltk_lite.corpora import *
+from nltk import tokenize
+from nltk.corpora import *
 
 
 items = ['Abkhaz-Cyrillic+Abkh', 'Abkhaz-UTF8', 'Achehnese-Latin1', 'Achuar-Shiwiar-Latin1', 'Adja-UTF8',
@@ -116,7 +116,7 @@ def langs(files = items):
     return langs
 
 def demo():
-    from nltk_lite.corpora import udhr
+    from nltk.corpora import udhr
     from itertools import islice
     
     print "English-Latin1"

@@ -76,7 +76,7 @@ objects. nltk_contrib.unimelb.tacohn.SparseArrays may be used for
 efficiency when required.
 """
 
-from nltk_lite.probability import DictionaryProbDist
+from nltk.probability import DictionaryProbDist
 import copy, numpy, math, random, sys, types
 from numpy import array, linalg
 
