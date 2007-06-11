@@ -8,7 +8,7 @@
 from nltk.corpora import get_basedir
 from nltk import tokenize
 from nltk.tag import tag2tuple
-from nltk.parse import tree
+from nltk import tree
 import os, re
 
 """
