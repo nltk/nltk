@@ -13,7 +13,7 @@
 # from nltk.semantics import *
 from nltk.semantics.logic import LogicParser, ApplicationExpression
 #from nltk.semantics.logic import 
-from nltk.parse.cfg import *
+from nltk.cfg import *
 from nltk.parse.featurelite import *
 from nltk.parse import *
 import filebroker
