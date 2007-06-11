@@ -14,7 +14,6 @@ syntax trees and morphological trees.
 import re, types, string
 from nltk import tokenize
 from nltk.probability import ProbabilisticMixIn
-from nltk.parse import *
 
 ######################################################################
 ## Trees

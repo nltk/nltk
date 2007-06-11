@@ -503,3 +503,11 @@ def guess_encoding(data):
     else:
          return (decoded, successful_encoding)
 
+
+##########################################################################
+# extract from iterator
+##########################################################################
+
+from itertools import islice
+def extract(n, i):
+    return list(islice(i, n, n+1))[0]
