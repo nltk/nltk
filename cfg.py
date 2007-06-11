@@ -703,7 +703,7 @@ def pcfg_demo():
 
     from nltk.corpora import treebank
     from nltk import extract, cfg, pcfg
-    from nltk.parse pchart, treetransforms
+    from nltk.parse import pchart, treetransforms
     from itertools import islice
 
     pcfg_prods = pcfg.toy1.productions()
@@ -749,7 +749,7 @@ def pcfg_demo():
     for parse in parser.get_parse_list(sent):
         print parse
 
-demo():
+def demo():
     cfg_demo()
     pcfg_demo()
 

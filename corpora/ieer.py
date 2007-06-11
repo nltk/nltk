@@ -21,8 +21,9 @@ The corpus contains the following files: APW_19980314, APW_19980424,
 APW_19980429, NYT_19980315, NYT_19980403, and NYT_19980407.
 """
 
-from nltk.corpora import get_basedir, extract
+from nltk.corpora import get_basedir
 from nltk import chunk
+from nltk import extract
 import os
 
 items = ['APW_19980314', 'APW_19980424', 'APW_19980429',

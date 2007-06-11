@@ -50,7 +50,8 @@ def tagged(files = items):
 
 
 def sample(language):
-    from nltk.corpora import indian, extract
+    from nltk.corpora import indian
+    from nltk import extract
     print language.capitalize() + ":",
     for word, tag in extract(8, indian.tagged(language)):
         print word + "/" + `tag`,

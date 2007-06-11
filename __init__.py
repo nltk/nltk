@@ -59,9 +59,10 @@ from detect import *
 from evaluate import *
 from featurestructure import *
 from probability import *
+from tree import *
 from utilities import *
 from yamltags import *
 
 # core packages
 
-import chat, chunk, cluster, corpora, draw, parse, semantics, stem, tag, tokenize, wordnet
+import cfg, chat, chunk, cluster, corpora, draw, parse, semantics, stem, tag, tokenize, wordnet
