@@ -772,7 +772,7 @@ def demo():
     text. 
     """
     
-    from nltk.parse import cfg
+    from nltk import cfg
     nonterminals = 'S VP NP PP P N Name V Det'
     (S, VP, NP, PP, P, N, Name, V, Det) = [cfg.Nonterminal(s)
                                            for s in nonterminals.split()]

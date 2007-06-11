@@ -664,7 +664,7 @@ class CFGDemo(object):
         self._top.mainloop(*args, **kwargs)
 
 def demo2():
-    from nltk.parse import cfg
+    from nltk import cfg
     nonterminals = 'S VP NP PP P N Name V Det'
     (S, VP, NP, PP, P, N, Name, V, Det) = [cfg.Nonterminal(s)
                                            for s in nonterminals.split()]
@@ -700,7 +700,7 @@ def demo2():
 ######################################################################
 
 def demo():
-    from nltk.parse import cfg
+    from nltk import cfg
     nonterminals = 'S VP NP PP P N Name V Det'
     (S, VP, NP, PP, P, N, Name, V, Det) = [cfg.Nonterminal(s)
                                            for s in nonterminals.split()]
@@ -735,7 +735,7 @@ def demo():
     top.mainloop()
 
 def demo3():
-    from nltk.parse import cfg
+    from nltk import cfg
     (S, VP, NP, PP, P, N, Name, V, Det) = \
         nonterminals('S, VP, NP, PP, P, N, Name, V, Det')
     

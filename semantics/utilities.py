@@ -13,9 +13,8 @@ a first-order model.
 """
 
 
-from nltk import tokenize
+from nltk import tokenize, Tree
 from nltk.parse.category import *
-from nltk.parse.tree import Tree
 from evaluate import *
 from logic import *
 
