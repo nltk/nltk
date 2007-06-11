@@ -105,6 +105,7 @@ The following is a short tutorial on the available transformations.
 
 """
 
+from nltk.tree import *
 from nltk.parse import *
 
 def chomskyNormalForm(tree, factor = "right", horzMarkov = None, vertMarkov = 0, childChar = "|", parentChar = "^"):

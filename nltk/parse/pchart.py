@@ -37,6 +37,7 @@ This option is most useful with InsideParse.
 # [XX] This might not be implemented quite right -- it would be better
 # to associate probabilities with child pointer lists.
 
+from nltk.tree import *
 from nltk.parse import *
 
 # Probabilistic edges
