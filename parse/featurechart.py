@@ -252,7 +252,9 @@ class FeatureEarleyChartParse(EarleyChartParse):
         EarleyChartParse.__init__(self, grammar, lexicon, trace)
         
     def get_parse_list(self, tokens):
-        #self._check_coverage(tokens)
+        tokens = list(tokens)
+        # self._check_coverage(tokens) # doesn't work for Earley Parser as its grammar omits lexical productions
+
         chart = Chart(tokens)
         grammar = self._grammar
 

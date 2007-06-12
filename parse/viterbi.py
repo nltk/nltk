@@ -6,9 +6,8 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-import types
-from nltk.tree import *
-from nltk.parse import *
+from nltk.tree import Tree
+from api import *
 
 ##//////////////////////////////////////////////////////
 ##  Viterbi PCFG Parser
@@ -104,6 +103,7 @@ class ViterbiParse(AbstractParse):
     def get_parse_list(self, tokens):
         # Inherit docs from ParseI
         
+        tokens = list(tokens)
         self._check_coverage(tokens)
 
         # The most likely constituent table.  This table specifies the

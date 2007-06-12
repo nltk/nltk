@@ -6,10 +6,9 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from types import *
 from nltk import tokenize, cfg
-from nltk.tree import *
-from nltk.parse import *
+from nltk.tree import Tree
+from api import *
 import string
 
 ##//////////////////////////////////////////////////////
@@ -70,11 +69,11 @@ class RecursiveDescent(AbstractParse):
     def get_parse_list(self, tokens):
         # Inherit docs from ParseI
         
+        tokens = list(tokens)
         self._check_coverage(tokens)
         
         # Start a recursive descent parse, with an initial tree
         # containing just the start symbol.
-        tokens = list(tokens)
         start = self._grammar.start().symbol()
         initial_tree = Tree(start, [])
         frontier = [()]
@@ -637,9 +636,9 @@ def demo():
     A demonstration of the recursive descent parser.
     """
 
-    from nltk import parse
+    from nltk import parse, cfg
     
-    grammar = parse.cfg.parse_cfg("""
+    grammar = cfg.parse_cfg("""
     S -> NP VP
     NP -> Det N | Det N PP
     VP -> V NP | V NP PP
@@ -655,9 +654,9 @@ def demo():
         print prod
     
     sent = tokenize.whitespace('I saw a man in the park')
-    parser = parse.RecursiveDescent(grammar)
-    parser.trace()
+    parser = parse.RecursiveDescent(grammar, trace=2)
     for p in parser.get_parse_list(sent):
         print p
 
-if __name__ == '__main__': demo()
+if __name__ == '__main__':
+    demo()

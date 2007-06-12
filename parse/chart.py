@@ -9,7 +9,7 @@
 #
 # $Id$
 
-from nltk.parse import *
+from api import *
 from nltk.tree import Tree
 from nltk import cfg
 
@@ -1278,7 +1278,8 @@ class EarleyChartParse(AbstractParse):
         AbstractParse.__init__(self)
 
     def get_parse_list(self, tokens, tree_class=Tree):
-        self._check_coverage(tokens)
+        tokens = list(tokens)
+        # self._check_coverage(tokens)  # doesn't work for Earley Parser as its grammar omits lexical productions
         chart = Chart(list(tokens))
         grammar = self._grammar
 
@@ -1358,6 +1359,7 @@ class ChartParse(AbstractParse):
         AbstractParse.__init__(self)
 
     def get_parse_list(self, tokens, tree_class=Tree):
+        tokens = list(tokens)
         self._check_coverage(tokens)
         chart = Chart(list(tokens))
         grammar = self._grammar
@@ -1526,6 +1528,7 @@ class SteppingChartParse(ChartParse):
     #////////////////////////////////////////////////////////////
 
     def get_parse_list(self, token, tree_class=Tree):
+        tokens = list(tokens)
         self._check_coverage(tokens)
         
         # Initialize ourselves.
