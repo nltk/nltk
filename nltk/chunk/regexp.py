@@ -57,7 +57,7 @@ class RegexpChunkRule(object):
         if type(regexp).__name__ == 'SRE_Pattern': regexp = regexp.pattern
         self._repl = repl
         self._descr = descr
-        if type(regexp) == types.StringType:
+        if type(regexp) in types.StringTypes:
             self._regexp = re.compile(regexp)
         else:
             self._regexp = regexp

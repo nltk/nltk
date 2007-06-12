@@ -10,7 +10,7 @@
 # Dictionary classes, which allow users to access
 # Wordnet data via a handy dict notation (see below).
 
-from types import IntType, StringType
+import types
 from util import *
 from cache import entityCache
 
@@ -137,10 +137,10 @@ class Dictionary(object):
         >>> N[0]
         'hood(n.)
         """
-        if isinstance(index, StringType):
+        if type(index) in types.StringTypes:
             return self.getWord(index)
 
-        elif isinstance(index, IntType):
+        elif type(index) == types.IntType:
             line = self.indexFile[index]
             return self.getWord(string.replace(line[:string.find(line, ' ')], '_', ' '), line)
 
