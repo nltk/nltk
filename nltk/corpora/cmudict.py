@@ -45,7 +45,7 @@ Y       yield   Y IY L D       Z       zee     Z IY
 ZH      seizure S IY ZH ER
 """
 
-from nltk.corpora import get_basedir
+from util import *
 import os
 
 items = [

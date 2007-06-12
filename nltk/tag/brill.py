@@ -11,7 +11,7 @@
 Brill's transformational rule-based tagger.
 """
 
-from nltk.tag import TagI
+from api import *
 
 import bisect        # for binary search through a subset of indices
 import random        # for shuffling WSJ files

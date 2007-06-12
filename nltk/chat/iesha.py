@@ -11,6 +11,8 @@ anime junky that frequents YahooMessenger or MSNM.
 All spelling mistakes and flawed grammar are intentional.
 """
 
+from util import *
+
 reflections = {
     "am"     : "r",
     "was"    : "were",
@@ -119,18 +121,19 @@ pairs = (
       "i wish i was a kitty!! kekekeke ^_^"))
     )
 
-from nltk.chat import Chat, converse
+iesha_chatbot = Chat(pairs, reflections)
 
-iesha = Chat(pairs, reflections)
-
-def demo():
+def iesha_chat():
     print "Iesha the TeenBoT: Simple Replication of ELIZA\n---------"
     print "Talk to the program by typing in plain English, using normal upper-"
     print 'and lower-case letters and punctuation.  Enter "quit" when done.'
     print '='*72
     print "hi!! i'm iesha! who r u??!"
 
-    converse(iesha)
+    iesha_chatbot.converse()
+
+def demo():
+    iesha_chat()
 
 if __name__ == "__main__":
     demo()

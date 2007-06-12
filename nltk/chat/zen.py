@@ -36,7 +36,7 @@ respond to a question by asking a different question, in much the same way
 as Eliza.
 """
 
-from nltk.chat import *
+from util import *
 
 # responses are matched top to bottom, so non-specific matches occur later
 # for each match, a list of possible responses is provided
@@ -260,9 +260,9 @@ responses = (
       "I pour out a cup of water. Is the cup empty?"))
 )
 
-zen = Chat(responses, reflections)
+zen_chatbot = Chat(responses, reflections)
 
-def demo():
+def zen_chat():
     print '*'*75
     print "Zen Chatbot!".center(75)
     print '*'*75
@@ -272,7 +272,10 @@ def demo():
     print '*'*75
     print "Welcome, my child."
 
-    converse(zen)
+    zen_chatbot.converse()
+
+def demo():
+    zen_chat()
 
 if __name__ == "__main__":
     demo()

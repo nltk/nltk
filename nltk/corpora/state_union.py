@@ -13,7 +13,7 @@ Annual US presidential addresses 1945-2005
 http://www.c-span.org/executive/stateoftheunion.asp
 """       
 
-from nltk.corpora import get_basedir
+from util import *
 from nltk import tokenize
 import os, re
 

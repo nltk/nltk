@@ -16,7 +16,7 @@ alphabetically, one per line.
 (Used in NLTK with permission.  See the README file for details.)
 """       
 
-from nltk.corpora import get_basedir
+from util import *
 import os
 
 items = ['female', 'male']

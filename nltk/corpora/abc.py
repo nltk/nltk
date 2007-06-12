@@ -15,7 +15,7 @@ Contents:
 * Science News  http://www.abc.net.au/science/news/
 """       
 
-from nltk.corpora import get_basedir
+from util import *
 from nltk import tokenize
 import os, re
 

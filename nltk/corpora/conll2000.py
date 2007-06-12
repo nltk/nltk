@@ -10,7 +10,7 @@
 Read chunk structures from the CONLL-2000 Corpus
 """       
 
-from nltk.corpora import get_basedir
+from util import *
 from nltk import tokenize, chunk, tree
 import os
 

@@ -20,7 +20,7 @@ swedish - Genesis, Gamla och Nya Testamentet, 1917 (Project Runeberg)
 finnish - Genesis, Suomen evankelis-luterilaisen kirkon kirkolliskokouksen vuonna 1992 kayttoon ottama suomennos
 """
 
-from nltk.corpora import get_basedir
+from util import *
 from nltk import tokenize
 import os
 

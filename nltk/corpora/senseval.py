@@ -22,7 +22,7 @@ Each instance of the ambiguous words "hard", "interest", "line", and "serve"
 is tagged with a sense identifier, and supplied with context.
 """       
 
-from nltk.corpora import get_basedir
+from util import *
 from nltk import tokenize
 import os, re, xml.sax
 

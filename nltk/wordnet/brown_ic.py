@@ -5,9 +5,8 @@ import sys
 from itertools import islice
 
 from nltk.corpora import brown
-from nltk.probability import *
-from nltk.tokenize import *
-from nltk.wordnet import *
+from nltk.probability import FreqDist
+from util import *
 
 def substr_binary_search(item, list):
 

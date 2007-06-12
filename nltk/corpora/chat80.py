@@ -126,7 +126,7 @@ current directory.
 import re
 import nltk.semantics.evaluate as evaluate
 import shelve, os, sys
-from nltk.corpora import get_basedir
+from util import *
 
 ###########################################################################
 # Chat-80 relation metadata bundles needed to build the valuation

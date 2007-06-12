@@ -18,7 +18,7 @@ Contents:
 - Telugu: IIIT Hyderabad
 """       
 
-from nltk.corpora import get_basedir
+from util import *
 from nltk import tokenize
 from nltk.tag import string2tags, string2words
 import os
