@@ -14,9 +14,8 @@ from the Universal Declaration of Human Rights
 """
 
 import os
+from util import *
 from nltk import tokenize
-from nltk.corpora import *
-
 
 items = ['Abkhaz-Cyrillic+Abkh', 'Abkhaz-UTF8', 'Achehnese-Latin1', 'Achuar-Shiwiar-Latin1', 'Adja-UTF8',
          'Afaan_Oromo_Oromiffa-Latin1', 'Afrikaans-Latin1', 'Aguaruna-Latin1', 'Akuapem_Twi-UTF8',

@@ -12,6 +12,7 @@ Read tokens from a webpage
 # to do: check html comments are being ignored properly
 # to do: add support for a cache directory
 
+from util import *
 from urllib import urlopen
 from HTMLParser import HTMLParser
 from nltk import tokenize

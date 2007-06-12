@@ -6,7 +6,9 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk.cluster import *
+from api import *
+from util import *
+import numpy, random
 
 class KMeans(VectorSpace):
     """
@@ -166,7 +168,7 @@ def demo():
 
     from nltk import cluster
 
-    vectors = [array(f) for f in [[2, 1], [1, 3], [4, 7], [6, 7]]]
+    vectors = [numpy.array(f) for f in [[2, 1], [1, 3], [4, 7], [6, 7]]]
     means = [[4, 3], [5, 5]]
 
     clusterer = cluster.KMeans(2, euclidean_distance, initial_means=means)
@@ -177,7 +179,7 @@ def demo():
     print 'Means:', clusterer.means()
     print
 
-    vectors = [array(f) for f in [[3, 3], [1, 2], [4, 2], [4, 0], [2, 3], [3, 1]]]
+    vectors = [numpy.array(f) for f in [[3, 3], [1, 2], [4, 2], [4, 0], [2, 3], [3, 1]]]
     
     # test k-means using the euclidean distance metric, 2 means and repeat
     # clustering 10 times with random seeds
@@ -190,7 +192,7 @@ def demo():
     print
 
     # classify a new vector
-    vector = array([3, 3])
+    vector = numpy.array([3, 3])
     print 'classify(%s):' % vector,
     print clusterer.classify(vector)
     print

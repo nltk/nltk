@@ -7,7 +7,7 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk.wordnet import *
+from util import *
 import math
 
 # Similarity metrics

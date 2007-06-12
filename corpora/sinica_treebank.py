@@ -5,10 +5,9 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk.corpora import get_basedir
-from nltk import tokenize
+from util import *
+from nltk import tokenize, tree
 from nltk.tag import tag2tuple
-from nltk import tree
 import os, re
 
 """

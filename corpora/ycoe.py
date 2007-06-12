@@ -71,12 +71,11 @@ Chunk Parse:
 
 """
 
-from nltk.corpora import get_basedir
+from util import *
 from nltk import tokenize, tree
 from nltk.tag import string2tags, string2words
 from string import split
-import os
-import re
+import os, re
 
 """ 
 All files within the corpora

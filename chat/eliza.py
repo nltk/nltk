@@ -12,7 +12,7 @@
 # a translation table used to convert things you say into things the
 # computer says back, e.g. "I am" --> "you are"
 
-from nltk.chat import Chat, reflections
+from util import *
 
 # a table of response pairs, where each pair consists of a
 # regular expression, and a list of possible responses,
@@ -224,24 +224,19 @@ pairs = (
     "How do you feel when you say that?"))
 )
 
-eliza = Chat(pairs, reflections)
+eliza_chatbot = Chat(pairs, reflections)
 
-def demo():
+def eliza_chat():
     print "Therapist\n---------"
     print "Talk to the program by typing in plain English, using normal upper-"
     print 'and lower-case letters and punctuation.  Enter "quit" when done.'
     print '='*72
     print "Hello.  How are you feeling today?"
-    s = ""
-    while s != "quit":
-        s = "quit"
-        try: s = raw_input(">")
-        except EOFError:
-            print s
-        if s:
-            while s[-1] in "!.": s = s[:-1]
-            print eliza.respond(s)
 
+    eliza_chatbot.converse()
+
+def demo():
+    eliza_chat()
 
 if __name__ == "__main__":
     demo()

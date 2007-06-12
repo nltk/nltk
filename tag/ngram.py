@@ -14,8 +14,10 @@ the L{TagI} interface.
 """
 
 import types, re
-from nltk.probability import FreqDist, ConditionalFreqDist
-from nltk.tag import *
+from nltk import FreqDist, ConditionalFreqDist
+from api import *
+from util import *
+from unigram import Unigram
 
 ##############################################################
 # N-GRAM TAGGERS: these make use of history

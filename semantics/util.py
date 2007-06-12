@@ -15,8 +15,6 @@ a first-order model.
 
 from nltk import tokenize, Tree
 from nltk.parse.category import *
-from evaluate import *
-from logic import *
 
 ##############################################################
 ## Utility functions for connecting parse output to semantics
@@ -100,4 +98,3 @@ def text_evaluate(inputs, grammar, model, assignment, semtrace=0):
         evaluations[sent] = syn_sem_val
     return evaluations
     
-
