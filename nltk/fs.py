@@ -1,97 +1,43 @@
-"""
-This module provides utilities for treating Python dictionaries as X{feature
-structures}. Specifically, it contains the C{unify} function, which can be used
-to merge the properties of two dictionaries, and the C{Variable} class, which
-holds an unknown value to be used in unification.
-
-A X{feature structure} is a mapping from feature names to feature values,
-where:
-
-  - Each X{feature name} is a case sensitive string.
-  - Each X{feature value} can be a base value (such as a string), a
-    variable, or a nested feature structure.
-
-However, feature structures are not a specialized class; they are represented
-by dictionaries, or more generally by anything that responds to the C{has_key}
-method. The YAML representation can be used to create and display feature
-structures intuitively:
-
->>> f1 = yaml.load('''
-... A:
-...   B: b
-...   D: d
-... ''')
->>> f2 = yaml.load('''
-... A:
-...   C: c
-...   D: d
-... ''')
->>> print show(unify(f1, f2))
-A:
-  B: b
-  C: c
-  D: d
-
-Feature structures are typically used to represent partial information
-about objects.  A feature name that is not mapped to a value stands
-for a feature whose value is unknown (I{not} a feature without a
-value).  Two feature structures that represent (potentially
-overlapping) information about the same object can be combined by
-X{unification}.  When two inconsistant feature structures are unified,
-the unification fails and raises an error.
-
-Features can be specified using X{feature paths}, or tuples of feature names
-that specify paths through the nested feature structures to a value.
-
-Feature structures may contain reentrant feature values.  A
-X{reentrant feature value} is a single feature value that can be
-accessed via multiple feature paths.  Unification preserves the
-reentrance relations imposed by both of the unified feature
-structures.  After unification, any extensions to a reentrant feature
-value will be visible using any of its feature paths.
-
-Feature structure variables are encoded using the L{Variable} class. The scope
-of a variable is determined by the X{bindings} used when the structure
-including that variable is unified. Bindings can be reused between unifications
-to ensure that variables with the same name get the same value.
-
-"""
+# Natural Language Toolkit: Utility functions
+#
+# Copyright (C) 2001-2007 University of Pennsylvania
+# Author: Rob Speer <rspeer@mit.edu>
+#         Ewan Klein <ewan@inf.ed.ac.uk>
+#         Steven Bird <sb@csse.unimelb.edu.au>
+#         Edward Loper <edloper@gradient.cis.upenn.edu>,
+#         
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
 
 from copy import copy, deepcopy
-import re
-import yaml
-#import unittest
-import sys
+import re, yaml, sys, types
+
+class FS(dict):
+    def __init__(self, d=None):
+        if d:
+            dict.__init__(self, d)
+        else:
+            dict.__init__(self)
+        self._bindings = {}
+
+    def unify(self, other):
+        return FS(unify(self, other, self._bindings))
+
+    def unify_update(self, other):
+        dict.__init__(self, unify(self, other))
+
+    def __str__(self):
+        return yaml.dump(self, default_flow_style=False).strip()
+
+    def __repr__(self):
+        return self.__str__()
+
 
 class UnificationFailure(Exception):
     """
     An exception that is raised when two values cannot be unified.
     """
     pass
-
-def makevar(varname):
-    """
-    Given a variable representation such as C{?x}, construct a corresponding
-    Variable object.
-    """
-    return Variable(varname[1:])
-
-def isMapping(obj):
-    """
-    Determine whether to treat a given object as a feature structure. The
-    test is whether it responds to C{has_key}. This can be overridden if the
-    object includes an attribute or method called C{_no_feature}.
-
-    @param obj: The object to be tested
-    @type obj: C{object}
-    @return: True iff the object can be treated as a feature structure
-    @rtype: C{bool}
-    """
-    return isinstance(obj, dict) or isinstance(obj, FeatureI)
-
-class FeatureI(object):
-    def __init__(self):
-        raise TypeError, "FeatureI is an abstract interface"
 
 class _FORWARD(object):
     """
@@ -158,6 +104,7 @@ class Variable(object):
         """
         if isinstance(self._value, Variable): return self._value.value()
         else: return self._value
+
     def copy(self):
         """
         @return: A copy of this variable.
@@ -227,6 +174,7 @@ class Variable(object):
         return other
         
     def __hash__(self): return hash(self._uid)
+
     def __cmp__(self, other):
         """
         Variables are equal if they are the same object or forward to the
@@ -259,41 +207,10 @@ class SubstituteBindingsMixin(SubstituteBindingsI):
             varstr = str(semvar)
             # discard Variables which don't look like FeatureVariables
             if varstr.startswith('?'):
-                var = makevar(varstr)
-                if bindings.has_key(var.name()):
+                var = _make_var(varstr)
+                if var.name() in bindings:
                     newval = newval.replace(semvar, bindings[var.name()])
         return newval
-
-def show(data):
-    """
-    Works like yaml.dump(), but with output suited for doctests. Flow style
-    is always off, and there is no blank line at the end.
-    """
-    return yaml.dump(data, default_flow_style=False).strip()
-
-def object_to_features(obj):
-    if not hasattr(obj, '__dict__'): return obj
-    if str(obj).startswith('?'):
-        return Variable(str(obj)[1:])
-    if isMapping(obj): return obj
-    dict = {}
-    dict['__class__'] = obj.__class__.__name__
-    for (key, value) in obj.__dict__.items():
-        dict[key] = object_to_features(value)
-    return dict
-
-def variable_representer(dumper, var):
-    "Output variables in YAML as ?name."
-    return dumper.represent_scalar(u'!var', u'?%s' % var.name())
-yaml.add_representer(Variable, variable_representer)
-
-def variable_constructor(loader, node):
-    "Recognize variables written as ?name in YAML."
-    value = loader.construct_scalar(node)
-    name = value[1:]
-    return Variable(name)
-yaml.add_constructor(u'!var', variable_constructor)
-yaml.add_implicit_resolver(u'!var', re.compile(r'^\?\w+$'))
 
 def _copy_and_bind(feature, bindings, memo=None):
     """
@@ -302,14 +219,16 @@ def _copy_and_bind(feature, bindings, memo=None):
     values, if these values are already known, and variables with unknown
     values are given placeholder bindings.
     """
-    if memo is None: memo = {}
-    if id(feature) in memo: return memo[id(feature)]
+    if memo is None:
+        memo = {}
+    if id(feature) in memo:
+        return memo[id(feature)]
     if isinstance(feature, Variable) and bindings is not None:
-        if not bindings.has_key(feature.name()):
+        if feature.name() not in bindings:
             bindings[feature.name()] = feature.copy()
         result = _copy_and_bind(bindings[feature.name()], None, memo)
     else:
-        if isMapping(feature):
+        if _is_mapping(feature):
             # Construct a new object of the same class
             result = feature.__class__()
             for (key, value) in feature.items():
@@ -319,7 +238,8 @@ def _copy_and_bind(feature, bindings, memo=None):
                 result = feature.substitute_bindings(bindings).simplify()
             else:
                 result = feature.simplify()
-        else: result = feature
+        else:
+            result = feature
     memo[id(feature)] = result
     memo[id(result)] = result
     return result
@@ -330,291 +250,7 @@ def substitute_bindings(feature, bindings):
     """
     return _copy_and_bind(feature, bindings.copy())
 
-apply = substitute_bindings
-
 def unify(feature1, feature2, bindings1=None, bindings2=None, memo=None, fail=None, trace=0):
-    """
-    In general, the 'unify' procedure takes two values, and either returns a
-    value that provides the information provided by both values, or fails if
-    that is impossible.
-    
-    These values can have any type, but fall into a few general cases:
-      - Values that respond to C{has_key} represent feature structures. The
-        C{unify} procedure will recurse into them and unify their inner values.
-      - L{Variable}s represent an unknown value, and are handled specially.
-        The values assigned to variables are tracked using X{bindings}.
-      - C{None} represents the absence of information.
-      - Any other value is considered a X{base value}. Base values are
-        compared to each other with the == operation.
-
-    The value 'None' represents the absence of any information. It specifies no
-    properties and acts as the identity in unification.
-    >>> unify(3, None)
-    3
-
-    >>> unify(None, 'fish')
-    'fish'
-
-    A base value unifies with itself, but not much else.
-    >>> unify(True, True)
-    True
-
-    >>> unify([1], [1])
-    [1]
-
-    >>> unify('a', 'b')
-    Traceback (most recent call last):
-        ...
-    UnificationFailure
-
-    When two mappings (representing feature structures, and usually implemented
-    as dictionaries) are unified, any chain of keys that accesses a value in
-    either mapping will access an equivalent or more specific value in the
-    unified mapping. If this is not possible, UnificationFailure is raised.
-
-    >>> f1 = dict(A=dict(B='b'))
-    >>> f2 = dict(A=dict(C='c'))
-    >>> unify(f1, f2) == dict(A=dict(B='b', C='c'))
-    True
-    
-    The empty dictionary specifies no features. It unifies with any mapping.
-    >>> unify({}, dict(foo='bar'))
-    {'foo': 'bar'}
-
-    >>> unify({}, True)
-    Traceback (most recent call last):
-        ...
-    UnificationFailure
-    
-    Representing dictionaries in YAML form is useful for making feature
-    structures readable:
-    
-    >>> f1 = yaml.load("number: singular")
-    >>> f2 = yaml.load("person: 3")
-    >>> print show(unify(f1, f2))
-    number: singular
-    person: 3
-
-    >>> f1 = yaml.load('''
-    ... A:
-    ...   B: b
-    ...   D: d
-    ... ''')
-    >>> f2 = yaml.load('''
-    ... A:
-    ...   C: c
-    ...   D: d
-    ... ''')
-    >>> print show(unify(f1, f2))
-    A:
-      B: b
-      C: c
-      D: d
-    
-    Variables are names for unknown values. Variables are assigned values
-    that will make unification succeed. The values of variables can be reused
-    in later unifications if you provide a dictionary of _bindings_ from
-    variables to their values.
-    >>> bindings = {}
-    >>> print unify(Variable('x'), 5, bindings)
-    5
-    
-    >>> print bindings
-    {'x': 5}
-    
-    >>> print unify({'a': Variable('x')}, {}, bindings)
-    {'a': 5}
-    
-    The same variable name can be reused in different binding dictionaries
-    without collision. In some cases, you may want to provide two separate
-    binding dictionaries to C{unify} -- one for each feature structure, so
-    their variables do not collide.
-
-    In the following examples, two different feature structures use the
-    variable ?x to require that two values are equal. The values assigned to
-    ?x are consistent within each structure, but would be inconsistent if every
-    ?x had to have the same value.
-
-    >>> f1 = yaml.load('''
-    ... a: 1
-    ... b: 1
-    ... c: ?x
-    ... d: ?x
-    ... ''')
-    >>> f2 = yaml.load('''
-    ... a: ?x
-    ... b: ?x
-    ... c: 2
-    ... d: 2
-    ... ''')
-    >>> bindings1 = {}
-    >>> bindings2 = {}
-    >>> print show(unify(f1, f2, bindings1, bindings2))
-    a: 1
-    b: 1
-    c: 2
-    d: 2
-    
-    >>> print bindings1
-    {'x': 2}
-    
-    >>> print bindings2
-    {'x': 1}
-
-    Feature structures can involve _reentrant_ values, where multiple feature
-    paths lead to the same value. This is represented by the features having
-    the same Python object as a value. (This kind of identity can be tested
-    using the C{is} operator.)
-    
-    Unification preserves the properties of reentrance. So if a reentrant value
-    is changed by unification, it is changed everywhere it occurs, and it is
-    still reentrant. Reentrant features can even form cycles; these
-    cycles can now be printed through the current YAML library.
-
-    >>> f1 = yaml.load('''
-    ... A: &1                # &1 defines a reference in YAML...
-    ...   B: b
-    ... E:
-    ...   F: *1              # and *1 uses the previously defined reference.
-    ... ''')
-    >>> f1['E']['F']['B']
-    'b'
-    >>> f1['A'] is f1['E']['F']
-    True
-    >>> f2 = yaml.load('''
-    ... A:
-    ...   C: c
-    ... E:
-    ...   F:
-    ...     D: d
-    ... ''')
-    >>> f3 = unify(f1, f2)
-    >>> print show(f3)
-    A: &id001
-      B: b
-      C: c
-      D: d
-    E:
-      F: *id001
-    >>> f3['A'] is f3['E']['F']    # Showing that the reentrance still holds.
-    True
-    
-    This unification creates a cycle:
-    >>> f1 = yaml.load('''
-    ... F: &1 {}
-    ... G: *1
-    ... ''')
-    >>> f2 = yaml.load('''
-    ... F:
-    ...   H: &2 {}
-    ... G: *2
-    ... ''')
-    >>> f3 = unify(f1, f2)
-    >>> print f3
-    {'G': {'H': {...}}, 'F': {'H': {...}}}
-    >>> print f3['F'] is f3['G']
-    True
-    >>> print f3['F'] is f3['G']['H']
-    True
-    >>> print f3['F'] is f3['G']['H']['H']
-    True
-
-    A cycle can also be created using variables instead of reentrance.
-    Here we supply a single set of bindings, so that it is used on both sides
-    of the unification, making ?x mean the same thing in both feature
-    structures.
-    
-    >>> f1 = yaml.load('''
-    ... F:
-    ...   H: ?x
-    ... ''')
-    >>> f2 = yaml.load('''
-    ... F: ?x
-    ... ''')
-    >>> f3 = unify(f1, f2, {})
-    >>> print f3
-    {'F': {'H': {...}}}
-    >>> print f3['F'] is f3['F']['H']
-    True
-    >>> print f3['F'] is f3['F']['H']['H']
-    True
-
-    Two sets of bindings can be provided because the variable names on each
-    side of the unification may be unrelated. An example involves unifying the
-    following two structures, which each require that two values are
-    equivalent, and happen to both use ?x to express that requirement.
-
-    >>> f1 = yaml.load('''
-    ... a: 1
-    ... b: 1
-    ... c: ?x
-    ... d: ?x
-    ... ''')
-    >>> f2 = yaml.load('''
-    ... a: ?x
-    ... b: ?x
-    ... c: 2
-    ... d: 2
-    ... ''')
-    >>> bindings1 = {}
-    >>> bindings2 = {}
-    >>> # We could avoid defining two empty dictionaries by simply using the
-    >>> # defaults, with unify(f1, f2) -- but we want to be able to examine
-    >>> # the bindings afterward.
-    >>> print show(unify(f1, f2, bindings1, bindings2))
-    a: 1
-    b: 1
-    c: 2
-    d: 2
-    >>> print bindings1
-    {'x': 2}
-    >>> print bindings2
-    {'x': 1}
-
-    If a variable is unified with another variable, the two variables are
-    _aliased_ to each other; they share the same value, similarly to reentrant
-    feature structures. This is represented in a set of bindings as one
-    variable having the other as its value.
-    >>> f1 = yaml.load('''
-    ... a: ?x
-    ... b: ?x
-    ... ''')
-    >>> f2 = yaml.load('''
-    ... b: ?y
-    ... c: ?y
-    ... ''')
-    >>> bindings = {}
-    >>> print show(unify(f1, f2, bindings))
-    a: &id001 ?y
-    b: *id001
-    c: *id001
-    >>> print bindings
-    {'x': ?y}
-
-    Reusing the same variable bindings ensures that appropriate bindings are
-    made after the fact:
-    >>> bindings = {}
-    >>> f1 = {'a': Variable('x')}
-    >>> f2 = unify(f1, {'a': {}}, bindings)
-    >>> f3 = unify(f2, {'b': Variable('x')}, bindings)
-    >>> print show(f3)
-    a: &id001 {}
-    b: *id001
-    >>> print bindings
-    {'x': {}}
-
-    @param feature1: The first object to be unified.
-    @type feature1: C{object} (probably a mapping)
-    @param feature2: The second object to be unified.
-    @type feature2: C{object} (probably a mapping)
-    @param bindings1: The variable bindings associated with the first object.
-    @type bindings1: C{dict} or None
-    @param bindings2: The variable bindings associated with the second object,
-      if these are distinct from C{bindings1}.
-    @type bindings2: C{dict} or None
-    @return: The result of unifying the two objects.
-    @rtype: C{object} (probably a mapping)
-    """
     if fail is None:
         def failerror(f1, f2):
             raise UnificationFailure
@@ -624,12 +260,14 @@ def unify(feature1, feature2, bindings1=None, bindings2=None, memo=None, fail=No
         bindings1 = {}
         bindings2 = {}
     else:
-        if bindings1 is None: bindings1 = {}
-        if bindings2 is None: bindings2 = bindings1
+        if bindings1 is None:
+            bindings1 = {}
+        if bindings2 is None:
+            bindings2 = bindings1
 
     if memo is None: memo = {}
     copymemo = {}
-    if memo.has_key((id(feature1), id(feature2))):
+    if (id(feature1), id(feature2)) in memo:
         result = memo[id(feature1), id(feature2)]
         if result is UnificationFailure:
             if trace > 2:
@@ -644,10 +282,10 @@ def unify(feature1, feature2, bindings1=None, bindings2=None, memo=None, fail=No
         print 'Unifying: %r + %r --> ' % (feature1, feature2),
     
     # Make copies of the two structures (since the unification algorithm is
-    # destructive). Use the same memo, to preserve reentrance links between
-    # them.
+    # destructive). Use the same memo, to preserve reentrance links between them.
     copy1 = _copy_and_bind(feature1, bindings1, copymemo)
     copy2 = _copy_and_bind(feature2, bindings2, copymemo)
+
     # Preserve links between bound variables and the two feature structures.
     for b in (bindings1, bindings2):
         for (vname, value) in b.items():
@@ -691,10 +329,9 @@ depth=0):
     """
     if depth > 50:
         print "Infinite recursion in this unification:"
-        print show(dict(feature1=feature1, feature2=feature2,
-        bindings1=bindings1, bindings2=bindings2, memo=memo))
+        print dict(feature1=feature1, feature2=feature2, bindings1=bindings1, bindings2=bindings2, memo=memo)
         raise ValueError, "Infinite recursion in unification"
-    if memo.has_key((id(feature1), id(feature2))):
+    if (id(feature1), id(feature2)) in memo:
         result = memo[id(feature1), id(feature2)]
         if result is UnificationFailure: raise result()
     unified = _do_unify(feature1, feature2, bindings1, bindings2, memo, fail,
@@ -727,23 +364,25 @@ def _do_unify(feature1, feature2, bindings1, bindings2, memo, fail, depth=0):
     
     # If it's not a mapping or variable, it's a base object, so we just
     # compare for equality.
-    if not isMapping(feature1):
+    if not _is_mapping(feature1):
         if feature1 == feature2: return feature1
         else: 
             return fail(feature1, feature2)
-    if not isMapping(feature2):
+    if not _is_mapping(feature2):
         return fail(feature1, feature2)
     
     # At this point, we know they're both mappings.
     # Do the destructive part of unification.
 
-    while feature2.has_key(_FORWARD): feature2 = feature2[_FORWARD]
-    if feature1 is not feature2: feature2[_FORWARD] = feature1
+    while _FORWARD in feature2:
+        feature2 = feature2[_FORWARD]
+    if feature1 is not feature2:
+        feature2[_FORWARD] = feature1
     for (fname, val2) in feature2.items():
-        if fname == _FORWARD: continue
+        if fname == _FORWARD:
+            continue
         val1 = feature1.get(fname)
-        feature1[fname] = _destructively_unify(val1, val2, bindings1,
-        bindings2, memo, fail, depth+1)
+        feature1[fname] = _destructively_unify(val1, val2, bindings1, bindings2, memo, fail, depth+1)
     return feature1
 
 def _apply_forwards(feature, visited):
@@ -751,13 +390,15 @@ def _apply_forwards(feature, visited):
     Replace any feature structure that has a forward pointer with
     the target of its forward pointer (to preserve reentrance).
     """
-    if not isMapping(feature): return
-    if visited.has_key(id(feature)): return
+    if not _is_mapping(feature):
+        return
+    if id(feature) in visited:
+        return
     visited[id(feature)] = True
 
     for fname, fval in feature.items():
-        if isMapping(fval):
-            while fval.has_key(_FORWARD):
+        if _is_mapping(fval):
+            while _FORWARD in fval:
                 fval = fval[_FORWARD]
                 feature[fname] = fval
             _apply_forwards(fval, visited)
@@ -788,17 +429,19 @@ def _lookup_values(mapping, visited, remove=False):
             return var.value()
         else:
             return var.forwarded_self()
-    if not isMapping(mapping): return mapping
-    if visited.has_key(id(mapping)): return mapping
+    if not _is_mapping(mapping):
+        return mapping
+    if id(mapping) in visited:
+        return mapping
     visited[id(mapping)] = True
 
     for fname, fval in mapping.items():
-        if isMapping(fval):
+        if _is_mapping(fval):
             _lookup_values(fval, visited)
         elif isinstance(fval, Variable):
             if fval.value() is not None:
                 mapping[fname] = fval.value()
-                if isMapping(mapping[fname]):
+                if _is_mapping(mapping[fname]):
                     _lookup_values(mapping[fname], visited)
             else:
                 newval = fval.forwarded_self()
@@ -814,16 +457,143 @@ def _apply_forwards_to_bindings(bindings):
     identities.
     """
     for (key, value) in bindings.items():
-        if isMapping(value) and value.has_key(_FORWARD):
-            while value.has_key(_FORWARD):
+        if _is_mapping(value) and _FORWARD in value:
+            while _FORWARD in value:
                 value = value[_FORWARD]
             bindings[key] = value
 
-def test():
-    "Run unit tests on unification."
-    import doctest
-    doctest.testmod()
+def _make_var(varname):
+    """
+    Given a variable representation such as C{?x}, construct a corresponding
+    Variable object.
+    """
+    return Variable(varname[1:])
+
+def _is_mapping(obj):
+    return hasattr(obj, 'has_key')
+
+#################################################################################
+# STRING I/O
+#################################################################################
+
+def variable_representer(dumper, var):
+    "Output variables in YAML as ?name."
+    return dumper.represent_scalar(u'!var', u'?%s' % var.name())
+yaml.add_representer(Variable, variable_representer)
+
+def variable_constructor(loader, node):
+    "Recognize variables written as ?name in YAML."
+    value = loader.construct_scalar(node)
+    name = value[1:]
+    return Variable(name)
+yaml.add_constructor(u'!var', variable_constructor)
+yaml.add_implicit_resolver(u'!var', re.compile(r'^\?\w+$'))
+
+def parse(s):
+    return FS(yaml.load(s))
+
+#################################################################################
+# DEMO CODE
+#################################################################################
+
+def demo():
+    s1 = '''
+    A:
+      B: b
+      D: d
+    '''
+    s2 = '''
+    A:
+      B: b
+      C: c
+    '''
+    fs1 = parse(s1)
+    fs2 = parse(s2)
+    print fs1
+    print fs2
+    print fs1.unify(fs2)
+
+    print "Atomic unification:"
+    print unify(3, None)
+    print unify(None, 'fish')
+    print unify(True, True)
+    print unify([1], [1])
+    #print unify('a', 'b')
+
+    print "FS unification:"
+    f1 = FS(dict(A=dict(B='b')))
+    f2 = FS(dict(A=dict(C='c')))
+    print unify(f1, f2) == FS(dict(A=dict(B='b', C='c')))
+
+    print "Unify update (cf set.intersection_update):"
+    f1 = FS(dict(A=dict(B='b')))
+    f2 = FS(dict(A=dict(C='c')))
+    f1.unify_update(f2)
+    print f1
+
+    print unify({}, dict(foo='bar'))
+
+    print "Bindings:"
+
+    bindings = {}
+    print unify(Variable('x'), 5, bindings), bindings
+    
+    print unify({'a': Variable('x')}, {}, bindings)
+
+    fs1 = parse('''
+    a: 1
+    b: 1
+    c: ?x
+    d: ?x
+    ''')
+    fs2 = parse('''
+    a: ?x
+    b: ?x
+    c: 2
+    d: 2
+    ''')
+    bindings1 = {}
+    bindings2 = {}
+    print unify(fs1, fs2, bindings1, bindings2)
+    print bindings1, bindings2
+
+    print "Re-entrancy:"
+
+    fs1 = parse('''
+    A: &1                # &1 defines a reference in YAML...
+      B: b
+    E:
+      F: *1              # and *1 uses the previously defined reference.
+    ''')
+    print fs1['E']['F']['B']
+    print fs1['A'] is fs1['E']['F']
+    fs2 = parse('''
+    A:
+      C: c
+    E:
+      F:
+        D: d
+    ''')
+    fs3 = unify(fs1, fs2)
+    print fs3
+    print fs3['A'] is fs3['E']['F']    # Showing that the reentrance still holds.
+
+    print "Cycles:"
+    fs1 = parse('''
+    F: &1 {}
+    G: *1
+    ''')
+    fs2 = parse('''
+    F:
+      H: &2 {}
+    G: *2
+    ''')
+    fs3 = unify(fs1, fs2)
+    print fs3
+    print fs3['F'] is fs3['G']
+    print fs3['F'] is fs3['G']['H']
+    print fs3['F'] is fs3['G']['H']['H']
 
 if __name__ == "__main__":
-    test()
+    demo()
 
