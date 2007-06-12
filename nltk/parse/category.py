@@ -10,15 +10,12 @@
 #
 # $Id$
 
-# from nltk.semantics import *
 from nltk.semantics.logic import LogicParser, ApplicationExpression
-#from nltk.semantics.logic import 
-from nltk.cfg import *
-from nltk.parse.featurelite import *
-from nltk.parse import *
+from nltk import cfg
+from featurelite import *
+from api import *
 import filebroker
 
-#from featurelite import *
 from copy import deepcopy
 import yaml
 # import nltk.yamltags
@@ -30,7 +27,7 @@ def makevar(varname):
     """
     return Variable(varname[1:])
 
-class Category(Nonterminal, FeatureI):
+class Category(cfg.Nonterminal, FeatureI):
     """
     A C{Category} is a wrapper for feature dictionaries, intended for use in
     parsing. It can act as a C{Nonterminal}.
@@ -487,7 +484,7 @@ class Category(Nonterminal, FeatureI):
                 if isinstance(val, Category): val.freeze()
                 rhs.append(val)
                 position = _PARSE_RE['whitespace'].match(s, position).end()
-            rules.append(Production(lhs, rhs))
+            rules.append(cfg.Production(lhs, rhs))
             
             if position < len(s):
                 match = _PARSE_RE['disjunct'].match(s, position)
@@ -495,7 +492,7 @@ class Category(Nonterminal, FeatureI):
         
         # Special case: if there's nothing after the arrow, it is one rule with
         # an empty RHS, instead of no rules.
-        if len(rules) == 0: rules = [Production(lhs, ())]
+        if len(rules) == 0: rules = [cfg.Production(lhs, ())]
         return rules
 
 class GrammarCategory(Category):
