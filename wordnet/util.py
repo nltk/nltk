@@ -7,9 +7,8 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-import os, string
+import os, string, types
 from nltk.corpora import get_basedir
-from types import IntType, StringType
 
 ANTONYM = 'antonym'
 HYPERNYM = 'hypernym'
@@ -182,7 +181,6 @@ def dataFilePathname(filenameroot):
 
     if os.name in ('dos', 'nt'):
         path = os.path.join(get_basedir(), "wordnet", filenameroot + ".dat")
-
         if os.path.exists(path):
             return path
 
@@ -214,30 +212,24 @@ def binarySearchFile(file, key, cache={}, cacheDepth=-1):
 
         else:
             file.seek(max(0, middle - 1))
-
             if middle > 0:
                 file.readline()
-
             offset, line = file.tell(), file.readline()
-
             if currentDepth < cacheDepth:
                 cache[middle] = (offset, line)
 
         if offset > end:
             assert end != middle - 1, "infinite loop"
             end = middle - 1
-
         elif line[:keylen] == key:
             return line
-
         elif line > key:
             assert end != middle - 1, "infinite loop"
             end = middle - 1
-
         elif line < key:
             start = offset + len(line) - 1
 
-        currentDepth = currentDepth + 1
+        currentDepth += 1
         thisState = start, end
 
         if lastState == thisState:
@@ -293,13 +285,11 @@ class IndexFile(object):
         """
         self.file.seek(0)
 
-        while 1:
+        while True:
             offset = self.file.tell()
             line = self.file.readline()
-
             if (line[0] != ' '):
                 break
-
         self.nextIndex = 0
         self.nextOffset = offset
     
@@ -307,53 +297,36 @@ class IndexFile(object):
         return 1
     
     def __len__(self):
-
         if hasattr(self, 'indexCache'):
             return len(self.indexCache)
-
         self.rewind()
         lines = 0
-
-        while 1:
+        while True:
             line = self.file.readline()
-
             if line == "":
                 break
-
-            lines = lines + 1
-
+            lines += 1
         return lines
     
-    def __nonzero__(self):
-        return 1
-    
     def __getitem__(self, index):
-
-        if isinstance(index, StringType):
-
+        if type(index) in types.StringTypes:
             if hasattr(self, 'indexCache'):
                 return self.indexCache[index]
 
             return binarySearchFile(self.file, index, self.offsetLineCache, 8)
 
-        elif isinstance(index, IntType):
-
+        elif type(index) == types.IntType:
             if hasattr(self, 'indexCache'):
                 return self.get(self.keys[index])
-
             if index < self.nextIndex:
                 self.rewind()
-
             while self.nextIndex <= index:
                 self.file.seek(self.nextOffset)
                 line = self.file.readline()
-
                 if line == "":
                     raise IndexError, "index out of range"
-
-                self.nextIndex = self.nextIndex + 1
+                self.nextIndex += 1
                 self.nextOffset = self.file.tell()
-
             return line
 
         else: raise TypeError, "%s is not a String or Int" % `index`
@@ -366,7 +339,6 @@ class IndexFile(object):
         """
         try:
             return self[key]
-
         except LookupError:
             return default
     
@@ -379,19 +351,14 @@ class IndexFile(object):
             keys = self.indexCache.keys()
             keys.sort()
             return keys
-
         else:
             keys = []
             self.rewind()
-
-            while 1:
+            while True:
                 line = self.file.readline()
-
                 if not line: break
-
                 key = line.split(' ', 1)[0]
                 keys.append(key.replace('_', ' '))
-
             return keys
     
     def has_key(self, key):
@@ -420,7 +387,7 @@ class IndexFile(object):
             self.rewind()
             count = 0
 
-            while 1:
+            while True:
                 offset, line = self.file.tell(), self.file.readline()
                 if not line: break
                 key = line[:string.find(line, ' ')]
@@ -429,7 +396,7 @@ class IndexFile(object):
                     import sys
                     sys.stdout.flush()
                 indexCache[key] = line
-                count = count + 1
+                count += 1
             indexCache.close()
             os.rename(tempname, self.shelfname)
 
