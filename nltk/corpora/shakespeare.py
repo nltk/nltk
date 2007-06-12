@@ -14,7 +14,7 @@ Marked up in XML by Jon Bosak, CSS stylesheet by Ajay Juneja.
 """       
 
 import os
-from nltk.corpora import get_basedir
+from util import *
 from nltk.etree import ElementTree
 
 items = ['a_and_c',  # Antony and Cleopatra

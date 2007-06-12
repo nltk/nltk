@@ -7,8 +7,7 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from pos import *
-from nltk.wordnet import *
+from util import *
 
 # Lexname class
 

@@ -15,7 +15,7 @@ Module for reading, writing and manipulating Toolbox databases.
 """
 
 import os, re
-from nltk.corpora import get_basedir
+from util import *
 from string import split
 from itertools import imap
 from StringIO import StringIO

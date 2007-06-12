@@ -11,7 +11,7 @@ Paice, Chris D. "Another Stemmer." ACM SIGIR Forum 24.3 (1990): 56-61.
 """
 
 import re
-from nltk.stem import *
+from api import *
 
 class Lancaster(StemI):
 

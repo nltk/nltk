@@ -5,7 +5,7 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk.chat import Chat, reflections, converse
+from util import *
 
 """
 Tsu bot responds to all queries with a Sun Tsu sayings
@@ -98,16 +98,18 @@ pairs = (
     ""))
 )
 
+suntsu_chatbot = Chat(pairs, reflections)
 
-suntsu = Chat(pairs, reflections)
-
-def demo():
+def suntsu_chat():
     print "Talk to the program by typing in plain English, using normal upper-"
     print 'and lower-case letters and punctuation.  Enter "quit" when done.'
     print '='*72
     print "You seek enlightenment?"
 
-    converse(suntsu)
+    suntsu_chatbot.converse()
+
+def demo():
+    suntsu_chat()
 
 if __name__ == "__main__":
     demo()

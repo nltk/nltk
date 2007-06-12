@@ -11,7 +11,7 @@ C-Span Inaugural Address Corpus
 US presidential inaugural addresses 1789-2005
 """       
 
-from nltk.corpora import get_basedir
+from util import *
 from nltk import tokenize
 import os, re
 

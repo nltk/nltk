@@ -5,8 +5,7 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from re import *
-from nltk.chat import *
+from util import *
 
 pairs = (
     (r'We (.*)',
@@ -75,13 +74,17 @@ pairs = (
         "Change the subject before I die of fatal boredom."))
 )
 
-rude = Chat(pairs, reflections) 
+rude_chatbot = Chat(pairs, reflections) 
 
-def demo():    
+def rude_chat():
     print "Unpleasant Chatbot (type 'quit' to exit)."
     print '='*72
     print "I suppose I should say hello."
-    converse(rude)
+
+    rude.converse()
+
+def demo():
+    rude_chat()
 
 if __name__ == "__main__":
     demo()

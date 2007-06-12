@@ -117,7 +117,7 @@ The 4 functions are as follows.
 
 """       
 
-from nltk.corpora import get_basedir
+from util import *
 from nltk import tokenize
 from itertools import islice
 import sys, os, re

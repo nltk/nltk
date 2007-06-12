@@ -11,7 +11,7 @@
 Read Named Entity tagged data as chunk structures from the CONLL-2002 Corpus
 """       
 
-from nltk.corpora import get_basedir
+from util import *
 from nltk import tokenize, chunk
 from nltk import tree
 import os

@@ -22,7 +22,7 @@ This corpus contains selected texts from Project Gutenberg:
 * Walt Whitman
 """       
 
-from nltk.corpora import get_basedir
+from util import *
 from nltk import tokenize
 import os, re
 

@@ -6,7 +6,8 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk.chunk import *
+from api import *
+from util import *
 from nltk.parse import AbstractParse
 
 class RegexpChunkRule(object):

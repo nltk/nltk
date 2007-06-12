@@ -65,4 +65,4 @@ from yamltags import *
 
 # core packages
 
-import cfg, chat, chunk, cluster, corpora, draw, parse, semantics, stem, tag, tokenize, wordnet
+import cfg, chat, chunk, cluster, corpora, draw, fs, parse, semantics, stem, tag, tokenize, wordnet

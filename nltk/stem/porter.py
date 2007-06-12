@@ -82,7 +82,7 @@ import string
 
 ## --NLTK--
 ## Import the nltk.stemmer module, which defines the stemmer interface
-from nltk.stem import *
+from api import *
 
 class Porter(StemI):
 

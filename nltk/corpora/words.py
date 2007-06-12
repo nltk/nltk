@@ -10,7 +10,7 @@
 Read tokens from the Wordlist Corpus.
 """       
 
-from nltk.corpora import get_basedir
+from util import *
 import os
 
 items = ['en']

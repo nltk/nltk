@@ -6,7 +6,9 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk.cluster import *
+from api import *
+from util import *
+import numpy
 
 class GroupAverageAgglomerative(VectorSpace):
     """
@@ -30,7 +32,7 @@ class GroupAverageAgglomerative(VectorSpace):
     def cluster(self, vectors, assign_clusters=False, trace=False):
         # stores the merge order
         self._dendogram = Dendogram(
-            [array(vector, numpy.float64) for vector in vectors])
+            [numpy.array(vector, numpy.float64) for vector in vectors])
         return VectorSpace.cluster(self, vectors, assign_clusters, trace)
 
     def cluster_vectorspace(self, vectors, trace=False):
@@ -74,7 +76,7 @@ class GroupAverageAgglomerative(VectorSpace):
             if self._should_normalise:
                 centroid = self._normalise(cluster[0])
             else:
-                centroid = array(cluster[0])
+                centroid = numpy.array(cluster[0])
             for vector in cluster[1:]:
                 if self._should_normalise:
                     centroid += self._normalise(vector)
@@ -119,7 +121,7 @@ def demo():
     from nltk import cluster
 
     # use a set of tokens with 2D indices
-    vectors = [array(f) for f in [[3, 3], [1, 2], [4, 2], [4, 0], [2, 3], [3, 1]]]
+    vectors = [numpy.array(f) for f in [[3, 3], [1, 2], [4, 2], [4, 0], [2, 3], [3, 1]]]
     
     # test the GAAC clusterer with 4 clusters
     clusterer = cluster.GroupAverageAgglomerative(4)
@@ -134,7 +136,7 @@ def demo():
     clusterer.dendogram().show()
 
     # classify a new vector
-    vector = array([3, 3])
+    vector = numpy.array([3, 3])
     print 'classify(%s):' % vector,
     print clusterer.classify(vector)
     print

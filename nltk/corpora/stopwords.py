@@ -10,7 +10,7 @@
 Read tokens from the Stopwords Corpus.
 """       
 
-from nltk.corpora import get_basedir
+from util import *
 import os
 
 items = ['danish', 'dutch', 'english', 'french', 'german', 'italian',

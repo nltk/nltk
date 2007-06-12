@@ -38,7 +38,7 @@ The PP Attachment Corpus is distributed with NLTK with the permission
 of the author.
 """       
 
-from nltk.corpora import get_basedir
+from util import *
 from nltk import tokenize
 from nltk.tag import string2tags, string2words
 import os

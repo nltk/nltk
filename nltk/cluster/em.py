@@ -6,7 +6,9 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk.cluster import *
+from api import *
+from util import *
+import numpy
 
 class EM(VectorSpace):
     """
@@ -49,7 +51,7 @@ class EM(VectorSpace):
         @type   svd_dimensions: int 
         """
         VectorSpace.__init__(self, normalise, svd_dimensions)
-        self._means = array(initial_means, numpy.float64)
+        self._means = numpy.array(initial_means, numpy.float64)
         self._num_clusters = len(initial_means)
         self._conv_threshold = conv_threshold
         self._covariance_matrices = covariance_matrices
@@ -138,8 +140,8 @@ class EM(VectorSpace):
         assert cvm.shape == (m, m), \
             'bad sized covariance matrix, %s' % str(cvm.shape)
         try:
-            det = linalg.det(cvm)
-            inv = linalg.inv(cvm)
+            det = numpy.linalg.det(cvm)
+            inv = numpy.linalg.inv(cvm)
             a = det ** -0.5 * (2 * numpy.pi) ** (-m / 2.0) 
             dx = x - mean
             print dx, inv
@@ -163,21 +165,6 @@ class EM(VectorSpace):
     def __repr__(self):
         return '<EM Clusterer means=%s>' % list(self._means)
 
-def euclidean_distance(u, v):
-    """
-    Returns the euclidean distance between vectors u and v. This is equivalent
-    to the length of the vector (u - v).
-    """
-    diff = u - v
-    return math.sqrt(numpy.dot(diff, diff))
-
-def cosine_distance(u, v):
-    """
-    Returns the cosine of the angle between vectors v and u. This is equal to
-    u.v / |u||v|.
-    """
-    return numpy.dot(u, v) / (math.sqrt(numpy.dot(u, u)) * math.sqrt(numpy.dot(v, v)))
-
 def demo():
     """
     Non-interactive demonstration of the clusterers with simple 2-D data.
@@ -187,7 +174,7 @@ def demo():
 
     # example from figure 14.10, page 519, Manning and Schutze
 
-    vectors = [array(f) for f in [[0.5, 0.5], [1.5, 0.5], [1, 3]]]
+    vectors = [numpy.array(f) for f in [[0.5, 0.5], [1.5, 0.5], [1, 3]]]
     means = [[4, 2], [4, 2.01]]
 
     clusterer = cluster.EM(means, bias=0.1)
@@ -205,12 +192,12 @@ def demo():
         print
 
     # classify a new vector
-    vector = array([2, 2])
+    vector = numpy.array([2, 2])
     print 'classify(%s):' % vector,
     print clusterer.classify(vector)
 
     # show the classification probabilities
-    vector = array([2, 2])
+    vector = numpy.array([2, 2])
     print 'classification_probdist(%s):' % vector
     pdist = clusterer.classification_probdist(vector)
     for sample in pdist.samples():
@@ -221,7 +208,7 @@ def demo():
 #     The following demo code is broken.
 #
 #     # use a set of tokens with 2D indices
-#     vectors = [array(f) for f in [[3, 3], [1, 2], [4, 2], [4, 0], [2, 3], [3, 1]]]
+#     vectors = [numpy.array(f) for f in [[3, 3], [1, 2], [4, 2], [4, 0], [2, 3], [3, 1]]]
     
 #     # test the EM clusterer with means given by k-means (2) and
 #     # dimensionality reduction
@@ -240,13 +227,13 @@ def demo():
 #     print
 
 #     # classify a new vector
-#     vector = array([3, 3])
+#     vector = numpy.array([3, 3])
 #     print 'classify(%s):' % vector,
 #     print clusterer.classify(vector)
 #     print
 
 #     # show the classification probabilities
-#     vector = array([2.2, 2])
+#     vector = numpy.array([2.2, 2])
 #     print 'classification_probdist(%s)' % vector
 #     pdist = clusterer.classification_probdist(vector)
 #     for sample in pdist.samples():

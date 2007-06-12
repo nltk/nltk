@@ -21,7 +21,7 @@ singles: Singles ads  http://search.classifieds.news.com.au/
 
 """       
 
-from nltk.corpora import get_basedir
+from util import *
 from nltk import tokenize
 import os, re
 

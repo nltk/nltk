@@ -7,7 +7,8 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk.stem import *
+from api import *
+import re
 
 class Regexp(StemI):
     """

@@ -13,13 +13,14 @@ synset tag.  This task, which is known as X{tagging}, is defined by
 the L{TagI} interface.
 """
 
-from nltk.probability import FreqDist, ConditionalFreqDist
+from nltk import FreqDist, ConditionalFreqDist
 
 ##############################################################
 # UNIGRAM TAGGERS: only use information about the current word
 ##############################################################
 
-from nltk.tag import *
+from api import *
+from util import *
 import re
 
 class Unigram(SequentialBackoff):
