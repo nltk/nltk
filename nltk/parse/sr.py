@@ -6,10 +6,9 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from types import *
 from nltk import tokenize, cfg
-from nltk.tree import *
-from nltk.parse import *
+from nltk.tree import Tree
+from api import *
 import string
 
 ##//////////////////////////////////////////////////////
@@ -75,12 +74,12 @@ class ShiftReduce(AbstractParse):
         self._check_grammar()
 
     def get_parse(self, tokens):
-        
+
+        tokens = list(tokens)        
         self._check_coverage(tokens)
 
         # initialize the stack.
         stack = []
-        tokens = list(tokens)
         remaining_text = tokens
         
         # Trace output.
@@ -436,9 +435,9 @@ def demo():
     A demonstration of the shift-reduce parser.
     """
 
-    from nltk import parse
+    from nltk import parse, cfg
 
-    grammar = parse.cfg.parse_cfg("""
+    grammar = cfg.parse_cfg("""
     S -> NP VP
     NP -> Det N | Det N PP
     VP -> V NP | V NP PP
@@ -452,8 +451,7 @@ def demo():
 
     sent = tokenize.whitespace('I saw a man in the park')
 
-    parser = parse.ShiftReduce(grammar)
-    parser.trace()
+    parser = parse.ShiftReduce(grammar, trace=2)
     for p in parser.get_parse_list(sent):
         print p
 
