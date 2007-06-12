@@ -5,7 +5,8 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk.wordnet import *
+from util import *
+from dictionary import *
 from textwrap import TextWrapper
 from string import join
 from random import randint
@@ -77,23 +78,58 @@ def browse(word="", index=0):
             input = raw_input(synsets[index][0] + "_" + `index` + "/" + `len(synsets)` + "> ")
         else:
             input = raw_input("> ")  # safety net
-        if input[0] == '"' and input[-1] == '"':
-            D, synsets = _new_word(input[1:-1])
+
+        # word lookup
+        if (input[0] == '"' and input[-1] == '"') or (input[0] == "'" and input[-1] == "'"):
+            word = input[1:-1]
+            D, synsets = _new_word(word)
             index = 0
+
+        # sense selection
         elif input[0] in "0123456789":
             if int(input) < len(synsets):
                 index = int(input)
                 print_gloss(synsets, index)
             else:
                 print "There are %d synsets" % len(synsets)
+
+        # more info
         elif input[0] is "a":
             print_all(synsets)
         elif input[0] is "g":
             print_gloss(synsets, index)
         elif input[0] is "v":
             print_all_glosses(synsets)
-        elif input[0] is "h":
-            help()
+        elif input[0] is "s":
+            print "Synonyms:", join(word for word in synsets[index])
+
+        # choose part-of-speech
+        elif input[0] in "N": # nouns
+            if word in N:
+                D = N
+                synsets = D[word]
+            else:
+                print "No noun sense found"
+        elif input[0] is "V": # verbs
+            if word in V:
+                D = V
+                synsets = D[word]
+            else:
+                print "No verb sense found"
+        elif input[0] is "J": # adjectives
+            if word in ADJ:
+                D = ADJ
+                synsets = D[word]
+            else:
+                print "No adjective sense found"
+        elif input[0] is "R": # adverbs
+            if word in ADV:
+                D = ADV
+                synsets = D[word]
+            else:
+                print "No adverb sense found"
+
+        # navigation
         elif input[0] is "r":
             synsets = _random_synset(D)
         elif input[0] is "u":
@@ -114,27 +150,14 @@ def browse(word="", index=0):
                 index = 0
             except IndexError:
                 print "Cannot go down"
-        elif input[0] is "s":
-            print "Synonyms:", join(word for word in synsets[index])
-        elif input[0] in "N": # nouns
-            if word in N:
-                D = N
-                synsets = D[word]
-        elif input[0] is "V": # verbs
-            if word in V:
-                D = V
-                synsets = D[word]
-        elif input[0] is "J": # adjectives
-            if word in ADJ:
-                D = ADJ
-                synsets = D[word]
-        elif input[0] is "R": # adverbs
-            if word in ADV:
-                D = ADV
-                synsets = D[word]
+
+        # miscellany
+        elif input[0] is "h":
+            help()
         elif input[0] is "q":
             print "Goodbye"
             break
+
         else:
             print "Unrecognised command, type 'h' for help"
             

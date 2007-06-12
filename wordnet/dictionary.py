@@ -63,7 +63,7 @@ class Dictionary(object):
         pos = self.pos
 
         def loader(key=key, line=line, indexFile=self.indexFile):
-            from wordnet import Word
+            from synset import Word
             line = line or indexFile.get(key)
             return line and Word(line)
 
@@ -82,7 +82,7 @@ class Dictionary(object):
         """
 
         def loader(pos=self.pos, offset=offset, dataFile=self.dataFile):
-            from wordnet import Synset
+            from synset import Synset
             dataFile.seek(offset)
             line = dataFile.readline()
             return Synset(pos, offset, line)
