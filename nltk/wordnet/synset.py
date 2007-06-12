@@ -641,14 +641,14 @@ def _equalsIgnoreCase(a, b):
 
 
 def demo():
-    from nltk.wordnet import N, V, ADJ, ADV, HYPERNYM
+    from nltk import wordnet
     from pprint import pprint
     
-    dog = N['dog']
-    cat = N['cat']
+    dog = wordnet.N['dog']
+    cat = wordnet.N['cat']
 
-    print "N['dog']"
-    print 'dog' in N
+    print "wordnet.N['dog']"
+    print 'dog' in wordnet.N
     print dog
     print dog.pos, dog.form
     print dog.taggedSenseCount
@@ -659,15 +659,15 @@ def demo():
     # N['dog'] < V['dog']
 
     print "Verb Frames:",
-    print V['think'][0].verbFrameStrings
+    print wordnet.V['think'][0].verbFrameStrings
 
     print "Relations:"
     print dog[0].relations()
-    print dog[0].relation(HYPERNYM)
+    print dog[0][wordnet.HYPERNYM]
 
     print "Glosses:"
     print dog[0].gloss
-    print dog[0].relation(HYPERNYM)[0].gloss
+    print dog[0].relation(wordnet.HYPERNYM)[0].gloss
 
     print
     print "Paths and Distances:"
@@ -681,22 +681,22 @@ def demo():
     print "Closures and Trees:"
     print
     
-    print ADJ['red'][0].closure(SIMILAR, depth=1)
-    print ADJ['red'][0].closure(SIMILAR, depth=2)
-    pprint(dog[0].tree(HYPERNYM))
+    print wordnet.ADJ['red'][0].closure(wordnet.SIMILAR, depth=1)
+    print wordnet.ADJ['red'][0].closure(wordnet.SIMILAR, depth=2)
+    pprint(dog[0].tree(wordnet.HYPERNYM))
     
     # Adjectives that are transitively SIMILAR to any of the senses of 'red'
     #flatten1(map(lambda sense:closure(sense, SIMILAR), ADJ['red']))    # too verbose
 
     print "All the words in the hyponym synsets of dog[0]"
-    print [word for synset in dog[0][HYPONYM] for word in synset]
+    print [word for synset in dog[0][wordnet.HYPONYM] for word in synset]
 
     print "Hyponyms of the first (and only) sense of 'animal' that are homophonous with verbs:"
-    print [word for synset in N['animal'][0].closure(HYPONYM) for word in synset if word in V]
+    print [word for synset in wordnet.N['animal'][0].closure(wordnet.HYPONYM) for word in synset if word in V]
 
     # BROKEN
     print "Senses of 'raise'(v.) and 'lower'(v.) that are antonyms:"
-    print filter(lambda p:p[0] in p[1][ANTONYM], [(r,l) for r in V['raise'] for l in V['lower']])
+    print filter(lambda p:p[0] in p[1][wordnet.ANTONYM], [(r,l) for r in wordnet.V['raise'] for l in wordnet.V['lower']])
 
     print
     print "Similarity: dog~cat"

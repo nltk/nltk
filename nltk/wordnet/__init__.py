@@ -57,5 +57,5 @@ from util import *
 from cache import *
 from lexname import *
 from similarity import *
-from wordnet import *
+from synset import *
 from browse import *
