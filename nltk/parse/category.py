@@ -632,11 +632,11 @@ class GrammarFile(object):
         self.kimmo = None
         
     def grammar(self):
-        return Grammar(self.start, self.grammatical_productions +\
+        return cfg.Grammar(self.start, self.grammatical_productions +\
         self.lexical_productions)
         
     def earley_grammar(self):
-        return Grammar(self.start, self.grammatical_productions)
+        return cfg.Grammar(self.start, self.grammatical_productions)
     
     def earley_lexicon(self):
         lexicon = {}
