@@ -194,6 +194,13 @@ def load(filename, verbose=False):
     """
     b = Broker()
     return b.open(filename, verbose=verbose)
+
+def pprint(filename):
+    for l in load(filename):
+        if l.startswith('#'): continue
+        if re.match('^$', l): continue
+        
+        print l,
             
 def demo():
 
@@ -232,4 +239,5 @@ def demo():
 
     
 if __name__ == '__main__':
-    demo()
+    #demo()
+    pprint('feat0.cfg')
