@@ -4,10 +4,10 @@ tested and revised. Assuming we have saved feat0cfg_ as a file named
 ``'feat0.cfg'``, the function ``GrammarFile.read_file()`` allows us to
 read the grammar into NLTK, ready for use in parsing.
 
-    >>> from nltk.parse import *
-    >>> from nltk.parse.featurechart import *
-    >>> import nltk.tokenize
-    >>> cp = load_earley('feat0.cfg', trace=2)
+    >>> from nltk import parse, tokenize
+    >>> from nltk import fs as featstruct
+    >>> from nltk.fs import FS
+    >>> cp = parse.load_earley('feat0.cfg', trace=2)
     >>> sent = 'Kim likes children'
     >>> tokens = list(tokenize.whitespace(sent))
     >>> tokens 
@@ -49,25 +49,31 @@ read the grammar into NLTK, ready for use in parsing.
 Feature structures in NLTK are ... Atomic feature values can be strings or
 integers.
 
-    >>> fs1 = dict(TENSE='past', NUM='sg') 
+    >>> fs1 = FS(dict(TENSE='past', NUM='sg')) 
     >>> print fs1
     {'NUM': 'sg', 'TENSE': 'past'}
 
 We can think of a feature structure as being like a Python dictionary,
 and access its values by indexing in the usual way.
 
-    >>> fs1 = dict(PER=3, NUM='pl', GND='fem')
+    >>> fs1 = FS(dict(PER=3, NUM='pl', GND='fem'))
     >>> print fs1['GND']
     fem
 
 We can also define feature structures which have complex values, as
 discussed earlier.
 
-    >>> fs2 = dict(POS='N', AGR=fs1)
+    >>> fs2 = FS(dict(POS='N', AGR=fs1))
     >>> print fs2
-    {'AGR': {'NUM': 'pl', 'GND': 'fem', 'PER': 3}, 'POS': 'N'}
+    AGR:
+      GND: fem
+      NUM: pl
+      PER: 3
+    POS: N
     >>> print fs2['AGR']
-    {'NUM': 'pl', 'GND': 'fem', 'PER': 3}
+    GND: fem
+    NUM: pl
+    PER: 3
     >>> print fs2['AGR']['PER']
     3
 
@@ -80,23 +86,23 @@ Representing dictionaries in YAML form is useful for making feature
 structures readable:
     
     >>> from nltk.parse.featurelite import *
-    >>> f1 = yaml.load("NUMBER: SINGULAR")
-    >>> f2 = yaml.load("PERSON: 3")
-    >>> print show(unify(f1, f2))
+    >>> f1 = featstruct.parse("NUMBER: SINGULAR")
+    >>> f2 = featstruct.parse("PERSON: 3")
+    >>> print unify(f1, f2)
     NUMBER: SINGULAR
     PERSON: 3
 
-    >>> f1 = yaml.load('''
+    >>> f1 = featstruct.parse('''
     ... A:
     ...   B: b
     ...   D: d
     ... ''')
-    >>> f2 = yaml.load('''
+    >>> f2 = featstruct.parse('''
     ... A:
     ...   C: c
     ...   D: d
     ... ''')
-    >>> print show(unify(f1, f2))
+    >>> print unify(f1, f2)
     A:
       B: b
       C: c
@@ -110,12 +116,12 @@ Feature structures are not inherently tied to linguistic objects; they are
 general purpose structures for representing knowledge. For example, we
 could encode information about a person in a feature structure:
 
-    >>> person01 = yaml.load('''
+    >>> person01 = featstruct.parse('''
     ... NAME: 'Lee'
     ... TELNO: '01 27 86 42 96'
     ... AGE: 33
     ... ''')
-    >>> print show(person01)
+    >>> print person01
     AGE: 33
     NAME: Lee
     TELNO: 01 27 86 42 96
@@ -127,7 +133,7 @@ is prefixed with an integer in parentheses, such as ``(1)``, and any
 subsequent reference to that structure uses the notation
 ``->(1)``, as shown below.
 
-    >>> fs=yaml.load("""
+    >>> fs=featstruct.parse("""
     ... NAME: 'Lee'
     ... ADDRESS: &1
     ...   NUMBER: 74
@@ -136,7 +142,7 @@ subsequent reference to that structure uses the notation
     ...   NAME: 'Kim'
     ...   ADDRESS: *1
     ... """)
-    >>> print show(fs)
+    >>> print fs
     ADDRESS: &id001
       NUMBER: 74
       STREET: rue Pascal
@@ -147,14 +153,14 @@ subsequent reference to that structure uses the notation
 
 There can be any number of tags within a single feature structure.
 
-    >>> fs3 = yaml.load("""
+    >>> fs3 = featstruct.parse("""
     ... A: 'a'
     ... B: &1
     ...   C: 'c'
     ... D: *1
     ... E: *1
     ... """)
-    >>> print show(fs3)
+    >>> print fs3
     A: a
     B: &id001
       C: c
@@ -162,12 +168,12 @@ There can be any number of tags within a single feature structure.
     E: *id001
 
 
-    >>> fs1 = yaml.load("""
+    >>> fs1 = featstruct.parse("""
     ... NUMBER: 74
     ... STREET: 'rue Pascal'
     ... """)
-    >>> fs2 = yaml.load("CITY: Paris")
-    >>> print show(unify(fs1, fs2))
+    >>> fs2 = featstruct.parse("CITY: Paris")
+    >>> print unify(fs1, fs2)
     CITY: Paris
     NUMBER: 74
     STREET: rue Pascal
@@ -179,7 +185,7 @@ Unification is symmetric:
 
 Unification is commutative:
 
-    >>> fs3 = yaml.load("TELNO: 01 27 86 42 96")
+    >>> fs3 = featstruct.parse("TELNO: 01 27 86 42 96")
     >>> unify(unify(fs1, fs2), fs3) == unify(fs1, unify(fs2, fs3))
     True
 
@@ -200,7 +206,7 @@ this is implemented by setting the result of unification to be
 Now, if we look at how unification interacts with structure-sharing,
 things become really interesting.
 
-    >>> fs0 = yaml.load("""
+    >>> fs0 = featstruct.parse("""
     ... NAME: Lee
     ... ADDRESS: 
     ...   NUMBER: 74 
@@ -211,7 +217,7 @@ things become really interesting.
     ...     NUMBER: 74
     ...     STREET: 'rue Pascal'
     ... """)
-    >>> print show(fs0)
+    >>> print fs0
     ADDRESS:
       NUMBER: 74
       STREET: rue Pascal
@@ -222,12 +228,12 @@ things become really interesting.
         STREET: rue Pascal
       NAME: Kim
 
-    >>> fs1 = yaml.load("""
+    >>> fs1 = featstruct.parse("""
     ... SPOUSE: 
     ...   ADDRESS: 
     ...     CITY: Paris
     ... """)
-    >>> print show(unify(fs0, fs1))
+    >>> print unify(fs0, fs1))
     ADDRESS:
       NUMBER: 74
       STREET: rue Pascal
@@ -239,7 +245,7 @@ things become really interesting.
         STREET: rue Pascal
       NAME: Kim
 
-    >>> fs0 = yaml.load("""
+    >>> fs0 = featstruct.parse("""
     ... NAME: Lee
     ... ADDRESS: &1
     ...   NUMBER: 74 
@@ -248,7 +254,7 @@ things become really interesting.
     ...   NAME: Kim
     ...   ADDRESS: *1
     ... """)
-    >>> print show(fs0)
+    >>> print fs0
     ADDRESS: &id001
       NUMBER: 74
       STREET: rue Pascal
@@ -257,7 +263,7 @@ things become really interesting.
       ADDRESS: *id001
       NAME: Kim
 
-    >>> print show(unify(fs0, fs1))
+    >>> print unify(fs0, fs1)
     ADDRESS: &id001
       CITY: Paris
       NUMBER: 74
@@ -267,18 +273,18 @@ things become really interesting.
       ADDRESS: *id001
       NAME: Kim
 
-    >>> fs1 = yaml.load("""
+    >>> fs1 = featstruct.parse("""
     ... ADDRESS1: 
     ...   NUMBER: 74
     ...   STREET: 'rue Pascal'
     ... """)
 
-    >>> fs2 = yaml.load("""
+    >>> fs2 = featstruct.parse("""
     ... ADDRESS1: ?x
     ... ADDRESS2: ?x
     ... """)
 
-    >>> print show(unify(fs1, fs2))
+    >>> print unify(fs1, fs2)
     ADDRESS1: &id001
       NUMBER: 74
       STREET: rue Pascal
@@ -287,7 +293,7 @@ things become really interesting.
 
     >>> sent = 'who do you claim that you like'
     >>> tokens = list(tokenize.whitespace(sent))
-    >>> cp = load_earley('feat1.cfg', trace=1)
+    >>> cp = parse.load_earley('feat1.cfg', trace=1)
     >>> trees = cp.parse(tokens)
               |.w.d.y.c.t.y.l.|
     Scanner   |[-] . . . . . .| NP[+WH] -> who * {} 
@@ -332,7 +338,7 @@ things become really interesting.
 
 Let's load a German grammar:
 
-    >>> cp = load_earley('german0.cfg', trace=0)
+    >>> cp = parse.load_earley('german0.cfg', trace=0)
     >>> sent = 'die katze sieht den hund'
     >>> tokens = list(tokenize.whitespace(sent))
     >>> trees = cp.parse(tokens)
@@ -349,7 +355,7 @@ Let's load a German grammar:
 
 First attempt at doing semantics with features:
 
-    >>> cp = load_earley('sem3.cfg', trace=2)
+    >>> cp = parse.load_earley('sem3.cfg', trace=2)
     >>> sent = 'Kim barks'
     >>> tokens = list(tokenize.whitespace(sent))
     >>> trees = cp.parse(tokens)
