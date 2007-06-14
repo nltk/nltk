@@ -46,7 +46,7 @@ class TestGermanGrammar(unittest.TestCase):
             'du siehst mich',
             'sie kommt',
             'sie sieht mich',
-            'ihr kommst',
+            'ihr kommt',
             'wir kommen',
             'sie kommen',
             'du magst mich',
