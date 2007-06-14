@@ -13,8 +13,8 @@ class Broker(object):
         # root for where to find the grammar files
         self.qualifier = 'http://nltk.sourceforge.net/'
         
-        # temporary location for the registry file
-        self.reg_qualifier = 'http://nltk.svn.sourceforge.net/viewvc/*checkout*/nltk/trunk/nltk/examples/'
+        # location for the registry file
+        self.reg_qualifier = 'http://nltk.sourceforge.net/examples/'
         
         try:
             reg_localname = self.resolve_filename(self.reg_name, qualifier=self.reg_qualifier, verbose=verbose)
@@ -195,16 +195,16 @@ def load(filename, verbose=False):
     b = Broker()
     return b.open(filename, verbose=verbose)
 
-def pprint(filename):
+def pprint(filename, escape='##'):
     for l in load(filename):
-        if l.startswith('#'): continue
+        if l.startswith(escape): continue
         if re.match('^$', l): continue
         
         print l,
             
 def demo():
 
-    qualifier = 'http://nltk.svn.sourceforge.net/viewvc/*checkout*/nltk/trunk/nltk/'
+    qualifier = 'http://nltk.sourceforge.net/'
     b = Broker()
     print
     print "Currently cached registry:"
@@ -228,6 +228,9 @@ def demo():
     print "Open a file:"
     load('feat0.cfg', verbose=True)
     print
+    print "Pretty-print a file:"
+    pprint('feat0.cfg')
+    print
     print "Try to find a file that doesn't exist:"
     load('missing.cfg', verbose=True)
     print
@@ -239,5 +242,5 @@ def demo():
 
     
 if __name__ == '__main__':
-    #demo()
-    pprint('feat0.cfg')
+    demo()
+
