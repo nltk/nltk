@@ -12,13 +12,13 @@
 from copy import copy, deepcopy
 import re, yaml
 
-class FS(dict):
+class FeatStruct(dict):
     def __init__(self, *args, **d):
         dict.__init__(self, *args, **d)
         self._bindings = {}
 
     def unify(self, other):
-        return FS(unify(self, other, self._bindings))
+        return FeatStruct(unify(self, other, self._bindings))
 
     def unify_update(self, other):
         dict.__init__(self, unify(self, other))
@@ -680,7 +680,7 @@ yaml.add_constructor(u'!var', variable_constructor)
 yaml.add_implicit_resolver(u'!var', re.compile(r'^\?\w+$'))
 
 def parse(s):
-    return FS(yaml.load(s))
+    return FeatStruct(yaml.load(s))
 
 #################################################################################
 # DEMO CODE
@@ -713,14 +713,14 @@ def demo():
 
     print
     print "FS unification:"
-    f1 = FS(dict(A=dict(B='b')))
-    f2 = FS(dict(A=dict(C='c')))
-    print unify(f1, f2) == FS(dict(A=dict(B='b', C='c')))
+    f1 = FeatStruct(dict(A=dict(B='b')))
+    f2 = FeatStruct(dict(A=dict(C='c')))
+    print unify(f1, f2) == FeatStruct(dict(A=dict(B='b', C='c')))
 
     print
     print "Unify update (cf set.intersection_update):"
-    f1 = FS(dict(A=dict(B='b')))
-    f2 = FS(dict(A=dict(C='c')))
+    f1 = FeatStruct(dict(A=dict(B='b')))
+    f2 = FeatStruct(dict(A=dict(C='c')))
     f1.unify_update(f2)
     print f1
 
@@ -793,18 +793,18 @@ def demo():
     print
     print "Parsing:"
     print '[A=[B=b]]'
-    fs1 = FS.parse('[A=[B=b]]')
+    fs1 = FeatStruct.parse('[A=[B=b]]')
     print fs1
     print '[A=[C=c]]'
-    fs2 = FS.parse('[A=[C=c]]')
+    fs2 = FeatStruct.parse('[A=[C=c]]')
     print fs2
     fs3 = fs1.unify(fs2)
     print fs3
 
     print '[A=(1)[B=b], E=[F->(1)]]'
-    fs1 = FS.parse('[A=(1)[B=b], E=[F->(1)]]')
+    fs1 = FeatStruct.parse('[A=(1)[B=b], E=[F->(1)]]')
     print "[A=[C='c'], E=[F=[D='d']]]"
-    fs2 = FS.parse("[A=[C='c'], E=[F=[D='d']]]")
+    fs2 = FeatStruct.parse("[A=[C='c'], E=[F=[D='d']]]")
     fs3 = fs1.unify(fs2)
     print fs3
     fs3 = fs2.unify(fs1) # Try unifying both ways.
@@ -812,17 +812,17 @@ def demo():
 
     # More than 2 paths to a value
     print "[a=[],b=[],c=[],d=[]]"
-    fs1 = FS.parse("[a=[],b=[],c=[],d=[]]")
+    fs1 = FeatStruct.parse("[a=[],b=[],c=[],d=[]]")
     print '[a=(1)[], b->(1), c->(1), d->(1)]'
-    fs2 = FS.parse('[a=(1)[], b->(1), c->(1), d->(1)]')
+    fs2 = FeatStruct.parse('[a=(1)[], b->(1), c->(1), d->(1)]')
     fs3 = fs1.unify(fs2)
     print fs3
 
     # fs1[a] gets unified with itself:
     print '[x=(1)[], y->(1)]'
-    fs1 = FS.parse('[x=(1)[], y->(1)]')
+    fs1 = FeatStruct.parse('[x=(1)[], y->(1)]')
     print '[x=(1)[], y->(1)]'
-    fs2 = FS.parse('[x=(1)[], y->(1)]')
+    fs2 = FeatStruct.parse('[x=(1)[], y->(1)]')
     fs3 = fs1.unify(fs2)
 
 if __name__ == "__main__":
