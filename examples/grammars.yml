@@ -1,3 +1,14 @@
+# Natural Language Toolkit: grammars.yml
+#
+# Index file for grammar file lookup
+# Used by nltk.parse.filebroker
+# 
+# Author: Ewan Klein <ewan@inf.ed.ac.uk> 
+# URL: <http://nltk.sourceforge.net>
+# For license information, see LICENSE.TXT
+#
+# $Id:$
+
 feat0.cfg: examples/parse/
 feat1.cfg: examples/parse/
 feat2.cfg: examples/parse/
