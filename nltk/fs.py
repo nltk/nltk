@@ -10,14 +10,11 @@
 # For license information, see LICENSE.TXT
 
 from copy import copy, deepcopy
-import re, yaml, sys, types
+import re, yaml
 
 class FS(dict):
-    def __init__(self, d=None):
-        if d:
-            dict.__init__(self, d)
-        else:
-            dict.__init__(self)
+    def __init__(self, *args, **d):
+        dict.__init__(self, *args, **d)
         self._bindings = {}
 
     def unify(self, other):
@@ -31,6 +28,199 @@ class FS(dict):
 
     def __repr__(self):
         return self.__str__()
+
+    #################################################################
+    ## Parsing
+    #################################################################
+
+    # [classmethod]
+    def parse(cls, s):
+        """
+        Convert a string representation of a feature structure (as
+        displayed by repr) into a C{FeatureStructure}.  This parse
+        imposes the following restrictions on the string
+        representation:
+          - Feature names cannot contain any of the following:
+            whitespace, parenthases, quote marks, equals signs,
+            dashes, and square brackets.
+          - Only the following basic feature value are supported:
+            strings, integers, variables, C{None}, and unquoted
+            alphanumeric strings.
+          - For reentrant values, the first mention must specify
+            a reentrance identifier and a value; and any subsequent
+            mentions must use arrows (C{'->'}) to reference the
+            reentrance identifier.
+        """
+        try:
+            value, position = cls._parse(s, 0, {})
+        except ValueError, e:
+            estr = ('Error parsing field structure\n\n    ' +
+                    s + '\n    ' + ' '*e.args[1] + '^ ' +
+                    'Expected %s\n' % e.args[0])
+            raise ValueError, estr
+        if position != len(s): raise ValueError()
+        return value
+
+    # Regular expressions for parsing.
+    _PARSE_RE = {'name': re.compile(r'\s*([^\s\(\)"\'\-=\[\]]+)\s*'),
+                 'ident': re.compile(r'\s*\((\d+)\)\s*'),
+                 'reentrance': re.compile(r'\s*->\s*'),
+                 'assign': re.compile(r'\s*=\s*'),
+                 'bracket': re.compile(r'\s*]\s*'),
+                 'comma': re.compile(r'\s*,\s*'),
+                 'none': re.compile(r'None(?=\s|\]|,)'),
+                 'int': re.compile(r'-?\d+(?=\s|\]|,)'),
+                 'var': re.compile(r'\?[a-zA-Z_][a-zA-Z0-9_]*'+'|'+
+                                   r'\?<[a-zA-Z_][a-zA-Z0-9_]*'+
+                                   r'(=[a-zA-Z_][a-zA-Z0-9_]*)*>'),
+                 'symbol': re.compile(r'\w+'),
+                 'stringmarker': re.compile("['\"\\\\]")}
+
+    # [classmethod]
+    def _parse(cls, s, position=0, reentrances=None):
+        """
+        Helper function that parses a feature structure.
+        @param s: The string to parse.
+        @param position: The position in the string to start parsing.
+        @param reentrances: A dictionary from reentrance ids to values.
+        @return: A tuple (val, pos) of the feature structure created
+            by parsing and the position where the parsed feature
+            structure ends.
+        """
+        # A set of useful regular expressions (precompiled)
+        _PARSE_RE = cls._PARSE_RE
+
+        # Check that the string starts with an open bracket.
+        if s[position] != '[': raise ValueError('open bracket', position)
+        position += 1
+
+        # If it's immediately followed by a close bracket, then just
+        # return an empty feature structure.
+        match = _PARSE_RE['bracket'].match(s, position)
+        if match is not None: return cls(), match.end()
+
+        # Build a list of the features defined by the structure.
+        # Each feature has one of the three following forms:
+        #     name = value
+        #     name (id) = value
+        #     name -> (target)
+        features = {}
+        while position < len(s):
+            # Use these variables to hold info about the feature:
+            name = id = target = val = None
+            
+            # Find the next feature's name.
+            match = _PARSE_RE['name'].match(s, position)
+            if match is None: raise ValueError('feature name', position)
+            name = match.group(1)
+            position = match.end()
+
+            # Check for a reentrance link ("-> (target)")
+            match = _PARSE_RE['reentrance'].match(s, position)
+            if match is not None:
+                position = match.end()
+                match = _PARSE_RE['ident'].match(s, position)
+                if match is None: raise ValueError('identifier', position)
+                target = match.group(1)
+                position = match.end()
+                try: features[name] = reentrances[target]
+                except: raise ValueError('bound identifier', position)
+
+            # If it's not a reentrance link, it must be an assignment.
+            else:
+                match = _PARSE_RE['assign'].match(s, position)
+                if match is None: raise ValueError('equals sign', position)
+                position = match.end()
+
+                # Find the feature's id (if specified)
+                match = _PARSE_RE['ident'].match(s, position)
+                if match is not None:
+                    id = match.group(1)
+                    if reentrances.has_key(id):
+                        raise ValueError('new identifier', position+1)
+                    position = match.end()
+                
+                val, position = cls._parseval(s, position, reentrances)
+                features[name] = val
+                if id is not None:
+                    reentrances[id] = val
+
+            # Check for a close bracket
+            match = _PARSE_RE['bracket'].match(s, position)
+            if match is not None:
+                return cls(**features), match.end()
+
+            # Otherwise, there should be a comma
+            match = _PARSE_RE['comma'].match(s, position)
+            if match is None: raise ValueError('comma', position)
+            position = match.end()
+
+        # We never saw a close bracket.
+        raise ValueError('close bracket', position)
+
+    # [classmethod]
+    def _parseval(cls, s, position, reentrances):
+        """
+        Helper function that parses a feature value.  Currently
+        supports: None, integers, variables, strings, nested feature
+        structures.
+        @param s: The string to parse.
+        @param position: The position in the string to start parsing.
+        @param reentrances: A dictionary from reentrance ids to values.
+        @return: A tuple (val, pos) of the value created by parsing
+            and the position where the parsed value ends.
+        """
+        # A set of useful regular expressions (precompiled)
+        _PARSE_RE = cls._PARSE_RE
+
+        # End of string (error)
+        if position == len(s): raise ValueError('value', position)
+        
+        # String value
+        if s[position] in "'\"":
+            start = position
+            quotemark = s[position:position+1]
+            position += 1
+            while 1:
+                match = _PARSE_RE['stringmarker'].search(s, position)
+                if not match: raise ValueError('close quote', position)
+                position = match.end()
+                if match.group() == '\\': position += 1
+                elif match.group() == quotemark:
+                    return eval(s[start:position]), position
+
+        # Nested feature structure
+        if s[position] == '[':
+            return cls._parse(s, position, reentrances)
+
+        # Variable
+        match = _PARSE_RE['var'].match(s, position)
+        if match is not None:
+            return FeatureVariable.parse(match.group()), match.end()
+
+        # None
+        match = _PARSE_RE['none'].match(s, position)
+        if match is not None:
+            return None, match.end()
+
+        # Integer value
+        match = _PARSE_RE['int'].match(s, position)
+        if match is not None:
+            return int(match.group()), match.end()
+
+        # Alphanumeric symbol (must be checked after integer)
+        match = _PARSE_RE['symbol'].match(s, position)
+        if match is not None:
+            return match.group(), match.end()
+
+        # We don't know how to parse this value.
+        raise ValueError('value', position)
+
+    _parseval=classmethod(_parseval)
+    _parse=classmethod(_parse)
+    parse=classmethod(parse)
+
+
 
 
 class UnificationFailure(Exception):
@@ -513,6 +703,7 @@ def demo():
     print fs2
     print fs1.unify(fs2)
 
+    print
     print "Atomic unification:"
     print unify(3, None)
     print unify(None, 'fish')
@@ -520,11 +711,13 @@ def demo():
     print unify([1], [1])
     #print unify('a', 'b')
 
+    print
     print "FS unification:"
     f1 = FS(dict(A=dict(B='b')))
     f2 = FS(dict(A=dict(C='c')))
     print unify(f1, f2) == FS(dict(A=dict(B='b', C='c')))
 
+    print
     print "Unify update (cf set.intersection_update):"
     f1 = FS(dict(A=dict(B='b')))
     f2 = FS(dict(A=dict(C='c')))
@@ -533,6 +726,7 @@ def demo():
 
     print unify({}, dict(foo='bar'))
 
+    print
     print "Bindings:"
 
     bindings = {}
@@ -557,6 +751,7 @@ def demo():
     print unify(fs1, fs2, bindings1, bindings2)
     print bindings1, bindings2
 
+    print
     print "Re-entrancy:"
 
     fs1 = parse('''
@@ -578,6 +773,7 @@ def demo():
     print fs3
     print fs3['A'] is fs3['E']['F']    # Showing that the reentrance still holds.
 
+    print
     print "Cycles:"
     fs1 = parse('''
     F: &1 {}
@@ -593,6 +789,41 @@ def demo():
     print fs3['F'] is fs3['G']
     print fs3['F'] is fs3['G']['H']
     print fs3['F'] is fs3['G']['H']['H']
+
+    print
+    print "Parsing:"
+    print '[A=[B=b]]'
+    fs1 = FS.parse('[A=[B=b]]')
+    print fs1
+    print '[A=[C=c]]'
+    fs2 = FS.parse('[A=[C=c]]')
+    print fs2
+    fs3 = fs1.unify(fs2)
+    print fs3
+
+    print '[A=(1)[B=b], E=[F->(1)]]'
+    fs1 = FS.parse('[A=(1)[B=b], E=[F->(1)]]')
+    print "[A=[C='c'], E=[F=[D='d']]]"
+    fs2 = FS.parse("[A=[C='c'], E=[F=[D='d']]]")
+    fs3 = fs1.unify(fs2)
+    print fs3
+    fs3 = fs2.unify(fs1) # Try unifying both ways.
+    print fs3
+
+    # More than 2 paths to a value
+    print "[a=[],b=[],c=[],d=[]]"
+    fs1 = FS.parse("[a=[],b=[],c=[],d=[]]")
+    print '[a=(1)[], b->(1), c->(1), d->(1)]'
+    fs2 = FS.parse('[a=(1)[], b->(1), c->(1), d->(1)]')
+    fs3 = fs1.unify(fs2)
+    print fs3
+
+    # fs1[a] gets unified with itself:
+    print '[x=(1)[], y->(1)]'
+    fs1 = FS.parse('[x=(1)[], y->(1)]')
+    print '[x=(1)[], y->(1)]'
+    fs2 = FS.parse('[x=(1)[], y->(1)]')
+    fs3 = fs1.unify(fs2)
 
 if __name__ == "__main__":
     demo()
