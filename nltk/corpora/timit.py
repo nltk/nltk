@@ -58,12 +58,12 @@ The timit module provides 4 functions and 4 data items.
       
   The second element of the result is a sentence ID.
   
-* dictionary
+* dictionary()
 
   Phonetic dictionary of words contained in this corpus.  This is a Python
   dictionary from words to phoneme lists.
   
-* spkrinfo
+* spkrinfo()
 
   Speaker information table.  It's a Python dictionary from speaker IDs to
   records of 10 fields.  Speaker IDs the same as the ones in timie.speakers.
@@ -132,35 +132,94 @@ __all__ = ["items", "raw", "phonetic", "speakers", "dictionary", "spkrinfo",
 
 PREFIX = os.path.join(get_basedir(),"timit")
 
-speakers = []
-items = []
-dictionary = {}
-spkrinfo = {}
+# speakers = []
+# items = []
+# for f in os.listdir(PREFIX):
+#     if re.match("^dr[0-9]-[a-z]{4}[0-9]$", f):
+#         speakers.append(f)
+#         for g in os.listdir(os.path.join(PREFIX,f)):
+#             if g.endswith(".txt"):
+#                 items.append(f+':'+g[:-4])
+# speakers.sort()
+# items.sort()
 
-for f in os.listdir(PREFIX):
-    if re.match("^dr[0-9]-[a-z]{4}[0-9]$", f):
-        speakers.append(f)
-        for g in os.listdir(os.path.join(PREFIX,f)):
-            if g.endswith(".txt"):
-                items.append(f+':'+g[:-4])
-speakers.sort()
-items.sort()
+speakers = ['dr1-fvmh0', 'dr1-mcpm0', 'dr2-faem0', 'dr2-marc0',
+  'dr3-falk0', 'dr3-madc0', 'dr4-falr0', 'dr4-maeb0', 'dr5-ftlg0',
+  'dr5-mbgt0', 'dr6-fapb0', 'dr6-mbma1', 'dr7-fblv0', 'dr7-madd0',
+  'dr8-fbcg1', 'dr8-mbcg0']
+
+items = ['dr1-fvmh0:sa1', 'dr1-fvmh0:sa2', 'dr1-fvmh0:si1466',
+  'dr1-fvmh0:si2096', 'dr1-fvmh0:si836', 'dr1-fvmh0:sx116',
+  'dr1-fvmh0:sx206', 'dr1-fvmh0:sx26', 'dr1-fvmh0:sx296',
+  'dr1-fvmh0:sx386', 'dr1-mcpm0:sa1', 'dr1-mcpm0:sa2',
+  'dr1-mcpm0:si1194', 'dr1-mcpm0:si1824', 'dr1-mcpm0:si564',
+  'dr1-mcpm0:sx114', 'dr1-mcpm0:sx204', 'dr1-mcpm0:sx24',
+  'dr1-mcpm0:sx294', 'dr1-mcpm0:sx384', 'dr2-faem0:sa1',
+  'dr2-faem0:sa2', 'dr2-faem0:si1392', 'dr2-faem0:si2022',
+  'dr2-faem0:si762', 'dr2-faem0:sx132', 'dr2-faem0:sx222',
+  'dr2-faem0:sx312', 'dr2-faem0:sx402', 'dr2-faem0:sx42',
+  'dr2-marc0:sa1', 'dr2-marc0:sa2', 'dr2-marc0:si1188',
+  'dr2-marc0:si1818', 'dr2-marc0:si558', 'dr2-marc0:sx108',
+  'dr2-marc0:sx18', 'dr2-marc0:sx198', 'dr2-marc0:sx288',
+  'dr2-marc0:sx378', 'dr3-falk0:sa1', 'dr3-falk0:sa2',
+  'dr3-falk0:si1086', 'dr3-falk0:si456', 'dr3-falk0:si658',
+  'dr3-falk0:sx186', 'dr3-falk0:sx276', 'dr3-falk0:sx366',
+  'dr3-falk0:sx6', 'dr3-falk0:sx96', 'dr3-madc0:sa1', 'dr3-madc0:sa2',
+  'dr3-madc0:si1367', 'dr3-madc0:si1997', 'dr3-madc0:si737',
+  'dr3-madc0:sx107', 'dr3-madc0:sx17', 'dr3-madc0:sx197',
+  'dr3-madc0:sx287', 'dr3-madc0:sx377', 'dr4-falr0:sa1',
+  'dr4-falr0:sa2', 'dr4-falr0:si1325', 'dr4-falr0:si1955',
+  'dr4-falr0:si695', 'dr4-falr0:sx155', 'dr4-falr0:sx245',
+  'dr4-falr0:sx335', 'dr4-falr0:sx425', 'dr4-falr0:sx65',
+  'dr4-maeb0:sa1', 'dr4-maeb0:sa2', 'dr4-maeb0:si1411',
+  'dr4-maeb0:si2250', 'dr4-maeb0:si990', 'dr4-maeb0:sx180',
+  'dr4-maeb0:sx270', 'dr4-maeb0:sx360', 'dr4-maeb0:sx450',
+  'dr4-maeb0:sx90', 'dr5-ftlg0:sa1', 'dr5-ftlg0:sa2',
+  'dr5-ftlg0:si1743', 'dr5-ftlg0:si483', 'dr5-ftlg0:si840',
+  'dr5-ftlg0:sx123', 'dr5-ftlg0:sx213', 'dr5-ftlg0:sx303',
+  'dr5-ftlg0:sx33', 'dr5-ftlg0:sx393', 'dr5-mbgt0:sa1', 'dr5-mbgt0:sa2',
+  'dr5-mbgt0:si1341', 'dr5-mbgt0:si1841', 'dr5-mbgt0:si711',
+  'dr5-mbgt0:sx171', 'dr5-mbgt0:sx261', 'dr5-mbgt0:sx351',
+  'dr5-mbgt0:sx441', 'dr5-mbgt0:sx81', 'dr6-fapb0:sa1', 'dr6-fapb0:sa2',
+  'dr6-fapb0:si1063', 'dr6-fapb0:si1693', 'dr6-fapb0:si2323',
+  'dr6-fapb0:sx163', 'dr6-fapb0:sx253', 'dr6-fapb0:sx343',
+  'dr6-fapb0:sx433', 'dr6-fapb0:sx73', 'dr6-mbma1:sa1', 'dr6-mbma1:sa2',
+  'dr6-mbma1:si2207', 'dr6-mbma1:si2214', 'dr6-mbma1:si954',
+  'dr6-mbma1:sx144', 'dr6-mbma1:sx234', 'dr6-mbma1:sx324',
+  'dr6-mbma1:sx414', 'dr6-mbma1:sx54', 'dr7-fblv0:sa1', 'dr7-fblv0:sa2',
+  'dr7-fblv0:si1058', 'dr7-fblv0:si1688', 'dr7-fblv0:si2318',
+  'dr7-fblv0:sx158', 'dr7-fblv0:sx248', 'dr7-fblv0:sx338',
+  'dr7-fblv0:sx428', 'dr7-fblv0:sx68', 'dr7-madd0:sa1', 'dr7-madd0:sa2',
+  'dr7-madd0:si1295', 'dr7-madd0:si1798', 'dr7-madd0:si538',
+  'dr7-madd0:sx178', 'dr7-madd0:sx268', 'dr7-madd0:sx358',
+  'dr7-madd0:sx448', 'dr7-madd0:sx88', 'dr8-fbcg1:sa1', 'dr8-fbcg1:sa2',
+  'dr8-fbcg1:si1612', 'dr8-fbcg1:si2242', 'dr8-fbcg1:si982',
+  'dr8-fbcg1:sx172', 'dr8-fbcg1:sx262', 'dr8-fbcg1:sx352',
+  'dr8-fbcg1:sx442', 'dr8-fbcg1:sx82', 'dr8-mbcg0:sa1', 'dr8-mbcg0:sa2',
+  'dr8-mbcg0:si2217', 'dr8-mbcg0:si486', 'dr8-mbcg0:si957',
+  'dr8-mbcg0:sx147', 'dr8-mbcg0:sx237', 'dr8-mbcg0:sx327',
+  'dr8-mbcg0:sx417', 'dr8-mbcg0:sx57']
 
 # read dictionary
-for l in open(os.path.join(PREFIX,"timitdic.txt")):
-    if l[0] == ';': continue
-    a = l.strip().split('  ')
-    dictionary[a[0]] = a[1].strip('/').split()
+def dictionary():
+    d = {}
+    for l in open(os.path.join(PREFIX,"timitdic.txt")):
+        if l[0] == ';': continue
+        a = l.strip().split('  ')
+        d[a[0]] = a[1].strip('/').split()
+    return d
 
 # read spkrinfo
-header = ['id','sex','dr','use','recdate','birthdate','ht','race','edu',
-          'comments']
-for l in open(os.path.join(PREFIX,"spkrinfo.txt")):
-    if l[0] == ';': continue
-    rec = l[:54].split() + [l[54:].strip()]
-    key = "dr%s-%s%s" % (rec[2],rec[1].lower(),rec[0].lower())
-    spkrinfo[key] = dict((header[i],rec[i]) for i in range(10))
-    
+def spkrinfo():
+    spkrinfo = {}
+    header = ['id','sex','dr','use','recdate','birthdate','ht','race','edu', 'comments']
+    for l in open(os.path.join(PREFIX,"spkrinfo.txt")):
+        if l[0] == ';': continue
+        rec = l[:54].split() + [l[54:].strip()]
+        key = "dr%s-%s%s" % (rec[2],rec[1].lower(),rec[0].lower())
+        spkrinfo[key] = dict((header[i],rec[i]) for i in range(10))
+    return spkrinfo
+
 def _prim(ext, sentences=items, offset=False):
     if isinstance(sentences,str):
         sentences = [sentences]
@@ -277,7 +336,7 @@ def demo():
     print "  speaker id: ", spkrid
     print "  sentence id:", sentid
     print
-    record = timit.spkrinfo[spkrid]
+    record = timit.spkrinfo()[spkrid]
     print "  speaker information:"
     print "    TIMIT speaker id: ", record['id']
     print "    speaker sex:      ", record['sex']
@@ -309,8 +368,9 @@ def demo():
     
     print "  looking up dictionary for words of the sentence..."
     words = timit.raw(sentences=itemid).next()
+    dictionary = timit.dictionary()
     for word in words:
-        print "    %-5s:" % word, timit.dictionary[word]
+        print "    %-5s:" % word, dictionary[word]
     print
 
 
@@ -339,8 +399,9 @@ def demo():
     
     # play sentence sa1 of all female speakers
     sentid = 'sa1'
+    spkrinfo = timit.spkrinfo()
     for spkr in timit.speakers:
-        if timit.spkrinfo[spkr]['sex'] == 'F':
+        if spkrinfo[spkr]['sex'] == 'F':
             itemid = spkr + ':' + sentid
             print "  playing sentence %s of speaker %s ..." % (sentid, spkr)
             data = timit.audiodata(itemid)
