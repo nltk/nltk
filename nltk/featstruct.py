@@ -23,11 +23,171 @@ class FeatStruct(dict):
     def unify_update(self, other):
         dict.__init__(self, unify(self, other))
 
-    def __str__(self):
+    def yaml(self):
         return yaml.dump(self, default_flow_style=False).strip()
 
+    #################################################################
+    ## String Representations
+    #################################################################
+
     def __repr__(self):
-        return self.__str__()
+        """
+        Display a single-line representation of this feature structure,
+        suitable for embedding in other representations.
+        """
+        return self._repr(self._find_reentrances({}), {})
+
+    def __str__(self):
+        """
+        Display a multi-line representation of this feature structure
+        as an FVM (feature value matrix).
+        """
+        return '\n'.join(self._str(self._find_reentrances({}), {}))
+
+    def _repr(self, reentrances, reentrance_ids):
+        """
+        @return: A string representation of this feature structure.
+        @param reentrances: A dictionary that maps from the C{id} of
+            each feature value in self, indicating whether that value
+            is reentrant or not.
+        @param reentrance_ids: A dictionary mapping from the C{id}s
+            of feature values to unique identifiers.  This is modified
+            by C{repr}: the first time a reentrant feature value is
+            displayed, an identifier is added to reentrance_ids for
+            it.
+        """
+        segments = []
+
+        # If this is the first time we've seen a reentrant structure,
+        # then assign it a unique identifier.
+        if reentrances[id(self)]:
+            assert id(self) not in reentrance_ids
+            reentrance_ids[id(self)] = `len(reentrance_ids)+1`
+
+        # sorting note: keys are unique strings, so we'll never fall through to comparing values.
+        for (fname, fval) in sorted(self.items()):
+            if not isinstance(fval, FeatStruct):
+                segments.append('%s=%r' % (fname, fval))
+            elif id(fval) in reentrance_ids:
+                segments.append('%s->(%s)' % (fname,
+                                              reentrance_ids[id(fval)]))
+            else:
+                fval_repr = fval._repr(reentrances, reentrance_ids)
+                segments.append('%s=%s' % (fname, fval_repr))
+
+        # If it's reentrant, then add on an identifier tag.
+        if reentrances[id(self)]:
+            return '(%s)[%s]' % (reentrance_ids[id(self)],
+                                ', '.join(segments))
+        else:
+            return '[%s]' % (', '.join(segments))
+
+    def _str(self, reentrances, reentrance_ids):
+        """
+        @return: A list of lines composing a string representation of
+            this feature structure.  
+        @param reentrances: A dictionary that maps from the C{id} of
+            each feature value in self, indicating whether that value
+            is reentrant or not.
+        @param reentrance_ids: A dictionary mapping from the C{id}s
+            of feature values to unique identifiers.  This is modified
+            by C{repr}: the first time a reentrant feature value is
+            displayed, an identifier is added to reentrance_ids for
+            it.
+        """
+        # If this is the first time we've seen a reentrant structure,
+        # then tack on an id string.
+        if reentrances[id(self)]:
+            assert id(self) not in reentrance_ids
+            reentrance_ids[id(self)] = `len(reentrance_ids)+1`
+
+        # Special case:
+        if len(self) == 0:
+            if reentrances[id(self)]:
+                return ['(%s) []' % reentrance_ids[id(self)]]
+            else:
+                return ['[]']
+        
+        # What's the longest feature name?  Use this to align names.
+        maxfnamelen = max(len(k) for k in self)
+
+        lines = []
+        # sorting note: keys are unique strings, so we'll never fall through to comparing values.
+        for (fname, fval) in sorted(self.items()):
+            if not isinstance(fval, FeatStruct):
+                # It's not a nested feature structure -- just print it.
+                lines.append('%s = %r' % (fname.ljust(maxfnamelen), fval))
+
+            elif id(fval) in reentrance_ids:
+                # It's a feature structure we've seen before -- print
+                # the reentrance id.
+                lines.append('%s -> (%s)' % (fname.ljust(maxfnamelen),
+                                               reentrance_ids[id(fval)]))
+
+            else:
+                # It's a new feature structure.  Separate it from
+                # other values by a blank line.
+                if lines and lines[-1] != '': lines.append('')
+
+                # Recursively print the feature's value (fval).
+                fval_lines = fval._str(reentrances, reentrance_ids)
+                
+                # Indent each line to make room for fname.
+                fval_lines = [(' '*(maxfnamelen+3))+l for l in fval_lines]
+
+                # Pick which line we'll display fname on.
+                nameline = (len(fval_lines)-1)/2
+                
+                fval_lines[nameline] = (
+                        fname.ljust(maxfnamelen)+' ='+
+                        fval_lines[nameline][maxfnamelen+2:])
+
+                # Add the feature structure to the output.
+                lines += fval_lines
+                            
+                # Separate FeatureStructures by a blank line.
+                lines.append('')
+
+        # Get rid of any excess blank lines.
+        if lines[-1] == '': lines = lines[:-1]
+        
+        # Add brackets around everything.
+        maxlen = max(len(line) for line in lines)
+        lines = ['[ %s%s ]' % (line, ' '*(maxlen-len(line))) for line in lines]
+
+        # If it's reentrant, then add on an identifier tag.
+        if reentrances[id(self)]:
+            idstr = '(%s) ' % reentrance_ids[id(self)]
+            lines = [(' '*len(idstr))+l for l in lines]
+            idline = (len(lines)-1)/2
+            lines[idline] = idstr + lines[idline][len(idstr):]
+
+        return lines
+
+    # Walk through the feature tree.  The first time we see a feature
+    # value, map it to False (not reentrant).  If we see a feature
+    # value more than once, then map it to C{True} (reentrant).
+    def _find_reentrances(self, reentrances):
+        """
+        Find all of the feature values contained by self that are
+        reentrant (i.e., that can be reached by multiple paths through
+        feature structure's features).  Return a dictionary
+        C{reentrances} that maps from the C{id} of each feature value
+        to a boolean value, indicating whether it is reentrant or not.
+        """
+        if id(self) in reentrances:
+            # We've seen it more than once.
+            reentrances[id(self)] = True
+        else:
+            # This is the first time we've seen it.
+            reentrances[id(self)] = False
+        
+            # Recurse to contained feature structures.
+            for fval in self.values():
+                if isinstance(fval, FeatStruct):
+                    fval._find_reentrances(reentrances)
+
+        return reentrances
 
     #################################################################
     ## Parsing
@@ -37,7 +197,7 @@ class FeatStruct(dict):
     def parse(cls, s):
         """
         Convert a string representation of a feature structure (as
-        displayed by repr) into a C{FeatureStructure}.  This parse
+        displayed by repr) into a C{FeatStruct}.  This parse
         imposes the following restrictions on the string
         representation:
           - Feature names cannot contain any of the following:
@@ -136,7 +296,7 @@ class FeatStruct(dict):
                 match = _PARSE_RE['ident'].match(s, position)
                 if match is not None:
                     id = match.group(1)
-                    if reentrances.has_key(id):
+                    if id in reentrances:
                         raise ValueError('new identifier', position+1)
                     position = match.end()
                 
