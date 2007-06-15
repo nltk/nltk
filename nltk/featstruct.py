@@ -18,10 +18,16 @@ class FeatStruct(dict):
         self._bindings = {}
 
     def unify(self, other):
-        return FeatStruct(unify(self, other, self._bindings))
+        try:
+            return FeatStruct(unify(self, other, self._bindings))
+        except UnificationFailure:
+            return None
 
     def unify_update(self, other):
         dict.__init__(self, unify(self, other))
+
+    def bindings(self):
+        return self._bindings
 
     def yaml(self):
         return yaml.dump(self, default_flow_style=False).strip()
@@ -341,7 +347,7 @@ class FeatStruct(dict):
             start = position
             quotemark = s[position:position+1]
             position += 1
-            while 1:
+            while True:
                 match = _PARSE_RE['stringmarker'].search(s, position)
                 if not match: raise ValueError('close quote', position)
                 position = match.end()
@@ -356,7 +362,7 @@ class FeatStruct(dict):
         # Variable
         match = _PARSE_RE['var'].match(s, position)
         if match is not None:
-            return FeatureVariable.parse(match.group()), match.end()
+            return Variable.parse(match.group()), match.end()
 
         # None
         match = _PARSE_RE['none'].match(s, position)
@@ -433,7 +439,8 @@ class Variable(object):
         """
         self._uid = Variable._next_numbered_id
         Variable._next_numbered_id += 1
-        if name is None: name = self._uid
+        if name is None:
+            name = self._uid
         self._name = str(name)
         self._value = value
     
@@ -452,8 +459,10 @@ class Variable(object):
         @return: The value of this variable, if any.
         @rtype: C{object}
         """
-        if isinstance(self._value, Variable): return self._value.value()
-        else: return self._value
+        if isinstance(self._value, Variable):
+            return self._value.value()
+        else:
+            return self._value
 
     def copy(self):
         """
@@ -536,6 +545,35 @@ class Variable(object):
     def __repr__(self):
         if self._value is None: return '?%s' % self._name
         else: return '?%s: %r' % (self._name, self._value)
+
+    # [staticmethod]
+    def parse(s):
+        """
+        Given a string that encodes a feature variable, return that
+        variable.  This method can be used to parse both
+        C{FeatureVariables} and C{AliasedFeatureVariables}.  However,
+        this method can not be used to parse numbered variables, since
+        doing so could violate the guarantee that each numbered
+        variable object has a unique identifier.
+        """
+        # Simple variable
+        match = re.match(r'\?[a-zA-Z_][a-zA-Z0-9_]*$', s)
+        if match:
+            return Variable(s[1:])
+
+        # Aliased variable
+        match = re.match(r'\?<[a-zA-Z_][a-zA-Z0-9_]*'+
+                         r'(=[a-zA-Z_][a-zA-Z0-9_]*)*>$', s)
+        if match:
+            raise ValueError('Aliased feature variables not supported (yet)')
+#            idents = s[2:-1].split('=')
+#            vars = [FeatureVariable(i) for i in idents]
+#            return AliasedFeatureVariable(*vars)
+
+        raise ValueError('Bad FeatureVariable string')
+    
+    parse=staticmethod(parse)
+
 
 class SubstituteBindingsI:
     """
@@ -645,8 +683,7 @@ def unify(feature1, feature2, bindings1=None, bindings2=None, memo=None, fail=No
 
     # Go on to doing the unification.
     try:
-        unified = _destructively_unify(copy1, copy2, bindings1, bindings2, memo,
-        fail)
+        unified = _destructively_unify(copy1, copy2, bindings1, bindings2, memo, fail)
     except UnificationFailure:
         if trace > 1: print '[fail]'
         memo[id(feature1), id(feature2)] = UnificationFailure
@@ -667,8 +704,7 @@ def unify(feature1, feature2, bindings1=None, bindings2=None, memo=None, fail=No
     memo[id(feature1), id(feature2)] = unified
     return unified
 
-def _destructively_unify(feature1, feature2, bindings1, bindings2, memo, fail,
-depth=0):
+def _destructively_unify(feature1, feature2, bindings1, bindings2, memo, fail, depth=0):
     """
     Attempt to unify C{self} and C{other} by modifying them
     in-place.  If the unification succeeds, then C{self} will
@@ -683,9 +719,9 @@ depth=0):
         raise ValueError, "Infinite recursion in unification"
     if (id(feature1), id(feature2)) in memo:
         result = memo[id(feature1), id(feature2)]
-        if result is UnificationFailure: raise result()
-    unified = _do_unify(feature1, feature2, bindings1, bindings2, memo, fail,
-    depth)
+        if result is UnificationFailure:
+            raise result()
+    unified = _do_unify(feature1, feature2, bindings1, bindings2, memo, fail, depth)
     memo[id(feature1), id(feature2)] = unified
     return unified
 
@@ -695,9 +731,12 @@ def _do_unify(feature1, feature2, bindings1, bindings2, memo, fail, depth=0):
     """
 
     # Trivial cases.
-    if feature1 is None: return feature2
-    if feature2 is None: return feature1
-    if feature1 is feature2: return feature1
+    if feature1 is None:
+        return feature2
+    if feature2 is None:
+        return feature1
+    if feature1 is feature2:
+        return feature1
     
     # Deal with variables by binding them to the other value.
     if isinstance(feature1, Variable):
@@ -846,7 +885,7 @@ def parse(s):
 # DEMO CODE
 #################################################################################
 
-def demo():
+def demo2():
     s1 = '''
     A:
       B: b
@@ -960,6 +999,7 @@ def demo():
     print fs2
     fs3 = fs1.unify(fs2)
     print fs3
+    print
 
     print '[A=(1)[B=b], E=[F->(1)]]'
     fs1 = FeatStruct.parse('[A=(1)[B=b], E=[F->(1)]]')
@@ -969,6 +1009,7 @@ def demo():
     print fs3
     fs3 = fs2.unify(fs1) # Try unifying both ways.
     print fs3
+    print
 
     # More than 2 paths to a value
     print "[a=[],b=[],c=[],d=[]]"
@@ -977,13 +1018,145 @@ def demo():
     fs2 = FeatStruct.parse('[a=(1)[], b->(1), c->(1), d->(1)]')
     fs3 = fs1.unify(fs2)
     print fs3
-
+    print
+    
     # fs1[a] gets unified with itself:
     print '[x=(1)[], y->(1)]'
     fs1 = FeatStruct.parse('[x=(1)[], y->(1)]')
     print '[x=(1)[], y->(1)]'
     fs2 = FeatStruct.parse('[x=(1)[], y->(1)]')
     fs3 = fs1.unify(fs2)
+    print fs3
+
+def display_unification(fs1, fs2, indent='  '):
+    # Print the two input feature structures, side by side.
+    fs1_lines = str(fs1).split('\n')
+    fs2_lines = str(fs2).split('\n')
+    if len(fs1_lines) > len(fs2_lines):
+        blankline = '['+' '*(len(fs2_lines[0])-2)+']'
+        fs2_lines += [blankline]*len(fs1_lines)
+    else:
+        blankline = '['+' '*(len(fs1_lines[0])-2)+']'
+        fs1_lines += [blankline]*len(fs2_lines)
+    for (fs1_line, fs2_line) in zip(fs1_lines, fs2_lines):
+        print indent + fs1_line + '   ' + fs2_line
+    print indent+'-'*len(fs1_lines[0])+'   '+'-'*len(fs2_lines[0])
+
+    linelen = len(fs1_lines[0])*2+3
+    print indent+'|               |'.center(linelen)
+    print indent+'+-----UNIFY-----+'.center(linelen)
+    print indent+'|'.center(linelen)
+    print indent+'V'.center(linelen)
+
+    result = fs1.unify(fs2)
+    if result is None:
+        print indent+'(FAILED)'.center(linelen)
+    else:
+        print '\n'.join(indent+l.center(linelen)
+                         for l in str(result).split('\n'))
+        if len(result.bindings()) > 0:
+            print repr(result.bindings()).center(linelen)
+    return result
+
+def demo(trace=False):
+    import random, sys
+
+    HELP = '''
+    1-%d: Select the corresponding feature structure
+    q: Quit
+    t: Turn tracing on or off
+    l: List all feature structures
+    ?: Help
+    '''
+    
+    print '''
+    This demo will repeatedly present you with a list of feature
+    structures, and ask you to choose two for unification.  Whenever a
+    new feature structure is generated, it is added to the list of
+    choices that you can pick from.  However, since this can be a
+    large number of feature structures, the demo will only print out a
+    random subset for you to choose between at a given time.  If you
+    want to see the complete lists, type "l".  For a list of valid
+    commands, type "?".
+    '''
+    print 'Press "Enter" to continue...'
+    sys.stdin.readline()
+    
+    fstruct_strings = [
+        '[agr=[number=sing, gender=masc]]',
+        '[agr=[gender=masc, person=3rd]]',
+        '[agr=[gender=fem, person=3rd]]',
+        '[subj=[agr=(1)[]], agr->(1)]',
+        '[obj=?x]', '[subj=?x]',
+        '[/=None]', '[/=NP]',
+        '[cat=NP]', '[cat=VP]', '[cat=PP]',
+        '[subj=[agr=[gender=?y]], obj=[agr=[gender=?y]]]',
+        '[gender=masc, agr=?C]',
+        '[gender=?S, agr=[gender=?S,person=3rd]]'
+        ]
+    
+    all_fstructs = [(i, FeatStruct.parse(fstruct_strings[i]))
+                    for i in range(len(fstruct_strings))]
+
+    def list_fstructs(fstructs):
+        for i, fstruct in fstructs:
+            print
+            lines = str(fstruct).split('\n')
+            print '%3d: %s' % (i+1, lines[0])
+            for line in lines[1:]: print '     '+line
+        print
+
+    while True:
+        # Pick 5 feature structures at random from the master list.
+        MAX_CHOICES = 5
+        if len(all_fstructs) > MAX_CHOICES:
+            fstructs = random.sample(all_fstructs, MAX_CHOICES)
+            fstructs.sort()
+        else:
+            fstructs = all_fstructs
+        
+        print '_'*75
+        
+        print 'Choose two feature structures to unify:'
+        list_fstructs(fstructs)
+        
+        selected = [None,None]
+        for (nth,i) in (('First',0), ('Second',1)):
+            while selected[i] is None:
+                print ('%s feature structure (1-%d,q,t,l,?): '
+                       % (nth, len(all_fstructs))),
+                try:
+                    input = sys.stdin.readline().strip()
+                    if input in ('q', 'Q', 'x', 'X'): return
+                    if input in ('t', 'T'):
+                        trace = not trace
+                        print '   Trace = %s' % trace
+                        continue
+                    if input in ('h', 'H', '?'):
+                        print HELP % len(fstructs); continue
+                    if input in ('l', 'L'):
+                        list_fstructs(all_fstructs); continue
+                    num = int(input)-1
+                    selected[i] = all_fstructs[num][1]
+                    print
+                except:
+                    print 'Bad sentence number'
+                    continue
+
+        if trace:
+            result = selected[0].unify(selected[1], trace=1)
+        else:
+            result = display_unification(selected[0], selected[1])
+        if result is not None:
+            for i, fstruct in all_fstructs:
+                if `result` == `fstruct`: break
+            else:
+                all_fstructs.append((len(all_fstructs), result))
+
+        print '\nType "Enter" to continue unifying; or "q" to quit.'
+        input = sys.stdin.readline().strip()
+        if input in ('q', 'Q', 'x', 'X'): return
+
 
 if __name__ == "__main__":
     demo()
