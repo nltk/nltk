@@ -10,12 +10,12 @@
 #
 # $Id$
 
-from nltk.semantics.logic import LogicParser, ApplicationExpression
-from nltk import cfg
-from featurelite import *
+from nltk import cfg, featstruct
+from nltk.sem import LogicParser, ApplicationExpression
 from api import *
 import filebroker
 
+import re
 from copy import deepcopy
 import yaml
 # import nltk.yamltags
@@ -25,9 +25,9 @@ def makevar(varname):
     Given a variable representation such as C{?x}, construct a corresponding
     Variable object.
     """
-    return Variable(varname[1:])
+    return featstruct.Variable(varname[1:])
 
-class Category(cfg.Nonterminal, FeatureI):
+class Category(cfg.Nonterminal):
     """
     A C{Category} is a wrapper for feature dictionaries, intended for use in
     parsing. It can act as a C{Nonterminal}.
@@ -62,7 +62,7 @@ class Category(cfg.Nonterminal, FeatureI):
     
     def __init__(self, features=None, **morefeatures):
         if features is None: features = {}
-        self._features = unify(features, morefeatures)
+        self._features = featstruct.unify(features, morefeatures)
         self._hash = None
         self._frozen = False
         self._memostr = None
@@ -75,7 +75,7 @@ class Category(cfg.Nonterminal, FeatureI):
         @return: A new Category based on this one, with its C{/} feature set to 
         C{other}.
         """
-        return unify(self, {'/': other})
+        return featstruct.unify(self, {'/': other})
 
     def __eq__(self, other):
         """
@@ -185,7 +185,7 @@ class Category(cfg.Nonterminal, FeatureI):
     @staticmethod
     def _remove_unbound_vars(obj):
         for (key, value) in obj.items():
-            if isinstance(value, Variable):
+            if isinstance(value, featstruct.Variable):
                 del obj[key]
             elif isinstance(value, (Category, dict)):
                 Category._remove_unbound_vars(value)
@@ -578,7 +578,7 @@ class GrammarCategory(Category):
             position = slash_match.end()
             slash, position = GrammarCategory._parseval(s, position, reentrances)
             if isinstance(slash, basestring): slash = {'pos': slash}
-            body['/'] = unify(body.get('/'), slash)
+            body['/'] = featstruct.unify(body.get('/'), slash)
         elif not body.has_key('/'):
             body['/'] = False
         return cls(body), position

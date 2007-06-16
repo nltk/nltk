@@ -34,7 +34,7 @@ setup(
                 'nltk.tokenize', 'nltk.stem', 'nltk.tag',
                 'nltk.parse', 'nltk.chunk', 'nltk.chat', 'nltk.draw',
                 'nltk.misc', 'nltk.model', 'nltk.cluster',
-                'nltk.semantics', 'nltk.wordnet', 'nltk.etree',
+                'nltk.sem', 'nltk.wordnet', 'nltk.etree',
                 'nltk.contrib', 'nltk.contrib.toolbox',
                 'nltk.contrib.fst', 'yaml',
                 'nltk.contrib.classifier', 'nltk.contrib.classifier.exceptions',

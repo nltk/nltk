@@ -19,7 +19,7 @@ class FeatStruct(dict):
 
     def unify(self, other):
         try:
-            return FeatStruct(_unify(self, other, self._bindings))
+            return FeatStruct(unify(self, other, self._bindings))
         except UnificationFailure:
             return None
 
@@ -511,7 +511,7 @@ class Variable(object):
         else:
             # This variable is already bound; try to unify the existing value
             # with the new one.
-            self._value = _unify(self._value, value, ourbindings, otherbindings)
+            self._value = unify(self._value, value, ourbindings, otherbindings)
 
     def forwardTo(self, other, ourbindings, otherbindings):
         """
@@ -638,7 +638,7 @@ def substitute_bindings(feature, bindings):
     """
     return _copy_and_bind(feature, bindings.copy())
 
-def _unify(feature1, feature2, bindings1=None, bindings2=None, memo=None, fail=None, trace=0):
+def unify(feature1, feature2, bindings1=None, bindings2=None, memo=None, fail=None, trace=0):
     if fail is None:
         def failerror(f1, f2):
             raise UnificationFailure
