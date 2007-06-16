@@ -46,7 +46,6 @@ from category import *
 from chart import *
 from featurechart import *
 from treetransforms import *
-from featurelite import *
 from sr import *
 from rd import *
 from pchart import *
