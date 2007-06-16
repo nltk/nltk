@@ -321,7 +321,8 @@ def raw(files='rotokas.dic', include_header=False, head_field_marker=None):
 
     for file in files:
         path = os.path.join(get_basedir(), "toolbox", file)
-        fc = open(path, "U").read()
+        f = open_corpus(path, "U")
+        fc = f.read()
         if fc.strip().startswith(r"\_") :
             (header, body) = split(fc, sep="\n\n", maxsplit=1)
             if include_header:

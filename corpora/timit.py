@@ -203,7 +203,9 @@ items = ['dr1-fvmh0:sa1', 'dr1-fvmh0:sa2', 'dr1-fvmh0:si1466',
 # read dictionary
 def dictionary():
     d = {}
-    for l in open(os.path.join(PREFIX,"timitdic.txt")):
+    path = os.path.join(PREFIX,"timitdic.txt")
+    f = open_corpus(path)
+    for l in f:
         if l[0] == ';': continue
         a = l.strip().split('  ')
         d[a[0]] = a[1].strip('/').split()
@@ -213,7 +215,9 @@ def dictionary():
 def spkrinfo():
     spkrinfo = {}
     header = ['id','sex','dr','use','recdate','birthdate','ht','race','edu', 'comments']
-    for l in open(os.path.join(PREFIX,"spkrinfo.txt")):
+    path = os.path.join(PREFIX,"spkrinfo.txt")
+    f = open_corpus(path)
+    for l in f:
         if l[0] == ';': continue
         rec = l[:54].split() + [l[54:].strip()]
         key = "dr%s-%s%s" % (rec[2],rec[1].lower(),rec[0].lower())

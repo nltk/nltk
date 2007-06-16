@@ -36,7 +36,8 @@ def raw(files = ['ned.train', 'esp.train']):
     if type(files) is str: files = (files,)
     for file in files:
         path = os.path.join(get_basedir(), "conll2002", file)
-        s = open(path).read()
+        f = open_corpus(path)
+        s = f.read()
         # remove initial -DOCSTART- -DOCSTART- O
         if s.startswith('-DOCSTART'):
             s = s[23:]
@@ -47,7 +48,8 @@ def pos_tagged(files = ['ned.train', 'esp.train']):
     if type(files) is str: files = (files,)
     for file in files:
         path = os.path.join(get_basedir(), "conll2002", file)
-        s = open(path).read()
+        f = open_corpus(path)
+        s = f.read()
         # remove initial -DOCSTART- -DOCSTART- O
         if s.startswith('-DOCSTART-'):
             s = s[23:]
@@ -61,7 +63,8 @@ def ne_chunked(files = ['ned.train', 'esp.train'], chunk_types=('LOC','ORG','PER
     if type(files) is str: files = (files,)
     for file in files:
         path = os.path.join(get_basedir(), "conll2002", file)
-        s = open(path).read()
+        f = open_corpus(path)
+        s = f.read()
         # remove initial -DOCSTART- -DOCSTART- O
         if s.startswith('-DOCSTART'):
             s = s[23:]
@@ -96,12 +99,12 @@ def demo():
 
     print "Named Entity chunked text -- Dutch:"
     for tree in islice(conll2002.ne_chunked(files = ['ned.train']), 0, 5):
-        print tree.pp()
+        print tree
     print
     
     print "Named Entity chunked text --Spanish:"
     for tree in islice(conll2002.ne_chunked(files = ['esp.train']), 0, 5):
-        print tree.pp()
+        print tree
     print
 
 

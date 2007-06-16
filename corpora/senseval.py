@@ -110,8 +110,8 @@ def raw(files = items):
     parser = SensevalParser()
     for file in files:
         path = os.path.join(get_basedir(), "senseval", file+".pos")
-        f = open(path).read()
-        for entry in parser.parse(f):
+        f = open_corpus(path)
+        for entry in parser.parse(f.read()):
             yield entry
 
 def demo():

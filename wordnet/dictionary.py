@@ -39,10 +39,17 @@ class Dictionary(object):
         @param filenameroot: filename of the relevant Wordnet dictionary file
         """
         self.pos = pos
-        self.indexFile = IndexFile(pos, filenameroot)
-        self.dataFile = open(dataFilePathname(filenameroot), FILE_OPEN_MODE)
+        self._filenameroot = filenameroot
+        self._loaded = False
+        
+    def load(self):
+        if not self._loaded:
+            self.indexFile = IndexFile(self.pos, self._filenameroot)
+            self.dataFile = open(dataFilePathname(self._filenameroot), FILE_OPEN_MODE)
+            self._loaded = True
     
     def __repr__(self):
+        self.load()
         dictionaryVariables = {}
 
         if dictionaryVariables.get(self):
@@ -59,6 +66,7 @@ class Dictionary(object):
         @param line: appropriate line sourced from the index file (optional)
         @return: The L{Word} object with the supplied form, if present.
         """
+        self.load()
         key = form.lower().replace(' ', '_')
         pos = self.pos
 
@@ -81,6 +89,7 @@ class Dictionary(object):
         @return: The relevant L{Synset}, if present.
         """
 
+        self.load()
         def loader(pos=self.pos, offset=offset, dataFile=self.dataFile):
             from synset import Synset
             dataFile.seek(offset)
@@ -90,6 +99,7 @@ class Dictionary(object):
         return entityCache.get((self.pos, offset), loader)
     
     def _buildIndexCacheFile(self):
+        self.load()
         self.indexFile._buildIndexCacheFile()
     
     def __nonzero__(self):
@@ -97,6 +107,7 @@ class Dictionary(object):
         >>> N and 'true'
         'true'
         """
+        self.load()
         return 1
     
     def __len__(self):
@@ -106,12 +117,14 @@ class Dictionary(object):
         >>> len(ADJ)
         21435
         """
+        self.load()
         if not hasattr(self, 'length'):
             self.length = len(self.indexFile)
 
         return self.length
     
     def __getslice__(self, a, b):
+        self.load()
         results = []
 
         if type(a) == type('') and type(b) == type(''):
@@ -137,6 +150,7 @@ class Dictionary(object):
         >>> N[0]
         'hood(n.)
         """
+        self.load()
         if type(index) in types.StringTypes:
             return self.getWord(index)
 
@@ -148,9 +162,11 @@ class Dictionary(object):
             raise TypeError, "%s is not a String or Int" % `index`
     
     def __iter__(self):
+        self.load()
         return iter(self.keys())
 
     def __contains__(self, item):
+        self.load()
         return self.has_key(item)
     
     def get(self, key, default=None):
@@ -167,6 +183,7 @@ class Dictionary(object):
             with the supplied key.
         @return: The L{Word} whose form is given by 'key'
         """
+        self.load()
         try:
             return self[key]
 
@@ -178,6 +195,7 @@ class Dictionary(object):
         @return: A sorted list of strings that index words in this
         dictionary.
         """
+        self.load()
         return self.indexFile.keys()
     
     def has_key(self, form):
@@ -193,12 +211,14 @@ class Dictionary(object):
         @param form: a word string e.g. 'dog'
         @return: true iff the argument indexes a word in this dictionary.
         """
+        self.load()
         return self.indexFile.has_key(form)
     
     # Testing
     
     def _testKeys(self):
         # Verify that index lookup can find each word in the index file.
+        self.load()
         print "Testing: ", self
         file = open(self.indexFile.file.name, _FILE_OPEN_MODE)
         counter = 0

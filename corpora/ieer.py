@@ -42,7 +42,8 @@ def raw(files = items):
 
     for file in files:
         path = os.path.join(get_basedir(), "ieer", file)
-        for doc in open(path).read().split('</DOC>'):
+        f = open_corpus(path)
+        for doc in f.read().split('</DOC>'):
             doc = doc.split('<DOC>')
             if len(doc) == 2:
                 yield "<DOC>" + doc[1] + "</DOC>\n"
