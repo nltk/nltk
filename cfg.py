@@ -592,6 +592,8 @@ def parse_pcfg_production(s):
             probabilities.append(0.0)
             found_terminal = found_non_terminal = False
         elif piece[0] in ('"', "'"):
+            if found_terminal:
+                raise ValueError, 'Bad right-hand-side: do not use a sequence of terminals'
             rhsides[-1].append(piece[1:-1])        # Terminal
             found_terminal = True
         elif piece[0] in "[":
@@ -657,7 +659,10 @@ def cfg_demo():
     # Use string.replace(...) is to line-wrap the output.
     print `grammar.productions()`.replace(',', ',\n'+' '*25)
     print
-
+    
+    print 'Coverage of input words by a grammar:'
+    print grammar.covers(['a','dog'])
+    print grammar.covers(['a','toy'])
 
 toy_pcfg1 = parse_pcfg("""
     S -> NP VP [1.0]
@@ -722,6 +727,10 @@ def pcfg_demo():
     # Use string.replace(...) is to line-wrap the output.
     print `grammar.productions()`.replace(',', ',\n'+' '*26)
     print
+
+    print 'Coverage of input words by a grammar:'
+    print grammar.covers(['a','boy'])
+    print grammar.covers(['a','girl'])
 
     # extract productions from three trees and induce the PCFG
     print "Induce PCFG grammar from treebank data:"
