@@ -337,7 +337,7 @@ class Assignment(dict):
         return self
 
     
-class Model:
+class Model(object):
     """
     A first order model is a domain M{D} of discourse and a valuation M{V}.
 

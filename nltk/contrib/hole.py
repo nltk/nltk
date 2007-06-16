@@ -1,8 +1,8 @@
 # Contributed by Peter Wang
 
-from nltk import tokenize
+from nltk import tokenize, tree
 from nltk.parse.featurechart import *
-from nltk.parse import GrammarFile, bracket_parse, tree
+from nltk.parse import GrammarFile, bracket_parse
 from nltk.draw.tree import draw_trees
 
 """
@@ -337,7 +337,7 @@ def main():
         filename = 'hole.cfg'
 
     print 'Reading grammar file', filename
-    grammar = GrammarFile.read_file(filename)
+    grammar = GrammarFile(filename)
     parser = grammar.earley_parser(trace=options.verbosity)
 
     # Prompt the user for a sentence.

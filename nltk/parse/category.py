@@ -625,12 +625,13 @@ class ApplicationExpressionSubst(ApplicationExpression, SubstituteBindingsI):
 ############################################################################
 
 class GrammarFile(object):
-    def __init__(self):
+    def __init__(self, filename=None, verbose=False):
         self.grammatical_productions = []
         self.lexical_productions = []
         self.start = GrammarCategory(pos='Start')
         self.kimmo = None
-        
+        self.apply_file(filename, verbose=verbose)
+
     def grammar(self):
         return cfg.Grammar(self.start, self.grammatical_productions +\
         self.lexical_productions)
@@ -692,18 +693,11 @@ class GrammarFile(object):
                         self.grammatical_productions.append(rule)
 
     def apply_file(self, filename, verbose=False):
- 
         lines = filebroker.load(filename, verbose=verbose)
         if lines:
             self.apply_lines(lines)
         else:
             return None
-
-    @staticmethod
-    def read_file(filename, verbose=False):
-        result = GrammarFile()
-        result.apply_file(filename, verbose=verbose)
-        return result
 
 yaml.add_representer(Category, Category.to_yaml)
 yaml.add_representer(GrammarCategory, GrammarCategory.to_yaml)
@@ -730,15 +724,15 @@ def demo():
     print repr(GrammarCategory.parse('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]'))
     print
     print "Find grammar file name in 'grammars.yml' and fetch from Sourceforge:"
-    g = GrammarFile.read_file("sem2.cfg")
+    g = GrammarFile("sem2.cfg")
     print g.grammar()
     print
     print "Attempt to find nonexistent grammar file:"   
-    g = GrammarFile.read_file("missing.cfg")
+    g = GrammarFile("missing.cfg")
     print g.grammar()
     print
     print "Find locally:"   
-    g = GrammarFile.read_file("broker_test.cfg")
+    g = GrammarFile("broker_test.cfg")
     print g.grammar()
     print
     b = filebroker.Broker()

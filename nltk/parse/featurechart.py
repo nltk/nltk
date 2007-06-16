@@ -39,7 +39,7 @@ def load_earley(filename, trace=1, verbose=False):
     grammar-loading is displayed.
     """
 
-    grammar = GrammarFile.read_file(filename, verbose=verbose)
+    grammar = GrammarFile(filename, verbose=verbose)
     return grammar.earley_parser(trace)
 
 class FeatureTreeEdge(TreeEdge):
