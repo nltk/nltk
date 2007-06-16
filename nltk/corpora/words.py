@@ -24,7 +24,8 @@ def raw(files = items):
 
     for file in files:
         path = os.path.join(get_basedir(), "words", file)
-        for word in open(path).readlines():
+        f = open_corpus(path)
+        for word in f:
             yield word.strip()
 
 def demo():

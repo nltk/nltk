@@ -67,7 +67,8 @@ def raw(files = 'cmudict'):
 
     for file in files:
         path = os.path.join(get_basedir(), "cmudict", file)
-        for line in open(path).readlines():
+        f = open_corpus(path)
+        for line in f:
             fields = line.strip().split(' ')
             yield (fields[0], int(fields[1]), tuple(fields[2:]))
 

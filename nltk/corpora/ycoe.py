@@ -12,6 +12,7 @@ Reads tokens from the York-Toronto-Helsinki Parsed Corpus of
 Old English Prose (YCOE), a 1.5 million word syntactically-
 annotated corpus of Old English prose texts. The corpus is
 distributed by the Oxford Text Archive: http://www.ota.ahds.ac.uk/
+It is not included with NLTK.
 
 The YCOE corpus is divided into 100 files, each representing
 an Old English prose text. Tags used within each text complies
@@ -194,12 +195,12 @@ def _read(files, conversion_function):
 
     for file in files:
         path = os.path.join(get_basedir(), "ycoe/pos", file)
-        f = open(path).read()
+        f = open_corpus(path)
         rx_pattern = re.compile(r"""
                 <.*>_CODE
                 |\s.*_ID
         """, re.VERBOSE|re.UNICODE)
-        mySents = tokenize.blankline(f)
+        mySents = tokenize.blankline(f.read())
         for sent in mySents:
             sent= re.sub(rx_pattern, '', sent)
             if sent != "":
@@ -224,7 +225,8 @@ def bracket_parse(files = items):
     if type(files) is str: files = (files,)
     for file in files:
         path = os.path.join(get_basedir(), "ycoe/psd", file + ".psd")
-        s = open(path).read()
+        f = open_corpus(path)
+        s = f.read()
         data = _parse(s)
         for sent in data:
             yield tree.bracket_parse(sent)
@@ -284,8 +286,8 @@ def _chunk_parse(files, chunk_types, top_node, partial_match, collapse_partials,
     if type(files) is str: files = (files,)
     for file in files:
         path = os.path.join(get_basedir(), "ycoe/psd", file + ".psd")
-        s = open(path).read()
-        data = _parse(s)
+        f = open_corpus(path)
+        data = _parse(f.read())
         for s in data:
             bracket = 0
             itmType = None

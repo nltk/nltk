@@ -11,3 +11,35 @@ import abc, brown, chat80, cmudict, conll2000, conll2002, genesis, gutenberg
 import ieer, inaugural, indian, names, ppattach, senseval, shakespeare
 import sinica_treebank, state_union, stopwords, timit, toolbox, treebank
 import udhr, web, webtext, words, ycoe
+
+def demo():
+    abc.demo()
+    brown.demo()
+#    chat80.demo()
+    cmudict.demo()
+    conll2000.demo()
+    conll2002.demo()
+    genesis.demo()
+    gutenberg.demo()
+    ieer.demo()
+    inaugural.demo()
+    indian.demo()
+    names.demo()
+    ppattach.demo()
+    senseval.demo()
+    shakespeare.demo()
+    sinica_treebank.demo()
+    state_union.demo()
+    stopwords.demo()
+    timit.demo()
+    toolbox.demo()
+    treebank.demo()
+    udhr.demo()
+    web.demo()
+    webtext.demo()
+    words.demo()
+#    ycoe.demo()
+
+if __name__ == '__main__':
+    demo()
+    

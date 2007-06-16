@@ -28,24 +28,24 @@ def raw(files = ['train']):
     if type(files) is str: files = (files,)
     for file in files:
         path = os.path.join(get_basedir(), "conll2000", file + ".txt")
-        s = open(path).read()
-        for sent in tokenize.blankline(s):
+        f = open_corpus(path)
+        for sent in tokenize.blankline(f.read()):
             yield [word for (word, tag, chunk) in _list_sent(sent)]
 
 def tagged(files = ['train']):
     if type(files) is str: files = (files,)
     for file in files:
         path = os.path.join(get_basedir(), "conll2000", file + ".txt")
-        s = open(path).read()
-        for sent in tokenize.blankline(s):
+        f = open_corpus(path)
+        for sent in tokenize.blankline(f.read()):
             yield [(word, tag) for (word, tag, chunk) in _list_sent(sent)]
 
 def chunked(files = ['train'], chunk_types=('NP','VP','PP')):
     if type(files) is str: files = (files,)
     for file in files:
         path = os.path.join(get_basedir(), "conll2000", file + ".txt")
-        s = open(path).read()
-        for sent in tokenize.blankline(s):
+        f = open_corpus(path)
+        for sent in tokenize.blankline(f.read()):
             yield chunk.conllstr2tree(sent, chunk_types)
 
 def demo():
@@ -66,7 +66,7 @@ def demo():
 
     print "Chunked text:"
     for tree in islice(conll2000.chunked(chunk_types=('NP','PP')), 0, 5):
-        print tree.pp()
+        print tree
     print
 
 

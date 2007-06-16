@@ -30,8 +30,8 @@ def _read(files, conversion_function):
 
     for file in files:
         path = os.path.join(get_basedir(), "indian", file + ".pos")
-        f = open(path).read()
-        for sent in tokenize.line(f):
+        f = open_corpus(path)
+        for sent in tokenize.line(f.read()):
             if sent and sent[0] != "<":
                 yield conversion_function(sent)
 
@@ -39,7 +39,8 @@ def xreadlines(files = items):
     if type(files) is str: files = (files,)
     for file in files:
         path = os.path.join(get_basedir(), "indian", file + ".pos")
-        for line in open(path):
+        f = open_corpus(path)
+        for line in f:
             yield line
 
 def raw(files = items):

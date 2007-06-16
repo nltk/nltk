@@ -74,8 +74,8 @@ def parsed(files = 'parsed', basedir = None):
 
     for file in files:
         path = os.path.join(get_basedir(), "treebank", file)
-        s = open(path).read()
-        for t in tokenize.sexpr(s):
+        f = open_corpus(path)
+        for t in tokenize.sexpr(f.read()):
             try:
                 yield tree.bracket_parse(t)
             except IndexError:
@@ -97,8 +97,8 @@ def chunked(files = 'chunked', basedir = None):
 
     for file in files:
         path = os.path.join(basedir, "treebank", file)
-        s = open(path).read()
-        for t in tokenize.blankline(s):
+        f = open_corpus(path)
+        for t in tokenize.blankline(f.read()):
             yield chunk.tagstr2tree(t)
 
 def tagged(files = 'chunked', basedir = None):
@@ -115,8 +115,8 @@ def tagged(files = 'chunked', basedir = None):
 
     for file in files:
         path = os.path.join(get_basedir(), "treebank", file)
-        f = open(path).read()
-        for sent in tokenize.blankline(f):
+        f = open_corpus(path)
+        for sent in tokenize.blankline(f.read()):
             l = []
             for t in tokenize.whitespace(sent):
                 if (t != '[' and t != ']'):
@@ -137,8 +137,8 @@ def raw(files = 'raw', basedir = None):
 
     for file in files:
         path = os.path.join(get_basedir(), "treebank", file)
-        f = open(path).read()
-        for sent in tokenize.blankline(f):
+        f = open_corpus(path)
+        for sent in tokenize.blankline(f.read()):
             l = []
             for t in tokenize.whitespace(sent):
                 l.append(t)
@@ -151,12 +151,12 @@ def demo():
 
     print "Parsed:"
     for tree in islice(treebank.parsed(), 3):
-        print tree.pp()
+        print tree
     print
 
     print "Chunked:"
     for tree in islice(treebank.chunked(), 3):
-        print tree.pp()
+        print tree
     print
 
     print "Tagged:"

@@ -65,9 +65,9 @@ def _read(files, conversion_function):
 
     for file in files:
         path = os.path.join(get_basedir(), "brown", file)
-        f = open(path).read()
-        for sent in tokenize.line(f):
-	    if sent:
+        f = open_corpus(path)
+        for sent in tokenize.line(f.read()):
+            if sent:
                 yield conversion_function(sent)
 
 def raw(files = items):
