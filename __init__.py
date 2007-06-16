@@ -57,7 +57,7 @@ __author_email__ = __maintainer_email__
 from compat import *
 from detect import *
 from evaluate import *
-from featurestructure import *
+from featstruct import *
 from probability import *
 from tree import *
 from utilities import *

@@ -65,7 +65,7 @@ class Variable(object):
 
     def __hash__(self): return hash(repr(self))
 
-class Constant:
+class Constant(object):
     """A nonlogical constant."""
     
     def __init__(self, name):
@@ -432,8 +432,7 @@ class LambdaExpression(VariableBinderExpression):
         return self.__class__(self.variable, self.term._skolemise(bv, counter))
 
     def __repr__(self):
-        return str(self)
-        #return "LambdaExpression('%s', '%s')" % (self.variable, self.term)
+        return "LambdaExpression('%s', '%s')" % (self.variable, self.term)
 
 class SomeExpression(VariableBinderExpression):
     """An existential quantification expression: some x.M."""
@@ -464,8 +463,7 @@ class AllExpression(VariableBinderExpression):
         return self.__class__(self.variable, self.term._skolemise(bv, counter))
 
     def __repr__(self):
-        return str(self)
-        #return "AllExpression('%s', '%s')" % (self.variable, self.term)
+        return "AllExpression('%s', '%s')" % (self.variable, self.term)
 
 
 
@@ -578,8 +576,7 @@ class ApplicationExpression(Expression):
         return '(%s %s)' % (strFirst, self.second)
 
     def __repr__(self):
-        return str(self)
-        #return "ApplicationExpression('%s', '%s')" % (self.first, self.second)
+        return "ApplicationExpression('%s', '%s')" % (self.first, self.second)
 
     def __hash__(self):
         return hash(str(self.normalize()))
@@ -596,10 +593,9 @@ class SomeExpressionSubst(SomeExpression, SubstituteBindingsMixin):
 class AllExpressionSubst(AllExpression, SubstituteBindingsMixin):
     pass
 
-class LogicParser:
+class LogicParser(object):
     """A lambda calculus expression parser."""
 
-    
     # Tokens.
     LAMBDA = '\\'
     SOME = 'some'

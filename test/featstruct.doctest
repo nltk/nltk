@@ -1,3 +1,5 @@
+.. STALE
+
 -----------------------------
 Unit tests for the FeatureLite classes
 -----------------------------
@@ -371,4 +373,309 @@ made after the fact:
      b: *id001
      >>> print bindings
      {'x': {}}
+
+
+--------------------------------------------------------------------------------
+Unit tests for FeatureStructure classes
+--------------------------------------------------------------------------------
+
+    >>> from nltk.featurestructure import *
+
+Copying from self to other.
+
+    >>> fs1 = FeatureStructure(number='singular')
+    >>> fs2 = fs1.unify(FeatureStructure())
+    >>> repr(fs2)
+    "[number='singular']"
+
+Copying from other to self
+
+    >>> fs1 = FeatureStructure()
+    >>> fs2 = fs1.unify(FeatureStructure(number='singular'))
+    >>> repr(fs2)
+    "[number='singular']"
+
+Cross copying
+
+    >>> fs1 = FeatureStructure(number='singular')
+    >>> fs2 = fs1.unify(FeatureStructure(person=3))
+    >>> repr(fs2)
+    "[number='singular', person=3]"
+
+Merging a nested structure
+
+    >>> fs1 = FeatureStructure.parse('[A=[B=b]]')
+    >>> fs2 = FeatureStructure.parse('[A=[C=c]]')
+    >>> fs3 = fs1.unify(fs2)
+    >>> repr(fs3)
+    "[A=[B='b', C='c']]"
+
+A basic case of reentrant unification
+
+    >>> fs1 = FeatureStructure.parse('[A=(1)[B=b], E=[F->(1)]]')
+    >>> fs2 = FeatureStructure.parse("[A=[C='c'], E=[F=[D='d']]]")
+    >>> fs3 = fs1.unify(fs2)
+    >>> repr(fs3)
+    "[A=(1)[B='b', C='c', D='d'], E=[F->(1)]]"
+
+Try unifying both ways
+
+    >>> fs3 = fs2.unify(fs1)
+    >>> repr(fs3)
+    "[A=(1)[B='b', C='c', D='d'], E=[F->(1)]]"
+
+More than 2 paths to a value
+
+    >>> fs1 = FeatureStructure.parse("[a=[],b=[],c=[],d=[]]")
+    >>> fs2 = FeatureStructure.parse('[a=(1)[], b->(1), c->(1), d->(1)]')
+    >>> fs3 = fs1.unify(fs2)
+    >>> repr(fs3)
+    '[a=(1)[], b->(1), c->(1), d->(1)]'
+
+fs1[a] gets unified with itself
+
+    >>> fs1 = FeatureStructure.parse('[x=(1)[], y->(1)]')
+    >>> fs2 = FeatureStructure.parse('[x=(1)[], y->(1)]')
+    >>> fs3 = fs1.unify(fs2)
+
+Bound variables should get forwarded appropriately
+
+    >>> fs1 = FeatureStructure.parse('[A=(1)[X=x], B->(1), C=?cvar, D=?dvar]')
+    >>> fs2y = FeatureStructure(Y='y')
+    >>> fs2z = FeatureStructure(Z='z')
+    >>> fs2 = FeatureStructure.parse('[A=(1)[Y=y], B=(2)[Z=z], C->(1), D->(2)]')
+    >>> fs3 = fs1.unify(fs2)
+    >>> repr(fs3)
+    "[A=(1)[X='x', Y='y', Z='z'], B->(1), C->(1), D->(1)]"
+
+Create a cyclic structure via unification.
+
+    >>> fs1 = FeatureStructure.parse('[F=(1)[], G->(1)]')
+    >>> fs2 = FeatureStructure.parse('[F=[H=(2)[]], G->(2)]')
+    >>> fs3 = fs1.unify(fs2)
+
+Check that we got the value right.
+
+    >>> repr(fs3)
+    '[F=(1)[H->(1)], G->(1)]'
+
+Check that we got the cyclicity right.
+
+    >>> fs3['F'] is fs3['G']
+    True
+
+    >>> fs3['F'] is fs3['G', 'H']
+    True
+
+    >>> fs3['F'] is fs3['G', 'H', 'H']
+    True
+
+    >>> fs3['F'] is fs3[('G',)+(('H',)*10)]
+    True
+
+Create a cyclic structure with variables.
+
+    >>> x = FeatureVariable('x')
+    >>> fs1 = FeatureStructure(F=FeatureStructure(H=x))
+    >>> fs2 = FeatureStructure(F=x)
+    >>> fs3 = fs1.unify(fs2)
+
+Check that we got the value right.
+
+    >>> repr(fs3)
+    '[F=(1)[H->(1)]]'
+
+Check that we got the cyclicity right.
+
+    >>> fs3['F'] is fs3['F','H']
+    True
+
+    >>> fs3['F'] is fs3['F','H','H']
+    True
+
+    >>> fs3['F'] is fs3[('F',)+(('H',)*10)]
+    True
+
+Cyclic structure as LHS
+
+    >>> fs4 = FeatureStructure.parse('[F=[H=[H=[H=(1)[]]]], K->(1)]')
+    >>> fs5 = fs3.unify(fs4)
+    >>> repr(fs5)
+    '[F=(1)[H->(1)], K->(1)]'
+
+Cyclic structure as RHS
+
+    >>> fs6 = fs4.unify(fs3)
+    >>> repr(fs6)
+    '[F=(1)[H->(1)], K->(1)]'
+
+Variable bindings should preserve reentrance.
+
+    >>> bindings = FeatureBindings()
+    >>> fs1 = FeatureStructure.parse("[a=?x]")
+    >>> fs2 = fs1.unify(FeatureStructure.parse("[a=[]]"), bindings)
+    >>> fs3 = fs2.unify(FeatureStructure.parse("[b=?x]"), bindings)
+    >>> repr(fs3)
+    '[a=(1)[], b->(1)]'
+
+Aliased variable tests
+
+    >>> fs1 = FeatureStructure.parse("[a=?x, b=?x]")
+    >>> fs2 = fs1.unify(FeatureStructure.parse("[b=?y, c=?y]"))
+    >>> repr(fs2)
+    '[a=?x, b=?<x=y>, c=?y]'
+
+    >>> fs3 = fs2.unify(FeatureStructure.parse("[a=1]"))
+    >>> repr(fs3)
+    '[a=1, b=1, c=1]'
+
+    >>> fs1 = FeatureStructure.parse("[a=1]")
+    >>> fs2 = FeatureStructure.parse("[a=?x, b=?x]")
+    >>> fs3 = fs2.unify(fs1)
+    >>> repr(fs3)
+    '[a=1, b=1]'
+
+
+.. def demo():
+    s1 = '''
+    A:
+      B: b
+      D: d
+    '''
+    s2 = '''
+    A:
+      B: b
+      C: c
+    '''
+    fs1 = parse(s1)
+    fs2 = parse(s2)
+    print fs1
+    print fs2
+    print fs1.unify(fs2)
+
+    print
+    print "Atomic unification:"
+    print unify(3, None)
+    print unify(None, 'fish')
+    print unify(True, True)
+    print unify([1], [1])
+    #print unify('a', 'b')
+
+    print
+    print "FS unification:"
+    f1 = FeatStruct(dict(A=dict(B='b')))
+    f2 = FeatStruct(dict(A=dict(C='c')))
+    print unify(f1, f2) == FeatStruct(dict(A=dict(B='b', C='c')))
+
+    print
+    print "Unify update (cf set.intersection_update):"
+    f1 = FeatStruct(dict(A=dict(B='b')))
+    f2 = FeatStruct(dict(A=dict(C='c')))
+    f1.unify_update(f2)
+    print f1
+
+    print unify({}, dict(foo='bar'))
+
+    print
+    print "Bindings:"
+
+    bindings = {}
+    print unify(Variable('x'), 5, bindings), bindings
+    
+    print unify({'a': Variable('x')}, {}, bindings)
+
+    fs1 = parse('''
+    a: 1
+    b: 1
+    c: ?x
+    d: ?x
+    ''')
+    fs2 = parse('''
+    a: ?x
+    b: ?x
+    c: 2
+    d: 2
+    ''')
+    bindings1 = {}
+    bindings2 = {}
+    print unify(fs1, fs2, bindings1, bindings2)
+    print bindings1, bindings2
+
+    print
+    print "Re-entrancy:"
+
+    fs1 = parse('''
+    A: &1                # &1 defines a reference in YAML...
+      B: b
+    E:
+      F: *1              # and *1 uses the previously defined reference.
+    ''')
+    print fs1['E']['F']['B']
+    print fs1['A'] is fs1['E']['F']
+    fs2 = parse('''
+    A:
+      C: c
+    E:
+      F:
+        D: d
+    ''')
+    fs3 = unify(fs1, fs2)
+    print fs3
+    print fs3['A'] is fs3['E']['F']    # Showing that the reentrance still holds.
+
+    print
+    print "Cycles:"
+    fs1 = parse('''
+    F: &1 {}
+    G: *1
+    ''')
+    fs2 = parse('''
+    F:
+      H: &2 {}
+    G: *2
+    ''')
+    fs3 = unify(fs1, fs2)
+    print fs3
+    print fs3['F'] is fs3['G']
+    print fs3['F'] is fs3['G']['H']
+    print fs3['F'] is fs3['G']['H']['H']
+
+    print
+    print "Parsing:"
+    print '[A=[B=b]]'
+    fs1 = FeatStruct.parse('[A=[B=b]]')
+    print fs1
+    print '[A=[C=c]]'
+    fs2 = FeatStruct.parse('[A=[C=c]]')
+    print fs2
+    fs3 = fs1.unify(fs2)
+    print fs3
+    print
+
+    print '[A=(1)[B=b], E=[F->(1)]]'
+    fs1 = FeatStruct.parse('[A=(1)[B=b], E=[F->(1)]]')
+    print "[A=[C='c'], E=[F=[D='d']]]"
+    fs2 = FeatStruct.parse("[A=[C='c'], E=[F=[D='d']]]")
+    fs3 = fs1.unify(fs2)
+    print fs3
+    fs3 = fs2.unify(fs1) # Try unifying both ways.
+    print fs3
+    print
+
+    # More than 2 paths to a value
+    print "[a=[],b=[],c=[],d=[]]"
+    fs1 = FeatStruct.parse("[a=[],b=[],c=[],d=[]]")
+    print '[a=(1)[], b->(1), c->(1), d->(1)]'
+    fs2 = FeatStruct.parse('[a=(1)[], b->(1), c->(1), d->(1)]')
+    fs3 = fs1.unify(fs2)
+    print fs3
+    print
+    
+    # fs1[a] gets unified with itself:
+    print '[x=(1)[], y->(1)]'
+    fs1 = FeatStruct.parse('[x=(1)[], y->(1)]')
+    print '[x=(1)[], y->(1)]'
+    fs2 = FeatStruct.parse('[x=(1)[], y->(1)]')
+    fs3 = fs1.unify(fs2)
+    print fs3
 

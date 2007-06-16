@@ -19,7 +19,7 @@ class FeatStruct(dict):
 
     def unify(self, other):
         try:
-            return FeatStruct(unify(self, other, self._bindings))
+            return FeatStruct(_unify(self, other, self._bindings))
         except UnificationFailure:
             return None
 
@@ -511,7 +511,7 @@ class Variable(object):
         else:
             # This variable is already bound; try to unify the existing value
             # with the new one.
-            self._value = unify(self._value, value, ourbindings, otherbindings)
+            self._value = _unify(self._value, value, ourbindings, otherbindings)
 
     def forwardTo(self, other, ourbindings, otherbindings):
         """
@@ -638,7 +638,7 @@ def substitute_bindings(feature, bindings):
     """
     return _copy_and_bind(feature, bindings.copy())
 
-def unify(feature1, feature2, bindings1=None, bindings2=None, memo=None, fail=None, trace=0):
+def _unify(feature1, feature2, bindings1=None, bindings2=None, memo=None, fail=None, trace=0):
     if fail is None:
         def failerror(f1, f2):
             raise UnificationFailure
@@ -884,149 +884,6 @@ def parse(s):
 #################################################################################
 # DEMO CODE
 #################################################################################
-
-def demo2():
-    s1 = '''
-    A:
-      B: b
-      D: d
-    '''
-    s2 = '''
-    A:
-      B: b
-      C: c
-    '''
-    fs1 = parse(s1)
-    fs2 = parse(s2)
-    print fs1
-    print fs2
-    print fs1.unify(fs2)
-
-    print
-    print "Atomic unification:"
-    print unify(3, None)
-    print unify(None, 'fish')
-    print unify(True, True)
-    print unify([1], [1])
-    #print unify('a', 'b')
-
-    print
-    print "FS unification:"
-    f1 = FeatStruct(dict(A=dict(B='b')))
-    f2 = FeatStruct(dict(A=dict(C='c')))
-    print unify(f1, f2) == FeatStruct(dict(A=dict(B='b', C='c')))
-
-    print
-    print "Unify update (cf set.intersection_update):"
-    f1 = FeatStruct(dict(A=dict(B='b')))
-    f2 = FeatStruct(dict(A=dict(C='c')))
-    f1.unify_update(f2)
-    print f1
-
-    print unify({}, dict(foo='bar'))
-
-    print
-    print "Bindings:"
-
-    bindings = {}
-    print unify(Variable('x'), 5, bindings), bindings
-    
-    print unify({'a': Variable('x')}, {}, bindings)
-
-    fs1 = parse('''
-    a: 1
-    b: 1
-    c: ?x
-    d: ?x
-    ''')
-    fs2 = parse('''
-    a: ?x
-    b: ?x
-    c: 2
-    d: 2
-    ''')
-    bindings1 = {}
-    bindings2 = {}
-    print unify(fs1, fs2, bindings1, bindings2)
-    print bindings1, bindings2
-
-    print
-    print "Re-entrancy:"
-
-    fs1 = parse('''
-    A: &1                # &1 defines a reference in YAML...
-      B: b
-    E:
-      F: *1              # and *1 uses the previously defined reference.
-    ''')
-    print fs1['E']['F']['B']
-    print fs1['A'] is fs1['E']['F']
-    fs2 = parse('''
-    A:
-      C: c
-    E:
-      F:
-        D: d
-    ''')
-    fs3 = unify(fs1, fs2)
-    print fs3
-    print fs3['A'] is fs3['E']['F']    # Showing that the reentrance still holds.
-
-    print
-    print "Cycles:"
-    fs1 = parse('''
-    F: &1 {}
-    G: *1
-    ''')
-    fs2 = parse('''
-    F:
-      H: &2 {}
-    G: *2
-    ''')
-    fs3 = unify(fs1, fs2)
-    print fs3
-    print fs3['F'] is fs3['G']
-    print fs3['F'] is fs3['G']['H']
-    print fs3['F'] is fs3['G']['H']['H']
-
-    print
-    print "Parsing:"
-    print '[A=[B=b]]'
-    fs1 = FeatStruct.parse('[A=[B=b]]')
-    print fs1
-    print '[A=[C=c]]'
-    fs2 = FeatStruct.parse('[A=[C=c]]')
-    print fs2
-    fs3 = fs1.unify(fs2)
-    print fs3
-    print
-
-    print '[A=(1)[B=b], E=[F->(1)]]'
-    fs1 = FeatStruct.parse('[A=(1)[B=b], E=[F->(1)]]')
-    print "[A=[C='c'], E=[F=[D='d']]]"
-    fs2 = FeatStruct.parse("[A=[C='c'], E=[F=[D='d']]]")
-    fs3 = fs1.unify(fs2)
-    print fs3
-    fs3 = fs2.unify(fs1) # Try unifying both ways.
-    print fs3
-    print
-
-    # More than 2 paths to a value
-    print "[a=[],b=[],c=[],d=[]]"
-    fs1 = FeatStruct.parse("[a=[],b=[],c=[],d=[]]")
-    print '[a=(1)[], b->(1), c->(1), d->(1)]'
-    fs2 = FeatStruct.parse('[a=(1)[], b->(1), c->(1), d->(1)]')
-    fs3 = fs1.unify(fs2)
-    print fs3
-    print
-    
-    # fs1[a] gets unified with itself:
-    print '[x=(1)[], y->(1)]'
-    fs1 = FeatStruct.parse('[x=(1)[], y->(1)]')
-    print '[x=(1)[], y->(1)]'
-    fs2 = FeatStruct.parse('[x=(1)[], y->(1)]')
-    fs3 = fs1.unify(fs2)
-    print fs3
 
 def display_unification(fs1, fs2, indent='  '):
     # Print the two input feature structures, side by side.
