@@ -1,3 +1,43 @@
+
+Version 0.8b1 2007-06-16
+
+Code:
+- changed GrammarFile initializer to accept filename
+- import all top-level modules into nltk, reducing need for import statements  
+- new featstruct module, unifying old featurelite and featurestructure modules
+- consistent tree display format
+- fixed loading process for WordNet and TIMIT that prevented code installation if data not installed
+- changed package name to nltk
+- more care with unicode types
+- reorganization of sub-package structures to simplify imports
+- incorporated pcfg code into cfg module
+- moved cfg, tree, featstruct to top level
+- Glue semantics code from Dan Garrette (contrib.glue)
+- new filebroker module to make handling of example grammar files more transparent
+- more corpus eraders (webtext, abc)
+- FreqDist now inherits from dict, fd.count(sample) becomes fd[sample]
+- FreqDist initializer permits: fd = FreqDist(len(token) for token in text)
+- Punkt sentence segmenter port by Willy (contrib.punkt)
+- extensive improvements to classifiers (contrib.classifier*, Sumukh Ghodke)
+- added cfg.covers() to check that a grammar covers a sentence
+- simple text-based wordnet browser
+- added LPath interpreter (contrib.lpath, Haejoong Lee)
+- made numpy optional
+
+Doc:
+- polishing on parts I, II
+- more illustrations, data plots, summaries, exercises
+- continuing to make prose more accessible to non-linguistic audience
+- powerpoint overview of NLTK
+
+Distributions:
+- updated to latest version of numpy
+- removed wordnet as it is included in corpus distribution
+- added pylab (matplotlib)
+
+Corpora:
+- csv data file to document NLTK corpora
+
 Version 0.7.5 2007-05-16
 
 Code:
