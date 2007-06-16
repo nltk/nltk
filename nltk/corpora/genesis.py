@@ -53,8 +53,8 @@ def raw(files = 'english-kjv'):
 
     for file in files:
         path = os.path.join(get_basedir(), "genesis", file+".txt")
-        s = open(path).read()
-        for t in tokenize.whitespace(s):
+        f = open_corpus(path)
+        for t in tokenize.whitespace(f.read()):
             yield t
 
 def demo():

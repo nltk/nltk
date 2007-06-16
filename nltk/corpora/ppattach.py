@@ -56,7 +56,8 @@ def raw(files = items):
 
     for file in files:
         path = os.path.join(get_basedir(), "ppattach", file)
-        for line in open(path):
+        f = open_corpus(path)
+        for line in f:
             yield tuple(line.split())
 
 def dictionary(files = items):

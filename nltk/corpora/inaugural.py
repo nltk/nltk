@@ -78,8 +78,7 @@ def raw(files = items):
 
     for file in files:
         path = os.path.join(get_basedir(), "inaugural", file + ".txt")
-        f = open(path)
-        preamble = True
+        f = open_corpus(path)
         text = f.read()
         for t in tokenize.wordpunct(text):
             yield t

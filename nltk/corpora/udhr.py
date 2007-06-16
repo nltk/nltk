@@ -102,8 +102,8 @@ def raw(files = 'English-Latin1'):
 
     for file in files:
         path = os.path.join(get_basedir(), "udhr", file)
-        s = open(path).read()
-        for t in tokenize.whitespace(s):
+        f = open_corpus(path)
+        for t in tokenize.whitespace(f.read()):
             yield t
 
 def langs(files = items):

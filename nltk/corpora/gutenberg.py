@@ -66,9 +66,9 @@ def raw(files = items):
 
     for file in files:
         path = os.path.join(get_basedir(), "gutenberg", file + ".txt")
-        f = open(path)
+        f = open_corpus(path)
         preamble = True
-        for line in f.readlines():
+        for line in f:
             if not preamble:
                 for t in tokenize.wordpunct(line):
                     yield t

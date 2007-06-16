@@ -25,6 +25,17 @@ def get_basedir():
     """
     return _BASEDIR
 
+def open_corpus(*args):
+    try:
+        return open(*args)
+    except IOError:
+        print """
+        *****************************************************************
+          Corpus not found.  For installation instructions, please see
+             http://nltk.sourceforge.net/index.php/Installation
+        *****************************************************************"""
+        raise
+    
 # Find a default base directory.
 if os.environ.has_key('NLTK_CORPORA'):
     set_basedir(os.environ['NLTK_CORPORA'])
