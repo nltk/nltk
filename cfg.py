@@ -702,8 +702,8 @@ def pcfg_demo():
     """
 
     from nltk.corpora import treebank
-    from nltk import extract, cfg
-    from nltk.parse import pchart, treetransforms
+    from nltk import extract, cfg, treetransforms
+    from nltk.parse import pchart
     from itertools import islice
 
     pcfg_prods = cfg.toy_pcfg1.productions()
@@ -728,9 +728,9 @@ def pcfg_demo():
 
     productions = []
     for tree in islice(treebank.parsed(),3):
-        # perform optional in-place tree transformations, e.g.:
-        # treetransforms.collapseUnary(tree, collapsePOS = False)
-        # treetransforms.chomskyNormalForm(tree, horzMarkov = 2)
+        # perform optional tree transformations, e.g.:
+        # tree = tree.collapse_unary(collapsePOS = False)
+        # tree = tree.chomsky_normal_form(horzMarkov = 2)
 
         productions += tree.productions()
 
