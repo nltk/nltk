@@ -105,34 +105,9 @@ The following is a short tutorial on the available transformations.
 
 """
 
-from nltk.tree import Tree
-from api import *
+from nltk import Tree
 
-def chomskyNormalForm(tree, factor = "right", horzMarkov = None, vertMarkov = 0, childChar = "|", parentChar = "^"):
-    """
-    This method can modify a tree in three ways:
-    1. Convert a tree into its Chomsky Normal Form (CNF) equivalent -- Every subtree
-    has either two non-terminals or one terminal as its children.  This process
-    requires the creation of more "artificial" non-terminal nodes.
-    2. Markov (vertical) smoothing of children in new artificial nodes
-    3. Horizontal (parent) annotation of nodes
-    (see documentation in code for more information)
-      
-    @param tree: The Tree to be modified
-    @type  tree: C{Tree}
-    @param factor: Right or left factoring method (default = "right")
-    @type  factor: C{string} = [left|right]
-    @param horzMarkov: Markov order for sibling smoothing in artificial nodes (None (default) = include all siblings)
-    @type  horzMarkov: C{int} | None
-    @param vertMarkov: Markov order for parent smoothing (0 (default) = no vertical annotation)
-    @type  vertMarkov: C{int} | None
-    @param childChar: A string used in construction of the artificial nodes, separating the head of the
-                      original subtree from the child nodes that have yet to be expanded (default = "|")
-    @type  childChar: C{string}
-    @param parentChar: A string used to separate the node representation from its vertical annotation
-    @type  parentChar: C{string}
-    """
-
+def chomsky_normal_form(tree, factor = "right", horzMarkov = None, vertMarkov = 0, childChar = "|", parentChar = "^"):
     # assume all subtrees have homogeneous children
     # assume all terminals have no siblings
     
@@ -180,31 +155,13 @@ def chomskyNormalForm(tree, factor = "right", horzMarkov = None, vertMarkov = 0,
                         newHead = "%s%s<%s>%s" % (originalNode, childChar, "-".join(childNodes[max([numChildren-i-horzMarkov,0]):-i]),parentString)
                         newNode = Tree(newHead, [])
                         curNode[0:] = [newNode, nodeCopy.pop()]
-        
+
                     curNode = newNode
-      
+
                 curNode[0:] = [child for child in nodeCopy]
         
 
-def unChomskyNormalForm(tree, expandUnary = True, childChar = "|", parentChar = "^", unaryChar = "+"):
-    """
-    This method modifies the tree in three ways:
-      1. Transforms a tree in Chomsky Normal Form back to its original structure (branching greater than two)
-      2. Removes any parent annotation (if it exists)
-      3. (optional) expands unary subtrees (if previously collapsed with collapseUnary(...) )
-      
-    @param tree: The Tree to be modified
-    @type  tree: C{Tree}
-    @param expandUnary: Flag to expand unary or not (default = True)
-    @type  expandUnary: C{boolean}
-    @param childChar: A string separating the head node from its children in an artificial node (default = "|")
-    @type  childChar: C{string}
-    @param parentChar: A sting separating the node label from its parent annotation (default = "^")
-    @type  parentChar: C{string}
-    @param unaryChar: A string joining two non-terminals in a unary production (default = "+")
-    @type  unaryChar: C{string}  
-    """
-    
+def un_chomsky_normal_form(tree, expandUnary = True, childChar = "|", parentChar = "^", unaryChar = "+"):
     # Traverse the tree-depth first keeping a pointer to the parent for modification purposes.
     nodeList = [(tree,[])]
     while nodeList != []:
@@ -246,7 +203,7 @@ def unChomskyNormalForm(tree, expandUnary = True, childChar = "|", parentChar = 
                 nodeList.append((child,node))
 
 
-def collapseUnary(tree, collapsePOS = False, collapseRoot = False, joinChar = "+"):
+def collapse_unary(tree, collapsePOS = False, collapseRoot = False, joinChar = "+"):
     """
     Collapse subtrees with a single child (ie. unary productions)
     into a new non-terminal (Tree node) joined by 'joinChar'.
@@ -287,23 +244,6 @@ def collapseUnary(tree, collapsePOS = False, collapseRoot = False, joinChar = "+
                 for child in node:
                     nodeList.append(child) 
           
-
-def toTreebank(tree):
-    """
-    Convert a tree into its treebank-style bracketed equivalent.
-    """
-    return _toTreebank(tree).strip()
-
-def _toTreebank(tree):
-    s = " (%s" % tree.node
-    for child in tree:
-        if isinstance(child,Tree):
-            s += _toTreebank(child)
-        else:
-            s += " " + child
-    return s + ")"
-
-
 #################################################################
 # Demonstration
 #################################################################
@@ -314,32 +254,48 @@ def demo():
     """  
       
     from nltk.draw.tree import draw_trees
-    from nltk.tree import bracket_parse
-    from nltk.parse import treetransforms
+    from nltk import treetransforms, bracket_parse
     from copy import deepcopy
     
     # original tree from WSJ bracketed text
-    sentence = "(TOP (S (S (VP (VBN Turned) (ADVP (RB loose)) (PP (IN in) (NP (NP (NNP Shane) (NNP Longman) (POS 's)) (NN trading) (NN room))))) (, ,) (NP (DT the) (NN yuppie) (NNS dealers)) (VP (AUX do) (NP (NP (RB little)) (ADJP (RB right)))) (. .)))"
+    sentence = """(TOP
+  (S
+    (S
+      (VP
+        (VBN Turned)
+        (ADVP (RB loose))
+        (PP
+          (IN in)
+          (NP
+            (NP (NNP Shane) (NNP Longman) (POS 's))
+            (NN trading)
+            (NN room)))))
+    (, ,)
+    (NP (DT the) (NN yuppie) (NNS dealers))
+    (VP (AUX do) (NP (NP (RB little)) (ADJP (RB right))))
+    (. .)))"""
     tree = bracket_parse(sentence)
     
     # collapse subtrees with only one child
     collapsedTree = deepcopy(tree)
-    treetransforms.collapseUnary(collapsedTree)
+    treetransforms.collapse_unary(collapsedTree)
     
     # convert the tree to CNF
     cnfTree = deepcopy(collapsedTree)
-    treetransforms.chomskyNormalForm(cnfTree)
+    treetransforms.chomsky_normal_form(cnfTree)
     
     # convert the tree to CNF with parent annotation (one level) and horizontal smoothing of order two
     parentTree = deepcopy(collapsedTree)
-    treetransforms.chomskyNormalForm(parentTree, horzMarkov=2, vertMarkov=1)
+    treetransforms.chomsky_normal_form(parentTree, horzMarkov=2, vertMarkov=1)
     
     # convert the tree back to its original form (used to make CYK results comparable)
     original = deepcopy(parentTree)
-    treetransforms.unChomskyNormalForm(original)
+    treetransforms.un_chomsky_normal_form(original)
     
     # convert tree back to bracketed text
-    sentence2 = treetransforms.toTreebank(original)
+    sentence2 = original.pprint()
+    print sentence
+    print sentence2
     print "Sentences the same? ", sentence == sentence2
     
     draw_trees(tree, collapsedTree, cnfTree, parentTree, original)

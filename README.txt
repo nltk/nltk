@@ -2,9 +2,10 @@
 ###             Natural Language Toolkit (NLTK)             ###
 ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
 ### Copyright (C) 2007 University of Pennsylvania           ###
-### Author: Steven Bird <sb@csse.unimelb.edu.au>            ###
-###         Edward Loper <edloper@gradient.cis.upenn.edu>   ###
-### URL: <http://nltk.sourceforge.net>                      ###
+### Authors: Steven Bird <sb@csse.unimelb.edu.au>           ###
+###          Edward Loper <edloper@gradient.cis.upenn.edu>  ###
+###          Ewan Klein <ewan@inf.ed.ac.uk>                 ###
+### URL: <http://nltk.org>                                  ###
 ### For license information, see LICENSE.TXT                ###
 ###############################################################
 
@@ -27,21 +28,21 @@ Documentation
 ~~~~~~~~~~~~~
 
     A substantial amount of documentation about how to use NLTK is
-    available from the nltk homepage: http://nltk.sourceforge.net/
+    available from the NLTK website: http://nltk.org/
 
     In particular, the NLTK homepage contains three types of
     documentation:
 
-      - Tutorials teach students how to use the toolkit, in the
+      - The book teaches students how to use the toolkit, in the
         context of performing specific tasks. They are appropriate for
         anyone who wishes to learn how to use the toolkit.
-        http://nltk.sourceforge.net/index.php/Book
+        http://nltk.org/index.php/Book
 
       - The toolkit's reference documentation describes every module,
         interface, class, method, function, and variable in the
         toolkit. This documentation should be useful to both users and
         developers.  
-        http://nltk.sourceforge.net/doc/api/
+        http://nltk.org/doc/api/
 
 Mailing Lists
 ~~~~~~~~~~~~~
@@ -68,7 +69,7 @@ Contributing
 ~~~~~~~~~~~~
 
     If you would like to contribute to NLTK, please see
-    http://nltk.sourceforge.net/index.php/Contribute
+    http://nltk.org/index.php/Contribute
 
 
 Redistributing
@@ -84,4 +85,4 @@ Citing
 
     Please cite NLTK as follows:
     Bird, Steven, Edward Loper and Ewan Klein (2007).  Natural Language Toolkit.
-    http://nltk.sourceforge.net/
+    http://nltk.org/
