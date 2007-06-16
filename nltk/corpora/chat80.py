@@ -20,7 +20,7 @@ files.
 This module contains functions to extract data from the Chat-80
 relation files ('the world database'), and convert then into a format
 that can be incorporated in the FOL models of
-L{nltk.semantics.evaluate}. The code assumes that the Prolog
+L{nltk.sem.evaluate}. The code assumes that the Prolog
 input files are available in the NLTK corpora directory.
 
 The Chat-80 World Database consists of the following files::
@@ -124,7 +124,6 @@ current directory.
 """
 
 import re
-import nltk.semantics.evaluate as evaluate
 import shelve, os, sys
 from util import *
 
@@ -297,7 +296,8 @@ class Concept(object):
 
 
         """
-        assert evaluate.isrel(self.extension)
+        from nltk.sem import isrel
+        assert isrel(self.extension)
         if 'symmetric' in self.closures:
             pairs = []
             for (x, y) in self.extension:
@@ -471,7 +471,8 @@ def make_valuation(concepts, read=False, lexicon=False):
          vals.append((c.prefLabel, c.extension))
     if lexicon: read = True
     if read:
-        val = evaluate.Valuation()
+        from nltk.sem import Valuation
+        val = Valuation()
         val.read(vals)
         # add labels for individuals
         val = label_indivs(val, lexicon=lexicon)
@@ -513,7 +514,8 @@ def val_load(db):
         sys.exit("Cannot read file: %s" % dbname)
     else:
         db_in = shelve.open(db)
-        val = evaluate.Valuation(db_in)
+        from nltk.sem import Valuation
+        val = Valuation(db_in)
 #        val.read(db_in.items())
         return val
 

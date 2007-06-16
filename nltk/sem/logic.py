@@ -23,9 +23,7 @@ The class of C{Expression} has various subclasses:
   
 """
 
-from nltk.utilities import Counter
-from nltk.parse.featurelite import SubstituteBindingsMixin, FeatureI
-from nltk.parse.featurelite import Variable as FeatureVariablep
+from nltk import Counter, featstruct
 
 _counter = Counter()
 
@@ -581,16 +579,16 @@ class ApplicationExpression(Expression):
     def __hash__(self):
         return hash(str(self.normalize()))
 
-class ApplicationExpressionSubst(ApplicationExpression, SubstituteBindingsMixin):
+class ApplicationExpressionSubst(ApplicationExpression, featstruct.SubstituteBindingsMixin):
     pass
 
-class LambdaExpressionSubst(LambdaExpression, SubstituteBindingsMixin):
+class LambdaExpressionSubst(LambdaExpression, featstruct.SubstituteBindingsMixin):
     pass
 
-class SomeExpressionSubst(SomeExpression, SubstituteBindingsMixin):
+class SomeExpressionSubst(SomeExpression, featstruct.SubstituteBindingsMixin):
     pass
 
-class AllExpressionSubst(AllExpression, SubstituteBindingsMixin):
+class AllExpressionSubst(AllExpression, featstruct.SubstituteBindingsMixin):
     pass
 
 class LogicParser(object):
