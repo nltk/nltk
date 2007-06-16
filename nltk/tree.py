@@ -3,6 +3,7 @@
 # Copyright (C) 2001-2007 University of Pennsylvania
 # Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Steven Bird <sb@csse.unimelb.edu.au>
+#         Nathan Bodenstab <bodenstab@cslu.ogi.edu> (tree transforms)
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
@@ -11,9 +12,8 @@ Class for representing hierarchical language structures, such as
 syntax trees and morphological trees.
 """
 
-import re, types, string
-from nltk import tokenize, cfg
-from nltk.probability import ProbabilisticMixIn
+import re, string
+from nltk import tokenize, cfg, ProbabilisticMixIn
 
 ######################################################################
 ## Trees
@@ -224,6 +224,81 @@ class Tree(list):
             if isinstance(child, Tree):
                 prods += child.productions()
         return prods
+
+    #////////////////////////////////////////////////////////////
+    # Transforms
+    #////////////////////////////////////////////////////////////
+
+    def chomsky_normal_form(self, factor = "right", horzMarkov = None, vertMarkov = 0, childChar = "|", parentChar = "^"):
+        """
+        This method can modify a tree in three ways:
+        1. Convert a tree into its Chomsky Normal Form (CNF) equivalent -- Every subtree
+        has either two non-terminals or one terminal as its children.  This process
+        requires the creation of more "artificial" non-terminal nodes.
+        2. Markov (vertical) smoothing of children in new artificial nodes
+        3. Horizontal (parent) annotation of nodes
+      
+        @param tree: The Tree to be modified
+        @type  tree: C{Tree}
+        @param factor: Right or left factoring method (default = "right")
+        @type  factor: C{string} = [left|right]
+        @param horzMarkov: Markov order for sibling smoothing in artificial nodes (None (default) = include all siblings)
+        @type  horzMarkov: C{int} | None
+        @param vertMarkov: Markov order for parent smoothing (0 (default) = no vertical annotation)
+        @type  vertMarkov: C{int} | None
+        @param childChar: A string used in construction of the artificial nodes, separating the head of the
+                          original subtree from the child nodes that have yet to be expanded (default = "|")
+        @type  childChar: C{string}
+        @param parentChar: A string used to separate the node representation from its vertical annotation
+        @type  parentChar: C{string}
+        """
+        from treetransforms import chomsky_normal_form
+        chomsky_normal_form(self, factor, horzMarkov, vertMarkov, childChar, parentChar)
+            
+    def un_chomsky_normal_form(self, expandUnary = True, childChar = "|", parentChar = "^", unaryChar = "+"):
+        """
+        This method modifies the tree in three ways:
+          1. Transforms a tree in Chomsky Normal Form back to its original structure (branching greater than two)
+          2. Removes any parent annotation (if it exists)
+          3. (optional) expands unary subtrees (if previously collapsed with collapseUnary(...) )
+      
+        @param tree: The Tree to be modified
+        @type  tree: C{Tree}
+        @param expandUnary: Flag to expand unary or not (default = True)
+        @type  expandUnary: C{boolean}
+        @param childChar: A string separating the head node from its children in an artificial node (default = "|")
+        @type  childChar: C{string}
+        @param parentChar: A sting separating the node label from its parent annotation (default = "^")
+        @type  parentChar: C{string}
+        @param unaryChar: A string joining two non-terminals in a unary production (default = "+")
+        @type  unaryChar: C{string}  
+        """
+        from treetransforms import un_chomsky_normal_form
+        un_chomsky_normal_form(self, expandUnary, childChar, parentChar, unaryChar)
+
+    def collapse_unary(self, collapsePOS = False, collapseRoot = False, joinChar = "+"):
+        """
+        Collapse subtrees with a single child (ie. unary productions)
+        into a new non-terminal (Tree node) joined by 'joinChar'.
+        This is useful when working with algorithms that do not allow
+        unary productions, and completely removing the unary productions
+        would require loss of useful information.  The Tree is modified 
+        directly (since it is passed by reference) and no value is returned.
+    
+        @param tree: The Tree to be collapsed
+        @type  tree: C{Tree}
+        @param collapsePOS: 'False' (default) will not collapse the parent of leaf nodes (ie. 
+                            Part-of-Speech tags) since they are always unary productions
+        @type  collapsePOS: C{boolean}
+        @param collapseRoot: 'False' (default) will not modify the root production
+                             if it is unary.  For the Penn WSJ treebank corpus, this corresponds
+                             to the TOP -> productions.
+        @type collapseRoot: C{boolean}
+        @param joinChar: A string used to connect collapsed node values (default = "+")
+        @type  joinChar: C{string}
+        """
+        from treetransforms import collapse_unary
+        collapse_unary(self, collapsePOS, collapseRoot, joinChar)
 
     #////////////////////////////////////////////////////////////
     # Convert, copy
@@ -576,8 +651,16 @@ def demo():
     print t
     print
 
-    # Demonstrate probabilistic trees.
+    # Tree transforms
+    print "Collapse unary:"
+    t.collapse_unary()
+    print t
+    print "Chomsky normal form:"
+    t.chomsky_normal_form()
+    print t
+    print
 
+    # Demonstrate probabilistic trees.
     pt = tree.ProbabilisticTree('x', ['y', 'z'], prob=0.5)
     print "Probabilistic Tree:"
     print pt

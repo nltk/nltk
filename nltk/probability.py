@@ -242,7 +242,7 @@ class FreqDist(dict):
         @rtype: sequence of any
         """
         from operator import itemgetter
-        return sorted(self.items(), key=itemgetter(1), reverse=True)
+        return [sample for (sample, count) in sorted(self.items(), key=itemgetter(1), reverse=True)]
 
     def __repr__(self):
         """

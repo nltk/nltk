@@ -43,7 +43,7 @@ __keywords__ = ['NLP', 'CL', 'natural language processing',
 __url__ = "http://nltk.sf.net/"
 
 # Maintainer, contributors, etc.
-__maintainer__ = "Steven Bird"
+__maintainer__ = "Steven Bird, Edward Loper, Ewan Klein"
 __maintainer_email__ = "sb@csse.unimelb.edu.au"
 __author__ = __maintainer__
 __author_email__ = __maintainer_email__
@@ -51,6 +51,7 @@ __author_email__ = __maintainer_email__
 # Import top-level utilities into top-level namespace
 
 from compat import *
+from cfg import *
 from detect import *
 from evaluate import *
 from featstruct import *
