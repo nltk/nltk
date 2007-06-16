@@ -1,5 +1,4 @@
-from nltk.semantics import *
-from nltk.semantics import logic
+from nltk.sem import *
 
 import unittest
 

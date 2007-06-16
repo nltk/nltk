@@ -659,7 +659,7 @@ class Model(object):
                     if trace:
                         print indent + "value of '%s' under %s is %s" % (expr, new_g, value)
                    
-            result = (c for c in candidates)
+            result = set(c for c in candidates)
         # var isn't free in expr
         else:
             raise Undefined, "%s is not free in %s" % (var, expr)
