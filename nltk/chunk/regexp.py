@@ -872,7 +872,7 @@ def demo_eval(chunkparser, text):
         print 'Missed:'
         missed = chunkscore.missed()
         for chunk in missed[:10]:
-            print '  ', chunk
+            print '  ', ' '.join(c.__str__() for c in chunk)
         if len(chunkscore.missed()) > 10:
                print '  ...'
 
@@ -881,7 +881,7 @@ def demo_eval(chunkparser, text):
         print 'Incorrect:'
         incorrect = chunkscore.incorrect()
         for chunk in incorrect[:10]:
-            print '  ', chunk
+            print '  ', ' '.join(c.__str__() for c in chunk)
         if len(chunkscore.incorrect()) > 10:
                print '  ...'
     

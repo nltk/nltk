@@ -482,7 +482,7 @@ def demo():
     s = "[ Pierre/NNP Vinken/NNP ] ,/, [ 61/CD years/NNS ] old/JJ ,/, will/MD join/VB [ the/DT board/NN ] ./."
     from nltk import chunk
     t = chunk.tagstr2tree(s, chunk_node='NP')
-    print t.pp()
+    print t.pprint()
     print
 
     s = """
@@ -516,7 +516,7 @@ better JJR I-ADJP
 """
 
     conll_tree = conllstr2tree(s, chunk_types=('NP', 'PP'))
-    print conll_tree.pp()
+    print conll_tree.pprint()
 
     # Demonstrate CoNLL output
     print "CoNLL output:"

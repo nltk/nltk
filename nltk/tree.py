@@ -12,7 +12,7 @@ syntax trees and morphological trees.
 """
 
 import re, types, string
-from nltk import tokenize
+from nltk import tokenize, cfg
 from nltk.probability import ProbabilisticMixIn
 
 ######################################################################
@@ -219,7 +219,7 @@ class Tree(list):
         if not isinstance(self.node, str):
             raise TypeError, 'Productions can only be generated from trees having node labels that are strings'
 
-        prods = [Production(Nonterminal(self.node), _child_names(self))]
+        prods = [cfg.Production(cfg.Nonterminal(self.node), _child_names(self))]
         for child in self:
             if isinstance(child, Tree):
                 prods += child.productions()
@@ -275,25 +275,13 @@ class Tree(list):
         draw_trees(self)
 
     def __repr__(self):
-        childstr = string.join(repr(c) for c in self)
-        return '(%s: %s)' % (repr(self.node), childstr)
+        childstr = ", ".join(repr(c) for c in self)
+        return 'Tree(%s, [%s])' % (repr(self.node), childstr)
 
     def __str__(self):
-        return self.pp()
+        return self.pprint()
 
-    def _ppflat(self, nodesep, parens, quotes):
-        childstrs = []
-        for child in self:
-            if isinstance(child, Tree):
-                childstrs.append(child._ppflat(nodesep, parens, quotes))
-            elif isinstance(child, str) and not quotes:
-                childstrs.append('%s' % child)
-            else:
-                childstrs.append('%s' % child.__repr__())
-        return '%s%s%s %s%s' % (parens[0], self.node, nodesep, 
-                                string.join(childstrs), parens[1])
-
-    def pp(self, margin=70, indent=0, nodesep=':', parens='()', quotes=True):
+    def pprint(self, margin=70, indent=0, nodesep='', parens='()', quotes=False):
         """
         @return: A pretty-printed string representation of this tree.
         @rtype: C{string}
@@ -309,7 +297,7 @@ class Tree(list):
         """
 
         # Try writing it on one line.
-        s = self._ppflat(nodesep, parens, quotes)
+        s = self._pprint_flat(nodesep, parens, quotes)
         if len(s)+indent < margin:
             return s
 
@@ -317,16 +305,13 @@ class Tree(list):
         s = '%s%s%s' % (parens[0], self.node, nodesep)
         for child in self:
             try:
-                s += '\n'+' '*(indent+2)+child.pp(margin, indent+2,
+                s += '\n'+' '*(indent+2)+child.pprint(margin, indent+2,
                                                   nodesep, parens, quotes)
             except AttributeError:
                 s += '\n'+' '*(indent+2)+repr(child)
         return s+parens[1]
 
-    def pp_treebank(self, margin=70, indent=0):
-        return self.pp(margin, indent, nodesep='', quotes=False)
-
-    def pp_latex_qtree(self):
+    def pprint_latex_qtree(self):
         r"""
         Returns a representation of the tree compatible with the
         LaTeX qtree package. This consists of the string C{\Tree}
@@ -344,8 +329,22 @@ class Tree(list):
         @return: A latex qtree representation of this tree.
         @rtype: C{string}
         """
-        return r'\Tree ' + self.pp(indent=6, nodesep='', parens=('[.', ' ]'))
+        return r'\Tree ' + self.pprint(indent=6, nodesep='', parens=('[.', ' ]'))
     
+    def _pprint_flat(self, nodesep, parens, quotes):
+        childstrs = []
+        for child in self:
+            if isinstance(child, Tree):
+                childstrs.append(child._pprint_flat(nodesep, parens, quotes))
+            elif isinstance(child, tuple):
+                childstrs.append("/".join(child))
+            elif isinstance(child, str) and not quotes:
+                childstrs.append('%s' % child)
+            else:
+                childstrs.append('%s' % child.__repr__())
+        return '%s%s%s %s%s' % (parens[0], self.node, nodesep, 
+                                string.join(childstrs), parens[1])
+
 class ImmutableTree(Tree):
     def __setitem__(self):
         raise ValueError, 'ImmutableTrees may not be modified'
@@ -388,7 +387,7 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
     def __repr__(self):
         return '%s (p=%s)' % (Tree.__repr__(self), self.prob())
     def __str__(self):
-        return '%s (p=%s)' % (self.pp(margin=60), self.prob())
+        return '%s (p=%s)' % (self.pprint(margin=60), self.prob())
     def __cmp__(self, other):
         c = Tree.__cmp__(self, other)
         if c != 0: return c
@@ -420,7 +419,7 @@ class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
     def __repr__(self):
         return '%s [%s]' % (Tree.__repr__(self), self.prob())
     def __str__(self):
-        return '%s [%s]' % (self.pp(margin=60), self.prob())
+        return '%s [%s]' % (self.pprint(margin=60), self.prob())
     def __cmp__(self, other):
         c = Tree.__cmp__(self, other)
         if c != 0: return c
@@ -447,7 +446,7 @@ def _child_names(tree):
     names = []
     for child in tree:
         if isinstance(child, Tree):
-            names.append(Nonterminal(child.node))
+            names.append(cfg.Nonterminal(child.node))
         else:
             names.append(child)
     return names
@@ -549,13 +548,14 @@ def demo():
     and shows the results of calling several of their methods.
     """
     
-    from nltk.parse import tree
+    from nltk import tree
 
     # Demonstrate tree parsing.
     s = '(S (NP (DT the) (NN cat)) (VP (VBD ate) (NP (DT a) (NN cookie))))'
     t = tree.bracket_parse(s)
     print "Convert bracketed string into tree:"
     print t
+    print t.__repr__()
 
     print "Display tree properties:"
     print t.node           # tree's constituent type
@@ -584,15 +584,14 @@ def demo():
     print
 
     # Demonstrate parsing of treebank output format.
-    t = tree.bracket_parse(t.pp_treebank())[0]
+    t = tree.bracket_parse(t.pprint())
     print "Convert tree to bracketed string and back again:"
-    print t.pp_treebank()
     print t
     print
 
     # Demonstrate LaTeX output
     print "LaTeX output:"
-    print t.pp_latex_qtree()
+    print t.pprint_latex_qtree()
     print
 
     # Demonstrate Productions
