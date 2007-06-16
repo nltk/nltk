@@ -72,7 +72,7 @@ Distributed under the GPL. See LICENSE.TXT for information.""" % globals()
 		filename = sys.stdin.readline()[:-1]
 		if filename == '': return
 	
-	grammar = GrammarFile.read_file(filename)
+	grammar = GrammarFile(filename)
 
 	if not batch:
 		sys.stderr.write("Sentence: ")
