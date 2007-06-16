@@ -38,6 +38,7 @@ This option is most useful with InsideParse.
 # to associate probabilities with child pointer lists.
 
 from nltk.tree import Tree, ProbabilisticTree
+from nltk import Nonterminal
 from api import *
 from chart import Chart, LeafEdge, TreeEdge, AbstractChartRule
 

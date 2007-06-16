@@ -6,7 +6,7 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk.tree import Tree
+from nltk.tree import Tree, ProbabilisticTree
 from api import *
 
 ##//////////////////////////////////////////////////////
@@ -339,13 +339,13 @@ def demo():
     summary of the results are displayed.
     """
     import sys, time
-    from nltk import tokenize, cfg, pcfg
+    import nltk
+    from nltk import tokenize
     from nltk.parse import ViterbiParse
 
     # Define two demos.  Each demo has a sentence and a grammar.
-    demos = [('I saw the man with my telescope', pcfg.toy1),
-             ('the boy saw Jack with Bob under the table with a telescope',
-              pcfg.toy2)]
+    demos = [('I saw the man with my telescope', nltk.toy_pcfg1),
+             ('the boy saw Jack with Bob under the table with a telescope', nltk.toy_pcfg2)]
 
     # Ask the user which demo they want to use.
     print
