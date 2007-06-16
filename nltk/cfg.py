@@ -526,7 +526,7 @@ class WeightedGrammar(Grammar):
 
 # Contributed by Nathan Bodenstab <bodenstab@cslu.ogi.edu>
 
-def induce(start, productions):
+def induce_pcfg(start, productions):
     """
     Induce a PCFG grammar from a list of productions.
 
@@ -659,7 +659,7 @@ def cfg_demo():
     print
 
 
-toy1 = parse_pcfg("""
+toy_pcfg1 = parse_pcfg("""
     S -> NP VP [1.0]
     NP -> Det N [0.5] | NP PP [0.25] | 'John' [0.1] | 'I' [0.15]
     Det -> 'the' [0.8] | 'my' [0.2]
@@ -670,7 +670,7 @@ toy1 = parse_pcfg("""
     P -> 'with' [0.61] | 'under' [0.39]
     """)
 
-toy2 = parse_pcfg("""
+toy_pcfg2 = parse_pcfg("""
     S    -> NP VP         [1.0]
     VP   -> V NP          [.59]
     VP   -> V             [.40]
@@ -702,11 +702,11 @@ def pcfg_demo():
     """
 
     from nltk.corpora import treebank
-    from nltk import extract, cfg, pcfg
+    from nltk import extract, cfg
     from nltk.parse import pchart, treetransforms
     from itertools import islice
 
-    pcfg_prods = pcfg.toy1.productions()
+    pcfg_prods = cfg.toy_pcfg1.productions()
 
     pcfg_prod = pcfg_prods[2]
     print 'A PCFG production:', `pcfg_prod`
@@ -715,7 +715,7 @@ def pcfg_demo():
     print '    pcfg_prod.prob() =>', `pcfg_prod.prob()`
     print
 
-    grammar = pcfg.toy2
+    grammar = cfg.toy_pcfg2
     print 'A PCFG grammar:', `grammar`
     print '    grammar.start()       =>', `grammar.start()`
     print '    grammar.productions() =>',
@@ -735,7 +735,7 @@ def pcfg_demo():
         productions += tree.productions()
 
     S = Nonterminal('S')
-    grammar = pcfg.induce(S, productions)
+    grammar = cfg.induce_pcfg(S, productions)
     print grammar
     print
 
