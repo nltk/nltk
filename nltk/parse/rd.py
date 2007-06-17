@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 from nltk import tokenize, cfg
-from nltk.tree import Tree
+from nltk.tree import Tree, ImmutableTree
 from api import *
 import string
 
