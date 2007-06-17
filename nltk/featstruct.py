@@ -878,9 +878,6 @@ def variable_constructor(loader, node):
 yaml.add_constructor(u'!var', variable_constructor)
 yaml.add_implicit_resolver(u'!var', re.compile(r'^\?\w+$'))
 
-def parse(s):
-    return FeatStruct(yaml.load(s))
-
 #################################################################################
 # DEMO CODE
 #################################################################################

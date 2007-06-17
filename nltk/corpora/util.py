@@ -37,7 +37,7 @@ def open_corpus(*args):
         raise
     
 # Find a default base directory.
-if os.environ.has_key('NLTK_CORPORA'):
+if 'NLTK_CORPORA' in os.environ:
     set_basedir(os.environ['NLTK_CORPORA'])
 elif sys.platform.startswith('win'):
     if os.path.isdir('C:\\corpora'):

@@ -81,7 +81,7 @@ def rude_chat():
     print '='*72
     print "I suppose I should say hello."
 
-    rude.converse()
+    rude_chatbot.converse()
 
 def demo():
     rude_chat()

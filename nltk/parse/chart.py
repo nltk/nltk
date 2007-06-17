@@ -493,7 +493,7 @@ class Chart(object):
         restr_keys = tuple(restr_keys)
 
         # If it doesn't exist, then create it.
-        if not self._indexes.has_key(restr_keys):
+        if restr_keys not in self._indexes:
             self._add_index(restr_keys)
                 
         vals = [restrictions[k] for k in restr_keys]
@@ -539,7 +539,7 @@ class Chart(object):
             C{child_pointer_list} with C{edge}.
         """
         # Is it a new edge?
-        if not self._edge_to_cpls.has_key(edge):
+        if edge not in self._edge_to_cpls:
             # Add it to the list of edges.
             self._edges.append(edge)
 
@@ -553,7 +553,7 @@ class Chart(object):
         cpls = self._edge_to_cpls.setdefault(edge,{})
         child_pointer_list = tuple(child_pointer_list)
 
-        if cpls.has_key(child_pointer_list):
+        if child_pointer_list in cpls:
             # We've already got this CPL; return false.
             return False
         else:
@@ -600,7 +600,8 @@ class Chart(object):
             than once, we can reuse the same trees.
         """
         # If we've seen this edge before, then reuse our old answer.
-        if memo.has_key(edge): return memo[edge]
+        if edge in memo:
+            return memo[edge]
 
         trees = []
 
