@@ -128,7 +128,6 @@ WEB = stevenbird@shell.sourceforge.net:/home/groups/n/nl/nltk/htdocs
 RSYNC_OPTS = -arvz -e ssh --relative --cvs-exclude
 
 rsync:	clean_up
-	$(MAKE) -C web rsync
 	$(MAKE) -C doc rsync
 	rsync $(RSYNC_OPTS) nltk examples $(WEB)
 	touch .rsync.done
