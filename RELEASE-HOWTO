@@ -13,11 +13,10 @@ A. ERROR CHECKING
   4. Tutorial examples (cd doc/en; make errs)
   5. Check trackers: http://sourceforge.net/tracker/?group_id=30982
 
-B. CHANGELOG AND RELEASE ANNOUNCEMENT
+B. CHANGELOG
 
   1. Update the ChangeLog ("svn log")
-  2. Edit web/index.html with new release announcement
-  3. Commit these changes
+  2. Commit changes
 
 C. NLTK VERSION NUMBERS
 
@@ -26,9 +25,9 @@ C. NLTK VERSION NUMBERS
   3. Edit wiki installation instructions with new version number
   5. Commit these changes
 
-D. PYTHON AND NUMERIC VERSIONS
+D. THIRD-PARTY SOFTWARE VERSIONS
 
-  1. Check for new versions of Python and Numeric
+  1. Check for new versions of Python, Numeric, Matplotlib
   2. Modify top level Makefile and commit
   3. Modify wiki installation instructions
   4. Save wiki installation page and FAQ in HTML format to /nltk
@@ -80,14 +79,15 @@ A. UPLOAD DISTRIBUTIONS
 B. WEBSITE
 
   1. make rsync
-  2. post to one or more of the mailing lists
+  2. add release notice to wiki
+  3. post to one or more of the mailing lists
        nltk-announce@lists.sourceforge.net,
        CORPORA@uib.no, linguist@linguistlist.org,
        PythonSIL@lists.sil.org
        mailing lists for any local courses using NLTK
-  3. post a news item on the sourceforge site
+  4. post a news item on the sourceforge site
        http://sourceforge.net/news/?group_id=30982
-  4. register with Python Cheeseshop
+  5. register with Python Cheeseshop
        python setup.py register
 
 C. INSTALLATION
