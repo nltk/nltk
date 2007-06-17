@@ -119,7 +119,7 @@ class OrderedDict(dict):
 
     def update(self, d):
         for key in d.keys():
-            if not self.has_key(key):
+            if key not in self:
                 self._keys.append(key)
         dict.update(self, d)
 
@@ -141,11 +141,9 @@ class OrderedDict(dict):
         del self._keys[cur]
 
     def index(self, key):
-        if not self.has_key(key):
+        if key not in self:
             raise KeyError(key)
         return self._keys.index(key)
-
-
 
 
 ##########################################################################
@@ -258,7 +256,7 @@ class MinimalSet(object):
         return [c for c in self._contexts if len(self._seen[c]) >= minimum]
 
     def display(self, context, target, default=""):
-        if self._displays.has_key((context, target)):
+        if (context, target) not in self._displays:
             return self._displays[(context, target)]
         else:
             return default

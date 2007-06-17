@@ -13,8 +13,10 @@ feature structures as nodes.
 """
 
 import yaml
-from nltk.parse import *
-from nltk.parse.category import Category, GrammarFile, GrammarCategory
+from api import *
+from chart import *
+from nltk.featstruct import *
+from category import Category, GrammarFile, GrammarCategory
 from nltk import cfg
 
 # from featurelite import *
