@@ -14,7 +14,6 @@ a first-order model.
 
 
 from nltk import tokenize, Tree
-from nltk.parse.category import *
 
 ##############################################################
 ## Utility functions for connecting parse output to semantics
@@ -52,6 +51,7 @@ def semrep(node, beta_reduce=True):
     Find the semantic representation at a given tree node.
     """
     # check that we have a GrammarCategory
+    from nltk.parse import GrammarCategory
     assert isinstance(node, GrammarCategory)
     try:
         semrep = node.get_feature('sem')

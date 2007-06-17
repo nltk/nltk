@@ -1,42 +1,41 @@
+Version 0.8b1 2007-06-18
 
-Version 0.8b1 2007-06-16
-
-Code:
-- changed GrammarFile initializer to accept filename
-- import all top-level modules into nltk, reducing need for import statements  
-- new featstruct module, unifying old featurelite and featurestructure modules
-- consistent tree display format
-- fixed loading process for WordNet and TIMIT that prevented code installation if data not installed
+Code (major):
 - changed package name to nltk
-- more care with unicode types
+- import all top-level modules into nltk, reducing need for import statements  
 - reorganization of sub-package structures to simplify imports
-- incorporated pcfg code into cfg module
-- moved cfg, tree, featstruct to top level
-- Glue semantics code from Dan Garrette (contrib.glue)
-- new filebroker module to make handling of example grammar files more transparent
-- more corpus eraders (webtext, abc)
+- new featstruct module, unifying old featurelite and featurestructure modules
 - FreqDist now inherits from dict, fd.count(sample) becomes fd[sample]
 - FreqDist initializer permits: fd = FreqDist(len(token) for token in text)
-- Punkt sentence segmenter port by Willy (contrib.punkt)
-- extensive improvements to classifiers (contrib.classifier*, Sumukh Ghodke)
+- made numpy optional
+Code (minor):
+- changed GrammarFile initializer to accept filename
+- consistent tree display format
+- fixed loading process for WordNet and TIMIT that prevented code installation if data not installed
+- taken more care with unicode types
+- incorporated pcfg code into cfg module
+- moved cfg, tree, featstruct to top level
+- new filebroker module to make handling of example grammar files more transparent
+- more corpus readers (webtext, abc)
 - added cfg.covers() to check that a grammar covers a sentence
 - simple text-based wordnet browser
-- added LPath interpreter (contrib.lpath, Haejoong Lee)
-- made numpy optional
-
-Doc:
+- known bug: parse/featurechart.py uses incorrect apply() function
+Corpora:
+- csv data file to document NLTK corpora
+Contrib:
+- added Glue semantics code (contrib.glue, by Dan Garrette)
+- Punkt sentence segmenter port (contrib.punkt, by Willy)
+- added LPath interpreter (contrib.lpath, by Haejoong Lee)
+- extensive work on classifiers (contrib.classifier*, Sumukh Ghodke)
+Tutorials:
 - polishing on parts I, II
 - more illustrations, data plots, summaries, exercises
 - continuing to make prose more accessible to non-linguistic audience
-- powerpoint overview of NLTK
-
+- new default import that all chapters presume: from nltk.book import *
 Distributions:
 - updated to latest version of numpy
-- removed wordnet as it is included in corpus distribution
+- removed WordNet installation instructions as WordNet is now included in corpus distribution
 - added pylab (matplotlib)
-
-Corpora:
-- csv data file to document NLTK corpora
 
 Version 0.7.5 2007-05-16
 

@@ -108,7 +108,7 @@ class Ngram(SequentialBackoff):
         history = tuple(self._history)
         context = (history, token)
 
-        if self._model.has_key(context):
+        if context in self._model:
             return self._model[context]
         if self._backoff:
             return self._backoff.tag_one(token, history)

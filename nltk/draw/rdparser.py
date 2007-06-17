@@ -68,10 +68,8 @@ Keyboard Shortcuts::
 
 from nltk.draw.tree import *
 from nltk.draw import *
-from nltk import parse
-from nltk import tokenize
+from nltk import parse, tokenize
 from nltk.draw.cfg import *
-from nltk.draw.cfg import CFGEditor
 import string
 import tkFont
 from Tkinter import *

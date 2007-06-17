@@ -90,7 +90,7 @@ class Unigram(SequentialBackoff):
     def tag_one(self, token, history=None):
         if self.size() == 0:
             raise ValueError, 'Tagger is not trained'
-        if self._model.has_key(token):
+        if token in self._model:
             return self._model[token]
         if self._backoff:
             return self._backoff.tag_one(token, history)
@@ -192,7 +192,7 @@ class Affix(SequentialBackoff):
         if self.size() == 0:
             raise ValueError, 'Tagger is not trained'
         affix = self._get_affix(token)
-        if len(token) >= self._minlength and self._model.has_key(affix):
+        if len(token) >= self._minlength and affix in self._model:
             return self._model[affix]
         if self._backoff:
             return self._backoff.tag_one(token, history)
