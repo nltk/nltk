@@ -7,12 +7,12 @@
 # For license information, see LICENSE.TXT
 
 from util import *
-import abc, brown, chat80, cmudict, conll2000, conll2002, genesis, gutenberg
-import ieer, inaugural, indian, names, ppattach, senseval, shakespeare
-import sinica_treebank, state_union, stopwords, timit, toolbox, treebank
-import udhr, web, webtext, words, ycoe
-
 def demo():
+    import abc, brown, chat80, cmudict, conll2000, conll2002, genesis, gutenberg
+    import ieer, inaugural, indian, names, ppattach, senseval, shakespeare
+    import sinica_treebank, state_union, stopwords, timit, toolbox, treebank
+    import udhr, web, webtext, words, ycoe
+
     abc.demo()
     brown.demo()
 #    chat80.demo()
