@@ -1,0 +1,69 @@
+
+
+( (NP-HLN PAPERS
+	  :))
+( (S (NP-SBJ-1 Backe Group Inc.)
+     (VP agreed
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP acquire
+                    (NP (NP Atlantic Publications Inc.)
+                        ,
+                        (SBAR (WHNP-141 which)
+                              (S (NP-SBJ *T*-141)
+                                 (VP has
+                                     (NP (NP 30 community papers)
+                                         and
+                                         (NP (NP annual sales)
+                                             (PP of
+                                                 (NP (QP $ 7 million) *U*))))))))))))
+     .))
+( (S (NP-SBJ-1 Terms)
+     (VP were 
+	 n't
+         (VP disclosed
+	     (NP *-1)))
+     .))
+( (S (NP-SBJ Backe)
+     (VP is
+         (NP-PRD (NP a
+		     (ADJP closely held)
+		     media firm)
+		 (VP run
+		     (NP *)
+		     (PP by
+			 (NP-LGS former
+				 CBS Inc. President
+				 John Backe)))))
+     .))
+( (NP-HLN TV
+	  :))
+( (S (NP-SBJ-1 Price Communications Corp.)
+     (VP completed
+	 (NP (NP the sale)
+	     (PP of
+		 (NP (NP four)
+		     (PP of
+			 (NP its TV stations))))
+	     (PP to
+		 (NP NTG Inc.))
+	     (PP for
+		 (NP (NP (QP $ 120 million) *U*)
+		     (PP in
+			 (NP cash and notes)))))
+	 ,
+	 (S-ADV (NP-SBJ *-1)
+		(VP retaining
+		    (NP (NP a (ADJP 10 %) equity stake)
+			(PP-LOC in
+				(NP the new concern))))))
+     .))
+( (S (NP-SBJ-1 NTG)
+     (VP was
+         (VP formed
+	     (NP *-1)
+             (PP by
+                 (NP-LGS (NP Osborn Communications Corp.)
+			 and
+			 (NP Desai Capital)))))
+     .))

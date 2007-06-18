@@ -1,0 +1,1382 @@
+
+
+( (S (NP-SBJ (NP (NP The National Association)
+		 (PP of
+		     (NP Securities Dealers)))
+	     ,
+             (NP (NP the self-regulatory organization)
+                 (PP for
+                     (NP the over-the-counter securities markets)))
+             ,)
+     (VP disciplined
+         (NP (NP a number)
+             (PP of
+                 (NP firms and individuals)))
+         (PP-CLR for
+		 (NP (NP alleged violations)
+		     (PP of
+			 (NP industry rules)))))
+     .))
+( (S (S (NP-SBJ-150 Two firms)
+        (VP were
+            (VP expelled
+                (NP *-150)
+                (PP-CLR from
+			(NP the NASD)))))
+     ,
+     (S (NP-SBJ-1 three)
+        (VP were
+            (VP suspended
+                or
+                barred
+		(NP *-1))))
+     and
+     (S (NP-SBJ-151 nine)
+        (VP were
+            (VP fined
+                (NP *-151))))
+     .))
+( (S (NP-SBJ-1 (NP (NP First Securities Group)
+		   (PP of
+		       (NP California)))
+	       and
+	       (NP (NP a principal)
+		   (PP of
+		       (NP the firm))
+		   ,
+		   (NP (NP Louis Fernando Vargas)
+		       (PP of
+			   (NP (NP Marina del Rey)
+			       ,
+			       (NP-LOC Calif.))))
+		   ,))
+     (VP were
+	 (VP (ADVP-MNR jointly)
+	     (VP fined
+		 (NP *-1)
+                 (NP $ 15,000 *U*)) 
+             and
+             (VP expelled
+		 (NP *-1))
+	     (PP for
+		 (NP (NP alleged violations)
+		     (PP of
+			 (NP (NP reporting requirements)
+			     (PP on
+				 (NP securities sales))))))))
+     .))
+( (S (ADVP Also)
+     ,
+     (NP-SBJ-152 Mr. Vargas)
+     (VP was
+         (VP barred
+             (NP *-152)
+             (PP-CLR from
+		     (NP (NP association)
+			 (PP with
+			     (NP any NASD member))))))
+     .))
+( (S (NP-SBJ-153 Neither
+                 (NP (NP First Securities)
+		     ,
+                     (PP of
+                         (NP Beverly Hills))
+                     ,)
+                 nor
+                 (NP Mr. Vargas))
+     (VP could
+         (VP be
+             (VP reached
+                 (NP *-153)
+                 (PP-CLR for
+			 (NP comment)))))
+     .))
+( (S (NP-SBJ A telephone-information operator)
+     (VP had
+         (NP (NP no listing)
+             (PP for
+                 (NP either party))))
+     .))
+( (S (NP-SBJ-1 (NP (NP J.L. Henry & Co.)
+		   ,
+		   (NP-LOC Miami)
+		   ,)
+	       and
+	       (NP (NP a principal)
+		   (PP of
+		       (NP the firm))
+		   ,
+		   (NP (NP Henry I. Otero)
+		       (PP of
+			   (NP Miami)))
+		   ,))
+     (VP were
+	 (VP (ADVP-MNR jointly)
+	     (VP fined
+		 (NP *-1)
+                 (NP $ 30,000 *U*)) 
+             and
+             (VP expelled
+		 (NP *-1))
+	     ,
+	     (PP for
+		 (NP (NP alleged improper use)
+		     (PP of
+			 (NP (NP a customer 's)
+			     funds))
+		     ,
+		     (PP-LOC among
+			     (NP other things))))))
+     .))
+( (S (ADVP Also)
+     ,
+     (NP-SBJ-154 Mr. Otero)
+     (VP was
+         (VP barred
+             (NP *-154)
+             (PP-CLR from
+		     (NP (NP association)
+			 (PP with
+			     (NP any NASD member))))))
+     .))
+( (S (S-TPC-1 (NP-SBJ J.L. Henry)
+	      (VP has 
+		  n't
+		  (NP any Miami telephone listing)))
+     ,
+     (NP-SBJ an operator)
+     (VP said
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (NP-SBJ-155 (NP Mr. Otero)
+                 ,
+                 (SBAR (WHNP-249 who)
+                       (S (NP-SBJ *T*-249)
+			  (ADVP apparently)
+                          (VP has
+                              (NP an unpublished number))))
+                 ,)
+     (ADVP also)
+     (VP could 
+	 n't
+         (VP be
+             (VP reached
+                 (NP *-155))))
+     .))
+( (S (NP-SBJ-1 (NP (NP Biscayne Securities Corp.) 
+		   ,
+		   (PP of
+		       (NP (NP Lauderhill)
+			   ,
+			   (NP-LOC Fla.)
+			   ,)))
+	       and
+	       (NP (NP a principal)
+		   (PP of
+		       (NP the firm))
+		   ,
+		   (NP (NP Alvin Rosenblum)
+		       (PP of
+			   (NP (NP Plantation)
+			       ,
+			       (NP-LOC Fla.)
+			       ,)))))
+     (VP were
+	 (VP (ADVP-MNR jointly)
+	     (VP fined
+		 (NP *-1)
+                 (NP $ 20,000 *U*)) 
+             and
+             (VP given
+		 (NP *-1)
+                 (NP 10-day suspensions))
+	     (PP for
+		 (S-NOM (NP-SBJ *)
+			(ADVP allegedly)
+			(VP selling
+			    (NP securities)
+			    (PP-CLR at
+				    (NP unfair prices)))))))
+     .))
+( (S (S-TPC-1 (NP-SBJ Biscayne)
+	      (VP has 
+		  n't
+		  (NP any telephone listing)))
+     ,
+     (NP-SBJ an operator)
+     (VP said
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (NP-SBJ-156 (NP Mr. Rosenblum)
+                 ,
+                 (SBAR (WHNP-250 who)
+                       (S (NP-SBJ *T*-250)
+                          (ADVP apparently)
+			  (VP has
+                              (NP an unpublished phone number))))
+                 ,)
+     (ADVP also)
+     (VP could 
+	 n't
+         (VP be
+             (VP reached
+                 (NP *-156))))
+     .))
+( (S (NP-SBJ-1 (NP (NP Triton Securities)
+		   ,
+		   (PP of
+		       (NP (NP Danville)
+			   ,
+			   (NP-LOC Calif.)
+			   ,)))
+	       and
+	       (NP (NP a principal)
+		   (PP of
+		       (NP the firm))
+		   ,
+		   (NP (NP Delwin George Chase)
+		       ,
+		       (PP (ADVP also) 
+			   of
+			   (NP Danville))
+		       ,)))
+     (VP were
+         (VP (ADVP-MNR jointly)
+	     (VP fined
+		 (NP *-1)
+                 (NP $ 10,000 *U*)) 
+             and
+             (VP given
+		 (NP *-1)
+                 (NP 30-day suspensions))
+	     (PP as
+		 (NP (NP part)
+		     (PP of
+			 (NP a settlement))))))
+     .))
+( (S (SBAR-ADV While
+	       (S (NP-SBJ *-1)
+		  (VP neither
+		      admitting
+		      nor
+		      denying
+		      (NP wrongdoing))))
+     ,
+     (NP-SBJ-1 (NP Triton)
+	       and
+	       (NP Mr. Chase))
+     (VP consented
+         (PP-CLR to
+		 (NP (NP findings)
+		     (PP of
+			 (NP (NP violations)
+			     (PP in
+				 (NP (NP connection)
+				     (PP with
+					 (NP limited-partnership sales)))))))))
+     .))
+( (S (NP-SBJ-157 (NP Officials)
+                 (PP of
+                     (NP Triton)))
+     (VP could 
+	 n't
+         (VP be
+             (VP reached
+                 (NP *-157)
+                 (PP-CLR for
+			 (NP comment)))))
+     .))
+( (S (NP-SBJ Mr. Chase)
+     (VP did
+	 n't
+         (VP return
+             (NP (NP a telephone call)
+                 (PP to
+                     (NP his office)))))
+     .))
+( (S (NP-SBJ (NP (NP Crane & Co. Securities Inc.)
+		 ,
+                 (PP of
+                     (NP (NP Mount Clemens)
+                         ,
+                         (NP-LOC Mich.)
+                         ,)))
+             and
+             (NP (NP its president)
+                 ,
+                 (NP (NP Glenn R. Crane)
+		     ,
+		     (PP of
+			 (NP (NP Sterling Heights)
+			     ,
+			     (NP-LOC Mich.)
+			     ,)))))
+     (VP consented
+         (PP-CLR to
+		 (NP (NP a joint fine)
+		     (PP of
+			 (NP $ 10,000 *U*)))))
+     .))
+( (S (PP Without
+         (S-NOM (NP-SBJ *-1)
+		(VP admitting
+		    or
+		    denying
+		    (NP wrongdoing))))
+     ,
+     (NP-SBJ-1 they)
+     (VP consented
+         (PP-CLR to
+		 (NP (NP findings)
+		     (PP of
+			 (NP (NP violations)
+			     (PP of
+				 (NP escrow
+				     and
+				     record-keeping
+				     rules)))))))
+     .))
+( (S (NP-SBJ Mr. Crane)
+     (VP did 
+	 n't
+         (VP return
+             (NP (NP a call)
+                 (VP seeking
+                     (NP comment)))))
+     .))
+( (S (NP-SBJ (NP First Commonwealth Securities Corp.
+		 ,
+                 (PP of
+                     (NP New Orleans))
+                 ,)
+             and
+             (NP (NP its president)
+                 ,
+                 (NP (NP Kenneth J. Canepa)
+		     ,
+                     (PP (ADVP also)
+			 of
+                         (NP New Orleans)))
+                 ,))
+     (VP consented
+         (PP-CLR to
+		 (NP a 
+		     (ADJP $ 10,000 *U*) 
+		     fine)))
+     .))
+( (S (ADVP Also)
+     ,
+     (NP-SBJ Mr. Canepa)
+     (VP received
+         (NP a two-week suspension)
+	 ``
+	 (PP in 
+	     (NP a principal capacity)))
+     .
+     ''))
+( (S (PP Without
+         (S-NOM (NP-SBJ *-1)
+		(VP admitting
+		    or
+		    denying
+		    (NP wrongdoing))))
+     ,
+     (NP-SBJ-1 they)
+     (VP consented
+         (PP-CLR to
+		 (NP findings
+		     (SBAR that
+			   (S (NP-SBJ they)
+			      (VP had
+				  (VP (VP (ADVP-MNR inaccurately)
+					  represented
+					  (NP (NP the firm 's)
+					      net capital))
+				      ,
+				      (VP maintained
+					  (NP inaccurate books and records))
+				      , 
+				      and
+				      (VP made
+					  (NP other violations)))))))))
+     .))
+( (S (NP-SBJ-1 Mr. Canepa)
+     (VP (VP confirmed
+             (SBAR 0
+                   (S (NP-SBJ he)
+                      (VP had
+                          (VP consented
+                              (PP-CLR to
+				      (NP the sanctions)))))))
+         but
+         (VP declined
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP comment
+                        (ADVP further)))))) 
+     .))
+( (S (NP-SBJ (NP (NP Weatherly Securities Corp.)
+                 ,
+                 (NP-LOC New York)
+                 ,)
+             and
+             (NP (NP (NP three)
+                     (PP of
+                         (NP its principals)))
+                 (PRN --
+		      (NP (NP (NP (NP Dell Eugene Keehn)
+				  and
+				  (NP William Northy Prater Jr.))
+			      ,
+			      (NP (NP both)
+				  (PP of
+				      (NP (NP Mercer Island)
+					  ,
+					  (NP-LOC Wash.)))))
+			  , 
+			  and
+			  (NP (NP Thomas Albert McFall) 
+			      ,
+			      (PP of
+				  (NP (NP Red Bank)
+				      ,
+				      (NP-LOC N.J .))))))
+		 --))
+     (VP consented
+         (PP-CLR to
+		 (NP (NP a fine)
+		     (PP of
+			 (NP $ 20,000 *U*)))))
+     .))
+( (S (PP Without
+         (S-NOM (NP-SBJ *-1)
+		(VP admitting
+		    or
+		    denying
+		    (NP wrongdoing))))
+     ,
+     (NP-SBJ-1 they)
+     (VP consented
+         (PP-CLR to
+		 (NP findings
+		     (SBAR that
+			   (S (NP-SBJ-2 they)
+			      (VP failed
+				  (S (NP-SBJ *-2)
+				     (VP to
+					 (VP return
+					     (NP (NP funds)
+						 (VP owed
+						     (NP *)
+						     (PP-CLR to
+							     (NP customers))
+						     (PP in
+							 (NP (NP connection)
+							     (PP with
+								 (NP a limited-partnership offering)))))))))))))))
+     .))
+( (S (S-ADV (NP-SBJ-1 *-2)
+	    (VP Reached
+		(NP *-1)
+		(PP-LOC-CLR at
+			    (NP his office))))
+     ,
+     (NP-SBJ-2 (NP Mr. McFall)
+	       ,
+	       (NP (ADVP-TMP currently)
+		   chairman)
+	       ,)
+     (VP said 
+	 ,
+	 ``
+	 (S (NP-SBJ An implication
+		    (SBAR that
+			  (S (NP-SBJ-3 we)
+			     (VP failed
+				 (S (NP-SBJ *-3)
+				    (VP to
+					(VP return
+					    (NP investor funds))))))))
+	    (VP is
+		(ADJP-PRD inappropriate and inaccurate))))
+     .
+     ''))
+( (S (NP-SBJ He)
+     (VP described
+         (NP the situation)
+         (PP-CLR as
+		 (NP ``
+		     (NP (NP an escrow problem)
+			 ,
+			 (NP a timing issue))
+		     , 
+		     ''
+		     (SBAR (WHNP-1 which)
+			   (S (NP-SBJ he)
+			      (VP said
+				  (SBAR 0
+					(S (NP-SBJ-2 *T*-1)
+					   (VP was
+					       (ADVP-TMP rapidly)
+					       (VP rectified 
+						   (NP *-2)
+						   ,
+						   (PP with
+						       (NP (NP no losses)
+							   (PP to
+							       (NP customers))))))))))))))
+     .))
+( (S (NP-SBJ-1 (NP (NP W.N. Whelen & Co.)
+		   ,
+		   (PP of
+		       (NP (NP Georgetown)
+			   ,
+			   (NP-LOC Del.))))
+	       , 
+	       and
+	       (NP (NP its president)
+		   ,
+		   (NP (NP William N. Whelen Jr.)
+		       ,
+		       (PP (ADVP also)
+			   of
+			   (NP Georgetown)))
+		   ,))
+     (VP (VP were
+	     (VP barred
+		 (NP-2 *-1)
+		 (PP-CLR from
+			 (S-NOM (NP-SBJ *-2)
+				(VP transacting
+				    (NP principal trades))))
+		 (PP-TMP for
+			 (NP 90 days))))
+	 and
+	 (VP were
+	     (VP (ADVP-MNR jointly)
+		 fined
+		 (NP *-1)
+		 (NP $ 15,000 *U*)))) 
+     .))
+( (S (NP-SBJ (NP The firm)
+             and
+             (NP Mr. Whelen))
+     (ADVP allegedly)
+     (VP sold
+	 (NP securities)
+	 (PP-CLR to
+		 (NP the public))
+	 (PP-CLR at
+		 (NP unfair prices))
+	 ,
+	 (PP among
+	     (NP other alleged violations)))
+     .))
+( (S (NP-SBJ Mr. Whelen)
+     (VP (VP denied
+             (SBAR 0
+                   (S (NP-SBJ the firm)
+                      (VP had
+                          (VP sold
+                              (NP securities)
+                              (PP-CLR at
+				      (NP unfair prices)))))))
+         and
+         (VP suggested
+             (SBAR that
+                   (S (NP-SBJ (NP the examination practices)
+                              (PP of
+                                  (NP the NASD)))
+                      (VP need
+                          (NP improvement))))))
+     .))
+( (S (S-TPC-1 (NP-SBJ (NP The firm)
+		      and
+		      (NP the NASD))
+	      (VP differ
+		  (PP over
+		      (NP (NP the meaning)
+			  (PP of
+			      (NP markup and markdown))))))
+     ,
+     (NP-SBJ he)
+     (VP added
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (NP-SBJ (NP Shearson Lehman Hutton Inc.)
+	     ,
+	     (NP-LOC New York)
+	     ,
+             (SBAR (WHNP-251 which)
+                   (S (NP-SBJ-1 *T*-251)
+                      (VP is
+                          (VP 62%-owned 
+			      (NP *-1)
+			      (PP by
+				  (NP-LGS American Express Co.))))))
+             ,)
+     (VP consented
+         (PP-CLR to
+		 (NP a 
+		     (ADJP $ 10,000 *U*) 
+		     fine)))
+     .))
+( (S (PP Without
+         (S-NOM (NP-SBJ *-1)
+		(VP admitting
+		    or
+		    denying
+		    (NP wrongdoing))))
+     ,
+     (NP-SBJ-1 the firm)
+     (VP consented
+         (PP-CLR to
+		 (NP findings
+		     (SBAR that
+			   (S (NP-SBJ-2 it)
+			      (VP failed
+				  (S (NP-SBJ *-2)
+				     (VP to
+					 (VP respond
+					     ``
+					     (PP-MNR in
+						     (NP a timely manner))
+					     ''
+					     (PP-CLR to
+						     (NP (NP (NP the NASD 's)
+							     requests)
+							 (PP for
+							     (NP (NP information)
+								 (PP in
+								     (NP (NP connection)
+									 (PP with
+									     (NP a customer complaint)))))))))))))))))
+     .))
+( (S (NP-SBJ A Shearson spokesman)
+     (VP had
+         (NP no comment))
+     .))
+( (S (NP-SBJ-2 The following individuals)
+     (VP were
+         (VP (VP fined
+		 (NP *-2)
+                 (SBAR-MNR as
+			   (S (NP-SBJ-1 *)
+			      (VP indicated
+				  (NP *-1)))))
+             and
+             (VP barred
+		 (NP *-2)
+                 (PP-CLR from
+			 (NP (NP association)
+			     (PP with
+				 (NP NASD members)))))
+             , 
+	     or 
+	     (VP (PRN ,
+		      (SBAR-LOC (WHADVP-4 where)
+				(S (NP-SBJ-3 *)
+				   (VP noted
+				       (NP *-3)
+				       (ADVP-LOC *T*-4))))
+		      ,)
+		 suspended
+		 (NP *-2))))
+     .))
+( (S (PP Except
+         (SBAR-LOC (WHADVP-1 where)
+		   (S (NP-SBJ-3 *)
+		      (VP noted
+			  (NP *-3)
+			  (ADVP-LOC *T*-1)))))
+     ,
+     (NP-SBJ-2 (NP none)
+	       (PP of
+		   (NP these people)))
+     (VP (VP could
+	     (VP be
+		 (VP reached
+		     (NP *-2)
+		     (PP-CLR for
+			     (NP comment)))))
+	 or
+	 (VP had
+	     (NP any comment)))
+     .))
+( (FRAG (FRAG (NP-SBJ-1 (NP Andrew Derel Adams)
+			,
+			(NP-LOC (NP Killeen)
+				,
+				(NP Texas)))
+	      ,
+	      (VP fined
+		  (NP *-1)
+		  (NP $ 15,000 *U*)))
+	;
+	(FRAG (NP-SBJ (NP John Francis Angier Jr.)
+		      ,
+		      (NP-LOC (NP Reddington Shores)
+			      ,
+			      (NP Fla.)
+			      ,))
+	      (NP $ 15,000 *U*))
+	;
+	(FRAG (NP-SBJ (NP Mark Anthony)
+		      ,
+		      (NP-LOC (NP Arlington Heights)
+			      ,
+			      (NP Ill.)
+			      ,))
+	      (NP (NP $ 10,000 *U*)
+		  and
+		  (NP 30-day suspension)))
+	;
+	(FRAG (NP-SBJ (NP William Stirlen)
+		      ,
+		      (NP-LOC (NP Arlington Heights)
+			      ,
+			      (NP Ill.)
+			      ,))
+	      (NP (NP $ 7,500 *U*)
+		  and
+		  (NP 30-day suspension)))
+	;
+	(FRAG (NP-SBJ (NP Fred W. Bonnell)
+		      ,
+		      (NP-LOC (NP Boulder)
+			      ,
+			      (NP Colo.)
+			      ,))
+	      (NP (NP $ 2,500 *U*)
+		  and
+		  (NP six-month suspension)))
+	;
+	(NP (NP Michael J. Boorse)
+	    ,
+	    (NP-LOC (NP Horsham)
+		    ,
+		    (NP Pa.)))
+	;
+	(FRAG (NP-SBJ-3 (NP David Chiodo)
+			,
+			(NP-LOC Dallas)
+			,)
+	      (NP $ 5,000 *U*)
+	      ,
+	      (VP barred
+		  (NP *-3) 
+		  (PP-CLR as
+			  (NP a principal))))
+	;
+	(FRAG (NP-SBJ (NP Camille Chafic Cotran)
+		      ,
+		      (NP-LOC London)
+		      ,)
+	      (NP $ 25,000 *U*))
+	;
+	(FRAG (NP-SBJ-4 John William Curry)
+	      ,
+	      (VP (VP fined
+		      (NP *-4) 
+		      (NP $ 5,000 *U*))
+		  ,
+		  (VP ordered
+		      (NP-2 *-4) 
+		      (S (NP-SBJ *-2)
+			 (VP to
+			     (VP disgorge
+				 (NP $ 30,000 *U*))))))
+	      ,
+	      (NP one-year suspension))
+	.))
+( (FRAG (FRAG (NP-SBJ-4 (NP John William Davis)
+			,
+			(NP-LOC (NP Colonsville)
+				,
+				(NP Miss.)))
+	      ,
+	      (VP fined
+		  (NP *-4)
+		  (NP $ 200,000 *U*)))
+	;
+	(FRAG (NP-SBJ (NP Jeffrey Gerard Dompierre)
+		      ,
+		      (NP-LOC (NP Valrico)
+			      ,
+			      (NP Fla.)))
+	      ,
+	      (NP (NP $ 5,000 *U*)
+		  and
+		  (NP 10-day suspension)))
+	;
+	(FRAG (NP-SBJ-3 (NP Eugene Michael Felten)
+			,
+			(NP-LOC (NP La Canada)
+				,
+				(NP Calif.)))
+	      ,
+	      (VP (VP fined
+		      (NP *-3) 
+		      (NP $ 25,000 *U*))
+		  ,
+		  (VP ordered
+		      (NP-2 *-3) 
+		      (S (NP-SBJ *-2)
+			 (VP to
+			     (VP disgorge
+				 (NP $ 16,072 *U*)))))
+		  and
+		  (VP (VP suspended
+			  (NP *-3)
+			  (NP-TMP one year)))))
+	;
+	(FRAG (NP-SBJ-5 (NP Marion Stewart Spitler)
+			,
+			(NP-LOC La Canada)
+			,)
+	      (VP (VP fined
+		      (NP *-5)
+		      (NP $ 15,000 *U*))
+		  ,
+		  (VP ordered
+		      (NP-1 *-5) 
+		      (S (NP-SBJ *-1)
+			 (VP to
+			     (VP disgorge
+				 (NP $ 18,444 *U*)))))
+		  and
+		  (VP (VP suspended
+			  (NP *-5)
+			  (NP-TMP six months)))))
+	.))
+( (S (NP-SBJ Mr. Felten)
+     (VP said 
+	 ,
+	 ``
+	 (S (S (NP-SBJ We)
+               (VP got
+                   (SBAR-NOM (WHNP-252 what)
+			     (S (NP-SBJ *T*-252)
+				(VP amounted
+				    (PP-CLR to
+					    (NP a parking ticket)))))))
+            , 
+	    and
+            (S (PP-MNR by
+		       (S-NOM (NP-SBJ *-1)
+			      (VP complaining
+				  (PP-CLR about
+					  (NP it)))))
+               ,
+               (NP-SBJ-1 we)
+               (VP ended 
+		   (PRT up)
+                   (PP-CLR with
+			   (NP a sizable fine and suspension))))))
+     .
+     ''))
+( (S (S-TPC-1 (NP-SBJ The matter)
+	      ``
+	      (VP did 
+		  n't
+		  (VP involve
+		      (NP (NP anybody 's)
+			  securities transactions))))
+     , 
+     ''
+     (NP-SBJ he)
+     (VP added
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (FRAG (FRAG (NP-SBJ-1 (NP Victor Stanley Fishman)
+			,
+			(NP-LOC (NP Longwood)
+				,
+				(NP Fla.)))
+	      ,
+	      (VP fined
+		  (NP *-1)
+		  (NP $ 25,000 *U*)))
+	;
+	(FRAG (NP-SBJ (NP William Harold Floyd)
+		      ,
+		      (NP-LOC Houston)
+		      ,)
+	      (NP $ 100,000 *U*))
+	;
+	(FRAG (NP-SBJ (NP Michael Anthony Houston)
+		      ,
+		      (NP-LOC (NP Bronx)
+			      ,
+			      (NP N.Y.))
+		      ,)
+	      (NP $ 15,000 *U*))
+	;
+	(FRAG (NP-SBJ (NP Amin Jalaalwalikraam)
+		      ,
+		      (NP-LOC (NP Glenham)
+			      ,
+			      (NP N.Y.))
+		      ,)
+	      (NP $ 60,000 *U*))
+	;
+	(FRAG (NP-SBJ (NP Richard F. Knapp)
+		      ,
+		      (NP-LOC London)
+		      ,)
+	      (NP (NP $ 10,000 *U*)
+		  and
+		  (NP 30-day suspension)))
+	;
+	(FRAG (NP-SBJ (NP Deborah Renee Martin)
+		      ,
+		      (NP-LOC St. Louis)
+		      ,)
+	      (NP $ 15,000 *U*))
+	;
+	(FRAG (NP-SBJ (NP Joseph Francis Muscolina Jr.)
+		      ,
+		      (NP-LOC (NP Palisades Park)
+			      ,
+			      (NP N.J.)))
+	      ,
+	      (NP $ 15,000 *U*))
+	;
+	(FRAG (NP-SBJ (NP Robert C. Najarian)
+		      ,
+		      (NP-LOC (NP Brooklyn Park)
+			      ,
+			      (NP Minn.))
+		      ,)
+	      (NP $ 15,000 *U*))
+	;
+	(FRAG (NP-SBJ (NP Edward Robert Norwick)
+		      ,
+		      (NP-LOC (NP Nesconset)
+			      ,
+			      (NP N.Y.))
+		      ,)
+	      (NP $ 30,000 *U*))
+	.))
+( (FRAG (FRAG (NP-SBJ-1 (NP Charles D. Phipps Sr.)
+			,
+			(NP-LOC (NP Hermitage)
+				,
+				(NP Pa.))
+			,)
+	      (VP fined
+		  (NP *-1)
+		  (NP $ 10,000 *U*)))
+	;
+	(FRAG (NP-SBJ (NP David Scott Rankin)
+		      ,
+		      (NP-LOC (NP Lake St. Louis)
+			      ,
+			      (NP Mo.))
+		      ,)
+	      (NP $ 15,000 *U*))
+	;
+	(FRAG (NP-SBJ-2 (NP Leigh A. Sanderoff)
+			,
+			(NP-LOC (NP Gaithersburg)
+				,
+				(NP Md.))
+			,)
+	      (VP (VP fined
+		      (NP *-2)
+		      (NP $ 45,000 *U*))
+		  ,
+		  (VP ordered
+		      (NP-3 *-2)
+		      (S (NP-SBJ *-3)
+			 (VP to
+			     (VP disgorge
+				 (NP $ 12,252 *U*)))))))
+	;
+	(FRAG (NP-SBJ (NP Sandra Ann Smith)
+		      ,
+		      (NP-LOC (NP Ridgefield)
+			      ,
+			      (NP N.J.))
+		      ,)
+	      (NP $ 15,000 *U*))
+	;
+	(FRAG (NP-SBJ (NP James G. Spence)
+		      ,
+		      (NP-LOC (NP Aloha)
+			      ,
+			      (NP Ore.))
+		      ,)
+	      (NP (NP $ 5,000 *U*)
+		  and
+		  (NP six-month suspension)))
+	;
+	(FRAG (NP-SBJ (NP Mona Sun)
+		      ,
+		      (NP-LOC (NP Jamaica Estates)
+			      ,
+			      (NP N.Y.))
+		      ,)
+	      (NP $ 60,000 *U*))
+	;
+	(FRAG (NP-SBJ (NP William Swearingen)
+		      ,
+		      (NP-LOC Minneapolis))
+	      ,
+	      (NP (NP $ 15,000 *U*)
+		  and
+		  (NP six-month suspension)))
+	;
+	(FRAG (NP-SBJ (NP John Bew Wong)
+		      ,
+		      (NP-LOC San Francisco)
+		      ,)
+	      (NP $ 25,000 *U*))
+	;
+	(FRAG (NP-SBJ (NP Rabia M. Zayed)
+		      ,
+		      (NP-LOC San Francisco)
+		      ,)
+	      (NP $ 50,000 *U*))
+	.))
+( (S (NP-SBJ-1 (NP The following)
+	       (FRAG *ICH*-2))
+     (VP were
+         (VP neither
+             barred
+             nor
+             suspended
+	     (NP *-1)))
+     :
+     (FRAG-2 (FRAG (NP-SBJ-3 (NP Stephanie Veselich Enright)
+			     ,
+			     (NP-LOC (NP Rolling Hills)
+				     ,
+				     (NP Calif.))
+			     ,)
+		   (VP (VP fined
+			   (NP *-3)
+			   (NP $ 2,500 *U*))
+		       and
+		       (VP ordered
+			   (NP-4 *-3)
+			   (S (NP-SBJ *-4)
+			      (VP to
+				  (VP disgorge
+				      (NP $ 11,762 *U*)))))))
+	     ;
+	     (FRAG (NP-SBJ-5 (NP Stuart Lane Russel)
+			     ,
+			     (NP-LOC (NP Glendale)
+				     ,
+				     (NP Calif.))
+			     ,)
+		   (VP (VP fined
+			   (NP *-5)
+			   (NP $ 2,500 *U*))
+		       and
+		       (VP ordered
+			   (NP-6 *-5)
+			   (S (NP-SBJ *-6)
+			      (VP to
+				  (VP disgorge
+				      (NP $ 14,821 *U*)))))))
+	     ;
+	     (FRAG (NP-SBJ-7 (NP Devon Nilson Dahl)
+			     ,
+			     (NP-LOC (NP Fountain Valley)
+				     ,
+				     (NP Calif.))
+			     ,)
+		   (VP fined
+		       (NP *-7)
+		       (NP $ 82,389 *U*))))
+     .))
+( (S (NP-SBJ (NP Mr. Dahl)
+             ,
+             (NP (NP a registered representative)
+                 (PP-LOC in
+			 (NP the insurance business)))
+             ,)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ he)
+		  ``
+		  (VP screwed 
+		      (PRT up)
+		      ''
+		      (SBAR-PRP because
+				(S (NP-SBJ he)
+				   (VP did 
+				       n't
+				       (VP realize
+					   (SBAR 0
+						 (S (NP-SBJ he)
+						    (VP was
+							(VP breaking
+							    (NP securities laws)))))))))))))
+     .))
+( (S-1 ``
+       (S (NP-SBJ-158 Insurance agents)
+	  (VP have
+	      (VP been
+		  (VP forced
+		      (NP-2 *-158)
+		      (PP by
+			  (NP-LGS their companies))
+		      (PP-CLR into
+			      (S-NOM (NP-SBJ *-2)
+				     (VP becoming
+					 (NP-PRD registered reps))))))))
+       (PRN , 
+	    ''
+	    (S (NP-SBJ he)
+	       (VP said
+		   (S *T*-1)))
+	    ,)
+       ``
+       but
+       (S (NP-SBJ they)
+	  (VP are 
+	      not
+	      (VP providing
+		  (NP (NP compliance) 
+		      and 
+		      (NP security-type training))
+		  (SBAR-PRP so that 
+			    (S (NP-SBJ we)
+			       (VP can
+				   (VP avoid
+				       (NP stupid mistakes))))))))
+       .
+       ''))
+( (S (NP-SBJ-3 (NP The following)
+	       (FRAG *ICH*-4))
+     (VP (VP were
+	     (VP (VP barred
+		     (NP *-3))
+		 or 
+		 (VP (PRN ,
+			  (SBAR-LOC (WHADVP-2 where)
+				    (S (NP-SBJ-1 *)
+				       (VP noted
+					   (NP *-1)
+					   (ADVP-LOC *T*-2))))
+			  ,)
+		     suspended
+		     (NP *-3))))
+	 and
+	 (VP consented
+	     (PP-CLR to
+		     (NP findings))
+	     (PP without
+		 (S-NOM (NP-SBJ *-3)
+			(VP admitting
+			    or
+			    denying
+			    (NP wrongdoing))))))
+     :
+     (FRAG-4 (FRAG (NP-SBJ (NP Edward L. Cole)
+			   ,
+			   (NP-LOC (NP Jackson)
+				   ,
+				   (NP Miss.))
+			   ,)
+		   (NP (ADJP $ 10,000 *U*) fine))
+	     ;
+	     (FRAG (NP-SBJ (NP Rita Rae Cross)
+			   ,
+			   (NP-LOC Denver)
+			   ,)
+		   (NP (NP (ADJP $ 2,500 *U*) fine)
+		       and
+		       (NP 30-day suspension)))
+	     ;
+	     (FRAG (NP-SBJ (NP Thomas Richard Meinders)
+			   ,
+			   (NP-LOC (NP Colorado Springs)
+				   ,
+				   (NP Colo.))
+			   ,)
+		   (NP (NP (ADJP $ 2,000 *U*) fine)
+		       ,
+		       (NP five-day suspension)
+		       and
+		       (NP (NP eight-month suspension)
+			   (PP as
+			       (NP a principal)))))
+	     ;
+	     (FRAG (NP-SBJ (NP Ronald A. Cutrer)
+			   ,
+			   (NP-LOC (NP Baton Rouge)
+				   ,
+				   (NP La.))
+			   ,)
+		   (NP (NP (ADJP $ 15,000 *U*) fine)
+		       and
+		       (NP one-month suspension)))
+	     ;
+	     (FRAG (NP-SBJ (NP Karl Grant Hale)
+			   ,
+			   (NP-LOC (NP Midvale)
+				   ,
+				   (NP Utah))
+			   ,)
+		   (NP (ADJP $ 15,000 *U*) fine))
+	     ;
+	     (FRAG (NP-SBJ (NP Clinton P. Hayne)
+			   ,
+			   (NP-LOC New Orleans)
+			   ,)
+		   (NP (NP (ADJP $ 7,500 *U*) fine)
+		       and
+		       (NP one-week suspension)))
+	     ;
+	     (FRAG (NP-SBJ (NP Richard M. Kane)
+			   ,
+			   (NP-LOC (NP Coconut Creek)
+				   ,
+				   (NP Fla.)
+				   ,))
+		   (NP (ADJP $ 250,000 *U*) fine))
+	     ;
+	     (FRAG (NP-SBJ (NP John B. Merrick)
+			   ,
+			   (NP-LOC (NP Aurora)
+				   ,
+				   (NP Colo.))
+			   ,)
+		   (NP (NP (ADJP $ 1,000 *U*) fine)
+		       and
+		       (NP 10-day suspension)))
+	     ;
+	     (FRAG (NP-SBJ (NP John P. Miller)
+			   ,
+			   (NP-LOC Baton Rouge)
+			   ,)
+		   (NP (NP (ADJP $ 2,000 *U*) fine)
+		       and
+		       (NP two-week suspension)))
+	     ;
+	     (FRAG (NP-SBJ (NP Randolph K. Pace)
+			   ,
+			   (NP-LOC New York)
+			   ,)
+		   (NP (NP (ADJP $ 10,000 *U*) fine)
+		       and
+		       (NP 90-day suspension)))
+	     ;
+	     (FRAG (NP-SBJ (NP Brian D. Pitcher)
+			   ,
+			   (NP-LOC (NP New Providence)
+				   ,
+				   (NP N.J.))
+			   ,)
+		   (NP (ADJP $ 30,000 *U*) fine))
+	     ;
+	     (FRAG (NP-SBJ (NP Wayne A. Russo)
+			   ,
+			   (NP-LOC (NP Bridgeville)
+				   ,
+				   (NP Pa.))
+			   ,)
+		   (NP (NP (ADJP $ 4,000 *U*) fine)
+		       and
+		       (NP 15-day suspension)))
+	     ;
+	     (FRAG (NP-SBJ (NP Orville Leroy Sandberg)
+			   ,
+			   (NP-LOC (NP Aurora)
+				   ,
+				   (NP Colo.))
+			   ,)
+		   (NP (NP (ADJP $ 3,500 *U*) fine)
+		       and
+		       (NP 10-day suspension)))
+	     ;
+	     (FRAG (NP-SBJ (NP Richard T. Marchese)
+			   ,
+			   (NP-LOC (NP Las Vegas)
+				   ,
+				   (NP Nev.))
+			   ,)
+		   (NP (NP $ 5,000 *U*)
+		       and
+		       (NP one-year suspension)))
+	     ;
+	     (FRAG (NP-SBJ (NP Eric G. Monchecourt)
+			   ,
+			   (NP-LOC Las Vegas))
+		   ,
+		   (NP (NP $ 5,000 *U*)
+		       and
+		       (NP one-year suspension)))
+	     ; 
+	     and
+	     (FRAG (NP-SBJ (NP Robert Gerhard Smith)
+			   ,
+			   (NP-LOC (NP Carson City)
+				   ,
+				   (NP Nev.))
+			   ,)
+		   (NP two-year suspension)))
+     .))
+( (SINV ``
+	(S-TPC-2 (NP-SBJ-1 I)
+		 (VP was 
+		     n't
+		     (ADVP-TMP ever)
+		     (VP (ADVP-MNR actively)
+			 engaged
+			 (NP *-1)
+			 (PP-CLR in
+				 (NP any securities activities)))))
+	, 
+	''
+	(VP said
+	    (S *T*-2))
+	(NP-SBJ Mr. Cutrer)
+	.))
+( (S ``
+     (NP-SBJ I)
+     (ADVP-TMP never)
+     (VP had
+         (NP any clients)
+         (ADVP at
+	       all))
+     .))
+( (S-3 (NP-SBJ (NP It)
+	       (S *EXP*-2))
+       (VP was
+	   (ADVP just)
+	   (NP-PRD a stupid mistake)
+	   (S-2 (NP-SBJ *)
+		(VP to
+		    (VP get
+			(NP the license))))
+	   (PRN , 
+		''
+		(S (NP-SBJ-1 he)
+		   (VP said
+		       (SBAR 0
+			     (S *T*-3))))
+		,)
+	   (S-ADV (NP-SBJ *-1)
+		  (VP adding 
+		      ,
+		      ``
+		      (S (NP-SBJ I)
+			 (VP 'd
+			     (ADVP just as soon)
+			     not
+			     (VP get
+				 (PP-CLR into 
+					 ''
+					 (NP (NP details)
+					     (PP of
+						 (NP the settlement))))))))))
+       .))

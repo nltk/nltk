@@ -1,0 +1,113 @@
+
+
+( (S (S (NP-SBJ Integra-A Hotel & Restaurant Co.)
+        (VP said
+            (SBAR 0
+                  (S (NP-SBJ-103 (NP its planned rights offering)
+				 (SBAR (WHNP-1 0)
+				       (S (NP-SBJ *T*-1)
+					  (VP to
+					      (VP raise
+						  (NP (QP about $ 9 million) *U*))))))
+                     (VP was
+                         (VP declared
+                             (S (NP-SBJ *-103)
+				(ADJP-PRD effective))))))))
+     and
+     (S (NP-SBJ-2 the company)
+        (VP will
+            (VP begin
+                (S (NP-SBJ *-2)
+                   (VP mailing
+                       (NP materials)
+                       (PP-DIR to
+			       (NP shareholders))))
+		(PP-TMP at
+			(NP (NP the end)
+			    (PP of
+				(NP this week)))))))
+     .))
+( (S (PP-LOC Under
+	     (NP the offer))
+     ,
+     (NP-SBJ shareholders)
+     (VP will
+         (VP receive
+             (NP one right)
+             (PP for
+		 (NP (NP each 105 common shares)
+		     (VP owned
+			 (NP *))))))
+     .))
+( (S (NP-SBJ Each right)
+     (VP entitles
+	 (S (NP-SBJ the shareholder)
+	    (VP to
+		(VP buy
+		    (NP (NP (NP $ 100 *U*)
+			    (NP face amount)
+			    (PP of
+				(NP (NP (ADJP 13.5 %) 
+					bonds)
+				    (ADJP due
+					  (NP-TMP 1993)))))
+			and
+			(NP warrants
+			    (S (NP-SBJ *)
+			       (VP to
+				   (VP buy
+				       (NP 23.5 common shares)
+				       (PP-CLR at
+					       (NP (NP 30 cents)
+						   (NP-ADV a share))))))))))))
+     .))
+( (S (NP-SBJ-104 (NP The rights)
+                 ,
+                 (SBAR (WHNP-173 which)
+                       (S (NP-SBJ *T*-173)
+                          (VP expire
+			      (NP-TMP Nov. 21))))
+                 ,)
+     (VP can
+	 (VP be
+	     (VP exercised
+		 (NP *-104)
+		 (PP for
+		     (NP (NP $ 100 *U*)
+			 (ADVP each))))))
+     .))
+( (S (NP-SBJ (NP Integra)
+             ,
+             (SBAR (WHNP-174 which)
+                   (S (NP-SBJ *T*-174)
+                      (VP owns and operates
+                          (NP hotels))))
+             ,)
+     (VP said
+         (SBAR that
+               (S (NP-SBJ-1 Hallwood Group Inc.)
+                  (VP has
+                      (VP agreed
+                          (S (NP-SBJ *-1)
+                             (VP to
+                                 (VP exercise
+                                     (NP (NP any rights)
+                                         (SBAR (WHNP-175 that)
+                                               (S (NP-SBJ-2 *T*-175)
+                                                  (VP are 
+						      n't
+                                                      (VP exercised
+							  (NP *-2)
+                                                          (PP by
+                                                              (NP-LGS other shareholders)))))))))))))))
+     .))
+( (S (NP-SBJ (NP Hallwood)
+             ,
+             (NP a Cleveland merchant bank)
+             ,)
+     (VP owns
+         (NP (NP (QP about 11)
+		 %)
+             (PP of
+                 (NP Integra))))
+     .))

@@ -1,0 +1,122 @@
+	      README file for Merged (a.k.a. Combined) files
+
+The files in this hierarchy were automatically created by inserting the
+part of speech tags from a tagged text file (.pos file) into a parsed text
+file (.prd file).  The tags are inserted as nodes immediately dominating
+the terminals.  The -NONE- node means that there is no part of speech for
+that terminal symbol (i.e., it is a "null element"; see manual).
+
+Most of the technical errors in the last release should be fixed, but note
+that the combining program applies a number of patches to make the .prd and
+.pos files match; see the file MERGE.LOG for the verbose information
+provided by the combiner.  The combiner itself is included in this release;
+see the tools/ directory for details.
+
+These files have the extension .mrg, to distinguish them from the .cmb
+files of the previous release.  The indentation of the trees is also
+somewhat different than before, though the use of parentheses is unchanged.
+
+
+A note about errors
+
+These files are free from technical errors in the sense that every word has
+been assigned the Part of Speech that it was annotated with in the tagged
+corpus.  However, the merging of files exposes errors in the tagging that
+may not otherwise be apparent, through conflicts between the parse category
+and the POS tagging.  For example, consider the following partial sentence,
+from wsj_0020:
+
+( (S (NP-SBJ (PRP She) )
+     (VP (VBD did)
+	 (RB n't)
+	 (VP (JJ elaborate)
+	     ...))))
+
+The bracketing annotator correctly described the phrase beginning with
+"elaborate" as a Verb Phrase.  However, the POS-tagging annotator made an
+error, and the word is tagged JJ (for adjective).  Thus this verb phrase
+lacks an annotated head, although the parse is correct.  (Conversely, the
+parse could be incorrect while the tagging is correct, but that is less
+likely.)
+
+Most such errors occur at a rate of 1-5%, which is probably a reflection of
+the 3% estimated error rate of the original POS tagging.  The best way to
+fix most of these errors, then, would be to lower the error rate of the
+underlying POS tagging, a project beyond our current resources.
+
+One class of such errors is considerably more frequent:  particles are
+tagged incorrectly about half of the time.  These can be fixed fairly
+simply, since they only involve a single word, so we've corrected most of
+them automatically for the WSJ corpus (see tools directory for the program
+used).  The program also corrects some adverbs that were mistagged as IN.
+
+The other known errors occur at an arguably tolerable rate, and most would
+require extensive hand-correction that is beyond the scope of the current
+parsing project, so we have generally left these alone.  Some information
+on such errors follows.
+
+
+HEAD ERRORS
+
+Ordinarily, the head of a phrase can be extracted from the POS tagging,
+albeit with somewhat tortuous rules.  (Since language is complex, so is the
+annotation.  No real easy way around this fact.)
+
+For instance, a word tagged VBx or MD or TO at top-level of a VP is a head
+of that VP.  Or, if there is no such head but the VP dominates one or more
+nodes labelled VP, the head (or heads, in the case of coordination) of the
+adjunction structure is in the dominated VP(s).  Or the VP could be a null
+element, making something tagged -NONE- be the head.
+
+However, these rules break down in about 0.5% of VPs, usually because of a
+tagging error like the one described above.  Similarly, about 1-2% of PPs,
+SBARs, and NPs have either no detectable head or a head that is complex to
+recover (if you indulge in the complexities, the error rate goes down to
+about 0.5%).
+
+For ADJPs, the error rate may at first appear to be over 10%.  But a little
+additional knowledge of parsing policy quickly brings the rate closer to
+about 5%.  In particular:
+
+  -- "%" in phrases like "a 5 % increase in sales" is bracketed in an ADJP
+	but still generally tagged NN.  Currency units such as "yen" or
+	"mark" (or $ ... *U*) may also play a similar role.
+
+  -- a VBG or VBN can function as the head of an ADJP that is acting as a
+	pre-head NP modifier (in which case it may be construed as a
+	modifying participial phrase).
+
+Adding several more rules and common errors may bring the rate down a bit
+more, but there is a long tail of uncommon cases, perhaps because it is
+more difficult to tag adjectives correctly than some other parts of speech.
+
+
+SOME NON-HEAD ERRORS
+
+1. Certain common collocations, such as "chief executive officer", lack a
+common tagging.  Thus you might see any of the following:
+
+	(NP (JJ chief) (JJ executive) (NN officer))
+	(NP (JJ chief) (NN executive) (NN officer))
+	(NP (NN chief) (JJ executive) (NN officer))
+	(NP (NN chief) (NN executive) (NN officer))
+
+Similar variation exists for "chief operating officer", etc.
+
+2. Since there is no verb "to pend", one might argue that "pending" (as in
+"the pending bill" or "pending the decision,...") should always be tagged
+either JJ or IN, but never VBG.  Nevertheless, VBG is its most common tag.
+Sometimes the error is reflected in the bracketing, and sometimes not.  As
+a nominal premodifier, it will most often appear to be a single-word
+participial modifier (no phrasal brackets).
+
+	(NP (DT the) (VBG pending) (NN case))
+	OR
+	(NP (DT the) (JJ pending) (NN case))
+
+	(PP (VBG pending)
+	    (NP (DT the) (NN decision)))
+	OR
+	(S-ADV (NP-SBJ (-NONE- *))
+	       (VP (VBG pending)
+		   (NP (DT the) (NN decision))))

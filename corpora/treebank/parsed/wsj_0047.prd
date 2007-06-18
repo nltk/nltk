@@ -1,0 +1,536 @@
+
+
+( (S (NP-SBJ-1 (NP The Department)
+	       (PP of
+		   (NP (NP Health)
+		       and
+		       (NP Human Services))))
+     (VP plans
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP extend
+                    (NP (NP its moratorium)
+                        (PP on
+			    (NP (NP federal funding)
+				(PP of
+				    (NP (NP research)
+					(VP involving
+					    (NP fetal-tissue transplants)))))))))))
+     .))
+( (S (NP-SBJ Medical researchers)
+     (VP believe
+         (SBAR 0
+               (S (NP-SBJ (NP the transplantation)
+                          (PP of
+                              (NP (NP small amounts)
+                                  (PP of
+                                      (NP fetal tissue))))
+                          (PP-DIR into
+				  (NP humans)))
+                  (VP could
+                      (VP help
+                          (S (NP-SBJ *)
+                             (VP treat
+                                 (NP (NP juvenile diabetes)
+                                     and
+                                     (NP (NP such degenerative diseases)
+                                         (PP as
+                                             (NP (NP Alzheimer 's) 
+						 , 
+						 (NP Parkinson 's) 
+						 and 
+						 (NP Huntington 's))))))))))))
+     .))
+( (S But
+     (NP-SBJ anti-abortionists)
+     (VP oppose
+         (NP such research)
+	 (SBAR-PRP because
+		   (S (NP-SBJ they)
+		      (VP worry
+			  (SBAR that
+				(S (NP-SBJ (NP the development)
+					   (PP of
+					       (NP (NP therapies)
+						   (VP using
+						       (NP fetal-tissue transplants)))))
+				   (VP could
+				       (VP lead
+					   (PP-CLR to
+						   (NP (NP an increase)
+						       (PP in
+							   (NP abortions))))))))))))
+     .))
+( (S (NP-SBJ (NP James Mason)
+             ,
+             (NP (NP assistant secretary)
+                 (PP for
+                     (NP health)))
+             ,)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 (NP the ban)
+			    (PP-LOC on
+				    (NP (NP federal funding)
+					(PP of
+					    (NP fetal-tissue transplant research)))))
+                  ``
+                  (VP should
+                      (VP be
+                          (VP continued
+			      (NP *-1)
+			      (ADVP-TMP indefinitely)))))))
+     . 
+     ''))
+( (S (NP-SBJ He)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ the ban)
+                  (VP wo 
+		      n't
+                      (VP stop
+                          (NP (NP (NP (ADJP privately funded)
+                                      tissue-transplant research)
+                                  or
+                                  (NP (ADJP federally funded)
+                                      fetal-tissue research))
+                              (SBAR (WHNP-111 that)
+                                    (S (NP-SBJ *T*-111)
+                                       (VP does 
+					   n't
+                                           (VP involve
+                                               (NP transplants)))))))))))
+     .))
+( (S (NP-SBJ Department officials)
+     (VP say
+         (SBAR that
+               (S (NP-SBJ HHS Secretary 
+			  Louis Sullivan)
+                  (VP will
+                      (VP support
+                          (NP (NP (NP Dr. Mason 's)
+                                  ruling)
+                              ,
+                              (SBAR (WHNP-112 which)
+                                    (S (NP-SBJ-1 *T*-112)
+                                       (VP will
+                                           (VP be
+                                               (VP issued
+						   (NP *-1)
+						   (ADVP-TMP soon)
+						   (PP-MNR in
+							   (NP (NP the form)
+							       (PP of
+								   (NP (NP a letter)
+								       (PP to
+									   (NP (NP the acting director)
+									       (PP of
+										   (NP (NP the National Institutes)
+										       (PP of
+											   (NP Health)))))))))))))))))))))
+     .))
+( (S (NP-SBJ Both 
+	     (NP Dr. Mason) 
+	     and 
+	     (NP Dr. Sullivan))
+     (VP oppose
+         (NP (NP federal funding)
+	     (PP for
+		 (NP abortion)))
+	 ,
+	 (SBAR-ADV as
+		   (SINV does
+			 (NP-SBJ President Bush)
+			 (VP *?*)))
+	 ,
+	 (PP-LOC except
+		 (PP in
+		     (NP (NP cases)
+			 (SBAR (WHADVP-1 where)
+			       (S (NP-SBJ-2 (NP a woman 's)
+					    life)
+				  (VP is
+				      (VP threatened
+					  (NP *-2)
+					  (ADVP-LOC *T*-1)))))))))
+     .))
+( (S (NP-SBJ The controversy)
+     (VP began
+	 (PP-TMP in
+		 (NP 1987))
+	 (SBAR-TMP (WHADVP-1 when)
+		   (S (NP-SBJ-2 (NP the National Institutes)
+				(PP of
+				    (NP Health))
+				,
+				(ADJP-PRD aware
+					  (PP of
+					      (NP (NP the policy implications)
+						  (PP of
+						      (NP its research)))))
+				,)
+		      (VP asked
+			  (PP-CLR for
+				  (NP (NP an HHS review)
+				      (PP of
+					  (NP its plan
+					      (S (NP-SBJ *)
+						 (VP to
+						     (VP implant
+							 (NP fetal tissue)
+							 (PP-DIR into
+								 (NP (NP the brain)
+								     (PP of
+									 (NP (NP a patient)
+									     (VP suffering
+										 (PP-CLR from
+											 (NP (NP Parkinson 's)
+											     disease))))))))))))))
+			  (ADVP-TMP *T*-1)))))
+     .))
+( (S (NP-SBJ The department)
+     (VP placed
+         (NP a moratorium)
+         (PP-CLR on
+		 (NP the research))
+	 ,
+	 (S-ADV (NP-SBJ *)
+		(VP pending
+		    (NP (NP a review)
+			(PP of
+			    (NP (ADJP scientific , legal and ethical)
+				issues))))))
+     .))
+( (S (S (NP-SBJ (NP A majority)
+                (PP of
+                    (NP an NIH-appointed panel)))
+        (VP recommended
+	    (NP-TMP late last year)
+	    (SBAR that
+		  (S (NP-SBJ the research)
+		     (VP continue
+			 (PP-LOC under
+				 (NP carefully controlled conditions)))))))
+     , 
+     but
+     (S (NP-SBJ-2 the issue)
+        (VP became
+            (VP embroiled
+		(NP *-2)
+                (PP-LOC-CLR in
+			    (NP politics))
+		(SBAR-TMP as
+			  (S (NP-SBJ-3 anti-abortion groups)
+			     (VP continued
+				 (S (NP-SBJ *-3)
+				    (VP to
+					(VP oppose
+					    (NP federal funding))))))))))
+     .))
+( (S (NP-SBJ The dispute)
+     (VP has
+         (VP hampered
+             (NP (NP the administration 's)
+                 efforts
+                 (S (NP-SBJ *)
+                    (VP to
+                        (VP recruit
+                            (NP (NP prominent doctors)
+				(SBAR (WHNP-1 0)
+				      (S (NP-SBJ *T*-1)
+					 (VP to
+					     (VP fill
+						 (NP (NP prestigious posts)
+						     (PP-LOC at
+							     (NP (NP the helm)
+								 (PP of
+								     (NP (NP the NIH)
+									 and
+									 (NP (NP the Centers)
+									     (PP for
+										 (NP Disease Control)))))))))))))))))))
+     .))
+( (S (NP-SBJ Several candidates)
+     (VP have
+         (VP withdrawn
+             (NP their names)
+             (PP-CLR from
+		     (NP consideration))
+	     (SBAR-TMP after
+		       (S (NP-SBJ administration officials)
+			  (VP asked
+			      (NP them)
+			      (PP-CLR for
+				      (NP (NP their views)
+					  (PP on
+					      (NP (NP abortion)
+						  and
+						  (NP fetal-tissue transplants))))))))))
+     .))
+( (S (NP-SBJ (NP Antonio Novello)
+             ,
+             (SBAR (WHNP-113 whom)
+                   (S (NP-SBJ Mr. Bush)
+                      (VP nominated
+			  (S (NP-SBJ *T*-113)
+                             (VP to
+                                 (VP serve
+                                     (PP-CLR as
+					     (NP surgeon general))))))))
+             ,)
+     (ADVP reportedly)
+     (VP has
+         (VP assured
+             (NP the administration)
+             (SBAR that
+                   (S (NP-SBJ she)
+                      (VP opposes
+                          (NP abortion))))))
+     .))
+( (S (NP-SBJ Dr. Novello)
+     (VP is
+         (NP-PRD (NP deputy director)
+		 (PP of
+		     (NP (NP the National Institute)
+			 (PP of
+			     (NP (NP Child Health)
+				 and
+				 (NP Human Development)))))))
+     .))
+( (S (NP-SBJ Some researchers)
+     (VP have
+         (VP charged
+             (SBAR that
+                   (S (NP-SBJ the administration)
+                      (VP is
+                          (VP imposing
+                              (NP (NP new ideological tests)
+				  (PP for
+				      (NP top scientific posts)))))))))
+     .))
+( (S (NP-TMP Earlier this week)
+     ,
+     (NP-SBJ-1 Dr. Sullivan)
+     (VP tried
+         (S (NP-SBJ-4 *-1)
+            (VP to
+                (VP defuse
+                    (NP these charges)
+		    (PP-MNR by
+			    (S-NOM (NP-SBJ *-4)
+				   (VP stressing
+				       (SBAR that
+					     (S (NP-SBJ-3 (NP candidates)
+							  (SBAR (WHNP-2 0)
+								(S (NP-SBJ *T*-2)
+								   (VP to
+								       (VP head
+									   (NP (NP the NIH)
+									       and
+									       (NP the CDC)))))))
+						(VP will
+						    (VP be
+							(VP judged
+							    (NP *-3)
+							    (PP-MNR by
+								    (NP ``
+									(NP (NP standards)
+									    (PP of
+										(NP (ADJP scientific and administrative) 
+										    excellence)))
+									, 
+									'' 
+									not
+									(NP politics)))))))))))))))
+     .))
+( (S But
+     (NP-SBJ (NP (NP the administration 's)
+		 handling)
+             (PP of
+                 (NP the fetal-tissue transplant issue)))
+     (VP disturbs
+         (NP many scientists))
+     .))
+( (SINV ``
+	(S-TPC-2 (SBAR-TMP (WHADVP-1 When)
+			   (S (NP-SBJ scientific progress)
+			      (VP moves
+				  (PP-DIR into
+					  (NP uncharted ground))
+				  (ADVP-TMP *T*-1))))
+		 ,
+		 (NP-SBJ-3 there)
+		 (VP has
+		     (S (NP-SBJ *-3)
+			(VP to
+			    (VP be
+				(NP-PRD (NP a role
+					    (S *ICH*-4))
+					(PP for
+					    (NP society))
+					(S-4 (NP-SBJ *)
+					     (VP to
+						 (VP make
+						     (NP (NP judgments)
+							 (PP about
+							     (NP its applications))))))))))))
+	, 
+	''
+	(VP says
+	    (S *T*-2))
+	(NP-SBJ (NP Myron Genel)
+		,
+		(NP (NP associate dean)
+		    (PP of
+			(NP the Yale Medical School))))
+	.))
+( (S ``
+     (NP-SBJ (NP The disturbing thing)
+	     (PP about
+		 (NP this abortion issue)))
+     (VP is
+         (SBAR-PRD that
+		   (S (NP-SBJ-1 the debate)
+		      (VP has
+			  (VP become
+			      (VP polarized
+				  (NP *-1)
+				  ,
+				  (SBAR-ADV so that
+					    (S (NP-SBJ (NP no mechanism)
+						       (PP *ICH*-2))
+					       (VP exists
+						   ''
+						   (PP-2 for
+							 (S-NOM (NP-SBJ *)
+								(VP finding
+								    (NP a middle ground)))))))))))))
+     .))
+( (S (NP-SBJ Yale)
+     (VP is
+         (NP-PRD (NP one)
+		 (PP of
+		     (NP (NP the few medical institutions)
+			 (VP conducting
+			     (NP (NP (ADJP privately funded)
+				     research)
+				 (PP on
+				     (NP fetal-tissue transplants))))))))
+     .))
+( (S But
+     (NP-SBJ Dr. Genel)
+     (VP warns
+         (SBAR that
+               (S (NP-SBJ (NP Dr. Mason 's)
+                          ruling)
+                  (VP may
+                      (VP discourage
+                          (NP private funding))))))
+     .))
+( (S ``
+     (S-TPC-3 (NP-SBJ (NP (NP The unavailability)
+			  (PP of
+			      (NP federal funds)))
+		      , 
+		      and
+		      (NP (NP the climate)
+			  (SBAR-LOC (WHPP-1 in
+					    (WHNP which))
+				    (S (NP-SBJ-2 the decision)
+				       (VP was
+					   (VP made
+					       (NP *-2)
+					       (PP-LOC *T*-1))))))
+		      ,)
+	      (ADVP certainly)
+	      (VP do 
+		  n't
+		  (VP provide
+		      (NP any incentive
+			  (SBAR for
+				(S (NP-SBJ (NP one)
+					   (PP of
+					       (NP the
+						   (ADJP more visible)
+						   foundations)))
+				   (VP to
+				       (VP provide
+					   (NP support)))))))))
+     , 
+     ''
+     (NP-SBJ he)
+     (VP said
+	 (S *T*-3))
+     .))
+( (S (PP Despite
+         (NP (NP the flap)
+             (PP over
+                 (NP transplants))))
+     ,
+     (NP-SBJ (NP federal funding)
+             (PP of
+                 (NP (NP research)
+                     (VP involving
+                         (NP fetal tissues)))))
+     (VP will
+         (VP continue
+	     (PP-LOC on
+		     (NP (NP a number)
+			 (PP of
+			     (NP fronts))))))
+     .))
+( (S ``
+     (NP-SBJ Such research)
+     (VP may
+         (ADVP-TMP ultimately)
+         (VP result
+             (PP-CLR in
+		     (NP the ability
+			 (S (S (NP-SBJ *)
+			       (VP to
+				   (VP regenerate
+				       (NP damaged tissues))))
+			    or
+			    (S (NP-SBJ *)
+			       (VP to
+				   (VP turn
+				       (PRT off)
+				       (NP (NP genes)
+					   (SBAR (WHNP-114 that)
+						 (S (NP-SBJ *T*-114)
+						    (VP cause
+							(NP cancer))))))))
+			    '' 
+			    or
+			    (S (NP-SBJ *)
+			       (VP to
+				   (VP regulate
+				       (NP (NP genes)
+					   (SBAR (WHNP-115 that)
+						 (S (NP-SBJ *T*-115)
+						    (VP cause
+							(NP (NP (NP Down 's)
+								syndrome)
+							    ,
+							    (NP (NP the leading cause)
+								(PP of
+								    (NP mental retardation))
+								,
+								(PP according
+								    (PP to
+									(NP an NIH summary)))))))))))))))))
+     .))
+( (S (NP-SBJ The NIH)
+     (ADVP-TMP currently)
+     (VP spends
+         (NP (NP (QP about $ 8 million) *U*)
+	     (PP *ICH*-2))
+	 (ADVP-TMP annually)
+	 (PP-CLR on
+		 (NP fetal-tissue research))
+	 (PP-2 out
+	       (PP of
+		   (NP (NP a total research budget)
+		       (PP of
+			   (NP (QP $ 8 billion) *U*))))))
+     .))

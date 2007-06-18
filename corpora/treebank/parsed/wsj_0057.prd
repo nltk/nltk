@@ -1,0 +1,317 @@
+
+
+( (S (NP-SBJ LSI Logic Corp.)
+     (VP reported
+         (NP (NP a surprise
+		 (ADJP (QP $ 35.7 million) *U*) 
+		 third-quarter net loss) 
+             ,
+             (PP including
+                 (NP (NP a special restructuring charge)
+                     (SBAR (WHNP-145 that)
+                           (S (NP-SBJ *T*-145)
+                              (VP reflects
+                                  (NP (NP a continuing industry-wide slowdown)
+				      (PP-LOC in
+					      (NP semiconductor demand))))))))))
+     .))
+( (S (PP-TMP In
+	     (NP September))
+     ,
+     (NP-SBJ the custom-chip maker)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ (NP excess capacity)
+                          and
+                          (NP lagging billings))
+                  (VP would
+                      (VP result
+                          (PP-CLR in
+				  (NP (NP an estimated
+					  (ADJP (QP $ 2 million to $ 3 million) 
+						*U*)
+					  net loss)
+				      (PP for
+					  (NP the third quarter)))))))))
+     .))
+( (S But
+     (NP-SBJ-4 company officials)
+     (VP said
+	 (NP-TMP yesterday)
+	 (SBAR that
+	       (S (NP-SBJ-2 they)
+		  (VP decided
+		      (S (NP-SBJ-3 *-2)
+			 (VP to
+			     (VP take
+				 (NP (NP a
+					 (ADJP (QP $ 43 million) *U*) 
+					 pretax charge)
+				     (PP for
+					 (NP the period)))
+				 (S-PRP (NP-SBJ *-3)
+					(VP to
+					    (VP cover
+						(NP (NP a restructuring)
+						    (PP of
+							(NP world-wide manufacturing operations))))))))))))
+	 ,
+	 (S-ADV (NP-SBJ *-4)
+		(VP citing
+		    (NP (NP (NP extended weakness)
+			    (PP-LOC in
+				    (NP the market)))
+			(CONJP as well as)
+			(NP a decision
+			    (S (NP-SBJ *)
+			       (VP to
+				   (VP switch
+				       (PP-CLR to
+					       (NP (ADJP more economical)
+						   production techniques))))))))))
+     .))
+( (SINV ``
+	(S-TPC-1 (PP-TMP Over
+			 (NP the summer months))
+		 ,
+		 (NP-SBJ there)
+		 (VP has
+		     (VP been
+			 (NP-PRD (NP a slowing)
+				 (PP-LOC in
+					 (NP (NP the rate)
+					     (PP of
+						 (NP (NP new orders)
+						     (PP from
+							 (NP (NP the computer sector)
+							     ,
+							     (NP our primary market)))))))))))
+	, 
+	''
+	(VP said
+	    (S *T*-1))
+	(NP-SBJ (NP Wilfred J. Corrigan)
+		,
+		(NP (NP chairman)
+		    and
+		    (NP chief executive officer)))
+	.))
+( (S ``
+     (PP In
+         (NP addition))
+     ,
+     (NP-SBJ (NP recent industry forecasts)
+	     (PP for
+		 (NP 1990)))
+     (VP indicate
+	 (NP (NP a slow environment)
+	     ,
+	     (PP-TMP (ADVP at least)
+		     until
+		     (NP midyear))))
+     . 
+     ''))
+( (S (PP As
+         (NP a result))
+     ,
+     (NP-SBJ the company)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 it)
+                  (VP decided
+                      (S (NP-SBJ *-1)
+                         (VP to
+                             (VP (VP phase
+                                     (PRT out)
+                                     (NP its oldest capacity))
+                                 and
+				 ``
+				 (VP make
+                                     (NP (NP appropriate reductions)
+					 ''
+					 (PP-LOC in
+						 (NP operating expenses)))))))))))
+     .))
+( (S (NP-SBJ The 
+	     (ADJP (QP $ 35.7 million) *U*) 
+	     net loss)
+     (VP equals
+         (NP (NP 86 cents)
+             (NP-ADV a share)))
+     .))
+( (S (S-ADV (NP-SBJ *-1)
+	    (VP Not counting
+		(NP the extraordinary charge)))
+     ,
+     (NP-SBJ-1 the company)
+     (VP said
+	 (SBAR 0
+	       (S (NP-SBJ it)
+		  (VP would
+		      (VP have
+			  (VP had
+			      (NP (NP a net loss)
+				  (PP of
+				      (NP (NP (QP $ 3.1 million) *U*)
+					  , 
+					  or
+					  (NP (NP seven cents)
+					      (NP-ADV a share)))))))))))
+     .))
+( (S (ADVP-TMP (NP A year)
+	       earlier)
+     ,
+     (NP-SBJ it)
+     (VP had
+         (NP (NP profit)
+             (PP of
+                 (NP (NP (QP $ 7.5 million) *U*)
+                     , 
+		     or
+                     (NP (NP 18 cents)
+                         (NP-ADV a share))))))
+     .))
+( (S (NP-SBJ Revenue)
+     (VP rose
+         (NP-EXT 42 %)
+         (PP-DIR to
+		 (NP (QP $ 133.7 million) *U*))
+         (PP-DIR from
+		 (NP (QP $ 94 million) *U*)))
+     .))
+( (S (NP-SBJ The charge)
+     (VP (ADVP-MNR partly)
+	 reflects
+         (NP a switch
+	     (PP-DIR from
+		     (NP older five-inch
+			 (NX *ICH*-1)))
+	     (PP-DIR to
+		     (NP more-efficient six-inch
+			 (NX *ICH*-1)))
+	     (NX-1 (NP silicon wafers)
+		   (SBAR (WHPP-2 with
+				 (WHNP which))
+			 (S (NP-SBJ *)
+			    (VP to
+				(VP fabricate
+				    (NP chips)
+				    (PP-MNR *T*-2))))))))
+     .))
+( (S (S-ADV (NP-SBJ *)
+	    (VP Related
+		(PP-CLR to
+			(NP that decision))))
+     ,
+     (NP-SBJ the company)
+     (VP said
+	 (SBAR 0
+	       (S (NP-SBJ it)
+		  (VP was
+		      (VP converting
+			  (NP its
+			      (NAC-LOC Santa Clara
+				       ,
+				       Calif.
+				       ,)
+			      factory)
+			  (PP-CLR to
+				  (NP a research and development facility)))))))
+     .))
+( (S (NP-SBJ-1 A spokesman)
+     (VP declined
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP speculate
+                    (PP-CLR about
+			    (NP (NP possible reductions)
+				(PP-LOC in
+					(NP force))))))))
+     .))
+( (SINV ``
+	(S-TPC-2 (S (NP-SBJ This)
+		    (VP is
+			(NP-PRD (NP a company)
+				(SBAR (WHNP-146 that)
+				      (S (NP-SBJ *T*-146)
+					 (VP has
+					     (VP invested
+						 (PP-CLR in
+							 (NP capacity additions))
+						 (ADVP-MNR (ADVP more aggressively)
+							   (PP than
+							       (NP (NP any other company)
+								   (PP-LOC in
+									   (NP the industry))))))))))))
+		 and
+		 (S (ADVP-TMP now)
+		    (S (NP-SBJ the industry)
+		       (VP is
+			   (VP growing
+			       (ADVP-MNR more slowly))))
+		    and
+		    (S (NP-SBJ they)
+		       (VP are
+			   (ADVP-TMP suddenly)
+			   (ADJP-PRD poorly positioned)))))
+	, 
+	''
+	(VP said
+	    (S *T*-2))
+	(NP-SBJ (NP Michael Stark)
+		,
+		(NP (NP chip analyst)
+		    (PP-LOC at
+			    (NP Robertson
+				,
+				Stephens
+				&
+				Co))))
+	.))
+( (S ``
+     (NP-SBJ I)
+     (VP think
+         (SBAR 0
+               (S (NP-SBJ the stock)
+		  (VP is
+		      (NP-PRD dead money)
+		      (PP-TMP for
+			      (NP a while))))))
+     . 
+     ''))
+( (S (NP-SBJ-1 (NP Yesterday 's)
+	       announcement)
+     (VP was
+         (VP made
+	     (NP *-1)
+	     (SBAR-TMP after
+		       (S (NP-SBJ markets)
+			  (VP closed)))))
+     .))
+( (S (NP-SBJ U.S. chip makers)
+     (VP are
+         (VP facing
+             (NP continued
+                 slack demand)
+	     (PP-TMP following
+		     (NP a
+			 (ADJP traditionally slow)
+			 summer))))
+     .))
+( (S (NP-SBJ (NP Part)
+             (PP of
+                 (NP the problem)))
+     (VP is
+         (SBAR-PRD that
+		   (S (NP-SBJ chip buyers)
+		      (VP are
+			  (VP keeping
+			      (S (NP-SBJ inventories)
+				 (ADJP-PRD low))
+			      (PP-PRP because of
+				      (NP (NP jitters)
+					  (PP about
+					      (NP (NP the course)
+						  (PP of
+						      (NP the U.S. economy)))))))))))
+     .))

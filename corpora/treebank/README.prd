@@ -1,0 +1,57 @@
+		 README file for (skeletally) parsed files
+
+CONTENTS
+
+This hierarchy contains files bracketed for syntactic structure.  The
+parses are skeletal in two senses: (1) POS tag information is not included
+(see combined/) and (2) the Treebank does not attempt to produce full,
+binary-branching structures.  Bracketing policy is described in great
+detail in the Bracketing Guidelines (see the doc/ directory).
+
+CREATION PROCESS
+
+The genesis of these files is fairly complicated.  Originally, each of the
+texts was run through FIDDITCH (Don Hindle's deterministic parser),
+simplified by an emacs-lisp program called "crunch", and then corrected by
+a human annotator.  For the ATIS-3 sample and a small portion of the WSJ
+material, the process stopped there.
+
+However, most of the WSJ material has undergone several passes.  The
+original results of the simple process described above were released on our
+first cdrom in 1992.  Then, in 1993, annotators hand-corrected much of this
+material to make it more accurate and uniform.  The results of that pass,
+plus a number of technical corrections, are included in this release as
+version 0.75.
+
+Finally, these cleaner files were processed using several tgrep T programs
+(see tools/ for more information about tgrep) to make them closer to the
+new Treebank II style (a.k.a. P/A, for Predicate-Argument (extractable)
+structure).  Then these files were hand-corrected by at least one
+annotator.  About half the material also received a second pass to bring it
+up-to-date with policy changes that had to be instituted in the middle of
+the first (P/A) pass through the material.
+
+The file doc/wsj.wha lists the specific directories, which passes were done
+for that directory, and who annotated the files during each pass.
+
+After all the regular annotation was completed, a few specific problems
+were identified (missing -SBJs, missing -PRDs, multiple top-level nodes,
+etc.).  These were listed using tgrep, and various annotators fixed the
+errors in the parsed files.  There were about 3000 such errors, distributed
+over about half the files.
+
+KNOWN BUGS
+
+There is a bit of variation in handling brackets that were part of the
+original text.  File that only underwent the shorter process have () and {}
+handled as *LRB* *RRB* and *LCB* *RCB*, respectively, while files that
+underwent the whole process have these symbols as -LRB- -RRB- and -LCB-
+-RCB-.  These are uniformly made the latter in the combined files, but in
+this hierarchy there are some files with the *[LR][RC]B* notation.
+
+A number of files, listed in tagged/CHANGES.LOG, are missing the final
+sentence or final close quote of the original article.  Also, most words
+that contain slashes (notably, fractions) are missing the part after the
+slash; this error is fixed for the combined files by the combining program.
+Aside from these errors, most of the original text should be pretty much
+intact.

@@ -1,0 +1,181 @@
+
+
+( (S (NP-SBJ The White House)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ President Bush)
+                  (VP has
+                      (VP approved
+                          (NP (NP duty-free treatment)
+                              (PP for
+                                  (NP (NP imports)
+                                      (PP of
+                                          (NP (NP certain types)
+					      (PP of
+						  (NP watches))
+                                              (SBAR (WHNP-35 that)
+                                                    (S (NP-SBJ-1 *T*-35)
+                                                       (VP are 
+							   n't
+                                                           (VP produced
+							       (NP *-1)
+                                                               (PP-MNR in 
+								       ``
+								       (NP significant quantities)
+								       '')
+							       (PP-LOC in
+								       (NP (NP the U.S.)
+									   ,
+									   (NP the Virgin Islands)
+									   and
+									   (NP other U.S. possessions)))))))))))))))))
+     .))
+( (S (NP-SBJ The action)
+     (VP came
+         (PP-PRP in
+		 (NP (NP response)
+		     (PP to
+			 (NP (NP a petition)
+			     (VP filed
+				 (NP *)
+				 (PP by
+				     (NP-LGS Timex Inc.)))
+			     (PP for
+				 (NP (NP changes)
+				     (PP-LOC in
+					     (NP (NP the 
+						     U.S. Generalized System)
+						 (PP of
+						     (NP Preferences))
+						 (PP for
+						     (NP (NP imports)
+							 (PP-DIR from
+								 (NP developing
+								     nations)))))))))))))
+     .))
+( (S (ADVP-TMP Previously)
+     ,
+     (NP-SBJ-37 watch imports)
+     (VP were
+         (VP denied
+             (NP *-37)
+             (NP such duty-free treatment)))
+     .))
+( (S (NP-SBJ Timex)
+     (VP had
+         (VP requested
+             (NP (NP duty-free treatment)
+		 (PP for
+		     (NP (NP many types)
+			 (PP of
+			     (NP watches))
+			 ,
+			 (VP covered
+			     (NP *)
+			     (PP by
+				 (NP-LGS 58 different 
+					 U.S. tariff classifications))))))))
+     .))
+( (S (NP-SBJ The White House)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 Mr. Bush)
+                  (VP (VP decided
+                          (S (NP-SBJ *-1)
+                             (VP to
+                                 (VP grant
+                                     (NP (NP duty-free status)
+					 (PP for
+					     (NP 18 categories)))))))
+                      , 
+		      but
+                      (VP turned
+			  (PRT down)
+			  (NP (NP such treatment)
+			      (PP for
+				  (NP (NP other types)
+				      (PP of
+					  (NP watches)))))
+			  ``
+			  (PP-PRD because of
+				  (NP (NP the potential)
+				      (PP for
+					  (NP (NP material injury)
+					      (PP to
+						  (NP (NP watch producers)
+						      (VP located
+							  (NP *)
+							  (PP-LOC-CLR in
+								      (NP (NP the U.S.)
+									  and
+									  (NP the Virgin Islands)))))))))))))))
+     .
+     ''))
+( (S (NP-SBJ Timex)
+     (VP is
+         (NP-PRD (NP a major U.S. producer and seller)
+		 (PP of
+		     (NP (NP watches)
+			 ,
+			 (PP including
+			     (NP (NP low-priced battery-operated watches)
+				 (VP assembled
+				     (NP *)
+				     (PP-LOC in
+					     (NP (NP the Philippines)
+						 and
+						 (NP (NP other
+							 developing nations)
+						     (VP covered
+							 (NP *)
+							 (PP by
+							     (NP-LGS the U.S. tariff preferences)))))))))))))
+     .))
+( (S (NP-SBJ U.S. trade officials)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ (NP the Philippines)
+                          and
+                          (NP Thailand))
+                  (VP would
+                      (VP be
+                          (NP-PRD (NP the main beneficiaries)
+				  (PP of
+				      (NP (NP the president 's)
+					  action))))))))
+     .))
+( (S (NP-SBJ (NP Imports)
+             (PP of
+                 (NP (NP the types)
+		     (PP of
+			 (NP watches))
+                     (SBAR (WHNP-36 that)
+                           (S (NP-SBJ *T*-36)
+                              (ADVP-TMP now)
+                              (VP will
+                                  (VP be
+                                      (ADJP-PRD eligible
+						(PP for
+						    (NP duty-free treatment))))))))))
+     (VP totaled
+         (NP (NP (QP about $ 37.3 million) *U*)
+             (NP *ICH*-1))
+	 (PP-TMP in
+		 (NP 1988))
+	 ,
+	 (NP-1 (NP (NP a
+		       (ADJP relatively small)
+		       share)
+		   (PP of
+		       (NP (NP the (QP $ 1.5 billion) *U*)
+			   (PP-LOC in
+				   (NP U.S. watch imports))
+			   (NP-TMP that year)))))
+	 ,
+	 (PP according
+	     (PP to
+		 (NP (NP an aide)
+		     (PP to
+			 (NP U.S. Trade Representative
+			     Carla Hills))))))
+     .))

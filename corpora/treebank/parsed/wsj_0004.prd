@@ -1,0 +1,284 @@
+
+
+( (S (NP-SBJ-1 (NP Yields)
+	       (PP on
+		   (NP money-market mutual funds)))
+     (VP continued
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP slide)))
+	 ,
+	 (PP-LOC amid
+		 (NP signs
+		     (SBAR that
+			   (S (NP-SBJ portfolio managers)
+			      (VP expect
+				  (NP (NP further declines)
+				      (PP-LOC in
+					      (NP interest rates)))))))))
+     .))
+( (S (NP-SBJ (NP The average seven-day compound yield)
+             (PP of
+                 (NP (NP the 400 taxable funds)
+                     (VP tracked
+                         (NP *)
+                         (PP by
+                             (NP-LGS (NP IBC 's)
+                                     Money Fund Report))))))
+     (VP eased
+         (NP-ADV (NP a fraction) 
+		 (PP of
+		     (NP a percentage point)))
+         (PP-DIR to
+		 (NP 8.45 %))
+         (PP-DIR from
+		 (NP 8.47 %))
+	 (PP-TMP for
+		 (NP (NP the week)
+		     (VP ended
+			 (NP-TMP Tuesday)))))
+     .))
+( (S (NP-SBJ Compound yields)
+     (VP assume
+         (UCP (NP (NP reinvestment)
+		  (PP of
+		      (NP dividends)))
+	      and
+	      (SBAR that
+		    (S (NP-SBJ the current yield)
+		       (VP continues
+			   (PP-TMP for
+				   (NP a year)))))))
+     .))
+( (S (NP-SBJ (NP Average maturity)
+             (PP of
+                 (NP (NP the funds ')
+                     investments)))
+     (VP lengthened
+         (PP-EXT by
+		 (NP a day))
+         (PP-DIR to
+		 (NP (NP 41 days)
+		     ,
+		     (NP (NP the
+			     longest)
+			 (PP-TMP since
+				 (NP early August)))
+		     ,))
+	 (PP according
+	     (PP to
+		 (NP Donoghue 's))))
+     .))
+( (S (NP-SBJ-1 Longer maturities)
+     (VP are
+         (VP thought
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP indicate
+                        (NP declining interest rates)
+			(SBAR-PRP because
+				  (S (NP-SBJ they)
+				     (VP permit
+					 (S (NP-SBJ portfolio managers)
+					    (VP to
+						(VP retain
+						    (NP relatively higher rates)
+						    (PP-TMP for
+							    (NP a longer period)))))))))))))
+     .))
+( (S (NP-SBJ-9 Shorter
+               maturities)
+     (VP are
+         (VP considered
+             (S (NP-SBJ *-9)
+		(NP-PRD (NP a sign)
+			(PP of
+			    (NP rising
+				rates))))
+	     (SBAR-PRP because
+		       (S (NP-SBJ portfolio managers)
+			  (VP can
+			      (VP capture
+				  (NP higher rates)
+				  (ADVP-TMP sooner)))))))
+     .))
+( (S (NP-SBJ (NP The average maturity)
+	     (PP for
+		 (NP (NP funds)
+		     (ADJP open 
+			   (PP (ADVP only)
+			       to
+			       (NP institutions)))))
+             ,
+             (RRC (VP considered
+		      (PP by
+			  (NP-LGS some))
+		      (S (NP-SBJ *)
+			 (VP to
+			     (VP be
+				 (NP-PRD a stronger indicator)
+				 (SBAR-PRP because
+					   (S (NP-SBJ those managers)
+					      (VP watch
+						  (NP the market)
+						  (ADVP-MNR closely)))))))))
+	     ,)
+     (VP reached
+         (NP (NP (NP a high point)
+                 (PP for
+                     (NP the year)))
+             (PRN --
+		  (NP 33 days))))
+     .))
+( (S-1 (ADVP Nevertheless)
+       (PRN ,
+	    (SINV (VP said
+		      (S *T*-1))
+		  (NP-SBJ (NP Brenda Malizia Negus)
+			  ,
+			  (NP (NP editor)
+			      (PP of
+				  (NP Money Fund Report)))))
+	    ,)
+       (NP-SBJ yields)
+       ``
+       (VP may
+	   (VP blip
+	       (ADVP-DIR up)
+	       (ADVP-TMP again)
+	       (SBAR-TMP before
+			 (S (NP-SBJ they)
+			    (VP blip
+				(ADVP-DIR down))))
+	       ''
+	       (PP-PRP because of
+		       (NP (NP recent rises)
+			   (PP-LOC in
+				   (NP short-term interest rates))))))
+       .))
+( (S (NP-SBJ (NP The yield)
+             (PP on
+                 (NP (NP six-month Treasury bills)
+                     (VP sold
+			 (NP *)
+			 (PP-LOC at
+				 (NP (NP Monday 's)
+				     auction))))))
+     ,
+     (PP for
+         (NP example))
+     ,
+     (VP rose
+         (PP-DIR to
+		 (NP 8.04 %))
+         (PP-DIR from
+		 (NP 7.90 %)))
+     .))
+( (S (PP Despite
+         (NP (NP recent declines)
+             (PP-LOC in
+		     (NP yields))))
+     ,
+     (NP-SBJ-1 investors)
+     (VP continue
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP pour
+                    (NP cash)
+                    (PP-DIR into
+			    (NP money funds))))))
+     .))
+( (S (NP-SBJ (NP Assets)
+             (PP of
+                 (NP the 400 taxable funds)))
+     (VP grew
+         (PP-EXT by
+		 (NP (QP $ 1.5 billion)
+		     *U*))
+	 (PP-TMP during
+		 (NP the latest week))
+	 ,
+	 (PP-DIR to
+		 (NP (QP $ 352.7 billion) 
+		     *U*)))
+     .))
+( (S (ADVP Typically)
+     ,
+     (NP-SBJ money-fund yields)
+     (VP beat
+         (NP comparable short-term investments)
+	 (SBAR-PRP because
+		   (S (NP-SBJ portfolio managers)
+		      (VP can
+			  (VP (VP vary
+				  (NP maturities))
+			      and
+			      (VP go 
+				  (PP-CLR after
+					  (NP the highest rates))))))))
+     .))
+( (S (NP-SBJ The top money funds)
+     (VP are
+         (ADVP-TMP currently)
+         (VP yielding
+	     (NP (QP well over 9) 
+		 %)))
+     .))
+( (S (NP-SBJ (NP Dreyfus World-Wide Dollar)
+             ,
+             (NP the top-yielding fund)
+             ,)
+     (VP had
+         (NP (NP a seven-day compound yield)
+	     (PP of
+		 (NP 9.37 %)))
+	 (PP-TMP during
+		 (NP the latest week))
+	 ,
+	 (ADVP down
+	       (PP from
+		   (NP 9.45 %)
+		   (ADVP-TMP (NP a week)
+			     earlier))))
+     .))
+( (S (NP-SBJ It)
+     (VP (VP invests 
+	     (ADVP-MNR heavily)
+	     (PP-CLR in
+		     (NP dollar-denominated securities))
+	     (ADVP-LOC overseas))
+	 and
+	 (VP is 
+	     (ADVP-TMP currently)
+	     (VP (VP waiving
+		     (NP management fees))
+		 ,
+		 (SBAR-ADV (WHNP-9 which)
+			   (S (NP-SBJ *T*-9)
+			      (VP boosts
+				  (NP its yield)))))))
+     .))
+( (S (NP-SBJ (NP The average seven-day simple yield)
+             (PP of
+                 (NP the 400 funds)))
+     (VP was
+         (NP-PRD 8.12 %)
+	 ,
+	 (ADVP down
+	       (PP from
+		   (NP 8.14 %))))
+     .))
+( (S (S (NP-SBJ The 30-day simple yield)
+        (VP fell
+            (PP-DIR to
+		    (NP an average 8.19 %))
+            (PP-DIR from
+		    (NP 8.22 %))))
+     ;
+     (S (NP-SBJ the 30-day compound yield)
+        (VP slid
+            (PP-DIR to
+		    (NP an average 8.53 %))
+            (PP-DIR from
+		    (NP 8.56 %))))
+     .))

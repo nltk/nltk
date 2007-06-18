@@ -1,0 +1,123 @@
+
+( (S 
+    (S-TPC-1 
+      (NP-SBJ 
+        (NP 
+          (NP (NNP Japan) (POS 's) )
+          (JJ domestic) (NNS sales) )
+        (PP (IN of) 
+          (NP (NNS cars) 
+            (, ,)
+            (NNS trucks) 
+            (CC and)
+            (NNS buses) ))
+        (PP-TMP (IN in) 
+          (NP (NNP October) )))
+      (VP (VBD rose) 
+        (NP-EXT (CD 18) (NN %) )
+        (PP-DIR (IN from) 
+          (ADVP-TMP 
+            (NP (DT a) (NN year) )
+            (JJR earlier) ))
+        (PP-DIR (TO to) 
+          (NP 
+            (NP (CD 500,004) (NNS units) )
+            (, ,) 
+            (NP 
+              (NP (DT a) (NN record) )
+              (PP (IN for) 
+                (NP (DT the) (NN month) )))))))
+    (, ,) 
+    (NP-SBJ 
+      (NP (DT the) (NNP Japan) (NNP Automobile) (NNPS Dealers) (POS ') )
+      (NNP Association) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (JJ strong) (NN growth) )
+    (VP (VBD followed) 
+      (NP 
+        (NP (JJ year-to-year) (NNS increases) )
+        (PP (IN of) 
+          (NP 
+            (NP 
+              (NP (CD 21) (NN %) )
+              (PP-TMP (IN in) 
+                (NP (NNP August) )))
+            (CC and) 
+            (NP 
+              (NP (CD 12) (NN %) )
+              (PP-TMP (IN in) 
+                (NP (NNP September) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (JJ monthly) (NNS sales) )
+    (VP (VBP have) 
+      (VP (VBN been) 
+        (VP (VBG setting) 
+          (NP (NNS records) )
+          (NP-TMP 
+            (NP (DT every) (NN month) )
+            (PP (IN since) 
+              (NP (NNP March) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP October) (NNS sales) )
+      (, ,) 
+      (VP (VBN compared) 
+        (NP (-NONE- *) )
+        (PP-CLR (IN with) 
+          (NP (DT the) (JJ previous) (NN month) )))
+      (, ,) )
+    (VP (VBD inched) 
+      (ADVP-DIR (RB down) 
+        (NP (CD 0.4) (NN %) )))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNS Sales) )
+      (PP (IN of) 
+        (NP (NN passenger) (NNS cars) )))
+    (VP (VBD grew) 
+      (NP-EXT (CD 22) (NN %) )
+      (PP-DIR (IN from) 
+        (ADVP-TMP 
+          (NP (DT a) (NN year) )
+          (JJR earlier) ))
+      (PP-DIR (TO to) 
+        (NP (CD 361,376) (NNS units) )))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNS Sales) )
+      (PP (IN of) 
+        (NP (JJ medium-sized) (NNS cars) ))
+      (, ,) 
+      (SBAR 
+        (WHNP-21 (WDT which) )
+        (S 
+          (NP-SBJ (-NONE- *T*-21) )
+          (VP (VBD benefited) 
+            (PP-CLR (IN from) 
+              (NP 
+                (NP (NN price) (NNS reductions) )
+                (VP (VBG arising) 
+                  (PP-DIR (IN from) 
+                    (NP 
+                      (NP (NN introduction) )
+                      (PP (IN of) 
+                        (NP (DT the) (NN consumption) (NN tax) ))))))))))
+      (, ,) )
+    (VP 
+      (ADVP (RBR more) (IN than) )
+      (VBD doubled) 
+      (PP-DIR (TO to) 
+        (NP (CD 30,841) (NNS units) ))
+      (PP-DIR (IN from) 
+        (NP (CD 13,056) )
+        (PP-TMP (IN in) 
+          (NP (NNP October) (CD 1988) ))))
+    (. .) ))

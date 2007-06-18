@@ -1,0 +1,286 @@
+
+( (S 
+    (S-TPC-2 
+      (NP-SBJ (DT The) (NNP U.S.) 
+        (CC and)
+        (NNP Soviet) (NNP Union) )
+      (VP (VBP are) 
+        (VP (VBG holding) 
+          (NP 
+            (NP (JJ technical) (NNS talks) )
+            (PP (IN about) 
+              (NP 
+                (NP (JJ possible) (NN repayment) )
+                (PP (IN by) 
+                  (NP (NNP Moscow) ))
+                (PP (IN of) 
+                  (NP 
+                    (NP 
+                      (QP ($ $) (CD 188) (CD million) )
+                      (-NONE- *U*) )
+                    (PP (IN in) 
+                      (NP 
+                        (NP (JJ pre-Communist) (JJ Russian) (NNS debts) )
+                        (VP (VBD owed) 
+                          (NP (-NONE- *) )
+                          (PP-CLR (TO to) 
+                            (NP (DT the) (NNP U.S.) (NN government) )))))))))))))
+    (, ,) 
+    (NP-SBJ (DT the) (NNP State) (NNP Department) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-2) )))
+    (. .) ))
+( (S 
+    (SBAR-ADV (IN If) 
+      (S 
+        (NP-SBJ-49 (DT the) (NNS debts) )
+        (VP (VBP are) 
+          (VP (VBN repaid) 
+            (NP (-NONE- *-49) )))))
+    (, ,) 
+    (NP-SBJ (PRP it) )
+    (VP (MD could) 
+      (VP (VB clear) 
+        (NP 
+          (NP (DT the) (NN way) )
+          (SBAR 
+            (WHADVP-1 (-NONE- 0) )
+            (IN for) 
+            (S 
+              (NP-SBJ-50 (JJ Soviet) (NNS bonds) )
+              (VP (TO to) 
+                (VP (VB be) 
+                  (VP (VBN sold) 
+                    (NP (-NONE- *-50) )
+                    (PP-LOC (IN in) 
+                      (NP (DT the) (NNP U.S.) ))
+                    (ADVP-MNR (-NONE- *T*-1) )))))))))
+    (. .) ))
+( (S 
+    (ADVP (RB However) )
+    (, ,) 
+    (PP-TMP (IN after) 
+      (NP 
+        (NP (CD two) (NNS meetings) )
+        (PP (IN with) 
+          (NP (DT the) (NNS Soviets) ))))
+    (, ,) 
+    (NP-SBJ (DT a) (NNP State) (NNP Department) (NN spokesman) )
+    (VP (VBD said) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ 
+            (NP (PRP it) )
+            (S (-NONE- *EXP*-1) ))
+          (VP (VBZ 's) (`` ``) 
+            (ADJP-PRD (RB too) (RB early) )
+            (S-1 
+              (NP-SBJ (-NONE- *) )
+              (VP (TO to) 
+                (VP (VB say) ('' '') 
+                  (SBAR (IN whether) 
+                    (S 
+                      (NP-SBJ (DT that) )
+                      (VP (MD will) 
+                        (VP (VB happen) )))))))))))
+    (. .) ))
+( (S 
+    (ADJP-TMP (JJ Coincident) 
+      (PP (IN with) 
+        (NP (DT the) (NNS talks) )))
+    (, ,) 
+    (NP-SBJ (DT the) (NNP State) (NNP Department) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP it) )
+          (VP (VBZ has) 
+            (VP (VBN permitted) 
+              (S 
+                (NP-SBJ (DT a) (JJ Soviet) (NN bank) )
+                (VP (TO to) 
+                  (VP (VB open) 
+                    (NP (DT a) (NNP New) (NNP York) (NN branch) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 
+      (NP (DT The) (NN branch) )
+      (PP (IN of) 
+        (NP 
+          (NP (DT the) (NNP Bank) )
+          (PP (IN for) 
+            (NP (NNP Foreign) (NNP Economic) (NNP Affairs) )))))
+    (VP 
+      (VP (VBD was) 
+        (VP (VBN approved) 
+          (NP (-NONE- *-1) )
+          (NP-TMP (JJ last) (NN spring) )))
+      (CC and) 
+      (VP (VBD opened) 
+        (PP-TMP (IN in) 
+          (NP (NNP July) ))))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ-51 
+      (NP (DT a) (JJ Soviet) (NN bank) )
+      (ADVP-LOC (RB here) ))
+    (VP (MD would) 
+      (VP (VB be) 
+        (VP (VBN crippled) 
+          (NP (-NONE- *-51) )
+          (SBAR-ADV (IN unless) 
+            (S 
+              (NP-SBJ (NNP Moscow) )
+              (VP (VBD found) 
+                (NP 
+                  (NP (DT a) (NN way) )
+                  (SBAR 
+                    (WHADVP-2 (-NONE- 0) )
+                    (S 
+                      (NP-SBJ (-NONE- *) )
+                      (VP (TO to) 
+                        (VP (VB settle) 
+                          (NP 
+                            (NP (DT the) 
+                              (ADJP 
+                                (QP ($ $) (CD 188) (CD million) )
+                                (-NONE- *U*) )
+                              (NN debt) )
+                            (, ,) 
+                            (SBAR 
+                              (WHNP-1 (WDT which) )
+                              (S 
+                                (NP-SBJ-52 (-NONE- *T*-1) )
+                                (VP (VBD was) 
+                                  (VP (VBN lent) 
+                                    (NP (-NONE- *-52) )
+                                    (PP-CLR (TO to) 
+                                      (NP 
+                                        (NP (DT the) (NN country) (POS 's) )
+                                        (JJ short-lived) (JJ democratic) (NNP Kerensky) (NN government) ))
+                                    (SBAR-TMP (IN before) 
+                                      (S 
+                                        (NP-SBJ (DT the) (NNS Communists) )
+                                        (VP (VBD seized) 
+                                          (NP (NN power) )
+                                          (PP-TMP (IN in) 
+                                            (NP (CD 1917) ))))))))))
+                          (ADVP-MNR (-NONE- *T*-2) ))))))))))))
+    (. .) ))
+( (S 
+    (PP-LOC (IN Under) 
+      (NP 
+        (NP (DT a) (CD 1934) (NN law) )
+        (, ,) 
+        (NP 
+          (NP (DT the) (NNP Johnson) (NNP Debt) (NNP Default) (NNP Act) )
+          (PRN 
+            (, ,)
+            (SBAR (RB as) 
+              (S 
+                (NP-SBJ-1 (-NONE- *) )
+                (VP (VBN amended) 
+                  (NP (-NONE- *-1) ))))
+            (, ,) ))))
+    (NP-SBJ 
+      (NP (PRP it) )
+      (SBAR (-NONE- *EXP*-2) ))
+    (VP (VBZ 's) 
+      (ADJP-PRD (JJ illegal) )
+      (SBAR-2 (IN for) 
+        (S 
+          (NP-SBJ (NNS Americans) )
+          (VP (TO to) 
+            (VP (VB extend) 
+              (NP (NN credit) )
+              (PP-CLR (TO to) 
+                (NP 
+                  (NP (NNS countries) )
+                  (PP (IN in) 
+                    (NP 
+                      (NP (NN default) )
+                      (PP (TO to) 
+                        (NP (DT the) (NNP U.S.) (NN government) ))))))
+              (, ,) 
+              (SBAR-ADV (IN unless) 
+                (S 
+                  (NP-SBJ (PRP they) )
+                  (VP (VBP are) 
+                    (NP-PRD 
+                      (NP (NNS members) )
+                      (PP (IN of) 
+                        (NP (DT the) 
+                          (NX 
+                            (NX (NNP World) (NNP Bank) )
+                            (CC and) 
+                            (NX (NNP International) (NNP Monetary) (NNP Fund) )))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NNP U.S.S.R.) )
+    (VP (VBZ belongs) 
+      (PP-CLR (TO to) 
+        (NP (DT neither) (NN organization) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Moscow) )
+    (VP (VBZ has) 
+      (VP (VBN settled) 
+        (NP 
+          (NP (JJ pre-1917) (NNS debts) )
+          (PP (IN with) 
+            (NP (JJ other) (NNS countries) )))
+        (PP-TMP (IN in) 
+          (NP (JJ recent) (NNS years) ))
+        (PP-CLR (IN at) 
+          (NP 
+            (NP (JJR less) )
+            (PP (IN than) 
+              (NP (NN face) (NN value) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NNP State) (NNP Department) )
+    (VP (VBD stressed) 
+      (NP (DT the) (JJ pre-1933) (NNS debts) )
+      (PP-CLR (IN as) 
+        (NP 
+          (NP (DT the) (NN key) )
+          (PP (TO to) 
+            (S-NOM 
+              (NP-SBJ (-NONE- *) )
+              (VP (VBG satisfying) 
+                (NP (DT the) (NNP Johnson) (NNP Act) )))))))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ (DT the) (NNS Soviets) )
+    (VP (MD might) 
+      (ADVP-TMP (RB still) )
+      (VP (VB face) 
+        (NP 
+          (NP (JJ legal) (NNS obstacles) )
+          (PP (TO to) 
+            (S-NOM 
+              (NP-SBJ (-NONE- *) )
+              (VP (VBG raising) 
+                (NP (NN money) )
+                (PP-LOC (IN in) 
+                  (NP (DT the) (NNP U.S.) ))))))
+        (SBAR-TMP (IN until) 
+          (S 
+            (NP-SBJ (PRP they) )
+            (VP (VBP settle) 
+              (NP 
+                (NP 
+                  (NP (NNS hundreds) )
+                  (PP (IN of) 
+                    (NP 
+                      (NP (NNS millions) )
+                      (PP (IN of) 
+                        (NP (NNS dollars) )))))
+                (PP (IN in) 
+                  (NP 
+                    (NP (JJ additional) (NN debt) )
+                    (ADJP (RB still) (JJ outstanding) 
+                      (PP (IN from) 
+                        (NP (DT the) (NNP World) (NNP War) (NNP II) (JJ lend-lease) (NN program) )))))))))))
+    (. .) ))

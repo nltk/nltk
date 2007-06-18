@@ -1,0 +1,810 @@
+
+
+( (S (PP As
+         (NP an actor))
+     ,
+     (NP-SBJ Charles Lane)
+     (VP is 
+	 n't
+         (NP-PRD (NP the inheritor)
+		 (PP of
+		     (NP (NP Charlie Chaplin 's)
+			 spirit))))
+     .))
+( (S (NP-SBJ Steve Martin)
+     (VP has
+         (ADVP-TMP already)
+         (VP laid
+             (NP (NP his claim)
+                 (PP to
+                     (NP that)))))
+     .))
+( (S-CLF But
+	 (NP-SBJ it)
+	 (VP is
+	     (NP (NP Mr. Lane) 
+		 ,
+		 (PP as
+		     (NP (NP movie director) 
+			 , 
+			 (NP producer) 
+			 and 
+			 (NP writer)))
+		 ,)
+	     (SBAR-NOM (WHNP-65 who)
+		       (S (NP-SBJ *T*-65)
+			  (VP has
+			      (VP been
+				  (ADJP-PRD obsessed
+					    (PP with
+						(S-NOM (NP-SBJ *)
+						       (VP refitting
+							   (NP (NP Chaplin 's)
+							       Little Tramp)
+							   (PP-MNR in
+								   (NP a contemporary way)))))))))))
+	 .))
+( (S (PP-TMP In
+	     (NP 1976))
+     ,
+     (PP as
+         (NP (NP a film student)
+             (PP-LOC at
+		     (NP (NP the Purchase campus)
+			 (PP of
+			     (NP (NP the State University)
+				 (PP of
+				     (NP New York))))))))
+     ,
+     (NP-SBJ Mr. Lane)
+     (VP shot
+         (NP ``
+             (NP-TTL A Place in Time)
+             , 
+	     ''
+             (NP (NP a 36-minute black-and-white film)
+                 (PP about
+                     (NP (NP a sketch artist)
+                         ,
+                         (NP (NP a man)
+                             (PP of
+                                 (NP the streets))))))))
+     .))
+( (S (ADVP-TMP Now)
+     ,
+     (ADVP-TMP (NP 13 years)
+	       later)
+     ,
+     (NP-SBJ Mr. Lane)
+     (VP has
+         (VP revived
+             (NP his Artist)
+	     (PP-LOC in
+		     (NP (NP a full-length movie)
+			 (VP called
+			     (S (NP-SBJ *)
+				(NP-PRD ``
+					(NP-TTL Sidewalk Stories)
+					, 
+					''
+					(NP (NP a poignant piece)
+					    (PP of
+						(NP work))
+					    (PP about
+						(NP a modern-day tramp))))))))))
+     .))
+( (S (PP Of
+         (NP course))
+     ,
+     (SBAR-ADV if
+	       (S (NP-SBJ the film)
+		  (VP contained
+		      (NP dialogue))))
+     ,
+     (NP-SBJ-71 (NP Mr. Lane 's)
+                Artist)
+     (VP would
+         (VP be
+             (VP called
+                 (S (NP-SBJ *-71)
+		    (NP-PRD a homeless person)))))
+     .))
+( (SINV (ADVP-PRD-TPC-1 So) 
+	(VP would
+	    (VP *?*
+		(ADVP-PRD *T*-1)))
+        (NP-SBJ the Little Tramp)
+        ,
+        (PP for
+            (NP that matter))
+        .))
+( (S (NP-SBJ I)
+     (VP say 
+	 ``
+	 (S (NP-SBJ *)
+	    (VP contained
+		(NP dialogue)))
+	 ''
+	 (SBAR-PRP because
+		   (S ``
+		      (NP-TTL-SBJ Sidewalk Stories)
+		      ''
+		      (VP is 
+			  n't
+			  (ADVP really)
+			  (ADJP-PRD silent)
+			  (ADVP at
+				all)))))
+     .))
+( (S (NP-SBJ (NP Composer
+                 Marc Marder)
+             ,
+             (NP (NP a college friend)
+		 (PP of
+		     (NP Mr. Lane 's))
+                 (SBAR (WHNP-66 who)
+                       (S (NP-SBJ-1 *T*-66)
+                          (VP earns
+                              (NP his living)
+                              (S-MNR (NP-SBJ *-1) 
+				     (VP playing
+					 (NP the double bass)
+					 (PP-LOC in
+						 (NP classical music ensembles))))))))
+             ,)
+     (VP has
+         (VP prepared
+             (NP (NP an exciting , eclectic score)
+                 (SBAR (WHNP-67 that)
+                       (S (NP-SBJ *T*-67)
+                          (VP tells
+                              (NP you)
+                              (SBAR-NOM (WHNP-2 what)
+					(S (NP-SBJ the characters)
+					   (VP are
+					       (VP (VP thinking
+						       (NP *T*-2))
+						   and
+						   (VP feeling
+						       (NP *T*-2))))))
+                              (ADVP-MNR (ADVP far more precisely)
+					(SBAR than
+					      (S (NP-SBJ (NP intertitles)
+							 , 
+							 or
+							 (NP even words)
+							 ,)
+						 (VP would
+						     (VP *?*)))))))))))
+     .))
+( (S (NP-SBJ (NP Much)
+             (PP of
+                 (NP (NP Mr. Lane 's)
+                     film)))
+     (VP takes
+         (NP (NP (NP a
+		     (ADJP highly romanticized)
+		     view)
+                 (PP of
+                     (NP (NP life)
+                         (PP-LOC on
+				 (NP the streets)))))
+             (PRN -LRB- 
+		  (SBAR-ADV though
+			    (FRAG (ADVP probably)
+				  (ADJP (ADJP (ADVP no more)
+					      romanticized)
+					(PP than
+					    (NP (NP (NP Mr. Chaplin 's)
+						    notion)
+						(PP of
+						    (NP (NP the Tramp)
+							(PP as
+							    (NP the good-hearted free spirit)))))))))
+		  -RRB-)))
+     .))
+( (S (S-ADV (NP-SBJ-1 *-2)
+	    (VP Filmed
+		(NP *-1)
+		(PP-MNR in
+			(NP lovely black and white))
+		(PP by
+		    (NP-LGS Bill Dill))))
+     ,
+     (NP-SBJ-2 (NP the New York streets)
+	       (PP of 
+		   ``
+		   (NP-TTL Sidewalk Stories)
+		   ''))
+     (VP seem
+	 (ADJP-PRD benign))
+     .))
+( (S (PP-LOC On
+	     (NP Wall Street))
+     (NP-SBJ-2 men
+	       and
+	       women)
+     (VP walk
+         (PP-MNR with
+		 (NP great purpose))
+	 ,
+	 (S-ADV (NP-SBJ *-2)
+		(VP noticing
+		    (NP (NP one) 
+			(ADJP another))
+		    (SBAR-TMP only
+			      (WHADVP-1 when)
+			      (S (NP-SBJ they)
+				 (VP jostle
+				     (PP-CLR for
+					     (NP cabs))
+				     (ADVP-TMP *T*-1)))))))
+     .))
+( (S (NP-SBJ The Artist)
+     (VP hangs
+         (PRT out)
+	 (PP-LOC in
+		 (NP Greenwich Village))
+	 ,
+	 (PP-LOC on
+		 (NP (NP a strip)
+		     (PP of
+			 (NP Sixth Avenue))
+		     (VP populated
+			 (NP *)
+			 (PP by
+			     (NP-LGS (NP jugglers)
+				     ,
+				     (NP magicians)
+				     and
+				     (NP other good-natured hustlers)))))))
+     .))
+( (S -LRB-
+     (NP-SBJ (NP This)
+	     (NP *ICH*-1))
+     (ADVP clearly)
+     (VP is 
+	 not
+	 (NP-PRD real life)
+	 :
+	 (NP-1 (NP no crack dealers)
+	       ,
+	       (NP (NP no
+		       dead-eyed men)
+		   (VP selling
+		       (NP (NP four-year-old copies)
+			   (PP of
+			       (NP Cosmopolitan)))))
+	       ,
+	       (NP (NP no one)
+		   (VP curled
+		       (PRT up)
+		       (PP-LOC in
+			       (NP a cardboard box))))))
+     . 
+     -RRB-))
+( (S (NP-SBJ The Artist)
+     (VP has
+         (NP his routine))
+     .))
+( (S (NP-SBJ-1 He)
+     (VP spends
+         (NP his days)
+         (S-CLR (S (NP-SBJ *-1)
+		   (VP sketching
+		       (NP passers-by)))
+		, 
+		or
+		(S (NP-SBJ-2 *-1)
+		   (VP trying
+		       (S (NP-SBJ *-2)
+			  (VP to
+			      (VP *?*)))))))
+     .))
+( (S (PP-TMP At
+	     (NP night))
+     (NP-SBJ he)
+     (VP returns
+         (PP-DIR to
+		 (NP (NP the condemned building)
+		     (SBAR (WHNP-1 0)
+			   (S (NP-SBJ he)
+			      (VP calls
+				  (S (NP-SBJ *T*-1)
+				     (NP-PRD home))))))))
+     .))
+( (S (NP-SBJ (NP His life)
+             ,
+             (PP including
+                 (NP (NP his skirmishes)
+                     (PP with
+                         (NP a
+                             competing
+                             sketch artist))))
+             ,)
+     (VP seems
+         (ADJP-PRD carefree))
+     .))
+( (S (NP-SBJ He)
+     (VP is
+         (NP-PRD his own man))
+     .))
+( (S (ADVP-TMP Then)
+     ,
+     (SBAR-ADV just as
+	       (S (NP-SBJ-72 the Tramp)
+		  (VP is
+		      (VP given
+			  (NP *-72)
+			  (NP (NP a blind girl)
+			      (SBAR (WHNP-2 0)
+				    (S (NP-SBJ *)
+				       (VP to
+					   (VP cure
+					       (NP *T*-2))))))
+			  (PP-LOC in 
+				  ``
+				  (NP-TTL City Lights))))))
+     ,
+     ''
+     (NP-SBJ-73 the Artist)
+     (VP is
+         (VP put
+             (NP *-73)
+             (PP-PUT in
+		     (NP (NP charge)
+			 (PP of
+			     (S-NOM (NP-SBJ *-73)
+				    (VP returning
+					(NP (NP a two-year-old waif)
+					    (PRN -LRB-
+						 (NP Nicole Alysia)
+						 -RRB-) 
+					    ,
+					    (SBAR (WHNP-1 whose
+							  (NP father))
+						  (S (NP-SBJ-74 *T*-1)
+						     (VP has
+							 (VP been
+							     (VP murdered
+								 (NP *-74)
+								 (PP by
+								     (NP-LGS thugs)))))))
+					    ,)
+					(PP-CLR to
+						(NP her mother)))))))))
+     .))
+( (S (NP-SBJ-1 This cute child)
+     (VP turns
+         (PRT out)
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP be
+                    (NP-PRD (NP a blessing)
+			    and
+			    (NP a curse))))))
+     .))
+( (S (NP-SBJ She)
+     (VP (VP gives
+             (NP the Artist)
+             (NP (NP a sense)
+                 (PP of
+                     (NP purpose))))
+         , 
+	 but
+	 (VP (ADVP also)
+	     alerts
+             (NP him)
+             (PP-CLR to
+		     (NP (NP the serious inadequacy)
+			 (PP of
+			     (NP his vagrant life))))))
+     .))
+( (S (NP-SBJ (NP The beds)
+	     (PP-LOC at
+		     (NP the Bowery Mission)))
+     (VP seem
+	 (ADJP-PRD far drearier)
+	 (SBAR-TMP (WHADVP-2 when)
+		   (S (NP-SBJ-1 he)
+		      (VP has
+			  (S (NP-SBJ *-1)
+			     (VP to
+				 (VP tuck
+				     (NP a little girl)
+				     (PP-CLR into
+					     (NP (NP one)
+						 (PP of
+						     (NP them))))
+				     (PP-TMP at
+					     (NP night))
+				     (ADVP-TMP *T*-2))))))))
+     .))
+( (S (S-PRP (NP-SBJ *-1)
+	    (VP To
+		(VP (ADVP further)
+		    load
+		    (NP the stakes))))
+     ,
+     (NP-SBJ-1 Mr. Lane)
+     (VP dreamed
+	 (PRT up)
+	 (NP (NP a
+		 (ADJP highly improbable)
+		 romance)
+	     (PP for
+		 (NP the Artist))
+	     ,
+	     (PP with
+		 (NP (NP a young woman)
+		     (SBAR (SBAR (WHNP-68 who)
+				 (S (NP-SBJ *T*-68)
+				    (VP owns
+					(NP her own 
+					    (NP children 's)
+					    shop))))
+			   and
+			   (SBAR (WHNP-69 who)
+				 (S (NP-SBJ *T*-69)
+				    (VP lives
+					(PP-LOC in
+						(NP an 
+						    expensive 
+						    high-rise 
+						    apartment building))))))))))
+     .))
+( (S (NP-SBJ This story line)
+     (VP might
+	 (VP resonate
+	     (ADVP-MNR more strongly)
+	     (SBAR-ADV if
+		       (S (NP-SBJ Mr. Lane)
+			  (VP had
+			      (NP (NP as strong a presence)
+				  (PP-LOC in
+					  (NP (NP front)
+					      (PP of
+						  (NP the camera))))
+				  (SBAR as
+					(S (NP-SBJ he)
+					   (VP does
+					       (VP *?*
+						   (PP-LOC behind
+							   (NP it))))))))))))
+     .))
+( (S (NP-SBJ-1 (NP Mr. Lane 's)
+	       final purpose)
+     (VP is 
+	 n't
+         (S-PRD (NP-SBJ *-1)
+		(VP to
+		    (VP glamorize
+			(NP (NP the Artist 's)
+			    vagabond existence)))))
+     .))
+( (S (S (NP-SBJ He)
+        (VP has
+            (NP (NP a point)
+                (SBAR (WHNP-2 0)
+                      (S (NP-SBJ-1 he)
+                         (VP wants
+                             (S (NP-SBJ *-1)
+                                (VP to
+                                    (VP make
+                                        (NP *T*-2))))))))))
+     , 
+     and
+     (S (NP-SBJ he)
+        (VP makes
+            (NP it)
+            ,
+            (PP-MNR with
+		    (NP (NP a great deal)
+			(PP of
+			    (NP force))))))
+     .))
+( (S (S (NP-SBJ The movie)
+        (VP ends
+            (PP-MNR with
+		    (NP (NP sound)
+			,
+			(NP (NP the sound)
+			    (PP of
+				(S-NOM (NP-SBJ street people)
+				       (VP talking))))
+			,))))
+     and
+     (S (NP-SBJ there)
+        (VP is 
+	    n't
+            (NP-PRD (NP anything)
+		    (ADJP whimsical or enviable))
+	    (PP-LOC in
+		    (NP those rough , beaten voices))))
+     .))
+( (S (NP-SBJ The French film maker
+             Claude Chabrol)
+     (VP has
+         (VP managed
+             (NP (NP another kind)
+                 (PP of
+                     (NP weird achievement)))
+	     (PP with
+		 (NP his 
+		     ``
+		     (NX-TTL (NP Story)
+			     (PP of
+				 (NP Women)))))))
+     .
+     ''))
+( (S (NP-SBJ He)
+     (VP has
+         (VP made
+             (NP (NP a harsh , brilliant picture)
+                 (PRN --
+		      (NP (NP one)
+			  (SBAR (WHNP-70 that)
+				(S (NP-SBJ *T*-70)
+				   (VP 's
+				       (ADJP-PRD captivating)))))
+		      --)
+                 (PP about
+                     (NP (NP a character)
+                         (SBAR (WHNP-1 who)
+			       ,
+			       (S (S-ADV (NP-SBJ-3 *-2)
+					 (VP viewed
+					     (NP *-3)
+					     (PP-CLR from
+						     (NP the
+							 (ADJP most sympathetic)
+							 angle))))
+				  ,
+                                  (NP-SBJ-2 *T*-1)
+				  (VP would
+				      (VP seem
+					  (ADJP-PRD disagreeable))))))))))
+     .))
+( (S (ADVP Yet)
+     (NP-SBJ (NP this woman)
+             ,
+             (NP Marie-Louise Giraud)
+             ,)
+     (VP carries
+         (NP historical significance)
+	 ,
+	 (PP both
+	     (PP as
+		 (NP (NP one)
+		     (PP of
+			 (NP (NP the last women)
+			     (SBAR (WHNP-1 0)
+				   (S (NP-SBJ-2 *T*-1)
+				      (VP to
+					  (VP be
+					      (VP executed
+						  (NP *-2)
+						  (PP-LOC in
+							  (NP France)))))))))))
+	     and
+	     (PP as
+		 (NP (NP a symbol)
+		     (PP of
+			 (NP (NP the Vichy government 's)
+			     hypocrisy))))))
+     .))
+( (S (SBAR-TMP While
+	       (S (NP-SBJ Vichy)
+		  (VP collaborated
+		      (PP-CLR with
+			      (NP the Germans))
+		      (PP-TMP during
+			      (NP World War II))
+		      (PP in
+			  (NP (NP the deaths)
+			      (PP of
+				  (NP (NP thousands)
+				      (PP of
+					  (NP (NP Resistance fighters)
+					      and
+					      (NP Jews))))))))))
+     ,
+     (NP-SBJ its officials)
+     (VP needed
+         (NP a diversionary symbolic traitor))
+     .))
+( (S (NP-SBJ (NP Marie-Louise)
+             ,
+             (NP a small-time abortionist)
+             ,)
+     (VP was
+         (NP-PRD their woman))
+     .))
+( (S (NP-SBJ She)
+     (VP (VP became
+             (NP-PRD an abortionist)
+             (ADVP-MNR accidentally))
+         , 
+	 and
+         (VP continued
+	     (SBAR-PRP because
+		       (S (NP-SBJ it)
+			  (VP enabled
+			      (S (NP-SBJ her)
+				 (VP to
+				     (VP buy
+					 (NP (NP jam)
+					     ,
+					     (NP cocoa)
+					     and
+					     (NP other war-rationed goodies))))))))))
+     .))
+( (S (NP-SBJ She)
+     (VP (VP was
+             (ADJP-PRD untrained))
+         and 
+	 ,
+         (VP (PP-LOC in
+		     (NP one botched job))
+	     killed
+	     (NP a client)))
+     .))
+( (S (NP-SBJ Her remorse)
+     (VP was
+         (ADJP-PRD shallow and brief))
+     .))
+( (S (SBAR-ADV Although
+	       (S (NP-SBJ she)
+		  (VP was
+		      (ADJP-PRD kind and playful
+				(PP to
+				    (NP her children))))))
+     ,
+     (S (NP-SBJ she)
+        (VP was
+            (ADJP-PRD dreadful
+		      (PP to
+			  (NP her war-damaged husband)))))
+     ;
+     (S (NP-SBJ she)
+        (VP (ADVP-MNR openly)
+            brought
+            (NP her lover)
+	    (PP-CLR into
+		    (NP their home))))
+     .))
+( (S (SBAR-ADV As
+	       (S (NP-SBJ-1 *)
+		  (VP (VP presented
+			  (NP *-1)
+			  (PP by
+			      (NP-LGS Mr. Chabrol)))
+		      , 
+		      and
+		      (VP played
+			  (NP *-1)
+			  (PP-MNR with
+				  (NP thin-lipped intensity))
+			  (PP by
+			      (NP-LGS Isabelle Huppert))))))
+     ,
+     (NP-SBJ (NP Marie-Louise)
+             (PRN -LRB-
+		  (VP called
+		      (S (NP-SBJ *)  
+			 (NP-PRD Marie Latour))
+		      (PP-LOC in
+			      (NP the film)))
+		  -RRB-))
+     (VP was 
+	 not
+         (NP-PRD a nice person))
+     .))
+( (S But
+     (NP-SBJ-1 she)
+     (VP did 
+	 n't
+         (VP deserve
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP have
+                        (S (NP-SBJ-2 her head)
+			   (VP chopped
+			       (NP *-2)
+			       (PRT off))))))))
+     .))
+( (S (NP-SBJ There)
+     (VP is
+         (NP-PRD (NP very little)
+		 (SBAR (WHNP-1 0)
+		       (S (NP-SBJ *T*-1)
+			  (VP to
+			      (VP recommend
+				  (NP ``
+				      (NP-TTL Old Gringo)
+				      , 
+				      ''
+				      (NP (NP a confused rendering)
+					  (PP of
+					      (NP (NP the Carlos Fuentes novel)
+						  (PP of
+						      (NP the Mexican Revolution))))))))))))
+     .))
+( (S (NP-SBJ (NP Most)
+             (PP of
+                 (NP the picture)))
+     (VP is
+         (VP taken
+             (PRT up)
+             (PP-CLR with
+		     (NP (NP endless scenes)
+			 (PP of
+			     (S-NOM (NP-SBJ-1 many people)
+				    (VP either
+					(VP fighting)
+					or
+					(VP eating
+					    and
+					    drinking
+					    (S-PRP (NP-SBJ *-1)
+						   (VP to
+						       (VP celebrate
+							   (NP victory))))))))))))
+     .))
+( (S (NP-SBJ I)
+     (VP mention
+         (NP the picture)
+	 (SBAR-PRP (ADVP only)
+		   because
+		   (S (S (NP-SBJ many bad movies)
+			 (VP have
+			     (NP a bright spot)))
+		      , 
+		      and
+		      (S (NP-SBJ this one)
+			 (VP has
+			     (NP (NP Gregory Peck)
+				 ,
+				 (PP-LOC in
+					 (NP (NP a
+						 (ADJP marvelously loose and energetic)
+						 portrayal)
+					     (PP of
+						 (NP (NP an old man)
+						     (SBAR (WHNP-71 who)
+							   (S (NP-SBJ-1 *T*-71)
+							      (VP wants
+								  (S (NP-SBJ *-1)
+								     (VP to
+									 (VP die
+									     (NP-MNR (NP the way)
+										     (SBAR (WHADVP-3 0)
+											   (S (NP-SBJ-2 he)
+											      (VP wants
+												  (S (NP-SBJ *-2)
+												     (VP to
+													 (VP die
+													     (ADVP-MNR *T*-3))))))))))))))))))))))))
+     .))
+( (FRAG (NP Video Tip)
+	:
+	(S (PP-TMP Before
+		   (S-NOM (NP-SBJ *-1)
+			  (VP seeing 
+			      ``
+			      (NP-TTL Sidewalk Stories))))
+	   ,
+	   ''
+	   (NP-SBJ-1 *)
+	   (VP take
+	       (NP (NP a look)
+		   (PP at
+		       (NP ``
+			   (NP-TTL City Lights)
+			   , 
+			   ''
+			   (NP (NP (NP Chaplin 's)
+				   Tramp)
+			       (PP at
+				   (NP his finest))))))))
+	.))

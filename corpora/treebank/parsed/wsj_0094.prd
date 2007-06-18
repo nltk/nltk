@@ -1,0 +1,240 @@
+
+
+( (S (NP-SBJ (NP Your Oct. 6 article)
+	     ``
+	     (S-TTL (NP-SBJ (NP Japan 's)
+			    Financial Firms)
+		    (VP Lure
+			(NP Science Graduates)))
+	     '')
+     (VP states
+	 ,
+	 ``
+	 (S (NP-SBJ Industrial companies)
+            (VP are
+                (VP accusing
+                    (NP-1 financial institutions)
+		    (PP-CLR of
+			    (S-NOM (NP-SBJ-2 *-1)
+				   (VP jeopardizing
+				       (NP (NP Japan 's)
+					   economy)
+				       (PP-MNR by
+					       (S-NOM (NP-SBJ *-2)
+						      (VP raising
+							  (NP (NP the salary stakes)
+							      (PP for
+								  (NP new employees)))))))))))))
+     .
+     ''))
+( (S (NP-SBJ The Japanese industrial companies)
+     (VP should
+         (VP know
+             (ADVP-CLR better)))
+     .))
+( (S (NP-SBJ They)
+     (VP are
+         (VP barking
+             (PP-CLR up
+		     (NP the wrong tree))
+	     ,
+	     (SBAR-PRP because
+		       (S (NP-SBJ (NP it)
+				  (SBAR *EXP*-1))
+			  (VP is
+			      (ADVP basically)
+			      (NP-PRD their fault)
+			      (SBAR-1 0
+				      (S (NP-SBJ they)
+					 (VP ca 
+					     n't
+					     (VP attract
+						 (NP new employees))))))))))
+     .))
+( (S (NP-SBJ (NP Takuma Yamamoto)
+             ,
+             (NP (NP president)
+                 (PP of
+                     (NP Fujitsu Ltd.)))
+             ,)
+     (VP believes 
+	 ``
+         (SBAR 0
+               (S (NP-SBJ (NP the ` money worship ')
+                          (PP-LOC among
+				  (NP young people)))
+		  ...
+                  (VP caused
+                      (NP the problem)))))
+     .
+     ''))
+( (S (NP-SBJ He)
+     (VP is
+	 (VP (ADVP just)
+	     passing
+             (NP the buck)
+             (PP-DIR to
+		     (NP young people))))
+     .))
+( (SBARQ (WHNP-247 What)
+         (SQ (NP-SBJ *T*-247)
+             (VP 's
+                 (ADJP-PRD wrong
+			   (PP with
+			       (S-NOM (NP-SBJ *)
+				      (VP asking
+					  (PP-CLR for
+						  (NP more money))))))))
+         ?))
+( (S (S (NP-SBJ Money)
+	(VP is 
+	    not
+	    (NP-PRD everything)))
+     , 
+     but
+     (S (NP-SBJ it)
+	(VP is
+	    (ADJP-PRD necessary)))
+     , 
+     and
+     (S (NP-SBJ business)
+        (VP is 
+	    not
+            (NP-PRD volunteer work)))
+     .))
+( (S (NP-SBJ (NP It)
+	     (S *EXP*-1))
+     (VP is
+	 not
+	 (ADJP-PRD unethical)
+	 (S-1 (NP-SBJ *)
+	      (VP to
+		  (VP choose
+		      (NP a higher-salaried job)))))
+     .))
+( (S (ADVP Unfortunately)
+     ,
+     (NP-SBJ Japanese manufacturers)
+     (VP have
+         (NP neither
+             (NP good working conditions)
+             nor
+             (NP good compensation packages)))
+     .))
+( (S (NP-SBJ I)
+     (VP get
+         (NP the impression
+             (SBAR that
+                   (S (NP-SBJ some Japanese managers)
+                      (VP believe
+                          (SBAR 0
+                                (S (S-NOM-SBJ (NP-SBJ *)
+					      (VP working 
+						  (ADVP-MNR harder)
+						  (PP-CLR for
+							  (NP less money))))
+                                   (VP is
+                                       (ADJP-PRD beautiful)))))))))
+     .))
+( (S (S (NP-SBJ I)
+        (VP visited
+            (NP (NP a lot)
+                (PP of
+                    (NP major Japanese manufacturers)))))
+     , 
+     but
+     (S (NP-SBJ I)
+        (ADVP-TMP never)
+	(VP felt
+            (SBAR 0
+                  (S (NP-SBJ-1 I)
+                     (VP would
+                         (VP want
+                             (S (NP-SBJ-149 *-1)
+                                (VP to
+                                    (VP be
+                                        (VP employed
+                                            (NP *-149)
+                                            (PP by
+                                                (NP-LGS (NP any)
+							(PP of
+							    (NP them))))))))))))))
+     .))
+( (S (S (NP-SBJ-1 (NP Many)
+		  (PP of
+		      (NP them)))
+        (ADVP-TMP recently)
+        (VP have
+            (VP been
+                (VP spending
+                    (NP (NP a lot)
+                        (PP of
+                            (NP money)))
+                    (PP-CLR on
+			    (NP (NP public relations) 
+				and 
+				(NP advertising)))
+		    (S-PRP (NP-SBJ *-1)
+			   (VP to
+			       (VP improve
+				   (NP their images))))))))
+     , 
+     but
+     (S (NP-SBJ they)
+        (VP should
+            (VP realize
+                (SBAR that
+                      (S (NP-SBJ the most important thing)
+                         (VP is
+                             (NP-PRD (NP real change)
+				     , 
+				     not
+				     (S-NOM (NP-SBJ *)
+					    (VP changing
+						(NP (NP people 's)
+						    perceptions))))))))))
+     .))
+( (S (SBAR-ADV If
+	       (S (NP-SBJ the Japanese companies)
+		  (VP are
+		      (VP (ADVP-MNR seriously)
+			  considering
+			  (NP their survival)))))
+     ,
+     (NP-SBJ-1 they)
+     (VP could
+         (VP do
+             (NP (NP (QP at least three) 
+		     things)
+		 (VP *ICH*-2))
+	     (S-PRP (NP-SBJ *-1)
+		    (VP to
+			(VP improve
+			    (NP the situation))))
+	     :
+	     (VP-2 (VP raise
+		       (S (NP-SBJ salaries)
+			  (ADJP-PRD (ADJP higher)
+				    (PP than
+					(NP (NP those)
+					    (PP of
+						(NP financial institutions)))))))
+		   ;
+		   (VP improve
+		       (NP (NP working conditions)
+			   (PRN -LRB-
+				(NP (NP better offices)
+				    and
+				    (NP more vacations))
+				,
+				(PP for
+				    (NP example))
+				-RRB-)))
+		   ;
+		   (VP accept and hire
+		       (NP more labor)
+		       (PP-DIR-CLR from
+				   (PP outside
+				       (NP Japan)))))))
+     .))
+( (NP Hiroshi Asada))

@@ -1,0 +1,57 @@
+
+
+( (S (NP-SBJ LTV Corp.)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 a federal bankruptcy court judge)
+                  (VP agreed
+                      (S (NP-SBJ *-1)
+                         (VP to
+                             (VP extend
+                                 (PP-TMP until
+					 (NP (NP March 8) 
+					     , 
+					     (NP 1990)))
+				 ,
+                                 (NP (NP the period)
+                                     (SBAR (WHPP-2 in
+						   (WHNP which))
+                                           (S (NP-SBJ the 
+						      steel , aerospace and energy products
+						      company)
+					      (VP has
+                                                  (NP the exclusive right
+                                                      (S (NP-SBJ *)
+                                                         (VP to
+                                                             (VP file
+                                                                 (NP a reorganization plan)))))
+						  (PP-TMP *T*-2))))))))))))
+     .))
+( (S (NP-SBJ The company)
+     (VP is
+         (VP operating
+	     (PP-LOC under
+		     (NP (NP Chapter 11)
+			 (PP of
+			     (NP (NP the federal Bankruptcy Code)))))
+	     ,
+	     (S-ADV (NP-SBJ *)
+		    (VP giving
+			(NP it)
+			(NP (NP court protection)
+			    (PP from
+				(NP (NP creditors ')
+				    lawsuits)))
+			(SBAR-TMP while
+				  (S (NP-SBJ-1 it)
+				     (VP attempts
+					 (S (NP-SBJ *-1)
+					    (VP to
+						(VP work
+						    (PRT out)
+						    (NP a plan
+							(S (NP-SBJ *)
+							   (VP to
+							       (VP pay
+								   (NP its debts)))))))))))))))
+     .))

@@ -1,0 +1,831 @@
+
+
+( (S (SBAR-TMP While
+	       (S (NP-SBJ (NP worry)
+			  (PP *ICH*-1))
+		  (VP grows
+		      (PP-1 about
+			    (NP (NP big Japanese investments)
+				(PP-LOC in
+					(NP the U.S.)))))))
+     ,
+     (NP-SBJ (NP Japan 's)
+             big trading companies)
+     (VP are
+         (ADVP-MNR rapidly)
+         (VP increasing
+             (NP (NP their stake)
+                 (PP-LOC in
+			 (NP (NP America 's)
+			     smaller business)))))
+     .))
+( (S (PP For
+         (NP Japan))
+     ,
+     (NP-SBJ the controversial trend)
+     (VP improves
+         (NP (NP access)
+             (PP to
+                 (NP American markets and technology))))
+     .))
+( (S But
+     (PP for
+         (NP small American companies))
+     ,
+     (NP-SBJ it)
+     (ADVP also)
+     (VP provides
+         (NP (NP a growing source)
+             (PP of
+                 (NP (NP capital)
+                     and 
+		     (ADVP even)
+                     (NP marketing help)))))
+     .))
+( (S (NP-SBJ *)
+     (VP Take
+         (NP (NP the deal)
+             (PP with
+                 (NP (NP Candela Laser Corp.)
+                     ,
+                     (NP (NP a
+			     (NAC-LOC Wayland
+				      ,
+				      Mass.
+				      ,)
+			     manufacturer)
+                         (PP of
+                             (NP high-tech medical devices)))
+                     ,
+                     (SBAR (WHNP-1 which)
+                           (S (ADVP-TMP (NP three years)
+					ago)
+                              (NP-SBJ *T*-1)
+                              (VP set
+                                  (NP its sights)
+                                  (PP-CLR on
+					  (NP (NP Japan)
+					      (PP as
+						  (NP an export market)))))))))))
+     .))
+( (S (S-PRP (ADVP Partly)
+	    (NP-SBJ-2 *-1)
+	    (VP to
+		(VP help
+		    (S (NP-SBJ *-2)
+		       (VP clear
+			   (NP (NP the myriad obstacles)
+			       (VP facing
+				   (NP (NP any overseas company)
+				       (VP trying
+					   (S (NP-SBJ *)
+					      (VP to
+						  (VP penetrate
+						      (NP Japan)))))))))))))
+     ,
+     (NP-SBJ-1 tiny Candela)
+     (VP turned
+	 (PP-DIR to
+		 (NP (NP Mitsui & Co.)
+		     ,
+		     (NP (NP one)
+			 (PP of
+			     (NP (NP Japan 's)
+				 largest trading companies)))
+		     ,))
+	 (PP-PRP for
+		 (NP investment)))
+     .))
+( (S (PP-LOC In
+	     (NP a joint-venture deal))
+     ,
+     (NP-SBJ Mitsui)
+     (VP guided
+         (NP Candela)
+         (PP-CLR through
+		 (NP (NP Tokyo 's)
+		     bureaucratic maze)))
+     .))
+( (S (NP-SBJ It)
+     (ADVP-TMP eventually)
+     (VP secured
+         (NP (NP (NAC Ministry
+		      (PP of
+			  (NP Health)))
+		 import approval)
+	     (PP for
+		 (NP (NP two Candela laser products)
+		     --
+		     (NP (NP (NP one)
+			     (SBAR (WHNP-189 that)
+				   (S (NP-SBJ *T*-189)
+				      (VP breaks
+					  (PRT up)
+					  (NP kidney stones)))))
+			 and
+			 (NP (NP another)
+			     (SBAR (WHNP-190 that)
+				   (S (NP-SBJ *T*-190)
+				      (VP treats
+					  (NP skin lesions))))))))))
+     .))
+( (S (PP-TMP At
+	     (NP last count))
+     ,
+     (NP-SBJ Candela)
+     (VP had
+         (VP sold
+             (NP (NP (QP $ 4 million)
+		     *U*)
+                 (PP of
+                     (NP its medical devices)))
+	     (PP-LOC in
+		     (NP Japan))))
+     .))
+( (S (NP-SBJ The deal)
+     (ADVP also)
+     (VP gave
+         (NP Mitsui)
+         (NP (NP access)
+             (PP to
+                 (NP a high-tech medical product))))
+     .))
+( (SINV ``
+	(S-TPC-1 (S (NP-SBJ They)
+		    (VP view
+			(NP this)
+			(PP-CLR as
+				(NP a growth area))))
+		 so
+		 (S (NP-SBJ they)
+		    (VP went
+			(PP-CLR about
+				(NP it))
+			(PP-MNR with
+				(NP a systematic approach)))))
+	, 
+	''
+	(VP says
+	    (S *T*-1))
+	(NP-SBJ (NP Richard Olsen)
+		,
+		(NP a Candela vice president))
+	.))
+( (S (ADVP Indeed)
+     ,
+     (PP for
+         (NP many Japanese trading companies))
+     ,
+     (NP-SBJ the favorite U.S. small business)
+     (VP is
+         (NP-PRD (NP one)
+		 (SBAR (WHNP-1 whose research and development)
+		       (S (NP-SBJ-117 *T*-1)
+			  (VP can
+			      (VP be
+				  (VP milked
+				      (NP *-117)
+				      (PP-PRP for
+					      (NP future Japanese use)))))))))
+     .))
+( (S (NP-SBJ-1 The Japanese companies)
+     (VP bankroll
+         (NP (NP many small U.S. companies)
+	     (PP with
+		 (NP promising products or ideas)))
+	 ,
+	 (S-ADV (NP-SBJ *-1)
+		(ADVP-TMP frequently)
+		(VP putting
+		    (NP their money)
+		    (PP-PUT behind
+			    (NP (NP projects)
+				(SBAR (WHNP-191 that)
+				      (S (NP-SBJ commercial banks)
+					 (VP wo
+					     n't
+					     (VP touch
+						 (NP *T*-191))))))))))
+     .))
+( (S (S (NP-SBJ Japanese companies)
+        (VP have
+            (VP financed
+                (NP (ADJP small 
+			  and
+                          medium-sized)
+                    U.S. firms)))
+	(PP-TMP for
+		(NP years)))
+     , 
+     but
+     (S (PP-TMP in
+		(NP recent months))
+        ,
+        (NP-SBJ the pace)
+        (VP has
+            (VP taken
+                (ADVP-CLR off))))
+     .))
+( (SINV (S-TPC-1 (PP-TMP In
+			 (NP (NP the first half)
+			     (PP of
+				 (NP 1989))
+			     (ADVP alone)))
+		 ,
+		 (NP-SBJ Japanese corporations)
+		 (VP invested
+		     (NP (NP (QP $ 214 million) *U*)
+			 (NP *ICH*-2))
+		     (PP-CLR in
+			     (NP (NP minority positions)
+				 (PP-LOC in
+					 (NP U.S. companies))))
+		     ,
+		     (NP-2 (NP a 
+			       (ADJP 61 %) 
+			       rise)
+			   (PP-DIR from
+				   (NP (NP the figure)
+				       (PP for
+					   (NP (NP all)
+					       (PP of
+						   (NP 1987)))))))))
+	,
+	(VP reports
+	    (SBAR 0
+		  (S *T*-1)))
+	(NP-SBJ Venture Economics Inc)
+	.))
+( (S (NP-SBJ The
+             (NAC-LOC Needham
+		      ,
+		      Mass.
+		      ,)
+             concern)
+     (VP tracks
+         (NP (NP investments)
+             (PP in
+                 (NP new businesses))))
+     .))
+( (S (PP In
+         (NP addition))
+     ,
+     (ADVP of course) 
+     ,
+     (NP-SBJ (NP some)
+             (PP of
+                 (NP the Japanese investments)))
+     (VP involved
+         (NP (NP outright purchase)
+             (PP of
+                 (NP small U.S. firms))))
+     .))
+( (S (NP-SBJ (NP Heightened Japanese interest)
+             (PP in
+                 (NP American small business)))
+     (VP parallels
+         (NP (NP an acceleration)
+             (PP of
+                 (NP (NP investments)
+		     (VP giving
+			 (NP Japanese companies)
+			 (NP (NP control)
+			     (PP of
+				 (NP (NP large 
+					 , 
+					 (ADJP highly visible)
+					 U.S. corporations)
+				     ,
+				     (PP such as
+					 (NP Columbia Pictures Entertainment Inc))))))))))
+     .))
+( (S (NP-TMP Only this week)
+     ,
+     (NP-SBJ-118 (NP it)
+		 (SBAR *EXP*-1))
+     (VP was
+         (VP announced
+             (NP *-118)
+	     (SBAR-1 that
+		     (S (NP-SBJ Mitsubishi Estate Co.)
+			(VP had
+			    (VP acquired
+				(NP (NP a 
+					(ADJP 51 %)
+					stake)
+				    (PP-LOC in
+					    (NP (NP Rockefeller Group)
+						,
+						(SBAR (WHNP-192 which)
+						      (S (NP-SBJ *T*-192)
+							 (VP owns
+							     (NP (NP New York 's)
+								 prestigious 
+								 Rockefeller Center)))))))))))))
+     .))
+( (S (SBAR-ADV While
+	       (S (NP-SBJ the small deals)
+		  (VP are
+		      (ADJP-PRD far less conspicuous))))
+     ,
+     (NP-SBJ they)
+     (VP add
+         (PP-CLR to
+		 (NP (NP Japanese penetration)
+		     (PP of
+			 (NP the U.S. market)))))
+     .))
+( (S (SBAR-PRP As
+	       (S (NP-SBJ the deals)
+		  (ADVP also)
+		  (VP improve
+		      (NP (NP Japanese access)
+			  (PP to
+			      (NP American 
+				  (NX (NX technology) 
+				      and 
+				      (NX market knowledge))))))))
+     ,
+     (NP-SBJ they)
+     (VP feed
+         (NP (NP American anxieties)
+             (PP-LOC in
+		     (NP (NP this area))))
+	 ,
+	 (ADVP too)) 
+     .))
+( (S (NP-SBJ (NP Even
+		 a low-tech product)
+	     (PP like
+		 (NP plate glass)))
+     (VP can
+	 (VP catch
+	     (NP (NP a trading company 's)
+		 fancy)
+	     (SBAR-ADV if
+		       (S (NP-SBJ there)
+			  (VP 's
+			      (NP-PRD a strategic fit))))))
+     .))
+( (S (NP-SBJ (NP (NP Free State Glass Industries)
+                 (PP of
+                     (NP (NP Warrenton)
+                         ,
+                         (NP-LOC Va.))))
+             ,
+             (NP (NP a small fabricator)
+                 (PP of
+                     (NP architectural glass)))
+             ,)
+     (VP was
+         (VP foundering
+	     (PP-LOC under
+		     (NP its original management))))
+     .))
+( (S (NP-TMP Last year)
+     ,
+     (NP-SBJ (NP Mitsubishi International Corp.)
+             ,
+             (NP (NP the
+		     (ADJP New York-based)
+		     arm)
+                 (PP of
+                     (NP Mitsubishi Corp.)))
+             ,)
+     (VP bought
+         (NP (NP controlling interest)
+             (PP-LOC in
+		     (NP the glass company)))
+	 (PP-LOC in
+		 (NP (NP a joint venture)
+		     (PP with
+			 (NP (NP Ronald Bodner)
+			     ,
+			     (NP a 
+				 (NX (NX glass industry executive)
+				     and
+				     (NX Mitsubishi consultant))))))))
+     .))
+( (SINV (S-TPC-2 (NP-SBJ-1 The deal)
+		 (VP is
+		     (ADVP chiefly)
+		     (VP designed
+			 (NP-3 *-1)
+			 (S-CLR (NP-SBJ *-3)
+				(VP to
+				    (VP give
+					(NP Mitsubishi)
+					(NP (NP a window)
+					    (PP-LOC on
+						    (NP the U.S. glass industry))))))))
+		 ,)
+	(VP says
+	    (S *T*-2))
+	(NP-SBJ (NP Ichiro Wakui)
+		,
+		(NP (NP an executive)
+		    (PP-LOC in
+			    (NP (NP (NP Mitsubishi 's)
+				    general merchandise department)
+				(PP-LOC in
+					(NP New York))))))
+	.))
+( (S ``
+     (S-TPC-1 (NP-SBJ It)
+	      (VP 's 
+		  not
+		  (NP-PRD (NP just 
+			      a simple investment)
+			  (PP in
+			      (NP a small company)))))
+     , 
+     ''
+     (NP-SBJ Mr. Wakui)
+     (VP says
+	 (S *T*-1))
+     .))
+( (S ``
+     (NP-SBJ-1 We)
+     (VP want
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP see
+                    (NP the glass market)
+		    (PP-LOC from
+			    (NP (NP the inside)
+				,
+				not
+				(NP the outside)))))))
+     .
+     ''))
+( (S (S-TPC-1 (NP-SBJ (NP (NP Mitsubishi 's)
+			  investment)
+		      (PP in
+			  (NP Free State)))
+	      (VP is
+		  ``
+		  (UCP-PRD (ADJP-PRD very small)
+			   ...
+			   (NP-PRD (QP less
+				       than
+				       $ 4 million) *U*))))
+     ,
+     ''
+     (NP-SBJ Mr. Wakui)
+     (VP says
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (NP-SBJ-1 Mr. Bodner)
+     (VP declines
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP comment
+                    (PP-CLR on
+			    (NP the arrangement))))))
+     .))
+( (S (NP-SBJ (NP Trading companies)
+	     (PP such as
+		 (NP (NP Mitsubishi)
+		     ,
+		     (NP Mitsui)
+		     ,
+		     (NP C. Itoh & Co.)
+		     and
+		     (NP Nissho-Iwai Corp.)))
+             ,
+             (SBAR (WHNP-193 which)
+                   (S (NP-SBJ *T*-193)
+                      (VP make
+                          (NP (NP many)
+                              (PP of
+                                  (NP (NP the Japanese investments)
+                                      (PP in
+                                          (NP small U.S. concerns))))))))
+             ,)
+     (VP have
+         (NP no U.S. counterpart))
+     .))
+( (S (NP-SBJ (NP These 
+		 (ADJP vertically integrated)
+		 combines)
+             ,
+             (SBAR (WHNP-1 (NP some)
+			   (WHPP of
+				 (WHNP which)))
+		   (S (NP-SBJ *T*-1)
+		      (VP got
+			  (NP their start)
+			  (PP-TMP in
+				  (NP (NP Japan 's)
+				      feudal period)))))
+	     ,)
+     (VP deal
+	 (ADVP-LOC globally)
+	 (PP-CLR in
+		 (NP commodities
+		     ,
+		     construction
+		     and
+		     manufacturing)))
+     .))
+( (S (NP-SBJ They)
+     (VP operate
+         (NP ships
+             and
+             banks))
+     .))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ All 
+			 the 
+			 `` 
+			 sogo-shosha 
+			 '')
+		 (VP are
+		     (VP looking
+			 (PP-CLR for
+				 (NP new business)))))
+	,
+	''
+	(VP says
+	    (S *T*-1))
+	(NP-SBJ-2 (NP Arthur Klauser)
+		  ,
+		  (NP (NP adviser)
+		      (PP to
+			  (NP (NP the president)
+			      (PP of
+				  (NP Mitsui
+				      ,
+				      U.S.A.)))))
+		  ,)
+	(S (NP-SBJ *-2)
+	   (VP using
+	       (NP (NP the Japanese term)
+		   (PP for
+		       (NP (NP the largest)
+			   (PP of
+			       (NP the 
+				   global
+				   trading houses)))))))
+	.))
+( (SINV (VP Adds
+	    (S *ICH*-1))
+	(NP-SBJ (NP Takeshi Kondo)
+		,
+		(NP (NP senior vice president)
+		    (PP of
+			(NP C. Itoh America Inc.))))
+	:
+	``
+	(S-1 (NP-SBJ We)
+	     (VP have
+		 (NP (NP a great interest)
+		     (PP in
+			 (S-NOM (NP-SBJ *)
+				(VP making
+				    (NP (NP investments)
+					,
+					(PP (ADVP particularly) 
+					    in
+					    (NP new ventures)))))))))
+	.
+	''))
+( (S (NP-SBJ-119 (NP A host)
+                 (PP of
+                     (NP (NP electronics firms)
+                         (PP-LOC in
+				 (NP (NP California 's)
+				     Silicon Valley)))))
+     (VP were
+         (VP financed
+             (NP *-119)
+             (PP-MNR with
+		     (NP trading-company venture capital))))
+     .))
+( (S (NP-SBJ Profit)
+     (PRN ,
+	  (PP-TMP (ADVP at least)
+		  in
+		  (NP the short term))
+	  ,)
+     (VP is
+	 (ADVP-TMP usually)
+	 (NP-PRD a secondary goal))
+     .))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ (NP Strategic objectives)
+			 ,
+			 not
+			 (NP financial return)
+			 ,)
+		 (VP drive
+		     (NP (NP many)
+			 (PP of
+			     (NP the deals)))))
+	,
+	''
+	(VP says
+	    (S *T*-1))
+	(NP-SBJ a Venture Economics spokesman)
+	.))
+( (S (PP In 
+         (NP (S-NOM (NP-SBJ *)
+		    (VP investing
+			(PP on
+			    (NP (NP the basis)
+				(PP of
+				    (NP future transactions))))))
+	     ,
+	     (NP (NP a role)
+		 (VP (ADVP-TMP often)
+		     performed
+		     (NP *) 
+		     (PP-LGS by
+			     (NP merchant banks)))))
+         ,)
+     (NP-SBJ trading companies)
+     (VP can
+         (VP cut
+             (PP-CLR through
+		     (NP (NP the logjam)
+			 (SBAR (WHNP-1 that)
+			       (S (NP-SBJ small-company owners)
+				  (ADVP-TMP often)
+				  (VP face
+				      (NP *T*-1))))
+			 (PP with
+			     (NP their local commercial banks))))))
+     .))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ It)
+		 (VP 's
+		     (NP-PRD (NP the classic problem)
+			     (PP of
+				 (NP the small businessman)))))
+	, 
+	''
+	(VP says
+	    (S *T*-1))
+	(NP-SBJ (NP Malcolm Davies)
+		,
+		(NP (NP managing director)
+		    (PP of
+			(NP (NP Trading Alliance Corp.)
+			    (PP of
+				(NP New York))))))
+	.))
+( (S ``
+     (S (NP-SBJ-1 People)
+        (VP are
+            (VP queuing
+		(PP-LOC at
+			(NP the door))
+		(S-PRP (NP-SBJ *-1)
+		       (VP to
+			   (VP take
+			       (NP his product)))))))
+     but
+     (S (S (NP-SBJ he)
+           (VP does
+	       n't
+               (VP have
+                   (NP (NP the working capital)
+                       (SBAR (WHADVP-2 0)
+			     (S (NP-SBJ *)
+				(VP to
+				    (VP make
+					(NP the thing)
+					(ADVP *T*-2)))))))))
+        and
+        (S (NP-SBJ commercial banks)
+           (VP are
+               (ADJP-PRD very unsympathetic))))
+     .))
+( (S (S (NP-SBJ They) 
+	(VP want
+	    (NP assets)))
+     ,
+     (S (NP-SBJ they)
+	(VP want
+	    (NP (NP a balance sheet)
+		,
+		(SBAR (WHNP-194 which)
+		      (S (NP-SBJ *T*-194)
+			 (VP has
+			     (NP (NP no relation)
+				 (PP to
+				     (NP (NP the business)
+					 (SBAR (WHNP-1 0)
+					       (S (NP-SBJ a company)
+						  (VP can
+						      (VP generate
+							  (NP *T*-1))))))))))))))
+     .
+     ''))
+( (SINV (VP Adds
+	    (S *ICH*-1))
+	(NP-SBJ (NP Mitsui 's)
+		Mr. Klauser)
+	:
+	``
+	(S-1 (PP Unlike
+		 (NP (NP corporations)
+		     (PP-LOC in
+			     (NP this country))))
+	     ,
+	     (NP-SBJ trading companies)
+	     (VP are 
+		 n't
+		 (ADJP-PRD (ADJP (ADVP so much)
+				 interested
+				 (PP in
+				     (NP (NP a high return)
+					 (PP on
+					     (NP investment)))))
+			   (SBAR as 
+				 (S (NP-SBJ they)
+				    (VP are
+					(ADJP-PRD *?*)
+					(PP on
+					    (S-NOM (NP-SBJ *)
+						   (VP increasing
+						       (NP trade flows))))))))))
+	.))
+( (S (PP To
+         (NP (NP the extent)
+             (SBAR (WHADVP-3 0)
+                   (S (NP-SBJ they)
+                      (VP can
+                          (VP do
+                              (NP this)
+			      (ADVP *T*-3)))))))
+     ,
+     (NP-SBJ-1 they)
+     (VP 're
+         (ADJP-PRD quite content
+		   (S (NP-SBJ *-1)
+		      (VP to
+			  (VP get 
+			      (NP (NP a return)
+				  (PP on
+				      (NP investment))
+				  (PP of
+				      (NP (QP 1 % to 2 %) 
+					  *U*))))))))
+     .
+     ''))
+( (S (NP-SBJ Mr. Klauser)
+     (VP says
+         (SBAR 0
+               (S (S (NP-SBJ Mitsui)
+                     (VP has
+                         (NP (NP 75 U.S. subsidiaries)
+                             (SBAR-LOC (WHPP-1 in
+					       (WHNP which))
+				       (S (NP-SBJ it)
+					  (VP holds
+					      (NP (NP (ADJP 35 %) 
+						      interest 
+						      (QP or more))
+						  (PP-LOC *T*-1))))))))
+                  and
+                  (S (NP-SBJ-2 the trading company)
+                     (VP hopes
+                         (S (NP-SBJ *-2)
+                            (VP to
+                                (VP double
+                                    (NP (NP the number)
+                                        (PP of
+                                            (NP its U.S. affiliates)))
+				    (PP-TMP in
+					    (NP 1990))))))))))
+     .))
+( (S (NP-SBJ (NP Sales)
+             (PP by
+                 (NP these subsidiaries)))
+     (PP-TMP in
+	     (NP (NP the fiscal year)
+		 (VP ending
+		     (NP-TMP last March))))
+     (VP were
+         (NP-PRD (QP more than $ 17 billion)
+		 *U*))
+     .))
+( (S (S-TPC-1 (NP-SBJ (NP A 
+			  (ADJP (QP 1 % to 2 %)
+				*U*)
+			  return)
+		      (PP on
+			  (NP (QP $ 17 billion) *U*)))
+	      ``
+	      (VP ai 
+		  n't
+		  (NP-PRD hay)))
+     ,
+     ''
+     (NP-SBJ Mr. Klauser)
+     (VP says
+	 (SBAR 0
+	       (S *T*-1)))
+     .))

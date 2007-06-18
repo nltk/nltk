@@ -1,0 +1,723 @@
+
+
+( (S (NP-SBJ-1 (NP The survival)
+	       (PP of
+		   (NP spinoff
+		       Cray Computer Corp.))
+	       (PP as
+		   (NP (NP a fledgling)
+		       (PP-LOC in
+			       (NP the supercomputer business)))))
+     (VP appears
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP depend
+                    (ADVP-MNR heavily)
+                    (PP-CLR on
+			    (NP (NP the 
+				    creativity 
+				    (PRN -- 
+					 and 
+					 longevity
+					 --))
+				(PP of
+				    (NP (NP its (NX (NX chairman)
+						    and 
+						    (NX chief designer)))
+					,
+					(NP Seymour Cray)))))))))
+     .))
+( (SINV (CONJP Not only)
+	(SINV is
+	      (NP-SBJ-1 (NP development)
+			(PP of
+			    (NP (NP the new company 's)
+				initial machine)))
+	      (VP tied
+		  (NP *-1)
+		  (ADVP-MNR directly)
+		  (PP-DIR-CLR to
+			      (NP Mr. Cray))))
+	,
+	(SINV (ADVP-PRD-TPC-2 so)
+	      (VP is
+		  (ADVP-PRD *T*-2))
+	      (NP-SBJ its balance sheet))
+	.))
+( (S (NP-SBJ (NP Documents)
+	     (VP filed
+		 (NP *)
+		 (PP-CLR with
+			 (NP the Securities and Exchange Commission)))
+             (PP on
+                 (NP the pending spinoff)))
+     (VP disclosed
+         (SBAR that
+               (S (NP-SBJ Cray Research Inc.)
+                  (VP will
+                      (VP withdraw
+                          (NP (NP the 
+				  (QP almost $ 100 million)
+				  *U*)
+			      (PP in
+				  (NP financing))
+                              (SBAR (WHNP-1 0)
+                                    (S (NP-SBJ it)
+                                       (VP is
+                                           (VP providing
+                                               (NP the new firm)
+					       (NP *T*-1))))))
+			  (SBAR-ADV (SBAR if
+					  (S (NP-SBJ Mr. Cray)
+					     (VP leaves)))
+				    or
+				    (SBAR if
+					  (S (NP-SBJ-18 (NP the product-design project)
+							(SBAR (WHNP-2 0)
+							      (S (NP-SBJ he)
+								 (VP heads
+								     (NP *T*-2)))))
+					     (VP is
+						 (VP scrapped
+						     (NP *-18)))))))))))
+     .))
+( (S (NP-SBJ The documents)
+     (ADVP also)
+     (VP said
+         (SBAR that
+               (S (SBAR-ADV although
+			    (S (NP-SBJ the 64-year-old Mr. Cray)
+			       (VP has
+				   (VP been
+				       (VP working
+					   (PP-CLR on
+						   (NP the project))
+					   (PP-TMP for
+						   (NP (QP more than six)
+						       years)))))))
+                  ,
+                  (NP-SBJ the Cray-3 machine)
+                  (VP is
+                      (ADJP-PRD (NP-ADV (QP at least another) 
+					year)
+				away
+				(PP-DIR from
+					(NP a 
+					    (ADJP fully operational) 
+					    prototype)))))))
+     .))
+( (S (ADVP Moreover) 
+     ,
+     (NP-SBJ there)
+     (VP have
+	 (VP been
+	     (NP-PRD (NP no orders)
+		     (PP for
+			 (NP the Cray-3)))
+	     (ADVP-TMP so far)
+	     ,
+	     (SBAR-ADV though
+		       (S (NP-SBJ the company)
+			  (VP says
+			      (SBAR 0
+				    (S (NP-SBJ it)
+				       (VP is
+					   (VP talking
+					       (PP-CLR with
+						       (NP several prospects)))))))))))
+     .))
+( (S (SBAR While
+           (S-ADV (NP-SBJ-19 (NP many)
+			     (PP of
+				 (NP the risks)))
+		  (VP were
+		      (VP anticipated
+			  (NP *-19)
+			  (SBAR-TMP (WHADVP-1 when)
+				    (S (NP-SBJ Minneapolis-based 
+					       Cray Research)
+				       (ADVP-TMP first)
+				       (VP announced
+					   (NP the spinoff)
+					   (PP-TMP in
+						   (NP May))
+					   (ADVP-TMP *T*-1))))))))
+     ,
+     (NP-SBJ-3 (NP the strings)
+	       (SBAR (WHNP-2 0)
+		     (S (NP-SBJ it)
+			(VP attached
+			    (NP *T*-2)
+			    (PP-CLR to
+				    (NP the financing))))))
+     (VP had 
+	 n't
+         (VP been
+             (VP made
+		 (S (NP-SBJ *-3)
+		    (ADJP-PRD public))
+		 (PP-TMP until
+			 (NP yesterday)))))
+     .))
+( (S ``
+     (S-TPC-1 (NP-SBJ We)
+	      (VP did 
+		  n't
+		  (VP have
+		      (NP (NP much)
+			  (PP of
+			      (NP a choice))))))
+     , 
+     ''
+     (NP-SBJ (NP (NP Cray Computer 's)
+		 chief financial officer)
+	     ,
+	     (NP Gregory Barnum)
+	     ,)
+     (VP said
+	 (S *T*-1)
+	 (PP-LOC in
+		 (NP an interview)))
+     .))
+( (S ``
+     (NP-SBJ The theory)
+     (VP is
+         (SBAR-PRD that
+		   (S (S (NP-SBJ Seymour)
+			 (VP is
+			     (NP-PRD (NP the chief designer)
+				     (PP of
+					 (NP the Cray-3)))))
+		      , 
+		      and
+		      (S (PP without
+			     (NP him))
+			 (NP-SBJ-20 it)
+			 (VP could 
+			     not
+			     (VP be
+				 (VP completed
+				     (NP *-20))))))))
+     .))
+( (S (NP-SBJ-1 Cray Research)
+     (VP did 
+	 not
+         (VP want
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP fund
+                        (NP (NP a project)
+                            (SBAR (WHNP-22 that)
+                                  (S (NP-SBJ *T*-22)
+                                     (VP did 
+					 not
+                                         (VP include
+                                             (NP Seymour)))))))))))
+     .
+     ''))
+( (S (NP-SBJ The documents)
+     (ADVP also)
+     (VP said
+         (SBAR that
+               (S (NP-SBJ-1 Cray Computer)
+                  (VP anticipates
+                      (S (NP-SBJ *-1)
+                         (VP needing
+                             (NP (NP (ADVP perhaps) 
+				     another 
+				     (QP $ 120 million)
+				     *U*)
+                                 (PP in
+                                     (NP financing)))
+			     (PP-TMP beginning
+				     (NP next September))))))))
+     .))
+( (S But
+     (NP-SBJ Mr. Barnum)
+     (VP called
+         (S (NP-SBJ that)
+	    (NP-PRD `` a worst-case '' scenario)))
+     .))
+( (S (NP-SBJ (NP The filing)
+             (PP on
+                 (NP (NP the details)
+                     (PP of
+                         (NP the spinoff)))))
+     (VP caused
+         (S (NP-SBJ-1 Cray Research stock)
+            (VP to
+                (VP jump
+                    (NP-EXT $ 2.875 *U*)
+		    (NP-TMP yesterday)
+		    (S-CLR (NP-SBJ *-1)
+			   (VP to
+			       (VP close
+				   (PP-LOC-CLR at
+					       (NP $ 38 *U*))
+				   (PP-LOC in
+					   (NP New York Stock Exchange composite trading)))))))))
+     .))
+( (S (NP-SBJ Analysts)
+     (VP noted
+	 (NP-TMP yesterday)
+	 (SBAR that
+	       (S (NP-SBJ (NP Cray Research 's)
+			  decision
+			  (S (NP-SBJ *)
+			     (VP to
+				 (VP link
+				     (NP its 
+					 (ADJP (QP $ 98.3 million)
+					       *U*) 
+					 promissory note) 
+				     (PP-CLR to
+					     (NP (NP Mr. Cray 's)
+						 presence))))))
+		  (VP will
+		      (VP complicate
+			  (NP (NP a valuation)
+			      (PP of
+				  (NP the new company))))))))
+     .))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ-2 It)
+		 (VP has
+		     (S (NP-SBJ-21 *-2)
+			(VP to
+			    (VP be
+				(VP considered
+				    (NP *-21)
+				    (PP-CLR as
+					    (NP (NP an additional risk)
+						(PP for
+						    (NP the investor))))))))))
+	, 
+	''
+	(VP said
+	    (S *T*-1))
+	(NP-SBJ (NP Gary P. Smaby)
+		(PP of
+		    (NP (NP Smaby Group Inc.)
+			,
+			(NP-LOC Minneapolis))))
+	.))
+( (S ``
+     (S-TPC-1 (NP-SBJ Cray Computer)
+	      (VP will
+		  (VP be
+		      (NP-PRD a concept stock))))
+     , ''
+     (NP-SBJ he)
+     (VP said
+	 (S *T*-1))
+     .))
+( (S ``
+     (S (NP-SBJ You)
+	either
+	(VP believe
+	    (SBAR 0
+		  (S (NP-SBJ Seymour)
+		     (VP can
+			 (VP do
+			     (NP it)
+			     (ADVP-TMP again)))))))
+     or
+     (S (NP-SBJ you)
+	(VP do 
+	    n't
+	    (VP *?*)))
+     .
+     ''))
+( (S (PP Besides
+         (NP (NP the designer 's)
+             age))
+     ,
+     (NP-SBJ (NP other risk factors)
+             (PP for
+                 (NP (NP Mr. Cray 's)
+                     new company)))
+     (VP include
+         (NP (NP the Cray-3 's)
+             tricky
+	     ,
+	     unproven
+             chip technology))
+     .))
+( (S (NP-SBJ The SEC documents)
+     (VP describe
+         (NP-2 (NP those chips)
+	       ,
+	       (SBAR (WHNP-1 which)
+		     (S (NP-SBJ-22 *T*-1)
+			(VP are
+			    (VP made
+				(NP *-22)
+				(PP-CLR of
+					(NP gallium arsenide))))))
+	       ,)
+         (PP-CLR as 
+		 (S-NOM (NP-SBJ *-2)
+			(VP being
+			    (ADJP-PRD (ADJP so fragile and minute)
+				      (SBAR 0
+					    (S (NP-SBJ they)
+					       (VP will
+						   (VP require
+						       (NP special robotic handling equipment))))))))))
+     .))
+( (S (PP In
+         (NP addition))
+     ,
+     (NP-SBJ the Cray-3)
+     (VP will
+         (VP contain
+             (NP (NP 16 processors)
+                 (PRN --
+		      (ADJP (ADJP twice
+				  as many)
+			    (PP as
+				(NP the largest current supercomputer)))))))
+     .))
+( (S (NP-SBJ Cray Computer)
+     (ADVP also)
+     (VP will
+         (VP face
+             (NP (NP intense competition) 
+		 , 
+		 (PP-DIR (ADVP not only)
+			 from
+			 (NP (NP Cray Research)
+			     ,
+			     (SBAR (SBAR (WHNP-23 which)
+					 (S (NP-SBJ *T*-23)
+					    (VP has
+						(NP (NP (QP about 60)
+							%)
+						    (PP of
+							(NP the world-wide supercomputer market))))))
+				   and
+				   (SBAR (WHNP-24 which)
+					 (S (NP-SBJ-1 *T*-24)
+					    (VP is
+						(VP expected
+						    (S (NP-SBJ *-1)
+						       (VP to
+							   (VP roll 
+							       (PRT out)
+							       (NP (NP the C-90 machine)
+								   ,
+								   (NP (NP a direct competitor)
+								       (PP with
+									   (NP the Cray-3))) 
+								   ,)
+							       (PP-TMP in
+								       (NP 1991)))))))))))))))
+     .))
+( (S (NP-SBJ The spinoff)
+     (ADVP also)
+     (VP will
+         (VP compete
+             (PP-CLR with
+		     (NP (NP International Business Machines Corp.)
+			 and
+			 (NP (NP (NP Japan 's)
+				 Big Three)
+			     --
+			     (NP (NP Hitachi Ltd.)
+				 ,
+				 (NP NEC Corp.)
+				 and
+				 (NP Fujitsu Ltd)))))))
+     .))
+( (S (NP-SBJ The new company)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP believes
+                      (SBAR 0
+                            (S (NP-SBJ there)
+                               (VP are
+                                   (NP-PRD (NP (QP fewer than 100)
+					       potential customers)
+					   (PP for
+					       (NP (NP supercomputers)
+						   (VP priced
+						       (NP *)
+						       (PP between
+							   (NP (QP $ 15 million
+								   and
+								   $ 30 million) 
+							       *U*))
+						       (PRN --
+							    (NP presumably the Cray-3 price range)))))))))))))
+     .))
+( (S (PP-LOC Under
+	     (NP (NP terms)
+		 (PP of
+		     (NP the spinoff))))
+     ,
+     (NP-SBJ-1 Cray Research stockholders)
+     (VP are
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP receive
+                    (NP one Cray Computer share)
+		    (PP for
+			(NP (NP (QP every two) 
+				Cray Research shares)
+			    (SBAR (WHNP-2 0)
+				  (S (NP-SBJ they)
+				     (VP own
+					 (NP *T*-2))))))
+		    (PP-LOC in
+			    (NP (NP a distribution)
+				(VP expected
+				    (S (NP-SBJ *)
+				       (VP to
+					   (VP occur
+					       (PP-TMP in
+						       (NP (QP about two) 
+							   weeks))))))))))))
+     .))
+( (S (NP-SBJ-23 (NP No price)
+                (PP for
+                    (NP the new shares)))
+     (VP has
+         (VP been
+             (VP set
+                 (NP *-23))))
+     .))
+( (S (ADVP Instead)
+     ,
+     (NP-SBJ the companies)
+     (VP will
+         (VP leave
+             (S (NP-SBJ it)
+		(PP-PRD up
+			(PP to
+			    (NP the marketplace)))
+		(S (NP-SBJ *) 
+		   (VP to
+		       (VP decide))))))
+     .))
+( (S (NP-SBJ-1 Cray Computer)
+     (VP has
+         (VP applied
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP trade
+			(PP-LOC on
+				(NP Nasdaq)))))))
+     .))
+( (S (NP-SBJ Analysts)
+     (VP calculate
+         (NP (NP Cray Computer 's)
+             initial book value)
+         (PP-CLR at
+		 (NP (NP (QP about $ 4.75) 
+			 *U*)
+		     (NP-ADV a share))))
+     .))
+( (S (PP Along
+         (PP with
+             (NP the note)))
+     ,
+     (NP-SBJ Cray Research)
+     (VP is
+         (VP transferring
+             (NP (NP (QP about $ 53 million) *U*)
+		 (PP in
+		     (NP (NP assets)
+			 ,
+			 (NP (NP (ADVP primarily)
+				 those)
+			     (ADJP related
+				   (PP to
+				       (NP (NP the Cray-3 development)
+					   ,
+					   (SBAR (WHNP-25 which)
+						 (S (NP-SBJ *T*-25)
+						    (VP has
+							(VP been
+							    (NP-PRD (NP a drain)
+								    (PP on
+									(NP (NP Cray Research 's)
+									    earnings))))))))))))))))
+     .))
+( (S (NP-SBJ Pro-forma balance sheets)
+     (VP (ADVP-MNR clearly)
+	 show
+         (SBAR-NOM (WHADVP-1 why)
+		   (S (NP-SBJ Cray Research)
+		      (VP favored
+			  (NP the spinoff)
+			  (ADVP-PRP *T*-1)))))
+     .))
+( (S (PP Without
+         (NP the Cray-3 research and development expenses))
+     ,
+     (NP-SBJ-2 the company)
+     (VP would
+	 (VP have
+	     (VP been
+		 (ADJP-PRD able
+			   (S (NP-SBJ *-2)
+			      (VP to
+				  (VP report
+				      (NP (NP a profit)
+					  (PP of
+					      (NP (NP (QP $ 19.3 million)
+						      *U*)
+						  (PP *ICH*-3)))
+					  (PP for
+					      (NP (NP the first half)
+						  (PP of
+						      (NP 1989))))
+					  (PP-3 rather than
+						(NP (NP the (QP $ 5.9 million) *U*)
+						    (SBAR (WHNP-1 0)
+							  (S (NP-SBJ it)
+							     (VP posted
+								 (NP *T*-1))))))))))))))
+     .))
+( (S (PP On
+         (NP the other hand))
+     ,
+     (SBAR-ADV (SINV had
+		     (NP-SBJ it)
+		     (VP existed
+			 (ADVP-TMP then))))
+     ,
+     (NP-SBJ Cray Computer)
+     (VP would
+	 (VP have
+	     (VP incurred
+		 (NP a 
+		     (ADJP (QP $ 20.5 million)
+			   *U*) 
+		     loss))))
+     .))
+( (S (NP-SBJ (NP Mr. Cray)
+	     ,
+	     (SBAR (WHNP-1 who)
+		   (S (NP-SBJ-24 *T*-1)
+		      (VP could
+			  n't
+			  (VP be
+			      (VP reached
+				  (NP *-24)
+				  (PP-PRP for
+					  (NP comment)))))))
+	     ,)
+     (VP will
+	 (VP (VP work
+		 (PP-CLR for
+			 (NP the new
+			     (NAC-LOC Colorado Springs
+				      ,
+				      Colo.
+				      ,)
+			     company))
+		 (PP as 
+		     (NP an independent contractor)))
+	     (PRN --
+		  (NP (NP the arrangement)
+		      (SBAR (WHNP-2 0)
+			    (S (NP-SBJ he)
+			       (VP had
+				   (NP *T*-2))))
+		      (PP with
+			  (NP Cray Research))))))
+     .))
+( (S (S-ADV (NP-SBJ-1 *-25)
+	    (VP Regarded
+		(NP *-1)
+		(PP-CLR as
+			(NP (NP the father)
+			    (PP of
+				(NP the supercomputer))))))
+     ,
+     (NP-SBJ-25 Mr. Cray)
+     (VP was
+	 (VP paid
+	     (NP *-25)
+	     (NP $ 600,000 *U*)
+	     (PP-LOC at
+		     (NP Cray Research))
+	     (NP-TMP last year)))
+     .))
+( (S (PP-LOC At
+	     (NP Cray Computer))
+     ,
+     (NP-SBJ-26 he)
+     (VP will
+	 (VP be
+	     (VP paid
+		 (NP *-26)
+		 (NP $ 240,000 *U*))))
+     .))
+( (S (PP Besides
+         (NP Messrs. Cray and Barnum))
+     ,
+     (NP-SBJ (NP other senior management)
+             (PP-LOC at
+		     (NP the company)))
+     (VP includes
+         (NP (NP (NP Neil Davenport)
+		 ,
+		 (NP 47)
+                 ,
+                 (NP (NP president) 
+		     and 
+		     (NP chief executive officer)))
+             ;
+             (NP (NP Joseph M. Blanchard)
+		 ,
+		 (NP 37)
+                 ,
+                 (NP (NP vice president)
+                     ,
+                     (NP engineering)))
+             ;
+             (NP (NP Malcolm A. Hammerton)
+		 ,
+		 (NP 40)
+                 ,
+                 (NP (NP vice president)
+                     ,
+                     (NP software)))
+             ; 
+	     and
+             (NP (NP Douglas R. Wheeland)
+		 ,
+		 (NP 45)
+                 ,
+                 (NP (NP vice president)
+                     ,
+                     (NP hardware)))))
+     .))
+( (S (NP-SBJ All)
+     (VP came
+         (PP-DIR from
+		 (NP Cray Research)))
+     .))
+( (S (NP-SBJ (NP Cray Computer)
+             ,
+             (SBAR (WHNP-26 which)
+                   (S (NP-SBJ *T*-26)
+                      (ADVP-TMP currently)
+                      (VP employs
+                          (NP 241 people))))
+             ,)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP expects
+                      (NP (NP a work force)
+                          (PP of
+                              (NP 450)))
+		      (PP-TMP by
+			      (NP (NP the end)
+				  (PP of
+				      (NP 1990))))))))
+     .))

@@ -1,0 +1,916 @@
+
+
+( (S (PP-LOC In
+	     (NP (NP this era)
+		 (PP of
+		     (NP (NP frantic competition)
+			 (PP for
+			     (NP ad dollars))))))
+     ,
+     (NP-SBJ-1 (NP a lot)
+	       (PP of
+		   (NP revenue-desperate magazines)))
+     (VP are
+         (VP getting
+             (ADJP-PRD pretty cozy
+		       (PP with
+			   (NP advertisers)))
+	     --
+	     (S-ADV (NP-SBJ *-1)
+		    (VP (VP fawning
+			    (PP-CLR over
+				    (NP them))
+			    (PP-LOC in
+				    (NP articles)))
+			and
+			(VP offering
+			    (NP (NP pages)
+				(PP of
+				    (NP advertorial space))))))))
+     .))
+( (SQ (ADVP-MNR So)
+      can
+      (NP-SBJ-1 a magazine)
+      (VP survive
+	  (PP-MNR by
+		  (S-NOM (NP-SBJ *-1)
+			 (VP (ADVP-MNR downright)
+			     thumbing
+			     (NP its nose)
+			     (PP-CLR at
+				     (NP major advertisers))))))
+      ?))
+( (S (NP-SBJ-1 (NP Garbage magazine)
+	       ,
+	       (VP billed
+		   (NP *) 
+		   (PP-CLR as
+			   ``
+			   (NP-TTL (NP The Practical Journal)
+				   (PP for
+				       (NP the Environment)))))
+	       ,
+	       '')
+     (VP is
+         (VP about
+	     (S (NP-SBJ *-1)
+		(VP to
+		    (VP find 
+			(PRT out)
+			(SBAR 0
+			      (S *?*)))))))
+     .))
+( (S (S-ADV (NP-SBJ-1 *-2)
+	    (VP Founded
+		(NP *-1)
+		(PP by
+		    (NP-LGS (NAC-LOC Brooklyn
+				     ,
+				     N.Y.
+				     ,)
+			    publishing entrepreneur
+			    Patricia Poore))))
+     ,
+     (NP-TTL-SBJ-2 Garbage)
+     (VP made
+	 (NP its debut)
+	 (NP-TMP this fall)
+	 (PP-MNR with
+		 (NP the promise
+		     (S (NP-SBJ *)
+			(VP to
+			    (VP give
+				(NP consumers)
+				(NP (NP the straight scoop)
+				    (PP on
+					(NP the U.S. waste crisis)))))))))
+     .))
+( (S (NP-SBJ The magazine)
+     (VP combines
+         (NP (NP (NP how-to pieces)
+                 (PP on
+                     (NP (NP topics)
+                         (PP like
+                             (NP backyard composting)))))
+             ,
+             (NP (NP explanatory essays)
+                 (PP on
+                     (NP (NP such things)
+                         (PP as
+			     (SBAR-NOM (WHNP-1 what)
+				       (S (NP-SBJ *T*-1)
+					  (VP happens
+					      (SBAR-TMP after
+							(S (NP-SBJ you)
+							   (VP flush
+							       (NP your toilet)))))))))))
+             , 
+	     and
+             (NP (NP hard-hitting pieces)
+                 (PP on
+                     (NP alleged environmental offenders)))))
+     .))
+( (S (NP-SBJ Garbage editors)
+     (VP have
+         (VP dumped
+             (NP considerable energy)
+             (PP-DIR into
+		     (NP (NP a whirling rampage)
+			 (PP-DIR through
+				 (NP supermarket aisles))))
+	     (PP-LOC in
+		     (NP a bid
+			 (S (NP-SBJ *)
+			    (VP to
+				(VP identify
+				    (NP (NP corporate America 's)
+					(NX (NX good guys)
+					    and
+					    (NX bad boys))))))))))
+     .))
+( (S (PP-LOC In
+	     (NP (NP one feature)
+		 ,
+		 (VP called
+		     (S (NP-SBJ *)
+			``
+			(PP-TTL In
+				(NP the Dumpster))))
+		 ,
+		 ''))
+     (NP-SBJ editors)
+     (VP point 
+	 (PRT out)
+         (NP (NP a product)
+             (SBAR (WHNP-1 0)
+                   (S (NP-SBJ they)
+                      (VP deem
+			  (S (NP-SBJ *T*-1)
+			     (VP to
+                                 (VP be
+                                     (NP-PRD a 
+					     (ADJP particularly bad) 
+					     offender)))))))))
+     .))
+( (S (PP-LOC From
+	     (NP an advertising standpoint))
+     ,
+     (NP-SBJ the problem)
+     (VP is
+         (SBAR-PRD 0
+		   (S (NP-SBJ-1 these offenders)
+		      (VP are
+			  (ADJP-PRD likely
+				    (S (NP-SBJ *-1)
+				       (VP to
+					   (VP be
+					       (NP-PRD (NP some)
+						       (PP of
+							   (NP (NP the same folks)
+							       (SBAR (WHNP-153 that)
+								     (S (NP-SBJ *T*-153)
+									(VP are
+									    (NP-PRD major magazine advertisers)
+									    (NP-TMP these days)))))))))))))))
+     .))
+( (S (PP With
+         (NP (NP only two issues)
+             (PP-LOC under
+		     (NP its belt))))
+     ,
+     (NP-TTL-SBJ Garbage)
+     (VP has
+         (VP (VP alienated
+                 (NP some would-be advertisers))
+             and
+             (VP raised
+                 (NP (NP the ire)
+                     (PP of
+                         (NP others))))))
+     .))
+( (S (NP-SBJ Campbell Soup)
+     (PRN ,
+	  (PP for
+	      (NP one))
+	  ,)
+     (VP is
+         (ADJP-PRD furious
+		   (SBAR 0
+			 (S (NP-SBJ-79 its Souper Combo microwave product)
+			    (VP was
+				(VP chastised
+				    (NP *-79)
+				    (PP-LOC in
+					    (NP the premiere
+						``
+						(PP-TTL In
+							(NP the Dumpster))
+						''
+						column))))))))
+     .))
+( (S (NP-SBJ (NP The magazine 's)
+             editors)
+     (VP ran
+         (NP (NP a giant diagram)
+	     (PP of
+		 (NP the product))
+             (PP with
+                 (NP (NP arrows)
+                     (VP pointing
+                         (PP-DIR to
+				 (NP (NP (NP the packaging 's)
+					 (NX (NX polystyrene foam)
+					     ,
+					     (NX polyproplene)
+					     and
+					     (NX polyester film)))
+				     --
+				     (NP (NP all plastic items) 
+					 (SBAR (WHNP-1 0)
+					       (S (NP-SBJ they)
+						  (VP say
+						      (SBAR 0
+							    (S (NP-SBJ *T*-1)
+							       (VP are
+								   (ADJP-PRD non-biodegradable)))))))))))))))
+     .))
+( (S ``
+     (S-TPC-2 (NP-SBJ It)
+	      (VP 's
+		  (ADVP precisely)
+		  (NP-PRD (NP the kind)
+			  (PP of
+			      (NP product))
+			  (SBAR (WHNP-1 that)
+				(S (NP-SBJ *T*-1)
+				   (VP 's
+				       (VP created
+					   (NP the municipal landfill monster))))))))
+     ,
+     ''
+     (NP-SBJ the editors)
+     (VP wrote
+	 (S *T*-2))
+     .))
+( (SINV ``
+	(S-TPC-2 (NP-SBJ I)
+		 (VP think
+		     (SBAR that
+			   (S (S (NP-SBJ-1 this magazine)
+				 (VP is 
+				     (ADVP not 
+					   only)
+				     (VP called
+					 (S (NP-SBJ *-1)
+					    (NP-TTL-PRD Garbage)))))
+			      , 
+			      but
+			      (S (NP-SBJ it)
+				 (VP is
+				     (VP practicing
+					 (NP journalistic garbage))))))))
+	,
+	''
+	(VP fumes
+	    (S *T*-2))
+	(NP-SBJ (NP a spokesman)
+		(PP for
+		    (NP Campbell Soup)))
+	.))
+( (S (NP-SBJ He)
+     (VP says
+         (SBAR 0
+               (S (NP-SBJ-1 Campbell)
+                  (VP was 
+		      n't
+		      (ADVP even)
+		      (VP contacted
+			  (NP *-1)
+                          (PP by
+                              (NP-LGS the magazine))
+                          (PP-CLR for
+				  (NP the opportunity
+				      (S (NP-SBJ *)
+					 (VP to
+					     (VP comment))))))))))
+     .))
+( (S-2 (NP-SBJ-80 (NP Modifications)
+		  (PP *ICH*-3))
+       (VP had
+	   (VP been
+	       (VP made
+		   (NP *-80)
+		   (PP-3 to
+			 (NP the Souper Combo product))
+		   (PP-TMP at
+			   (NP (NP the time)
+			       (SBAR-TMP (WHADVP-1 0)
+					 (S (NP-SBJ-81 the issue)
+					    (VP was
+						(VP printed
+						    (NP *-81)
+						    (ADVP-TMP *T*-1)))))))
+		   (PRN ,
+			(S (NP-SBJ he)
+			   (VP says
+			       (SBAR 0
+				     (S *T*-2))))
+			,)
+		   (S-ADV (NP-SBJ *-80)
+			  (VP making
+			      (S (NP-SBJ it)
+				 (NP-PRD (NP less 
+					     an offender)
+					 (SBAR than
+					       (S (NP-SBJ-4 *)
+						  (VP was
+						      (VP portrayed
+							  (NP *-4))))))))))))
+       .))
+( (S (NP-SBJ He)
+     (VP admits 
+	 (PRN ,
+	      (ADVP though)
+	      ,)
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP is 
+		      n't
+                      (NP-PRD (NP one)
+			      (PP of
+				  (NP (NP Campbell Soup 's)
+				      better products)))
+		      (PP-LOC in
+			      (NP (NP terms)
+				  (PP of
+				      (NP recyclability))))))))
+     .))
+( (S (NP-SBJ Campbell Soup)
+     , 
+     (ADVP not
+	   surprisingly)
+     ,
+     (VP does 
+	 n't
+         (VP have
+             (NP any plans
+                 (S (NP-SBJ *)
+                    (VP to
+                        (VP advertise
+			    (PP-LOC in
+				    (NP the magazine))))))
+	     ,
+	     (PP according
+		 (PP to
+		     (NP its spokesman)))))
+     .))
+( (S (NP-SBJ Some media experts)
+     (VP question
+         (SBAR whether
+               (S (NP-SBJ-1 a young magazine)
+                  (VP can
+                      (VP risk
+                          (S (NP-SBJ *-1)
+                             (VP turning 
+				 (PRT off)
+                                 (NP (NP Madison Avenue 's)
+                                     big spenders))))))))
+     .))
+( (SINV ``
+	(S-TPC-2 (NP-SBJ You)
+		 (ADVP really)
+		 (VP need
+		     (S (NP-SBJ (NP the Campbell Soups)
+				(PP of
+				    (NP the world)))
+			(VP to
+			    (VP be
+				(ADJP-PRD interested
+					  (PP in
+					      (NP your magazine))))))
+		     (SBAR-ADV if
+			       (S (NP-SBJ-1 you)
+				  (VP 're
+				      (VP going
+					  (S (NP-SBJ *-1)
+					     (VP to
+						 (VP make
+						     (NP (NP a run)
+							 (PP of
+							     (NP it))))))))))))
+	,
+	''
+	(VP says
+	    (S *T*-2))
+	(NP-SBJ (NP Mike White)
+		,
+		(NP (NP (NP senior vice president)
+			and
+			(NP media director))
+		    (PP-LOC at
+			    (NP (NP DDB Needham)
+				,
+				(NP-LOC Chicago)))))
+	.))
+( (S ``
+     (S-TPC-1 (NP-SBJ (NP The economics)
+		      (PP of
+			  (NP magazine publishing)))
+	      (VP (ADVP pretty
+			much)
+		  require
+		  (SBAR that
+			(S (NP-SBJ you)
+			   (VP have
+			       (NP (NP a 
+				       (ADJP pretty solid) 
+				       base) 
+				   ''
+				   (PP of
+				       (NP big-time ad spenders))))))))
+     ,
+     (NP-SBJ he)
+     (VP adds
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (S (NP-SBJ The first two issues)
+        (VP featured
+            (NP (NP ads)
+                (PP from
+		    (NP (NP only a handful)
+			(PP of
+			    (NP big advertisers))
+			,
+			(PP including
+			    (NP (NP General Electric)
+				and
+				(NP Adolph Coors))))))))
+     , 
+     but
+     (S (NP-SBJ the majority)
+        (VP were
+            (PP-PRD from
+		    (NP (NP companies)
+			(PP like
+			    (NP (NP (NP Waste Management Inc.)
+				    and
+				    (NP Bumkins International))
+				,
+				(NP (NP firms)
+				    (SBAR (WHNP-154 that)
+					  (S (NP-SBJ-1 *T*-154)
+					     (VP (VP do 
+						     n't
+						     (VP spend
+							 (NP much money)
+							 (S-CLR (NP-SBJ *-1)
+								(VP advertising))))
+						 and
+						 (VP ca 
+						     n't
+						     (VP be
+							 (VP relied 
+							     (PP-CLR on
+								     (NP *-1))
+							     (S-CLR (NP-SBJ *-1)
+								    (VP to
+									(VP support
+									    (NP a magazine)
+									    (PP-TMP over
+										    (NP the long haul))))))))))))))))))
+     .))
+( (S (NP-SBJ A Waste Management spokeswoman)
+     (VP says
+         (SBAR (SBAR 0
+                     (S (NP-SBJ (NP its ad)
+                                (PP-LOC in
+					(NP the premiere issue)))
+                        (VP was
+                            (NP-PRD a one-time purchase))))
+               , 
+	       and
+               (SBAR 0
+                     (S (NP-SBJ it)
+                        (VP does 
+			    n't
+                            (VP have
+                                (NP any plans
+                                    (S (NP-SBJ *)
+                                       (VP to
+                                           (VP advertise
+					       (PP-TMP in
+						       (NP future issues))))))))))))
+     .))
+( (S ``
+     (S-TPC-1 (NP-SBJ We)
+	      (VP do 
+		  n't
+		  (VP spend
+		      (NP much)
+		      (PP-CLR on
+			      (NP print advertising)))))
+     ,
+     ''
+     (NP-SBJ she)
+     (VP says
+	 (S *T*-1))
+     .))
+( (S But
+     (NP-SBJ (NP Ms. Poore)
+             ,
+             (NP (NP the magazine 's)
+                 editor and publisher)
+             ,)
+     (VP contends
+         (SBAR 0
+               (S (NP-TTL-SBJ Garbage)
+                  (VP can
+                      (VP survive 
+			  (PRN ,
+			       (ADVP-TMP at least initially)
+			       ,)
+                          (PP-CLR on
+				  (NP subscription revenues)))))))
+     .))
+( (S (S (NP-SBJ (NP Individual copies)
+                (PP of
+                    (NP the magazine)))
+        (VP sell
+            (PP-CLR for
+		    (NP $ 2.95 *U*))))
+     and
+     (S (NP-SBJ yearly subscriptions)
+        (VP cost
+            (NP $ 21 *U*)))
+     .))
+( (S -LRB-
+     (NP-SBJ-1 It)
+     (VP is 
+	 (PRN ,
+	      (PP of
+		  (NP course))
+	      ,)
+         (VP printed
+	     (NP *-1)
+             (PP-LOC-CLR on
+			 (NP recycled paper))))
+     .
+     -RRB-))
+( (S (PP According
+	 (PP to
+	     (NP Ms. Poore)))
+     ,
+     (NP-SBJ (NP Old-House Journal Corp.)
+	     ,
+	     (NP her publishing company)
+	     ,)
+     (VP printed
+	 and
+	 sold
+	 (NP (NP all 126,000 copies)
+	     (PP of
+		 (NP the premiere issue))))
+     .))
+( (S-1 (S (NP-SBJ The first and second issues)
+	  (VP sold 
+	      (PRT out)
+	      (PP-LOC on
+		      (NP newsstands))))
+       (PRN ,
+	    (S (NP-SBJ she)
+	       (VP says
+		   (SBAR 0
+			 (S *T*-1))))
+	    ,)
+       and
+       (S (NP-SBJ the magazine)
+	  (VP has
+	      (NP (NP orders)
+		  (PP for
+		      (NP 93,000 subscriptions)))))
+       .))
+( (S (S-ADV (NP-SBJ-2 *-1)
+	    (VP Asked
+		(NP *-2)
+		(SBAR whether
+		      (S (NP-SBJ-83 potential advertisers)
+			 (VP will
+			     (VP be
+				 (VP scared
+				     (NP *-83)
+				     (ADVP-CLR away)
+				     (PP by
+					 (NP-LGS (NP the magazine 's)
+						 direct policy)))))))))
+     ,
+     (NP-SBJ-1 Ms. Poore)
+     (VP replies 
+	 :
+	 ``
+	 (S (S (NP-SBJ I)
+	       (VP do 
+		   n't
+		   (VP know)))
+	    and
+	    (S (NP-SBJ I)
+	       (VP do 
+		   n't
+		   (VP care)))))
+     .))
+( (S-1 (S (NP-SBJ I)
+	  (VP 'm 
+	      not
+	      (VP saying
+		  (SBAR 0
+			(S (NP-SBJ advertising revenue)
+			   (VP is 
+			       n't
+			       (ADJP-PRD important)))))))
+       (PRN , 
+	    ''
+	    (S (NP-SBJ she)
+	       (VP says
+		   (SBAR 0
+			 (S *T*-1))))
+	    ,) 
+       `` 
+       but
+       (S (NP-SBJ I)
+	  (VP could 
+	      n't
+	      (VP sleep
+		  (PP-TMP at
+			  (NP night))
+		  ''
+		  (SBAR-ADV if
+			    (S (NP-SBJ the magazine)
+			       (VP bowed
+				   (PP-CLR to
+					   (NP a company))
+				   (SBAR-PRP because
+					     (S (NP-SBJ they)
+						(ADVP-TMP once)
+						(VP took 
+						    (PRT out)
+						    (NP an ad))))))))))
+       .))
+( (NP-HLN Ad Notes ... .))
+( (NP-HLN (NP INTERPUBLIC) 
+	  (PP-LOC ON 
+		  (NP TV))
+	  :))
+( (S (NP-SBJ Interpublic Group)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-2 (NP its television programming operations)
+			    (PRN --
+				 (SBAR (WHNP-1 which)
+				       (S (NP-SBJ it)
+					  (VP expanded
+					      (NP *T*-1)
+					      (NP-TMP earlier this year))))
+				 --))
+                  (VP agreed
+                      (S (NP-SBJ *-2)
+                         (VP to
+                             (VP supply
+                                 (NP (NP (QP more than 4,000) 
+					 hours)
+				     (PP of
+					 (NP original programming)))
+				 (PP-LOC across
+					 (NP Europe))
+				 (PP-TMP in
+					 (NP 1990)))))))))
+     .))
+( (S (NP-SBJ It)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-84 (NP the programs)
+                             ,
+                             (NP largely game shows)
+                             ,)
+                  (VP will
+                      (VP be
+                          (VP provided
+                              (NP *-84)
+                              (PP by
+                                  (NP-LGS (NP its E.C. Television unit)
+					  (PP along
+					      (PP with
+						  (NP (NP Fremantle International)
+						      ,
+						      (NP (NP a producer and distributor)
+							  (PP of
+							      (NP (NP game shows)
+								  (SBAR (WHPP-1 of
+										(WHNP which))
+									(S (NP-SBJ it)
+									   (ADVP-TMP recently)
+									   (VP bought
+									       (NP (NP 49 %)
+										   (PP *T*-1)))))))))))))))))))
+     .))
+( (S (NP-SBJ It)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ that volume)
+                  (VP makes
+                      (S (NP-SBJ it)
+			 (NP-PRD (NP the largest supplier)
+				 (PP of
+				     (NP original TV programming))
+				 (PP-LOC in
+					 (NP Europe))))))))
+     .))
+( (S (NP-SBJ Interpublic)
+     (VP is
+         (VP providing
+             (NP the programming)
+	     (PP-PRP in
+		     (NP (NP return)
+			 (PP for
+			     (NP (NP advertising time)
+				 ,
+				 (SBAR (WHNP-1 which)
+				       (S (NP-SBJ it)
+					  (VP said
+					      (SBAR 0
+						    (S (NP-SBJ-85 *T*-1)
+						       (VP will
+							   (VP be
+							       (VP (VP valued
+								       (NP *-85)
+								       (PP-CLR at
+									       (NP-2 (QP more
+											 than
+											 $ 75 million)
+										     *U*))
+								       (PP-TMP-3 in
+										 (NP 1990)))
+								   and
+								   (VP (NP=2 (QP $ 150 million)
+									     *U*)
+								       (PP-TMP=3 in
+										 (NP 1991)))))))))))))))))
+     .))
+( (S (NP-SBJ-1 It)
+     (VP plans
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP sell
+                    (NP the ad time)
+                    (PP-CLR to
+			    (NP its clients))
+                    (PP-MNR at
+			    (NP a discount))))))
+     .))
+( (NP-HLN NEW ACCOUNT
+	  :))
+( (S (NP-SBJ (NP CoreStates Financial Corp.)
+             ,
+             (NP-LOC Philadelphia)
+             ,)
+     (VP named
+         (NP (NP Earle Palmer Brown & Spiro)
+             ,
+             (NP-LOC Philadelphia)
+             ,)
+         (PP-CLR as
+		 (NP (NP agency)
+		     (PP of
+			 (NP record))
+		     (PP for
+			 (NP its 
+			     (ADJP (QP $ 5 million) *U*) 
+			     account)))))
+     .))
+( (S (NP-SBJ-86 The business)
+     (VP had
+         (VP been
+             (VP handled
+                 (NP *-86)
+                 (PP by
+                     (NP-LGS (NP VanSant Dugdale)
+			     ,
+			     (NP-LOC Baltimore))))))
+     .))
+( (NP-HLN AT&T FAX
+	  :))
+( (S (NP-SBJ (NP (NP American Telephone & Telegraph 's)
+                 General Business Systems division)
+             ,
+             (NP-LOC New York)
+             ,)
+     (VP awarded
+         (NP (NP the ad account)
+             (PP for
+                 (NP its Fax product line)))
+         (PP-CLR to
+		 (NP (NP Ogilvy & Mather)
+		     ,
+		     (NP-LOC New York)
+		     ,
+		     (NP a WPP Group agency))))
+     .))
+( (S (NP-SBJ-1 (NP Billings)
+	       (PP *ICH*-3))
+     (VP were 
+	 n't
+         (VP disclosed
+	     (NP *-1)
+	     (PP-3 for
+		   (NP (NP the small account)
+		       ,
+		       (SBAR (WHNP-155 which)
+			     (S (NP-SBJ-2 *T*-155)
+				(VP had
+				    (VP been
+					(VP serviced
+					    (NP *-2)
+					    (PP-LOC at
+						    (NP (NP Young & Rubicam)
+							,
+							(NP-LOC New York))))))))))))
+     .))
+( (NP-HLN FIRST CAMPAIGN
+	  :))
+( (S (NP-SBJ Enterprise Rent-A-Car Inc.)
+     (VP breaks
+         (NP its
+             first 
+	     national
+             ad campaign)
+	 (NP-TMP this week))
+     .))
+( (S (NP-SBJ The St. Louis firm)
+     (VP specializes
+         (PP-CLR in
+		 (NP (NP replacement-car rentals)
+		     ,
+		     (NP (NP those)
+			 (VP provided
+			     (NP *)
+			     (PP by
+				 (NP-LGS insurance companies))
+			     (PP-PRP for
+				     (NP (NP cars)
+					 (VP damaged
+					     (NP *)
+					     (PP-LOC in
+						     (NP accidents))))))))))
+     .))
+( (S (S-ADV (NP-SBJ-1 *-2)
+	    (VP Developed
+		(NP *-1)
+		(PP by
+		    (NP-LGS (NP Avrett , Free & Ginsberg)
+			    ,
+			    (NP-LOC New York)
+			    ,))))
+     (NP-SBJ-2 the 
+	       (ADJP (QP $ 6 million) *U*) 
+	       campaign) 
+     (VP pitches
+	 (NP (NP (NP Enterprise 's)
+		 consumer-driven service)
+	     and
+	     (NP its 
+		 free 
+		 (ADJP pick-up and drop-off) 
+		 service)))
+     .))
+( (NP-HLN LANDOR ASSOCIATES
+	  :))
+( (S (NP-SBJ Young & Rubicam)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP completed
+                      (NP (NP its acquisition)
+                          (PP of
+                              (NP (NP Landor Associates)
+                                  ,
+                                  (NP a San Francisco identity-management firm))))))))
+     .))
+( (NP-HLN ACQUISITION
+	  :))
+( (S (NP-SBJ (NP Ketchum Communications)
+	     ,
+	     (NP-LOC Pittsburgh)
+	     ,)
+     (VP acquired
+	 (NP (NP Braun & Co.)
+	     ,
+	     (NP a 
+		 Los Angeles 
+		 (ADJP investor-relations and marketing-communications) 
+		 firm)))
+     .))
+( (S (NP-SBJ-1 Terms)
+     (VP were 
+	 n't
+         (VP disclosed
+	     (NP *-1)))
+     .))

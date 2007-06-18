@@ -1,0 +1,843 @@
+
+
+( (S (NP-SBJ (NP Japanese) investment
+	     (PP-LOC in
+		     (NP Southeast Asia)))
+     (VP is
+         (VP propelling
+             (NP the region)
+             (PP-DIR-CLR toward
+			 (NP economic integration))))
+     .))
+( (S (NP-SBJ (NP Interviews)
+             (PP with
+                 (NP (NP (NP analysts) 
+			 and 
+			 (NP business people))
+		     (PP-LOC in
+			     (NP the U.S.)))))
+     (VP suggest
+         (SBAR that
+               (S (NP-SBJ Japanese capital)
+                  (VP may
+                      (VP produce
+                          (NP (NP the economic cooperation)
+                              (SBAR (WHNP-2 that)
+                                    (S (NP-SBJ Southeast Asian
+                                               politicians)
+                                       (VP have
+                                           (VP pursued
+					       (NP *T*-2)
+                                               (PP-MNR in 
+						       (NP fits and starts))
+					       (PP-TMP for
+						       (NP decades))))))))))))
+     .))
+( (S But
+     (NP-SBJ (NP (NP Japan 's)
+		 power)
+             (PP-LOC in
+		     (NP the region)))
+     (ADVP also)
+     (VP is
+         (VP (VP sparking
+                 (NP (NP fears)
+                     (PP of
+                         (NP domination))))
+             and
+             (VP posing
+                 (NP fresh policy questions))))
+     .))
+( (SINV (S-TPC-3 (NP-SBJ (NP The flow)
+			 (PP of
+			     (NP Japanese funds)))
+		 (VP has
+		     (VP set
+			 (PP-CLR in
+				 (NP motion))
+			 ``
+			 (NP (NP a process)
+			     (SBAR (WHADVP-2 whereby)
+				   (S (NP-SBJ-1 these economies)
+				      (VP will
+					  (VP be
+					      (VP knitted
+						  (NP *-1)
+						  (PRT together)
+						  (PP by
+						      (NP-LGS the great Japanese investment machine))
+						  (ADVP-MNR *T*-2))))))))))
+	, 
+	''
+	(VP says
+	    (SBAR 0
+		  (S *T*-3)))
+	(NP-SBJ (NP Robert Hormats)
+		,
+		(NP (NP vice chairman)
+		    (PP of
+			(NP Goldman Sachs International Corp))))
+	.))
+( (S (PP-TMP In
+	     (NP the past five years))
+     ,
+     (NP-SBJ Japanese companies)
+     (VP have
+         (VP tripled
+             (NP (NP their commitments)
+                 (PP-LOC in
+			 (NP Asia)))
+             (PP-DIR to
+		     (NP (QP $ 5.57 billion) *U*))))
+     .))
+( (S (PP-LOC In
+	     (NP Thailand))
+     (PRN ,
+	  (PP for
+	      (NP example))
+	  ,)
+     (NP-SBJ (NP (NP the government 's)
+		 Board)
+             (PP of
+                 (NP Investment)))
+     (VP approved
+         (NP (NP (QP $ 705.6 million)
+		 *U*)
+	     (PP of
+		 (NP Japanese investment))
+	     (NP *ICH*-1))
+	 (PP-TMP in
+		 (NP 1988))
+	 ,
+	 (NP-1 (NP (QP 10 times)
+		   the U.S. investment figure)
+	       (PP for
+		   (NP the year))))
+     .))
+( (S (NP-SBJ (NP (NP Japan 's)
+		 commitment)
+             (PP-LOC in
+		     (NP Southeast Asia)))
+     (ADVP also)
+     (VP includes
+         (NP (NP steep increases)
+             (PP-LOC in
+		     (NP foreign assistance and trade))))
+     .))
+( (S (NP-SBJ (NP Asia 's)
+             other cash-rich countries)
+     (VP are
+         (VP (VP following
+                 (NP (NP Japan 's)
+                     lead))
+             and
+             (VP pumping
+                 (NP capital)
+                 (PP-DIR into
+			 (NP the region)))))
+     .))
+( (S (PP-LOC In
+	     (NP (NP Taiwan)
+		 and
+		 (NP South Korea)))
+     ,
+     (NP-SBJ rising
+             wages)
+     (VP are
+         (VP forcing
+             (S (NP-SBJ manufacturers)
+                (VP to
+                    (VP seek
+                        (NP (NP other overseas sites)
+			    (PP for
+				(NP labor-intensive production))))))))
+     .))
+( (S (S (NP-SBJ (NP These nations)
+                ,
+                (VP known
+                    (NP *)
+                    (PP-CLR as
+			    (NP (NP Asia 's)
+				`` 
+				little tigers))))
+        , 
+	''
+        (ADVP also)
+        (VP are
+            (VP contributing
+                (PP-CLR to
+			(NP (NP Southeast Asia 's)
+			    integration)))))
+     , 
+     but
+     (S (NP-SBJ their influence)
+        (VP will
+            (VP remain
+                (ADJP-PRD subordinate
+			  (PP to
+			      (NP Japan 's))))))
+     .))
+( (S (PP For
+         (NP (NP recipient countries)
+             (PP such
+		 as
+		 (NP Thailand
+		     and
+		     Malaysia))))
+     ,
+     (NP-SBJ the investment)
+     (VP will
+         (VP (VP provide
+                 (NP needed jobs))
+             and
+             (VP spur
+                 (NP growth))))
+     .))
+( (S But
+     (NP-SBJ (NP (NP Asian nations ')
+		 harsh memories)
+             (PP of
+                 (NP (NP their military domination)
+                     (PP by
+                         (NP Japan))
+                     (PP-TMP in
+			     (NP (NP the early part)
+				 (PP of
+				     (NP this century)))))))
+     (VP make
+         (S (NP-SBJ them)
+	    (ADJP-PRD fearful
+		      (PP of
+			  (S-NOM (NP-SBJ *)
+				 (VP falling
+				     (PP-LOC under
+					     (NP Japanese economic hegemony))
+				     (ADVP-TMP now)))))))
+     .))
+( (S (PP-PRP Because of
+	     (NP (NP budget constraints)
+		 (PP-LOC in
+			 (NP Washington))))
+     ,
+     (NP-SBJ the U.S.)
+     (VP encourages
+	 (S (NP-SBJ Japan)
+            (VP to
+                (VP share
+                    (NP (NP economic burdens)
+			(PP-LOC in
+				(NP the region)))))))
+     .))
+( (S But
+     (NP-SBJ-1 it)
+     (VP resists
+         (S (NP-SBJ *-1)
+            (VP yielding
+                (NP political ground))))
+     .))
+( (S-2 (PP-TMP In
+	       (NP the coming decade))
+       (PRN ,
+	    (NP-SBJ analysts)
+	    (VP say
+		(SBAR 0
+		      (S *T*-2)))
+	    ,)
+       (NP-SBJ-1 U.S.-Japanese relations)
+       (VP will
+	   (VP be
+	       (VP tested
+		   (NP *-1)
+		   (SBAR-TMP as
+			     (S (NP-SBJ Tokyo)
+				(VP comes
+				    (PP-CLR to
+					    (NP terms))
+				    (PP-CLR with
+					    (NP (NP its new status)
+						(PP as
+						    (NP (NP the region 's)
+							economic behemoth))))))))))
+       .))
+( (S (NP-SBJ (NP (NP Japan 's)
+		 swelling investment)
+             (PP-LOC in
+		     (NP Southeast Asia)))
+     (VP is
+         (NP-PRD (NP part)
+		 (PP of
+		     (NP its economic evolution))))
+     .))
+( (S (PP-TMP In
+	     (NP the past decade))
+     ,
+     (NP-SBJ Japanese manufacturers)
+     (VP concentrated
+         (PP-CLR on
+		 (NP (NP domestic production)
+		     (PP for
+			 (NP export)))))
+     .))
+( (S (PP-TMP In
+	     (NP the 1990s))
+     ,
+     (S-ADV (NP-SBJ-1 *-2)
+	    (VP spurred
+		(NP *-1)
+		(PP by
+		    (NP-LGS (NP rising
+				labor costs)
+			    and
+			    (NP the strong yen)))))
+     ,
+     (NP-SBJ-2 these companies)
+     (VP will
+	 (ADVP increasingly)
+	 (VP turn
+	     (NP themselves)
+	     (PP-CLR into
+		     (NP (NP multinationals)
+			 (PP with
+			     (NP (NP plants)
+				 (PP-LOC around
+					 (NP the world))))))))
+     .))
+( (S (S-PRP (NP-SBJ *-1)
+	    (VP To
+		(VP capture
+		    (NP the investment))))
+     ,
+     (NP-SBJ-1 Southeast Asian
+	       nations)
+     (VP will
+	 (VP move
+	     (S (NP-SBJ *-1)
+		(VP to
+		    (VP accommodate
+			(NP Japanese business))))))
+     .))
+( (SINV (S-TPC-2 (NP-SBJ-3 (NP These nations ')
+			   internal decisions)
+		 ``
+		 (VP will
+		     (VP be
+			 (VP made
+			     (NP *-3)
+			     (PP-MNR in
+				     (NP (NP a way)
+					 (SBAR (WHADVP-1 0)
+					       (S (NP-SBJ *) 
+						  not
+						  (VP to
+						      (VP offend
+							  (NP their
+							      (NX (NX largest aid donor)
+								  ,
+								  (NX largest private investor)
+								  and
+								  (NX largest lender)))
+							  (ADVP-MNR *T*-1)))))))))))
+        , 
+	''
+        (VP says
+	    (SBAR 0
+		  (S *T*-2)))
+        (NP-SBJ (NP Richard Drobnick)
+		,
+		(NP (NP director)
+		    (PP of
+			(NP (NP the international business and research program)
+			    (PP-LOC at
+				    (NP (NP (NP (NAC the University
+						     (PP of
+							 (NP Southern California)))
+						's)
+					    Graduate School)
+					(PP of
+					    (NP Business))))))))
+	.))
+( (S (NP-SBJ-1 Japanese money)
+     (VP will
+         (VP help
+             (S (NP-SBJ *-1)
+                (VP turn
+                    (NP Southeast Asia)
+                    (PP-CLR into
+			    (NP a 
+				(ADJP more cohesive) 
+				economic region))))))
+     .))
+( (S-2 But 
+       (PRN ,
+	    (S (NP-SBJ analysts)
+	       (VP say
+		   (SBAR 0
+			 (S *T*-2))))
+	    ,)
+       (NP-SBJ-1 Asian cooperation)
+       (VP is 
+	   n't
+	   (ADJP-PRD likely
+		     (S (NP-SBJ *-1)
+			(VP to
+			    (VP parallel
+				(NP the European Common Market approach))))))
+       .))
+( (SINV (S-TPC-1 (ADVP Rather)
+		 ,
+		 (NP-SBJ Japanese investment)
+		 (VP will
+		     (VP spur
+			 (NP (NP integration)
+			     (PP of
+				 (NP certain sectors))))))
+	,
+	(VP says
+	    (SBAR 0
+		  (S *T*-1)))
+	(NP-SBJ (NP Kent Calder)
+		,
+		(NP (NP a specialist)
+		    (PP in
+			(NP East Asian
+			    economies))
+		    (PP-LOC at
+			    (NP (NP (NP the Woodrow Wilson School)
+				    (PP for
+					(NP Public
+					    and
+					    Internatonal Affairs)))
+				(PP-LOC at
+					(NP Princeton University))))))
+	.))
+( (S (PP-LOC In
+	     (NP electronics))
+     ,
+     (PP for
+         (NP example))
+     ,
+     (NP-SBJ a Japanese company)
+     (VP might
+         (VP (VP make
+		 (NP television picture tubes)
+		 (PP-LOC in
+			 (NP Japan)))
+             ,
+             (VP assemble
+		 (NP the sets)
+		 (PP-LOC in
+			 (NP Malaysia)))
+             and
+             (VP export
+                 (NP them)
+                 (PP-DIR to
+			 (NP Indonesia)))))
+     .))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ The effect)
+		 (VP will
+		     (VP be
+			 (S-PRD (NP-SBJ *)
+				(VP to
+				    (VP pull
+					(NP Asia)
+					(PRT together)
+					(PP-CLR not
+						(PP as
+						    (NP a common market))
+						but
+						(PP as
+						    (NP an integrated production zone)))))))))
+	, 
+	''
+	(VP says
+	    (SBAR 0
+		  (S *T*-1)))
+	(NP-SBJ (NP Goldman Sachs 's)
+		Mr. Hormats)
+	.))
+( (S (NP-SBJ-1 (NP Countries)
+	       (PP-LOC in
+		       (NP the region)))
+     (ADVP also)
+     (VP are
+         (VP beginning
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP consider
+                        (NP (NP a framework)
+                            (PP for
+                                (NP closer economic and political ties))))))))
+     .))
+( (S (NP-SBJ-1 (NP The 
+		   economic and foreign
+		   ministers)
+	       (PP of
+		   (NP 12
+		       (ADJP Asian and Pacific)
+		       nations)))
+     (VP will
+         (VP meet
+	     (PP-LOC in
+		     (NP Australia))
+	     (NP-TMP next week)
+	     (S-PRP (NP-SBJ *-1)
+		    (VP to
+			(VP discuss
+			    (NP (NP global trade issues)
+				(CONJP as well as)
+				(NP (NP regional matters)
+				    (PP such as
+					(NP transportation and telecommunications)))))))))
+     .))
+( (S (NP-SBJ Participants)
+     (VP will
+         (VP include
+             (NP (NP (NP the U.S.)
+                     ,
+                     (NP Australia)
+                     ,
+                     (NP Canada)
+                     ,
+                     (NP Japan)
+                     ,
+                     (NP South Korea)
+                     and
+                     (NP New Zealand))
+                 (CONJP as well as)
+                 (NP (NP (NP the six members)
+                         (PP of
+                             (NP (NP the Association)
+                                 (PP of
+                                     (NP Southeast Asian Nations)))))
+                     --
+                     (NP (NP Thailand)
+                         ,
+                         (NP Malaysia)
+                         ,
+                         (NP Singapore)
+                         ,
+                         (NP Indonesia)
+                         ,
+                         (NP the Philippines)
+                         and
+                         (NP Brunei))))))
+     .))
+( (S (PP In
+         (NP addition))
+     ,
+     (NP-SBJ-2 the U.S.)
+     (NP-TMP this year)
+     (VP offered
+         (NP (NP its own plan)
+             (PP for
+                 (NP (NP cooperation)
+                     (PP-LOC around
+			     (NP the Pacific rim)))))
+	 (PP-LOC in
+		 (NP (NP a major speech)
+		     (PP by
+			 (NP (NAC Secretary
+				  (PP of
+				      (NP State)))
+			     James Baker))
+		     ,
+		     (VP following
+			 (PRT up)
+			 (NP (NP a proposal)
+			     (VP made
+				 (NP *)
+				 (PP-TMP in
+					 (NP January))
+				 (PP by
+				     (NP-LGS Australian Prime Minister
+					     Bob Hawke))))))))
+     .))
+( (S (NP-SBJ The Baker proposal)
+     (VP reasserts
+         (NP (NP Washington 's)
+             intention
+             (S (NP-SBJ-1 *)
+                (VP to
+                    (VP continue
+                        (S (NP-SBJ *-1)
+                           (VP playing
+                               (NP a leading political role)
+			       (PP-LOC in
+				       (NP the region)))))))))
+     .))
+( (S ``
+     (S-1 (PP-LOC In
+		  (NP Asia))
+	  ,
+	  (SBAR-ADV as
+		    (FRAG (PP-LOC in
+				  (NP Europe))))
+	  ,
+	  (NP-SBJ a new order)
+	  (VP is
+	      (VP taking
+		  (NP-CLR shape))))
+     , 
+     ''
+     (NP-SBJ Mr. Baker)
+     (VP said
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S ``
+     (NP-SBJ-1 The U.S.)
+     (PRN ,
+	  (PP with
+	      (NP its regional friends))
+	  ,)
+     (VP must
+         (VP play
+             (NP a crucial role)
+             (PP in
+                 (S-NOM (NP-SBJ *) 
+			(VP designing
+			    (NP its architecture))))))
+     . ''))
+( (S But
+     (S-NOM-SBJ (NP-SBJ *)
+		(VP maintaining
+		    (NP U.S. influence)))
+     (VP will
+         (VP be
+             (ADJP-PRD difficult)
+	     (PP-LOC in
+		     (NP (NP the face)
+			 (PP of
+			     (NP (NP Japanese dominance)
+				 (PP-LOC in
+					 (NP the region))))))))
+     .))
+( (S (NP-SBJ Japan)
+     (VP (CONJP not
+		only)
+	 (VP outstrips
+	     (NP the U.S.)
+	     (PP-LOC in
+		     (NP investment flows)))
+         (CONJP but
+		also)
+         (VP outranks
+	     (NP it)
+	     (PP-LOC in
+		     (NP (NP trade)
+			 (PP-CLR with
+				 (NP most Southeast Asian countries)))))
+	 (PRN -LRB-
+	      (SBAR-ADV although
+			(S (NP-SBJ the U.S.)
+			   (VP remains
+			       (NP-PRD (NP the leading trade partner)
+				       (PP for
+					   (NP (NP all)
+					       (PP of
+						   (NP Asia))))))))
+	      -RRB-))
+     .))
+( (S (ADVP Moreover)
+     ,
+     (NP-SBJ (NP the Japanese government) 
+	     , 
+	     (NP (ADVP-TMP now)
+		 (NP the world 's)
+                 largest aid donor)
+             ,)
+     (VP is
+         (VP pumping
+             (NP (NP (ADJP far more)
+		     assistance)
+		 (SBAR *ICH*-2))
+	     (PP-DIR into
+		     (NP the region))
+	     (SBAR-2 than
+		     (S (NP-SBJ the U.S.)
+			(VP is
+			    (VP *?*))))))
+     .))
+( (S (SBAR-TMP While 
+	       (S (NP-SBJ U.S. officials)
+		  (VP voice
+		      (NP (NP optimism)
+			  (PP about
+			      (NP (NP (NP Japan 's)
+				      enlarged role)
+				  (PP-LOC in
+					  (NP Asia))))))))
+     ,
+     (NP-SBJ they)
+     (ADVP also)
+     (VP convey
+         (NP (NP an undertone)
+             (PP of
+                 (NP caution))))
+     .))
+( (SINV ``
+	(S-TPC-3 (NP-SBJ There)
+		 (VP 's
+		     (NP-PRD (NP an understanding
+				 (SBAR *ICH*-1))
+			     (PP on
+				 (NP (NP the part)
+				     (PP of
+					 (NP the U.S.))))
+			     (SBAR-1 that
+				     (S (NP-SBJ-2 Japan)
+					(VP has
+					    (S (NP-SBJ *-2)
+					       (VP to
+						   (VP expand
+						       (NP (NP its functions)
+							   ''
+							   (PP-LOC in
+								   (NP Asia))))))))))))
+	,
+	(VP says
+	    (SBAR 0
+		  (S *T*-3)))
+	(NP-SBJ (NP J. Michael Farren)
+		,
+		(NP (NP undersecretary)
+		    (PP of
+			(NP commerce))
+		    (PP for
+			(NP trade))))
+	.))
+( (S ``
+     (SBAR-ADV If
+	       (S (NP-SBJ they)
+		  (VP approach
+		      (NP it)
+		      (PP-MNR with
+			      (NP a
+				  benevolent , altruistic
+				  attitude)))))
+     ,
+     (NP-SBJ there)
+     (VP will
+	 (VP be
+	     (NP-PRD a net gain)
+	     (PP for
+		 (NP everyone))))
+     . 
+     ''))
+( (S (NP-SBJ Some Asian nations)
+     (VP are
+         (ADJP-PRD apprehensive
+		   (PP about
+		       (NP (NP Washington 's)
+			   demand
+			   (SBAR that
+				 (S (NP-SBJ-1 Tokyo)
+				    (VP step
+					(PRT up)
+					(NP its military spending)
+					(S-PRP (NP-SBJ *-1)
+					       (VP to
+						   (VP ease
+						       (NP (NP the U.S. security burden)
+							   (PP-LOC in
+								   (NP the region)))))))))))))
+     .))
+( (S (NP-SBJ-1 The issue)
+     (VP is 
+	 (VP (ADVP further)
+	     complicated
+	     (NP *-1)
+             (PP (PP by
+                     (NP-LGS (NP uncertainty)
+			     (PP over
+				 (NP (NP the future)
+				     (PP of
+					 (NP (NP (NP the U.S. 's)
+						 leases)
+					     (PP on
+						 (NP (NP military bases)
+						     (PP-LOC in
+							     (NP the Philippines))))))))))
+                 and
+                 (PP by
+                     (NP-LGS (NP a possible U.S. troop reduction)
+			     (PP-LOC in
+				     (NP South Korea)))))))
+     .))
+( (S (NP-SBJ Many Asians)
+     (VP regard
+         (NP a U.S. presence)
+         (PP-CLR as
+		 (NP (NP a desirable counterweight)
+		     (PP to
+			 (NP Japanese influence)))))
+     .))
+( (S ``
+     (S-TPC-1 (NP-SBJ No one)
+	      (VP wants
+		  (S (NP-SBJ the U.S.)
+		     (VP to
+			 (VP (VP pick
+				 (PRT up)
+				 (NP its marbles))
+			     and
+			     (VP go
+				 (ADVP-DIR home)))))))
+     , 
+     ''
+     (NP-SBJ Mr. Hormats)
+     (VP says
+	 (S *T*-1))
+     .))
+( (S (PP For
+         (NP their part))
+     ,
+     (NP-SBJ-1 (NP Taiwan)
+	       and
+	       (NP South Korea))
+     (VP are
+         (VP expected
+             (S (NP-SBJ-2 *-1)
+                (VP to
+                    (VP step
+                        (PRT up)
+                        (NP their own investments)
+			(PP-TMP in
+				(NP the next decade))
+			(S-PRP (NP-SBJ-3 *-2)
+			       (VP to
+				   (VP try
+				       (S (NP-SBJ *-3)
+					  (VP to
+					      (VP slow
+						  (NP the Japanese juggernaut))))))))))))
+     .))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ They)
+		 (VP do 
+		     n't
+		     (VP want
+			 (S (NP-SBJ Japan)
+			    (VP to
+				(VP (VP monopolize
+					(NP the region))
+				    and
+				    (VP sew
+					(NP it)
+					(PRT up))))))))
+	, 
+	''
+	(VP says
+	    (S *T*-1))
+	(NP-SBJ (NP Chong-sik Lee)
+		,
+		(NP (NP professor)
+		    (PP of
+			(NP East Asian
+			    politics))
+		    (PP-LOC at
+			    (NP (NP the University)
+				(PP of
+				    (NP Pennsylvania))))))
+	.))

@@ -1,0 +1,59 @@
+
+( (S 
+    (NP-SBJ (NNP McDermott) (NNP International) (NNP Inc.) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP$ its) (NNP Babcock) (CC &) (NNP Wilcox) (NN unit) )
+          (VP (VBD completed) 
+            (NP 
+              (NP (DT the) (NN sale) )
+              (PP (IN of) 
+                (NP (PRP$ its) (NNP Bailey) (NNP Controls) (NNP Operations) ))
+              (PP (TO to) 
+                (NP (NNP Finmeccanica) (NNP S.p) (. .) (NNP A.) ))
+              (PP (IN for) 
+                (NP 
+                  (QP ($ $) (CD 295) (CD million) )
+                  (-NONE- *U*) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Finmeccanica) )
+    (VP (VBZ is) 
+      (NP-PRD 
+        (NP (DT an) (JJ Italian) (JJ state-owned) (VBG holding) (NN company) )
+        (PP (IN with) 
+          (NP 
+            (NP (NNS interests) )
+            (PP-LOC (IN in) 
+              (NP (DT the) (JJ mechanical) (NN engineering) (NN industry) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Bailey) (NNP Controls) )
+      (, ,) 
+      (VP (VBN based) 
+        (NP (-NONE- *) )
+        (PP-LOC-CLR (IN in) 
+          (NP 
+            (NP (NNP Wickliffe) )
+            (, ,) 
+            (NP (NNP Ohio) ))))
+      (, ,) )
+    (VP (VBZ makes) 
+      (NP (JJ computerized) (JJ industrial) (NNS controls) (NNS systems) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP It) )
+    (VP 
+      (VP (VBZ employs) 
+        (NP (CD 2,700) (NNS people) ))
+      (CC and) 
+      (VP (VBZ has) 
+        (NP 
+          (NP (JJ annual) (NN revenue) )
+          (PP (IN of) 
+            (NP 
+              (QP (IN about) ($ $) (CD 370) (CD million) )
+              (-NONE- *U*) )))))
+    (. .) ))

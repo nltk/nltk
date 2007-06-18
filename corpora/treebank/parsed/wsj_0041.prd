@@ -1,0 +1,1337 @@
+
+
+( (S (NP-SBJ This)
+     (VP is
+         (NP-PRD (NP the year)
+		 (SBAR (WHADVP-1 0)
+		       (S (NP-SBJ (NP the negative ad)
+				  ,
+				  (RRC (PP-TMP for
+					       (NP years))
+				       (NP (NP a secondary presence)
+					   (PP-LOC in
+						   (NP most political campaigns))))
+				  ,)
+			  (VP became
+			      (NP-PRD the main event)
+			      (ADVP-TMP *T*-1))))))
+     .))
+( (S (NP-SBJ The irony)
+     (VP is
+         (SBAR-PRD that
+		   (S (NP-SBJ-1 the attack commercial)
+		      ,
+		      (PP-TMP after
+			      (S-NOM (NP-SBJ *-1)
+				     (VP getting
+					 (NP a boost)
+					 (PP-LOC in
+						 (NP (NP last year 's)
+						     presidential campaign)))))
+		      ,
+		      (VP has
+			  (VP come
+			      (PP-CLR of
+				      (NP age))
+			      (PP-TMP in
+				      (NP (NP an off-off election year)
+					  (PP with
+					      (NP (NP only a few contests)
+						  (VP scattered
+						      (NP *)
+						      (PP-LOC across
+							      (NP the country))))))))))))
+     .))
+( (S But
+     (PP-LOC in
+	     (NP (NP the three leading political contests)
+		 (PP of
+		     (NP 1989))))
+     ,
+     (NP-SBJ-1 the negative ads)
+     (VP have
+	 (VP reached
+	     (NP (NP new levels)
+		 (PP of
+		     (NP hostility)))
+	     ,
+	     (S-ADV (NP-SBJ *-1)
+		    (VP raising
+			(NP fears
+			    (SBAR that
+				  (S (NP-SBJ (NP this kind)
+					     (PP of
+						 (NP mudslinging))
+					     ,
+					     (ADJP empty
+						   (PP of
+						       (NP significant issues)))
+					     ,)
+				     (VP is
+					 (VP ushering
+					     (PP-CLR in
+						     (NP (NP a new era)
+							 (PP of
+							     (NP (NP campaigns)
+								 (PP without
+								     (NP content)))))))))))))))
+     .))
+( (S-1 ``
+       (ADVP-TMP Now)
+       ,
+       ''
+       (PRN (SINV (VP says
+		      (S *T*-1))
+		  (NP-SBJ (NP Joseph Napolitan)
+			  ,
+			  (NP (NP a pioneer)
+			      (PP-LOC in
+				      (NP political television)))))
+	    ,)
+       ``
+       (NP-SBJ the idea)
+       (VP is
+	   (S-PRD (NP-SBJ *)
+		  (VP to
+		      (VP attack
+			  (ADVP-TMP first
+				    ,
+				    last
+				    and
+				    always)))))
+       . 
+       ''))
+( (S (NP-SBJ (NP A trend)
+             (SBAR (WHNP-72 that)
+                   (S (NP-SBJ *T*-72)
+                      (VP (VP started
+                              (PP-CLR with
+				      (NP (NP the first stirrings)
+					  (PP of
+					      (NP politics)))))
+                          ,
+                          (VP accelerated
+                              (PP-CLR with
+				      (NP (NP the dawn)
+					  (PP of
+					      (NP the television age)))))
+                          and
+                          (VP became
+			      (NP-PRD a sometimes-tawdry art form)
+			      (PP-TMP in
+				      (NP 1988)))
+                          ,))))
+     (VP has
+         (VP reached
+             (NP an
+                 (ADJP entirely new)
+                 stage)))
+     .))
+( (S-2 ``
+       (S-PRP (NP-SBJ *-1)
+	      (VP To
+		  (VP get
+		      (NP (NP people 's)
+			  attention)
+		      (NP-TMP these days))))
+       ,
+       ''
+       (PRN (SINV (VP says
+		      (S *T*-2))
+		  (NP-SBJ (NP Douglas Bailey)
+			  ,
+			  (NP a political consultant)))
+	    ,)
+       (S ``
+	  (NP-SBJ-1 your TV ad)
+	  (VP needs
+	      (S (NP-SBJ *-1)
+		 (VP to
+		     (VP be
+			 (ADJP-PRD bold and entertaining))))))
+       , 
+       and 
+       ,
+       (S (ADVP-TMP (ADVP more often)
+		    (PP than 
+			(ADVP not)))
+	  ,
+	  (NP-SBJ that)
+	  (VP means
+	      (ADJP confrontational))) 
+       .))
+( (S And 
+     ,
+     (PP unlike
+	 (ADVP-TMP (NP a few years)
+		   ago))
+     ,
+     (NP-SBJ-1 you)
+     (VP do 
+	 n't
+	 (ADVP even)
+	 (VP have
+	     (S (NP-SBJ *-1)
+		(VP to
+		    (VP worry
+			(SBAR whether
+			      (S (NP-SBJ the ad)
+				 (VP is
+				     (ADJP-PRD truthful)))))))))
+     . 
+     ''))
+( (S (PP-TMP In
+	     (NP 1989))
+     ,
+     (ADVP-TMP as often
+	       (PP as 
+		   (ADVP not)))
+     ,
+     (NP-SBJ-1 (NP the principal fights)
+	       (PP-LOC in
+		       (NP the major campaigns)))
+     (VP are
+         (VP prompted
+	     (NP *-1)
+             (PP by
+                 (NP-LGS (NP the ads)
+			 (NP themselves)))))
+     .))
+( (S (NP-SBJ *)
+     (VP Take
+         (NP (NP a look)
+	     (PRN ,
+		  (ADVP then)
+		  ,)
+	     (PP at
+		 (NP (NP the main attack commercials)
+		     (SBAR (WHNP-73 that)
+			   (S (NP-SBJ *T*-73)
+			      (VP set
+				  (NP (NP the tone)
+				      (PP for
+					  (NP (NP (NP Tuesday 's)
+						  elections)
+					      (PP-LOC in
+						      (NP (NP New York City)
+							  ,
+							  (NP New Jersey)
+							  and
+							  (NP Virginia)))))))))))))
+     :))
+( (NP New York City
+      :))
+( (S (NP-SBJ The screen)
+     (VP fills
+         (PP-CLR with
+		 (NP a
+		     (NP (NP small , tight
+			     facial shot)
+			 (PP of
+			     (NP (NP David Dinkins)
+				 ,
+				 (NP (NP Democratic candidate)
+				     (PP for
+					 (NP (NP mayor)
+					     (PP of
+						 (NP New York City)))))))))))
+     .))
+( (SINV ``
+        (S-TPC-1 (NP-SBJ-2 David Dinkins)
+		 (VP failed
+		     (S (NP-SBJ *-2)
+			(VP to
+			    (VP file
+				(NP his income taxes))))
+		     (PP-TMP for
+			     (NP four straight years))))
+	, 
+	''
+        (VP says
+	    (S *T*-1))
+        (NP-SBJ a disembodied male voice)
+        .))
+( (S And
+     (ADVP-TMP then)
+     (NP-SBJ (NP this television commercial)
+             ,
+             (VP (VP paid
+                     (PP-CLR for
+			     (NP *))
+		     (PP by
+                         (NP-LGS (NP Republican Rudolph Giuliani 's)
+				 campaign)))
+                 and
+                 (VP produced
+		     (NP *) 
+                     (PP by
+                         (NP-LGS (NP Roger Ailes)
+				 ,
+				 (NP (NP the master)
+				     (PP of
+					 (NP negative TV ads)))))))
+             ,)
+     (ADVP really)
+     (VP gets
+         (ADVP-CLR down
+		   (PP to
+		       (NP business))))
+     .))
+( (S-2 (NP-SBJ-1 Mr. Dinkins)
+       (PRN ,
+	    (S (NP-SBJ the ad)
+	       (VP charges
+		   (SBAR 0
+			 (S *T*-2))))
+	    ,)
+       (ADVP also)
+       (VP (VP failed
+	       (S (NP-SBJ *-1)
+		  (VP to
+		      (VP report
+			  (NP his campaign contributions)
+			  (ADVP-MNR accurately)))))
+	   ,
+	   (VP hid
+	       (NP (NP his links)
+		   (PP to
+		       (NP a failing insurance company))))
+	   and
+	   (VP paid
+	       (NP a convicted kidnapper)
+	       ``
+	       (PP-MNR through
+		       (NP (NP a phony organization)
+			   (PP with
+			       (NP (NP no members)
+				   ,
+				   (NP no receipts)
+				   and
+				   (NP no office)))))))
+       . 
+       ''))
+( (SBARQ-2 ``
+	   (NP-TPC David Dinkins)
+	   (PRN , 
+		''
+		(SINV (VP says
+			  (SBARQ *T*-2))
+		      (NP-SBJ the kicker))
+		,)
+	   ``
+	   (WHADVP Why)
+	   (SQ does
+	       (NP-SBJ he)
+	       (ADVP-TMP always)
+	       (VP wait
+		   (SBAR-TMP until
+			     (S (NP-SBJ-1 he)
+				(VP 's
+				    (VP caught
+					(NP *-1)))))))
+	   ?
+	   ''))
+( (NP-2 (NP ``
+	    Nasty innuendoes
+	    , 
+	    '')
+	(PRN (SINV (VP says
+		       (NP *-2))
+		   (NP-SBJ (NP John Siegal)
+			   ,
+			   (NP (NP Mr. Dinkins 's)
+			       issues director)
+			   ,)))
+	``
+	(VP designed
+	    (NP-1 *)
+	    (S-CLR (NP-SBJ *-1)
+		   (VP to
+		       (VP prosecute
+			   (NP (NP a case)
+			       (PP of
+				   (NP (NP political corruption)
+				       (SBAR (WHNP-74 that)
+					     (S (NP-SBJ *T*-74)
+						(ADVP simply)
+						(VP does 
+						    n't
+						    (VP exist)))))))))))
+	. 
+	''))
+( (S (S-SBJ (NP-SBJ-1 *-2)
+	    (VP Stung
+		(NP *-1)
+		(PP by
+		    (NP-LGS the Giuliani ads))))
+     ,
+     (NP-SBJ-2 (NP (NP Mr. Dinkins 's)
+		   TV consultants) 
+	       ,
+	       (NP (NP Robert Shrum)
+		   and
+		   (NP David Doak))
+	       ,)
+     (ADVP-TMP finally)
+     (VP unleashed
+	 (NP (NP a negative ad)
+	     (PP of
+		 (NP their own))))
+     .))
+( (S (NP-SBJ The screen)
+     (VP shows
+         (NP (NP two distorted , unrecognizable photos)
+	     , 
+	     (PP (ADVP presumably)
+		 of
+                 (NP two politicians))))
+     .))
+( (SINV ``
+        (S-TPC-1 (NP-SBJ *)
+		 (VP Compare
+		     (NP (NP two candidates)
+			 (PP for
+			     (NP mayor)))))
+        , 
+	''
+        (VP says
+	    (S *T*-1))
+        (NP-SBJ the announcer)
+	.))
+( (S ``
+     (NP-SBJ One)
+     (VP says
+         (SBAR 0
+               (S (NP-SBJ he)
+                  (VP 's
+                      (PP-PRD for
+			      (S-NOM (NP-SBJ *)
+				     (VP banning
+					 (NP cop-killer bullets))))))))
+     .))
+( (S (NP-SBJ The other)
+     (VP has
+         (VP opposed
+             (NP (NP a ban)
+                 (PP on
+                     (NP cop-killer bullets)))))
+     .))
+( (S (NP-SBJ One)
+     (VP claims
+         (SBAR 0
+               (S (NP-SBJ he)
+                  (VP 's
+                      (ADJP-PRD pro-choice)))))
+     .))
+( (S (NP-SBJ The other)
+     (VP has
+         (VP opposed
+             (NP (NP a woman 's)
+                 right
+                 (S (NP-SBJ *)
+                    (VP to
+                        (VP choose))))))
+     . 
+     ''))
+( (FRAG-1 ``
+	  (NP Funny thing)
+	  (PRN , 
+	       ''
+	       (SINV (VP says
+			 (FRAG *T*-1))
+		     (NP-SBJ the kicker))
+	       ,)
+	  ``
+	  (S (NP-SBJ-2 both
+		       these candidates)
+	     (VP are
+		 (VP named
+		     (S (NP-SBJ *-2)
+			(NP-PRD Rudolph Giuliani)))))
+	  . 
+	  ''))
+( (SBARQ (WHNP-1 Who)
+	 (SQ 's
+	     (NP-SBJ *T*-1)
+	     (VP telling
+		 (NP the truth)))
+         ?))
+( (NP Everybody
+      -- 
+      and
+      nobody
+      .))
+( (S (NP-SBJ It)
+     (VP 's
+         (NP-PRD (NP a classic situation)
+		 (PP of
+		     (NP (NP ads)
+			 (SBAR (WHNP-75 that)
+			       (S (NP-SBJ *T*-75)
+				  (VP are
+				      (ADJP-PRD (ADJP true)
+						but 
+						not 
+						(ADVP-TMP always)
+						(ADJP fully accurate)))))))))
+     .))
+( (S (S (NP-SBJ-1 Mr. Dinkins)
+        (VP did
+            (VP fail
+                (S (NP-SBJ *-1)
+                   (VP to
+                       (VP file
+                           (NP his income taxes))))
+		(PP-TMP for
+			(NP four years)))))
+     , 
+     but
+     (S (NP-SBJ he)
+        (VP insists
+            (SBAR 0
+                  (S (NP-SBJ he)
+		     (VP (ADVP-MNR voluntarily)
+			 admitted
+                         (NP the `` oversight '')
+			 (SBAR-TMP (WHADVP-3 when)
+				   (S (NP-SBJ-2 he)
+				      (VP was
+					  (VP being
+					      (VP considered
+						  (NP *-2)
+						  (PP-CLR for
+							  (NP a city job))
+						  (ADVP-TMP *T*-3)))))))))))
+     .))
+( (S (S (NP-SBJ He)
+        (VP was
+            (PP-LOC-PRD on
+			(NP (NP the board)
+			    (PP of
+				(NP (NP an insurance company)
+				    (PP with
+					(NP financial problems))))))))
+     , 
+     but
+     (S (NP-SBJ he)
+        (VP insists
+            (SBAR 0
+                  (S (NP-SBJ he)
+                     (VP made
+                         (NP (NP no secret)
+			     (PP of
+				 (NP it))))))))
+     .))
+( (S (NP-SBJ-1 (NP The city 's)
+	       Campaign Finance Board)
+     (VP has
+         (VP refused
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP pay
+                        (NP Mr. Dinkins)
+                        (NP (NP $ 95,142 *U*)
+                            (PP in
+                                (NP matching funds))))))
+	     (SBAR-PRP because
+		       (S (NP-SBJ his campaign records)
+			  (VP are
+			      (ADJP-PRD incomplete))))))
+     .))
+( (S (NP-SBJ The campaign)
+     (VP has
+         (VP blamed
+             (NP these reporting problems)
+             (PP-CLR on
+		     (NP computer errors))))
+     .))
+( (S-1 And 
+       (PRN ,
+	    (SINV (VP says
+		      (SBAR 0
+			    (S *T*-1)))
+		  (NP-SBJ Mr. Dinkins))
+	    ,)
+       (NP-SBJ he)
+       (VP did 
+	   n't
+	   (VP know
+	       (SBAR 0
+		     (S (NP-SBJ-3 (NP the man)
+				  (SBAR (WHNP-2 0)
+					(S (NP-SBJ his campaign)
+					   (VP paid
+					       (NP *T*-2)
+					       (PP-CLR for
+						       (NP a get-out-the-vote effort))))))
+			(VP had
+			    (VP been
+				(VP convicted
+				    (NP *-3)
+				    (PP-CLR of
+					    (NP kidnapping)))))))))
+       .))
+( (S-1 But 
+       (PRN ,
+	    (SINV (VP say
+		      (SBAR 0
+			    (S *T*-1)))
+		  (NP-SBJ (NP Mr. Dinkins 's)
+			  managers))
+	    ,)
+       (S (NP-SBJ he)
+	  (VP did
+	      (VP have
+		  (NP an office))))
+       and
+       (S (NP-SBJ his organization)
+	  (VP did
+	      (VP have
+		  (NP members))))
+       .))
+( (S (NP-SBJ (NP (NP Mr. Giuliani 's)
+		 campaign chairman)
+	     ,
+             (NP Peter Powers)
+             ,)
+     (VP says
+         (SBAR 0
+               (S (NP-SBJ the Dinkins ad)
+                  (VP is
+		      ``
+		      (ADJP-PRD deceptive)))))
+     . 
+     ''))
+( (S-1 (NP-SBJ The other side)
+       (PRN ,
+	    (S (NP-SBJ he)
+	       (VP argues
+		   (SBAR 0
+			 (S *T*-1))))
+	    ,)
+       ``
+       (VP knows
+	   (SBAR 0
+		 (S (NP-SBJ Giuliani)
+		    (VP has
+			(ADVP-TMP always)
+			(VP been
+			    (ADJP-PRD pro-choice)
+			    ,
+			    (SBAR-ADV (ADVP even)
+				      though
+				      (S (NP-SBJ he)
+					 (VP has
+					     (NP personal reservations)))))))))
+       .))
+( (S (NP-SBJ They)
+     (VP know
+         (SBAR (SBAR 0
+                     (S (NP-SBJ he)
+                        (VP is
+                            (ADVP generally)
+                            (ADJP-PRD opposed
+				      (PP to
+					  (NP cop-killer bullets))))))
+               , 
+	       but
+               (SBAR that
+                     (S (NP-SBJ he)
+                        (VP had
+                            (NP (NP some reservations)
+                                (PP about
+                                    (NP (NP the language)
+                                        (PP-LOC in
+						(NP the legislation))))))))))
+     . 
+     ''))
+( (NP Virginia
+      :))
+( (S (NP-SBJ Democratic Lt. Gov. Douglas Wilder)
+     (VP opened
+         (NP (NP his gubernatorial battle)
+             (PP with
+                 (NP Republican Marshall Coleman)))
+         (PP-CLR with
+		 (NP (NP an abortion commercial)
+		     (VP produced
+			 (NP *)
+			 (PP by
+			     (NP-LGS Frank Greer)))
+		     (SBAR (WHNP-1 that)
+			   (S (NP-SBJ (NP analysts)
+				      (PP of
+					  (NP every political persuasion)))
+			      (VP agree
+				  (SBAR 0
+					(S (NP-SBJ *T*-1)
+					   (VP was
+					       (NP-PRD a tour de force))))))))))
+     .))
+( (S (PP-LOC Against
+	     (NP (NP a shot)
+		 (PP of
+		     (NP Monticello))
+		 (VP superimposed
+		     (NP *)
+		     (PP-CLR on
+			     (NP an American flag)))))
+     ,
+     (NP-SBJ an announcer)
+     (VP talks
+         (PP-CLR about
+		 (NP (NP the 
+			 `` 
+			 strong tradition)
+		     (PP of
+			 (NP (NP freedom)
+			     and
+			     (NP individual liberty)))
+		     ''
+		     (SBAR (WHNP-1 that)
+			   (S (NP-SBJ Virginians)
+			      (VP have
+				  (VP nurtured
+				      (NP *T*-1)
+				      (PP-TMP for
+					      (NP generations)))))))))
+     .))
+( (S (ADVP-TMP Then)
+     ,
+     (SBAR-TMP (ADVP just)
+	       as
+	       (S (NP-SBJ (NP an image)
+			  (PP of
+			      (NP (NP the statue)
+				  (PP of
+				      (NP Thomas Jefferson)))))
+		  (VP dissolves
+		      (PP-DIR from
+			      (NP the screen)))))
+     ,
+     (NP-SBJ the announcer)
+     (VP continues 
+	 :
+	 ``
+	 (S (PP-LOC On
+		    (NP (NP the issue)
+			(PP of
+			    (NP abortion))))
+	    ,
+	    (NP-SBJ-1 Marshall Coleman)
+	    (VP wants
+		(S (S (NP-SBJ *-1)
+		      (VP to
+			  (VP take
+			      (PRT away)
+			      (NP your right
+				  (S (NP-SBJ *)
+				     (VP to
+					 (VP choose)))))))
+		   and
+		   (S (NP-SBJ *-1)
+		      (VP give
+			  (NP it)
+			  (PP-DTV to
+				  (NP the politicians))))))))
+     . 
+     ''))
+( (S (NP-SBJ-3 (NP That commercial)
+	       (PRN --
+		    (SBAR (WHNP-76 which)
+			  (S (NP-SBJ *T*-76)
+			     (VP said
+				 (SBAR 0
+				       (S (NP-SBJ-1 Mr. Coleman)
+					  (VP wanted
+					      (S (NP-SBJ *-1)
+						 (VP to
+						     (VP (VP take
+							     (PRT away)
+							     (NP (NP the right)
+								 (PP of
+								     (NP abortion)))
+							     ``
+							     (PP-LOC (ADVP even)
+								     in
+								     (NP (NP cases)
+									 (PP of
+									     (NP rape and incest))))
+							     ,
+							     '')
+							 (NP (NP a charge)
+							     (SBAR (WHNP-2 0)
+								   (S (NP-SBJ Mr. Coleman)
+								      (VP denies
+									  (NP *T*-2))))))))))))))
+		    --))
+     (VP changed
+         (NP (NP the dynamics)
+             (PP of
+                 (NP the campaign)))
+	 ,
+	 (S-ADV (NP-SBJ *-3)
+		(VP transforming
+		    (NP it)
+		    (PRN ,
+			 (PP (ADVP at least)
+			     in
+			     (NP part))
+			 ,)
+		    (PP-CLR into
+			    (NP (NP a referendum)
+				(PP on
+				    (NP abortion)))))))
+     .))
+( (S (NP-SBJ The ad)
+     (VP prompted
+	 (S (NP-SBJ (NP Mr. Coleman)
+		    ,
+		    (NP the former Virginia attorney general)
+		    ,)
+            (VP to
+                (VP launch
+                    (NP (NP a series)
+                        (PP of
+                            (NP (NP advertisements)
+                                (VP (VP created
+					(NP *) 
+                                        (PP by
+                                            (NP-LGS Bob Goodman)))
+                                    and
+                                    (VP designed
+					(NP-2 *)
+					(S-CLR (NP-SBJ *-2)
+					       (VP to
+						   (VP shake
+						       (NP (NP (NP Mr. Wilder 's)
+							       support)
+							   (PP-LOC among
+								   (NP (NP the very women)
+								       (SBAR (WHNP-77 who)
+									     (S (NP-SBJ-1 *T*-77)
+										(VP were
+										    (VP attracted
+											(NP *-1)
+											(PP by
+											    (NP-LGS the abortion ad)))))))))))))))))))))
+     .))
+( (S (S (NP-SBJ The Coleman counterattack)
+        (VP featured
+            (NP (NP a close-up)
+                (PP of
+                    (NP (NP a young woman)
+                        (PP-LOC in
+				(NP shadows)))))))
+     and
+     (S (NP-SBJ the ad)
+        (VP suggested
+            (SBAR that
+                  (S (NP-SBJ she)
+                     (VP was
+                         (VP recalling
+                             (NP an unpleasant courtroom ordeal)))))))
+     .))
+( (S (NP-SBJ A voice)
+     (VP says 
+	 ,
+	 ``
+	 (SQ (INTJ C'mon , now)
+	     ,
+	     do
+	     n't
+	     (NP-SBJ you)
+	     (VP have
+		 (NP boyfriends))
+	     ?)
+	 '')))
+( (S (ADVP-TMP Then)
+     (NP-SBJ an announcer)
+     (VP interjects 
+	 : 
+	 ``
+         (S-CLF (NP-SBJ It)
+		(VP was
+		    (NP-PRD Douglas Wilder)
+		    (SBAR (WHNP-78 who)
+			  (S (NP-SBJ *T*-78)
+			     (VP introduced
+				 (NP (NP a bill)
+				     (SBAR (WHNP-1 0)
+					   (S (NP-SBJ *T*-1)
+					      (VP to
+						  (VP force
+						      (S (NP-SBJ-2 (NP rape victims)
+								   (UCP (NP age 13) 
+									and 
+									(ADJP younger)))
+							 (VP to
+							     (VP be
+								 (VP interrogated
+								     (NP *-2)
+								     (PP-CLR about
+									     (NP their private lives))
+								     (PP by
+									 (NP-LGS (NP lawyers)
+										 (PP for
+										     (NP accused rapists)))))))))))))))))))
+     .)) 
+( (S (ADVP So)
+     (NP-TMP (NP the next time)
+	     (SBAR (WHADVP-1 0)
+		   (S (NP-SBJ Mr. Wilder)
+		      (VP talks
+			  (PP-CLR about
+				  (NP (NP the rights)
+				      (PP of
+					  (NP women))))
+			  (ADVP-TMP *T*-1)))))
+     ,
+     (NP-SBJ *)
+     (VP ask
+	 (NP him)
+	 (PP-CLR about
+		 (NP (NP this law)
+		     (SBAR (WHNP-2 0)
+			   (S (NP-SBJ-3 he)
+			      (VP tried
+				  (S (NP-SBJ *-3)
+				     (VP to
+					 (VP pass
+					     (NP *T*-2))))))))))
+     .
+     ''))
+( (S (S (NP-SBJ Mr. Wilder)
+	(VP did
+	    (VP introduce
+		(NP such legislation)
+		(ADVP-TMP (NP 17 years)
+			  ago))))
+     ,
+     but
+     (S (NP-SBJ he)
+	(VP (VP did
+		(ADVP-PRD so)
+		(PP at
+		    (NP (NP the request)
+			(PP of
+			    (NP a constituent)))))
+	    ,
+	    (NP (NP a common legislative technique)
+		(VP used
+		    (NP *)
+		    (PP by
+			(NP-LGS lawmakers))))))
+     .))
+( (S (S (NP-SBJ (NP The legislation)
+		(NP itself))
+	(VP noted
+	    (SBAR that
+		  (S (NP-SBJ-1 it)
+		     (VP was
+			 (VP introduced
+			     (NP *-1)
+			     ``
+			     (PP-MNR by
+				     (NP request))))))))
+     ,
+     ''
+     and
+     (S (PP-TMP in
+		(NP 1983))
+	(NP-SBJ Mr. Wilder)
+	(VP introduced
+	    (NP (NP a bill)
+		(SBAR (WHNP-2 0)
+		      (S (NP-SBJ *T*-2)
+			 (VP to
+			     (VP protect
+				 (NP rape victims)
+				 (PP-CLR from
+					 (NP unfounded interrogation)))))))))
+     .))
+( (SINV ``
+	(S-TPC-1 (S (NP-SBJ People)
+		    (VP have
+			(VP grown
+			    (ADJP-PRD tired
+				      (PP of
+					  (NP these ads))))))
+		 and
+		 (S (NP-SBJ Coleman)
+		    (VP has
+			(VP gotten
+			    (NP (NP the stigma)
+				(PP of
+				    (S-NOM (NP-SBJ *)
+					   (VP being
+					       (NP-PRD a negative campaigner)))))))))
+	,
+	''
+	(VP says
+	    (S *T*-1))
+	(NP-SBJ (NP Mark Rozell)
+		,
+		(NP (NP a political scientist)
+		    (PP-LOC at
+			    (NP Mary Washington College))))
+	.))
+( (S ``
+     (NP-SBJ-1 Wilder)
+     (VP (VP has
+	     (VP managed
+		 (S (NP-SBJ *-1)
+		    (VP to
+			(VP get
+			    (PRT across)
+			    (NP the idea
+				(SBAR that
+				      (S (NP-SBJ-2 Coleman)
+					 (VP will
+					     (VP say
+						 (NP anything)
+						 (S-PRP (NP-SBJ-3 *-2)
+							(VP to 
+							    (VP get
+								(VP elected
+								    (S (NP-SBJ *-3)
+								       (NP-PRD governor))))))))))))))))
+	 and
+	 (VP (PRN --
+		  (ADJP more
+			important)
+		  --)
+	     has
+	     (VP been
+		 (ADJP-PRD able
+			   (S (NP-SBJ *-1)
+			      (VP to
+				  (VP put
+				      (NP (NP the onus)
+					  (PP for
+					      (NP all the negative campaigning)))
+				      (PP-PUT on
+					      (NP Coleman)))))))))
+     .
+     ''))
+( (S (S (NP-SBJ Mr. Coleman)
+	(VP said
+	    (NP-TMP this week)
+	    (SBAR that
+		  (S (NP-SBJ he)
+		     (VP would
+			 (VP devote
+			     (NP (NP the remainder)
+				 (PP of
+				     (NP the political season)))
+			     (PP-CLR to
+				     (NP positive campaigning))))))))
+     ,
+     but
+     (S (NP-SBJ the truce)
+	(VP lasted
+	    (NP only
+		hours)))
+     .))
+( (S (PP-TMP By
+	     (NP Tuesday night))
+     ,
+     (NP-SBJ television stations)
+     (VP were
+	 (VP carrying
+	     (NP (NP new ads)
+		 (VP featuring
+		     (S (NP-SBJ (NP Mr. Coleman)
+				(NP himself))
+			(VP raising 
+			    (NP (NP questions)
+				(PP about
+				    (NP (NP (NP Mr. Wilder 's)
+					    sensitivity)
+					(PP to
+					    (NP rape victims)))))))))))
+     .))
+( (NP-HLN New Jersey
+	  :))
+( (S (NP-SBJ The attacks)
+     (VP began
+	 (SBAR-TMP (WHADVP when)
+		   (S (NP-SBJ Democratic
+			      Rep. James Florio)
+		      (VP aired
+			  (NP (NP an ad)
+			      (VP featuring
+				  (NP (NP (NP a drawing)
+					  (PP of
+					      (NP Pinocchio)))
+				      and
+				      (NP (NP a photograph)
+					  (PP of
+					      (NP (NP (NP Mr. Florio 's)
+						      rival)
+						  ,
+						  (NP Republican
+						      Rep. Jim Courter)))))))))))
+     .))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ *)
+		 (VP Remember
+		     (NP Pinocchio)))
+	?
+	''
+	(VP says
+	    (S *T*-1))
+	(NP-SBJ a female voice)
+	.))
+( (S ``
+     (NP-SBJ *)
+     (VP Consider
+	 (NP Jim Courter))
+     .
+     ''))
+( (S And
+     (ADVP-TMP then)
+     (NP-SBJ (NP this commercial)
+	     ,
+	     (VP produced
+		 (NP *)
+		 (PP by
+		     (NP-LGS Bob Squier)))
+	     ,)
+     (VP gets
+	 (ADVP-CLR down
+		   (PP to
+		       (NP its own (ADJP mean and dirty) business))))
+     .))
+( (S (S (NP-SBJ (NP Pictures)
+		(PP of
+		    (NP rusted
+			oil drums)))
+	(VP swim
+	    (PP-CLR into
+		    (NP focus))))
+     ,
+     and
+     (S (NP-SBJ the female voice)
+	(VP purrs
+	    ,
+	    ``
+	    (FRAG (NP (NP That hazardous waste) 
+		      (PP-LOC on
+			      (NP his
+				  (PRN *LCB*
+				       (NP Mr. Courter 's)
+				       *RCB*)
+				  property)))
+		  --
+		  (S (NP-SBJ the neighbors)
+		     (VP are
+			 (VP suing
+			     (PP-CLR for
+				     (NP consumer fraud))))))))
+     .
+     ''))
+( (S And
+     (NP-SBJ (NP the nose)
+	     (PP-LOC on
+		     (NP (NP Mr. Courter 's)
+			 face)))
+     (VP grows)
+     .))
+( (S (S-1 (NP-SBJ (NP The only fraud)
+		  (ADJP involved))
+	  ,
+	  (PRN (SINV (VP cry
+			 (S *T*-1))
+		     (NP-SBJ (NP Mr. Courter 's)
+			     partisans)))
+	  ,
+	  (VP is
+	      (NP-PRD (NP the Florio commercial)
+		      (NP itself))))
+     ,
+     and
+     (S (ADVP so)
+	(NP-SBJ the Courter campaign)
+        (VP has
+	    (VP responded
+		(PP-MNR with
+			(NP (NP its own Pinocchio commercial)
+			    ,
+			    (VP produced
+				(NP *)
+				(PP by
+				    (NP-LGS Mr. Ailes))))))))
+     .))
+( (S (PP-LOC In
+	     (NP this one))
+     ,
+     (NP-SBJ the screen)
+     (VP fills
+	 (PP-CLR with
+		 (NP (NP photographs)
+		     (PP of
+			 (NP both
+			     candidates)))))
+     .))
+( (SINV ``
+	(SBARQ-TPC-2 (WHNP-1 Who)
+		     (S (NP-SBJ *T*-1)
+			(VP 's
+			    (ADVP really)
+			    (VP lying))))
+	?
+	''
+	(VP asks
+	    (SBARQ *T*-2))
+	(NP-SBJ a female voice)
+	.))
+( (S ``
+     (NP-SBJ Florio)
+     (VP 's
+	 (VP lying
+	     (PRN ,
+		  ''
+		  (S (NP-SBJ the voice)
+		     (VP goes
+			 (PRT on)))
+		  ,)
+	     (SBAR-PRP because
+		       ``
+		       (S (NP-SBJ-1 (NP the barrel)
+				    (PP-LOC on
+					    (NP (NP Courter 's)
+						land)))
+			  ...
+			  (VP (VP contained
+				  (NP heating oil))
+			      ,
+			      (VP was
+				  (VP cleaned
+				      (NP *-1)
+				      (PRT up)))
+			      and
+			      (VP caused
+				  (NP no pollution)))))))
+     .
+     ''))
+( (S (NP-SBJ (NP Mr. Courter 's)
+	     long nose)
+     (VP shrinks
+	 (SBAR-TMP while
+		   (S (NP-SBJ Mr. Florio 's)
+		      (VP grows))))
+     .))
+( (SBARQ (WHNP-1 Who)
+	 (S (NP-SBJ *T*-1)
+	    (VP 's
+		(VP telling
+		    (NP the truth))))
+	 ?))
+( (S (NP-SBJ (NP Stephen Salmore)
+	     ,
+	     (NP (NP a political scientist)
+		 (PP-LOC at
+			 (NP (NP New Jersey 's)
+			     Eagleton Institute)))
+	     ,)
+     (VP says
+	 (SBAR 0
+	       (S (NP-SBJ it)
+		  (VP 's
+		      (NP-PRD (NP another example)
+			      (PP of
+				  (NP (NP an ad)
+				      (SBAR (WHNP-1 that) 
+					    (S (NP-SBJ *T*-1)
+					       (VP 's 
+						   (ADJP-PRD (ADJP true)
+							     but
+							     (ADJP not
+								   fully
+								   accurate))))))))))))
+     .))
+( (S (S (NP-SBJ-1 Barrels)
+	(VP were
+	    (VP dumped
+		(NP *-1)
+		(PP-LOC-CLR on
+			    (NP the Courter property)))))
+     ,
+     (S (NP-SBJ-2 a complaint)
+	(VP was
+	    (VP made
+		(NP *-2))))
+     ,
+     but
+     (S (NP-SBJ there)
+	(VP is
+	    (NP-PRD no evidence
+		    (SBAR 0
+			  (S (NP-SBJ the barrels)
+			     (VP were
+				 (NP-PRD (NP a serious threat)
+					 (PP to
+					     (NP the environment)))))))))
+     .))
+( (S (ADVP Even
+	   so)
+     ,
+     (PP according
+	 (PP to
+	     (NP Mr. Salmore)))
+     ,
+     (NP-SBJ the ad)
+     (VP was
+	 ``
+	 (ADJP-PRD devastating)
+	 ''
+	 (SBAR-PRP because
+		   (S (NP-SBJ it)
+		      (VP raised
+			  (NP (NP questions)
+			      (PP about
+				  (NP (NP Mr. Courter 's)
+				      credibility)))))))
+     .))
+( (S But
+     (NP-SBJ it)
+     (VP 's
+	 (VP building
+	     (PP-CLR on
+		     (NP a long tradition))))
+     .))
+( (S (PP-TMP In
+	     (NP 1966))
+     ,
+     (PP-LOC on
+	     (NP (NP route)
+		 (PP to
+		     (NP (NP a re-election rout)
+			 (PP of
+			     (NP Democrat Frank O'Connor))))))
+     ,
+     (NP-SBJ-1 (NP GOP Gov. Nelson Rockefeller)
+	       (PP of
+		   (NP New York)))
+     (VP appeared
+	 (PP-MNR in
+		 (NP person))
+	 (S-ADV (NP-SBJ *-1)
+		(VP saying
+		    ,
+		    ``
+		    (S (SBAR-ADV If
+				 (S (NP-SBJ-2 you)
+				    (VP want
+					(S (NP-SBJ *-2)
+					   (VP to
+					       (VP keep
+						   (S (NP-SBJ the crime rates)
+						      (ADJP-PRD high))))))))
+		       ,
+		       (NP-SBJ O'Connor)
+		       (VP is
+			   (NP-PRD your man))))))
+     .
+     ''))

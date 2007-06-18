@@ -1,0 +1,22 @@
+
+
+( (S (NP-SBJ (NP Pierre Vinken)
+             ,
+             (ADJP (NP 61 years)
+		   old)
+             ,)
+     (VP will
+         (VP join
+             (NP the board)
+             (PP-CLR as
+		     (NP a nonexecutive director))
+	     (NP-TMP Nov. 29)))
+     .))
+( (S (NP-SBJ Mr. Vinken)
+     (VP is
+         (NP-PRD (NP chairman)
+		 (PP of
+		     (NP (NP Elsevier N.V.)
+			 ,
+			 (NP the Dutch publishing group)))))
+     .))

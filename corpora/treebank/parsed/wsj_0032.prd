@@ -1,0 +1,70 @@
+
+
+( (S (NP-SBJ Italian chemical giant
+             Montedison S.p.A.)
+     (PRN ,
+	  (PP through
+	      (NP its Montedison Acquisition N.V. indirect unit))
+	  ,)
+     (VP began
+         (NP (NP its 
+		 (ADJP $ 37-a-share *U*) 
+		 tender offer)
+             (PP for
+                 (NP (NP all the common shares)
+                     (ADJP outstanding)
+                     (PP of
+			 (NP (NP Erbamont N.V.)
+			     ,
+			     (NP (NP a maker)
+				 (PP of
+				     (NP pharmaceuticals))
+				 (VP incorporated
+				     (NP *)
+				     (PP-LOC-CLR in
+						 (NP the Netherlands))))))))))
+     .))
+( (S (NP-SBJ-1 (NP The offer)
+	       ,
+	       (VP advertised
+		   (NP *)
+		   (PP-LOC in
+			   (NP (NP (NP today 's)
+				   editions)
+			       (PP of
+				   (NP The Wall Street Journal)))))
+	       ,)
+     (VP is
+         (VP scheduled
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP expire
+			(PP-TMP at
+				(NP (NP the end)
+				    (PP of
+					(NP November)))))))))
+     .))
+( (S (NP-SBJ Montedison)
+     (ADVP-TMP currently)
+     (VP owns
+         (NP (NP (QP about 72)
+		 %)
+             (PP of
+                 (NP (NP (NP Erbamont 's)
+                         common shares)
+                     (ADJP outstanding)))))
+     .))
+( (S (NP-SBJ-45 The offer)
+     (VP is
+         (VP being
+             (VP launched
+                 (NP *-45)
+                 (ADVP-MNR pursuant
+			   (PP to
+			       (NP (NP a
+				       (ADJP (ADVP-TMP previously)
+					     announced)
+				       agreement)
+				   (PP-LOC between
+					   (NP the companies))))))))
+     .))

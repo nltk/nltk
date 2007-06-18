@@ -1,0 +1,103 @@
+
+
+( (S (NP-SBJ BRAMALEA Ltd.)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 it)
+                  (VP agreed
+                      (S (NP-SBJ *-1)
+                         (VP to
+                             (VP issue
+                                 (NP (NP (QP 100 million) 
+					 Canadian dollars)
+				     (PRN -LRB-
+					  (NP (QP US$ 85.1 million) *U*)
+					  -RRB-)
+				     (PP of
+					 (NP (NP (ADJP 10.5 %) 
+						 senior debentures)
+					     (ADJP due
+						   (NP-TMP (NP Nov. 30) 
+							   , 
+							   (NP 1999)))))
+				     ,
+				     (ADVP together
+					   (PP with
+					       (NP 100,000 bond purchase warrants)))))))))))
+     .))
+( (S (NP-SBJ The Toronto-based real estate concern)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ each bond warrant)
+                  (VP entitles
+		      (S (NP-SBJ the holder)
+                         (VP to
+                             (VP buy
+                                 (NP (NP (ADJP C$ 1,000 *U*) 
+					 principal amount)
+				     (PP of
+					 (NP debentures)))
+                                 (PP-CLR at
+					 (NP (NP par)
+					     plus
+					     (NP (NP accrued interest)
+						 (PP-TMP to
+							 (NP (NP the date)
+							     (PP of
+								 (NP purchase))))))))))))))
+     .))
+( (S (NP-SBJ The warrants)
+     (VP expire
+	 (NP-TMP (NP Nov. 30) 
+		 , 
+		 (NP 1990)))
+     .))
+( (S (S (NP-SBJ-70 The issue)
+        (VP will
+            (VP be
+                (VP swapped
+                    (NP *-70)
+                    (PP-CLR into
+			    (NP fixed-rate U.S. dollars))
+                    (PP-CLR at
+			    (NP (NP a rate)
+				(SBAR (WHNP-1 0)
+				      (S (NP-SBJ the company)
+					 (VP said
+					     (SBAR 0
+						   (S (NP-SBJ *T*-1)
+						      (VP is
+							  (NP-PRD (QP less than 9) 
+								  %)))))))))))))
+     ;
+     (S (NP-SBJ-2 a spokesman)
+        (VP declined
+            (S (NP-SBJ *-2)
+               (VP to
+                   (VP elaborate)))))
+     .))
+( (S (NP-SBJ (NP Lead underwriters)
+             (PP for
+                 (NP the issue)))
+     (VP are
+         (NP-PRD (NP (NP Scotia McLeod Inc.)
+		     and
+		     (NP RBC Dominion Securities Inc.))
+		 ,
+		 (NP both
+		     Toronto-based investment dealers)))
+     .))
+( (S (NP-SBJ Bramalea)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 it)
+                  (VP expects
+                      (S (NP-SBJ *-1)
+                         (VP to
+                             (VP complete
+                                 (NP the issue)
+				 (PP-TMP by
+					 (NP (NP the end)
+					     (PP of
+						 (NP the month)))))))))))
+     .))

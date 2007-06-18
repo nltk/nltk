@@ -1,0 +1,15 @@
+
+
+( (S (NP-SBJ-39 (NP Lord Chilver)
+                ,
+                (NP (NP 63-year-old chairman)
+                    (PP of
+                        (NP English China Clays PLC)))
+                ,)
+     (VP was
+         (VP named
+             (S (NP-SBJ *-39)
+		(NP-PRD (NP a nonexecutive director)
+			(PP of
+			    (NP this British chemical company))))))
+     .))

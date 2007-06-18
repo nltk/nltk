@@ -1,0 +1,394 @@
+
+( (S 
+    (SBAR-TMP 
+      (WHADVP-1 (WRB When) )
+      (S 
+        (NP-SBJ (PRP it) )
+        (VP (VBZ 's) 
+          (NP-PRD 
+            (NP (NN time) )
+            (PP (IN for) 
+              (NP (PRP$ their) (JJ biannual) (NN powwow) )))
+          (ADVP-TMP (-NONE- *T*-1) ))))
+    (, ,) 
+    (NP-SBJ 
+      (NP (DT the) (NN nation) (POS 's) )
+      (VBG manufacturing) (NNS titans) )
+    (ADVP (RB typically) )
+    (VP (VBP jet) 
+      (PRT (RP off) )
+      (PP-DIR (TO to) 
+        (NP 
+          (NP (DT the) (JJ sunny) (NNS confines) )
+          (PP (IN of) 
+            (NP 
+              (NP (NN resort) (NNS towns) )
+              (PP (IN like) 
+                (NP 
+                  (NP (NNP Boca) (NNP Raton) )
+                  (CC and) 
+                  (NP (NNP Hot) (NNP Springs) ))))))))
+    (. .) ))
+( (FRAG (RB Not) 
+    (NP-TMP (DT this) (NN year) )
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (NNP National) (NNP Association) )
+      (PP (IN of) 
+        (NP (NNP Manufacturers) )))
+    (VP (VBD settled) 
+      (PP-CLR (IN on) 
+        (NP 
+          (NP (DT the) (NNP Hoosier) (NN capital) )
+          (PP (IN of) 
+            (NP (NNP Indianapolis) ))))
+      (PP (IN for) 
+        (NP (PRP$ its) (NN fall) (NN board) (NN meeting) )))
+    (. .) ))
+( (S (CC And) 
+    (NP-SBJ-1 (DT the) (NN city) )
+    (VP (VBD decided) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB treat) 
+            (NP (PRP$ its) (NNS guests) )
+            (PP-MNR 
+              (PP 
+                (ADVP (JJR more) )
+                (IN like) 
+                (NP 
+                  (NP (NN royalty) )
+                  (CC or) 
+                  (NP (NN rock) (NNS stars) )))
+              (PP (IN than) 
+                (NP (NN factory) (NNS owners) )))))))
+    (. .) ))
+( (FRAG 
+    (NP (DT The) (NN idea) )
+    (, ,) 
+    (PP (IN of) 
+      (NP (NN course) ))
+    (: :) 
+    (S 
+      (NP-SBJ (-NONE- *) )
+      (VP (TO to) 
+        (VP (VB prove) 
+          (PP-CLR (TO to) 
+            (NP (CD 125) (JJ corporate) (NN decision) (NNS makers) ))
+          (SBAR 
+            (SBAR (IN that) 
+              (S 
+                (NP-SBJ 
+                  (NP (DT the) (NN buckle) )
+                  (PP (IN on) 
+                    (NP (DT the) (NNP Rust) (NNP Belt) )))
+                (VP (VBZ is) (RB n't) 
+                  (ADJP-PRD (RB so) (JJ rusty) )
+                  (PP (IN after) 
+                    (NP (DT all) )))))
+            (, ,) 
+            (SBAR (IN that) 
+              (S 
+                (NP-SBJ (PRP it) )
+                (VP (VBZ 's) 
+                  (NP-PRD 
+                    (NP (DT a) (JJ good) (NN place) )
+                    (SBAR 
+                      (WHADVP-1 (-NONE- 0) )
+                      (IN for) 
+                      (S 
+                        (NP-SBJ (DT a) (NN company) )
+                        (VP (TO to) 
+                          (VP (VB expand) 
+                            (ADVP-LOC (-NONE- *T*-1) )))))))))))))
+    (. .) ))
+( (SINV 
+    (PP-LOC-PRD-TPC-1 (IN On) 
+      (NP 
+        (NP (DT the) (VBG receiving) (NN end) )
+        (PP (IN of) 
+          (NP (DT the) (NN message) ))))
+    (VP (VBD were) 
+      (PP-LOC-PRD (-NONE- *T*-1) ))
+    (NP-SBJ 
+      (NP (NNS officials) )
+      (PP (IN from) 
+        (NP 
+          (NP 
+            (NP (NNS giants) )
+            (PP (IN like) 
+              (NP 
+                (NP (NNP Du) (NNP Pont) )
+                (CC and) 
+                (NP (NNP Maytag) ))))
+          (, ,) 
+          (CONJP (IN along) (IN with) )
+          (NP 
+            (NP (JJR lesser) (NNS knowns) )
+            (PP (IN like) 
+              (NP 
+                (NP (NNP Trojan) (NNP Steel) )
+                (CC and) 
+                (NP (DT the) (NNP Valley) (NNP Queen) (NNP Cheese) (NNP Factory) )))))))
+    (. .) ))
+( (S 
+    (PP (IN For) 
+      (NP (NNS starters) ))
+    (, ,) 
+    (NP-SBJ (DT the) (NNS executives) )
+    (VP (VBD joined) 
+      (NP (NNP Mayor) (NNP William) (NNP H.) (NNP Hudnut) (NNP III) )
+      (PP (IN for) 
+        (NP 
+          (NP (DT an) (NN evening) )
+          (PP (IN of) 
+            (NP 
+              (NP (DT the) (NNP Indianapolis) (NNP Symphony) (NNP Orchestra) )
+              (CC and) 
+              (NP (DT a) (NN guest) (NN pianist-comedian) (NNP Victor) (NNP Borge) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NN Champagne) 
+      (CC and)
+      (NN dessert) )
+    (VP (VBD followed) )
+    (. .) ))
+( (S 
+    (NP-TMP (DT The) (JJ next) (NN morning) )
+    (, ,) 
+    (PP (IN with) 
+      (NP (DT a) (NN police) (NN escort) ))
+    (, ,) 
+    (NP-SBJ-1 
+      (NP (NNS busloads) )
+      (PP (IN of) 
+        (NP 
+          (NP (NNS executives) )
+          (CC and) 
+          (NP (PRP$ their) (NNS wives) ))))
+    (VP (VBD raced) 
+      (PP-DIR (TO to) 
+        (NP (DT the) (NNP Indianapolis) (NNP Motor) (NNP Speedway) ))
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ (-NONE- *-1) )
+        (ADJP-PRD (JJ unimpeded) 
+          (PP (IN by) 
+            (NP 
+              (NP (NN traffic) )
+              (CC or) 
+              (NP (JJ red) (NNS lights) ))))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ (DT The) (NN governor) )
+      (VP (MD could) (RB n't) 
+        (VP (VB make) 
+          (NP (PRP it) ))))
+    (, ,) (IN so) 
+    (S 
+      (NP-SBJ (DT the) (NN lieutenant) (NN governor) )
+      (VP (VBD welcomed) 
+        (NP (DT the) (JJ special) (NNS guests) )))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (DT A) (NN buffet) (NN breakfast) )
+    (VP (VBD was) 
+      (VP (VBN held) 
+        (NP (-NONE- *-1) )
+        (PP-LOC (IN in) 
+          (NP (DT the) (NN museum) ))
+        (, ,) 
+        (SBAR-LOC 
+          (WHADVP-3 (WRB where) )
+          (S 
+            (NP-SBJ-2 (NN food) 
+              (CC and)
+              (NNS drinks) )
+            (VP (VBP are) 
+              (VP (VBN banned) 
+                (NP (-NONE- *-2) )
+                (PP (TO to) 
+                  (NP (JJ everyday) (NNS visitors) ))
+                (ADVP-LOC (-NONE- *T*-3) )))))))
+    (. .) ))
+( (S 
+    (ADVP-TMP (RB Then) )
+    (, ,) 
+    (PP (IN in) 
+      (NP 
+        (NP (DT the) (NNS guests) (POS ') )
+        (NN honor) ))
+    (, ,) 
+    (NP-SBJ (DT the) (NN speedway) )
+    (VP (VBD hauled) 
+      (PRT (RP out) )
+      (NP 
+        (NP (CD four) (NNS drivers) )
+        (, ,) 
+        (NP (NNS crews) )
+        (CC and) 
+        (NP (RB even) (DT the) (JJ official) (NNP Indianapolis) (CD 500) (NN announcer) ))
+      (PP-PRP (IN for) 
+        (NP (DT a) (JJ 10-lap) (NN exhibition) (NN race) )))
+    (. .) ))
+( (S 
+    (PP-TMP (IN After) 
+      (NP (DT the) (NN race) ))
+    (, ,) 
+    (NP-SBJ (NNP Fortune) (CD 500) (NNS executives) )
+    (VP (VBD drooled) 
+      (PP-MNR (IN like) 
+        (NP (NNS schoolboys) ))
+      (PP-CLR (IN over) 
+        (NP (DT the) (NNS cars) 
+          (CC and)
+          (NNS drivers) )))
+    (. .) ))
+( (S 
+    (S-ADV 
+      (NP-SBJ (-NONE- *-1) )
+      (NP-PRD (DT No) (NNS dummies) ))
+    (, ,) 
+    (NP-SBJ-1 (DT the) (NNS drivers) )
+    (VP (VBD pointed) 
+      (PRT (RP out) )
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP they) )
+          (ADVP (RB still) )
+          (VP (VBD had) 
+            (NP 
+              (NP (NN space) )
+              (PP (IN on) 
+                (NP (PRP$ their) (NNS machines) ))
+              (PP (IN for) 
+                (NP 
+                  (NP 
+                    (NP (DT another) (NN sponsor) (POS 's) )
+                    (NN name) )
+                  (CC or) 
+                  (NP (CD two) ))))))))
+    (. .) ))
+( (S 
+    (ADVP-LOC (RB Back) (NN downtown) )
+    (, ,) 
+    (NP-SBJ-1 (DT the) (NNS execs) )
+    (VP (VBD squeezed) 
+      (PRT (RP in) )
+      (NP 
+        (NP (DT a) (JJ few) (NNS meetings) )
+        (PP-LOC (IN at) 
+          (NP (DT the) (NN hotel) )))
+      (PP-TMP (IN before) 
+        (S-NOM 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (VBG boarding) 
+            (NP (DT the) (NNS buses) )
+            (ADVP (RB again) )))))
+    (. .) ))
+( (S 
+    (NP-TMP (DT This) (NN time) )
+    (, ,) 
+    (NP-SBJ (PRP it) )
+    (VP (VBD was) 
+      (PP-PRD (IN for) 
+        (NP 
+          (NP (NN dinner) 
+            (CC and)
+            (NN dancing) )
+          (: --) 
+          (ADVP-LOC 
+            (NP (DT a) (NN block) )
+            (RB away) ))))
+    (. .) ))
+( (S 
+    (PP-LOC (IN Under) 
+      (NP 
+        (NP (DT the) (NNS stars) 
+          (CC and)
+          (NNS moons) )
+        (PP (IN of) 
+          (NP (DT the) (VBN renovated) (NNP Indiana) (NNP Roof) (NN ballroom) ))))
+    (, ,) 
+    (NP-SBJ 
+      (NP (CD nine) )
+      (PP (IN of) 
+        (NP 
+          (NP (DT the) (JJS hottest) (NNS chefs) )
+          (PP (IN in) 
+            (NP (NN town) )))))
+    (VP (VBD fed) 
+      (NP (PRP them) )
+      (NP 
+        (NP (NNP Indiana) (NN duckling) (NN mousseline) )
+        (, ,) 
+        (NP (NN lobster) (NN consomme) )
+        (, ,) 
+        (NP (NN veal) (NN mignon) )
+        (CC and) 
+        (NP 
+          (NP (JJ chocolate) (NN terrine) )
+          (PP (IN with) 
+            (NP (DT a) (NN raspberry) (NN sauce) )))))
+    (. .) ))
+( (S 
+    (S-ADV 
+      (NP-SBJ (-NONE- *-2) )
+      (VP (VBG Knowing) 
+        (NP (DT a) 
+          (ADJP (JJ tasty) 
+            (PRN (: --) 
+              (CC and)
+              (JJ free) (: --) ))
+          (NN meal) )
+        (SBAR-TMP 
+          (WHADVP-1 (WRB when) )
+          (S 
+            (NP-SBJ (PRP they) )
+            (VP (VBP eat) 
+              (NP (CD one) )
+              (ADVP-TMP (-NONE- *T*-1) ))))))
+    (, ,) 
+    (NP-SBJ-2 (DT the) (NNS executives) )
+    (VP (VBD gave) 
+      (NP (DT the) (NNS chefs) )
+      (NP (DT a) (JJ standing) (NN ovation) ))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (JJR More) )
+      (PP (IN than) 
+        (NP (DT a) (JJ few) (NNS CEOs) )))
+    (VP (VBP say) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (DT the) (JJ red-carpet) (NN treatment) )
+          (VP (VBZ tempts) 
+            (S 
+              (NP-SBJ (PRP them) )
+              (VP (TO to) 
+                (VP (VB return) 
+                  (PP-DIR (TO to) 
+                    (NP (DT a) (NN heartland) (NN city) ))
+                  (PP-PRP (IN for) 
+                    (NP (JJ future) (NNS meetings) )))))))))
+    (. .) ))
+( (S (CC But) 
+    (PP-TMP (IN for) 
+      (ADVP (RB now) ))
+    (, ,) 
+    (NP-SBJ (PRP they) )
+    (VP (VBP 're) 
+      (VP (VBG looking) 
+        (ADVP-CLR (RB forward) )
+        (PP-CLR (TO to) 
+          (NP 
+            (NP (PRP$ their) (NN winter) (NN meeting) )
+            (PRN (: --) 
+              (NP-LOC (NNP Boca) )
+              (PP-TMP (IN in) 
+                (NP (NNP February) )))))))
+    (. .) ))

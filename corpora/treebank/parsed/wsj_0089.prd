@@ -1,0 +1,1377 @@
+
+
+( (S (NP-SBJ (NP The art)
+             (PP of
+                 (NP change-ringing)))
+     (VP is
+         (ADJP-PRD (ADJP peculiar
+			 (PP to
+			     (NP the English)))
+		   , 
+		   and
+		   ,
+		   (PP like
+		       (NP most English peculiarities))
+		   , 
+		   (ADJP unintelligible
+			 (PP to
+			     (NP (NP the rest)
+				 (PP of
+				     (NP the world)))))))
+     .))
+( (NP --
+      (NP Dorothy L. Sayers)
+      ,
+      ``
+      (NP-TTL The Nine Tailors)
+      ''))
+( (NP-LOC (NP ASLACTON)
+	  ,
+	  (NP England)))
+( (S --
+     (S (PP-TPC-2 Of
+		  (NP (NP all scenes)
+		      (SBAR (WHNP-219 that)
+			    (S (NP-SBJ *T*-219)
+			       (VP evoke
+				   (NP rural England))))))
+	,
+	(NP-SBJ this)
+	(VP is
+	    (NP-PRD (NP one)
+		    (PP of
+			(NP (NP the loveliest)
+			    (PP *T*-2))))))
+     :
+     (S (NP-SBJ An ancient stone church) 
+	(VP stands
+	    (PP-LOC amid
+		    (NP the fields))
+	    ,
+	    (S-ADV (NP-SBJ-1 (NP the sound)
+			     (PP of
+				 (NP bells)))
+		   (VP cascading
+		       (PP-DIR from
+			       (NP its tower))
+		       ,
+		       (S-ADV (NP-SBJ *-1)
+			      (VP calling
+				  (NP the faithful)
+				  (PP-CLR to
+					  (NP evensong))))))))
+     .))
+( (S (NP-SBJ-1 (NP The parishioners)
+	       (PP of
+		   (NP (NP St. Michael) 
+		       and 
+		       (NP All Angels))))
+     (VP stop
+	 (S-PRP (NP-SBJ *-1)
+		(VP to
+		    (VP chat)))
+	 (PP-LOC at
+		 (NP the church door))
+	 ,
+	 (SBAR-ADV as
+		   (S (NP-SBJ (NP members)
+			      (ADVP-LOC here))
+		      (ADVP-TMP always)
+		      (VP have
+			  (VP *?*)))))
+     .))
+( (S (PP-LOC In
+	     (NP the tower))
+     ,
+     (NP-SBJ five men and women)
+     (VP pull
+         (ADVP-MNR rhythmically)
+         (PP on
+             (NP (NP ropes)
+                 (VP attached
+                     (NP *)
+                     (PP-CLR to
+			     (NP (NP the same five bells)
+				 (SBAR (WHNP-220 that)
+				       (S (NP-SBJ *T*-220)
+					  (ADVP-TMP first)
+					  (VP sounded
+					      (ADVP-LOC here)
+					      (PP-TMP in
+						      (NP 1614)))))))))))
+     .))
+( (S But
+     (NP-SBJ there)
+     (VP is
+         (ADVP also)
+         (NP-PRD a
+		 discordant , modern
+		 note)
+	 (PP-TMP in
+		 (NP Aslacton))
+	 ,
+	 (SBAR-ADV though
+		   (S (NP-SBJ-135 it)
+		      (VP ca 
+			  n't
+			  (VP be
+			      (VP heard
+				  (NP *-135)
+				  (PP by
+				      (NP-LGS (NP the church-goers)
+					      (VP enjoying
+						  (NP (NP the peal)
+						      (PP of
+							  (NP bells)))
+						  (NP-TMP this cool autumn evening))))))))))
+     .))
+( (S (PP Like
+         (NP (NP most)
+             (PP of
+                 (NP (NP the other 6,000 churches)
+                     (PP-LOC in
+			     (NP Britain))
+                     (PP with
+                         (NP (NP sets)
+                             (PP of
+                                 (NP bells))))))))
+     ,
+     (NP-SBJ St. Michael)
+     (ADVP-TMP once)
+     (VP had
+         (NP (NP its own 
+		 `` band '')
+	     (PP of
+		 (NP ringers))
+             ,
+             (SBAR (WHNP-221 who)
+                   (S (NP-SBJ *T*-221)
+                      (VP would
+                          (VP herald
+                              (NP every  
+				  Sunday morning and evening  
+				  service)))))))
+     .))
+( (S (ADVP-TMP Now)
+     ,
+     (NP-SBJ (NP (QP only one) 
+		 local ringer)
+             (NP *ICH*-1))
+     (VP remains
+	 :
+	 (NP-1 64-year-old
+	       Derek Hammond))
+     .))
+( (S (NP-SBJ (NP The others)
+	     (ADVP-LOC here))
+     (NP-TMP today)
+     (VP live
+	 (ADVP-LOC elsewhere))
+     .))
+( (S (NP-SBJ They)
+     (VP belong
+         (PP-CLR to
+		 (NP (NP a group)
+		     (PP of
+			 (NP 15 ringers))
+		     --
+		     (PP including
+			 (NP (NP two octogenarians)
+			     and
+			     (NP (NP four youngsters)
+				 (PP in
+				     (NP training)))))
+		     --
+		     (SBAR (WHNP-222 who)
+			   (S (NP-SBJ *T*-222)
+			      (VP drive
+				  (NP-TMP every Sunday)
+				  (PP-DIR (PP from
+					      (NP church))
+					  (PP to
+					      (NP church)))
+				  (PP in
+				      (NP a sometimes-exhausting effort
+					  (S (NP-SBJ *)
+					     (VP to
+						 (VP keep
+						     (S (NP-SBJ the bells)
+							(VP sounding
+							    (PP-LOC in
+								    (NP (NP the many belfries)
+									(PP of
+									    (NP East Anglia)))))))))))))))))
+     .))
+( (SINV ``
+	(S-TPC-2 (S-PRP (NP-SBJ *-1)
+			(VP To
+			    (VP ring
+				(PP for
+				    (NP (QP even one)
+					service))
+				(PP-LOC at
+					(NP this tower)))))
+		 ,
+		 (NP-SBJ-1 we)
+		 (VP have
+		     (S (NP-SBJ *-1)
+			(VP to
+			    (VP scrape)))))
+	, 
+	''
+	(VP says
+	    (S *T*-2))
+	(NP-SBJ (NP Mr. Hammond)
+		,
+		(NP a retired water-authority worker))
+	.))
+( (S ``
+     (S (NP-SBJ-1 We)
+        (VP 've
+            (VP tried
+                (S (NP-SBJ *-1)
+                   (VP to
+                       (VP train
+                           (NP the youngsters)))))))
+     , 
+     but
+     (S (NP-SBJ they)
+	(VP have
+	    (NP (NP their discos)
+		and
+		(NP their dances))))
+     , 
+     and
+     (S (NP-SBJ they)
+	(VP (ADVP just)
+	    drift
+	    (ADVP-DIR away)))
+     .
+     ''))
+( (S (NP-SBJ Mr. Hammond)
+     (VP worries
+         (SBAR that
+               (S (NP-SBJ (NP old age)
+                          and
+                          (NP (NP the flightiness)
+                              (PP of
+                                  (NP youth))))
+                  (VP will
+                      (VP diminish
+                          (NP (NP the ranks)
+                              (PP of
+                                  (NP (NP the
+                                          (ADJP East Anglian)
+                                          group)
+                                      (SBAR (WHNP-223 that)
+                                            (S (NP-SBJ *T*-223)
+                                               (VP keeps
+                                                   (S (NP-SBJ the Aslacton bells)
+						      (VP pealing)))))))))))))
+     .))
+( (S (NP-SBJ History)
+     (PRN ,
+	  (PP after
+	      (NP all))
+	  ,)
+     (VP is 
+	 not
+         (PP-LOC-PRD on
+		     (NP his side)))
+     .))
+( (S (PP According
+         (PP to
+             (NP (NP a nationwide survey)
+                 (VP taken
+		     (NP *)
+		     (ADVP-TMP (NP a year)
+			       ago)))))
+     ,
+     (NP-SBJ-1 (NP (QP nearly a third))
+	       (PP of
+		   (NP (NP England 's)
+		       church bells)))
+     (VP are
+	 (ADVP-TMP no longer)
+	 (VP rung
+	     (NP *-1)
+	     (PP-TMP on
+		     (NP Sundays))
+	     (SBAR-PRP because
+		       (S (NP-SBJ there)
+			  (VP is
+			      (NP-PRD (NP no one)
+				      (SBAR (WHNP-2 0)
+					    (S (NP-SBJ *T*-2)
+					       (VP to
+						   (VP ring
+						       (NP them)))))))))))
+     .))
+( (S (NP-SBJ (NP It)
+             (S *EXP*-1))
+     (VP is
+         (ADJP-PRD easy)
+	 (S-1 (NP-SBJ *)
+	      (VP to
+		  (VP see
+		      (SBAR (WHADVP-2 why)
+			    (S (NP-SBJ the ancient art)
+			       (VP is
+				   (PP-LOC-PRD on
+					       (NP the ropes))
+				   (ADVP-PRP *T*-2))))))))
+     .))
+( (S (NP-SBJ-136 (NP The less complicated version)
+                 (PP of
+                     (S-NOM (NP-SBJ *)
+			    (VP playing
+				(NP tunes)
+				(PP-CLR on
+					(NP bells))
+				,
+				(SBAR-ADV as
+					  (SINV do
+						(VP *?*)
+						(NP-SBJ (NP the carillons)
+							(PP of
+							    (NP continental Europe))))))
+			    ,)))
+     (VP is
+         (VP considered
+             (PP by
+                 (NP-LGS the English))
+             (S (NP-SBJ *-136)
+                (VP to
+                    (VP be
+                        (ADJP-PRD (ADJP childish)
+				  ,
+				  (ADJP fit 
+					(PP (ADVP only)
+					    for
+					    (NP foreigners)))))))))
+     .))
+( (S (NP-SBJ (NP Change-ringing)
+             ,
+             (NP (NP a mind-boggling exercise)
+                 (SBAR (WHNP-1 0)
+                       (S (NP-SBJ the English)
+                          (VP invented
+			      (NP *T*-1)
+			      (ADVP-TMP (NP 380 years)
+					ago)))))
+             ,)
+     (VP requires
+         (NP (NP physical dexterity)
+             (PRN --
+		  (S (NP-SBJ some bells)
+		     (VP weigh
+			 (NP (QP more
+				 than
+				 a) ton)))
+		  --)
+             (VP combined
+                 (NP *)
+                 (PP-CLR with
+			 (NP intense mental concentration)))))
+     .))
+( (S (NP-SBJ-1 Proper English bells)
+     (VP are
+         (VP started
+	     (NP *-1)
+             (PRT off)
+             (PP-MNR in
+		     (NP ``
+			 (NP rounds)
+			 , 
+			 ''
+			 (PP (PP from
+				 (NP the highest-pitched bell))
+			     (PP to
+				 (NP the lowest)))
+			 --
+			 (NP (NP a 
+				 simple
+				 descending scale)
+			     (VP using
+				 (PRN ,
+				      (PP-LOC in
+					      (NP larger churches))
+				      ,)
+				 (NP (QP as many as 12)
+				     bells)))))))
+     .))
+( (S Then
+     ,
+     (PP-TMP at
+	     (NP a signal))
+     ,
+     (NP-SBJ-1 the ringers)
+     (VP begin
+         (S (NP-SBJ *-1)
+            (VP varying
+                (NP (NP the order)
+                    (SBAR (WHPP-2 in
+				  (WHNP which))
+                          (S (NP-SBJ the bells)
+                             (VP sound
+				 (PP *T*-2)))))
+		(PP-MNR without
+			(S-NOM (NP-SBJ *)
+			       (VP altering
+				   (NP (NP the steady rhythm)
+				       (PP of
+					   (NP the striking)))))))))
+     .))
+( (S (S-TPC-1 (NP-SBJ Each 
+		      variation 
+		      , 
+		      or 
+		      change
+		      ,)
+	      (VP can
+		  (VP occur
+		      (ADVP-TMP only once))))
+     ,
+     (NP-SBJ the rules)
+     (VP state
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (NP-SBJ Ringers)
+     (VP memorize
+         (NP (NP patterns)
+	     (PP of
+		 (NP changes))
+             ,
+             (VP known
+                 (NP *)
+                 (PP-CLR as
+			 ``
+			 (NP methods)))
+             , 
+	     ''
+             (SBAR (WHNP-224 which)
+                   (S (NP-SBJ *T*-224)
+                      (VP have
+                          (NP (NP odd-sounding names)
+			      (PP like
+				  (NP (NP Kent Treble Bob Major)
+				      or
+				      (NP Grandsire Caters)))))))))
+     .))
+( (S (NP-SBJ (NP A series)
+             (PP of
+                 (NP (QP 5,000 or so)
+		     changes)))
+     (VP (VP is
+             (NP-PRD a `` peal ''))
+         and
+         (VP takes
+             (NP (QP about three) 
+		 hours)))
+     .))
+( (S (NP-SBJ (NP A look)
+             (PP at
+                 (NP (NP a 
+			 Thursday night 
+			 practice)
+                     (PP-LOC at
+			     (NP (NP St. Mary Abbot church)
+				 (PP-LOC in
+					 (NP (NP the Kensington district)
+					     (PP of
+						 (NP London)))))))))
+     (VP gives
+         (NP (NP an idea)
+             (PP of
+                 (NP (NP the work)
+                     (VP involved
+                         (NP *))))))
+     .))
+( (S (NP-SBJ Ten shirt-sleeved ringers)
+     (VP stand
+	 (PP in
+	     (NP a circle))
+	 ,
+	 (S-ADV (NP-SBJ one foot)
+		(ADVP-LOC-PRD ahead
+			      (PP of
+				  (NP the other)))
+		(PP in
+		    (NP (NP a prize-fighter 's)
+			stance)))
+	 ,
+	 (S-ADV (NP-SBJ each)
+		(VP pulling
+		    (NP (NP a rope)
+			(SBAR (WHNP-225 that)
+			      (S (NP-SBJ *T*-225)
+				 (VP disappears
+				     (PP through
+					 (NP (NP a small hole)
+					     (PP-LOC in
+						     (NP (NP the high ceiling)
+							 (PP of
+							     (NP the ringing chamber)))))))))))))
+     .))
+( (S (S (NP-SBJ No one)
+        (VP speaks))
+     , 
+     and
+     (S (NP-SBJ-1 (NP the snaking)
+		  (PP of
+		      (NP the ropes)))
+        (VP seems
+            (S (NP-SBJ *-1)
+               (VP to
+                   (VP make
+                       (NP (NP as much sound)
+                           (SBAR as
+				 (S (NP-SBJ-2 (NP the bells)
+					      (NP themselves))
+				    (VP *?*
+					,
+					(S-ADV (NP-SBJ-3 *-2)
+					       (VP muffled
+						   (NP *-3)
+						   (PP by
+						       (NP-LGS the ceiling)))))))))))))
+     .))
+( (S (S-ADV (NP-SBJ *-1)
+	    (ADJP-PRD Totally absorbed))
+     ,
+     (NP-SBJ-1 the ringers)
+     (VP stare
+	 (ADVP-DIR straight
+		   ahead)
+	 ,
+	 (S-ADV (NP-SBJ-2 *-1)
+		(VP using
+		    (NP (NP peripheral vision)
+			(PRN -LRB-
+			     (S (NP-SBJ they)
+				(VP call
+				    (S (NP-SBJ it)
+				       ``
+				       (NP-PRD rope-sight)
+				       '')))
+			     -RRB-))
+		    (S-PRP (NP-SBJ *-2)
+			   (VP to
+			       (VP (VP watch
+				       (NP the other ropes))
+				   and
+				   (ADVP thus)
+				   (VP time
+				       (NP their pulls))))))))
+     .))
+( (S (ADVP-LOC Far above)
+     (PP-LOC in
+	     (NP the belfry))
+     ,
+     (NP-SBJ-1 (NP the huge bronze bells)
+	       ,
+	       (VP mounted
+		   (NP *)
+		   (PP-CLR on
+			   (NP wheels)))
+	       ,)
+     (VP swing
+         (ADVP-MNR madly)
+         (PP-DIR through
+		 (NP a full 360 degrees))
+	 ,
+	 (S-ADV (NP-SBJ *-1)
+		(VP starting
+		    and
+		    ending
+		    (PRN ,
+			 (ADVP-MNR surprisingly)
+			 ,)
+		    (PP-LOC in
+			    (NP the 
+				(ADJP inverted 
+				      , 
+				      or 
+				      mouth-up) 
+				position)))))
+     .))
+( (S (NP-SBJ-1 Skilled ringers)
+     (VP use
+         (NP their wrists)
+	 (S-CLR (NP-SBJ *-1)
+		(VP to
+		    (VP advance or retard
+			(NP the next swing))))
+	 ,
+	 (SBAR-PRP so that
+		   (S (NP-SBJ one bell)
+		      (VP can
+			  (VP swap
+			      (NP places)
+			      (PP-CLR with
+				      (NP another))
+			      (PP-LOC in
+				      (NP the following change)))))))
+     .))
+( (S (PP-LOC In
+	     (NP (NP a well-known detective-story)
+		 (VP involving
+		     (NP church bells))))
+     ,
+     (NP-SBJ English novelist 
+	     Dorothy L. Sayers)
+     (VP described
+         (NP ringing)
+         (PP-CLR as
+		 (NP (NP a `` passion)
+		     (SBAR -LCB-
+			   (WHNP-1 that) 
+			   -RCB-
+			   (S (NP-SBJ *T*-1)
+			      (VP finds
+				  (NP its satisfaction)
+				  (PP-LOC-CLR in
+					      (NP (NP mathematical completeness)
+						  and
+						  (NP mechanical perfection)))))))))
+     .
+     ''))
+( (S-2 (NP-SBJ-1 Ringers)
+       (PRN ,
+	    (S (NP-SBJ she)
+	       (VP added
+		   (SBAR 0
+			 (S *T*-2))))
+	    ,)
+       (VP are
+	   ``
+	   (VP filled
+	       (NP *-1)
+	       (PP-CLR with
+		       (NP (NP the solemn intoxication)
+			   (SBAR (WHNP-226 that)
+				 (S (NP-SBJ *T*-226)
+				    (VP comes
+					(PP-CLR of
+						(NP (NP intricate ritual)
+						    (VP (ADVP-MNR faultlessly)
+							performed
+							(NP *)))))))))))
+       .
+       ''))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ Ringing)
+		 (VP does
+		     (VP become
+			 (NP-PRD (NP a bit)
+				 (PP of
+				     (NP an obsession))))))
+	, 
+	''
+	(VP admits
+	    (S *T*-1))
+	(NP-SBJ (NP Stephanie Pattenden)
+		,
+		(NP (NP (NP master)
+			(PP of
+			    (NP the band))
+			(PP-LOC at
+				(NP St. Mary Abbot)))
+		    and
+		    (NP (NP one)
+			(PP of
+			    (NP (NP England 's)
+				best female ringers)))))
+	.))
+( (S (NP-SBJ It)
+     (VP is
+         (NP-PRD (NP a passion)
+		 (SBAR (WHNP-227 that)
+		       (S (NP-SBJ *T*-227)
+			  (ADVP-TMP usually)
+			  (VP stays
+			      (PP-LOC-CLR in
+					  (NP the tower))
+			      ,
+			      (ADVP however))))))
+     .))
+( (S (ADVP-TMP (ADVP More often) 
+	       (PP than 
+		   (ADVP not)))
+     ,
+     (NP-SBJ ringers)
+     (VP think
+         (PP-CLR of
+		 (NP the church))
+         (PP-CLR as
+		 (NP (NP something)
+		     (VP stuck
+			 (NP *) 
+			 (PP-CLR on
+				 (NP (NP the bottom)
+				     (PP of
+					 (NP the belfry))))))))
+     .))
+( (S (SBAR-TMP (SBAR (WHADVP-1 When)
+		     (S (NP-SBJ-137 their changes)
+			(VP are
+			    (VP completed
+				(NP *-137)
+				(ADVP-TMP *T*-1)))))
+	       , 
+	       and
+	       (SBAR after
+		     (S (NP-SBJ they)
+			(VP have
+			    (VP worked
+				(PRT up)
+				(NP a sweat))))))
+     ,
+     (NP-SBJ-2 ringers)
+     (ADVP-TMP often)
+     (VP skip
+	 (ADVP-CLR off)
+	 (PP-DIR to
+		 (NP the local pub))
+	 ,
+	 (S-ADV (NP-SBJ *-2)
+		(VP leaving
+		    (S (NP-SBJ worship)
+		       (PP-PRD for
+			       (NP (NP others) 
+				   (PP-LOC below)))))))
+     .))
+( (S (NP-SBJ This)
+     (VP does 
+	 not
+         (VP sit
+             (ADVP-MNR well)
+	     (PP with
+		 (NP some clerics))))
+     .))
+( (S (PP With
+         (S-NOM (NP-SBJ (NP membership)
+			(PP of
+			    (NP (NP the Church)
+				(PP of
+				    (NP England)))))
+		(VP (ADVP-MNR steadily)
+		    dwindling)))
+     ,
+     (NP-SBJ strong-willed vicars)
+     (VP are
+         (VP pressing
+	     (S (NP-SBJ (ADJP (ADJP equally strong-willed)
+			      and
+			      (ADJP often non-religious))
+			ringers)
+		(VP to
+                    (VP attend
+                        (NP services))))))
+     .))
+( (S (S (ADVP-TMP (NP Two years)
+		  ago)
+        ,
+        (NP-SBJ (NP the Rev. Jeremy Hummerstone)
+                ,
+                (NP (NP vicar)
+                    (PP of
+                        (NP (NP Great Torrington)
+                            ,
+                            (NP-LOC Devon))))
+                ,)
+        (VP got
+            (ADJP-PRD (ADJP so
+			    fed
+			    (PRT up)
+			    (PP with
+				(NP (NP ringers)
+				    (SBAR (WHNP-228 who)
+					  (S (NP-SBJ *T*-228)
+					     (VP did 
+						 n't
+						 (VP attend
+						     (NP service))))))))
+		      (SBAR 0
+			    (S (NP-SBJ he)
+			       (VP sacked
+				   (NP the entire band)))))))
+     ;
+     (S (NP-SBJ the ringers)
+        (ADVP-TMP promptly)
+	(VP set
+            (PRT up)
+            (NP a picket line)
+	    (PP in
+		(NP protest))))
+     .))
+( (S ``
+     (S-TPC-1 (NP-SBJ They)
+	      (VP were
+		  (NP-PRD (NP a self-perpetuating club)
+			  (SBAR (WHNP-229 that)
+				(S (NP-SBJ *T*-229)
+				   (VP treated
+				       (NP the tower)
+				       (PP-CLR as
+					       (NP (NP sort)
+						   (PP of
+						       (NP a separate premises))))))))))
+     , 
+     ''
+     (NP-SBJ the Vicar Hummerstone)
+     (VP says
+	 (S *T*-1))
+     .))
+( (S (NP-SBJ (NP An entirely new band)
+             (SBAR *ICH*-2))
+     (VP rings
+	 (NP-TMP today)
+	 (PP-LOC at
+		 (NP Great Torrington))
+	 ,
+	 (SBAR-2 (WHNP-1 (NP several)
+			 (WHPP of
+			       (WHNP whom)))
+		 (S (NP-SBJ *T*-1)
+		    (VP are
+			(NP-PRD (NP members)
+				(PP of
+				    (NP the congregation)))))))
+     .))
+( (S But
+     (NP-SBJ there)
+     (ADVP-TMP still)
+     (VP are 
+	 n't
+         (NP-PRD (NP enough ringers)
+		 (SBAR (WHNP-1 0)
+		       (S (NP-SBJ *T*-1)
+			  (VP to
+			      (VP ring
+				  (NP (NP (QP more than six)) 
+				      (PP of 
+					  (NP the eight 
+					      bells)))))))))
+     .))
+( (S (PP-LOC At
+	     (NP (NP (NP St. Mary 's)
+		     Church)
+		 (PP-LOC in
+			 (NP (NP Ilminster)
+			     ,
+			     (NP-LOC Somerset)))))
+     ,
+     (NP-SBJ-1 the bells)
+     (VP have
+         (VP fallen
+             (S-CLR (NP-SBJ *-1)
+		    (ADJP-PRD silent))
+	     (PP-TMP following
+		     (NP (NP a dust-up)
+			 (PP over
+			     (NP church attendance))))))
+     .))
+( (S (NP-SBJ-1 (NP The vicar)
+	       ,
+	       (NP W.D. Jones)
+	       ,)
+     (VP refuses
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP talk
+                    (PP-CLR about
+			    (NP it)))))
+	 ,
+	 (S-ADV (NP-SBJ *-1)
+		(VP saying
+		    (SBAR 0
+			  (S (NP-SBJ it)
+			     (VP would
+				 ``
+				 (VP reopen
+				     (NP the wound))))))))
+     .
+     ''))
+( (S But
+     (NP-SBJ (NP C.J.B. Marshall)
+             ,
+             (NP (NP vicar)
+                 (PP of
+                     (NP a nearby church)))
+             ,)
+     (VP feels
+         (SBAR 0
+               (S (NP-SBJ the fault)
+                  (VP is
+                      (PP-LOC-PRD in
+				  (NP (NP the stairs)
+				      (PP from
+					  (NP the bell tower))
+				      (SBAR (WHNP-1 that)
+					    (S (NP-SBJ-138 *T*-1)
+					       (VP are
+						   (VP located
+						       (NP *-138)
+						       (PP-LOC-CLR next
+								   (PP to
+								       (NP the altar)))))))))))))
+     .))
+( (S ``
+     (SINV-TPC-2 So
+		 (INTJ crunch
+		       ,
+		       crunch
+		       ,
+		       crunch
+		       ,
+		       bang
+		       ,
+		       bang
+		       ,
+		       bang)
+		 --
+		 (ADVP-DIR-TPC-4 here)
+		 (VP come
+		     (ADVP-DIR *T*-4))
+		 (NP-SBJ-1 the ringers)
+		 (PP-DIR from
+			 (NP above))
+		 ,
+		 (S-ADV (NP-SBJ *-1)
+			(VP making
+			    (NP a 
+				(ADJP very obvious) 
+				exit)
+			    (SBAR-TMP while
+				      (S (NP-SBJ the congregation)
+					 (VP is
+					     (PP-PRD at
+						     (NP prayer))))))))
+     , 
+     ''
+     (NP-SBJ he)
+     (VP says
+	 (SINV *T*-2))
+     .))
+( (S (NP-SBJ Vicar Marshall)
+     (VP admits
+         (PP-CLR to
+		 (NP (NP mixed
+			 feelings)
+		     (PP about
+			 (NP this issue))))
+	 ,
+	 (SBAR-PRP since
+		   (S (NP-SBJ he)
+		      (VP is
+			  (NP-PRD (NP both
+				      (NX (NX a vicar)
+					  and
+					  (NX an active bell-ringer)))
+				  (NP himself))))))
+     .))
+( (S ``
+     (S-TPC-2 (NP-SBJ (NP The sound)
+		      (PP of
+			  (NP bells)))
+	      (VP is
+		  (NP-PRD (NP a net)
+			  (SBAR (WHNP-1 0)
+				(S (NP-SBJ *T*-1)
+				   (VP to
+				       (VP draw
+					   (NP people)
+					   (PP-CLR into
+						   (NP the church)))))))))
+     , 
+     ''
+     (NP-SBJ he)
+     (VP says
+	 (S *T*-2))
+     .))
+( (S ``
+     (NP-SBJ I)
+     (VP live
+	 (PP-CLR in
+		 (NP hopes
+		     (SBAR that
+			   (S (NP-SBJ-139 (NP the ringers)
+					  (NP themselves))
+			      (VP will
+				  (VP be
+				      (VP drawn
+					  (NP *-139)
+					  (PP-CLR into
+						  (NP that fuller life))))))))))
+     .
+     ''))
+( (SINV (S-TPC-2 (NP-SBJ-1 (NP (NP The Central Council)
+			       (PP of
+				   (NP Church Bell Ringers)))
+			   ,
+			   (NP (NP a sort)
+			       (PP of
+				   (NP (NP parliament)
+				       (PP of
+					   (NP ringing groups)))))
+			   ,)
+		 (VP aims
+		     (S (NP-SBJ *-1)
+			(VP to
+			    (VP improve
+				(NP (NP relations)
+				    (PP with
+					(NP vicars))))))))
+	,
+	(VP says
+	    (SBAR 0
+		  (S *T*-2)))
+	(NP-SBJ (NP John C. Baldwin)
+		,
+		(NP president))
+	.))
+( (S (NP-SBJ-1 It)
+     (VP (VP hopes
+	     (S (NP-SBJ *-1)
+		(VP to
+		    (VP speak
+			(PP-CLR to
+				(NP (NP students)
+				    (PP-LOC at
+					    (NP theological colleges))))
+			(PP-CLR about
+				(NP (NP the joys)
+				    (PP of
+					(NP bell ringing))))))))
+	 and
+	 (VP will
+	     (ADVP-TMP shortly)
+	     (VP publish
+		 (NP (NP a booklet)
+		     (PP for
+			 (NP (NP every vicar)
+			     (PP-LOC in
+				     (NP the country))))
+		     (VP entitled 
+			 ,
+			 ``
+			 (NP-TTL (NP The Bells)
+				 (PP-LOC in
+					 (NP Your Care))))))))
+     . 
+     ''))
+( (SINV (VP Says
+	    (S *ICH*-1))
+	(NP-SBJ Mr. Baldwin)
+	,
+	``
+	(S-1 (NP-SBJ We)
+	     (VP recognize
+		 (SBAR that
+		       (S (NP-SBJ we)
+			  (VP may
+			      (ADVP-TMP no longer)
+			      (VP have
+				  (NP (NP as high a priority)
+				      (PP-LOC in
+					      (NP church life and experience)))))))))
+	.
+	''))
+( (S (NP-SBJ Mr. Baldwin)
+     (VP is
+         (ADVP also)
+         (VP attacking
+             (NP (NP the greater problem)
+                 :
+                 (NP (NP lack)
+                     (PP of
+                         (NP ringers))))))
+     .))
+( (S (NP-SBJ One survey)
+     (VP says
+         (SBAR that
+               (S (PP-TPC of
+			  (NP (NP the 100,000 trained bellringers)
+			      (PP-LOC in
+				      (NP England))
+			      (NP-TMP today)))
+                  ,
+                  (NP-SBJ (NP (QP only 40,000))
+                          (PP of
+                              (NP them)))
+                  (ADVP-TMP still)
+		  (VP ring))))
+     .))
+( (S (ADVP Also)
+     ,
+     (NP-SBJ ringers)
+     (VP do 
+	 n't
+         (ADVP-TMP always)
+         (VP live
+             (UCP-LOC-CLR (SBAR-NOM (WHADVP-2 where)
+				    (S (NP-SBJ-1 the bells)
+				       (VP need
+					   (S (NP-SBJ-140 *-1)
+					      (VP to
+						  (VP be
+						      (VP rung
+							  (NP *-140)
+							  (ADVP-LOC *T*-2))))))))
+			  --
+			  (PP like
+			      (PP in
+				  (NP (NP small 
+					  , 
+					  rural
+					  parishes) 
+				      and 
+				      (NP inner-city churches)))))))
+     .))
+( (SINV (S-TPC-1 But
+		 (NP-SBJ (NP the council 's)
+			 program
+			 (S (NP-SBJ *)
+			    (VP to
+				(VP attract and train
+				    (NP ringers)))))
+		 (VP is
+		     (ADJP-PRD (ADVP only partly) 
+			       successful)))
+	,
+	(VP says
+	    (SBAR 0
+		  (S *T*-1)))
+	(NP-SBJ Mr. Baldwin)
+	.))
+( (S ``
+     (S-TPC-1 (ADVP-TMP Right now)
+	      ,
+	      (NP-SBJ we)
+	      (VP 're
+		  (ADJP-PRD lucky)
+		  (SBAR-ADV if
+			    (S (PP-TMP after
+				       (NP five years))
+			       (NP-SBJ we)
+			       (VP keep
+				   (NP one new ringer
+				       (QP out of 10)))))))
+     , 
+     ''
+     (NP-SBJ he)
+     (VP adds
+	 (S *T*-1))
+     .))
+( (S (S (NP-SBJ One bright sign)
+        (VP is
+            (SBAR-PRD that
+		      (S (NP-SBJ (NP a growing number)
+				 (PP of
+				     (NP women)))
+			 (VP have
+			     (VP entered
+				 (NP the 
+				     (ADJP once male-dominated) 
+				     field)))))))
+     ;
+     (S (NP-SBJ (NP (QP more
+			than
+			a third))
+		(PP of
+		    (NP (NP the ringers)
+			(NP-TMP today))))
+        (VP are
+            (NP-PRD women)))
+     .))
+( (S (NP-SBJ-1 They)
+     (VP are 
+	 n't
+         (VP accepted
+	     (NP *-1)
+	     (ADVP-LOC everywhere)
+	     ,
+	     (ADVP however)))
+     .))
+( (S (NP-SBJ (NP (NP The oldest bell-ringing group)
+                 (PP-LOC in
+			 (NP the country)))
+             ,
+             (NP (NP the Ancient Society)
+                 (PP of
+                     (NP College Youths)))
+             ,
+             (VP founded
+		 (NP *)
+		 (PP-TMP in
+			 (NP 1637)))
+	     ,)
+     (VP (VP remains
+	     (ADJP-PRD male-only))
+	 ,
+	 (NP (NP a fact) 
+	     (SBAR (WHNP-230 that)
+		   (S (NP-SBJ *T*-230)
+		      (VP 's
+			  (ADJP-PRD particularly
+				    galling
+				    (PP to
+					(NP women)))
+			  (SBAR-PRP because
+				    (S (NP-SBJ the group)
+				       (VP is
+					   (NP-PRD (NP the sole source)
+						   (PP of
+						       (NP ringers))
+						   (PP for
+						       (NP (NP (NP Britain 's)
+							       (ADJP most prestigious)
+							       churches)
+							   ,
+							   (NP (NP (NP St. Paul 's)
+								   Cathedral)
+							       and
+							       (NP Westminster Abbey)))))))))))))
+     .))
+( (S (S (S-ADV (NP-SBJ This)
+	       (VP being
+		   (NP-PRD Britain)))
+        ,
+        (NP-SBJ no woman)
+	(VP has
+	    (VP filed
+		(NP an equal-opportunity suit))))
+     , 
+     but
+     (S (NP-SBJ (NP the extent)
+                (PP of
+                    (NP the problem)))
+        (VP surfaced
+	    (NP-TMP this summer)
+	    (PP-LOC in
+		    (NP (NP a series)
+			(PP of
+			    (NP (NP letters)
+				(PP to
+				    (NP ``
+					(NP-TTL The Ringing World)
+					, 
+					''
+					(NP (NP a weekly newspaper)
+					    (PP for
+						(NP ringers)))))))))))
+     .))
+( (S (NP-SBJ (NP One writer)
+             ,
+             (VP signing
+                 (NP his letter)
+                 (PP-CLR as
+			 ``
+			 (NP Red-blooded , balanced
+			     male)))
+             , 
+	     '')
+     (VP (VP remarked
+             (PP-CLR on
+		     (NP (NP the `` frequency)
+			 (PP of
+			     (NP (NP women)
+				 (VP fainting
+				     (PP-LOC in
+					     (NP peals))))))))
+         , 
+	 '' 
+	 and
+         (VP suggested
+             (SBAR that
+                   (S (NP-SBJ they)
+		      ``
+		      (VP settle
+                          (ADVP-CLR back)
+                          (PP-DIR into
+				  (NP (NP their traditional role)
+				      (PP of
+					  (S-NOM (NP-SBJ *)
+						 (VP making
+						     (NP tea)
+						     (PP-LOC at
+							     (NP meetings))))))))))))
+     .
+     ''))
+( (S (PP-LOC In
+	     (NP (NP the torrent)
+		 (PP of
+		     (NP replies))
+		 (SBAR (WHNP-1 that)
+		       (S (NP-SBJ *T*-1)
+			  (VP followed)))))
+     ,
+     (NP-SBJ (NP one woman ringer)
+             (PP from
+                 (NP Solihull)))
+     (VP observed
+         (SBAR that
+	       ``
+	       (S (NP-SBJ-3 the average male ringer)
+                  (VP leaves
+                      (NP (NP quite a lot)
+			  (SBAR (WHNP-2 0)
+				(S (NP-SBJ-141 *T*-2)
+				   (VP to
+				       (VP be
+					   (VP desired
+					       (NP *-141)))))))
+		      :
+		      (S-ADV (NP-SBJ *-3)
+			     (ADJP-PRD (ADJP badly dressed)
+				       ,
+				       (ADJP decorated
+					     (PP-CLR with
+						     (NP (NP acne)
+							 and
+							 (NP a large beer-belly))))
+				       ,
+				       (ADJP frequently unwashed)
+				       and
+				       (ADJP unbearably flatulent
+					     (PP-LOC in
+						     (NP peals)))))))))
+     .
+     ''))
+( (S (NP-SBJ-1 Another women)
+     (VP wrote
+	 (PP-CLR from
+		 (NP Sheffield))
+	 (S-PRP (NP-SBJ *-1)
+		(VP to
+		    (VP say
+			(SBAR that
+			      (S (PP-TMP in
+					 (NP (NP her 60 years)
+					     (PP of
+						 (NP ringing))))
+				 , 
+				 ``
+				 (NP-SBJ I)
+				 (VP have
+				     (ADVP-TMP never)
+				     (VP known
+					 (S (NP-SBJ a lady)
+					    (VP to
+						(VP faint
+						    (PP-LOC in
+							    (NP the belfry)))))))))))))
+     .))
+( (S (S (NP-SBJ I)
+        (VP have
+            (VP seen
+                (S (NP-SBJ (QP one or two) 
+			   men)
+                   (VP die)))))
+     ,
+     (S (NP-SBJ *)
+        (VP bless
+            (NP them)))
+     .))

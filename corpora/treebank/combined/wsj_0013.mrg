@@ -1,0 +1,518 @@
+
+( (S 
+    (NP-SBJ-1 (NNP New) (NNP England) (NNP Electric) (NNP System) )
+    (VP (VBD bowed) 
+      (ADVP-DIR-CLR (IN out) )
+      (PP-CLR (IN of) 
+        (NP 
+          (NP (DT the) (NN bidding) )
+          (PP (IN for) 
+            (NP 
+              (NP (NNP Public) (NNP Service) (NNP Co.) )
+              (PP (IN of) 
+                (NP (NNP New) (NNP Hampshire) ))))))
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (VBG saying) 
+          (SBAR (IN that) 
+            (S 
+              (S 
+                (NP-SBJ-2 (DT the) (NNS risks) )
+                (VP (VBD were) 
+                  (ADJP-PRD-3 (RB too) (JJ high) 
+                    (S (-NONE- *RNR*-4) ))))
+              (CC and) 
+              (S 
+                (NP-SBJ=2 (DT the) (JJ potential) (NN payoff) )
+                (ADVP-PRD-LOC=3 (RB too) (RB far) 
+                  (PP-LOC (IN in) 
+                    (NP (DT the) (NN future) ))
+                  (S (-NONE- *RNR*-4) )))
+              (S-4 
+                (NP-SBJ (-NONE- *) )
+                (VP (TO to) 
+                  (VP (VB justify) 
+                    (NP (DT a) (JJR higher) (NN offer) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN move) )
+    (VP (VBZ leaves) 
+      (NP 
+        (NP (NNP United) (NNP Illuminating) (NNP Co.) )
+        (CC and) 
+        (NP (NNP Northeast) (NNP Utilities) ))
+      (PP-CLR (IN as) 
+        (NP 
+          (NP (DT the) (VBG remaining) (JJ outside) (NNS bidders) )
+          (PP (IN for) 
+            (NP 
+              (NP 
+                (NP (NNP PS) )
+                (PP (IN of) 
+                  (NP (NNP New) (NNP Hampshire) )))
+              (, ,) 
+              (SBAR 
+                (WHNP-1 (WDT which) )
+                (S 
+                  (NP-SBJ (-NONE- *T*-1) )
+                  (ADVP (RB also) )
+                  (VP (VBZ has) 
+                    (VP (VBN proposed) 
+                      (NP 
+                        (NP (DT an) (JJ internal) (NN reorganization) (NN plan) )
+                        (PP-LOC (IN in) 
+                          (NP (NN Chapter) (CD 11) (NN bankruptcy) (NNS proceedings) ))
+                        (SBAR 
+                          (WHPP-2 (IN under) 
+                            (WHNP (WDT which) ))
+                          (S 
+                            (NP-SBJ (PRP it) )
+                            (VP (MD would) 
+                              (VP (VB remain) 
+                                (NP-PRD (DT an) (JJ independent) (NN company) )
+                                (PP-LOC (-NONE- *T*-2) )))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-4 
+      (NP (NNP New) (NNP England) (NNP Electric) )
+      (, ,) 
+      (VP (VBN based) 
+        (NP (-NONE- *) )
+        (PP-LOC-CLR (IN in) 
+          (NP 
+            (NP (NNP Westborough) )
+            (, ,) 
+            (NP (NNP Mass.) ))))
+      (, ,) )
+    (VP (VBD had) 
+      (VP (VBN offered) 
+        (NP 
+          (NP 
+            (QP ($ $) (CD 2) (CD billion) )
+            (-NONE- *U*) )
+          (PP (-NONE- *ICH*-1) ))
+        (S-PRP 
+          (NP-SBJ (-NONE- *-4) )
+          (VP (TO to) 
+            (VP (VB acquire) 
+              (NP 
+                (NP (NNP PS) )
+                (PP (IN of) 
+                  (NP (NNP New) (NNP Hampshire) ))))))
+        (, ,) 
+        (PP-1 
+          (ADVP (RB well) )
+          (IN below) 
+          (NP 
+            (NP 
+              (NP (DT the) 
+                (ADJP 
+                  (QP ($ $) (CD 2.29) (CD billion) )
+                  (-NONE- *U*) )
+                (NN value) )
+              (SBAR 
+                (WHNP-2 (-NONE- 0) )
+                (S 
+                  (NP-SBJ (NNP United) (NNP Illuminating) )
+                  (VP (NNS places) 
+                    (NP (-NONE- *T*-2) )
+                    (PP-DIR (IN on) 
+                      (NP (PRP$ its) (NN bid) ))))))
+            (CC and) 
+            (NP 
+              (NP (DT the) 
+                (QP ($ $) (CD 2.25) (CD billion) )
+                (-NONE- *U*) )
+              (SBAR 
+                (WHNP-3 (-NONE- 0) )
+                (S 
+                  (NP-SBJ (NNP Northeast) )
+                  (VP (VBZ says) 
+                    (SBAR (-NONE- 0) 
+                      (S 
+                        (NP-SBJ (PRP$ its) (NN bid) )
+                        (VP (VBZ is) 
+                          (ADJP-PRD (IN worth) 
+                            (NP (-NONE- *T*-3) )))))))))))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ-13 (NNP United) (NNP Illuminating) )
+      (VP (VBZ is) 
+        (VP (VBN based) 
+          (NP (-NONE- *-13) )
+          (PP-LOC (IN in) 
+            (NP 
+              (NP (NNP New) (NNP Haven) )
+              (, ,) 
+              (NP (NNP Conn.) )
+              (, ,) )))))
+    (CC and) 
+    (S 
+      (NP-SBJ-14 (NNP Northeast) )
+      (VP (VBZ is) 
+        (VP (VBN based) 
+          (NP (-NONE- *-14) )
+          (PP-LOC (IN in) 
+            (NP 
+              (NP (NNP Hartford) )
+              (, ,) 
+              (NP (NNP Conn) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP 
+        (NP (NNP PS) )
+        (PP (IN of) 
+          (NP (NNP New) (NNP Hampshire) )))
+      (, ,) 
+      (NP-LOC 
+        (NP (NNP Manchester) )
+        (, ,) 
+        (NP (NNP N.H.) ))
+      (, ,) )
+    (VP (VBZ values) 
+      (NP (PRP$ its) (JJ internal) (NN reorganization) (NN plan) )
+      (PP-CLR (IN at) 
+        (NP 
+          (QP (IN about) ($ $) (CD 2.2) (CD billion) )
+          (-NONE- *U*) )))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP John) (NNP Rowe) )
+      (, ,) 
+      (NP 
+        (NP 
+          (NP (NN president) )
+          (PP (-NONE- *RNR*-1) ))
+        (CC and) 
+        (NP 
+          (NP (JJ chief) (JJ executive) (NN officer) )
+          (PP (-NONE- *RNR*-1) ))
+        (PP-1 (IN of) 
+          (NP (NNP New) (NNP England) (NNP Electric) )))
+      (, ,) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP 
+              (NP (DT the) (NN company) (POS 's) )
+              (NN return) )
+            (PP (IN on) 
+              (NP (NN equity) )))
+          (VP (MD could) 
+            (VP (VB suffer) 
+              (SBAR-ADV (IN if) 
+                (S 
+                  (S 
+                    (NP-SBJ (PRP it) )
+                    (VP (VBD made) 
+                      (NP (DT a) (JJR higher) (NN bid) )))
+                  (CC and) 
+                  (S 
+                    (NP-SBJ 
+                      (NP (PRP$ its) (NNS forecasts) )
+                      (VP (VBN related) 
+                        (NP (-NONE- *) )
+                        (PP-CLR (TO to) 
+                          (NP 
+                            (NP (NNP PS) )
+                            (PP (IN of) 
+                              (NP (NNP New) (NNP Hampshire) )))))
+                      (PRN (: --) 
+                        (PP (JJ such) (IN as) 
+                          (NP 
+                            (NP 
+                              (NP (NN growth) )
+                              (PP-LOC (IN in) 
+                                (NP (NN electricity) (NN demand) )))
+                            (CC and) 
+                            (NP (VBN improved) (NN operating) (NNS efficiencies) )))
+                        (: --) ))
+                    (VP (VBD did) (RB n't) 
+                      (VP (VB come) 
+                        (ADJP-PRD (JJ true) )))))))))))
+    (. .) ))
+( (S (`` ``) 
+    (SBAR-TMP 
+      (WHADVP-1 (WRB When) )
+      (S 
+        (NP-SBJ-2 (PRP we) )
+        (VP (VBD evaluated) 
+          (S 
+            (NP-SBJ (-NONE- *-2) )
+            (VP (VBG raising) 
+              (NP (PRP$ our) (NN bid) )))
+          (ADVP-TMP (-NONE- *T*-1) ))))
+    (, ,) 
+    (S 
+      (NP-SBJ (DT the) (NNS risks) )
+      (VP (VBD seemed) 
+        (ADJP-PRD (JJ substantial) 
+          (CC and)
+          (JJ persistent) )
+        (PP-TMP (IN over) 
+          (NP (DT the) (JJ next) (CD five) (NNS years) ))))
+    (, ,) 
+    (CC and)
+    (S 
+      (NP-SBJ (DT the) (NNS rewards) )
+      (VP (VBD seemed) 
+        (ADVP-LOC-PRD 
+          (NP (DT a) (JJ long) (NN way) )
+          (IN out) )))
+    (. .) ))
+( (S 
+    (S-TPC-2 
+      (NP-SBJ (WDT That) )
+      (VP (VBD got) 
+        (ADJP-PRD (RB hard) 
+          (SBAR 
+            (WHNP-1 (-NONE- 0) )
+            (S 
+              (NP-SBJ (-NONE- *) )
+              (VP (TO to) 
+                (VP (VB take) 
+                  (NP (-NONE- *T*-1) ))))))))
+    (, ,) ('' '') 
+    (NP-SBJ (PRP he) )
+    (VP (VBD added) 
+      (S (-NONE- *T*-2) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Mr.) (NNP Rowe) )
+    (ADVP (RB also) )
+    (VP (VBD noted) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ (JJ political) (NNS concerns) )
+          (ADVP (RB also) )
+          (VP (VBN worried) 
+            (NP (NNP New) (NNP England) (NNP Electric) )))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (ADVP (DT No) (NN matter) 
+        (SBAR-NOM 
+          (WHNP-16 (WP who) )
+          (S 
+            (NP-SBJ (-NONE- *T*-16) )
+            (VP (VBZ owns) 
+              (NP 
+                (NP (NNP PS) )
+                (PP (IN of) 
+                  (NP (NNP New) (NNP Hampshire) )))))))
+      (, ,) 
+      (SBAR-TMP (IN after) 
+        (S 
+          (NP-SBJ (PRP it) )
+          (VP (VBZ emerges) 
+            (PP-DIR (IN from) 
+              (NP (NN bankruptcy) (NNS proceedings) )))))
+      (NP-SBJ (PRP$ its) (NNS rates) )
+      (VP (MD will) 
+        (VP (VB be) 
+          (PP-LOC-PRD (IN among) 
+            (NP 
+              (NP (DT the) (JJS highest) )
+              (PP-LOC (IN in) 
+                (NP (DT the) (NN nation) )))))))
+    (, ,) 
+    (NP-SBJ (PRP he) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S (`` ``) 
+    (NP-SBJ (DT That) )
+    (VP (VBZ attracts) 
+      (NP (NN attention) ))
+    (: ...) ))
+( (S 
+    (S-1 
+      (NP-SBJ (PRP it) )
+      (VP (VBD was) 
+        (NP-PRD 
+          (NP (RB just) (DT another) (CD one) )
+          (PP (IN of) 
+            (NP 
+              (NP (DT the) (NN risk) (NNS factors) )
+              ('' '') 
+              (SBAR 
+                (WHNP-17 (WDT that) )
+                (S 
+                  (NP-SBJ (-NONE- *T*-17) )
+                  (VP (VBD led) 
+                    (PP-DIR-CLR (TO to) 
+                      (NP 
+                        (NP (DT the) (NN company) (POS 's) )
+                        (NN decision) 
+                        (S 
+                          (NP-SBJ (-NONE- *) )
+                          (VP (TO to) 
+                            (VP (VB withdraw) 
+                              (PP-DIR-CLR (IN from) 
+                                (NP (DT the) (NN bidding) )))))))))))))))
+    (, ,) 
+    (NP-SBJ (PRP he) )
+    (VP (VBD added) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Wilbur) (NNP Ross) (NNP Jr.) )
+      (PP (IN of) 
+        (NP 
+          (NP (NNP Rothschild) (NNP Inc.) )
+          (, ,) 
+          (NP 
+            (NP (DT the) (JJ financial) (NN adviser) )
+            (PP (TO to) 
+              (NP 
+                (NP (DT the) (JJ troubled) (NN company) (POS 's) )
+                (NN equity) (NNS holders) ))))))
+    (, ,) 
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (DT the) (NN withdrawal) )
+            (PP (IN of) 
+              (NP (NNP New) (NNP England) (NNP Electric) )))
+          (VP (MD might) 
+            (VP (VB speed) 
+              (PRT (RP up) )
+              (NP (DT the) (NN reorganization) (NN process) ))))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (NP-SBJ (DT The) (NN fact) 
+        (SBAR (IN that) 
+          (S 
+            (NP-SBJ (NNP New) (NNP England) )
+            (VP (VBD proposed) 
+              (NP 
+                (NP (JJR lower) (NN rate) (NNS increases) )
+                (PRN (: --) 
+                  (NP 
+                    (NP (CD 4.8) (NN %) (-NONE- *U*) )
+                    (PP-TMP (IN over) 
+                      (NP (CD seven) (NNS years) )))
+                  (PP-DIR (IN against) 
+                    (NP 
+                      (NP 
+                        (ADJP 
+                          (QP (IN around) (CD 5.5) )
+                          (NN %) )
+                        (NNS boosts) )
+                      (VP (VBN proposed) 
+                        (NP (-NONE- *) )
+                        (PP (IN by) 
+                          (NP-LGS (DT the) (JJ other) (CD two) (JJ outside) (NNS bidders) )))))
+                  (: --) ))))))
+      (VP (IN complicated) 
+        (NP 
+          (NP (NNS negotiations) )
+          (PP (IN with) 
+            (NP (NN state) (NNS officials) )))))
+    (, ,) 
+    (NP-SBJ (NNP Mr.) (NNP Ross) )
+    (VP (VBD asserted) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S (`` ``) 
+    (S-TPC-1 
+      (ADVP-TMP (RB Now) )
+      (NP-SBJ (DT the) (NN field) )
+      (VP (VBZ is) 
+        (ADJP-PRD (RBR less) (VBN cluttered) )))
+    (, ,) ('' '') 
+    (NP-SBJ (PRP he) )
+    (VP (VBD added) 
+      (S (-NONE- *T*-1) ))
+    (. .) ))
+( (S 
+    (ADVP (RB Separately) )
+    (, ,) 
+    (NP-SBJ (DT the) (NNP Federal) (NNP Energy) (NNP Regulatory) (NNP Commission) )
+    (VP (VBD turned) 
+      (PRT (RP down) )
+      (PP-TMP (IN for) 
+        (NP (RB now) ))
+      (NP 
+        (NP (DT a) (NN request) )
+        (PP (IN by) 
+          (NP (NNP Northeast) ))
+        (VP (VBG seeking) 
+          (NP 
+            (NP (NN approval) )
+            (PP (IN of) 
+              (NP 
+                (NP (PRP$ its) (JJ possible) (NN purchase) )
+                (PP (IN of) 
+                  (NP 
+                    (NP (NNP PS) )
+                    (PP (IN of) 
+                      (NP (NNP New) (NNP Hampshire) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Northeast) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP it) )
+          (VP 
+            (VP (MD would) 
+              (VP (VB refile) 
+                (NP (PRP$ its) (NN request) )))
+            (CC and) 
+            (VP 
+              (ADVP-TMP (RB still) )
+              (VBZ hopes) 
+              (PP-CLR (IN for) 
+                (NP 
+                  (NP (DT an) (VBN expedited) (NN review) )
+                  (PP (IN by) 
+                    (NP (DT the) (NNP FERC) )))))
+            (SBAR-PRP (IN so) (IN that) 
+              (S 
+                (NP-SBJ (PRP it) )
+                (VP (MD could) 
+                  (VP (VB complete) 
+                    (NP (DT the) (NN purchase) )
+                    (PP-TMP (IN by) 
+                      (NP (JJ next) (NN summer) ))
+                    (SBAR-ADV (IN if) 
+                      (S 
+                        (NP-SBJ (PRP$ its) (NN bid) )
+                        (VP (VBZ is) 
+                          (NP-PRD 
+                            (NP (DT the) (NN one) )
+                            (VP (VBD approved) 
+                              (NP (-NONE- *) )
+                              (PP (IN by) 
+                                (NP-LGS (DT the) (NN bankruptcy) (NN court) )))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NAC (NNP PS) 
+        (PP (IN of) 
+          (NP (NNP New) (NNP Hampshire) )))
+      (NNS shares) )
+    (VP (VBD closed) 
+      (NP-TMP (NN yesterday) )
+      (PP-CLR (IN at) 
+        (NP 
+          (NP ($ $) (CD 3.75) (-NONE- *U*) )
+          (, ,) 
+          (PP-DIR (IN off) 
+            (NP (CD 25) (NNS cents) ))
+          (, ,) ))
+      (PP-LOC (IN in) 
+        (NP (NNP New) (NNP York) (NNP Stock) (NNP Exchange) (JJ composite) (NN trading) )))
+    (. .) ))

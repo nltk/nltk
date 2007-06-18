@@ -1,0 +1,993 @@
+
+
+( (S (PP-TMP For
+	     (NP 10 years))
+     ,
+     (NP-SBJ Genie Driskill)
+     (VP went
+         (PP-DIR to
+		 (NP her neighborhood bank))
+	 (SBAR-PRP because
+		   (S (NP-SBJ it)
+		      (VP was
+			  (ADJP-PRD convenient)))))
+     .))
+( (S (S-ADV (NP-SBJ *-4)
+	    (NP-PRD (NP A high-balance customer)
+		    (SBAR (WHNP-1 that)
+			  (S (NP-SBJ banks)
+			     (VP pine
+				 (PP-CLR for
+					 (NP *T*-1)))))))
+     ,
+     (NP-SBJ-4 she)
+     (VP did 
+	 n't
+         (VP give
+             (NP much thought)
+             (PP-DTV (PP to
+			 (NP (NP the rates)
+			     (SBAR (WHNP-2 0)
+				   (S (NP-SBJ she)
+				      (VP was
+					  (VP receiving
+					      (NP *T*-2)))))))
+		     , 
+		     nor
+		     (PP to
+			 (NP (NP the fees)
+			     (SBAR (WHNP-3 0)
+				   (S (NP-SBJ she)
+				      (VP was
+					  (VP paying
+					      (NP *T*-3))))))))))
+     .))
+( (S But
+     (PP-TMP in
+	     (NP August))
+     ,
+     (NP-SBJ First Atlanta National Bank)
+     (VP introduced
+         (NP (NP its
+                 (NP Crown Account))
+             ,
+             (NP (NP a package)
+                 (VP designed
+		     (NP-1 *)
+		     (S-CLR (NP-SBJ *-1)
+			    (VP to
+				(VP lure
+				    (NP (NP customers)
+					(PP such as
+					    (NP Ms. Driskill))))))))))
+     .))
+( (S (PP-LOC Among
+	     (NP other things))
+     ,
+     (NP-SBJ it)
+     (VP included
+         (NP (NP (NP (NP checking)
+		     ,
+		     (NP safe deposit box)
+		     and
+		     (NP credit card))
+		 (PRN --
+		      (NP (NP all)
+			  (PP for
+			      (ADJP free)))
+		      --))
+	     plus
+	     (NP (NP a good deal)
+		 (PP on
+		     (NP installment loans)))))
+     .))
+( (S (NP-SBJ (NP All)
+             (SBAR (WHNP-1 0)
+                   (S (NP-SBJ-2 she)
+                      (VP had
+                          (S (NP-SBJ *-2)
+                             (VP to
+                                 (VP do
+                                     (NP *T*-1))))))))
+     (VP was
+         (VP (VP put
+                 (NP $ 15,000 *U*)
+                 (PP-PUT in
+			 (NP (NP a certificate)
+			     (PP of
+				 (NP deposit)))))
+             , 
+	     or
+             (VP qualify
+                 (PP-CLR for
+			 (NP (NP a
+				 (ADJP $ 10,000 *U*)
+				 personal line)
+			     (PP of
+				 (NP credit)))))))
+     .))
+( (S ``
+     (S-TPC-1 (NP-SBJ I)
+	      (VP deserve
+		  (NP something)
+		  (PP-PRP for
+			  (NP my loyalty))))
+     ,
+     ''
+     (NP-SBJ she)
+     (VP says
+	 (S *T*-1))
+     .))
+( (S (NP-SBJ She)
+     (VP took
+         (NP her business)
+         (PP-DIR to
+		 (NP First Atlanta)))
+     .))
+( (S (ADVP-MNR So)
+     (NP-SBJ it)
+     (VP goes
+	 (PP-LOC in
+		 (NP (NP the competitive world)
+		     (PP of
+			 (NP consumer banking))))
+	 (NP-TMP these days))
+     .))
+( (S (PP-TMP For
+	     (NP nearly a decade))
+     ,
+     (NP-SBJ banks)
+     (VP have
+         (VP competed
+             (PP-CLR for
+		     (NP customers))
+             (PP-MNR (ADVP primarily) 
+		     with
+		     (NP (NP the interest rates)
+			 (SBAR (WHNP-1 0)
+			       (S (NP-SBJ they)
+				  (VP (VP pay
+					  (NP *T*-1)
+					  (PP-CLR on
+						  (NP their deposits)))
+				      and
+				      (VP charge
+					  (NP *T*-1)
+					  (PP-CLR on
+						  (NP their loans))))))))))
+     .))
+( (S (NP-SBJ-1 The competitive rates)
+     (VP were
+         (ADVP generally)
+         (VP offset
+	     (NP *-1)
+             (PP by
+                 (NP-LGS (NP hefty fees)
+			 (PP on
+			     (NP various services))))))
+     .))
+( (S But
+     (NP-SBJ many banks)
+     (VP are
+         (VP turning
+             (ADVP-DIR away)
+             (PP-DIR from
+		     (NP strict price competition))))
+     .))
+( (S (ADVP Instead)
+     ,
+     (NP-SBJ-1 they)
+     (VP are
+         (VP trying
+             (S (NP-SBJ-2 *-1)
+                (VP to
+                    (VP build
+                        (NP customer loyalty)
+                        (PP-MNR by
+				(S-NOM (NP-SBJ *-2)
+				       (VP (VP bundling
+					       (NP their services)
+					       (PP-CLR into
+						       (NP packages)))
+					   and
+					   (VP targeting
+					       (NP them)
+					       (PP-CLR to
+						       (NP (NP small segments)
+							   (PP of
+							       (NP the population)))))))))))))
+     .))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ You)
+		 (VP 're
+		     (ADJP-PRD dead
+			       (PP-LOC in 
+				       (NP the water)))
+		     (SBAR-ADV if
+			       (S (NP-SBJ you)
+				  (VP are 
+				      n't
+				      (VP segmenting
+					  (NP the market)))))))
+	,
+	''
+	(VP says
+	    (S *T*-1))
+	(NP-SBJ (NP Anne Moore)
+		,
+		(NP (NP president)
+		    (PP of
+			(NP (NP Synergistics Research Corp.)
+			    ,
+			    (NP (NP a bank consulting firm)
+				(PP-LOC in
+					(NP Atlanta)))))))
+	.))
+( (S (NP-SBJ (NP NCNB Corp.)
+             (PP of
+                 (NP (NP Charlotte)
+                     ,
+                     (NP-LOC N.C.)
+                     ,)))
+     (ADVP-TMP recently)
+     (VP introduced
+         (NP (NP its Financial Connections Program)
+             (VP aimed
+		 (NP *) 
+                 (PP-CLR at
+			 (NP (NP young adults)
+			     (VP (ADVP just)
+				 starting
+				 (NP careers)))))))
+     .))
+( (S (NP-SBJ The program)
+     (VP (CONJP not only)
+         (VP offers
+             (NP (NP a pre-approved car loan)
+                 (NP (QP up to $ 18,000) 
+		     *U*)))
+         , 
+	 but
+         (VP throws
+             (PRT in)
+	     (NP (NP a special cash-flow statement)
+		 (SBAR-PRP (WHNP-1 0)
+			   (S (NP-SBJ *T*-1) 
+			      (VP to
+				  (VP help
+				      (PP-CLR in
+					      (S-NOM (NP-SBJ *)
+						     (VP saving
+							 (NP money)))))))))))
+     .))
+( (S (PP-TMP In
+	     (NP September))
+     ,
+     (NP-SBJ (NP Union Planters Corp.)
+             (PP of
+                 (NP (NP Memphis)
+                     ,
+                     (NP-LOC Tenn.)
+                     ,)))
+     (VP launched
+         (NP (NP The Edge account)
+             ,
+             (NP (NP a package)
+                 (VP designed
+                     (NP *)
+                     (PP-CLR for
+			     (NP the 
+				 `` thirtysomething '' 
+				 crowd)))
+                 (PP with
+                     (NP (NP services)
+                         (SBAR (WHNP-197 that)
+                               (S (NP-SBJ *T*-197)
+                                  (VP include
+                                      (NP (NP (NP a 
+						  (NX (NX credit card) 
+						      and
+						      (NX (NX line)
+							  (PP of
+							      (NP credit)))))
+                                              (PP with
+                                                  (NP no annual fees)))
+                                          , 
+					  and
+                                          (NP (NP a full percentage point)
+					      (ADVP off)
+                                              (PP on
+                                                  (NP installment loans))))))))))))
+     .))
+( (FRAG (NP The theory)
+	:
+	(S (S (NP-SBJ (NP Such individuals)
+		      ,
+		      (NP (NP many)
+			  (PP with
+			      (NP young children)))
+		      ,)
+	      (VP are
+		  (PP-LOC-PRD in
+			      (NP their prime borrowing years))))
+	   -- 
+	   and 
+	   ,
+	   (S (S-ADV (NP-SBJ *-1)
+		     (VP having
+			 (VP borrowed
+			     (PP-CLR from
+				     (NP the bank)))))
+	      ,
+	      (NP-SBJ-1 they)
+	      (VP may
+		  (VP continue
+		      (S (NP-SBJ *-1)
+			 (VP to
+			     (VP use
+				 (NP it)
+				 (PP-PRP for
+					 (NP other services))
+				 (PP-TMP in
+					 (NP later years)))))))))
+	.))
+( (S (PP-TMP For
+	     (NP some time))
+     ,
+     (NP-SBJ banks)
+     (VP have
+	 (VP been
+	     (VP aiming
+		 (NP packages)
+		 (PP-CLR at
+			 (NP (NP the elderly)
+			     ,
+			     (NP (NP the demographic segment)
+				 (PP with
+				     (NP the highest savings))))))))
+     .))
+( (S (NP-SBJ-1 Those efforts)
+     (VP are
+	 (VP being
+	     (VP stepped
+		 (PRT up)
+		 (NP *-1))))
+     .))
+( (S (NP-SBJ (NP Judie MacDonald)
+             ,
+             (NP (NP vice president)
+		 (PP of
+		     (NP retail sales))
+		 (PP-LOC at
+			 (NP (NP Barnett Banks Inc.)
+			     (PP of
+				 (NP (NP Jacksonville)
+				     ,
+				     (NP-LOC Fla.)
+				     ,))))))
+     (VP says
+         (SBAR 0
+               (S (NP-SBJ-1 the company)
+                  (ADVP-TMP now)
+                  (VP targets
+                      (NP (NP sub-segments)
+                          (PP-LOC within
+				  (NP the market)))
+                      (PP-MNR by
+			      (S-NOM (NP-SBJ *-1)
+				     (VP tailoring
+					 (NP its 
+					     popular
+					     Seniors Partners Program)
+					 (PP-CLR to
+						 (NP various life styles)))))))))
+     .))
+( (S ``
+     (S-TPC-1 (NP-SBJ (NP Varying age) 
+		      , 
+		      (NP geography)
+		      and 
+		      (NP life-style differences))
+	      (VP create
+		  (NP numerous sub-markets)))
+     ,
+     ''
+     (NP-SBJ Ms. MacDonald)
+     (VP says
+	 (S *T*-1))
+     .))
+( (S (NP-SBJ She)
+     (VP says
+         (SBAR 0
+               (S (NP-SBJ-2 individual Barnett branches)
+                  (VP can
+                      (VP add
+                          (NP (NP different benefits)
+			      (PP *ICH*-1))
+                          (PP-CLR to
+				  (NP their Seniors Partners package))
+                          --
+			  (PP-1 such as
+				(NP (NP athletic activities) 
+				    or 
+				    (NP travel clubs)))
+			  --
+			  (S-PRP (NP-SBJ *-2)
+				 (VP to
+				     (VP appeal
+					 (PP-CLR to
+						 (NP local market interests))))))))))
+     .))
+( (S ``
+     (S-TPC-1 (NP-SBJ (NP An active 55-year-old)
+		      (PP-LOC in
+			      (NP Boca Raton)))
+	      (VP may
+		  (VP care 
+		      (ADVP more)
+		      (PP-CLR about
+			      (NP Senior Olympic games))
+		      ,
+		      (SBAR-ADV while
+				(S (NP-SBJ (NP a 75-year-old)
+					   (PP-LOC in
+						   (NP Panama City)))
+				   (VP may
+				       (VP care 
+					   (ADVP more)
+					   (PP-CLR about
+						   (NP (NP a seminar)
+						       (PP on
+							   (NP health)))))))))))
+     ,
+     ''
+     (NP-SBJ she)
+     (VP says
+	 (S *T*-1))
+     .))
+( (S (NP-SBJ Banks)
+     (VP have
+         (VP tried
+             (NP packaging)
+	     (ADVP-TMP before)))
+     .))
+( (S (PP-TMP In
+	     (NP 1973))
+     ,
+     (NP-SBJ (NP Wells Fargo & Co.)
+             (PP of
+                 (NP San Francisco)))
+     (VP launched
+         (NP (NP the Gold Account)
+             ,
+             (SBAR (WHNP-198 which)
+                   (S (NP-SBJ *T*-198)
+                      (VP included
+                          (NP (NP free checking) 
+			      , 
+			      (NP a credit card) 
+			      , 
+			      (NP safe-deposit box) 
+			      and 
+			      (NP travelers checks))
+			  (PP for
+			      (NP a
+				  (ADJP $ 3 *U*)
+				  monthly fee)))))))
+     .))
+( (S (S (NP-SBJ The concept)
+        (VP begot
+            (NP (NP a slew)
+                (PP of
+                    (NP copycats)))))
+     , 
+     but
+     (S (NP-SBJ-1 the banks)
+        (VP stopped
+            (S (NP-SBJ *-1)
+               (VP promoting
+                   (NP the packages)))))
+     .))
+( (NP (NP One big reason)
+      :
+      (NP thin margins)
+      .))
+( (S (NP-SBJ-1 (NP Many banks)
+	       ,
+	       (ADVP particularly)
+	       (NP smaller ones)
+	       ,)
+     (VP (VP were
+	     (ADJP-PRD slow
+		       (S (NP-SBJ *-1)
+			  (VP to
+			      (VP computerize)))))
+	 and
+	 (VP could 
+	     n't
+	     (VP target
+		 (NP (NP market niches)
+		     (SBAR (WHNP-199 that)
+			   (S (NP-SBJ *T*-199)
+			      (VP would
+				  (VP have
+				      (VP made
+					  (S (NP-SBJ the programs)
+					     (ADJP-PRD more profitable)))))))))))
+     .))
+( (S (SBAR-TMP As
+	       (S (NP-SBJ-122 (NP banks ')
+			      earnings)
+		  (VP were
+		      (VP squeezed
+			  (NP *-122)
+			  (PP-TMP in
+				  (NP the mid-1970s))))))
+     ,
+     (NP-SBJ the emphasis)
+     (VP switched
+         (PP-CLR to
+		 (S-NOM (NP-SBJ *)
+			(VP finding
+			    (NP (NP ways)
+				(SBAR (WHADVP-1 0)
+				      (S (NP-SBJ *)
+					 (VP to
+					     (VP cut
+						 (NP costs)
+						 (ADVP-MNR *T*-1))))))))))
+     .))
+( (S But
+     (ADVP-TMP now)
+     (NP-SBJ computers)
+     (VP are
+         (VP enabling
+	     (S (NP-SBJ more banks)
+		(VP to
+                    (VP analyze
+                        (NP their customers)
+                        (PP-MNR by
+				(NP age 
+				    , 
+				    income 
+				    and 
+				    geography)))))))
+     .))
+( (S (NP-SBJ-1 They)
+     (VP are
+         (ADJP-PRD better able
+		   (S (NP-SBJ *-1)
+		      (VP to
+			  (VP get
+			      (PP-CLR to
+				      (NP those segments))
+			      (PP-LOC in
+				      (NP (NP the wake)
+					  (PP of
+					      (NP (NP the deregulation)
+						  (SBAR (WHNP-200 that)
+							(S (NP-SBJ *T*-200)
+							   (VP began
+							       (PP-TMP in
+								       (NP the late 1970s))))))))))))))
+     .))
+( (S (NP-SBJ Deregulation)
+     (VP has
+         (ADVP effectively)
+         (VP (VP removed
+                 (NP (NP all restrictions)
+                     (PP on
+                         (SBAR-NOM (WHNP-201 what)
+				   (S (NP-SBJ banks)
+				      (VP can
+					  (VP pay
+					      (NP *T*-201)
+					      (PP-CLR for
+						      (NP deposits)))))))))
+             ,
+             (CONJP as well as)
+             (VP opened
+		 (PRT up)
+		 (NP the field)
+		 (PP for
+                     (NP (NP new products)
+			 (PP such as
+			     (NP high-rate CDs)))))))
+     .))
+( (S (SBAR-LOC (WHADVP-2 Where)
+	       (S (NP-SBJ a bank)
+		  (ADVP-TMP once)
+		  (VP offered
+		      (NP a standard passbook savings account)
+		      (ADVP-LOC *T*-2)))) 
+     ,
+     (NP-SBJ-1 it)
+     (VP began
+	 (S (NP-SBJ *-1)
+	    (VP (VP offering
+		    (NP (NP money-market accounts)
+			,
+			(NP (NP certificates)
+			    (PP of
+				(NP deposit)))
+			and
+			(NP interest-bearing checking)))
+		, 
+		and
+		(VP staggering
+		    (NP rates)
+		    (PP based
+			(PP on
+			    (NP (NP the size)
+				(PP of
+				    (NP deposits)))))))))
+     .))
+( (S (NP-SBJ The competition)
+     (VP has
+	 (VP grown
+	     (ADJP-PRD more intense)
+	     (SBAR-TMP as
+		       (S (NP-SBJ (NP bigger banks)
+				  (PP such as
+				      (NP (NP (NP Norwest Corp.)
+					      (PP of
+						  (NP Minneapolis)))
+					  and
+					  (NP (NP Chemical Banking Corp.)
+					      (PP of
+						  (NP New York))))))
+			  (VP extend
+			      (NP their market-share battles)
+			      (PP-CLR into
+				      (NP (NP small towns)
+					  (PP-LOC across
+						  (NP the nation)))))))))
+     .))
+( (SINV ``
+	(S-TPC-1 (NP-TMP Today)
+		 ,
+		 (NP-SBJ a banker)
+		 (VP is
+		     (VP worrying
+			 (PP-CLR about
+				 (NP (NP (ADJP local , regional and money-center)
+					 -LCB-
+					 banks
+					 -RCB-)
+				     , 
+				     (CONJP as well as)
+				     (NP (NP thrifts) 
+					 and 
+					 (NP credit unions)))))))
+	,
+	''
+	(VP says
+	    (S *T*-1))
+	(NP-SBJ (NP Ms. Moore)
+		(PP-LOC at
+			(NP Synergistics Research)))
+	.))
+( (S `` 
+     So
+     (NP-SBJ-1 (NP people)
+	       (SBAR (WHNP-202 who)
+		     (S (NP-SBJ *T*-202)
+			(VP were 
+			    n't
+			    (ADVP even)
+			    (VP thinking
+				(PP-CLR about
+					(NP targeting))
+				(ADVP-TMP (NP 10 years)
+					  ago))))))
+     (VP are
+	 (VP scrambling
+	     (S (NP-SBJ *-1)
+		(VP to
+		    (VP define
+			(NP their customer base))))))
+     .
+     ''))
+( (S (NP-SBJ The competition)
+     (VP has
+         (VP cultivated
+             (NP a
+                 (ADJP much savvier)
+                 consumer)))
+     .))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ The average household)
+		 (VP will
+		     (VP spread
+			 (NP 19 accounts)
+			 (PP-DIR over
+				 (NP a dozen financial institutions)))))
+	,
+	''
+	(VP says
+	    (S *T*-1))
+	(NP-SBJ (NP Michael P. Sullivan)
+		,
+		(SBAR (WHNP-203 who)
+		      (S (NP-SBJ *T*-203)
+			 (VP runs
+			     (NP his own bank consulting firm)
+			     (PP-LOC in
+				     (NP (NP Charlotte)
+					 ,
+					 (NP-LOC N.C)))))))
+	.))
+( (S ``
+     (NP-SBJ This much fragmentation)
+     (VP makes
+         (S (S-NOM-SBJ (NP-SBJ *)
+		       (VP attracting
+			   and
+			   keeping
+			   (NP (NP today 's)
+			       rate-sensitive customers)))
+	    (ADJP-PRD costly)))
+     .
+     ''))
+( (S (NP-SBJ-1 Packages)
+     (VP encourage
+         (NP loyalty)
+	 (PP-MNR by
+		 (S-NOM (NP-SBJ *-1)
+			(VP rewarding
+			    (NP customers)
+			    (PP-CLR for
+				    (S-NOM (NP-SBJ *)
+					   (VP doing
+					       (NP (NP the bulk)
+						   (PP of
+						       (NP their banking)))
+					       (PP-LOC in
+						       (NP one place)))))))))
+     .))
+( (S (PP For
+         (NP their troubles))
+     ,
+     (NP-SBJ the banks)
+     (VP get
+         (NP (NP a larger captive audience)
+             (SBAR (WHNP-204 that)
+                   (S (NP-SBJ-1 *T*-204)
+                      (VP is
+                          (ADJP-PRD less likely
+				    (S (NP-SBJ *-1)
+				       (VP to
+					   (VP move
+					       (PP-TMP at
+						       (NP (NP the drop)
+							   (PP of
+							       (NP a rate)))))))))))))
+     .))
+( (S-2 (NP-ADV (NP The more accounts) 
+	       (SBAR (WHNP-1 0)
+		     (S (NP-SBJ customers)
+			(VP have
+			    (NP *T*-1)))))
+       (PRN ,
+	    (NP-SBJ Mr. Sullivan)
+	    (VP says
+		(SBAR 0
+		      (S *T*-2)))
+	    ,)
+       (NP-ADV the
+	       (ADJP more likely))
+       (NP-SBJ-3 they)
+       (VP are
+	   (S (S (NP-SBJ-123 *-3)
+		 (VP to
+		     (VP be
+			 (VP attracted
+			     (NP *-123)
+			     (PP-CLR to
+				     (NP a package))))))
+	      -- 
+	      and
+	      (S (NP-SBJ *-3)
+		 (VP to
+		     (VP be
+			 (ADJP-PRD loyal
+				   (PP to
+				       (NP (NP the bank)
+					   (SBAR (WHNP-205 that)
+						 (S (NP-SBJ *T*-205)
+						    (VP offers
+							(NP it))))))))))))
+       .))
+( (S (NP-SBJ That)
+     (VP can
+         (VP pay
+             (PRT off)
+	     (PP-TMP down 
+		     (NP the road))
+	     (SBAR-ADV as
+		       (S (NP-SBJ (NP customers)
+				  ,
+				  (ADVP especially)
+				  (NP the younger ones)
+				  ,)
+			  (VP change
+			      (PP-CLR from
+				      (NP borrowers))
+			      (PP-CLR to
+				      (NP savers/investors)))))))
+     .))
+( (S (NP-SBJ Packaging)
+     (VP has
+         (NP some drawbacks))
+     .))
+( (S (NP-SBJ The additional 
+	     (NX (NX technology) 
+		 , 
+		 (NX personnel training) 
+		 and 
+		 (NX promotional effort)))
+     (VP can
+         (VP be
+             (ADJP-PRD expensive)))
+     .))
+( (S (NP-SBJ-1 Chemical Bank)
+     (VP spent
+         (NP (QP more than $ 50 million)
+	     *U*)
+	 (S-PRP (NP-SBJ *-1)
+		(VP to
+		    (VP introduce
+			(NP (NP its ChemPlus line)
+			    ,
+			    (NP (NP several packages)
+				(VP aimed
+				    (NP *)
+				    (PP-CLR at
+					    (NP different segments))))
+			    ,))))
+	 (PP-TMP in
+		 (NP 1986))
+	 ,
+	 (PP according
+	     (PP to
+		 (NP (NP Thomas Jacob)
+		     ,
+		     (NP (NP senior vice president)
+			 (PP of
+			     (NP marketing)))))))
+     .))
+( (S ``
+     (S-TPC-2 (NP-SBJ (NP It)
+		      (S *EXP*-1))
+	      (VP 's 
+		  not
+		  (ADJP-PRD easy)
+		  (S-1 (NP-SBJ *)
+		       (VP to
+			   (VP (VP roll
+				   (PRT out)
+				   (NP (NP something)
+				       (ADJP that comprehensive)))
+			       , 
+			       and
+			       (VP make
+				   (S (NP-SBJ it)
+				      (VP pay))))))))
+     ,
+     ''
+     (NP-SBJ Mr. Jacob)
+     (VP says
+	 (S *T*-2))
+     .))
+( (S (ADVP Still)
+     ,
+     (NP-SBJ bankers)
+     (VP expect
+         (S (NP-SBJ packaging)
+            (VP to
+                (VP flourish)))
+	 ,
+	 (SBAR-PRP (ADVP primarily)
+		   because
+		   (S (NP-SBJ more customers)
+		      (VP are
+			  (VP demanding
+			      (SBAR that
+				    (S (NP-SBJ-124 financial services)
+				       (VP be
+					   (VP tailored
+					       (NP *-124)
+					       (PP-CLR to
+						       (NP their needs)))))))))))
+     .))
+( (S ``
+     (S-TPC-2 (NP-TMP These days)
+	      ,
+	      (NP-SBJ-1 banking customers)
+	      (VP walk
+		  (PP-DIR in
+			  (NP the door))
+		  (S-ADV (NP-SBJ *-1)
+			 (VP expecting
+			     (S (NP-SBJ you)
+				(VP to
+				    (VP have
+					(NP (NP a package)
+					    (PP (ADVP especially) 
+						for
+						(NP them))))))))))
+     ,
+     ''
+     (NP-SBJ Ms. Moore)
+     (VP says
+	 (S *T*-2))
+     .))
+( (S (NP-SBJ Some banks)
+     (VP are
+         (ADVP-TMP already)
+         (VP moving
+             (PP-DIR in
+		     (NP that direction))
+	     ,
+	     (PP according
+		 (PP to
+		     (NP (NP Alvin T. Sale)
+			 ,
+			 (NP (NP marketing director)
+			     (PP-LOC at
+				     (NP (NP First Union Corp.)
+					 (PP-LOC in
+						 (NP Charlotte))))))))))
+     .))
+( (S-1 (NP-SBJ First Union)
+       (PRN ,
+	    (S (NP-SBJ he)
+	       (VP says
+		   (SBAR 0
+			 (S *T*-1))))
+	    ,)
+       (ADVP-TMP now)
+       (VP has
+	   (NP (NP packages)
+	       (PP for
+		   (NP seven customer groups))))
+       .))
+( (S (ADVP-TMP Soon)
+     ,
+     (NP-SBJ it)
+     (VP will
+         (VP split
+             (NP those)
+             (PP-CLR into
+		     (NP 30))))
+     .))
+( (S (VP Says
+	 (S *ICH*-1))
+     (NP-SBJ Mr. Sale)
+     :
+     ``
+     (S-1 (NP-SBJ I)
+	  (VP think
+	      (SBAR 0
+		    (S (NP-SBJ-2 more banks)
+		       (VP are
+			   (VP starting
+			       (S (NP-SBJ *-2)
+				  (VP to
+				      (VP realize
+					  (SBAR that
+						(S (NP-SBJ-3 we)
+						   (VP have
+						       (S (NP-SBJ *-3)
+							  (VP to
+							      (VP be
+								  (PP-PRD (ADVP more)
+									  like
+									  (NP (NP the department store)
+									      ,
+									      not
+									      (NP the boutique))))))))))))))))))
+     .
+     ''))
+( (NP-HLN IRAs 
+	  .))

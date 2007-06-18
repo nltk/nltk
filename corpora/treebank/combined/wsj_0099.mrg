@@ -1,0 +1,67 @@
+
+( (S 
+    (NP-SBJ 
+      (NP (NNP Zenith) (NNP Data) (NNPS Systems) (NNP Corp.) )
+      (, ,) 
+      (NP 
+        (NP (DT a) (NN subsidiary) )
+        (PP (IN of) 
+          (NP (NNP Zenith) (NNP Electronics) (NNP Corp.) )))
+      (, ,) )
+    (VP (VBD received) 
+      (NP 
+        (NP (DT a) 
+          (ADJP 
+            (QP ($ $) (CD 534) (CD million) )
+            (-NONE- *U*) )
+          (NNP Navy) (NN contract) )
+        (PP (IN for) 
+          (NP 
+            (NP (NN software) 
+              (CC and)
+              (NNS services) )
+            (PP (IN of) 
+              (NP (NNS microcomputers) ))
+            (PP-TMP (IN over) 
+              (NP (DT an) (JJ 84-month) (NN period) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Rockwell) (NNP International) (NNP Corp.) )
+    (VP (VBD won) 
+      (NP 
+        (NP (DT a) 
+          (ADJP 
+            (QP ($ $) (CD 130.7) (CD million) )
+            (-NONE- *U*) )
+          (NNP Air) (NNP Force) (NN contract) )
+        (PP (IN for) 
+          (NP (NN AC-130U) (NN gunship) (NN replacement) (NN aircraft) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ-166 (NNP Martin) (NNP Marietta) (NNP Corp.) )
+    (VP (VBD was) 
+      (VP (VBN given) 
+        (NP (-NONE- *-166) )
+        (NP 
+          (NP (DT a) 
+            (ADJP 
+              (QP ($ $) (CD 29.9) (CD million) )
+              (-NONE- *U*) )
+            (NNP Air) (NNP Force) (NN contract) )
+          (PP (IN for) 
+            (NP (NN low-altitude) (NN navigation) 
+              (CC and)
+              (VBG targeting) (NN equipment) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Federal) (NNP Data) (NNP Corp.) )
+    (VP (VBD got) 
+      (NP 
+        (NP (DT a) 
+          (ADJP 
+            (QP ($ $) (CD 29.4) (CD million) )
+            (-NONE- *U*) )
+          (NNP Air) (NNP Force) (NN contract) )
+        (PP (IN for) 
+          (NP (NN intelligence) (NNS data) (NN handling) ))))
+    (. .) ))

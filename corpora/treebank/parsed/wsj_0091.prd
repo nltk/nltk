@@ -1,0 +1,163 @@
+
+
+( (S (NP-SBJ (NP Your Oct. 13 page-one story)
+             (PP on
+                 (NP (NP the renewed plight)
+                     (PP of
+                         (NP Western Union)))))
+     (VP says
+         (SBAR that
+               (S (NP-SBJ-1 Western Union)
+                  (VP had
+                      (VP lost
+                          (NP its chance
+                              (S (NP-SBJ *)
+                                 (VP to
+                                     (VP be
+                                         (PP-LOC-PRD in
+						     (NP the telephone business))))))
+                          (PP-MNR by
+				  (S-NOM (NP-SBJ *-1)
+					 (VP turning 
+					     (PRT down)
+					     (NP (NP (NP Alexander Graham Bell 's)
+						     offer)
+						 (PP to
+						     (NP it))
+						 (PP of
+						     (NP his invention))))))
+			  ,
+			  (SBAR-PRP because
+				    (S (NP-SBJ it)
+				       (ADVP supposedly)
+				       (VP felt
+					   (SBAR that
+						 (S (NP-SBJ voice communication)
+						    (VP would
+							(ADVP-TMP never)
+							(VP replace
+							    (NP the telegraph)))))))))))))
+     .))
+( (S (NP-SBJ Such)
+     (VP is
+         (ADVP hardly)
+         (NP-PRD the case))
+     .))
+( (S (NP-SBJ (NP (NP Bell 's)
+                 father-in-law)
+             ,
+             (NP Gardner G. Hubbard)
+             ,
+             (ADJP wealthy and well-connected)
+             ,)
+     (VP obtained
+         (NP (NP financing)
+	     (SBAR-PRP (WHNP-1 0)
+		       (S (NP-SBJ *T*-1)
+			  (VP to
+			      (VP start
+				  (NP (NP the American Bell Telephone Co.)
+				      (PP-LOC in
+					      (NP Boston))
+				      ,
+				      (SBAR (WHNP-2 which)
+					    (S (NP-SBJ *T*-2)
+					       (ADVP even)
+					       (VP had
+						   (NP (NP a subsidiary)
+						       (PP-LOC in
+							       (NP New York))
+						       (VP called
+							   (S (NP-SBJ *)
+							      (NP-PRD (NP the Telephone Co.)
+								      (PP of
+									  (NP New York))))))))))))))))
+     .))
+( (S (NP-SBJ This)
+     (VP is
+         (SBAR-LOC-PRD (WHADVP-1 where)
+		       (S (NP-SBJ (NP Bell 's)
+				  patents)
+			  (VP went
+			      (ADVP-DIR *T*-1)))))
+     .))
+( (S (NP-SBJ-1 Western Union)
+     (ADVP indeed)
+     (VP wanted
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP get
+                    (PP-CLR into
+			    (NP the telephone business))))))
+     .))
+( (S (NP-SBJ-1 It)
+     (VP (VP acquired
+             (NP (NP Thomas Edison 's)
+                 microphone patent))
+         and
+	 (VP (ADVP-TMP then)
+	     (ADVP-TMP immediately)
+             sued
+	     (NP the Bell Co.)
+	     (S-ADV (NP-SBJ *-1)
+		    (VP claiming
+			(SBAR that
+			      (S (NP-SBJ (NP the microphone)
+					 (VP invented
+					     (NP *)
+					     (PP by
+						 (NP-LGS (NP my grandfather)
+							 ,
+							 (NP Emile Berliner)
+							 ,)))
+					 (SBAR (WHNP-2 which)
+					       (S (NP-SBJ-144 *T*-2)
+						  (VP had
+						      (VP been
+							  (VP sold
+							      (NP *-144)
+							      (PP-CLR to
+								      (NP Bell))
+							      (PP-CLR for
+								      (NP a princely $ 50,000 *U*)))))))
+					 ,)
+				 (VP infringed
+				     (PP-CLR upon
+					     (NP (NP Western Union 's)
+						 Edison patent)))))))))
+     .))
+( (S (SBAR-TMP (WHADVP-1 When)
+	       (S (NP-SBJ Bell)
+		  (VP established
+		      (SBAR that
+			    (S (NP-SBJ-145 the Berliner patent caveat)
+			       (VP was
+				   (VP registered
+				       (NP *-145)
+				       (PP-TMP (NP-ADV 10 days)
+					       before
+					       (NP (NP Edison 's)
+						   application))
+				       (ADVP-TMP *T*-1))))))))
+     ,
+     (NP-SBJ-2 Western Union)
+     (VP (VP dropped
+	     (NP the lawsuit))
+	 and
+	 (VP (VP agreed
+		 (S (NP-SBJ *-2) 
+		    (ADVP-TMP never)
+		    (VP to
+			(VP enter
+			    (NP the telephone business)))))
+	     --
+	     (NP (NP the basis) 
+		 (PP for
+		     (NP (NP the company 's)
+			 current plight)))))
+     .))
+( (NP (NP Oliver Berliner)
+      (NP-LOC (NP Beverly Hills) 
+	      ,
+	      (NP Calif))
+      .))

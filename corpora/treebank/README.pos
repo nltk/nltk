@@ -1,0 +1,149 @@
+		    README file for (POS-)tagged files
+
+This hierarchy contains files tagged for Part of Speech.  There are 2499
+files organized in 25 directories numbered 00 to 24.  Note that not all
+files found here have a corresponding parsed file in this release.
+
+Originally, each of the texts was run through PARTS (Ken Church's stochastic
+part-of-speech tagger) and then corrected by a human annotator.  The square
+brackets surrounding phrases in the texts are the output of a stochastic NP
+parser that is part of PARTS and are best ignored.  Estimated error rate
+for the POS tags is about 3%.
+
+Words are separated from their part-of-speech tag by a forward slash.  In
+cases of uncertainty concerning the proper part-of-speech tag, words are
+given alternate tags, which are separated from one another by a vertical
+bar.  The order in which the alternate tags appear is not significant, but
+has not been standardized.  When they are part of the original text and
+have not been added in the course of the tagging process, the delimiter
+characters forward slash and vertical bar are quoted by being preceded by a
+backward slash.
+
+The part-of-speech tags used are described in detail in the POS tagging
+guide (see the doc/ directory), with some changes as described below.
+There has been no thorough revision of the WSJ material since the last
+release, but a number of technical errors have been fixed along with a few
+tagging errors.  The small ATIS-3 sample has not been previously released.
+
+
+DIFFERENCES FROM THE TAGGING GUIDE
+
+Several POS tags have changed names, to avoid conflicts with bracket tags
+with the same name.  The most recent version of the guide reflects this
+change, but earlier editions and papers may use the old names.
+
+    old name  new name   description
+
+	NP	NNP	Proper Noun
+	NPS	NNPS	Proper Noun, plural 
+	PP	PRP	Personal Pronoun (I, they, it, etc.)
+	PP$	PRP$	Possessive Personal Pronoun (my, their, its, etc.)
+
+The Guide lacks a description of the punctuation tags.  They are:
+
+  $      Dollar sign, also US$, NZ$, etc.
+  #      Pound sign (usually British currency)
+  ``     Left (double or single) quote
+  ''     Right (double or single) quote
+  (      Left parenthesis (round, square, curly or angle bracket)
+  )      Right parenthesis (round, square, curly or angle bracket)
+  ,      Comma
+  .      Sentence-final punctuation (. ! ?)
+  :      Mid-sentence punctuation (: ; ... -- -)
+
+
+CHANGES SINCE LAST RELEASE
+
+This is a summary of changes to the WSJ tagged files since the 1992 CDROM1
+release of the material.  The changes are described in greater detail, with
+specific files and words, in CHANGES.LOG.
+
+In general, most of the corrected errors were discovered during the parsing
+of the material, so the corrections are concentrated in those files for
+which there is a current parsed version.  However, many changes were
+applied uniformly to all files.
+
+  Missing/Doubled Words
+	Due to various errors in the creation of these files, some words or
+	portions thereof were lost, and other words (such as 'em or '87)
+	were doubled.  Most of these errors have been corrected, usually
+	with some sort of systematic check.
+
+  Tokenization
+	The tokenization of ellipsis dots has been made uniform:
+		final ellipsis (4 dots) == .../: ./.
+		medial ellipsis (3 dots) == .../:
+
+	Most sentence-ending periods have been split, and some
+	end-of-abbrev. periods have been joined to the abbrev.
+
+	Policy has been to split "'s"'s from the preceding word, so that
+	they can be separately tagged as VBZ or POSsessive, as appropriate.
+	Many errors in this process, especially with words in ALL CAPS,
+	have been corrected.
+
+	Initials are done as separate tokens (W./NNP E./NNP B./NNP
+	DuBois/NNP), but abbreviations are done as a single token
+	(U.S.A./NNP, G.m.b.H./NNP).  The final period of an abbreviation is
+	frequently split at the end of a sentence, however: U.S/NNP ./.
+
+	Places where there should be a dash (--) in the rawtext have been
+	split accordingly, even when the rawtext has a hyphen (-) or no
+	boundary at all.
+
+	When "its" is misspelled -- used as "it is" -- it is split to allow
+	the sentence to have a separate subject and verb, just as "it's"
+	and other such contractions have always been split.  (But when
+	possessive its is misspelled as "it's", it is generally handled as
+	it/PRP 's/POS.)
+
+	More generally, word boundaries have been changed to make the text
+	make more sense and to allow correct bracketing.
+
+  Quotes
+	Double quotes in the rawtext are automatically converted to
+	matching `` and '' in our POS files.  Some of the errors in this
+	process have been corrected by hand.
+	  Also, there has been some attempt to regularize the tokenization
+	of quotes acting as abbreviation markers, as in "rock 'n' roll".
+
+  NP Brackets ([])
+	The NP brackets added by PARTS were usually left alone, unless a
+	sentence boundary was added in the middle, in which case they were
+	adjusted appropriately.  However, some brackets had spurious POS
+	tags; these were removed.
+
+  Tagging
+	Some tags have been corrected, either because they were near some
+	other change or because they were strikingly wrong and somebody
+	noticed.  No systematic correction of tags was performed, however.
+
+  Errors in Rawtext
+	There are various errors in our rawtexts, some from the initial
+	source and some from the extraction of the text from that source.
+	In particular, text from tables in the original source was supposed
+	to not be extracted, but occasionally it was, usually as some sort
+	of sentence fragment.  Many of these have been removed.  Similarly,
+	one piece of text was misidentified as a table and came out as a
+	fragment; the missing words were restored from another published
+	version of the same text.
+	   In addition, the source text contains a number of typographical
+	errors, such as misspellings and repeated words.  Most of these
+	remain uncorrected, since the "correct" version is not always clear
+	and, after all, such typos are part of any real text.
+
+  Lost Final Tokens
+	Due to an error in preprocessing, the final token of many files had
+	been lost.  About 2/3 of these final tokens were final close
+	quotes.  All such tokens were restored automatically to the POS
+	files as described in CHANGES.LOG.  However, there was not enough
+	time to restore the missing text to all of the bracketed files.
+
+  Double Tags
+
+	Various bugs in preprocessing occasionally caused a word to have
+	more than one tag, for example 5050/NNP/CD or n't/NNP/CD.  These
+	have been searched out and corrected in the Treebank II material,
+	but the Treebank I material may still have a few of these, limited
+	to the NNP/CD case, in which case it is always correct to take the
+	second tag.

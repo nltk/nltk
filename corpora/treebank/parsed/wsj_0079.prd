@@ -1,0 +1,51 @@
+
+
+( (S (NP-SBJ Eaton Corp.)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP sold
+                      (NP its Pacific Sierra Research Corp. unit)
+                      (PP-DTV to
+			      (NP (NP a company)
+				  (VP formed
+				      (NP *)
+				      (PP by
+					  (NP-LGS (NP employees)
+						  (PP of
+						      (NP that unit)))))))))))
+     .))
+( (S (NP-SBJ-1 Terms)
+     (VP were 
+	 n't
+         (VP disclosed
+	     (NP *-1)))
+     .))
+( (S (NP-SBJ (NP Pacific Sierra)
+             ,
+             (VP based
+                 (NP *)
+                 (PP-LOC-CLR in
+			     (NP Los Angeles)))
+             ,)
+     (VP (VP has
+             (NP (QP about 200) 
+		 employees))
+         and
+         (VP supplies
+             (NP (NP professional services)
+                 and
+                 (NP advanced products))
+             (PP-DIR to
+		     (NP industry))))
+     .))
+( (S (NP-SBJ Eaton)
+     (VP is
+         (NP-PRD an 
+		 automotive parts 
+		 , 
+		 controls 
+		 and 
+		 aerospace electronics 
+		 concern))
+     .))

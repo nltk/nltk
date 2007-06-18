@@ -1,0 +1,19 @@
+
+
+( (S (NP-SBJ-44 (NP James L. Pate)
+                ,
+                (NP 54-year-old executive vice president)
+                ,)
+     (VP was
+         (VP named
+             (S (NP-SBJ *-44)
+		(NP-PRD (NP a director)
+			(PP of
+			    (NP this oil concern))))
+	     ,
+	     (S-ADV (NP-SBJ *)
+		    (VP expanding
+			(NP the board)
+			(PP-CLR to
+				(NP 14 members))))))
+     .))

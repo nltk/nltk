@@ -1,0 +1,174 @@
+
+( (S 
+    (NP-SBJ (NNP Argentina) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP it) )
+          (VP (MD will) 
+            (VP (VB ask) 
+              (NP-1 (NN creditor) (NNS banks) )
+              (S 
+                (NP-SBJ (-NONE- *-1) )
+                (VP (TO to) 
+                  (VP (VB halve) 
+                    (NP 
+                      (NP 
+                        (NP (PRP$ its) (JJ foreign) (NN debt) )
+                        (PP (IN of) 
+                          (NP 
+                            (QP ($ $) (CD 64) (CD billion) )
+                            (-NONE- *U*) )))
+                      (PRN (: --) 
+                        (NP 
+                          (NP (DT the) (JJS third-highest) )
+                          (PP-LOC (IN in) 
+                            (NP (DT the) (VBG developing) (NN world) )))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 
+      (NP (DT The) (NN declaration) )
+      (PP (IN by) 
+        (NP (NNP Economy) (NNP Minister) (NNP Nestor) (NNP Rapanelli) )))
+    (VP (VBZ is) 
+      (VP (VBN believed) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB be) 
+              (NP-PRD 
+                (NP (DT the) (JJ first) (NN time) )
+                (SBAR-TMP 
+                  (WHADVP-2 (-NONE- 0) )
+                  (S 
+                    (NP-SBJ-3 (JJ such) (DT an) (NN action) )
+                    (VP (VBZ has) 
+                      (VP (VBN been) 
+                        (VP (VBN called) 
+                          (PP (IN for) 
+                            (NP (-NONE- *-3) ))
+                          (PP (IN by) 
+                            (NP-LGS 
+                              (NP (DT an) (JJ Argentine) (NN official) )
+                              (PP (IN of) 
+                                (NP (JJ such) (NN stature) ))))
+                          (ADVP-TMP (-NONE- *T*-2) ))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NNP Latin) (NNP American) (NN nation) )
+    (VP (VBZ has) 
+      (VP (VBN paid) 
+        (NP (RB very) (RB little) )
+        (PP (IN on) 
+          (NP (PRP$ its) (NN debt) ))
+        (PP-TMP (IN since) 
+          (NP (JJ early) (JJ last) (NN year) ))))
+    (. .) ))
+( (S (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ-2 (NNP Argentina) )
+      (VP (VBZ aspires) 
+        (S 
+          (NP-SBJ (-NONE- *-2) )
+          (VP (TO to) 
+            (VP (VB reach) 
+              (NP 
+                (NP (DT a) (NN reduction) )
+                (PP (IN of) 
+                  (NP (CD 50) (NN %) ))
+                (PP-LOC (IN in) 
+                  (NP 
+                    (NP (DT the) (NN value) )
+                    (PP (IN of) 
+                      (NP (PRP$ its) (JJ external) (NN debt) ))))))))))
+    (, ,) ('' '') 
+    (NP-SBJ (NNP Mr.) (NNP Rapanelli) )
+    (VP (VBD said) 
+      (S (-NONE- *T*-1) )
+      (PP-MNR (IN through) 
+        (NP 
+          (NP (PRP$ his) (NN spokesman) )
+          (, ,) 
+          (NP (NNP Miguel) (NNP Alurralde) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Mr.) (NNP Rapanelli) )
+    (VP (VBD met) 
+      (PP-TMP (IN in) 
+        (NP (NNP August) ))
+      (PP-CLR (IN with) 
+        (NP (NNP U.S.) (NNP Assistant) (NNP Treasury) (NNP Secretary) (NNP David) (NNP Mulford) )))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (JJ Argentine) (NN negotiator) (NNP Carlos) (NNP Carballo) )
+    (VP (VBD was) 
+      (PP-LOC-PRD (IN in) 
+        (NP 
+          (NP (NNP Washington) )
+          (CC and) 
+          (NP (NNP New) (NNP York) )))
+      (NP-TMP (DT this) (NN week) )
+      (S-PRP 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB meet) 
+            (PP-CLR (IN with) 
+              (NP (NNS banks) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Mr.) (NNP Rapanelli) )
+    (ADVP-TMP (RB recently) )
+    (VP (VBZ has) 
+      (VP (VBD said) 
+        (SBAR (-NONE- 0) 
+          (S 
+            (NP-SBJ 
+              (NP (DT the) (NN government) )
+              (PP (IN of) 
+                (NP 
+                  (NP (NNP President) (NNP Carlos) (NNP Menem) )
+                  (, ,) 
+                  (SBAR 
+                    (WHNP-29 (WP who) )
+                    (S 
+                      (NP-SBJ (-NONE- *T*-29) )
+                      (VP (VBD took) 
+                        (NP (NN office) )
+                        (NP-TMP (NNP July) (CD 8) ))))
+                  (, ,) )))
+            (VP (VBZ feels) 
+              (SBAR (-NONE- 0) 
+                (S 
+                  (NP-SBJ 
+                    (NP (DT a) (JJ significant) (NN reduction) )
+                    (PP (IN of) 
+                      (NP (NN principal) 
+                        (CC and)
+                        (NN interest) )))
+                  (VP (VBZ is) 
+                    (NP-PRD 
+                      (NP (DT the) (JJ only) (NN way) )
+                      (SBAR 
+                        (WHADVP-1 (-NONE- 0) )
+                        (S 
+                          (NP-SBJ-31 (DT the) (NN debt) (NN problem) )
+                          (VP (MD may) 
+                            (VP (VB be) 
+                              (VP (VBN solved) 
+                                (NP (-NONE- *-31) )
+                                (ADVP-MNR (-NONE- *T*-1) )))))))))))))))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ (PRP he) )
+    (VP (VBZ has) (RB not) 
+      (VP (VBD said) 
+        (ADVP-TMP (IN before) )
+        (SBAR (IN that) 
+          (S 
+            (NP-SBJ (DT the) (NN country) )
+            (VP (VBZ wants) 
+              (S 
+                (NP-SBJ-2 (PDT half) (DT the) (NN debt) )
+                (VP (VBN forgiven) 
+                  (NP (-NONE- *-2) ))))))))
+    (. .) ))

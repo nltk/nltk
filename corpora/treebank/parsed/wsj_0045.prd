@@ -1,0 +1,762 @@
+
+
+( (S (SBAR-TMP Since
+	       (S (NP-SBJ chalk)
+		  (ADVP-TMP first)
+		  (VP touched
+		      (NP slate))))
+     ,
+     (NP-SBJ-1 schoolchildren)
+     (VP have
+         (VP wanted
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP know 
+			:
+                        (SBARQ (WHNP-2 What)
+			       (SQ 's
+				   (NP-SBJ *T*-2)
+				   (PP-LOC-PRD on
+					       (NP the test)))
+			       ?))))))))
+( (S (NP-TMP These days)
+     ,
+     (NP-SBJ students)
+     (VP can
+	 (ADVP-TMP often)
+	 (VP find
+	     (NP the answer)
+	     (PP-LOC in
+		     (NP (NP test-coaching workbooks and worksheets)
+			 (SBAR (WHNP-1 0)
+			       (S (NP-SBJ their teachers)
+				  (VP give
+				      (NP them)
+				      (NP *T*-1)
+				      (PP-TMP in
+					      (NP (NP the weeks)
+						  (ADVP prior
+							(PP to
+							    (S-NOM (NP-SBJ *)
+								   (VP taking
+								       (NP standardized achievement tests))))))))))))))
+     .))
+( (S (NP-SBJ (NP The mathematics section)
+             (PP of
+                 (NP the
+                     (ADJP widely used)
+		     (NX-TTL California Achievement Test))))
+     (VP asks
+         (NP fifth graders)
+         :
+	 ``
+	 (SBARQ-NOM (WHNP-1 What)
+		    (SQ is
+			(NP-SBJ *T*-1)
+			(NP-PRD (NP another name)
+				(PP for
+				    (NP the Roman numeral IX))))
+		    ?)
+	 '')))
+( (S (NP-SBJ It)
+     (ADVP also)
+     (VP asks
+         (NP-1 them)
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP add
+                    (NP two-sevenths and three-sevenths)))))
+     .))
+( (S (NP-SBJ (NP Worksheets)
+             (PP-LOC in
+		     (NP (NP (NP a test-practice kit)
+			     (VP called
+				 (S (NP-SBJ *)
+				    (NP-PRD-TTL Learning Materials))))
+			 ,
+			 (VP sold
+			     (NP *) 
+			     (PP-DTV to
+				     (NP (NP schools)
+					 (ADVP-LOC across
+						   (NP the country))))
+			     (PP by
+				 (NP-LGS Macmillan/McGraw-Hill School Publishing Co.)))
+			 ,)))
+     (VP contain
+         (NP the same questions))
+     .))
+( (S (PP-LOC In
+	     (NP many other instances))
+     ,
+     (NP-SBJ there)
+     (VP is
+         (NP-PRD (NP almost no difference)
+		 (PP-LOC between
+			 (NP (NP the real test)
+			     and
+			     (NP-TTL Learning Materials)))))
+     .))
+( (S (SBAR-ADV (WHNP-102 What) 
+	       (S (NP-SBJ *T*-102)
+		  (VP 's 
+		      (ADJP-PRD more))))
+     ,
+     (NP-SBJ-1 (NP the test) 
+	       and 
+	       (NP-TTL Learning Materials))
+     (VP are
+         (ADVP both)
+         (VP produced
+	     (NP *-1)
+             (PP by
+                 (NP-LGS (NP the same company) 
+			 ,
+			 (NP Macmillan/McGraw-Hill)
+			 ,
+			 (NP (NP a joint venture)
+			     (PP of
+				 (NP (NP McGraw-Hill Inc.)
+				     and
+				     (NP (NP (NP Macmillan 's)
+					     parent)
+					 ,
+					 (NP (NP Britain 's)
+					     Maxwell Communication Corp)))))))))
+     .))
+( (S (S-TPC-1 (NP-SBJ (NP Close parallels)
+		      (PP-LOC between
+			      (NP (NP tests) 
+				  and 
+				  (NP practice tests))))
+	      (VP are
+		  (ADJP-PRD common)))
+     ,
+     (NP-SBJ some educators and researchers)
+     (VP say
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (NP-SBJ Test-preparation 
+	     booklets
+             ,
+             software 
+	     and 
+	     worksheets)
+     (VP are
+         (NP-PRD a booming publishing subindustry))
+     .))
+( (S But
+     (NP-SBJ some practice products)
+     (VP are
+         (ADJP-PRD (ADJP so similar
+			 (PP to
+			     (NP (NP the tests)
+				 (NP themselves))))
+		   (SBAR that
+			 (S (NP-SBJ critics)
+			    (VP say
+				(SBAR 0
+				      (S (NP-SBJ they)
+					 (VP represent
+					     (NP (NP a form)
+						 (PP of
+						     (NP school-sponsored cheating)))))))))))
+     .))
+( (SINV ``
+	(S-TPC-2 (SBAR-ADV If
+			   (S (NP-SBJ I)
+			      (VP took 
+				  -LCB-
+				  (NP these preparation booklets)
+				  -RCB-
+				  (PP-DIR into
+					  (NP my classroom)))))
+		 ,
+		 (NP-SBJ-1 I)
+		 (VP 'd
+		     (VP have
+			 (NP (NP a hard time)
+			     (S-NOM (NP-SBJ *-1)
+				    (VP justifying
+					(PP-CLR to
+						(NP my students and parents))
+					(SBAR that
+					      (S (NP-SBJ it)
+						 (VP was 
+						     n't
+						     (NP-PRD cheating))))))))))
+	, 
+	''
+	(VP says
+	    (S *T*-2))
+	(NP-SBJ (NP John Kaminski)
+		,
+		(NP (NP a
+			(NAC-LOC Traverse City
+				 ,
+				 Mich.
+				 ,)
+			teacher))
+		(SBAR (WHNP-103 who)
+		      (S (NP-SBJ *T*-103)
+			 (VP has
+			     (VP studied
+				 (NP test coaching))))))
+	.))
+( (S (NP-SBJ (NP He)
+             and
+             (NP other critics))
+     (VP say
+         (SBAR 0
+               (S (NP-SBJ such coaching aids)
+                  (VP can
+                      (VP defeat
+                          (NP (NP the purpose)
+			      (PP of
+				  (NP standardized tests))
+                              ,
+                              (SBAR (WHNP-104 which)
+                                    (S (NP-SBJ *T*-104)
+                                       (VP is
+                                           (S-PRD (NP-SBJ *)
+						  (VP to
+						      (VP gauge
+							  (NP learning progress)))))))))))))
+     .))
+( (SINV ``
+        (S-TPC-2 (S (NP-SBJ It)
+		    (VP 's
+			(SBAR-PRD as if
+				  (S (NP-SBJ-1 France)
+				     (VP decided
+					 (S (NP-SBJ *-1)
+					    (VP to
+						(VP give
+						    (NP only 
+							French history 
+							questions)
+						    (PP-DTV to
+							    (NP (NP students)
+								(PP-LOC in
+									(NP a European history class))))))))))))
+		 , 
+		 and
+		 (S (SBAR-TMP (WHADVP-3 when)
+			      (S (NP-SBJ everybody)
+				 (VP aces
+				     (NP the test)
+				     (ADVP-TMP *T*-3))))
+		    ,
+		    (NP-SBJ they)
+		    (VP say
+			(SBAR 0
+			      (S (NP-SBJ their kids)
+				 (VP are
+				     (ADJP-PRD good
+					       (PP-LOC in
+						       (NP European history)))))))))
+        , 
+	''
+        (VP says
+	    (S *T*-2))
+	(NP-SBJ (NP John Cannell)
+		,
+		(NP (NP an
+			(NAC-LOC Albuquerque
+				 ,
+				 N.M.
+				 ,)
+			psychiatrist)
+		    and
+		    (NP (NP founder)
+			(PP of
+			    (NP (NP an educational research organization)
+				,
+				(NP (NP Friends)
+				    (PP for
+					(NP Education)))
+				,
+				(SBAR (WHNP-105 which)
+				      (S (NP-SBJ *T*-105)
+					 (VP has
+					     (VP studied
+						 (NP standardized testing))))))))))
+	.))
+( (S (NP-SBJ-1 Standardized achievement tests)
+     (VP are
+         (VP given
+	     (NP *-1)
+	     (NP-TMP (NP (QP about 10 million) 
+			 times)
+		     (NP-ADV a year))
+	     (ADVP-LOC across
+		       (NP the country))
+	     (PP-DTV to
+		     (NP (NP students) 
+			 (PP (ADVP generally)
+			     (PP from
+				 (NP kindergarten))
+			     (PP through
+				 (NP eighth grade)))))))
+     .))
+( (S (NP-SBJ (NP The 
+		 (ADJP most widely used)) 
+	     (PP of
+		 (NP these tests)))
+     (VP are
+         (NP-PRD (NP (NP Macmillan/McGraw 's)
+		     (NX (NX-TTL CAT) 
+			 and
+			 (NX-TTL (NP Comprehensive Test)
+				 (PP of
+				     (NP Basic Skills)))))
+		 ;
+		 (NP (NP the 
+			 (NX-TTL (NP Iowa Test)
+				 (PP of
+				     (NP Basic Skills))))
+		     ,
+		     (PP by
+			 (NP Houghton Mifflin Co.)))
+		 ; 
+		 and
+		 (NP (NP Harcourt Brace Jovanovich Inc. 's)
+		     (NX (NX-TTL Metropolitan Achievement Test)
+			 and
+			 (NX-TTL Stanford Achievement Test)))))
+     .))
+( (S (S (NP-SBJ-1 (NP Sales figures)
+		  (PP of
+		      (NP the test-prep materials)))
+        (VP are 
+	    n't
+            (VP known
+		(NP *-1))))
+     , 
+     but
+     (S (NP-SBJ (NP their reach)
+                (PP-DIR into
+			(NP schools)))
+        (VP is
+            (ADJP-PRD significant)))
+     .))
+( (S (PP-LOC In
+	     (NP (NP Arizona)
+		 ,
+		 (NP California)
+		 ,
+		 (NP Florida)
+		 ,
+		 (NP Louisiana)
+		 ,
+		 (NP Maryland)
+		 ,
+		 (NP New Jersey)
+		 ,
+		 (NP South Carolina)
+		 and
+		 (NP Texas)))
+     ,
+     (NP-SBJ educators)
+     (VP say
+         (SBAR 0
+               (S (NP-SBJ they)
+                  (VP are
+                      (NP-PRD common classroom tools)))))
+     .))
+( (S (NP-SBJ Macmillan/McGraw)
+     (VP says
+         (SBAR 0
+               (S (NP-SBJ-1 `` 
+			    (NP (QP well over 10 million)) 
+			    ''
+			    (PP of
+				(NP its (NX-TTL Scoring High) test-preparation books)))
+                  (VP have
+                      (VP been
+                          (VP sold
+			      (NP *-1)
+			      (PP-TMP since
+				      (NP (NP their introduction)
+					  (ADVP-TMP (NP 10 years) 
+						    ago)))
+			      ,
+			      (PP with
+				  (FRAG (NP-SBJ most sales) 
+					(PP-TMP in
+						(NP the last five years))))))))))
+     .))
+( (S (NP-SBJ-1 (NP (QP About 20,000)
+		   sets)
+	       (PP of
+		   (NP (NP (NX-TTL Learning Materials) 
+			   teachers ')
+		       binders)))
+     (VP have
+         (ADVP also)
+         (VP been
+             (VP sold
+		 (NP *-1)
+		 (PP-TMP in
+			 (NP the past four years)))))
+     .))
+( (S (NP-SBJ (NP The materials)
+             (PP-LOC in
+		     (NP each set)))
+     (VP reach
+         (NP (QP about 90) 
+	     students))
+     .))
+( (S (NP-SBJ (NP-TTL Scoring High)
+             and
+             (NP-TTL Learning Materials))
+     (VP are
+         (NP-PRD the best-selling preparation tests))
+     .))
+( (S (NP-SBJ (NP Michael Kean)
+             ,
+             (NP (NP director)
+		 (PP of
+		     (NP marketing))
+		 (PP for
+                     (NP (NP CTB Macmillan/McGraw)
+                         ,
+                         (NP (NP the Macmillan/McGraw division)
+                             (SBAR (WHNP-106 that)
+                                   (S (NP-SBJ *T*-106)
+                                      (VP publishes
+                                          (NP-TTL Learning Materials)))))
+                         ,))))
+     (VP says
+         (SBAR 0
+               (S (NP-SBJ-1 it)
+                  (VP is 
+		      n't
+                      (VP aimed
+			  (NP *-1)
+                          (PP-CLR at
+				  (S-NOM (NP-SBJ *)
+					 (VP improving
+					     (NP test scores)))))))))
+     .))
+( (S (NP-SBJ He)
+     (ADVP also)
+     (VP asserted
+         (SBAR that
+               (S (NP-SBJ-1 exact questions)
+                  (VP were 
+		      n't
+                      (VP replicated
+			  (NP *-1))))))
+     .))
+( (S (SBAR-TMP (WHADVP-1 When)
+	       (S (NP-SBJ-2 *)
+		  (VP referred
+		      (NP *-2)
+		      (PP-CLR to
+			      (NP (NP the questions)
+				  (SBAR (WHNP-107 that)
+					(S (NP-SBJ *T*-107)
+					   (VP matched)))))
+		      (ADVP-TMP *T*-1))))
+     ,
+     (NP-SBJ he)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP was
+                      (ADJP-PRD coincidental)))))
+     .))
+( (S (NP-SBJ (NP (NP Mr. Kaminski)
+                 ,
+                 (NP the schoolteacher))
+             , 
+	     and
+             (NP (NP William Mehrens)
+                 ,
+                 (NP a Michigan State University education professor))
+             ,)
+     (VP concluded
+	 (PP-LOC in
+		 (NP a study))
+	 (NP-TMP last June)
+	 (SBAR that
+	       (S (NP-SBJ-2 (NP CAT test versions)
+			    (PP of
+				(NP (NP-TTL Scoring High)
+				    and
+				    (NP-TTL Learning Materials))))
+		  (VP should 
+		      n't
+		      (VP be
+			  (VP used
+			      (NP *-2)
+			      (PP-LOC in
+				      (NP the classroom))
+			      (PP-PRP because of
+				      (NP (NP their similarity)
+					  (PP to
+					      (NP the actual test))))))))))
+     .))
+( (S (NP-SBJ-1 They)
+     (VP devised
+         (NP a 69-point scale)
+	 (PRN --
+	      (S-ADV (NP-SBJ *-1)
+		     (VP awarding
+			 (NP one point)
+			 (PP-CLR for
+				 (NP (NP each subskill)
+				     (VP measured
+					 (NP *)
+					 (PP-LOC on
+						 (NP the CAT test)))))))
+	      --)
+	 (S-PRP (NP-SBJ *-1)
+		(VP to
+		    (VP rate
+			(NP (NP the closeness)
+			    (PP of
+				(NP test preparatives))
+			    (PP to
+				(NP the fifth-grade CAT)))))))
+     .))
+( (S-1 (SBAR-PRP Because
+		 (S (NP-SBJ (NP many)
+			    (PP of
+				(NP these subskills))
+			    (PRN --
+				 (NP (NP (NP (NP the symmetry)
+					     (PP of
+						 (NP geometrical figures)))
+					 ,
+					 (NP (NP metric measurement)
+					     (PP of
+						 (NP volume)))
+					 , 
+					 or
+					 (NP pie and bar graphs)
+					 ,)
+				     (PP for
+					 (NP example)))
+				 --))
+		    (VP are
+			(NP-PRD (NP (ADVP only)
+				    a small part)
+				(PP of
+				    (NP the total fifth-grade curriculum))))))
+       (PRN ,
+	    (NP-SBJ Mr. Kaminski)
+	    (VP says
+		(SBAR 0
+		      (S *T*-1)))
+	    ,)
+       (NP-SBJ the preparation kits)
+       (VP would 
+	   n't
+	   (VP replicate
+	       (NP too many)
+	       ,
+	       (SBAR-ADV if
+			 (S (NP-SBJ their real intent)
+			    (VP was
+				(NP-PRD (NP general instruction)
+					or 
+					(ADVP even)
+					(NP (NP general familiarization)
+					    (PP with
+						(NP test procedures)))))))))
+       .))
+( (S But
+     (NP-TTL-SBJ Learning Materials)
+     (VP matched
+	 (PP-LOC on
+		 (NP (QP 66.5 of 69) 
+		     subskills)))
+     .))
+( (S (NP-TTL-SBJ Scoring High)
+     (VP matched
+	 (PP-LOC on
+		 (NP 64.5)))
+     .))
+( (S (PP-LOC In
+	     (NP (NP CAT sections)
+		 (SBAR (WHADVP-2 where)
+		       (S (NP-SBJ-1 (NP (NP students ')
+					knowledge)
+				    (PP of
+					(NP two-letter consonant sounds)))
+			  (VP is
+			      (VP tested
+				  (NP *-1)
+				  (ADVP-LOC *T*-2)))))))
+     ,
+     (NP-SBJ the authors)
+     (VP noted
+         (SBAR that
+               (S (NP-TTL-SBJ Scoring High)
+                  (VP concentrated
+                      (PP-CLR on
+			      (NP (NP the same sounds)
+				  (SBAR (WHNP-4 that)
+					(S (NP-SBJ the test)
+					   (VP does
+					        (VP *?*
+						    (NP *T*-4)))))))
+		      --
+		      (PP to
+			  (NP (NP the exclusion)
+			      (PP of
+				  (NP (NP other sounds)
+				      (SBAR (WHNP-3 that)
+					    (S (NP-SBJ fifth graders)
+					       (VP should
+						   (VP know
+						       (NP *T*-3)))))))))))))
+     .))
+( (S (NP-SBJ (NP-TTL Learning Materials)
+             (PP for
+                 (NP the fifth-grade)))
+     (VP contains
+         (NP (NP (QP at least a dozen)
+		 examples)
+             (PP of
+                 (NP (NP exact matches)
+		     or
+		     (NP (NP close parallels)
+			 (PP to
+			     (NP test items)))))))
+     .))
+( (S (NP-SBJ (NP Rick Brownell)
+             ,
+             (NP (NP senior editor)
+                 (PP of
+                     (NP-TTL Scoring High)))
+             ,)
+     (VP says
+         (SBAR that
+               (S (NP-SBJ Messrs. Kaminski and Mehrens)
+                  (VP are
+                      (VP ignoring
+			  ``
+			  (NP (NP the need)
+                              (SBAR (WHNP-1 0)
+                                    (S (NP-SBJ students)
+                                       (VP have
+					   (NP *T*-1)
+					   (PP for
+					       (S-NOM (NP-SBJ *)
+						      (VP becoming
+							  (ADJP-PRD familiar
+								    (PP with
+									(NP (NP tests) 
+									    and 
+									    (NP testing format))))))))))))))))
+     . 
+     ''))
+( (S (S (NP-SBJ He)
+        (VP said
+            (SBAR 0
+                  (S (NP-SBJ-1 (NP authors)
+			       (PP of
+				   (NP Scoring High)))
+		     ``
+		     (VP (ADVP-MNR scrupulously)
+                         avoid 
+			 ''
+                         (S (NP-SBJ *-1)
+			    (VP replicating
+				(NP exact questions))))))))
+     , 
+     but
+     (S (NP-SBJ he)
+        (VP does 
+	    n't
+            (VP deny
+                (SBAR that
+                      (S (NP-SBJ some items)
+                         (VP are
+                             (ADJP-PRD similar)))))))
+     .))
+( (S (SBAR-TMP (WHADVP-1 When)
+	       (S (NP-TTL-SBJ Scoring High)
+		  (ADVP-TMP first)
+		  (VP came
+		      (ADVP-CLR out)
+		      (PP-TMP in
+			      (NP 1979))
+		      (ADVP-TMP *T*-1))))
+     ,
+     (NP-SBJ it)
+     (VP was
+         (NP-PRD (NP a publication)
+		 (PP of
+		     (NP Random House))))
+     .))
+( (S (NP-SBJ McGraw-Hill)
+     (VP was
+         (ADJP-PRD outraged))
+     .))
+( (S (PP-LOC In
+	     (NP (NP a 1985 advisory)
+		 (PP to
+		     (NP educators))))
+     ,
+     (NP-SBJ McGraw-Hill)
+     (VP said
+         (SBAR 0
+               (S (NP-TTL-SBJ-1 Scoring High)
+                  (VP should 
+		      n't
+                      (VP be
+                          (VP used
+			      (NP-TTL *-1)
+			      (SBAR-PRP because
+					(S (NP-SBJ it)
+					   (VP represented
+					       (NP (NP a 
+						       `` 
+						       parallel form 
+						       '')
+						   (PP of
+						       (NP the CAT and CTBS tests))))))))))))
+     .))
+( (S But
+     (PP-TMP in
+	     (NP 1988))
+     ,
+     (NP-SBJ McGraw-Hill)
+     (VP purchased
+	 (NP (NP the Random House unit)
+	     (SBAR (WHNP-108 that)
+		   (S (NP-SBJ *T*-108)
+		      (VP publishes
+			  (NP (NP-TTL Scoring High)
+			      ,
+			      (SBAR (WHNP-109 which)
+				    (S (NP-SBJ *T*-109)
+				       (ADVP-TMP later)
+				       (VP became
+					   (NP-PRD (NP part)
+						   (PP of
+						       (NP Macmillan/McGraw))))))))))))
+     .))
+( (S (NP-SBJ Messrs. Brownell and Kean)
+     (VP say
+         (SBAR 0
+               (S (NP-SBJ they)
+                  (VP are
+                      (ADJP-PRD unaware
+				(PP of
+				    (NP (NP any efforts
+					    (S *ICH*-1))
+					(PP by
+					    (NP McGraw-Hill))
+					(S-1 (NP-SBJ *)
+					     (VP to
+						 (VP modify 
+						     or 
+						     discontinue
+						     (NP-TTL Scoring High)))))))))))
+     .))

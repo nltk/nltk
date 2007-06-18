@@ -1,0 +1,739 @@
+
+
+( (S (NP-SBJ (NP Criticism)
+             (PP-LOC in
+		     (NP the U.S.))
+             (PP over
+                 (NP recent Japanese acquisitions)))
+     (VP is
+         (VP looming
+             (ADVP-CLR ever larger)
+	     (PP-LOC in
+		     (NP (NP the two countries ')
+			 relations))))
+     .))
+( (S (NP-SBJ (NP Officials)
+             (PP from
+                 (NP both nations)))
+     (VP say
+         (SBAR 0
+               (S (NP-SBJ (NP (NP the U.S. public 's)
+			      skittishness)
+                          (PP about
+                              (NP Japanese investment)))
+                  (VP could
+                      (VP color
+                          (NP (NP a second round)
+			      (PP of
+				  (NP bilateral economic talks))
+                              (VP scheduled
+                                  (NP *)
+                                  (PP-CLR for
+					  (NP next week))
+                                  (PP-LOC in
+					  (NP Washington)))))))))
+     .))
+( (S (SBAR-ADV Not
+	       that
+	       (S (NP-SBJ Washington
+			  and
+			  Tokyo)
+		  (VP disagree
+		      (PP-CLR on
+			      (NP the Japanese acquisitions)))))
+     ;
+     (ADVP indeed)
+     ,
+     (NP-SBJ each)
+     (VP has
+	 (VP come
+	     (PRT out)
+	     (PP-CLR in
+		     (NP (NP favor)
+			 (PP of
+			     (NP (NP unfettered investment)
+				 (PP-LOC in
+					 (NP the U.S))))))))
+     .))
+( (S (SBAR-NOM-SBJ (WHADVP-1 Where)
+		   (S (NP-SBJ they)
+		      (VP disagree
+			  (ADVP-LOC *T*-1))))
+     (VP is
+         (PP-LOC-PRD on
+		     (NP (NP the subject)
+			 (PP of
+			     (NP (NP U.S. direct investment)
+				 (PP in
+				     (NP Japan)))))))
+     .))
+( (S (S (NP-SBJ The U.S.)
+        (VP wants
+            (NP (NP the removal)
+                (PP of
+		    (SBAR-NOM (WHNP-183 what)
+			      (S (NP-SBJ it)
+				 (VP perceives
+				     (NP *T*-183)
+				     (PP-CLR as
+					     (NP (NP barriers)
+						 (PP to
+						     (NP investment)))))))))))
+     ;
+     (S (NP-SBJ Japan)
+        (VP denies
+            (SBAR 0
+                  (S (NP-SBJ there)
+                     (VP are
+                         (NP-PRD real barriers))))))
+     .))
+( (S (NP-SBJ (NP-1 The heated talk)
+             (VP stirred
+		 (NP *-1)
+                 (PRT up)
+                 (PP by
+                     (NP-LGS (NP recent Japanese investments)
+			     (PP-LOC in
+				     (NP the U.S.))))))
+     (VP is
+         (VP focusing
+             (NP attention)
+             (PP-CLR on
+		     (NP (NP the differences)
+			 (PP-LOC in
+				 (NP investment climate))))
+	     ,
+	     (SBAR-ADV even though
+		       (S (NP-SBJ it)
+			  (VP 's
+			      (NP-PRD (NP (QP only one)) 
+				      (PP of
+					  (NP (NP many subjects)
+					      (SBAR (WHNP-2 0)
+						    (S (NP-SBJ-116 *T*-2)
+						       (VP to
+							   (VP be
+							       (VP covered
+								   (NP *-116)
+								   (PP-LOC in
+									   (NP (NP the bilateral talks)
+									       ,
+									       (VP known
+										   (NP *)
+										   (PP-CLR as
+											   (NP the Structural Impediments Initiative))))))))))))))))))
+     .))
+( (SINV (S-TPC-1 (NP-SBJ The Japanese)
+		 ``
+		 (VP should
+		     (VP see
+			 (NP this rhetoric)
+			 (PP-CLR as
+				 (NP (NP a signal)
+				     (PP of
+					 (NP (NP the need)
+					     (PP for
+						 (NP (NP a change)
+						     (PP-LOC in
+							     (NP their own economy)))))))))))
+	,
+	''
+	(VP says
+	    (SBAR 0
+		  (S *T*-1)))
+	(NP-SBJ (NP Charles Dallara)
+		,
+		(NP U.S. assistant Treasury secretary)
+		,
+		(SBAR (WHNP-184 who)
+		      (S (NP-SBJ-2 *T*-184)
+			 (VP has
+			     (VP been
+				 (PP-LOC-PRD in
+					     (NP Tokyo))
+				 (NP-TMP this week)
+				 (S-ADV (NP-SBJ *-2)
+					(VP (ADVP-MNR informally)
+					    discussing
+					    (NP the impending negotiations)
+					    (PP-CLR with
+						    (NP government and business leaders)))))))))
+	.))
+( (S ``
+     (S-TPC-1 (NP-SBJ We)
+	      (VP have
+		  (NP (NP a long history)
+		      (PP of
+			  (S-NOM (NP-SBJ *)
+				 (VP maintaining
+				     (NP an open direct-investment policy)))))))
+     ,
+     ''
+     (NP-SBJ Mr. Dallara)
+     (VP says
+	 (S *T*-1))
+     .))
+( (S ``
+     (NP-SBJ U.S. investors)
+     (VP should
+         (VP have
+             (NP (NP a greater opportunity)
+                 (PP at
+                     (NP (NP direct investment) 
+			 ''
+                         (PP-LOC in
+				 (NP Japan)))))))
+     .))
+( (S (NP-SBJ The Japanese)
+     (VP fret
+         (ADVP-MNR openly)
+         (PP-CLR about
+		 (NP (NP the U.S. public 's)
+		     rancor)))
+     .))
+( (S (NP-SBJ (NP One clear sign)
+             (PP of
+                 (NP (NP Japan 's)
+                     nervousness)))
+     (VP came
+	 (NP-TMP this week)
+	 ,
+	 (SBAR-TMP (WHADVP-1 when)
+		   (S (NP-SBJ (NP a spokesman)
+			      (PP for
+				  (NP (NP Japan 's)
+				      Foreign Ministry)))
+		      (VP devoted
+			  (NP (NP nearly all)
+			      (PP of
+				  (NP (NP a
+					  regular , half-hour
+					  briefing)
+				      (PP for
+					  (NP foreign journalists)))))
+			  (PP-CLR to
+				  (NP (NP the subject)
+				      (PP of
+					  (NP (NP recent Japanese investments)
+					      (PP-LOC in
+						      (NP the U.S))))))
+			  (ADVP-TMP *T*-1)))))
+     .))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ We)
+		 (VP believe
+		     (SBAR that
+			   (S (NP-SBJ (NP it)
+				      (SBAR *EXP*-3))
+			      (VP is
+				  (ADJP-PRD vitally important)
+				  (SBAR-3 for
+					  (S (NP-SBJ (NP those Japanese business interests)
+						     -LCB-
+						     (PP-LOC in
+							     (NP the U.S .))
+						     -RCB-)
+					     (VP to
+						 (VP be
+						     (ADJP-PRD more aware
+							       (PP of
+								   (NP (NP the emotions and concerns)
+								       (PP of
+									   (NP the American people))))))))))))))
+	,
+	''
+	(VP said
+	    (S *T*-1))
+	(NP-SBJ (NP the spokesman)
+		,
+		(NP Taizo Watanabe))
+	.))
+( (S (PP-TMP At
+	     (NP the same time))
+     ,
+     (ADVP though)
+     ,
+     (NP-SBJ he)
+     (VP chastised
+         (NP the media)
+	 (PP-PRP for
+		 (S-NOM (NP-SBJ *)
+			(VP paying
+			    (NP such close attention)
+			    (PP-CLR to
+				    (NP Japanese investment))
+			    (SBAR-TMP (WHADVP-1 when)
+				      (S (NP-SBJ (NP other foreign countries)
+						 ,
+						 (NP notably Britain)
+						 ,)
+					 (VP are
+					     (VP acquiring
+						 (NP more American assets)
+						 (ADVP-TMP *T*-1)))))))))
+     .))
+( (S (NP-SBJ Fears
+             (SBAR that
+                   (S (NP-SBJ Japanese investors)
+                      (VP are
+                          (VP buying 
+			      (PRT up)
+                              (NP America))))))
+     (VP have
+         (VP escalated
+             (ADVP-MNR sharply)
+	     (PP-TMP in
+		     (NP the past several weeks))
+	     ,
+	     (PP with
+		 (NP (NP (NP (NP Sony Corp. 's)
+			     purchase)
+			 (PP of
+			     (NP Columbia Pictures Entertainment Inc.))
+			 (PP from
+			     (NP Coca-Cola Co.)))
+		     and
+		     (NP (NP (NP Mitsubishi Estate Co. 's)
+			     acquisition)
+			 (PP of
+			     (NP (NP a 
+				     (ADJP 51 %) 
+				     holding)
+				 (PP-LOC in
+					 (NP (NP Rockefeller Group)
+					     ,
+					     (NP (NP the owner)
+						 (PP of
+						     (NP (NP some)
+							 (PP of
+							     (NP (NP midtown Manhattan 's)
+								 (ADJP most exclusive) 
+								 real estate))))))))))))))
+     .))
+( (S (SBAR-TMP Even
+	       before
+	       (S (NP-SBJ those moves)
+		  (VP added
+		      (NP fuel))))
+     ,
+     (NP-SBJ-1 (NP the fires)
+	       (PP of
+		   (NP discontent)))
+     (VP had
+	 (VP been
+	     (VP (ADVP-MNR well)
+		 stoked
+		 (NP *-1)
+		 (PP by
+		     (NP-LGS (NP (NP the
+				     (ADJP highly publicized)
+				     experience))
+			     (PP-LOC in
+				     (NP Japan))
+			     (PP of
+				 (NP (NP one U.S. investor)
+				     ,
+				     (NP T. Boone Pickens Jr))))))))
+     .))
+( (S (NP-SBJ The Texas oilman)
+     (VP has
+         (VP acquired
+             (NP (NP a 
+		     (ADJP 26.2 %)
+		     stake)
+                 (VP valued
+                     (NP *)
+                     (PP-CLR at
+			     (NP (QP more than $ 1.2 billion)
+				 *U*)))
+		 (PP-LOC in
+			 (NP (NP an automotive-lighting company)
+			     ,
+			     (NP Koito Manufacturing Co))))))
+     .))
+( (S But
+     (NP-SBJ-1 he)
+     (VP has
+         (VP failed
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP gain
+                        (NP any influence)
+			(PP-LOC at
+				(NP the company)))))))
+     .))
+( (S (NP-SBJ-1 Koito)
+     (VP has
+	 (VP refused
+	     (S (NP-SBJ *-1)
+		(VP to
+		    (VP grant
+			(NP Mr. Pickens)
+			(NP (NP seats)
+			    (PP-LOC on
+				    (NP its board))))))
+	     ,
+	     (S-ADV (NP-SBJ *-1)
+		    (VP asserting
+			(SBAR 0
+			      (S (NP-SBJ he)
+				 (VP is
+				     (NP-PRD (NP a greenmailer)
+					     (VP trying
+						 (S (NP-SBJ *)
+						    (VP to
+							(VP pressure
+							    (NP (NP Koito 's)
+								other shareholders)
+							    (PP-CLR into
+								    (S-NOM (NP-SBJ *)
+									   (VP buying
+									       (NP him)
+									       (PRT out)
+									       (PP-MNR at
+										       (NP a profit)))))))))))))))))
+     .))
+( (S (NP-SBJ Mr. Pickens)
+     (VP made
+         (NP considerable political hay)
+         (PP with
+	     (NP (NP his troubles)
+		 (PP-LOC in
+			 (NP Japan)))))
+     .))
+( (S (NP-SBJ (NP The Senate Finance Committee)
+             ,
+             (VP chaired
+                 (NP *)
+                 (PP by
+                     (NP-LGS (NP a fellow Texan)
+                             ,
+                             (NP Democratic Sen. 
+				 Lloyd Bentsen)
+                             ,))))
+     (NP-TMP last month)
+     (VP urged
+	 (S (NP-SBJ U.S. Trade Representative
+		    Carla Hills)
+	    (VP to
+                (VP use
+                    (NP-1 (NP Mr. Pickens 's)
+			  experience)
+		    (PP-LOC in
+			    (NP (NP talks)
+				(PP with
+				    (NP Tokyo))))
+		    ``
+		    (S-CLR (NP-SBJ *-1)
+			   (VP to
+			       (VP highlight
+				   (NP (NP this problem)
+				       (VP facing
+					   (NP (NP Americans)
+					       (SBAR (WHNP-185 who)
+						     (S (NP-SBJ *T*-185)
+							(VP seek
+							    (NP (NP access)
+								(PP to
+								    (NP the Japanese capital markets))))))))))))))))
+     .
+     ''))
+( (S (SBAR-TMP While
+	       (S (NP-SBJ (NP Mr. Dallara)
+			  and
+			  (NP Japanese officials))
+		  (VP say
+		      (SBAR 0
+			    (S (NP-SBJ (NP the question)
+				       (PP of
+					   (NP (NP (NP investors ')
+						   access)
+					       (PP to
+						   (NP the U.S. and Japanese markets)))))
+			       (VP may
+				   (VP get
+				       (NP (NP a disproportionate share)
+					   (PP of
+					       (NP (NP the public 's)
+						   attention))))))))))
+     ,
+     (NP-SBJ (NP a number)
+             (PP of
+                 (NP other important economic issues)))
+     (VP will
+         (VP be
+             (PP-LOC-PRD on
+			 (NP the table))
+	     (PP-LOC at
+		     (NP (NP next week 's)
+			 talks))))
+     .))
+( (SINV (PP-TPC-1 Among
+		  (NP them))
+        (VP are
+	    (PP-PRD *T*-1))
+        (NP-SBJ (NP differences)
+		(PP-LOC in
+			(NP (NP savings and investment rates)
+			    ,
+			    (NP corporate structures and management)
+			    , 
+			    and
+			    (NP government spending))))
+        .))
+( (S (NP-SBJ Each side)
+     (VP has
+         (NP (NP a litany)
+             (PP of
+                 (NP (NP recommendations)
+		     (PP for
+			 (NP the other))))))
+     .))
+( (S (NP-SBJ The U.S.)
+     (VP says
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP is
+                      (ADJP-PRD anxious
+				(PP for
+				    (NP results)))))))
+     .))
+( (S ``
+     (S-TPC-2 (NP-SBJ We)
+	      (VP feel
+		  (ADVP-MNR very strongly)
+		  (SBAR that
+			(S (S (NP-SBJ we)
+			      (VP (ADVP really)
+				  need
+				  (NP (NP action)
+				      (PP-LOC across
+					      (NP (NP the full range)
+						  (PP of
+						      (NP (NP issues)
+							  (SBAR (WHNP-1 0)
+								(S (NP-SBJ we)
+								   (VP 've
+								       (VP identified
+									   (NP *T*-1))))))))))))
+			   , 
+			   and
+			   (S (NP-SBJ we)
+			      (VP need
+				  (NP it)
+				  (PP-TMP by
+					  (NP next spring))))))))
+     ,
+     ''
+     (NP-SBJ Mr. Dallara)
+     (VP says
+	 (S *T*-2))
+     .))
+( (S (NP-SBJ Both sides)
+     (VP have
+         (VP agreed
+             (SBAR that
+                   (S (NP-SBJ the talks)
+                      (VP will
+                          (VP be
+                              (ADJP-PRD most successful)
+			      (SBAR-ADV if
+					(S (NP-SBJ negotiators)
+					   (VP start
+					       (PP-MNR by
+						       (S-NOM (NP-SBJ *)
+							      (VP focusing
+								  (PP-CLR on
+									  (NP (NP the areas)
+									      (SBAR (WHNP-186 that)
+										    (S (NP-SBJ-1 *T*-186)
+										       (VP can
+											   (VP be
+											       (ADVP-MNR most easily)
+											       (VP changed
+												   (NP *-1))))))))))))))))))))
+     .))
+( (S But
+     (NP-SBJ they)
+     (VP have 
+	 n't
+         (VP clarified
+             (SBAR-NOM (WHNP-187 what)
+		       (S (NP-SBJ those)
+			  (VP might
+			      (VP be
+				  (NP-PRD *T*-187)))))))
+     .))
+( (S (PP-TMP After
+	     (NP (NP the first set)
+		 (PP of
+		     (NP meetings))
+		 (ADVP-TMP (NP two months)
+			   ago)))
+     ,
+     (NP-SBJ some U.S. officials)
+     (VP complained
+         (SBAR that
+	       (S (NP-SBJ Japan)
+		  (VP had 
+		      n't
+		      (VP come
+			  (PRT up)
+			  (PP-CLR with
+				  (NP (NP specific changes)
+				      (SBAR (WHNP-2 0)
+					    (S (NP-SBJ-1 it)
+					       (VP was
+						   (VP prepared
+						       (S (NP-SBJ *-1)
+							  (VP to
+							      (VP make
+								  (NP *T*-2)))))))))))))))
+     .))
+( (S (NP-SBJ The Japanese)
+     (VP retort
+         (SBAR that
+               (S (NP-SBJ the first round)
+                  (VP was
+                      (ADJP-PRD too early
+				(S (NP-SBJ *)
+				   (VP to
+				       (VP make
+					   (NP concessions)))))))))
+     .))
+( (SINV ``
+	(S-TPC-1 (S-SBJ (NP-SBJ *) 
+			(VP (ADVP Just)
+			    to
+			    (VP say
+				(SBAR 0
+				      (S (NP-SBJ the distribution system)
+					 (VP is
+					     (ADJP-PRD wrong)))))))
+		 (VP does 
+		     n't
+		     (VP mean
+			 (NP anything))))
+	,
+	''
+	(VP says
+	    (S *T*-1))
+	(NP-SBJ a
+		(NAC Ministry
+		     (PP of
+			 (NP International Trade and Industry)))
+		official)
+	.))
+( (S ``
+     (NP-SBJ-1 We)
+     (VP need
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP clarify
+                    (SBAR-NOM (WHNP-188 (WHNP what) 
+					(ADVP exactly))
+			      (S (NP-SBJ *T*-188)
+				 (VP is
+				     (ADJP-PRD wrong
+					       (PP with
+						   (NP it))))))))))
+     .
+     ''))
+( (S-2 (NP-SBJ-1 (NP That process)
+		 (PP of
+		     (S-NOM (NP-SBJ *)
+			    (VP sorting
+				(PRT out)
+				(NP specifics)))))
+       (VP is
+	   (ADJP-PRD likely
+		     (S (NP-SBJ *-1)
+			(VP to
+			    (VP take
+				(NP time)))))
+	   (PRN ,
+		(S (NP-SBJ the Japanese)
+		   (VP say
+		       (SBAR 0
+			     (S *T*-2))))
+		,)
+	   (ADVP no matter 
+		 (SBAR (WHADVP-3 how badly)
+		       (S (NP-SBJ the U.S.)
+			  (VP wants
+			      (NP quick results)
+			      (ADVP-MNR *T*-3))))))
+       .))
+( (S (PP For
+         (NP instance))
+     ,
+     (PP-LOC at
+	     (NP the first meeting))
+     (NP-SBJ the two sides)
+     (VP could 
+	 n't
+         (ADVP even)
+         (VP agree
+             (PP-CLR on
+		     (NP (NP basic data)
+			 (VP used
+			     (NP *)
+			     (PP-LOC in
+				     (NP price discussions)))))))
+     .))
+( (S (PP-TMP Since
+	     (NP then))
+     ,
+     (NP-SBJ-1 (NP a team)
+	       (PP of
+		   (NP (QP about 15) 
+		       MITI and U.S. Commerce Department 
+		       officials)))
+     (VP have
+	 (VP crossed
+	     (NP the globe)
+	     (S-ADV (NP-SBJ *-1)
+		    (VP gauging
+			(NP consumer prices)))))
+     .))
+( (S (PP-TMP By
+	     (NP Monday))
+     ,
+     (NP-SBJ-1 they)
+     (VP hope
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP have
+                    (NP (NP a sheaf)
+                        (PP of
+                            (NP (NP documents)
+                                (SBAR (WHNP-2 0)
+                                      (S (NP-SBJ both sides)
+                                         (VP can
+                                             (VP trust
+                                                 (NP *T*-2))))))))))))
+     .))
+( (SINV ``
+	(S-TPC-1 (ADVP Little by little) 
+		 ,
+		 (NP-SBJ there)
+		 (VP is
+		     (NP-PRD progress)))
+	,
+	''
+	(VP says
+	    (S *T*-1))
+	(NP-SBJ the MITI official)
+	.))
+( (S ``
+     (NP-SBJ Both sides)
+     (VP are
+         (VP taking
+             (NP action)))
+     .
+     ''))
+( (S (NP-SBJ Elisabeth Rubinfien)
+     (VP contributed
+         (PP-CLR to
+		 (NP this article)))
+     .))

@@ -1,0 +1,975 @@
+
+( (S 
+    (SBAR-TMP (IN Since) 
+      (S 
+        (NP-SBJ (NN chalk) )
+        (ADVP-TMP (RB first) )
+        (VP (VBD touched) 
+          (NP (NN slate) ))))
+    (, ,) 
+    (NP-SBJ-1 (NN schoolchildren) )
+    (VP (VBP have) 
+      (VP (VBN wanted) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB know) (: :) 
+              (SBARQ 
+                (WHNP-2 (WP What) )
+                (SQ (VBZ 's) 
+                  (NP-SBJ (-NONE- *T*-2) )
+                  (PP-LOC-PRD (IN on) 
+                    (NP (DT the) (NN test) )))
+                (. ?) ))))))))
+( (S 
+    (NP-TMP (DT These) (NNS days) )
+    (, ,) 
+    (NP-SBJ (NNS students) )
+    (VP (MD can) 
+      (ADVP-TMP (RB often) )
+      (VP (VB find) 
+        (NP (DT the) (NN answer) )
+        (PP-LOC (IN in) 
+          (NP 
+            (NP (JJ test-coaching) (NNS workbooks) 
+              (CC and)
+              (NNS worksheets) )
+            (SBAR 
+              (WHNP-1 (-NONE- 0) )
+              (S 
+                (NP-SBJ (PRP$ their) (NNS teachers) )
+                (VP (VBP give) 
+                  (NP (PRP them) )
+                  (NP (-NONE- *T*-1) )
+                  (PP-TMP (IN in) 
+                    (NP 
+                      (NP (DT the) (NNS weeks) )
+                      (ADVP (RB prior) 
+                        (PP (TO to) 
+                          (S-NOM 
+                            (NP-SBJ (-NONE- *) )
+                            (VP (VBG taking) 
+                              (NP (JJ standardized) (NN achievement) (NNS tests) ))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (NN mathematics) (NN section) )
+      (PP (IN of) 
+        (NP (DT the) 
+          (ADJP (RB widely) (JJ used) )
+          (NX-TTL (NNP California) (NNP Achievement) (NNP Test) ))))
+    (VP (VBZ asks) 
+      (NP (JJ fifth) (NNS graders) )
+      (: :) (`` ``) 
+      (SBARQ-NOM 
+        (WHNP-1 (WP What) )
+        (SQ (VBZ is) 
+          (NP-SBJ (-NONE- *T*-1) )
+          (NP-PRD 
+            (NP (DT another) (NN name) )
+            (PP (IN for) 
+              (NP (DT the) (JJ Roman) (NN numeral) (CD IX) ))))
+        (. ?) )
+      ('' '') )))
+( (S 
+    (NP-SBJ (PRP It) )
+    (ADVP (RB also) )
+    (VP (VBZ asks) 
+      (NP-1 (PRP them) )
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB add) 
+            (NP (NNS two-sevenths) 
+              (CC and)
+              (NNS three-sevenths) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNS Worksheets) )
+      (PP-LOC (IN in) 
+        (NP 
+          (NP 
+            (NP (DT a) (JJ test-practice) (NN kit) )
+            (VP (VBN called) 
+              (S 
+                (NP-SBJ (-NONE- *) )
+                (NP-PRD-TTL (NNP Learning) (NNPS Materials) ))))
+          (, ,) 
+          (VP (VBN sold) 
+            (NP (-NONE- *) )
+            (PP-DTV (TO to) 
+              (NP 
+                (NP (NNS schools) )
+                (ADVP-LOC (IN across) 
+                  (NP (DT the) (NN country) ))))
+            (PP (IN by) 
+              (NP-LGS (NNP Macmillan\/McGraw-Hill) (NNP School) (NNP Publishing) (NNP Co.) )))
+          (, ,) )))
+    (VP (VBP contain) 
+      (NP (DT the) (JJ same) (NNS questions) ))
+    (. .) ))
+( (S 
+    (PP-LOC (IN In) 
+      (NP (JJ many) (JJ other) (NNS instances) ))
+    (, ,) 
+    (NP-SBJ (EX there) )
+    (VP (VBZ is) 
+      (NP-PRD 
+        (NP (RB almost) (DT no) (NN difference) )
+        (PP-LOC (IN between) 
+          (NP 
+            (NP (DT the) (JJ real) (NN test) )
+            (CC and) 
+            (NP-TTL (NNP Learning) (NNPS Materials) )))))
+    (. .) ))
+( (S 
+    (SBAR-ADV 
+      (WHNP-102 (WP What) )
+      (S 
+        (NP-SBJ (-NONE- *T*-102) )
+        (VP (VBZ 's) 
+          (ADJP-PRD (JJR more) ))))
+    (, ,) 
+    (NP-SBJ-1 
+      (NP (DT the) (NN test) )
+      (CC and) 
+      (NP-TTL (NNP Learning) (NNPS Materials) ))
+    (VP (VBP are) 
+      (ADVP (DT both) )
+      (VP (VBN produced) 
+        (NP (-NONE- *-1) )
+        (PP (IN by) 
+          (NP-LGS 
+            (NP (DT the) (JJ same) (NN company) )
+            (, ,) 
+            (NP (NNP Macmillan\/McGraw-Hill) )
+            (, ,) 
+            (NP 
+              (NP (DT a) (JJ joint) (NN venture) )
+              (PP (IN of) 
+                (NP 
+                  (NP (NNP McGraw-Hill) (NNP Inc.) )
+                  (CC and) 
+                  (NP 
+                    (NP 
+                      (NP (NNP Macmillan) (POS 's) )
+                      (NN parent) )
+                    (, ,) 
+                    (NP 
+                      (NP (NNP Britain) (POS 's) )
+                      (NNP Maxwell) (NNP Communication) (NNP Corp) )))))))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (NP-SBJ 
+        (NP (JJ Close) (NNS parallels) )
+        (PP-LOC (IN between) 
+          (NP 
+            (NP (NNS tests) )
+            (CC and) 
+            (NP (NN practice) (NNS tests) ))))
+      (VP (VBP are) 
+        (ADJP-PRD (JJ common) )))
+    (, ,) 
+    (NP-SBJ (DT some) (NNS educators) 
+      (CC and)
+      (NNS researchers) )
+    (VP (VBP say) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (JJ Test-preparation) (NNS booklets) 
+      (, ,)
+      (NN software) 
+      (CC and)
+      (NNS worksheets) )
+    (VP (VBP are) 
+      (NP-PRD (DT a) (VBG booming) (VBG publishing) (NN subindustry) ))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ (DT some) (NN practice) (NNS products) )
+    (VP (VBP are) 
+      (ADJP-PRD 
+        (ADJP (RB so) (JJ similar) 
+          (PP (TO to) 
+            (NP 
+              (NP (DT the) (NNS tests) )
+              (NP (PRP themselves) ))))
+        (SBAR (IN that) 
+          (S 
+            (NP-SBJ (NNS critics) )
+            (VP (VBP say) 
+              (SBAR (-NONE- 0) 
+                (S 
+                  (NP-SBJ (PRP they) )
+                  (VP (VBP represent) 
+                    (NP 
+                      (NP (DT a) (NN form) )
+                      (PP (IN of) 
+                        (NP (JJ school-sponsored) (NN cheating) )))))))))))
+    (. .) ))
+( (SINV (`` ``) 
+    (S-TPC-2 
+      (SBAR-ADV (IN If) 
+        (S 
+          (NP-SBJ (PRP I) )
+          (VP (VBD took) 
+            (-LRB- -LCB-)
+            (NP (DT these) (NN preparation) (NNS booklets) )
+            (-RRB- -RCB-) 
+            (PP-DIR (IN into) 
+              (NP (PRP$ my) (NN classroom) )))))
+      (, ,) 
+      (NP-SBJ-1 (PRP I) )
+      (VP (MD 'd) 
+        (VP (VB have) 
+          (NP 
+            (NP (DT a) (JJ hard) (NN time) )
+            (S-NOM 
+              (NP-SBJ (-NONE- *-1) )
+              (VP (VBG justifying) 
+                (PP-CLR (TO to) 
+                  (NP (PRP$ my) (NNS students) 
+                    (CC and)
+                    (NNS parents) ))
+                (SBAR (IN that) 
+                  (S 
+                    (NP-SBJ (PRP it) )
+                    (VP (VBD was) (RB n't) 
+                      (NP-PRD (NN cheating) ))))))))))
+    (, ,) ('' '') 
+    (VP (VBZ says) 
+      (S (-NONE- *T*-2) ))
+    (NP-SBJ 
+      (NP (NNP John) (NNP Kaminski) )
+      (, ,) 
+      (NP 
+        (NP (DT a) 
+          (NAC-LOC (NNP Traverse) (NNP City) 
+            (, ,)
+            (NNP Mich.) 
+            (, ,)
+            )
+          (NN teacher) ))
+      (SBAR 
+        (WHNP-103 (WP who) )
+        (S 
+          (NP-SBJ (-NONE- *T*-103) )
+          (VP (VBZ has) 
+            (VP (VBN studied) 
+              (NP (NN test) (NN coaching) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (PRP He) )
+      (CC and) 
+      (NP (JJ other) (NNS critics) ))
+    (VP (VBP say) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (JJ such) (NN coaching) (NNS aids) )
+          (VP (MD can) 
+            (VP (VB defeat) 
+              (NP 
+                (NP (DT the) (NN purpose) )
+                (PP (IN of) 
+                  (NP (JJ standardized) (NNS tests) ))
+                (, ,) 
+                (SBAR 
+                  (WHNP-104 (WDT which) )
+                  (S 
+                    (NP-SBJ (-NONE- *T*-104) )
+                    (VP (VBZ is) 
+                      (S-PRD 
+                        (NP-SBJ (-NONE- *) )
+                        (VP (TO to) 
+                          (VP (VB gauge) 
+                            (NP (NN learning) (NN progress) )))))))))))))
+    (. .) ))
+( (SINV (`` ``) 
+    (S-TPC-2 
+      (S 
+        (NP-SBJ (PRP It) )
+        (VP (VBZ 's) 
+          (SBAR-PRD (IN as) (IN if) 
+            (S 
+              (NP-SBJ-1 (NNP France) )
+              (VP (VBD decided) 
+                (S 
+                  (NP-SBJ (-NONE- *-1) )
+                  (VP (TO to) 
+                    (VP (VB give) 
+                      (NP (JJ only) (JJ French) (NN history) (NNS questions) )
+                      (PP-DTV (TO to) 
+                        (NP 
+                          (NP (NNS students) )
+                          (PP-LOC (IN in) 
+                            (NP (DT a) (JJ European) (NN history) (NN class) ))))))))))))
+      (, ,) 
+      (CC and)
+      (S 
+        (SBAR-TMP 
+          (WHADVP-3 (WRB when) )
+          (S 
+            (NP-SBJ (NN everybody) )
+            (VP (VBZ aces) 
+              (NP (DT the) (NN test) )
+              (ADVP-TMP (-NONE- *T*-3) ))))
+        (, ,) 
+        (NP-SBJ (PRP they) )
+        (VP (VBP say) 
+          (SBAR (-NONE- 0) 
+            (S 
+              (NP-SBJ (PRP$ their) (NNS kids) )
+              (VP (VBP are) 
+                (ADJP-PRD (JJ good) 
+                  (PP-LOC (IN in) 
+                    (NP (JJ European) (NN history) )))))))))
+    (, ,) ('' '') 
+    (VP (VBZ says) 
+      (S (-NONE- *T*-2) ))
+    (NP-SBJ 
+      (NP (NNP John) (NNP Cannell) )
+      (, ,) 
+      (NP 
+        (NP (DT an) 
+          (NAC-LOC (NNP Albuquerque) 
+            (, ,)
+            (NNP N.M.) 
+            (, ,)
+            )
+          (NN psychiatrist) )
+        (CC and) 
+        (NP 
+          (NP (NN founder) )
+          (PP (IN of) 
+            (NP 
+              (NP (DT an) (JJ educational) (NN research) (NN organization) )
+              (, ,) 
+              (NP 
+                (NP (NNPS Friends) )
+                (PP (IN for) 
+                  (NP (NNP Education) )))
+              (, ,) 
+              (SBAR 
+                (WHNP-105 (WDT which) )
+                (S 
+                  (NP-SBJ (-NONE- *T*-105) )
+                  (VP (VBZ has) 
+                    (VP (VBN studied) 
+                      (NP (JJ standardized) (NN testing) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (JJ Standardized) (NN achievement) (NNS tests) )
+    (VP (VBP are) 
+      (VP (VBN given) 
+        (NP (-NONE- *-1) )
+        (NP-TMP 
+          (NP 
+            (QP (IN about) (CD 10) (CD million) )
+            (NNS times) )
+          (NP-ADV (DT a) (NN year) ))
+        (ADVP-LOC (IN across) 
+          (NP (DT the) (NN country) ))
+        (PP-DTV (TO to) 
+          (NP 
+            (NP (NNS students) )
+            (PP 
+              (ADVP (RB generally) )
+              (PP (IN from) 
+                (NP (NN kindergarten) ))
+              (PP (IN through) 
+                (NP (JJ eighth) (NN grade) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) 
+        (ADJP (RBS most) (RB widely) (JJ used) ))
+      (PP (IN of) 
+        (NP (DT these) (NNS tests) )))
+    (VP (VBP are) 
+      (NP-PRD 
+        (NP 
+          (NP (NNP Macmillan\/McGraw) (POS 's) )
+          (NX 
+            (NX-TTL (NNP CAT) )
+            (CC and) 
+            (NX-TTL 
+              (NP (NNP Comprehensive) (NN Test) )
+              (PP (IN of) 
+                (NP (JJ Basic) (NNS Skills) )))))
+        (: ;) 
+        (NP 
+          (NP (DT the) 
+            (NX-TTL 
+              (NP (NNP Iowa) (NN Test) )
+              (PP (IN of) 
+                (NP (JJ Basic) (NNS Skills) ))))
+          (, ,) 
+          (PP (IN by) 
+            (NP (NNP Houghton) (NNP Mifflin) (NNP Co.) )))
+        (: ;) 
+        (CC and)
+        (NP 
+          (NP (NNP Harcourt) (NNP Brace) (NNP Jovanovich) (NNP Inc.) (POS 's) )
+          (NX 
+            (NX-TTL (NNP Metropolitan) (NNP Achievement) (NNP Test) )
+            (CC and) 
+            (NX-TTL (NNP Stanford) (NNP Achievement) (NNP Test) )))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ-1 
+        (NP (NNS Sales) (NNS figures) )
+        (PP (IN of) 
+          (NP (DT the) (JJ test-prep) (NNS materials) )))
+      (VP (VBP are) (RB n't) 
+        (VP (JJ known) 
+          (NP (-NONE- *-1) ))))
+    (, ,) (CC but) 
+    (S 
+      (NP-SBJ 
+        (NP (PRP$ their) (NN reach) )
+        (PP-DIR (IN into) 
+          (NP (NNS schools) )))
+      (VP (VBZ is) 
+        (ADJP-PRD (JJ significant) )))
+    (. .) ))
+( (S 
+    (PP-LOC (IN In) 
+      (NP 
+        (NP (NNP Arizona) )
+        (, ,) 
+        (NP (NNP California) )
+        (, ,) 
+        (NP (NNP Florida) )
+        (, ,) 
+        (NP (NNP Louisiana) )
+        (, ,) 
+        (NP (NNP Maryland) )
+        (, ,) 
+        (NP (NNP New) (NNP Jersey) )
+        (, ,) 
+        (NP (NNP South) (NNP Carolina) )
+        (CC and) 
+        (NP (NNP Texas) )))
+    (, ,) 
+    (NP-SBJ (NNS educators) )
+    (VP (VBP say) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP they) )
+          (VP (VBP are) 
+            (NP-PRD (JJ common) (NN classroom) (NNS tools) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NN Macmillan\/McGraw) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 (`` ``) 
+            (NP 
+              (QP (RB well) (IN over) (CD 10) (CD million) ))
+            ('' '') 
+            (PP (IN of) 
+              (NP (PRP$ its) 
+                (NX-TTL (NNP Scoring) (NNP High) )
+                (JJ test-preparation) (NNS books) )))
+          (VP (VBP have) 
+            (VP (VBN been) 
+              (VP (VBN sold) 
+                (NP (-NONE- *-1) )
+                (PP-TMP (IN since) 
+                  (NP 
+                    (NP (PRP$ their) (NN introduction) )
+                    (ADVP-TMP 
+                      (NP (CD 10) (NNS years) )
+                      (RB ago) )))
+                (, ,) 
+                (PP (IN with) 
+                  (FRAG 
+                    (NP-SBJ (JJS most) (NNS sales) )
+                    (PP-TMP (IN in) 
+                      (NP (DT the) (JJ last) (CD five) (NNS years) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 
+      (NP 
+        (QP (IN About) (CD 20,000) )
+        (NNS sets) )
+      (PP (IN of) 
+        (NP 
+          (NP 
+            (NX-TTL (NNP Learning) (NNPS Materials) )
+            (NNS teachers) (POS ') )
+          (NNS binders) )))
+    (VP (VBP have) 
+      (ADVP (RB also) )
+      (VP (VBN been) 
+        (VP (VBN sold) 
+          (NP (-NONE- *-1) )
+          (PP-TMP (IN in) 
+            (NP (DT the) (JJ past) (CD four) (NNS years) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (NNS materials) )
+      (PP-LOC (IN in) 
+        (NP (DT each) (NN set) )))
+    (VP (VBP reach) 
+      (NP 
+        (QP (IN about) (CD 90) )
+        (NNS students) ))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP-TTL (NNP Scoring) (NNP High) )
+      (CC and) 
+      (NP-TTL (NNP Learning) (NNPS Materials) ))
+    (VP (VBP are) 
+      (NP-PRD (DT the) (JJS best-selling) (NN preparation) (NNS tests) ))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Michael) (NNP Kean) )
+      (, ,) 
+      (NP 
+        (NP (NN director) )
+        (PP (IN of) 
+          (NP (NN marketing) ))
+        (PP (IN for) 
+          (NP 
+            (NP (NNP CTB) (NNP Macmillan\/McGraw) )
+            (, ,) 
+            (NP 
+              (NP (DT the) (NNP Macmillan\/McGraw) (NN division) )
+              (SBAR 
+                (WHNP-106 (WDT that) )
+                (S 
+                  (NP-SBJ (-NONE- *T*-106) )
+                  (VP (VBZ publishes) 
+                    (NP-TTL (NNP Learning) (NNPS Materials) )))))
+            (, ,) ))))
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 (PRP it) )
+          (VP (VBZ is) (RB n't) 
+            (VP (VBN aimed) 
+              (NP (-NONE- *-1) )
+              (PP-CLR (IN at) 
+                (S-NOM 
+                  (NP-SBJ (-NONE- *) )
+                  (VP (VBG improving) 
+                    (NP (NN test) (NNS scores) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP He) )
+    (ADVP (RB also) )
+    (VP (VBD asserted) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ-1 (JJ exact) (NNS questions) )
+          (VP (VBD were) (RB n't) 
+            (VP (VBN replicated) 
+              (NP (-NONE- *-1) ))))))
+    (. .) ))
+( (S 
+    (SBAR-TMP 
+      (WHADVP-1 (WRB When) )
+      (S 
+        (NP-SBJ-2 (-NONE- *) )
+        (VP (VBN referred) 
+          (NP (-NONE- *-2) )
+          (PP-CLR (TO to) 
+            (NP 
+              (NP (DT the) (NNS questions) )
+              (SBAR 
+                (WHNP-107 (WDT that) )
+                (S 
+                  (NP-SBJ (-NONE- *T*-107) )
+                  (VP (VBN matched) )))))
+          (ADVP-TMP (-NONE- *T*-1) ))))
+    (, ,) 
+    (NP-SBJ (PRP he) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP it) )
+          (VP (VBD was) 
+            (ADJP-PRD (JJ coincidental) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP 
+        (NP (NNP Mr.) (NNP Kaminski) )
+        (, ,) 
+        (NP (DT the) (NN schoolteacher) ))
+      (, ,) 
+      (CC and)
+      (NP 
+        (NP (NNP William) (NNP Mehrens) )
+        (, ,) 
+        (NP (DT a) (NNP Michigan) (NNP State) (NNP University) (NN education) (NN professor) ))
+      (, ,) )
+    (VP (VBD concluded) 
+      (PP-LOC (IN in) 
+        (NP (DT a) (NN study) ))
+      (NP-TMP (JJ last) (NNP June) )
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ-2 
+            (NP (NNP CAT) (NN test) (NNS versions) )
+            (PP (IN of) 
+              (NP 
+                (NP-TTL (NNP Scoring) (NNP High) )
+                (CC and) 
+                (NP-TTL (NNP Learning) (NNPS Materials) ))))
+          (VP (MD should) (RB n't) 
+            (VP (VB be) 
+              (VP (VBN used) 
+                (NP (-NONE- *-2) )
+                (PP-LOC (IN in) 
+                  (NP (DT the) (NN classroom) ))
+                (PP-PRP (IN because) (IN of) 
+                  (NP 
+                    (NP (PRP$ their) (NN similarity) )
+                    (PP (TO to) 
+                      (NP (DT the) (JJ actual) (NN test) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (PRP They) )
+    (VP (VBD devised) 
+      (NP (DT a) (JJ 69-point) (NN scale) )
+      (PRN (: --) 
+        (S-ADV 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (VBG awarding) 
+            (NP (CD one) (NN point) )
+            (PP-CLR (IN for) 
+              (NP 
+                (NP (DT each) (NN subskill) )
+                (VP (VBN measured) 
+                  (NP (-NONE- *) )
+                  (PP-LOC (IN on) 
+                    (NP (DT the) (NNP CAT) (NN test) )))))))
+        (: --) )
+      (S-PRP 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB rate) 
+            (NP 
+              (NP (DT the) (NN closeness) )
+              (PP (IN of) 
+                (NP (NN test) (NNS preparatives) ))
+              (PP (TO to) 
+                (NP (DT the) (NN fifth-grade) (NNP CAT) )))))))
+    (. .) ))
+( (S-1 
+    (SBAR-PRP (IN Because) 
+      (S 
+        (NP-SBJ 
+          (NP (JJ many) )
+          (PP (IN of) 
+            (NP (DT these) (NNS subskills) ))
+          (PRN (: --) 
+            (NP 
+              (NP 
+                (NP 
+                  (NP (JJ the) (NN symmetry) )
+                  (PP (IN of) 
+                    (NP (JJ geometrical) (NNS figures) )))
+                (, ,) 
+                (NP 
+                  (NP (JJ metric) (NN measurement) )
+                  (PP (IN of) 
+                    (NP (NN volume) )))
+                (, ,) (CC or) 
+                (NP (NN pie) 
+                  (CC and)
+                  (NN bar) (NNS graphs) )
+                (, ,) )
+              (PP (IN for) 
+                (NP (NN example) )))
+            (: --) ))
+        (VP (NN are) 
+          (NP-PRD 
+            (NP 
+              (ADVP (RB only) )
+              (DT a) (JJ small) (NN part) )
+            (PP (IN of) 
+              (NP (DT the) (JJ total) (NN fifth-grade) (NN curriculum) ))))))
+    (PRN 
+      (, ,)
+      (NP-SBJ (NNP Mr.) (NNP Kaminski) )
+      (VP (VBZ says) 
+        (SBAR (-NONE- 0) 
+          (S (-NONE- *T*-1) )))
+      (, ,) )
+    (NP-SBJ (DT the) (NN preparation) (NNS kits) )
+    (VP (MD would) (RB n't) 
+      (VP (VB replicate) 
+        (NP (RB too) (JJ many) )
+        (, ,) 
+        (SBAR-ADV (IN if) 
+          (S 
+            (NP-SBJ (PRP$ their) (JJ real) (NN intent) )
+            (VP (VBD was) 
+              (NP-PRD 
+                (NP (JJ general) (NN instruction) )
+                (CC or) 
+                (ADVP (RB even) )
+                (NP 
+                  (NP (JJ general) (NN familiarization) )
+                  (PP (IN with) 
+                    (NP (NN test) (NNS procedures) )))))))))
+    (. .) ))
+( (S (CC But) 
+    (NP-TTL-SBJ (NNP Learning) (NNPS Materials) )
+    (VP (VBD matched) 
+      (PP-LOC (IN on) 
+        (NP 
+          (QP (CD 66.5) (IN of) (CD 69) )
+          (NNS subskills) )))
+    (. .) ))
+( (S 
+    (NP-TTL-SBJ (NNP Scoring) (NNP High) )
+    (VP (VBD matched) 
+      (PP-LOC (IN on) 
+        (NP (CD 64.5) )))
+    (. .) ))
+( (S 
+    (PP-LOC (IN In) 
+      (NP 
+        (NP (NNP CAT) (NNS sections) )
+        (SBAR 
+          (WHADVP-2 (WRB where) )
+          (S 
+            (NP-SBJ-1 
+              (NP 
+                (NP (NNS students) (POS ') )
+                (NN knowledge) )
+              (PP (IN of) 
+                (NP (JJ two-letter) (JJ consonant) (NNS sounds) )))
+            (VP (VBZ is) 
+              (VP (VBN tested) 
+                (NP (-NONE- *-1) )
+                (ADVP-LOC (-NONE- *T*-2) )))))))
+    (, ,) 
+    (NP-SBJ (DT the) (NNS authors) )
+    (VP (VBD noted) 
+      (SBAR (IN that) 
+        (S 
+          (NP-TTL-SBJ (NNP Scoring) (NNP High) )
+          (VP (VBD concentrated) 
+            (PP-CLR (IN on) 
+              (NP 
+                (NP (DT the) (JJ same) (NNS sounds) )
+                (SBAR 
+                  (WHNP-4 (IN that) )
+                  (S 
+                    (NP-SBJ (DT the) (NN test) )
+                    (VP (VBZ does) 
+                      (VP (-NONE- *?*) 
+                        (NP (-NONE- *T*-4) )))))))
+            (: --) 
+            (PP (IN to) 
+              (NP 
+                (NP (DT the) (NN exclusion) )
+                (PP (IN of) 
+                  (NP 
+                    (NP (JJ other) (NNS sounds) )
+                    (SBAR 
+                      (WHNP-3 (IN that) )
+                      (S 
+                        (NP-SBJ (JJ fifth) (NNS graders) )
+                        (VP (MD should) 
+                          (VP (VB know) 
+                            (NP (-NONE- *T*-3) )))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP-TTL (NNP Learning) (NNPS Materials) )
+      (PP (IN for) 
+        (NP (DT the) (NN fifth-grade) )))
+    (VP (VBZ contains) 
+      (NP 
+        (NP 
+          (QP (IN at) (JJS least) (DT a) (NN dozen) )
+          (NNS examples) )
+        (PP (IN of) 
+          (NP 
+            (NP (JJ exact) (NNS matches) )
+            (CC or) 
+            (NP 
+              (NP (JJ close) (NNS parallels) )
+              (PP (TO to) 
+                (NP (NN test) (NNS items) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Rick) (NNP Brownell) )
+      (, ,) 
+      (NP 
+        (NP (JJ senior) (NN editor) )
+        (PP (IN of) 
+          (NP-TTL (NNP Scoring) (NNP High) )))
+      (, ,) )
+    (VP (VBZ says) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ (NNPS Messrs.) (NNP Kaminski) 
+            (CC and)
+            (NNP Mehrens) )
+          (VP (VBP are) 
+            (VP (VBG ignoring) (`` ``) 
+              (NP 
+                (NP (DT the) (NN need) )
+                (SBAR 
+                  (WHNP-1 (-NONE- 0) )
+                  (S 
+                    (NP-SBJ (NNS students) )
+                    (VP (VBP have) 
+                      (NP (-NONE- *T*-1) )
+                      (PP (IN for) 
+                        (S-NOM 
+                          (NP-SBJ (-NONE- *) )
+                          (VP (VBG becoming) 
+                            (ADJP-PRD (JJ familiar) 
+                              (PP (IN with) 
+                                (NP 
+                                  (NP (NNS tests) )
+                                  (CC and) 
+                                  (NP (NN testing) (NN format) ))))))))))))))))
+    (. .) ('' '') ))
+( (S 
+    (S 
+      (NP-SBJ (PRP He) )
+      (VP (VBD said) 
+        (SBAR (-NONE- 0) 
+          (S 
+            (NP-SBJ-1 
+              (NP (NNS authors) )
+              (PP (IN of) 
+                (NP (NNP Scoring) (NNP High) )))
+            (`` ``) 
+            (VP 
+              (ADVP-MNR (RB scrupulously) )
+              (VBP avoid) ('' '') 
+              (S 
+                (NP-SBJ (-NONE- *-1) )
+                (VP (VBG replicating) 
+                  (NP (JJ exact) (NNS questions) ))))))))
+    (, ,) (CC but) 
+    (S 
+      (NP-SBJ (PRP he) )
+      (VP (VBZ does) (RB n't) 
+        (VP (VB deny) 
+          (SBAR (IN that) 
+            (S 
+              (NP-SBJ (DT some) (NNS items) )
+              (VP (VBP are) 
+                (ADJP-PRD (JJ similar) )))))))
+    (. .) ))
+( (S 
+    (SBAR-TMP 
+      (WHADVP-1 (WRB When) )
+      (S 
+        (NP-TTL-SBJ (NNP Scoring) (NNP High) )
+        (ADVP-TMP (RB first) )
+        (VP (VBD came) 
+          (ADVP-CLR (RB out) )
+          (PP-TMP (IN in) 
+            (NP (CD 1979) ))
+          (ADVP-TMP (-NONE- *T*-1) ))))
+    (, ,) 
+    (NP-SBJ (PRP it) )
+    (VP (VBD was) 
+      (NP-PRD 
+        (NP (DT a) (NN publication) )
+        (PP (IN of) 
+          (NP (NNP Random) (NNP House) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP McGraw-Hill) )
+    (VP (VBD was) 
+      (ADJP-PRD (JJ outraged) ))
+    (. .) ))
+( (S 
+    (PP-LOC (IN In) 
+      (NP 
+        (NP (DT a) (CD 1985) (NN advisory) )
+        (PP (TO to) 
+          (NP (NNS educators) ))))
+    (, ,) 
+    (NP-SBJ (NNP McGraw-Hill) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-TTL-SBJ-1 (NNP Scoring) (NNP High) )
+          (VP (MD should) (RB n't) 
+            (VP (VB be) 
+              (VP (VBN used) 
+                (NP-TTL (-NONE- *-1) )
+                (SBAR-PRP (IN because) 
+                  (S 
+                    (NP-SBJ (PRP it) )
+                    (VP (VBD represented) 
+                      (NP 
+                        (NP (DT a) (`` ``) (JJ parallel) (NN form) ('' '') )
+                        (PP (IN of) 
+                          (NP (DT the) (NNP CAT) 
+                            (CC and)
+                            (NNP CTBS) (NNS tests) ))))))))))))
+    (. .) ))
+( (S (CC But) 
+    (PP-TMP (IN in) 
+      (NP (CD 1988) ))
+    (, ,) 
+    (NP-SBJ (NNP McGraw-Hill) )
+    (VP (VBD purchased) 
+      (NP 
+        (NP (DT the) (NNP Random) (NNP House) (NN unit) )
+        (SBAR 
+          (WHNP-108 (WDT that) )
+          (S 
+            (NP-SBJ (-NONE- *T*-108) )
+            (VP (VBZ publishes) 
+              (NP 
+                (NP-TTL (NNP Scoring) (NNP High) )
+                (, ,) 
+                (SBAR 
+                  (WHNP-109 (WDT which) )
+                  (S 
+                    (NP-SBJ (-NONE- *T*-109) )
+                    (ADVP-TMP (RBR later) )
+                    (VP (VBD became) 
+                      (NP-PRD 
+                        (NP (NN part) )
+                        (PP (IN of) 
+                          (NP (NNP Macmillan\/McGraw) ))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNPS Messrs.) (NNP Brownell) 
+      (CC and)
+      (NNP Kean) )
+    (VP (VBP say) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP they) )
+          (VP (VBP are) 
+            (ADJP-PRD (JJ unaware) 
+              (PP (IN of) 
+                (NP 
+                  (NP (DT any) (NNS efforts) 
+                    (S (-NONE- *ICH*-1) ))
+                  (PP (IN by) 
+                    (NP (NNP McGraw-Hill) ))
+                  (S-1 
+                    (NP-SBJ (-NONE- *) )
+                    (VP (TO to) 
+                      (VP (VB modify) (CC or) (VB discontinue) 
+                        (NP-TTL (NNP Scoring) (NNP High) )))))))))))
+    (. .) ))

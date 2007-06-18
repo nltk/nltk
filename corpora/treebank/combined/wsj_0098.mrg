@@ -1,0 +1,572 @@
+
+( (S 
+    (NP-SBJ-1 (DT The) (NNP House) )
+    (VP (VBD voted) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB boost) 
+            (NP (DT the) (JJ federal) (JJ minimum) (NN wage) ))))
+      (PP-TMP (IN for) 
+        (NP 
+          (NP (DT the) (JJ first) (NN time) )
+          (PP-TMP (IN since) 
+            (NP (JJ early) (CD 1981) ))))
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (VBG casting) 
+          (NP 
+            (NP (DT a) (JJ solid) (CD 382-37) (NN vote) )
+            (PP (IN for) 
+              (NP 
+                (NP (DT a) (NN compromise) (NN measure) )
+                (VP (VBN backed) 
+                  (NP (-NONE- *) )
+                  (PP (IN by) 
+                    (NP-LGS (NNP President) (NNP Bush) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN vote) )
+    (VP (VBD came) 
+      (PP-TMP (IN after) 
+        (NP 
+          (NP (DT a) (NN debate) )
+          (ADJP (JJ replete) 
+            (PP (IN with) 
+              (NP 
+                (NP (NNS complaints) )
+                (PP (IN from) 
+                  (NP 
+                    (NP (DT both) (NNS proponents) 
+                      (CC and)
+                      (NNS critics) )
+                    (PP (IN of) 
+                      (NP 
+                        (NP (DT a) (JJ substantial) (NN increase) )
+                        (PP-LOC (IN in) 
+                          (NP (DT the) (NN wage) (NN floor) ))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNS Advocates) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (DT the) (JJ 90-cent-an-hour) (NN rise) )
+            (, ,) 
+            (PP-DIR (TO to) 
+              (NP 
+                (NP ($ $) (CD 4.25) (-NONE- *U*) )
+                (NP-ADV (DT an) (NN hour) )))
+            (PP-TMP (IN by) 
+              (NP (NNP April) (CD 1991) ))
+            (, ,) )
+          (VP (VBZ is) 
+            (ADJP-PRD (RB too) (JJ small) )
+            (PP (IN for) 
+              (NP (DT the) (VBG working) (NN poor) )))))
+      (, ,) 
+      (SBAR-ADV (IN while) 
+        (S 
+          (NP-SBJ (NNS opponents) )
+          (VP (VBD argued) 
+            (SBAR (IN that) 
+              (S 
+                (NP-SBJ (DT the) (NN increase) )
+                (VP (MD will) 
+                  (ADVP (RB still) )
+                  (VP 
+                    (VP (VB hurt) 
+                      (NP (JJ small) (NN business) ))
+                    (CC and) 
+                    (VP (VB cost) 
+                      (NP 
+                        (NP 
+                          (QP (JJ many) (NNS thousands) ))
+                        (PP (IN of) 
+                          (NP (NNS jobs) ))))))))))))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ (DT the) (NN legislation) )
+    (VP (VBD reflected) 
+      (NP 
+        (NP (DT a) (NN compromise) )
+        (VP (VBN agreed) 
+          (PP (TO to) 
+            (NP (-NONE- *) ))
+          (PP-TMP (IN on) 
+            (NP (NNP Tuesday) ))
+          (PP (IN by) 
+            (NP-LGS 
+              (NP (NNP President) (NNP Bush) )
+              (CC and) 
+              (NP 
+                (NP (JJ Democratic) (NNS leaders) )
+                (PP-LOC (IN in) 
+                  (NP (NNP Congress) )))))
+          (, ,) 
+          (SBAR-TMP (IN after) 
+            (S 
+              (NP-SBJ (JJ congressional) (NNPS Republicans) )
+              (VP (VBD urged) 
+                (NP-2 (DT the) (NNP White) (NNP House) )
+                (S 
+                  (NP-SBJ (-NONE- *-2) )
+                  (VP (TO to) 
+                    (VP (VB bend) 
+                      (NP (DT a) (NN bit) )
+                      (PP-DIR (IN from) 
+                        (NP (PRP$ its) (JJ previous) (NN resistance) 
+                          (S 
+                            (NP-SBJ (-NONE- *) )
+                            (VP (TO to) 
+                              (VP (VB compromise) ))))))))))))))
+    (. .) ))
+( (S (IN So) 
+    (NP-SBJ (DT both) (NNS sides) )
+    (VP (VBD accepted) 
+      (NP 
+        (NP (DT the) (NN compromise) )
+        (, ,) 
+        (SBAR 
+          (WHNP-259 (WDT which) )
+          (S 
+            (NP-SBJ (-NONE- *T*-259) )
+            (VP (MD would) 
+              (VP (VB lead) 
+                (PP-CLR (TO to) 
+                  (NP 
+                    (NP (DT the) (JJ first) (NN lifting) )
+                    (PP (IN of) 
+                      (NP (DT the) (JJ minimum) (NN wage) ))
+                    (SBAR-TMP (IN since) 
+                      (S 
+                        (NP-SBJ-163 (DT a) (JJ four-year) (NN law) )
+                        (VP (VBD was) 
+                          (VP (VBN enacted) 
+                            (NP (-NONE- *-163) )
+                            (PP-TMP (IN in) 
+                              (NP (CD 1977) ))
+                            (, ,) 
+                            (S-ADV 
+                              (NP-SBJ (-NONE- *-163) )
+                              (VP (VBG raising) 
+                                (NP (DT the) (NN wage) )
+                                (PP-DIR (TO to) 
+                                  (NP 
+                                    (NP ($ $) (CD 3.35) (-NONE- *U*) )
+                                    (NP-ADV (DT an) (NN hour) )))
+                                (PP-DIR (IN from) 
+                                  (NP ($ $) (CD 2.65) (-NONE- *U*) ))))))))))))))))
+    (. .) ))
+( (S 
+    (PP-LOC (IN Under) 
+      (NP 
+        (NP (DT the) (NN measure) )
+        (VP (VBD passed) 
+          (NP (-NONE- *) )
+          (NP-TMP (NN yesterday) ))))
+    (, ,) 
+    (NP-SBJ (DT the) (JJ minimum) (NN wage) )
+    (VP (MD would) 
+      (VP (VB rise) 
+        (PP-DIR (TO to) 
+          (NP ($ $) (CD 3.80) (-NONE- *U*) ))
+        (NP-TMP (JJ next) (NNP April) )))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (DT The) (NNP Senate) )
+    (VP 
+      (VP (VBZ plans) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB take) 
+              (PRT (RP up) )
+              (NP (DT the) (NN measure) )
+              (ADVP-TMP (RB quickly) )))))
+      (CC and) 
+      (VP (VBZ is) 
+        (VP (VBN expected) 
+          (S 
+            (NP-SBJ (-NONE- *-1) )
+            (VP (TO to) 
+              (VP (VB pass) 
+                (NP (PRP it) )))))))
+    (. .) ))
+( (S (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ (EX There) )
+      (VP (VBP are) 
+        (NP-PRD 
+          (NP (DT no) (NNS smiles) )
+          (PP (IN about) 
+            (NP (DT this) (NN bill) )))))
+    (, ,) ('' '') 
+    (NP-SBJ 
+      (NP (NNP Rep.) (NNP Pat) (NNP Williams) )
+      (PRN 
+        (-LRB- -LRB-)
+        (NP (NNP D.) )
+        (, ,) 
+        (NP-LOC (NNP Mont) (. .) )
+        (-RRB- -RRB-) ))
+    (VP (VBD said) 
+      (S (-NONE- *T*-1) )
+      (PP-TMP (IN during) 
+        (NP (NNP House) (NN floor) (NN debate) ))
+      (NP-TMP (NN yesterday) ))
+    (. .) ))
+( (S (CC But) (`` ``) 
+    (SBAR-PRP (IN because) 
+      (S 
+        (NP-SBJ (PRP it) )
+        (VP (VBZ 's) 
+          (NP-PRD 
+            (NP (DT all) )
+            (SBAR 
+              (WHNP-1 (-NONE- 0) )
+              (S 
+                (NP-SBJ (PRP we) )
+                (VP (VBP 've) 
+                  (VP (VBN got) 
+                    (NP (-NONE- *T*-1) )))))))))
+    (, ,) 
+    (NP-SBJ-2 (PRP I) )
+    (VP (VBP 'm) 
+      (VP (VBG going) 
+        (S 
+          (NP-SBJ (-NONE- *-2) )
+          (VP (TO to) 
+            (VP (VB vote) 
+              (PP-CLR (IN for) 
+                (NP (PRP it) )))))))
+    (. .) ('' '') ))
+( (S 
+    (S-TPC-1 
+      (SBAR-ADV (IN While) 
+        (S 
+          (NP-SBJ-164 (DT the) (JJ minimum) (NN wage) )
+          (VP (VBD had) 
+            (ADVP (RB traditionally) )
+            (VP (VBN been) 
+              (VP (VBN pegged) 
+                (NP (-NONE- *-164) )
+                (PP-CLR (IN at) 
+                  (NP 
+                    (ADVP (PDT half) )
+                    (DT the) (JJ average) (NNP U.S.) (NN manufacturing) (NN wage) )))))))
+      (, ,) 
+      (NP-SBJ 
+        (NP (DT the) (NN level) )
+        (PP (IN of) 
+          (NP 
+            (NP ($ $) (CD 4.25) (-NONE- *U*) )
+            (NP-ADV (DT an) (NN hour) ))))
+      (PP-TMP (IN in) 
+        (NP (CD 1991) ))
+      (VP (MD will) 
+        (ADVP-TMP (RB still) )
+        (VP (VB be) 
+          (NP-PRD 
+            (NP (JJR less) )
+            (PP (IN than) 
+              (NP 
+                (NP (CD 35) (NN %) )
+                (PP (IN of) 
+                  (NP (JJ average) (NN factory) (NN pay) ))))))))
+    (, ,) 
+    (NP-SBJ (NNP Mr.) (NNP Williams) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ 
+      (NP (NNP Rep.) (NNP Marge) (NNP Roukema) )
+      (PRN 
+        (-LRB- -LRB-)
+        (NP (NNP R.) )
+        (, ,) 
+        (NP-LOC (NNP N.J) (. .) )
+        (-RRB- -RRB-) ))
+    (ADVP (RB instead) )
+    (VP (VBD praised) 
+      (NP 
+        (NP 
+          (NP (DT the) (NNP House) (POS 's) )
+          (NN acceptance) )
+        (PP (IN of) 
+          (NP 
+            (NP (DT a) (JJ new) (NN youth) (`` ``) (NN training) ('' '') (NN wage) )
+            (, ,) 
+            (NP 
+              (NP (DT a) (NN subminimum) )
+              (SBAR 
+                (WHNP-1 (IN that) )
+                (S 
+                  (NP-SBJ (NNP GOP) (NNS administrations) )
+                  (VP (VBP have) 
+                    (VP (VBN sought) 
+                      (NP (-NONE- *T*-1) )
+                      (PP-TMP (IN for) 
+                        (NP (JJ many) (NNS years) )))))))))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (S-NOM-SBJ 
+        (NP-SBJ (-NONE- *) )
+        (VP (VBG Adopting) 
+          (NP (DT a) (JJ training-wage) (NN policy) )))
+      (VP (VBZ means) (`` ``) 
+        (S 
+          (NP-SBJ (-NONE- *) )
+          (VP (VBG getting) 
+            (PP-DIR (IN beyond) 
+              (NP 
+                (NP (DT the) (NN nickel) 
+                  (CC and)
+                  (NN diming) )
+                (PP (IN of) 
+                  (NP (DT the) (JJ minimum) (NN wage) ))))))))
+    (, ,) ('' '') 
+    (NP-SBJ (NNP Mrs.) (NNP Roukema) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ (NN Policy) (NNS makers) )
+      (VP (VBP regard) 
+        (NP (DT the) (NN youth) (NN wage) )
+        (PP-CLR (IN as) 
+          (S-NOM 
+            (NP-SBJ-1 (-NONE- *) )
+            (VP (VBG helping) 
+              (S 
+                (NP-SBJ (-NONE- *-1) )
+                (VP (TO to) 
+                  (VP (VB limit) 
+                    (NP 
+                      (NP (DT the) (NN loss) )
+                      (PP (IN of) 
+                        (NP (NNS jobs) ))
+                      (PP (IN from) 
+                        (NP 
+                          (NP (DT an) (NN increase) )
+                          (PP-LOC (IN in) 
+                            (NP (DT the) (JJ minimum) (NN wage) )))))))))))))
+    (, ,) (CC but) 
+    (S 
+      (NP-SBJ (PRP they) )
+      (VP (VBP have) 
+        (ADVP-TMP (RB lately) )
+        (VP (VBN touted) 
+          (NP-2 (PRP it) )
+          (PP-CLR (RB as) 
+            (ADJP (JJ necessary) 
+              (S 
+                (NP-SBJ-3 (-NONE- *-2) )
+                (VP (TO to) 
+                  (VP (VB help) 
+                    (S 
+                      (NP-SBJ (-NONE- *-3) )
+                      (VP (VB impart) 
+                        (NP (NN job) (NNS skills) )
+                        (PP-CLR (TO to) 
+                          (NP 
+                            (NP (NNS entrants) )
+                            (PP-DIR (IN into) 
+                              (NP (DT the) (NN work) (NN force) ))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NN Labor) (NNS unions) )
+      (CC and) 
+      (NP (NNPS Democrats) ))
+    (VP 
+      (VP 
+        (ADVP-TMP (RB long) )
+        (VBD fought) 
+        (NP (DT the) (NN idea) ))
+      (, ,) (CC but) 
+      (VP 
+        (ADVP-TMP (RB recently) )
+        (VBD acceded) 
+        (PP-CLR (TO to) 
+          (NP (PRP it) ))
+        (PP-LOC (IN in) 
+          (NP 
+            (NP (DT the) (NN face) )
+            (PP (IN of) 
+              (NP (NNP Bush) (NN administration) (NN insistence) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN compromise) )
+    (VP (VBZ sets) 
+      (NP (DT the) (NN training) (NN wage) )
+      (PP-CLR 
+        (PP (IN at) 
+          (NP 
+            (NP 
+              (NP ($ $) (CD 3.35) (-NONE- *U*) )
+              (NP-ADV (DT an) (NN hour) ))
+            (NP-TMP (IN next) (NNP April) )))
+        (, ,) 
+        (CC and)
+        (PP (IN at) 
+          (NP 
+            (NP 
+              (NP 
+                (NP ($ $) (CD 3.61) (-NONE- *U*) )
+                (NP-ADV (DT an) (NN hour) ))
+              (, ,) (CC or) 
+              (NP 
+                (NP (CD 85) (NN %) )
+                (PP (IN of) 
+                  (NP (DT the) (JJ minimum) (NN wage) )))
+              (, ,) )
+            (PP-TMP (IN in) 
+              (NP (NNP April) (CD 1991) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNS Employers) )
+    (VP (MD can) 
+      (VP 
+        (VP (VB pay) 
+          (NP (DT the) (NN subminimum) )
+          (PP-TMP-2 (IN for) 
+            (NP (CD 90) (NNS days) ))
+          (, ,) 
+          (PP (IN without) 
+            (NP (NN restriction) ))
+          (, ,) 
+          (PP-CLR (TO to) 
+            (NP 
+              (NP (NNS workers) )
+              (PP (IN with) 
+                (NP 
+                  (NP 
+                    (QP (JJR less) (IN than) (CD six) )
+                    (NNS months) )
+                  (PP (IN of) 
+                    (NP (NN job) (NN experience) ))))))
+          (SBAR-ADV-3 (-NONE- *NOT*) ))
+        (, ,) 
+        (CC and)
+        (VP 
+          (PP-TMP=2 (IN for) 
+            (NP (DT another) (CD 90) (NNS days) ))
+          (SBAR-ADV=3 (IN if) 
+            (S 
+              (NP-SBJ (DT the) (NN company) )
+              (VP (VBZ uses) 
+                (NP 
+                  (NP (DT a) (JJ government-certified) (NN training) (NN program) )
+                  (PP (IN for) 
+                    (NP (DT the) (JJ young) (NNS workers) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN training) (NN wage) )
+    (VP (VBZ covers) 
+      (ADVP (JJ only) )
+      (NP 
+        (NP (NNS workers) )
+        (SBAR 
+          (WHNP-260 (WP who) )
+          (S 
+            (NP-SBJ (-NONE- *T*-260) )
+            (VP (VBP are) 
+              (ADJP-PRD 
+                (NP-ADV 
+                  (QP (CD 16) (TO to) (CD 19) )
+                  (NNS years) )
+                (JJ old) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NNP White) (NNP House) )
+    (ADVP-TMP (RB previously) )
+    (VP (VBD insisted) 
+      (PP-CLR (IN on) 
+        (NP 
+          (NP (DT an) (JJ unrestricted) (JJ six-month) (NN training) (NN wage) )
+          (SBAR 
+            (WHNP-1 (WDT that) )
+            (S 
+              (NP-SBJ-165 (-NONE- *T*-1) )
+              (VP (MD could) 
+                (VP (VB be) 
+                  (VP (VBN paid) 
+                    (NP (-NONE- *-165) )
+                    (NP-TMP 
+                      (NP (DT any) (NN time) )
+                      (SBAR 
+                        (WHADVP-2 (-NONE- 0) )
+                        (S 
+                          (NP-SBJ 
+                            (NP (DT a) (NN worker) )
+                            (PP (IN of) 
+                              (NP (DT any) (NN age) )))
+                          (VP (VBD took) 
+                            (NP (DT a) (JJ new) (NN job) )
+                            (ADVP-TMP (-NONE- *T*-2) )))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 
+      (NP (DT The) (NNP U.S.) (NNP Chamber) )
+      (PP (IN of) 
+        (NP (NNP Commerce) )))
+    (, ,) 
+    (S-ADV 
+      (NP-SBJ (-NONE- *-1) )
+      (ADVP-TMP (RB still) )
+      (ADJP-PRD (VBN opposed) 
+        (PP (TO to) 
+          (NP (DT any) (NN mininum-wage) (NN increase) ))))
+    (, ,) 
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (DT the) (NN compromise) (NN plan) 
+            (S 
+              (NP-SBJ (-NONE- *) )
+              (VP (TO to) 
+                (VP (VB lift) 
+                  (NP (DT the) (NN wage) (NN floor) )
+                  (NP-EXT (CD 27) (NN %) )
+                  (PP-MNR (IN in) 
+                    (NP (CD two) (NNS stages) ))
+                  (PP-TMP (IN between) 
+                    (NP 
+                      (NP (NNP April) (CD 1990) )
+                      (CC and) 
+                      (NP (NNP April) (CD 1991) )))))))
+          (`` ``) 
+          (VP 
+            (VP (MD will) 
+              (VP (VB be) 
+                (ADJP-PRD (JJ impossible) 
+                  (SBAR (IN for) 
+                    (S 
+                      (NP-SBJ (JJ many) (NNS employers) )
+                      (VP (TO to) 
+                        (VP (VB accommodate) )))))))
+            (CC and) 
+            (VP (MD will) 
+              (VP (VB result) 
+                (PP-CLR (IN in) 
+                  (NP 
+                    (NP 
+                      (NP (DT the) (NN elimination) )
+                      (PP (IN of) 
+                        (NP (NNS jobs) ))
+                      (PP (IN for) 
+                        (NP (JJ American) (NNS workers) )))
+                    (CC and) 
+                    (NP 
+                      (NP (JJR higher) (NNS prices) )
+                      (PP (IN for) 
+                        (NP (JJ American) (NNS consumers) )))))))))))
+    (. .) ))

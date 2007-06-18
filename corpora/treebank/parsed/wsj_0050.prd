@@ -1,0 +1,47 @@
+
+
+( (S (NP-SBJ Cooper Tire & Rubber Co.)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP has
+                      (VP reached
+                          (NP (NP an agreement
+				  (S *ICH*-1))
+			      (PP in
+				  (NP principle))
+			      (S-1 (NP-SBJ *)
+				   (VP to
+				       (VP buy
+					   (NP (NP (NP buildings)
+						   and
+						   (NP related property))
+					       (PP-LOC in
+						       (NP (NP Albany)
+							   ,
+							   (NP Ga.)
+							   ,)))
+					   (PP-CLR from
+						   (NP Bridgestone/Firestone Inc)))))))))))
+     .))
+( (S (NP-SBJ-1 Terms)
+     (VP were 
+	 n't
+         (VP disclosed
+	     (NP *-1)))
+     .))
+( (S (NP-SBJ The tire maker)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ the buildings)
+                  (VP consist
+                      (PP-CLR of
+			      (NP (NP (QP 1.8 million) 
+				      square feet)
+				  (PP of
+				      (NP office , manufacturing and warehousing space))
+				  (PP-LOC on
+					  (NP (NP 353 acres)
+					      (PP of
+						  (NP land))))))))))
+     .))
