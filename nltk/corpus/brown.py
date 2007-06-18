@@ -103,7 +103,7 @@ def demo():
     print 'Words from b:', d2[220:240]
                        
     d3 = read('c', grouped_by_sent=False, tagged=False)
-    print 'Untagged words from c:', d2[220:240]
+    print 'Untagged words from c:', d3[220:240]
                        
 if __name__ == '__main__':
     demo()
