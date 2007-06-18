@@ -60,9 +60,28 @@ Parsed:
       (. .) ))
 """
 
-def read_document(name):
-    filename = find_corpus_file('treebank', name)
-    return StreamBackedCorpusView(filename, treebank_parse_tokenizer)
+documents = dict([('wsj_%04d' % i, 'Wall Street Journal document %d' % i)
+                   for i in range(1, 100)])
+
+def read_document(name, format='combined'):
+    if format == 'combined':
+        filename = find_corpus_file('treebank/combined', name, '.mrg')
+        return StreamBackedCorpusView(filename, parsed_treebank_tokenizer)
+    elif format == 'parsed':
+        filename = find_corpus_file('treebank/parsed', name, '.prd')
+        return StreamBackedCorpusView(filename, parsed_treebank_tokenizer)
+    elif format == 'chunked':
+        filename = find_corpus_file('treebank/tagged', name, '.pos')
+        return StreamBackedCorpusView(filename, chunked_treebank_tokenizer)
+    elif format == 'tagged':
+        filename = find_corpus_file('treebank/tagged', name, '.pos')
+        return StreamBackedCorpusView(filename, tagged_treebank_tokenizer)
+    elif format == 'raw':
+        filename = find_corpus_file('treebank/raw', name)
+        return StreamBackedCorpusView(filename, raw_treebank_tokenizer)
+    else:
+        raise ValueError('Expected one of the following formats:\n'
+                         'combined parsed chunked tagged raw')
 read = read_document
 
 def treebank_bracket_parse(t):
@@ -73,93 +92,46 @@ def treebank_bracket_parse(t):
         # strip first and last brackets before parsing
         return tree.bracket_parse(t.strip()[1:-1]) 
 
-def treebank_parse_tokenizer(stream):
+def parsed_treebank_tokenizer(stream):
     return [treebank_bracket_parse(t) for t in 
             tokenize_sexpr(stream)]
 
-def chunked(files = 'chunked', basedir = None):
-    """
-    @param files: One or more treebank files to be processed
-    @type files: L{string} or L{tuple(string)}
-    @rtype: iterator over L{tree}
-    """       
+def chunked_treebank_tokenizer(stream):
+    return [chunk.tagstr2tree(t) for t in
+            tokenize.blankline(stream.read())]
 
-    # Just one file to process?  If so convert to a tuple so we can iterate
-    if type(files) is str: files = (files,)
+def tagged_treebank_tokenizer(stream):
+    return [[tag2tuple(t) for t in tokenize.whitespace(sent)
+             if t != '[' and t != ']']
+            for sent in tokenize.blankline(stream.read())]
 
-    if not basedir: basedir = get_basedir()
-
-    for file in files:
-        path = os.path.join(basedir, "treebank", file)
-        f = open_corpus(path)
-        for t in tokenize.blankline(f.read()):
-            yield chunk.tagstr2tree(t)
-
-def tagged(files = 'chunked', basedir = None):
-    """
-    @param files: One or more treebank files to be processed
-    @type files: L{string} or L{tuple(string)}
-    @rtype: iterator over L{list(tuple)}
-    """       
-
-    # Just one file to process?  If so convert to a tuple so we can iterate
-    if type(files) is str: files = (files,)
-
-    if not basedir: basedir = get_basedir()
-
-    for file in files:
-        path = os.path.join(get_basedir(), "treebank", file)
-        f = open_corpus(path)
-        for sent in tokenize.blankline(f.read()):
-            l = []
-            for t in tokenize.whitespace(sent):
-                if (t != '[' and t != ']'):
-                    l.append(tag2tuple(t))
-            yield l
-
-def raw(files = 'raw', basedir = None):
-    """
-    @param files: One or more treebank files to be processed
-    @type files: L{string} or L{tuple(string)}
-    @rtype: iterator over L{list(string)}
-    """       
-
-    # Just one file to process?  If so convert to a tuple so we can iterate
-    if type(files) is str: files = (files,)
-
-    if not basedir: basedir = get_basedir()
-
-    for file in files:
-        path = os.path.join(get_basedir(), "treebank", file)
-        f = open_corpus(path)
-        for sent in tokenize.blankline(f.read()):
-            l = []
-            for t in tokenize.whitespace(sent):
-                l.append(t)
-            yield l
-
+def raw_treebank_tokenizer(stream):
+    return [list(tokenize.whitespace(sent))
+            for sent in tokenize.blankline(stream.read())
+            if sent.strip() != '.START']
 
 def demo():
     from nltk.corpora import treebank
     from itertools import islice
+    add_corpus_path('../../corpora')
 
     print "Parsed:"
-    for tree in islice(treebank.parsed(), 3):
+    for tree in read('wsj_0003', format='parsed')[:3]:
         print tree
     print
 
     print "Chunked:"
-    for tree in islice(treebank.chunked(), 3):
+    for tree in read('wsj_0003', format='chunked')[:3]:
         print tree
     print
 
     print "Tagged:"
-    for sent in islice(treebank.tagged(), 3):
+    for sent in read('wsj_0003', format='tagged')[:3]:
         print sent
     print
 
     print "Raw:"
-    for sent in islice(treebank.raw(), 3):
+    for sent in read('wsj_0003', format='raw')[:3]:
         print sent
     print
 
