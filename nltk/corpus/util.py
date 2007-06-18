@@ -314,7 +314,7 @@ class StreamBackedCorpusView:
 
 
 ######################################################################
-#{ Foo
+#{ Finding Corpus Directories & Files
 ######################################################################
 
 def find_corpus(corpusname):
@@ -340,42 +340,63 @@ def find_corpus_file(corpusname, filename, extension=None):
         raise ValueError('Corpus file %r in %s not found' %
                          (filename, corpusname))
 
+######################################################################
+#{ Helpers
+######################################################################
+import re
 
-# def open_corpus(*args):
-#     try:
-#         return open(*args)
-#     except IOError:
-#         print """
-#         *****************************************************************
-#           Corpus not found.  For installation instructions, please see
-#              http://nltk.sourceforge.net/index.php/Installation
-#         *****************************************************************"""
-#         raise
+def tokenize_sexpr(stream, block_size=10):
+    start = stream.tell()
+    block = ''
+    while True:
+        try:
+            block += stream.read(block_size)
+            tokens, offset = tokenize_sexpr_block(block)
+            # Skip whitespace
+            offset = re.compile(r'\s*').search(block, offset).end()
+            # Move to the end position.
+            stream.seek(start+offset)
+            # Return the list of tokens we processed
+            return tokens
+        except ValueError, e:
+            if e.args[0] == 'Block too small':
+                continue
+            else: raise
+
+def tokenize_sexpr_block(block):
+    tokens = []
+    start = end = 0
+
+    while end < len(block):
+        m = re.compile(r'\S').search(block, end)
+        if not m:
+            return tokens, end
+
+        start = m.start()
+
+        # Case 1: sexpr is not parenthesized.
+        if m.group() != '(':
+            m2 = re.compile(r'[\s()]').search(block, start)
+            if m2:
+                end = m2.start()
+            else:
+                if tokens: return tokens, end
+                raise ValueError('Block too small')
+
+        # Case 2: parenthasized sexpr.
+        else:
+            nesting = 0
+            for m in re.compile(r'[()]').finditer(block, start):
+                if m.group()=='(': nesting += 1
+                else: nesting -= 1
+                if nesting == 0:
+                    end = m.end()
+                    break
+            else:
+                if tokens: return tokens, end
+                raise ValueError('Block too small')
+
+        tokens.append(block[start:end])
+
+    return tokens, end
     
-# # Find a default base directory.
-# if 'NLTK_CORPORA' in os.environ:
-#     set_basedir(os.environ['NLTK_CORPORA'])
-# elif sys.platform.startswith('win'):
-#     if os.path.isdir('C:\\corpora'):
-#         set_basedir('C:\\corpora')
-#     elif os.path.isdir(os.path.join(sys.prefix, 'nltk', 'corpora')):
-#         set_basedir(os.path.join(sys.prefix, 'nltk', 'corpora'))
-#     elif os.path.isdir(os.path.join(sys.prefix, 'lib', 'nltk', 'corpora')):
-#         set_basedir(os.path.join(sys.prefix, 'lib', 'nltk', 'corpora'))
-#     elif os.path.isdir(os.path.join(sys.prefix, 'nltk')):
-#         set_basedir(os.path.join(sys.prefix, 'nltk'))
-#     elif os.path.isdir(os.path.join(sys.prefix, 'lib', 'nltk')):
-#         set_basedir(os.path.join(sys.prefix, 'lib', 'nltk'))
-#     else:
-#         set_basedir('C:\\corpora')
-# elif os.path.isdir('/usr/share/nltk/corpora'):
-#    set_basedir('/usr/share/nltk/corpora')
-# elif os.path.isdir('/usr/local/share/nltk/corpora'):
-#    set_basedir('/usr/local/share/nltk/corpora')
-# elif os.path.isdir('/usr/share/nltk'):
-#    set_basedir('/usr/share/nltk')
-# elif os.path.isdir('/usr/local/share/nltk'):
-#    set_basedir('/usr/local/share/nltk')
-# else:
-#     set_basedir('/usr/share/nltk/corpora')
-
