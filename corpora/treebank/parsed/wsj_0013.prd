@@ -1,0 +1,400 @@
+
+
+( (S (NP-SBJ-1 New England Electric System)
+     (VP bowed 
+	 (ADVP-DIR-CLR out)
+         (PP-CLR of
+		 (NP (NP the bidding)
+		     (PP for
+			 (NP (NP Public Service Co.)
+			     (PP of
+				 (NP New Hampshire))))))
+	 ,
+	 (S-ADV (NP-SBJ *-1)
+		(VP saying
+		    (SBAR that
+			  (S (S (NP-SBJ-2 the risks)
+				(VP were
+				    (ADJP-PRD-3 too high
+						(S *RNR*-4))))
+			     and
+			     (S (NP-SBJ=2 the potential payoff)
+				(ADVP-PRD-LOC=3 too far
+						(PP-LOC in 
+							(NP the future))
+						(S *RNR*-4)))
+			     (S-4 (NP-SBJ *)
+				  (VP to
+				      (VP justify
+					  (NP a higher offer)))))))))
+     .))
+( (S (NP-SBJ The move)
+     (VP leaves
+         (NP (NP United Illuminating Co.)
+             and
+             (NP Northeast Utilities))
+         (PP-CLR as
+		 (NP (NP the remaining outside bidders)
+		     (PP for
+			 (NP (NP (NP PS)
+				 (PP of
+				     (NP New Hampshire)))
+			     ,
+			     (SBAR (WHNP-1 which)
+				   (S (NP-SBJ *T*-1)
+				      (ADVP also)
+				      (VP has
+					  (VP proposed
+					      (NP (NP an internal reorganization plan)
+						  (PP-LOC in
+							  (NP Chapter 11 bankruptcy proceedings))
+						  (SBAR (WHPP-2 under
+								(WHNP which))
+							(S (NP-SBJ it)
+							   (VP would
+							       (VP remain
+								   (NP-PRD an independent company)
+								   (PP-LOC *T*-2)))))))))))))))
+     .))
+( (S (NP-SBJ-4 (NP New England Electric)
+	       ,
+	       (VP based
+		   (NP *)
+		   (PP-LOC-CLR in
+			       (NP (NP Westborough)
+				   ,
+				   (NP Mass.))))
+	       ,)
+     (VP had
+         (VP offered
+             (NP (NP (QP $ 2 billion) *U*)
+                 (PP *ICH*-1))
+	     (S-PRP (NP-SBJ *-4)
+		    (VP to
+			(VP acquire
+			    (NP (NP PS)
+				(PP of
+				    (NP New Hampshire))))))
+	     ,
+	     (PP-1 (ADVP well)
+		   below
+		   (NP (NP (NP the 
+			       (ADJP (QP $ 2.29 billion) *U*) 
+			       value) 
+			   (SBAR (WHNP-2 0)
+				 (S (NP-SBJ United Illuminating)
+				    (VP places
+					(NP *T*-2)
+					(PP-DIR on
+						(NP its bid))))))
+		       and
+		       (NP (NP the (QP $ 2.25 billion) *U*)
+			   (SBAR (WHNP-3 0)
+				 (S (NP-SBJ Northeast)
+				    (VP says
+					(SBAR 0
+					      (S (NP-SBJ its bid)
+						 (VP is
+						     (ADJP-PRD worth
+							       (NP *T*-3)) )))))))))))
+     .))
+( (S (S (NP-SBJ-13 United Illuminating)
+        (VP is
+            (VP based
+                (NP *-13)
+                (PP-LOC in 
+			(NP (NP New Haven)
+			    ,
+			    (NP Conn.)
+			    ,)))))
+     and
+     (S (NP-SBJ-14 Northeast)
+        (VP is
+            (VP based
+                (NP *-14)
+                (PP-LOC in 
+			(NP (NP Hartford)
+			    ,
+			    (NP Conn))))))
+     .))
+( (S (NP-SBJ (NP (NP PS)
+		 (PP of
+		     (NP New Hampshire)))
+	     ,
+	     (NP-LOC (NP Manchester)
+		     ,
+		     (NP N.H.))
+	     ,)
+     (VP values
+	 (NP its internal reorganization plan)
+	 (PP-CLR at
+		 (NP (QP about $ 2.2 billion) *U*)))
+     .))
+( (S (NP-SBJ (NP John Rowe)
+             ,
+             (NP (NP (NP president)
+		     (PP *RNR*-1)) 
+		 and 
+		 (NP (NP chief executive officer)
+		     (PP *RNR*-1))
+                 (PP-1 of
+		       (NP New England Electric)))
+             ,)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ (NP (NP the company 's)
+			      return)
+                          (PP on
+                              (NP equity)))
+                  (VP could
+                      (VP suffer
+			  (SBAR-ADV if
+				    (S (S (NP-SBJ it)
+					  (VP made
+					      (NP a higher bid)))
+				       and
+				       (S (NP-SBJ (NP its forecasts)
+						  (VP related
+						      (NP *)
+						      (PP-CLR to
+							      (NP (NP PS)
+								  (PP of
+								      (NP New Hampshire)))))
+						  (PRN --
+						       (PP such
+							   as
+							   (NP (NP (NP growth)
+								   (PP-LOC in
+									   (NP electricity demand)))
+							       and
+							       (NP improved operating efficiencies)))
+						       --))
+					  (VP did n't
+					      (VP come
+						  (ADJP-PRD true)))))))))))
+     .))
+( (S ``
+     (SBAR-TMP (WHADVP-1 When)
+	       (S (NP-SBJ-2 we)
+		  (VP evaluated
+		      (S (NP-SBJ *-2)
+			 (VP raising
+			     (NP our bid)))
+		      (ADVP-TMP *T*-1))))
+     ,
+     (S (NP-SBJ the risks)
+        (VP seemed
+            (ADJP-PRD substantial
+		      and
+		      persistent)
+	    (PP-TMP over
+		    (NP the next five years))))
+     , 
+     and
+     (S (NP-SBJ the rewards)
+        (VP seemed
+            (ADVP-LOC-PRD (NP a long way)
+			  out)))
+     .))
+( (S (S-TPC-2 (NP-SBJ That)
+	      (VP got
+		  (ADJP-PRD hard
+			    (SBAR (WHNP-1 0)
+				  (S (NP-SBJ *)
+				     (VP to
+					 (VP take
+					     (NP *T*-1))))))))
+     , 
+     ''
+     (NP-SBJ he)
+     (VP added
+	 (S *T*-2))
+     .))
+( (S (NP-SBJ Mr. Rowe)
+     (ADVP also)
+     (VP noted
+         (SBAR that
+               (S (NP-SBJ political concerns)
+                  (ADVP also)
+                  (VP worried
+                      (NP New England Electric)))))
+     .))
+( (S (S-TPC-1 (ADVP No matter 
+		    (SBAR-NOM (WHNP-16 who)
+			      (S (NP-SBJ *T*-16)
+				 (VP owns
+				     (NP (NP PS)
+					 (PP of
+					     (NP New Hampshire)))))))
+	      ,
+	      (SBAR-TMP after
+			(S (NP-SBJ it)
+			   (VP emerges
+			       (PP-DIR from
+				       (NP bankruptcy proceedings)))))
+	      (NP-SBJ its rates)
+	      (VP will
+		  (VP be
+		      (PP-LOC-PRD among
+				  (NP (NP the
+					  highest)
+				      (PP-LOC in
+					      (NP the nation)))))))
+     ,
+     (NP-SBJ he)
+     (VP said
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S ``
+     (NP-SBJ That)
+     (VP attracts
+         (NP attention))
+     ...))
+( (S (S-1 (NP-SBJ it)
+	  (VP was
+	      (NP-PRD (NP just another one)
+		      (PP of
+			  (NP (NP the risk factors)
+			      ''
+			      (SBAR (WHNP-17 that)
+				    (S (NP-SBJ *T*-17)
+				       (VP led
+					   (PP-DIR-CLR to
+						       (NP (NP the company 's)
+							   decision
+							   (S (NP-SBJ *)
+							      (VP to
+								  (VP withdraw
+								      (PP-DIR-CLR from
+										  (NP the bidding)))))))))))))))
+     ,
+     (NP-SBJ he)
+     (VP added
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (NP-SBJ (NP Wilbur Ross Jr.)
+             (PP of
+                 (NP (NP Rothschild Inc.)
+                     ,
+                     (NP (NP the financial adviser)
+                         (PP to
+                             (NP (NP the troubled company 's)
+                                 equity holders))))))
+     ,
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ (NP the withdrawal)
+                          (PP of
+                              (NP New England Electric)))
+                  (VP might
+                      (VP speed 
+			  (PRT up)
+                          (NP the reorganization process))))))
+     .))
+( (S (S-TPC-1 (NP-SBJ The fact
+		      (SBAR that
+			    (S (NP-SBJ New England)
+			       (VP proposed
+				   (NP (NP lower rate increases)
+				       (PRN --
+					    (NP (NP 4.8 % *U*) 
+						(PP-TMP over
+							(NP seven years)))
+					    (PP-DIR against
+						    (NP (NP (ADJP (QP around 5.5) %) 
+							    boosts)
+							(VP proposed
+							    (NP *)
+							    (PP by
+								(NP-LGS the
+									other two 
+									outside bidders)))))
+					    --))))))
+	      (VP complicated
+		  (NP (NP negotiations)
+		      (PP with
+			  (NP state officials)))))
+     ,
+     (NP-SBJ Mr. Ross)
+     (VP asserted
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S ``
+     (S-TPC-1 (ADVP-TMP Now)
+	      (NP-SBJ the field)
+	      (VP is
+		  (ADJP-PRD less
+			    cluttered)))
+     , 
+     ''
+     (NP-SBJ he)
+     (VP added
+	 (S *T*-1))
+     .))
+( (S (ADVP Separately)
+     ,
+     (NP-SBJ the Federal Energy Regulatory Commission)
+     (VP turned 
+	 (PRT down)
+	 (PP-TMP for
+		 (NP now))
+	 (NP (NP a request)
+	     (PP by
+		 (NP Northeast))
+	     (VP seeking
+		 (NP (NP approval)
+		     (PP of
+			 (NP (NP its possible purchase)
+			     (PP of
+				 (NP (NP PS)
+				     (PP of
+					 (NP New Hampshire))))))))))
+     .))
+( (S (NP-SBJ Northeast)
+     (VP said
+	 (SBAR 0
+	       (S (NP-SBJ it)
+		  (VP (VP would
+			  (VP refile
+			      (NP its request)))
+		      and
+		      (VP (ADVP-TMP still)
+			  hopes
+			  (PP-CLR for
+				  (NP (NP an expedited review)
+				      (PP by
+					  (NP the FERC)))) )
+		      (SBAR-PRP so that
+				(S (NP-SBJ it)
+				   (VP could
+				       (VP complete
+					   (NP the purchase)
+					   (PP-TMP by
+						   (NP next summer))
+					   (SBAR-ADV if
+						     (S (NP-SBJ its bid)
+							(VP is
+							    (NP-PRD (NP the one)
+								    (VP approved
+									(NP *) 
+									(PP by
+									    (NP-LGS the bankruptcy court)))))))))))))))
+     .))
+( (S (NP-SBJ (NAC PS
+		  (PP of
+		      (NP New Hampshire)))
+	     shares)
+     (VP closed
+	 (NP-TMP yesterday)
+	 (PP-CLR at
+		 (NP (NP $ 3.75 *U*)
+		     ,
+		     (PP-DIR off 
+			     (NP 25 cents))
+		     ,))
+	 (PP-LOC in
+		 (NP New York Stock Exchange composite trading)))
+     .))

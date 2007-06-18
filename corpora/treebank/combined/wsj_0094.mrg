@@ -1,0 +1,297 @@
+
+( (S 
+    (NP-SBJ 
+      (NP (PRP$ Your) (NNP Oct.) (CD 6) (NN article) )
+      (`` ``) 
+      (S-TTL 
+        (NP-SBJ 
+          (NP (NNP Japan) (POS 's) )
+          (JJ Financial) (NNS Firms) )
+        (VP (VBP Lure) 
+          (NP (NN Science) (NNS Graduates) )))
+      ('' '') )
+    (VP (VBZ states) 
+      (, ,)
+      (`` ``) 
+      (S 
+        (NP-SBJ (JJ Industrial) (NNS companies) )
+        (VP (VBP are) 
+          (VP (VBG accusing) 
+            (NP-1 (JJ financial) (NNS institutions) )
+            (PP-CLR (IN of) 
+              (S-NOM 
+                (NP-SBJ-2 (-NONE- *-1) )
+                (VP (VBG jeopardizing) 
+                  (NP 
+                    (NP (NNP Japan) (POS 's) )
+                    (NN economy) )
+                  (PP-MNR (IN by) 
+                    (S-NOM 
+                      (NP-SBJ (-NONE- *-2) )
+                      (VP (VBG raising) 
+                        (NP 
+                          (NP (DT the) (NN salary) (NNS stakes) )
+                          (PP (IN for) 
+                            (NP (JJ new) (NNS employees) )))))))))))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ (DT The) (JJ Japanese) (JJ industrial) (NNS companies) )
+    (VP (MD should) 
+      (VP (VB know) 
+        (ADVP-CLR (JJR better) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP They) )
+    (VP (VBP are) 
+      (VP (VBG barking) 
+        (PP-CLR (IN up) 
+          (NP (DT the) (JJ wrong) (NN tree) ))
+        (, ,) 
+        (SBAR-PRP (IN because) 
+          (S 
+            (NP-SBJ 
+              (NP (PRP it) )
+              (SBAR (-NONE- *EXP*-1) ))
+            (VP (VBZ is) 
+              (ADVP (RB basically) )
+              (NP-PRD (PRP$ their) (NN fault) )
+              (SBAR-1 (-NONE- 0) 
+                (S 
+                  (NP-SBJ (PRP they) )
+                  (VP (MD ca) (RB n't) 
+                    (VP (VB attract) 
+                      (NP (JJ new) (NNS employees) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Takuma) (NNP Yamamoto) )
+      (, ,) 
+      (NP 
+        (NP (NN president) )
+        (PP (IN of) 
+          (NP (NNP Fujitsu) (NNP Ltd.) )))
+      (, ,) )
+    (VP (VBZ believes) (`` ``) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (DT the) (`` `) (NN money) (NN worship) ('' ') )
+            (PP-LOC (IN among) 
+              (NP (JJ young) (NNS people) )))
+          (: ...) 
+          (VP (VBD caused) 
+            (NP (DT the) (NN problem) )))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ (PRP He) )
+    (VP (VBZ is) 
+      (VP 
+        (ADVP (RB just) )
+        (VBG passing) 
+        (NP (DT the) (NN buck) )
+        (PP-DIR (TO to) 
+          (NP (JJ young) (NNS people) ))))
+    (. .) ))
+( (SBARQ 
+    (WHNP-247 (WP What) )
+    (SQ 
+      (NP-SBJ (-NONE- *T*-247) )
+      (VP (VBZ 's) 
+        (ADJP-PRD (JJ wrong) 
+          (PP (IN with) 
+            (S-NOM 
+              (NP-SBJ (-NONE- *) )
+              (VP (VBG asking) 
+                (PP-CLR (IN for) 
+                  (NP (JJR more) (NN money) ))))))))
+    (. ?) ))
+( (S 
+    (S 
+      (NP-SBJ (NN Money) )
+      (VP (VBZ is) (RB not) 
+        (NP-PRD (NN everything) )))
+    (, ,) (CC but) 
+    (S 
+      (NP-SBJ (PRP it) )
+      (VP (VBZ is) 
+        (ADJP-PRD (JJ necessary) )))
+    (, ,) 
+    (CC and)
+    (S 
+      (NP-SBJ (NN business) )
+      (VP (VBZ is) (RB not) 
+        (NP-PRD (NN volunteer) (NN work) )))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (PRP It) )
+      (S (-NONE- *EXP*-1) ))
+    (VP (VBZ is) (RB not) 
+      (ADJP-PRD (JJ unethical) )
+      (S-1 
+        (NP-SBJ (-NONE- *) )
+        (VP (TO to) 
+          (VP (VB choose) 
+            (NP (DT a) (JJ higher-salaried) (NN job) )))))
+    (. .) ))
+( (S 
+    (ADVP (RB Unfortunately) )
+    (, ,) 
+    (NP-SBJ (JJ Japanese) (NNS manufacturers) )
+    (VP (VBP have) 
+      (NP (DT neither) 
+        (NP (JJ good) (NN working) (NNS conditions) )
+        (CC nor) 
+        (NP (JJ good) (NN compensation) (NNS packages) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP I) )
+    (VP (VBP get) 
+      (NP (DT the) (NN impression) 
+        (SBAR (IN that) 
+          (S 
+            (NP-SBJ (DT some) (JJ Japanese) (NNS managers) )
+            (VP (VBP believe) 
+              (SBAR (-NONE- 0) 
+                (S 
+                  (S-NOM-SBJ 
+                    (NP-SBJ (-NONE- *) )
+                    (VP (VBG working) 
+                      (ADVP-MNR (RBR harder) )
+                      (PP-CLR (IN for) 
+                        (NP (JJR less) (NN money) ))))
+                  (VP (VBZ is) 
+                    (ADJP-PRD (JJ beautiful) )))))))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ (PRP I) )
+      (VP (VBD visited) 
+        (NP 
+          (NP (DT a) (NN lot) )
+          (PP (IN of) 
+            (NP (JJ major) (JJ Japanese) (NNS manufacturers) )))))
+    (, ,) (CC but) 
+    (S 
+      (NP-SBJ (PRP I) )
+      (ADVP-TMP (RB never) )
+      (VP (VBD felt) 
+        (SBAR (-NONE- 0) 
+          (S 
+            (NP-SBJ-1 (PRP I) )
+            (VP (MD would) 
+              (VP (VB want) 
+                (S 
+                  (NP-SBJ-149 (-NONE- *-1) )
+                  (VP (TO to) 
+                    (VP (VB be) 
+                      (VP (VBN employed) 
+                        (NP (-NONE- *-149) )
+                        (PP (IN by) 
+                          (NP-LGS 
+                            (NP (DT any) )
+                            (PP (IN of) 
+                              (NP (PRP them) ))))))))))))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ-1 
+        (NP (JJ Many) )
+        (PP (IN of) 
+          (NP (PRP them) )))
+      (ADVP-TMP (RB recently) )
+      (VP (VBP have) 
+        (VP (VBN been) 
+          (VP (VBG spending) 
+            (NP 
+              (NP (DT a) (NN lot) )
+              (PP (IN of) 
+                (NP (NN money) )))
+            (PP-CLR (IN on) 
+              (NP 
+                (NP (JJ public) (NNS relations) )
+                (CC and) 
+                (NP (NN advertising) )))
+            (S-PRP 
+              (NP-SBJ (-NONE- *-1) )
+              (VP (TO to) 
+                (VP (VB improve) 
+                  (NP (PRP$ their) (NNS images) ))))))))
+    (, ,) (CC but) 
+    (S 
+      (NP-SBJ (PRP they) )
+      (VP (MD should) 
+        (VP (VB realize) 
+          (SBAR (IN that) 
+            (S 
+              (NP-SBJ (DT the) (RBS most) (JJ important) (NN thing) )
+              (VP (VBZ is) 
+                (NP-PRD 
+                  (NP (JJ real) (NN change) )
+                  (, ,) (RB not) 
+                  (S-NOM 
+                    (NP-SBJ (-NONE- *) )
+                    (VP (VBG changing) 
+                      (NP 
+                        (NP (NNS people) (POS 's) )
+                        (NNS perceptions) ))))))))))
+    (. .) ))
+( (S 
+    (SBAR-ADV (IN If) 
+      (S 
+        (NP-SBJ (DT the) (JJ Japanese) (NNS companies) )
+        (VP (VBP are) 
+          (VP 
+            (ADVP-MNR (RB seriously) )
+            (VBG considering) 
+            (NP (PRP$ their) (NN survival) )))))
+    (, ,) 
+    (NP-SBJ-1 (PRP they) )
+    (VP (MD could) 
+      (VP (VB do) 
+        (NP 
+          (NP 
+            (QP (IN at) (JJS least) (CD three) )
+            (NNS things) )
+          (VP (-NONE- *ICH*-2) ))
+        (S-PRP 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB improve) 
+              (NP (DT the) (NN situation) ))))
+        (: :) 
+        (VP-2 
+          (VP (VB raise) 
+            (S 
+              (NP-SBJ (NNS salaries) )
+              (ADJP-PRD 
+                (ADJP (JJR higher) )
+                (PP (IN than) 
+                  (NP 
+                    (NP (DT those) )
+                    (PP (IN of) 
+                      (NP (JJ financial) (NNS institutions) )))))))
+          (: ;) 
+          (VP (VB improve) 
+            (NP 
+              (NP (NN working) (NNS conditions) )
+              (PRN 
+                (-LRB- -LRB-)
+                (NP 
+                  (NP (JJR better) (NNS offices) )
+                  (CC and) 
+                  (NP (JJR more) (NNS vacations) ))
+                (, ,) 
+                (PP (IN for) 
+                  (NP (NN example) ))
+                (-RRB- -RRB-) )))
+          (: ;) 
+          (VP (VB accept) 
+            (CC and)
+            (VB hire) 
+            (NP (JJR more) (NN labor) )
+            (PP-DIR-CLR (IN from) 
+              (PP (JJ outside) 
+                (NP (NNP Japan) )))))))
+    (. .) ))
+( (NP (NNP Hiroshi) (NNP Asada) ))

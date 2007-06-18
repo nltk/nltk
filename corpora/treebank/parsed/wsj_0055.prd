@@ -1,0 +1,22 @@
+
+
+( (S (NP-SBJ (NP Structural Dynamics Research Corp.)
+             ,
+             (SBAR (WHNP-143 which)
+                   (S (NP-SBJ *T*-143)
+                      (VP makes
+                          (NP computer-aided engineering software))))
+             ,)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP introduced
+                      (NP (NP new technology)
+			  (PP in
+			      (NP mechanical design automation))
+                          (SBAR (WHNP-144 that)
+                                (S (NP-SBJ *T*-144)
+                                   (VP will
+                                       (VP improve
+                                           (NP mechanical engineering productivity))))))))))
+     .))

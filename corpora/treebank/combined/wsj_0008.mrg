@@ -1,0 +1,127 @@
+
+( (S 
+    (NP-SBJ (DT The) (JJ federal) (NN government) )
+    (VP (VBD suspended) 
+      (NP 
+        (NP (NNS sales) )
+        (PP (IN of) 
+          (NP (NNP U.S.) (NNS savings) (NNS bonds) )))
+      (SBAR-PRP (IN because) 
+        (S 
+          (NP-SBJ (NNP Congress) )
+          (VP (VBZ has) (RB n't) 
+            (VP (VBN lifted) 
+              (NP 
+                (NP (DT the) (NN ceiling) )
+                (PP-LOC (IN on) 
+                  (NP (NN government) (NN debt) ))))))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (SBAR-TMP (IN Until) 
+        (S 
+          (NP-SBJ (NNP Congress) )
+          (VP (VBZ acts) )))
+      (, ,) 
+      (NP-SBJ (DT the) (NN government) )
+      (VP (VBZ has) (RB n't) 
+        (NP (DT any) (NN authority) 
+          (S 
+            (NP-SBJ (-NONE- *) )
+            (VP (TO to) 
+              (VP (VB issue) 
+                (NP 
+                  (NP (JJ new) (NN debt) (NNS obligations) )
+                  (PP (IN of) 
+                    (NP (DT any) (NN kind) )))))))))
+    (, ,) 
+    (NP-SBJ (DT the) (NNP Treasury) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (NN government) (POS 's) )
+      (NN borrowing) (NN authority) )
+    (VP (VBD dropped) 
+      (PP-TMP (IN at) 
+        (NP (NN midnight) ))
+      (NP-TMP (NNP Tuesday) )
+      (PP-DIR (TO to) 
+        (NP 
+          (QP ($ $) (CD 2.80) (CD trillion) )
+          (-NONE- *U*) ))
+      (PP-DIR (IN from) 
+        (NP 
+          (QP ($ $) (CD 2.87) (CD trillion) )
+          (-NONE- *U*) )))
+    (. .) ))
+( (S 
+    (NP-SBJ-11 
+      (NP (NN Legislation) )
+      (SBAR 
+        (WHNP-1 (-NONE- 0) )
+        (S 
+          (NP-SBJ (-NONE- *T*-1) )
+          (VP (TO to) 
+            (VP (VB lift) 
+              (NP (DT the) (NN debt) (NN ceiling) ))))))
+    (VP (VBZ is) 
+      (VP (VBN ensnarled) 
+        (NP (-NONE- *-11) )
+        (PP-LOC-CLR (IN in) 
+          (NP 
+            (NP (DT the) (NN fight) )
+            (PP (IN over) 
+              (S-NOM 
+                (NP-SBJ (-NONE- *) )
+                (VP (VBG cutting) 
+                  (NP (JJ capital-gains) (NNS taxes) ))))))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ-1 (DT The) (NNP House) )
+      (VP (VBZ has) 
+        (VP (VBN voted) 
+          (S 
+            (NP-SBJ (-NONE- *-1) )
+            (VP (TO to) 
+              (VP (VB raise) 
+                (NP (DT the) (NN ceiling) )
+                (PP-DIR (TO to) 
+                  (NP 
+                    (QP ($ $) (CD 3.1) (CD trillion) )
+                    (-NONE- *U*) ))))))))
+    (, ,) (CC but) 
+    (S 
+      (NP-SBJ-2 (DT the) (NNP Senate) )
+      (VP (VBZ is) (RB n't) 
+        (VP (VBN expected) 
+          (S 
+            (NP-SBJ (-NONE- *-2) )
+            (VP (TO to) 
+              (VP (VB act) 
+                (PP-TMP (IN until) 
+                  (NP (JJ next) (NN week) ))
+                (PP-TMP (IN at) 
+                  (NP (DT the) (JJS earliest) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NNP Treasury) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (DT the) (NNP U.S.) )
+          (VP (MD will) 
+            (VP (VB default) 
+              (PP-TMP (IN on) 
+                (NP (NNP Nov.) (CD 9) ))
+              (SBAR-ADV (IN if) 
+                (S 
+                  (NP-SBJ (NNP Congress) )
+                  (VP (VBZ does) (RB n't) 
+                    (VP (VB act) 
+                      (PP-TMP (IN by) 
+                        (NP (RB then) )))))))))))
+    (. .) ))

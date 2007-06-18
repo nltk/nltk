@@ -1,0 +1,80 @@
+
+( (S 
+    (NP-SBJ (NNP GOODY) (NNP PRODUCTS) (NNP Inc.) )
+    (VP (VBD cut) 
+      (NP (PRP$ its) (JJ quarterly) (NN dividend) )
+      (PP-DIR (TO to) 
+        (NP 
+          (NP (CD five) (NNS cents) )
+          (NP-ADV (DT a) (NN share) )))
+      (PP-DIR (IN from) 
+        (NP 
+          (NP (CD 11.5) (NNS cents) )
+          (NP-ADV (DT a) (NN share) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (VBN reduced) (NN dividend) )
+    (VP (VBZ is) 
+      (ADJP-PRD (JJ payable) 
+        (NP-TMP (NNP Jan.) (CD 2) )
+        (PP (TO to) 
+          (NP 
+            (NP (NN stock) )
+            (PP (IN of) 
+              (NP (NN record) ))
+            (NP-TMP (NNP Dec.) (CD 15) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) 
+        (ADJP (NNP Kearny) 
+          (, ,)
+          (JJ N.J.-based) )
+        (NN maker) )
+      (PP (IN of) 
+        (NP 
+          (NP (NN hair) (NNS accessories) )
+          (CC and) 
+          (NP (JJ other) (NN cosmetic) (NNS products) ))))
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP it) )
+          (VP (VBD cut) 
+            (NP (DT the) (NN dividend) )
+            (PP-PRP (JJ due) 
+              (PP (TO to) 
+                (NP 
+                  (NP (PRP$ its) (NN third-quarter) (NN loss) )
+                  (PP (IN of) 
+                    (NP 
+                      (NP ($ $) (CD 992,000) (-NONE- *U*) )
+                      (, ,) (CC or) 
+                      (NP 
+                        (NP (CD 15) (NNS cents) )
+                        (NP-ADV (DT a) (NN share) )))))))))))
+    (. .) ))
+( (S 
+    (PP-TMP (IN In) 
+      (NP (DT the) (JJ year-ago) (NN quarter) ))
+    (, ,) 
+    (NP-SBJ (DT the) (NN company) )
+    (VP (VBD reported) 
+      (NP 
+        (NP (JJ net) (NN income) )
+        (PP (IN of) 
+          (NP 
+            (NP 
+              (QP ($ $) (CD 1.9) (CD million) )
+              (-NONE- *U*) )
+            (, ,) (CC or) 
+            (NP 
+              (NP (CD 29) (NNS cents) )
+              (NP-ADV (DT a) (NN share) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN company) )
+    (ADVP (RB also) )
+    (VP (VBD adopted) 
+      (NP (DT an) (JJ anti-takeover) (NN plan) ))
+    (. .) ))

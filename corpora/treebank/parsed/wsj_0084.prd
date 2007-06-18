@@ -1,0 +1,91 @@
+
+
+( (S (NP-SBJ (NP (NP Hudson General Corp. 's)
+                 president and chief executive officer)
+             ,
+             (NP Alan J. Stearn)
+             ,)
+     (VP resigned)
+     .))
+( (S (NP-SBJ-120 (NP Mr. Stearn)
+                 ,
+                 (ADJP (NP 46 years)
+                       old)
+                 ,)
+     (VP could 
+	 n't
+	 (VP be
+	     (VP reached
+		 (NP *-120)
+		 (PP-PRP for
+			 (NP comment)))))
+     .))
+( (S (NP-SBJ-1 A company spokesman)
+     (VP declined
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP elaborate
+                    (PP-CLR on
+			    (NP the departure))))))
+     .))
+( (S (NP-SBJ (NP Hudson General)
+             ,
+             (SBAR (WHNP-195 which)
+                   (S (NP-SBJ *T*-195)
+                      (VP provides
+                          (NP (NP maintenance)
+                              ,
+                              (NP fueling)
+                              and
+                              (NP other services))
+                          (PP-CLR to
+				  (NP airlines and airports)))))
+             ,)
+     (VP (VP reported
+             (NP (NP a loss)
+		 (PP for
+		     (NP its
+			 (ADJP most recent)
+			 fiscal year))))
+         and
+         (VP (NP-TMP last month)
+	     omitted
+	     (NP (NP the semiannual dividend)
+		 (PP on
+		     (NP its common shares)))))
+     .))
+( (S (NP-SBJ (NP Mr. Stearn)
+             ,
+             (SBAR (WHNP-196 who)
+                   (S (NP-SBJ *T*-196)
+                      (VP (VP had
+			      (VP been
+				  (PP-PRD with
+					  (NP the company))
+				  (NP-TMP (QP more than 20)
+					  years)))
+			  and
+			  (VP had
+			      (VP been
+				  (NP-PRD president)
+				  (PP-TMP since
+					  (NP 1984)))))))
+             ,)
+     (VP will
+         (VP act
+             (PP-CLR as
+		     (NP (NP a consultant)
+			 (PP to
+			     (NP Hudson General))))))
+     .))
+( (S (NP-SBJ-121 (NP His duties)
+                 (PP as
+                     (NP chief executive)))
+     (VP will
+	 (VP be
+	     (VP assumed
+		 (NP *-121)
+		 (PP by
+		     (NP-LGS Chairman
+			     Jay B. Langner)))))
+     .))

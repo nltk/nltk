@@ -1,0 +1,57 @@
+
+( (S 
+    (NP-SBJ 
+      (NP (NNP Michaels) (NNP Stores) (NNP Inc.) )
+      (, ,) 
+      (SBAR 
+        (WHNP-142 (WDT which) )
+        (S 
+          (NP-SBJ (-NONE- *T*-142) )
+          (VP (VBZ owns) 
+            (CC and)
+            (VBZ operates) 
+            (NP 
+              (NP (DT a) (NN chain) )
+              (PP (IN of) 
+                (NP (NN specialty) (NN retail) (NNS stores) ))))))
+      (, ,) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (NNP October) (NNS sales) )
+          (VP (VBD rose) 
+            (NP-EXT (CD 14.6) (NN %) )
+            (PP-DIR (TO to) 
+              (NP 
+                (QP ($ $) (CD 32.8) (CD million) )
+                (-NONE- *U*) ))
+            (PP-DIR (IN from) 
+              (NP 
+                (QP ($ $) (CD 28.6) (CD million) )
+                (-NONE- *U*) )
+              (NP-TMP 
+                (NP (DT a) (NN year) )
+                (ADVP (RBR earlier) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNS Sales) )
+      (PP-LOC (IN in) 
+        (NP 
+          (NP (NNS stores) )
+          (RRC 
+            (ADJP (JJ open) )
+            (NP-TMP 
+              (QP (JJR more) (IN than) (CD one) )
+              (NN year) )))))
+    (VP (VBD rose) 
+      (NP-EXT (CD 3) (NN %) )
+      (PP-DIR (TO to) 
+        (NP 
+          (QP ($ $) (CD 29.3) (CD million) )
+          (-NONE- *U*) ))
+      (PP-DIR (IN from) 
+        (NP 
+          (QP ($ $) (CD 28.4) (CD million) )
+          (-NONE- *U*) )))
+    (. .) ))

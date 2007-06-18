@@ -1,0 +1,18 @@
+
+
+( (S (NP-SBJ-1 (NP Rudolph Agnew)
+               ,
+               (UCP (ADJP (NP 55 years)
+			  old)
+		    and
+		    (NP (NP former chairman)
+			(PP of
+			    (NP Consolidated Gold Fields PLC))))
+               ,)
+     (VP was
+         (VP named
+             (S (NP-SBJ *-1)
+		(NP-PRD (NP a nonexecutive director)
+			(PP of
+			    (NP this British industrial conglomerate))))))
+     .))

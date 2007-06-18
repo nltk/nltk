@@ -1,0 +1,1480 @@
+
+
+( (S (S-ADV (NP-SBJ *)
+	    (VP Judging
+		(PP-CLR from
+			(NP (NP the Americana)
+			    (PP-LOC in
+				    (NP (NP Haruki Murakami 's)
+					``
+					(NX-TTL (NP A Wild Sheep Chase))
+					''
+					(PRN -LRB-
+					     (NP Kodansha)
+					     ,
+					     (NP 320 pages)
+					     ,
+					     (NP $ 18.95 *U*)
+					     -RRB-)))))))
+     ,
+     (NP-SBJ (NP baby boomers)
+	     (PP-LOC on
+		     (NP (NP both sides)
+			 (PP of
+			     (NP the Pacific)))))
+     (VP have
+	 (NP (NP a lot)
+	     (PP in
+		 (NP common))))
+     .))
+( (S (SBAR-ADV Although
+	       (S (NP-SBJ-1 *-2)
+		  (VP set
+		      (NP *-1)
+		      (PP-LOC in
+			      (NP Japan)))))
+     ,
+     (NP-SBJ-2 (NP the novel 's)
+	       texture)
+     (VP is
+         (ADJP-PRD (ADJP (ADVP almost entirely)
+			 Western)
+		   ,
+		   (ADJP especially American)))
+     .))
+( (S (NP-SBJ Characters)
+     (VP (VP drink
+             (NP Salty Dogs))
+         ,
+         (VP whistle 
+	     ``
+             (NP-TTL Johnny B. Goode)
+             '')
+         and
+         (VP watch
+             (NP Bugs Bunny reruns)))
+     .))
+( (S (NP-SBJ They)
+     (VP (VP read
+             (NP Mickey Spillane))
+         and
+         (VP talk
+             (PP-CLR about
+		     (NP Groucho
+			 and
+			 Harpo))))
+     .))
+( (S (NP-SBJ They)
+     (VP (VP worry
+             (PP-CLR about
+		     (NP their careers)))
+         ,
+         (VP drink
+             (ADVP too much))
+         and
+         (VP suffer
+             (PP through
+                 (NP (NP broken marriages)
+                     and
+                     (NP desultory affairs)))))
+     .))
+( (S (NP-SBJ This)
+     (VP is
+         (NP-PRD Japan))
+     ?))
+( (S (PP For
+         (NP an American reader))
+     ,
+     (NP-SBJ (NP part)
+             (PP of
+                 (NP (NP the charm)
+                     (PP of
+                         (NP this engaging novel)))))
+     (VP should
+         (VP come
+             (PP-LOC in
+		     (S-NOM (NP-SBJ *)
+			    (VP recognizing
+				(SBAR that
+				      (S (NP-SBJ Japan)
+					 (VP is 
+					     n't
+					     (NP-PRD (NP the buttoned-down society)
+						     (PP of
+							 (NP contemporary American lore)))))))))))
+     .))
+( (S (NP-SBJ (NP It)
+	     (S *EXP*-1))
+     (VP 's
+         (ADVP also)
+         (ADJP-PRD refreshing)
+	 (S-1 (NP-SBJ *)
+	      (VP to
+		  (VP read
+		      (NP (NP a Japanese author)
+			  (SBAR (WHNP-52 who)
+				(S (NP-SBJ *T*-52)
+				   (ADVP clearly)
+				   (VP does 
+				       n't
+				       (VP belong
+					   (PP-CLR to
+						   (NP (NP the self-aggrandizing 
+							   `` we-Japanese '' 
+							   school)
+						       (PP of
+							   (NP (NP writers)
+							       (SBAR (WHNP-53 who)
+								     (S (NP-SBJ *T*-53)
+									(VP perpetuate
+									    (NP (NP the notion)
+										(PP of
+										    (NP (NP the unique Japanese)
+											,
+											(ADJP unfathomable
+											      (PP by
+												  (NP outsiders))))))))))))))))))))))
+     .))
+( (S (SBAR-ADV If
+	       (S ``
+		  (NP-TTL-SBJ A Wild Sheep Chase)
+		  ''
+		  (VP carries
+		      (NP (NP an implicit message)
+			  (PP for
+			      (NP international relations))))))
+     ,
+     (NP-SBJ it)
+     (VP 's
+         (SBAR-PRD that
+		   (S (NP-SBJ the Japanese)
+		      (VP are
+			  (PP-PRD (PP more
+				      like
+				      (NP us) )
+				  (SBAR than
+					(S (NP-SBJ (NP most)
+						   (PP of
+						       (NP us)))
+					   (VP think
+					       (SBAR 0
+						     (S *?*))))))))))
+     .))
+( (S (NP-SBJ That)
+     (VP 's 
+	 not
+         (S-PRD (NP-SBJ *)
+		(VP to
+		    (VP say
+			(SBAR that
+			      (S (NP-SBJ-57 (NP the nutty plot)
+					    (PP of 
+						``
+						(NP-TTL A Wild Sheep Chase)
+						''))
+				 (VP is
+				     (VP rooted
+					 (NP *-57)
+					 (PP-LOC-CLR in
+						     (NP reality))))))))))
+     .))
+( (S (NP-SBJ It)
+     (VP 's
+         (ADJP-PRD (ADJP imaginative) 
+		   and
+		   (ADJP often funny)))
+     .))
+( (S (NP-SBJ A disaffected , hard-drinking , nearly-30 hero)
+     (VP sets 
+	 (PRT off)
+         (PP-CLR for
+		 (NP snow country))
+	 (PP-PRP in
+		 (NP (NP search)
+		     (PP of
+			 (NP (NP an elusive sheep)
+			     (PP with
+				 (NP (NP a star)
+				     (PP-LOC on
+					     (NP its back))))))))
+	 (PP at
+	     (NP (NP the behest)
+		 (PP of
+		     (NP (NP a sinister , erudite mobster)
+			 (PP with
+			     (NP a Stanford degree)))))))
+     .))
+( (S (NP-SBJ He)
+     (VP has
+         (PP-CLR in
+		 (NP tow))
+         (NP (NP his prescient girlfriend)
+             ,
+             (SBAR (WHNP-54 whose sassy retorts)
+                   (S (NP-SBJ *T*-54)
+                      (VP mark
+                          (NP her)
+                          (PP-CLR as
+				  (NP (NP anything)
+				      (PP but
+					  (NP a docile butterfly)))))))))
+     .))
+( (S (PP-LOC Along
+	     (NP the way))
+     ,
+     (NP-SBJ he)
+     (VP meets
+         (NP (NP (NP a solicitous Christian chauffeur)
+                 (SBAR (WHNP-55 who)
+                       (S (NP-SBJ *T*-55)
+                          (VP offers
+                              (NP the hero)
+                              (NP (NP God 's)
+                                  phone number)))))
+             ; 
+	     and
+             (NP (NP the Sheep Man)
+                 ,
+                 (NP (NP a sweet , roughhewn figure)
+                     (SBAR (WHNP-56 who)
+                           (S (NP-SBJ *T*-56)
+                              (VP wears
+                                  (PRN --
+				       (NP what else)
+				       --)
+				  (NP a sheepskin))))))))
+     .))
+( (S (NP-SBJ The 40-year-old Mr. Murakami)
+     (VP is
+         (NP-PRD a publishing sensation)
+	 (PP-LOC in
+		 (NP Japan)))
+     .))
+( (S (NP-SBJ (NP A
+		 (ADJP more recent)
+		 novel)
+	     ,
+	     (NP ``
+		 (NP-TTL Norwegian Wood)
+		 ''
+		 (PRN -LRB-
+		      (S (NP-SBJ-1 (NP every Japanese)
+				   (PP under
+				       (NP 40)))
+			 (VP seems
+			     (S (NP-SBJ *-1)
+				(VP to
+				    (VP be
+					(ADJP-PRD fluent
+						  (PP in
+						      (NP Beatles lyrics))))))))
+		      -RRB-))
+	     ,)
+     (VP has
+	 (VP sold
+	     (NP (QP more than four million)
+		 copies)
+	     (SBAR-TMP since
+		       (S (NP-SBJ Kodansha)
+			  (VP published
+			      (NP it)
+			      (PP-TMP in
+				      (NP 1987)))))))
+     .))
+( (S But
+     (NP-SBJ he)
+     (VP is
+         (NP-PRD (NP just one)
+		 (PP of
+		     (NP (NP several youthful writers)
+			 (PRN --
+			      (NP (NP Tokyo 's)
+				  brat pack)
+			      --)
+			 (SBAR (WHNP-57 who)
+			       (S (NP-SBJ *T*-57)
+				  (VP are
+				      (VP dominating
+					  (NP the best-seller charts)
+					  (PP-LOC in
+						  (NP Japan))))))))))
+     .))
+( (S (NP-SBJ-1 Their books)
+     (VP are
+         (VP (VP written
+		 (NP *-1)
+                 (PP-MNR in
+			 (NP idiomatic , contemporary language)))
+             and
+	     (VP (ADVP-TMP usually)
+		 carry
+                 (NP (NP hefty dashes)
+                     (PP of
+                         (NP Americana))))))
+     .))
+( (S (PP-LOC In
+	     (NP (NP Robert Whiting 's)
+		 (NP ``
+		     (NP-TTL You Gotta Have Wa)
+		     ''
+		     (PRN -LRB-
+			  (NP Macmillan)
+			  ,
+			  (NP 339 pages)
+			  ,
+			  (NP $ 17.95 *U*)
+			  -RRB-))))
+     ,
+     (NP-SBJ the Beatles)
+     (VP give
+         (NP-CLR way)
+         (PP-CLR to
+		 (NP (NP baseball)
+		     ,
+		     (PP-LOC in
+			     (NP (NP the Nipponese version)
+				 (SBAR (WHNP-1 0)
+				       (S (NP-SBJ-2 we)
+					  (VP would
+					      (VP be
+						  (ADJP-PRD hard
+							    put
+							    (S (NP-SBJ *-2)
+							       (VP to
+								   (VP call
+								       (S (NP-SBJ *T*-1)
+									  (NP-PRD a 
+										  `` game)))))))))))))))
+     .
+     ''))
+( (S (SBAR-ADV As
+	       (S (NP-SBJ Mr. Whiting)
+		  (VP describes
+		      (NP it))))
+     ,
+     (NP-SBJ Nipponese baseball)
+     (VP is
+         (NP-PRD (NP a 
+		     `` 
+		     mirror)
+		 (PP of
+		     (NP (NP (NP Japan 's)
+			     fabled virtues)
+			 (PP of
+			     (NP (NP hard work)
+				 and
+				 (NP harmony)))))))
+     .
+     ''))
+( (S (S ``
+        (NP-SBJ Wa)
+        ''
+        (VP is
+            (NP-PRD (NP Japanese)
+		    (PP for 
+			``
+			(NP team spirit)
+			''))))
+     and
+     (S (NP-SBJ Japanese ballplayers)
+        (VP have
+            (NP (NP miles and miles)
+                (PP of
+                    (NP it)))))
+     .))
+( (S (NP-SBJ (NP (NP A player 's)
+		 commitment)
+             (PP to
+                 (NP (NP practice) 
+		     and 
+		     (NP team image))))
+     (VP is
+         (ADJP-PRD (ADJP as important)
+		   (PP as
+		       (NP his batting average))))
+     .))
+( (S (NP-SBJ Polls)
+     (ADVP-TMP once)
+     (VP named
+         (NP (NP Tokyo Giants star
+		 Tatsunori Hara)
+	     ,
+	     (NP a 
+		 `` 
+		 humble , uncomplaining , obedient 
+		 soul)
+	     ,
+	     '')
+	 (PP-CLR as
+		 (NP (NP the male symbol)
+		     (PP of
+			 (NP Japan)))))
+     .))
+( (S (S But
+        (ADVP other
+              (PP than
+                  (NP the fact
+                      (SBAR that
+			    (S (NP-SBJ-1 besuboru)
+			       (VP is
+				   (VP played
+				       (NP *-1)
+				       (PP-MNR with
+					       (NP (NP a ball)
+						   and
+						   (NP a bat))))))))))
+        ,
+        (NP-SBJ it)
+        (VP 's
+            (ADJP-PRD unrecognizable)))
+     :
+     (S (S (NP-SBJ Fans)
+           (VP (ADVP-MNR politely)
+               return
+               (NP foul balls)
+               (PP-CLR to
+		       (NP stadium ushers))))
+        ;
+        (S (NP-SBJ the strike zone)
+           (VP expands
+	       (PP depending
+		   (PP on
+		       (NP (NP the size)
+			   (PP of
+			       (NP the hitter)))))))
+        ;
+        (S (NP-SBJ-2 ties)
+	   (VP are
+	       (VP (VP permitted
+		       (NP *-2))
+		   (PRN --
+			(VP (ADVP even)
+			    welcomed
+			    (NP *-2))
+			--)
+		   (SBAR-PRP since
+			     (S (NP-SBJ they)
+				(VP (ADVP-MNR honorably)
+				    sidestep
+				    (NP (NP the shame)
+					(PP of
+					    (NP defeat)))))))))
+        ;
+        (S (NP-SBJ players)
+	   (VP must
+	       (VP abide
+		   (PP-CLR by
+			   (NP (NP strict rules)
+			       (PP of
+				   (NP conduct))))
+		   (PP-LOC even 
+			   in
+			   (NP their personal lives))
+		   (PRN --
+			(S (NP-SBJ (NP players)
+				   (PP for
+				       (NP the Tokyo Giants)))
+			   (PRN ,
+				(PP for
+				    (NP example))
+				,)
+			   (VP must
+			       (ADVP-TMP always)
+			       (VP wear
+				   (NP ties)
+				   (SBAR-TMP (WHADVP when)
+					     (FRAG (PP-LOC on
+							   (NP the road))))))))))))
+     .))
+( (S ``
+     (NP-TTL-SBJ You Gotta Have Wa)
+     ''
+     (VP is
+         (NP-PRD (NP the
+		     (ADJP often amusing)
+		     chronicle)
+		 (PP of
+		     (SBAR-NOM (WHADVP-1 how)
+			       (S (NP-SBJ (NP American ballplayers)
+					  ,
+					  (VP rationed
+					      (NP *)
+					      (PP-CLR to
+						      (NP (NP two)
+							  (PP per
+							      (NP team)))))
+					  ,)
+				  (VP fare
+				      (ADVP-MNR *T*-1)
+				      (PP-LOC in
+					      (NP Japan))))))))
+     .))
+( (S (PP Despite
+         (NP (NP the enormous sums)
+	     (PP of
+		 (NP money))
+             (SBAR (WHNP-1 0)
+                   (S (NP-SBJ-2 they)
+                      (VP 're
+                          (VP paid
+                              (NP *T*-1)
+                              (S-CLR (NP-SBJ *-2)
+				     (VP to
+					 (VP stand
+					     (PRT up)
+					     (PP-LOC at
+						     (NP a Japanese plate)))))))))))
+     ,
+     (NP-SBJ a good number)
+     (VP (VP decide
+             (SBAR 0
+                   (S (NP-SBJ it)
+		      (VP 's 
+			  not
+			  (ADJP-PRD worth
+				    (NP it))))))
+         and
+         (VP run
+             (PP-DIR for
+		     (NP home))))
+     .))
+( (S (NP-SBJ ``
+             (NP-TTL Funny Business)
+             ''
+	     (PRN -LRB-
+		  (NP Soho)
+		  ,
+		  (NP 228 pages)
+		  ,
+		  (NP $ 17.95 *U*)
+		  -RRB-)
+             (PP by
+                 (NP Gary Katzenstein)))
+     (VP is
+         (NP-PRD (NP anything) 
+		 (PP but
+		     (NP *?*))))
+     .))
+( (S (NP-SBJ It)
+     (VP 's
+         (NP-PRD (NP the petulant complaint)
+		 (PP of
+		     (NP (NP an impudent American)
+			 (SBAR (WHNP-58 whom)
+			       (S (NP-SBJ Sony)
+				  (VP hosted
+				      (NP *T*-58)
+				      (PP-TMP for
+					      (NP a year))
+				      (SBAR-TMP while
+						(S (NP-SBJ he)
+						   (VP was
+						       (PP-PRD on
+							       (NP a Luce Fellowship))
+						       (PP-LOC in
+							       (NP Tokyo)))))
+				      --
+				      (PP to
+					  (NP (NP the regret)
+					      (PP of
+						  (NP both parties)))))))))))
+     .))
+( (S (PP-LOC In
+	     (NP (ADJP (ADJP sometimes amusing)
+		       ,
+		       (ADJP (ADVP-TMP more often)
+			     supercilious)
+		       ,
+		       (ADJP even vicious))
+		 passages))
+     ,
+     (NP-SBJ Mr. Katzenstein)
+     (VP describes
+         (SBAR-NOM (WHADVP-2 how)
+		   (S (NP-SBJ Sony)
+		      (VP invades
+			  (NP (NP even the
+				  (ADJP most mundane)
+				  aspects)
+			      (PP of
+				  (NP (NP its workers ')
+				      lives)))
+			  --
+			  (PP-LOC (PP at
+				      (NP (NP the regimented office)
+					  ,
+					  (SBAR-LOC (WHADVP-1 where)
+						    (S (NP-SBJ-59 employees)
+						       (VP are
+							   (VP assigned
+							       (NP *-59)
+							       (NP lunch partners)
+							       (ADVP-LOC *T*-1)))))))
+				  -- 
+				  and
+				  (PP (PP at 
+					  ``
+					  (NP home)
+					  '')
+				      (PP in
+					  (NP (NP the austere company dormitory)
+					      (VP run
+						  (NP *)
+						  (PP by
+						      (NP-LGS a
+							      prying
+							      caretaker)))))))
+			  (ADVP-MNR *T*-2)))))
+     .))
+( (S (NP-SBJ (NP Some)
+             (PP of
+                 (NP (NP his observations)
+                     (PP about
+                         (NP Japanese management style)))))
+     (VP are
+         (PP-PRD-LOC on
+		     (NP the mark)))
+     .))
+( (S (NP-SBJ (NP It)
+	     (SBAR *EXP*-3))
+     (VP 's
+         (ADVP probably)
+         (ADJP-PRD true)
+	 (SBAR-3 (SBAR that
+		       (S (NP-SBJ many salarymen)
+			  (VP put 
+			      (PRT in)
+			      (NP unproductive overtime)
+			      (PP-PRP just for
+				      (NP (NP the sake)
+					  (PP of
+					      (NP solidarity)))))))
+		 ,
+		 (SBAR that
+		       (S (NP-SBJ the system)
+			  (VP is
+			      (ADJP-PRD (ADJP so hierarchical)
+					(SBAR that
+					      (S (S (NP-SBJ-1 only the assistant manager)
+						    (VP can
+							(VP talk
+							    (PP-CLR-2 to
+								      (NP the manager)))))
+						 and
+						 (S (NP-SBJ=1 the manager)
+						    (PP-CLR=2 to
+							      (NP the general manager)))))))))
+		 , 
+		 and
+		 (SBAR that
+		       (S (NP-SBJ-4 Sony)
+			  (VP was
+			      (ADJP-PRD chary
+					(PP of
+					    (S-NOM (NP-SBJ *-4)
+						   (VP letting
+						       (S (NP-SBJ a 
+								  young , short-term 
+								  American employee)
+							  (VP take 
+							      (PRT on)
+							      (NP any responsibility))))))))))))
+     .))
+( (S (NP-SBJ (NP All)
+             (PP of
+                 (NP this)))
+     (VP must
+         (VP have
+             (VP been
+                 (ADJP-PRD enormously frustrating
+			   (PP to
+			       (NP (NP Mr. Katzenstein)
+				   ,
+				   (SBAR (WHNP-59 who)
+					 (S (NP-SBJ-1 *T*-59)
+					    (VP (VP went
+						    (PP-DIR to
+							    (NP Sony))
+						    (PP with
+							(NP (NP degrees)
+							    (PP in
+								(NP (NP business)
+								    and
+								    (NP computer science))))))
+						and
+						(VP was
+						    (ADJP-PRD raring
+							      (S (NP-SBJ *-1)
+								 (VP to
+								     (VP invent
+									 (NP another Walkman)))))))))))))))
+     .))
+( (S But
+     (NP-SBJ Sony)
+     (ADVP-TMP ultimately)
+     (VP (VP took
+             (NP a lesson)
+             (PP-CLR from
+		     (NP the American management books)))
+         and
+         (VP fired
+             (NP Mr. Katzenstein)
+	     ,
+	     (SBAR-TMP after
+		       (S (NP-SBJ he)
+			  (VP committed
+			      (NP (NP the social crime)
+				  (PP of
+				      (S-NOM (NP-SBJ *)
+					     (VP making
+						 (NP an appointment
+						     (S (NP-SBJ *)
+							(VP to
+							    (VP see
+								(NP (NP the venerable
+									Akio Morita)
+								    ,
+								    (NP (NP founder)
+									(PP of
+									    (NP Sony)))))))))))))))))
+     .))
+( (S (NP-SBJ (NP It)
+	     (SBAR *EXP*-1))
+     (VP 's
+         (NP-PRD a shame)
+	 (SBAR-1 0
+		 (S (NP-SBJ their meeting)
+		    (ADVP-TMP never)
+		    (VP took
+			(NP-CLR place)))))
+     .))
+( (S (S (NP-SBJ Mr. Katzenstein)
+        (ADVP certainly)
+        (VP would
+            (VP have
+                (VP learned
+                    (NP something)))))
+     , 
+     and
+     (S (NP-SBJ (NP it)
+		(SBAR *EXP*-1))
+        (VP 's
+            (ADVP even)
+	    (ADJP-PRD possible)
+	    (SBAR-1 0
+		    (S (NP-SBJ Mr. Morita)
+		       (VP would
+			   (VP have 
+			       (VP *?*
+				   (ADVP too))))))))
+     .))
+( (S (NP-SBJ (NP Ms. Kirkpatrick)
+             ,
+             (NP (NP the Journal 's)
+                 deputy editorial features editor)
+             ,)
+     (VP worked
+	 (PP-LOC in
+		 (NP Tokyo))
+	 (PP-TMP for
+		 (NP three years)))
+     .))
+( (S (NP-SBJ (NP (ADJP More and more)
+		 corners)
+             (PP of
+                 (NP the globe)))
+     (VP are
+         (VP becoming
+             (ADJP-PRD free
+		       (PP of
+			   (NP tobacco smoke)))))
+     .))
+( (S (PP-LOC In
+	     (NP Singapore))
+     ,
+     (NP-SBJ a new law)
+     (VP requires
+         (S (NP-SBJ-1 smokers)
+	    (VP to
+		(VP (VP put
+			(PRT out)
+			(NP their cigarettes)
+			(PP before
+			    (S-NOM (NP-SBJ *-1)
+				   (VP entering
+				       (NP (NP restaurants)
+					   ,
+					   (NP department stores)
+					   and
+					   (NP sports centers))))))
+		    or
+		    (VP face
+			(NP a 
+			    (ADJP $ 250 *U*) 
+			    fine))))))
+     .))
+( (S (S-TPC-1 (S (NP-SBJ (NP Discos)
+			 and
+			 (NP private clubs))
+		 (VP are
+		     (ADJP-PRD exempt
+			       (PP from
+				   (NP the ban)))))
+	      , 
+	      and
+	      (S (NP-SBJ-60 smoking)
+		 (VP will
+		     (VP be
+			 (VP permitted
+			     (NP *-60)
+			     (PP-LOC in
+				     (NP bars))
+			     (PP except
+				 (PP-TMP during
+					 (NP meal hours))))))))
+     ,
+     (NP-SBJ an official)
+     (VP said
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (NP-SBJ Singapore)
+     (ADVP-TMP already)
+     (VP bans
+         (NP (NP smoking)
+	     (PP-LOC in
+		     (NP all 
+			 (NX (NX theaters) 
+			     , 
+			     (NX buses) 
+			     , 
+			     (NX public elevators) 
+			     , 
+			     (NX hospitals) 
+			     and
+			     (NX fast-food restaurants))))))
+     .))
+( (S (PP-LOC In
+	     (NP Malaysia))
+     ,
+     (NP-SBJ (NP Siti Zaharah Sulaiman)
+             ,
+             (NP (NP a deputy minister)
+                 (PP-LOC in
+			 (NP (NP the prime minister 's)
+			     office)))
+             ,)
+     (VP (VP launched
+	     (NP (NP a `` No-Smoking Week '')
+		 (PP-LOC at
+			 (NP (NP (NP the Mara Institute)
+				 (PP of
+				     (NP Technology)))
+			     (PP near
+				 (NP Kuala Lumpur))))))
+	 and
+         (VP urged
+             (NP-1 other schools)
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP ban
+                        (NP on-campus smoking))))))
+     .))
+( (S (NP-SBJ South Korea)
+     (VP has
+         (NP different concerns))
+     .))
+( (S (PP-LOC In
+	     (NP Seoul))
+     ,
+     (NP-SBJ-1 officials)
+     (VP began
+         (S (NP-SBJ *-1)
+            (VP visiting
+                (NP (QP about 26,000) 
+		    cigarette stalls)
+		(S-PRP (NP-SBJ *-1)
+		       (VP to
+			   (VP remove
+			       (NP (NP illegal posters and signboards)
+				   (VP advertising
+				       (NP imported cigarettes)))))))))
+     .))
+( (S (NP-SBJ South Korea)
+     (VP (VP has
+	     (VP opened
+		 (NP its market)
+		 (PP-CLR to
+			 (NP foreign cigarettes))))
+	 but
+	 (VP restricts
+	     (NP advertising)
+	     (PP-CLR to
+		     (NP designated places))))
+     .))
+( (S (NP-SBJ A marketing study)
+     (VP indicates
+         (SBAR that
+               (S (NP-SBJ Hong Kong consumers)
+                  (VP are
+                      (NP-PRD the
+			      (ADJP most materialistic))
+		      (PP-LOC in
+			      (NP (NP the 14 major markets)
+				  (SBAR-LOC (WHADVP-1 where)
+					    (S (NP-SBJ the survey)
+					       (VP was
+						   (VP carried
+						       (PRT out)
+						       (ADVP-LOC *T*-1)))))))))))
+     .))
+( (S (NP-SBJ (NP The study)
+             (PP by
+                 (NP the Backer Spielvogel Bates ad agency)))
+     (ADVP also)
+     (VP found
+         (SBAR that
+               (S (NP-SBJ (NP the colony 's)
+                          consumers)
+                  (VP feel
+                      (ADJP-PRD (ADJP more pressured)
+				(PP than
+				    (NP (NP those)
+					(PP-LOC in
+						(NP (NP any)
+						    (PP of
+							(NP (NP the 
+								other
+								surveyed markets)
+							    ,
+							    (SBAR (WHNP-60 which)
+								  (S (NP-SBJ *T*-60)
+								     (VP include
+									 (NP (NP the U.S.)
+									     and
+									     (NP Japan))))))))))))))))
+     .))
+( (S (NP-SBJ The survey)
+     (VP found
+         (SBAR that
+               (S (NP-SBJ (NP (QP nearly half))
+                          (PP of
+                              (NP Hong Kong consumers)))
+                  (VP espouse
+                      (SBAR (WHNP-61 what)
+                            (S (NP-SBJ it)
+                               (VP identified
+                                   (NP *T*-61)
+                                   (PP-CLR as
+					   (NP materialistic values)))))
+		      ,
+		      (PP compared
+			  (PP with
+			      (NP (NP (QP about one-third))
+				  (PP-LOC in
+					  (NP (NP Japan)
+					      and
+					      (NP the U.S))))))))))
+     .))
+( (S (NP-SBJ (QP More
+		 than
+		 three
+		 in
+		 five)) 
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ they)
+                  (VP are
+                      (PP-PRD-LOC under
+				  (NP (NP a great deal)
+				      (PP of
+					  (NP stress))))
+		      (NP-TMP (NP most)
+			      (PP of
+				  (NP the time)))
+		      ,
+		      (PP compared
+			  (PP with
+			      (NP (NP (QP less than one in two)
+				      U.S. consumers)
+				  and
+				  (NP (NP (QP one
+					      in
+					      four))
+				      (PP-LOC in
+					      (NP Japan))))))))))
+     .))
+( (S (NP-SBJ The Thai cabinet)
+     (VP endorsed
+         (NP (NP Finance Minister 
+		 Pramual Sabhavasu 's)
+             proposal
+             (S (NP-SBJ *)
+                (VP to
+                    (VP build
+                        (NP (NP a 
+				(ADJP (QP $ 19 million) *U*) 
+				conference center)
+                            (PP for
+                                (NP (NP a joint meeting)
+				    (PP of
+					(NP (NP the World Bank)
+					    and
+					    (NP International Monetary Fund)))
+                                    (NP-TMP (NP two years)
+					    (PP from
+						(NP now)))))))))))
+     .))
+( (S (S (NP-SBJ-2 (NP The meeting)
+		  ,
+		  (SBAR (WHNP-62 which)
+			(S (NP-SBJ-1 *T*-62)
+			   (VP is
+			       (VP expected
+				   (S (NP-SBJ *-1)
+				      (VP to
+					  (VP draw
+					      (NP 20,000)
+					      (PP-DIR to
+						      (NP Bangkok)))))))))
+		  ,)
+        (VP was
+            (VP going
+                (S (NP-SBJ-61 *-2)
+                   (VP to
+                       (VP be
+                           (VP held
+                               (NP *-61)
+			       (PP-LOC at
+				       (NP the Central Plaza Hotel)))))))))
+     , 
+     but
+     (S (NP-SBJ the government)
+        (VP balked
+            (PP-CLR at
+		    (NP (NP (NP the hotel 's)
+			    conditions)
+			(PP for
+			    (S-NOM (NP-SBJ *)
+				   (VP undertaking
+				       (NP necessary expansion))))))))
+     .))
+( (S (NP-SBJ (NP A major concern)
+             (PP about
+                 (NP the current plan)))
+     (VP is
+         (SBAR-PRD whether
+		   (S (NP-SBJ-62 the new center)
+		      (VP can
+			  (VP be
+			      (VP built
+				  (NP *-62)
+				  (PP-TMP in
+					  (NP such a short time))))))))
+     .))
+( (S (S-TPC-1 (NP-SBJ-2 Yasser Arafat)
+	      (VP has
+		  (VP written
+		      (PP-DIR to
+			      (NP (NP the chairman)
+				  (PP of
+				      (NP the International Olympic Committee))))
+		      (S-ADV (NP-SBJ *-2)
+			     (VP asking
+				 (NP-3 him)
+				 (S (NP-SBJ *-3)
+				    (VP to
+					(VP back
+					    (NP a Palestinian bid
+						(S (NP-SBJ *)
+						   (VP to
+						       (VP join
+							   (NP the committee)))))))))))))
+     ,
+     (NP-SBJ the Palestine Liberation Organization news agency
+	     WAFA)
+     (VP said
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (NP-SBJ (NP An official)
+             (PP of
+                 (NP the Palestinian Olympic Committee)))
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ the committee)
+                  (VP (VP (ADVP-TMP first)
+			  applied
+			  (PP-CLR for
+				  (NP membership))
+			  (PP-TMP in
+				  (NP 1979)))
+                      and
+                      (VP renewed
+			  (NP its application)
+			  (PP-LOC in
+				  (NP (NP August)
+				      (PP of
+					  (NP this year)))))))))
+     .))
+( (S (NP-SBJ-1 The PLO)
+     (VP (VP (PP-TMP in
+		     (NP recent months))
+	     has
+	     (VP been
+		 (VP trying
+		     (S (NP-SBJ *-1)
+			(VP to
+			    (VP join
+				(NP international organizations)))))))
+	 but
+	 (VP failed
+	     (ADVP-TMP earlier
+		       (NP this year))
+	     (S (NP-SBJ *-1)
+		(VP to
+		    (VP win
+			(NP (NP membership)
+			    (PP in
+				(NP (NP the World Health Organization)
+				    and
+				    (NP the World Tourism Organization)))))))))
+     .))
+( (S (S-TPC-1 (NP-SBJ A Beijing food-shop assistant)
+	      (VP has
+		  (VP become
+		      (NP-PRD (NP the first mainland Chinese)
+			      (SBAR (WHNP-2 0)
+				    (S (NP-SBJ *T*-2)
+				       (VP to
+					   (VP get
+					       (NP AIDS)
+					       (PP-MNR through
+						       (NP sex))))))))))
+     ,
+     (NP-SBJ the People 's Daily)
+     (VP said
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (NP-SBJ It)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 (NP the man)
+			    ,
+			    (SBAR (WHNP-63 whom)
+				  (S (NP-SBJ it)
+				     (VP did 
+					 not
+					 (VP name
+					     (NP *T*-63)))))
+			    ,)
+                  (VP had
+                      (VP been
+                          (VP found
+                              (S (NP-SBJ *-1)
+                                 (VP to
+                                     (VP have
+                                         (NP the disease))))
+			      (PP-TMP after
+				      (NP hospital tests))))))))
+     .))
+( (S (S-TPC-2 (S (SBAR-TMP Once
+			   (S (NP-SBJ-63 the disease)
+			      (VP was
+				  (VP confirmed
+				      (NP *-63)))))
+		 ,
+		 (NP-SBJ-64 all
+			    (NP the man 's)
+			    associates and family)
+		 (VP were
+		     (VP tested
+			 (NP *-64))))
+	      , 
+	      but
+	      (S (NP-SBJ-1 none)
+		 (VP have
+		     (ADVP-TMP so far)
+		     (VP been
+			 (VP found
+			     (S (NP-SBJ *-1)
+				(VP to
+				    (VP have
+					(NP AIDS)))))))))
+     ,
+     (NP-SBJ the newspaper)
+     (VP said
+	 (SBAR 0
+	       (S *T*-2)))
+     .))
+( (S (S-TPC-1 (NP-SBJ The man)
+	      (VP had
+		  (PP-TMP for
+			  (NP a long time))
+		  (VP had
+		      (NP ``
+			  (NP a chaotic sex life)
+			  , 
+			  ''
+			  (PP including
+			      (NP (NP relations)
+				  (PP with
+				      (NP foreign men))))))))
+     ,
+     (NP-SBJ the newspaper)
+     (VP said
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (NP-SBJ The Polish government)
+     (VP (VP increased
+             (NP home electricity charges)
+             (PP-EXT by
+		     (NP 150 %)))
+         and
+         (VP doubled
+             (NP gas prices)))
+     .))
+( (S (NP-SBJ The official news agency
+             PAP)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 the increases)
+                  (VP were
+                      (VP intended
+                          (S (NP-SBJ *-1)
+                             (VP to
+                                 (VP (VP bring
+                                         (NP (ADJP unrealistically low)
+                                             energy charges)
+                                         (PP-CLR into
+						 (NP (NP line)
+						     (PP with
+							 (NP production costs)))))
+                                     and
+                                     (VP compensate
+                                         (PP-CLR for
+						 (NP (NP a rise)
+						     (PP-LOC in
+							     (NP coal prices)))))))))))))
+     .))
+( (S (PP-TMP In
+	     (NP happier news))
+     ,
+     (NP-SBJ-1 South Korea)
+     (PRN ,
+	  (PP in
+	      (S-NOM (NP-SBJ *-1)
+		     (VP establishing
+			 (NP (NP diplomatic ties)
+			     (PP with
+				 (NP Poland)))
+			 (NP-TMP yesterday))))
+	  ,)
+     (VP announced
+	 (NP (NP (QP $ 450 million) *U*)
+	     (PP in
+		 (NP (NP loans)
+		     (PP-DIR to
+			     (NP the
+				 (ADJP financially strapped)
+				 Warsaw government))))))
+     .))
+( (S (PP-LOC In
+	     (NP (NP a victory)
+		 (PP for
+		     (NP environmentalists))))
+     ,
+     (NP-SBJ (NP Hungary 's)
+             parliament)
+     (VP terminated
+         (NP (NP a 
+		 multibillion-dollar
+                 River Danube
+                 dam)
+             (VP being
+                 (VP built
+		     (NP *) 
+                     (PP by
+                         (NP-LGS Austrian firms))))))
+     .))
+( (S (NP-SBJ-1 The Nagymaros dam)
+     (VP was
+         (VP designed
+	     (NP-2 *-1)
+             (S-CLR (NP-SBJ-3 *-2)
+		    (VP to
+			(VP be
+			    (VP twinned
+				(NP *-3)
+				(PP-CLR with
+					(NP (NP another dam)
+					    , 
+					    (ADJP (ADVP-TMP now)
+						  nearly complete)
+					    ,
+					    (ADVP-LOC (NP 100 miles)
+						      upstream)
+					    (PP-LOC in
+						    (NP Czechoslovakia))))))))))
+     .))
+( (S (PP In
+         (S-NOM (NP-SBJ *-2)
+		(VP ending
+		    (NP (NP (NP Hungary
+				's)
+			    part)
+			(PP of
+			    (NP the project))))))
+     ,
+     (NP-SBJ-2 Parliament)
+     (VP authorized
+	 (S (NP-SBJ Prime Minister Miklos Nemeth)
+            (VP to
+                (VP modify
+                    (NP (NP a 1977 agreement)
+                        (PP with
+                            (NP (NP Czechoslovakia)
+                                ,
+                                (SBAR (WHNP-64 which)
+                                      (S (NP-SBJ *T*-64)
+                                         (ADVP-TMP still)
+					 (VP wants
+					     (S (NP-SBJ-1 the dam)
+                                                (VP to
+                                                    (VP be
+                                                        (VP built
+							    (NP *-1)))))))))))))))
+     .))
+( (S (NP-SBJ Mr. Nemeth)
+     (VP said
+	 (PP-LOC in
+		 (NP parliament))
+	 (SBAR that
+	       (S (NP-SBJ Czechoslovakia
+			  and
+			  Hungary)
+		  (VP would
+		      (VP suffer
+			  (NP environmental damage)
+			  (SBAR-ADV if
+				    (S (NP-SBJ-67 the twin dams)
+				       (VP were
+					   (VP built
+					       (NP *-67)
+					       (SBAR-MNR as
+							 (S (NP-SBJ-2 *)
+							    (VP planned
+								(NP *-2)))))))))))))
+     .))
+( (S (NP-SBJ Czechoslovakia)
+     (VP said
+	 (PP-TMP in
+		 (NP May))
+	 (SBAR 0
+	       (S (NP-SBJ it)
+		  (VP could
+		      (VP seek
+			  (NP (QP $ 2 billion) *U*)
+			  (PP-CLR from
+				  (NP Hungary))
+			  (SBAR-ADV if
+				    (S (NP-SBJ-68 the twindam contract)
+				       (VP were
+					   (VP broken
+					       (NP *-68))))))))))
+     .))
+( (S (NP-SBJ-69 The Czech dam)
+     (VP ca 
+	 n't
+         (VP be
+             (VP operated
+                 (NP *-69)
+		 (PP-TMP (ADVP solely)
+			 at
+			 (NP peak periods))
+		 (PP-MNR without
+			 (NP the Nagymaros project)))))
+     .))
+( (S (NP-SBJ (NP A painting)
+	     (PP by
+		 (NP August Strindberg)))
+     (VP set
+	 (NP a Scandinavian price record)
+	 (SBAR-TMP (WHADVP-1 when)
+		   (S (NP-SBJ it)
+		      (VP sold
+			  (PP-LOC at
+				  (NP auction))
+			  (PP-LOC in
+				  (NP Stockholm))
+			  (PP-CLR for
+				  (NP (QP $ 2.44 million) *U*))
+			  (ADVP-TMP *T*-1)))))
+     .))
+( (S ``
+     (NP-TTL-SBJ-1 Lighthouse II)
+     ''
+     (VP was
+         (VP painted
+	     (NP-TTL *-1)
+             (PP-MNR in
+		     (NP oils))
+             (PP by
+                 (NP-LGS the playwright))
+	     (PP-TMP in
+		     (NP 1901))))
+     ...))
+( (S (S-TPC-2 (PP-TMP After
+		      (NP (NP years)
+			  (PP of
+			      (NP decline))))
+	      ,
+	      (NP-SBJ (NP weddings)
+		      (PP-LOC in
+			      (NP France)))
+	      (VP showed
+		  (NP a 
+		      (ADJP 2.2 %) 
+		      upturn)
+		  (NP-TMP last year)
+		  ,
+		  (PP with
+		      (S-NOM (NP-SBJ (NP 6,000 more couples)
+				     (PP *ICH*-1))
+			     (VP exchanging
+				 (NP rings)
+				 (PP-TMP in
+					 (NP 1988))
+				 (PP-1 than
+				       (PP-TMP in
+					       (NP the previous year))))))))
+     ,
+     (NP-SBJ the national statistics office)
+     (VP said
+	 (SBAR 0
+	       (S *T*-2)))
+     .))
+( (S But
+     (NP-SBJ (NP the number)
+	     (PP of
+		 (NP weddings))
+	     (NP-TMP last year)
+             (PRN --
+		  (NP 271,124)
+		  --))
+     (VP was
+	 (ADVP-TMP still)
+	 (PP-LOC-PRD well below
+		     (NP (NP the 400,000)
+			 (VP registered
+			     (NP *)
+			     (PP-TMP in
+				     (NP (NP 1972)
+					 ,
+					 (NP (NP the last year)
+					     (PP of
+						 (NP increasing
+						     marriages)))))))))
+     .))

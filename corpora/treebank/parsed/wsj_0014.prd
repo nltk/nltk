@@ -1,0 +1,47 @@
+
+
+( (S (NP-SBJ-15 (NP (NP Norman Ricken)
+                    ,
+                    (UCP (ADJP (NP 52 years)
+			       old)
+			 and
+			 (NP (NP former 
+				 (NX (NX president)
+				     and
+				     (NX chief
+					 operating
+					 officer)))
+			     (PP of
+				 (NP Toys `` R '' Us Inc.)))))
+                , 
+		and
+                (NP (NP Frederick Deane Jr.)
+		    ,
+		    (NP 63)
+		    ,
+                    (NP (NP chairman)
+                        (PP of
+                            (NP Signet Banking Corp.))))
+                ,)
+     (VP were
+         (VP elected
+             (S (NP-SBJ *-15)
+		(NP-PRD (NP directors)
+			(PP of
+			    (NP this consumer electronics and appliances retailing chain))))))
+     .))
+( (S (NP-SBJ They)
+     (VP succeed
+         (NP (NP (NP Daniel M. Rexinger)
+                 ,
+                 (NP retired
+                     Circuit City executive vice president))
+             , 
+	     and
+             (NP (NP Robert R. Glauber)
+                 ,
+                 (NP U.S. Treasury undersecretary))
+             ,)
+	 (PP-LOC on
+		 (NP the 12-member board)))
+     .))

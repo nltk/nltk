@@ -1,0 +1,23 @@
+
+( (S 
+    (NP-SBJ-44 
+      (NP (NNP James) (NNP L.) (NNP Pate) )
+      (, ,) 
+      (NP (JJ 54-year-old) (NN executive) (NN vice) (NN president) )
+      (, ,) )
+    (VP (VBD was) 
+      (VP (VBN named) 
+        (S 
+          (NP-SBJ (-NONE- *-44) )
+          (NP-PRD 
+            (NP (DT a) (NN director) )
+            (PP (IN of) 
+              (NP (DT this) (NN oil) (NN concern) ))))
+        (, ,) 
+        (S-ADV 
+          (NP-SBJ (-NONE- *) )
+          (VP (VBG expanding) 
+            (NP (DT the) (NN board) )
+            (PP-CLR (TO to) 
+              (NP (CD 14) (NNS members) ))))))
+    (. .) ))

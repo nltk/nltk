@@ -1,0 +1,1050 @@
+
+( (S 
+    (SBAR-TMP (IN While) 
+      (S 
+        (NP-SBJ 
+          (NP (NN worry) )
+          (PP (-NONE- *ICH*-1) ))
+        (VP (VBZ grows) 
+          (PP-1 (IN about) 
+            (NP 
+              (NP (JJ big) (JJ Japanese) (NNS investments) )
+              (PP-LOC (IN in) 
+                (NP (DT the) (NNP U.S.) )))))))
+    (, ,) 
+    (NP-SBJ 
+      (NP (NNP Japan) (POS 's) )
+      (JJ big) (NN trading) (NNS companies) )
+    (VP (VBP are) 
+      (ADVP-MNR (RB rapidly) )
+      (VP (VBG increasing) 
+        (NP 
+          (NP (PRP$ their) (NN stake) )
+          (PP-LOC (IN in) 
+            (NP 
+              (NP (NNP America) (POS 's) )
+              (JJR smaller) (NN business) )))))
+    (. .) ))
+( (S 
+    (PP (IN For) 
+      (NP (NNP Japan) ))
+    (, ,) 
+    (NP-SBJ (DT the) (JJ controversial) (NN trend) )
+    (VP (VBZ improves) 
+      (NP 
+        (NP (NN access) )
+        (PP (TO to) 
+          (NP (JJ American) (NNS markets) 
+            (CC and)
+            (NN technology) ))))
+    (. .) ))
+( (S (CC But) 
+    (PP (IN for) 
+      (NP (JJ small) (JJ American) (NNS companies) ))
+    (, ,) 
+    (NP-SBJ (PRP it) )
+    (ADVP (RB also) )
+    (VP (VBZ provides) 
+      (NP 
+        (NP (DT a) (VBG growing) (NN source) )
+        (PP (IN of) 
+          (NP 
+            (NP (NN capital) )
+            (CC and) 
+            (ADVP (RB even) )
+            (NP (NN marketing) (NN help) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ (-NONE- *) )
+    (VP (VB Take) 
+      (NP 
+        (NP (DT the) (NN deal) )
+        (PP (IN with) 
+          (NP 
+            (NP (NNP Candela) (NNP Laser) (NNP Corp.) )
+            (, ,) 
+            (NP 
+              (NP (DT a) 
+                (NAC-LOC (NNP Wayland) 
+                  (, ,)
+                  (NNP Mass.) 
+                  (, ,)
+                  )
+                (NN manufacturer) )
+              (PP (IN of) 
+                (NP (JJ high-tech) (JJ medical) (NNS devices) )))
+            (, ,) 
+            (SBAR 
+              (WHNP-1 (WDT which) )
+              (S 
+                (ADVP-TMP 
+                  (NP (CD three) (NNS years) )
+                  (RB ago) )
+                (NP-SBJ (-NONE- *T*-1) )
+                (VP (VBP set) 
+                  (NP (PRP$ its) (NNS sights) )
+                  (PP-CLR (IN on) 
+                    (NP 
+                      (NP (NNP Japan) )
+                      (PP (IN as) 
+                        (NP (DT an) (NN export) (NN market) )))))))))))
+    (. .) ))
+( (S 
+    (S-PRP 
+      (ADVP (RB Partly) )
+      (NP-SBJ-2 (-NONE- *-1) )
+      (VP (TO to) 
+        (VP (VB help) 
+          (S 
+            (NP-SBJ (-NONE- *-2) )
+            (VP (VB clear) 
+              (NP 
+                (NP (DT the) (JJ myriad) (NNS obstacles) )
+                (VP (VBG facing) 
+                  (NP 
+                    (NP (DT any) (JJ overseas) (NN company) )
+                    (VP (VBG trying) 
+                      (S 
+                        (NP-SBJ (-NONE- *) )
+                        (VP (TO to) 
+                          (VP (VB penetrate) 
+                            (NP (NNP Japan) )))))))))))))
+    (, ,) 
+    (NP-SBJ-1 (JJ tiny) (NNP Candela) )
+    (VP (VBD turned) 
+      (PP-DIR (TO to) 
+        (NP 
+          (NP (NNP Mitsui) (CC &) (NNP Co.) )
+          (, ,) 
+          (NP 
+            (NP (CD one) )
+            (PP (IN of) 
+              (NP 
+                (NP (NNP Japan) (POS 's) )
+                (JJS largest) (VBG trading) (NNS companies) )))
+          (, ,) ))
+      (PP-PRP (IN for) 
+        (NP (NN investment) )))
+    (. .) ))
+( (S 
+    (PP-LOC (IN In) 
+      (NP (DT a) (JJ joint-venture) (NN deal) ))
+    (, ,) 
+    (NP-SBJ (NNP Mitsui) )
+    (VP (VBD guided) 
+      (NP (NNP Candela) )
+      (PP-CLR (IN through) 
+        (NP 
+          (NP (NNP Tokyo) (POS 's) )
+          (JJ bureaucratic) (NN maze) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP It) )
+    (ADVP-TMP (RB eventually) )
+    (VP (VBD secured) 
+      (NP 
+        (NP 
+          (NAC (NNP Ministry) 
+            (PP (IN of) 
+              (NP (NNP Health) )))
+          (NN import) (NN approval) )
+        (PP (IN for) 
+          (NP 
+            (NP (CD two) (NNP Candela) (NN laser) (NNS products) )
+            (: --) 
+            (NP 
+              (NP 
+                (NP (CD one) )
+                (SBAR 
+                  (WHNP-189 (WDT that) )
+                  (S 
+                    (NP-SBJ (-NONE- *T*-189) )
+                    (VP (VBZ breaks) 
+                      (PRT (RP up) )
+                      (NP (NN kidney) (NNS stones) )))))
+              (CC and) 
+              (NP 
+                (NP (DT another) )
+                (SBAR 
+                  (WHNP-190 (WDT that) )
+                  (S 
+                    (NP-SBJ (-NONE- *T*-190) )
+                    (VP (VBZ treats) 
+                      (NP (NN skin) (NNS lesions) ))))))))))
+    (. .) ))
+( (S 
+    (PP-TMP (IN At) 
+      (NP (JJ last) (NN count) ))
+    (, ,) 
+    (NP-SBJ (NNP Candela) )
+    (VP (VBD had) 
+      (VP (VBN sold) 
+        (NP 
+          (NP 
+            (QP ($ $) (CD 4) (CD million) )
+            (-NONE- *U*) )
+          (PP (IN of) 
+            (NP (PRP$ its) (JJ medical) (NNS devices) )))
+        (PP-LOC (IN in) 
+          (NP (NNP Japan) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN deal) )
+    (ADVP (RB also) )
+    (VP (VBD gave) 
+      (NP (NNP Mitsui) )
+      (NP 
+        (NP (NN access) )
+        (PP (TO to) 
+          (NP (DT a) (JJ high-tech) (JJ medical) (NN product) ))))
+    (. .) ))
+( (SINV (`` ``) 
+    (S-TPC-1 
+      (S 
+        (NP-SBJ (PRP They) )
+        (VP (VBP view) 
+          (NP (DT this) )
+          (PP-CLR (IN as) 
+            (NP (DT a) (NN growth) (NN area) ))))
+      (IN so) 
+      (S 
+        (NP-SBJ (PRP they) )
+        (VP (VBD went) 
+          (PP-CLR (IN about) 
+            (NP (PRP it) ))
+          (PP-MNR (IN with) 
+            (NP (DT a) (JJ systematic) (NN approach) )))))
+    (, ,) ('' '') 
+    (VP (VBZ says) 
+      (S (-NONE- *T*-1) ))
+    (NP-SBJ 
+      (NP (NNP Richard) (NNP Olsen) )
+      (, ,) 
+      (NP (DT a) (NNP Candela) (NN vice) (NN president) ))
+    (. .) ))
+( (S 
+    (ADVP (RB Indeed) )
+    (, ,) 
+    (PP (IN for) 
+      (NP (JJ many) (JJ Japanese) (NN trading) (NNS companies) ))
+    (, ,) 
+    (NP-SBJ (DT the) (JJ favorite) (NNP U.S.) (JJ small) (NN business) )
+    (VP (VBZ is) 
+      (NP-PRD 
+        (NP (CD one) )
+        (SBAR 
+          (WHNP-1 (WP$ whose) (NN research) 
+            (CC and)
+            (NN development) )
+          (S 
+            (NP-SBJ-117 (-NONE- *T*-1) )
+            (VP (MD can) 
+              (VP (VB be) 
+                (VP (VBN milked) 
+                  (NP (-NONE- *-117) )
+                  (PP-PRP (IN for) 
+                    (NP (JJ future) (JJ Japanese) (NN use) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (DT The) (JJ Japanese) (NNS companies) )
+    (VP (VBP bankroll) 
+      (NP 
+        (NP (JJ many) (JJ small) (NNP U.S.) (NNS companies) )
+        (PP (IN with) 
+          (NP (JJ promising) (NNS products) (CC or) (NNS ideas) )))
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ (-NONE- *-1) )
+        (ADVP-TMP (RB frequently) )
+        (VP (VBG putting) 
+          (NP (PRP$ their) (NN money) )
+          (PP-PUT (IN behind) 
+            (NP 
+              (NP (NNS projects) )
+              (SBAR 
+                (WHNP-191 (IN that) )
+                (S 
+                  (NP-SBJ (JJ commercial) (NNS banks) )
+                  (VP (MD wo) (RB n't) 
+                    (VP (VB touch) 
+                      (NP (-NONE- *T*-191) ))))))))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ (JJ Japanese) (NNS companies) )
+      (VP (VBP have) 
+        (VP (VBN financed) 
+          (NP 
+            (ADJP (JJ small) 
+              (CC and)
+              (JJ medium-sized) )
+            (NNP U.S.) (NNS firms) )))
+      (PP-TMP (IN for) 
+        (NP (NNS years) )))
+    (, ,) (CC but) 
+    (S 
+      (PP-TMP (IN in) 
+        (NP (JJ recent) (NNS months) ))
+      (, ,) 
+      (NP-SBJ (DT the) (NN pace) )
+      (VP (VBZ has) 
+        (VP (VBN taken) 
+          (PRT (RP off) ))))
+    (. .) ))
+( (SINV 
+    (S-TPC-1 
+      (PP-TMP (IN In) 
+        (NP 
+          (NP (DT the) (JJ first) (NN half) )
+          (PP (IN of) 
+            (NP (CD 1989) ))
+          (ADVP (RB alone) )))
+      (, ,) 
+      (NP-SBJ (JJ Japanese) (NNS corporations) )
+      (VP (VBD invested) 
+        (NP 
+          (NP 
+            (QP ($ $) (CD 214) (CD million) )
+            (-NONE- *U*) )
+          (NP (-NONE- *ICH*-2) ))
+        (PP-CLR (IN in) 
+          (NP 
+            (NP (NN minority) (NNS positions) )
+            (PP-LOC (IN in) 
+              (NP (NNP U.S.) (NNS companies) ))))
+        (, ,) 
+        (NP-2 
+          (NP (DT a) 
+            (ADJP (CD 61) (NN %) )
+            (NN rise) )
+          (PP-DIR (IN from) 
+            (NP 
+              (NP (DT the) (NN figure) )
+              (PP (IN for) 
+                (NP 
+                  (NP (DT all) )
+                  (PP (IN of) 
+                    (NP (CD 1987) )))))))))
+    (, ,) 
+    (VP (VBZ reports) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (NP-SBJ (NNP Venture) (NNP Economics) (NNP Inc) )
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) 
+      (NAC-LOC (NNP Needham) 
+        (, ,)
+        (NNP Mass.) 
+        (, ,)
+        )
+      (NN concern) )
+    (VP (VBZ tracks) 
+      (NP 
+        (NP (NNS investments) )
+        (PP (IN in) 
+          (NP (JJ new) (NNS businesses) ))))
+    (. .) ))
+( (S 
+    (PP (IN In) 
+      (NP (NN addition) ))
+    (, ,) 
+    (ADVP (IN of) (NN course) )
+    (, ,) 
+    (NP-SBJ 
+      (NP (DT some) )
+      (PP (IN of) 
+        (NP (DT the) (JJ Japanese) (NNS investments) )))
+    (VP (VBD involved) 
+      (NP 
+        (NP (JJ outright) (NN purchase) )
+        (PP (IN of) 
+          (NP (JJ small) (NNP U.S.) (NNS firms) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (JJ Heightened) (JJ Japanese) (NN interest) )
+      (PP (IN in) 
+        (NP (JJ American) (JJ small) (NN business) )))
+    (VP (VBZ parallels) 
+      (NP 
+        (NP (DT an) (NN acceleration) )
+        (PP (IN of) 
+          (NP 
+            (NP (NNS investments) )
+            (VP (VBG giving) 
+              (NP (JJ Japanese) (NNS companies) )
+              (NP 
+                (NP (NN control) )
+                (PP (IN of) 
+                  (NP 
+                    (NP (JJ large) 
+                      (, ,)
+                      (ADJP (RB highly) (JJ visible) )
+                      (NNP U.S.) (NNS corporations) )
+                    (, ,) 
+                    (PP (JJ such) (IN as) 
+                      (NP (NNP Columbia) (NNP Pictures) (NNP Entertainment) (NNP Inc) ))))))))))
+    (. .) ))
+( (S 
+    (NP-TMP (RB Only) (DT this) (NN week) )
+    (, ,) 
+    (NP-SBJ-118 
+      (NP (PRP it) )
+      (SBAR (-NONE- *EXP*-1) ))
+    (VP (VBD was) 
+      (VP (VBN announced) 
+        (NP (-NONE- *-118) )
+        (SBAR-1 (IN that) 
+          (S 
+            (NP-SBJ (NNP Mitsubishi) (NNP Estate) (NNP Co.) )
+            (VP (VBD had) 
+              (VP (VBN acquired) 
+                (NP 
+                  (NP (DT a) 
+                    (ADJP (CD 51) (NN %) )
+                    (NN stake) )
+                  (PP-LOC (IN in) 
+                    (NP 
+                      (NP (NNP Rockefeller) (NNP Group) )
+                      (, ,) 
+                      (SBAR 
+                        (WHNP-192 (WDT which) )
+                        (S 
+                          (NP-SBJ (-NONE- *T*-192) )
+                          (VP (VBZ owns) 
+                            (NP 
+                              (NP (NNP New) (NNP York) (POS 's) )
+                              (JJ prestigious) (NNP Rockefeller) (NNP Center) )))))))))))))
+    (. .) ))
+( (S 
+    (SBAR-ADV (IN While) 
+      (S 
+        (NP-SBJ (DT the) (JJ small) (NNS deals) )
+        (VP (VBP are) 
+          (ADJP-PRD (RB far) (RBR less) (JJ conspicuous) ))))
+    (, ,) 
+    (NP-SBJ (PRP they) )
+    (VP (VBP add) 
+      (PP-CLR (TO to) 
+        (NP 
+          (NP (JJ Japanese) (NN penetration) )
+          (PP (IN of) 
+            (NP (DT the) (NNP U.S.) (NN market) )))))
+    (. .) ))
+( (S 
+    (SBAR-PRP (IN As) 
+      (S 
+        (NP-SBJ (DT the) (NNS deals) )
+        (ADVP (RB also) )
+        (VP (VBP improve) 
+          (NP 
+            (NP (JJ Japanese) (NN access) )
+            (PP (TO to) 
+              (NP (JJ American) 
+                (NX 
+                  (NX (NN technology) )
+                  (CC and) 
+                  (NX (NN market) (NN knowledge) ))))))))
+    (, ,) 
+    (NP-SBJ (PRP they) )
+    (VP (VBP feed) 
+      (NP 
+        (NP (JJ American) (NNS anxieties) )
+        (PP-LOC (IN in) 
+          (NP 
+            (NP (DT this) (NN area) ))))
+      (, ,) 
+      (ADVP (RB too) ))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (RB Even) (DT a) (JJ low-tech) (NN product) )
+      (PP (IN like) 
+        (NP (NN plate) (NN glass) )))
+    (VP (MD can) 
+      (VP (VB catch) 
+        (NP 
+          (NP (DT a) (NN trading) (NN company) (POS 's) )
+          (NN fancy) )
+        (SBAR-ADV (IN if) 
+          (S 
+            (NP-SBJ (EX there) )
+            (VP (VBZ 's) 
+              (NP-PRD (DT a) (JJ strategic) (NN fit) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP 
+        (NP (NNP Free) (NNP State) (NNP Glass) (NNP Industries) )
+        (PP (IN of) 
+          (NP 
+            (NP (NNP Warrenton) )
+            (, ,) 
+            (NP-LOC (NNP Va.) ))))
+      (, ,) 
+      (NP 
+        (NP (DT a) (JJ small) (NN fabricator) )
+        (PP (IN of) 
+          (NP (JJ architectural) (NN glass) )))
+      (, ,) )
+    (VP (VBD was) 
+      (VP (VBG foundering) 
+        (PP-LOC (IN under) 
+          (NP (PRP$ its) (JJ original) (NN management) ))))
+    (. .) ))
+( (S 
+    (NP-TMP (JJ Last) (NN year) )
+    (, ,) 
+    (NP-SBJ 
+      (NP (NNP Mitsubishi) (NNP International) (NNP Corp.) )
+      (, ,) 
+      (NP 
+        (NP (DT the) 
+          (ADJP (NNP New) (NNP York-based) )
+          (NN arm) )
+        (PP (IN of) 
+          (NP (NNP Mitsubishi) (NNP Corp.) )))
+      (, ,) )
+    (VP (VBD bought) 
+      (NP 
+        (NP (VBG controlling) (NN interest) )
+        (PP-LOC (IN in) 
+          (NP (DT the) (NN glass) (NN company) )))
+      (PP-LOC (IN in) 
+        (NP 
+          (NP (DT a) (JJ joint) (NN venture) )
+          (PP (IN with) 
+            (NP 
+              (NP (NNP Ronald) (NNP Bodner) )
+              (, ,) 
+              (NP (DT a) 
+                (NX 
+                  (NX (NN glass) (NN industry) (NN executive) )
+                  (CC and) 
+                  (NX (NNP Mitsubishi) (NN consultant) ))))))))
+    (. .) ))
+( (SINV 
+    (S-TPC-2 
+      (NP-SBJ-1 (DT The) (NN deal) )
+      (VP (VBZ is) 
+        (ADVP (RB chiefly) )
+        (VP (VBN designed) 
+          (NP-3 (-NONE- *-1) )
+          (S-CLR 
+            (NP-SBJ (-NONE- *-3) )
+            (VP (TO to) 
+              (VP (VB give) 
+                (NP (NNP Mitsubishi) )
+                (NP 
+                  (NP (DT a) (NN window) )
+                  (PP-LOC (IN on) 
+                    (NP (DT the) (NNP U.S.) (NN glass) (NN industry) ))))))))
+      (, ,) )
+    (VP (VBZ says) 
+      (S (-NONE- *T*-2) ))
+    (NP-SBJ 
+      (NP (NNP Ichiro) (NNP Wakui) )
+      (, ,) 
+      (NP 
+        (NP (DT an) (NN executive) )
+        (PP-LOC (IN in) 
+          (NP 
+            (NP 
+              (NP (NNP Mitsubishi) (POS 's) )
+              (JJ general) (NN merchandise) (NN department) )
+            (PP-LOC (IN in) 
+              (NP (NNP New) (NNP York) ))))))
+    (. .) ))
+( (S (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ (PRP It) )
+      (VP (VBZ 's) (RB not) 
+        (NP-PRD 
+          (NP (RB just) (DT a) (JJ simple) (NN investment) )
+          (PP (IN in) 
+            (NP (DT a) (JJ small) (NN company) )))))
+    (, ,) ('' '') 
+    (NP-SBJ (NNP Mr.) (NNP Wakui) )
+    (VP (VBZ says) 
+      (S (-NONE- *T*-1) ))
+    (. .) ))
+( (S (`` ``) 
+    (NP-SBJ-1 (PRP We) )
+    (VP (VBP want) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB see) 
+            (NP (DT the) (NN glass) (NN market) )
+            (PP-LOC (IN from) 
+              (NP 
+                (NP (DT the) (NN inside) )
+                (, ,) (RB not) 
+                (NP (DT the) (NN outside) )))))))
+    (. .) ('' '') ))
+( (S 
+    (S-TPC-1 
+      (NP-SBJ 
+        (NP 
+          (NP (NNS Mitsubishi) (POS 's) )
+          (NN investment) )
+        (PP (IN in) 
+          (NP (NNP Free) (NNP State) )))
+      (VP (VBZ is) (`` ``) 
+        (UCP-PRD 
+          (ADJP-PRD (RB very) (JJ small) )
+          (: ...) 
+          (NP-PRD 
+            (QP (JJR less) (IN than) ($ $) (CD 4) (CD million) )
+            (-NONE- *U*) ))))
+    (, ,) ('' '') 
+    (NP-SBJ (NNP Mr.) (NNP Wakui) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (NNP Mr.) (NNP Bodner) )
+    (VP (VBZ declines) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB comment) 
+            (PP-CLR (IN on) 
+              (NP (DT the) (NN arrangement) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NN Trading) (NNS companies) )
+      (PP (JJ such) (IN as) 
+        (NP 
+          (NP (NNP Mitsubishi) )
+          (, ,) 
+          (NP (NNP Mitsui) )
+          (, ,) 
+          (NP (NNP C.) (NNP Itoh) (CC &) (NNP Co.) )
+          (CC and) 
+          (NP (NNP Nissho-Iwai) (NNP Corp.) )))
+      (, ,) 
+      (SBAR 
+        (WHNP-193 (WDT which) )
+        (S 
+          (NP-SBJ (-NONE- *T*-193) )
+          (VP (VBP make) 
+            (NP 
+              (NP (JJ many) )
+              (PP (IN of) 
+                (NP 
+                  (NP (DT the) (JJ Japanese) (NNS investments) )
+                  (PP (IN in) 
+                    (NP (JJ small) (NNP U.S.) (NNS concerns) ))))))))
+      (, ,) )
+    (VP (VBP have) 
+      (NP (DT no) (NNP U.S.) (NN counterpart) ))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT These) 
+        (ADJP (RB vertically) (VBN integrated) )
+        (NNS combines) )
+      (, ,) 
+      (SBAR 
+        (WHNP-1 
+          (NP (DT some) )
+          (WHPP (IN of) 
+            (WHNP (WDT which) )))
+        (S 
+          (NP-SBJ (-NONE- *T*-1) )
+          (VP (VBD got) 
+            (NP (PRP$ their) (NN start) )
+            (PP-TMP (IN in) 
+              (NP 
+                (NP (NNP Japan) (POS 's) )
+                (JJ feudal) (NN period) )))))
+      (, ,) )
+    (VP (VBP deal) 
+      (ADVP-LOC (RB globally) )
+      (PP-CLR (IN in) 
+        (NP (NNS commodities) 
+          (, ,)
+          (NN construction) 
+          (CC and)
+          (VBG manufacturing) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP They) )
+    (VP (VBP operate) 
+      (NP (NNS ships) 
+        (CC and)
+        (NNS banks) ))
+    (. .) ))
+( (SINV (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ (DT All) (DT the) (`` ``) (NN sogo-shosha) ('' '') )
+      (VP (VBP are) 
+        (VP (VBG looking) 
+          (PP-CLR (IN for) 
+            (NP (JJ new) (NN business) )))))
+    (, ,) ('' '') 
+    (VP (VBZ says) 
+      (S (-NONE- *T*-1) ))
+    (NP-SBJ-2 
+      (NP (NNP Arthur) (NNP Klauser) )
+      (, ,) 
+      (NP 
+        (NP (NN adviser) )
+        (PP (TO to) 
+          (NP 
+            (NP (DT the) (NN president) )
+            (PP (IN of) 
+              (NP (NNP Mitsui) 
+                (, ,)
+                (NNP U.S.A.) )))))
+      (, ,) )
+    (S 
+      (NP-SBJ (-NONE- *-2) )
+      (VP (VBG using) 
+        (NP 
+          (NP (DT the) (NNP Japanese) (NN term) )
+          (PP (IN for) 
+            (NP 
+              (NP (DT the) (JJS largest) )
+              (PP (IN of) 
+                (NP (DT the) (JJ global) (VBG trading) (NNS houses) )))))))
+    (. .) ))
+( (SINV 
+    (VP (VBZ Adds) 
+      (S (-NONE- *ICH*-1) ))
+    (NP-SBJ 
+      (NP (NNP Takeshi) (NNP Kondo) )
+      (, ,) 
+      (NP 
+        (NP (JJ senior) (NN vice) (NN president) )
+        (PP (IN of) 
+          (NP (NNP C.) (NNP Itoh) (NNP America) (NNP Inc.) ))))
+    (: :) (`` ``) 
+    (S-1 
+      (NP-SBJ (PRP We) )
+      (VP (VBP have) 
+        (NP 
+          (NP (DT a) (JJ great) (NN interest) )
+          (PP (IN in) 
+            (S-NOM 
+              (NP-SBJ (-NONE- *) )
+              (VP (VBG making) 
+                (NP 
+                  (NP (NNS investments) )
+                  (, ,) 
+                  (PP 
+                    (ADVP (RB particularly) )
+                    (IN in) 
+                    (NP (JJ new) (NNS ventures) )))))))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ-119 
+      (NP (DT A) (NN host) )
+      (PP (IN of) 
+        (NP 
+          (NP (NNS electronics) (NNS firms) )
+          (PP-LOC (IN in) 
+            (NP 
+              (NP (NNP California) (POS 's) )
+              (NNP Silicon) (NNP Valley) )))))
+    (VP (VBD were) 
+      (VP (VBN financed) 
+        (NP (-NONE- *-119) )
+        (PP-MNR (IN with) 
+          (NP (NN trading-company) (NN venture) (NN capital) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NN Profit) )
+    (PRN 
+      (, ,)
+      (PP-TMP 
+        (ADVP (IN at) (JJS least) )
+        (IN in) 
+        (NP (DT the) (JJ short) (NN term) ))
+      (, ,) )
+    (VP (VBZ is) 
+      (ADVP-TMP (RB usually) )
+      (NP-PRD (DT a) (JJ secondary) (NN goal) ))
+    (. .) ))
+( (SINV (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ 
+        (NP (JJ Strategic) (NNS objectives) )
+        (, ,) (RB not) 
+        (NP (JJ financial) (NN return) )
+        (, ,) )
+      (VP (VBP drive) 
+        (NP 
+          (NP (JJ many) )
+          (PP (IN of) 
+            (NP (DT the) (NNS deals) )))))
+    (, ,) ('' '') 
+    (VP (VBZ says) 
+      (S (-NONE- *T*-1) ))
+    (NP-SBJ (DT a) (NNP Venture) (NNP Economics) (NN spokesman) )
+    (. .) ))
+( (S 
+    (PP (IN In) 
+      (NP 
+        (S-NOM 
+          (NP-SBJ (-NONE- *) )
+          (VP (VBG investing) 
+            (PP (IN on) 
+              (NP 
+                (NP (DT the) (NN basis) )
+                (PP (IN of) 
+                  (NP (JJ future) (NNS transactions) ))))))
+        (, ,) 
+        (NP 
+          (NP (DT a) (NN role) )
+          (VP 
+            (ADVP-TMP (RB often) )
+            (VBN performed) 
+            (NP (-NONE- *) )
+            (PP-LGS (IN by) 
+              (NP (NN merchant) (NNS banks) )))))
+      (, ,) )
+    (NP-SBJ (NN trading) (NNS companies) )
+    (VP (MD can) 
+      (VP (VB cut) 
+        (PP-CLR (IN through) 
+          (NP 
+            (NP (DT the) (NN logjam) )
+            (SBAR 
+              (WHNP-1 (IN that) )
+              (S 
+                (NP-SBJ (NN small-company) (NNS owners) )
+                (ADVP-TMP (RB often) )
+                (VP (VBP face) 
+                  (NP (-NONE- *T*-1) ))))
+            (PP (IN with) 
+              (NP (PRP$ their) (JJ local) (JJ commercial) (NNS banks) ))))))
+    (. .) ))
+( (SINV (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ (PRP It) )
+      (VP (VBZ 's) 
+        (NP-PRD 
+          (NP (DT the) (JJ classic) (NN problem) )
+          (PP (IN of) 
+            (NP (DT the) (JJ small) (NN businessman) )))))
+    (, ,) ('' '') 
+    (VP (VBZ says) 
+      (S (-NONE- *T*-1) ))
+    (NP-SBJ 
+      (NP (NNP Malcolm) (NNP Davies) )
+      (, ,) 
+      (NP 
+        (NP (VBG managing) (NN director) )
+        (PP (IN of) 
+          (NP 
+            (NP (NNP Trading) (NNP Alliance) (NNP Corp.) )
+            (PP (IN of) 
+              (NP (NNP New) (NNP York) ))))))
+    (. .) ))
+( (S (`` ``) 
+    (S 
+      (NP-SBJ-1 (NNS People) )
+      (VP (VBP are) 
+        (VP (VBG queuing) 
+          (PP-LOC (IN at) 
+            (NP (DT the) (NN door) ))
+          (S-PRP 
+            (NP-SBJ (-NONE- *-1) )
+            (VP (TO to) 
+              (VP (VB take) 
+                (NP (PRP$ his) (NN product) )))))))
+    (CC but) 
+    (S 
+      (S 
+        (NP-SBJ (PRP he) )
+        (VP (VBZ does) (RB n't) 
+          (VP (VB have) 
+            (NP 
+              (NP (DT the) (VBG working) (NN capital) )
+              (SBAR 
+                (WHADVP-2 (-NONE- 0) )
+                (S 
+                  (NP-SBJ (-NONE- *) )
+                  (VP (TO to) 
+                    (VP (VB make) 
+                      (NP (DT the) (NN thing) )
+                      (ADVP (-NONE- *T*-2) )))))))))
+      (CC and) 
+      (S 
+        (NP-SBJ (JJ commercial) (NNS banks) )
+        (VP (VBP are) 
+          (ADJP-PRD (RB very) (JJ unsympathetic) ))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ (PRP They) )
+      (VP (VBP want) 
+        (NP (NNS assets) )))
+    (, ,) 
+    (S 
+      (NP-SBJ (PRP they) )
+      (VP (VBP want) 
+        (NP 
+          (NP (DT a) (NN balance) (NN sheet) )
+          (, ,) 
+          (SBAR 
+            (WHNP-194 (WDT which) )
+            (S 
+              (NP-SBJ (-NONE- *T*-194) )
+              (VP (VBZ has) 
+                (NP 
+                  (NP (DT no) (NN relation) )
+                  (PP (TO to) 
+                    (NP 
+                      (NP (DT the) (NN business) )
+                      (SBAR 
+                        (WHNP-1 (-NONE- 0) )
+                        (S 
+                          (NP-SBJ (DT a) (NN company) )
+                          (VP (MD can) 
+                            (VP (VB generate) 
+                              (NP (-NONE- *T*-1) ))))))))))))))
+    (. .) ('' '') ))
+( (SINV 
+    (VP (VBZ Adds) 
+      (S (-NONE- *ICH*-1) ))
+    (NP-SBJ 
+      (NP (NNP Mitsui) (POS 's) )
+      (NNP Mr.) (NNP Klauser) )
+    (: :) (`` ``) 
+    (S-1 
+      (PP (IN Unlike) 
+        (NP 
+          (NP (NNS corporations) )
+          (PP-LOC (IN in) 
+            (NP (DT this) (NN country) ))))
+      (, ,) 
+      (NP-SBJ (NN trading) (NNS companies) )
+      (VP (VBP are) (RB n't) 
+        (ADJP-PRD 
+          (ADJP 
+            (ADVP (RB so) (RB much) )
+            (JJ interested) 
+            (PP (IN in) 
+              (NP 
+                (NP (DT a) (JJ high) (NN return) )
+                (PP (IN on) 
+                  (NP (NN investment) )))))
+          (SBAR (IN as) 
+            (S 
+              (NP-SBJ (PRP they) )
+              (VP (VBP are) 
+                (ADJP-PRD (-NONE- *?*) )
+                (PP (IN on) 
+                  (S-NOM 
+                    (NP-SBJ (-NONE- *) )
+                    (VP (VBG increasing) 
+                      (NP (NN trade) (NNS flows) ))))))))))
+    (. .) ))
+( (S 
+    (PP (TO To) 
+      (NP 
+        (NP (DT the) (NN extent) )
+        (SBAR 
+          (WHADVP-3 (-NONE- 0) )
+          (S 
+            (NP-SBJ (PRP they) )
+            (VP (MD can) 
+              (VP (VB do) 
+                (NP (DT this) )
+                (ADVP (-NONE- *T*-3) )))))))
+    (, ,) 
+    (NP-SBJ-1 (PRP they) )
+    (VP (VBP 're) 
+      (ADJP-PRD (RB quite) (JJ content) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB get) 
+              (NP 
+                (NP (DT a) (NN return) )
+                (PP (IN on) 
+                  (NP (NN investment) ))
+                (PP (IN of) 
+                  (NP 
+                    (QP (CD 1) (NN %) (TO to) (CD 2) (NN %) )
+                    (-NONE- *U*) ))))))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ (NNP Mr.) (NNP Klauser) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (S 
+            (NP-SBJ (NNP Mitsui) )
+            (VP (VBZ has) 
+              (NP 
+                (NP (CD 75) (NNP U.S.) (NNS subsidiaries) )
+                (SBAR-LOC 
+                  (WHPP-1 (IN in) 
+                    (WHNP (WDT which) ))
+                  (S 
+                    (NP-SBJ (PRP it) )
+                    (VP (VBZ holds) 
+                      (NP 
+                        (NP 
+                          (ADJP (CD 35) (NN %) )
+                          (NN interest) 
+                          (QP (CC or) (JJR more) ))
+                        (PP-LOC (-NONE- *T*-1) ))))))))
+          (CC and) 
+          (S 
+            (NP-SBJ-2 (DT the) (NN trading) (NN company) )
+            (VP (VBZ hopes) 
+              (S 
+                (NP-SBJ (-NONE- *-2) )
+                (VP (TO to) 
+                  (VP (VB double) 
+                    (NP 
+                      (NP (DT the) (NN number) )
+                      (PP (IN of) 
+                        (NP (PRP$ its) (NNP U.S.) (NNS affiliates) )))
+                    (PP-TMP (IN in) 
+                      (NP (CD 1990) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNS Sales) )
+      (PP (IN by) 
+        (NP (DT these) (NNS subsidiaries) )))
+    (PP-TMP (IN in) 
+      (NP 
+        (NP (DT the) (JJ fiscal) (NN year) )
+        (VP (VBG ending) 
+          (NP-TMP (JJ last) (NNP March) ))))
+    (VP (VBD were) 
+      (NP-PRD 
+        (QP (JJR more) (IN than) ($ $) (CD 17) (CD billion) )
+        (-NONE- *U*) ))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (NP-SBJ 
+        (NP (DT A) 
+          (ADJP 
+            (QP (CD 1) (NN %) (TO to) (CD 2) (NN %) )
+            (-NONE- *U*) )
+          (NN return) )
+        (PP (IN on) 
+          (NP 
+            (QP ($ $) (CD 17) (CD billion) )
+            (-NONE- *U*) )))
+      (`` ``) 
+      (VP (VBP ai) (RB n't) 
+        (NP-PRD (NN hay) )))
+    (, ,) ('' '') 
+    (NP-SBJ (NNP Mr.) (NNP Klauser) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))

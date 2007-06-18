@@ -1,0 +1,80 @@
+
+( (S 
+    (NP-SBJ 
+      (NP (NNP Texas) (NNPS Instruments) (NNP Japan) (NNP Ltd.) )
+      (, ,) 
+      (NP 
+        (NP (DT a) (NN unit) )
+        (PP (IN of) 
+          (NP (NNP Texas) (NNPS Instruments) (NNP Inc.) )))
+      (, ,) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP it) )
+          (VP (VBD opened) 
+            (NP 
+              (NP (DT a) (NN plant) )
+              (SBAR (-NONE- *ICH*-3) ))
+            (PP-LOC (IN in) 
+              (NP (NNP South) (NNP Korea) ))
+            (SBAR-3 
+              (WHNP-2 (-NONE- 0) )
+              (S 
+                (NP-SBJ (-NONE- *T*-2) )
+                (VP (TO to) 
+                  (VP (VB manufacture) 
+                    (NP (NN control) (NNS devices) )))))))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (NP-SBJ-2 
+        (NP (DT The) (JJ new) (NN plant) )
+        (, ,) 
+        (VP (VBN located) 
+          (NP (-NONE- *) )
+          (PP-LOC-CLR (IN in) 
+            (NP 
+              (NP (NNP Chinchon) )
+              (PP-LOC 
+                (NP-ADV 
+                  (QP (IN about) (CD 60) )
+                  (NNS miles) )
+                (IN from) 
+                (NP (NNP Seoul) )))))
+        (, ,) )
+      (VP (MD will) 
+        (VP (VB help) 
+          (S 
+            (NP-SBJ (-NONE- *-2) )
+            (VP (VB meet) 
+              (NP 
+                (NP 
+                  (ADJP (VBG increasing) 
+                    (CC and)
+                    (VBG diversifying) )
+                  (NN demand) )
+                (PP (IN for) 
+                  (NP (NN control) (NNS products) ))
+                (PP-LOC (IN in) 
+                  (NP (NNP South) (NNP Korea) ))))))))
+    (, ,) 
+    (NP-SBJ (DT the) (NN company) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN plant) )
+    (VP (MD will) 
+      (VP (VB produce) 
+        (NP 
+          (NP (NN control) (NNS devices) )
+          (VP (VBN used) 
+            (NP (-NONE- *) )
+            (PP-LOC (IN in) 
+              (NP 
+                (NP (NN motor) (NNS vehicles) )
+                (CC and) 
+                (NP (NN household) (NNS appliances) )))))))
+    (. .) ))

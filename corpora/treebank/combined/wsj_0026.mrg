@@ -1,0 +1,227 @@
+
+( (S 
+    (NP-SBJ (DT The) (NNP White) (NNP House) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (NNP President) (NNP Bush) )
+          (VP (VBZ has) 
+            (VP (VBN approved) 
+              (NP 
+                (NP (JJ duty-free) (NN treatment) )
+                (PP (IN for) 
+                  (NP 
+                    (NP (NNS imports) )
+                    (PP (IN of) 
+                      (NP 
+                        (NP (JJ certain) (NNS types) )
+                        (PP (IN of) 
+                          (NP (NNS watches) ))
+                        (SBAR 
+                          (WHNP-35 (WDT that) )
+                          (S 
+                            (NP-SBJ-1 (-NONE- *T*-35) )
+                            (VP (VBP are) (RB n't) 
+                              (VP (VBN produced) 
+                                (NP (-NONE- *-1) )
+                                (PP-MNR (IN in) (`` ``) 
+                                  (NP (JJ significant) (NNS quantities) )
+                                  ('' '') )
+                                (PP-LOC (IN in) 
+                                  (NP 
+                                    (NP (DT the) (NNP U.S.) )
+                                    (, ,) 
+                                    (NP (DT the) (NNP Virgin) (NNPS Islands) )
+                                    (CC and) 
+                                    (NP (JJ other) (NNP U.S.) (NNS possessions) )))))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN action) )
+    (VP (VBD came) 
+      (PP-PRP (IN in) 
+        (NP 
+          (NP (NN response) )
+          (PP (TO to) 
+            (NP 
+              (NP (DT a) (NN petition) )
+              (VP (VBN filed) 
+                (NP (-NONE- *) )
+                (PP (IN by) 
+                  (NP-LGS (NNP Timex) (NNP Inc.) )))
+              (PP (IN for) 
+                (NP 
+                  (NP (NNS changes) )
+                  (PP-LOC (IN in) 
+                    (NP 
+                      (NP (DT the) (NNP U.S.) (NNP Generalized) (NNP System) )
+                      (PP (IN of) 
+                        (NP (NNPS Preferences) ))
+                      (PP (IN for) 
+                        (NP 
+                          (NP (NNS imports) )
+                          (PP-DIR (IN from) 
+                            (NP (VBG developing) (NNS nations) )))))))))))))
+    (. .) ))
+( (S 
+    (ADVP-TMP (RB Previously) )
+    (, ,) 
+    (NP-SBJ-37 (NN watch) (NNS imports) )
+    (VP (VBD were) 
+      (VP (VBN denied) 
+        (NP (-NONE- *-37) )
+        (NP (JJ such) (JJ duty-free) (NN treatment) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Timex) )
+    (VP (VBD had) 
+      (VP (VBN requested) 
+        (NP 
+          (NP (JJ duty-free) (NN treatment) )
+          (PP (IN for) 
+            (NP 
+              (NP (JJ many) (NNS types) )
+              (PP (IN of) 
+                (NP (NNS watches) ))
+              (, ,) 
+              (VP (VBN covered) 
+                (NP (-NONE- *) )
+                (PP (IN by) 
+                  (NP-LGS (CD 58) (JJ different) (NNP U.S.) (NN tariff) (NNS classifications) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NNP White) (NNP House) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 (NNP Mr.) (NNP Bush) )
+          (VP 
+            (VP (VBD decided) 
+              (S 
+                (NP-SBJ (-NONE- *-1) )
+                (VP (TO to) 
+                  (VP (VB grant) 
+                    (NP 
+                      (NP (JJ duty-free) (NN status) )
+                      (PP (IN for) 
+                        (NP (CD 18) (NNS categories) )))))))
+            (, ,) (CC but) 
+            (VP (VBD turned) 
+              (PRT (RP down) )
+              (NP 
+                (NP (JJ such) (NN treatment) )
+                (PP (IN for) 
+                  (NP 
+                    (NP (JJ other) (NNS types) )
+                    (PP (IN of) 
+                      (NP (NNS watches) )))))
+              (`` ``) 
+              (PP-PRD (RB because) (IN of) 
+                (NP 
+                  (NP (DT the) (NN potential) )
+                  (PP (IN for) 
+                    (NP 
+                      (NP (NN material) (NN injury) )
+                      (PP (TO to) 
+                        (NP 
+                          (NP (VB watch) (NNS producers) )
+                          (VP (VBN located) 
+                            (NP (-NONE- *) )
+                            (PP-LOC-CLR (IN in) 
+                              (NP 
+                                (NP (DT the) (NNP U.S.) )
+                                (CC and) 
+                                (NP (DT the) (NNP Virgin) (NNPS Islands) )))))))))))))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ (NNP Timex) )
+    (VP (VBZ is) 
+      (NP-PRD 
+        (NP (DT a) (JJ major) (NNP U.S.) (NN producer) 
+          (CC and)
+          (NN seller) )
+        (PP (IN of) 
+          (NP 
+            (NP (NNS watches) )
+            (, ,) 
+            (PP (VBG including) 
+              (NP 
+                (NP (JJ low-priced) (JJ battery-operated) (NNS watches) )
+                (VP (VBN assembled) 
+                  (NP (-NONE- *) )
+                  (PP-LOC (IN in) 
+                    (NP 
+                      (NP (DT the) (NNP Philippines) )
+                      (CC and) 
+                      (NP 
+                        (NP (JJ other) (VBG developing) (NNS nations) )
+                        (VP (VBN covered) 
+                          (NP (-NONE- *) )
+                          (PP (IN by) 
+                            (NP-LGS (DT the) (NNP U.S.) (NN tariff) (NNS preferences) )))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP U.S.) (NN trade) (NNS officials) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (DT the) (NNP Philippines) )
+            (CC and) 
+            (NP (NNP Thailand) ))
+          (VP (MD would) 
+            (VP (VB be) 
+              (NP-PRD 
+                (NP (DT the) (JJ main) (NNS beneficiaries) )
+                (PP (IN of) 
+                  (NP 
+                    (NP (DT the) (NN president) (POS 's) )
+                    (NN action) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNS Imports) )
+      (PP (IN of) 
+        (NP 
+          (NP (DT the) (NNS types) )
+          (PP (IN of) 
+            (NP (NNS watches) ))
+          (SBAR 
+            (WHNP-36 (WDT that) )
+            (S 
+              (NP-SBJ (-NONE- *T*-36) )
+              (ADVP-TMP (RB now) )
+              (VP (MD will) 
+                (VP (VB be) 
+                  (ADJP-PRD (JJ eligible) 
+                    (PP (IN for) 
+                      (NP (JJ duty-free) (NN treatment) ))))))))))
+    (VP (VBD totaled) 
+      (NP 
+        (NP 
+          (QP (IN about) ($ $) (CD 37.3) (CD million) )
+          (-NONE- *U*) )
+        (NP (-NONE- *ICH*-1) ))
+      (PP-TMP (IN in) 
+        (NP (CD 1988) ))
+      (, ,) 
+      (NP-1 
+        (NP 
+          (NP (DT a) 
+            (ADJP (RB relatively) (JJ small) )
+            (NN share) )
+          (PP (IN of) 
+            (NP 
+              (NP (DT the) 
+                (QP ($ $) (CD 1.5) (CD billion) )
+                (-NONE- *U*) )
+              (PP-LOC (IN in) 
+                (NP (NNP U.S.) (NN watch) (NNS imports) ))
+              (NP-TMP (DT that) (NN year) )))))
+      (, ,) 
+      (PP (VBG according) 
+        (PP (TO to) 
+          (NP 
+            (NP (DT an) (NN aide) )
+            (PP (TO to) 
+              (NP (NNP U.S.) (NNP Trade) (NNP Representative) (NNP Carla) (NNP Hills) ))))))
+    (. .) ))

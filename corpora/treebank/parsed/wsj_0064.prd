@@ -1,0 +1,464 @@
+
+
+( (S (NP-SBJ-1 The Transportation Department)
+     ,
+     (S-ADV (NP-SBJ *-1)
+	    (VP responding
+		(PP-CLR to
+			(NP (NP pressure)
+			    (PP-DIR from
+				    (NP safety advocates))))))
+     ,
+     (VP took
+         (NP (NP further steps)
+             (SBAR (WHADVP-2 0)
+		   (S (NP-SBJ *)
+		      (VP to
+			  (VP impose
+			      (PP-CLR on
+				      (NP (NP light trucks) 
+					  and 
+					  (NP vans)))
+			      (NP (NP the safety requirements)
+				  (VP used
+				      (NP *)
+				      (PP-CLR for
+					      (NP automobiles))))
+			      (ADVP-MNR *T*-2)))))))
+     .))
+( (S (NP-SBJ The department)
+     (VP proposed
+         (S (NP-SBJ *)
+	    (VP requiring
+		(NP (NP stronger roofs)
+		    (PP for
+			(NP (NP light trucks) 
+			    and 
+			    (NP minivans))))
+		,
+		(S-ADV (NP-SBJ *)
+		       (VP beginning
+			   (PP with
+			       (NP 1992 models)))))))
+     .))
+( (S (NP-SBJ It)
+     (ADVP also)
+     (VP issued
+	 (NP (NP a final rule)
+	     (VP requiring
+		 (S (NP-SBJ auto makers)
+		    (VP to
+			(VP equip
+			    (NP (NP light trucks) 
+				and 
+				(NP minivans))
+			    (PP-CLR with
+				    (NP (NP lap-shoulder belts)
+					(PP for
+					    (NP rear seats))))
+			    (S-ADV (NP-SBJ *)
+				   (VP beginning
+				       (PP-TMP in
+					       (NP the 1992 model year))))))))))
+     .))
+( (S (NP-SBJ-89 Such belts)
+     (ADVP-TMP already)
+     (VP are
+         (VP required
+             (NP *-89)
+             (PP for
+                 (NP (NP the vehicles ')
+                     front seats))))
+     .))
+( (S-1 ``
+       (NP-SBJ (NP Today 's)
+	       action)
+       (PRN , 
+	    ''
+	    (S (NP-SBJ Transportation Secretary Samuel Skinner)
+	       (VP said
+		   (S *T*-1)))
+	    ,) 
+       ``
+       (VP represents
+	   (NP (NP another milestone)
+	       (PP-LOC in
+		       (NP (NP the ongoing program)
+			   (SBAR (WHNP-2 0)
+				 (S (NP-SBJ *T*-2)
+				    (VP to
+					(VP promote
+					    (NP (NP vehicle occupant safety)
+						(PP-LOC in
+							(NP (NP light trucks)
+							    and 
+							    (NP minivans))))
+					    (PP-MNR through
+						    (NP (NP its extension)
+							(PP of
+							    (NP passenger car standards))))))))))))
+       .
+       ''))
+( (S (PP-TMP In
+	     (NP September))
+     ,
+     (NP-SBJ the department)
+     (VP had
+         (VP said
+             (SBAR 0
+                   (S (NP-SBJ it)
+                      (VP will
+                          (VP require
+                              (S (NP-SBJ-90 trucks
+                                            and
+                                            minivans)
+                                 (VP to
+                                     (VP be
+                                         (VP equipped
+                                             (NP *-90)
+                                             (PP-CLR with
+						     (NP (NP the same front-seat headrests)
+							 (SBAR (WHNP-1 that)
+							       (S (NP-SBJ-91 *T*-1)
+								  (VP have
+								      (ADVP-TMP long)
+								      (VP been
+									  (VP required
+									      (NP *-91)
+									      (PP-LOC on
+										      (NP passenger cars)))))))))))))))))))
+     .))
+( (S (NP-SBJ The Big Three auto makers)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ the rule changes)
+                  (VP were 
+		      n't
+                      (ADJP-PRD surprising)
+		      (SBAR-PRP because
+				(S (NP-SBJ Bush administration officials)
+				   (VP have
+				       (ADVP-TMP long)
+				       (VP said
+					   (SBAR 0
+						 (S (NP-SBJ-1 they)
+						    (VP planned
+							(S (NP-SBJ *-1)
+							   (VP to
+							       (VP impose
+								   (NP car safety standards)
+								   (PP-CLR on
+									   (NP (NP light trucks) 
+									       and 
+									       (NP vans)))))))))))))))))
+     .))
+( (S (NP-SBJ (NP Safety advocates)
+             ,
+             (PP including
+                 (NP (NP some members)
+                     (PP of
+                         (NP Congress))))
+             ,)
+     (VP have
+         (VP been
+             (VP urging
+                 (NP-2 the department)
+		 (PP-TMP for
+			 (NP years))
+		 (S (NP-SBJ *-2)
+		    (VP to
+			(VP extend
+			    (NP car-safety requirements)
+			    (PP-CLR to
+				    (NP (NP (NP light trucks) 
+					    and 
+					    (NP vans))
+					,
+					(SBAR (WHNP-157 which)
+					      (S (ADVP-TMP now)
+						 (NP-SBJ *T*-157)
+						 (VP account
+						     (PP-CLR for
+							     (NP (NP (QP almost one-third))
+								 (PP of
+								     (NP (NP all vehicle sales)
+									 (PP-LOC in
+										 (NP the U.S)))))))))))))))))
+     .))
+( (S (NP-SBJ They)
+     (VP say
+         (SBAR that
+               (S (NP-SBJ (NP many vehicles)
+			  (VP classed
+			      (NP *)
+			      (PP-CLR as
+				      (NP commercial 
+					  light trucks))))
+                  (VP (VP (ADVP actually)
+			  carry
+			  (NP (NP more people)
+			      (PP than
+				  (NP cargo))))
+		      and
+		      (VP (ADVP therefore)
+			  should
+			  (VP have
+			      (NP (NP the same safety features)
+				  (PP as
+				      (NP cars)))))))))
+     .))
+( (S (NP-SBJ They)
+     (VP did
+	 n't
+         (VP have
+             (NP much luck)
+	     (PP-TMP during
+		     (NP the Reagan administration))))
+     .))
+( (SINV ``
+	(S-TPC-1 But
+		 (ADVP-TMP now)
+		 ,
+		 (NP-SBJ-2 there)
+		 (VP seems
+		     (S (NP-SBJ *-2)
+			(VP to
+			    (VP be
+				(NP-PRD a fairly systematic effort
+					(S (NP-SBJ *)
+					   (VP to
+					       (VP address
+						   (NP the problem))))))))))
+	,
+	''
+	(VP said
+	    (S *T*-1))
+	(NP-SBJ (NP Chuck Hurley)
+		,
+		(NP (NP vice president)
+		    (PP of
+			(NP communications))
+		    (PP for
+			(NP (NP the Insurance Institute)
+			    (PP for
+				(NP Highway Safety))))))
+	.))
+( (S ``
+     (NP-SBJ We)
+     (VP 're
+         (PP-LOC-PRD in
+		     (NP a 
+			 (ADJP very different) 
+			 regulatory environment)))
+     .
+     ''))
+( (S (NP-SBJ-1 (NP Sen. John Danforth)
+	       (PRN -LRB-
+		    (NP R.)
+		    ,
+		    (NP-LOC Mo .)
+		    -RRB-))
+     (VP praised
+         (NP (NP the department 's)
+             actions)
+	 ,
+	 (S-ADV (NP-SBJ *-1)
+		(VP noting
+		    (SBAR that
+			  (S (NP-SBJ rollover crashes)
+			     (VP account
+				 (PP-CLR for
+					 (NP (NP (QP almost half))
+					     (PP of
+						 (NP all light-truck deaths))))))))))
+     .))
+( (S ``
+     (S-TPC-1 (NP-SBJ We)
+	      (VP could
+		  (VP prevent
+		      (NP (NP many)
+			  (PP of
+			      (NP these fatalities)))
+		      (PP-MNR with
+			      (NP minimum roof-crush standards)))))
+     ,
+     ''
+     (NP-SBJ he)
+     (VP said
+	 (S *T*-1))
+     .))
+( (S (NP-SBJ (NP Sen. Danforth)
+             and
+             (NP others))
+     (ADVP also)
+     (VP want
+         (S (NP-SBJ the department)
+            (VP to
+                (VP require
+                    (NP (NP additional safety equipment)
+			(PP *ICH*-1))
+		    (PP-LOC in
+			    (NP (NP light trucks) 
+				and 
+				(NP minivans)))
+		    ,
+		    (PP-1 including
+			  (NP (NP (NP (NP air bags)
+				      or
+				      (NP automatic seat belts))
+				  (PP-LOC in
+					  (NP front seats)))
+			      and
+			      (NP improved side-crash protection)))))))
+     .))
+( (S (NP-SBJ (NP The department 's)
+             roof-crush proposal)
+     (VP would
+         (VP apply
+             (PP-CLR to
+		     (NP (NP vehicles)
+			 (VP weighing
+			     (NP 10,000 pounds
+				 (QP or
+				     less)))))))
+     .))
+( (S (NP-SBJ-1 The roofs)
+     (VP would
+         (VP be
+             (VP required
+                 (S (NP-SBJ *-1)
+                    (VP to
+                        (VP withstand
+                            (NP (NP a force)
+                                (PP of
+                                    (NP (NP (QP 1.5 times) 
+					    the unloaded weight)
+                                        (PP of
+                                            (NP the vehicle)))))))))))
+     .))
+( (S (PP-TMP During
+	     (NP the test))
+     ,
+     (NP-SBJ-92 the roof)
+     (VP could 
+	 n't
+	 (VP be
+	     (VP depressed
+		 (NP *-92)
+		 (NP-EXT (QP more than five)
+			 inches))))
+     .))
+( (S (PP-LOC In
+	     (NP Detroit))
+     ,
+     (NP-SBJ a Chrysler Corp. official)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 the company)
+                  (VP (VP (ADVP-TMP currently)
+			  has
+			  (NP no 
+			      rear-seat 
+			      lap and shoulder 
+			      belts)
+			  (PP-LOC in
+				  (NP its light trucks)))
+		      , 
+		      but
+		      (VP plans
+			  (S (NP-SBJ-2 *-1)
+			     (VP to
+				 (VP begin
+				     (S (NP-SBJ *-2)
+					(VP phasing
+					    (NP them)
+					    (PRT in)
+					    (PP-TMP by
+						    (NP (NP the end)
+							(PP of
+							    (NP the 1990 model year))))))))))))))
+     .))
+( (S (NP-SBJ He)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 Chrysler)
+		  (VP (ADVP-MNR fully)
+		      expects
+                      (S (NP-SBJ *-1)
+                         (VP to
+                             (VP have
+                                 (S (NP-SBJ-2 them)
+                                    (VP installed
+					(NP *-2)
+					(PP-LOC across
+						(NP its light-truck line))
+					(PP-TMP by
+						(NP the 
+						    (NAC-TMP Sept. 1 , 1991 ,) 
+						    deadline)))))))))))
+     .))
+( (S (NP-SBJ Chrysler)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ its trucks and vans)
+                  (ADVP-TMP already)
+                  (VP meet
+                      (NP (NP the roof-crush resistance standard)
+                          (PP for
+                              (NP cars)))))))
+     .))
+( (S (NP-SBJ (NP John Leinonen)
+             ,
+             (NP (NP executive engineer)
+                 (PP of
+                     (NP (NP Ford Motor Co. 's)
+                         auto-safety office)))
+             ,)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ Ford trucks)
+                  (VP have
+                      (VP met
+                          (NP (NP car standards)
+			      (PP for
+				  (NP roof-crush resistance)))
+			  (PP-TMP since
+				  (NP 1982)))))))
+     .))
+( (S (NP-SBJ-1 Ford)
+     (VP began
+         (S (NP-SBJ *-1)
+            (VP installing
+                (NP the rear-seat belts)
+                (PP-CLR in
+			(NP trucks))))
+	 (PP with
+	     (NP its F-series Crew Cab pickups))
+	 (PP-TMP in
+		 (NP the 1989 model year)))
+     .))
+( (S (NP-SBJ (NP The new Explorer sport-utility vehicle)
+             ,
+             (VP set
+		 (NP *)
+		 (PP-CLR for
+			 (NP (NP introduction)
+			     (NP-TMP next
+				     spring))))
+             ,)
+     (VP will
+         (ADVP also)
+         (VP have
+             (NP the rear-seat belts)))
+     .))
+( (S (NP-SBJ Mr. Leinonen)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ he)
+                  (VP expects
+                      (S (NP-SBJ Ford)
+                         (VP to
+                             (VP meet
+                                 (NP the deadline)
+                                 (ADVP-MNR easily))))))))
+     .))

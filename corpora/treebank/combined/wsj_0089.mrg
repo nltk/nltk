@@ -1,0 +1,1704 @@
+
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (NN art) )
+      (PP (IN of) 
+        (NP (NN change-ringing) )))
+    (VP (VBZ is) 
+      (ADJP-PRD 
+        (ADJP (JJ peculiar) 
+          (PP (TO to) 
+            (NP (DT the) (NNS English) )))
+        (, ,) 
+        (CC and)
+        
+        (, ,)
+        (PP (IN like) 
+          (NP (JJS most) (JJ English) (NNS peculiarities) ))
+        (, ,) 
+        (ADJP (JJ unintelligible) 
+          (PP (TO to) 
+            (NP 
+              (NP (DT the) (NN rest) )
+              (PP (IN of) 
+                (NP (DT the) (NN world) )))))))
+    (. .) ))
+( (NP (: --) 
+    (NP (NNP Dorothy) (NNP L.) (NNP Sayers) )
+    (, ,) (`` ``) 
+    (NP-TTL (DT The) (CD Nine) (NNP Tailors) )
+    ('' '') ))
+( (NP-LOC 
+    (NP (NNP ASLACTON) )
+    (, ,) 
+    (NP (NNP England) )))
+( (S (: --) 
+    (S 
+      (PP-TPC-2 (IN Of) 
+        (NP 
+          (NP (DT all) (NNS scenes) )
+          (SBAR 
+            (WHNP-219 (WDT that) )
+            (S 
+              (NP-SBJ (-NONE- *T*-219) )
+              (VP (VBP evoke) 
+                (NP (JJ rural) (NNP England) ))))))
+      (, ,) 
+      (NP-SBJ (DT this) )
+      (VP (VBZ is) 
+        (NP-PRD 
+          (NP (CD one) )
+          (PP (IN of) 
+            (NP 
+              (NP (DT the) (JJS loveliest) )
+              (PP (-NONE- *T*-2) ))))))
+    (: :) 
+    (S 
+      (NP-SBJ (DT An) (JJ ancient) (NN stone) (NN church) )
+      (VP (VBZ stands) 
+        (PP-LOC (IN amid) 
+          (NP (DT the) (NNS fields) ))
+        (, ,) 
+        (S-ADV 
+          (NP-SBJ-1 
+            (NP (DT the) (NN sound) )
+            (PP (IN of) 
+              (NP (NNS bells) )))
+          (VP (VBG cascading) 
+            (PP-DIR (IN from) 
+              (NP (PRP$ its) (NN tower) ))
+            (, ,) 
+            (S-ADV 
+              (NP-SBJ (-NONE- *-1) )
+              (VP (VBG calling) 
+                (NP (DT the) (NN faithful) )
+                (PP-CLR (TO to) 
+                  (NP (NN evensong) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 
+      (NP (DT The) (NNS parishioners) )
+      (PP (IN of) 
+        (NP 
+          (NP (NNP St.) (NNP Michael) )
+          (CC and) 
+          (NP (DT All) (NNPS Angels) ))))
+    (VP (VBP stop) 
+      (S-PRP 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB chat) )))
+      (PP-LOC (IN at) 
+        (NP (DT the) (NN church) (NN door) ))
+      (, ,) 
+      (SBAR-ADV (IN as) 
+        (S 
+          (NP-SBJ 
+            (NP (NNS members) )
+            (ADVP-LOC (RB here) ))
+          (ADVP-TMP (RB always) )
+          (VP (VBP have) 
+            (VP (-NONE- *?*) )))))
+    (. .) ))
+( (S 
+    (PP-LOC (IN In) 
+      (NP (DT the) (NN tower) ))
+    (, ,) 
+    (NP-SBJ (CD five) (NNS men) 
+      (CC and)
+      (NNS women) )
+    (VP (VBP pull) 
+      (ADVP-MNR (RB rhythmically) )
+      (PP (IN on) 
+        (NP 
+          (NP (NNS ropes) )
+          (VP (VBN attached) 
+            (NP (-NONE- *) )
+            (PP-CLR (TO to) 
+              (NP 
+                (NP (DT the) (JJ same) (CD five) (NNS bells) )
+                (SBAR 
+                  (WHNP-220 (WDT that) )
+                  (S 
+                    (NP-SBJ (-NONE- *T*-220) )
+                    (ADVP-TMP (RB first) )
+                    (VP (VBD sounded) 
+                      (ADVP-LOC (RB here) )
+                      (PP-TMP (IN in) 
+                        (NP (CD 1614) )))))))))))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ (EX there) )
+    (VP (VBZ is) 
+      (ADVP (RB also) )
+      (NP-PRD (DT a) (JJ discordant) 
+        (, ,)
+        (JJ modern) (NN note) )
+      (PP-TMP (IN in) 
+        (NP (NNP Aslacton) ))
+      (, ,) 
+      (SBAR-ADV (IN though) 
+        (S 
+          (NP-SBJ-135 (PRP it) )
+          (VP (MD ca) (RB n't) 
+            (VP (VB be) 
+              (VP (VBN heard) 
+                (NP (-NONE- *-135) )
+                (PP (IN by) 
+                  (NP-LGS 
+                    (NP (DT the) (NNS church-goers) )
+                    (VP (VBG enjoying) 
+                      (NP 
+                        (NP (DT the) (NN peal) )
+                        (PP (IN of) 
+                          (NP (NNS bells) )))
+                      (NP-TMP (DT this) (JJ cool) (NN autumn) (NN evening) ))))))))))
+    (. .) ))
+( (S 
+    (PP (IN Like) 
+      (NP 
+        (NP (JJS most) )
+        (PP (IN of) 
+          (NP 
+            (NP (DT the) (JJ other) (CD 6,000) (NNS churches) )
+            (PP-LOC (IN in) 
+              (NP (NNP Britain) ))
+            (PP (IN with) 
+              (NP 
+                (NP (NNS sets) )
+                (PP (IN of) 
+                  (NP (NNS bells) ))))))))
+    (, ,) 
+    (NP-SBJ (NNP St.) (NNP Michael) )
+    (ADVP-TMP (RB once) )
+    (VP (VBD had) 
+      (NP 
+        (NP (PRP$ its) (JJ own) (`` ``) (NN band) ('' '') )
+        (PP (IN of) 
+          (NP (NNS ringers) ))
+        (, ,) 
+        (SBAR 
+          (WHNP-221 (WP who) )
+          (S 
+            (NP-SBJ (-NONE- *T*-221) )
+            (VP (MD would) 
+              (VP (VB herald) 
+                (NP (DT every) (NNP Sunday) (NN morning) 
+                  (CC and)
+                  (NN evening) (NN service) )))))))
+    (. .) ))
+( (S 
+    (ADVP-TMP (RB Now) )
+    (, ,) 
+    (NP-SBJ 
+      (NP 
+        (QP (RB only) (CD one) )
+        (JJ local) (NN ringer) )
+      (NP (-NONE- *ICH*-1) ))
+    (VP (VBZ remains) (: :) 
+      (NP-1 (JJ 64-year-old) (NNP Derek) (NNP Hammond) ))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (NNS others) )
+      (ADVP-LOC (RB here) ))
+    (NP-TMP (NN today) )
+    (VP (VBP live) 
+      (ADVP-LOC (RB elsewhere) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP They) )
+    (VP (VBP belong) 
+      (PP-CLR (TO to) 
+        (NP 
+          (NP (DT a) (NN group) )
+          (PP (IN of) 
+            (NP (CD 15) (NNS ringers) ))
+          (: --) 
+          (PP (VBG including) 
+            (NP 
+              (NP (CD two) (NNS octogenarians) )
+              (CC and) 
+              (NP 
+                (NP (CD four) (NNS youngsters) )
+                (PP (IN in) 
+                  (NP (NN training) )))))
+          (: --) 
+          (SBAR 
+            (WHNP-222 (WP who) )
+            (S 
+              (NP-SBJ (-NONE- *T*-222) )
+              (VP (VBP drive) 
+                (NP-TMP (DT every) (NNP Sunday) )
+                (PP-DIR 
+                  (PP (IN from) 
+                    (NP (NN church) ))
+                  (PP (TO to) 
+                    (NP (NN church) )))
+                (PP (IN in) 
+                  (NP (DT a) (JJ sometimes-exhausting) (NN effort) 
+                    (S 
+                      (NP-SBJ (-NONE- *) )
+                      (VP (TO to) 
+                        (VP (VB keep) 
+                          (S 
+                            (NP-SBJ (DT the) (NNS bells) )
+                            (VP (VBG sounding) 
+                              (PP-LOC (IN in) 
+                                (NP 
+                                  (NP (DT the) (JJ many) (NNS belfries) )
+                                  (PP (IN of) 
+                                    (NP (NNP East) (NNP Anglia) )))))))))))))))))
+    (. .) ))
+( (SINV (`` ``) 
+    (S-TPC-2 
+      (S-PRP 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO To) 
+          (VP (VB ring) 
+            (PP (IN for) 
+              (NP 
+                (QP (RB even) (CD one) )
+                (NN service) ))
+            (PP-LOC (IN at) 
+              (NP (DT this) (NN tower) )))))
+      (, ,) 
+      (NP-SBJ-1 (PRP we) )
+      (VP (VBP have) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB scrape) )))))
+    (, ,) ('' '') 
+    (VP (VBZ says) 
+      (S (-NONE- *T*-2) ))
+    (NP-SBJ 
+      (NP (NNP Mr.) (NNP Hammond) )
+      (, ,) 
+      (NP (DT a) (VBN retired) (NN water-authority) (NN worker) ))
+    (. .) ))
+( (S (`` ``) 
+    (S 
+      (NP-SBJ-1 (PRP We) )
+      (VP (VBP 've) 
+        (VP (VBD tried) 
+          (S 
+            (NP-SBJ (-NONE- *-1) )
+            (VP (TO to) 
+              (VP (VB train) 
+                (NP (DT the) (NNS youngsters) )))))))
+    (, ,) (CC but) 
+    (S 
+      (NP-SBJ (PRP they) )
+      (VP (VBP have) 
+        (NP 
+          (NP (PRP$ their) (NNS discos) )
+          (CC and) 
+          (NP (PRP$ their) (NNS dances) ))))
+    (, ,) 
+    (CC and)
+    (S 
+      (NP-SBJ (PRP they) )
+      (VP 
+        (ADVP (RB just) )
+        (VBP drift) 
+        (ADVP-DIR (RB away) )))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ (NNP Mr.) (NNP Hammond) )
+    (VP (VBZ worries) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ 
+            (NP (JJ old) (NN age) )
+            (CC and) 
+            (NP 
+              (NP (DT the) (NN flightiness) )
+              (PP (IN of) 
+                (NP (NN youth) ))))
+          (VP (MD will) 
+            (VP (VB diminish) 
+              (NP 
+                (NP (DT the) (NNS ranks) )
+                (PP (IN of) 
+                  (NP 
+                    (NP (DT the) 
+                      (ADJP (JJ East) (JJ Anglian) )
+                      (NN group) )
+                    (SBAR 
+                      (WHNP-223 (WDT that) )
+                      (S 
+                        (NP-SBJ (-NONE- *T*-223) )
+                        (VP (VBZ keeps) 
+                          (S 
+                            (NP-SBJ (DT the) (NNP Aslacton) (NNS bells) )
+                            (VP (VBG pealing) )))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NN History) )
+    (PRN 
+      (, ,)
+      (PP (IN after) 
+        (NP (DT all) ))
+      (, ,) )
+    (VP (VBZ is) (RB not) 
+      (PP-LOC-PRD (IN on) 
+        (NP (PRP$ his) (NN side) )))
+    (. .) ))
+( (S 
+    (PP (VBG According) 
+      (PP (TO to) 
+        (NP 
+          (NP (DT a) (JJ nationwide) (NN survey) )
+          (VP (VBN taken) 
+            (NP (-NONE- *) )
+            (ADVP-TMP 
+              (NP (DT a) (NN year) )
+              (RB ago) )))))
+    (, ,) 
+    (NP-SBJ-1 
+      (NP 
+        (QP (RB nearly) (DT a) (JJ third) ))
+      (PP (IN of) 
+        (NP 
+          (NP (NNP England) (POS 's) )
+          (NN church) (NNS bells) )))
+    (VP (VBP are) 
+      (ADVP-TMP (RB no) (RBR longer) )
+      (VP (VBN rung) 
+        (NP (-NONE- *-1) )
+        (PP-TMP (IN on) 
+          (NP (NNS Sundays) ))
+        (SBAR-PRP (IN because) 
+          (S 
+            (NP-SBJ (EX there) )
+            (VP (VBZ is) 
+              (NP-PRD 
+                (NP (DT no) (CD one) )
+                (SBAR 
+                  (WHNP-2 (-NONE- 0) )
+                  (S 
+                    (NP-SBJ (-NONE- *T*-2) )
+                    (VP (TO to) 
+                      (VP (VB ring) 
+                        (NP (PRP them) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (PRP It) )
+      (S (-NONE- *EXP*-1) ))
+    (VP (VBZ is) 
+      (ADJP-PRD (JJ easy) )
+      (S-1 
+        (NP-SBJ (-NONE- *) )
+        (VP (TO to) 
+          (VP (VB see) 
+            (SBAR 
+              (WHADVP-2 (WRB why) )
+              (S 
+                (NP-SBJ (DT the) (JJ ancient) (NN art) )
+                (VP (VBZ is) 
+                  (PP-LOC-PRD (IN on) 
+                    (NP (DT the) (NNS ropes) ))
+                  (ADVP-PRP (-NONE- *T*-2) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-136 
+      (NP (DT The) (RBR less) (JJ complicated) (NN version) )
+      (PP (IN of) 
+        (S-NOM 
+          (NP-SBJ (-NONE- *) )
+          (VP (VBG playing) 
+            (NP (NNS tunes) )
+            (PP-CLR (IN on) 
+              (NP (NNS bells) ))
+            (, ,) 
+            (SBAR-ADV (IN as) 
+              (SINV (VB do) 
+                (VP (-NONE- *?*) )
+                (NP-SBJ 
+                  (NP (DT the) (NNS carillons) )
+                  (PP (IN of) 
+                    (NP (JJ continental) (NNP Europe) ))))))
+          (, ,) )))
+    (VP (VBZ is) 
+      (VP (VBN considered) 
+        (PP (IN by) 
+          (NP-LGS (DT the) (NNP English) ))
+        (S 
+          (NP-SBJ (-NONE- *-136) )
+          (VP (TO to) 
+            (VP (VB be) 
+              (ADJP-PRD 
+                (ADJP (JJ childish) )
+                (, ,) 
+                (ADJP (JJ fit) 
+                  (PP 
+                    (ADVP (RB only) )
+                    (IN for) 
+                    (NP (NNS foreigners) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NN Change-ringing) )
+      (, ,) 
+      (NP 
+        (NP (DT a) (JJ mind-boggling) (NN exercise) )
+        (SBAR 
+          (WHNP-1 (-NONE- 0) )
+          (S 
+            (NP-SBJ (DT the) (NNP English) )
+            (VP (VBD invented) 
+              (NP (-NONE- *T*-1) )
+              (ADVP-TMP 
+                (NP (CD 380) (NNS years) )
+                (RB ago) )))))
+      (, ,) )
+    (VP (VBZ requires) 
+      (NP 
+        (NP (JJ physical) (NN dexterity) )
+        (PRN (: --) 
+          (S 
+            (NP-SBJ (DT some) (NNS bells) )
+            (VP (VBP weigh) 
+              (NP 
+                (QP (JJR more) (IN than) (DT a) )
+                (NN ton) )))
+          (: --) )
+        (VP (VBN combined) 
+          (NP (-NONE- *) )
+          (PP-CLR (IN with) 
+            (NP (JJ intense) (JJ mental) (NN concentration) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (JJ Proper) (JJ English) (NNS bells) )
+    (VP (VBP are) 
+      (VP (VBN started) 
+        (NP (-NONE- *-1) )
+        (PRT (RP off) )
+        (PP-MNR (IN in) 
+          (NP (`` ``) 
+            (NP (NNS rounds) )
+            (, ,) ('' '') 
+            (PP 
+              (PP (IN from) 
+                (NP (DT the) (JJ highest-pitched) (NN bell) ))
+              (PP (TO to) 
+                (NP (DT the) (JJS lowest) )))
+            (: --) 
+            (NP 
+              (NP (DT a) (JJ simple) (VBG descending) (NN scale) )
+              (VP (VBG using) 
+                (PRN 
+                  (, ,)
+                  (PP-LOC (IN in) 
+                    (NP (JJR larger) (NNS churches) ))
+                  (, ,) )
+                (NP 
+                  (QP (RB as) (JJ many) (IN as) (CD 12) )
+                  (NNS bells) )))))))
+    (. .) ))
+( (S (RB Then) 
+    (, ,)
+    (PP-TMP (IN at) 
+      (NP (DT a) (NN signal) ))
+    (, ,) 
+    (NP-SBJ-1 (DT the) (NNS ringers) )
+    (VP (VBP begin) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (VBG varying) 
+          (NP 
+            (NP (DT the) (NN order) )
+            (SBAR 
+              (WHPP-2 (IN in) 
+                (WHNP (WDT which) ))
+              (S 
+                (NP-SBJ (DT the) (NNS bells) )
+                (VP (VBP sound) 
+                  (PP (-NONE- *T*-2) )))))
+          (PP-MNR (IN without) 
+            (S-NOM 
+              (NP-SBJ (-NONE- *) )
+              (VP (VBG altering) 
+                (NP 
+                  (NP (DT the) (JJ steady) (NN rhythm) )
+                  (PP (IN of) 
+                    (NP (DT the) (JJ striking) )))))))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (NP-SBJ (DT Each) (NN variation) 
+        (, ,)
+        (CC or) (NN change) 
+        (, ,)
+        )
+      (VP (MD can) 
+        (VP (VB occur) 
+          (ADVP-TMP (RB only) (RB once) ))))
+    (, ,) 
+    (NP-SBJ (DT the) (NNS rules) )
+    (VP (VBP state) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNS Ringers) )
+    (VP (VBP memorize) 
+      (NP 
+        (NP (NNS patterns) )
+        (PP (IN of) 
+          (NP (NNS changes) ))
+        (, ,) 
+        (VP (VBN known) 
+          (NP (-NONE- *) )
+          (PP-CLR (IN as) (`` ``) 
+            (NP (NNS methods) )))
+        (, ,) ('' '') 
+        (SBAR 
+          (WHNP-224 (WDT which) )
+          (S 
+            (NP-SBJ (-NONE- *T*-224) )
+            (VP (VBP have) 
+              (NP 
+                (NP (JJ odd-sounding) (NNS names) )
+                (PP (IN like) 
+                  (NP 
+                    (NP (NNP Kent) (NNP Treble) (NNP Bob) (NNP Major) )
+                    (CC or) 
+                    (NP (NNP Grandsire) (NNP Caters) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT A) (NN series) )
+      (PP (IN of) 
+        (NP 
+          (QP (CD 5,000) (CC or) (RB so) )
+          (NNS changes) )))
+    (VP 
+      (VP (VBZ is) 
+        (NP-PRD (DT a) (`` ``) (NN peal) ('' '') ))
+      (CC and) 
+      (VP (VBZ takes) 
+        (NP 
+          (QP (RB about) (CD three) )
+          (NNS hours) )))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT A) (NN look) )
+      (PP (IN at) 
+        (NP 
+          (NP (DT a) (NNP Thursday) (NN night) (NN practice) )
+          (PP-LOC (IN at) 
+            (NP 
+              (NP (NNP St.) (NNP Mary) (NNP Abbot) (NN church) )
+              (PP-LOC (IN in) 
+                (NP 
+                  (NP (DT the) (NNP Kensington) (NN district) )
+                  (PP (IN of) 
+                    (NP (NNP London) )))))))))
+    (VP (VBZ gives) 
+      (NP 
+        (NP (DT an) (NN idea) )
+        (PP (IN of) 
+          (NP 
+            (NP (DT the) (NN work) )
+            (VP (VBN involved) 
+              (NP (-NONE- *) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (CD Ten) (JJ shirt-sleeved) (NNS ringers) )
+    (VP (VBP stand) 
+      (PP (IN in) 
+        (NP (DT a) (NN circle) ))
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ (CD one) (NN foot) )
+        (ADVP-LOC-PRD (RB ahead) 
+          (PP (IN of) 
+            (NP (DT the) (JJ other) )))
+        (PP (IN in) 
+          (NP 
+            (NP (DT a) (NN prize-fighter) (POS 's) )
+            (NN stance) )))
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ (DT each) )
+        (VP (VBG pulling) 
+          (NP 
+            (NP (DT a) (NN rope) )
+            (SBAR 
+              (WHNP-225 (WDT that) )
+              (S 
+                (NP-SBJ (-NONE- *T*-225) )
+                (VP (VBZ disappears) 
+                  (PP (IN through) 
+                    (NP 
+                      (NP (DT a) (JJ small) (NN hole) )
+                      (PP-LOC (IN in) 
+                        (NP 
+                          (NP (DT the) (JJ high) (NN ceiling) )
+                          (PP (IN of) 
+                            (NP (DT the) (NN ringing) (NN chamber) )))))))))))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ (DT No) (PRP one) )
+      (VP (VBZ speaks) ))
+    (, ,) 
+    (CC and)
+    (S 
+      (NP-SBJ-1 
+        (NP (DT the) (VBG snaking) )
+        (PP (IN of) 
+          (NP (DT the) (NNS ropes) )))
+      (VP (VBZ seems) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB make) 
+              (NP 
+                (NP (IN as) (JJ much) (NN sound) )
+                (SBAR (IN as) 
+                  (S 
+                    (NP-SBJ-2 
+                      (NP (DT the) (NNS bells) )
+                      (NP (PRP themselves) ))
+                    (VP (-NONE- *?*) 
+                      (, ,)
+                      (S-ADV 
+                        (NP-SBJ-3 (-NONE- *-2) )
+                        (VP (VBN muffled) 
+                          (NP (-NONE- *-3) )
+                          (PP (IN by) 
+                            (NP-LGS (DT the) (NN ceiling) )))))))))))))
+    (. .) ))
+( (S 
+    (S-ADV 
+      (NP-SBJ (-NONE- *-1) )
+      (ADJP-PRD (RB Totally) (VBN absorbed) ))
+    (, ,) 
+    (NP-SBJ-1 (DT the) (NNS ringers) )
+    (VP (VBP stare) 
+      (ADVP-DIR (RB straight) (RB ahead) )
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ-2 (-NONE- *-1) )
+        (VP (VBG using) 
+          (NP 
+            (NP (JJ peripheral) (NN vision) )
+            (PRN 
+              (-LRB- -LRB-)
+              (S 
+                (NP-SBJ (PRP they) )
+                (VP (VBP call) 
+                  (S 
+                    (NP-SBJ (PRP it) )
+                    (`` ``) 
+                    (NP-PRD (NN rope-sight) )
+                    ('' '') )))
+              (-RRB- -RRB-) ))
+          (S-PRP 
+            (NP-SBJ (-NONE- *-2) )
+            (VP (TO to) 
+              (VP 
+                (VP (VB watch) 
+                  (NP (DT the) (JJ other) (NNS ropes) ))
+                (CC and) 
+                (ADVP (RB thus) )
+                (VP (VB time) 
+                  (NP (PRP$ their) (NNS pulls) ))))))))
+    (. .) ))
+( (S 
+    (ADVP-LOC (RB Far) (RB above) )
+    (PP-LOC (IN in) 
+      (NP (DT the) (NN belfry) ))
+    (, ,) 
+    (NP-SBJ-1 
+      (NP (DT the) (JJ huge) (NN bronze) (NNS bells) )
+      (, ,) 
+      (VP (VBN mounted) 
+        (NP (-NONE- *) )
+        (PP-CLR (IN on) 
+          (NP (NNS wheels) )))
+      (, ,) )
+    (VP (VBP swing) 
+      (ADVP-MNR (RB madly) )
+      (PP-DIR (IN through) 
+        (NP (DT a) (JJ full) (CD 360) (NNS degrees) ))
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (VBG starting) 
+          (CC and)
+          (VBG ending) 
+          (PRN 
+            (, ,)
+            (ADVP-MNR (RB surprisingly) )
+            (, ,) )
+          (PP-LOC (IN in) 
+            (NP (DT the) 
+              (ADJP (JJ inverted) 
+                (, ,)
+                (CC or) (JJ mouth-up) )
+              (NN position) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (JJ Skilled) (NNS ringers) )
+    (VP (VBP use) 
+      (NP (PRP$ their) (NNS wrists) )
+      (S-CLR 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB advance) (CC or) (VB retard) 
+            (NP (DT the) (JJ next) (NN swing) ))))
+      (, ,) 
+      (SBAR-PRP (RB so) (IN that) 
+        (S 
+          (NP-SBJ (CD one) (NN bell) )
+          (VP (MD can) 
+            (VP (VB swap) 
+              (NP (NNS places) )
+              (PP-CLR (IN with) 
+                (NP (DT another) ))
+              (PP-LOC (IN in) 
+                (NP (DT the) (JJ following) (NN change) )))))))
+    (. .) ))
+( (S 
+    (PP-LOC (IN In) 
+      (NP 
+        (NP (DT a) (JJ well-known) (NN detective-story) )
+        (VP (VBG involving) 
+          (NP (NN church) (NNS bells) ))))
+    (, ,) 
+    (NP-SBJ (JJ English) (NN novelist) (NNP Dorothy) (NNP L.) (NNP Sayers) )
+    (VP (VBD described) 
+      (NP (VBG ringing) )
+      (PP-CLR (IN as) 
+        (NP 
+          (NP (DT a) (`` ``) (NN passion) )
+          (SBAR 
+            (-LRB- -LCB-)
+            (WHNP-1 (DT that) )
+            (-RRB- -RCB-) 
+            (S 
+              (NP-SBJ (-NONE- *T*-1) )
+              (VP (VBZ finds) 
+                (NP (PRP$ its) (NN satisfaction) )
+                (PP-LOC-CLR (IN in) 
+                  (NP 
+                    (NP (JJ mathematical) (NN completeness) )
+                    (CC and) 
+                    (NP (JJ mechanical) (NN perfection) )))))))))
+    (. .) ('' '') ))
+( (S-2 
+    (NP-SBJ-1 (NNS Ringers) )
+    (PRN 
+      (, ,)
+      (S 
+        (NP-SBJ (PRP she) )
+        (VP (VBD added) 
+          (SBAR (-NONE- 0) 
+            (S (-NONE- *T*-2) ))))
+      (, ,) )
+    (VP (VBP are) (`` ``) 
+      (VP (VBN filled) 
+        (NP (-NONE- *-1) )
+        (PP-CLR (IN with) 
+          (NP 
+            (NP (DT the) (JJ solemn) (NN intoxication) )
+            (SBAR 
+              (WHNP-226 (WDT that) )
+              (S 
+                (NP-SBJ (-NONE- *T*-226) )
+                (VP (VBZ comes) 
+                  (PP-CLR (IN of) 
+                    (NP 
+                      (NP (JJ intricate) (NN ritual) )
+                      (VP 
+                        (ADVP-MNR (RB faultlessly) )
+                        (VBN performed) 
+                        (NP (-NONE- *) )))))))))))
+    (. .) ('' '') ))
+( (SINV (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ (NN Ringing) )
+      (VP (VBZ does) 
+        (VP (VB become) 
+          (NP-PRD 
+            (NP (DT a) (NN bit) )
+            (PP (IN of) 
+              (NP (DT an) (NN obsession) ))))))
+    (, ,) ('' '') 
+    (VP (VBZ admits) 
+      (S (-NONE- *T*-1) ))
+    (NP-SBJ 
+      (NP (NNP Stephanie) (NNP Pattenden) )
+      (, ,) 
+      (NP 
+        (NP 
+          (NP (NN master) )
+          (PP (IN of) 
+            (NP (DT the) (NN band) ))
+          (PP-LOC (IN at) 
+            (NP (NNP St.) (NNP Mary) (NNP Abbot) )))
+        (CC and) 
+        (NP 
+          (NP (CD one) )
+          (PP (IN of) 
+            (NP 
+              (NP (NNP England) (POS 's) )
+              (JJS best) (NN female) (NNS ringers) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP It) )
+    (VP (VBZ is) 
+      (NP-PRD 
+        (NP (DT a) (NN passion) )
+        (SBAR 
+          (WHNP-227 (WDT that) )
+          (S 
+            (NP-SBJ (-NONE- *T*-227) )
+            (ADVP-TMP (RB usually) )
+            (VP (VBZ stays) 
+              (PP-LOC-CLR (IN in) 
+                (NP (DT the) (NN tower) ))
+              (, ,) 
+              (ADVP (RB however) ))))))
+    (. .) ))
+( (S 
+    (ADVP-TMP 
+      (ADVP (RBR More) (RB often) )
+      (PP (IN than) 
+        (ADVP (RB not) )))
+    (, ,) 
+    (NP-SBJ (NNS ringers) )
+    (VP (VBP think) 
+      (PP-CLR (IN of) 
+        (NP (DT the) (NN church) ))
+      (PP-CLR (IN as) 
+        (NP 
+          (NP (NN something) )
+          (VP (VBD stuck) 
+            (NP (-NONE- *) )
+            (PP-CLR (IN on) 
+              (NP 
+                (NP (DT the) (NN bottom) )
+                (PP (IN of) 
+                  (NP (DT the) (NN belfry) ))))))))
+    (. .) ))
+( (S 
+    (SBAR-TMP 
+      (SBAR 
+        (WHADVP-1 (WRB When) )
+        (S 
+          (NP-SBJ-137 (PRP$ their) (NNS changes) )
+          (VP (VBP are) 
+            (VP (VBN completed) 
+              (NP (-NONE- *-137) )
+              (ADVP-TMP (-NONE- *T*-1) )))))
+      (, ,) 
+      (CC and)
+      (SBAR (IN after) 
+        (S 
+          (NP-SBJ (PRP they) )
+          (VP (VBP have) 
+            (VP (VBN worked) 
+              (PRT (RP up) )
+              (NP (DT a) (NN sweat) ))))))
+    (, ,) 
+    (NP-SBJ-2 (NNS ringers) )
+    (ADVP-TMP (RB often) )
+    (VP (VBP skip) 
+      (PRT (RP off) )
+      (PP-DIR (TO to) 
+        (NP (DT the) (JJ local) (NN pub) ))
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ (-NONE- *-2) )
+        (VP (VBG leaving) 
+          (S 
+            (NP-SBJ (NN worship) )
+            (PP-PRD (IN for) 
+              (NP 
+                (NP (NNS others) )
+                (PP-LOC (RB below) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT This) )
+    (VP (VBZ does) (RB not) 
+      (VP (VB sit) 
+        (ADVP-MNR (RB well) )
+        (PP (IN with) 
+          (NP (DT some) (NNS clerics) ))))
+    (. .) ))
+( (S 
+    (PP (IN With) 
+      (S-NOM 
+        (NP-SBJ 
+          (NP (NN membership) )
+          (PP (IN of) 
+            (NP 
+              (NP (DT the) (NNP Church) )
+              (PP (IN of) 
+                (NP (NNP England) )))))
+        (VP 
+          (ADVP-MNR (RB steadily) )
+          (VBG dwindling) )))
+    (, ,) 
+    (NP-SBJ (JJ strong-willed) (NNS vicars) )
+    (VP (VBP are) 
+      (VP (VBG pressing) 
+        (S 
+          (NP-SBJ 
+            (ADJP 
+              (ADJP (RB equally) (JJ strong-willed) )
+              (CC and) 
+              (ADJP (RB often) (JJ non-religious) ))
+            (NNS ringers) )
+          (VP (TO to) 
+            (VP (VB attend) 
+              (NP (NNS services) ))))))
+    (. .) ))
+( (S 
+    (S 
+      (ADVP-TMP 
+        (NP (CD Two) (NNS years) )
+        (RB ago) )
+      (, ,) 
+      (NP-SBJ 
+        (NP (DT the) (NNP Rev.) (NNP Jeremy) (NNP Hummerstone) )
+        (, ,) 
+        (NP 
+          (NP (NN vicar) )
+          (PP (IN of) 
+            (NP 
+              (NP (NNP Great) (NNP Torrington) )
+              (, ,) 
+              (NP-LOC (NNP Devon) ))))
+        (, ,) )
+      (VP (VBD got) 
+        (ADJP-PRD 
+          (ADJP (RB so) (VBN fed) 
+            (PRT (RP up) )
+            (PP (IN with) 
+              (NP 
+                (NP (NNS ringers) )
+                (SBAR 
+                  (WHNP-228 (WP who) )
+                  (S 
+                    (NP-SBJ (-NONE- *T*-228) )
+                    (VP (VBD did) (RB n't) 
+                      (VP (VB attend) 
+                        (NP (NN service) ))))))))
+          (SBAR (-NONE- 0) 
+            (S 
+              (NP-SBJ (PRP he) )
+              (VP (VBD sacked) 
+                (NP (DT the) (JJ entire) (NN band) )))))))
+    (: ;) 
+    (S 
+      (NP-SBJ (DT the) (NNS ringers) )
+      (ADVP-TMP (RB promptly) )
+      (VP (VBN set) 
+        (PRT (RP up) )
+        (NP (DT a) (NN picket) (NN line) )
+        (PP (IN in) 
+          (NP (NN protest) ))))
+    (. .) ))
+( (S (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ (PRP They) )
+      (VP (VBD were) 
+        (NP-PRD 
+          (NP (DT a) (JJ self-perpetuating) (NN club) )
+          (SBAR 
+            (WHNP-229 (WDT that) )
+            (S 
+              (NP-SBJ (-NONE- *T*-229) )
+              (VP (VBD treated) 
+                (NP (DT the) (NN tower) )
+                (PP-CLR (IN as) 
+                  (NP 
+                    (NP (NN sort) )
+                    (PP (IN of) 
+                      (NP (DT a) (JJ separate) (NN premises) ))))))))))
+    (, ,) ('' '') 
+    (NP-SBJ (DT the) (NNP Vicar) (NNP Hummerstone) )
+    (VP (VBZ says) 
+      (S (-NONE- *T*-1) ))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT An) (RB entirely) (JJ new) (NN band) )
+      (SBAR (-NONE- *ICH*-2) ))
+    (VP (VBZ rings) 
+      (NP-TMP (NN today) )
+      (PP-LOC (IN at) 
+        (NP (JJ Great) (NNP Torrington) ))
+      (, ,) 
+      (SBAR-2 
+        (WHNP-1 
+          (NP (JJ several) )
+          (WHPP (IN of) 
+            (WHNP (WP whom) )))
+        (S 
+          (NP-SBJ (-NONE- *T*-1) )
+          (VP (VBP are) 
+            (NP-PRD 
+              (NP (NNS members) )
+              (PP (IN of) 
+                (NP (DT the) (NN congregation) )))))))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ (EX there) )
+    (ADVP-TMP (RB still) )
+    (VP (VBP are) (RB n't) 
+      (NP-PRD 
+        (NP (JJ enough) (NNS ringers) )
+        (SBAR 
+          (WHNP-1 (-NONE- 0) )
+          (S 
+            (NP-SBJ (-NONE- *T*-1) )
+            (VP (TO to) 
+              (VP (VB ring) 
+                (NP 
+                  (NP 
+                    (QP (JJR more) (IN than) (CD six) ))
+                  (PP (IN of) 
+                    (NP (DT the) (CD eight) (NNS bells) )))))))))
+    (. .) ))
+( (S 
+    (PP-LOC (IN At) 
+      (NP 
+        (NP 
+          (NP (NNP St.) (NNP Mary) (POS 's) )
+          (NNP Church) )
+        (PP-LOC (IN in) 
+          (NP 
+            (NP (NNP Ilminster) )
+            (, ,) 
+            (NP-LOC (NNP Somerset) )))))
+    (, ,) 
+    (NP-SBJ-1 (DT the) (NNS bells) )
+    (VP (VBP have) 
+      (VP (VBN fallen) 
+        (S-CLR 
+          (NP-SBJ (-NONE- *-1) )
+          (ADJP-PRD (JJ silent) ))
+        (PP-TMP (VBG following) 
+          (NP 
+            (NP (DT a) (NN dust-up) )
+            (PP (IN over) 
+              (NP (NN church) (NN attendance) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 
+      (NP (DT The) (NN vicar) )
+      (, ,) 
+      (NP (NNP W.D.) (NNP Jones) )
+      (, ,) )
+    (VP (VBZ refuses) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB talk) 
+            (PP-CLR (IN about) 
+              (NP (PRP it) )))))
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (VBG saying) 
+          (SBAR (-NONE- 0) 
+            (S 
+              (NP-SBJ (PRP it) )
+              (VP (MD would) (`` ``) 
+                (VP (VB reopen) 
+                  (NP (DT the) (NN wound) ))))))))
+    (. .) ('' '') ))
+( (S (CC But) 
+    (NP-SBJ 
+      (NP (NNP C.J.B.) (NNP Marshall) )
+      (, ,) 
+      (NP 
+        (NP (NN vicar) )
+        (PP (IN of) 
+          (NP (DT a) (JJ nearby) (NN church) )))
+      (, ,) )
+    (VP (VBZ feels) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (DT the) (NN fault) )
+          (VP (VBZ is) 
+            (PP-LOC-PRD (IN in) 
+              (NP 
+                (NP (DT the) (NNS stairs) )
+                (PP (IN from) 
+                  (NP (DT the) (NN bell) (NN tower) ))
+                (SBAR 
+                  (WHNP-1 (WDT that) )
+                  (S 
+                    (NP-SBJ-138 (-NONE- *T*-1) )
+                    (VP (VBP are) 
+                      (VP (VBN located) 
+                        (NP (-NONE- *-138) )
+                        (PP-LOC-CLR (JJ next) 
+                          (PP (TO to) 
+                            (NP (DT the) (NN altar) )))))))))))))
+    (. .) ))
+( (S (`` ``) 
+    (SINV-TPC-2 (RB So) 
+      (INTJ (NN crunch) 
+        (, ,)
+        (NN crunch) 
+        (, ,)
+        (NN crunch) 
+        (, ,)
+        (NN bang) 
+        (, ,)
+        (NN bang) 
+        (, ,)
+        (NN bang) )
+      (: --) 
+      (ADVP-DIR-TPC-4 (RB here) )
+      (VP (VBP come) 
+        (ADVP-DIR (-NONE- *T*-4) ))
+      (NP-SBJ-1 (DT the) (NNS ringers) )
+      (PP-DIR (IN from) 
+        (NP (RB above) ))
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (VBG making) 
+          (NP (DT a) 
+            (ADJP (RB very) (JJ obvious) )
+            (NN exit) )
+          (SBAR-TMP (IN while) 
+            (S 
+              (NP-SBJ (DT the) (NN congregation) )
+              (VP (VBZ is) 
+                (PP-PRD (IN at) 
+                  (NP (NN prayer) ))))))))
+    (, ,) ('' '') 
+    (NP-SBJ (PRP he) )
+    (VP (VBZ says) 
+      (SINV (-NONE- *T*-2) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Vicar) (NNP Marshall) )
+    (VP (VBZ admits) 
+      (PP-CLR (TO to) 
+        (NP 
+          (NP (VBN mixed) (NNS feelings) )
+          (PP (IN about) 
+            (NP (DT this) (NN issue) ))))
+      (, ,) 
+      (SBAR-PRP (IN since) 
+        (S 
+          (NP-SBJ (PRP he) )
+          (VP (VBZ is) 
+            (NP-PRD 
+              (NP (DT both) 
+                (NX 
+                  (NX (DT a) (NN vicar) )
+                  (CC and) 
+                  (NX (DT an) (JJ active) (NN bell-ringer) )))
+              (NP (PRP himself) ))))))
+    (. .) ))
+( (S (`` ``) 
+    (S-TPC-2 
+      (NP-SBJ 
+        (NP (DT The) (NN sound) )
+        (PP (IN of) 
+          (NP (NNS bells) )))
+      (VP (VBZ is) 
+        (NP-PRD 
+          (NP (DT a) (NN net) )
+          (SBAR 
+            (WHNP-1 (-NONE- 0) )
+            (S 
+              (NP-SBJ (-NONE- *T*-1) )
+              (VP (TO to) 
+                (VP (VB draw) 
+                  (NP (NNS people) )
+                  (PP-CLR (IN into) 
+                    (NP (DT the) (NN church) )))))))))
+    (, ,) ('' '') 
+    (NP-SBJ (PRP he) )
+    (VP (VBZ says) 
+      (S (-NONE- *T*-2) ))
+    (. .) ))
+( (S (`` ``) 
+    (NP-SBJ (PRP I) )
+    (VP (VBP live) 
+      (PP-CLR (IN in) 
+        (NP (NNS hopes) 
+          (SBAR (IN that) 
+            (S 
+              (NP-SBJ-139 
+                (NP (DT the) (NNS ringers) )
+                (NP (PRP themselves) ))
+              (VP (MD will) 
+                (VP (VB be) 
+                  (VP (VBN drawn) 
+                    (NP (-NONE- *-139) )
+                    (PP-CLR (IN into) 
+                      (NP (DT that) (JJR fuller) (NN life) ))))))))))
+    (. .) ('' '') ))
+( (SINV 
+    (S-TPC-2 
+      (NP-SBJ-1 
+        (NP 
+          (NP (DT The) (NNP Central) (NNP Council) )
+          (PP (IN of) 
+            (NP (NNP Church) (NNP Bell) (NNP Ringers) )))
+        (, ,) 
+        (NP 
+          (NP (DT a) (NN sort) )
+          (PP (IN of) 
+            (NP 
+              (NP (NN parliament) )
+              (PP (IN of) 
+                (NP (NN ringing) (NNS groups) )))))
+        (, ,) )
+      (VP (VBZ aims) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB improve) 
+              (NP 
+                (NP (NNS relations) )
+                (PP (IN with) 
+                  (NP (NNS vicars) ))))))))
+    (, ,) 
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-2) )))
+    (NP-SBJ 
+      (NP (NNP John) (NNP C.) (NNP Baldwin) )
+      (, ,) 
+      (NP (NN president) ))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (PRP It) )
+    (VP 
+      (VP (VBZ hopes) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB speak) 
+              (PP-CLR (TO to) 
+                (NP 
+                  (NP (NNS students) )
+                  (PP-LOC (IN at) 
+                    (NP (JJ theological) (NNS colleges) ))))
+              (PP-CLR (IN about) 
+                (NP 
+                  (NP (DT the) (NNS joys) )
+                  (PP (IN of) 
+                    (NP (NN bell) (NN ringing) ))))))))
+      (CC and) 
+      (VP (MD will) 
+        (ADVP-TMP (RB shortly) )
+        (VP (VB publish) 
+          (NP 
+            (NP (DT a) (NN booklet) )
+            (PP (IN for) 
+              (NP 
+                (NP (DT every) (NN vicar) )
+                (PP-LOC (IN in) 
+                  (NP (DT the) (NN country) ))))
+            (VP (VBD entitled) 
+              (, ,)
+              (`` ``) 
+              (NP-TTL 
+                (NP (DT The) (NNP Bells) )
+                (PP-LOC (IN in) 
+                  (NP (PRP$ Your) (NNP Care) ))))))))
+    (. .) ('' '') ))
+( (SINV 
+    (VP (VBZ Says) 
+      (S (-NONE- *ICH*-1) ))
+    (NP-SBJ (NNP Mr.) (NNP Baldwin) )
+    (, ,) (`` ``) 
+    (S-1 
+      (NP-SBJ (PRP We) )
+      (VP (VBP recognize) 
+        (SBAR (IN that) 
+          (S 
+            (NP-SBJ (PRP we) )
+            (VP (MD may) 
+              (ADVP-TMP (RB no) (RBR longer) )
+              (VP (VBP have) 
+                (NP 
+                  (NP (RB as) (JJ high) (DT a) (NN priority) )
+                  (PP-LOC (IN in) 
+                    (NP (NN church) (NN life) 
+                      (CC and)
+                      (NN experience) )))))))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ (NNP Mr.) (NNP Baldwin) )
+    (VP (VBZ is) 
+      (ADVP (RB also) )
+      (VP (VBG attacking) 
+        (NP 
+          (NP (DT the) (JJR greater) (NN problem) )
+          (: :) 
+          (NP 
+            (NP (NN lack) )
+            (PP (IN of) 
+              (NP (NNS ringers) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (CD One) (NN survey) )
+    (VP (VBZ says) 
+      (SBAR (IN that) 
+        (S 
+          (PP-TPC (IN of) 
+            (NP 
+              (NP (DT the) (CD 100,000) (VBN trained) (NNS bellringers) )
+              (PP-LOC (IN in) 
+                (NP (NNP England) ))
+              (NP-TMP (NN today) )))
+          (, ,) 
+          (NP-SBJ 
+            (NP 
+              (QP (RB only) (CD 40,000) ))
+            (PP (IN of) 
+              (NP (PRP them) )))
+          (ADVP-TMP (RB still) )
+          (VP (VBP ring) ))))
+    (. .) ))
+( (S 
+    (ADVP (RB Also) )
+    (, ,) 
+    (NP-SBJ (NNS ringers) )
+    (VP (VBP do) (RB n't) 
+      (ADVP-TMP (RB always) )
+      (VP (VB live) 
+        (UCP-LOC-CLR 
+          (SBAR-NOM 
+            (WHADVP-2 (WRB where) )
+            (S 
+              (NP-SBJ-1 (DT the) (NNS bells) )
+              (VP (VBP need) 
+                (S 
+                  (NP-SBJ-140 (-NONE- *-1) )
+                  (VP (TO to) 
+                    (VP (VB be) 
+                      (VP (VBN rung) 
+                        (NP (-NONE- *-140) )
+                        (ADVP-LOC (-NONE- *T*-2) ))))))))
+          (: --) 
+          (PP (IN like) 
+            (PP (IN in) 
+              (NP 
+                (NP (JJ small) 
+                  (, ,)
+                  (JJ rural) (NNS parishes) )
+                (CC and) 
+                (NP (NN inner-city) (NNS churches) )))))))
+    (. .) ))
+( (SINV 
+    (S-TPC-1 (CC But) 
+      (NP-SBJ 
+        (NP (DT the) (NN council) (POS 's) )
+        (NN program) 
+        (S 
+          (NP-SBJ (-NONE- *) )
+          (VP (TO to) 
+            (VP (VB attract) 
+              (CC and)
+              (VB train) 
+              (NP (NNS ringers) )))))
+      (VP (VBZ is) 
+        (ADJP-PRD 
+          (ADVP (RB only) (RB partly) )
+          (JJ successful) )))
+    (, ,) 
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (NP-SBJ (NNP Mr.) (NNP Baldwin) )
+    (. .) ))
+( (S (`` ``) 
+    (S-TPC-1 
+      (ADVP-TMP (RB Right) (RB now) )
+      (, ,) 
+      (NP-SBJ (PRP we) )
+      (VP (VBP 're) 
+        (ADJP-PRD (JJ lucky) )
+        (SBAR-ADV (IN if) 
+          (S 
+            (PP-TMP (IN after) 
+              (NP (CD five) (NNS years) ))
+            (NP-SBJ (PRP we) )
+            (VP (VBP keep) 
+              (NP (CD one) (JJ new) (NN ringer) 
+                (QP (IN out) (IN of) (CD 10) )))))))
+    (, ,) ('' '') 
+    (NP-SBJ (PRP he) )
+    (VP (VBZ adds) 
+      (S (-NONE- *T*-1) ))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ (CD One) (JJ bright) (NN sign) )
+      (VP (VBZ is) 
+        (SBAR-PRD (IN that) 
+          (S 
+            (NP-SBJ 
+              (NP (DT a) (VBG growing) (NN number) )
+              (PP (IN of) 
+                (NP (NNS women) )))
+            (VP (VBP have) 
+              (VP (VBN entered) 
+                (NP (DT the) 
+                  (ADJP (RB once) (JJ male-dominated) )
+                  (NN field) )))))))
+    (: ;) 
+    (S 
+      (NP-SBJ 
+        (NP 
+          (QP (JJR more) (IN than) (DT a) (JJ third) ))
+        (PP (IN of) 
+          (NP 
+            (NP (DT the) (NNS ringers) )
+            (NP-TMP (NN today) ))))
+      (VP (VBP are) 
+        (NP-PRD (NNS women) )))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (PRP They) )
+    (VP (VBP are) (RB n't) 
+      (VP (VBN accepted) 
+        (NP (-NONE- *-1) )
+        (ADVP-LOC (RB everywhere) )
+        (, ,) 
+        (ADVP (RB however) )))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP 
+        (NP (DT The) (JJS oldest) (JJ bell-ringing) (NN group) )
+        (PP-LOC (IN in) 
+          (NP (DT the) (NN country) )))
+      (, ,) 
+      (NP 
+        (NP (DT the) (NNP Ancient) (NNP Society) )
+        (PP (IN of) 
+          (NP (NNP College) (NNP Youths) )))
+      (, ,) 
+      (VP (VBN founded) 
+        (NP (-NONE- *) )
+        (PP-TMP (IN in) 
+          (NP (CD 1637) )))
+      (, ,) )
+    (VP 
+      (VP (VBZ remains) 
+        (ADJP-PRD (JJ male-only) ))
+      (, ,) 
+      (NP 
+        (NP (DT a) (NN fact) )
+        (SBAR 
+          (WHNP-230 (WDT that) )
+          (S 
+            (NP-SBJ (-NONE- *T*-230) )
+            (VP (VBZ 's) 
+              (ADJP-PRD (RB particularly) (JJ galling) 
+                (PP (TO to) 
+                  (NP (NNS women) )))
+              (SBAR-PRP (IN because) 
+                (S 
+                  (NP-SBJ (DT the) (NN group) )
+                  (VP (VBZ is) 
+                    (NP-PRD 
+                      (NP (DT the) (JJ sole) (NN source) )
+                      (PP (IN of) 
+                        (NP (NNS ringers) ))
+                      (PP (IN for) 
+                        (NP 
+                          (NP 
+                            (NP (NNP Britain) (POS 's) )
+                            (ADJP (JJS most) (JJ prestigious) )
+                            (NNS churches) )
+                          (, ,) 
+                          (NP 
+                            (NP 
+                              (NP (NNP St.) (NNP Paul) (POS 's) )
+                              (NNP Cathedral) )
+                            (CC and) 
+                            (NP (NNP Westminster) (NNP Abbey) )))))))))))))
+    (. .) ))
+( (S 
+    (S 
+      (S-ADV 
+        (NP-SBJ (DT This) )
+        (VP (VBG being) 
+          (NP-PRD (NNP Britain) )))
+      (, ,) 
+      (NP-SBJ (DT no) (NN woman) )
+      (VP (VBZ has) 
+        (VP (VBN filed) 
+          (NP (DT an) (NN equal-opportunity) (NN suit) ))))
+    (, ,) (CC but) 
+    (S 
+      (NP-SBJ 
+        (NP (DT the) (NN extent) )
+        (PP (IN of) 
+          (NP (DT the) (NN problem) )))
+      (VP (VBD surfaced) 
+        (NP-TMP (DT this) (NN summer) )
+        (PP-LOC (IN in) 
+          (NP 
+            (NP (DT a) (NN series) )
+            (PP (IN of) 
+              (NP 
+                (NP (NNS letters) )
+                (PP (TO to) 
+                  (NP (`` ``) 
+                    (NP-TTL (DT The) (NNP Ringing) (NNP World) )
+                    (, ,) ('' '') 
+                    (NP 
+                      (NP (DT a) (JJ weekly) (NN newspaper) )
+                      (PP (IN for) 
+                        (NP (NNS ringers) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (CD One) (NN writer) )
+      (, ,) 
+      (VP (VBG signing) 
+        (NP (PRP$ his) (NN letter) )
+        (PP-CLR (IN as) (`` ``) 
+          (NP (JJ Red-blooded) 
+            (, ,)
+            (JJ balanced) (NN male) )))
+      (, ,) ('' '') )
+    (VP 
+      (VP (VBN remarked) 
+        (PP-CLR (IN on) 
+          (NP 
+            (NP (DT the) (`` ``) (NN frequency) )
+            (PP (IN of) 
+              (NP 
+                (NP (NNS women) )
+                (VP (VBG fainting) 
+                  (PP-LOC (IN in) 
+                    (NP (NNS peals) ))))))))
+      (, ,) ('' '') 
+      (CC and)
+      (VP (VBD suggested) 
+        (SBAR (IN that) 
+          (S 
+            (NP-SBJ (PRP they) )
+            (`` ``) 
+            (VP (VB settle) 
+              (ADVP-CLR (RB back) )
+              (PP-DIR (IN into) 
+                (NP 
+                  (NP (PRP$ their) (JJ traditional) (NN role) )
+                  (PP (IN of) 
+                    (S-NOM 
+                      (NP-SBJ (-NONE- *) )
+                      (VP (VBG making) 
+                        (NP (NN tea) )
+                        (PP-LOC (IN at) 
+                          (NP (NNS meetings) ))))))))))))
+    (. .) ('' '') ))
+( (S 
+    (PP-LOC (IN In) 
+      (NP 
+        (NP (DT the) (NN torrent) )
+        (PP (IN of) 
+          (NP (NNS replies) ))
+        (SBAR 
+          (WHNP-1 (IN that) )
+          (S 
+            (NP-SBJ (-NONE- *T*-1) )
+            (VP (VBD followed) )))))
+    (, ,) 
+    (NP-SBJ 
+      (NP (CD one) (NN woman) (NN ringer) )
+      (PP (IN from) 
+        (NP (NNP Solihull) )))
+    (VP (VBN observed) 
+      (SBAR (IN that) (`` ``) 
+        (S 
+          (NP-SBJ-3 (DT the) (JJ average) (JJ male) (NN ringer) )
+          (VP (VBZ leaves) 
+            (NP 
+              (NP (RB quite) (DT a) (NN lot) )
+              (SBAR 
+                (WHNP-2 (-NONE- 0) )
+                (S 
+                  (NP-SBJ-141 (-NONE- *T*-2) )
+                  (VP (TO to) 
+                    (VP (VB be) 
+                      (VP (VBN desired) 
+                        (NP (-NONE- *-141) )))))))
+            (: :) 
+            (S-ADV 
+              (NP-SBJ (-NONE- *-3) )
+              (ADJP-PRD 
+                (ADJP (RB badly) (VBN dressed) )
+                (, ,) 
+                (ADJP (VBN decorated) 
+                  (PP-CLR (IN with) 
+                    (NP 
+                      (NP (NN acne) )
+                      (CC and) 
+                      (NP (DT a) (JJ large) (NN beer-belly) ))))
+                (, ,) 
+                (ADJP (RB frequently) (JJ unwashed) )
+                (CC and) 
+                (ADJP (RB unbearably) (JJ flatulent) 
+                  (PP-LOC (IN in) 
+                    (NP (NNS peals) )))))))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ-1 (DT Another) (NNS women) )
+    (VP (VBD wrote) 
+      (PP-CLR (IN from) 
+        (NP (NNP Sheffield) ))
+      (S-PRP 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB say) 
+            (SBAR (IN that) 
+              (S 
+                (PP-TMP (IN in) 
+                  (NP 
+                    (NP (PRP$ her) (CD 60) (NNS years) )
+                    (PP (IN of) 
+                      (NP (VBG ringing) ))))
+                (, ,) (`` ``) 
+                (NP-SBJ (PRP I) )
+                (VP (VBP have) 
+                  (ADVP-TMP (RB never) )
+                  (VP (VBN known) 
+                    (S 
+                      (NP-SBJ (DT a) (NN lady) )
+                      (VP (TO to) 
+                        (VP (VB faint) 
+                          (PP-LOC (IN in) 
+                            (NP (DT the) (NN belfry) )))))))))))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ (PRP I) )
+      (VP (VBP have) 
+        (VP (VBN seen) 
+          (S 
+            (NP-SBJ 
+              (QP (CD one) (CC or) (CD two) )
+              (NNS men) )
+            (VP (VB die) )))))
+    (, ,) 
+    (S 
+      (NP-SBJ (-NONE- *) )
+      (VP (VB bless) 
+        (NP (PRP them) )))
+    (. .) ))

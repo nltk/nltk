@@ -1,0 +1,97 @@
+
+
+( (S (S-TPC-1 (NP-SBJ (NP (NP Japan 's)
+			  domestic sales)
+		      (PP of
+			  (NP cars
+			      ,
+			      trucks
+			      and
+			      buses))
+		      (PP-TMP in
+			      (NP October)))
+	      (VP rose
+		  (NP-EXT 18 %)
+		  (PP-DIR from
+			  (ADVP-TMP (NP a year) 
+				    earlier))
+		  (PP-DIR to
+			  (NP (NP 500,004 units)
+			      ,
+			      (NP (NP a record)
+				  (PP for
+				      (NP the month)))))))
+     ,
+     (NP-SBJ (NP the Japan Automobile Dealers ')
+	     Association)
+     (VP said
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (NP-SBJ The strong growth)
+     (VP followed
+         (NP (NP year-to-year increases)
+             (PP of
+                 (NP (NP (NP 21 %)
+                         (PP-TMP in
+				 (NP August)))
+                     and
+                     (NP (NP 12 %)
+                         (PP-TMP in
+				 (NP September)))))))
+     .))
+( (S (NP-SBJ The monthly sales)
+     (VP have
+         (VP been
+             (VP setting
+                 (NP records)
+		 (NP-TMP (NP every month)
+			 (PP since
+			     (NP March))))))
+     .))
+( (S (NP-SBJ (NP October sales)
+             ,
+             (VP compared
+                 (NP *)
+                 (PP-CLR with
+			 (NP the previous month)))
+             ,)
+     (VP inched
+         (ADVP-DIR down
+		   (NP 0.4 %)))
+     .))
+( (S (NP-SBJ (NP Sales)
+             (PP of
+                 (NP passenger cars)))
+     (VP grew
+         (NP-EXT 22 %)
+         (PP-DIR from
+		 (ADVP-TMP (NP a year)
+			   earlier))
+         (PP-DIR to
+		 (NP 361,376 units)))
+     .))
+( (S (NP-SBJ (NP Sales)
+	     (PP of
+		 (NP medium-sized cars))
+	     ,
+	     (SBAR (WHNP-21 which)
+		   (S (NP-SBJ *T*-21)
+		      (VP benefited
+			  (PP-CLR from
+				  (NP (NP price reductions)
+				      (VP arising
+					  (PP-DIR from
+						  (NP (NP introduction)
+						      (PP of
+							  (NP the consumption tax))))))))))
+	     ,)
+     (VP (ADVP more than) 
+	 doubled
+         (PP-DIR to
+		 (NP 30,841 units))
+         (PP-DIR from
+		 (NP 13,056)
+		 (PP-TMP in
+			 (NP October 1988))))
+     .))

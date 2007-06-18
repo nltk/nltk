@@ -1,0 +1,89 @@
+
+( (NP-HLN (NNS PAPERS) (: :) ))
+( (S 
+    (NP-SBJ-1 (NNP Backe) (NNP Group) (NNP Inc.) )
+    (VP (VBD agreed) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB acquire) 
+            (NP 
+              (NP (NNP Atlantic) (NNP Publications) (NNP Inc.) )
+              (, ,) 
+              (SBAR 
+                (WHNP-141 (WDT which) )
+                (S 
+                  (NP-SBJ (-NONE- *T*-141) )
+                  (VP (VBZ has) 
+                    (NP 
+                      (NP (CD 30) (NN community) (NNS papers) )
+                      (CC and) 
+                      (NP 
+                        (NP (JJ annual) (NNS sales) )
+                        (PP (IN of) 
+                          (NP 
+                            (QP ($ $) (CD 7) (CD million) )
+                            (-NONE- *U*) ))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (NNS Terms) )
+    (VP (VBD were) (RB n't) 
+      (VP (VBN disclosed) 
+        (NP (-NONE- *-1) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Backe) )
+    (VP (VBZ is) 
+      (NP-PRD 
+        (NP (DT a) 
+          (ADJP (RB closely) (VBN held) )
+          (NNS media) (NN firm) )
+        (VP (VBN run) 
+          (NP (-NONE- *) )
+          (PP (IN by) 
+            (NP-LGS (JJ former) (NNP CBS) (NNP Inc.) (NNP President) (NNP John) (NNP Backe) )))))
+    (. .) ))
+( (NP-HLN (NN TV) (: :) ))
+( (S 
+    (NP-SBJ-1 (NNP Price) (NNP Communications) (NNP Corp.) )
+    (VP (VBD completed) 
+      (NP 
+        (NP (DT the) (NN sale) )
+        (PP (IN of) 
+          (NP 
+            (NP (CD four) )
+            (PP (IN of) 
+              (NP (PRP$ its) (NN TV) (NNS stations) ))))
+        (PP (TO to) 
+          (NP (NNP NTG) (NNP Inc.) ))
+        (PP (IN for) 
+          (NP 
+            (NP 
+              (QP ($ $) (CD 120) (CD million) )
+              (-NONE- *U*) )
+            (PP (IN in) 
+              (NP (NN cash) 
+                (CC and)
+                (NNS notes) )))))
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (VBG retaining) 
+          (NP 
+            (NP (DT a) 
+              (ADJP (CD 10) (NN %) )
+              (NN equity) (NN stake) )
+            (PP-LOC (IN in) 
+              (NP (DT the) (JJ new) (NN concern) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (NNP NTG) )
+    (VP (VBD was) 
+      (VP (VBN formed) 
+        (NP (-NONE- *-1) )
+        (PP (IN by) 
+          (NP-LGS 
+            (NP (NNP Osborn) (NNP Communications) (NNP Corp.) )
+            (CC and) 
+            (NP (NNP Desai) (NNP Capital) )))))
+    (. .) ))

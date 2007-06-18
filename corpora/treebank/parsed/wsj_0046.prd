@@ -1,0 +1,46 @@
+
+
+( (S (NP-SBJ Alleghany Corp.)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP completed
+                      (NP (NP the acquisition)
+                          (PP of
+                              (NP Sacramento Savings & Loan Association))
+                          (PP-DIR from
+				  (NP the H.N. & Frances C. Berger Foundation))
+			  (PP for
+			      (NP (QP $ 150 million) *U*)))))))
+     .))
+( (S (NP-SBJ (NP The Sacramento-based S&L)
+             ,
+             (SBAR (WHNP-110 which)
+                   (S (NP-SBJ *T*-110)
+                      (VP has
+                          (NP 44 branch offices)
+			  (PP-LOC in
+				  (NP north central California)))))
+             ,)
+     (VP had
+         (NP (NP assets)
+             (PP of
+                 (NP (QP $ 2.4 billion) *U*)))
+	 (PP-TMP at
+		 (NP (NP the end)
+		     (PP of
+			 (NP September)))))
+     .))
+( (S (NP-SBJ (NP (ADJP New York-based)
+                 Alleghany))
+     (VP is
+         (NP-PRD an
+		 insurance
+		 and
+		 financial services
+		 concern))
+     .))
+( (S (NP-SBJ The purchase price)
+     (VP includes
+         (NP two ancillary companies))
+     .))

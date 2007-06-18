@@ -1,0 +1,59 @@
+
+
+( (S (NP-SBJ R.P. Scherer Corp.)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP completed
+                      (NP (NP the 
+			      (ADJP (QP $ 10.2 million) *U*) 
+			      sale)
+                          (PP of
+                              (NP its Southern Optical subsidiary))
+                          (PP to
+                              (NP (NP a group)
+                                  (VP led
+				      (NP *) 
+                                      (PP by
+                                          (NP-LGS (NP (NP (NP the unit 's)
+							  president)
+						      ,
+						      (NP Thomas R. Sloan)
+						      ,)
+						  and
+						  (NP other managers)))))))))))
+     .))
+( (S (PP-TMP Following
+	     (NP (NP the acquisition)
+		 (PP of
+		     (NP R.P. Scherer))
+		 (PP by
+		     (NP (NP a buy-out group)
+			 (VP led
+			     (NP *)
+			     (PP by
+				 (NP-LGS Shearson Lehman Hutton)))))
+		 (NP-TMP earlier 
+			 this year)))
+     ,
+     (NP-SBJ-1 (NP the maker)
+	       (PP of
+		   (NP gelatin capsules)))
+     (VP decided
+	 (S (NP-SBJ *-1)
+	    (VP to
+		(VP divest
+		    (NP itself)
+		    (PP-CLR of
+			    (NP (NP certain)
+				(PP of
+				    (NP its non-encapsulating businesses))))))))
+     .))
+( (S (NP-SBJ (NP The sale)
+             (PP of
+                 (NP Southern Optical)))
+     (VP is
+         (NP-PRD (NP a part)
+		 (PP of
+		     (NP the program))))
+     .))

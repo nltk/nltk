@@ -1,0 +1,227 @@
+
+
+( (S (S-TPC-1 (NP-SBJ Japanese investors)
+	      (VP (ADVP-MNR nearly single-handedly)
+		  bought
+		  (PRT up)
+		  (NP (NP two new mortgage securities-based mutual funds)
+		      (VP totaling
+			  (NP (QP $ 701 million) *U*)))))
+     ,
+     (NP-SBJ the U.S. Federal National Mortgage Association)
+     (VP said
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (S-TPC-1 (NP-SBJ The purchases)
+	      (VP show
+		  (NP (NP the strong interest)
+		      (PP of
+			  (NP Japanese investors))
+		      (PP in
+			  (NP U.S. mortgage-based instruments)))))
+     ,
+     (NP-SBJ (NP (NP Fannie Mae 's)
+		 chairman)
+	     ,
+	     (NP David O. Maxwell)
+	     ,)
+     (VP said
+	 (SBAR 0
+	       (S *T*-1))
+	 (PP-LOC at
+		 (NP a news conference)))
+     .))
+( (S (NP-SBJ He)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-40 (NP (QP more than 90)
+				 %)
+                             (PP of
+                                 (NP the funds)))
+                  (VP were
+                      (VP placed
+                          (NP *-40)
+                          (PP-CLR with
+				  (NP Japanese institutional investors)))))))
+     .))
+( (S (NP-SBJ The rest)
+     (VP went
+         (PP-DIR to
+		 (NP (NP investors)
+		     (PP-DIR from
+			     (NP (NP France)
+				 and
+				 (NP Hong Kong))))))
+     .))
+( (S (NP-TMP Earlier 
+	     this year)
+     ,
+     (NP-SBJ Japanese investors)
+     (VP snapped
+	 (PRT up)
+	 (NP a similar 
+	     , 
+	     (ADJP (QP $ 570 million)
+		   *U*) 
+	     mortgage-backed securities mutual fund))
+     .))
+( (S (NP-SBJ-41 That fund)
+     (VP was
+         (VP put
+             (NP *-41)
+             (PRT together)
+             (PP by
+                 (NP-LGS (NP Blackstone Group)
+			 ,
+			 (NP a New York investment bank)))))
+     .))
+( (S (NP-SBJ-42 The latest two funds)
+     (VP were
+         (VP assembled
+             (NP *-42)
+             (ADVP-MNR jointly)
+             (PP by
+                 (NP-LGS (NP (NP Goldman , Sachs & Co.)
+			     (PP of
+				 (NP the U.S.)))
+			 and
+			 (NP (NP Japan 's)
+			     Daiwa Securities Co)))))
+     .))
+( (S (NP-SBJ (NP The new , seven-year funds)
+             (PRN --
+		  (NP (NP (NP one)
+			  (VP offering
+			      (NP a fixed-rate return)))
+		      and
+		      (NP (NP the other)
+			  (PP with
+			      (NP (NP a floating-rate return)
+				  (VP linked
+				      (NP *)
+				      (PP-CLR to
+					      (NP the London interbank offered rate)))))))
+		  --))
+     (VP offer
+         (NP two key advantages)
+         (PP-CLR to
+		 (NP Japanese investors)))
+     .))
+( (S (S (ADVP First)
+	,
+        (NP-SBJ-1 they)
+	(VP are
+	    (VP designed
+		(S-CLR (NP-SBJ *-1)
+		       (VP to
+			   (VP eliminate
+			       (NP (NP the risk)
+				   (PP of
+				       (NP prepayment)))))))))
+     --
+     (S (S (NP-SBJ-43 mortgage-backed securities)
+	   (VP can
+	       (VP be
+		   (VP retired
+		       (NP *-43)
+		       (ADVP-TMP early)
+		       (SBAR-ADV if
+				 (S (NP-SBJ interest rates)
+				    (VP decline)))))))
+        , 
+	and
+        (S (NP-SBJ such prepayment)
+           (VP forces
+	       (S (NP-SBJ investors)
+                  (VP to
+                      (VP redeploy
+                          (NP their money)
+                          (PP-CLR at
+				  (NP lower rates))))))))
+     .))
+( (S (ADVP Second)
+     ,
+     (NP-SBJ-1 they)
+     (VP channel
+	 (NP monthly mortgage payments)
+	 (PP-CLR into
+		 (NP semiannual payments))
+	 ,
+	 (S-ADV (NP-SBJ *-1)
+		(VP reducing
+		    (NP (NP the administrative burden)
+			(PP-LOC on
+				(NP investors))))))
+     .))
+( (S-1 (PP-MNR By 
+	       (S-NOM (NP-SBJ *)
+		      (VP addressing
+			  (NP those problems))))
+       (PRN ,
+	    (NP-SBJ Mr. Maxwell)
+	    (VP said
+		(SBAR 0
+		      (S *T*-1)))
+	    ,)
+       (NP-SBJ the new funds)
+       (VP have
+	   (VP become 
+	       ``
+	       (ADJP-PRD extremely attractive
+			 (PP to
+			     (NP (NP Japanese and other investors)
+				 (PP-LOC outside
+					 (NP the U.S)))))))
+       .
+       ''))
+( (S (S (NP-SBJ Such devices)
+        (VP have
+            (VP boosted
+                (NP (NP Japanese investment)
+                    (PP in
+                        (NP mortgage-backed securities)))
+                (PP-DIR to
+			(NP (NP (QP more than 1)
+				%)
+			    (PP of
+				(NP (NP the (QP $ 900 billion) *U*)
+				    (PP-LOC in
+					    (NP such instruments))
+				    (ADJP outstanding))))))))
+     , 
+     and
+     (S (NP-SBJ their purchases)
+        (VP are
+            (VP growing
+                (PP-MNR at 
+			(NP a rapid rate)))))
+     .))
+( (S (NP-SBJ-2 They)
+     (ADVP also)
+     (VP have
+         (VP become
+             (NP-PRD (NP large purchasers)
+		     (PP of
+			 (NP (NP Fannie Mae 's)
+			     corporate debt)))
+	     ,
+	     (S-ADV (NP-SBJ *-2)
+		    (VP buying
+			(NP (NP (QP $ 2.4 billion) *U*)
+			    (PP in
+				(NP Fannie Mae bonds)))
+			(PP-TMP during
+				(NP (NP the
+					first 
+					nine months)
+				    (PP of
+					(NP the year))))
+			(PRN ,
+			     or 
+			     (NP (NP (QP almost a tenth))
+				 (PP of
+				     (NP (NP the total amount)
+					 (VP issued
+					     (NP *))))))))))
+     .))

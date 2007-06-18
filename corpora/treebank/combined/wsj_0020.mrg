@@ -1,0 +1,600 @@
+
+( (S 
+    (NP-SBJ-1 (DT The) (NNP U.S.) )
+    (, ,) 
+    (S-ADV 
+      (NP-SBJ (-NONE- *-1) )
+      (VP (VBG claiming) 
+        (NP 
+          (NP (DT some) (NN success) )
+          (PP-LOC (IN in) 
+            (NP (PRP$ its) (NN trade) (NN diplomacy) )))))
+    (, ,) 
+    (VP (VBD removed) 
+      (NP 
+        (NP (NNP South) (NNP Korea) )
+        (, ,) 
+        (NP (NNP Taiwan) )
+        (CC and) 
+        (NP (NNP Saudi) (NNP Arabia) ))
+      (PP-CLR (IN from) 
+        (NP 
+          (NP (DT a) (NN list) )
+          (PP (IN of) 
+            (NP 
+              (NP (NNS countries) )
+              (SBAR 
+                (WHNP-2 (-NONE- 0) )
+                (S 
+                  (NP-SBJ (PRP it) )
+                  (VP (VBZ is) 
+                    (VP 
+                      (ADVP-MNR (RB closely) )
+                      (VBG watching) 
+                      (NP (-NONE- *T*-2) )
+                      (PP-CLR (IN for) 
+                        (S-NOM 
+                          (NP-SBJ-3 (-NONE- *) )
+                          (VP 
+                            (ADVP (RB allegedly) )
+                            (VBG failing) 
+                            (S 
+                              (NP-SBJ (-NONE- *-3) )
+                              (VP (TO to) 
+                                (VP (VB honor) 
+                                  (NP (NNP U.S.) 
+                                    (NX 
+                                      (NX (NNS patents) )
+                                      (, ,) 
+                                      (NX (NNS copyrights) )
+                                      (CC and) 
+                                      (NX (JJ other) (JJ intellectual-property) (NNS rights) ))))))))))))))))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (ADVP (RB However) )
+      (, ,) 
+      (NP-SBJ 
+        (NP (CD five) (JJ other) (NNS countries) )
+        (: --) 
+        (NP (NNP China) 
+          (, ,)
+          (NNP Thailand) 
+          (, ,)
+          (NNP India) 
+          (, ,)
+          (NNP Brazil) 
+          (CC and)
+          (NNP Mexico) )
+        (: --) )
+      (VP (MD will) 
+        (VP (VB remain) 
+          (PP-LOC-PRD (IN on) 
+            (NP (DT that) (JJ so-called) (NN priority) (NN watch) (NN list) ))
+          (PP-PRP (IN as) 
+            (NP 
+              (NP (DT a) (NN result) )
+              (PP (IN of) 
+                (NP (DT an) (JJ interim) (NN review) )))))))
+    (, ,) 
+    (NP-SBJ (NNP U.S.) (NNP Trade) (NNP Representative) (NNP Carla) (NNP Hills) )
+    (VP (VBD announced) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S 
+    (PP-LOC (IN Under) 
+      (NP (DT the) (JJ new) (NNP U.S.) (NN trade) (NN law) ))
+    (, ,) 
+    (NP-SBJ (DT those) (NNS countries) )
+    (VP (MD could) 
+      (VP (VB face) 
+        (NP 
+          (NP (JJ accelerated) (JJ unfair-trade) (NNS investigations) )
+          (CC and) 
+          (NP (JJ stiff) (NN trade) (NNS sanctions) ))
+        (SBAR-ADV (IN if) 
+          (S 
+            (NP-SBJ (PRP they) )
+            (VP (VBP do) (RB n't) 
+              (VP (VB improve) 
+                (NP 
+                  (NP (PRP$ their) (NN protection) )
+                  (PP (IN of) 
+                    (NP (JJ intellectual) (NN property) )))
+                (PP-TMP (IN by) 
+                  (NP (JJ next) (NN spring) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Mrs.) (NNP Hills) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (JJ many) )
+            (PP (IN of) 
+              (NP 
+                (NP (DT the) (CD 25) (NNS countries) )
+                (SBAR 
+                  (WHNP-1 (IN that) )
+                  (S 
+                    (NP-SBJ (PRP she) )
+                    (VP (VBD placed) 
+                      (NP (-NONE- *T*-1) )
+                      (PP-DIR-CLR (IN under) 
+                        (NP 
+                          (NP (VBG varying) (NNS degrees) )
+                          (PP (IN of) 
+                            (NP (NN scrutiny) ))))))))))
+          (VP (VBP have) 
+            (VP (VBN made) (`` ``) 
+              (NP 
+                (NP (JJ genuine) (NN progress) )
+                ('' '') 
+                (PP-LOC (IN on) 
+                  (NP (DT this) (JJ touchy) (NN issue) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP She) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (EX there) )
+          (VP (VBZ is) (`` ``) 
+            (NP-PRD (VBG growing) (NN realization) 
+              (SBAR (-NONE- *ICH*-1) ))
+            ('' '') 
+            (PP-LOC (IN around) 
+              (NP (DT the) (NN world) ))
+            (SBAR-1 (DT that) 
+              (S 
+                (NP-SBJ 
+                  (NP (NN denial) )
+                  (PP (IN of) 
+                    (NP (JJ intellectual-property) (NNS rights) )))
+                (VP (VBZ harms) 
+                  (NP 
+                    (NP (DT all) (VBG trading) (NNS nations) )
+                    (, ,) 
+                    (CC and)
+                    (ADVP (RB particularly) )
+                    (NP 
+                      (NP (DT the) (`` ``) (NN creativity) 
+                        (CC and)
+                        (NN inventiveness) )
+                      (PP (IN of) 
+                        (NP 
+                          (NP (DT an) 
+                            (-LRB- -LCB-)
+                            (VBG offending) 
+                            (-RRB- -RCB-)
+                            (NN country) (POS 's) )
+                          (JJ own) (NNS citizens) )))))))))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ (NNP U.S.) (NN trade) (NNS negotiators) )
+    (VP (VBP argue) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ-1 
+            (NP (NNS countries) )
+            (PP (IN with) 
+              (NP 
+                (NP (JJ inadequate) (NNS protections) )
+                (PP (IN for) 
+                  (NP (JJ intellectual-property) (NNS rights) )))))
+          (VP (MD could) 
+            (VP (VB be) 
+              (VP (VBG hurting) 
+                (NP (PRP themselves) )
+                (PP 
+                  (PP (IN by) 
+                    (S-NOM 
+                      (NP-SBJ (-NONE- *-1) )
+                      (VP (VBG discouraging) 
+                        (NP (PRP$ their) (JJ own) (NNS scientists) 
+                          (CC and)
+                          (NNS authors) ))))
+                  (CC and) 
+                  (PP (IN by) 
+                    (S-NOM 
+                      (NP-SBJ (-NONE- *-1) )
+                      (VP (VBG deterring) 
+                        (NP-2 (NNP U.S.) (NN high-technology) (NNS firms) )
+                        (PP-CLR (IN from) 
+                          (S-NOM 
+                            (NP-SBJ (-NONE- *-2) )
+                            (VP 
+                              (VP (VBG investing) )
+                              (CC or) 
+                              (VP (VBG marketing) 
+                                (NP (PRP$ their) (JJS best) (NNS products) ))
+                              (ADVP-LOC (RB there) ))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Mrs.) (NNP Hills) )
+    (VP (VBD lauded) 
+      (NP-1 (NNP South) (NNP Korea) )
+      (PP-CLR (IN for) 
+        (S-NOM 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (VBG creating) 
+            (NP 
+              (NP (DT an) (JJ intellectual-property) (NN task) (NN force) )
+              (CC and) 
+              (NP 
+                (NP (JJ special) (NN enforcement) (NNS teams) )
+                (PP (IN of) 
+                  (NP 
+                    (NP (NN police) (NNS officers) )
+                    (CC and) 
+                    (NP (NNS prosecutors) )))
+                (VP (VBN trained) 
+                  (S 
+                    (NP-SBJ (-NONE- *) )
+                    (VP (TO to) 
+                      (VP (VB pursue) 
+                        (NP (NN movie) 
+                          (CC and)
+                          (NN book) (NNS pirates) )))))))))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (NP-SBJ (NNP Seoul) )
+      (ADVP (RB also) )
+      (VP (VBZ has) 
+        (VP (VBN instituted) 
+          (NP 
+            (NP (JJ effective) (JJ search-and-seizure) (NNS procedures) )
+            (SBAR 
+              (WHADVP-2 (-NONE- 0) )
+              (S 
+                (NP-SBJ (-NONE- *) )
+                (VP (TO to) 
+                  (VP (VB aid) 
+                    (NP (DT these) (NNS teams) )
+                    (ADVP-MNR (-NONE- *T*-2) )))))))))
+    (, ,) 
+    (NP-SBJ (PRP she) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S 
+    (NP-SBJ-2 (NNP Taiwan) )
+    (VP (VBZ has) 
+      (VP (VBN improved) 
+        (NP 
+          (NP (PRP$ its) (NN standing) )
+          (PP (IN with) 
+            (NP (DT the) (NNP U.S.) )))
+        (PP-MNR (IN by) 
+          (S-NOM 
+            (NP-SBJ (-NONE- *-2) )
+            (VP 
+              (VP (VBG initialing) 
+                (NP (DT a) (JJ bilateral) (NN copyright) (NN agreement) ))
+              (, ,) 
+              (VP (VBG amending) 
+                (NP (PRP$ its) (NN trademark) (NN law) ))
+              (CC and) 
+              (VP (VBG introducing) 
+                (NP 
+                  (NP (NN legislation) )
+                  (SBAR 
+                    (WHADVP-1 (-NONE- 0) )
+                    (S 
+                      (NP-SBJ (-NONE- *) )
+                      (VP (TO to) 
+                        (VP (VB protect) 
+                          (NP (JJ foreign) (NN movie) (NNS producers) )
+                          (PP-CLR (IN from) 
+                            (NP 
+                              (NP (JJ unauthorized) (NNS showings) )
+                              (PP (IN of) 
+                                (NP (PRP$ their) (NNS films) ))))
+                          (ADVP-MNR (-NONE- *T*-1) ))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT That) (NN measure) )
+    (VP (MD could) 
+      (VP (VB compel) 
+        (S 
+          (NP-SBJ 
+            (NP 
+              (NP (NNP Taipei) (POS 's) )
+              (VBG growing) (NN number) )
+            (PP (IN of) 
+              (NP (JJ small) (JJ video-viewing) (NNS parlors) )))
+          (VP (TO to) 
+            (VP (VB pay) 
+              (NP (NN movie) (NNS producers) )
+              (PP-PRP (IN for) 
+                (S-NOM 
+                  (NP-SBJ (-NONE- *) )
+                  (VP (VBG showing) 
+                    (NP (PRP$ their) (NNS films) )))))))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (NP-SBJ-2 (NNP Saudi) (NNP Arabia) )
+      (PRN 
+        (, ,)
+        (PP (IN for) 
+          (NP (PRP$ its) (NN part) ))
+        (, ,) )
+      (VP (VBZ has) 
+        (VP (VBN vowed) 
+          (S 
+            (S 
+              (NP-SBJ (-NONE- *-2) )
+              (VP (TO to) 
+                (VP (VB enact) 
+                  (NP 
+                    (NP (DT a) (NN copyright) (NN law) )
+                    (ADJP (JJ compatible) 
+                      (PP (IN with) 
+                        (NP (JJ international) (NNS standards) )))))))
+            (CC and) 
+            (S 
+              (NP-SBJ (-NONE- *-2) )
+              (VP (TO to) 
+                (VP (VB apply) 
+                  (NP (DT the) (NN law) )
+                  (PP-CLR 
+                    (PP (TO to) 
+                      (NP (NN computer) (NN software) ))
+                    (CONJP (RB as) (RB well) (IN as) )
+                    (PP (TO to) 
+                      (NP (JJ literary) (NNS works) ))))))))))
+    (, ,) 
+    (NP-SBJ (NNP Mrs.) (NNP Hills) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT These) (CD three) (NNS countries) )
+    (VP (VBP are) (RB n't) 
+      (PP-PRD 
+        (ADVP (RB completely) )
+        (IN off) 
+        (NP (DT the) (NN hook) ))
+      (, ,) 
+      (ADVP (RB though) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP They) )
+    (VP (MD will) 
+      (VP (VB remain) 
+        (PP-LOC-PRD (IN on) 
+          (NP 
+            (NP (DT a) (JJ lower-priority) (NN list) )
+            (SBAR 
+              (WHNP-27 (WDT that) )
+              (S 
+                (NP-SBJ (-NONE- *T*-27) )
+                (VP (VBZ includes) 
+                  (NP (CD 17) (JJ other) (NNS countries) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 
+      (NP (DT Those) (NNS countries) )
+      (PRN (: --) 
+        (PP (IN including) 
+          (NP (NNP Japan) 
+            (, ,)
+            (NNP Italy) 
+            (, ,)
+            (NNP Canada) 
+            (, ,)
+            (NNP Greece) 
+            (CC and)
+            (NNP Spain) ))
+        (: --) ))
+    (VP 
+      (VP (VBP are) 
+        (ADVP-TMP (RB still) )
+        (PP-PRD (IN of) 
+          (NP (DT some) (NN concern) ))
+        (PP (TO to) 
+          (NP (DT the) (NNP U.S.) )))
+      (CC but) 
+      (VP (VBP are) 
+        (VP (VBN deemed) 
+          (S 
+            (NP-SBJ (-NONE- *-1) )
+            (VP (TO to) 
+              (VP (VB pose) 
+                (NP 
+                  (NP (JJ less-serious) (NNS problems) )
+                  (PP (IN for) 
+                    (NP (JJ American) (NN patent) 
+                      (CC and)
+                      (NN copyright) (NNS owners) ))
+                  (PP (IN than) 
+                    (NP 
+                      (NP (DT those) )
+                      (PP-LOC (IN on) 
+                        (NP (DT the) (`` ``) (NN priority) ('' '') (NN list) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Gary) (NNP Hoffman) )
+      (, ,) 
+      (NP 
+        (NP (DT a) (NNP Washington) (NN lawyer) )
+        (VP (VBG specializing) 
+          (PP-CLR (IN in) 
+            (NP (JJ intellectual-property) (NNS cases) ))))
+      (, ,) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (DT the) (NN threat) )
+            (PP (IN of) 
+              (NP (NNP U.S.) (NN retaliation) ))
+            (, ,) 
+            (VP (VBN combined) 
+              (NP (-NONE- *) )
+              (PP-CLR (IN with) 
+                (NP (DT a) (VBG growing) (NN recognition) 
+                  (SBAR (IN that) 
+                    (S 
+                      (S-NOM-SBJ 
+                        (NP-SBJ (-NONE- *) )
+                        (VP (VBG protecting) 
+                          (NP (JJ intellectual) (NN property) )))
+                      (VP (VBZ is) 
+                        (PP-PRD (IN in) 
+                          (NP 
+                            (NP (DT a) (NN country) (POS 's) )
+                            (JJ own) (NN interest) ))))))))
+            (, ,) )
+          (VP (VBD prompted) 
+            (NP 
+              (NP (DT the) (NNS improvements) )
+              (VP (VBN made) 
+                (NP (-NONE- *) )
+                (PP (IN by) 
+                  (NP-LGS 
+                    (NP (NNP South) (NNP Korea) )
+                    (, ,) 
+                    (NP (NNP Taiwan) )
+                    (CC and) 
+                    (NP (NNP Saudi) (NNP Arabia) )))))))))
+    (. .) ))
+( (S (`` ``) 
+    (S-TPC-1 
+      (SBAR-NOM-SBJ 
+        (WHNP-28 (WP What) )
+        (S 
+          (NP-SBJ (DT this) )
+          (VP (VBZ tells) 
+            (NP (PRP us) )
+            (NP (-NONE- *T*-28) ))))
+      (VP (VBZ is) 
+        (SBAR-PRD (DT that) 
+          (S 
+            (NP-SBJ (NNP U.S.) (NN trade) (NN law) )
+            (VP (VBZ is) 
+              (VP (VBG working) ))))))
+    (, ,) ('' '') 
+    (NP-SBJ (PRP he) )
+    (VP (VBD said) 
+      (S (-NONE- *T*-1) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP He) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (NNP Mexico) )
+          (VP (MD could) 
+            (VP (VB be) 
+              (NP-PRD 
+                (NP (CD one) )
+                (PP (IN of) 
+                  (NP 
+                    (NP (DT the) (JJ next) (NNS countries) )
+                    (SBAR 
+                      (WHNP-1 (-NONE- 0) )
+                      (S 
+                        (NP-SBJ-2 (-NONE- *T*-1) )
+                        (VP (TO to) 
+                          (VP (VB be) 
+                            (VP (VBN removed) 
+                              (NP (-NONE- *-2) )
+                              (PP-CLR (IN from) 
+                                (NP (DT the) (NN priority) (NN list) ))
+                              (PP-PRP (IN because) (IN of) 
+                                (NP (PRP$ its) (NNS efforts) 
+                                  (S 
+                                    (NP-SBJ (-NONE- *) )
+                                    (VP (TO to) 
+                                      (VP (VB craft) 
+                                        (NP (DT a) (JJ new) (NN patent) (NN law) )))))))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Mrs.) (NNP Hills) )
+    (VP (VBD said) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ (DT the) (NNP U.S.) )
+          (VP (VBZ is) 
+            (ADVP-TMP (RB still) )
+            (ADJP-PRD (VBN concerned) 
+              (PP (IN about) (`` ``) 
+                (NP 
+                  (NP 
+                    (NP (JJ disturbing) (NNS developments) )
+                    (PP-LOC (IN in) 
+                      (NP (NNP Turkey) )))
+                  (CC and) 
+                  (NP 
+                    (NP (VBG continuing) (JJ slow) (NN progress) )
+                    (PP-LOC (IN in) 
+                      (NP (NNP Malaysia) ))))))))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ (PRP She) )
+    (VP (VBD did) (RB n't) 
+      (VP (JJ elaborate) 
+        (, ,)
+        (SBAR-ADV (IN although) 
+          (S 
+            (NP-SBJ (JJR earlier) (NNP U.S.) (NN trade) (NNS reports) )
+            (VP (VBP have) 
+              (VP (VBN complained) 
+                (PP-CLR (IN of) 
+                  (NP 
+                    (NP 
+                      (NP (NN videocassette) (NN piracy) )
+                      (PP-LOC (IN in) 
+                        (NP (NNP Malaysia) )))
+                    (CC and) 
+                    (NP 
+                      (NP (NN disregard) )
+                      (PP (IN for) 
+                        (NP (NNP U.S.) (JJ pharmaceutical) (NNS patents) ))
+                      (PP-LOC (IN in) 
+                        (NP (NNP Turkey) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (CD 1988) (NN trade) (NN act) )
+    (VP (VBZ requires) 
+      (S 
+        (NP-SBJ (NNP Mrs.) (NNP Hills) )
+        (VP (TO to) 
+          (VP (VB issue) 
+            (NP 
+              (NP (DT another) (NN review) )
+              (PP (IN of) 
+                (NP 
+                  (NP (DT the) (NN performance) )
+                  (PP (IN of) 
+                    (NP (DT these) (NNS countries) )))))
+            (PP-TMP (IN by) 
+              (NP (NNP April) (CD 30) ))))))
+    (. .) ))
+( (S 
+    (ADVP-TMP (IN So) (RB far) )
+    (, ,) 
+    (NP-SBJ (NNP Mrs.) (NNP Hills) )
+    (VP (VBZ has) (RB n't) 
+      (VP (VBD deemed) 
+        (S 
+          (NP-SBJ-1 (DT any) (NNS cases) )
+          (ADJP-PRD (JJ bad) (RB enough) 
+            (S 
+              (NP-SBJ (-NONE- *-1) )
+              (VP (TO to) 
+                (VP (VB merit) 
+                  (NP (DT an) (VBN accelerated) (NN investigation) )))
+              (PP-LOC (IN under) 
+                (NP 
+                  (NP (DT the) (JJ so-called) (JJ special) (CD 301) (NN provision) )
+                  (PP (IN of) 
+                    (NP (DT the) (NN act) )))))))))
+    (. .) ))

@@ -1,0 +1,554 @@
+
+
+( (S (NP-SBJ-1 (NP Investor Harold Simmons)
+	       and
+	       (NP NL Industries Inc.))
+     (VP offered
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP acquire
+                    (NP Georgia Gulf Corp.)
+                    (PP-CLR for
+			    (NP (NP (NP $ 50 *U*)
+				    (NP-ADV a share))
+				, 
+				or
+				(NP (QP about $ 1.1 billion) *U*)
+				,)))))
+	 (S-ADV (NP-SBJ *-1)
+		(VP stepping
+		    (PRT up)
+		    (NP (NP the pressure)
+			(PP on
+			    (NP the commodity chemicals concern))))))
+     .))
+( (S (NP-SBJ The offer)
+     (VP follows
+         (NP (NP an earlier proposal
+		 (S *ICH*-1))
+             (PP by
+                 (NP (NP NL)
+                     and
+                     (NP Mr. Simmons)))
+             (S-1 (NP-SBJ *)
+		  (VP to
+		      (VP help
+			  (S (NP-SBJ Georgia Gulf)
+			     (VP (VP restructure)
+				 or
+				 (VP go
+				     (ADJP-PRD private))
+				 (PP-LOC in
+					 (NP (NP a transaction)
+					     (SBAR (WHNP-179 that)
+						   (S (NP-SBJ *T*-179)
+						      (VP would
+							  (VP pay
+							      (NP shareholders)
+							      (NP (NP $ 55 *U*)
+								  (NP-ADV a share)))))))))))))))
+     .))
+( (S (NP-SBJ Georgia Gulf)
+     (VP (VP rebuffed
+	     (NP that offer)
+	     (PP-TMP in
+		     (NP September)))
+	 and
+         (VP said
+             (SBAR 0
+                   (S (NP-SBJ it)
+                      (VP would
+                          (VP study
+                              (NP other alternatives)))))))
+     .))
+( (S (ADVP However)
+     ,
+     (NP-SBJ it)
+     (VP has 
+	 n't
+         (ADVP-TMP yet)
+         (VP made
+             (NP any proposals)
+             (PP-CLR to
+		     (NP shareholders))))
+     .))
+( (S (NP-TMP Late yesterday)
+     ,
+     (NP-SBJ Georgia Gulf)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP reviewed
+                      (NP (NP the NL proposal)
+                          (CONJP as well as)
+                          (NP (NP interests)
+			      (PP from
+				  ``
+				  (NP third parties)
+				  '')
+                              (PP regarding
+                                  (NP business combinations))))))))
+     .))
+( (S (NP-SBJ Georgia Gulf)
+     (VP said
+         (SBAR (SBAR 0
+                     (S (NP-SBJ it)
+                        (VP has 
+			    n't
+                            (VP eliminated
+                                (NP any alternatives)))))
+               and
+               (SBAR that
+                     (S ``
+			(S (NP-SBJ-1 (NP discussions)
+				     (PP *PPA*-2))
+                           (VP are
+			       (VP being
+				   (VP held
+				       (NP *-1)
+				       (PP-CLR-2 with
+						 (NP interested parties))))))
+                        , 
+			and
+                        (S (NP-SBJ (NP work)
+				   (PP *ICH*-3))
+                           (VP is
+                               (ADVP also)
+                               (VP continuing
+				   (PP-3 on
+					 (NP other various transactions)))))))))
+     .
+     ''))
+( (S (NP-SBJ It)
+     (VP did 
+	 n't
+         (VP elaborate))
+     .))
+( (S (NP-SBJ Analysts)
+     (VP saw
+         (NP the latest offer)
+         (PP-CLR as
+		 (NP proof
+		     (SBAR that
+			   (S (NP-SBJ (NP Mr. Simmons)
+				      ,
+				      (NP an 
+					  (ADJP aggressive and persistent) 
+					  investor)
+				      ,)
+			      (VP wo 
+				  n't
+				  (VP leave
+				      (S (NP-SBJ Georgia Gulf)
+					 (ADJP-PRD alone))
+				      (SBAR-TMP until
+						(S (NP-SBJ-113 (NP some kind)
+							       (PP of
+								   (NP transaction)))
+						   (VP is
+						       (VP completed
+							   (NP *-113))))))))))))
+     .))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ He)
+		 (VP has
+		     (VP clamped
+			 (PP-CLR on
+				 (NP their ankle))
+			 (PP-MNR like
+				 (NP a pit bull)))))
+	,
+	''
+	(VP says
+	    (S *T*-1))
+	(NP-SBJ (NP Paul Leming)
+		,
+		(NP (NP a vice president)
+		    (PP with
+			(NP Morgan Stanley & Co))))
+	.))
+( (S ``
+     (NP-SBJ-1 He)
+     (VP appears
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP be
+                    (PP-LOC-PRD in
+				(NP it))
+		    (PP-TMP for
+			    (NP the long haul))))))
+     .
+     ''))
+( (S (NP-SBJ (NP Mr. Simmons)
+             and
+             (NP NL))
+     (ADVP-TMP already)
+     (VP own
+         (NP (NP a 
+		 (ADJP 9.9 %) 
+		 stake)
+             (PP-LOC in
+		     (NP Georgia Gulf))))
+     .))
+( (S (NP-SBJ Mr. Simmons)
+     (VP owns
+         (NP (NP 88 %)
+             (PP of
+                 (NP (NP Valhi Inc.)
+                     ,
+                     (SBAR (WHNP-1 which)
+                           (S (PP in
+                                  (NP turn))
+                              (NP-SBJ *T*-1)
+                              (VP owns
+                                  (NP (NP two-thirds)
+                                      (PP of
+                                          (NP NL))))))))))
+     .))
+( (S (NP-SBJ NL)
+     (VP is
+         (ADVP-MNR officially)
+         (VP making
+             (NP the offer)))
+     .))
+( (S (NP-SBJ-1 Mr. Leming)
+     (VP was 
+	 n't
+         (VP surprised
+	     (NP *-1)
+             (PP by
+                 (NP-LGS (NP the lower price)
+			 (VP cited
+			     (NP *)
+			     (PP by
+				 (NP-LGS NL)))))
+	     ,
+	     (S-ADV (NP-SBJ *-1)
+		    (VP saying
+			(SBAR 0
+			      (S (NP-SBJ he)
+				 (VP believes
+				     (SBAR that
+					   (S (NP-SBJ (NP $ 55 *U*)
+						      (NP-ADV a share))
+					      (VP is
+						  (NP-PRD ``
+							  (NP the most)
+							  (SBAR (WHNP-2 0)
+								(S (NP-SBJ you)
+								   (VP can
+								       (VP pay
+									   (NP *T*-2)
+									   (PP-CLR for
+										   (NP Georgia Gulf))
+									   (SBAR-TMP before
+										     (S (NP-SBJ it)
+											(VP becomes
+											    (NP-PRD a bad acquisition)))))))))))))))))))
+     .
+     ''))
+( (S (NP-SBJ-1 Georgia Gulf stock)
+     (VP rose
+	 (NP-EXT (NP $ 1.75 *U*)
+		 (NP-ADV a share))
+	 (NP-TMP yesterday)
+	 (S-PRP (NP-SBJ *-1)
+		(VP to
+		    (VP close
+			(PP-CLR at
+				(NP (NP $ 51.25 *U*)
+				    (NP-ADV a share))))))
+	 ,
+	 (SBAR-TMP while
+		   (S (S (NP-SBJ NL shares)
+			 (VP closed
+			     (ADJP unchanged)
+			     (PP-CLR at
+				     (NP $ 22.75 *U*))))
+		      and
+		      (S (NP-SBJ Valhi)
+			 (VP rose
+			     (NP-EXT 62.5 cents)
+			     (PP-DIR to
+				     (NP $ 15 *U*))))))
+	 ,
+	 (PP-LOC all in
+		 (NP New York Stock Exchange 
+		     composite trading)))
+     .))
+( (S (NP-SBJ (NP J. Landis Martin)
+             ,
+             (NP NL 
+		 (NX (NX president) 
+		     and 
+		     (NX chief executive officer)))
+             ,)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ (NP NL)
+                          and
+                          (NP Mr. Simmons))
+                  (VP cut
+                      (NP (NP (NP the price)
+			      (PP *ICH*-2))
+                          (SBAR (WHNP-1 0)
+                                (S (NP-SBJ they)
+                                   (VP were
+                                       (VP proposing
+                                           (NP *T*-1)
+                                           (PP-2 for
+						 (NP Georgia Gulf)))))))
+		      (SBAR-PRP because
+				(S (NP-SBJ they)
+				   (ADVP-TMP initially)
+				   (VP planned
+				       (NP (NP a transaction)
+					   (SBAR (WHNP-180 that)
+						 (S (NP-SBJ *T*-180)
+						    (VP included
+							(NP (NP (NP (QP about $ 250 million)
+								    *U*)
+								(PP in
+								    (NP equity)))
+							    and
+							    (NP (NP a substantial amount)
+								(PP of
+								    (NP high-yield
+									subordinated
+									debt)))))))))))))))
+     .))
+( (S (ADVP However)
+     ,
+     (NP-SBJ the junk-bond market)
+     (VP has
+	 (VP collapsed
+	     (PP-TMP in
+		     (NP recent weeks))
+	     ,
+	     (S-ADV (NP-SBJ *)
+		    (VP lessening
+			(NP the likelihood
+			    (SBAR that
+				  (S (NP-SBJ such a transaction)
+				     (VP would
+					 (VP succeed)))))))))
+     .))
+( (S-1 (ADVP-TMP Now)
+       (PRN ,
+	    (NP-SBJ he)
+	    (VP said
+		(SBAR 0
+		      (S *T*-1)))
+	    ,)
+       (NP-SBJ-2 the group)
+       (VP plans
+	   (S (NP-SBJ *-2)
+	      (VP to
+		  (VP (VP put
+			  (PRT in)
+			  (NP (NP `` 
+				  (QP several hundred million) 
+				  '' 
+				  dollars)
+			      (PP in
+				  (NP equity))))
+		      and
+		      (VP finance
+			  (NP the remainder)
+			  (PP-MNR with 
+				  (NP bank debt)))))))
+       .))
+( (S (NP-SBJ He)
+     (ADVP also)
+     (VP said
+         (SBAR that
+               (S (NP-SBJ the group)
+                  (VP reduced
+                      (NP its offer)
+		      (SBAR-PRP because
+				(S (NP-SBJ-1 it)
+				   (VP was 
+				       n't
+				       (VP allowed
+					   (S (NP-SBJ-2 *-1)
+					      (VP to
+						  (VP see
+						      (NP (NP Georgia Gulf 's)
+							  confidential financial information)
+						      (PP-MNR without
+							      (S-NOM (NP-SBJ *-2)
+								     (VP agreeing
+									 (SBAR that
+									       (S (NP-SBJ it)
+										  (VP would 
+										      n't
+										      (VP make
+											  (NP an offer)
+											  (SBAR-ADV unless
+												    (S (NP-SBJ it)
+												       (VP had
+													   (NP (NP Georgia Gulf 's)
+													       consent))))))))))))))))))))))
+     .))
+( (S (PP-LOC In
+	     (NP (NP a letter)
+		 (PP to
+		     (NP Georgia Gulf President
+			 Jerry R. Satrum))))
+     ,
+     (NP-SBJ Mr. Martin)
+     (VP asked
+         (NP-1 Georgia Gulf)
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP answer
+                    (NP its offer)
+		    (PP-TMP by
+			    (NP Tuesday))))))
+     .))
+( (S (NP-SBJ (NP It)
+             (SBAR *EXP*-1))
+     (VP was 
+	 n't
+         (ADJP-PRD clear)
+	 (SBAR-NOM-1 (WHADVP-2 how)
+		     (S (NP-SBJ (NP NL)
+				and
+				(NP Mr. Simmons))
+			(VP would
+			    (VP respond
+				(ADVP-MNR *T*-2)
+				(SBAR-ADV if
+					  (S (NP-SBJ Georgia Gulf)
+					     (VP spurns
+						 (NP them)
+						 (ADVP-TMP again)))))))))
+     .))
+( (S (S (NP-SBJ Mr. Martin)
+        (VP said
+            (SBAR 0
+                  (S (NP-SBJ they)
+                     (VP have 
+			 n't
+                         (ADVP-TMP yet)
+                         (VP decided
+                             (SBAR-NOM (WHNP-181 what)
+				       (S (NP-SBJ their next move)
+					  (VP would
+					      (VP be
+						  (NP-PRD *T*-181)))))))))))
+     , 
+     but
+     (S (NP-SBJ he)
+        (VP did 
+	    n't
+            (VP rule
+                (PRT out)
+                (NP (NP the possibility)
+                    (PP of
+                        (NP (NP a consent solicitation)
+                            (VP aimed
+                                (NP *)
+                                (PP-CLR at
+					(S-NOM (NP-SBJ *)
+					       (VP replacing
+						   (NP (NP Georgia Gulf 's)
+						       board)))))))))))
+     .))
+( (S (PP-LOC In
+	     (NP other transactions))
+     ,
+     (NP-SBJ Mr. Simmons)
+     (VP has
+         (VP followed
+             (NP friendly offers)
+             (PP-CLR with
+		     (NP a hostile tender offer))))
+     .))
+( (S (SBAR-ADV Although
+	       (S (NP-SBJ-1 Georgia Gulf)
+		  (VP has 
+		      n't
+		      (VP been
+			  (ADJP-PRD eager
+				    (S (NP-SBJ *-1)
+				       (VP to
+					   (VP negotiate
+					       (PP-CLR with
+						       (NP (NP Mr. Simmons)
+							   and
+							   (NP (NP NL)
+							       ,
+							       (NP a specialty chemicals concern)
+							       ,)))))))))))
+     (NP-SBJ the group)
+     (ADVP apparently)
+     (VP believes
+         (SBAR 0
+               (S (NP-SBJ-114 (NP the company 's)
+                              management)
+                  (VP is
+                      (VP interested
+                          (NP *-114)
+                          (PP-CLR in
+				  (NP (NP some kind)
+				      (PP of
+					  (NP transaction)))))))))
+     .))
+( (S (NP-SBJ-1 The management group)
+     (VP (VP owns
+	     (NP (NP (NP (QP about 18)
+			 %)
+		     (PP of
+			 (NP the stock)))
+		 ,
+		 (NP (NP most)
+		     (VP purchased
+			 (NP *)
+			 (PP-CLR at
+				 (NP nominal prices))))
+		 ,))
+	 and
+	 (VP would
+	     (VP stand
+		 (S (NP-SBJ *-1)
+		    (VP to
+			(VP gain
+			    (NP (NP millions)
+				(PP of
+				    (NP dollars)))
+			    (SBAR-ADV if
+				      (S (NP-SBJ-115 the company)
+					 (VP were
+					     (VP sold
+						 (NP *-115)))))))))))
+     .))
+( (S (PP-TMP In
+	     (NP the third quarter))
+     ,
+     (NP-SBJ Georgia Gulf)
+     (VP earned
+         (NP (NP (QP $ 46.1 million) *U*)
+	     , 
+	     or
+	     (NP (NP $ 1.85 *U*)
+		 (NP-ADV a share))
+	     ,)
+	 (ADVP down
+	       (PP from
+		   (NP (NP (QP $ 53 million) *U*)
+		       , 
+		       or
+		       (NP (NP (NP $ 1.85 *U*)
+			       (NP-ADV a share))
+			   (PP on
+			       (NP (NP fewer shares)
+				   (ADJP outstanding))))))))
+     .))
+( (S (NP-SBJ Sales)
+     (VP fell
+         (PP-DIR to
+		 (NP (QP $ 251.2 million) *U*))
+         (PP-DIR from
+		 (NP (QP $ 278.7 million) *U*)))
+     .))

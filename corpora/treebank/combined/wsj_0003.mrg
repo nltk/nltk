@@ -1,0 +1,766 @@
+
+( (S 
+    (S-TPC-1 
+      (NP-SBJ 
+        (NP 
+          (NP (DT A) (NN form) )
+          (PP (IN of) 
+            (NP (NN asbestos) )))
+        (RRC 
+          (ADVP-TMP (RB once) )
+          (VP (VBN used) 
+            (NP (-NONE- *) )
+            (S-CLR 
+              (NP-SBJ (-NONE- *) )
+              (VP (TO to) 
+                (VP (VB make) 
+                  (NP (NNP Kent) (NN cigarette) (NNS filters) )))))))
+      (VP (VBZ has) 
+        (VP (VBN caused) 
+          (NP 
+            (NP (DT a) (JJ high) (NN percentage) )
+            (PP (IN of) 
+              (NP (NN cancer) (NNS deaths) ))
+            (PP-LOC (IN among) 
+              (NP 
+                (NP (DT a) (NN group) )
+                (PP (IN of) 
+                  (NP 
+                    (NP (NNS workers) )
+                    (RRC 
+                      (VP (VBN exposed) 
+                        (NP (-NONE- *) )
+                        (PP-CLR (TO to) 
+                          (NP (PRP it) ))
+                        (ADVP-TMP 
+                          (NP 
+                            (QP (RBR more) (IN than) (CD 30) )
+                            (NNS years) )
+                          (IN ago) )))))))))))
+    (, ,) 
+    (NP-SBJ (NNS researchers) )
+    (VP (VBD reported) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S 
+    (S-TPC-2 
+      (NP-SBJ 
+        (NP (DT The) (NN asbestos) (NN fiber) )
+        (, ,) 
+        (NP (NN crocidolite) )
+        (, ,) )
+      (VP (VBZ is) 
+        (ADJP-PRD (RB unusually) (JJ resilient) )
+        (SBAR-TMP (IN once) 
+          (S 
+            (NP-SBJ (PRP it) )
+            (VP (VBZ enters) 
+              (NP (DT the) (NNS lungs) ))))
+        (, ,) 
+        (PP (IN with) 
+          (S-NOM 
+            (NP-SBJ 
+              (NP (RB even) (JJ brief) (NNS exposures) )
+              (PP (TO to) 
+                (NP (PRP it) )))
+            (VP (VBG causing) 
+              (NP 
+                (NP (NNS symptoms) )
+                (SBAR 
+                  (WHNP-1 (WDT that) )
+                  (S 
+                    (NP-SBJ (-NONE- *T*-1) )
+                    (VP (VBP show) 
+                      (PRT (RP up) )
+                      (ADVP-TMP 
+                        (NP (NNS decades) )
+                        (JJ later) ))))))))))
+    (, ,) 
+    (NP-SBJ (NNS researchers) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-2) )))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Lorillard) (NNP Inc.) )
+      (, ,) 
+      (NP 
+        (NP (DT the) (NN unit) )
+        (PP (IN of) 
+          (NP 
+            (ADJP (JJ New) (JJ York-based) )
+            (NNP Loews) (NNP Corp.) ))
+        (SBAR 
+          (WHNP-2 (WDT that) )
+          (S 
+            (NP-SBJ (-NONE- *T*-2) )
+            (VP (VBZ makes) 
+              (NP (NNP Kent) (NNS cigarettes) )))))
+      (, ,) )
+    (VP (VBD stopped) 
+      (VP (VBG using) 
+        (NP (NN crocidolite) )
+        (PP-LOC-CLR (IN in) 
+          (NP (PRP$ its) (NN Micronite) (NN cigarette) (NNS filters) ))
+        (PP-TMP (IN in) 
+          (NP (CD 1956) ))))
+    (. .) ))
+( (S 
+    (SBAR-ADV (IN Although) 
+      (S 
+        (NP-SBJ-2 (JJ preliminary) (NNS findings) )
+        (VP (VBD were) 
+          (VP (VBN reported) 
+            (NP (-NONE- *-2) )
+            (ADVP-TMP 
+              (NP 
+                (QP (RBR more) (IN than) (DT a) )
+                (NN year) )
+              (IN ago) )))))
+    (, ,) 
+    (NP-SBJ (DT the) (JJS latest) (NNS results) )
+    (VP (VBP appear) 
+      (PP-LOC (IN in) 
+        (NP 
+          (NP 
+            (NP 
+              (NP (NN today) (POS 's) )
+              (NNP New) (NNP England) (NNP Journal) )
+            (PP (IN of) 
+              (NP (NNP Medicine) )))
+          (, ,) 
+          (NP 
+            (NP (DT a) (NN forum) )
+            (ADJP (JJ likely) 
+              (S 
+                (NP-SBJ (-NONE- *) )
+                (VP (TO to) 
+                  (VP (VB bring) 
+                    (NP (JJ new) (NN attention) )
+                    (PP-DIR (TO to) 
+                      (NP (DT the) (NN problem) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT A) (NNP Lorillard) (NN spokewoman) )
+    (VP (VBD said) 
+      (, ,)
+      (`` ``) 
+      (S 
+        (NP-SBJ (DT This) )
+        (VP (VBZ is) 
+          (NP-PRD (DT an) (JJ old) (NN story) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP We) )
+    (VP (VBP 're) 
+      (VP (VBG talking) 
+        (PP-CLR (IN about) 
+          (ADVP-TMP 
+            (ADVP 
+              (NP (NNS years) )
+              (IN ago) )
+            (SBAR (IN before) 
+              (S 
+                (NP-SBJ (NN anyone) )
+                (VP (VBD heard) 
+                  (PP-CLR (IN of) 
+                    (S-NOM 
+                      (NP-SBJ (NN asbestos) )
+                      (VP (VBG having) 
+                        (NP (DT any) (JJ questionable) (NNS properties) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (EX There) )
+    (VP (VBZ is) 
+      (NP-PRD (DT no) (NN asbestos) )
+      (PP-LOC (IN in) 
+        (NP (PRP$ our) (NNS products) ))
+      (ADVP-TMP (RB now) ))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ (DT Neither) 
+      (NP (NNP Lorillard) )
+      (CC nor) 
+      (NP 
+        (NP (DT the) (NNS researchers) )
+        (SBAR 
+          (WHNP-3 (WP who) )
+          (S 
+            (NP-SBJ (-NONE- *T*-3) )
+            (VP (VBD studied) 
+              (NP (DT the) (NNS workers) ))))))
+    (VP (VBD were) 
+      (ADJP-PRD (JJ aware) 
+        (PP (IN of) 
+          (NP 
+            (NP (DT any) (NN research) )
+            (PP (IN on) 
+              (NP 
+                (NP (NNS smokers) )
+                (PP (IN of) 
+                  (NP (DT the) (NNP Kent) (NNS cigarettes) ))))))))
+    (. .) ))
+( (SINV (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ (PRP We) )
+      (VP (VBP have) 
+        (NP 
+          (NP (DT no) (JJ useful) (NN information) )
+          (PP (IN on) 
+            (SBAR (IN whether) 
+              (S 
+                (NP-SBJ (NNS users) )
+                (VP (VBP are) 
+                  (PP-PRD (IN at) 
+                    (NP (NN risk) )))))))))
+    (, ,) ('' '') 
+    (VP (VBD said) 
+      (S (-NONE- *T*-1) ))
+    (NP-SBJ 
+      (NP (NNP James) (NNP A.) (NNP Talcott) )
+      (PP (IN of) 
+        (NP 
+          (NP (NNP Boston) (POS 's) )
+          (NNP Dana-Farber) (NNP Cancer) (NNP Institute) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Dr.) (NNP Talcott) )
+    (VP (VBD led) 
+      (NP 
+        (NP (DT a) (NN team) )
+        (PP (IN of) 
+          (NP 
+            (NP (NNS researchers) )
+            (PP-DIR (IN from) 
+              (NP 
+                (NP (DT the) (NNP National) (NNP Cancer) (NNP Institute) )
+                (CC and) 
+                (NP 
+                  (NP (DT the) (JJ medical) (NNS schools) )
+                  (PP (IN of) 
+                    (NP 
+                      (NP (NNP Harvard) (NNP University) )
+                      (CC and) 
+                      (NP (NNP Boston) (NNP University) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NNP Lorillard) (NN spokeswoman) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 (NN asbestos) )
+          (VP (VBD was) 
+            (VP 
+              (VP (VBN used) 
+                (NP (-NONE- *-1) )
+                (PP-CLR (IN in) (`` ``) 
+                  (NP 
+                    (ADJP (RB very) (JJ modest) )
+                    (NNS amounts) )
+                  ('' '') )
+                (PP-LOC (IN in) 
+                  (S-NOM 
+                    (NP-SBJ (-NONE- *) )
+                    (VP (VBG making) 
+                      (NP 
+                        (NP (NN paper) )
+                        (PP (IN for) 
+                          (NP (DT the) (NNS filters) ))))))
+                (PP-TMP (IN in) 
+                  (NP (DT the) (JJ early) (CD 1950s) )))
+              (CC and) 
+              (VP (VBN replaced) 
+                (NP (-NONE- *-1) )
+                (PP (IN with) 
+                  (NP 
+                    (NP (DT a) (JJ different) (NN type) )
+                    (PP (IN of) 
+                      (NP (NN filter) ))))
+                (PP-TMP (IN in) 
+                  (NP (CD 1956) ))))))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (PP-TMP 
+        (PP-DIR (IN From) 
+          (NP (CD 1953) ))
+        (PP-DIR (TO to) 
+          (NP (CD 1955) )))
+      (, ,) 
+      (NP-SBJ-3 
+        (NP 
+          (QP (CD 9.8) (CD billion) )
+          (NNP Kent) (NNS cigarettes) )
+        (PP (IN with) 
+          (NP (DT the) (NNS filters) )))
+      (VP (VBD were) 
+        (VP (VBN sold) 
+          (NP (-NONE- *-3) ))))
+    (, ,) 
+    (NP-SBJ (DT the) (NN company) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S 
+    (PP-LOC (IN Among) 
+      (NP 
+        (NP (CD 33) (NNS men) )
+        (SBAR 
+          (WHNP-4 (WP who) )
+          (S 
+            (NP-SBJ (-NONE- *T*-4) )
+            (VP (VBD worked) 
+              (ADVP-MNR (RB closely) )
+              (PP-CLR (IN with) 
+                (NP (DT the) (NN substance) )))))))
+    (, ,) 
+    (NP-SBJ 
+      (NP (CD 28) )
+      (NP (-NONE- *ICH*-1) ))
+    (VP (VBP have) 
+      (VP (VBN died) (: --) 
+        (NP-1 
+          (QP (JJ more) (IN than) (CD three) (NNS times) )
+          (DT the) (VBN expected) (NN number) )))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (CD Four) )
+      (PP (IN of) 
+        (NP (DT the) (CD five) (VBG surviving) (NNS workers) )))
+    (VP (VBP have) 
+      (NP (JJ asbestos-related) (NNS diseases) )
+      (, ,) 
+      (PP (VBG including) 
+        (NP 
+          (NP (CD three) )
+          (PP (IN with) 
+            (NP 
+              (ADJP (RB recently) (VBN diagnosed) )
+              (NN cancer) )))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (NP-SBJ 
+        (NP (DT The) (NN total) )
+        (PP (IN of) 
+          (NP 
+            (NP (CD 18) (NNS deaths) )
+            (PP-DIR (IN from) 
+              (NP 
+                (NP (JJ malignant) (NN mesothelioma) )
+                (, ,) 
+                (NP (NN lung) (NN cancer) )
+                (CC and) 
+                (NP (NN asbestosis) ))))))
+      (VP (VBD was) 
+        (ADJP-PRD 
+          (ADJP (RB far) (JJR higher) )
+          (SBAR (IN than) 
+            (S 
+              (NP-SBJ (-NONE- *) )
+              (VP (VBN expected) 
+                (S (-NONE- *?*) )))))))
+    (, ,) 
+    (NP-SBJ (DT the) (NNS researchers) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (SINV (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ (DT The) (NN morbidity) (NN rate) )
+      (VP (VBZ is) 
+        (NP-PRD (DT a) (JJ striking) (NN finding) )
+        (PP-LOC (IN among) 
+          (NP 
+            (NP (DT those) )
+            (PP (IN of) 
+              (NP (PRP us) ))
+            (SBAR 
+              (WHNP-5 (WP who) )
+              (S 
+                (NP-SBJ (-NONE- *T*-5) )
+                (VP (VBP study) 
+                  (NP (JJ asbestos-related) (NNS diseases) ))))))))
+    (, ,) ('' '') 
+    (VP (VBD said) 
+      (S (-NONE- *T*-1) ))
+    (NP-SBJ (NNP Dr.) (NNP Talcott) )
+    (. .) ))
+( (S 
+    (S-TPC-2 
+      (NP-SBJ-1 
+        (NP (DT The) (NN percentage) )
+        (PP (IN of) 
+          (NP (NN lung) (NN cancer) (NNS deaths) ))
+        (PP-LOC (IN among) 
+          (NP 
+            (NP (DT the) (NNS workers) )
+            (PP-LOC (IN at) 
+              (NP (DT the) 
+                (NAC-LOC (NNP West) (NNP Groton) 
+                  (, ,)
+                  (NNP Mass.) 
+                  (, ,)
+                  )
+                (NN paper) (NN factory) )))))
+      (VP (VBZ appears) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB be) 
+              (NP-PRD 
+                (NP (DT the) (JJS highest) )
+                (PP (IN for) 
+                  (NP 
+                    (NP (DT any) (NN asbestos) (NNS workers) )
+                    (RRC 
+                      (VP (VBN studied) 
+                        (NP (-NONE- *) )
+                        (PP-LOC (IN in) 
+                          (NP (JJ Western) (VBN industrialized) (NNS countries) ))))))))))))
+    (, ,) 
+    (NP-SBJ (PRP he) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-2) )))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (NN plant) )
+      (, ,) 
+      (SBAR 
+        (WHNP-1 (WDT which) )
+        (S 
+          (NP-SBJ-4 (-NONE- *T*-1) )
+          (VP (VBZ is) 
+            (VP (VBN owned) 
+              (NP (-NONE- *-4) )
+              (PP (IN by) 
+                (NP-LGS (NNP Hollingsworth) (CC &) (NNP Vose) (NNP Co.) ))))))
+      (, ,) )
+    (VP (VBD was) 
+      (PP-LOC-PRD (IN under) 
+        (NP 
+          (NP (NN contract) 
+            (S (-NONE- *ICH*-2) ))
+          (PP (IN with) 
+            (NP (NN Lorillard) ))
+          (S-2 
+            (NP-SBJ (-NONE- *) )
+            (VP (TO to) 
+              (VP (VB make) 
+                (NP (DT the) (NN cigarette) (NNS filters) )))))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (NP-SBJ (DT The) (NN finding) )
+      (ADVP (RB probably) )
+      (VP (MD will) 
+        (VP (VB support) 
+          (NP 
+            (NP (DT those) )
+            (SBAR 
+              (WHNP-6 (WP who) )
+              (S 
+                (NP-SBJ (-NONE- *T*-6) )
+                (VP (VBP argue) 
+                  (SBAR (IN that) 
+                    (S 
+                      (NP-SBJ (DT the) (NNP U.S.) )
+                      (VP (MD should) 
+                        (VP (VB regulate) 
+                          (NP 
+                            (NP (DT the) (NN class) )
+                            (PP (IN of) 
+                              (NP (NN asbestos) ))
+                            (PP (VBG including) 
+                              (NP (NN crocidolite) )))
+                          (ADVP-MNR 
+                            (ADVP (RBR more) (RB stringently) )
+                            (PP (IN than) 
+                              (NP 
+                                (NP 
+                                  (NP (DT the) (JJ common) (NN kind) )
+                                  (PP (IN of) 
+                                    (NP (NN asbestos) ))
+                                  (, ,) 
+                                  (NP (NN chrysotile) )
+                                  (, ,) )
+                                (VP (VBN found) 
+                                  (NP (-NONE- *) )
+                                  (PP-LOC-CLR (IN in) 
+                                    (NP 
+                                      (NP (JJS most) (NNS schools) )
+                                      (CC and) 
+                                      (NP (JJ other) (NNS buildings) ))))))))))))))))))
+    (, ,) 
+    (NP-SBJ (NNP Dr.) (NNP Talcott) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NNP U.S.) )
+    (VP (VBZ is) 
+      (NP-PRD 
+        (NP (CD one) )
+        (PP (IN of) 
+          (NP 
+            (NP (DT the) (JJ few) (VBN industrialized) (NNS nations) )
+            (SBAR 
+              (WHNP-7 (WDT that) )
+              (S 
+                (NP-SBJ (-NONE- *T*-7) )
+                (VP (VBZ does) (RB n't) 
+                  (VP (VB have) 
+                    (NP 
+                      (NP (DT a) (JJR higher) (NN standard) )
+                      (PP (IN of) 
+                        (NP (NN regulation) ))
+                      (PP (IN for) 
+                        (NP 
+                          (NP (DT the) (JJ smooth) 
+                            (, ,)
+                            (JJ needle-like) (NNS fibers) )
+                          (PP (JJ such) (IN as) 
+                            (NP (NN crocidolite) ))
+                          (SBAR 
+                            (WHNP-1 (WDT that) )
+                            (S 
+                              (NP-SBJ-5 (-NONE- *T*-1) )
+                              (VP (VBP are) 
+                                (VP (VBN classified) 
+                                  (NP (-NONE- *-5) )
+                                  (PP-CLR (IN as) 
+                                    (NP (NNS amphobiles) ))))))))))))))))
+      (, ,) 
+      (PP (VBG according) 
+        (PP (TO to) 
+          (NP 
+            (NP (NNP Brooke) (NNP T.) (NNP Mossman) )
+            (, ,) 
+            (NP 
+              (NP (DT a) (NN professor) )
+              (PP (IN of) 
+                (NP (NN pathlogy) ))
+              (PP-LOC (IN at) 
+                (NP 
+                  (NP (DT the) 
+                    (NAC (NNP University) 
+                      (PP (IN of) 
+                        (NP (NNP Vermont) )))
+                    (NNP College) )
+                  (PP (IN of) 
+                    (NP (NNP Medicine) )))))))))
+    (. .) ))
+( (S 
+    (S-TPC-2 
+      (NP-SBJ-1 (RBR More) (JJ common) (NN chrysotile) (NNS fibers) )
+      (VP 
+        (VP (VBP are) 
+          (ADJP-PRD (JJ curly) ))
+        (CC and) 
+        (VP (VBP are) 
+          (VP 
+            (ADVP-MNR (RBR more) (RB easily) )
+            (VBN rejected) 
+            (NP (-NONE- *-1) )
+            (PP (IN by) 
+              (NP-LGS (DT the) (NN body) ))))))
+    (, ,) 
+    (NP-SBJ (NNP Dr.) (NNP Mossman) )
+    (VP (VBD explained) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-2) )))
+    (. .) ))
+( (S 
+    (PP-TMP (IN In) 
+      (NP (NNP July) ))
+    (, ,) 
+    (NP-SBJ (DT the) (NNP Environmental) (NNP Protection) (NNP Agency) )
+    (VP (VBD imposed) 
+      (NP (DT a) (JJ gradual) (NN ban) )
+      (PP-CLR (IN on) 
+        (NP 
+          (NP 
+            (ADJP (RB virtually) (DT all) )
+            (NNS uses) )
+          (PP (IN of) 
+            (NP (NN asbestos) )))))
+    (. .) ))
+( (S 
+    (PP-TMP (IN By) 
+      (NP (CD 1997) ))
+    (, ,) 
+    (NP-SBJ-6 
+      (NP 
+        (ADJP (RB almost) (DT all) )
+        (VBG remaining) (NNS uses) )
+      (PP (IN of) 
+        (NP (JJ cancer-causing) (NN asbestos) )))
+    (VP (MD will) 
+      (VP (VB be) 
+        (VP (VBN outlawed) 
+          (NP (-NONE- *-6) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ-7 
+      (NP 
+        (QP (IN About) (CD 160) )
+        (NNS workers) )
+      (PP-LOC (IN at) 
+        (NP 
+          (NP (DT a) (NN factory) )
+          (SBAR 
+            (WHNP-8 (WDT that) )
+            (S 
+              (NP-SBJ (-NONE- *T*-8) )
+              (VP (VBD made) 
+                (NP 
+                  (NP (NN paper) )
+                  (PP (IN for) 
+                    (NP (DT the) (NNP Kent) (NNS filters) )))))))))
+    (VP (VBD were) 
+      (VP (VBN exposed) 
+        (NP (-NONE- *-7) )
+        (PP-DIR (TO to) 
+          (NP (NN asbestos) ))
+        (PP-TMP (IN in) 
+          (NP (DT the) (CD 1950s) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNS Areas) )
+      (PP (IN of) 
+        (NP (DT the) (NN factory) ))
+      (SBAR (-NONE- *ICH*-2) ))
+    (VP (VBD were) 
+      (ADJP-PRD (RB particularly) (JJ dusty) )
+      (SBAR-2 
+        (WHADVP-1 (WRB where) )
+        (S 
+          (NP-SBJ-8 (DT the) (NN crocidolite) )
+          (VP (VBD was) 
+            (VP (VBN used) 
+              (NP (-NONE- *-8) )
+              (ADVP-LOC (-NONE- *T*-1) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNS Workers) )
+    (VP 
+      (VP (VBD dumped) 
+        (NP 
+          (NP (JJ large) (NN burlap) (NNS sacks) )
+          (PP (IN of) 
+            (NP (DT the) (VBN imported) (NN material) )))
+        (PP-DIR (IN into) 
+          (NP (DT a) (JJ huge) (NN bin) )))
+      (, ,) 
+      (VP (VBD poured) 
+        (PRT (RP in) )
+        (NP (NN cotton) 
+          (CC and)
+          (NN acetate) (NNS fibers) ))
+      (CC and) 
+      (VP 
+        (VP 
+          (ADVP-MNR (RB mechanically) )
+          (VBD mixed) 
+          (NP (DT the) (JJ dry) (NNS fibers) )
+          (PP-LOC (IN in) 
+            (NP 
+              (NP (DT a) (NN process) )
+              (RRC 
+                (VP (VBN used) 
+                  (NP (-NONE- *) )
+                  (S-CLR 
+                    (NP-SBJ (-NONE- *) )
+                    (VP (TO to) 
+                      (VP (VB make) 
+                        (NP (NNS filters) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNS Workers) )
+    (VP (VBD described) 
+      (NP (`` ``) 
+        (NP (NNS clouds) )
+        (PP (IN of) 
+          (NP (JJ blue) (NN dust) ))
+        ('' '') 
+        (SBAR 
+          (WHNP-1 (WDT that) )
+          (S 
+            (NP-SBJ (-NONE- *T*-1) )
+            (VP (VBD hung) 
+              (PP-LOC (IN over) 
+                (NP 
+                  (NP (NNS parts) )
+                  (PP (IN of) 
+                    (NP (DT the) (NN factory) ))))
+              (, ,) 
+              (SBAR-ADV (RB even) (IN though) 
+                (S 
+                  (NP-SBJ (NN exhaust) (NNS fans) )
+                  (VP (VBD ventilated) 
+                    (NP (DT the) (NN area) )))))))))
+    (. .) ))
+( (SINV (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ (EX There) )
+      (VP (VBZ 's) 
+        (NP-PRD 
+          (NP (DT no) (NN question) )
+          (SBAR (IN that) 
+            (S 
+              (NP-SBJ 
+                (NP (DT some) )
+                (PP (IN of) 
+                  (NP (DT those) (NNS workers) 
+                    (CC and)
+                    (NNS managers) )))
+              (VP (VBD contracted) 
+                (NP (JJ asbestos-related) (NNS diseases) )))))))
+    (, ,) ('' '') 
+    (VP (VBD said) 
+      (S (-NONE- *T*-1) ))
+    (NP-SBJ 
+      (NP (NNP Darrell) (NNP Phillips) )
+      (, ,) 
+      (NP 
+        (NP (NN vice) (NN president) )
+        (PP (IN of) 
+          (NP (JJ human) (NNS resources) ))
+        (PP (IN for) 
+          (NP (NNP Hollingsworth) (CC &) (NNP Vose) ))))
+    (. .) ))
+( (S (`` ``) (CC But) 
+    (NP-SBJ-1 (PRP you) )
+    (VP (VBP have) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB recognize) 
+            (SBAR (IN that) 
+              (S 
+                (NP-SBJ (DT these) (NNS events) )
+                (VP (VBD took) 
+                  (NP (NN place) )
+                  (ADVP-TMP 
+                    (NP (CD 35) (NNS years) )
+                    (IN ago) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP It) )
+    (VP (VBZ has) 
+      (NP 
+        (NP (DT no) (NN bearing) )
+        (PP-DIR (IN on) 
+          (NP 
+            (NP (PRP$ our) (NN work) (NN force) )
+            (NP-TMP (NN today) )))))
+    (. .) ))

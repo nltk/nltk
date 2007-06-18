@@ -1,0 +1,3019 @@
+
+( (S 
+    (NP-SBJ (NNP Cathryn) (NNP Rice) )
+    (VP (MD could) 
+      (ADVP (RB hardly) )
+      (VP (VB believe) 
+        (NP (PRP$ her) (NNS eyes) )))
+    (. .) ))
+( (S 
+    (SBAR-TMP (IN While) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (VBG giving) 
+          (NP 
+            (NP (DT the) (JJ Comprehensive) (NN Test) )
+            (PP (IN of) 
+              (NP (JJ Basic) (NNS Skills) )))
+          (PP-DTV (TO to) 
+            (NP (JJ ninth) (NNS graders) ))
+          (PP-LOC (IN at) 
+            (NP (NNP Greenville) (NNP High) (NNP School) ))
+          (NP-TMP (JJ last) (NNP March) (CD 16) ))))
+    (, ,) 
+    (NP-SBJ-1 (PRP she) )
+    (VP (VBD spotted) 
+      (NP 
+        (NP (DT a) (NN student) )
+        (VP (VBG looking) 
+          (PP-CLR (IN at) 
+            (NP (JJ crib) (NNS sheets) )))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ (PRP She) )
+      (VP (VBD had) 
+        (VP (VBN seen) 
+          (NP (NN cheating) )
+          (ADVP-TMP (RB before) ))))
+    (, ,) (CC but) 
+    (S 
+      (NP-SBJ (DT these) (NNS notes) )
+      (VP (VBD were) 
+        (ADJP-PRD (JJ uncanny) )))
+    (. .) ))
+( (S (`` ``) 
+    (NP-SBJ (DT A) (NN stockbroker) )
+    (VP (VBZ is) 
+      (NP-PRD 
+        (NP (DT an) (NN example) )
+        (PP (IN of) 
+          (NP 
+            (NP (DT a) (NN profession) )
+            (PP-LOC (IN in) 
+              (NP (NN trade) 
+                (CC and)
+                (NN finance) ))))))
+    (: ...) (. .) ))
+( (S 
+    (PP-TMP (IN At) 
+      (NP 
+        (NP (DT the) (NN end) )
+        (PP (IN of) 
+          (NP (NNP World) (NNP War) (NNP II) ))))
+    (, ,) 
+    (NP-SBJ (NNP Germany) )
+    (VP (VBD surrendered) 
+      (PP-TMP (IN before) 
+        (NP (NNP Japan) )))
+    (: ...) (. .) ))
+( (S 
+    (NP-SBJ-1 (DT The) (JJ Senate-House) (NN conference) (NN committee) )
+    (VP (VBZ is) 
+      (VP (VBN used) 
+        (NP (-NONE- *-1) )
+        (SBAR-TMP 
+          (WHADVP-2 (WRB when) )
+          (S 
+            (NP-SBJ-3 (DT a) (NN bill) )
+            (VP (VBZ is) 
+              (VP (VBN passed) 
+                (NP (-NONE- *-3) )
+                (PP (IN by) 
+                  (NP-LGS (DT the) (NNP House) 
+                    (CC and)
+                    (NNP Senate) ))
+                (PP-MNR (IN in) 
+                  (NP (JJ different) (NNS forms) ))
+                (ADVP-TMP (-NONE- *T*-2) )))))))
+    (. .) ('' '') ))
+( (S 
+    (ADVP (RB Virtually) (NN word) (IN for) (NN word) )
+    (, ,) 
+    (NP-SBJ (DT the) (NNS notes) )
+    (VP (VBD matched) 
+      (NP 
+        (NP (NNS questions) 
+          (CC and)
+          (NNS answers) )
+        (PP-LOC (IN on) 
+          (NP 
+            (NP (DT the) (NN social-studies) (NN section) )
+            (PP (IN of) 
+              (NP 
+                (NP (DT the) (NN test) )
+                (SBAR 
+                  (WHNP-1 (-NONE- 0) )
+                  (S 
+                    (NP-SBJ (DT the) (NN student) )
+                    (VP (VBD was) 
+                      (VP (VBG taking) 
+                        (NP (-NONE- *T*-1) )))))))))))
+    (. .) ))
+( (S 
+    (PP (IN In) 
+      (NP (NN fact) ))
+    (, ,) 
+    (NP-SBJ (DT the) (NN student) )
+    (VP (VBD had) 
+      (NP 
+        (NP (DT the) (NNS answers) )
+        (PP (TO to) 
+          (NP 
+            (NP (RB almost) (DT all) )
+            (PP (IN of) 
+              (NP 
+                (NP (DT the) (CD 40) (NNS questions) )
+                (PP-LOC (IN in) 
+                  (NP (DT that) (NN section) ))))))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ (DT The) (NN student) )
+      (VP (VBD surrendered) 
+        (NP (DT the) (NNS notes) )))
+    (, ,) (CC but) 
+    (FRAG (RB not) 
+      (PP (IN without) 
+        (NP (DT a) (NN protest) )))
+    (. .) ))
+( (S (`` ``) 
+    (S-TPC-2 
+      (NP-SBJ (PRP$ My) (NN teacher) )
+      (VP (VBD said) 
+        (SBAR (-NONE- 0) 
+          (S 
+            (NP-SBJ 
+              (NP (PRP it) )
+              (SBAR (-NONE- *EXP*-1) ))
+            (VP (VBD was) 
+              (ADJP-PRD (UH OK) )
+              (SBAR-1 (IN for) 
+                (S 
+                  (NP-SBJ (PRP me) )
+                  (VP (TO to) 
+                    (VP (VB use) 
+                      (NP (DT the) (NNS notes) )
+                      (PP-LOC (IN on) 
+                        (NP (DT the) (NN test) )))))))))))
+    (, ,) ('' '') 
+    (NP-SBJ (PRP he) )
+    (VP (VBD said) 
+      (S (-NONE- *T*-2) ))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (NN teacher) )
+      (PP-LOC (IN in) 
+        (NP (NN question) )))
+    (VP (VBD was) 
+      (NP-PRD 
+        (NP (NNP Nancy) (NNP Yeargin) )
+        (: --) 
+        (VP (VBN considered) 
+          (PP (IN by) 
+            (NP-LGS (JJ many) (NNS students) 
+              (CC and)
+              (NNS parents) ))
+          (S 
+            (NP-SBJ (-NONE- *) )
+            (VP (TO to) 
+              (VP (VB be) 
+                (NP-PRD 
+                  (NP (CD one) )
+                  (PP (IN of) 
+                    (NP 
+                      (NP (DT the) (JJS best) )
+                      (PP-LOC (IN at) 
+                        (NP (DT the) (NN school) )))))))))))
+    (. .) ))
+( (S 
+    (S-ADV 
+      (NP-SBJ-1 (-NONE- *-2) )
+      (VP (VBN Confronted) 
+        (NP (-NONE- *-1) )))
+    (, ,) 
+    (NP-SBJ-2 (NNP Mrs.) (NNP Yeargin) )
+    (VP (VBD admitted) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP she) )
+          (VP (VBD had) 
+            (VP (VBN given) 
+              (NP (DT the) (NNS questions) 
+                (CC and)
+                (VBZ answers) )
+              (PP-TMP 
+                (NP-ADV (CD two) (NNS days) )
+                (IN before) 
+                (NP (DT the) (NN examination) ))
+              (PP-DTV (TO to) 
+                (NP (CD two) (JJ low-ability) (NN geography) (NNS classes) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (PRP She) )
+    (VP (VBD had) 
+      (VP (VBN gone) 
+        (ADVP 
+          (ADVP (RB so) (RB far) )
+          (SBAR (IN as) 
+            (S 
+              (NP-SBJ (-NONE- *-1) )
+              (VP (TO to) 
+                (VP 
+                  (VP (VB display) 
+                    (NP (DT the) (NNS questions) )
+                    (PP-LOC (IN on) 
+                      (NP (DT an) (JJ overhead) (NN projector) )))
+                  (CC and) 
+                  (VP (VB underline) 
+                    (NP (DT the) (NNS answers) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (NNP Mrs.) (NNP Yeargin) )
+    (VP (VBD was) 
+      (VP 
+        (VP (VBN fired) 
+          (NP (-NONE- *-1) ))
+        (CC and) 
+        (VP (VBN prosecuted) 
+          (NP (-NONE- *-1) )
+          (PP-CLR (IN under) 
+            (NP 
+              (NP (DT an) (JJ unusual) (NNP South) (NNP Carolina) (NN law) )
+              (SBAR 
+                (WHNP-79 (WDT that) )
+                (S 
+                  (NP-SBJ (-NONE- *T*-79) )
+                  (VP (VBZ makes) 
+                    (S 
+                      (NP-SBJ 
+                        (NP (PRP it) )
+                        (S (-NONE- *EXP*-2) ))
+                      (NP-PRD (DT a) (NN crime) )
+                      (S-2 
+                        (NP-SBJ (-NONE- *) )
+                        (VP (TO to) 
+                          (VP (VB breach) 
+                            (NP (NN test) (NN security) )))))))))))))
+    (. .) ))
+( (S 
+    (PP-TMP (IN In) 
+      (NP (NNP September) ))
+    (, ,) 
+    (NP-SBJ (PRP she) )
+    (VP 
+      (VP (VBD pleaded) 
+        (ADJP-PRD (JJ guilty) ))
+      (CC and) 
+      (VP (VBD paid) 
+        (NP (DT a) 
+          (ADJP ($ $) (CD 500) (-NONE- *U*) )
+          (NN fine) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP$ Her) (NN alternative) )
+    (VP (VBD was) 
+      (NP-PRD 
+        (NP (CD 90) (NNS days) )
+        (PP-LOC (IN in) 
+          (NP (NN jail) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP$ Her) (NN story) )
+    (VP (VBZ is) 
+      (ADVP (RB partly) )
+      (NP-PRD 
+        (NP (NN one) )
+        (PP (IN of) 
+          (NP (JJ personal) (NN downfall) ))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ (PRP She) )
+      (VP (VBD was) 
+        (NP-PRD 
+          (NP (DT an) (JJ unstinting) (NN teacher) )
+          (SBAR 
+            (WHNP-80 (WP who) )
+            (S 
+              (NP-SBJ (-NONE- *T*-80) )
+              (VP 
+                (VP (VBD won) 
+                  (NP (NNS laurels) ))
+                (CC and) 
+                (VP (VBD inspired) 
+                  (NP (NNS students) ))))))))
+    (, ,) (CC but) 
+    (S 
+      (NP-SBJ (PRP she) )
+      (VP (MD will) 
+        (ADVP (RB probably) )
+        (ADVP-TMP (RB never) )
+        (VP (VB teach) 
+          (ADVP-TMP (RB again) ))))
+    (. .) ))
+( (S 
+    (PP-LOC (IN In) 
+      (NP (PRP$ her) (NN wake) ))
+    (NP-SBJ (PRP she) )
+    (VP (VBD left) 
+      (NP 
+        (NP (DT the) (NN bitterness) 
+          (CC and)
+          (NN anger) )
+        (PP 
+          (PP (IN of) 
+            (NP 
+              (NP (DT a) (NN principal) )
+              (SBAR 
+                (WHNP-81 (WP who) )
+                (S 
+                  (NP-SBJ (-NONE- *T*-81) )
+                  (VP 
+                    (VP (VBD was) 
+                      (NP-PRD (PRP$ her) (NN friend) ))
+                    (CC and) 
+                    (VP 
+                      (ADVP-TMP (RB now) )
+                      (VBZ calls) 
+                      (S 
+                        (NP-SBJ (PRP her) )
+                        (NP-PRD (DT a) (NN betrayer) ))))))))
+          (: ;) 
+          (PP (IN of) 
+            (NP 
+              (NP (NNS colleagues) )
+              (SBAR 
+                (WHNP-82 (WP who) )
+                (S 
+                  (NP-SBJ (-NONE- *T*-82) )
+                  (VP (VBP say) 
+                    (SBAR (-NONE- 0) 
+                      (S 
+                        (NP-SBJ (PRP she) )
+                        (VP (VBD brought) 
+                          (NP (PRP them) )
+                          (NP (NN shame) )))))))))
+          (: ;) 
+          (PP (IN of) 
+            (NP 
+              (NP (NNS students) 
+                (CC and)
+                (NNS parents) )
+              (SBAR 
+                (WHNP-83 (WP who) )
+                (S 
+                  (NP-SBJ (-NONE- *T*-83) )
+                  (VP 
+                    (VP (VBD defended) 
+                      (NP (PRP her) ))
+                    (CC and) 
+                    (VP (VBP insist) 
+                      (SBAR (-NONE- 0) 
+                        (S 
+                          (NP-SBJ-1 (PRP she) )
+                          (VP (VBD was) 
+                            (VP (VBN treated) 
+                              (NP (-NONE- *-1) )
+                              (ADVP-MNR (RB harshly) )))))))))))
+          (: ;) 
+          (CC and)
+          (PP (IN of) 
+            (NP 
+              (NP (NN school-district) (NNS officials) )
+              (ADJP (JJ stunned) 
+                (SBAR (IN that) 
+                  (S 
+                    (PP (IN despite) 
+                      (NP 
+                        (NP (DT the) (JJ bald-faced) (NN nature) )
+                        (PP (IN of) 
+                          (NP (PRP$ her) (NNS actions) ))))
+                    (, ,) 
+                    (NP-SBJ (PRP she) )
+                    (VP (VBD became) 
+                      (NP-PRD 
+                        (NP (NN something) )
+                        (PP (IN of) 
+                          (NP (DT a) (JJ local) (NN martyr) ))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Mrs.) (NNP Yeargin) (POS 's) )
+      (NN case) )
+    (ADVP (RB also) )
+    (VP (VBZ casts) 
+      (NP (DT some) (NN light) )
+      (PP-DIR (IN on) 
+        (NP 
+          (NP (DT the) (JJ dark) (NN side) )
+          (PP (IN of) 
+            (NP (NN school) (NN reform) ))
+          (, ,) 
+          (SBAR-LOC 
+            (SBAR 
+              (WHADVP-1 (WRB where) )
+              (S 
+                (NP-SBJ 
+                  (NP (NNS pressures) )
+                  (PP (IN on) 
+                    (NP (NNS teachers) )))
+                (VP (VBP are) 
+                  (VP (VBG growing) 
+                    (ADVP-LOC (-NONE- *T*-1) )))))
+            (CC and) 
+            (SBAR 
+              (WHADVP-2 (WRB where) )
+              (S 
+                (NP-SBJ (JJ high-stakes) (NN testing) )
+                (VP (VBZ has) 
+                  (VP (VBN enhanced) 
+                    (NP (DT the) (NN temptation) 
+                      (S 
+                        (NP-SBJ (-NONE- *) )
+                        (VP (TO to) 
+                          (VP (VB cheat) ))))
+                    (ADVP-LOC (-NONE- *T*-2) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-2 
+      (NP (DT The) (CD 1987) (NN statute) )
+      (SBAR 
+        (WHNP-1 (-NONE- 0) )
+        (S 
+          (NP-SBJ (NNP Mrs.) (NNP Yeargin) )
+          (VP (VBD violated) 
+            (NP (-NONE- *T*-1) )))))
+    (VP (VBD was) 
+      (VP (VBN designed) 
+        (NP-3 (-NONE- *-2) )
+        (S-CLR 
+          (NP-SBJ (-NONE- *-3) )
+          (VP (TO to) 
+            (VP (VB enforce) 
+              (NP 
+                (NP (NNS provisions) )
+                (PP (IN of) 
+                  (NP 
+                    (NP (NNP South) (NNP Carolina) (POS 's) )
+                    (JJ school-improvement) (NNS laws) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNS Prosecutors) )
+    (VP (VBD alleged) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ-1 (PRP she) )
+          (VP (VBD was) 
+            (VP (VBG trying) 
+              (S 
+                (NP-SBJ (-NONE- *-1) )
+                (VP (TO to) 
+                  (VP (VB bolster) 
+                    (NP 
+                      (NP (NNS students) (POS ') )
+                      (NNS scores) )
+                    (S-PRP 
+                      (NP-SBJ (-NONE- *-1) )
+                      (VP (TO to) 
+                        (VP (VB win) 
+                          (NP (DT a) (NN bonus) )
+                          (PP-LOC (IN under) 
+                            (NP 
+                              (NP (DT the) (NN state) (POS 's) )
+                              (CD 1984) (NNP Education) (NNP Improvement) (NNP Act) )))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN bonus) )
+    (VP (VBD depended) 
+      (PP-CLR (IN on) 
+        (NP (PRP$ her) (NN ability) 
+          (S 
+            (NP-SBJ (-NONE- *) )
+            (VP (TO to) 
+              (VP (VB produce) 
+                (NP (JJR higher) (JJ student-test) (NNS scores) )))))))
+    (. .) ))
+( (SINV (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ (EX There) )
+      (VP (VBZ is) 
+        (NP-PRD 
+          (NP (JJ incredible) (NN pressure) 
+            (S (-NONE- *ICH*-2) ))
+          (PP-LOC (IN on) 
+            (NP (NN school) (NNS systems) 
+              (CC and)
+              (NNS teachers) ))
+          (S-2 
+            (NP-SBJ (-NONE- *) )
+            (VP (TO to) 
+              (VP (VB raise) 
+                (NP (NN test) (NNS scores) )))))))
+    (, ,) ('' '') 
+    (VP (VBZ says) 
+      (S (-NONE- *T*-1) ))
+    (NP-SBJ 
+      (NP (NNP Walt) (NNP Haney) )
+      (, ,) 
+      (NP 
+        (NP (DT an) 
+          (NX 
+            (NX (NN education) (NN professor) )
+            (CC and) 
+            (NX (NN testing) (NN specialist) )))
+        (PP-LOC (IN at) 
+          (NP (NNP Boston) (NNP College) ))))
+    (. .) ))
+( (S (`` ``) (RB So) 
+    (NP-SBJ (NNS efforts) 
+      (S 
+        (NP-SBJ (-NONE- *) )
+        (VP (TO to) 
+          (VP (VB beat) 
+            (NP (DT the) (NNS tests) )))))
+    (VP (VBP are) 
+      (ADVP (RB also) )
+      (PP-PRD (IN on) 
+        (NP (DT the) (NN rise) )))
+    (. .) ('' '') ))
+( (S-CLF (CC And) 
+    (S-ADV 
+      (NP-SBJ (-NONE- *-1) )
+      (ADJP-PRD (RBS most) (JJ disturbing) ))
+    (, ,) 
+    (NP-SBJ-1 (PRP it) )
+    (VP (VBZ is) 
+      (NP-PRD (NNS educators) 
+        (, ,)
+        (RB not) (NNS students) )
+      (, ,) 
+      (SBAR 
+        (WHNP-84 (WP who) )
+        (S 
+          (NP-SBJ-2 (-NONE- *T*-84) )
+          (VP (VBP are) 
+            (VP (VBN blamed) 
+              (NP (-NONE- *-2) )
+              (PP-CLR (IN for) 
+                (NP 
+                  (NP (RB much) )
+                  (PP (IN of) 
+                    (NP (DT the) (NN wrongdoing) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT A) (JJ 50-state) (NN study) )
+      (VP (VBN released) 
+        (NP (-NONE- *) )
+        (PP-TMP (IN in) 
+          (NP (NNP September) ))
+        (PP (IN by) 
+          (NP-LGS 
+            (NP 
+              (NP (NNPS Friends) )
+              (PP (IN for) 
+                (NP (NNP Education) )))
+            (, ,) 
+            (NP (DT an) 
+              (NAC-LOC (NNP Albuquerque) 
+                (, ,)
+                (NNP N.M.) )
+              (, ,) (JJ school-research) (NN group) 
+              (, ,)
+              )))))
+    (VP (VBD concluded) 
+      (SBAR (IN that) 
+        (S (`` ``) 
+          (NP-SBJ 
+            (NP (JJ outright) (NN cheating) )
+            (PP (IN by) 
+              (NP (JJ American) (NNS educators) )))
+          ('' '') 
+          (VP (VBZ is) (`` ``) 
+            (ADJP-PRD (JJ common) )))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ (DT The) (NN group) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (JJ standardized) (NN achievement) (NN test) (NNS scores) )
+          (VP (VBP are) 
+            (ADJP-PRD (RB greatly) (VBN inflated) )
+            (SBAR-PRP (IN because) 
+              (S 
+                (NP-SBJ (NNS teachers) )
+                (ADVP-TMP (RB often) )
+                (`` ``) 
+                (VP (VBP teach) 
+                  (NP (DT the) (NN test) )
+                  ('' '') 
+                  (SBAR-ADV (IN as) 
+                    (S 
+                      (NP-SBJ (NNP Mrs.) (NNP Yeargin) )
+                      (VP (VBD did) 
+                        (VP (-NONE- *?*) ))))
+                  (, ,) 
+                  (SBAR-ADV (IN although) 
+                    (S 
+                      (NP-SBJ-1 (JJS most) )
+                      (VP (VBP are) 
+                        (ADVP-TMP (RB never) )
+                        (VP (VBN caught) 
+                          (NP (-NONE- *-1) ))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NN Evidence) )
+      (PP (IN of) 
+        (NP (JJ widespread) (NN cheating) )))
+    (VP (VBZ has) 
+      (VP (VBN surfaced) 
+        (PP-LOC (IN in) 
+          (NP (JJ several) (NNS states) ))
+        (PP-TMP (IN in) 
+          (NP (DT the) (JJ last) (NN year) 
+            (QP (CC or) (RB so) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP California) (POS 's) )
+      (NN education) (NN department) )
+    (VP (VBZ suspects) 
+      (NP 
+        (NP (NN adult) (NN responsibility) )
+        (PP (IN for) 
+          (NP 
+            (NP (NNS erasures) )
+            (PP-LOC (IN at) 
+              (NP (CD 40) (NNS schools) ))
+            (SBAR 
+              (WHNP-85 (WDT that) )
+              (S 
+                (NP-SBJ (-NONE- *T*-85) )
+                (VP (VBD changed) 
+                  (NP (JJ wrong) (NNS answers) )
+                  (PP-CLR (TO to) 
+                    (NP (JJ right) (NNS ones) ))
+                  (PP-LOC (IN on) 
+                    (NP (DT a) (JJ statewide) (NN test) )))))))))
+    (. .) ))
+( (S 
+    (PP-TMP (IN After) 
+      (NP 
+        (NP (JJ numerous) (NNS occurrences) )
+        (PP (IN of) 
+          (NP 
+            (NP (JJ questionable) (NN teacher) (NN help) )
+            (PP (TO to) 
+              (NP (NNS students) ))))))
+    (, ,) 
+    (NP-SBJ (NNP Texas) )
+    (VP (VBZ is) 
+      (VP (VBG revising) 
+        (NP (PRP$ its) (NN security) (NNS practices) )))
+    (. .) ))
+( (S (CC And) 
+    (NP-SBJ 
+      (NP (NNS sales) )
+      (PP (IN of) 
+        (NP 
+          (NP (JJ test-coaching) (NNS booklets) )
+          (PP (IN for) 
+            (NP (NN classroom) (NN instruction) )))))
+    (VP (VBP are) 
+      (VP (VBG booming) ))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT These) (NNS materials) )
+      (, ,) 
+      (PP (VBG including) 
+        (NP 
+          (NP (NNP Macmillan\/McGraw-Hill) (NNP School) (NNP Publishing) (NNP Co.) (POS 's) )
+          (NNP Scoring) (NNP High) 
+          (CC and)
+          (NNP Learning) (NNPS Materials) )))
+    (: --) 
+    (VP (VBP are) 
+      (NP-PRD 
+        (NP (NN nothing) )
+        (ADJP (JJ short) 
+          (PP (IN of) 
+            (NP (JJ sophisticated) (NN crib) (NNS sheets) ))))
+      (, ,) 
+      (PP (VBG according) 
+        (PP (TO to) 
+          (NP (DT some) (JJ recent) (JJ academic) (NN research) ))))
+    (. .) ))
+( (S 
+    (PP-MNR (IN By) 
+      (S-NOM 
+        (NP-SBJ (-NONE- *-3) )
+        (VP (VBG using) 
+          (NP (PRP them) ))))
+    (, ,) 
+    (NP-SBJ-3 (NNS teachers) )
+    (PRN (: --) 
+      (PP (IN with) 
+        (NP (JJ administrative) (NN blessing) ))
+      (: --) )
+    (VP 
+      (VP (VBP telegraph) 
+        (PP-CLR (TO to) 
+          (NP (NNS students) ))
+        (ADVP-TMP (RB beforehand) )
+        (NP 
+          (NP (DT the) (JJ precise) (NNS areas) )
+          (SBAR-LOC 
+            (WHPP-1 (IN on) 
+              (WHNP (WDT which) ))
+            (S 
+              (NP-SBJ (DT a) (NN test) )
+              (VP (MD will) 
+                (VP (VB concentrate) 
+                  (PP-CLR (-NONE- *T*-1) )))))))
+      (, ,) 
+      (CC and)
+      (VP 
+        (ADVP-TMP (RB sometimes) )
+        (VB give) 
+        (PRT (RP away) )
+        (NP (DT a) (JJ few) (JJ exact) (NNS questions) 
+          (CC and)
+          (NNS answers) )))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NN Use) )
+      (PP (IN of) 
+        (NP (NNP Scoring) (NNP High) )))
+    (VP (VBZ is) 
+      (ADJP-PRD 
+        (ADJP (JJ widespread) 
+          (PP-LOC (IN in) 
+            (NP (NNP South) (NNP Carolina) )))
+        (CC and) 
+        (ADJP (JJ common) 
+          (PP-LOC (IN in) 
+            (NP 
+              (NP (NNP Greenville) (NNP County) )
+              (, ,) 
+              (NP 
+                (NP (NNP Mrs.) (NNP Yeargin) (POS 's) )
+                (NN school) (NN district) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNS Experts) )
+    (VP (VBP say) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (EX there) )
+          (VP (VBZ is) (RB n't) 
+            (NP-PRD 
+              (NP (DT another) (NN state) )
+              (PP-LOC (IN in) 
+                (NP (DT the) (NN country) ))
+              (SBAR-LOC 
+                (WHADVP-1 (WRB where) )
+                (S 
+                  (NP-SBJ (NNS tests) )
+                  (VP (VBP mean) 
+                    (NP 
+                      (NP (RB as) (JJ much) )
+                      (SBAR (IN as) 
+                        (S 
+                          (NP-SBJ (PRP they) )
+                          (VP (VBP do) 
+                            (VP (-NONE- *?*) 
+                              (PP-LOC (IN in) 
+                                (NP (NNP South) (NNP Carolina) )))))))
+                    (ADVP-LOC (-NONE- *T*-1) )))))))))
+    (. .) ))
+( (S 
+    (PP-LOC (IN Under) 
+      (NP 
+        (NP (DT the) (NN state) (POS 's) )
+        (NNP Education) (NNP Improvement) (NNP Act) ))
+    (, ,) 
+    (NP-SBJ (JJ low) (NN test) (NNS scores) )
+    (VP (MD can) 
+      (VP 
+        (VP (VB block) 
+          (NP 
+            (NP (NNS students) (POS ') )
+            (NNS promotions) ))
+        (CC or) 
+        (VP (VB force) 
+          (NP (JJ entire) (NNS districts) )
+          (PP-DIR (IN into) 
+            (NP 
+              (NP (JJ wrenching) 
+                (, ,)
+                (JJ state-supervised) (`` ``) (NNS interventions) ('' '') )
+              (SBAR 
+                (WHNP-86 (WDT that) )
+                (S 
+                  (NP-SBJ (-NONE- *T*-86) )
+                  (VP (MD can) 
+                    (VP (VB mean) 
+                      (NP (NNS firings) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (JJ High) (NN test) (NNS scores) )
+    (PRN 
+      (, ,)
+      (PP (IN on) 
+        (NP (DT the) (JJ other) (NN hand) ))
+      (, ,) )
+    (VP (VB bring) 
+      (NP 
+        (NP 
+          (NP (NN recognition) )
+          (CC and) 
+          (NP (JJ extra) (NN money) ))
+        (: --) 
+        (NP 
+          (NP 
+            (NP (IN a) (JJ new) (NN computer) (NN lab) )
+            (PP (IN for) 
+              (NP (DT a) (NN school) )))
+          (, ,) 
+          (NP 
+            (NP (NNS grants) )
+            (PP (IN for) 
+              (NP (JJ special) (NNS projects) )))
+          (, ,) 
+          (NP 
+            (NP (DT a) (NN bonus) )
+            (PP (IN for) 
+              (NP (DT the) (NN superintendent) ))))))
+    (. .) ))
+( (S (CC And) 
+    (NP-SBJ (NNP South) (NNP Carolina) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP it) )
+          (VP (VBZ is) 
+            (VP (VBG getting) 
+              (NP (NNS results) ))))))
+    (. .) ))
+( (S 
+    (SBAR-TMP (IN Since) 
+      (S 
+        (NP-SBJ (DT the) (NNS reforms) )
+        (VP (VBD went) 
+          (PP-CLR (IN in) 
+            (NP (NN place) )))))
+    (PRN 
+      (, ,)
+      (PP (IN for) 
+        (NP (NN example) ))
+      (, ,) )
+    (NP-SBJ (DT no) (NN state) )
+    (VP (VBZ has) 
+      (VP (VBN posted) 
+        (NP 
+          (NP (DT a) (JJR higher) (NN rate) )
+          (PP (IN of) 
+            (NP (NN improvement) ))
+          (PP-LOC (IN on) 
+            (NP (DT the) (NNP Scholastic) (NNP Aptitude) (NNP Test) ))
+          (SBAR (IN than) 
+            (S 
+              (NP-SBJ (NNP South) (NNP Carolina) )
+              (VP (-NONE- *?*) ))))
+        (, ,) 
+        (SBAR-ADV (IN although) 
+          (S 
+            (NP-SBJ (DT the) (NN state) )
+            (ADVP-TMP (RB still) )
+            (VP (VBZ posts) 
+              (NP 
+                (NP (DT the) (JJS lowest) (JJ average) (NN score) )
+                (PP (IN of) 
+                  (NP 
+                    (NP (DT the) 
+                      (QP (IN about) (CD 21) )
+                      (NNS states) )
+                    (SBAR 
+                      (WHNP-87 (WP who) )
+                      (S 
+                        (NP-SBJ (-NONE- *T*-87) )
+                        (VP (VBP use) 
+                          (NP (DT the) (NNP SAT) )
+                          (PP-CLR (IN as) 
+                            (NP (DT the) (JJ primary) (NN college) (NN entrance) (NN examination) )))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNS Critics) )
+    (VP (VBP say) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (NNP South) (NNP Carolina) )
+          (VP (VBZ is) 
+            (VP (VBG paying) 
+              (NP (DT a) (NN price) )
+              (PP-MNR (IN by) 
+                (S-NOM 
+                  (NP-SBJ (-NONE- *) )
+                  (VP (VBG stressing) 
+                    (NP (VBN improved) (NN test) (NNS scores) )
+                    (ADVP-MNR (RB so) (RB much) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNPS Friends) )
+      (PP (IN of) 
+        (NP (NNP Education) )))
+    (VP (VBZ rates) 
+      (S 
+        (NP-SBJ (NNP South) (NNP Carolina) )
+        (NP-PRD 
+          (NP (CD one) )
+          (PP (IN of) 
+            (NP (DT the) (JJS worst) (CD seven) (NNS states) ))))
+      (PP-LOC (IN in) 
+        (NP 
+          (NP (PRP$ its) (NN study) )
+          (PP (IN on) 
+            (NP (JJ academic) (NN cheating) )))))
+    (. .) ))
+( (SINV 
+    (VP (VBZ Says) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *ICH*-3) )))
+    (NP-SBJ 
+      (NP 
+        (NP (DT the) (NN organization) (POS 's) )
+        (NN founder) )
+      (, ,) 
+      (NP (NNP John) (NNP Cannell) )
+      (, ,) )
+    (S-3 
+      (S-NOM-SBJ 
+        (NP-SBJ (-NONE- *) )
+        (VP (VBG prosecuting) 
+          (NP (NNP Mrs.) (NNP Yeargin) )))
+      (VP (VBZ is) (`` ``) 
+        (NP-PRD 
+          (NP (DT a) (NN way) )
+          (SBAR (IN for) 
+            (WHADVP-4 (-NONE- 0) )
+            (S 
+              (NP-SBJ (NNS administrators) )
+              (VP (TO to) 
+                (VP 
+                  (VP (VB protect) 
+                    (NP (PRP themselves) )
+                    (ADVP-MNR (-NONE- *T*-4) ))
+                  (CC and) 
+                  (VP (VB look) 
+                    (SBAR-PRD (IN like) 
+                      (S 
+                        (NP-SBJ (PRP they) )
+                        (VP (VBP take) 
+                          (NP (NN cheating) )
+                          (ADVP-MNR (RB seriously) )
+                          (ADVP-MNR (-NONE- *T*-4) )))))
+                  (, ,) 
+                  (SBAR-TMP 
+                    (WHADVP-1 (WRB when) )
+                    (PP (IN in) 
+                      (NP (NN fact) ))
+                    (S 
+                      (NP-SBJ (PRP they) )
+                      (VP (VBP do) (RB n't) 
+                        (VP (VB take) 
+                          (NP (PRP it) )
+                          (ADVP-MNR (RB seriously) )
+                          (ADVP (IN at) (DT all) )
+                          (ADVP-TMP (-NONE- *T*-1) ))))))))))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Paul) (NNP Sandifer) )
+      (, ,) 
+      (NP 
+        (NP 
+          (NP (NN director) )
+          (PP (IN of) 
+            (NP (NN testing) )))
+        (PP (IN for) 
+          (NP 
+            (NP (DT the) (NNP South) (NNP Carolina) (NN department) )
+            (PP (IN of) 
+              (NP (NN education) )))))
+      (, ,) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP 
+              (NP (NNP Mr.) (NNP Cannell) (POS 's) )
+              (NNS allegations) )
+            (PP (IN of) 
+              (NP (NN cheating) )))
+          (`` ``) 
+          (VP (VBP are) 
+            (PP-PRD 
+              (PP 
+                (ADVP (RB purely) )
+                (IN without) 
+                (NP (NN foundation) ))
+              (, ,) ('' '') 
+              (CC and)
+              (PP (VBN based) 
+                (PP (IN on) 
+                  (NP (JJ unfair) (NNS inferences) ))))))))
+    (. .) ))
+( (S 
+    (PP-PRP 
+      (ADVP (RB Partly) )
+      (IN because) (IN of) 
+      (NP 
+        (NP (NNS worries) )
+        (PP (IN about) 
+          (NP (JJ potential) (NN abuse) ))))
+    (, ,) 
+    (ADVP (RB however) )
+    (, ,) 
+    (NP-SBJ (PRP he) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 (DT the) (NN state) )
+          (VP (MD will) 
+            (VP (VB begin) 
+              (S 
+                (NP-SBJ (-NONE- *-1) )
+                (VP (VBG keeping) 
+                  (NP 
+                    (NP (JJR closer) (NN track) )
+                    (PP (IN of) 
+                      (NP (NN achievement-test) (NN preparation) (NNS booklets) )))))
+              (NP-TMP (JJ next) (NN spring) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 
+      (NP (NNP South) (NNP Carolina) (POS 's) )
+      (NNS reforms) )
+    (VP (VBD were) 
+      (VP (VBN designed) 
+        (NP (-NONE- *-1) )
+        (PP-CLR (IN for) 
+          (NP 
+            (NP (NNS schools) )
+            (PP (IN like) 
+              (NP (NNP Greenville) (NNP High) (NNP School) ))))))
+    (. .) ))
+( (S 
+    (S-ADV 
+      (NP-SBJ (-NONE- *-1) )
+      (VP (VBG Standing) 
+        (PP-LOC-CLR (IN on) 
+          (NP (DT a) (JJ shaded) (NN hill) ))
+        (PP-LOC (IN in) 
+          (NP 
+            (NP (DT a) (JJ run-down) (NN area) )
+            (PP (IN of) 
+              (NP (DT this) (JJ old) (NN textile) (NN city) ))))))
+    (, ,) 
+    (NP-SBJ-1 (DT the) (NN school) )
+    (VP (VBZ has) 
+      (VP (VBN educated) 
+        (NP 
+          (NP (JJ many) )
+          (PP (IN of) 
+            (NP 
+              (NP (NNP South) (NNP Carolina) (POS 's) )
+              (JJS best) 
+              (CC and)
+              (JJS brightest) ))
+          (, ,) 
+          (PP (VBG including) 
+            (NP 
+              (NP 
+                (NP (DT the) (NN state) (POS 's) )
+                (JJ last) (CD two) (NNS governors) )
+              (, ,) 
+              (NP 
+                (ADJP 
+                  (NP (NNP Nobel) (NNP Prize) )
+                  (JJ winning) )
+                (NN physicist) (NNP Charles) (NNP Townes) )
+              (CC and) 
+              (NP (NN actress) (NNP Joanne) (NNP Woodward) ))))))
+    (. .) ))
+( (S (CC But) 
+    (PP-TMP (IN by) 
+      (NP (DT the) (JJ early) (NN 1980s) ))
+    (, ,) 
+    (NP-SBJ 
+      (NP (PRP$ its) (NN glory) )
+      (PP (-NONE- *PPA*-1) ))
+    (VP (VBD had) 
+      (VP (VBN faded) 
+        (PP-MNR-1 (IN like) 
+          (NP 
+            (NP (DT the) (JJ yellow) (NNS bricks) )
+            (PP (IN of) 
+              (NP (PRP$ its) (JJ broad) (NN facade) ))))))
+    (. .) ))
+( (SINV (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ (PRP It) )
+      (VP (VBD was) 
+        (ADJP-PRD (JJ full) 
+          (PP (IN of) 
+            (NP 
+              (NP (NN violence) )
+              (CC and) 
+              (NP (NNS gangs) )
+              (CC and) 
+              (NP 
+                (NP (NNS kids) )
+                (VP (VBG cutting) 
+                  (NP (NN class) ))))))))
+    (, ,) ('' '') 
+    (VP (VBZ says) 
+      (S (-NONE- *T*-1) ))
+    (NP-SBJ 
+      (NP (NNP Linda) (NNP Ward) )
+      (, ,) 
+      (NP 
+        (NP (DT the) (NN school) (POS 's) )
+        (NN principal) ))
+    (. .) ))
+( (S (`` ``) 
+    (S 
+      (NP-SBJ (NN Crime) )
+      (VP (VBD was) 
+        (ADJP-PRD (JJ awful) )))
+    (, ,) 
+    (S 
+      (NP-SBJ (NN test) (NNS scores) )
+      (VP (VBD were) 
+        (ADJP-PRD (JJ low) )))
+    (, ,) 
+    (CC and)
+    (S 
+      (NP-SBJ (EX there) )
+      (VP (VBD was) 
+        (NP-PRD 
+          (NP (DT no) (NN enrollment) )
+          (PP-LOC (IN in) 
+            (NP (NNS honors) (NNS programs) )))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ-1 (NNP Mrs.) (NNP Ward) )
+    (VP (VBD took) 
+      (PRT (RP over) )
+      (PP-TMP (IN in) 
+        (NP (CD 1986) ))
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (VBG becoming) 
+          (NP 
+            (NP 
+              (NP (DT the) (NN school) (POS 's) )
+              (JJ seventh) (NN principal) )
+            (PP-TMP (IN in) 
+              (NP (CD 15) (NNS years) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP$ Her) (JJ immediate) (NN predecessor) )
+    (VP (VBD suffered) 
+      (NP (DT a) (JJ nervous) (NN breakdown) ))
+    (. .) ))
+( (S 
+    (ADVP-TMP (RB Prior) 
+      (PP (TO to) 
+        (NP (PRP$ his) (NN term) )))
+    (, ,) 
+    (NP-SBJ-1 (DT a) (NN teacher) )
+    (VP (VBD bled) 
+      (PP-CLR (TO to) 
+        (NP (NN death) ))
+      (PP-LOC (IN in) 
+        (NP (DT the) (NNS halls) ))
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ-2 (-NONE- *-1) )
+        (VP (VBN stabbed) 
+          (NP (-NONE- *-2) )
+          (PP (IN by) 
+            (NP-LGS (DT a) (NN student) )))))
+    (. .) ))
+( (S-1 
+    (ADVP (RB Academically) )
+    (PRN 
+      (, ,)
+      (NP-SBJ (NNP Mrs.) (NNP Ward) )
+      (VP (VBZ says) 
+        (SBAR (-NONE- 0) 
+          (S (-NONE- *T*-1) )))
+      (, ,) )
+    (NP-SBJ-2 (DT the) (NN school) )
+    (VP (VBD was) 
+      (VP (VBG having) 
+        (NP (NN trouble) )
+        (S-CLR 
+          (NP-SBJ (-NONE- *-2) )
+          (VP (VBG serving) 
+            (PP-MNR (IN in) 
+              (NP (NN harmony) ))
+            (NP 
+              (NP (PRP$ its) (CD two) 
+                (ADJP 
+                  (ADJP (JJ disparate) )
+                  (, ,) 
+                  (CC and)
+                  (ADJP (RB evenly) (JJ split) )
+                  (, ,) )
+                (NN student) (NNS groups) )
+              (: :) 
+              (NP 
+                (NP 
+                  (NP (DT a) (JJ privileged) (JJ white) (NN elite) )
+                  (PP (IN from) 
+                    (NP (JJ old) (JJ monied) (NNS neighborhoods) )))
+                (CC and) 
+                (NP 
+                  (NP (NNS blacks) )
+                  (PRN 
+                    (, ,)
+                    (S 
+                      (NP-SBJ 
+                        (NP (JJ many) )
+                        (PP (IN of) 
+                          (NP (PRP them) )))
+                      (ADJP-PRD (JJ poor) ))
+                    (, ,) )
+                  (PP (IN from) 
+                    (NP (JJ run-down) 
+                      (, ,)
+                      (JJ inner) (NN city) (NNS neighborhoods) )))))))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ-1 (NNP Mrs.) (NNP Ward) )
+      (VP (VBD resolved) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP 
+              (VP (VB clean) 
+                (PRT (RP out) )
+                (NP (`` ``) 
+                  (NP (NN deadwood) )
+                  ('' '') 
+                  (PP-LOC (IN in) 
+                    (NP 
+                      (NP (DT the) (NN school) (POS 's) )
+                      (NN faculty) ))))
+              (CC and) 
+              (VP (VB restore) 
+                (NP (NN safety) )))))))
+    (, ,) 
+    (CC and)
+    (S 
+      (NP-SBJ (PRP she) )
+      (ADVP (RB also) )
+      (VP (VBD had) 
+        (NP 
+          (NP (DT some) (JJ new) (NNS factors) )
+          (VP (VBG working) 
+            (PP-CLR (IN in) 
+              (NP (PRP$ her) (NN behalf) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (CD One) )
+    (VP (VBD was) 
+      (NP-PRD 
+        (NP (JJ statewide) (NN school) (NN reform) )
+        (, ,) 
+        (SBAR 
+          (WHNP-88 (WDT which) )
+          (S 
+            (NP-SBJ (-NONE- *T*-88) )
+            (VP 
+              (VP (VBD raised) 
+                (NP (JJ overall) (JJ educational) (NN funding) ))
+              (CC and) 
+              (VP (VBD ushered) 
+                (PRT (RP in) )
+                (NP 
+                  (NP (DT a) (JJ new) (JJ public) (NN spirit) )
+                  (PP (IN for) 
+                    (NP (NN school) (NN betterment) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT Another) )
+    (VP (VBD was) 
+      (NP-PRD 
+        (NP (NNP Nancy) (NNP Yeargin) )
+        (, ,) 
+        (SBAR 
+          (WHNP-89 (WP who) )
+          (S 
+            (NP-SBJ-1 (-NONE- *T*-89) )
+            (VP (VBD came) 
+              (PP-DIR (TO to) 
+                (NP (NNP Greenville) ))
+              (PP-TMP (IN in) 
+                (NP (CD 1985) ))
+              (, ,) 
+              (S-ADV 
+                (NP-SBJ (-NONE- *-1) )
+                (ADJP-PRD (JJ full) 
+                  (PP (IN of) 
+                    (NP 
+                      (NP (DT the) (NN energy) 
+                        (CC and)
+                        (NNS ambitions) )
+                      (SBAR 
+                        (WHNP-3 (IN that) )
+                        (S 
+                          (NP-SBJ-2 (NNS reformers) )
+                          (VP (VBD wanted) 
+                            (S 
+                              (NP-SBJ (-NONE- *-2) )
+                              (VP (TO to) 
+                                (VP (VB reward) 
+                                  (NP (-NONE- *T*-3) ))))))))))))))))
+    (. .) ))
+( (SINV (`` ``) 
+    (S-TPC-1 
+      (S-NOM-SBJ 
+        (NP-SBJ (-NONE- *) )
+        (VP (VBG Being) 
+          (NP (DT a) (NN teacher) )))
+      (ADVP (RB just) )
+      (VP (VBD became) 
+        (NP-PRD (PRP$ my) (NN life) )))
+    (, ,) ('' '') 
+    (VP (VBZ says) 
+      (S (-NONE- *T*-1) ))
+    (NP-SBJ 
+      (NP (DT the) (JJ 37-year-old) (NNP Mrs.) (NNP Yeargin) )
+      (, ,) 
+      (NP 
+        (NP (DT a) (NN teacher) )
+        (PP-TMP (IN for) 
+          (NP (CD 12) (NNS years) ))
+        (PP-TMP (IN before) 
+          (NP (PRP$ her) (NN dismissal) ))))
+    (. .) (`` ``) ))
+( (S 
+    (NP-SBJ (PRP I) )
+    (VP (VBD loved) 
+      (NP 
+        (NP (DT the) (NN school) )
+        (, ,) 
+        (NP (PRP$ its) (NN history) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP I) )
+    (ADVP (RB even) )
+    (VP (VBD dreamt) 
+      (PP-CLR (IN about) 
+        (NP 
+          (NP (NN school) )
+          (CC and) 
+          (NP 
+            (NP (JJ new) (NNS things) )
+            (SBAR 
+              (WHNP-1 (-NONE- 0) )
+              (S 
+                (NP-SBJ (-NONE- *) )
+                (VP (TO to) 
+                  (VP (VB do) 
+                    (NP (-NONE- *T*-1) )
+                    (PP-CLR (IN with) 
+                      (NP (PRP$ my) (NNS students) ))))))))))
+    (. .) ('' '') ))
+( (S 
+    (SBAR-TMP (IN While) 
+      (S 
+        (NP-SBJ-1 (NNP Mrs.) (NNP Ward) )
+        (VP 
+          (VP (VBD fired) 
+            (CC and)
+            (VBD restructured) 
+            (NP (NN staff) ))
+          (CC and) 
+          (VP (VBD struggled) 
+            (S 
+              (NP-SBJ (-NONE- *-1) )
+              (VP (TO to) 
+                (VP (VB improve) 
+                  (NP (NN curriculum) ))))))))
+    (, ,) 
+    (NP-SBJ (NNP Mrs.) (NNP Yeargin) )
+    (VP 
+      (VP (VBD worked) 
+        (NP (JJ 14-hour) (NNS days) ))
+      (CC and) 
+      (VP 
+        (ADVP-MNR (RB fast) )
+        (VBD became) 
+        (NP-PRD (DT a) (NN student) (JJ favorite) )))
+    (. .) ))
+( (S 
+    (PP-TMP (IN In) 
+      (NP (CD 1986-87) 
+        (CC and)
+        (CD 1987-88) ))
+    (, ,) 
+    (NP-SBJ (PRP she) )
+    (VP 
+      (VP (VBD applied) 
+        (PP-CLR (IN for) 
+          (NP (-NONE- *RNR*-1) )))
+      (CC and) 
+      (VP (VBD won) 
+        (NP (-NONE- *RNR*-1) ))
+      (NP-1 (NN bonus) (NN pay) )
+      (PP-LOC (IN under) 
+        (NP (DT the) (NN reform) (NN law) )))
+    (. .) ))
+( (S 
+    (S-ADV 
+      (NP-SBJ-2 (-NONE- *-1) )
+      (VP (JJ Encouraged) 
+        (NP (-NONE- *-2) )
+        (PP (IN by) 
+          (NP-LGS (NNP Mrs.) (NNP Ward) ))))
+    (, ,) 
+    (NP-SBJ-1 (NNP Mrs.) (NNP Yeargin) )
+    (VP (VBD taught) 
+      (NP 
+        (NP (NN honor) (NNS students) )
+        (PP-LOC (IN in) 
+          (NP 
+            (NP (DT the) (NN state) (`` ``) (NN teacher) (NN cadet) ('' '') (NN program) )
+            (, ,) 
+            (NP 
+              (NP (DT a) (NN reform) (NN creation) )
+              (VP (VBN designed) 
+                (NP-3 (-NONE- *) )
+                (S-CLR 
+                  (NP-SBJ (-NONE- *-3) )
+                  (VP (TO to) 
+                    (VP (VB encourage) 
+                      (S 
+                        (NP-SBJ (JJ good) (NNS students) )
+                        (VP (TO to) 
+                          (VP (VB consider) 
+                            (NP (NN teaching) )
+                            (PP-CLR (IN as) 
+                              (NP (DT a) (NN career) ))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (PRP She) )
+    (VP 
+      (VP (VBD won) 
+        (NP (NN grant) (NN money) )
+        (PP-BNF (IN for) 
+          (NP (DT the) (NN school) )))
+      (, ,) 
+      (VP (VBD advised) 
+        (NP (NNS cheerleaders) ))
+      (, ,) 
+      (VP (VBD ran) 
+        (NP (DT the) (NN pep) (NN club) ))
+      (, ,) 
+      (VP (VBD proposed) 
+        (CC and)
+        (VBD taught) 
+        (NP 
+          (NP (DT a) (JJ new) (`` ``) (JJ Cultural) (NN Literacy) ('' '') (NN class) )
+          (PP (IN in) 
+            (NP (JJ Western) (NN Civilization) ))))
+      (CC and) 
+      (VP (VBD was) 
+        (VP (VBN chosen) 
+          (NP (-NONE- *-1) )
+          (PP-LGS (IN by) 
+            (NP (DT the) (NN school) (NNP PTA) ))
+          (PP-CLR (IN as) (`` ``) 
+            (NP 
+              (NP (NN Teacher) )
+              (PP (IN of) 
+                (NP (DT the) (NN Year) )))))))
+    (. .) ('' '') ))
+( (SINV (`` ``) 
+    (S-TPC-1 
+      (S 
+        (NP-SBJ (PRP She) )
+        (VP (VBD was) 
+          (NP-PRD (DT an) (JJ inspirational) (NN lady) )))
+      (: ;) 
+      (S 
+        (NP-SBJ (PRP she) )
+        (VP (VBD had) 
+          (S 
+            (NP-SBJ (PRP it) )
+            (ADVP-PRD (RB all) (RB together) )))))
+    (, ,) ('' '') 
+    (VP (VBZ says) 
+      (S (-NONE- *T*-1) ))
+    (NP-SBJ 
+      (NP (NNP Laura) (NNP Dobson) )
+      (, ,) 
+      (NP 
+        (NP (DT a) (NN freshman) )
+        (PP-LOC (IN at) 
+          (NP 
+            (NP (DT the) (NNP University) )
+            (PP (IN of) 
+              (NP (NNP South) (NNP Carolina) )))))
+      (SBAR 
+        (WHNP-90 (WP who) )
+        (S 
+          (NP-SBJ (-NONE- *T*-90) )
+          (VP (VBD had) 
+            (NP (NNP Mrs.) (NNP Yeargin) )
+            (PP-LOC (IN in) 
+              (NP (DT the) (JJ teacher-cadet) (NN class) ))
+            (NP-TMP (JJ last) (NN year) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP She) )
+    (VP (VBZ says) 
+      (SBAR (IN that) 
+        (S 
+          (PP-PRP (IN because) (IN of) 
+            (NP (NNP Mrs.) (NNP Yeargin) ))
+          (NP-SBJ-1 (PRP she) )
+          (VP 
+            (VP (VBD gave) 
+              (PRT (RP up) )
+              (NP 
+                (NP (NNS ambitions) )
+                (PP-LOC (IN in) 
+                  (NP (NN architecture) ))))
+            (CC and) 
+            (VP (VBZ is) 
+              (VP (VBG studying) 
+                (S-PRP 
+                  (NP-SBJ (-NONE- *-1) )
+                  (VP (TO to) 
+                    (VP (VB become) 
+                      (NP-PRD (DT a) (NN teacher) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Mary) (NNP Beth) (NNP Marchand) )
+      (, ,) 
+      (NP (DT a) (NNP Greenville) (JJ 11th) (NN grader) )
+      (, ,) )
+    (ADVP (RB also) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (NNP Mrs.) (NNP Yeargin) )
+          (VP (VBD inspired) 
+            (S 
+              (NP-SBJ (PRP her) )
+              (VP (TO to) 
+                (VP (VB go) 
+                  (PP-CLR (IN into) 
+                    (NP (NN education) )))))))))
+    (. .) ))
+( (SINV (`` ``) 
+    (S-2 
+      (NP-SBJ (PRP She) )
+      (VP (VBD taught) 
+        (NP (PRP us) )
+        (NP 
+          (NP (JJR more) )
+          (PP-LOC (IN in) 
+            (NP (JJ Western) (NN Civilization) ))
+          (SBAR (IN than) 
+            (S 
+              (NP-SBJ (PRP I) )
+              (VP (VBP 've) 
+                (ADVP-TMP (RB ever) )
+                (VP (VBN learned) 
+                  (PP-TMP (IN in) 
+                    (NP (JJ other) (NNS classes) )))))))))
+    (, ,) ('' '') 
+    (VP (VBZ says) 
+      (S (-NONE- *T*-2) ))
+    (NP-SBJ 
+      (NP (NNP Kelli) (NNP Green) )
+      (, ,) 
+      (NP (DT a) (NNP Greenville) (NN senior) ))
+    (. .) ))
+( (S-3 
+    (PP-LOC (IN In) 
+      (NP (DT the) (NN classroom) ))
+    (PRN 
+      (, ,)
+      (NP-SBJ (NNS students) )
+      (VP (VBP say) 
+        (SBAR (-NONE- 0) 
+          (S (-NONE- *T*-3) )))
+      (, ,) )
+    (NP-SBJ (NNP Mrs.) (NNP Yeargin) )
+    (VP (VBD distinguished) 
+      (NP (PRP herself) )
+      (PP-MNR (IN by) 
+        (S-NOM 
+          (NP-SBJ-1 (-NONE- *) )
+          (VP (VBG varying) 
+            (NP (NN teaching) (NNS approaches) )
+            (: --) 
+            (S-ADV 
+              (NP-SBJ (-NONE- *-1) )
+              (VP 
+                (VP (JJ forcing) 
+                  (S 
+                    (NP-SBJ-2 (NNS kids) )
+                    (VP (TO to) 
+                      (VP (VB pair) 
+                        (PRT (RP up) )
+                        (S-PRP 
+                          (NP-SBJ (-NONE- *-2) )
+                          (VP (TO to) 
+                            (VP (VB complete) 
+                              (NP (NN classroom) (NN work) ))))))))
+                (CC or) 
+                (VP (VBG using) 
+                  (NP 
+                    (ADJP (NN college-bowl) (NN type) )
+                    (NNS competitions) ))))))))
+    (. .) ))
+( (S 
+    (PP-TMP (IN On) 
+      (NP (NNS weekends) ))
+    (, ,) 
+    (NP-SBJ-1 (PRP she) )
+    (VP (VBD came) 
+      (PP-DIR (TO to) 
+        (VP (VB work) ))
+      (S-PRP 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB prepare) 
+              (NP (NN study) (NNS plans) ))))
+        (CC or) 
+        (S 
+          (ADVP-TMP (RB sometimes) )
+          (, ,) 
+          (ADVP (RB even) )
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB polish) 
+              (NP 
+                (NP (DT the) (NN furniture) )
+                (PP-LOC (IN in) 
+                  (NP (PRP$ her) (NN classroom) ))))))))
+    (. .) ))
+( (SINV (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ (PRP She) )
+      (ADVP (RB just) )
+      (ADVP-TMP (RB never) )
+      (VP (VBD gave) 
+        (NP (PRP it) )
+        (PRT (RP up) )))
+    (, ,) ('' '') 
+    (VP (VBZ says) 
+      (S (-NONE- *T*-1) ))
+    (NP-SBJ 
+      (NP (NNP Mary) (NNP Marchand) )
+      (, ,) 
+      (NP 
+        (NP (NNP Mary) (NNP Beth) (POS 's) )
+        (NN mother) ))
+    (. .) ))
+( (S (`` ``) 
+    (NP-SBJ (PRP You) )
+    (VP (MD 'd) 
+      (VP (VB see) 
+        (S 
+          (NP-SBJ (PRP her) )
+          (VP (VBG correcting) 
+            (NP (NN homework) )
+            (PP-LOC (IN in) 
+              (NP (DT the) (NNS stands) ))
+            (PP-LOC (IN at) 
+              (NP (DT a) (NN football) (NN game) ))))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ (DT Some) (JJ fellow) (NNS teachers) )
+    (, ,) 
+    (ADVP (RB however) )
+    (, ,) 
+    (VP (VBD viewed) 
+      (NP (NNP Mrs.) (NNP Yeargin) )
+      (PP-CLR (IN as) 
+        (ADJP 
+          (ADJP (JJ cocky) )
+          (CC and) 
+          (ADJP (RB too) (JJ yielding) 
+            (PP (TO to) 
+              (NP (NNS students) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Mrs.) (NNP Ward) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP she) )
+          (ADVP-TMP (RB often) )
+          (VP (VBD defended) 
+            (NP (PRP her) )
+            (PP-CLR (TO to) 
+              (NP 
+                (NP (NNS colleagues) )
+                (SBAR 
+                  (WHNP-91 (WP who) )
+                  (S 
+                    (NP-SBJ (-NONE- *T*-91) )
+                    (VP (VBD called) 
+                      (S 
+                        (NP-SBJ (PRP her) )
+                        (NP-PRD (DT a) (NN grandstander) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (NNS Pressures) )
+    (VP (VBD began) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB build) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNS Friends) )
+    (VP (VBD told) 
+      (NP (PRP her) )
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP she) )
+          (VP (VBD was) 
+            (VP (VBG pushing) 
+              (ADVP-MNR (RB too) (RB hard) ))))))
+    (. .) ))
+( (S 
+    (PP-PRP (IN Because) (IN of) 
+      (NP (VBG deteriorating) (NN hearing) ))
+    (, ,) 
+    (NP-SBJ (PRP she) )
+    (VP (VBD told) 
+      (NP (NNS colleagues) )
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP she) )
+          (VP (VBD feared) 
+            (SBAR (-NONE- 0) 
+              (S 
+                (NP-SBJ-1 (PRP she) )
+                (VP (MD might) (RB not) 
+                  (VP (VB be) 
+                    (ADJP-PRD (JJ able) 
+                      (S 
+                        (NP-SBJ (-NONE- *-1) )
+                        (VP (TO to) 
+                          (VP (VB teach) 
+                            (ADVP-TMP (RB much) (RBR longer) )))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Mrs.) (NNP Yeargin) (POS 's) )
+      (JJ extra) (NN work) )
+    (VP (VBD was) 
+      (ADVP (RB also) )
+      (VP (VBG helping) 
+        (S 
+          (NP-SBJ (PRP her) )
+          (VP (VB earn) 
+            (NP (NNS points) )
+            (PP-LOC (IN in) 
+              (NP 
+                (NP (DT the) (NN state) (POS 's) )
+                (NN incentive-bonus) (NN program) ))))))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ 
+      (NP (DT the) (RBS most) (JJ important) (NN source) )
+      (PP (IN of) 
+        (NP (NNS points) )))
+    (VP (VBD was) 
+      (NP-PRD 
+        (NP (NN student) (NN improvement) )
+        (PP-LOC (IN on) 
+          (NP (NNS tests) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (JJ Huge) (NNS gains) )
+      (PP (IN by) 
+        (NP (PRP$ her) (NNS students) ))
+      (PP-TMP (IN in) 
+        (NP (CD 1987) 
+          (CC and)
+          (CD 1988) )))
+    (VP (VBD meant) 
+      (NP 
+        (NP 
+          (NP (DT a) (NN total) )
+          (PP (IN of) 
+            (NP ($ $) (CD 5,000) (-NONE- *U*) ))
+          (PP (IN in) 
+            (NP (NNS bonuses) ))
+          (PP-TMP (IN over) 
+            (NP (CD two) (NNS years) )))
+        (PRN (: --) 
+          (NP 
+            (NP (JJ a) (JJ meaningful) (NN addition) )
+            (PP (TO to) 
+              (NP 
+                (NP (PRP$ her) (JJ annual) (NN salary) )
+                (PP (IN of) 
+                  (NP ($ $) (CD 23,000) (-NONE- *U*) ))))))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (S-NOM-SBJ 
+        (NP-SBJ (-NONE- *) )
+        (VP (VBG Winning) 
+          (NP (DT a) (NN bonus) )
+          (PP-TMP (IN for) 
+            (NP (DT a) (JJ third) (NN year) ))))
+      (VP (VBD was) (RB n't) 
+        (ADJP-PRD (RB that) (JJ important) 
+          (PP (TO to) 
+            (NP (PRP her) )))))
+    (, ,) 
+    (NP-SBJ (NNP Mrs.) (NNP Yeargin) )
+    (VP (VBZ insists) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ 
+      (NP (NNS others) )
+      (PP-LOC (IN at) 
+        (NP (NNP Greenville) (NNP High) )))
+    (VP (VB say) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 (PRP she) )
+          (VP (VBD was) 
+            (ADJP-PRD (JJ eager) 
+              (S 
+                (NP-SBJ (-NONE- *-1) )
+                (VP (TO to) 
+                  (VP (VB win) ))))
+            (PRN (: --) 
+              (PP (JJ if) (RB not) 
+                (PP (IN for) 
+                  (NP (NN money) ))
+                (, ,) (RB then) 
+                (PP (IN for) 
+                  (NP (NN pride) 
+                    (CC and)
+                    (NN recognition) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Mary) (NNP Elizabeth) (NNP Ariail) )
+      (, ,) 
+      (NP (DT another) (NN social-studies) (NN teacher) )
+      (, ,) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP she) )
+          (VP (VBD believed) 
+            (SBAR (-NONE- 0) 
+              (S 
+                (NP-SBJ-1 (NNP Mrs.) (NNP Yeargin) )
+                (VP (VBD wanted) 
+                  (S 
+                    (NP-SBJ (-NONE- *-1) )
+                    (VP (TO to) 
+                      (VP (VB keep) 
+                        (S 
+                          (NP-SBJ (PRP her) (NN standing) )
+                          (ADJP-PRD (RB high) ))
+                        (SBAR-PRP (IN so) 
+                          (S 
+                            (NP-SBJ (PRP she) )
+                            (VP (MD could) 
+                              (VP (VB get) 
+                                (NP 
+                                  (NP (DT a) (JJ new) (NN job) )
+                                  (SBAR 
+                                    (WHNP-92 (WDT that) )
+                                    (S 
+                                      (NP-SBJ (-NONE- *T*-92) )
+                                      (VP (MD would) (RB n't) 
+                                        (VP (VB demand) 
+                                          (NP (JJ good) (NN hearing) ))))))))))))))))))))
+    (. .) ))
+( (S 
+    (ADVP (RB Indeed) )
+    (, ,) 
+    (NP-SBJ (NNP Mrs.) (NNP Yeargin) )
+    (VP (VBD was) 
+      (ADJP-PRD (JJ interested) 
+        (PP (IN in) 
+          (NP 
+            (NP (DT a) (JJ possible) (NN job) )
+            (PP (IN with) 
+              (NP (DT the) (NN state) (NN teacher) (NN cadet) (NN program) ))))))
+    (. .) ))
+( (S 
+    (NP-TMP (JJ Last) (NNP March) )
+    (, ,) 
+    (PP-TMP (IN after) 
+      (S-NOM 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (VBG attending) 
+          (NP (DT a) (NN teaching) (NN seminar) )
+          (PP-TMP (IN in) 
+            (NP (NNP Washington) )))))
+    (, ,) 
+    (NP-SBJ-1 (NNP Mrs.) (NNP Yeargin) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-2 (PRP she) )
+          (VP (VBD returned) 
+            (PP-DIR (TO to) 
+              (NP (NNP Greenville) ))
+            (PP-TMP 
+              (NP (CD two) (NNS days) )
+              (IN before) 
+              (NP (JJ annual) (NN testing) ))
+            (S 
+              (NP-SBJ (-NONE- *-2) )
+              (VP (VBG feeling) 
+                (SBAR (IN that) 
+                  (S 
+                    (NP-SBJ (PRP she) )
+                    (VP (VBD had) (RB n't) 
+                      (VP (VBN prepared) 
+                        (NP (PRP$ her) (JJ low-ability) (NN geography) (NNS students) )
+                        (ADVP-MNR (RB adequately) )))))))))))
+    (. .) ))
+( (S 
+    (SBAR-TMP 
+      (WHADVP-2 (WRB When) )
+      (S 
+        (NP-SBJ-1 (NN test) (NNS booklets) )
+        (VP (VBD were) 
+          (VP (VBN passed) 
+            (NP (-NONE- *-1) )
+            (ADVP (RB out) )
+            (ADVP-TMP 
+              (NP (CD 48) (NNS hours) )
+              (RB ahead) 
+              (PP (IN of) 
+                (NP (NN time) )))
+            (ADVP-TMP (-NONE- *T*-2) )))))
+    (, ,) 
+    (NP-SBJ (PRP she) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP she) )
+          (VP 
+            (VP (VBD copied) 
+              (NP 
+                (NP (NNS questions) )
+                (PP-LOC (IN in) 
+                  (NP (DT the) 
+                    (NP (JJ social) (NNS studies) (NN section) )))))
+            (CC and) 
+            (VP (VBD gave) 
+              (NP (DT the) (NNS answers) )
+              (PP-DIR (TO to) 
+                (NP (NNS students) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Mrs.) (NNP Yeargin) )
+    (VP 
+      (VP (VBZ admits) 
+        (SBAR (-NONE- 0) 
+          (S 
+            (NP-SBJ (PRP she) )
+            (VP (VBD made) 
+              (NP (DT a) (JJ big) (NN mistake) )))))
+      (CC but) 
+      (VP (VBZ insists) 
+        (SBAR (-NONE- 0) 
+          (S 
+            (NP-SBJ (PRP$ her) (NNS motives) )
+            (VP (VBD were) 
+              (ADJP-PRD (JJ correct) ))))))
+    (. .) ))
+( (S (`` ``) 
+    (S-TPC-2 
+      (NP-SBJ-1 (PRP I) )
+      (VP (VBD was) 
+        (VP (VBG trying) 
+          (S 
+            (NP-SBJ (-NONE- *-1) )
+            (VP (TO to) 
+              (VP (VB help) 
+                (NP 
+                  (NP (NNS kids) )
+                  (PP-LOC (IN in) 
+                    (NP (DT an) (JJ unfair) (NN testing) (NN situation) )))))))))
+    (, ,) ('' '') 
+    (NP-SBJ (PRP she) )
+    (VP (VBZ says) 
+      (S (-NONE- *T*-2) ))
+    (. .) ))
+( (S (`` ``) 
+    (NP-SBJ 
+      (QP (RB Only) (CD five) (IN of) (DT the) (CD 40) )
+      (NNS questions) )
+    (VP (VBD were) 
+      (NP-PRD (NN geography) (NNS questions) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN rest) )
+    (VP (VBD were) 
+      (NP-PRD 
+        (NP (NN history) 
+          (, ,)
+          (NN sociology) 
+          (, ,)
+          (NN finance) )
+        (PRN (: --) 
+          (NP 
+            (NP (NNS subjects) )
+            (SBAR 
+              (WHNP-1 (-NONE- 0) )
+              (S 
+                (NP-SBJ (PRP they) )
+                (ADVP-TMP (RB never) )
+                (VP (VBD had) 
+                  (NP (-NONE- *T*-1) ))))))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ (NNP Mrs.) (NNP Yeargin) )
+    (VP (VBZ says) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ-1 (PRP she) )
+          (ADVP (RB also) )
+          (VP (VBD wanted) 
+            (S 
+              (NP-SBJ-2 (-NONE- *-1) )
+              (VP (TO to) 
+                (VP (VB help) 
+                  (S 
+                    (NP-SBJ (-NONE- *-2) )
+                    (VP (VB lift) 
+                      (NP 
+                        (NP 
+                          (NP (NNP Greenville) (NNP High) (NNP School) (POS 's) )
+                          (JJ overall) (NN test) (NNS scores) )
+                        (, ,) 
+                        (PP-LOC 
+                          (ADVP-TMP (RB usually) )
+                          (IN near) 
+                          (NP 
+                            (NP (DT the) (NN bottom) )
+                            (PP (IN of) 
+                              (NP (CD 14) (NN district) (JJ high) (NNS schools) ))
+                            (PP-LOC (IN in) 
+                              (NP 
+                                (NP (NNS rankings) )
+                                (VP (VBN carried) 
+                                  (NP (-NONE- *) )
+                                  (ADVP-TMP (RB annually) )
+                                  (PP (IN by) 
+                                    (NP-LGS (JJ local) (NNS newspapers) )))))))))))))))))
+    (. .) ))
+( (S-1 
+    (ADVP (RB Mostly) )
+    (PRN 
+      (, ,)
+      (NP-SBJ (PRP she) )
+      (VP (VBZ says) 
+        (SBAR (-NONE- 0) 
+          (S (-NONE- *T*-1) )))
+      (, ,) )
+    (NP-SBJ-2 (PRP she) )
+    (VP (VBD wanted) 
+      (S 
+        (NP-SBJ (-NONE- *-2) )
+        (VP (TO to) 
+          (VP (VB prevent) 
+            (NP 
+              (NP (DT the) (NN damage) )
+              (PP (TO to) 
+                (NP (NN self-esteem) ))
+              (SBAR 
+                (WHNP-3 (IN that) )
+                (S 
+                  (NP-SBJ (PRP$ her) (JJ low-ability) (NNS students) )
+                  (VP (MD would) 
+                    (VP (VB suffer) 
+                      (NP (-NONE- *T*-3) )
+                      (PP-CLR (IN from) 
+                        (S-NOM 
+                          (NP-SBJ (-NONE- *) )
+                          (VP (VBG doing) 
+                            (ADVP-MNR (RB badly) )
+                            (PP-LOC (IN on) 
+                              (NP (DT the) (NN test) ))))))))))))))
+    (. .) ))
+( (S (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ (DT These) (NNS kids) )
+      (VP (VBD broke) 
+        (NP (PRP$ my) (NN heart) )))
+    (, ,) ('' '') 
+    (NP-SBJ (PRP she) )
+    (VP (VBZ says) 
+      (S (-NONE- *T*-1) ))
+    (. .) ))
+( (S (`` ``) 
+    (S 
+      (NP-SBJ (DT A) (JJ whole) (NN day) )
+      (VP (VBZ goes) 
+        (ADVP-CLR (RB by) )))
+    (CC and) 
+    (S 
+      (NP-SBJ (DT no) (NN one) )
+      (ADVP (RB even) )
+      (VP (VBZ knows) 
+        (SBAR (-NONE- 0) 
+          (S 
+            (NP-SBJ (PRP they) )
+            (VP (VBP 're) 
+              (ADJP-PRD (JJ alive) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP They) )
+    (VP 
+      (ADVP-MNR (RB desperately) )
+      (VBD needed) 
+      (NP 
+        (NP (NN somebody) )
+        (SBAR 
+          (SBAR 
+            (WHNP-93 (WP who) )
+            (S 
+              (NP-SBJ (-NONE- *T*-93) )
+              (VP (VBD showed) 
+                (SBAR (-NONE- 0) 
+                  (S 
+                    (NP-SBJ (PRP they) )
+                    (VP (VBD cared) 
+                      (PP-CLR (IN for) 
+                        (NP (PRP them) ))))))))
+          (, ,) 
+          (SBAR 
+            (WHNP-94 (WP who) )
+            (S 
+              (NP-SBJ (-NONE- *T*-94) )
+              (VP (VBD loved) 
+                (NP (PRP them) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (JJ last) (NN thing) )
+      (SBAR 
+        (WHNP-1 (-NONE- 0) )
+        (S 
+          (NP-SBJ (PRP they) )
+          (VP (VBD needed) 
+            (NP (-NONE- *T*-1) )))))
+    (VP (VBD was) 
+      (NP-PRD (DT another) (JJ drag-down) (NN blow) ))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP School) (NNS officials) )
+      (CC and) 
+      (NP (NNS prosecutors) ))
+    (VP (VB say) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (NNP Mrs.) (NNP Yeargin) )
+          (VP (VBZ is) 
+            (VP (VBG lying) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP They) )
+    (VP (VBD found) 
+      (NP 
+        (NP (NNS students) )
+        (PP-LOC (IN in) 
+          (NP (DT an) (JJ advanced) (NN class) ))
+        (ADVP-TMP 
+          (NP (DT a) (NN year) )
+          (RB earlier) )
+        (SBAR 
+          (WHNP-95 (WP who) )
+          (S 
+            (NP-SBJ (-NONE- *T*-95) )
+            (VP (VBD said) 
+              (SBAR (-NONE- 0) 
+                (S 
+                  (NP-SBJ (PRP she) )
+                  (VP (VBD gave) 
+                    (NP (PRP them) )
+                    (NP (JJ similar) (NN help) ))))))))
+      (, ,) 
+      (SBAR-ADV (IN although) 
+        (S 
+          (SBAR-PRP (IN because) 
+            (S 
+              (NP-SBJ (DT the) (NN case) )
+              (VP (VBD was) (RB n't) 
+                (VP (VBN tried) 
+                  (PP-LOC (IN in) 
+                    (NP (NN court) ))))))
+          (, ,) 
+          (NP-SBJ-1 (DT this) (NN evidence) )
+          (VP (VBD was) 
+            (ADVP-TMP (RB never) )
+            (VP (VBN presented) 
+              (NP (-NONE- *-1) )
+              (ADVP-MNR (RB publicly) ))))))
+    (. .) ))
+( (SINV (`` ``) 
+    (S 
+      (NP-SBJ (DT That) )
+      (ADVP (RB pretty) (RB much) )
+      (VP (VBZ defeats) 
+        (NP (DT any) (NN inkling) 
+          (SBAR (IN that) 
+            (S 
+              (NP-SBJ-1 (PRP she) )
+              (VP (VBD was) 
+                (ADVP-PRD (RP out) 
+                  (S 
+                    (NP-SBJ (-NONE- *-1) )
+                    (VP (TO to) 
+                      (VP (VB help) 
+                        (NP (DT the) (JJ poor) (JJ underprivileged) (NN child) )))))))))))
+    (, ,) ('' '') 
+    (VP (VBZ says) )
+    (NP-SBJ 
+      (NP (NNP Joe) (NNP Watson) )
+      (, ,) 
+      (NP 
+        (NP (DT the) (NN prosecutor) )
+        (PP-LOC (IN in) 
+          (NP (DT the) (NN case) ))
+        (, ,) 
+        (SBAR 
+          (WHNP-96 (WP who) )
+          (S 
+            (NP-SBJ (-NONE- *T*-96) )
+            (VP (VBZ is) 
+              (ADVP (RB also) )
+              (NP-PRD 
+                (NP (NN president) )
+                (PP (IN of) 
+                  (NP 
+                    (NP (NNP Greenville) (NNP High) (NNP School) (POS 's) )
+                    (NNS alumni) (NN association) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (NNP Mrs.) (NNP Yeargin) )
+    (VP (VBZ concedes) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ (PRP she) )
+          (VP (VBD went) 
+            (PP-CLR (RB over) 
+              (NP (DT the) (NNS questions) ))
+            (PP-LOC (IN in) 
+              (NP (DT the) (JJR earlier) (NN class) )))))
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (VBG adding) (: :) (`` ``) 
+          (S 
+            (NP-SBJ-2 (PRP I) )
+            (VP (VBD wanted) 
+              (S 
+                (NP-SBJ (-NONE- *-2) )
+                (VP (TO to) 
+                  (VP (VB help) 
+                    (NP (DT all) ('' '') (NNS students) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Mr.) (NNP Watson) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (NNP Mrs.) (NNP Yeargin) )
+          (ADVP-TMP (RB never) )
+          (VP (VBD complained) 
+            (PP-CLR (TO to) 
+              (NP (NN school) (NNS officials) ))
+            (SBAR (IN that) 
+              (S 
+                (NP-SBJ (DT the) (JJ standardized) (NN test) )
+                (VP (VBD was) 
+                  (ADJP-PRD (JJ unfair) ))))))))
+    (. .) ))
+( (S (`` ``) 
+    (SQ-TPC-1 (VBP Do) 
+      (NP-SBJ (PRP I) )
+      (VP (VB have) 
+        (NP 
+          (NP (JJ much) (NN sympathy) )
+          (PP (IN for) 
+            (NP (PRP her) ))))
+      (. ?) )
+    ('' '') 
+    (NP-SBJ (NNP Mr.) (NNP Watson) )
+    (VP (VBZ asks) 
+      (SQ (-NONE- *T*-1) ))
+    (. .) ))
+( (ADVP (`` ``) (RB Not) (RB really) (. .) ))
+( (S 
+    (NP-SBJ (PRP I) )
+    (VP (VBP believe) 
+      (PP-CLR (IN in) 
+        (NP (DT the) (NN system) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP I) )
+    (VP (VBP believe) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 (PRP you) )
+          (VP (VBP have) 
+            (S 
+              (NP-SBJ-2 (-NONE- *-1) )
+              (VP (TO to) 
+                (VP (VB use) 
+                  (NP (DT the) (NN system) )
+                  (S-PRP 
+                    (NP-SBJ (-NONE- *-2) )
+                    (VP (TO to) 
+                      (VP (VB change) 
+                        (NP (PRP it) )))))))))))
+    (. .) ))
+( (S 
+    (SBAR-NOM-SBJ 
+      (WHNP-97 (WP What) )
+      (S 
+        (NP-SBJ (PRP she) )
+        (VP (VBD did) 
+          (NP (-NONE- *T*-97) ))))
+    (VP (VBD was) 
+      (PP-PRD (IN like) 
+        (S-NOM 
+          (NP-SBJ (-NONE- *) )
+          (VP (VBG taking) 
+            (NP (DT the) (NN law) )
+            (PP-CLR (IN into) 
+              (NP (PRP$ your) (JJ own) (NNS hands) ))))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ (NNP Mrs.) (NNP Ward) )
+    (VP (VBZ says) 
+      (SBAR (IN that) 
+        (S 
+          (SBAR-TMP 
+            (WHADVP-1 (WRB when) )
+            (S 
+              (NP-SBJ-4 (DT the) (NN cheating) )
+              (VP (VBD was) 
+                (VP (VBN discovered) 
+                  (NP (-NONE- *-4) )
+                  (ADVP-TMP (-NONE- *T*-1) )))))
+          (, ,) 
+          (NP-SBJ-2 (PRP she) )
+          (VP (VBD wanted) 
+            (S 
+              (NP-SBJ (-NONE- *-2) )
+              (VP (TO to) 
+                (VP (VB avoid) 
+                  (NP 
+                    (NP (DT the) (JJ morale-damaging) (JJ public) (NN disclosure) )
+                    (SBAR 
+                      (WHNP-3 (IN that) )
+                      (S 
+                        (NP-SBJ (DT a) (NN trial) )
+                        (VP (MD would) 
+                          (VP (VB bring) 
+                            (NP (-NONE- *T*-3) )))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP She) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP she) )
+          (VP 
+            (VP (VBD offered) 
+              (NP (NNP Mrs.) (NNP Yeargin) )
+              (NP (DT a) (JJ quiet) (NN resignation) ))
+            (CC and) 
+            (VP (VBD thought) 
+              (SBAR (-NONE- 0) 
+                (S 
+                  (NP-SBJ-1 (PRP she) )
+                  (VP (MD could) 
+                    (VP (VB help) 
+                      (S 
+                        (NP-SBJ (-NONE- *-1) )
+                        (VP (VB save) 
+                          (NP (PRP her) (NN teaching) (NN certificate) ))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Mrs.) (NNP Yeargin) )
+    (VP (VBD declined) )
+    (. .) ))
+( (S (`` ``) 
+    (NP-SBJ (PRP She) )
+    (VP (VBD said) 
+      (NP 
+        (NP (NN something) )
+        (PP (IN like) (`` `) 
+          (S 
+            (NP-SBJ-1 (PRP You) )
+            (ADVP (RB just) )
+            (VP (VBP want) 
+              (S 
+                (NP-SBJ (-NONE- *-1) )
+                (VP (TO to) 
+                  (VP (VB make) 
+                    (S 
+                      (NP-SBJ (PRP it) )
+                      (ADJP-PRD (JJ easy) 
+                        (PP (IN for) 
+                          (NP (DT the) (NN school) ))))))))))))
+    (. .) ('' ') ))
+( (S 
+    (S-TPC-1 
+      (NP-SBJ (PRP I) )
+      (VP (VBD was) 
+        (ADJP-PRD (JJ dumbfounded) )))
+    (, ,) ('' '') 
+    (NP-SBJ (NNP Mrs.) (NNP Ward) )
+    (VP (VBZ recalls) 
+      (S (-NONE- *T*-1) ))
+    (. .) ))
+( (S (`` ``) 
+    (NP-SBJ (PRP It) )
+    (VP (VBD was) 
+      (SBAR-PRD (IN like) 
+        (S 
+          (NP-SBJ (NN someone) )
+          (VP (VBD had) 
+            (VP (VBN turned) 
+              (NP (DT a) (NN knife) )
+              (PP-LOC-CLR (IN in) 
+                (NP (PRP me) )))))))
+    (. .) ('' '') ))
+( (S 
+    (PP 
+      (PP (TO To) 
+        (NP 
+          (NP (DT the) (NN astonishment) 
+            (CC and)
+            (NN dismay) )
+          (PP (IN of) 
+            (NP 
+              (NP (PRP$ her) (NNS superiors) )
+              (CC and) 
+              (NP (JJ legal) (NNS authorities) )))))
+      (: --) (JJ and) 
+      (ADVP (RB perhaps) )
+      (PP (IN as) 
+        (NP 
+          (NP (DT a) (NN measure) )
+          (PP (IN of) 
+            (NP 
+              (NP (DT the) (NN unpopularity) )
+              (PP (IN of) 
+                (NP (JJ standardized) (NNS tests) ))))))
+      (: --) )
+    (NP-SBJ (NNP Mrs) (. .) (NNP Yeargin) )
+    (VP (VBD won) 
+      (NP (JJ widespread) (JJ local) (NN support) ))
+    (. .) ))
+( (S 
+    (NP-SBJ-4 
+      (NP (DT The) (NN school-board) (NN hearing) )
+      (SBAR-LOC 
+        (WHPP-1 (IN at) 
+          (WHNP (WDT which) ))
+        (S 
+          (NP-SBJ-2 (PRP she) )
+          (VP (VBD was) 
+            (VP (VBN dismissed) 
+              (NP (-NONE- *-2) )
+              (PP-LOC (-NONE- *T*-1) ))))))
+    (VP (VBD was) 
+      (VP (VBN crowded) 
+        (NP (-NONE- *-4) )
+        (PP-CLR (IN with) 
+          (NP 
+            (NP (NNS students) 
+              (, ,)
+              (NNS teachers) 
+              (CC and)
+              (NNS parents) )
+            (SBAR 
+              (WHNP-98 (WP who) )
+              (S 
+                (NP-SBJ-3 (-NONE- *T*-98) )
+                (VP (VBD came) 
+                  (S-PRP 
+                    (NP-SBJ (-NONE- *-3) )
+                    (VP (TO to) 
+                      (VP (VB testify) 
+                        (PP-CLR (IN on) 
+                          (NP (PRP$ her) (NN behalf) ))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (JJ Supportive) (NNS callers) )
+    (VP (VBD decried) 
+      (NP 
+        (NP (JJ unfair) (NN testing) )
+        (, ,) (RB not) 
+        (NP (NNP Mrs.) (NNP Yeargin) )
+        (, ,) )
+      (PP-LOC (IN on) 
+        (NP 
+          (NP (DT a) (JJ local) (NN radio) (NN talk) (NN show) )
+          (SBAR-LOC 
+            (WHPP-1 (IN on) 
+              (WHNP (WDT which) ))
+            (S 
+              (NP-SBJ (PRP she) )
+              (VP (VBD appeared) 
+                (PP-LOC (-NONE- *T*-1) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (DT The) (NN show) )
+    (VP (VBD did) (RB n't) 
+      (VP (VB give) 
+        (NP 
+          (NP (DT the) (NNS particulars) )
+          (PP (IN of) 
+            (NP 
+              (NP (NNP Mrs.) (NNP Yeargin) (POS 's) )
+              (NN offense) )))
+        (, ,) 
+        (S-ADV 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (VBG saying) 
+            (ADVP (RB only) )
+            (SBAR (IN that) 
+              (S 
+                (NP-SBJ (PRP she) )
+                (VP (VBD helped) 
+                  (S 
+                    (NP-SBJ (NNS students) )
+                    (VP (VB do) 
+                      (ADVP-MNR (RBR better) )
+                      (PP-LOC (IN on) 
+                        (NP (DT the) (NN test) )))))))))))
+    (. .) ))
+( (SINV (`` ``) 
+    (S-TPC-3 
+      (NP-SBJ 
+        (NP (DT The) (NN message) )
+        (PP (TO to) 
+          (NP 
+            (NP (DT the) (NN board) )
+            (PP (IN of) 
+              (NP (NN education) ))))
+        (PP (IN out) 
+          (PP (IN of) 
+            (NP (PDT all) (DT this) ))))
+      (VP (VBZ is) 
+        (SBAR-PRD (-NONE- 0) 
+          (S 
+            (NP-SBJ-1 (PRP we) )
+            (VP (VBP 've) 
+              (VP (VBN got) 
+                (S 
+                  (NP-SBJ (-NONE- *-1) )
+                  (VP (TO to) 
+                    (VP (VB take) 
+                      (NP 
+                        (NP (DT a) (JJ serious) (NN look) )
+                        (PP (IN at) 
+                          (SBAR-NOM 
+                            (WHADVP-2 (WRB how) )
+                            (S 
+                              (NP-SBJ (PRP we) )
+                              (VP (VBP 're) 
+                                (VP (VBG doing) 
+                                  (NP 
+                                    (NP (PRP$ our) (NN curriculum) )
+                                    (CC and) 
+                                    (NP (PRP$ our) (NN testing) (NNS policies) ))
+                                  (ADVP-MNR (-NONE- *T*-2) )
+                                  (PP-LOC (IN in) 
+                                    (NP (DT this) (NN state) )))))))))))))))))
+    (, ,) ('' '') 
+    (VP (VBD said) 
+      (S (-NONE- *T*-3) ))
+    (NP-SBJ (DT the) (NN talk-show) (NN host) )
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNS Editorials) )
+      (PP-LOC (IN in) 
+        (NP (DT the) (NNP Greenville) (NN newspaper) )))
+    (VP 
+      (VP (VBD allowed) 
+        (SBAR (IN that) 
+          (S 
+            (NP-SBJ (NNP Mrs.) (NNP Yeargin) )
+            (VP (VBD was) 
+              (ADJP-PRD (JJ wrong) )))))
+      (, ,) (CC but) 
+      (VP 
+        (ADVP (RB also) )
+        (VBD said) 
+        (SBAR (-NONE- 0) 
+          (S 
+            (NP-SBJ (DT the) (NN case) )
+            (VP (VBD showed) 
+              (SBAR 
+                (WHADVP-1 (WRB how) )
+                (S 
+                  (NP-SBJ-2 (NN testing) )
+                  (VP (VBD was) 
+                    (VP (VBG being) 
+                      (VP (VBN overused) 
+                        (NP (-NONE- *-2) )
+                        (ADVP-MNR (-NONE- *T*-1) )))))))))))
+    (. .) ))
+( (SINV 
+    (S-TPC-1 
+      (NP-SBJ (DT The) (NN radio) (NN show) )
+      (`` ``) 
+      (VP (VBD enraged) 
+        (NP (PRP us) )))
+    (, ,) ('' '') 
+    (VP (VBZ says) 
+      (S (-NONE- *T*-1) ))
+    (NP-SBJ (NNP Mrs.) (NNP Ward) )
+    (. .) ))
+( (S-1 
+    (PP-PRP 
+      (ADVP (RB Partly) )
+      (IN because) (IN of) 
+      (NP (DT the) (NN show) ))
+    (PRN 
+      (, ,)
+      (S 
+        (NP-SBJ (NNP Mr.) (NNP Watson) )
+        (VP (VBZ says) 
+          (SBAR (-NONE- 0) 
+            (S (-NONE- *T*-1) ))))
+      (, ,) )
+    (NP-SBJ-2 (DT the) (NN district) )
+    (VP (VBD decided) (RB not) 
+      (S 
+        (NP-SBJ (-NONE- *-2) )
+        (VP (TO to) 
+          (VP (VB recommend) 
+            (NP (NNP Mrs.) (NNP Yeargin) )
+            (PP-CLR (IN for) 
+              (NP 
+                (NP (DT a) (JJ first-time) (NNS offenders) (NN program) )
+                (SBAR 
+                  (WHNP-99 (WDT that) )
+                  (S 
+                    (NP-SBJ (-NONE- *T*-99) )
+                    (VP (MD could) 
+                      (VP (VB have) 
+                        (VP (VBN expunged) 
+                          (NP 
+                            (NP (DT the) (NNS charges) )
+                            (CC and) 
+                            (NP (DT the) (NN conviction) ))
+                          (PP-CLR (IN from) 
+                            (NP (PRP$ her) (NN record) )))))))))))))
+    (. .) ))
+( (S (CC And) 
+    (NP-SBJ (JJ legal) (NNS authorities) )
+    (VP (VBD cranked) 
+      (PRT (RP up) )
+      (NP 
+        (NP (DT an) (NN investigation) )
+        (ADJP (JJ worthy) 
+          (PP (IN of) 
+            (NP (DT a) (NN murder) (NN case) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 
+      (NP 
+        (QP (IN Over) (CD 50) )
+        (NNS witnesses) )
+      (, ,) 
+      (NP (RB mostly) (NNS students) )
+      (, ,) )
+    (VP (VBD were) 
+      (VP (VBN interviewed) 
+        (NP (-NONE- *-1) )))
+    (. .) ))
+( (S 
+    (PP-LOC (IN At) 
+      (NP (NNP Greenville) (NNP High) (NNP School) ))
+    (, ,) 
+    (ADVP-TMP (RB meanwhile) )
+    (, ,) 
+    (NP-SBJ-1 
+      (NP (DT some) (NNS students) )
+      (: --) 
+      (PP-LOC 
+        (ADVP (RB especially) )
+        (IN on) 
+        (NP (DT the) (NN cheerleading) (NN squad) ))
+      (: --) )
+    (VP (VBD were) 
+      (VP (JJ crushed) 
+        (NP (-NONE- *-1) )))
+    (. .) ))
+( (SINV (`` ``) 
+    (S-TPC-4 
+      (NP-SBJ 
+        (NP (PRP It) )
+        (S (-NONE- *EXP*-1) ))
+      (VP (VBZ 's) 
+        (ADJP-PRD (JJ hard) )
+        (S-1 
+          (NP-SBJ (-NONE- *) )
+          (VP (TO to) 
+            (VP (VB explain) 
+              (PP-DIR-CLR (TO to) 
+                (NP (DT a) (JJ 17-year-old) ))
+              (SBAR-PRP 
+                (WHADVP (WRB why) )
+                (S 
+                  (NP-SBJ-3 
+                    (NP (NN someone) )
+                    (SBAR 
+                      (WHNP-2 (-NONE- 0) )
+                      (S 
+                        (NP-SBJ (PRP they) )
+                        (VP (VBP like) 
+                          (NP (-NONE- *T*-2) )))))
+                  (VP (VBD had) 
+                    (S 
+                      (NP-SBJ (-NONE- *-3) )
+                      (VP (TO to) 
+                        (VP (VB go) )))))))))))
+    (, ,) ('' '') 
+    (VP (VBZ says) 
+      (S (-NONE- *T*-4) ))
+    (NP-SBJ (NNP Mrs.) (NNP Ward) )
+    (. .) ))
+( (S 
+    (ADVP-TMP (RB Soon) )
+    (, ,) 
+    (NP-SBJ 
+      (NP (NNS T-shirts) )
+      (SBAR (-NONE- *ICH*-1) ))
+    (VP (VBD appeared) 
+      (PP-LOC (IN in) 
+        (NP (DT the) (NNS corridors) ))
+      (SBAR-1 
+        (WHNP-2 (WDT that) )
+        (S 
+          (NP-SBJ (-NONE- *T*-2) )
+          (VP (VBD carried) 
+            (NP 
+              (NP (DT the) (NN school) (POS 's) )
+              (JJ familiar) (JJ red-and-white) (NNP GHS) (NN logo) )
+            (PP-LOC (IN on) 
+              (NP (DT the) (NN front) ))))))
+    (. .) ))
+( (S 
+    (PP-LOC (IN On) 
+      (NP (DT the) (NN back) ))
+    (, ,) 
+    (NP-SBJ (DT the) (NNS shirts) )
+    (VP (VBD read) 
+      (, ,)
+      (`` ``) 
+      (S 
+        (NP-SBJ (PRP We) )
+        (VP (VBP have) 
+          (NP (PDT all) (DT the) (NNS answers) ))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ (JJ Many) (NNS colleagues) )
+    (VP (VBP are) 
+      (ADJP-PRD (JJ angry) 
+        (PP (IN at) 
+          (NP (NNP Mrs.) (NNP Yeargin) ))))
+    (. .) ))
+( (SINV (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ (PRP She) )
+      (VP (VBD did) 
+        (NP 
+          (NP (DT a) (NN lot) )
+          (PP (IN of) 
+            (NP (NN harm) )))))
+    (, ,) ('' '') 
+    (VP (VBZ says) 
+      (S (-NONE- *T*-1) ))
+    (NP-SBJ 
+      (NP (NNP Cathryn) (NNP Rice) )
+      (, ,) 
+      (SBAR 
+        (WHNP-100 (WP who) )
+        (S 
+          (NP-SBJ (-NONE- *T*-100) )
+          (VP (VBD had) 
+            (VP (VBN discovered) 
+              (NP (DT the) (NN crib) (NNS notes) ))))))
+    (. .) ))
+( (S (`` ``) 
+    (S 
+      (NP-SBJ (PRP We) )
+      (VP (VBP work) 
+        (ADVP-MNR (RB damn) (RB hard) )
+        (PP-CLR (IN at) 
+          (SBAR-NOM 
+            (WHNP-101 (WP what) )
+            (S 
+              (NP-SBJ (PRP we) )
+              (VP (VBP do) 
+                (NP (-NONE- *T*-101) )))))
+        (PP (IN for) 
+          (NP 
+            (ADJP (RB damn) (JJ little) )
+            (NN pay) ))))
+    (, ,) 
+    (CC and)
+    (S 
+      (SBAR-NOM-SBJ 
+        (WHNP-1 (WP what) )
+        (S 
+          (NP-SBJ (PRP she) )
+          (VP (VBD did) 
+            (NP (-NONE- *T*-1) ))))
+      (VP (VBN cast) 
+        (NP (JJ unfair) (NNS aspersions) )
+        (PP-CLR (IN on) 
+          (NP 
+            (NP (DT all) )
+            (PP (IN of) 
+              (NP (PRP us) ))))))
+    (. .) ('' '') ))
+( (S (CC But) 
+    (NP-SBJ (JJ several) (NNS teachers) )
+    (ADVP (RB also) )
+    (VP (VBP say) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (DT the) (NN incident) )
+          (VP (VBZ casts) 
+            (NP (NN doubt) )
+            (PP-CLR (IN on) 
+              (NP 
+                (NP (DT the) (NN wisdom) )
+                (PP (IN of) 
+                  (S-NOM 
+                    (NP-SBJ (-NONE- *) )
+                    (VP (VBG evaluating) 
+                      (NP (NNS teachers) (CC or) (NNS schools) )
+                      (PP-MNR (IN by) 
+                        (S-NOM 
+                          (NP-SBJ (-NONE- *) )
+                          (VP (VBG using) 
+                            (NP (JJ standardized) (NN test) (NNS scores) )))))))))))))
+    (. .) ))
+( (SINV 
+    (VP (VBZ Says) 
+      (S (-NONE- *ICH*-1) ))
+    (NP-SBJ 
+      (NP (NNP Gayle) (NNP Key) )
+      (, ,) 
+      (NP (DT a) (NN mathematics) (NN teacher) )
+      (, ,) )
+    (`` ``) 
+    (S-1 
+      (NP-SBJ (DT The) (NN incentive) (NN pay) (NN thing) )
+      (VP (VBZ has) 
+        (VP (VBN opened) 
+          (PRT (RP up) )
+          (NP 
+            (NP (DT a) (NN can) )
+            (PP (IN of) 
+              (NP (NNS worms) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (EX There) )
+    (VP (MD may) 
+      (VP (VB be) 
+        (NP-PRD 
+          (NP (NNS others) )
+          (VP (VBG doing) 
+            (SBAR-NOM 
+              (WHNP-1 (WP what) )
+              (S 
+                (NP-SBJ (PRP she) )
+                (VP (VBD did) 
+                  (NP (-NONE- *T*-1) ))))))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ (NNP Mrs.) (NNP Yeargin) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP she) )
+          (VP (VBD pleaded) 
+            (ADJP-PRD (JJ guilty) )
+            (SBAR-PRP 
+              (SBAR (IN because) 
+                (S 
+                  (NP-SBJ (PRP she) )
+                  (VP (VBD realized) 
+                    (SBAR (-NONE- 0) 
+                      (S 
+                        (NP-SBJ-1 
+                          (NP (PRP it) )
+                          (S (-NONE- *EXP*-2) ))
+                        (VP (MD would) 
+                          (ADVP-TMP (RB no) (RBR longer) )
+                          (VP (VB be) 
+                            (ADJP-PRD (JJ possible) )
+                            (S-2 
+                              (NP-SBJ (-NONE- *-1) )
+                              (VP (TO to) 
+                                (VP (VB win) 
+                                  (NP (NN reinstatement) )))))))))))
+              (, ,) 
+              (CC and)
+              (SBAR-PRP (IN because) 
+                (S 
+                  (NP-SBJ (PRP she) )
+                  (VP (VBD was) 
+                    (ADJP-PRD (JJ afraid) 
+                      (PP (IN of) 
+                        (NP (JJ further) (NNS charges) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Mrs.) (NNP Ward) )
+    (PRN 
+      (, ,)
+      (PP (IN for) 
+        (NP (CD one) ))
+      (, ,) )
+    (VP (VBD was) 
+      (ADJP-PRD (JJ relieved) ))
+    (. .) ))
+( (S-2 
+    (PP (IN Despite) 
+      (NP 
+        (NP (DT the) (JJ strong) (NN evidence) )
+        (PP (IN against) 
+          (NP (NNP Mrs.) (NNP Yeargin) ))))
+    (, ,) 
+    (NP-SBJ 
+      (NP (JJ popular) (NN sentiment) )
+      (PP (-NONE- *ICH*-1) ))
+    (VP (VBD was) 
+      (ADJP-PRD 
+        (ADJP (RB so) (JJ strong) )
+        (SBAR (-NONE- *ICH*-3) ))
+      (PP-1 (IN in) 
+        (NP (PRP$ her) (NN favor) ))
+      (PRN 
+        (, ,)
+        (S 
+          (NP-SBJ (NNP Mrs.) (NNP Ward) )
+          (VP (VBZ says) 
+            (SBAR (-NONE- 0) 
+              (S (-NONE- *T*-2) ))))
+        (, ,) )
+      (SBAR-3 (IN that) (`` ``) 
+        (S 
+          (NP-SBJ (PRP I) )
+          (VP (VBP 'm) 
+            (ADJP-PRD (JJ afraid) 
+              (SBAR (-NONE- 0) 
+                (S 
+                  (NP-SBJ (DT a) (NN jury) )
+                  (VP (MD would) (RB n't) 
+                    (VP (VB have) 
+                      (VP (VBN convicted) 
+                        (NP (PRP her) )))))))))))
+    (. .) ))

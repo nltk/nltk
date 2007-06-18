@@ -1,0 +1,693 @@
+
+( (S 
+    (NP-SBJ-1 
+      (NP (DT The) (NNP Department) )
+      (PP (IN of) 
+        (NP 
+          (NP (NNP Health) )
+          (CC and) 
+          (NP (NNP Human) (NNPS Services) ))))
+    (VP (VBZ plans) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB extend) 
+            (NP 
+              (NP (PRP$ its) (NN moratorium) )
+              (PP (IN on) 
+                (NP 
+                  (NP (JJ federal) (NN funding) )
+                  (PP (IN of) 
+                    (NP 
+                      (NP (NN research) )
+                      (VP (VBG involving) 
+                        (NP (JJ fetal-tissue) (NNS transplants) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (JJ Medical) (NNS researchers) )
+    (VP (VBP believe) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (DT the) (NN transplantation) )
+            (PP (IN of) 
+              (NP 
+                (NP (JJ small) (NNS amounts) )
+                (PP (IN of) 
+                  (NP (JJ fetal) (NN tissue) ))))
+            (PP-DIR (IN into) 
+              (NP (NNS humans) )))
+          (VP (MD could) 
+            (VP (VB help) 
+              (S 
+                (NP-SBJ (-NONE- *) )
+                (VP (VB treat) 
+                  (NP 
+                    (NP (JJ juvenile) (NN diabetes) )
+                    (CC and) 
+                    (NP 
+                      (NP (JJ such) (JJ degenerative) (NNS diseases) )
+                      (PP (IN as) 
+                        (NP 
+                          (NP (NNP Alzheimer) (POS 's) )
+                          (, ,) 
+                          (NP (NNP Parkinson) (POS 's) )
+                          (CC and) 
+                          (NP (NNP Huntington) (POS 's) ))))))))))))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ (NNS anti-abortionists) )
+    (VP (VBP oppose) 
+      (NP (JJ such) (NN research) )
+      (SBAR-PRP (IN because) 
+        (S 
+          (NP-SBJ (PRP they) )
+          (VP (VBP worry) 
+            (SBAR (IN that) 
+              (S 
+                (NP-SBJ 
+                  (NP (DT the) (NN development) )
+                  (PP (IN of) 
+                    (NP 
+                      (NP (NNS therapies) )
+                      (VP (VBG using) 
+                        (NP (JJ fetal-tissue) (NNS transplants) )))))
+                (VP (MD could) 
+                  (VP (VB lead) 
+                    (PP-CLR (TO to) 
+                      (NP 
+                        (NP (DT an) (NN increase) )
+                        (PP (IN in) 
+                          (NP (NNS abortions) ))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP James) (NNP Mason) )
+      (, ,) 
+      (NP 
+        (NP (NN assistant) (NN secretary) )
+        (PP (IN for) 
+          (NP (NN health) )))
+      (, ,) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 
+            (NP (DT the) (NN ban) )
+            (PP-LOC (IN on) 
+              (NP 
+                (NP (JJ federal) (NN funding) )
+                (PP (IN of) 
+                  (NP (JJ fetal-tissue) (NN transplant) (NN research) )))))
+          (`` ``) 
+          (VP (MD should) 
+            (VP (VB be) 
+              (VP (VBN continued) 
+                (NP (-NONE- *-1) )
+                (ADVP-TMP (RB indefinitely) )))))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ (PRP He) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (DT the) (NN ban) )
+          (VP (MD wo) (RB n't) 
+            (VP (VB stop) 
+              (NP 
+                (NP 
+                  (NP 
+                    (ADJP (RB privately) (VBN funded) )
+                    (JJ tissue-transplant) (NN research) )
+                  (CC or) 
+                  (NP 
+                    (ADJP (RB federally) (VBN funded) )
+                    (JJ fetal-tissue) (NN research) ))
+                (SBAR 
+                  (WHNP-111 (WDT that) )
+                  (S 
+                    (NP-SBJ (-NONE- *T*-111) )
+                    (VP (VBZ does) (RB n't) 
+                      (VP (VB involve) 
+                        (NP (NNS transplants) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NN Department) (NNS officials) )
+    (VP (VBP say) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ (NNP HHS) (NNP Secretary) (NNP Louis) (NNP Sullivan) )
+          (VP (MD will) 
+            (VP (VB support) 
+              (NP 
+                (NP 
+                  (NP (NNP Dr.) (NNP Mason) (POS 's) )
+                  (NN ruling) )
+                (, ,) 
+                (SBAR 
+                  (WHNP-112 (WDT which) )
+                  (S 
+                    (NP-SBJ-1 (-NONE- *T*-112) )
+                    (VP (MD will) 
+                      (VP (VB be) 
+                        (VP (VBN issued) 
+                          (NP (-NONE- *-1) )
+                          (ADVP-TMP (RB soon) )
+                          (PP-MNR (IN in) 
+                            (NP 
+                              (NP (DT the) (NN form) )
+                              (PP (IN of) 
+                                (NP 
+                                  (NP (DT a) (NN letter) )
+                                  (PP (TO to) 
+                                    (NP 
+                                      (NP (DT the) (JJ acting) (NN director) )
+                                      (PP (IN of) 
+                                        (NP 
+                                          (NP (DT the) (NNP National) (NNPS Institutes) )
+                                          (PP (IN of) 
+                                            (NP (NNP Health) )))))))))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT Both) 
+      (NP (NNP Dr.) (NNP Mason) )
+      (CC and) 
+      (NP (NNP Dr.) (NNP Sullivan) ))
+    (VP (VBP oppose) 
+      (NP 
+        (NP (JJ federal) (NN funding) )
+        (PP (IN for) 
+          (NP (NN abortion) )))
+      (, ,) 
+      (SBAR-ADV (IN as) 
+        (SINV (VBZ does) 
+          (NP-SBJ (NNP President) (NNP Bush) )
+          (VP (-NONE- *?*) )))
+      (, ,) 
+      (PP-LOC (IN except) 
+        (PP (IN in) 
+          (NP 
+            (NP (NNS cases) )
+            (SBAR 
+              (WHADVP-1 (WRB where) )
+              (S 
+                (NP-SBJ-2 
+                  (NP (DT a) (NN woman) (POS 's) )
+                  (NN life) )
+                (VP (VBZ is) 
+                  (VP (VBN threatened) 
+                    (NP (-NONE- *-2) )
+                    (ADVP-LOC (-NONE- *T*-1) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN controversy) )
+    (VP (VBD began) 
+      (PP-TMP (IN in) 
+        (NP (CD 1987) ))
+      (SBAR-TMP 
+        (WHADVP-1 (WRB when) )
+        (S 
+          (NP-SBJ-2 
+            (NP (DT the) (NNP National) (NNPS Institutes) )
+            (PP (IN of) 
+              (NP (NNP Health) ))
+            (, ,) 
+            (ADJP-PRD (JJ aware) 
+              (PP (IN of) 
+                (NP 
+                  (NP (DT the) (NN policy) (NNS implications) )
+                  (PP (IN of) 
+                    (NP (PRP$ its) (NN research) )))))
+            (, ,) )
+          (VP (VBD asked) 
+            (PP-CLR (IN for) 
+              (NP 
+                (NP (DT an) (NNP HHS) (NN review) )
+                (PP (IN of) 
+                  (NP (PRP$ its) (NN plan) 
+                    (S 
+                      (NP-SBJ (-NONE- *) )
+                      (VP (TO to) 
+                        (VP (VB implant) 
+                          (NP (JJ fetal) (NN tissue) )
+                          (PP-DIR (IN into) 
+                            (NP 
+                              (NP (DT the) (NN brain) )
+                              (PP (IN of) 
+                                (NP 
+                                  (NP (DT a) (NN patient) )
+                                  (VP (NN suffering) 
+                                    (PP-CLR (IN from) 
+                                      (NP 
+                                        (NP (NNPS Parkinson) (POS 's) )
+                                        (NN disease) ))))))))))))))
+            (ADVP-TMP (-NONE- *T*-1) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN department) )
+    (VP (VBD placed) 
+      (NP (DT a) (NN moratorium) )
+      (PP-CLR (IN on) 
+        (NP (DT the) (NN research) ))
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ (-NONE- *) )
+        (VP (VBG pending) 
+          (NP 
+            (NP (DT a) (NN review) )
+            (PP (IN of) 
+              (NP 
+                (ADJP (JJ scientific) 
+                  (, ,)
+                  (JJ legal) 
+                  (CC and)
+                  (JJ ethical) )
+                (NNS issues) ))))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ 
+        (NP (DT A) (NN majority) )
+        (PP (IN of) 
+          (NP (DT an) (JJ NIH-appointed) (NN panel) )))
+      (VP (VBD recommended) 
+        (NP-TMP (RB late) (JJ last) (NN year) )
+        (SBAR (IN that) 
+          (S 
+            (NP-SBJ (DT the) (NN research) )
+            (VP (VB continue) 
+              (PP-LOC (IN under) 
+                (NP (RB carefully) (JJ controlled) (NNS conditions) )))))))
+    (, ,) (CC but) 
+    (S 
+      (NP-SBJ-2 (DT the) (NN issue) )
+      (VP (VBD became) 
+        (VP (VBN embroiled) 
+          (NP (-NONE- *-2) )
+          (PP-LOC-CLR (IN in) 
+            (NP (NNS politics) ))
+          (SBAR-TMP (IN as) 
+            (S 
+              (NP-SBJ-3 (JJ anti-abortion) (NNS groups) )
+              (VP (VBD continued) 
+                (S 
+                  (NP-SBJ (-NONE- *-3) )
+                  (VP (TO to) 
+                    (VP (VB oppose) 
+                      (NP (JJ federal) (NN funding) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN dispute) )
+    (VP (VBZ has) 
+      (VP (VBN hampered) 
+        (NP 
+          (NP (DT the) (NN administration) (POS 's) )
+          (NNS efforts) 
+          (S 
+            (NP-SBJ (-NONE- *) )
+            (VP (TO to) 
+              (VP (VB recruit) 
+                (NP 
+                  (NP (JJ prominent) (NNS doctors) )
+                  (SBAR 
+                    (WHNP-1 (-NONE- 0) )
+                    (S 
+                      (NP-SBJ (-NONE- *T*-1) )
+                      (VP (TO to) 
+                        (VP (VB fill) 
+                          (NP 
+                            (NP (JJ prestigious) (NNS posts) )
+                            (PP-LOC (IN at) 
+                              (NP 
+                                (NP (DT the) (NN helm) )
+                                (PP (IN of) 
+                                  (NP 
+                                    (NP (DT the) (NNP NIH) )
+                                    (CC and) 
+                                    (NP 
+                                      (NP (DT the) (NNPS Centers) )
+                                      (PP (IN for) 
+                                        (NP (NNP Disease) (NNP Control) )))))))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (JJ Several) (NNS candidates) )
+    (VP (VBP have) 
+      (VP (VBN withdrawn) 
+        (NP (PRP$ their) (NNS names) )
+        (PP-CLR (IN from) 
+          (NP (NN consideration) ))
+        (SBAR-TMP (IN after) 
+          (S 
+            (NP-SBJ (NN administration) (NNS officials) )
+            (VP (VBD asked) 
+              (NP (PRP them) )
+              (PP-CLR (IN for) 
+                (NP 
+                  (NP (PRP$ their) (NNS views) )
+                  (PP (IN on) 
+                    (NP 
+                      (NP (NN abortion) )
+                      (CC and) 
+                      (NP (JJ fetal-tissue) (NNS transplants) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Antonio) (NNP Novello) )
+      (, ,) 
+      (SBAR 
+        (WHNP-113 (WP whom) )
+        (S 
+          (NP-SBJ (NNP Mr.) (NNP Bush) )
+          (VP (VBD nominated) 
+            (S 
+              (NP-SBJ (-NONE- *T*-113) )
+              (VP (TO to) 
+                (VP (VB serve) 
+                  (PP-CLR (IN as) 
+                    (NP (NN surgeon) (NN general) ))))))))
+      (, ,) )
+    (ADVP (RB reportedly) )
+    (VP (VBZ has) 
+      (VP (VBN assured) 
+        (NP (DT the) (NN administration) )
+        (SBAR (IN that) 
+          (S 
+            (NP-SBJ (PRP she) )
+            (VP (VBZ opposes) 
+              (NP (NN abortion) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Dr.) (NNP Novello) )
+    (VP (VBZ is) 
+      (NP-PRD 
+        (NP (NN deputy) (NN director) )
+        (PP (IN of) 
+          (NP 
+            (NP (DT the) (NNP National) (NNP Institute) )
+            (PP (IN of) 
+              (NP 
+                (NP (NNP Child) (NNP Health) )
+                (CC and) 
+                (NP (NNP Human) (NNP Development) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT Some) (NNS researchers) )
+    (VP (VBP have) 
+      (VP (VBN charged) 
+        (SBAR (IN that) 
+          (S 
+            (NP-SBJ (DT the) (NN administration) )
+            (VP (VBZ is) 
+              (VP (VBG imposing) 
+                (NP 
+                  (NP (JJ new) (JJ ideological) (NNS tests) )
+                  (PP (IN for) 
+                    (NP (JJ top) (JJ scientific) (NNS posts) )))))))))
+    (. .) ))
+( (S 
+    (NP-TMP (JJR Earlier) (DT this) (NN week) )
+    (, ,) 
+    (NP-SBJ-1 (NNP Dr.) (NNP Sullivan) )
+    (VP (VBD tried) 
+      (S 
+        (NP-SBJ-4 (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB defuse) 
+            (NP (DT these) (NNS charges) )
+            (PP-MNR (IN by) 
+              (S-NOM 
+                (NP-SBJ (-NONE- *-4) )
+                (VP (VBG stressing) 
+                  (SBAR (IN that) 
+                    (S 
+                      (NP-SBJ-3 
+                        (NP (NNS candidates) )
+                        (SBAR 
+                          (WHNP-2 (-NONE- 0) )
+                          (S 
+                            (NP-SBJ (-NONE- *T*-2) )
+                            (VP (TO to) 
+                              (VP (VB head) 
+                                (NP 
+                                  (NP (DT the) (NNP NIH) )
+                                  (CC and) 
+                                  (NP (DT the) (NNP CDC) )))))))
+                      (VP (MD will) 
+                        (VP (VB be) 
+                          (VP (VBN judged) 
+                            (NP (-NONE- *-3) )
+                            (PP-MNR (IN by) 
+                              (NP (`` ``) 
+                                (NP 
+                                  (NP (NNS standards) )
+                                  (PP (IN of) 
+                                    (NP 
+                                      (ADJP (JJ scientific) 
+                                        (CC and)
+                                        (JJ administrative) )
+                                      (NN excellence) )))
+                                (, ,) ('' '') (RB not) 
+                                (NP (NNS politics) )))))))))))))))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ 
+      (NP 
+        (NP (DT the) (NN administration) (POS 's) )
+        (NN handling) )
+      (PP (IN of) 
+        (NP (DT the) (JJ fetal-tissue) (NN transplant) (NN issue) )))
+    (VP (VBZ disturbs) 
+      (NP (JJ many) (NNS scientists) ))
+    (. .) ))
+( (SINV (`` ``) 
+    (S-TPC-2 
+      (SBAR-TMP 
+        (WHADVP-1 (WRB When) )
+        (S 
+          (NP-SBJ (JJ scientific) (NN progress) )
+          (VP (VBZ moves) 
+            (PP-DIR (IN into) 
+              (NP (JJ uncharted) (NN ground) ))
+            (ADVP-TMP (-NONE- *T*-1) ))))
+      (, ,) 
+      (NP-SBJ-3 (EX there) )
+      (VP (VBZ has) 
+        (S 
+          (NP-SBJ (-NONE- *-3) )
+          (VP (TO to) 
+            (VP (VB be) 
+              (NP-PRD 
+                (NP (DT a) (NN role) 
+                  (S (-NONE- *ICH*-4) ))
+                (PP (IN for) 
+                  (NP (NN society) ))
+                (S-4 
+                  (NP-SBJ (-NONE- *) )
+                  (VP (TO to) 
+                    (VP (VB make) 
+                      (NP 
+                        (NP (NNS judgments) )
+                        (PP (IN about) 
+                          (NP (PRP$ its) (NNS applications) ))))))))))))
+    (, ,) ('' '') 
+    (VP (VBZ says) 
+      (S (-NONE- *T*-2) ))
+    (NP-SBJ 
+      (NP (NNP Myron) (NNP Genel) )
+      (, ,) 
+      (NP 
+        (NP (NN associate) (NN dean) )
+        (PP (IN of) 
+          (NP (DT the) (NNP Yale) (NNP Medical) (NNP School) ))))
+    (. .) ))
+( (S (`` ``) 
+    (NP-SBJ 
+      (NP (DT The) (JJ disturbing) (NN thing) )
+      (PP (IN about) 
+        (NP (DT this) (NN abortion) (NN issue) )))
+    (VP (VBZ is) 
+      (SBAR-PRD (IN that) 
+        (S 
+          (NP-SBJ-1 (DT the) (NN debate) )
+          (VP (VBZ has) 
+            (VP (VBN become) 
+              (VP (VBN polarized) 
+                (NP (-NONE- *-1) )
+                (, ,) 
+                (SBAR-ADV (IN so) (IN that) 
+                  (S 
+                    (NP-SBJ 
+                      (NP (DT no) (NN mechanism) )
+                      (PP (-NONE- *ICH*-2) ))
+                    (VP (VBZ exists) ('' '') 
+                      (PP-2 (IN for) 
+                        (S-NOM 
+                          (NP-SBJ (-NONE- *) )
+                          (VP (VBG finding) 
+                            (NP (DT a) (JJ middle) (NN ground) )))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Yale) )
+    (VP (VBZ is) 
+      (NP-PRD 
+        (NP (CD one) )
+        (PP (IN of) 
+          (NP 
+            (NP (DT the) (JJ few) (JJ medical) (NNS institutions) )
+            (VP (VBG conducting) 
+              (NP 
+                (NP 
+                  (ADJP (RB privately) (JJ funded) )
+                  (NN research) )
+                (PP (IN on) 
+                  (NP (JJ fetal-tissue) (NNS transplants) ))))))))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ (NNP Dr.) (NNP Genel) )
+    (VP (VBZ warns) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ 
+            (NP (NNP Dr.) (NNP Mason) (POS 's) )
+            (NN ruling) )
+          (VP (MD may) 
+            (VP (VB discourage) 
+              (NP (JJ private) (NN funding) ))))))
+    (. .) ))
+( (S (`` ``) 
+    (S-TPC-3 
+      (NP-SBJ 
+        (NP 
+          (NP (DT The) (NN unavailability) )
+          (PP (IN of) 
+            (NP (JJ federal) (NNS funds) )))
+        (, ,) 
+        (CC and)
+        (NP 
+          (NP (DT the) (NN climate) )
+          (SBAR-LOC 
+            (WHPP-1 (IN in) 
+              (WHNP (WDT which) ))
+            (S 
+              (NP-SBJ-2 (DT the) (NN decision) )
+              (VP (VBD was) 
+                (VP (VBN made) 
+                  (NP (-NONE- *-2) )
+                  (PP-LOC (-NONE- *T*-1) ))))))
+        (, ,) )
+      (ADVP (RB certainly) )
+      (VP (VBP do) (RB n't) 
+        (VP (VB provide) 
+          (NP (DT any) (NN incentive) 
+            (SBAR (IN for) 
+              (S 
+                (NP-SBJ 
+                  (NP (CD one) )
+                  (PP (IN of) 
+                    (NP (DT the) 
+                      (ADJP (RBR more) (JJ visible) )
+                      (NNS foundations) )))
+                (VP (TO to) 
+                  (VP (VB provide) 
+                    (NP (NN support) )))))))))
+    (, ,) ('' '') 
+    (NP-SBJ (PRP he) )
+    (VP (VBD said) 
+      (S (-NONE- *T*-3) ))
+    (. .) ))
+( (S 
+    (PP (IN Despite) 
+      (NP 
+        (NP (DT the) (NN flap) )
+        (PP (IN over) 
+          (NP (NNS transplants) ))))
+    (, ,) 
+    (NP-SBJ 
+      (NP (JJ federal) (NN funding) )
+      (PP (IN of) 
+        (NP 
+          (NP (NN research) )
+          (VP (VBG involving) 
+            (NP (JJ fetal) (NNS tissues) )))))
+    (VP (MD will) 
+      (VP (VB continue) 
+        (PP-LOC (IN on) 
+          (NP 
+            (NP (DT a) (NN number) )
+            (PP (IN of) 
+              (NP (NNS fronts) ))))))
+    (. .) ))
+( (S (`` ``) 
+    (NP-SBJ (JJ Such) (NN research) )
+    (VP (MD may) 
+      (ADVP-TMP (RB ultimately) )
+      (VP (VB result) 
+        (PP-CLR (IN in) 
+          (NP (DT the) (NN ability) 
+            (S 
+              (S 
+                (NP-SBJ (-NONE- *) )
+                (VP (TO to) 
+                  (VP (VB regenerate) 
+                    (NP (JJ damaged) (NNS tissues) ))))
+              (CC or) 
+              (S 
+                (NP-SBJ (-NONE- *) )
+                (VP (TO to) 
+                  (VP (VB turn) 
+                    (PRT (RP off) )
+                    (NP 
+                      (NP (NNS genes) )
+                      (SBAR 
+                        (WHNP-114 (WDT that) )
+                        (S 
+                          (NP-SBJ (-NONE- *T*-114) )
+                          (VP (VBP cause) 
+                            (NP (NN cancer) ))))))))
+              ('' '') (CC or) 
+              (S 
+                (NP-SBJ (-NONE- *) )
+                (VP (TO to) 
+                  (VP (VB regulate) 
+                    (NP 
+                      (NP (NNS genes) )
+                      (SBAR 
+                        (WHNP-115 (WDT that) )
+                        (S 
+                          (NP-SBJ (-NONE- *T*-115) )
+                          (VP (VBP cause) 
+                            (NP 
+                              (NP 
+                                (NP (NNP Down) (POS 's) )
+                                (NN syndrome) )
+                              (, ,) 
+                              (NP 
+                                (NP (DT the) (VBG leading) (NN cause) )
+                                (PP (IN of) 
+                                  (NP (JJ mental) (NN retardation) ))
+                                (, ,) 
+                                (PP (VBG according) 
+                                  (PP (TO to) 
+                                    (NP (DT an) (NNP NIH) (NN summary) )))))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NNP NIH) )
+    (ADVP-TMP (RB currently) )
+    (VP (VBZ spends) 
+      (NP 
+        (NP 
+          (QP (IN about) ($ $) (CD 8) (CD million) )
+          (-NONE- *U*) )
+        (PP (-NONE- *ICH*-2) ))
+      (ADVP-TMP (RB annually) )
+      (PP-CLR (IN on) 
+        (NP (JJ fetal-tissue) (NN research) ))
+      (PP-2 (IN out) 
+        (PP (IN of) 
+          (NP 
+            (NP (DT a) (JJ total) (NN research) (NN budget) )
+            (PP (IN of) 
+              (NP 
+                (QP ($ $) (CD 8) (CD billion) )
+                (-NONE- *U*) ))))))
+    (. .) ))

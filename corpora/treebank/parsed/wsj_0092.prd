@@ -1,0 +1,234 @@
+
+
+( (S (NP-SBJ Troubled NBI Inc.)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 it)
+                  (VP (VP fired
+			  (NP (QP more than half)
+			      its work force))
+		      and
+		      (VP is
+			  (VP discontinuing
+			      (NP its hardware business)))
+		      (S-PRP (NP-SBJ *-1)
+			     (VP to
+				 (VP focus
+				     (PP-CLR on
+					     (NP its software and service operations)))))))))
+     .))
+( (S (NP-SBJ (NP The ailing company)
+             ,
+             (SBAR (WHNP-236 which)
+                   (S (NP-SBJ *T*-236)
+                      (VP has
+                          (VP reported
+                              (NP net losses)
+			      (PP-TMP for
+				      (NP 16 consecutive quarters))))))
+             ,)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP (VP wo
+			  n't
+			  (VP manufacture
+			      (NP network computer systems)
+			      (ADVP-TMP any more)))
+		      and
+		      (VP will 
+			  (ADVP-MNR greatly)
+			  reduce
+			  (NP its costly direct sales force))))))
+     .))
+( (S (ADVP Altogether)
+     ,
+     (NP-SBJ NBI)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP will
+                      (VP eliminate
+                          (NP (NP (NP 266 jobs)
+                                  (PP-LOC at
+					  (NP its Boulder headquarters)))
+                              ,
+                              (NP 176 field sales jobs)
+                              and
+                              (NP (NP 50 jobs)
+                                  (PP-LOC at
+					  (NP its (UCP Canadian and United Kingdom) headquarters)))))))))
+     .))
+( (S (NP-SBJ (NP The company 's)
+             work force)
+     (VP will
+         (VP fall
+             (PP-DIR to
+		     (NP (QP about 400) people))))
+     .))
+( (S (NP-SBJ (NP Stephen G. Jerritts)
+             ,
+             (NP (NP president) 
+		 and 
+		 (NP chief executive officer))
+             ,)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 customers)
+                  (VP were 
+		      n't
+                      (ADJP-PRD willing
+				(S (NP-SBJ *-1)
+				   (VP to
+				       (VP commit
+					   (PP-CLR to
+						   (NP an expensive NBI hardware systems))))))
+		      (PP-PRP because of
+			      (NP (NP the company 's)
+				  financial troubles))))))
+     .))
+( (S-1 (ADVP Further)
+       (PRN ,
+	    (NP-SBJ he)
+	    (VP said
+		(SBAR 0
+		      (S *T*-1)))
+	    ,)
+       (NP-SBJ the company)
+       (VP does 
+	   n't
+	   (VP have
+	       (NP (NP the capital)
+		   (VP needed
+		       (NP *)
+		       (S (NP-SBJ *)
+			  (VP to
+			      (VP build
+				  (NP the business)
+				  (PP-TMP over
+					  (NP the next year
+					      (QP or two))))))))))
+       .))
+( (S ``
+     (S-TPC-1 (NP-SBJ We)
+	      (VP (ADVP flat)
+		  ran 
+		  (ADVP-CLR out
+			    (PP of
+				(NP financing resources)))))
+     , 
+     ''
+     (NP-SBJ Mr. Jerritts)
+     (VP said
+	 (S *T*-1))
+     .))
+( (S ``
+     (NP-SBJ-1 We)
+     (VP had
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP do
+                    (NP (NP something)
+                        (ADJP (ADVP structurally and radically) 
+			      different))))))
+     .
+     ''))
+( (S (PP-PRP As
+	     (NP a result))
+     ,
+     (NP-SBJ he)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ NBI)
+                  (VP will
+                      (VP focus
+                          (PP-CLR on
+				  (S-NOM (NP-SBJ-4 *)
+					 (VP (VP servicing
+						 (NP (NP its installed base)
+						     (PP of
+							 (NP systems))))
+					     ,
+					     (VP trying
+						 (S (NP-SBJ *-4)
+						    (VP to
+							(VP provide
+							    (NP maintenance)
+							    (PP-CLR for
+								    (NP other manufacturers))))))
+					     and
+					     (VP expanding
+						 (NP its software business)
+						 ,
+						 (S-ADV (NP-SBJ *-4)
+							(VP using
+							    (NP (NP some)
+								(PP of
+								    (NP (NP the applications)
+									(SBAR (WHNP-3 0)
+									      (S (NP-SBJ it)
+										 (VP developed
+										     (NP *T*-3)
+										     (PP for
+											 (NP its hardware)))))))))))))))))))
+     .))
+( (S (NP-SBJ The company)
+     (ADVP-TMP currently)
+     (VP offers
+         (NP (NP a word-processing package)
+	     (PP for
+		 (NP personal computers))
+             (VP called
+                 (S (NP-SBJ *)
+		    (NP-PRD Legend)))))
+     .))
+( (S (NP-SBJ (NP The company)
+             ,
+             (SBAR (WHNP-237 which)
+                   (S (NP-SBJ *T*-237)
+		      (ADVP-TMP recently)
+                      (VP said
+                          (SBAR 0
+                                (S (NP-SBJ it)
+                                   (VP lacked
+                                       (NP (NP the profits and capital)
+                                           (SBAR (WHADVP-1 0)
+						 (S (NP-SBJ *)
+						    (VP to
+							(VP pay
+							    (NP (NP dividends)
+								(PP on
+								    (NP its 
+									Series A 
+									convertible
+									preferred
+									stock)))
+							    (ADVP-CLR *T*-1))))))))))))
+             ,)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP has
+                      (VP hired
+                          (NP (NP an investment banker)
+			      (SBAR (WHNP-2 0)
+				    (S (NP-SBJ *T*-2)
+				       (VP to
+					   (VP help
+					       (S (NP-SBJ it)
+						  (VP raise
+						      (NP additional cash)))))))))))))
+     .))
+( (S (PP-LOC In
+	     (NP New York Stock Exchange composite trading))
+     (NP-TMP yesterday)
+     ,
+     (NP-SBJ NBI common)
+     (VP closed
+         (PP-CLR at
+		 (NP (NP 93 cents)
+		     (NP-ADV a share)))
+         ,
+         (ADVP up
+               (NP 31 cents)))
+     .))

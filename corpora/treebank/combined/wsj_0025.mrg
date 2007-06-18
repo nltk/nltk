@@ -1,0 +1,75 @@
+
+( (S 
+    (NP-SBJ (NNP R.P.) (NNP Scherer) (NNP Corp.) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP it) )
+          (VP (VBD completed) 
+            (NP 
+              (NP (DT the) 
+                (ADJP 
+                  (QP ($ $) (CD 10.2) (CD million) )
+                  (-NONE- *U*) )
+                (NN sale) )
+              (PP (IN of) 
+                (NP (PRP$ its) (NNP Southern) (NNP Optical) (NN subsidiary) ))
+              (PP (TO to) 
+                (NP 
+                  (NP (DT a) (NN group) )
+                  (VP (VBD led) 
+                    (NP (-NONE- *) )
+                    (PP (IN by) 
+                      (NP-LGS 
+                        (NP 
+                          (NP 
+                            (NP (DT the) (NN unit) (POS 's) )
+                            (NN president) )
+                          (, ,) 
+                          (NP (NNP Thomas) (NNP R.) (NNP Sloan) )
+                          (, ,) )
+                        (CC and) 
+                        (NP (JJ other) (NNS managers) )))))))))))
+    (. .) ))
+( (S 
+    (PP-TMP (VBG Following) 
+      (NP 
+        (NP (DT the) (NN acquisition) )
+        (PP (IN of) 
+          (NP (NNP R.P.) (NNP Scherer) ))
+        (PP (IN by) 
+          (NP 
+            (NP (DT a) (JJ buy-out) (NN group) )
+            (VP (VBN led) 
+              (NP (-NONE- *) )
+              (PP (IN by) 
+                (NP-LGS (NNP Shearson) (NNP Lehman) (NNP Hutton) )))))
+        (NP-TMP (JJR earlier) (DT this) (NN year) )))
+    (, ,) 
+    (NP-SBJ-1 
+      (NP (DT the) (NN maker) )
+      (PP (IN of) 
+        (NP (NN gelatin) (NNS capsules) )))
+    (VP (VBD decided) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB divest) 
+            (NP (PRP itself) )
+            (PP-CLR (IN of) 
+              (NP 
+                (NP (JJ certain) )
+                (PP (IN of) 
+                  (NP (PRP$ its) (JJ non-encapsulating) (NNS businesses) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (NN sale) )
+      (PP (IN of) 
+        (NP (NNP Southern) (NNP Optical) )))
+    (VP (VBZ is) 
+      (NP-PRD 
+        (NP (DT a) (NN part) )
+        (PP (IN of) 
+          (NP (DT the) (NN program) ))))
+    (. .) ))

@@ -1,0 +1,127 @@
+
+
+( (S (NP-SBJ-34 (NP Oil production)
+                (PP-DIR from
+			(NP (NP Australia 's)
+			    Bass Strait fields)))
+     (VP will
+         (VP be
+             (VP raised
+                 (NP *-34)
+                 (PP-EXT by
+			 (NP (NP 11,000 barrels)
+			     (NP-ADV a day)))
+                 (PP-DIR to
+			 (NP (QP about 321,000) barrels))
+		 (PP with
+		     (NP (NP the launch)
+			 (PP of
+			     (NP (NP the Whiting field)
+				 ,
+				 (NP (NP the first)
+				     (PP of
+					 (NP (NP five small fields)
+					     (VP scheduled
+						 (S (NP-SBJ-35 *)
+						    (VP to
+							(VP be
+							    (VP brought
+								(NP *-35)
+								(PP-CLR into
+									(NP production))
+								(PP-TMP before
+									(NP (NP the end)
+									    (PP of
+										(NP 1990)))))))))))))))))))
+     .))
+( (S (NP-SBJ (NP (NP Esso Australia Ltd.)
+                 ,
+                 (NP (NP a unit)
+                     (PP of
+                         (NP (ADJP New York-based)
+                             Exxon Corp.)))
+                 ,)
+             and
+             (NP Broken Hill Pty.))
+     (VP operate
+         (NP the fields)
+	 (PP in
+	     (NP a joint venture)))
+     .))
+( (S (NP-SBJ Esso)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ the Whiting field)
+                  (VP started
+                      (NP production)
+		      (NP-TMP Tuesday)))))
+     .))
+( (S (NP-SBJ-1 Output)
+     (VP will
+	 (VP be
+	     (VP (ADVP-MNR gradually)
+		 increased
+		 (NP *-1)
+		 (SBAR-TMP until
+			   (S (NP-SBJ it)
+			      (VP reaches
+				  (NP (NP (QP about 11,000) 
+					  barrels)
+				      (NP-ADV a day))))))))
+     .))
+( (S (NP-SBJ The field)
+     (VP has
+         (NP (NP reserves)
+             (PP of
+                 (NP (QP 21 million)
+		     barrels))))
+     .))
+( (S (NP-SBJ (NP Reserves)
+             (PP for
+                 (NP the five new fields)))
+     (VP total
+         (NP (QP 50 million)
+	     barrels))
+     .))
+( (S (S (NP-SBJ-3 The Perch and Dolphin fields)
+        (VP are
+            (VP expected
+                (S (NP-SBJ-1 *-3)
+                   (VP to
+                       (VP start
+                           (S (NP-SBJ *-1)
+                              (VP producing
+				  (NP-TMP-2 early 
+					    next year)))))))))
+     , 
+     and
+     (S (NP-SBJ=3 the 
+		  Seahorse and Tarwhine 
+		  fields)
+	(NP-TMP=2 later 
+		  next year))
+     .))
+( (S (NP-SBJ Esso)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-36 the fields)
+		  (VP were
+		      (VP developed
+			  (NP *-36)
+			  (SBAR-TMP after
+				    (S (NP-SBJ-2 the Australian government)
+				       (VP decided
+					   (PP-TMP in
+						   (NP 1987))
+					   (S (NP-SBJ *-2)
+					      (VP to
+						  (VP make
+						      (NP the first 
+							  (QP 30 million) 
+							  barrels)
+						      (PP-MNR from 
+							      (NP (NP new fields)
+								  (ADJP free
+									(PP of
+									    (NP excise tax))))))))))))))))
+     .))

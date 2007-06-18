@@ -1,0 +1,528 @@
+
+( (S 
+    (S (`` ``) 
+      (NP-TTL-SBJ (DT The) (NNP Cosby) (NNP Show) )
+      ('' '') 
+      (VP (MD may) 
+        (VP (VB have) 
+          (ADVP-MNR (RB single-handedly) )
+          (VP (VBN turned) 
+            (PRT (RP around) )
+            (NP 
+              (NP (NNS ratings) )
+              (PP-LOC (IN at) 
+                (NP (NNP NBC) )))
+            (PP-TMP (IN since) 
+              (NP 
+                (NP (PRP$ its) (NN debut) )
+                (PP-TMP (IN in) 
+                  (NP (CD 1984) ))))))))
+    (, ,) 
+    (CC and)
+    (S 
+      (NP-SBJ (DT the) (NNP Huxtable) (NN family) )
+      (ADVP-TMP (RB still) )
+      (VP (VBZ keeps) 
+        (S 
+          (NP-SBJ 
+            (NP (NNS millions) )
+            (PP (IN of) 
+              (NP (NNS viewers) )))
+          (VP (VBG laughing) 
+            (NP-TMP (NNP Thursday) (NN night) )
+            (PP-LOC (IN on) 
+              (NP (DT the) (NN network) ))))))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ 
+      (NP (DT some) )
+      (PP (IN of) 
+        (NP 
+          (NP (DT the) (NN TV) (NNS stations) )
+          (SBAR 
+            (WHNP-149 (WDT that) )
+            (S 
+              (NP-SBJ (-NONE- *T*-149) )
+              (VP (VBD bought) 
+                (NP (`` ``) (NNP Cosby) ('' '') (NNS reruns) )
+                (PP-CLR (IN for) 
+                  (NP (NN record) (NNS prices) ))
+                (ADVP-TMP 
+                  (NP (CD two) (NNS years) )
+                  (RB ago) )))))))
+    (VP (VBP are) (RB n't) 
+      (VP (VBG laughing) 
+        (ADVP (RB much) )
+        (NP-TMP (DT these) (NNS days) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NNS reruns) )
+    (VP (VBP have) 
+      (VP (VBN helped) 
+        (NP 
+          (NP (NNS ratings) )
+          (PP-LOC (IN at) 
+            (NP 
+              (NP (JJ many) )
+              (PP (IN of) 
+                (NP 
+                  (NP (DT the) (CD 187) 
+                    (NX 
+                      (NX (NN network) (NNS affiliates) )
+                      (CC and) 
+                      (NX (JJ independent) (NN TV) (NNS stations) )))
+                  (SBAR 
+                    (WHNP-150 (WDT that) )
+                    (S 
+                      (NP-SBJ (-NONE- *T*-150) )
+                      (VP (VBP air) 
+                        (NP (DT the) (NNS shows) )))))))))))
+    (. .) ))
+( (S (CC But) 
+    (S 
+      (NP-SBJ (DT the) (NNS ratings) )
+      (VP (VBP are) 
+        (PP-PRD-LOC 
+          (ADVP (RB considerably) )
+          (IN below) 
+          (NP (NNS expectations) ))))
+    (, ,) 
+    (CC and)
+    (S 
+      (NP-SBJ (DT some) (NNS stations) )
+      (VP (VBP say) 
+        (SBAR (-NONE- 0) 
+          (S 
+            (NP-SBJ (PRP they) )
+            (VP (MD may) (RB not) 
+              (VP (VB buy) 
+                (NP (JJ new) (NNS episodes) )
+                (SBAR-TMP 
+                  (WHADVP-1 (WRB when) )
+                  (S 
+                    (NP-SBJ (PRP$ their) (JJ current) (NNS contracts) )
+                    (VP (VBP expire) 
+                      (ADVP-TMP (-NONE- *T*-1) ))))))))))
+    (. .) ))
+( (S 
+    (ADVP-TMP (RB Meanwhile) )
+    (, ,) 
+    (NP-SBJ (NNS stations) )
+    (VP (VBP are) 
+      (VP (VBG fuming) 
+        (SBAR-PRP (RB because) 
+          (S-1 
+            (PRN 
+              (, ,)
+              (S 
+                (NP-SBJ 
+                  (NP (JJ many) )
+                  (PP (IN of) 
+                    (NP (PRP them) )))
+                (VP (VBP say) 
+                  (SBAR (-NONE- 0) 
+                    (S (-NONE- *T*-1) ))))
+              (, ,) )
+            (NP-SBJ 
+              (NP 
+                (NP (DT the) (NN show) (POS 's) )
+                (NN distributor) )
+              (, ,) 
+              (NP (NNP Viacom) (NNP Inc.) )
+              (, ,) )
+            (VP (VBZ is) 
+              (VP (VBG giving) 
+                (NP 
+                  (NP (DT an) (NN ultimatum) )
+                  (: :) 
+                  (S 
+                    (NP-SBJ-2 (-NONE- *) )
+                    (VP (CC Either) 
+                      (VP (VB sign) 
+                        (NP (JJ new) (JJ long-term) (NNS commitments) 
+                          (S 
+                            (NP-SBJ (-NONE- *) )
+                            (VP (TO to) 
+                              (VP (VB buy) 
+                                (NP (JJ future) (NNS episodes) ))))))
+                      (CC or) 
+                      (VP (VB risk) 
+                        (S 
+                          (NP-SBJ (-NONE- *-2) )
+                          (VP (VBG losing) (`` ``) 
+                            (NP-TTL (NNP Cosby) )
+                            ('' '') 
+                            (PP-CLR (TO to) 
+                              (NP (DT a) (NN competitor) ))))))))))))))
+    (. .) ))
+( (S 
+    (PP-TMP (IN At) 
+      (NP (DT the) (JJ same) (NN time) ))
+    (, ,) 
+    (NP-SBJ-1 (NNP Viacom) )
+    (VP (VBZ is) 
+      (VP (VBG trying) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB persuade) 
+              (NP-2 (NNS stations) )
+              (S 
+                (NP-SBJ (-NONE- *-2) )
+                (VP (TO to) 
+                  (VP (VB make) 
+                    (NP 
+                      (NP (NNS commitments) )
+                      (PP (TO to) 
+                        (NP (`` ``) 
+                          (NP-TTL (DT A) (NNP Different) (NNP World) )
+                          (, ,) ('' '') 
+                          (NP 
+                            (NP (DT a) (NN spin-off) )
+                            (PP (IN of) (`` ``) 
+                              (NP-TTL (NNP Cosby) )
+                              ('' '') ))
+                          (SBAR 
+                            (WHNP-151 (WP$ whose) (NNS reruns) )
+                            (S 
+                              (NP-SBJ (-NONE- *T*-151) )
+                              (VP (MD will) 
+                                (VP (VB become) 
+                                  (ADJP-PRD (JJ available) )
+                                  (PP-TMP (IN in) 
+                                    (NP (CD 1991) )))))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Viacom) )
+    (VP (VBZ denies) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP it) )
+          (VP (VBZ 's) 
+            (VP (VBG using) 
+              (NP (NN pressure) (NNS tactics) ))))))
+    (. .) ))
+( (SINV (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ-2 (PRP We) )
+      (VP (VBP 're) 
+        (ADJP-PRD (JJ willing) 
+          (S 
+            (NP-SBJ (-NONE- *-2) )
+            (VP (TO to) 
+              (VP (VB negotiate) ))))))
+    (, ,) ('' '') 
+    (VP (VBZ says) 
+      (S (-NONE- *T*-1) ))
+    (NP-SBJ 
+      (NP (NNP Dennis) (NNP Gillespie) )
+      (, ,) 
+      (NP 
+        (NP (JJ executive) (NN vice) (NN president) )
+        (PP (IN of) 
+          (NP (VBG marketing) ))))
+    (. .) ))
+( (S (`` ``) 
+    (NP-SBJ (PRP We) )
+    (VP (VBP 're) 
+      (VP (VBG offering) 
+        (NP (DT this) (NN plan) )
+        (ADVP-TMP (RB now) )
+        (SBAR-PRP (IN because) 
+          (S 
+            (NP-SBJ (PRP we) )
+            (VP (VBP feel) 
+              (SBAR (-NONE- 0) 
+                (S 
+                  (NP-SBJ (PRP it) )
+                  (VP (VBZ 's) 
+                    (NP-PRD (DT the) (JJ right) (NN time) )))))))))
+    (. .) ('' '') ))
+( (S-1 (CC But) 
+    (PRN 
+      (, ,)
+      (SINV 
+        (VP (VBZ says) 
+          (SBAR (-NONE- 0) 
+            (S (-NONE- *T*-1) )))
+        (NP-SBJ 
+          (NP (DT the) (JJ general) (NN manager) )
+          (PP (IN of) 
+            (NP 
+              (NP (DT a) (NN network) (NN affiliate) )
+              (PP-LOC (IN in) 
+                (NP (DT the) (NN Midwest) ))))))
+      (, ,) )
+    (`` ``) 
+    (NP-SBJ (PRP I) )
+    (VP (VBP think) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (SBAR-ADV (IN if) 
+            (S 
+              (NP-SBJ (PRP I) )
+              (VP (VBP tell) 
+                (NP (PRP them) )
+                (SBAR (-NONE- 0) 
+                  (S 
+                    (NP-SBJ (PRP I) )
+                    (VP (VBP need) 
+                      (NP (JJR more) (NN time) )))))))
+          (, ,) 
+          (NP-SBJ (PRP they) )
+          (VP (MD 'll) 
+            (VP (VB take) (`` `) 
+              (NP-TTL (NNP Cosby) )
+              ('' ') 
+              (PP-DIR (IN across) 
+                (NP (DT the) (NN street) )))))))
+    (, ,) ('' '') ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Viacom) (POS 's) )
+      (NN move) )
+    (VP (VBZ comes) 
+      (SBAR-TMP (IN as) 
+        (S 
+          (NP-SBJ-76 (DT the) (NN syndication) (NN market) )
+          (VP (VBZ is) 
+            (VP (VBG being) 
+              (VP (VBN flooded) 
+                (NP (-NONE- *-76) )
+                (PP-CLR (IN with) 
+                  (NP 
+                    (NP (NN situation) (NNS comedies) )
+                    (SBAR 
+                      (WHNP-152 (WDT that) )
+                      (S 
+                        (NP-SBJ (-NONE- *T*-152) )
+                        (VP (VBP are) 
+                          (ADVP-TMP (RB still) )
+                          (VP (VBG running) 
+                            (PP-TMP (IN on) 
+                              (NP (DT the) (NNS networks) ))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (CD One) (NN station) (NN manager) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP he) )
+          (VP (VBZ believes) 
+            (SBAR (-NONE- 0) 
+              (S 
+                (NP-SBJ 
+                  (NP (NNP Viacom) (POS 's) )
+                  (NN move) )
+                (VP (VBZ is) 
+                  (NP-PRD (DT a) (`` ``) (JJ pre-emptive) (NN strike) ('' '') ))))
+            (SBAR-PRP (IN because) 
+              (S 
+                (NP-SBJ (DT the) (NN company) )
+                (VP (VBZ is) 
+                  (ADJP-PRD (VBN worried) 
+                    (SBAR (IN that) 
+                      (S 
+                        (NP-SBJ-1 (`` ``) (NNP Cosby) ('' '') (NNS ratings) )
+                        (VP (MD will) 
+                          (VP (VB continue) 
+                            (S 
+                              (NP-SBJ (-NONE- *-1) )
+                              (VP (TO to) 
+                                (VP (VB drop) 
+                                  (PP-LOC (IN in) 
+                                    (NP (NN syndication) ))
+                                  (PP-TMP (IN over) 
+                                    (NP (DT the) (JJ next) (JJ few) (NNS years) )))))))))))))))))
+    (. .) ))
+( (S (`` ``) 
+    (NP-TTL-SBJ (NNP Cosby) )
+    ('' '') 
+    (VP (VBZ is) 
+      (ADVP-PRD (RB down) 
+        (NP (DT a) (JJ full) (NNS ratings) (NN point) ))
+      (PP-TMP (IN in) 
+        (NP 
+          (NP (DT the) (NN week) )
+          (PP (IN of) 
+            (NP (NNP Oct.) (CD 2-8) ))))
+      (PP (IN over) 
+        (NP 
+          (NP (DT the) (JJ same) (NN week) )
+          (ADVP-TMP 
+            (NP (DT a) (NN year) )
+            (RB ago) )))
+      (, ,) 
+      (PP (VBG according) 
+        (PP (TO to) 
+          (NP (NNP A.C.) (NNP Nielsen) (NNP Co) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Mr.) (NNP Gillespie) )
+      (PP-LOC (IN at) 
+        (NP (NNP Viacom) )))
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (DT the) (NNS ratings) )
+          (VP (VBP are) 
+            (VP (VBG rising) )))))
+    (. .) ))
+( (S (CC And) 
+    (NP-SBJ 
+      (NP (NNS executives) )
+      (PP-LOC (IN at) 
+        (NP 
+          (NP (NNS stations) )
+          (PP-LOC (IN in) 
+            (NP 
+              (NP (JJ such) (JJ major) (NNS markets) )
+              (PP (IN as) 
+                (NP 
+                  (NP (NNP Washington) )
+                  (: ;) 
+                  (NP 
+                    (NP (NNP Providence) )
+                    (, ,) 
+                    (NP (NNP R.I.) ))
+                  (: ;) 
+                  (NP (NNP Cleveland) )
+                  (: ;) 
+                  (NP 
+                    (NP (NNP Raleigh) )
+                    (, ,) 
+                    (NP (NNP N.C.) ))
+                  (: ;) 
+                  (NP (NNP Minneapolis) )
+                  (, ,) 
+                  (CC and)
+                  (NP 
+                    (NP (NNP Louisville) )
+                    (, ,) 
+                    (NP (NNP Ky.) )
+                    (, ,) ))))))))
+    (VP (VBP say) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP they) )
+          (VP (MD may) 
+            (ADVP (RB very) (RB well) )
+            (RB not) 
+            (VP (VB renew) (`` ``) 
+              (NP-TTL (NNP Cosby) ))))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Dick) (NNP Lobo) )
+      (, ,) 
+      (NP 
+        (NP (DT the) (JJ general) (NN manager) )
+        (PP (IN of) 
+          (NP 
+            (NP (NNP WTVJ) )
+            (, ,) 
+            (NP 
+              (NP (DT the) (JJ NBC-owned) (NN station) )
+              (PP-LOC (IN in) 
+                (NP (NNP Miami) )))))))
+    (PRN 
+      (, ,)
+      (PP (IN for) 
+        (NP (NN example) ))
+      (, ,) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (DT the) (NN show) )
+          (VP (VBZ has) (`` ``) 
+            (VP (VBN been) 
+              (NP-PRD 
+                (NP (DT a) (JJ major) (NN disappointment) )
+                (PP (TO to) 
+                  (NP (PRP us) ))))))))
+    (. .) ('' '') ))
+( (S (`` ``) 
+    (PP-LOC (IN At) 
+      (NP 
+        (NP (DT the) (NNS prices) )
+        (SBAR 
+          (WHNP-1 (-NONE- 0) )
+          (S 
+            (NP-SBJ-78 (PRP we) )
+            (VP (VBD were) 
+              (VP (VBN charged) 
+                (NP (-NONE- *-78) )
+                (NP (-NONE- *T*-1) )))))))
+    (, ,) 
+    (NP-SBJ (EX there) )
+    (VP (MD should) 
+      (VP (VB have) 
+        (VP (VBN been) 
+          (NP-PRD 
+            (NP (DT some) (NN return) )
+            (PP (IN for) 
+              (NP (DT the) (NN dollar) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (EX There) )
+    (VP (VBD was) (RB n't) 
+      (NP-PRD (-NONE- *?*) ))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Neil) (NNP Kuvin) )
+      (, ,) 
+      (NP 
+        (NP (DT the) (JJ general) (NN manager) )
+        (PP (IN of) 
+          (NP 
+            (NP (NNP WHAS) )
+            (, ,) 
+            (NP 
+              (NP (DT the) (NNP CBS) (NN affiliate) )
+              (PP-LOC (IN in) 
+                (NP (NNP Louisville) )))
+            (, ,) ))))
+    (VP (VBZ says) 
+      (SBAR 
+        (SBAR (-NONE- 0) 
+          (S (`` ``) 
+            (NP-TTL-SBJ (NNP Cosby) )
+            ('' '') 
+            (VP (VBZ gets) 
+              (NP 
+                (NP (DT the) (NN station) (POS 's) )
+                (JJS highest) (NNS ratings) ))))
+        (CC and) 
+        (SBAR (-NONE- 0) 
+          (S 
+            (NP-SBJ-1 (PRP he) )
+            (VP (VBZ 's) (`` ``) 
+              (VP (VBN pleased) 
+                (NP (-NONE- *-1) )))))))
+    (. .) ('' '') ))
+( (S (CC But) 
+    (NP-SBJ (PRP he) )
+    (VP (VBZ adds) 
+      (, ,)
+      (`` ``) 
+      (S 
+        (NP-SBJ-1 (PRP I) )
+        (VP (VBP feel) 
+          (UCP-PRD 
+            (VP (JJ pressured) 
+              (NP (-NONE- *-1) ))
+            (, ,) 
+            (VP (JJ disappointed) 
+              (NP (-NONE- *-1) ))
+            (, ,) 
+            (ADJP (JJ uncomfortable) )
+            (CC and) 
+            (, ,)
+            (ADVP (RB frankly) )
+            (, ,) 
+            (ADJP (RB quite) (JJ angry) 
+              (PP (IN with) 
+                (NP (NNP Viacom) )))))))
+    (. .) ))

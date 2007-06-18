@@ -1,0 +1,60 @@
+
+( (S 
+    (NP-SBJ (NNP Alleghany) (NNP Corp.) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP it) )
+          (VP (VBD completed) 
+            (NP 
+              (NP (DT the) (NN acquisition) )
+              (PP (IN of) 
+                (NP (NNP Sacramento) (NNPS Savings) (CC &) (NNP Loan) (NNP Association) ))
+              (PP-DIR (IN from) 
+                (NP (DT the) (NNP H.N.) (CC &) (NNP Frances) (NNP C.) (NNP Berger) (NNP Foundation) ))
+              (PP (IN for) 
+                (NP 
+                  (QP ($ $) (CD 150) (CD million) )
+                  (-NONE- *U*) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (JJ Sacramento-based) (NN S&L) )
+      (, ,) 
+      (SBAR 
+        (WHNP-110 (WDT which) )
+        (S 
+          (NP-SBJ (-NONE- *T*-110) )
+          (VP (VBZ has) 
+            (NP (CD 44) (NN branch) (NNS offices) )
+            (PP-LOC (IN in) 
+              (NP (JJ north) (JJ central) (NNP California) )))))
+      (, ,) )
+    (VP (VBD had) 
+      (NP 
+        (NP (NNS assets) )
+        (PP (IN of) 
+          (NP 
+            (QP ($ $) (CD 2.4) (CD billion) )
+            (-NONE- *U*) )))
+      (PP-TMP (IN at) 
+        (NP 
+          (NP (DT the) (NN end) )
+          (PP (IN of) 
+            (NP (NNP September) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP 
+        (ADJP (NNP New) (JJ York-based) )
+        (NNP Alleghany) ))
+    (VP (VBZ is) 
+      (NP-PRD (DT an) (NN insurance) 
+        (CC and)
+        (JJ financial) (NNS services) (NN concern) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN purchase) (NN price) )
+    (VP (VBZ includes) 
+      (NP (CD two) (JJ ancillary) (NNS companies) ))
+    (. .) ))

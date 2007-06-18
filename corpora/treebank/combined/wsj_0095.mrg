@@ -1,0 +1,225 @@
+
+( (S 
+    (PP (IN In) 
+      (NP 
+        (NP (NN reference) )
+        (PP (TO to) 
+          (NP 
+            (NP (PRP$ your) (NNP Oct.) (CD 9) (NN page-one) (NN article) )
+            (`` ``) 
+            (S-TTL 
+              (NP-SBJ (NNP Barbara) (NNP Bush) )
+              (VP (VBZ Earns) 
+                (NP 
+                  (NP 
+                    (ADJP (RB Even) (JJR Higher) )
+                    (NNS Ratings) )
+                  (PP (IN Than) 
+                    (NP (DT the) (NNP President) )))))))))
+    (, ,) ('' '') 
+    (NP-SBJ 
+      (NP (PRP it) )
+      (SBAR (-NONE- *EXP*-1) ))
+    (VP (VBZ is) 
+      (ADJP-PRD (JJ regrettable) )
+      (SBAR-1 (IN that) 
+        (S 
+          (NP-SBJ (PRP you) )
+          (VP (MD must) 
+            (ADVP-TMP (RB continually) )
+            (VP (VB define) 
+              (NP (NNS blacks) )
+              (PP-MNR (IN by) 
+                (NP (PRP$ our) (NNS negatives) ))))
+          (: :) (`` ``) 
+          (S 
+            (PP-LOC (IN Among) 
+              (NP (NNS liberals) ))
+            (, ,) 
+            (NP-SBJ (CD 60) (NN %) )
+            (VP (VBP have) 
+              (NP 
+                (NP (JJ positive) (NNS views) )
+                (PP (IN of) 
+                  (NP (PRP her) )))
+              (, ,) 
+              (SBAR-ADV (IN while) 
+                (S 
+                  (NP-SBJ (CD 50) (NN %) )
+                  (VP (VBP approve) 
+                    (PP-CLR (IN of) 
+                      (NP 
+                        (NP (DT the) (NN president) (POS 's) )
+                        (NN job) (NN performance) ))))))))))
+    (. .) ))
+( (S 
+    (PP (IN In) 
+      (NP (NN part) ))
+    (, ,) 
+    (NP-SBJ (DT this) )
+    (VP (MD may) 
+      (VP (VB reflect) 
+        (NP (DT the) (NN fact) 
+          (SBAR (IN that) 
+            (S (`` `) 
+              (NP-SBJ (PRP she) )
+              (VP (VBZ speaks) 
+                (NP 
+                  (NP (DT a) 
+                    (ADJP (JJR more) (JJ progressive) )
+                    (NN language) )
+                  ('' ') 
+                  (SBAR (IN than) 
+                    (S 
+                      (NP-SBJ (PRP$ her) (NN husband) )
+                      (VP (-NONE- *?*) ))))
+                (, ,) 
+                (SBAR-ADV (IN as) 
+                  (S 
+                    (NP-SBJ 
+                      (NP (NNP Columbia) (POS 's) )
+                      (NNP Prof) (. .) 
+                      (-LRB- -LCB-)
+                      (NNP Ethel) 
+                      (-RRB- -RCB-)
+                      (NNP Klein) )
+                    (VP (VBZ puts) 
+                      (NP (PRP it) ))))))))))
+    (. .) ))
+( (S 
+    (PP-LOC (IN Among) 
+      (NP (NNS professionals) ))
+    (, ,) 
+    (NP-SBJ (CD 76) (NN %) )
+    (VP (VBP have) 
+      (NP 
+        (NP (DT a) (JJ favorable) (NN opinion) )
+        (PP (IN of) 
+          (NP (PRP$ her) )))
+      (, ,) 
+      (PP (VBN compared) 
+        (PP (TO to) 
+          (NP 
+            (NP (CD 62) (NN %) )
+            (SBAR 
+              (WHNP-248 (WP who) )
+              (S 
+                (NP-SBJ (-NONE- *T*-248) )
+                (VP (VBP approve) 
+                  (PP-CLR (IN of) 
+                    (NP 
+                      (NP (PRP$ her) (NN husband) (POS 's) )
+                      (NN performance) )))))))))
+    (. .) ))
+( (S 
+    (SBAR-ADV (IN While) 
+      (S 
+        (NP-SBJ 
+          (NP (DT a) (NN quarter) )
+          (PP (IN of) 
+            (NP (JJ black) (NNS voters) )))
+        (VP (VBP disapprove) 
+          (PP-CLR (IN of) 
+            (NP 
+              (NP 
+                (NP (NNP Mr.) (NNP Bush) (POS 's) )
+                (NN handling) )
+              (PP (IN of) 
+                (NP (PRP$ his) (NN job) )))))))
+    (, ,) 
+    (NP-SBJ 
+      (QP (RB only) (CD 15) )
+      (NN %) )
+    (VP (VBP have) 
+      (NP 
+        (NP (DT a) (JJ negative) (NN view) )
+        (PP (IN of) 
+          (NP (PRP$ his) (NN spouse) ))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ (DT The) (NNS statistics) )
+    (VP (VBP imply) 
+      (SBAR (IN that) 
+        (S 
+          (S 
+            (NP-SBJ 
+              (NP (NNS three-quarters) )
+              (PP (IN of) 
+                (NP (NNS blacks) )))
+            (VP (VBP approve) 
+              (PP-CLR (IN of) 
+                (NP 
+                  (NP (NNP Mr.) (NNP Bush) (POS 's) )
+                  (NN job) (NN performance) ))))
+          (CC and) 
+          (S 
+            (NP-SBJ 
+              (NP (CD 85) (NN %) )
+              (PP (IN of) 
+                (NP (NNS blacks) )))
+            (VP (VBP approve) 
+              (PP-CLR (IN of) 
+                (NP (NNP Mrs.) (NNP Bush) )))))))
+    (. .) ))
+( (S 
+    (SBAR-ADV (IN If) 
+      (S 
+        (NP-SBJ (DT the) (NN assumption) )
+        (VP (VBZ is) 
+          (SBAR-PRD (IN that) 
+            (S 
+              (NP-SBJ 
+                (NP (PRP it) )
+                (SBAR (-NONE- *EXP*-1) ))
+              (VP (VBZ is) 
+                (ADJP-PRD (JJ surprising) )
+                (SBAR-1 (IN that) 
+                  (S 
+                    (NP-SBJ 
+                      (ADJP (RB so) (JJ few) )
+                      (NNS blacks) )
+                    (VP (VBP find) 
+                      (S 
+                        (NP-SBJ (NNP Mr.) 
+                          (CC and)
+                          (NNP Mrs.) (NNP Bush) )
+                        (ADJP-PRD (JJ distasteful) )))))))))))
+    (, ,) 
+    (NP-SBJ (DT the) (JJ positive) (NN view) )
+    (VP (VBZ is) 
+      (ADJP-PRD 
+        (ADVP (RB even) (RBR more) )
+        (JJ newsworthy) ))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (PDT Such) (DT an) (NN editorial) (NN point) )
+      (PP (IN of) 
+        (NP (NN view) )))
+    (VP (VBZ perpetuates) 
+      (NP (DT an) (JJ insidious) 
+        (, ,)
+        (JJ stereotyped) (NN perspective) ))
+    (. .) ))
+( (SBARQ 
+    (WHADVP (WRB Why) )
+    (SQ (VBP are) 
+      (NP-SBJ-1 
+        (NP (PRP we) )
+        (NP (NNS blacks) ))
+      (ADVP-TMP (RB continually) )
+      (VP (VBN defined) 
+        (NP (-NONE- *-1) )
+        (PP (IN by) 
+          (NP-LGS 
+            (NP (PRP$ our) (NN minority) )
+            (CC and) 
+            (NP (DT the) (JJS lowest) (JJ common) (NN denominator) )))))
+    (. .) ))
+( (NP 
+    (NP (NNP Preston) (NNP G.) (NNP Foster) )
+    (NP-LOC 
+      (NP (NNP Birmingham) )
+      (, ,) 
+      (NP (NNP Ala) ))
+    (. .) ))

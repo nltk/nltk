@@ -1,0 +1,39 @@
+
+
+( (S (NP-SBJ-10 (NP J.P. Bolduc)
+                ,
+                (NP (NP vice chairman)
+                    (PP of
+                        (NP (NP W.R. Grace & Co.)
+                            ,
+                            (SBAR (WHNP-10 which)
+                                  (S (NP-SBJ *T*-10)
+                                     (VP holds
+                                         (NP (NP a (ADJP 83.4 %) interest)
+                                             (PP-LOC in
+						     (NP this energy-services company)))))))))
+                ,)
+     (VP was
+         (VP elected
+             (S (NP-SBJ *-10)
+		(NP-PRD a director))))
+     .))
+( (S (NP-SBJ He)
+     (VP succeeds
+         (NP (NP Terrence D. Daniels)
+	     ,
+	     (NP (ADVP formerly) 
+		 a W.R. Grace vice chairman)
+	     ,
+             (SBAR (WHNP-11 who)
+                   (S (NP-SBJ *T*-11)
+                      (VP resigned)))))
+     .))
+( (S (NP-SBJ W.R. Grace)
+     (VP holds
+         (NP (NP three)
+             (PP of
+                 (NP (NP Grace Energy 's)
+                     seven 
+		     board seats))))
+     .))

@@ -1,0 +1,64 @@
+
+
+( (S (NP-SBJ (NP Furukawa Co.)
+             (PP of
+                 (NP Japan)))
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP will
+                      (VP acquire
+			  (NP (NP (NP two construction machinery plants)
+				  and
+				  (NP a sales unit))
+			      (PP-LOC in
+				      (NP France))
+			      (VP (ADVP-TMP formerly)
+				  belonging
+				  (PP-CLR to
+					  (NP (NP Dresser Industries Inc.)
+					      (PP of
+						  (NP the U.S)))))))))))
+     .))
+( (S (NP-SBJ The company)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 it)
+                  (VP made
+                      (NP the purchase)
+		      (SBAR-TMP in order
+				(S (NP-SBJ *-1)
+				   (VP to
+				       (ADVP-LOC locally)
+				       (VP produce
+					   (NP (ADJP hydraulically operated)
+					       shovels)))))))))
+     .))
+( (S (NP-TMP Last October)
+     ,
+     (NP-SBJ the company)
+     (ADVP also)
+     (VP bought
+         (NP (NP a wheel-loader manufacturing plant)
+	     (PP-LOC in
+		     (NP (NP Heidelberg)
+			 ,
+			 (NP West Germany)
+			 ,)))
+	 (PP-DIR-CLR from
+		     (NP Dresser)))
+     .))
+( (S (NP-SBJ Furukawa)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ (NP the purchase)
+			  (PP of
+			      (NP the French and German plants)))
+		  (ADVP together) 
+                  (VP will
+                      (VP total
+                          (NP (NP (QP about 40 billion) yen)
+                              (PRN -LRB-
+				   (NP (QP $ 280 million) *U*)
+				   -RRB-)))))))
+     .))

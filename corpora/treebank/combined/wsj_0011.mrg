@@ -1,0 +1,185 @@
+
+( (S 
+    (NP-SBJ (NNP South) (NNP Korea) )
+    (VP (VBD registered) 
+      (NP 
+        (NP (DT a) (NN trade) (NN deficit) )
+        (PP (IN of) 
+          (NP 
+            (QP ($ $) (CD 101) (CD million) )
+            (-NONE- *U*) )))
+      (PP-TMP (IN in) 
+        (NP (NNP October) ))
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ (-NONE- *) )
+        (VP (VBG reflecting) 
+          (NP 
+            (NP (DT the) (NN country) (POS 's) )
+            (JJ economic) (NN sluggishness) )))
+      (, ,) 
+      (PP (VBG according) 
+        (PP (TO to) 
+          (NP 
+            (NP (NN government) (NNS figures) )
+            (VP (VBD released) 
+              (NP (-NONE- *) )
+              (NP-TMP (NNP Wednesday) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (JJ Preliminary) (NNS tallies) )
+      (PP (IN by) 
+        (NP (DT the) (NNP Trade) 
+          (CC and)
+          (NNP Industry) (NNP Ministry) )))
+    (VP (VBD showed) 
+      (NP 
+        (NP 
+          (NP (DT another) (NN trade) (NN deficit) )
+          (PP-TMP (IN in) 
+            (NP (NNP October) )))
+        (, ,) 
+        (NP 
+          (NP (DT the) (JJ fifth) (JJ monthly) (NN setback) )
+          (NP-TMP (DT this) (NN year) )))
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ (-NONE- *) )
+        (VP (VBG casting) 
+          (NP (DT a) (NN cloud) )
+          (PP-CLR (IN on) 
+            (NP 
+              (NP (NNP South) (NNP Korea) (POS 's) )
+              (JJ export-oriented) (NN economy) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNS Exports) )
+      (PP-TMP (IN in) 
+        (NP (NNP October) )))
+    (VP (VBD stood) 
+      (PP-LOC-CLR (IN at) 
+        (NP 
+          (NP 
+            (QP ($ $) (CD 5.29) (CD billion) )
+            (-NONE- *U*) )
+          (, ,) 
+          (NP 
+            (NP 
+              (ADJP 
+                (QP (DT a) (JJ mere) (CD 0.7) )
+                (NN %) )
+              (NN increase) )
+            (PP-TMP (IN from) 
+              (NP (DT a) (NN year) (JJR earlier) )))
+          (, ,) ))
+      (SBAR-TMP (IN while) 
+        (S 
+          (NP-SBJ (NNS imports) )
+          (VP (VBD increased) 
+            (ADVP-MNR (RB sharply) )
+            (PP-DIR (TO to) 
+              (NP 
+                (NP 
+                  (QP ($ $) (CD 5.39) (CD billion) )
+                  (-NONE- *U*) )
+                (, ,) 
+                (ADVP (RB up) 
+                  (NP (CD 20) (NN %) )
+                  (PP-TMP (IN from) 
+                    (NP (JJ last) (NNP October) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP 
+        (NP (NNP South) (NNP Korea) (POS 's) )
+        (JJ economic) (NN boom) )
+      (, ,) 
+      (SBAR 
+        (WHNP-12 (WDT which) )
+        (S 
+          (NP-SBJ (-NONE- *T*-12) )
+          (VP (VBD began) 
+            (PP-TMP (IN in) 
+              (NP (CD 1986) )))))
+      (, ,) )
+    (VP (VBD stopped) 
+      (NP-TMP (DT this) (NN year) )
+      (PP-PRP (IN because) (IN of) 
+        (NP 
+          (NP (VBN prolonged) (NN labor) (NNS disputes) )
+          (, ,) 
+          (NP (NN trade) (NNS conflicts) )
+          (CC and) 
+          (NP (JJ sluggish) (NNS exports) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NN Government) (NNS officials) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (NNS exports) )
+            (PP-TMP (IN at) 
+              (NP 
+                (NP (DT the) (NN end) )
+                (PP (IN of) 
+                  (NP (DT the) (NN year) )))))
+          (VP (MD would) 
+            (VP (VB remain) 
+              (PP-LOC (IN under) 
+                (NP 
+                  (NP (DT a) (NN government) (NN target) )
+                  (PP (IN of) 
+                    (NP 
+                      (QP ($ $) (CD 68) (CD billion) )
+                      (-NONE- *U*) )))))))))
+    (. .) ))
+( (S 
+    (PP (IN Despite) 
+      (NP (DT the) (JJ gloomy) (NN forecast) ))
+    (, ,) 
+    (NP-SBJ (NNP South) (NNP Korea) )
+    (VP (VBZ has) 
+      (VP (VBN recorded) 
+        (NP 
+          (NP (DT a) (NN trade) (NN surplus) )
+          (PP (IN of) 
+            (NP 
+              (QP ($ $) (CD 71) (CD million) )
+              (-NONE- *U*) )))
+        (ADVP-TMP (IN so) (IN far) )
+        (NP-TMP (DT this) (NN year) )))
+    (. .) ))
+( (S 
+    (PP-TMP 
+      (PP-DIR (IN From) 
+        (NP (NNP January) ))
+      (PP-DIR (TO to) 
+        (NP (NNP October) )))
+    (, ,) 
+    (NP-SBJ 
+      (NP (DT the) (NN nation) (POS 's) )
+      (VBN accumulated) (NNS exports) )
+    (VP (VBD increased) 
+      (NP-EXT (CD 4) (NN %) )
+      (PP-TMP (IN from) 
+        (NP (DT the) (JJ same) (NN period) (JJ last) (NN year) ))
+      (PP-DIR (TO to) 
+        (NP 
+          (QP ($ $) (CD 50.45) (CD billion) )
+          (-NONE- *U*) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNS Imports) )
+    (VP (VBD were) 
+      (PP-LOC-PRD (IN at) 
+        (NP 
+          (NP 
+            (QP ($ $) (CD 50.38) (CD billion) )
+            (-NONE- *U*) )))
+      (, ,) 
+      (ADVP (RB up) 
+        (NP (CD 19) (NN %) )))
+    (. .) ))

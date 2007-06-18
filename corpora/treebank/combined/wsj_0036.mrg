@@ -1,0 +1,1336 @@
+
+( (S 
+    (PP-LOC (IN In) 
+      (NP (DT another) (NN reflection) 
+        (SBAR (IN that) 
+          (S 
+            (NP-SBJ 
+              (NP (DT the) (NN growth) )
+              (PP (IN of) 
+                (NP (DT the) (NN economy) )))
+            (VP (VBZ is) 
+              (VP (VBG leveling) 
+                (PRT (RP off) )))))))
+    (, ,) 
+    (NP-SBJ (DT the) (NN government) )
+    (VP (VBD said) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ-1 
+            (NP 
+              (NP (NNS orders) )
+              (PP (IN for) 
+                (NP (VBN manufactured) (NNS goods) )))
+            (CC and) 
+            (NP 
+              (NP (NN spending) )
+              (PP (IN on) 
+                (NP (NN construction) ))))
+          (VP (VBD failed) 
+            (S 
+              (NP-SBJ (-NONE- *-1) )
+              (VP (TO to) 
+                (VP (VB rise) 
+                  (PP-TMP (IN in) 
+                    (NP (NNP September) )))))))))
+    (. .) ))
+( (S 
+    (ADVP-TMP (RB Meanwhile) )
+    (, ,) 
+    (NP-SBJ 
+      (NP (DT the) (NNP National) (NNP Association) )
+      (PP (IN of) 
+        (NP (NNP Purchasing) (NNP Management) )))
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP$ its) (JJS latest) (NN survey) )
+          (VP (VBD indicated) 
+            (SBAR (IN that) 
+              (S 
+                (NP-SBJ (DT the) (NN manufacturing) (NN economy) )
+                (VP (VBD contracted) 
+                  (PP-TMP (IN in) 
+                    (NP (NNP October) ))
+                  (PP-TMP (IN for) 
+                    (NP (DT the) (JJ sixth) (JJ consecutive) (NN month) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP$ Its) (NN index) )
+    (VP (VBD inched) 
+      (ADVP-CLR (RB up) )
+      (PP-DIR (TO to) 
+        (NP (CD 47.6) (NN %) )
+        (PP-TMP (IN in) 
+          (NP (NNP October) )))
+      (PP-DIR (IN from) 
+        (NP (CD 46) (NN %) )
+        (PP-TMP (IN in) 
+          (NP (NNP September) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT Any) (NN reading) )
+      (PP-LOC (IN below) 
+        (NP (CD 50) (NN %) )))
+    (VP (VBZ suggests) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (DT the) (NN manufacturing) (NN sector) )
+          (VP (VBZ is) 
+            (ADVP (RB generally) )
+            (VP (VBG declining) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (VBG purchasing) (NNS managers) )
+    (, ,) 
+    (ADVP (RB however) )
+    (, ,) 
+    (ADVP (RB also) )
+    (VP (VBD said) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ (NNS orders) )
+          (VP (VBD turned) 
+            (ADVP-CLR (RB up) )
+            (PP-TMP (IN in) 
+              (NP (NNP October) ))
+            (PP-TMP (IN after) 
+              (NP 
+                (NP (CD four) (NNS months) )
+                (PP (IN of) 
+                  (NP (NN decline) ))))))))
+    (. .) ))
+( (S 
+    (S-TPC-2 
+      (NP-SBJ (NNS Factories) )
+      (VP (VBD booked) 
+        (NP 
+          (NP 
+            (NP 
+              (QP ($ $) (CD 236.74) (CD billion) )
+              (-NONE- *U*) )
+            (PP (IN in) 
+              (NP (NNS orders) )))
+          (NP (-NONE- *ICH*-1) ))
+        (PP-TMP (IN in) 
+          (NP (NNP September) ))
+        (, ,) 
+        (NP-1 
+          (NP (RB nearly) (DT the) (JJ same) )
+          (PP (IN as) 
+            (NP 
+              (NP (DT the) 
+                (QP ($ $) (CD 236.79) (CD billion) )
+                (-NONE- *U*) )
+              (PP-TMP (IN in) 
+                (NP (NNP August) )))))))
+    (, ,) 
+    (NP-SBJ (DT the) (NNP Commerce) (NNP Department) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-2) )))
+    (. .) ))
+( (S 
+    (SBAR-ADV (IN If) 
+      (FRAG (RB not) 
+        (PP (IN for) 
+          (NP 
+            (NP (DT a) 
+              (ADJP (CD 59.6) (NN %) )
+              (NN surge) )
+            (PP-LOC (IN in) 
+              (NP 
+                (NP (NNS orders) )
+                (PP (IN for) 
+                  (NP (NN capital) (NNS goods) ))
+                (PP (IN by) 
+                  (NP (NN defense) (NNS contractors) ))))))))
+    (, ,) 
+    (NP-SBJ (NN factory) (NNS orders) )
+    (VP (MD would) 
+      (VP (VB have) 
+        (VP (VBN fallen) 
+          (NP-EXT (CD 2.1) (NN %) ))))
+    (. .) ))
+( (S 
+    (PP-LOC (IN In) 
+      (NP (DT a) (JJ separate) (NN report) ))
+    (, ,) 
+    (NP-SBJ (DT the) (NN department) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (NN construction) (NN spending) )
+          (VP (VBD ran) 
+            (PP-CLR (IN at) 
+              (NP 
+                (NP (DT an) (JJ annual) (NN rate) )
+                (PP (IN of) 
+                  (NP 
+                    (NP 
+                      (QP ($ $) (CD 415.6) (CD billion) )
+                      (-NONE- *U*) )
+                    (, ,) 
+                    (ADJP (RB not) (RB significantly) (JJ different) 
+                      (PP (IN from) 
+                        (NP 
+                          (NP (DT the) 
+                            (QP ($ $) (CD 415.8) (CD billion) )
+                            (-NONE- *U*) )
+                          (VP (VBN reported) 
+                            (NP (-NONE- *) )
+                            (PP (IN for) 
+                              (NP (NNP August) ))))))))))))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ (JJ Private) (NN construction) (NN spending) )
+      (VP (VBD was) 
+        (ADVP-PRD (RB down) )))
+    (, ,) (CC but) 
+    (S 
+      (NP-SBJ (NN government) (NN building) (NN activity) )
+      (VP (VBD was) 
+        (ADVP-PRD (RB up) )))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 
+      (NP (DT The) (NNS figures) )
+      (PP-LOC (IN in) 
+        (NP (DT both) (NNS reports) )))
+    (VP 
+      (VP (VBD were) 
+        (VP (VBN adjusted) 
+          (NP (-NONE- *-1) )
+          (S-PRP 
+            (NP-SBJ (-NONE- *) )
+            (VP (TO to) 
+              (VP (VB remove) 
+                (NP 
+                  (NP (DT the) (NNS effects) )
+                  (PP (IN of) 
+                    (NP (JJ usual) (JJ seasonal) (NNS patterns) ))))))))
+      (, ,) (CC but) 
+      (VP (VBD were) (RB n't) 
+        (VP (VBN adjusted) 
+          (PP-PRP (IN for) 
+            (NP (NN inflation) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Kenneth) (NNP Mayland) )
+      (, ,) 
+      (NP 
+        (NP (NN economist) )
+        (PP (IN for) 
+          (NP 
+            (NP (NNP Society) (NNP Corp.) )
+            (, ,) 
+            (NP (DT a) (NNP Cleveland) (NN bank) )
+            (, ,) ))))
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 
+            (NP (NN demand) )
+            (PP (IN for) 
+              (NP 
+                (NP (NNS exports) )
+                (PP (IN of) 
+                  (NP (NN factory) (NNS goods) )))))
+          (VP (VBZ is) 
+            (VP (VBG beginning) 
+              (S 
+                (NP-SBJ (-NONE- *-1) )
+                (VP (TO to) 
+                  (VP (VB taper) 
+                    (PRT (RP off) )))))))))
+    (. .) ))
+( (S 
+    (PP-TMP (IN At) 
+      (NP (DT the) (JJ same) (NN time) ))
+    (, ,) 
+    (NP-SBJ-1 
+      (NP (DT the) (NN drop) )
+      (PP-LOC (IN in) 
+        (NP (NN interest) (NNS rates) ))
+      (PP-TMP (IN since) 
+        (NP (DT the) (NN spring) )))
+    (VP (VBZ has) 
+      (VP (VBN failed) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB revive) 
+              (NP (DT the) (JJ residential) (NN construction) (NN industry) ))))))
+    (. .) ))
+( (S (`` ``) 
+    (SBARQ-TPC-1 
+      (WHNP-46 (WP What) (NN sector) )
+      (SQ (VBZ is) 
+        (NP-SBJ-2 (-NONE- *T*-46) )
+        (VP (VBG stepping) 
+          (ADVP-DIR (RB forward) )
+          (S-PRP 
+            (NP-SBJ (-NONE- *-2) )
+            (VP (TO to) 
+              (VP (VB pick) 
+                (PRT (RP up) )
+                (NP (DT the) (NN slack) ))))))
+      (. ?) )
+    ('' '') 
+    (NP-SBJ (PRP he) )
+    (VP (VBD asked) 
+      (SBARQ (-NONE- *T*-1) ))
+    (. .) ))
+( (S (`` ``) 
+    (NP-SBJ (PRP I) )
+    (VP (VBP draw) 
+      (NP (DT a) (NN blank) ))
+    (. .) ('' '') ))
+( (S 
+    (PP (IN By) 
+      (NP (JJS most) (NNS measures) ))
+    (, ,) 
+    (NP-SBJ 
+      (NP (DT the) (NN nation) (POS 's) )
+      (JJ industrial) (NN sector) )
+    (VP (VBZ is) 
+      (ADVP-TMP (RB now) )
+      (VP (VBG growing) 
+        (ADVP-MNR (RB very) (RB slowly) )
+        (: --) 
+        (SBAR-ADV (IN if) 
+          (FRAG 
+            (ADVP (IN at) (DT all) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NN Factory) (NNS payrolls) )
+    (VP (VBD fell) 
+      (PP-TMP (IN in) 
+        (NP (NNP September) )))
+    (. .) ))
+( (SINV 
+    (ADVP-PRD-TPC-1 (RB So) )
+    (VP (VBD did) 
+      (VP (-NONE- *?*) 
+        (ADVP-PRD (-NONE- *T*-1) )))
+    (NP-SBJ 
+      (NP (DT the) (NNP Federal) (NNP Reserve) (NNP Board) (POS 's) )
+      (JJ industrial-production) (NN index) )
+    (. .) ))
+( (S (CC Yet) 
+    (NP-SBJ (JJ many) (NNS economists) )
+    (VP (VBP are) (RB n't) 
+      (VP (VBG predicting) 
+        (SBAR (IN that) 
+          (S 
+            (NP-SBJ-1 (DT the) (NN economy) )
+            (VP (VBZ is) 
+              (VP (IN about) 
+                (S 
+                  (NP-SBJ (-NONE- *-1) )
+                  (VP (TO to) 
+                    (VP (VB slip) 
+                      (PP-DIR (IN into) 
+                        (NP (NN recession) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP They) )
+    (VP (VBP cite) 
+      (NP 
+        (NP (DT a) (NN lack) )
+        (PP (IN of) 
+          (NP (`` ``) 
+            (NP (NNS imbalances) )
+            ('' '') 
+            (SBAR 
+              (WHNP-47 (WDT that) )
+              (S 
+                (NP-SBJ (-NONE- *T*-47) )
+                (VP (VBP provide) 
+                  (NP 
+                    (NP (JJ early) (NN warning) (NNS signals) )
+                    (PP (IN of) 
+                      (NP (DT a) (NN downturn) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (NNS Inventories) )
+    (VP (VBP are) 
+      (VP 
+        (ADVP-MNR (RB closely) )
+        (VBN watched) 
+        (NP (-NONE- *-1) )
+        (PP-PRP (IN for) 
+          (NP (JJ such) (NNS clues) ))
+        (, ,) 
+        (PP (IN for) 
+          (NP (NN instance) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNS Economists) )
+    (VP (VBP say) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (DT a) (NN buildup) )
+            (PP-LOC (IN in) 
+              (NP (NNS inventories) )))
+          (VP (MD can) 
+            (VP (VB provoke) 
+              (NP 
+                (NP (NNS cutbacks) )
+                (PP-LOC (IN in) 
+                  (NP (NN production) ))
+                (SBAR 
+                  (WHNP-48 (WDT that) )
+                  (S 
+                    (NP-SBJ (-NONE- *T*-48) )
+                    (VP (MD can) 
+                      (VP (VB lead) 
+                        (PP-CLR (TO to) 
+                          (NP (DT a) (NN recession) ))))))))))))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ 
+      (NP (NN yesterday) (POS 's) )
+      (NN factory) (NNS orders) (NN report) )
+    (VP (VBD had) 
+      (NP 
+        (NP (JJ good) (NN news) )
+        (PP-LOC (IN on) 
+          (NP (DT that) (NN front) ))))
+    (: :) 
+    (S 
+      (NP-SBJ (PRP it) )
+      (VP (VBD said) 
+        (SBAR (-NONE- 0) 
+          (S 
+            (NP-SBJ (NN factory) (NNS inventories) )
+            (VP 
+              (VP (VBD fell) 
+                (NP-EXT (CD 0.1) (NN %) )
+                (PP-TMP (IN in) 
+                  (NP (NNP September) )))
+              (, ,) 
+              (NP 
+                (NP (DT the) (JJ first) (NN decline) )
+                (PP-TMP (IN since) 
+                  (NP (NNP February) (CD 1987) ))))))))
+    (. .) ))
+( (SINV (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ (DT This) )
+      (VP (VBZ conforms) 
+        (PP-CLR (TO to) 
+          (NP (DT the) (`` `) (JJ soft) (NN landing) ('' ') (NN scenario) ))))
+    (, ,) ('' '') 
+    (VP (VBD said) 
+      (S (-NONE- *T*-1) ))
+    (NP-SBJ 
+      (NP (NNP Elliott) (NNP Platt) )
+      (, ,) 
+      (NP 
+        (NP (DT an) (NN economist) )
+        (PP-LOC (IN at) 
+          (NP (NNP Donaldson) 
+            (, ,)
+            (NNP Lufkin) (CC &) (NNP Jenrette) (NNP Securities) (NNP Corp) ))))
+    (. .) ))
+( (S (`` ``) 
+    (NP-SBJ (PRP I) )
+    (VP (VBP do) (RB n't) 
+      (VP (VB see) 
+        (NP (DT any) (NNS signs) 
+          (SBAR (IN that) 
+            (S 
+              (NP-SBJ (NNS inventories) )
+              (VP (VBP are) 
+                (ADJP-PRD (JJ excessive) )))))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ (DT A) (JJ soft) (NN landing) )
+    (VP (VBZ is) 
+      (NP-PRD 
+        (NP (DT an) (JJ economic) (NN slowdown) )
+        (SBAR 
+          (WHNP-49 (WDT that) )
+          (S 
+            (NP-SBJ-1 (-NONE- *T*-49) )
+            (VP (VBZ eases) 
+              (NP (NN inflation) )
+              (PP-MNR (IN without) 
+                (S-NOM 
+                  (NP-SBJ (-NONE- *-1) )
+                  (VP (VBG leading) 
+                    (PP-CLR (TO to) 
+                      (NP (DT a) (NN recession) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN department) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 
+            (NP (NNS orders) )
+            (PP (IN for) 
+              (NP 
+                (NP (JJ nondurable) (NNS goods) )
+                (: --) 
+                (NP 
+                  (NP (DT those) )
+                  (VP (VBN intended) 
+                    (S 
+                      (NP-SBJ (-NONE- *) )
+                      (VP (TO to) 
+                        (VP (VB last) 
+                          (NP 
+                            (QP (JJR fewer) (IN than) (CD three) )
+                            (NNS years) ))))))
+                (: --) )))
+          (VP (VBD fell) 
+            (NP-EXT (CD 0.3) (NN %) )
+            (PP-TMP (IN in) 
+              (NP (NNP September) ))
+            (PP-DIR (TO to) 
+              (NP 
+                (QP ($ $) (CD 109.73) (CD billion) )
+                (-NONE- *U*) ))
+            (PP-TMP (RB after) 
+              (S-NOM 
+                (NP-SBJ (-NONE- *-1) )
+                (VP (VBG climbing) 
+                  (NP-EXT (CD 0.9) (NN %) )
+                  (NP-TMP 
+                    (NP (DT the) (NN month) )
+                    (ADVP (RB before) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 
+      (NP (NNS Orders) )
+      (PP (IN for) 
+        (NP (JJ durable) (NNS goods) )))
+    (VP (VBD were) 
+      (ADVP-PRD (RB up) 
+        (NP (CD 0.2) (NN %) )
+        (PP (TO to) 
+          (NP 
+            (QP ($ $) (CD 127.03) (CD billion) )
+            (-NONE- *U*) )))
+      (PP-TMP (IN after) 
+        (S-NOM 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (VBG rising) 
+            (NP-EXT (CD 3.9) (NN %) )
+            (NP-TMP 
+              (NP (DT the) (NN month) )
+              (ADVP (RB before) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN department) )
+    (ADVP-TMP (RB previously) )
+    (VP (VBD estimated) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ (NNS durable-goods) (NNS orders) )
+          (VP (VBD fell) 
+            (NP-EXT (CD 0.1) (NN %) )
+            (PP-TMP (IN in) 
+              (NP (NNP September) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NN Factory) (NNS shipments) )
+    (VP (VBD fell) 
+      (NP-EXT (CD 1.6) (NN %) )
+      (PP-DIR (TO to) 
+        (NP 
+          (QP ($ $) (CD 234.4) (CD billion) )
+          (-NONE- *U*) ))
+      (PP-TMP (IN after) 
+        (S-NOM 
+          (NP-SBJ (-NONE- *) )
+          (VP (VBG rising) 
+            (NP-EXT (CD 5.4) (NN %) )
+            (PP-TMP (IN in) 
+              (NP (NNP August) ))))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (NP-SBJ (NNS Shipments) )
+      (VP (VBP have) 
+        (VP (VBN been) 
+          (ADJP-PRD (RB relatively) (JJ level) )
+          (PP-TMP (IN since) 
+            (NP (NNP January) )))))
+    (, ,) 
+    (NP-SBJ (DT the) (NNP Commerce) (NNP Department) )
+    (VP (VBD noted) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S 
+    (NP-SBJ-3 
+      (NP 
+        (NP (NNS Manufacturers) (POS ') )
+        (NNS backlogs) )
+      (PP (IN of) 
+        (NP (JJ unfilled) (NNS orders) )))
+    (VP (VBD rose) 
+      (NP-EXT (CD 0.5) (NN %) )
+      (PP-TMP (IN in) 
+        (NP (NNP September) ))
+      (PP-DIR (TO to) 
+        (NP 
+          (QP ($ $) (CD 497.34) (CD billion) )
+          (-NONE- *U*) ))
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ-2 (-NONE- *-3) )
+        (VP (VBN helped) 
+          (NP (-NONE- *-2) )
+          (PP (IN by) 
+            (NP-LGS 
+              (NP (NN strength) )
+              (PP-LOC (IN in) 
+                (NP (DT the) (NN defense) (NN capital) (NNS goods) (NN sector) )))))))
+    (. .) ))
+( (S 
+    (PP (VBG Excluding) 
+      (NP (DT these) (NNS orders) ))
+    (, ,) 
+    (NP-SBJ (NNS backlogs) )
+    (VP (VBD declined) 
+      (NP-EXT (CD 0.3) (NN %) ))
+    (. .) ))
+( (S 
+    (PP-LOC (IN In) 
+      (NP (PRP$ its) (NN construction) (NN spending) (NN report) ))
+    (, ,) 
+    (NP-SBJ (DT the) (NNP Commerce) (NNP Department) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (JJ residential) (NN construction) )
+            (, ,) 
+            (SBAR 
+              (WHNP-50 (WDT which) )
+              (S 
+                (NP-SBJ (-NONE- *T*-50) )
+                (VP (VBZ accounts) 
+                  (PP-CLR (IN for) 
+                    (NP 
+                      (NP 
+                        (QP (RB nearly) (NN half) ))
+                      (PP (IN of) 
+                        (NP (DT all) (NN construction) (NN spending) )))))))
+            (, ,) )
+          (VP (VBD was) 
+            (ADVP-PRD (JJ off) 
+              (NP (CD 0.9) (NN %) )
+              (PP (-NONE- *ICH*-3) ))
+            (PP-TMP (IN in) 
+              (NP (NNP September) ))
+            (PP-DIR-3 (TO to) 
+              (NP 
+                (NP (DT an) (JJ annual) (NN rate) )
+                (PP (IN of) 
+                  (NP 
+                    (QP ($ $) (CD 191.9) (CD billion) )
+                    (-NONE- *U*) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP David) (NNP Berson) )
+      (, ,) 
+      (NP 
+        (NP (NN economist) )
+        (PP (IN for) 
+          (NP (DT the) (NNP Mortgage) (NNP Bankers) (NNP Association) )))
+      (, ,) )
+    (VP (VBD predicted) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (DT the) (NN drop) )
+            (PP-LOC (IN in) 
+              (NP (NN interest) (NNS rates) )))
+          (ADVP-TMP (RB eventually) )
+          (VP (MD will) 
+            (VP (VB boost) 
+              (NP 
+                (NP (NN spending) )
+                (PP (IN on) 
+                  (NP (JJ single-family) (NNS homes) )))
+              (PRN 
+                (, ,)
+                (PP (CC but) 
+                  (ADVP (RB probably) )
+                  (RB not) 
+                  (PP-TMP (IN until) 
+                    (NP (JJ early) (JJ next) (NN year) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NN Spending) )
+      (PP (IN on) 
+        (NP (JJ private) 
+          (, ,)
+          (JJ nonresidential) (NN construction) )))
+    (VP (VBD was) 
+      (ADVP-PRD (JJ off) 
+        (NP (CD 2.6) (NN %) )
+        (PP (TO to) 
+          (NP 
+            (NP (DT an) (JJ annual) (NN rate) )
+            (PP (IN of) 
+              (NP 
+                (QP ($ $) (CD 99.1) (CD billion) )
+                (-NONE- *U*) )))))
+      (PP (IN with) 
+        (S-NOM 
+          (NP-SBJ (DT no) (NN sector) )
+          (VP (VBG showing) 
+            (NP (NN strength) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Government) (NN construction) (NN spending) )
+    (VP (VBD rose) 
+      (NP-EXT (CD 4.3) (NN %) )
+      (PP-DIR (TO to) 
+        (NP 
+          (QP ($ $) (CD 88) (CD billion) )
+          (-NONE- *U*) )))
+    (. .) ))
+( (S 
+    (PP-TMP (RB After) 
+      (S-NOM 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (VBG adjusting) 
+          (PP-CLR (IN for) 
+            (NP (NN inflation) )))))
+    (, ,) 
+    (NP-SBJ-1 (DT the) (NNP Commerce) (NNP Department) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (NN construction) (NN spending) )
+          (VP (VBD did) (RB n't) 
+            (VP (VB change) 
+              (PP-TMP (IN in) 
+                (NP (NNP September) )))))))
+    (. .) ))
+( (S 
+    (PP-TMP (IN For) 
+      (NP 
+        (NP (DT the) (JJ first) (CD nine) (NNS months) )
+        (PP (IN of) 
+          (NP (DT the) (NN year) ))))
+    (, ,) 
+    (NP-SBJ (JJ total) (NN construction) (NN spending) )
+    (VP (VBD ran) 
+      (PP 
+        (NP-ADV 
+          (QP (RB about) (CD 2) )
+          (NN %) )
+        (IN above) 
+        (NP 
+          (NP (JJ last) (NN year) (POS 's) )
+          (NN level) )))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (NN government) (POS 's) )
+      (NN construction) (NN spending) (NNS figures) )
+    (VP (VBP contrast) 
+      (PP-CLR (IN with) 
+        (NP 
+          (NP (DT a) (NN report) )
+          (VP (VBD issued) 
+            (NP (-NONE- *) )
+            (PP-TMP 
+              (ADVP (RBR earlier) )
+              (IN in) 
+              (NP (DT the) (NN week) ))
+            (PP (IN by) 
+              (NP-LGS 
+                (NP (NNP McGraw-Hill) (NNP Inc.) (POS 's) )
+                (NNP F.W.) (NNP Dodge) (NNP Group) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Dodge) )
+    (VP (VBD reported) 
+      (NP 
+        (NP (DT an) 
+          (ADJP (CD 8) (NN %) )
+          (NN increase) )
+        (PP-LOC (IN in) 
+          (NP 
+            (NP (NN construction) (NNS contracts) )
+            (VP (VBN awarded) 
+              (NP (-NONE- *) )
+              (PP-TMP (IN in) 
+                (NP (NNP September) )))))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ (DT The) (NN goverment) )
+      (VP (VBZ counts) 
+        (NP (NN money) )
+        (SBAR-TMP (IN as) 
+          (S 
+            (NP-SBJ-53 (PRP it) )
+            (VP (VBZ is) 
+              (VP (VBN spent) 
+                (NP (-NONE- *-53) )))))))
+    (: ;) 
+    (S 
+      (NP-SBJ (NNP Dodge) )
+      (VP (VBZ counts) 
+        (NP (NNS contracts) )
+        (SBAR-TMP 
+          (WHADVP-1 (WRB when) )
+          (S 
+            (NP-SBJ-54 (PRP they) )
+            (VP (VBP are) 
+              (VP (VBN awarded) 
+                (NP (-NONE- *-54) )
+                (ADVP-TMP (-NONE- *T*-1) )))))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ (DT The) (NN government) )
+      (VP (VBZ includes) 
+        (NP 
+          (NP (NN money) )
+          (VP (VBN spent) 
+            (NP (-NONE- *) )
+            (PP-CLR (IN on) 
+              (NP (JJ residential) (NN renovation) ))))))
+    (: ;) 
+    (S 
+      (NP-SBJ (NNP Dodge) )
+      (VP (VBZ does) (RB n't) 
+        (VP (-NONE- *?*) )))
+    (. .) ))
+( (SINV 
+    (S-TPC-2 
+      (SBAR-ADV (IN Although) 
+        (S 
+          (NP-SBJ-1 
+            (NP (DT the) (NN purchasing) (NNS managers) (POS ') )
+            (NN index) )
+          (VP (VBZ continues) 
+            (S 
+              (NP-SBJ (-NONE- *-1) )
+              (VP (TO to) 
+                (VP (VB indicate) 
+                  (NP (DT a) (VBG slowing) (NN economy) )))))))
+      (, ,) 
+      (NP-SBJ (PRP it) )
+      (VP (VBZ is) (RB n't) 
+        (VP (VBG signaling) 
+          (NP (DT an) (JJ imminent) (NN recession) ))))
+    (, ,) 
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-2) )))
+    (NP-SBJ 
+      (NP (NNP Robert) (NNP Bretz) )
+      (, ,) 
+      (NP 
+        (NP 
+          (NP (NN chairman) )
+          (PP (IN of) 
+            (NP 
+              (NP (DT the) (NN association) (POS 's) )
+              (NN survey) (NN committee) )))
+        (CC and) 
+        (NP 
+          (NP (NN director) )
+          (PP (IN of) 
+            (NP (NNS materials) (NN management) ))
+          (PP-LOC (IN at) 
+            (NP 
+              (NP (NNP Pitney) (NNP Bowes) (NNP Inc.) )
+              (, ,) 
+              (NP-LOC 
+                (NP (NNP Stamford) )
+                (, ,) 
+                (NP (NNP Conn) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP He) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 (DT the) (NN index) )
+          (VP (MD would) 
+            (VP (VB have) 
+              (S 
+                (NP-SBJ (-NONE- *-1) )
+                (VP (TO to) 
+                  (VP (VB be) 
+                    (PP-PRD-LOC (IN in) 
+                      (NP (DT the) 
+                        (ADJP (JJ low) (CD 40) (NN %) )
+                        (NN range) ))
+                    (PP-TMP (IN for) 
+                      (NP (JJ several) (NNS months) ))
+                    (S-PRP 
+                      (NP-SBJ-55 (-NONE- *-1) )
+                      (VP (TO to) 
+                        (VP (VB be) 
+                          (VP (VBN considered) 
+                            (S 
+                              (NP-SBJ (-NONE- *-55) )
+                              (NP-PRD 
+                                (NP (DT a) (NN forecast) )
+                                (PP (IN of) 
+                                  (NP (NN recession) ))))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN report) )
+    (VP (VBD offered) 
+      (NP (JJ new) (NN evidence) 
+        (SBAR (IN that) 
+          (S 
+            (NP-SBJ-1 
+              (NP 
+                (NP (DT the) (NN nation) (POS 's) )
+                (NN export) (NN growth) ))
+            (PRN 
+              (, ,)
+              (SBAR-ADV (IN though) 
+                (S 
+                  (NP-SBJ (-NONE- *-1) )
+                  (ADVP-TMP (RB still) )
+                  (VP (VBG continuing) )))
+              (, ,) )
+            (VP (MD may) 
+              (VP (VB be) 
+                (VP (VBG slowing) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP 
+        (NP 
+          (QP (RB Only) (CD 19) )
+          (NN %) )
+        (PP (IN of) 
+          (NP (DT the) (VBG purchasing) (NNS managers) ))))
+    (VP (VBD reported) 
+      (NP (JJR better) (NN export) (NNS orders) )
+      (PP-TMP (IN in) 
+        (NP (NNP October) ))
+      (, ,) 
+      (ADVP (RB down) 
+        (PP (IN from) 
+          (NP (CD 27) (NN %) )
+          (PP-TMP (IN in) 
+            (NP (NNP September) )))))
+    (. .) ))
+( (S (CC And) 
+    (NP-SBJ 
+      (NP (CD 8) (NN %) )
+      (PP (-NONE- *ICH*-1) ))
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (NN export) (NNS orders) )
+          (VP (VBD were) 
+            (ADVP-PRD (RB down) )
+            (NP-TMP (JJ last) (NN month) ))))
+      (, ,) 
+      (PP-1 (VBN compared) 
+        (PP (IN with) 
+          (NP 
+            (NP (CD 6) (NN %) )
+            (ADVP-TMP 
+              (NP (DT the) (NN month) )
+              (RB before) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (NN purhasing) (NNS managers) (POS ') )
+      (NN report) )
+    (ADVP (RB also) )
+    (VP (VBD added) 
+      (NP (NN evidence) 
+        (SBAR (IN that) 
+          (S 
+            (NP-SBJ (NN inflation) )
+            (VP (VBZ is) 
+              (PP-LOC-PRD (IN under) 
+                (NP (NN control) )))))))
+    (. .) ))
+( (S 
+    (PP-TMP (IN For) 
+      (NP (DT the) (JJ fifth) (JJ consecutive) (NN month) ))
+    (, ,) 
+    (NP-SBJ (VBG purchasing) (NNS managers) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (NNS prices) )
+            (PP (IN for) 
+              (NP 
+                (NP (DT the) (NNS goods) )
+                (SBAR 
+                  (WHNP-1 (-NONE- 0) )
+                  (S 
+                    (NP-SBJ (PRP they) )
+                    (VP (VBD purchased) 
+                      (NP (-NONE- *T*-1) )))))))
+          (VP (VBD fell) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN decline) )
+    (VP (VBD was) 
+      (ADJP-PRD 
+        (ADJP (RB even) (JJR steeper) )
+        (PP (IN than) 
+          (PP-TMP (IN in) 
+            (NP (NNP September) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP They) )
+    (ADVP (RB also) )
+    (VP (VBD said) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ (NNS vendors) )
+          (VP (VBD were) 
+            (VP (VBG delivering) 
+              (NP (NNS goods) )
+              (ADVP-MNR 
+                (ADVP (RBR more) (RB quickly) )
+                (SBAR (-NONE- *ICH*-1) ))
+              (PP-TMP (IN in) 
+                (NP (NNP October) ))
+              (SBAR-1 (IN than) 
+                (S 
+                  (NP-SBJ (PRP they) )
+                  (VP (VBD had) 
+                    (VP (-NONE- *?*) 
+                      (PP-TMP (IN for) 
+                        (NP 
+                          (NP (DT each) )
+                          (PP (IN of) 
+                            (NP (DT the) (CD five) (JJ previous) (NNS months) )))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNS Economists) )
+    (VP (VBP consider) 
+      (S 
+        (NP-SBJ (DT that) )
+        (NP-PRD (DT a) (NN sign) 
+          (SBAR (IN that) 
+            (S 
+              (NP-SBJ (JJ inflationary) (NNS pressures) )
+              (VP (VBP are) 
+                (VP (VBG abating) )))))))
+    (. .) ))
+( (S 
+    (SBAR-TMP 
+      (WHADVP-1 (WRB When) )
+      (S 
+        (S 
+          (NP-SBJ (NN demand) )
+          (VP (VBZ is) 
+            (ADJP-PRD 
+              (ADJP (JJR stronger) )
+              (SBAR (IN than) 
+                (S 
+                  (NP-SBJ (NNS suppliers) )
+                  (VP (MD can) 
+                    (VP (VB handle) )))))
+            (ADVP-TMP (-NONE- *T*-1) )))
+        (CC and) 
+        (S 
+          (NP-SBJ (NN delivery) (NNS times) )
+          (VP (VBP lengthen) 
+            (ADVP-TMP (-NONE- *T*-1) )))))
+    (, ,) 
+    (NP-SBJ-2 (NNS prices) )
+    (VP (VBP tend) 
+      (S 
+        (NP-SBJ (-NONE- *-2) )
+        (VP (TO to) 
+          (VP (VB rise) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ-56 
+      (NP (DT The) (NN purchasing) (NNS managers) (POS ') )
+      (NN report) )
+    (VP (VBZ is) 
+      (VP (VBN based) 
+        (NP (-NONE- *-56) )
+        (PP-CLR (IN on) 
+          (NP 
+            (NP (NNS data) )
+            (VP (VBN provided) 
+              (NP (-NONE- *) )
+              (PP (IN by) 
+                (NP-LGS 
+                  (QP (RBR more) (IN than) (CD 250) )
+                  (NN purchasing) (NNS executives) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT Each) )
+      (PP (IN of) 
+        (NP 
+          (NP (DT the) (NN survey) (POS 's) )
+          (NNS indicators) )))
+    (VP (VBZ gauges) 
+      (NP 
+        (NP (DT the) (NN difference) )
+        (PP (IN between) 
+          (NP 
+            (NP 
+              (NP (DT the) (NN number) )
+              (PP (IN of) 
+                (NP (NNS purchasers) ))
+              (VP (VBG reporting) 
+                (NP 
+                  (NP (NN improvement) )
+                  (PP-LOC (IN in) 
+                    (NP (DT a) (JJ particular) (NN area) )))))
+            (CC and) 
+            (NP 
+              (NP (DT the) (NN number) )
+              (VP (VBG reporting) 
+                (NP (DT a) (NN worsening) )))))))
+    (. .) ))
+( (S 
+    (PP-TMP (IN For) 
+      (NP (DT the) (JJ first) (NN time) ))
+    (, ,) 
+    (NP-SBJ (DT the) (NNP October) (NN survey) )
+    (VP (VBD polled) 
+      (NP (NNS members) )
+      (PP-CLR (IN on) 
+        (NP (NNS imports) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP It) )
+    (VP (VBD found) 
+      (SBAR (IN that) 
+        (S 
+          (PP-TPC-1 (IN of) 
+            (NP 
+              (NP (DT the) (CD 73) (NN %) )
+              (SBAR 
+                (WHNP-51 (WP who) )
+                (S 
+                  (NP-SBJ (-NONE- *T*-51) )
+                  (VP (VBP import) )))))
+          (, ,) 
+          (S 
+            (NP-SBJ 
+              (NP (CD 10) (NN %) )
+              (PP (-NONE- *T*-1) ))
+            (VP (VBD said) 
+              (SBAR (-NONE- 0) 
+                (S 
+                  (NP-SBJ (PRP they) )
+                  (VP (VBD imported) 
+                    (NP (RBR more) )
+                    (PP-TMP (IN in) 
+                      (NP (NNP October) )))))))
+          (CC and) 
+          (S 
+            (NP-SBJ 
+              (NP (CD 12) (NN %) )
+              (PP (-NONE- *T*-1) ))
+            (VP (VBD said) 
+              (SBAR (-NONE- 0) 
+                (S 
+                  (NP-SBJ (PRP they) )
+                  (VP (VBD imported) 
+                    (NP 
+                      (NP (JJR less) )
+                      (PP (IN than) 
+                        (NP (DT the) (JJ previous) (NN month) )))))))))))
+    (. .) ))
+( (S 
+    (SBAR-TMP (IN While) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (VBG acknowledging) 
+          (SBAR (-NONE- 0) 
+            (S 
+              (NP-SBJ 
+                (NP (CD one) (NN month) (POS 's) )
+                (NNS figures) )
+              (VP (VBP do) (RB n't) 
+                (VP (VB prove) 
+                  (NP (DT a) (NN trend) ))))))))
+    (, ,) 
+    (NP-SBJ-1 (NNP Mr.) (NNP Bretz) )
+    (VP (VBD said) 
+      (, ,)
+      (`` ``) 
+      (S 
+        (NP-SBJ (PRP It) )
+        (VP (VBZ does) 
+          (VP (VB lead) 
+            (S 
+              (NP-SBJ (PRP you) )
+              (VP (TO to) 
+                (VP (VB suspect) 
+                  (SBAR (-NONE- 0) 
+                    (S 
+                      (NP-SBJ (NNS imports) )
+                      (VP (VBP are) 
+                        (VP 
+                          (VP (VBG going) 
+                            (ADVP-CLR (RB down) ))
+                          (, ,) (CC or) 
+                          (VP 
+                            (ADVP (IN at) (JJS least) )
+                            (RB not) (VBG increasing) 
+                            (ADVP (RB that) (RB much) )))))))))))))
+    (. .) ('' '') ))
+( (S 
+    (S 
+      (NP-SBJ 
+        (NP (NNS Items) )
+        (VP (VBN listed) 
+          (NP-1 (-NONE- *) )
+          (PP-CLR (IN as) 
+            (S-NOM 
+              (NP-SBJ (-NONE- *-1) )
+              (VP (VBG being) 
+                (PP-PRD (IN in) 
+                  (NP (JJ short) (NN supply) )))))))
+      (VP (VBD numbered) 
+        (NP 
+          (QP (RB only) (RB about) (DT a) )
+          (NN dozen) )))
+    (, ,) (CC but) 
+    (S 
+      (NP-SBJ (PRP they) )
+      (VP (VBD included) 
+        (NP 
+          (NP (CD one) (NN newcomer) )
+          (: :) 
+          (NP 
+            (NP (NN milk) )
+            (CC and) 
+            (NP (NN milk) (NN powder) )))))
+    (. .) ))
+( (S (`` ``) 
+    (S-TPC-2 
+      (NP-SBJ (PRP It) )
+      (VP (VBZ 's) 
+        (NP-PRD 
+          (NP (DT an) (JJ odd) (NN thing) )
+          (SBAR 
+            (WHNP-1 (-NONE- 0) )
+            (S 
+              (NP-SBJ (-NONE- *) )
+              (VP (TO to) 
+                (VP (VB put) 
+                  (NP (-NONE- *T*-1) )
+                  (PP-PUT (IN on) 
+                    (NP (DT the) (NN list) )))))))))
+    (, ,) ('' '') 
+    (NP-SBJ (NNP Mr.) (NNP Bretz) )
+    (VP (VBD noted) 
+      (S (-NONE- *T*-2) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP He) )
+    (VP (VBD said) 
+      (SBAR (IN that) 
+        (S 
+          (PP-TMP (IN for) 
+            (NP 
+              (NP (DT the) (JJ second) (NN month) )
+              (PP (IN in) 
+                (NP (DT a) (NN row) ))))
+          (, ,) 
+          (NP-SBJ (NN food) (NNS processors) )
+          (VP (VBD reported) 
+            (NP 
+              (NP (DT a) (NN shortage) )
+              (PP (IN of) 
+                (NP (JJ nonfat) (JJ dry) (NN milk) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP They) )
+    (VP (VBD blamed) 
+      (NP 
+        (NP 
+          (NP (VBN increased) (NN demand) )
+          (PP (IN for) 
+            (NP (NN dairy) (NNS products) ))
+          (PP-TMP (IN at) 
+            (NP 
+              (NP (DT a) (NN time) )
+              (PP (IN of) 
+                (NP 
+                  (NP 
+                    (ADJP (RB exceptionally) (JJ high) )
+                    (NNP U.S.) (NNS exports) )
+                  (PP (IN of) 
+                    (NP (JJ dry) (NN milk) )))))))
+        (, ,) 
+        (VP (VBN coupled) 
+          (NP (-NONE- *) )
+          (PP-CLR (IN with) 
+            (NP 
+              (ADJP (RB very) (JJ low) )
+              (NN import) (NNS quotas) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Pamela) (NNP Sebastian) )
+      (PP-LOC (IN in) 
+        (NP (NNP New) (NNP York) )))
+    (VP (VBD contributed) 
+      (PP-CLR (TO to) 
+        (NP (DT this) (NN article) )))
+    (. .) ))
+( (SINV 
+    (ADVP-LOC-PRD-TPC-1 (RB Here) )
+    (VP (VBP are) 
+      (ADVP-LOC-PRD (-NONE- *T*-1) ))
+    (NP-SBJ 
+      (NP 
+        (NP (DT the) (NNP Commerce) (NNP Department) (POS 's) )
+        (NNS figures) )
+      (PP (IN for) 
+        (NP (NN construction) (NN spending) ))
+      (PP (IN in) 
+        (NP 
+          (NP (NNS billions) )
+          (PP (IN of) 
+            (NP (NNS dollars) ))))
+      (PP (IN at) 
+        (NP 
+          (ADJP (RB seasonally) (VBN adjusted) )
+          (JJ annual) (NNS rates) )))
+    (. .) ))
+( (SINV 
+    (ADVP-LOC-PRD-TPC-1 (RB Here) )
+    (VP (VBP are) 
+      (ADVP-LOC-PRD (-NONE- *T*-1) ))
+    (NP-SBJ 
+      (NP 
+        (NP (DT the) (NNP Commerce) (NNP Department) (POS 's) )
+        (JJS latest) (NNS figures) )
+      (PP (IN for) 
+        (NP (NNS manufacturers) ))
+      (PP (IN in) 
+        (NP 
+          (NP (NNS billions) )
+          (PP (IN of) 
+            (NP (NNS dollars) ))))
+      (, ,) 
+      (ADJP (RB seasonally) (VBN adjusted) ))
+    (. .) ))

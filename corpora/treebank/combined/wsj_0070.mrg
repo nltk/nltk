@@ -1,0 +1,124 @@
+
+( (S 
+    (NP-SBJ 
+      (NP (NNP Rally) (POS 's) )
+      (NNP Inc.) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP it) )
+          (VP (VBZ has) 
+            (VP (VBN redeemed) 
+              (NP 
+                (NP (PRP$ its) (NNS rights) )
+                (ADJP (JJ outstanding) )
+                (VP (VBN issued) 
+                  (NP (-NONE- *) )
+                  (NP-TMP (NNP Monday) )
+                  (PP-LOC (IN in) 
+                    (NP (PRP$ its) (NN shareholder) (NNS rights) (NN plan) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN company) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (NNS holders) )
+            (PP (IN of) 
+              (NP 
+                (NP (NN stock) )
+                (PP (IN of) 
+                  (NP (NN record) ))
+                (NP-TMP (NNP Nov.) (CD 10) ))))
+          (VP (MD will) 
+            (VP (VB receive) 
+              (NP 
+                (NP 
+                  (NP (NN 1\/10th) )
+                  (PP (IN of) 
+                    (NP (CD one) (NN cent) )))
+                (NP-ADV (DT a) (NN share) ))
+              (PP-CLR (IN as) 
+                (NP (DT the) (NN redemption) (NN payment) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN fast-food) (NN company) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 (PRP$ its) (NN decision) )
+          (VP (VBD was) 
+            (VP (VBN based) 
+              (NP (-NONE- *-1) )
+              (PP-CLR (IN upon) 
+                (NP 
+                  (NP (NNS discussions) )
+                  (PP-CLR (IN with) 
+                    (NP 
+                      (NP (DT a) (NN shareholder) (NN group) )
+                      (, ,) 
+                      (NP (NNP Giant) (NNP Group) (NNP Ltd.) )
+                      (, ,) ))))
+              (`` ``) 
+              (PP-LOC (IN in) 
+                (NP (DT an) (NN effort) 
+                  (S 
+                    (NP-SBJ (-NONE- *) )
+                    (VP (TO to) 
+                      (VP (VB resolve) 
+                        (NP 
+                          (NP (JJ certain) (NNS disputes) )
+                          (PP-CLR (IN with) 
+                            (NP (DT the) (NN company) )))))))))))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ-96 (NNP Giant) (NNP Group) )
+    (VP (VBZ is) 
+      (VP (VBN led) 
+        (NP (-NONE- *-96) )
+        (PP (IN by) 
+          (NP-LGS 
+            (NP (CD three) 
+              (NP (NNP Rally) (POS 's) )
+              (NNS directors) )
+            (, ,) 
+            (NP 
+              (NP (NNP Burt) (NNP Sugarman) )
+              (, ,) 
+              (NP (NNP James) (NNP M.) (NNP Trotter) (NNP III) )
+              (CC and) 
+              (NP (NNP William) (NNP E.) (NNP Trotter) (NNP II) )
+              (, ,) )
+            (SBAR 
+              (WHNP-1 (WP who) )
+              (S 
+                (NP-TMP (JJ last) (NN month) )
+                (NP-SBJ (-NONE- *T*-1) )
+                (VP (VBD indicated) 
+                  (SBAR (-NONE- 0) 
+                    (S 
+                      (NP-SBJ-2 (PRP they) )
+                      (VP 
+                        (VP (VBP hold) 
+                          (NP 
+                            (NP (DT a) 
+                              (ADJP (CD 42.5) (NN %) )
+                              (NN stake) )
+                            (PP-LOC (IN in) 
+                              (NP (NNP Rally) (POS 's) ))))
+                        (CC and) 
+                        (VP (VBP plan) 
+                          (S 
+                            (NP-SBJ (-NONE- *-2) )
+                            (VP (TO to) 
+                              (VP (VB seek) 
+                                (NP 
+                                  (NP (DT a) (NN majority) )
+                                  (PP (IN of) 
+                                    (NP (NNS seats) ))
+                                  (PP-LOC (IN on) 
+                                    (NP 
+                                      (NP (NNP Rally) (POS 's) )
+                                      (JJ nine-member) (NN board) )))))))))))))))))
+    (. .) ))

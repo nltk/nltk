@@ -1,0 +1,736 @@
+
+
+( (S-CLF (NP-SBJ It)
+	 (VP was
+	     (NP-PRD (NP (NP Richard Nixon 's)
+			 first visit)
+		     (PP to
+			 (NP China))
+		     (PP-TMP in
+			     (NP 1972)))
+	     (SBAR (WHNP-238 that)
+		   (S (NP-SBJ *T*-238)
+		      (VP set
+			  (PP-CLR in
+				  (NP motion))
+			  (NP (NP the historic rapprochement)
+			      (PP-LOC between
+				      (NP Beijing
+					  and
+					  Washington)))))))
+	 .))
+( (S But
+     (NP-SBJ (NP (NP the former U.S. president 's)
+		 sixth visit)
+	     (PP to
+		 (NP China))
+	     ,
+	     (SBAR-TMP (WHPP-1 during
+			       (WHNP which))
+		       (S (NP-SBJ he)
+			  (VP spoke
+			      (PP-TMP at
+				      (NP length))
+			      (PP with
+				  (NP Chinese leaders))
+			      (PP-TMP *T*-1))))
+	     ,)
+     (VP was
+         (ADJP-PRD (ADVP nowhere near)
+		   as
+		   successful
+		   (PP at
+		       (S-NOM (NP-SBJ *)
+			      (VP easing
+				  (NP (NP strains)
+				      (SBAR (WHNP-239 that)
+					    (S (NP-SBJ *T*-239)
+					       (VP have
+						   (ADVP-TMP recently)
+						   (VP afflicted
+						       (NP the Sino-U.S. relationship)))))))))))
+     .))
+( (S (NP-SBJ (NP Mr. Nixon)
+             ,
+             (NP (NP the (ADJP most prominent) American)
+                 (SBAR (WHNP-1 0)
+		       (S (NP-SBJ *T*-1)
+			  (VP to
+			      (VP come
+				  (PP-DIR to
+					  (NP China))
+				  (PP-TMP since
+					  (NP (NP (NP Beijing 's)
+						  bloody suppression)
+					      (PP of
+						  (NP pro-democracy demonstrators))
+					      (PP-TMP in
+						      (NP June)))))))))
+             ,)
+     (VP harped
+         (PP-CLR on
+		 (NP (NP international outrage)
+		     (PP over
+			 (NP the massacre)))))
+     .))
+( (S (NP-SBJ The Chinese)
+     ,
+     (PP in
+         (NP turn))
+     ,
+     (VP took
+         (NP-CLR aim)
+         (PP-CLR at
+		 (NP (NP American `` interference '')
+		     (PP-LOC in
+			     (NP (NP China 's)
+				 domestic affairs)))))
+     .))
+( (S (NP-SBJ (NP One official newspaper)
+             ,
+             (NP Legal Daily)
+             ,)
+     (ADVP even)
+     (VP (ADVP-MNR directly)
+         criticized
+         (NP (NP Mr. Nixon)
+             ,
+             (SBAR (WHNP-240 who)
+                   (S (NP-SBJ-1 *T*-240)
+                      (VP is
+                          (ADVP-TMP normally)
+                          (VP referred
+                              (PP to
+                                  (NP *T*-1))
+			      (ADVP-LOC here)
+			      (PP-CLR as 
+				      (NP an `` old friend))))))))
+     .
+     ''))
+( (S (NP-SBJ The paper)
+     (VP accused
+         (NP-3 him)
+         (PP-CLR of
+		 (S-NOM (NP-SBJ *-3)
+			(VP being
+			    (NP-PRD (NP a leading proponent)
+				    (PP of
+					(NP ``
+					    (NP peaceful evolution)
+					    , 
+					    ''
+					    (NP (NP a catch phrase)
+						(SBAR (WHADVP-2 0)
+						      (S (NP-SBJ *)
+							 (VP to
+							     (VP describe
+								 (SBAR-NOM (WHNP-1 what)
+									   (S (NP-SBJ China)
+									      (VP believes
+										  (SBAR 0
+											(S (NP-SBJ *T*-1)
+											   (VP is
+											       (NP-PRD (NP the policy
+													   (S *ICH*-4))
+												       (PP of
+													   (NP Western countries))
+												       (S-4 (NP-SBJ *)
+													    (VP to
+														(VP seduce
+														    (NP socialist nations)
+														    (PP-CLR into
+															    (NP the capitalist sphere))))))))))))
+								 (ADVP-MNR *T*-2)))))))))))))
+     .))
+( (S (NP-SBJ The tension)
+     (VP was
+         (ADJP-PRD evident)
+	 (PP-TMP on
+		 (NP Wednesday evening))
+	 (PP-TMP during
+		 (NP (NP (NP Mr. Nixon 's)
+			 final banquet toast)
+		     ,
+		     (ADVP-TMP normally)
+		     (NP (NP an opportunity)
+			 (PP for
+			     (S-NOM (NP-SBJ *)
+				    (VP reciting
+					(NP (NP platitudes)
+					    (PP about
+						(NP eternal friendship))))))))))
+     .))
+( (S (ADVP Instead)
+     ,
+     (NP-SBJ Mr. Nixon)
+     (VP reminded
+         (NP (NP his host)
+             ,
+             (NP Chinese President
+                 Yang Shangkun)
+             ,)
+         (SBAR that
+               (S (NP-SBJ Americans)
+                  (VP have 
+		      n't
+                      (VP forgiven
+                          (NP (NP China 's)
+                              leaders)
+                          (PP-CLR for
+				  (NP (NP the military assault)
+				      (PP of
+					  (NP June 3-4))
+				      (SBAR (WHNP-241 that)
+					    (S (NP-SBJ *T*-241)
+					       (VP killed
+						   (NP (NP hundreds
+							   , 
+							   and
+							   perhaps
+							   thousands)
+						       ,
+						       (PP of
+							   (NP demonstrators)))))))))))))
+     .))
+( (S ``
+     (S-TPC-1 (NP-SBJ (NP Many)
+		      (PP-LOC in
+			      (NP the United States))
+		      ,
+		      (PP including
+			  (NP (NP many friends)
+			      (PP of
+				  (NP China))))
+		      ,)
+	      (VP believe
+		  (SBAR 0
+			(S (NP-SBJ the crackdown)
+			   (VP was
+			       (ADJP-PRD excessive and unjustified))))))
+     , 
+     ''
+     (NP-SBJ Mr. Nixon)
+     (VP told
+	 (NP (NP Mr. Yang)
+	     ,
+	     (SBAR (WHNP-242 who)
+		   (S (NP-SBJ-2 *T*-242)
+		      (VP was
+			  (VP (ADVP-MNR directly)
+			      involved
+			      (NP *-2)
+			      (PP-CLR in
+				      (S-NOM (NP-SBJ *)
+					     (VP ordering
+						 (NP the attack)))))))))
+	 (S *T*-1))
+     .))
+( (S ``
+     (NP-SBJ (NP The events)
+	     (PP of
+		 (NP April
+		     through
+		     June)))
+     (VP damaged
+         (NP (NP the respect and confidence)
+             (SBAR (WHNP-1 which)
+                   (S (NP-SBJ most Americans)
+                      (ADVP-TMP previously)
+		      (VP had
+			  (NP *T*-1))))
+	     (PP for
+		 (NP (NP the leaders)
+		     (PP of
+			 (NP China))))))
+     .
+     ''))
+( (S (NP-SBJ The Chinese)
+     (VP responded
+         (PP-MNR in
+		 (NP an equally undiplomatic fashion)))
+     .))
+( (S (PP-LOC In
+	     (NP (NP talks)
+		 (PP with
+		     (NP Mr. Nixon))))
+     ,
+     (NP-SBJ Chinese leaders)
+     (VP (VP expressed
+             (NP (NP no regret)
+                 (PP for
+                     (NP the killings))))
+         , 
+	 and
+	 (VP (ADVP even)
+	     suggested
+             (SBAR that
+                   (S (NP-SBJ-1 the U.S.)
+                      (VP was
+			  (VP (ADVP-MNR prominently)
+			      involved
+			      (NP *-1)
+                              (PP-CLR in
+				      (NP (NP the demonstrations)
+					  (NP-TMP this spring)))))))))
+     .))
+( (S (PP-LOC In
+	     (NP a meeting))
+     (NP-TMP Tuesday)
+     ,
+     (NP-SBJ (NP supreme leader)
+             ,
+             (NP Deng Xiaoping)
+             ,)
+     (VP told
+         (NP Mr. Nixon)
+         ,
+	 ``
+	 (S (S-ADV (NP-SBJ *)
+		   (VP (ADVP-MNR Frankly)
+		       speaking))
+            ,
+            (NP-SBJ-146 the U.S.)
+	    (VP was
+		(VP involved
+		    (NP *-146)
+		    (ADVP-MNR too deeply)
+		    (PP-CLR in
+			    (NP (NP the 
+				    (NX (NX turmoil)
+					and
+					(NX counterrevolutionary rebellion)))
+				(SBAR (WHNP-243 which)
+				      (S (NP-SBJ *T*-243)
+					 (VP occurred
+					     (PP-LOC in
+						     (NP Beijing))
+					     (ADVP-TMP not long ago))))))))))
+     .))
+( (S (S (NP-SBJ China)
+        (VP was
+            (NP-PRD the real victim)))
+     and
+     (S (NP-SBJ (NP it)
+		(S *EXP*-1))
+        (VP is
+            (ADJP-PRD unjust)
+	    (S-1 (NP-SBJ *)
+		 (VP to
+		     (VP reprove
+			 (NP China)
+			 (PP-PRP for
+				 (NP it)))))))
+     .
+     ''))
+( (S (PP Despite
+         (NP the harsh exchanges))
+     ,
+     (NP-SBJ-1 (NP the U.S.)
+	       and
+	       (NP China))
+     (ADVP-TMP still)
+     (VP seem
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP be
+                    (VP looking
+                        (PP-CLR for
+				(NP (NP a way)
+				    (SBAR (WHADVP-3 0)
+					  (S (NP-SBJ *)
+					     (VP to
+						 (VP mend
+						     (NP (NP relations)
+							 ,
+							 (SBAR (WHNP-244 which)
+							       (S (NP-SBJ *T*-244)
+								  (VP have
+								      (VP deteriorated
+									  (PP-CLR into
+										  (SBAR-NOM (WHNP-2 what)
+											    (S (NP-SBJ Mr. Nixon)
+											       (VP referred
+												   (PP to
+												       (NP *T*-2))
+												   (PP-CLR as
+													   (NP `` 
+													       (NP the greatest crisis)
+													       (PP-LOC in
+														       (NP Chinese-American relations))
+													       ''
+													       (PP-TMP since
+														       (NP (NP his initial visit)
+															   (PP to
+															       (NP China))
+															   (ADVP-TMP (NP 17 years)
+																     ago))))))))))))))
+						     (ADVP-MNR *T*-3))))))))))))
+     .))
+( (S (PP-LOC In
+	     (NP (NP his return toast)
+		 (PP to
+		     (NP Mr. Nixon))))
+     ,
+     (NP-SBJ Mr. Yang)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ the relationship)
+                  (VP had
+                      (VP reached
+                          (NP a `` stalemate))))))
+     .
+     ''))
+( (S (NP-SBJ (NP Relations)
+	     (PP-LOC between
+		     (NP (NP China)
+			 and
+			 (NP the U.S.))))
+     (VP have
+         (VP been
+             (ADJP-PRD tense)
+	     (PP-TMP since
+		     (NP (NP June 7)
+			 ,
+			 (SBAR (WHADVP-1 when)
+			       (S (NP-SBJ (NP (NP Chinese dissident Fang Lizhi)
+					      and
+					      (NP (NP his wife)
+						  ,
+						  (NP Li Shuxian)
+						  ,)))
+				  (VP took
+				      (NP-CLR refuge)
+				      (PP-LOC-CLR in
+						  (NP (NP the U.S. Embassy)
+						      (PP-LOC in
+							      (NP Beijing))))
+				      (ADVP-TMP *T*-1))))))))
+     .))
+( (S (ADVP-TMP Shortly afterwards)
+     ,
+     (NP-SBJ Mr. Bush)
+     (VP imposed
+         (NP (NP a series)
+             (PP of
+                 (NP (NP anti-China sanctions)
+                     ,
+                     (PP including
+                         (NP (NP suspension)
+                             (PP of
+                                 (NP most high-level talks))))
+                     ,
+                     (SBAR (WHNP-1 which)
+                           (S (NP-SBJ-147 *T*-1)
+                              (VP could
+                                  (VP be
+                                      (VP codified
+                                          (NP *-147)
+					  (PP-LOC in
+						  (NP U.S. congressional legislation))
+					  (PP-TMP in
+						  (NP the coming weeks)))))))))))
+     .))
+( (S (S (NP-SBJ Mr. Nixon)
+        (VP is
+            (VP traveling
+		(PP-LOC in
+			(NP China))
+		(PP-MNR as
+			(NP a private citizen)))))
+     , 
+     but
+     (S (NP-SBJ he)
+        (VP has
+            (VP made
+                (S (ADJP-PRD clear)
+		   (SBAR-SBJ that
+			     (S (NP-SBJ he)
+				(VP is
+				    (NP-PRD (NP an unofficial envoy)
+					    (PP for
+						(NP the Bush administration))))))))))
+     .))
+( (S (NP-SBJ-1 Mr. Nixon)
+     (VP met
+         (NP (NP Mr. Bush)
+             and
+             (NP (NP his national security adviser)
+                 ,
+                 (NP Brent Scowcroft)
+                 ,))
+	 (PP-TMP before
+		 (S-NOM (NP-SBJ *-1)
+			(VP coming
+			    (PP-DIR to
+				    (NP China))
+			    (PP-TMP on
+				    (NP Saturday))))))
+     .))
+( (S (S-TPC-2 And
+	      (NP-SBJ-1 he)
+	      (VP plans
+		  (S (NP-SBJ *-1)
+		     (VP to
+			 (VP brief
+			     (NP the president)
+			     (PP-TMP at
+				     (NP (NP the end)
+					 (PP of
+					     (NP the week)))))))))
+     ,
+     (NP-SBJ U.S. sources)
+     (VP said
+	 (SBAR 0
+	       (S *T*-2)))
+     .))
+( (S (NP-SBJ-1 Mr. Nixon)
+     (VP was
+	 (S (NP-SBJ *-1)
+	    (VP to
+		(VP leave
+		    (NP China)
+		    (NP-TMP today)))))
+     .))
+( (S (PP According
+         (PP to
+             (NP (NP an American member)
+                 (PP of
+                     (NP the Nixon party)))))
+     ,
+     (NP-SBJ the former president)
+     (VP raised
+	 (NP (NP a number)
+	     (PP of
+		 (NP controversial issues)))
+	 (PP-LOC in
+		 (NP (NP his 20 hours)
+		     (PP of
+			 (NP (NP talks)
+			     (PP with
+				 (NP top-level Chinese officials)))))))
+     .))
+( (S (NP-SBJ These)
+     (VP included
+         (NP (NP (NP China 's)
+                 economic policies)
+             ,
+             (NP human rights)
+             and
+             (NP (NP the question)
+                 (PP of
+                     (NP Mr. Fang)))))
+     .))
+( (S (NP-SBJ Mr. Nixon)
+     (ADVP also)
+     (VP proposed
+         (SBAR that
+               (S (NP-SBJ China)
+                  (VP restore
+                      (NP (NP its participation)
+                          (PP in
+                              (NP (NP the Fulbright Program)
+                                  ,
+                                  (NP a 
+				      (ADJP U.S. government-funded) 
+				      academic exchange))))))))
+     .))
+( (S (NP-SBJ China)
+     (VP pulled
+         (ADVP-CLR out
+		   (PP of
+		       (NP the program)))
+	 (PP-TMP in
+		 (NP July)))
+     .))
+( (S (PP-LOC In
+	     (NP his talks))
+     ,
+     (NP-SBJ the former president)
+     (VP urged
+         (NP-1 (NP China 's)
+	       leaders)
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP (VP acknowledge
+                        (SBAR that
+                              (S (NP-SBJ their nation)
+                                 (VP is
+                                     (NP-PRD (NP part)
+					     (PP of
+						 (NP the world community)))))))
+                    and
+                    (VP welcome
+                        (NP (NP the infusion)
+                            (PP of
+                                (NP outside contacts and ideas))))))))
+     .))
+( (S ``
+     (S-TPC-1 (S (NP-SBJ Ideas)
+		 (VP are
+		     (VP going
+			 (PP-DIR over
+				 (NP borders)))))
+	      , 
+	      and
+	      (S (NP-SBJ there)
+		 (VP 's
+		     (NP-PRD (NP no SDI ideological weapon)
+			     (SBAR (WHNP-245 that)
+				   (S (NP-SBJ *T*-245)
+				      (VP can
+					  (VP shoot
+					      (NP them)
+					      (PRT down)))))))))
+     , 
+     ''
+     (NP-SBJ he)
+     (VP told
+	 (NP (NP a group)
+	     (PP of
+		 (NP Americans)))
+	 (S *T*-1)
+	 (PP-LOC at
+		 (NP the U.S. Embassy))
+	 (PP-TMP on
+		 (NP Wednesday)))
+     .))
+( (S (NP-SBJ There)
+     (VP are
+         (NP-PRD (NP no signs)
+		 (PRN , 
+		      (ADVP however)
+		      ,)
+		 (PP of
+		     (S-NOM (NP-SBJ China 's)
+			    (VP yielding
+				(PP-CLR on
+					(NP key issues)))))))
+     .))
+( (S But
+     (PP-LOC in
+	     (NP one minor matter))
+     ,
+     (NP-SBJ-1 Mr. Nixon)
+     (VP appears
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP have
+                    (VP gained
+                        (NP a concession))))))
+     .))
+( (S (PP-LOC In
+	     (NP (NP a meeting)
+		 (PP with
+		     (NP Premier Li Peng))
+		 (PP-TMP on
+			 (NP Monday))))
+     ,
+     (NP-SBJ Mr. Nixon)
+     (VP said
+         (SBAR that
+               (S (NP-SBJ he)
+                  (VP hoped
+                      (SBAR 0
+                            (S (NP-SBJ he)
+                               (VP would 
+				   n't
+                                   (VP encounter
+                                       (NP (NP guards)
+                                           (PP with
+                                               (NP machine guns)))
+				       (PP-TMP during
+					       (NP (NP his visit)
+						   (PP to
+						       (NP the U.S. Embassy))))))))))))
+     .))
+( (S (ADVP Sure enough)
+     ,
+     (SBAR-TMP (WHADVP when)
+	       (S (NP-SBJ he)
+		  (VP arrived
+		      (PP-DIR at
+			      (NP the embassy))
+		      (ADVP-TMP (NP two days)
+				later))))
+     ,
+     (NP-SBJ the machine-gun-toting guards)
+     (VP were
+	 (ADJP-PRD gone)
+	 --
+	 (PP-TMP for
+		 (NP (NP the first time)
+		     (PP-TMP in
+			     (NP five months)))))
+     .))
+( (S (ADVP-LOC (NP A few blocks)
+	       away)
+     ,
+     (PP-LOC at
+	     (NP (NP the U.S. ambassador 's)
+		 residence))
+     ,
+     (NP-SBJ (NP the guards)
+             (VP encircling
+                 (NP the compound)))
+     (ADVP also)
+     (VP had
+         (VP discarded
+             (NP their Uzi-model arms)
+	     (PP-TMP for
+		     (NP (NP the first time)
+			 (PP-TMP since
+				 (NP early June))))))
+     .))
+( (S But
+     (S (NP-SBJ the guards there)
+        (VP retained
+            (NP their pistols)))
+     , 
+     and
+     (S (NP-SBJ (NP a large contingent)
+                (PP of
+                    (NP plainclothes police)))
+        (VP remained
+	    (ADVP-LOC-CLR nearby)
+	    (PP-LOC in
+		    (NP unmarked cars))))
+     .))
+( (S (ADVP Moreover)
+     ,
+     (NP-SBJ-1 police and soldiers)
+     (VP continue
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP harass
+                    (NP (NP Americans)
+                        ,
+                        (SBAR (WHNP-246 who)
+                              (S (NP-SBJ *T*-246)
+                                 (VP have
+                                     (VP filed
+                                         (NP several protests)
+                                         (PP-CLR with
+						 (NP the Foreign Ministry))
+					 (PP-TMP in
+						 (NP the past week)))))))))))
+     .))
+( (S (NP-TMP Several times)
+     ,
+     (NP-SBJ Chinese guards)
+     (VP have
+         (VP (VP pointed
+                 (NP their automatic rifles)
+                 (PP-CLR at
+			 (NP (NP young children)
+			     (PP of
+				 (NP U.S. diplomats)))))
+             and
+             (VP clicked
+                 (NP the trigger))))
+     .))
+( (S (NP-SBJ-1 The rifles)
+     (VP were 
+	 n't
+         (VP loaded
+	     (NP *-1)))
+     .))

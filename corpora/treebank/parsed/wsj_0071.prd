@@ -1,0 +1,1243 @@
+
+
+( (S (SBAR-TMP (WHADVP-1 When)
+	       (S (NP-SBJ (NP Warren Winiarski)
+			  ,
+			  (NP (NP proprietor)
+			      (PP of
+				  (NP (NP (NP Stag 's)
+					  Leap Wine Cellars)
+				      (PP-LOC in
+					      (NP Napa Valley)))))
+			  ,)
+		  (VP announced
+		      (NP (NP a 
+			      (ADJP $ 75 *U*) 
+			      price tag)
+			  (PP for
+			      (NP his 1985 Cask 23 Cabernet)))
+		      (NP-TMP this fall)
+		      (ADVP-TMP *T*-1))))
+     ,
+     (NP-SBJ (NP few 
+		 (NX (NX wine shops)
+		     and
+		     (NX restaurants)))
+             (PP-LOC around
+		     (NP the country)))
+     (VP balked)
+     .))
+( (S-1 ``
+       (S (NP-SBJ This)
+	  (VP is
+	      (NP-PRD (NP the peak)
+		      (PP of
+			  (NP my wine-making experience)))))
+       (PRN ,
+	    ''
+	    (S (NP-SBJ Mr. Winiarski)
+	       (VP declared
+		   (S *T*-1)
+		   (SBAR-TMP (WHADVP-2 when)
+			     (S (NP-SBJ he)
+				(VP introduced
+				    (NP the wine)
+				    (PP-LOC at
+					    (NP (NP a dinner)
+						(PP-LOC in
+							(NP New York))))
+				    (ADVP-TMP *T*-2))))))
+	    ,) 
+       `` 
+       and
+       (S (NP-SBJ-3 I)
+	  (VP wanted
+	      (S (NP-SBJ *-3)
+		 (VP to
+		     (VP single
+			 (NP it)
+			 (PRT out)
+			 (PP-CLR as
+				 (ADJP such)))))))
+       .
+       ''))
+( (S (S (NP-SBJ It)
+        (VP is
+	    (PP-LOC in
+		    (NP my estimation))
+	    (NP-PRD (NP the best wine)
+		    (SBAR (WHNP-2 0)
+			  (S (NP-SBJ (NP Stag 's)
+				     Leap)
+			     (VP has
+				 (VP produced
+				     (NP *T*-2))))))))
+     , 
+     and
+     (S (PP with
+            (NP (NP (QP fewer than 700) 
+		    cases)
+                (ADJP available)))
+        ,
+        (NP-SBJ-3 it)
+        (VP is
+            (ADJP-PRD sure
+		      (S (NP-SBJ *-3)
+			 (VP to
+			     (VP sell
+				 (ADVP-MNR quickly)))))))
+     .))
+( (S (S (NP-SBJ The price)
+        (VP is
+            (NP-PRD (NP a new high)
+		    (PP for
+			(NP California Cabernet Sauvignon)))))
+     ,
+     but
+     (S (NP-SBJ it)
+        (VP is 
+	    not
+            (NP-PRD the highest)))
+     .))
+( (S (NP-SBJ Diamond Creek 1985 Lake Vineyard Cabernet)
+     (VP weighed
+         (PRT in)
+	 (NP-TMP this fall)
+	 (PP-CLR with
+		 (NP (NP a sticker price)
+		     (PP of
+			 (NP (NP $ 100 *U*)
+			     (NP-ADV a bottle))))))
+     .))
+( (S (NP-SBJ (NP One)
+             (PP of
+                 (NP (NP the fastest growing segments)
+                     (PP of
+                         (NP the wine market)))))
+     (VP is
+         (NP-PRD (NP the category)
+		 (PP of
+		     (NP (NP superpremiums)
+			 --
+			 (NP (NP wines)
+			     (UCP (VP limited
+				      (NP *)
+				      (PP in
+					  (NP production)))
+				  ,
+				  (UCP (PP of
+					   (NP exceptional quality))
+				       (PRN -LRB-
+					    or
+					    (VP (ADVP-MNR so)
+						perceived
+						(NP *)
+						,
+						(PP at
+						    (NP any rate)))
+					    -RRB-)) 
+				  , 
+				  and
+				  (PP with
+				      (NP (ADJP exceedingly high) 
+					  prices))))))))
+     .))
+( (S (PP-TMP For
+	     (NP years))
+     ,
+     (NP-SBJ this group)
+     (VP included
+         (NP (NP a stable)
+             (PP of
+                 (NP (NP classics)
+                     --
+                     (NP (NP Bordeaux first growths)
+                         (PRN -LRB-
+			      (NP Lafite-Rothschild
+				  ,
+				  Latour
+				  ,
+				  Haut-Brion
+				  ,
+				  Petrus)
+			      -RRB-))
+                     ,
+                     (NP (NP Grand Cru Burgundies)
+                         (PRN -LRB-
+			      (NP (NP Romanee-Conti)
+				  and
+				  (NP La Tache))
+			      -RRB-))
+                     (NP (NP deluxe Champagnes)
+                         (PRN -LRB-
+			      (NP (NP Dom Perignon)
+				  or
+				  (NP Roederer Cristal))
+			      -RRB-))
+                     ,
+                     (NP (NP rarefied sweet wines)
+                         (PRN -LRB-
+			      (NP (NP (NP Chateau Yquem)
+				      or
+				      (NP (NP Trockenbeerenauslesen Rieslings)
+					  (PP from
+					      (NP Germany))))
+				  , 
+				  and
+				  (NP (NP Biondi-Santi Brunello Riserva)
+				      (PP from
+					  (NP Tuscany))))
+			      -RRB-))))))
+     .))
+( (S (NP-SBJ These first magnitude wines)
+     (VP ranged
+         (PP-CLR-LOC in
+		     (NP price))
+         (PP-DIR (PP from
+		     (NP (NP $ 40 *U*)
+			 (NP-ADV *RNR*-1)))
+		 (PP to
+		     (NP (NP $ 125 *U*)
+			 (NP-ADV *RNR*-1)))
+		 (NP-ADV-1 a bottle)))
+     .))
+( (S (PP-TMP In
+	     (NP the last year
+		 (QP or so)))
+     ,
+     (ADVP however)
+     ,
+     (NP-SBJ this exclusive club)
+     (VP has
+         (VP taken
+             (PP-CLR in
+		     (NP (NP a host)
+			 (PP of
+			     (NP flashy new members))))))
+     .))
+( (S (S (NP-SBJ-1 The classics)
+        (VP have
+            (VP zoomed
+                (PP-CLR-LOC in
+			    (NP price))
+		(S-PRP (NP-SBJ *-1)
+		       (VP to
+			   (VP meet
+			       (NP the competition)))))))
+     , 
+     and
+     (S (NP-SBJ it)
+        (ADVP almost)
+	(VP seems
+            (SBAR that
+                  (S (NP-SBJ there)
+                     (VP 's
+                         (NP-PRD (NP a race
+				     (S *ICH*-2)))
+			 (ADVP-CLR on)
+			 (S-2 (NP-SBJ *)
+			      (VP to
+				  (VP come
+				      (PRT up)
+				      (PP-CLR with
+					      (NP (NP the priciest single bottle) 
+						  ,
+						  (PP-LOC among
+							  (NP (NP current releases)
+							      (PP from
+								  (NP (NP every 
+									  major wine region)
+								      (PP-LOC on
+									      (NP the globe))))))))))))))))
+     .))
+( (S (NP-SBJ France)
+     (VP can
+         (VP boast
+             (NP (NP (NP the lion 's)
+		     share)
+                 (PP of
+                     (NP high-priced bottles)))))
+     .))
+( (S (NP-SBJ (NP (NP Bordeaux 's)
+		 first growths)
+             (PP from
+                 (NP 1985
+                     and
+                     1986)))
+     (VP are
+         (NP-PRD (NP (QP $ 60 to $ 80) *U*)
+		 (ADVP each))
+	 (PRN -LRB-
+	      (PP except
+		  (PP for
+		      (NP (NP (NP the smallest)
+			      (PP in
+				  (NP (NP terms)
+				      (PP of
+					  (NP production)))))
+			  ,
+			  (NP Chateau Petrus)
+			  ,
+			  (SBAR (WHNP-162 which)
+				(S (NP-SBJ *T*-162)
+				   (VP costs
+				       (NP (QP around $ 250) *U*)))
+				!))))
+	      -RRB-))
+     .))
+( (S (NP-SBJ These prices)
+     (VP seem
+         (ADJP-PRD rather modest)
+	 ,
+	 (ADVP however)
+	 ,
+	 (PP-LOC in
+		 (NP (NP light)
+		     (PP of
+			 (NP (NP other French wines)
+			     (PP from
+				 (NP current vintages)))))))
+     .))
+( (S (S (NP-SBJ (NP Chateau Yquem)
+                ,
+                (NP the leading Sauternes)
+                ,)
+        (ADVP-TMP now)
+	(VP goes
+            (PP-CLR for
+		    (NP (NP (QP well over $ 100) *U*)
+			(NP-ADV a bottle)))
+	    (PP for
+		(NP (NP a lighter vintage)
+		    (PP like
+			(NP 1984))))))
+     ;
+     (S (NP-SBJ the
+                (ADJP spectacularly rich)
+                1983)
+        (VP runs
+            (NP $ 179 *U*)))
+     .))
+( (S (PP-LOC In
+	     (NP Champagne))
+     ,
+     (NP-SBJ (NP some)
+             (PP of
+                 (NP the prestige cuvees)))
+     (VP are
+         (VP inching
+             (PP-CLR toward
+		     (NP (NP $ 100 *U*)
+			 (NP-ADV a bottle)))))
+     .))
+( (S (NP-SBJ (NP The first Champagne)
+             (SBAR (WHNP-1 0)
+		   (S (NP-SBJ *T*-1)
+		      (VP to
+			  (VP crack
+			      (NP that price barrier))))))
+     (VP was
+         (NP-PRD the 1979 Salon de Mesnil 
+		 Blanc
+		 de
+		 Blancs)) 
+     .))
+( (S (NP-SBJ The '82 Salon) 
+     (VP is
+         (NP-PRD $ 115 *U*))
+     .))
+( (S (S (NP-SBJ (NP Roederer Cristal)
+                (PP at
+                    (NP (NP $ 90 *U*)
+                        (NP-ADV a bottle))))
+        (VP sells
+            (PRT out)
+	    (PP-LOC around
+		    (NP the country))))
+     and
+     (S (NP-SBJ (NP Taittinger 's)
+		Comtes
+                de
+		Champagne Blanc
+		de
+		Blancs) 
+        (VP is
+            (VP encroaching
+                (PP-CLR upon
+			(NP that level)))))
+     .))
+( (S (NP-SBJ (NP The great reds)
+             (PP of
+                 (NP the Rhone Valley)))
+     (VP have
+         (VP soared
+	     (PP-LOC-CLR in
+			 (NP price))
+	     (ADVP as
+		   well)))
+     .))
+( (S (NP-SBJ (NP E. Guigal 's)
+             1982 Cote Rotie La Landonne)
+     ,
+     (PP for
+         (NP example))
+     ,
+     (VP is
+         (NP-PRD $ 120 *U*))
+     .))
+( (S (NP-SBJ (NP None)
+             (PP of
+                 (NP (NP France 's)
+                     wine regions)))
+     (VP can
+         (VP steal
+             (NP a march)
+	     (PP-CLR on
+		     (NP Burgundy))
+	     ,
+	     (ADVP however))) 
+     .))
+( (S (NP-SBJ (NP The six wines)
+             (PP of
+                 (NP (NP the Domaine
+                         de
+			 la Romanee-Conti) 
+                     ,
+                     (NP (NP 72)
+                         (PP of
+                             (NP (NP the
+				     (ADJP most precious)
+				     acres)
+				 (PP of
+				     (NP vineyard))
+                                 (PP-LOC (ADVP anywhere) 
+					 in
+					 (NP the world)))))
+                     ,)))
+     (VP have
+         (VP commanded
+             (NP three-digit price tags)
+	     (PP-TMP for
+		     (NP (NP several years)
+			 (ADVP-TMP now)))))
+     .))
+( (S (PP With
+         (NP the 1985 vintage))
+     ,
+     (NP-SBJ they)
+     (VP (VP soared
+	     (ADVP-DIR higher)) 
+	 :
+	 (NP (NP (NP La Tache) 
+		 ,
+		 (NP $ 195 *U*))
+	     ;
+	     (NP (NP Richebourg)
+		 ,
+		 (NP $ 180 *U*))
+	     ;
+	     (NP (NP Romanee-Conti)
+		 ,
+		 (NP $ 225 *U*))))
+     .))
+( (S (NP-SBJ (NP Another small Burgundy estate)
+             ,
+             (NP Coche-Dury)
+             ,)
+     (VP has
+         (ADVP-TMP just)
+         (VP offered
+             (NP its 1987 Corton-Charlemagne)
+             (PP-CLR for
+		     (NP $ 155 *U*))))
+     .))
+( (S (PP From
+	 (NP Italy))
+     (NP-SBJ there)
+     (VP is
+         (NP-PRD (NP (NP Angelo Gaja Barbaresco)
+		     (PP at
+			 (NP (NP $ 125 *U*)
+			     (NP-ADV a bottle))))
+		 ,
+		 (NP (NP (NP (NP Piero Antinori 's)
+			     La Solaia) 
+			 ,
+			 (NP (NP a 
+				 (ADJP $ 90 *U*)
+				 Cabernet)
+			     (PP from
+				 (NP Tuscany)))))
+		 , 
+		 and
+		 (NP (NP Biondi-Santi Brunello)
+		     (PP at
+			 (NP $ 98 *U*)))))
+     .))
+( (S (NP-SBJ (NP (NP Spain 's)
+                 Vega Secilia Unico 1979)
+             (PRN -LRB-
+		  (VP released
+		      (NP *)
+		      (PP-TMP (ADVP only) 
+			      in
+			      (NP its 10th year)))
+		  -RRB-))
+     (VP is
+         (NP-PRD $ 70 *U*)
+	 ,
+	 (SBAR-ADV as
+		   (SINV (VP is
+			     (NP-PRD *?*)) 
+			 (NP-SBJ (NP Australia 's)
+				 Grange Hermitage 1982))))
+     .))
+( (SINV ``
+	(S-1 (NP-SBJ There)
+	     (VP are
+		 (NP-PRD (NP certain cult wines)
+			 (SBAR (WHNP-163 that)
+			       (S (NP-SBJ *T*-163)
+				  (VP can
+				      (VP command
+					  (NP these higher prices))))))))
+	,
+	''
+	(VP says
+	    (S *T*-1))
+	(NP-SBJ (NP Larry Shapiro)
+		(PP of
+		    (NP (NP Marty 's)
+			,
+			(NP (NP one)
+			    (PP of
+				(NP (NP the largest wine shops)
+				    (PP-LOC in
+					    (NP Dallas))))))))
+	.))
+( (S ``
+     (SBAR-NOM-SBJ (WHNP-164 What)
+		   (S (NP-SBJ *T*-164)
+		      (VP 's
+			  (ADJP-PRD different))))
+     (VP is
+         (SBAR-PRD that
+		   (S (NP-SBJ it)
+		      (VP is
+			  (VP happening
+			      (PP with
+				  (NP (NP young wines)
+				      (VP (ADVP-TMP just)
+					  coming
+					  (ADVP-DIR out)))))))))
+     .))
+( (S (NP-SBJ We)
+     (VP 're
+         (VP seeing
+             (NP it)
+	     (SBAR-PRP (ADVP partly) 
+		       because
+		       (S (NP-SBJ older vintages)
+			  (VP are
+			      (VP growing
+				  (ADJP-PRD more scarce)))))))
+     .
+     ''))
+( (S-1 (S (NP-SBJ Wine auctions)
+	  (VP have
+	      (ADVP almost)
+	      (VP exhausted
+		  (NP (NP the limited supply)
+		      (PP of
+			  (NP those wines))))))
+       ,
+       (PRN (S (NP-SBJ Mr. Shapiro)
+	       (VP continued
+		   :
+		   (SBAR 0
+			 (S *T*-1)))))
+       ``
+       (S (NP-SBJ We)
+	  (VP 've
+	      (VP seen
+		  (NP (NP a dramatic decrease)
+		      (PP-LOC in
+			      (NP (NP demand)
+				  (PP for
+				      (NP (NP wines)
+					  (PP from
+					      (NP the '40s and '50s))
+					  ,
+					  (SBAR (WHNP-165 which)
+						(S (NP-SBJ *T*-165)
+						   (VP go
+						       (PP-CLR for
+							       (NP (NP (QP $ 300
+									   to
+									   $ 400) 
+								       *U*)
+								   (NP-ADV a bottle))))))))))))))
+       .))
+( (S (NP-SBJ (NP (NP Some)
+		 (PP of
+		     (NP the newer wines)))
+	     (PRN ,
+		  (PP (ADVP even) 
+		      at
+		      (NP (NP (QP $ 90 to $ 100) 
+			      *U*
+			      (QP *ICH*-1))
+			  (NP-ADV a bottle)
+			  (QP-1 or so)))
+		  ,))
+     (ADVP almost)
+     (VP offer
+         (NP a bargain))
+     .
+     ''))
+( (S (NP-SBJ *)
+     (VP Take
+         (NP (NP Lake Vineyard Cabernet)
+             (PP from
+                 (NP Diamond Creek))))
+     .))
+( (S (NP-SBJ-2 It)
+     (VP (VP 's
+	     (VP made
+		 (NP *-2)
+		 (PP-TMP (ADVP only) 
+			 in
+			 (NP (NP (NP years)
+				 (SBAR-TMP (WHADVP-1 when)
+					   (S (NP-SBJ the grapes)
+					      (VP ripen
+						  (ADVP-MNR perfectly)
+						  (ADVP-TMP *T*-1)))))
+			     (PRN -LRB-
+				  (S (NP-SBJ the last)
+				     (VP was
+					 (NP-PRD 1979)))
+				  -RRB-)))))
+	 and
+	 (VP comes
+	     (PP-DIR from
+		     (NP (NP a single acre)
+			 (PP of
+			     (NP grapes))
+			 (SBAR (WHNP-166 that)
+			       (S (NP-SBJ *T*-166)
+				  (VP yielded
+				      (NP a mere 75 cases)
+				      (PP-TMP in
+					      (NP 1987)))))))))
+     .))
+( (S (S (NP-SBJ-1 Owner Al Brownstein)
+        (ADVP originally)
+        (VP planned
+            (S (NP-SBJ *-1)
+               (VP to
+                   (VP sell
+                       (NP it)
+                       (PP-CLR for
+			       (NP (NP $ 60 *U*)
+				   (NP-ADV a bottle))))))))
+     , 
+     but
+     (S (SBAR-TMP (WHADVP-2 when)
+		  (S (NP-SBJ (NP a retailer)
+			     (PP-LOC in
+				     (NP Southern California)))
+		     (VP asked
+			 ,
+			 ``
+			 (SQ Is
+			     (NP-SBJ that)
+			     (ADJP-PRD wholesale
+				       or
+				       retail))
+			 ? 
+			 ''
+			 (ADVP-TMP *T*-2))))
+        (NP-SBJ he)
+        (VP re-thought
+            (NP the matter)))
+     .))
+( (S (S-ADV (NP-SBJ *-1)
+	    (VP Offering
+		(NP the wine)
+		(PP-CLR at
+			(NP (NP (NP (QP roughly $ 65) *U*)
+				(NP-ADV a bottle)
+				(ADVP wholesale))
+			    (PRN -LRB-
+				 (NP (NP $ 100 *U*)
+				     (ADVP retail))
+				 -RRB-)))))
+     ,
+     (NP-SBJ-1 he)
+     (VP sent
+	 (NP (NP merchants)
+	     (PP-LOC around
+		     (NP the country)))
+	 (NP (NP a form)
+	     (VP asking
+		 (NP-2 them)
+		 (S (NP-SBJ *-2)
+		    (VP to
+			(VP check
+			    (NP (NP one)
+				(PP of
+				    (NP (NP three answers)
+					:
+					(S (S (LST 1 -RRB-)
+					      (INTJ no)
+					      ,
+					      (NP-SBJ the wine)
+					      (VP is
+						  (ADJP-PRD too high))
+					      (PRN -LRB-
+						   (NP 2 responses)
+						   -RRB-))
+					   ;
+					   (S (LST 2 -RRB-)
+					      (S (INTJ yes)
+						 ,
+						 (NP-SBJ it)
+						 (VP 's
+						     (ADJP-PRD high)))
+					      but
+					      (S (NP-SBJ I)
+						 (VP 'll
+						     (VP take
+							 (NP it))))
+					      (PRN -LRB-
+						   (NP 2 responses)
+						   -RRB-))
+					   ;
+					   (S (LST 3 -RRB-)
+					      (NP-SBJ I)
+					      (VP 'll
+						  (VP take
+						      (NP (NP all)
+							  (SBAR (WHNP-3 0)
+								(S (NP-SBJ I)
+								   (VP can
+								       (VP get
+									   (NP *T*-3))))))))
+					      (PRN -LRB-
+						   (NP 58 responses)
+						   -RRB-))))))))))))
+     .))
+( (S (S (NP-SBJ-97 The wine)
+        (VP was
+            (VP shipped
+                (NP *-97)
+                (PP-MNR in
+			(NP (NP six-bottle cases)
+			    (PP instead of
+				(NP the usual 12)))))))
+     , 
+     but
+     (S (PP (ADVP even)
+	    at
+	    (NP that)) 
+	(NP-SBJ-98 it)
+        (VP was
+            (VP spread
+                (S (NP-SBJ *-98)
+		   (ADJP-PRD thin))
+		,
+		(S-ADV (NP-SBJ *-98)
+		       (VP going
+			   (PP-DIR to
+				   (NP (NP 62 retailers)
+				       (PP-LOC in
+					       (NP 28 states)))))))))
+     .))
+( (S-2 ``
+       (S (NP-SBJ We)
+	  (VP thought
+	      (SBAR 0
+		    (S (NP-SBJ it)
+		       (VP was
+			   (ADJP-PRD awfully expensive))))))
+       (PRN ,
+	    ''
+	    (SINV (VP said
+		      (S *T*-2))
+		  (NP-SBJ (NP Sterling Pratt)
+			  ,
+			  (NP (NP wine director)
+			      (PP-LOC at
+				      (NP (NP Schaefer 's)
+					  (PP-LOC in
+						  (NP (NP Skokie)
+						      ,
+						      (NP Ill.)
+						      ,))
+					  (NP (NP one)
+					      (PP of
+						  (NP (NP the top stores)
+						      (PP-LOC in
+							      (NP suburban Chicago))))))))))
+	    ,) 
+       `` 
+       but
+       (S (NP-SBJ there)
+	  (VP are
+	      (NP-PRD (NP people)
+		      (ADVP-LOC out there)
+		      (PP-CLR with
+			      (NP (NP (ADJP very different)
+				      opinions)
+				  (PP of
+				      (NP value)))))))
+       .))
+( (S (S (NP-SBJ We)
+        (VP got
+            (NP our two six-packs)))
+     --
+     and
+     (S (NP-SBJ they)
+        (VP 're
+            (VP gone)))
+     .
+     ''))
+( (S (NP-SBJ Mr. Pratt)
+     (VP remarked
+         (SBAR that
+               (S (NP-SBJ he)
+                  (VP thinks
+                      (SBAR 0
+                            (S (NP-SBJ steeper prices)
+                               (VP have
+                                   (VP come
+                                       (PRT about)
+				       (SBAR-PRP because
+						 (S (NP-SBJ-1 producers)
+						    (VP do 
+							n't
+							(VP like
+							    (S (NP-SBJ *-1)
+							       (VP to
+								   (VP see
+								       (S (NP-SBJ a hit wine)
+									  (VP (ADVP-MNR dramatically)
+									      increase
+									      (PP in
+										  (NP price))
+									      (ADVP-TMP later on))))))))))))))))))
+     .))
+( (S (SBAR-ADV (ADVP Even) 
+	       if
+	       (S (NP-SBJ there)
+		  (VP is
+		      (NP-PRD consumer resistance)
+		      (PP-TMP at
+			      (ADJP first)))))
+     ,
+     (NP-SBJ (NP a wine)
+             (SBAR (WHNP-167 that)
+                   (S (NP-SBJ *T*-167)
+                      (VP wins
+                          (NP high ratings)
+                          (PP from
+			      (NP the critics))))))
+     (VP will
+         (ADVP-TMP eventually)
+         (VP move))
+     .))
+( (S-2 ``
+       (S (NP-SBJ There)
+	  (VP may
+	      (VP be
+		  (NP-PRD sticker-shock reaction)
+		  (ADVP-TMP initially))))
+       , 
+       ''
+       (PRN (SINV (VP said
+		      (S *T*-2))
+		  (NP-SBJ Mr. Pratt)))
+       , 
+       `` 
+       but
+       (S (SBAR-TMP as
+		    (S (NP-SBJ-1 the wine)
+		       (VP is
+			   (VP talked 
+			       (PP-CLR about
+				       (NP *-1))))
+		       and
+		       (VP starts
+			   (S (NP-SBJ *-1)
+			      (VP to
+				  (VP sell))))))
+	  ,
+	  (NP-SBJ-3 they)
+	  (ADVP-TMP eventually)
+	  (VP (VP get
+		  (ADJP-PRD excited))
+	      and
+	      (VP decide
+		  (SBAR 0
+			(S (NP-SBJ it)
+			   (VP 's
+			       (ADJP-PRD worth 
+					 (NP the astronomical price))
+			       (S-PRP (NP-SBJ *-3)
+				      (VP to
+					  (VP add
+					      (NP it)
+					      (PP-CLR to
+						      (NP their collection)))))))))))
+       .
+       ''))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ It)
+		 (VP 's
+		     (ADVP just)
+		     (NP-PRD (NP sort)
+			     (PP of
+				 (NP a one-upsmanship thing)))
+		     (PP with
+			 (NP some people))))
+	, 
+	''
+	(VP added
+	    (S *T*-1))
+	(NP-SBJ Larry Shapiro)
+	.))
+( (S ``
+     (NP-SBJ-1 They)
+     (VP like
+         (S (NP-SBJ-2 *-1)
+            (VP to
+                (VP talk
+                    (PP-CLR about
+			    (S-NOM (NP-SBJ *-2)
+				   (VP having
+				       (NP (NP (NP the new Red Rock Terrace)
+					       (PRN -LCB-
+						    (NP (NP one)
+							(PP of
+							    (NP (NP Diamond Creek 's)
+								Cabernets)))
+						    -RCB-))
+					   or
+					   (NP the Dunn 1985 Cabernet)
+					   , 
+					   or
+					   (NP the Petrus)))))))))
+     .))
+( (S (S (NP-SBJ Producers)
+        (VP have
+            (VP seen
+                (S (NP-SBJ this market)
+                   (VP opening
+                       (ADVP-CLR up))))))
+     and
+     (S (NP-SBJ they)
+        (VP 're
+            (ADVP-TMP now)
+            (VP creating
+                (NP (NP wines)
+                    (SBAR (WHNP-168 that)
+                          (S (NP-SBJ *T*-168)
+                             (VP appeal
+                                 (PP-CLR to
+					 (NP these people)))))))))
+     .
+     ''))
+( (S (NP-SBJ That)
+     (VP explains
+         (SBAR (WHADVP why)
+	       (S (NP-SBJ (NP the number)
+			  (PP of
+			      (NP these wines)))
+		  (VP is
+		      (VP expanding
+			  (ADVP-MNR so
+				    rapidly))))))
+     .))
+( (S But
+     (NP-SBJ (NP consumers)
+             (SBAR (WHNP-169 who)
+                   (S (NP-SBJ *T*-169)
+                      (VP buy
+			  (PP-LOC at
+				  (NP this level))))))
+     (VP are
+         (ADVP also)
+         (ADJP-PRD (ADJP more knowledgeable)
+		   (SBAR than
+			 (S (NP-SBJ they)
+			    (VP were
+				(ADJP-PRD *?*)
+				(ADVP-TMP (NP a few years)
+					  ago))))))
+     .))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ They)
+		 (VP wo 
+		     n't
+		     (VP buy
+			 (SBAR-ADV if
+				   (S (NP-SBJ the quality)
+				      (VP is 
+					  not
+					  (ADVP-LOC-PRD there)))))))
+	, 
+	''
+	(VP said
+	    (S *T*-1))
+	(NP-SBJ (NP Cedric Martin)
+		(PP of
+		    (NP (NP Martin Wine Cellar)
+			(PP-LOC in
+				(NP New Orleans)))))
+	.))
+( (FRAG ``
+	Or
+	(SBAR-ADV if
+		  (S (NP-SBJ they)
+		     (VP feel
+			 (SBAR (SBAR 0
+				     (S (NP-SBJ-99 the wine)
+					(VP is
+					    (VP overpriced
+						(NP *-99)))))
+			       and
+			       (SBAR 0
+				     (S (NP-SBJ they)
+					(VP can
+					    (VP get
+						(NP (NP something)
+						    (ADJP equally good))
+						(PP-CLR for
+							(ADJP less))))))))))
+	.
+	''))
+( (S (S (NP-SBJ-1 Mr. Martin)
+	(VP has
+	    (VP increased
+		(NP (NP prices)
+		    (PP-LOC on
+			    (NP (NP some wines)
+				(PRN -LRB-
+				     (PP like
+					 (NP (NP Grgich Hills Chardonnay)
+					     ,
+					     (NP (ADVP-TMP now) 
+						 $ 32 *U*)))
+				     -RRB-))))
+		(S-PRP (ADVP just)
+		       (NP-SBJ *-1)
+		       (VP to
+			   (VP slow
+			       (PRT down)
+			       (NP movement))))))
+	,)
+     but
+     (S (NP-SBJ-2 he)
+	(VP is
+	    (VP beginning
+		(S (NP-SBJ *-2)
+		   (VP to
+		       (VP see
+			   (NP (NP some resistance)
+			       (PP to
+				   (NP (NP high-priced red Burgundies
+					   and
+					   Cabernets
+					   and
+					   Chardonnays) 
+				       (PP-LOC in
+					       (NP the
+						   (ADJP (QP $ 30 to $ 40) 
+							 *U*)
+						   range)))))))))))
+     .))
+( (S (S (NP-SBJ Image)
+        (VP has 
+	    (PRN ,
+		 (PP of
+		     (NP course))
+		 ,)
+            (NP (NP a great deal)
+                (SBAR (WHNP-1 0)
+		      (S (NP-SBJ *)
+			 (VP to
+			     (VP do 
+				 (NP *T*-1)
+				 (PP-CLR with
+					 (SBAR-NOM (SBAR (WHNP-170 what)
+							 (S (NP-SBJ *T*-170)
+							    (VP sells)))
+						   and
+						   (SBAR (WHNP-171 what)
+							 (S (NP-SBJ *T*-171)
+							    (VP does 
+								n't 
+								(VP *?*)))))))))))))
+     , 
+     and
+     (S (NP-SBJ-100 it)
+        (VP ca 
+	    n't
+	    (VP be
+		(VP forced
+		    (NP *-100)))))
+     .))
+( (S (S (NP-SBJ Wine merchants)
+        (VP ca 
+	    n't
+            (VP keep
+                (S (NP-SBJ Roederer Cristal)
+		   (PP-LOC-PRD in
+			       (NP stock))))))
+     , 
+     but
+     (S (NP-SBJ-1 they)
+	(VP have
+	    (S (NP-SBJ-2 *-1)
+	       (VP to
+		   (VP push
+		       (NP Salon le Mesnil)
+		       ,
+		       (S-ADV (NP-SBJ *-2)
+			      (ADVP even)
+			      (VP lowering
+				  (NP the price)
+				  (PP-DIR from
+					  (NP $ 115 *U*))
+				  (PP-DIR to
+					  (NP $ 90 *U*)))))))))
+     .))
+( (S (S (NP-SBJ It)
+	(VP 's
+	    (ADVP hardly)
+	    (NP-PRD (NP a question)
+		    (PP of
+			(NP quality)))))
+     --
+     (S (NP-SBJ the 1982 Salon)
+	(VP is
+	    (NP-PRD a beautiful wine)))
+     , 
+     but 
+     (S-1 (PRN ,
+	       (SBAR-ADV as
+			 (S (NP-SBJ Mr. Pratt)
+			    (VP noted
+				(SBAR 0
+				      (S *T*-1))))) 
+	       ,)
+	  (NP-SBJ people)
+	  (VP have
+	      (NP (NP their own ideas)
+		  (PP about
+		      (NP value)))))
+     .))
+( (S (NP-SBJ (NP It)
+	     (S *EXP*-1))
+     (VP 's
+         (ADJP-PRD interesting)
+	 (S-1 (NP-SBJ *)
+	      (VP to
+		  (VP find
+		      (SBAR that
+			    (S (NP-SBJ (NP a lot)
+				       (PP of
+					   (NP the expensive wines)))
+			       (VP are
+				   n't
+				   (ADVP-TMP always)
+				   (VP walking
+				       (PP-DIR out
+					       (NP the door))))))))))
+     .))
+( (S (PP-LOC In
+	     (NP (NP every major market)
+		 (PP-LOC in
+			 (NP the U.S.))))
+     ,
+     (PP for
+         (NP instance))
+     ,
+     (NP-SBJ you)
+     (VP can
+         (VP buy
+             (NP (NP '86 
+		     La Tache 
+		     or
+		     Richebourg)
+                 ,
+                 (NP (NP virtually 
+			 all)
+		     (PP of
+			 (NP the first growth Bordeaux))
+                     (PRN -LRB-
+			  (PP except
+			      (NP Petrus))
+			  -RRB-))
+                 ,
+                 (CONJP as well as)
+                 (NP (NP (NP Opus One)
+			 and
+			 (NP Dominus))
+		     (PP from
+                         (NP California)))
+                 and 
+		 ,
+                 (PP-TMP at
+			 (NP the moment))
+                 ,
+                 (NP (NP the Stag 's)
+                     Leap 1985 Cask 23))))
+     .))
+( (S (PP With
+         (S-NOM (NP-SBJ (NP the biggest wine-buying period)
+			(PP of
+			    (NP the year)))
+		(VP looming
+		    (SBAR-TMP as
+			      (S (NP-SBJ the holidays)
+				 (VP approach))))))
+     ,
+     (NP-SBJ (NP it)
+	     (S *EXP*-1))
+     (VP will
+         (VP be
+             (ADJP-PRD interesting)
+	     (S-1 (NP-SBJ *)
+		  (VP to
+		      (VP see
+			  (SBAR (WHADVP how)
+				(S (NP-SBJ the superpremiums)
+				   (VP fare))))))))
+     .))
+( (S (PP-TMP By
+	     (NP January))
+     (NP-SBJ (NP it)
+             (SBAR *EXP*-1))
+     (VP should
+         (VP be
+             (ADJP-PRD fairly clear)
+	     (SBAR-1 (SBAR (WHNP-2 what)
+			   (S (NP-SBJ *T*-2)
+			      (VP 's
+				  (ADJP-PRD hot))))
+		     -- 
+		     and
+		     (SBAR (WHNP-172 what)
+			   (S (NP-SBJ *T*-172)
+			      (VP 's 
+				  not
+				  (ADJP-PRD *?*)))))))
+     .))
+( (S (NP-SBJ Ms. Ensrud)
+     (VP is
+         (NP-PRD (NP a free-lance wine writer)
+		 (PP-LOC in
+			 (NP New York))))
+     .))

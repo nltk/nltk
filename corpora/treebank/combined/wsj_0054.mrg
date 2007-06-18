@@ -1,0 +1,88 @@
+
+( (S 
+    (NP-SBJ 
+      (NP (NNP Furukawa) (NNP Co.) )
+      (PP (IN of) 
+        (NP (NNP Japan) )))
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP it) )
+          (VP (MD will) 
+            (VP (VB acquire) 
+              (NP 
+                (NP 
+                  (NP (CD two) (NN construction) (NN machinery) (NNS plants) )
+                  (CC and) 
+                  (NP (DT a) (NNS sales) (NN unit) ))
+                (PP-LOC (IN in) 
+                  (NP (NNP France) ))
+                (VP 
+                  (ADVP-TMP (RB formerly) )
+                  (VBG belonging) 
+                  (PP-CLR (TO to) 
+                    (NP 
+                      (NP (NNP Dresser) (NNP Industries) (NNP Inc.) )
+                      (PP (IN of) 
+                        (NP (DT the) (NNP U.S.) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN company) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 (PRP it) )
+          (VP (VBD made) 
+            (NP (DT the) (NN purchase) )
+            (SBAR-TMP (IN in) (NN order) 
+              (S 
+                (NP-SBJ (-NONE- *-1) )
+                (VP (TO to) 
+                  (ADVP-LOC (RB locally) )
+                  (VP (VB produce) 
+                    (NP 
+                      (ADJP (RB hydraulically) (VBN operated) )
+                      (NNS shovels) )))))))))
+    (. .) ))
+( (S 
+    (NP-TMP (JJ Last) (NNP October) )
+    (, ,) 
+    (NP-SBJ (DT the) (NN company) )
+    (ADVP (RB also) )
+    (VP (VBD bought) 
+      (NP 
+        (NP (DT a) (JJ wheel-loader) (NN manufacturing) (NN plant) )
+        (PP-LOC (IN in) 
+          (NP 
+            (NP (NNP Heidelberg) )
+            (, ,) 
+            (NP (NNP West) (NNP Germany) )
+            (, ,) )))
+      (PP-DIR-CLR (IN from) 
+        (NP (NNP Dresser) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Furukawa) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (DT the) (NN purchase) )
+            (PP (IN of) 
+              (NP (DT the) (JJ French) 
+                (CC and)
+                (JJ German) (NNS plants) )))
+          (ADVP (RB together) )
+          (VP (MD will) 
+            (VP (VB total) 
+              (NP 
+                (NP 
+                  (QP (RB about) (CD 40) (CD billion) )
+                  (NNS yen) )
+                (PRN 
+                  (-LRB- -LRB-)
+                  (NP 
+                    (QP ($ $) (CD 280) (CD million) )
+                    (-NONE- *U*) )
+                  (-RRB- -RRB-) )))))))
+    (. .) ))

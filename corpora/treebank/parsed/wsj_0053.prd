@@ -1,0 +1,38 @@
+
+
+( (S (NP-SBJ (NP Michaels Stores Inc.)
+             ,
+             (SBAR (WHNP-142 which)
+                   (S (NP-SBJ *T*-142)
+                      (VP owns
+			  and
+			  operates
+                          (NP (NP a chain)
+                              (PP of
+                                  (NP specialty retail stores))))))
+             ,)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ October sales)
+                  (VP rose
+                      (NP-EXT 14.6 %)
+                      (PP-DIR to
+			      (NP (QP $ 32.8 million) *U*))
+                      (PP-DIR from
+			      (NP (QP $ 28.6 million) *U*)
+			      (NP-TMP (NP a year)
+				      (ADVP earlier)))))))
+     .))
+( (S (NP-SBJ (NP Sales)
+             (PP-LOC in
+		     (NP (NP stores)
+			 (RRC (ADJP open)
+			      (NP-TMP (QP more than one) 
+				      year)))))
+     (VP rose
+         (NP-EXT 3 %)
+         (PP-DIR to
+		 (NP (QP $ 29.3 million) *U*))
+         (PP-DIR from
+		 (NP (QP $ 28.4 million) *U*)))
+     .))

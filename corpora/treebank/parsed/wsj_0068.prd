@@ -1,0 +1,62 @@
+
+
+( (S (NP-SBJ GOODY PRODUCTS Inc.)
+     (VP cut
+         (NP its quarterly dividend)
+         (PP-DIR to
+		 (NP (NP five cents)
+		     (NP-ADV a share)))
+         (PP-DIR from
+		 (NP (NP 11.5 cents)
+		     (NP-ADV a share))))
+     .))
+( (S (NP-SBJ The reduced dividend)
+     (VP is
+         (ADJP-PRD payable
+		   (NP-TMP Jan. 2)
+		   (PP to
+		       (NP (NP stock)
+			   (PP of
+			       (NP record))
+			   (NP-TMP Dec. 15)))))
+     .))
+( (S (NP-SBJ (NP The 
+		 (ADJP Kearny , N.J.-based) 
+		 maker)
+             (PP of
+                 (NP (NP hair accessories)
+                     and
+                     (NP other cosmetic products))))
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP cut
+                      (NP the dividend)
+		      (PP-PRP due
+			      (PP to
+				  (NP (NP its third-quarter loss)
+				      (PP of
+					  (NP (NP $ 992,000 *U*)
+					      , 
+					      or
+					      (NP (NP 15 cents)
+						  (NP-ADV a share)))))))))))
+     .))
+( (S (PP-TMP In
+	     (NP the year-ago quarter))
+     ,
+     (NP-SBJ the company)
+     (VP reported
+         (NP (NP net income)
+             (PP of
+                 (NP (NP (QP $ 1.9 million) *U*)
+                     , 
+		     or
+                     (NP (NP 29 cents)
+                         (NP-ADV a share))))))
+     .))
+( (S (NP-SBJ The company)
+     (ADVP also)
+     (VP adopted
+         (NP an anti-takeover plan))
+     .))

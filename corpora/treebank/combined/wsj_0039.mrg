@@ -1,0 +1,1022 @@
+
+( (S 
+    (PP (IN As) 
+      (NP (DT an) (NN actor) ))
+    (, ,) 
+    (NP-SBJ (NNP Charles) (NNP Lane) )
+    (VP (VBZ is) (RB n't) 
+      (NP-PRD 
+        (NP (DT the) (NN inheritor) )
+        (PP (IN of) 
+          (NP 
+            (NP (NNP Charlie) (NNP Chaplin) (POS 's) )
+            (NN spirit) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Steve) (NNP Martin) )
+    (VP (VBZ has) 
+      (ADVP-TMP (RB already) )
+      (VP (VBN laid) 
+        (NP 
+          (NP (PRP$ his) (NN claim) )
+          (PP (TO to) 
+            (NP (DT that) )))))
+    (. .) ))
+( (S-CLF (CC But) 
+    (NP-SBJ (PRP it) )
+    (VP (VBZ is) 
+      (NP 
+        (NP (NNP Mr.) (NNP Lane) )
+        (, ,) 
+        (PP (IN as) 
+          (NP 
+            (NP (NN movie) (NN director) )
+            (, ,) 
+            (NP (NN producer) )
+            (CC and) 
+            (NP (NN writer) )))
+        (, ,) )
+      (SBAR-NOM 
+        (WHNP-65 (WP who) )
+        (S 
+          (NP-SBJ (-NONE- *T*-65) )
+          (VP (VBZ has) 
+            (VP (VBN been) 
+              (ADJP-PRD (VBN obsessed) 
+                (PP (IN with) 
+                  (S-NOM 
+                    (NP-SBJ (-NONE- *) )
+                    (VP (VBG refitting) 
+                      (NP 
+                        (NP (NNP Chaplin) (POS 's) )
+                        (NNP Little) (NNP Tramp) )
+                      (PP-MNR (IN in) 
+                        (NP (DT a) (JJ contemporary) (NN way) )))))))))))
+    (. .) ))
+( (S 
+    (PP-TMP (IN In) 
+      (NP (CD 1976) ))
+    (, ,) 
+    (PP (IN as) 
+      (NP 
+        (NP (DT a) (NN film) (NN student) )
+        (PP-LOC (IN at) 
+          (NP 
+            (NP (DT the) (NNP Purchase) (NN campus) )
+            (PP (IN of) 
+              (NP 
+                (NP (DT the) (NNP State) (NNP University) )
+                (PP (IN of) 
+                  (NP (NNP New) (NNP York) ))))))))
+    (, ,) 
+    (NP-SBJ (NNP Mr.) (NNP Lane) )
+    (VP (VBD shot) 
+      (NP (`` ``) 
+        (NP-TTL (DT A) (NNP Place) (IN in) (NNP Time) )
+        (, ,) ('' '') 
+        (NP 
+          (NP (DT a) (JJ 36-minute) (JJ black-and-white) (NN film) )
+          (PP (IN about) 
+            (NP 
+              (NP (DT a) (NN sketch) (NN artist) )
+              (, ,) 
+              (NP 
+                (NP (DT a) (NN man) )
+                (PP (IN of) 
+                  (NP (DT the) (NNS streets) ))))))))
+    (. .) ))
+( (S 
+    (ADVP-TMP (RB Now) )
+    (, ,) 
+    (ADVP-TMP 
+      (NP (CD 13) (NNS years) )
+      (RBR later) )
+    (, ,) 
+    (NP-SBJ (NNP Mr.) (NNP Lane) )
+    (VP (VBZ has) 
+      (VP (VBN revived) 
+        (NP (PRP$ his) (NNP Artist) )
+        (PP-LOC (IN in) 
+          (NP 
+            (NP (DT a) (JJ full-length) (NN movie) )
+            (VP (VBN called) 
+              (S 
+                (NP-SBJ (-NONE- *) )
+                (NP-PRD (`` ``) 
+                  (NP-TTL (NNP Sidewalk) (NNP Stories) )
+                  (, ,) ('' '') 
+                  (NP 
+                    (NP (DT a) (JJ poignant) (NN piece) )
+                    (PP (IN of) 
+                      (NP (NN work) ))
+                    (PP (IN about) 
+                      (NP (DT a) (JJ modern-day) (NN tramp) ))))))))))
+    (. .) ))
+( (S 
+    (PP (IN Of) 
+      (NP (NN course) ))
+    (, ,) 
+    (SBAR-ADV (IN if) 
+      (S 
+        (NP-SBJ (DT the) (NN film) )
+        (VP (VBD contained) 
+          (NP (NN dialogue) ))))
+    (, ,) 
+    (NP-SBJ-71 
+      (NP (NNP Mr.) (NNP Lane) (POS 's) )
+      (NNP Artist) )
+    (VP (MD would) 
+      (VP (VB be) 
+        (VP (VBN called) 
+          (S 
+            (NP-SBJ (-NONE- *-71) )
+            (NP-PRD (DT a) (JJ homeless) (NN person) )))))
+    (. .) ))
+( (SINV 
+    (ADVP-PRD-TPC-1 (RB So) )
+    (VP (MD would) 
+      (VP (-NONE- *?*) 
+        (ADVP-PRD (-NONE- *T*-1) )))
+    (NP-SBJ (DT the) (NNP Little) (NNP Tramp) )
+    (, ,) 
+    (PP (IN for) 
+      (NP (DT that) (NN matter) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP I) )
+    (VP (VBP say) (`` ``) 
+      (S 
+        (NP-SBJ (-NONE- *) )
+        (VP (VBD contained) 
+          (NP (NN dialogue) )))
+      ('' '') 
+      (SBAR-PRP (IN because) 
+        (S (`` ``) 
+          (NP-TTL-SBJ (NNP Sidewalk) (NNP Stories) )
+          ('' '') 
+          (VP (VBZ is) (RB n't) 
+            (ADVP (RB really) )
+            (ADJP-PRD (JJ silent) )
+            (ADVP (IN at) (DT all) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NN Composer) (NNP Marc) (NNP Marder) )
+      (, ,) 
+      (NP 
+        (NP (DT a) (NN college) (NN friend) )
+        (PP (IN of) 
+          (NP (NNP Mr.) (NNP Lane) (POS 's) ))
+        (SBAR 
+          (WHNP-66 (WP who) )
+          (S 
+            (NP-SBJ-1 (-NONE- *T*-66) )
+            (VP (VBZ earns) 
+              (NP (PRP$ his) (NN living) )
+              (S-MNR 
+                (NP-SBJ (-NONE- *-1) )
+                (VP (VBG playing) 
+                  (NP (DT the) (JJ double) (NN bass) )
+                  (PP-LOC (IN in) 
+                    (NP (JJ classical) (NN music) (NNS ensembles) ))))))))
+      (, ,) )
+    (VP (VBZ has) 
+      (VP (VBN prepared) 
+        (NP 
+          (NP (DT an) (JJ exciting) 
+            (, ,)
+            (JJ eclectic) (NN score) )
+          (SBAR 
+            (WHNP-67 (WDT that) )
+            (S 
+              (NP-SBJ (-NONE- *T*-67) )
+              (VP (VBZ tells) 
+                (NP (PRP you) )
+                (SBAR-NOM 
+                  (WHNP-2 (WP what) )
+                  (S 
+                    (NP-SBJ (DT the) (NNS characters) )
+                    (VP (VBP are) 
+                      (VP 
+                        (VP (VBG thinking) 
+                          (NP (-NONE- *T*-2) ))
+                        (CC and) 
+                        (VP (VBG feeling) 
+                          (NP (-NONE- *T*-2) ))))))
+                (ADVP-MNR 
+                  (ADVP (RB far) (RBR more) (RB precisely) )
+                  (SBAR (IN than) 
+                    (S 
+                      (NP-SBJ 
+                        (NP (NNS intertitles) )
+                        (, ,) (CC or) 
+                        (NP (RB even) (NNS words) )
+                        (, ,) )
+                      (VP (MD would) 
+                        (VP (-NONE- *?*) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (RB Much) )
+      (PP (IN of) 
+        (NP 
+          (NP (NNP Mr.) (NNP Lane) (POS 's) )
+          (NN film) )))
+    (VP (VBZ takes) 
+      (NP 
+        (NP 
+          (NP (DT a) 
+            (ADJP (RB highly) (VBN romanticized) )
+            (NN view) )
+          (PP (IN of) 
+            (NP 
+              (NP (NN life) )
+              (PP-LOC (IN on) 
+                (NP (DT the) (NNS streets) )))))
+        (PRN 
+          (-LRB- -LRB-)
+          (SBAR-ADV (IN though) 
+            (FRAG 
+              (ADVP (RB probably) )
+              (ADJP 
+                (ADJP 
+                  (ADVP (DT no) (RBR more) )
+                  (VBN romanticized) )
+                (PP (IN than) 
+                  (NP 
+                    (NP 
+                      (NP (NNP Mr.) (NNP Chaplin) (POS 's) )
+                      (NN notion) )
+                    (PP (IN of) 
+                      (NP 
+                        (NP (DT the) (NNP Tramp) )
+                        (PP (IN as) 
+                          (NP (DT the) (JJ good-hearted) (JJ free) (NN spirit) )))))))))
+          (-RRB- -RRB-) )))
+    (. .) ))
+( (S 
+    (S-ADV 
+      (NP-SBJ-1 (-NONE- *-2) )
+      (VP (VBN Filmed) 
+        (NP (-NONE- *-1) )
+        (PP-MNR (IN in) 
+          (NP (JJ lovely) (NN black) 
+            (CC and)
+            (NN white) ))
+        (PP (IN by) 
+          (NP-LGS (NNP Bill) (NNP Dill) ))))
+    (, ,) 
+    (NP-SBJ-2 
+      (NP (DT the) (NNP New) (NNP York) (NNS streets) )
+      (PP (IN of) (`` ``) 
+        (NP-TTL (NNP Sidewalk) (NNP Stories) )
+        ('' '') ))
+    (VP (VBP seem) 
+      (ADJP-PRD (JJ benign) ))
+    (. .) ))
+( (S 
+    (PP-LOC (IN On) 
+      (NP (NNP Wall) (NNP Street) ))
+    (NP-SBJ-2 (NNS men) 
+      (CC and)
+      (NNS women) )
+    (VP (VBP walk) 
+      (PP-MNR (IN with) 
+        (NP (JJ great) (NN purpose) ))
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ (-NONE- *-2) )
+        (VP (VBG noticing) 
+          (NP 
+            (NP (CD one) )
+            (ADJP (DT another) ))
+          (SBAR-TMP (RB only) 
+            (WHADVP-1 (WRB when) )
+            (S 
+              (NP-SBJ (PRP they) )
+              (VP (VBP jostle) 
+                (PP-CLR (IN for) 
+                  (NP (NNS cabs) ))
+                (ADVP-TMP (-NONE- *T*-1) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NNP Artist) )
+    (VP (VBZ hangs) 
+      (PRT (RP out) )
+      (PP-LOC (IN in) 
+        (NP (NNP Greenwich) (NNP Village) ))
+      (, ,) 
+      (PP-LOC (IN on) 
+        (NP 
+          (NP (DT a) (NN strip) )
+          (PP (IN of) 
+            (NP (NNP Sixth) (NNP Avenue) ))
+          (VP (VBN populated) 
+            (NP (-NONE- *) )
+            (PP (IN by) 
+              (NP-LGS 
+                (NP (NNS jugglers) )
+                (, ,) 
+                (NP (NNS magicians) )
+                (CC and) 
+                (NP (JJ other) (JJ good-natured) (NNS hustlers) )))))))
+    (. .) ))
+( (S 
+    (-LRB- -LRB-)
+    (NP-SBJ 
+      (NP (DT This) )
+      (NP (-NONE- *ICH*-1) ))
+    (ADVP (RB clearly) )
+    (VP (VBZ is) (RB not) 
+      (NP-PRD (JJ real) (NN life) )
+      (: :) 
+      (NP-1 
+        (NP (DT no) (NN crack) (NNS dealers) )
+        (, ,) 
+        (NP 
+          (NP (DT no) (JJ dead-eyed) (NNS men) )
+          (VP (VBG selling) 
+            (NP 
+              (NP (JJ four-year-old) (NNS copies) )
+              (PP (IN of) 
+                (NP (NNP Cosmopolitan) )))))
+        (, ,) 
+        (NP 
+          (NP (DT no) (PRP one) )
+          (VP (VBD curled) 
+            (PRT (RP up) )
+            (PP-LOC (IN in) 
+              (NP (DT a) (NN cardboard) (NN box) ))))))
+    (. .) 
+    (-RRB- -RRB-)
+    ))
+( (S 
+    (NP-SBJ (DT The) (NNP Artist) )
+    (VP (VBZ has) 
+      (NP (PRP$ his) (NN routine) ))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (PRP He) )
+    (VP (VBZ spends) 
+      (NP (PRP$ his) (NNS days) )
+      (S-CLR 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (VBG sketching) 
+            (NP (NNS passers-by) )))
+        (, ,) (CC or) 
+        (S 
+          (NP-SBJ-2 (-NONE- *-1) )
+          (VP (VBG trying) 
+            (S 
+              (NP-SBJ (-NONE- *-2) )
+              (VP (TO to) 
+                (VP (-NONE- *?*) )))))))
+    (. .) ))
+( (S 
+    (PP-TMP (IN At) 
+      (NP (NN night) ))
+    (NP-SBJ (PRP he) )
+    (VP (VBZ returns) 
+      (PP-DIR (TO to) 
+        (NP 
+          (NP (DT the) (VBN condemned) (NN building) )
+          (SBAR 
+            (WHNP-1 (-NONE- 0) )
+            (S 
+              (NP-SBJ (PRP he) )
+              (VP (VBZ calls) 
+                (S 
+                  (NP-SBJ (-NONE- *T*-1) )
+                  (NP-PRD (NN home) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (PRP$ His) (NN life) )
+      (, ,) 
+      (PP (VBG including) 
+        (NP 
+          (NP (PRP$ his) (NNS skirmishes) )
+          (PP (IN with) 
+            (NP (DT a) (VBG competing) (NN sketch) (NN artist) ))))
+      (, ,) )
+    (VP (VBZ seems) 
+      (ADJP-PRD (JJ carefree) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP He) )
+    (VP (VBZ is) 
+      (NP-PRD (PRP$ his) (JJ own) (NN man) ))
+    (. .) ))
+( (S 
+    (ADVP-TMP (RB Then) )
+    (, ,) 
+    (SBAR-ADV (RB just) (IN as) 
+      (S 
+        (NP-SBJ-72 (DT the) (NNP Tramp) )
+        (VP (VBZ is) 
+          (VP (VBN given) 
+            (NP (-NONE- *-72) )
+            (NP 
+              (NP (DT a) (JJ blind) (NN girl) )
+              (SBAR 
+                (WHNP-2 (-NONE- 0) )
+                (S 
+                  (NP-SBJ (-NONE- *) )
+                  (VP (TO to) 
+                    (VP (VB cure) 
+                      (NP (-NONE- *T*-2) ))))))
+            (PP-LOC (IN in) (`` ``) 
+              (NP-TTL (NNP City) (NNP Lights) ))))))
+    (, ,) ('' '') 
+    (NP-SBJ-73 (DT the) (NNP Artist) )
+    (VP (VBZ is) 
+      (VP (VBN put) 
+        (NP (-NONE- *-73) )
+        (PP-PUT (IN in) 
+          (NP 
+            (NP (NN charge) )
+            (PP (IN of) 
+              (S-NOM 
+                (NP-SBJ (-NONE- *-73) )
+                (VP (VBG returning) 
+                  (NP 
+                    (NP (DT a) (JJ two-year-old) (NN waif) )
+                    (PRN 
+                      (-LRB- -LRB-)
+                      (NP (NNP Nicole) (NNP Alysia) )
+                      (-RRB- -RRB-) )
+                    (, ,) 
+                    (SBAR 
+                      (WHNP-1 (WP$ whose) 
+                        (NP (NN father) ))
+                      (S 
+                        (NP-SBJ-74 (-NONE- *T*-1) )
+                        (VP (VBZ has) 
+                          (VP (VBN been) 
+                            (VP (VBN murdered) 
+                              (NP (-NONE- *-74) )
+                              (PP (IN by) 
+                                (NP-LGS (NNS thugs) )))))))
+                    (, ,) )
+                  (PP-CLR (TO to) 
+                    (NP (PRP$ her) (NN mother) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (DT This) (JJ cute) (NN child) )
+    (VP (VBZ turns) 
+      (PRT (RP out) )
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB be) 
+            (NP-PRD 
+              (NP (DT a) (NN blessing) )
+              (CC and) 
+              (NP (DT a) (NN curse) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP She) )
+    (VP 
+      (VP (VBZ gives) 
+        (NP (DT the) (NNP Artist) )
+        (NP 
+          (NP (DT a) (NN sense) )
+          (PP (IN of) 
+            (NP (NN purpose) ))))
+      (, ,) (CC but) 
+      (VP 
+        (ADVP (RB also) )
+        (VBZ alerts) 
+        (NP (PRP him) )
+        (PP-CLR (TO to) 
+          (NP 
+            (NP (DT the) (JJ serious) (NN inadequacy) )
+            (PP (IN of) 
+              (NP (PRP$ his) (JJ vagrant) (NN life) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (NNS beds) )
+      (PP-LOC (IN at) 
+        (NP (DT the) (NNP Bowery) (NNP Mission) )))
+    (VP (VBP seem) 
+      (ADJP-PRD (JJ far) (RBR drearier) )
+      (SBAR-TMP 
+        (WHADVP-2 (WRB when) )
+        (S 
+          (NP-SBJ-1 (PRP he) )
+          (VP (VBZ has) 
+            (S 
+              (NP-SBJ (-NONE- *-1) )
+              (VP (TO to) 
+                (VP (VB tuck) 
+                  (NP (DT a) (JJ little) (NN girl) )
+                  (PP-CLR (IN into) 
+                    (NP 
+                      (NP (CD one) )
+                      (PP (IN of) 
+                        (NP (PRP them) ))))
+                  (PP-TMP (IN at) 
+                    (NP (NN night) ))
+                  (ADVP-TMP (-NONE- *T*-2) ))))))))
+    (. .) ))
+( (S 
+    (S-PRP 
+      (NP-SBJ (-NONE- *-1) )
+      (VP (TO To) 
+        (VP 
+          (ADVP (RBR further) )
+          (VB load) 
+          (NP (DT the) (NNS stakes) ))))
+    (, ,) 
+    (NP-SBJ-1 (NNP Mr.) (NNP Lane) )
+    (VP (VBD dreamed) 
+      (PRT (RP up) )
+      (NP 
+        (NP (DT a) 
+          (ADJP (RB highly) (JJ improbable) )
+          (NN romance) )
+        (PP (IN for) 
+          (NP (DT the) (NNP Artist) ))
+        (, ,) 
+        (PP (IN with) 
+          (NP 
+            (NP (DT a) (JJ young) (NN woman) )
+            (SBAR 
+              (SBAR 
+                (WHNP-68 (WP who) )
+                (S 
+                  (NP-SBJ (-NONE- *T*-68) )
+                  (VP (VBZ owns) 
+                    (NP (PRP$ her) (JJ own) 
+                      (NP (NNS children) (POS 's) )
+                      (NN shop) ))))
+              (CC and) 
+              (SBAR 
+                (WHNP-69 (WP who) )
+                (S 
+                  (NP-SBJ (-NONE- *T*-69) )
+                  (VP (VBZ lives) 
+                    (PP-LOC (IN in) 
+                      (NP (DT an) (JJ expensive) (JJ high-rise) (NN apartment) (NN building) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT This) (NN story) (NN line) )
+    (VP (MD might) 
+      (VP (VB resonate) 
+        (ADVP-MNR (RBR more) (RB strongly) )
+        (SBAR-ADV (IN if) 
+          (S 
+            (NP-SBJ (NNP Mr.) (NNP Lane) )
+            (VP (VBD had) 
+              (NP 
+                (NP (RB as) (JJ strong) (DT a) (NN presence) )
+                (PP-LOC (IN in) 
+                  (NP 
+                    (NP (NN front) )
+                    (PP (IN of) 
+                      (NP (DT the) (NN camera) ))))
+                (SBAR (IN as) 
+                  (S 
+                    (NP-SBJ (PRP he) )
+                    (VP (VBZ does) 
+                      (VP (-NONE- *?*) 
+                        (PP-LOC (IN behind) 
+                          (NP (PRP it) ))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 
+      (NP (NNP Mr.) (NNP Lane) (POS 's) )
+      (JJ final) (NN purpose) )
+    (VP (VBZ is) (RB n't) 
+      (S-PRD 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB glamorize) 
+            (NP 
+              (NP (DT the) (NNP Artist) (POS 's) )
+              (NN vagabond) (NN existence) )))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ (PRP He) )
+      (VP (VBZ has) 
+        (NP 
+          (NP (DT a) (NN point) )
+          (SBAR 
+            (WHNP-2 (-NONE- 0) )
+            (S 
+              (NP-SBJ-1 (PRP he) )
+              (VP (VBZ wants) 
+                (S 
+                  (NP-SBJ (-NONE- *-1) )
+                  (VP (TO to) 
+                    (VP (VB make) 
+                      (NP (-NONE- *T*-2) ))))))))))
+    (, ,) 
+    (CC and)
+    (S 
+      (NP-SBJ (PRP he) )
+      (VP (VBZ makes) 
+        (NP (PRP it) )
+        (, ,) 
+        (PP-MNR (IN with) 
+          (NP 
+            (NP (DT a) (JJ great) (NN deal) )
+            (PP (IN of) 
+              (NP (NN force) ))))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ (DT The) (NN movie) )
+      (VP (VBZ ends) 
+        (PP-MNR (IN with) 
+          (NP 
+            (NP (NN sound) )
+            (, ,) 
+            (NP 
+              (NP (DT the) (NN sound) )
+              (PP (IN of) 
+                (S-NOM 
+                  (NP-SBJ (NN street) (NNS people) )
+                  (VP (VBG talking) ))))
+            (, ,) ))))
+    (CC and) 
+    (S 
+      (NP-SBJ (EX there) )
+      (VP (VBZ is) (RB n't) 
+        (NP-PRD 
+          (NP (NN anything) )
+          (ADJP (JJ whimsical) (CC or) (JJ enviable) ))
+        (PP-LOC (IN in) 
+          (NP (DT those) (JJ rough) 
+            (, ,)
+            (JJ beaten) (NNS voices) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (JJ French) (NN film) (NN maker) (NNP Claude) (NNP Chabrol) )
+    (VP (VBZ has) 
+      (VP (VBN managed) 
+        (NP 
+          (NP (DT another) (NN kind) )
+          (PP (IN of) 
+            (NP (JJ weird) (NN achievement) )))
+        (PP (IN with) 
+          (NP (PRP$ his) (`` ``) 
+            (NX-TTL 
+              (NP (NNP Story) )
+              (PP (IN of) 
+                (NP (NNP Women) )))))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ (PRP He) )
+    (VP (VBZ has) 
+      (VP (VBN made) 
+        (NP 
+          (NP (DT a) (JJ harsh) 
+            (, ,)
+            (JJ brilliant) (NN picture) )
+          (PRN (: --) 
+            (NP 
+              (NP (CD one) )
+              (SBAR 
+                (WHNP-70 (WDT that) )
+                (S 
+                  (NP-SBJ (-NONE- *T*-70) )
+                  (VP (VBZ 's) 
+                    (ADJP-PRD (JJ captivating) )))))
+            (: --) )
+          (PP (IN about) 
+            (NP 
+              (NP (DT a) (NN character) )
+              (SBAR 
+                (WHNP-1 (WP who) )
+                (, ,) 
+                (S 
+                  (S-ADV 
+                    (NP-SBJ-3 (-NONE- *-2) )
+                    (VP (VBN viewed) 
+                      (NP (-NONE- *-3) )
+                      (PP-CLR (IN from) 
+                        (NP (DT the) 
+                          (ADJP (RBS most) (JJ sympathetic) )
+                          (NN angle) ))))
+                  (, ,) 
+                  (NP-SBJ-2 (-NONE- *T*-1) )
+                  (VP (MD would) 
+                    (VP (VB seem) 
+                      (ADJP-PRD (JJ disagreeable) ))))))))))
+    (. .) ))
+( (S 
+    (ADVP (RB Yet) )
+    (NP-SBJ 
+      (NP (DT this) (NN woman) )
+      (, ,) 
+      (NP (NNP Marie-Louise) (NNP Giraud) )
+      (, ,) )
+    (VP (VBZ carries) 
+      (NP (JJ historical) (NN significance) )
+      (, ,) 
+      (PP (DT both) 
+        (PP (IN as) 
+          (NP 
+            (NP (CD one) )
+            (PP (IN of) 
+              (NP 
+                (NP (DT the) (JJ last) (NNS women) )
+                (SBAR 
+                  (WHNP-1 (-NONE- 0) )
+                  (S 
+                    (NP-SBJ-2 (-NONE- *T*-1) )
+                    (VP (TO to) 
+                      (VP (VB be) 
+                        (VP (VBN executed) 
+                          (NP (-NONE- *-2) )
+                          (PP-LOC (IN in) 
+                            (NP (NNP France) )))))))))))
+        (CC and) 
+        (PP (IN as) 
+          (NP 
+            (NP (DT a) (NN symbol) )
+            (PP (IN of) 
+              (NP 
+                (NP (DT the) (NNP Vichy) (NN government) (POS 's) )
+                (NN hypocrisy) ))))))
+    (. .) ))
+( (S 
+    (SBAR-TMP (IN While) 
+      (S 
+        (NP-SBJ (NNP Vichy) )
+        (VP (VBD collaborated) 
+          (PP-CLR (IN with) 
+            (NP (DT the) (NNS Germans) ))
+          (PP-TMP (IN during) 
+            (NP (NNP World) (NNP War) (NNP II) ))
+          (PP (IN in) 
+            (NP 
+              (NP (DT the) (NNS deaths) )
+              (PP (IN of) 
+                (NP 
+                  (NP (NNS thousands) )
+                  (PP (IN of) 
+                    (NP 
+                      (NP (NNP Resistance) (NNS fighters) )
+                      (CC and) 
+                      (NP (NNS Jews) ))))))))))
+    (, ,) 
+    (NP-SBJ (PRP$ its) (NNS officials) )
+    (VP (VBD needed) 
+      (NP (DT a) (JJ diversionary) (JJ symbolic) (NN traitor) ))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Marie-Louise) )
+      (, ,) 
+      (NP (DT a) (JJ small-time) (NN abortionist) )
+      (, ,) )
+    (VP (VBD was) 
+      (NP-PRD (PRP$ their) (NN woman) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP She) )
+    (VP 
+      (VP (VBD became) 
+        (NP-PRD (DT an) (NN abortionist) )
+        (ADVP-MNR (RB accidentally) ))
+      (, ,) 
+      (CC and)
+      (VP (VBD continued) 
+        (SBAR-PRP (IN because) 
+          (S 
+            (NP-SBJ (PRP it) )
+            (VP (VBD enabled) 
+              (S 
+                (NP-SBJ (PRP her) )
+                (VP (TO to) 
+                  (VP (VB buy) 
+                    (NP 
+                      (NP (NN jam) )
+                      (, ,) 
+                      (NP (NN cocoa) )
+                      (CC and) 
+                      (NP (JJ other) (JJ war-rationed) (NNS goodies) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP She) )
+    (VP 
+      (VP (VBD was) 
+        (ADJP-PRD (JJ untrained) ))
+      (CC and) 
+      (, ,)
+      (VP 
+        (PP-LOC (IN in) 
+          (NP (CD one) (JJ botched) (NN job) ))
+        (VBD killed) 
+        (NP (DT a) (NN client) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP$ Her) (NN remorse) )
+    (VP (VBD was) 
+      (ADJP-PRD (JJ shallow) 
+        (CC and)
+        (JJ brief) ))
+    (. .) ))
+( (S 
+    (SBAR-ADV (IN Although) 
+      (S 
+        (NP-SBJ (PRP she) )
+        (VP (VBD was) 
+          (ADJP-PRD (JJ kind) 
+            (CC and)
+            (JJ playful) 
+            (PP (TO to) 
+              (NP (PRP$ her) (NNS children) ))))))
+    (, ,) 
+    (S 
+      (NP-SBJ (PRP she) )
+      (VP (VBD was) 
+        (ADJP-PRD (JJ dreadful) 
+          (PP (TO to) 
+            (NP (PRP$ her) (JJ war-damaged) (NN husband) )))))
+    (: ;) 
+    (S 
+      (NP-SBJ (PRP she) )
+      (VP 
+        (ADVP-MNR (RB openly) )
+        (VBD brought) 
+        (NP (PRP$ her) (NN lover) )
+        (PP-CLR (IN into) 
+          (NP (PRP$ their) (NN home) ))))
+    (. .) ))
+( (S 
+    (SBAR-ADV (IN As) 
+      (S 
+        (NP-SBJ-1 (-NONE- *) )
+        (VP 
+          (VP (VBN presented) 
+            (NP (-NONE- *-1) )
+            (PP (IN by) 
+              (NP-LGS (NNP Mr.) (NNP Chabrol) )))
+          (, ,) 
+          (CC and)
+          (VP (VBN played) 
+            (NP (-NONE- *-1) )
+            (PP-MNR (IN with) 
+              (NP (JJ thin-lipped) (NN intensity) ))
+            (PP (IN by) 
+              (NP-LGS (NNP Isabelle) (NNP Huppert) ))))))
+    (, ,) 
+    (NP-SBJ 
+      (NP (NNP Marie-Louise) )
+      (PRN 
+        (-LRB- -LRB-)
+        (VP (VBN called) 
+          (S 
+            (NP-SBJ (-NONE- *) )
+            (NP-PRD (NNP Marie) (NNP Latour) ))
+          (PP-LOC (IN in) 
+            (NP (DT the) (NN film) )))
+        (-RRB- -RRB-) ))
+    (VP (VBD was) (RB not) 
+      (NP-PRD (DT a) (JJ nice) (NN person) ))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ-1 (PRP she) )
+    (VP (VBD did) (RB n't) 
+      (VP (VB deserve) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB have) 
+              (S 
+                (NP-SBJ-2 (PRP$ her) (NN head) )
+                (VP (VBN chopped) 
+                  (NP (-NONE- *-2) )
+                  (PRT (RP off) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (EX There) )
+    (VP (VBZ is) 
+      (NP-PRD 
+        (NP (RB very) (JJ little) )
+        (SBAR 
+          (WHNP-1 (-NONE- 0) )
+          (S 
+            (NP-SBJ (-NONE- *T*-1) )
+            (VP (TO to) 
+              (VP (VB recommend) 
+                (NP (`` ``) 
+                  (NP-TTL (NNP Old) (NNP Gringo) )
+                  (, ,) ('' '') 
+                  (NP 
+                    (NP (DT a) (JJ confused) (NN rendering) )
+                    (PP (IN of) 
+                      (NP 
+                        (NP (DT the) (NNP Carlos) (NNP Fuentes) (NN novel) )
+                        (PP (IN of) 
+                          (NP (DT the) (NNP Mexican) (NNP Revolution) ))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (JJS Most) )
+      (PP (IN of) 
+        (NP (DT the) (NN picture) )))
+    (VP (VBZ is) 
+      (VP (VBN taken) 
+        (PRT (RP up) )
+        (PP-CLR (IN with) 
+          (NP 
+            (NP (JJ endless) (NNS scenes) )
+            (PP (IN of) 
+              (S-NOM 
+                (NP-SBJ-1 (JJ many) (NNS people) )
+                (VP (CC either) 
+                  (VP (VBG fighting) )
+                  (CC or) 
+                  (VP (VBG eating) 
+                    (CC and)
+                    (VBG drinking) 
+                    (S-PRP 
+                      (NP-SBJ (-NONE- *-1) )
+                      (VP (TO to) 
+                        (VP (VB celebrate) 
+                          (NP (NN victory) ))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP I) )
+    (VP (VBP mention) 
+      (NP (DT the) (NN picture) )
+      (SBAR-PRP 
+        (ADVP (RB only) )
+        (IN because) 
+        (S 
+          (S 
+            (NP-SBJ (JJ many) (JJ bad) (NNS movies) )
+            (VP (VBP have) 
+              (NP (DT a) (JJ bright) (NN spot) )))
+          (, ,) 
+          (CC and)
+          (S 
+            (NP-SBJ (DT this) (CD one) )
+            (VP (VBZ has) 
+              (NP 
+                (NP (NNP Gregory) (NNP Peck) )
+                (, ,) 
+                (PP-LOC (IN in) 
+                  (NP 
+                    (NP (DT a) 
+                      (ADJP (RB marvelously) (JJ loose) 
+                        (CC and)
+                        (JJ energetic) )
+                      (NN portrayal) )
+                    (PP (IN of) 
+                      (NP 
+                        (NP (DT an) (JJ old) (NN man) )
+                        (SBAR 
+                          (WHNP-71 (WP who) )
+                          (S 
+                            (NP-SBJ-1 (-NONE- *T*-71) )
+                            (VP (VBZ wants) 
+                              (S 
+                                (NP-SBJ (-NONE- *-1) )
+                                (VP (TO to) 
+                                  (VP (VB die) 
+                                    (NP-MNR 
+                                      (NP (DT the) (NN way) )
+                                      (SBAR 
+                                        (WHADVP-3 (-NONE- 0) )
+                                        (S 
+                                          (NP-SBJ-2 (PRP he) )
+                                          (VP (VBZ wants) 
+                                            (S 
+                                              (NP-SBJ (-NONE- *-2) )
+                                              (VP (TO to) 
+                                                (VP (VB die) 
+                                                  (ADVP-MNR (-NONE- *T*-3) ))))))))))))))))))))))))
+    (. .) ))
+( (FRAG 
+    (NP (NNP Video) (NNP Tip) )
+    (: :) 
+    (S 
+      (PP-TMP (IN Before) 
+        (S-NOM 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (VBG seeing) (`` ``) 
+            (NP-TTL (NNP Sidewalk) (NNP Stories) ))))
+      (, ,) ('' '') 
+      (NP-SBJ-1 (-NONE- *) )
+      (VP (VB take) 
+        (NP 
+          (NP (DT a) (NN look) )
+          (PP (IN at) 
+            (NP (`` ``) 
+              (NP-TTL (NNP City) (NNP Lights) )
+              (, ,) ('' '') 
+              (NP 
+                (NP 
+                  (NP (NNP Chaplin) (POS 's) )
+                  (NNP Tramp) )
+                (PP (IN at) 
+                  (NP (PRP$ his) (JJS finest) ))))))))
+    (. .) ))

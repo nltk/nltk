@@ -1,0 +1,743 @@
+
+
+( (S (NP-SBJ-1 Program traders)
+     (VP are
+         (ADJP-PRD fond
+		   (PP of
+		       (S-NOM (NP-SBJ *-1)
+			      (VP predicting
+				  (SBAR that
+					(S (SBAR-ADV if
+						     (S (NP-SBJ-159 they)
+							(VP are
+							    (VP blocked
+								(NP *-159)
+								(PP-LOC in
+									(NP the U.S.))))))
+					   ,
+					   (NP-SBJ they)
+					   (VP will
+					       (ADVP simply)
+					       (VP emigrate
+						   (PP-DIR to
+							   (NP foreign stock markets)))))))))))
+     .))
+( (S But
+     (PP-LOC in
+	     (NP (NP London
+		     and
+		     Tokyo)
+		 ,
+		 (SBAR (WHADVP-1 where)
+		       (S (NP-SBJ computer-driven trading)
+			  (ADVP-TMP now)
+			  (VP plays
+			      (NP a
+				  (ADJP small but growing)
+				  role)
+			      (ADVP-LOC *T*-1))))))
+     ,
+     (NP-SBJ traders)
+     (VP say
+         (SBAR 0
+               (S (NP-SBJ (NP a number)
+                          (PP of
+                              (NP hurdles)))
+                  (VP loom))))
+     .))
+( (S (NP-SBJ Government officials)
+     (PRN ,
+	  (PP-LOC (ADVP especially) 
+		  in
+		  (NP Japan))
+	  ,)
+     (ADVP probably)
+     (VP would
+         (VP resist
+             (NP (NP any onslaught)
+                 (PP of
+                     (NP program trading))
+                 (PP by
+                     (NP (NP players)
+                         (VP (VP trying
+                                 (S (NP-SBJ *)
+                                    (VP to
+                                        (VP shrug 
+					    (PRT off)
+                                            (NP (NP the U.S. furor)
+                                                (PP over
+                                                    (NP their activities)))))))
+                             and
+                             (VP marching
+                                 (ADVP-DIR abroad)
+                                 (PP with
+				     (NP their business)))))))))
+     .))
+( (S (S-TPC-1 (NP-SBJ Japan)
+	      (VP is
+		  (ADJP-PRD ``
+			    very concerned 
+			    ''
+			    (PP about
+				(NP (NP the possible effects)
+				    (PP of
+					(NP program trading)))))))
+     ,
+     (NP-SBJ a senior Japanese official)
+     (VP said
+	 (SBAR 0
+	       (S *T*-1))
+	 (PP-TMP after
+		 (NP (NP the Oct. 13 stock plunge)
+		     (PP-LOC in
+			     (NP New York)))))
+     .))
+( (S (NP-SBJ-1 U.S. stock-index futures)
+     (VP are 
+	 n't
+         (ADVP even)
+         (VP traded
+	     (NP *-1)
+	     (PP-LOC in
+		     (NP Japan))
+	     (ADVP-TMP now)))
+     .))
+( (S And
+     (PP-PRP because of
+	     (NP the time difference))
+     ,
+     (NP-SBJ (NP (NP the Japanese
+		     (NX *RNR*-1)) 
+		 and 
+		 (NP the U.S.
+		     (NX *RNR*-1)) 
+		 (NX-1 markets) ')
+             trading hours)
+     (VP do 
+	 n't
+         (VP overlap))
+     .))
+( (S (NP-SBJ It)
+     all
+     (VP adds 
+	 (PRT up)
+	 (PP-CLR to
+		 (NP (NP a barrier)
+		     (PP to
+			 (NP (NP American-style index arbitrage)
+			     ,
+			     (NP (NP the
+				     (ADJP most popular)
+				     form)
+				 (PP of
+				     (NP U.S. program trading))
+				 (SBAR (WHNP-253 that)
+				       (S (NP-SBJ-1 *T*-253)
+					  (VP seeks
+					      (S (NP-SBJ *-1)
+						 (VP to
+						     (VP exploit)))))))
+			     (NP (NP brief differences)
+				 (PP-LOC between
+					 (NP (NP (NP prices)
+						 (PP of
+						     (NP stocks))
+						 (PP-LOC in
+							 (NP New York)))
+					     and
+					     (NP (NP the price)
+						 (PP of
+						     (NP a futures contract))
+						 (PP-LOC in
+							 (NP Chicago))
+						 (PP based
+						     (PP on
+							 (NP those stocks))))))))))))
+     .))
+( (S (NP-SBJ (NP (QP About 11.6)
+		 %)
+             (PP of
+                 (NP (NP all program trading)
+                     (PP by
+                         (NP New York Stock Exchange firms))
+                     (PP-TMP in
+			     (NP September)))))
+     (VP took
+         (NP-CLR place)
+	 (PP-LOC in
+		 (NP foreign markets))
+	 ,
+	 (PP according
+	     (PP to
+		 (NP Big Board data))))
+     .))
+( (S Yet
+     (NP-SBJ (NP it)
+	     (S *EXP*-1))
+     (VP is
+         (ADJP-PRD difficult)
+	 (S-1 (NP-SBJ *)
+	      (VP to
+		  (VP imagine
+		      (S (NP-SBJ-2 Japan)
+			 (VP racing
+			     (S (NP-SBJ *-2)
+				(VP to
+				    (VP introduce
+					(NP Chicago-style stock-index futures))))))))))
+     .))
+( (SINV (S-TPC-2 (NP-SBJ-1 (NP Japan 's)
+			   Finance Ministry)
+		 (ADVP-TMP already)
+		 (VP is
+		     (VP scrutinizing
+			 (NP (NP institutional investors ')
+			     activity)
+			 (S-PRP (NP-SBJ *-1)
+				(VP to
+				    (VP see
+					(SBAR whether
+					      (S (NP-SBJ-160 policy changes)
+						 (VP are
+						     (VP needed
+							 (NP *-160)
+							 (S-PRP (NP-SBJ *)
+								(VP to
+								    (VP cope
+									(PP-CLR with
+										(NP (NP the current level)
+										    (PP of
+											(NP program trading)))))))))))))))))
+	,
+	(VP said
+	    (SBAR 0
+		  (S *T*-2)))
+	(NP-SBJ (NP Makato Utsumi)
+		,
+		(NP (NP vice minister)
+		    (PP for
+			(NP international finance))))
+	.))
+( (S (NP-SBJ Program trading)
+     (VP has
+         (VP taken 
+	     (ADVP-CLR off)
+	     (PP-LOC in
+		     (NP Japan))
+	     (PP-TMP since
+		     (NP (NP (NP last year 's)
+			     introduction)
+			 (PP of
+			     (NP (NP home-market stock-index futures trading)
+				 (PP-LOC on
+					 (NP the 
+					     Tokyo and Osaka 
+					     stock exchanges))))))))
+     .))
+( (S But
+     (NP-SBJ regulators)
+     (VP are
+         (ADJP-PRD wary))
+     .))
+( (S (NP-SBJ They)
+     (VP have 
+	 n't
+         (VP forgotten
+             (NP (NP the leap)
+                 (PP-LOC in
+			 (NP share prices))
+                 (NP-TMP (NP last Dec. 7)
+			 ,
+			 (SBAR (WHADVP-1 when)
+			       (S (NP-SBJ (NP the first bout)
+					  (PP of
+					      (NP foreign-led index arbitrage)))
+				  (VP drove
+				      (NP stocks)
+				      (ADVP-DIR skyward)
+				      (PP-TMP in
+					      (NP (NP the last half-hour)
+						  (PP of
+						      (NP trading))))
+				      (ADVP-TMP *T*-1)
+				      ,
+				      (S-ADV (NP-SBJ *)
+					     (VP startling
+						 (NP (NP regulators)
+						     (SBAR (WHNP-254 who)
+							   (S (NP-SBJ *T*-254)
+							      (VP thought
+								  (SBAR 0
+									(S (NP-SBJ they)
+									   (VP had
+									       (VP written
+										   (NP (NP enough rules)
+										       (SBAR (WHNP-2 0)
+											     (S (NP-SBJ *T*-2)
+												(VP to
+												    (VP prevent
+													(NP such a swing)))))))))))))))))))))))
+     .))
+( (S (NP-SBJ (NP Japan 's)
+             Finance Ministry)
+     (VP had
+         (VP set 
+	     (PRT up)
+             (NP (NP mechanisms)
+                 (SBAR (WHNP-1 0)
+		       (S (S (NP-SBJ *-1)
+			     (VP to
+				 (VP limit
+				     (SBAR-NOM (WHADVP-2 how far)
+					       (S (NP-SBJ futures prices)
+						  (VP could
+						      (VP fall
+							  (ADVP *T*-2)
+							  (PP-TMP in
+								  (NP a single session)))) )))))
+			  and
+			  (S (NP-SBJ *-1)
+			     (VP to
+				 (VP give
+				     (NP market operators)
+				     (NP the authority
+					 (S (NP-SBJ *)
+					    (VP to
+						(VP suspend
+						    (NP (NP trading)
+							(PP-LOC in
+								(NP futures)))
+						    (PP-TMP at
+							    (NP any time))))))))))))))
+     .))
+( (S ``
+     (S-TPC-1 Maybe
+	      (NP-SBJ it)
+	      (VP was 
+		  n't
+		  (ADJP-PRD enough)))
+     , 
+     ''
+     (NP-SBJ a Finance Ministry official)
+     (VP noted
+	 (S *T*-1)
+	 (PP-TMP after
+		 (NP the Dec. 7 surge)))
+     .))
+( (S (NP-SBJ (NP Japan 's)
+             regulators)
+     (VP have 
+	 (ADVP-TMP since)
+         (VP tightened
+             (NP (NP controls)
+                 (PP on
+		     (NP index-related stock purchases)))))
+     .))
+( (S (NP-SBJ (NP Tokyo 's)
+             leading program traders)
+     (VP are
+         (NP-PRD the big U.S. securities houses)
+	 ,
+	 (SBAR-ADV though
+		   (S (NP-SBJ the Japanese)
+		      (VP are
+			  (VP playing
+			      (NP catch-up))))))
+     .))
+( (S (NP-SBJ (NP Some U.S. firms)
+             ,
+             (NP (ADVP notably)
+                 (NP Salomon Inc.)
+                 and
+                 (NP Morgan Stanley Group Inc.))
+             ,)
+     (VP have
+         (VP reaped
+             (NP (NP a hefty chunk)
+                 (PP of
+                     (NP their Japanese earnings)))
+             (PP-CLR from
+		     (NP (NP index arbitrage)
+			 ,
+			 (PP both
+			     (PP for
+				 (NP customers))
+			     and
+			     (PP for
+				 (NP their own accounts)))))))
+     .))
+( (S -LRB-
+     (NP-SBJ Morgan Stanley)
+     (NP-TMP last week)
+     (VP joined
+         (NP (NP a growing list)
+             (PP of
+                 (NP (NP U.S. securities firms)
+                     (SBAR (WHNP-255 that)
+                           (S (NP-SBJ-1 *T*-255)
+                              (VP have
+                                  (VP stopped
+                                      (S (NP-SBJ *-1)
+                                         (VP doing
+                                             (NP (NP index arbitrage)
+						 (PP for
+						     (NP their own accounts)))))))))))))
+     .
+     -RRB-))
+( (S (NP-SBJ Both
+             (NP (NP Deryck C. Maughan)
+                 ,
+                 (SBAR (WHNP-256 who)
+                       (S (NP-SBJ *T*-256)
+                          (VP heads
+                              (NP (NP Salomon)
+				  (PP-LOC in
+					  (NP Tokyo))))))
+                 ,)
+             and
+             (NP (NP John S. Wadsworth)
+                 ,
+                 (SBAR (WHNP-257 who)
+                       (S (NP-SBJ *T*-257)
+                          (VP heads
+                              (NP (NP Morgan Stanley)
+				  (ADVP-LOC there)))))
+                 ,))
+     (VP ascribe
+         (NP (NP a good part)
+             (PP of
+                 (NP (NP (NP their firms ')
+			 success)
+                     (PP-LOC in
+			     (NP Tokyo)))))
+         (PP-CLR to
+		 (NP their ability
+		     (S (NP-SBJ *)
+			(VP to
+			    (VP offer
+				(NP sophisticated , futures-related
+				    investment strategies)
+				(PP-CLR to
+					(NP big institutional clients))))))))
+     .))
+( (S (NP-SBJ They)
+     (VP do
+	 n't
+         (VP have
+             (NP plans
+                 (S (NP-SBJ *)
+                    (VP to
+                        (VP cut
+                            (ADVP-CLR back)))))))
+     .))
+( (S ``
+     (S-TPC-1 (NP-SBJ It)
+	      (VP has 
+		  not
+		  (VP been
+		      (ADJP-PRD disruptive)
+		      (PP-LOC in
+			      (NP the markets here)))))
+     , 
+     ''
+     (NP-SBJ Mr. Maughan)
+     (VP said
+	 (S *T*-1))
+     .))
+( (S ``
+     (NP-SBJ-1 The real difference)
+     (VP seems
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP be
+                    (SBAR-PRD that
+			      (S (NP-SBJ the cash market)
+				 (ADVP-LOC here)
+				 ...
+				 (VP is
+				     (ADJP-PRD (ADJP big enough
+						     (SBAR *RNR*-2))
+					       and
+					       (ADJP liquid enough
+						     (SBAR *RNR*-2))
+					       (SBAR-2 that
+						       (S (NP-SBJ the futures market)
+							  (VP is 
+							      n't
+							      (VP having
+								  (NP (NP the same impact)
+								      (SBAR (WHNP-3 0) 
+									    (S (NP-SBJ it)
+									       (VP does
+										   (VP *?*
+										       (NP *T*-3)
+										       (PP-LOC in
+											       (NP America)))))))))))))))))))
+     .
+     ''))
+( (S (NP-SBJ The British)
+     (ADVP also)
+     (VP are
+         (VP scrutinizing
+             (NP program trades)))
+     .))
+( (S (S-TPC-2 (NP-SBJ Index-arbitrage trading)
+	      (VP is
+		  ``
+		  (NP-PRD (NP something)
+			  (SBAR (WHNP 0)
+				(S (NP-SBJ-1 we)
+				   (VP want
+				       (S (NP-SBJ *-1)
+					  (VP to
+					      (VP watch
+						  (NP *T*-1)
+						  (ADVP-MNR closely))))))))))
+     , 
+     ''
+     (NP-SBJ (NP an official)
+	     (PP-LOC at
+		     (NP (NP London 's)
+			 Stock Exchange)))
+     (VP said
+	 (SBAR 0
+	       (S *T*-2)))
+     .))
+( (S ``
+     (NP-SBJ We)
+     (VP do 
+	 n't
+         (VP think
+             (SBAR 0
+                   (S (NP-SBJ there)
+                      (VP is
+                          (NP-PRD (NP cause)
+				  (PP for
+				      (NP concern)))
+			  (PP-TMP at
+				  (NP the moment)))))))
+     .
+     ''))
+( (S (NP-SBJ London)
+     (VP serves
+         (ADVP increasingly)
+         (PP-CLR as
+		 (NP (NP a conduit)
+		     (PP for
+			 (NP (NP program trading)
+			     (PP of
+				 (NP U.S. stocks)))))))
+     .))
+( (S (NP-SBJ Market professionals)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ London)
+                  (VP has
+                      (NP several attractions)))))
+     .))
+( (S (ADVP First)
+     ,
+     (NP-SBJ-1 the trading)
+     (VP (VP (VP is
+		 (VP done
+		     (NP *-1)
+		     (PP-LOC over
+			     (NP the counter)))))
+	 and
+	 (VP (VP is 
+		 n't
+		 (VP reported
+		     (NP *-1)
+		     (PP-LOC on
+			     (NP either the U.S. or London stock trading tapes))))))
+     .))
+( (S (ADVP Second)
+     ,
+     (NP-SBJ-1 it)
+     (VP can
+	 (VP be
+	     (VP used
+		 (NP *-1)
+		 (S-PRP-CLR (NP-SBJ *) 
+			    (VP to
+				(VP unwind
+				    (NP positions)
+				    (SBAR-TMP before
+					      (S (NP-SBJ U.S. trading)
+						 (VP begins)))
+				    (PRN ,
+					 but
+					 (PP-CLR at
+						 (NP (NP prices)
+						     (VP pegged
+							 (NP *)
+							 (PP-CLR to
+								 (NP (NP the previous session 's)
+								     Big Board close))))))))
+ ))))
+     .))
+( (S (PP In
+         (NP (NP addition)
+             (PP to
+                 (NP (NP the extra privacy)
+                     (PP of
+                         (NP these trades))))))
+     ,
+     (NP-SBJ the transactions)
+     (VP can
+         (ADVP-TMP often)
+         (VP be
+             (ADJP-PRD less expensive
+		       (S (NP-SBJ *)
+			  (VP to
+			      (VP execute))))
+	     ,
+	     (SBAR-PRP because
+		       (S (NP-SBJ-1 the parties)
+			  (VP do 
+			      n't
+			      (VP have
+				  (S (NP-SBJ *-1)
+				     (VP to
+					 (VP pay
+					     (NP (NP a floor brokerage fee)
+						 or
+						 (NP (NP a specialist 's)
+						     fee)))))))))))
+     .))
+( (SINV (S-TPC-2 (ADVP Still)
+		 , 
+		 ``
+		 (NP-SBJ-161 (NP Much less 
+				 -LCB- 
+				 index-arbitrage activity 
+				 -RCB-)
+			     (PP *ICH*-1))
+		 (VP is
+		     (VP done
+			 (NP *-161)
+			 (PP-LOC over
+				 (NP here))
+			 (PP-1 than 
+			       (PP-LOC in
+				       (NP the U.S.))))))
+	''
+	(VP said
+	    (SBAR 0
+		  (S *T*-2)))
+	(NP-SBJ (NP Richard Barfield)
+		,
+		(NP (NP chief investment manager)
+		    (PP-LOC at
+			    (NP (NP Standard Life Assurance Co.)
+				,
+				(SBAR (WHNP-258 which)
+				      (S (NP-SBJ *T*-258)
+					 (VP manages
+					     (NP (NP (QP about # 15 billion) *U*)
+						 (PRN -LRB-
+						      (NP (QP $ 23.72 billion) *U*)
+						      -RRB-)
+						 (PP in
+						     (NP United Kingdom 
+							 institutional funds))))))))))
+	.))
+( (S (NP-SBJ Britain)
+     (VP has
+         (NP two main index-arbitrage instruments))
+     .))
+( (S (NP-SBJ-162 A Financial Times-Stock Exchange 100-share index option contract)
+     (VP is
+         (VP traded
+             (NP *-162)
+	     (PP-LOC on
+		     (NP (NP the London Stock Exchange 's)
+			 Traded Options Market))))
+     .))
+( (S And
+     (NP-SBJ-1 an FT-SE futures contract)
+     (VP is
+         (VP traded
+	     (NP *-1)
+	     (PP-LOC on
+		     (NP the London International Financial Futures Exchange))))
+     .))
+( (S (NP-SBJ Both contracts)
+     (VP have
+         (VP gained
+             (NP a following)
+	     (PP-TMP since
+		     (NP the 1987 global market crash))))
+     .))
+( (S (NP-SBJ (NP The average number)
+             (PP of
+                 (NP (NP FT-SE option contracts)
+                     (VP traded
+			 (NP *)
+			 (PP-LOC on
+				 (NP the London exchange))))))
+     (VP has
+         (VP surged
+             (ADVP-EXT nearly tenfold)
+	     (PP-TMP since
+		     (NP (NP (NP the contract 's)
+			     launch)
+			 (PP-TMP in
+				 (NP 1984))))))
+     .))
+( (S (NP-TMP This year)
+     ,
+     (NP-SBJ (NP the average)
+             (PP of
+                 (NP (NP daily contracts)
+                     (VP traded
+                         (NP *)))))
+     (VP totaled
+	 (NP 9,118)
+	 ,
+	 (ADVP up
+	       (PP (PP from
+		       (NP 4,645)
+		       (ADVP-TMP (NP a year)
+				 earlier))
+		   and
+		   (PP from
+		       (NP 917)
+		       (PP-TMP in
+			       (NP 1984))))))
+     .))
+( (S (S-TPC-1 But
+	      (NP-SBJ a survey)
+	      (NP-TMP early
+		      this summer)
+	      (VP indicated
+		  (SBAR that
+			(S (NP-SBJ (NP the volume)
+				   (PP of
+				       (NP index-options trading)))
+			   (VP was
+			       (NP-PRD (NP (QP only 15)
+					   %)
+				       (PP of
+					   (NP (NP the size)
+					       (PP of
+						   (NP the underlying equity market))))))))))
+     ,
+     (NP-SBJ exchange officials)
+     (VP said
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (NP-SBJ This)
+     (VP compares
+         (PP-CLR with
+		 (NP estimates
+		     (SBAR that
+			   (S (NP-SBJ the U.S. `` derivatives '' market)
+			      (VP is
+				  (ADVP perhaps)
+				  (ADJP-PRD (ADJP (QP four times)
+						  as large)
+					    (PP as
+						(NP the underlying domestic market)))))))))
+     .))

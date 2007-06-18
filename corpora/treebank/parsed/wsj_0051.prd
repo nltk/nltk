@@ -1,0 +1,634 @@
+
+
+( (S (NP-SBJ (NP Fujitsu Ltd. 's)
+             top executive)
+     (VP took
+         (NP (NP the unusual step)
+             (PP of
+                 (S-NOM (NP-SBJ *)
+			(VP (ADVP-MNR publicly)
+			    apologizing
+			    (PP-CLR for
+				    (S-NOM (NP-SBJ his company 's)
+					   (VP making
+					       (NP (NP bids)
+						   (PP of
+						       (NP (QP just one) yen))
+						   (PP for
+						       (NP several local government projects))))))))))
+	 ,
+	 (SBAR-TMP while
+		   (S (NP-SBJ computer rival 
+			      NEC Corp.)
+		      (VP made
+			  (NP (NP a written apology)
+			      (PP for
+				  (S-NOM (NP-SBJ *)
+					 (VP indulging
+					     (PP-CLR in
+						     (NP the same practice))))))))))
+     .))
+( (S (ADVP-TMP Meanwhile)
+     ,
+     (NP-SBJ business and government leaders)
+     (VP (VP rebuked
+             (NP the computer makers))
+	 ,
+	 and
+	 (VP fretted
+	     (PP-CLR about
+		     (NP (NP the broader statement)
+			 (SBAR (WHNP-1 0)
+			       (S (NP-SBJ (NP the companies ')
+					  actions)
+				  (VP make
+				      (NP *T*-1))))
+			 (PP about
+			     (NP Japanese 
+				 cutthroat pricing))))))
+     .))
+( (S (NP-SBJ Fujitsu)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP bid
+                      (NP (NP the equivalent)
+                          (PP of
+                              (NP (QP less
+				      than
+				      a) U.S. penny)))
+                      (PP-CLR on
+			      (NP three separate municipal contracts))
+		      (PP-TMP during
+			      (NP the past two years))))))
+     .))
+( (S (NP-SBJ The company)
+     (ADVP also)
+     (VP disclosed
+         (SBAR that
+               (S (PP-TMP during
+			  (NP that period))
+                  (NP-SBJ it)
+                  (VP offered
+                      (NP (NP 10,000 yen)
+                          , 
+			  or
+                          (NP (QP about $ 70) *U*)
+                          ,)
+                      (PP-CLR for
+			      (NP another contract))))))
+     .))
+( (S But
+     (NP-SBJ (NP Fujitsu)
+             ,
+             (NP (NP Japan 's)
+                 No. 1 computer maker)
+             ,)
+     (VP is 
+	 n't
+         (ADVP-PRD alone))
+     .))
+( (S (NP-SBJ (NP NEC)
+             ,
+             (NP (NP one)
+                 (PP of
+                     (NP its largest domestic competitors)))
+             ,)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP bid
+                      (NP one yen)
+		      (PP-LOC in
+			      (NP two separate public auctions))
+		      (PP-TMP since
+			      (NP 1987))))))
+     .))
+( (S (PP-LOC In
+	     (NP both cases))
+     ,
+     (NP-SBJ NEC)
+     (VP lost
+         (NP the contract)
+         (PP-CLR to
+		 (NP (NP Fujitsu)
+		     ,
+		     (SBAR (WHNP-139 which)
+			   (S (NP-SBJ *T*-139)
+			      (VP (VP made
+				      (NP the same bid))
+				  and
+				  (VP won
+				      (NP a tie-breaking lottery))))))))
+     .))
+( (S (NP-SBJ All
+             the contracts)
+     (VP (VP were
+             (PP-PRD for
+		     (NP computer-system-design contracts)))
+         and
+         (VP involved
+             (NP no hardware or software)))
+     .))
+( (S (NP-SBJ-1 (NP The Ministry)
+	       (PP of
+		   (NP (NP International Trade)
+		       and
+		       (NP Industry))))
+     (VP summoned
+         (NP (NP executives)
+             (PP from
+                 (NP the companies)))
+	 (S-PRP (NP-SBJ *-1)
+		(VP to
+		    ``
+		    (VP make
+			(ADJP sure
+			      (SBAR 0
+				    (S (NP-SBJ they)
+				       (VP understood 
+					   ''
+					   (NP (NP the concern)
+					       (PP about
+						   (NP such practices)))))))
+			,
+			(PP according
+			    (PP to
+				(NP a government spokesman)))))))
+     .))
+( (S ``
+     (S-TPC-1 (NP-SBJ These cases)
+	      (VP lead
+		  (PP-CLR to
+			  (NP (NP the loss)
+			      (PP of
+				  (NP (NP the firms ')
+				      (ADJP social and international) credibility))))))
+     , 
+     ''
+     (NP-SBJ a ministry statement)
+     (VP said
+	 (S *T*-1))
+     .))
+( (S (NP-SBJ (NP Japan 's)
+             Fair Trade Commission)
+     (VP has
+         (VP said
+             (SBAR 0
+                   (S (NP-SBJ-1 it)
+                      (VP is
+                          (VP considering
+                              (S (NP-SBJ *-1)
+                                 (VP investigating
+                                     (NP the bids)
+                                     (PP-CLR for
+					     (NP possible antitrust-law violations))))))))))
+     .))
+( (S ``
+     (S-TPC-1 (NP-SBJ-2 We)
+	      (VP would
+		  (VP like
+		      (S (NP-SBJ-3 *-2)
+			 (VP to
+			     (VP apologize
+				 (PP-CLR for
+					 (S-NOM (NP-SBJ *-3)
+						(VP having
+						    (VP caused
+							(NP huge trouble)))))))))))
+     , 
+     ''
+     (NP-SBJ Fujitsu President
+	     Takuma Yamamoto)
+     ,
+     (VP read
+	 (S *T*-1)
+	 (PP from
+	     (NP a prepared statement))
+	 (SBAR-TMP as
+		   (S (NP-SBJ he)
+		      (VP stood
+			  (PP-LOC before
+				  (NP a packed news conference))
+			  (PP-LOC at
+				  (NP (NP his company 's)
+				      downtown headquarters))))))
+     .))
+( (S-1 (NP-SBJ The bids)
+       (PRN ,
+	    (S (NP-SBJ he)
+	       (VP added
+		   (SBAR 0
+			 (S *T*-1))))
+	    ,)
+       (VP were
+	   ``
+	   (ADJP-PRD contrary
+		     (PP to
+			 (NP common sense))))
+       . 
+       ''))
+( (S (NP-SBJ NEC)
+     (VP released
+         (NP (NP (NP a statement)
+                 (VP saying
+		     ,
+		     ``
+		     (S (NP-SBJ-1 We)
+			(VP feel
+			    (ADJP-PRD sorry
+				      (PP for
+					  (S-NOM (NP-SBJ *-1)
+						 (VP having
+						     (VP caused
+							 (NP (NP trouble)
+							     (PP to
+								 (NP society))))))))))))
+             , 
+	     ''
+             (NP (NP a form)
+		 (PP of
+		     (NP apology))
+		 (RRC (ADJP common)
+		      (PP-LOC in
+			      (NP Japan))
+		      (PP for
+			  (NP (NP companies)
+			      (VP caught
+				  (NP *)
+				  (PP-LOC-CLR in
+					      (NP embarrassing situations)))))))))
+     .))
+( (S (NP-SBJ-2 Japanese companies)
+     (VP have
+         (ADVP-TMP long)
+         (VP had
+             (NP (NP a reputation)
+		 (PP for
+		     (S-NOM (NP-SBJ-1 *-2)
+			    (VP sacrificing
+				(NP short-term profits)
+				(S-PRP (NP-SBJ *-1)
+				       (VP to
+					   (VP make
+					       (NP (NP a sale)
+						   (SBAR (WHNP-140 that)
+							 (S (NP-SBJ *T*-140)
+							    (VP may
+								(VP have
+								    (NP long-term benefits)))))))))))))))
+     .))
+( (S But
+     (NP-SBJ the growing controversy)
+     (VP comes
+	 (PP-TMP as
+		 (S-NOM (NP-SBJ (NP (NP many practices)
+				    (VP (ADVP-MNR historically)
+					accepted
+					(NP *) 
+					(PP-CLR as
+						(ADJP normal))
+					(ADVP-LOC here)))
+				(PRN --
+				     (PP such as
+					 (S-NOM (NP-SBJ politicians)
+						(VP (VP accepting
+							(NP substantial gifts)
+							(PP-DIR from
+								(NP businessmen)))
+						    or
+						    (VP having
+							(NP extramarital affairs)))))
+				     --))
+			are
+			(VP coming
+			    (PP-LOC-CLR under
+					(NP close ethical scrutiny))))))
+     .))
+( (S (NP-SBJ-1 The fire)
+     (VP is
+         (ADVP also)
+         (VP fueled
+	     (NP *-1)
+             (PP by
+                 (NP-LGS (NP growing international interest)
+			 (PP in
+			     (NP Japanese behavior))))))
+     .))
+( (S (ADVP-TMP So far)
+     (NP-SBJ there)
+     (VP have
+         (VP been
+             (NP-PRD (NP no public overseas complaints)
+		     (PP about
+			 (NP the issue)))))
+     .))
+( (S But
+     (PP-LOC in
+	     (NP (NP one)
+		 (PP of
+		     (NP (NP the auctions)
+			 (PP in
+			     (NP question))))))
+     ,
+     (NP-SBJ International Business Machines Corp.)
+     (VP made
+	 (NP (NP a bid)
+	     (ADJP (ADJP substantially higher)
+		   (PP than
+		       (NP the Fujitsu offer))))
+	 ,
+	 (PP according
+	     (PP to
+		 (NP the municipality))))
+     .))
+( (S (NP-SBJ The low-ball bids)
+     (VP touch
+         (PP-CLR on
+		 (NP (NP issues)
+		     (ADJP central
+			   (PP to
+			       (NP the
+				   (ADJP increasingly tense)
+				   trade debate))))))
+     .))
+( (S (NP-SBJ Foreigners)
+     (VP complain
+         (SBAR that
+               (S (NP-SBJ they)
+                  (VP have
+                      (NP (NP limited access)
+			  (PP to
+			      (NP government procurement)))
+		      (PP-LOC in
+			      (NP Japan))
+		      ,
+		      (SBAR-PRP (ADVP in part) 
+				because
+				(S (NP-SBJ Japanese companies)
+				   (VP (ADVP-MNR unfairly)
+				       undercut
+				       (NP them))))))))
+     .))
+( (S (NP-SBJ The U.S. government)
+     (PP-TMP in
+	     (NP recent years))
+     (VP has
+         (VP accused
+             (NP Japanese companies)
+	     (PP-CLR of
+		     (S-NOM (NP-SBJ *)
+			    (VP (ADVP-MNR excessively)
+				slashing
+				(NP (NP prices)
+				    (PP-LOC on
+					    (NP (NP semiconductors and supercomputers)
+						--
+						(NP (NP products)
+						    (SBAR (WHNP-1 0)
+							  (S (NP-SBJ Fujitsu
+								     and
+								     NEC)
+							     (VP make
+								 (NP *T*-1)))))))))))))
+     .))
+( (S (S-ADV (NP-SBJ-2 *-1)
+	    (VP Asked
+		(NP *-2)
+		(SBAR whether
+		      (S (NP-SBJ the bidding flap)
+			 (VP would
+			     (VP hurt
+				 (NP U.S.-Japan relations)))))))
+     ,
+     (NP-SBJ-1 Mr. Yamamoto)
+     (VP said 
+	 ,
+	 ``
+	 (S (NP-SBJ this)
+	    (VP will
+		(VP be
+		    (NP-PRD a minus factor)))))
+     . 
+     ''))
+( (S (NP-SBJ The
+	     `` one-yen '' 
+	     controversy)
+     (ADVP-TMP first)
+     (VP came
+         (PP-CLR to
+		 (NP a head))
+	 (NP-TMP last week)
+	 (SBAR-TMP (WHADVP-1 when)
+		   (S (NP-SBJ (NP the city)
+			      (PP of
+				  (NP Hiroshima)))
+		      (VP announced
+			  (SBAR that
+				(S (NP-SBJ Fujitsu)
+				   (VP won
+				       (NP a contract
+					   (S (NP-SBJ *)
+					      (VP to
+						  (VP design
+						      (NP (NP a computer system)
+							  (SBAR (WHNP-2 0)
+								(S (NP-SBJ *T*-2)
+								   (VP to
+								       (VP map
+									   (NP its waterworks)))))))))))))
+			  (ADVP-TMP *T*-1)))))
+     .))
+( (S (S (NP-SBJ-1 The city)
+        (VP had
+            (VP expected
+                (S (NP-SBJ *-1)
+                   (VP to
+                       (VP pay
+                           (NP (NP (QP about 11 million) yen)
+			       (PRN -LRB-
+				    (NP $ 77,000 *U*)
+				    -RRB-))))))))
+     , 
+     but
+     (S (NP-SBJ-2 Fujitsu)
+        (ADVP essentially)
+        (VP offered
+            (S (NP-SBJ *-2)
+               (VP to
+                   (VP do
+                       (NP it)
+                       (PP-MNR for 
+			       (ADVP free)))))))
+     .))
+( (S (ADVP-TMP Then)
+     (NP-TMP Wednesday)
+     ,
+     (NP-SBJ Fujitsu)
+     (VP said
+	 (SBAR 0
+	       (S (NP-SBJ-1 it)
+		  (VP made
+		      (NP a similar bid)
+		      (S-PRP (NP-SBJ *-1)
+			     (VP to
+				 (VP win
+				     (NP (NP a library contract)
+					 (PP-LOC in
+						 (NP Nagano prefecture))))))
+		      (ADVP-TMP (NP two weeks)
+				earlier)))))
+     .))
+( (S (NP-SBJ It)
+     (ADVP also)
+     (VP said
+         (SBAR that
+               (S (S (PP-TMP in
+			     (NP July))
+                     ,
+                     (NP-SBJ-2 it)
+                     (VP bid
+                         (NP 10,000 yen)
+			 (S-PRP (NP-SBJ *-2)
+				(VP to
+				    (VP design
+					(NP a system)
+					(PP-BNF for
+						(NP the Saitama prefectural library)))))))
+                  , 
+		  and
+                  (S (ADVP-TMP (NP two years)
+			       ago)
+                     ,
+                     (NP-SBJ-1 it)
+                     (VP bid
+                         (NP one yen)
+			 (S-PRP (NP-SBJ *-1)
+				(VP to
+				    (VP plan
+					(NP (NP the telecommunications system)
+					    (PP for
+						(NP Wakayama prefecture)))))))))))
+     .))
+( (S (NP-SBJ The company)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 it)
+                  (VP has
+                      (VP offered
+                          (S (NP-SBJ *-1)
+                             (VP to
+                                 (VP withdraw
+                                     (NP (NP its bids)
+					 (PP-LOC in
+						 (NP Hiroshima
+						     and
+						     Nagano)))))))))))
+     .))
+( (S (NP-SBJ The municipalities)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 they)
+                  (VP have 
+		      n't
+                      (VP decided
+                          (SBAR whether
+				(S (NP-SBJ-2 *-1)
+				   (VP to
+				       (VP try
+					   (S (NP-SBJ *-2)
+					      (VP to
+						  (VP force
+						      (S (NP-SBJ the company)
+							 (VP to
+							     (VP go
+								 (PRT through)
+								 (PP-CLR with
+									 (NP the contracts)))))))))))))))))
+     .))
+( (S (NP-SBJ Fujitsu
+             and
+             NEC)
+     (VP said
+         (SBAR (SBAR 0
+                     (S (NP-SBJ they)
+                        (VP were
+                            (ADVP-TMP still)
+                            (VP investigating))))
+               , 
+	       and
+               (SBAR that
+                     (S (NP-SBJ (NP knowledge)
+                                (PP of
+                                    (NP more such bids)))
+                        (VP could
+                            (VP emerge))))))
+     .))
+( (S (NP-SBJ Mr. Yamamoto)
+     (VP insisted
+         (SBAR (SBAR that
+                     (S (NP-SBJ headquarters)
+                        (VP had 
+			    n't
+                            (VP approved
+                                (NP the bids)))))
+               , 
+	       and
+               (SBAR that
+                     (S (NP-SBJ he)
+                        (VP did 
+			    n't
+                            (VP know
+                                (PP-CLR about
+					(NP (NP most)
+					    (PP of
+						(NP the cases))))
+				(PP-TMP until
+					(NP Wednesday))))))))
+     .))
+( (S (NP-SBJ (NP Other major Japanese computer companies)
+             (VP contacted
+		 (NP *)
+		 (NP-TMP yesterday)))
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ they)
+                  (VP have 
+		      (ADVP-TMP never)
+                      (VP made
+                          (NP such bids))))))
+     .))
+( (S ``
+     (S-TPC-1 (NP-SBJ One yen)
+	      (VP is 
+		  not
+		  (ADJP-PRD ethical)))
+     , 
+     ''
+     (NP-SBJ (NP Michio Sasaki)
+	     ,
+	     (NP (NP an official)
+		 (PP-LOC at
+			 (NP (NP Keidanren)
+			     ,
+			     (NP (NP the Japan Federation)
+				 (PP of
+				     (NP Economic Organizations))))))
+	     ,)
+     (VP said
+	 (S *T*-1))
+     .))
+( (S ``
+     (S (NP-SBJ Profit)
+        (VP may
+            (VP be
+                (ADJP-PRD low))))
+     , 
+     but
+     (S (ADVP at least)
+	(NP-SBJ-1 costs)
+	(VP should
+	    (VP be
+		(VP covered
+		    (NP *-1)))))
+     .))

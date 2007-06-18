@@ -1,0 +1,49 @@
+
+
+( (S (NP-SBJ-1 (NP A seat)
+	       (PP-LOC on
+		       (NP (NP the Chicago Board)
+			   (PP of
+			       (NP Trade)))))
+     (VP was
+         (VP sold
+	     (NP *-1)
+             (PP-CLR for
+		     (NP (NP $ 350,000 *U*)
+			 ,
+			 (ADVP down
+			       (NP $ 16,000 *U*)
+			       (PP from
+				   (NP the previous sale)
+				   (NP-TMP last Friday)))))))
+     .))
+( (S (NP-SBJ-1 Seats)
+     (ADVP-TMP currently)
+     (VP are
+         (VP quoted
+	     (NP *-1)
+             (PP-CLR at
+		     (NP (NP (NP $ 331,000 *U*)
+			     ,
+			     (VP bid
+				 (NP *)))
+			 , 
+			 and
+			 (NP (NP $ 350,000 *U*)
+			     ,
+			     (VP asked
+				 (NP *)))))))
+     .))
+( (S (NP-SBJ-2 (NP The record price)
+	       (PP for
+		   (NP (NP a full membership)
+		       (PP-LOC on
+			       (NP the exchange)))))
+     (VP is
+         (NP-PRD $ 550,000 *U*)
+	 ,
+	 (S-ADV (NP-SBJ-1 *-2)
+		(VP set
+		    (NP *-1)
+		    (NP-TMP Aug. 31 , 1987))))
+     .))

@@ -1,0 +1,85 @@
+
+( (S 
+    (S-TPC-2 
+      (NP-SBJ 
+        (NP 
+          (NP (NNP Japan) (POS 's) )
+          (NNS reserves) )
+        (PP (IN of) 
+          (NP 
+            (NP (NN gold) )
+            (, ,) 
+            (NP (JJ convertible) (JJ foreign) (NNS currencies) )
+            (, ,) 
+            (CC and)
+            (NP (JJ special) (NN drawing) (NNS rights) ))))
+      (VP (VBD fell) 
+        (PP-EXT (IN by) 
+          (NP (DT a) (JJ hefty) 
+            (QP ($ $) (CD 1.82) (CD billion) )
+            (-NONE- *U*) ))
+        (PP-TMP (IN in) 
+          (NP (NNP October) ))
+        (PP-DIR (TO to) 
+          (NP 
+            (QP ($ $) (CD 84.29) (CD billion) )
+            (-NONE- *U*) ))))
+    (, ,) 
+    (NP-SBJ (DT the) (NNP Finance) (NNP Ministry) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-2) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN total) )
+    (VP (VBZ marks) 
+      (NP (DT the) (JJ sixth) (JJ consecutive) (JJ monthly) (NN decline) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (JJ protracted) (NN downturn) )
+    (VP (VBZ reflects) 
+      (NP 
+        (NP (DT the) (NN intensity) )
+        (PP (IN of) 
+          (NP 
+            (NAC (NNP Bank) 
+              (PP (IN of) 
+                (NP (NNP Japan) )))
+            (JJ yen-support) (NN intervention) ))
+        (PP-TMP (IN since) 
+          (NP 
+            (NP (NNP June) )
+            (, ,) 
+            (SBAR 
+              (WHADVP-1 (WRB when) )
+              (S 
+                (NP-SBJ (DT the) (NNP U.S.) (NN currency) )
+                (VP 
+                  (ADVP (RB temporarily) )
+                  (VBD surged) 
+                  (PP-DIR (IN above) 
+                    (NP (DT the) 
+                      (ADJP (CD 150.00) (NNS yen) )
+                      (NN level) ))
+                  (ADVP-TMP (-NONE- *T*-1) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN announcement) )
+    (VP (VBZ follows) 
+      (NP 
+        (NP (DT a) (JJR sharper) 
+          (ADJP 
+            (QP ($ $) (CD 2.2) (CD billion) )
+            (-NONE- *U*) )
+          (NN decline) )
+        (PP-LOC (IN in) 
+          (NP 
+            (NP (DT the) (NN country) (POS 's) )
+            (JJ foreign) (NNS reserves) ))
+        (PP-TMP (IN in) 
+          (NP (NNP September) ))
+        (PP (TO to) 
+          (NP 
+            (QP ($ $) (CD 86.12) (CD billion) )
+            (-NONE- *U*) ))))
+    (. .) ))

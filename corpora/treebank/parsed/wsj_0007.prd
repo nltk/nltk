@@ -1,0 +1,48 @@
+
+
+( (S (NP-SBJ McDermott International Inc.)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ its
+                          Babcock & Wilcox
+                          unit)
+                  (VP completed
+                      (NP (NP the sale)
+                          (PP of
+                              (NP its Bailey Controls Operations))
+                          (PP to
+			      (NP Finmeccanica S.p . A.))
+                          (PP for
+                              (NP (QP $ 295 million) 
+				  *U*)))))))
+     .))
+( (S (NP-SBJ Finmeccanica)
+     (VP is
+         (NP-PRD (NP an Italian state-owned holding company)
+		 (PP with
+		     (NP (NP interests)
+			 (PP-LOC in
+				 (NP the mechanical engineering industry))))))
+     .))
+( (S (NP-SBJ (NP Bailey Controls)
+             ,
+             (VP based
+                 (NP *)
+                 (PP-LOC-CLR in
+			     (NP (NP Wickliffe) 
+				 ,
+				 (NP Ohio))))
+             ,)
+     (VP makes
+         (NP computerized industrial controls systems))
+     .))
+( (S (NP-SBJ It)
+     (VP (VP employs
+             (NP 2,700 people))
+         and
+         (VP has
+             (NP (NP annual revenue)
+                 (PP of
+                     (NP (QP about $ 370 million)
+			 *U*)))))
+     .))

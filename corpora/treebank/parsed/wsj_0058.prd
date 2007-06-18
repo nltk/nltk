@@ -1,0 +1,35 @@
+
+
+( (NP-HLN (NP INGERSOLL-RAND Co .)
+	  (PRN -LRB-
+	       (NP-LOC (NP Woodcliff Lake)
+		       ,
+		       (NP N.J .))
+	       -RRB-)
+	  --))
+( (S (NP-SBJ-2 (NP William G. Kuhns)
+	       ,
+	       (NP former 
+		   (NX (NX (NX chairman)
+			   (PP *RNR*-1))
+		       and
+		       (NX (NX chief executive officer)
+			   (PP *RNR*-1))
+		       (PP-1 of
+			     (NP General Public Utilities Corp.))))
+	       ,)
+     (VP was
+	 (VP elected
+	     (S (NP-SBJ *-2)
+		(NP-PRD (NP a director)
+			(PP of
+			    (NP (NP this maker)
+				(PP of
+				    (NP (UCP industrial and construction) equipment))))))
+	     ,
+	     (S-ADV (NP-SBJ *)
+		    (VP increasing
+			(NP board membership)
+			(PP-DIR to
+				(NP 10))))))
+     .))

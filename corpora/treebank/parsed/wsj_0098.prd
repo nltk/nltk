@@ -1,0 +1,451 @@
+
+
+( (S (NP-SBJ-1 The House)
+     (VP voted
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP boost
+                    (NP the federal minimum wage))))
+	 (PP-TMP for
+		 (NP (NP the first time)
+		     (PP-TMP since
+			     (NP early 1981))))
+	 ,
+	 (S-ADV (NP-SBJ *-1)
+		(VP casting
+		    (NP (NP a solid 382-37 vote)
+			(PP for
+			    (NP (NP a compromise measure)
+				(VP backed
+				    (NP *)
+				    (PP by
+					(NP-LGS President Bush)))))))))
+     .))
+( (S (NP-SBJ The vote)
+     (VP came
+	 (PP-TMP after
+		 (NP (NP a debate)
+		     (ADJP replete
+			   (PP with
+			       (NP (NP complaints)
+				   (PP from
+				       (NP (NP both proponents and critics)
+					   (PP of
+					       (NP (NP a substantial increase)
+						   (PP-LOC in
+							   (NP the wage floor))))))))))))
+     .))
+( (S (NP-SBJ Advocates)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ (NP the 90-cent-an-hour rise)
+			  ,
+			  (PP-DIR to
+				  (NP (NP $ 4.25 *U*)
+				      (NP-ADV an hour)))
+			  (PP-TMP by
+				  (NP April 1991))
+                          ,)
+                  (VP is
+                      (ADJP-PRD too small)
+		      (PP for
+			  (NP the working poor)))))
+	 ,
+	 (SBAR-ADV while
+		   (S (NP-SBJ opponents)
+		      (VP argued
+			  (SBAR that
+				(S (NP-SBJ the increase)
+				   (VP will
+				       (ADVP still)
+				       (VP (VP hurt
+					       (NP small business))
+					   and
+					   (VP cost
+					       (NP (NP (QP many thousands))
+						   (PP of
+						       (NP jobs))))))))))))
+     .))
+( (S But
+     (NP-SBJ the legislation)
+     (VP reflected
+         (NP (NP a compromise)
+             (VP agreed
+		 (PP to
+		     (NP *))
+		 (PP-TMP on
+			 (NP Tuesday))
+		 (PP by
+		     (NP-LGS (NP President Bush)
+			     and
+			     (NP (NP Democratic leaders)
+				 (PP-LOC in
+					 (NP Congress)))))
+		 ,
+		 (SBAR-TMP after
+			   (S (NP-SBJ congressional Republicans)
+			      (VP urged
+				  (NP-2 the White House)
+				  (S (NP-SBJ *-2)
+				     (VP to
+					 (VP bend
+					     (NP a bit)
+					     (PP-DIR from
+						     (NP its previous resistance
+							 (S (NP-SBJ *)
+							    (VP to
+								(VP compromise))))))))))))))
+     .))
+( (S So
+     (NP-SBJ both sides)
+     (VP accepted
+         (NP (NP the compromise)
+             ,
+             (SBAR (WHNP-259 which)
+                   (S (NP-SBJ *T*-259)
+                      (VP would
+                          (VP lead
+                              (PP-CLR to
+				      (NP (NP the first lifting)
+					  (PP of
+					      (NP the minimum wage))
+					  (SBAR-TMP since
+						    (S (NP-SBJ-163 a four-year law)
+						       (VP was
+							   (VP enacted
+							       (NP *-163)
+							       (PP-TMP in
+								       (NP 1977))
+							       ,
+							       (S-ADV (NP-SBJ *-163)
+								      (VP raising
+									  (NP the wage)
+									  (PP-DIR to
+										  (NP (NP $ 3.35 *U*)
+										      (NP-ADV an hour)))
+									  (PP-DIR from
+										  (NP $ 2.65 *U*))))))))))))))))
+     .))
+( (S (PP-LOC Under
+	     (NP (NP the measure)
+		 (VP passed
+		     (NP *)
+		     (NP-TMP yesterday))))
+     ,
+     (NP-SBJ the minimum wage)
+     (VP would
+         (VP rise
+             (PP-DIR to
+		     (NP $ 3.80 *U*))
+	     (NP-TMP next April)))
+     .))
+( (S (NP-SBJ-1 The Senate)
+     (VP (VP plans
+	     (S (NP-SBJ *-1)
+		(VP to
+		    (VP take 
+			(PRT up)
+			(NP the measure)
+			(ADVP-TMP quickly)))))
+	 and
+	 (VP is
+	     (VP expected
+		 (S (NP-SBJ *-1)
+		    (VP to
+			(VP pass
+			    (NP it)))))))
+     .))
+( (S ``
+     (S-TPC-1 (NP-SBJ There)
+	      (VP are
+		  (NP-PRD (NP no smiles)
+			  (PP about
+			      (NP this bill)))))
+     , 
+     ''
+     (NP-SBJ (NP Rep. Pat Williams)
+	     (PRN -LRB-
+		  (NP D.)
+		  ,
+		  (NP-LOC Mont .)
+		  -RRB-))
+     (VP said
+	 (S *T*-1)
+	 (PP-TMP during
+		 (NP House floor debate))
+	 (NP-TMP yesterday))
+     .))
+( (S But
+     ``
+     (SBAR-PRP because
+	       (S (NP-SBJ it)
+		  (VP 's
+		      (NP-PRD (NP all)
+			      (SBAR (WHNP-1 0)
+				    (S (NP-SBJ we)
+				       (VP 've
+					   (VP got
+					       (NP *T*-1)))))))))
+     ,
+     (NP-SBJ-2 I)
+     (VP 'm
+	 (VP going
+	     (S (NP-SBJ *-2)
+		(VP to
+		    (VP vote
+			(PP-CLR for
+				(NP it)))))))
+     .
+     ''))
+( (S (S-TPC-1 (SBAR-ADV While
+			(S (NP-SBJ-164 the minimum wage)
+			   (VP had
+			       (ADVP traditionally)
+			       (VP been
+				   (VP pegged
+				       (NP *-164)
+				       (PP-CLR at
+					       (NP (ADVP half)
+						   the average U.S. manufacturing wage)))))))
+	      ,
+	      (NP-SBJ (NP the level)
+		      (PP of
+			  (NP (NP $ 4.25 *U*)
+			      (NP-ADV an hour))))
+	      (PP-TMP in
+		      (NP 1991))
+	      (VP will
+		  (ADVP-TMP still)
+		  (VP be
+		      (NP-PRD (NP less)
+			      (PP than
+				  (NP (NP 35 %)
+				      (PP of
+					  (NP average factory pay))))))))
+     ,
+     (NP-SBJ Mr. Williams)
+     (VP said
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S But
+     (NP-SBJ (NP Rep. Marge Roukema)
+	     (PRN -LRB-
+		  (NP R.)
+		  ,
+		  (NP-LOC N.J .)
+		  -RRB-))
+     (ADVP instead)
+     (VP praised
+         (NP (NP (NP the House 's)
+		 acceptance)
+             (PP of
+                 (NP (NP a new youth `` training '' wage)
+                     ,
+                     (NP (NP a subminimum)
+                         (SBAR (WHNP-1 that)
+                               (S (NP-SBJ GOP administrations)
+                                  (VP have
+                                      (VP sought
+                                          (NP *T*-1)
+					  (PP-TMP for
+						  (NP many years)))))))))))
+     .))
+( (S (S-TPC-1 (S-NOM-SBJ (NP-SBJ *)
+			 (VP Adopting
+			     (NP a training-wage policy)))
+	      (VP means 
+		  ``
+		  (S (NP-SBJ *)
+		     (VP getting
+			 (PP-DIR beyond
+				 (NP (NP the nickel and diming)
+				     (PP of
+					 (NP the minimum wage))))))))
+     , 
+     ''
+     (NP-SBJ Mrs. Roukema)
+     (VP said
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (S (NP-SBJ Policy makers)
+        (VP regard
+            (NP the youth wage)
+            (PP-CLR as
+		    (S-NOM (NP-SBJ-1 *)
+			   (VP helping
+			       (S (NP-SBJ *-1)
+				  (VP to
+				      (VP limit
+					  (NP (NP the loss)
+					      (PP of
+						  (NP jobs))
+					      (PP from
+						  (NP (NP an increase)
+						      (PP-LOC in
+							      (NP the minimum wage)))))))))))))
+     , 
+     but
+     (S (NP-SBJ they)
+        (VP have
+            (ADVP-TMP lately)
+            (VP touted
+                (NP-2 it)
+                (PP-CLR as
+			(ADJP necessary
+			      (S (NP-SBJ-3 *-2) 
+				 (VP to
+				     (VP help
+					 (S (NP-SBJ *-3)
+					    (VP impart
+						(NP job skills)
+						(PP-CLR to
+							(NP (NP entrants)
+							    (PP-DIR into
+								    (NP the work force))))))))))))))
+     .))
+( (S (NP-SBJ (NP Labor unions)
+             and
+             (NP Democrats))
+     (VP (VP (ADVP-TMP long)
+             fought
+	     (NP the idea))
+         , 
+	 but
+         (VP (ADVP-TMP recently)
+             acceded
+	     (PP-CLR to
+		     (NP it))
+	     (PP-LOC in
+		     (NP (NP the face)
+			 (PP of
+			     (NP Bush administration insistence))))))
+     .))
+( (S (NP-SBJ The compromise)
+     (VP sets
+         (NP the training wage)
+         (PP-CLR (PP at
+		     (NP (NP (NP $ 3.35 *U*)
+			     (NP-ADV an hour))
+			 (NP-TMP next April)))
+		 , 
+		 and
+		 (PP at
+		     (NP (NP (NP (NP $ 3.61 *U*)
+				 (NP-ADV an hour))
+			     , 
+			     or
+			     (NP (NP 85 %)
+				 (PP of
+				     (NP the minimum wage)))
+			     ,)
+			 (PP-TMP in
+				 (NP April 1991))))))
+     .))
+( (S (NP-SBJ Employers)
+     (VP can
+	 (VP (VP pay
+		 (NP the subminimum)
+		 (PP-TMP-2 for
+			   (NP 90 days))
+		 ,
+		 (PP without
+		     (NP restriction))
+		 ,
+		 (PP-CLR to
+			 (NP (NP workers)
+			     (PP with
+				 (NP (NP (QP less than six)
+					 months)
+				     (PP of
+					 (NP job experience))))))
+		 (SBAR-ADV-3 *NOT*))
+	     , 
+	     and
+	     (VP (PP-TMP=2 for
+			   (NP another 90 days))
+		 (SBAR-ADV=3 if
+			     (S (NP-SBJ the company)
+				(VP uses
+				    (NP (NP a government-certified training program)
+					(PP for
+					    (NP the young workers)))))))))
+     .))
+( (S (NP-SBJ The training wage)
+     (VP covers
+         (ADVP only)
+	 (NP (NP workers)
+             (SBAR (WHNP-260 who)
+                   (S (NP-SBJ *T*-260)
+                      (VP are
+                          (ADJP-PRD (NP-ADV (QP 16 to 19)
+					    years)
+				    old))))))
+     .))
+( (S (NP-SBJ The White House)
+     (ADVP-TMP previously)
+     (VP insisted
+         (PP-CLR on
+		 (NP (NP an unrestricted six-month training wage)
+		     (SBAR (WHNP-1 that)
+			   (S (NP-SBJ-165 *T*-1)
+			      (VP could
+				  (VP be
+				      (VP paid
+					  (NP *-165)
+					  (NP-TMP (NP any time)
+						  (SBAR (WHADVP-2 0) 
+							(S (NP-SBJ (NP a worker)
+								   (PP of
+								       (NP any age)))
+							   (VP took
+							       (NP a new job)
+							       (ADVP-TMP *T*-2)))))))))))))
+     .))
+( (S (NP-SBJ-1 (NP The U.S. Chamber)
+	       (PP of
+		   (NP Commerce)))
+     ,
+     (S-ADV (NP-SBJ *-1)
+	    (ADVP-TMP still)
+	    (ADJP-PRD opposed
+		      (PP to
+			  (NP any mininum-wage increase))))
+     ,
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ the compromise plan
+			  (S (NP-SBJ *)
+			     (VP to
+				 (VP lift
+				     (NP the wage floor)
+				     (NP-EXT 27 %)
+				     (PP-MNR in
+					     (NP two stages))
+				     (PP-TMP between
+					     (NP (NP April 1990)
+						 and
+						 (NP April 1991)))))))
+                  ``
+                  (VP (VP will
+			  (VP be
+			      (ADJP-PRD impossible
+					(SBAR for
+					      (S (NP-SBJ many employers)
+						 (VP to
+						     (VP accommodate)))))))
+		      and
+		      (VP will
+			  (VP result
+			      (PP-CLR in
+				      (NP (NP (NP the elimination)
+					      (PP of
+						  (NP jobs))
+					      (PP for
+						  (NP American workers)))
+					  and
+					  (NP (NP higher prices)
+					      (PP for
+						  (NP American consumers)))))))))))
+     .))

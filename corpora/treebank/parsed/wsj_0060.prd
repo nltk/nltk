@@ -1,0 +1,448 @@
+
+
+( (S (S ``
+	(NP-TTL-SBJ The Cosby Show)
+	''
+        (VP may
+            (VP have
+                (ADVP-MNR single-handedly)
+                (VP turned
+                    (PRT around)
+                    (NP (NP ratings)
+                        (PP-LOC at
+				(NP NBC)))
+		    (PP-TMP since
+			    (NP (NP its debut)
+				(PP-TMP in
+					(NP 1984))))))))
+     , 
+     and
+     (S (NP-SBJ the Huxtable family)
+        (ADVP-TMP still)
+        (VP keeps
+            (S (NP-SBJ (NP millions)
+		       (PP of
+			   (NP viewers)))
+	       (VP laughing
+		   (NP-TMP Thursday night)
+		   (PP-LOC on
+			   (NP the network))))))
+     .))
+( (S But
+     (NP-SBJ (NP some)
+             (PP of
+                 (NP (NP the TV stations)
+                     (SBAR (WHNP-149 that)
+                           (S (NP-SBJ *T*-149)
+                              (VP bought
+                                  (NP `` 
+				      Cosby 
+				      '' 
+				      reruns)
+                                  (PP-CLR for
+					  (NP record prices))
+				  (ADVP-TMP (NP two years)
+					    ago)))))))
+     (VP are 
+	 n't
+         (VP laughing
+             (ADVP much)
+	     (NP-TMP these days)))
+     .))
+( (S (NP-SBJ The reruns)
+     (VP have
+         (VP helped
+             (NP (NP ratings)
+		 (PP-LOC at
+			 (NP (NP many)
+			     (PP of
+				 (NP (NP the 187 
+					 (NX (NX network affiliates) 
+					     and
+					     (NX independent TV stations)))
+				     (SBAR (WHNP-150 that)
+					   (S (NP-SBJ *T*-150)
+					      (VP air
+						  (NP the shows)))))))))))
+     .))
+( (S But
+     (S (NP-SBJ the ratings)
+        (VP are
+            (PP-PRD-LOC (ADVP considerably) 
+			below
+			(NP expectations))))
+     , 
+     and
+     (S (NP-SBJ some stations)
+        (VP say
+            (SBAR 0
+                  (S (NP-SBJ they)
+                     (VP may 
+			 not
+                         (VP buy
+                             (NP new episodes)
+			     (SBAR-TMP (WHADVP-1 when)
+				       (S (NP-SBJ their current contracts)
+					  (VP expire
+					      (ADVP-TMP *T*-1))))))))))
+     .))
+( (S (ADVP-TMP Meanwhile)
+     ,
+     (NP-SBJ stations)
+     (VP are
+         (VP fuming
+	     (SBAR-PRP because 
+		       (S-1 (PRN ,
+				 (S (NP-SBJ (NP many)
+					    (PP of
+						(NP them)))
+				    (VP say
+					(SBAR 0
+					      (S *T*-1))))
+				 ,)
+			    (NP-SBJ (NP (NP the show 's)
+					distributor)
+				    ,
+				    (NP Viacom Inc.)
+				    ,)
+			    (VP is
+				(VP giving
+				    (NP (NP an ultimatum)
+					:
+					(S (NP-SBJ-2 *)
+					   (VP Either
+					       (VP sign
+						   (NP new long-term commitments
+						       (S (NP-SBJ *)
+							  (VP to
+							      (VP buy
+								  (NP future episodes))))))
+					       or
+					       (VP risk
+						   (S (NP-SBJ *-2)
+						      (VP losing
+							  ``
+							  (NP-TTL Cosby)
+							  ''
+							  (PP-CLR to
+								  (NP a competitor))))))))))))))
+     .))
+( (S (PP-TMP At
+	     (NP the same time))
+     ,
+     (NP-SBJ-1 Viacom)
+     (VP is
+         (VP trying
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP persuade
+                        (NP-2 stations)
+                        (S (NP-SBJ *-2)
+                           (VP to
+                               (VP make
+                                   (NP (NP commitments)
+                                       (PP to
+                                           (NP ``
+					       (NP-TTL A Different World)
+                                               , 
+					       ''
+                                               (NP (NP a spin-off)
+                                                   (PP of
+                                                       ``
+						       (NP-TTL Cosby)
+						       ''))
+					       (SBAR (WHNP-151 whose reruns)
+						     (S (NP-SBJ *T*-151)
+							(VP will
+							    (VP become
+								(ADJP-PRD available)
+								(PP-TMP in
+									(NP 1991)))))))))))))))))
+     .))
+( (S (NP-SBJ Viacom)
+     (VP denies
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP 's
+                      (VP using
+                          (NP pressure tactics))))))
+     .))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ-2 We)
+		 (VP 're
+		     (ADJP-PRD willing
+			       (S (NP-SBJ *-2)
+				  (VP to
+				      (VP negotiate))))))
+	, 
+	''
+	(VP says
+	    (S *T*-1))
+	(NP-SBJ (NP Dennis Gillespie)
+		,
+		(NP (NP executive vice president)
+		    (PP of
+			(NP marketing))))
+	.))
+( (S ``
+     (NP-SBJ We)
+     (VP 're
+         (VP offering
+             (NP this plan)
+	     (ADVP-TMP now)
+	     (SBAR-PRP because
+		       (S (NP-SBJ we)
+			  (VP feel
+			      (SBAR 0
+				    (S (NP-SBJ it)
+				       (VP 's
+					   (NP-PRD the right time)))))))))
+     .
+     ''))
+( (S-1 But 
+       (PRN ,
+	    (SINV (VP says
+		      (SBAR 0
+			    (S *T*-1)))
+		  (NP-SBJ (NP the general manager)
+			  (PP of
+			      (NP (NP a network affiliate)
+				  (PP-LOC in
+					  (NP the Midwest))))))
+	    ,)
+       ``
+       (NP-SBJ I)
+       (VP think
+	   (SBAR 0
+		 (S (SBAR-ADV if
+			      (S (NP-SBJ I)
+				 (VP tell
+				     (NP them)
+				     (SBAR 0
+					   (S (NP-SBJ I)
+					      (VP need
+						  (NP more time)))))))
+		    ,
+		    (NP-SBJ they)
+		    (VP 'll
+			(VP take
+			    `
+			    (NP-TTL Cosby)
+			    '
+			    (PP-DIR across
+				    (NP the street)))))))
+       ,
+       ''))
+( (S (NP-SBJ (NP Viacom 's)
+             move)
+     (VP comes
+	 (SBAR-TMP as
+		   (S (NP-SBJ-76 the syndication market)
+		      (VP is
+			  (VP being
+			      (VP flooded
+				  (NP *-76)
+				  (PP-CLR with
+					  (NP (NP situation comedies)
+					      (SBAR (WHNP-152 that)
+						    (S (NP-SBJ *T*-152)
+						       (VP are
+							   (ADVP-TMP still)
+							   (VP running
+							       (PP-TMP on
+								       (NP the networks))))))))))))))
+     .))
+( (S (NP-SBJ One station manager)
+     (VP says
+         (SBAR 0
+               (S (NP-SBJ he)
+                  (VP believes
+                      (SBAR 0
+                            (S (NP-SBJ (NP Viacom 's)
+                                       move)
+                               (VP is
+                                   (NP-PRD a 
+					   `` 
+					   pre-emptive strike 
+					   ''))))
+		      (SBAR-PRP because
+				(S (NP-SBJ the company)
+				   (VP is
+				       (ADJP-PRD worried
+						 (SBAR that
+						       (S (NP-SBJ-1 `` 
+								    Cosby 
+								    '' 
+								    ratings)
+							  (VP will
+							      (VP continue
+								  (S (NP-SBJ *-1)
+								     (VP to
+									 (VP drop
+									     (PP-LOC in
+										     (NP syndication))
+									     (PP-TMP over
+										     (NP the next few years)))))))))))))))))
+     .))
+( (S ``
+     (NP-TTL-SBJ Cosby)
+     ''
+     (VP is
+	 (ADVP-PRD down
+		   (NP a full ratings point))
+	 (PP-TMP in
+		 (NP (NP the week)
+		     (PP of
+			 (NP Oct. 2-8))))
+	 (PP over
+	     (NP (NP the same week)
+		 (ADVP-TMP (NP a year)
+			   ago)))
+	 ,
+	 (PP according
+	     (PP to
+		 (NP A.C. Nielsen Co))))
+     .))
+( (S (NP-SBJ (NP Mr. Gillespie)
+             (PP-LOC at
+		     (NP Viacom)))
+     (VP says
+         (SBAR 0
+               (S (NP-SBJ the ratings)
+                  (VP are
+                      (VP rising)))))
+     .))
+( (S And
+     (NP-SBJ (NP executives)
+             (PP-LOC at
+		     (NP (NP stations)
+			 (PP-LOC in
+				 (NP (NP such major markets)
+				     (PP as
+					 (NP (NP Washington)
+					     ;
+					     (NP (NP Providence)
+						 ,
+						 (NP R.I.))
+					     ;
+					     (NP Cleveland)
+					     ;
+					     (NP (NP Raleigh)
+						 ,
+						 (NP N.C.))
+					     ;
+					     (NP Minneapolis)
+					     , 
+					     and
+					     (NP (NP Louisville)
+						 ,
+						 (NP Ky.)
+						 ,))))))))
+     (VP say
+         (SBAR 0
+               (S (NP-SBJ they)
+                  (VP may
+		      (ADVP very well)
+                      not
+                      (VP renew
+			  ``
+			  (NP-TTL Cosby))))))
+     .
+     ''))
+( (S (NP-SBJ (NP Dick Lobo)
+             ,
+             (NP (NP the general manager)
+                 (PP of
+                     (NP (NP WTVJ)
+                         ,
+                         (NP (NP the NBC-owned station)
+                             (PP-LOC in
+				     (NP Miami)))))))
+     (PRN ,
+	  (PP for
+	      (NP example))
+	  ,)
+     (VP says
+         (SBAR 0
+               (S (NP-SBJ the show)
+                  (VP has 
+		      ``
+                      (VP been
+                          (NP-PRD (NP a major disappointment)
+				  (PP to
+				      (NP us))))))))
+     .
+     ''))
+( (S ``
+     (PP-LOC At
+	     (NP (NP the prices)
+		 (SBAR (WHNP-1 0)
+		       (S (NP-SBJ-78 we)
+			  (VP were
+			      (VP charged
+				  (NP *-78)
+				  (NP *T*-1)))))))
+     ,
+     (NP-SBJ there)
+     (VP should
+	 (VP have
+	     (VP been
+		 (NP-PRD (NP some return)
+			 (PP for
+			     (NP the dollar))))))
+     .))
+( (S (NP-SBJ There)
+     (VP was 
+	 n't
+	 (NP-PRD *?*))
+     .
+     ''))
+( (S (NP-SBJ (NP Neil Kuvin)
+             ,
+             (NP (NP the general manager)
+                 (PP of
+                     (NP (NP WHAS)
+                         ,
+                         (NP (NP the CBS affiliate)
+                             (PP-LOC in
+				     (NP Louisville)))
+                         ,))))
+     (VP says
+         (SBAR (SBAR 0
+                     (S ``
+			(NP-TTL-SBJ Cosby)
+			''
+                        (VP gets
+                            (NP (NP the station 's)
+                                highest ratings))))
+               and
+               (SBAR 0
+                     (S (NP-SBJ-1 he)
+                        (VP 's
+			    ``
+			    (VP pleased
+				(NP *-1)))))))
+     .
+     ''))
+( (S But
+     (NP-SBJ he)
+     (VP adds 
+	 ,
+	 ``
+	 (S (NP-SBJ-1 I)
+            (VP feel
+                (UCP-PRD (VP pressured 
+			     (NP *-1))
+			 ,
+			 (VP disappointed
+			     (NP *-1))
+			 ,
+			 (ADJP uncomfortable)
+			 and 
+			 , 
+			 (ADVP frankly) 
+			 ,
+			 (ADJP quite angry
+			       (PP with
+				   (NP Viacom)))))))
+     .))

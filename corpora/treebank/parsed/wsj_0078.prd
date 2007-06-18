@@ -1,0 +1,37 @@
+
+
+( (S (NP-SBJ Mitsui Mining & Smelting Co.)
+     (VP posted
+         (NP (NP a 
+		 (ADJP 62 %) 
+		 rise)
+             (PP-LOC in
+		     (NP pretax profit))
+             (PP to
+		 (NP (NP (QP 5.276 billion) yen)
+		     (PRN -LRB-
+			  (NP (QP $ 36.9 million) *U*)
+			  -RRB-))))
+	 (PP-TMP in
+		 (NP (NP its fiscal first half)
+		     (VP ended
+			 (NP-TMP Sept. 30))))
+	 (PP compared
+	     (PP with
+		 (NP (NP (QP 3.253 billion) 
+			 yen)
+		     (ADVP-TMP (NP a year)
+			       earlier)))))
+     .))
+( (S (NP-SBJ Net income)
+     (VP (ADVP more than) 
+	 tripled
+         (PP-DIR to
+		 (NP (QP 4.898 billion) 
+		     yen))
+         (PP-DIR from
+		 (NP (QP 1.457 billion) 
+		     yen)
+		 (ADVP-TMP (NP a year)
+			   earlier)))
+     .))

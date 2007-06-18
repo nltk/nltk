@@ -1,0 +1,67 @@
+
+
+( (S (NP-SBJ (NP Copperweld Corp.)
+             ,
+             (NP a specialty steelmaker)
+             ,)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ (NP 445 workers)
+                          (PP-LOC at
+				  (NP (NP a plant)
+				      (PP-LOC in
+					      (NP (NP Shelby)
+						  ,
+						  (NP Ohio)
+						  ,)))))
+                  (VP began
+                      (NP a strike)
+		      (SBAR-TMP after
+				(S (NP-SBJ the United Steelworkers Local 3057)
+				   (VP rejected
+				       (NP a new contract)
+				       (PP-TMP on
+					       (NP Tuesday)))))))))
+     .))
+( (S (NP-SBJ (NP The previous contract)
+             (PP-LOC between
+		     (NP (NP (NP Copperweld 's)
+			     Ohio Steel Tube division)
+			 and
+			 (NP the union))))
+     (VP expired
+	 (PP-TMP at
+		 (NP midnight))
+	 (NP-TMP Tuesday))
+     .))
+( (S (NP-SBJ The union vote
+             (S (NP-SBJ *)
+                (VP to
+                    (VP reject
+                        (NP the proposed pact)))))
+     (VP was
+         (ADVP-PRD 230-215))
+     .))
+( (S (NP-SBJ Copperweld)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP does 
+		      n't
+                      (VP expect
+                          (NP a protracted strike))))))
+     .))
+( (S (NP-SBJ It)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 it)
+                  (VP has
+                      (VP taken
+                          (NP-CLR measures)
+			  (S-CLR (NP-SBJ *-1)
+				 (VP to
+				     (VP continue
+					 (NP shipments)
+					 (PP-TMP during
+						 (NP the work stoppage))))))))))
+     .))
