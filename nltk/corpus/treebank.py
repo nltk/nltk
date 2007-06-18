@@ -60,28 +60,22 @@ Parsed:
       (. .) ))
 """
 
-def parsed(files = 'parsed', basedir = None):
-    """
-    @param files: One or more treebank files to be processed
-    @type files: L{string} or L{tuple(string)}
-    @rtype: iterator over L{tree}
-    """       
+def read_document(name):
+    filename = find_corpus_file('treebank', name)
+    return StreamBackedCorpusView(filename, treebank_parse_tokenizer)
+read = read_document
 
-    # Just one file to process?  If so convert to a tuple so we can iterate
-    if type(files) is str: files = (files,)
+def treebank_bracket_parse(t):
+    try:
+        return tree.bracket_parse(t)
+    except IndexError:
+        # in case it's the real treebank format, 
+        # strip first and last brackets before parsing
+        return tree.bracket_parse(t.strip()[1:-1]) 
 
-    if not basedir: basedir = get_basedir()
-
-    for file in files:
-        path = os.path.join(get_basedir(), "treebank", file)
-        f = open_corpus(path)
-        for t in tokenize.sexpr(f.read()):
-            try:
-                yield tree.bracket_parse(t)
-            except IndexError:
-                # in case it's the real treebank format, 
-                # strip first and last brackets before parsing
-                yield tree.bracket_parse(t[1:-1]) 
+def treebank_parse_tokenizer(stream):
+    return [treebank_bracket_parse(t) for t in 
+            tokenize_sexpr(stream)]
 
 def chunked(files = 'chunked', basedir = None):
     """
