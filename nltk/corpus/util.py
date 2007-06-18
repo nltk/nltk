@@ -339,16 +339,23 @@ def find_corpus(corpusname):
     raise ValueError('Corpus not found!')
 
 def find_corpus_file(corpusname, filename, extension=None):
-    corpusname = os.path.join(*corpusname.split('/'))
-    p = os.path.join(find_corpus(corpusname), filename)
-    if extension: p += extension
-    if os.path.exists(p):
-        return p
-    elif os.path.exists(filename):
+    # Look for it in the corpus
+    if not os.path.isabs(filename):
+        corpusname = os.path.join(*corpusname.split('/'))
+        p = os.path.join(find_corpus(corpusname), filename)
+        if extension: p += extension
+        if os.path.exists(p):
+            return p
+
+    # Else check if it's a filename.
+    if os.path.exists(filename):
         return filename
-    else:
-        raise ValueError('Corpus file %r in %s not found' %
-                         (filename, corpusname))
+    elif os.path.exists(filename+extension):
+        return filename+extension
+
+    # Else complain
+    raise ValueError('Corpus file %r in %s not found' %
+                     (filename, corpusname))
     
 ######################################################################
 #{ Helpers
