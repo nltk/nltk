@@ -26,11 +26,8 @@ documents = {
 
 def read_document(name):
     filename = find_corpus_file('abc', name, '.txt')
-    return StreamBackedCorpusView(filename, abc_tokenizer)
+    return StreamBackedCorpusView(filename, tokenize_wordpunct)
 read = read_document
-
-def abc_tokenizer(stream):
-    return list(tokenize.wordpunct(stream.readline()))
 
 def demo():
     rural = read('rural')

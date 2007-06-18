@@ -6,7 +6,8 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-import os, sys, bisect
+import os, sys, bisect, re
+from nltk import tokenize
 
 ######################################################################
 #{ Corpus Path
@@ -360,7 +361,22 @@ def find_corpus_file(corpusname, filename, extension=None):
 ######################################################################
 #{ Helpers
 ######################################################################
-import re
+
+def tokenize_wordpunct(stream):
+    return list(tokenize.wordpunct(stream.readline()))
+
+def tokenize_blankline(stream):
+    s = ''
+    while True:
+        line = stream.readline()
+        # Blank line:
+        if line and not line.strip():
+            return [s]
+        # End of file:
+        if not line:
+            return [s]
+        # Other line:
+        s += line
 
 def tokenize_sexpr(stream, block_size=10):
     start = stream.tell()
