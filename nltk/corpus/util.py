@@ -55,6 +55,14 @@ def set_corpus_path(path):
     global _CORPUS_PATH
     _CORPUS_PATH = path
 
+def add_corpus_path(path):
+    """
+    Register a new directory where NLTK corpora might be found.
+    @type path: C{string}
+    """
+    global _CORPUS_PATH
+    _CORPUS_PATH.append(path)
+
 def get_corpus_path():
     """
     @return: The paths of directories of the directory where NLTK
@@ -318,6 +326,7 @@ class StreamBackedCorpusView:
 ######################################################################
 
 def find_corpus(corpusname):
+    corpusname = os.path.join(*corpusname.split('/'))
     for directory in get_corpus_path():
         p = os.path.join(directory, corpusname)
         if os.path.exists(p):
@@ -330,6 +339,7 @@ def find_corpus(corpusname):
     raise ValueError('Corpus not found!')
 
 def find_corpus_file(corpusname, filename, extension=None):
+    corpusname = os.path.join(*corpusname.split('/'))
     p = os.path.join(find_corpus(corpusname), filename)
     if extension: p += extension
     if os.path.exists(p):
@@ -339,7 +349,7 @@ def find_corpus_file(corpusname, filename, extension=None):
     else:
         raise ValueError('Corpus file %r in %s not found' %
                          (filename, corpusname))
-
+    
 ######################################################################
 #{ Helpers
 ######################################################################
