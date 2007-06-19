@@ -30,11 +30,8 @@ items = list(lexicons)
 
 def read_lexicon(name='english'):
     filename = find_corpus_file('stopwords', name)
-    return StreamBackedCorpusView(filename, tokenize_stopwords)
+    return open(filename).read().split()
 read = read_lexicon
-
-def tokenize_stopwords(stream):
-    return [stream.readline().strip()]
 
 def demo():
     from nltk.corpus import stopwords
