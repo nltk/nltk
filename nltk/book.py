@@ -10,5 +10,5 @@
 # from nltk.book import *
 
 import nltk, re, string
-from nltk import corpora, wordnet, tokenize, stem, tag, chunk, parse, sem
+from nltk import corpus, corpora, wordnet, tokenize, stem, tag, chunk, parse, sem
 from pprint import pprint
