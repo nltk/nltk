@@ -362,6 +362,9 @@ def find_corpus_file(corpusname, filename, extension=None):
 #{ Helpers
 ######################################################################
 
+def tokenize_whitespace(stream):
+    return stream.readline().split()
+
 def tokenize_wordpunct(stream):
     return list(tokenize.wordpunct(stream.readline()))
 
