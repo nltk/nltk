@@ -351,7 +351,7 @@ def find_corpus_file(corpusname, filename, extension=None):
     # Else check if it's a filename.
     if os.path.exists(filename):
         return filename
-    elif os.path.exists(filename+extension):
+    elif extension and os.path.exists(filename+extension):
         return filename+extension
 
     # Else complain
