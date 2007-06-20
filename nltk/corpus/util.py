@@ -282,7 +282,7 @@ class StreamBackedCorpusView:
 	    # Read the next block.
 	    self._stream.seek(filepos)
 	    tokens = self._block_reader(self._stream)
-            assert isinstance(tokens, list) # tokenzier should return list.
+            assert isinstance(tokens, list) # tokenizer should return list.
 	    num_toks = len(tokens)
             # Update our cache.
             self._cache = (toknum, toknum+len(tokens), tokens)
