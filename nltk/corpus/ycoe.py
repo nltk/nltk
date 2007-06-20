@@ -190,8 +190,8 @@ items = documents.keys()
 Reads files from a given list, and converts them via the conversion_function.
 Can return raw or tagged read files.
 """
-def _read(name, conversion_function):
-    filename = find_corpus_file('ycoe/pos', name)
+def _read(item, conversion_function):
+    filename = find_corpus_file('ycoe/pos', item)
     f = open_corpus(filename)
     rx_pattern = re.compile(r"""
             <.*>_CODE
@@ -203,20 +203,20 @@ def _read(name, conversion_function):
         if sent != "":
             yield conversion_function(sent, sep="_")
 
-def read_document(name, format='parsed', chunk_types=('NP',),
+def read_document(item, format='parsed', chunk_types=('NP',),
          top_node="S", partial_match=False, collapse_partials=True,
          cascade=False):
     if format == 'raw':
-        return open(find_corpus_file('ycoe/psd', name, '.psd')).read()
+        return open(find_corpus_file('ycoe/psd', item, '.psd')).read()
     if format == 'tokenized':
-        return list(_read(name, string2words))
+        return list(_read(item, string2words))
     elif format == 'tagged':
-        return list(_read(name, string2tags))
+        return list(_read(item, string2tags))
     elif format == 'chunked':
-        return list(_chunk_parse(name, chunk_types, top_node,
+        return list(_chunk_parse(item, chunk_types, top_node,
                                  partial_match, collapse_partials, cascade))
     elif format == 'parsd':
-        filename = find_corpus_file('ycoe/psd', name, '.psd')
+        filename = find_corpus_file('ycoe/psd', item, '.psd')
         f = open(filename, 'r')
         return [tree.bracket_parse(sent) for sent in _parse(f.read())]
 
@@ -337,27 +337,27 @@ def _chunk_parse(files, chunk_types, top_node, partial_match, collapse_partials,
 ######################################################################
 read = read_document
 
-def tagged(name):
+def tagged(item):
     """@Return the given document as a list of sentences, where each
     sentence is a list of tagged words.  Tagged words are encoded as
     tuples of (word, part-of-speech)."""
-    return read_document(name, format='tagged')
+    return read_document(item, format='tagged')
 
-def tokenized(name):
+def tokenized(item):
     """@Return the given document as a list of sentences, where each
     sentence is a list of words."""
-    return read_document(name, format='tokenized')
+    return read_document(item, format='tokenized')
 
-def raw(name):
+def raw(item):
     """@Return the given document as a single string."""
-    return read_document(name, format='raw')
+    return read_document(item, format='raw')
 
-def parsed(name):
-    return read_document(name, format='parsed')
+def parsed(item):
+    return read_document(item, format='parsed')
 
-def chunked(name, chunk_types=('NP',), top_node="S",
+def chunked(item, chunk_types=('NP',), top_node="S",
             partial_match=False, collapse_partials=True, cascade=False):
-    return read_document(name, 'chunked', chunk_types, top_node,
+    return read_document(item, 'chunked', chunk_types, top_node,
                          partial_match, collapse_partials, cascade)
 ######################################################################
 #{ Demo

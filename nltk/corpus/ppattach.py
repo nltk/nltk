@@ -64,12 +64,12 @@ class PPAttachment:
                 (self.sent, self.verb, self.noun1, self.prep,
                  self.noun2, self.attachment))
 
-def read_document(name, format='tuple'):
+def read_document(item, format='tuple'):
     """
     @param format: raw, object, or tuple.  If tuple, then the elements
     of each tuple are (sentid, verb, noun1, prep, noun2, attachment).
     """
-    filename = find_corpus_file('ppattach', name)
+    filename = find_corpus_file('ppattach', item)
     if format == 'raw':
         return open(filename).read()
     elif format == 'object':
@@ -99,9 +99,9 @@ def read_ppattach_obj_block(stream):
 ######################################################################
 read = read_document
 
-def raw(name):
+def raw(item):
     """@Return the given document as a single string."""
-    return read_document(name, 'raw')
+    return read_document(item, 'raw')
 
 ######################################################################
 #{ Demo

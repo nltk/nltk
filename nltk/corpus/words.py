@@ -16,8 +16,8 @@ import os
 lexicons = {'en': 'English Wordlist'}
 items = list(lexicons)
 
-def read_lexicon(name='en'):
-    filename = find_corpus_file('words', name)
+def read_lexicon(item='en'):
+    filename = find_corpus_file('words', item)
     return open(filename).read().split()
 read = read_lexicon
 

@@ -55,14 +55,14 @@ read = read_document
 ######################################################################
 read = read_document
 
-def tokenized(name):
+def tokenized(item):
     """@Return the given document as a list of sentences, where each
     sentence is a list of words."""
-    return read_document(name, format='tokenized')
+    return read_document(item, format='tokenized')
 
-def raw(name):
+def raw(item):
     """@Return the given document as a single string."""
-    return read_document(name, format='raw')
+    return read_document(item, format='raw')
 
 ######################################################################
 #{ Demo
