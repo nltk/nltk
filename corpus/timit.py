@@ -231,9 +231,8 @@ items = sorted(reduce(lambda a,b:a.union(b), documents.values(), set()))
 # read dictionary
 def dictionary():
     d = {}
-    PREFIX = find_corpus('timit')
-    path = os.path.join(PREFIX,"timitdic.txt")
-    f = open_corpus(path)
+    path = find_corpus_file('timit', 'timitdic', '.txt')
+    f = open(path)
     for l in f:
         if l[0] == ';': continue
         a = l.strip().split('  ')
@@ -244,9 +243,8 @@ def dictionary():
 def spkrinfo():
     spkrinfo = {}
     header = ['id','sex','dr','use','recdate','birthdate','ht','race','edu', 'comments']
-    PREFIX = find_corpus('timit')
-    path = os.path.join(PREFIX,"spkrinfo.txt")
-    f = open_corpus(path)
+    path = find_corpus_file('timit', 'spkrinfo', '.txt')
+    f = open(path)
     for l in f:
         if l[0] == ';': continue
         rec = l[:54].split() + [l[54:].strip()]
@@ -257,9 +255,9 @@ def spkrinfo():
 def _prim(ext, sentences=items, offset=False):
     if isinstance(sentences,str):
         sentences = [sentences]
-    PREFIX = find_corpus('timit')
     for sent in sentences:
-        fnam = os.path.sep.join([PREFIX] + sent.split(':')) + ext
+        fnam = find_corpus_file('timit',
+                                os.path.sep.join(sent.split(':')), ext)
         r = []
         for l in open(fnam):
             if not l.strip(): continue
@@ -327,8 +325,7 @@ def audiodata(item, start=0, end=None):
     """
     assert(end is None or end > start)
     headersize = 44
-    PREFIX = find_corpus('timit')
-    fnam = os.path.join(PREFIX,item.replace(':',os.path.sep)) + '.wav'
+    fnam = find_corpus_file('timit', item.replace(':',os.path.sep), '.wav')
     if end is None:
         data = open(fnam).read()
     else:
@@ -361,7 +358,7 @@ def play(data):
     dsp.close()
     
 def demo():
-    from nltk.corpora import timit
+    from nltk.corpus import timit
     import time
 
     print "6th item (timit.items[5])"
