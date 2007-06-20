@@ -49,7 +49,7 @@ def read_document(name='english-kjv', format='tokenized'):
     if format == 'raw':
         return open(filename).read()
     elif format == 'tokenized':
-        return StreamBackedCorpusView(filename, read_wordpunc_block)
+        return StreamBackedCorpusView(filename, read_wordpunct_block)
     else:
         raise ValueError('Bad format: expected raw or tokenized')
 
@@ -76,12 +76,12 @@ def demo():
     from nltk.corpus import genesis
 
     print 'English:'
-    for word in genesis.read(('english-kjv')[:27]:
+    for word in genesis.read('english-kjv')[:27]:
         print word,
     print
 
     print 'Finnish:'
-    for word in genesis.read(('finnish')[:27]:
+    for word in genesis.read('finnish')[:27]:
         print word,
     print
 

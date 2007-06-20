@@ -33,6 +33,7 @@ items = list(documents)
 
 def read_document(name, format='chunked', chunk_types=('NP','VP','PP')):
     filename = find_corpus_file('conll2002', name)
+    if format == 'raw': return open(filename).read()
     return Conll2000CorpusView(filename, format, chunk_types)
 
 ######################################################################
@@ -57,7 +58,7 @@ def chunked(name, chunk_types=('NP','VP','PP')):
 ######################################################################
 
 def demo():
-    from nltk.corpora import conll2002
+    from nltk.corpus import conll2002
 
     print "CONLL2002 NE data\n"
     
