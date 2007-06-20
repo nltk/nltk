@@ -1,0 +1,34 @@
+-------------------------------------------------------------------------------
+Unit tests for the corpus readers.
+-------------------------------------------------------------------------------
+
+nltk.corpus.abc: Australian Broadcasting Commission 2006
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    >>> from nltk.corpus import abc
+    >>> print abc.items
+    ['rural', 'science']
+    >>> rural = abc.read('rural')
+    >>> print rural[:4], rural[10:12]
+    ['PM', 'denies', 'knowledge', 'of'] ['denied', 'he']
+    >>> print repr(abc.read('rural', 'raw')[:20])
+    'PM denies knowledge '
+
+nltk.corpus.brown: The Brown Corpus
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    >>> from nltk.corpus import brown
+    >>> # Default: grouped by sentence, not by para, tagged.
+    >>> d = brown.read('a')
+    >>> print d[3][:4]
+    [('``', '``'), ('Only', 'rb'), ('a', 'at'), ('relative', 'jj')]
+    >>> d = brown.read('a', grouped_by_sent=False)
+    >>> print d[:3]
+    [('The', 'at'), ('Fulton', 'np-tl'), ('County', 'nn-tl')]
+    >>> d = brown.read('a', grouped_by_para=True)
+    >>> print [para[0][0] for para in d[:5]]
+    [('The', 'at'), ('The', 'at'), ('The', 'at'), ('``', '``'), ('The', 'at')]
+    >>> d = brown.read('a', format='tokenized')
+    >>> print d[3][:4]
+    ['``', 'Only', 'a', 'relative']
+    
