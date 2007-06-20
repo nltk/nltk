@@ -63,6 +63,13 @@ documents = {
 items = sorted(documents)
 
 class BrownCorpusView(StreamBackedCorpusView):
+    """
+    A specialized corpus view for brown documents.  It can be customized
+    via flags to divide brown corpus documents up by sentence or paragraph,
+    and to include or omit part of speech tags.  C{BrownCorpusView}
+    objects are typically created by L{read_document()} (not directly by
+    the brown corpus modules' users).
+    """
     def __init__(self, corpus_file, tagged, grouped_by_sent, grouped_by_para):
         self.tagged = tagged
         self.grouped_by_sent = grouped_by_sent
@@ -94,10 +101,19 @@ class BrownCorpusView(StreamBackedCorpusView):
 def read_document(item, format='tagged', grouped_by_sent=True,
                   grouped_by_para = False):
     """
-    Read and return the given document C{item}.
-    @param format: tagged, tokenized, or raw.
+    Read and return the given document.
+
+    @param item: The item name of the document to return.
+    
+    @param format: Determines the format that the result will be
+    returned in:
+      - C{'raw'}: a single C{string}
+      - C{'tokenized'}: a list of words and punctuation symbols.
+      - C{'tagged'}: a list of (word, part-of-speech) tuples.
+      
     @param grouped_by_sent: If true, then the result will contain one
-        list for each sentence.  
+        list for each sentence.
+        
     @param grouped_by_para: If true, then the result will contain one
         list for each paragraph.  If C{grouped_by_sent} is also true,
         then each of these paragraphs will contain a list of sentences.
@@ -107,7 +123,7 @@ def read_document(item, format='tagged', grouped_by_sent=True,
         return open(filename).read()
     elif format not in ('tagged', 'tokenized'):
         raise ValueError('Expected format to be raw, tagged, or tokenized')
-    return BrownCorpusView(filename, format==tagged,
+    return BrownCorpusView(filename, format=='tagged',
                            grouped_by_sent, grouped_by_para)
 
 ######################################################################
@@ -116,18 +132,33 @@ def read_document(item, format='tagged', grouped_by_sent=True,
 read = read_document
 
 def tagged(item, grouped_by_sent=True, grouped_by_para=False):
-    """@Return the given document as a list of sentences, where each
+    """
+    @return the given document as a list of sentences, where each
     sentence is a list of tagged words.  Tagged words are encoded as
-    tuples of (word, part-of-speech)."""
+    tuples of (word, part-of-speech).
+    @param grouped_by_sent, grouped_by_para: Controls whether the
+        result groups words by sentence or paragraph, or both or neither.
+        By default, words are grouped by sentence.
+    """
     return read_document(item, 'tagged', grouped_by_sent, grouped_by_para)
 
 def tokenized(item, grouped_by_sent=True, grouped_by_para=False):
-    """@Return the given document as a list of sentences, where each
-    sentence is a list of words."""
+    """
+    @return the given document as a list of sentences, where each
+    sentence is a list of words.
+    @param grouped_by_sent, grouped_by_para: Controls whether the
+        result groups words by sentence or paragraph, or both or neither.
+        By default, words are grouped by sentence.
+    """
     return read_document(item, 'tokenized', grouped_by_sent, grouped_by_para)
 
 def raw(item):
-    """@Return the given document as a single string."""
+    """
+    @return the given document as a single string.
+    @param grouped_by_sent, grouped_by_para: Controls whether the
+        result groups words by sentence or paragraph, or both or neither.
+        By default, words are grouped by sentence.
+    """
     return read_document(item, format='raw')
 
 ######################################################################
