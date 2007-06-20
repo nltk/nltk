@@ -96,23 +96,45 @@ documents = ['Abkhaz-Cyrillic+Abkh', 'Abkhaz-UTF8', 'Achehnese-Latin1', 'Achuar-
          'Zulu-Latin1']
 items = list(documents)
 
-def read_document(item='English-Latin1'):
+def read_document(item='English-Latin1', format='tokenized'):
+    """
+    Read the given document from the corpus, and return its contents.
+    C{format} determines the format that the result will be returned
+    in:
+      - C{'raw'}: a single C{string}
+      - C{'tokenized'}: a list of words and punctuation symbols.
+    """
     filename = find_corpus_file('udhr', item)
-    return open(filename).read().split()
+    if format == 'raw':
+        return open(filename).read()
+    elif format == 'tokenized':
+        return StreamBackedCorpusView(filename, read_wordpunct_block)
+    else:
+        raise ValueError('Bad format: expected raw or tokenized')
 
 ######################################################################
 #{ Convenience Functions
 ######################################################################
 read = read_document
 
-def langs(names = documents):
+def raw(item):
+    """@Return the given document as a single string."""
+    return read_document(item, 'raw')
+
+def tokenized(item):
+    """@Return the given document as a list of words and punctuation
+    symbols.
+    @rtype: C{list} of C{str}"""
+    return read_document(item, 'tokenized')
+
+def langs(items = documents, format='tokenized'):
     """
     Return a dictionary mapping languages to documents.  If a list
     of names is specified, then only those languages will be
     included.
     """
-    if type(names) is str: names = (names,)
-    return dict([ (file, read_document(file)) for file in names])
+    if type(items) is str: items = (items,)
+    return dict([ (file, read_document(file, format)) for file in items])
 
 ######################################################################
 #{ Demo
@@ -131,7 +153,7 @@ def demo():
     print    
     
     print "English-Latin1, Italian-Latin1"
-    data = udhr.langs(names = ('English-Latin1', 'Italian-Latin1'))
+    data = udhr.langs(items = ('English-Latin1', 'Italian-Latin1'))
     
     print data["English-Latin1"]
     print data["Italian-Latin1"]
