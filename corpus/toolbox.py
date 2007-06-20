@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 
 # Natural Language Toolkit: Toolbox Reader
 #
@@ -384,7 +384,7 @@ def dict_list(files='rotokas.dic', include_header=False) :
         yield _dict_list_entry(entry)
 
 def demo():
-    from nltk.corpora import toolbox
+    from nltk.corpus import toolbox
     from itertools import islice
     from pprint import pprint
 
