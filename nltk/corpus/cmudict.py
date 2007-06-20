@@ -58,20 +58,24 @@ def read_cmudict_block(stream):
     else:
         return []
 
-def read_lexicon(item='cmudict', as_dictionary=False):
+def read_lexicon(item='cmudict', format='listed'):
     """
     Read and return the given cmudict lexicon file.  This lexicon will
     consist of a list of entries, where each entry is a list
     containing (word, identifier, transcription).  Identifier is a
     counter used when a word has multiple transcriptions.
 
-    @param as_dictionary: If true, then collect all the entries into
-        a single dictionary, whose keys are upper case words and whose
-        values are lists of pronunciation transcriptions.
+    @param format: Controls the format in which the corpus is returned.
+       - 'listed' - as a list of entries containing (word, identifier,
+         transcription) tuples.
+       - 'dictionary' - as a dictionary, whose keys are upper case words
+          and whose values are lists of pronunciation transcriptions.
     """
     filename = find_corpus_file('cmudict', item)
     lexicon = StreamBackedCorpusView(filename, read_cmudict_block)
-    if as_dictionary:
+    if format == 'listed':
+        return lexicon
+    elif format == 'dictionary':
         d = {}
         for word, num, pron in lexicon:
             if num == 1:
@@ -80,20 +84,27 @@ def read_lexicon(item='cmudict', as_dictionary=False):
                 d[word] += (pron,)
         return d
     else:
-        return lexicon
+        raise ValueError('format should be listed or dictionary')
 
 ######################################################################
 #{ Convenience Functions
 ######################################################################
 read = read_lexicon
 
-def dictionary(item):
+def dictionary(item='cmudict'):
     """
     Return the given cmudict lexicon as a dictionary, whose keys are
     upper case words and whose values are lists of pronunciation
     transcriptions.
     """
-    return read_lexicon(item, as_dictionary=True)
+    return read_lexicon(item, format='dictionary')
+
+def listed(item='cmudict'):
+    """
+    Return the given cmudict lexicon as a list of entries containing
+    (word, identifier, transcription) tuples.
+    """
+    return read_lexicon(item, format='listed')
 
 ######################################################################
 #{ Demo
@@ -103,16 +114,16 @@ def demo():
     from nltk.corpus import cmudict
 
     print "raw method:"
-    for entry in read_lexicon()[40000:40025]:
+    for entry in cmudict.read_lexicon()[40000:40025]:
         print entry
     print
 
     print "dictionary method:"
-    cmudict = read_lexicon(as_dictionary=True)
-    print 'NATURAL', cmudict['NATURAL']
-    print 'LANGUAGE', cmudict['LANGUAGE']
-    print 'TOOL', cmudict['TOOL']
-    print 'KIT', cmudict['KIT']
+    cmu = cmudict.read_lexicon(format='dictionary')
+    print 'NATURAL', cmu['NATURAL']
+    print 'LANGUAGE', cmu['LANGUAGE']
+    print 'TOOL', cmu['TOOL']
+    print 'KIT', cmu['KIT']
 
 if __name__ == '__main__':
     demo()
