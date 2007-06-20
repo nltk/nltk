@@ -24,12 +24,11 @@ def read_lexicon(item='en', format='listed'):
         return open(filename).read().split()
     else:
         raise ValueError('Expected format to be raw or listed')
-read = read_lexicon
 
 ######################################################################
 #{ Convenience Functions
 ######################################################################
-read = read_document
+read = read_lexicon
 
 def raw(name):
     """@Return the given document as a single string."""
