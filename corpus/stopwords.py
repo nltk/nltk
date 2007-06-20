@@ -28,10 +28,31 @@ lexicons = {
     }
 items = list(lexicons)
 
-def read_lexicon(name='english'):
+def read_lexicon(name='english', format='listed'):
     filename = find_corpus_file('stopwords', name)
-    return open(filename).read().split()
-read = read_lexicon
+    if format == 'listed':
+        return open(filename).read().split()
+    elif format == 'raw':
+        return open(filename).read()
+    else:
+        raise ValueError('Expected format to be listed or raw')
+
+######################################################################
+#{ Convenience Functions
+######################################################################
+read = read_document
+
+def raw(name):
+    """@Return the given document as a single string."""
+    return read_document(name, 'raw')
+
+def listed(name):
+    """@Return the given document as a list"""
+    return read_document(name, 'listed')
+
+######################################################################
+#{ Demo
+######################################################################
 
 def demo():
     from nltk.corpus import stopwords

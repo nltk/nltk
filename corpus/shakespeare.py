@@ -17,6 +17,8 @@ import os
 from util import *
 from nltk.etree import ElementTree
 
+#: A dictionary whose keys are the names of documents in this corpus;
+#: and whose values are descriptions of those documents' contents.
 documents = {'a_and_c':  'Antony and Cleopatra',
              'dream':    'A Midsummer Night\'s Dream',
              'hamlet':   'Hamlet',
@@ -27,14 +29,42 @@ documents = {'a_and_c':  'Antony and Cleopatra',
              'r_and_j':  'Romeo and Juliet',
 }
 
+#: A list of all documents in this corpus.
+items = list(documents)
+
 def read_document(name, format='xml'):
+    """
+    Read the given document from the corpus, and return its contents.
+    C{format} determines the format that the result will be returned
+    in:
+      - C{'raw'}: a single C{string}
+      - C{'xml'}: an xml ElementTree.
+    """
     filename = find_corpus_file('shakespeare', name, '.xml')
     if format == 'xml':
         return ElementTree.parse(filename).getroot()
+    elif format == 'raw':
+        return open(filename).read()
     else:
-        raise ValueError('currently only xml format is supported')
+        raise ValueError('expected format to be xml or raw')
 read = read_document
 
+######################################################################
+#{ Convenience Functions
+######################################################################
+read = read_document
+
+def raw(name):
+    """@Return the given document as a single string."""
+    return read_document(name, 'raw')
+
+def xml(name):
+    """@Return the given document as an xml ElementTree."""
+    return read_document(name, 'xml')
+
+######################################################################
+#{ Demo
+######################################################################
 def demo():
     from nltk.corpus import shakespeare
     from pprint import pprint

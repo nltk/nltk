@@ -36,10 +36,11 @@ r. humor
 """       
 
 from util import *
-from nltk import tokenize
 from nltk.tag import string2tags, string2words
 import os
 
+#: A dictionary whose keys are the names of documents in this corpus;
+#: and whose values are descriptions of those documents' contents.
 documents = {
     'a': 'press: reportage',
     'b': 'press: editorial',
@@ -58,6 +59,9 @@ documents = {
     'r': 'humor'
     }
 
+#: A list of all documents in this corpus.
+items = list(documents)
+
 class BrownCorpusView(StreamBackedCorpusView):
     def __init__(self, corpus_file, tagged, grouped_by_sent, grouped_by_para):
         self.tagged = tagged
@@ -65,7 +69,7 @@ class BrownCorpusView(StreamBackedCorpusView):
         self.grouped_by_para = grouped_by_para
         StreamBackedCorpusView.__init__(self, corpus_file)
         
-    def tokenize_block(self, stream):
+    def read_block(self, stream):
         """Reads one paragraph at a time."""
         para = []
         while True:
@@ -88,21 +92,56 @@ class BrownCorpusView(StreamBackedCorpusView):
                 return []
 
 def read_document(name, tagged=True, grouped_by_sent=True,
-                  grouped_by_para = False):
+                  grouped_by_para = False, raw=False):
+    """
+    Read and return the document with the given name.
+    @param tagged: If true, then encode words as (word, pos) tuples.
+        If false, then encode words as simple strings.
+    @param grouped_by_sent: If true, then the result will contain one
+        list for each sentence.  
+    @param grouped_by_para: If true, then the result will contain one
+        list for each paragraph.  If C{grouped_by_sent} is also true,
+        then each of these paragraphs will contain a list of sentences.
+    """
     filename = find_corpus_file('brown', name)
+    if raw: return open(filename).read()
     return BrownCorpusView(filename, tagged, grouped_by_sent, grouped_by_para)
 
+######################################################################
+#{ Convenience Functions
+######################################################################
 read = read_document
 
+def tagged(name):
+    """@Return the given document as a list of sentences, where each
+    sentence is a list of tagged words.  Tagged words are encoded as
+    tuples of (word, part-of-speech)."""
+    return read_document(name)
+
+def tokenized(name):
+    """@Return the given document as a list of sentences, where each
+    sentence is a list of words."""
+    return read_document(name, tagged=False)
+
+def raw(name):
+    """@Return the given document as a single string."""
+    return read_document(name, raw=True)
+
+######################################################################
+#{ Demo
+######################################################################
+
 def demo():
-    d1 = read('a')
+    from nltk.corpus import brown
+    
+    d1 = brown.read('a')
     for sent in d1[3:5]:
         print 'Sentence from a:', sent
 
-    d2 = read('b', grouped_by_sent=False)
+    d2 = brown.read('b', grouped_by_sent=False)
     print 'Words from b:', d2[220:240]
                        
-    d3 = read('c', grouped_by_sent=False, tagged=False)
+    d3 = brown.read('c', grouped_by_sent=False, tagged=False)
     print 'Untagged words from c:', d3[220:240]
                        
 if __name__ == '__main__':

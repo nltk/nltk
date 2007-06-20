@@ -49,49 +49,78 @@ TAGWORD = re.compile(r':([^:()|]+):([^:()|]+)')
 
 def read_document(name='parsed', format=None):
     """
-    @param name: 'parsed' or 'tagged' or 'raw'; or a filename.
+    @param name: 'parsed' or 'tagged' or 'tokenized'; or a filename.
     @param format: the format in which the results should be returned:
-        one of 'parsed', 'tagged', or 'raw'.  If C{name} is a valid
+        one of 'parsed', 'tagged', or 'tokenized'.  If C{name} is a valid
         format (i.e., not a filename), then it will be used as the format.
     """
-    if name in ('parsed', 'tagged', 'raw'):
+    if name in ('parsed', 'tagged', 'tokenized', 'raw'):
         format = name
-        if name == 'tagged': name = 'parsed'
+        if name == 'tokenized': name = 'raw'
+        if name in ('tagged', 'raw'): name = 'parsed'
+        
+    filename = find_corpus_file('sinica_treebank', name)
+    if format == 'raw':
+        return open(filename).read()
     if format == 'parsed':
-        filename = find_corpus_file('sinica_treebank', name)
-        return StreamBackedCorpusView(filename, parsed_sinica_tb_tokenizer)
+        return StreamBackedCorpusView(filename, read_parsed_sinica_block)
     elif format == 'tagged':
-        filename = find_corpus_file('sinica_treebank', name)
-        return StreamBackedCorpusView(filename, tagged_sinica_tb_tokenizer)
-    elif format == 'raw':
-        filename = find_corpus_file('sinica_treebank', name)
-        return StreamBackedCorpusView(filename, raw_sinica_tb_tokenizer)
+        return StreamBackedCorpusView(filename, read_tagged_sinica_block)
+    elif format == 'tokenized':
+        return StreamBackedCorpusView(filename, read_tokenized_sinica_block)
     else:
         raise ValueError('Expected one of the following formats:\n'
-                         'combined parsed chunked tagged raw')
+                         'combined parsed chunked tagged tokenized')
 read = read_document
 
-def raw_sinica_tb_tokenizer(stream):
+def read_tokenized_sinica_block(stream):
     return [stream.readline().split()[1:]]
 
-def tagged_sinica_tb_tokenizer(stream):
+def read_tagged_sinica_block(stream):
     sent = stream.readline()
     sent = re.sub(IDENTIFIER, '', sent)
     tagged_tokens = re.findall(TAGWORD, sent)
     return [[(token, tag) for (tag, token) in tagged_tokens]]
 
-def parsed_sinica_tb_tokenizer(stream):
+def read_parsed_sinica_block(stream):
     sent = stream.readline()
     sent = re.sub(IDENTIFIER, '', sent)
     sent = re.sub(APPENDIX, '', sent)
     return [tree.sinica_parse(sent)]
 
+######################################################################
+#{ Convenience Functions
+######################################################################
+read = read_document
+
+def tagged(name='parsed'):
+    """@Return the given document as a list of sentences, where each
+    sentence is a list of tagged words.  Tagged words are encoded as
+    tuples of (word, part-of-speech)."""
+    return read_document(name, format='tagged')
+
+def tokenized(name='raw'):
+    """@Return the given document as a list of sentences, where each
+    sentence is a list of words."""
+    return read_document(name, format='tokenized')
+
+def raw(name='parsed'):
+    """@Return the given document as a single string."""
+    return read_document(name, format='raw')
+
+def parsed(name='parsed'):
+    return read_document(name, format='parsed')
+
+######################################################################
+#{ Demo
+######################################################################
+
 def demo():
     from nltk.corpus import sinica_treebank
     from nltk.draw.tree import draw_trees
     
-    print "Raw:"
-    for sent in sinica_treebank.read('raw')[:10]:
+    print "Tokenized:"
+    for sent in sinica_treebank.read('tokenized')[:10]:
         print sent
     print
 

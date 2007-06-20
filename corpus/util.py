@@ -85,20 +85,20 @@ class StreamBackedCorpusView:
 
     The constructor to C{StreamBackedCorpusView} takes two arguments:
     a corpus file (which can be either a filename or a stream); and a
-    block tokenizer.  A X{block tokenizer} is a function that reads
-    and tokenizes zero or more tokens from a stream, and returns them
-    as a list.  A very simple example of a block tokenizer is:
+    block reader.  A X{block reader} is a function that reads
+    and reads zero or more tokens from a stream, and returns them
+    as a list.  A very simple example of a block reader is:
 
-        >>> def simple_block_tokenizer(stream):
+        >>> def simple_block_reader(stream):
         ...     return stream.readline().split()
 
-    This simple block tokenizer reads a single line at a time, and
+    This simple block reader reads a single line at a time, and
     returns a single token (consisting of a string) for each
     whitespace-separated substring on the line.
 
-    When deciding how to define the block tokenizer for a given
+    When deciding how to define the block reader for a given
     corpus, careful consideration should be given to the size of
-    blocks handled by the block tokenizer.  Smaller block sizes will
+    blocks handled by the block reader.  Smaller block sizes will
     increase the memory requirements of the corpus view's internal
     data structures (by 2 integers per block).  On the other hand,
     larger block sizes may decrase performance for random access to
@@ -114,17 +114,17 @@ class StreamBackedCorpusView:
          index closest to (but less than or equal to) M{i}.
 	 
       2. Then, starting at the file position corresponding to that
-         index, it tokenizes one block at a time using the block
-         tokenizer, until it reaches the requested token.
+         index, it reads one block at a time using the block reader
+         until it reaches the requested token.
 
     The toknum/filepos mapping is created lazily: it is initially
-    empty, but every time a new block is tokenized, the block's
+    empty, but every time a new block is read, the block's
     initial token is added to the mapping.  (Thus, the toknum/filepos
     map has one entry per block.)
 
     In order to increase efficiency for random access patterns that
     have high degrees of locality, the corpus view may cache one or
-    more tokenized blocks.
+    more blocks.
 
     @note: Each C{CorpusView} object internally maintains an open file
         object for its underlying corpus file.  This file should be
@@ -137,7 +137,7 @@ class StreamBackedCorpusView:
         lifetime of the C{CorpusView}, then the C{CorpusView}'s beahvior
 	is undefined.
 
-    @ivar _block_tokenizer: The function used to read and tokenize
+    @ivar _block_reader: The function used to read 
         a single block from the underlying file stream.
     @ivar _toknum: A list containing the token index of each block
         that has been process.  In particular, C{_toknum[i]} is the
@@ -156,20 +156,20 @@ class StreamBackedCorpusView:
     @ivar _eofpos: The character position of the last character in the
         file.  This is calculated when the corpus view is initialized,
         and is used to decide when the end of file has been reached.
-    @ivar _cache: A cache of the most recently tokenized block.  It
+    @ivar _cache: A cache of the most recently read block.  It
        is encoded as a tuple (start_toknum, end_toknum, tokens), where
        start_toknum is the token index of the first token in the block;
        end_toknum is the token index of the first token not in the
        block; and tokens is a list of the tokens in the block.
     """
-    def __init__(self, corpus_file, block_tokenizer=None):
+    def __init__(self, corpus_file, block_reader=None):
         """
         Create a new corpus view, based on the file C{corpus_file}, and
-        tokenized with C{block_tokenizer}.  See the class documentation
+        read with C{block_reader}.  See the class documentation
         for more information.
         """
-        if block_tokenizer:
-            self._block_tokenizer = block_tokenizer
+        if block_reader:
+            self._block_reader = block_reader
         # Initialize our toknum/filepos mapping.
 	self._toknum = [0]
 	self._filepos = [0]
@@ -183,12 +183,15 @@ class StreamBackedCorpusView:
         # Find the character position of the end of the file.
         self._stream.seek(0, 2)
         self._eofpos = self._stream.tell()
-        # Maintain a cache of the most recently tokenized block, to
+        # Maintain a cache of the most recently read block, to
         # increase efficiency of random access.
         self._cache = (-1, -1, None)
 
-    def _block_tokenizer(self, stream):
-        return self.tokenize_block(stream)
+    def _block_reader(self, stream):
+        return self.read_block(stream)
+
+    def read_block(self, stream):
+        raise NotImplementedError('Abstract Method')
 
     def close(self):
 	"""
@@ -273,12 +276,12 @@ class StreamBackedCorpusView:
             toknum = self._toknum[-1]
             filepos = self._filepos[-1]
 
-        # Each iteration through this loop, we tokenize a single block
+        # Each iteration through this loop, we read a single block
         # from the stream.
 	while True:
-	    # Tokenize the next block.
+	    # Read the next block.
 	    self._stream.seek(filepos)
-	    tokens = self._block_tokenizer(self._stream)
+	    tokens = self._block_reader(self._stream)
             assert isinstance(tokens, list) # tokenzier should return list.
 	    num_toks = len(tokens)
             # Update our cache.
@@ -362,32 +365,34 @@ def find_corpus_file(corpusname, filename, extension=None):
 #{ Helpers
 ######################################################################
 
-def tokenize_whitespace(stream):
+def read_whitespace_block(stream):
     return stream.readline().split()
 
-def tokenize_wordpunct(stream):
+def read_wordpunct_block(stream):
     return list(tokenize.wordpunct(stream.readline()))
 
-def tokenize_blankline(stream):
+def read_blankline_block(stream):
     s = ''
     while True:
         line = stream.readline()
-        # Blank line:
-        if line and not line.strip():
-            return [s]
         # End of file:
         if not line:
-            return [s]
+            if s: return [s]
+            else: return []
+        # Blank line:
+        elif line and not line.strip():
+            if s: return [s]
         # Other line:
-        s += line
+        else:
+            s += line
 
-def tokenize_sexpr(stream, block_size=10):
+def read_sexpr_block(stream, block_size=10):
     start = stream.tell()
     block = ''
     while True:
         try:
             block += stream.read(block_size)
-            tokens, offset = tokenize_sexpr_block(block)
+            tokens, offset = _parse_sexpr_block(block)
             # Skip whitespace
             offset = re.compile(r'\s*').search(block, offset).end()
             # Move to the end position.
@@ -399,7 +404,7 @@ def tokenize_sexpr(stream, block_size=10):
                 continue
             else: raise
 
-def tokenize_sexpr_block(block):
+def _parse_sexpr_block(block):
     tokens = []
     start = end = 0
 

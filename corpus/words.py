@@ -13,9 +13,8 @@ Read tokens from the Wordlist Corpus.
 from util import *
 import os
 
-lexicons = {
-    'en': 'English Wordlist',
-    }
+lexicons = {'en': 'English Wordlist'}
+items = list(lexicons)
 
 def read_lexicon(name='en'):
     filename = find_corpus_file('words', name)

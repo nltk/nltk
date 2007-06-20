@@ -11,13 +11,18 @@ Read chunk structures from the CONLL-2000 Corpus
 """       
 
 from util import *
-from nltk import tokenize, chunk, tree
+from nltk import chunk, tree
 import os
 
+#: A dictionary whose keys are the names of documents in this corpus;
+#: and whose values are descriptions of those documents' contents.
 documents = {
     'train': 'training set',
     'test':  'test set'
     }
+
+#: A list of all documents in this corpus.
+items = list(documents)
 
 class Conll2000CorpusView(StreamBackedCorpusView):
     def __init__(self, corpus_file, format, chunk_types):
@@ -25,9 +30,9 @@ class Conll2000CorpusView(StreamBackedCorpusView):
         self.chunk_types = chunk_types
         StreamBackedCorpusView.__init__(self, corpus_file)
         
-    def tokenize_block(self, stream):
+    def read_block(self, stream):
         # Read the next sentence.
-        sent = tokenize_blankline(stream)[0].strip()
+        sent = read_blankline_block(stream)[0].strip()
         # If format is chunked, use the conllstr2tree function to parse it.
         if self.format == 'chunked':
             return [chunk.conllstr2tree(sent, self.chunk_types)]
@@ -38,29 +43,60 @@ class Conll2000CorpusView(StreamBackedCorpusView):
                  if line != '-DOCSTART- -DOCSTART- O']
         if self.format == 'tagged':
             return [[(word, tag) for (word, tag, chunk_typ) in lines]]
-        elif self.format == 'raw':
+        elif self.format == 'tokenized':
             return [[word for (word, tag, chunk_typ) in lines]]
 
 def read_document(name, format='chunked', chunk_types=('NP','VP','PP')):
+    """
+    Read the given document from the corpus, and return its contents.
+    C{format} determines the format that the result will be returned
+    in:
+      - C{'raw'}: a single C{string}
+      - C{'tokenized'}: a list of words and punctuation symbols.
+      - C{'tagged'}: a list of tagged words
+      - C{'chunked'}: a chunk tree containing tagged words
+    """
     filename = find_corpus_file('conll2000', name, '.txt')
+    if format == 'raw': return open(filename).read()
     return Conll2000CorpusView(filename, format, chunk_types)
+
+######################################################################
+#{ Convenience Functions
+######################################################################
 read = read_document
 
+def raw(name):
+    return read_document(name, format='raw')
+
+def tokenized(name):
+    return read_document(name, format='tokenized')
+
+def tagged(name):
+    return read_document(name, format='tagged')
+
+def chunked(name, chunk_types=('NP','VP','PP')):
+    return read_document(name, format='chunked', chunk_types=chunk_types)
+
+######################################################################
+#{ Demo
+######################################################################
 def demo():
+    from nltk.corpus import conll2000
     print "CONLL Chunked data\n"
     
     print "Raw text:"
-    for sent in read('train', 'raw')[0:5]:
+    for sent in conll2000.read('train', 'raw')[0:5]:
         print sent
     print
 
     print "Tagged text:"
-    for sent in read('train', 'tagged')[0:5]:
+    for sent in conll2000.read('train', 'tagged')[0:5]:
         print sent
     print
 
     print "Chunked text:"
-    for tree in read('train', 'chunked', chunk_types=('NP', 'PP'))[0:5]:
+    for tree in conll2000.read('train', 'chunked',
+                               chunk_types=('NP', 'PP'))[0:5]:
         print tree
     print
 

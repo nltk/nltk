@@ -23,40 +23,76 @@ from nltk import tokenize
 from nltk.tag import string2tags, string2words
 import os
 
-documents = ['bangla', 'hindi', 'marathi', 'telugu']
+#: A dictionary whose keys are the names of documents in this corpus;
+#: and whose values are descriptions of those documents' contents.
+documents = {
+    'bangla': 'IIT Kharagpur',
+    'hindi': 'Microsoft Research India',
+    'marathi': 'IIT Bombay',
+    'telugu': 'IIIT Hyderabad',
+    }
+
+#: A list of all documents in this corpus.
+items = list(documents)
 
 def read_document(name, format='tagged'):
     """
-    @param format: raw or tagged.
+    @param format: raw or tokenized or tagged.
     """
     filename = find_corpus_file('indian', name, '.pos')
     if format == 'raw':
-        return StreamBackedCorpusView(filename, tokenize_indian_raw)
+        return(open(filename).read())
+    if format == 'tokenized':
+        return StreamBackedCorpusView(filename, read_tokenized_indian_block)
     elif format == 'tagged':
-        return StreamBackedCorpusView(filename, tokenize_indian_tagged)
+        return StreamBackedCorpusView(filename, read_tagged_indian_block)
     else:
-        raise ValueError('format should be "raw" or "tagged"')
+        raise ValueError('format should be "raw" or "tokenized" or "tagged"')
 read = read_document
 
-def tokenize_indian_raw(stream):
+def read_tokenized_indian_block(stream):
     line = stream.readline()
     if line.startswith('<'): return []
     else: return [string2words(line, sep='_')]
 
-def tokenize_indian_tagged(stream):
+def read_tagged_indian_block(stream):
     line = stream.readline()
     if line.startswith('<'): return []
     else: return [string2tags(line, sep='_')]
 
-def sample(language):
+######################################################################
+#{ Convenience Functions
+######################################################################
+read = read_document
+
+def raw(name):
+    """@Return the given document as a single string."""
+    return read_document(name, 'raw')
+
+def tokenized(name):
+    """@Return the given document as a list of words and punctuation
+    symbols.
+    @rtype: C{list} of C{str}"""
+    return read_document(name, 'tokenized')
+
+def tagged(name):
+    """@Return the given document as a list of sentences, where each
+    sentence is a list of tagged words.  Tagged words are encoded as
+    tuples of (word, part-of-speech)."""
+    return read_document(name)
+
+######################################################################
+#{ Demo
+######################################################################
+def demo():
     from nltk.corpus import indian
     from nltk import extract
-    print language.capitalize() + ":"
-    for word, tag in indian.read(language, 'tagged')[8]:
-        print word + "/" + `tag`,
-    print
-
-def demo():
+    
+    def sample(language):
+        print language.capitalize() + ":"
+        for word, tag in indian.read(language, 'tagged')[8]:
+            print word + "/" + `tag`,
+        print
 
     sample('bangla')
     sample('hindi')

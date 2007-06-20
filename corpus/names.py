@@ -19,31 +19,56 @@ alphabetically, one per line.
 from util import *
 import os
 
+#: A dictionary whose keys are the names of documents in this corpus;
+#: and whose values are descriptions of those documents' contents.
 documents = {
     'female':     'Female names',
     'male':       'Male names'
     }
 
-def read_document(name, as_objects=False):
-    filename = find_corpus_file('names', name, '.txt')
-    return StreamBackedCorpusView(filename, names_tokenizer)
-read = read_document
+#: A list of all documents in this corpus.
+items = list(documents)
 
-def names_tokenizer(stream):
+def read_document(name, format='listed'):
+    filename = find_corpus_file('names', name, '.txt')
+    if format == 'listed':
+        return StreamBackedCorpusView(filename, read_names_block)
+    elif format == 'raw':
+        return open(filename).read()
+    else:
+        raise ValueError('Expected format to be listed or raw')
+
+def read_names_block(stream):
     return [stream.readline().strip()]
 
+######################################################################
+#{ Convenience Functions
+######################################################################
+read = read_document
+
+def raw(name):
+    """@Return the given document as a single string."""
+    return read_document(name, 'raw')
+
+def listed(name):
+    """@Return the given document as a list"""
+    return read_document(name, 'listed')
+
+######################################################################
+#{ Demo
+######################################################################
 def demo():
-    from nltk.corpora import names
+    from nltk.corpus import names
     from random import shuffle
     from pprint import pprint
 
     print "20 female names"
-    female = list(read('female'))
+    female = list(names.read('female'))
     shuffle(female)
     pprint(female[:20])
 
     print "20 male names"
-    male = list(read('male'))
+    male = list(names.read('male'))
     shuffle(male)
     pprint(male[:20])
 
