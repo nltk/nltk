@@ -100,15 +100,28 @@ def _to_ascii(text):
     return text.encode('Latin-1')
 
 
-def read_document(item):
+def read_document(item, format='listed'):
     filename = find_corpus_file('senseval', item, '.pos')
-    parser = SensevalParser()
-    return parser.parse(open(filename).read())
+    if format == 'raw':
+        return open(filename).read()
+    elif format == 'listed':
+        parser = SensevalParser()
+        return parser.parse(open(filename).read())
+    else:
+        raise ValueError('Expected format to be raw or listed')
 
 ######################################################################
 #{ Convenience Functions
 ######################################################################
 read = read_document
+
+def raw(name):
+    """@Return the given document as a single string."""
+    return read_document(name, 'raw')
+
+def listed(name):
+    """@Return the given document as a list of instances"""
+    return read_document(name, 'listed')
 
 ######################################################################
 #{ Demo
