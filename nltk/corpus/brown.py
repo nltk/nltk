@@ -175,7 +175,7 @@ def demo():
     d2 = brown.read('b', grouped_by_sent=False)
     print 'Words from b:', d2[220:240]
                        
-    d3 = brown.read('c', grouped_by_sent=False, tagged=False)
+    d3 = brown.read('c', grouped_by_sent=False, format='tagged')
     print 'Untagged words from c:', d3[220:240]
                        
 if __name__ == '__main__':
