@@ -37,8 +37,8 @@ class MarkupCleaner(HTMLParser):
     def clean_text(self):
         return ''.join(self.fed)
 
-def read_document(url, format='words'):
-    if format == 'words':
+def read_document(url, format='tokenized'):
+    if format == 'tokenized':
         html = urlopen(url).read()
         cleaner = MarkupCleaner()
         cleaner.feed(html)
@@ -50,13 +50,31 @@ def read_document(url, format='words'):
         raise ValueError('Expected format to be one of: "words", "raw"')
 read = read_document
 
+######################################################################
+#{ Convenience Functions
+######################################################################
+read = read_document
+
+def tokenized(name):
+    """@Return the given document as a list of sentences, where each
+    sentence is a list of words."""
+    return read_document(name, format='tokenized')
+
+def raw(name):
+    """@Return the given document as a single string."""
+    return read_document(name, format='raw')
+
+######################################################################
+#{ Demo
+######################################################################
+
 def demo():
     from nltk.corpus import web
     from textwrap import wrap
 
     constitution = "http://www.archives.gov/national-archives-experience/charters/constitution_transcript.html"
 
-    text = string.join(web.read(constitution, 'words'))
+    text = string.join(web.read(constitution, 'tokenized'))
     print "\n".join(wrap(text))
 
 if __name__ == '__main__':

@@ -48,7 +48,10 @@ ZH      seizure S IY ZH ER
 from util import *
 import os
 
-def cmudict_tokenizer(stream):
+lexicons = {'cmudict': 'The Carnegie Mellon Pronouncing Dictionary'}
+items = list(documents)
+
+def read_cmudict_block(stream):
     line = stream.readline().split()
     if line:
         return [ [line[0], int(line[1]), tuple(line[2:])] ]
@@ -56,8 +59,18 @@ def cmudict_tokenizer(stream):
         return []
 
 def read_lexicon(name='cmudict', as_dictionary=False):
+    """
+    Read and return the given cmudict lexicon file.  This lexicon will
+    consist of a list of entries, where each entry is a list
+    containing (word, identifier, transcription).  Identifier is a
+    counter used when a word has multiple transcriptions.
+
+    @param as_dictionary: If true, then collect all the entries into
+        a single dictionary, whose keys are upper case words and whose
+        values are lists of pronunciation transcriptions.
+    """
     filename = find_corpus_file('cmudict', name)
-    lexicon = StreamBackedCorpusView(filename, cmudict_tokenizer)
+    lexicon = StreamBackedCorpusView(filename, read_cmudict_block)
     if as_dictionary:
         d = {}
         for word, num, pron in lexicon:
@@ -69,7 +82,22 @@ def read_lexicon(name='cmudict', as_dictionary=False):
     else:
         return lexicon
 
+######################################################################
+#{ Convenience Functions
+######################################################################
 read = read_lexicon
+
+def dictionary(name):
+    """
+    Return the given cmudict lexicon as a dictionary, whose keys are
+    upper case words and whose values are lists of pronunciation
+    transcriptions.
+    """
+    return read_lexicon(name, as_dictionary=True)
+
+######################################################################
+#{ Demo
+######################################################################
 
 def demo():
     from nltk.corpora import cmudict

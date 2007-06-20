@@ -94,16 +94,29 @@ documents = ['Abkhaz-Cyrillic+Abkh', 'Abkhaz-UTF8', 'Achehnese-Latin1', 'Achuar-
          'WesternSotho_Tswana-Setswana-Latin1', 'Wolof-Latin1', 'Xhosa-Latin1', 'Yagua-Latin1', 'Yao-Latin1',
          'Yapese-Latin1', 'Yoruba-UTF8', 'Zapoteco-Latin1', 'Zapoteco-SanLucasQuiavini-Latin1', 'Zhuang-Latin1',
          'Zulu-Latin1']
+items = list(documents)
 
 def read_document(name='English-Latin1'):
     filename = find_corpus_file('udhr', name)
     return open(filename).read().split()
+
+######################################################################
+#{ Convenience Functions
+######################################################################
 read = read_document
 
-def langs(files = documents):
-    if type(files) is str: files = (files,)
-    return dict([ (file, read_document(file)) for file in files])
+def langs(names = documents):
+    """
+    Return a dictionary mapping languages to documents.  If a list
+    of names is specified, then only those languages will be
+    included.
+    """
+    if type(names) is str: names = (names,)
+    return dict([ (file, read_document(file)) for file in names])
 
+######################################################################
+#{ Demo
+######################################################################
 def demo():
     from nltk.corpus import udhr
     
@@ -118,7 +131,7 @@ def demo():
     print    
     
     print "English-Latin1, Italian-Latin1"
-    data = udhr.langs(files = ('English-Latin1', 'Italian-Latin1'))
+    data = udhr.langs(names = ('English-Latin1', 'Italian-Latin1'))
     
     print data["English-Latin1"]
     print data["Italian-Latin1"]

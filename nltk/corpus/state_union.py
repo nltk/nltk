@@ -84,10 +84,43 @@ documents = [
     '2005-GWBush'
 ]
 
-def read_document(name):
+#: A list of all documents in this corpus.
+items = list(documents)
+
+def read_document(name, format='tokenized'):
+    """
+    Read the given document from the corpus, and return its contents.
+    C{format} determines the format that the result will be returned
+    in:
+      - C{'raw'}: a single C{string}
+      - C{'tokenized'}: a list of words and punctuation symbols.
+    """
     filename = find_corpus_file('state_union', name, '.txt')
-    return StreamBackedCorpusView(filename, tokenize_wordpunct)
+    if format == 'raw':
+        return open(filename).read()
+    elif format == 'tokenized':
+        return StreamBackedCorpusView(filename, read_wordpunc_block)
+    else:
+        raise ValueError('Bad format: expected raw or tokenized')
+
+######################################################################
+#{ Convenience Functions
+######################################################################
 read = read_document
+
+def raw(name):
+    """@Return the given document as a single string."""
+    return read_document(name, 'raw')
+
+def tokenized(name):
+    """@Return the given document as a list of words and punctuation
+    symbols.
+    @rtype: C{list} of C{str}"""
+    return read_document(name, 'tokenized')
+
+######################################################################
+#{ Demo
+######################################################################
 
 def demo():
     from nltk.corpus import state_union
