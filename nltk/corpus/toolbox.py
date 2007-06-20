@@ -216,7 +216,7 @@ def parse_corpus(file_name, key=None, **kwargs):
     A convenience function that creates a C{ToolboxData} object, opens and 
     parses the toolbox data file. The data file is assumed to be in the toolbox 
     subdirectory of the directory where NLTK looks for corpora, 
-    see L{corpora.get_basedir()}.
+    see L{corpora.find_corpus()}.
     @param file_name: Name of file in toolbox corpus directory
     @type file_name: string
     @param key: marker at the start of each record
@@ -227,7 +227,7 @@ def parse_corpus(file_name, key=None, **kwargs):
     @return:  contents of toolbox data divided into header and records
     """ 
     db = ToolboxData()
-    db.open(os.path.join(get_basedir(), 'toolbox', file_name))
+    db.open(find_corpus_file('toolbox', file_name))
     return db.parse(key, **kwargs)
 
 import re
@@ -320,7 +320,7 @@ def raw(files='rotokas.dic', include_header=False, head_field_marker=None):
     if type(files) is str : files = (files,)
 
     for file in files:
-        path = os.path.join(get_basedir(), "toolbox", file)
+        path = find_corpus_file('toolbox', file)
         f = open_corpus(path, "U")
         fc = f.read()
         if fc.strip().startswith(r"\_") :
