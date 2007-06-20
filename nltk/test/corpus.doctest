@@ -32,3 +32,21 @@ nltk.corpus.brown: The Brown Corpus
     >>> print d[3][:4]
     ['``', 'Only', 'a', 'relative']
     
+nltk.corpus.cmudict: The Carnegie Mellon Pronouncing Dictionary
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    >>> from nltk.corpus import cmudict
+    >>> for entry in cmudict.read()[200:204]: print entry
+    ['ABEND', 1, ('AE1', 'B', 'EH0', 'N', 'D')]
+    ['ABEND', 2, ('AH0', 'B', 'EH1', 'N', 'D')]
+    ['ABENDROTH', 1, ('AE1', 'B', 'AH0', 'N', 'D', 'R', 'AO0', 'TH')]
+    ['ABER', 1, ('EY1', 'B', 'ER0')]
+    >>> cmu = cmudict.read_lexicon(format='dictionary')
+    >>> print cmu['NATURAL'][0]
+    ('N', 'AE1', 'CH', 'ER0', 'AH0', 'L')
+    >>> print cmu['LANGUAGE'][0]
+    ('L', 'AE1', 'NG', 'G', 'W', 'AH0', 'JH')
+    >>> print cmu['TOOL'][0]
+    ('T', 'UW1', 'L')
+    >>> print cmu['KIT'][0]
+    ('K', 'IH1', 'T')
