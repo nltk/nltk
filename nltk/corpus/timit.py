@@ -130,8 +130,6 @@ else:
 __all__ = ["items", "raw", "phonetic", "speakers", "dictionary", "spkrinfo",
            "audiodata", "play"]
 
-PREFIX = find_corpus('timit')
-
 # speakers = []
 # items = []
 # for f in os.listdir(PREFIX):
@@ -233,6 +231,7 @@ items =  reduce(lambda a,b:a.union(b), documents.values(), set())
 # read dictionary
 def dictionary():
     d = {}
+    PREFIX = find_corpus('timit')
     path = os.path.join(PREFIX,"timitdic.txt")
     f = open_corpus(path)
     for l in f:
@@ -245,6 +244,7 @@ def dictionary():
 def spkrinfo():
     spkrinfo = {}
     header = ['id','sex','dr','use','recdate','birthdate','ht','race','edu', 'comments']
+    PREFIX = find_corpus('timit')
     path = os.path.join(PREFIX,"spkrinfo.txt")
     f = open_corpus(path)
     for l in f:
@@ -257,6 +257,7 @@ def spkrinfo():
 def _prim(ext, sentences=items, offset=False):
     if isinstance(sentences,str):
         sentences = [sentences]
+    PREFIX = find_corpus('timit')
     for sent in sentences:
         fnam = os.path.sep.join([PREFIX] + sent.split(':')) + ext
         r = []
@@ -326,6 +327,7 @@ def audiodata(item, start=0, end=None):
     """
     assert(end is None or end > start)
     headersize = 44
+    PREFIX = find_corpus('timit')
     fnam = os.path.join(PREFIX,item.replace(':',os.path.sep)) + '.wav'
     if end is None:
         data = open(fnam).read()

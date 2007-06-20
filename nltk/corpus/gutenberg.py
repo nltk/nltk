@@ -68,7 +68,7 @@ class GutenbergCorpusView(StreamBackedCorpusView):
                 elif line == '':
                     break
         # Then tokenize using wordpunct.
-        return tokenize_wordpunct(stream)
+        return tokenize.wordpunct(stream)
 
 def read_document(name='english-kjv', format='tokenized'):
     """
