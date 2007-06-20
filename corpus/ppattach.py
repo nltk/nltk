@@ -69,8 +69,17 @@ class PPAttachment:
 
 def read_document(item, format='tuple'):
     """
-    @param format: raw, object, or tuple.  If tuple, then the elements
-    of each tuple are (sentid, verb, noun1, prep, noun2, attachment).
+    Read the given document from the corpus, and return its contents.
+    C{format} determines the format that the result will be returned
+    in:
+      - C{'raw'}: a single C{string}
+      - C{'object'}: a list of L{PPAttachment} objects, which define
+        fields for the sentence id (C{o.sent}), the verb (C{o.verb}),
+        the first noun (C{o.noun1}), the second noun (C{o.noun2}),
+        the preposition (C{o.prep}), and the attachment decision
+        (C{o.attachment}).
+      - C{'tuple'}: a list of C{tuple} objects.  The elements 
+        of each tuple are (sent, verb, noun1, prep, noun2, attachment).
     """
     filename = find_corpus_file('ppattach', item)
     if format == 'raw':
