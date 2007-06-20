@@ -63,7 +63,7 @@ Parsed:
 documents = dict([('wsj_%04d' % i, 'Wall Street Journal document %d' % i)
                    for i in range(1, 100)])
 
-def read_document(name, format='combined'):
+def read_document(name, format='parsed'):
     if format == 'parsed':
         filename = find_corpus_file('treebank/combined', name, '.mrg')
         return StreamBackedCorpusView(filename, read_parsed_tb_block)
