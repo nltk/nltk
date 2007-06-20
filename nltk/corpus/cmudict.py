@@ -58,7 +58,7 @@ def read_cmudict_block(stream):
     else:
         return []
 
-def read_lexicon(name='cmudict', as_dictionary=False):
+def read_lexicon(item='cmudict', as_dictionary=False):
     """
     Read and return the given cmudict lexicon file.  This lexicon will
     consist of a list of entries, where each entry is a list
@@ -69,7 +69,7 @@ def read_lexicon(name='cmudict', as_dictionary=False):
         a single dictionary, whose keys are upper case words and whose
         values are lists of pronunciation transcriptions.
     """
-    filename = find_corpus_file('cmudict', name)
+    filename = find_corpus_file('cmudict', item)
     lexicon = StreamBackedCorpusView(filename, read_cmudict_block)
     if as_dictionary:
         d = {}
@@ -87,13 +87,13 @@ def read_lexicon(name='cmudict', as_dictionary=False):
 ######################################################################
 read = read_lexicon
 
-def dictionary(name):
+def dictionary(item):
     """
     Return the given cmudict lexicon as a dictionary, whose keys are
     upper case words and whose values are lists of pronunciation
     transcriptions.
     """
-    return read_lexicon(name, as_dictionary=True)
+    return read_lexicon(item, as_dictionary=True)
 
 ######################################################################
 #{ Demo

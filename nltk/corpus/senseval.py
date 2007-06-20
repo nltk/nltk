@@ -100,8 +100,8 @@ def _to_ascii(text):
     return text.encode('Latin-1')
 
 
-def read_document(name):
-    filename = find_corpus_file('senseval', name, '.pos')
+def read_document(item):
+    filename = find_corpus_file('senseval', item, '.pos')
     parser = SensevalParser()
     return parser.parse(open(filename).read())
 

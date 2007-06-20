@@ -37,7 +37,7 @@ documents = {
 #: A list of all documents in this corpus.
 items = list(documents)
 
-def read_document(name, format='tokenized'):
+def read_document(item, format='tokenized'):
     """
     Read the given document from the corpus, and return its contents.
     C{format} determines the format that the result will be returned
@@ -45,7 +45,7 @@ def read_document(name, format='tokenized'):
       - C{'raw'}: a single C{string}
       - C{'tokenized'}: a list of words and punctuation symbols.
     """
-    filename = find_corpus_file('webtext', name)
+    filename = find_corpus_file('webtext', item)
     if format == 'raw':
         return open(filename).read()
     elif format == 'tokenized':
@@ -58,15 +58,15 @@ def read_document(name, format='tokenized'):
 ######################################################################
 read = read_document
 
-def raw(name):
+def raw(item):
     """@Return the given document as a single string."""
-    return read_document(name, 'raw')
+    return read_document(item, 'raw')
 
-def tokenized(name):
+def tokenized(item):
     """@Return the given document as a list of words and punctuation
     symbols.
     @rtype: C{list} of C{str}"""
-    return read_document(name, 'tokenized')
+    return read_document(item, 'tokenized')
 
 ######################################################################
 #{ Demo

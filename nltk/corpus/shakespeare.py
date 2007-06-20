@@ -32,7 +32,7 @@ documents = {'a_and_c':  'Antony and Cleopatra',
 #: A list of all documents in this corpus.
 items = list(documents)
 
-def read_document(name, format='xml'):
+def read_document(item, format='xml'):
     """
     Read the given document from the corpus, and return its contents.
     C{format} determines the format that the result will be returned
@@ -40,7 +40,7 @@ def read_document(name, format='xml'):
       - C{'raw'}: a single C{string}
       - C{'xml'}: an xml ElementTree.
     """
-    filename = find_corpus_file('shakespeare', name, '.xml')
+    filename = find_corpus_file('shakespeare', item, '.xml')
     if format == 'xml':
         return ElementTree.parse(filename).getroot()
     elif format == 'raw':
@@ -54,13 +54,13 @@ read = read_document
 ######################################################################
 read = read_document
 
-def raw(name):
+def raw(item):
     """@Return the given document as a single string."""
-    return read_document(name, 'raw')
+    return read_document(item, 'raw')
 
-def xml(name):
+def xml(item):
     """@Return the given document as an xml ElementTree."""
-    return read_document(name, 'xml')
+    return read_document(item, 'xml')
 
 ######################################################################
 #{ Demo
