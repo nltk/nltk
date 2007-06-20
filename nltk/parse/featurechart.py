@@ -15,11 +15,10 @@ feature structures as nodes.
 import yaml
 from api import *
 from chart import *
-from nltk.featstruct import *
+from nltk.featstruct import unify, substitute_bindings, UnificationFailure
 from category import Category, GrammarFile, GrammarCategory
 from nltk import cfg
 
-# from featurelite import *
 
 def load_earley(filename, trace=1, verbose=False):
     """
@@ -116,7 +115,7 @@ class FeatureTreeEdge(TreeEdge):
         @return: the value of the left-hand side with variables set.
         @rtype: C{Category}
         """
-        return apply(TreeEdge.lhs(self), self._vars)
+        return substitute_bindings(TreeEdge.lhs(self), self._vars)
     
     def orig_lhs(self):
         """
@@ -130,7 +129,7 @@ class FeatureTreeEdge(TreeEdge):
         @return: the value of the right-hand side with variables set.
         @rtype: C{Category}
         """
-        return tuple(apply(x, self._vars) for x in TreeEdge.rhs(self))
+        return tuple(substitute_bindings(x, self._vars) for x in TreeEdge.rhs(self))
     
     def orig_rhs(self):
         """
