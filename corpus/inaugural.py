@@ -112,7 +112,7 @@ def tokenized(item):
 #{ Demo
 ######################################################################
 def demo():
-    from nltk.corpora import inaugural
+    from nltk.corpus import inaugural
 
     for speech in inaugural.items:
         year = speech[:4]
