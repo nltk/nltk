@@ -91,41 +91,44 @@ class BrownCorpusView(StreamBackedCorpusView):
             else:
                 return []
 
-def read_document(name, tagged=True, grouped_by_sent=True,
-                  grouped_by_para = False, raw=False):
+def read_document(item, format='tagged', grouped_by_sent=True,
+                  grouped_by_para = False):
     """
-    Read and return the document with the given name.
-    @param tagged: If true, then encode words as (word, pos) tuples.
-        If false, then encode words as simple strings.
+    Read and return the given document C{item}.
+    @param format: tagged, tokenized, or raw.
     @param grouped_by_sent: If true, then the result will contain one
         list for each sentence.  
     @param grouped_by_para: If true, then the result will contain one
         list for each paragraph.  If C{grouped_by_sent} is also true,
         then each of these paragraphs will contain a list of sentences.
     """
-    filename = find_corpus_file('brown', name)
-    if raw: return open(filename).read()
-    return BrownCorpusView(filename, tagged, grouped_by_sent, grouped_by_para)
+    filename = find_corpus_file('brown', item)
+    if format == 'raw':
+        return open(filename).read()
+    elif format not in ('tagged', 'tokenized'):
+        raise ValueError('Expected format to be raw, tagged, or tokenized')
+    return BrownCorpusView(filename, format==tagged,
+                           grouped_by_sent, grouped_by_para)
 
 ######################################################################
 #{ Convenience Functions
 ######################################################################
 read = read_document
 
-def tagged(name):
+def tagged(item, grouped_by_sent=True, grouped_by_para=False):
     """@Return the given document as a list of sentences, where each
     sentence is a list of tagged words.  Tagged words are encoded as
     tuples of (word, part-of-speech)."""
-    return read_document(name)
+    return read_document(item, 'tagged', grouped_by_sent, grouped_by_para)
 
-def tokenized(name):
+def tokenized(item, grouped_by_sent=True, grouped_by_para=False):
     """@Return the given document as a list of sentences, where each
     sentence is a list of words."""
-    return read_document(name, tagged=False)
+    return read_document(item, 'tokenized', grouped_by_sent, grouped_by_para)
 
-def raw(name):
+def raw(item):
     """@Return the given document as a single string."""
-    return read_document(name, raw=True)
+    return read_document(item, format='raw')
 
 ######################################################################
 #{ Demo

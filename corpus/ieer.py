@@ -40,8 +40,8 @@ documents = {
 #: A list of all documents in this corpus.
 items = list(documents)
 
-def read_document(name, format='parsed'):
-    filename = find_corpus_file('ieer', name)
+def read_document(item, format='parsed'):
+    filename = find_corpus_file('ieer', item)
     if format == 'parsed':
         return StreamBackedCorpusView(filename, read_parsed_ieer_block)
     elif format == 'docs':
@@ -72,14 +72,14 @@ def read_ieer_block(stream):
 ######################################################################
 read = read_document
 
-def raw(name):
-    return read_document(name, format='raw')
+def raw(item):
+    return read_document(item, format='raw')
 
-def parsed(name):
-    return read_document(name, format='parsed')
+def parsed(item):
+    return read_document(item, format='parsed')
 
-def docs(name):
-    return read_document(name, format='docs')
+def docs(item):
+    return read_document(item, format='docs')
 
 ######################################################################
 #{ Demo

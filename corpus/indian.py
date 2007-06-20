@@ -35,11 +35,11 @@ documents = {
 #: A list of all documents in this corpus.
 items = list(documents)
 
-def read_document(name, format='tagged'):
+def read_document(item, format='tagged'):
     """
     @param format: raw or tokenized or tagged.
     """
-    filename = find_corpus_file('indian', name, '.pos')
+    filename = find_corpus_file('indian', item, '.pos')
     if format == 'raw':
         return(open(filename).read())
     if format == 'tokenized':
@@ -65,21 +65,21 @@ def read_tagged_indian_block(stream):
 ######################################################################
 read = read_document
 
-def raw(name):
+def raw(item):
     """@Return the given document as a single string."""
-    return read_document(name, 'raw')
+    return read_document(item, 'raw')
 
-def tokenized(name):
+def tokenized(item):
     """@Return the given document as a list of words and punctuation
     symbols.
     @rtype: C{list} of C{str}"""
-    return read_document(name, 'tokenized')
+    return read_document(item, 'tokenized')
 
-def tagged(name):
+def tagged(item):
     """@Return the given document as a list of sentences, where each
     sentence is a list of tagged words.  Tagged words are encoded as
     tuples of (word, part-of-speech)."""
-    return read_document(name)
+    return read_document(item)
 
 ######################################################################
 #{ Demo

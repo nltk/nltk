@@ -47,19 +47,19 @@ IDENTIFIER = re.compile(r'^#\S+\s')
 APPENDIX = re.compile(r'(?<=\))#.*$')
 TAGWORD = re.compile(r':([^:()|]+):([^:()|]+)')
 
-def read_document(name='parsed', format=None):
+def read_document(item='parsed', format=None):
     """
-    @param name: 'parsed' or 'tagged' or 'tokenized'; or a filename.
+    @param item: 'parsed' or 'tagged' or 'tokenized'; or a filename.
     @param format: the format in which the results should be returned:
-        one of 'parsed', 'tagged', or 'tokenized'.  If C{name} is a valid
+        one of 'parsed', 'tagged', or 'tokenized'.  If C{item} is a valid
         format (i.e., not a filename), then it will be used as the format.
     """
-    if name in ('parsed', 'tagged', 'tokenized', 'raw'):
-        format = name
-        if name == 'tokenized': name = 'raw'
-        if name in ('tagged', 'raw'): name = 'parsed'
+    if item in ('parsed', 'tagged', 'tokenized', 'raw'):
+        format = item
+        if item == 'tokenized': item = 'raw'
+        if item in ('tagged', 'raw'): item = 'parsed'
         
-    filename = find_corpus_file('sinica_treebank', name)
+    filename = find_corpus_file('sinica_treebank', item)
     if format == 'raw':
         return open(filename).read()
     if format == 'parsed':
@@ -93,23 +93,23 @@ def read_parsed_sinica_block(stream):
 ######################################################################
 read = read_document
 
-def tagged(name='parsed'):
+def tagged(item='parsed'):
     """@Return the given document as a list of sentences, where each
     sentence is a list of tagged words.  Tagged words are encoded as
     tuples of (word, part-of-speech)."""
-    return read_document(name, format='tagged')
+    return read_document(item, format='tagged')
 
-def tokenized(name='raw'):
+def tokenized(item='raw'):
     """@Return the given document as a list of sentences, where each
     sentence is a list of words."""
-    return read_document(name, format='tokenized')
+    return read_document(item, format='tokenized')
 
-def raw(name='parsed'):
+def raw(item='parsed'):
     """@Return the given document as a single string."""
-    return read_document(name, format='raw')
+    return read_document(item, format='raw')
 
-def parsed(name='parsed'):
-    return read_document(name, format='parsed')
+def parsed(item='parsed'):
+    return read_document(item, format='parsed')
 
 ######################################################################
 #{ Demo

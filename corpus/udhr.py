@@ -96,8 +96,8 @@ documents = ['Abkhaz-Cyrillic+Abkh', 'Abkhaz-UTF8', 'Achehnese-Latin1', 'Achuar-
          'Zulu-Latin1']
 items = list(documents)
 
-def read_document(name='English-Latin1'):
-    filename = find_corpus_file('udhr', name)
+def read_document(item='English-Latin1'):
+    filename = find_corpus_file('udhr', item)
     return open(filename).read().split()
 
 ######################################################################

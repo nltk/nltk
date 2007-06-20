@@ -49,7 +49,7 @@ class Conll2000CorpusView(StreamBackedCorpusView):
         elif self.format == 'tokenized':
             return [[word for (word, tag, chunk_typ) in lines]]
 
-def read_document(name, format='chunked', chunk_types=('NP','VP','PP')):
+def read_document(item, format='chunked', chunk_types=('NP','VP','PP')):
     """
     Read the given document from the corpus, and return its contents.
     C{format} determines the format that the result will be returned
@@ -59,7 +59,7 @@ def read_document(name, format='chunked', chunk_types=('NP','VP','PP')):
       - C{'tagged'}: a list of tagged words
       - C{'chunked'}: a chunk tree containing tagged words
     """
-    filename = find_corpus_file('conll2000', name, '.txt')
+    filename = find_corpus_file('conll2000', item, '.txt')
     if format == 'raw': return open(filename).read()
     return Conll2000CorpusView(filename, format, chunk_types)
 
@@ -68,17 +68,17 @@ def read_document(name, format='chunked', chunk_types=('NP','VP','PP')):
 ######################################################################
 read = read_document
 
-def raw(name):
-    return read_document(name, format='raw')
+def raw(item):
+    return read_document(item, format='raw')
 
-def tokenized(name):
-    return read_document(name, format='tokenized')
+def tokenized(item):
+    return read_document(item, format='tokenized')
 
-def tagged(name):
-    return read_document(name, format='tagged')
+def tagged(item):
+    return read_document(item, format='tagged')
 
-def chunked(name, chunk_types=('NP','VP','PP')):
-    return read_document(name, format='chunked', chunk_types=chunk_types)
+def chunked(item, chunk_types=('NP','VP','PP')):
+    return read_document(item, format='chunked', chunk_types=chunk_types)
 
 ######################################################################
 #{ Demo

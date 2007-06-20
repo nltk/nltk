@@ -29,8 +29,8 @@ documents = {
 #: A list of all documents in this corpus.
 items = list(documents)
 
-def read_document(name, format='listed'):
-    filename = find_corpus_file('names', name, '.txt')
+def read_document(item, format='listed'):
+    filename = find_corpus_file('names', item, '.txt')
     if format == 'listed':
         return StreamBackedCorpusView(filename, read_names_block)
     elif format == 'raw':
@@ -46,13 +46,13 @@ def read_names_block(stream):
 ######################################################################
 read = read_document
 
-def raw(name):
+def raw(item):
     """@Return the given document as a single string."""
-    return read_document(name, 'raw')
+    return read_document(item, 'raw')
 
-def listed(name):
+def listed(item):
     """@Return the given document as a list"""
-    return read_document(name, 'listed')
+    return read_document(item, 'listed')
 
 ######################################################################
 #{ Demo

@@ -70,7 +70,7 @@ class GutenbergCorpusView(StreamBackedCorpusView):
         # Then tokenize using wordpunct.
         return read_wordpunct_block(stream)
 
-def read_document(name='english-kjv', format='tokenized'):
+def read_document(item='english-kjv', format='tokenized'):
     """
     Read the given document from the corpus, and return its contents.
     C{format} determines the format that the result will be returned
@@ -78,7 +78,7 @@ def read_document(name='english-kjv', format='tokenized'):
       - C{'raw'}: a single C{string}
       - C{'tokenized'}: a list of words and punctuation symbols.
     """
-    filename = find_corpus_file('gutenberg', name, '.txt')
+    filename = find_corpus_file('gutenberg', item, '.txt')
     if format == 'raw':
         return open(filename).read()
     elif format == 'tokenized':
@@ -91,15 +91,15 @@ def read_document(name='english-kjv', format='tokenized'):
 ######################################################################
 read = read_document
 
-def raw(name):
+def raw(item):
     """@Return the given document as a single string."""
-    return read_document(name, 'raw')
+    return read_document(item, 'raw')
 
-def tokenized(name):
+def tokenized(item):
     """@Return the given document as a list of words and punctuation
     symbols.
     @rtype: C{list} of C{str}"""
-    return read_document(name, 'tokenized')
+    return read_document(item, 'tokenized')
 
 ######################################################################
 #{ Demo

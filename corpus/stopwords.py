@@ -28,8 +28,8 @@ lexicons = {
     }
 items = list(lexicons)
 
-def read_lexicon(name='english', format='listed'):
-    filename = find_corpus_file('stopwords', name)
+def read_lexicon(item='english', format='listed'):
+    filename = find_corpus_file('stopwords', item)
     if format == 'listed':
         return open(filename).read().split()
     elif format == 'raw':
@@ -42,13 +42,13 @@ def read_lexicon(name='english', format='listed'):
 ######################################################################
 read = read_lexicon
 
-def raw(name):
+def raw(item):
     """@Return the given document as a single string."""
-    return read_lexicon(name, 'raw')
+    return read_lexicon(item, 'raw')
 
-def listed(name):
+def listed(item):
     """@Return the given document as a list"""
-    return read_lexicon(name, 'listed')
+    return read_lexicon(item, 'listed')
 
 ######################################################################
 #{ Demo

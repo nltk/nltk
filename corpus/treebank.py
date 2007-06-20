@@ -65,24 +65,24 @@ documents = dict([('wsj_%04d' % i, 'Wall Street Journal document %d' % i)
 
 items = list(documents)
 
-def read_document(name, format='parsed'):
+def read_document(item, format='parsed'):
     if format == 'parsed':
-        filename = find_corpus_file('treebank/combined', name, '.mrg')
+        filename = find_corpus_file('treebank/combined', item, '.mrg')
         return StreamBackedCorpusView(filename, read_parsed_tb_block)
     elif format == 'parsed-no-pos':
-        filename = find_corpus_file('treebank/parsed', name, '.prd')
+        filename = find_corpus_file('treebank/parsed', item, '.prd')
         return StreamBackedCorpusView(filename, read_parsed_tb_block)
     elif format == 'chunked':
-        filename = find_corpus_file('treebank/tagged', name, '.pos')
+        filename = find_corpus_file('treebank/tagged', item, '.pos')
         return StreamBackedCorpusView(filename, read_chunked_tb_block)
     elif format == 'tagged':
-        filename = find_corpus_file('treebank/tagged', name, '.pos')
+        filename = find_corpus_file('treebank/tagged', item, '.pos')
         return StreamBackedCorpusView(filename, read_tagged_tb_block)
     elif format == 'tokenized':
-        filename = find_corpus_file('treebank/raw', name)
+        filename = find_corpus_file('treebank/raw', item)
         return StreamBackedCorpusView(filename, read_tokenized_tb_block)
     elif format == 'raw':
-        filename = find_corpus_file('treebank/parsed', name, '.prd')
+        filename = find_corpus_file('treebank/parsed', item, '.prd')
         return open(filename).read()
     else:
         raise ValueError('Expected one of the following formats:\n'
@@ -120,26 +120,26 @@ def read_tokenized_tb_block(stream):
 ######################################################################
 read = read_document
 
-def tagged(name):
+def tagged(item):
     """@Return the given document as a list of sentences, where each
     sentence is a list of tagged words.  Tagged words are encoded as
     tuples of (word, part-of-speech)."""
-    return read_document(name, format='tagged')
+    return read_document(item, format='tagged')
 
-def tokenized(name):
+def tokenized(item):
     """@Return the given document as a list of sentences, where each
     sentence is a list of words."""
-    return read_document(name, format='tokenized')
+    return read_document(item, format='tokenized')
 
-def raw(name):
+def raw(item):
     """@Return the given document as a single string."""
-    return read_document(name, format='raw')
+    return read_document(item, format='raw')
 
-def parsed(name):
-    return read_document(name, format='parsed')
+def parsed(item):
+    return read_document(item, format='parsed')
 
-def parsed_no_pos(name):
-    return read_document(name, format='parsed-no-pos')
+def parsed_no_pos(item):
+    return read_document(item, format='parsed-no-pos')
 
 ######################################################################
 #{ Demo
