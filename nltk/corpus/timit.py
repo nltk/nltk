@@ -89,7 +89,7 @@ The timit module provides 4 functions and 4 data items.
   
 The 4 functions are as follows.
 
-* raw(sentences=items, offset=False)
+* tokenized(sentences=items, offset=False)
 
   Given a list of items, returns an iterator of a list of word lists,
   each of which corresponds to an item (sentence).  If offset is set to True,
@@ -269,7 +269,7 @@ def _prim(ext, sentences=items, offset=False):
                 r.append(a[2])
         yield r
 
-def raw(sentences=items, offset=False):
+def tokenized(sentences=items, offset=False):
     """
     Given a list of items, returns an iterator of a list of word lists,
     each of which corresponds to an item (sentence).  If offset is set to True,
@@ -385,11 +385,11 @@ def demo():
     print
 
     print "  words of the sentence:"
-    print "   ", timit.raw(sentences=itemid).next()
+    print "   ", timit.tokenized(sentences=itemid).next()
     print
 
     print "  words of the sentence with offsets (first 3):"
-    print "   ", timit.raw(sentences=itemid, offset=True).next()[:3]
+    print "   ", timit.tokenized(sentences=itemid, offset=True).next()[:3]
     print
     
     print "  phonemes of the sentence (first 10):"
@@ -401,7 +401,7 @@ def demo():
     print
     
     print "  looking up dictionary for words of the sentence..."
-    words = timit.raw(sentences=itemid).next()
+    words = timit.tokenized(sentences=itemid).next()
     dictionary = timit.dictionary()
     for word in words:
         print "    %-5s:" % word, dictionary[word]
@@ -415,7 +415,7 @@ def demo():
     timit.play(data)
     print
     print "  playing words:"
-    words = timit.raw(sentences=itemid, offset=True).next()
+    words = timit.tokenized(sentences=itemid, offset=True).next()
     for word, start, end in words:
         print "    playing %-10s in 1.5 seconds ..." % `word`
         time.sleep(1.5)
