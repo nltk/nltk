@@ -32,6 +32,21 @@ documents = {
 items = sorted(documents)
 
 def read_document(item, format='chunked', chunk_types=('NP','VP','PP')):
+    """
+    Read the given document from the corpus, and return its contents.
+    C{format} determines the format that the result will be returned
+    in:
+      - C{'raw'}: a single C{string}
+      - C{'tokenized'}: a list of words and punctuation symbols.
+      - C{'tagged'}: a list of tagged words
+      - C{'chunked'}: a chunk tree containing tagged words
+
+    @param chunk_types: If C{format='chunked'}, then C{chunk_types}
+        determines which chunk types will be included.  Any chunks
+        not listed in the chunk_types list will have their words
+        listed at the top level.  For example, to list the document
+        with only noun phrase chunks marked, use ('NP',).
+    """
     filename = find_corpus_file('conll2002', item)
     if format == 'raw': return open(filename).read()
     return Conll2000CorpusView(filename, format, chunk_types)
@@ -42,15 +57,22 @@ def read_document(item, format='chunked', chunk_types=('NP','VP','PP')):
 read = read_document
 
 def raw(item):
+    """Return the given document as a single string"""
     return read_document(item, format='raw')
 
 def tokenized(item):
+    """Return the given document as a list of words and punctuation
+    symbols."""
     return read_document(item, format='tokenized')
 
 def tagged(item):
+    """Return the given document as a list of (word, part-of-speech)
+    tuples."""
     return read_document(item, format='tagged')
 
 def chunked(item, chunk_types=('NP','VP','PP')):
+    """Return the given document as a chunk tree, containing tagged
+    words."""
     return read_document(item, format='chunked', chunk_types=chunk_types)
 
 ######################################################################
