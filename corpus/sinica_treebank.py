@@ -43,6 +43,9 @@ Chen Keh-Jiann and Yu-Ming Hsieh (2004) Chinese Treebanks and Grammar
 Extraction, Proceedings of IJCNLP-04, pp560-565.
 """
 
+#: A list of all documents in this corpus.
+items = ['parsed', 'tagged', 'tokenized', 'raw']
+
 IDENTIFIER = re.compile(r'^#\S+\s')
 APPENDIX = re.compile(r'(?<=\))#.*$')
 TAGWORD = re.compile(r':([^:()|]+):([^:()|]+)')

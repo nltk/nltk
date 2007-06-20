@@ -29,7 +29,7 @@ documents = {
     }
 
 #: A list of all documents in this corpus.
-items = list(documents)
+items = sorted(documents)
 
 def read_document(item, format='chunked', chunk_types=('NP','VP','PP')):
     filename = find_corpus_file('conll2002', item)

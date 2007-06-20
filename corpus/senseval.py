@@ -27,7 +27,7 @@ from nltk import tokenize
 import os, re, xml.sax
 
 documents = ["hard", "interest", "line", "serve"]
-items = list(documents)
+items = sorted(documents)
 
 class SensevalParser(xml.sax.ContentHandler):
 

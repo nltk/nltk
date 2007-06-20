@@ -22,7 +22,7 @@ documents = {
     }
 
 #: A list of all documents in this corpus.
-items = list(documents)
+items = sorted(documents)
 
 class Conll2000CorpusView(StreamBackedCorpusView):
     def __init__(self, corpus_file, format, chunk_types):
