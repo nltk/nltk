@@ -37,7 +37,12 @@ items = sorted(documents)
 
 def read_document(item, format='tagged'):
     """
-    @param format: raw or tokenized or tagged.
+    Read the given document from the corpus, and return its contents.
+    C{format} determines the format that the result will be returned
+    in:
+      - C{'raw'}: a single C{string}
+      - C{'tokenized'}: a list of words and punctuation symbols.
+      - C{'tagged'}: a list of (word, part-of-speech) tuples.
     """
     filename = find_corpus_file('indian', item, '.pos')
     if format == 'raw':

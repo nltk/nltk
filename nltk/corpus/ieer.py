@@ -41,6 +41,14 @@ documents = {
 items = sorted(documents)
 
 def read_document(item, format='parsed'):
+    """
+    Read the given document from the corpus, and return its contents.
+    C{format} determines the format that the result will be returned
+    in:
+      - C{'parsed'}: a list of parse trees
+      - C{'raw'}: a single C{string}
+      - C{'docs'}: a list of strings, each containing a single document.
+    """
     filename = find_corpus_file('ieer', item)
     if format == 'parsed':
         return StreamBackedCorpusView(filename, read_parsed_ieer_block)
@@ -73,12 +81,16 @@ def read_ieer_block(stream):
 read = read_document
 
 def raw(item):
+    """@return: the given item as a single string."""
     return read_document(item, format='raw')
 
 def parsed(item):
+    """@return: the given item as a list of parsed trees."""
     return read_document(item, format='parsed')
 
 def docs(item):
+    """@return: the given item as a list of strings, each containing
+    one document."""
     return read_document(item, format='docs')
 
 ######################################################################
