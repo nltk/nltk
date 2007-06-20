@@ -25,6 +25,11 @@ documents = {
 items = sorted(documents)
 
 class Conll2000CorpusView(StreamBackedCorpusView):
+    """
+    A specialized corpus view for conll documents.  C{Conll2000CorpusView}
+    objects are typically created by L{read_document()} (not directly by
+    the brown corpus modules' users).
+    """
     def __init__(self, corpus_file, format, chunk_types):
         if format not in ('chunked', 'tokenized', 'tagged'):
             raise ValueError('Expected format to be chunked, tokenized, '
@@ -58,6 +63,12 @@ def read_document(item, format='chunked', chunk_types=('NP','VP','PP')):
       - C{'tokenized'}: a list of words and punctuation symbols.
       - C{'tagged'}: a list of tagged words
       - C{'chunked'}: a chunk tree containing tagged words
+
+    @param chunk_types: If C{format='chunked'}, then C{chunk_types}
+        determines which chunk types will be included.  Any chunks
+        not listed in the chunk_types list will have their words
+        listed at the top level.  For example, to list the document
+        with only noun phrase chunks marked, use ('NP',).
     """
     filename = find_corpus_file('conll2000', item, '.txt')
     if format == 'raw': return open(filename).read()
@@ -69,15 +80,22 @@ def read_document(item, format='chunked', chunk_types=('NP','VP','PP')):
 read = read_document
 
 def raw(item):
+    """Return the given document as a single string"""
     return read_document(item, format='raw')
 
 def tokenized(item):
+    """Return the given document as a list of words and punctuation
+    symbols."""
     return read_document(item, format='tokenized')
 
 def tagged(item):
+    """Return the given document as a list of (word, part-of-speech)
+    tuples."""
     return read_document(item, format='tagged')
 
 def chunked(item, chunk_types=('NP','VP','PP')):
+    """Return the given document as a chunk tree, containing tagged
+    words."""
     return read_document(item, format='chunked', chunk_types=chunk_types)
 
 ######################################################################
