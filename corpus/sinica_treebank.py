@@ -118,7 +118,7 @@ def parsed(item='parsed'):
 #{ Demo
 ######################################################################
 
-def demo():
+def demo(draw=True):
     from nltk.corpus import sinica_treebank
     from nltk.draw.tree import draw_trees
     
@@ -138,7 +138,8 @@ def demo():
         print tree
     print
 
-    draw_trees(*trees)
+    if draw:
+        draw_trees(*trees)
 
 if __name__ == '__main__':
     demo()

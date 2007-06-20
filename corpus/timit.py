@@ -357,7 +357,7 @@ def play(data):
     dsp.write(data)
     dsp.close()
     
-def demo():
+def demo(audio=True):
     from nltk.corpus import timit
     import time
 
@@ -411,7 +411,7 @@ def demo():
     print "---------------"
     print "  playing sentence", sentid, "by speaker", spkrid, "(a.k.a. %s)"%record["id"], "..."
     data = timit.audiodata(itemid)
-    timit.play(data)
+    if audio: timit.play(data)
     print
     print "  playing words:"
     words = timit.tokenized(sentences=itemid, offset=True).next()
@@ -419,7 +419,7 @@ def demo():
         print "    playing %-10s in 1.5 seconds ..." % `word`
         time.sleep(1.5)
         data = timit.audiodata(itemid, start, end)
-        timit.play(data)
+        if audio: timit.play(data)
     print
     print "  playing phonemes (first 10):"
     phones = timit.phonetic(sentences=itemid, offset=True).next()
@@ -427,7 +427,7 @@ def demo():
         print "    playing %-10s in 1.5 seconds ..." % `phone`
         time.sleep(1.5)
         data = timit.audiodata(itemid, start, end)
-        timit.play(data)
+        if audio: timit.play(data)
     print
     
     # play sentence sa1 of all female speakers
@@ -438,7 +438,7 @@ def demo():
             itemid = spkr + ':' + sentid
             print "  playing sentence %s of speaker %s ..." % (sentid, spkr)
             data = timit.audiodata(itemid)
-            timit.play(data)
+            if audio: timit.play(data)
     print
     
 if __name__ == '__main__':
