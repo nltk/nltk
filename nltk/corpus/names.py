@@ -30,6 +30,14 @@ documents = {
 items = sorted(documents)
 
 def read_document(item, format='listed'):
+    """
+    Return the given list of names.  C{item} can be 'female' or
+    'male', or the filename of a file containing a name list.
+    C{format} determines the format that the result will be returned
+    in:
+      - C{'raw'}: a single C{string}
+      - C{'listed'}: a list of names
+    """
     filename = find_corpus_file('names', item, '.txt')
     if format == 'listed':
         return StreamBackedCorpusView(filename, read_names_block)
