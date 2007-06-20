@@ -43,7 +43,7 @@ items = list(documents)
 def read_document(name, format='parsed'):
     filename = find_corpus_file('ieer', name)
     if format == 'parsed':
-        docs = StreamBackedCorpusView(filename, read_parsed_ieer_block)
+        return StreamBackedCorpusView(filename, read_parsed_ieer_block)
     elif format == 'docs':
         return StreamBackedCorpusView(filename, read_ieer_block)
     elif format == 'raw':
@@ -52,7 +52,7 @@ def read_document(name, format='parsed'):
         raise ValueError('Expected format to be "parsed" or "raw"')
 
 def read_parsed_ieer_block(stream):
-    return [chunk.ieerstr2tree(read_ieer_block(stream))]
+    return [chunk.ieerstr2tree(doc) for doc in read_ieer_block(stream)]
     
 def read_ieer_block(stream):
     out = []
@@ -88,8 +88,8 @@ def demo():
     from nltk.corpus import ieer
     from pprint import pprint
 
-    print '%r ... %r' % (ieer.read('NYT_19980407', format='raw')[3][:30],
-                         ieer.read('NYT_19980407', format='raw')[3][-30:])
+    print '%r ... %r' % (ieer.docs('NYT_19980407')[3][:30],
+                         ieer.docs('NYT_19980407')[3][-30:])
     pprint(ieer.read('NYT_19980407', format='parsed')[3])
 
 if __name__ == '__main__':

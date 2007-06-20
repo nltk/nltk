@@ -40,15 +40,15 @@ def read_lexicon(name='english', format='listed'):
 ######################################################################
 #{ Convenience Functions
 ######################################################################
-read = read_document
+read = read_lexicon
 
 def raw(name):
     """@Return the given document as a single string."""
-    return read_document(name, 'raw')
+    return read_lexicon(name, 'raw')
 
 def listed(name):
     """@Return the given document as a list"""
-    return read_document(name, 'listed')
+    return read_lexicon(name, 'listed')
 
 ######################################################################
 #{ Demo
