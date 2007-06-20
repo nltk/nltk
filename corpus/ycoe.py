@@ -193,7 +193,7 @@ Can return raw or tagged read files.
 """
 def _read(item, conversion_function):
     filename = find_corpus_file('ycoe/pos', item)
-    f = open_corpus(filename)
+    f = open(filename)
     rx_pattern = re.compile(r"""
             <.*>_CODE
             |\s.*_ID
@@ -275,8 +275,8 @@ def _chunk_parse(files, chunk_types, top_node, partial_match, collapse_partials,
 
     if type(files) is str: files = (files,)
     for file in files:
-        path = os.path.join(get_basedir(), "ycoe/psd", file + ".psd")
-        f = open_corpus(path)
+        path = find_corpus_file("ycoe/psd", file + ".psd")
+        f = open(path)
         data = _parse(f.read())
         for s in data:
             bracket = 0
