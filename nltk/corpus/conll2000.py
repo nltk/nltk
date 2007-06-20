@@ -26,6 +26,9 @@ items = list(documents)
 
 class Conll2000CorpusView(StreamBackedCorpusView):
     def __init__(self, corpus_file, format, chunk_types):
+        if format not in ('chunked', 'tokenized', 'tagged'):
+            raise ValueError('Expected format to be chunked, tokenized, '
+                             'or tagged.')
         self.format = format
         self.chunk_types = chunk_types
         StreamBackedCorpusView.__init__(self, corpus_file)

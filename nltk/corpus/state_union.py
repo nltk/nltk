@@ -99,7 +99,7 @@ def read_document(name, format='tokenized'):
     if format == 'raw':
         return open(filename).read()
     elif format == 'tokenized':
-        return StreamBackedCorpusView(filename, read_wordpunc_block)
+        return StreamBackedCorpusView(filename, read_wordpunct_block)
     else:
         raise ValueError('Bad format: expected raw or tokenized')
 

@@ -41,7 +41,7 @@ def read_document(name, format='tokenized'):
     if format == 'raw':
         return open(filename).read()
     elif format == 'tokenized':
-        return StreamBackedCorpusView(filename, read_wordpunc_block)
+        return StreamBackedCorpusView(filename, read_wordpunct_block)
     else:
         raise ValueError('Bad format: expected raw or tokenized')
 
@@ -64,7 +64,7 @@ def tokenized(name):
 #{ Demo
 ######################################################################
 def demo():
-    from ntlk.corpus import 
+    from nltk.corpus import abc
     rural = read('rural')
     for word in rural[20:100]:
         print word,
