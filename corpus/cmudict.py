@@ -100,8 +100,7 @@ def dictionary(item):
 ######################################################################
 
 def demo():
-    from nltk.corpora import cmudict
-    from itertools import islice
+    from nltk.corpus import cmudict
 
     print "raw method:"
     for entry in read_lexicon()[40000:40025]:
