@@ -94,7 +94,7 @@ documents = ['Abkhaz-Cyrillic+Abkh', 'Abkhaz-UTF8', 'Achehnese-Latin1', 'Achuar-
          'WesternSotho_Tswana-Setswana-Latin1', 'Wolof-Latin1', 'Xhosa-Latin1', 'Yagua-Latin1', 'Yao-Latin1',
          'Yapese-Latin1', 'Yoruba-UTF8', 'Zapoteco-Latin1', 'Zapoteco-SanLucasQuiavini-Latin1', 'Zhuang-Latin1',
          'Zulu-Latin1']
-items = list(documents)
+items = sorted(documents)
 
 def read_document(item='English-Latin1', format='tokenized'):
     """

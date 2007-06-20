@@ -63,7 +63,7 @@ Parsed:
 documents = dict([('wsj_%04d' % i, 'Wall Street Journal document %d' % i)
                    for i in range(1, 100)])
 
-items = list(documents)
+items = sorted(documents)
 
 def read_document(item, format='parsed'):
     if format == 'parsed':

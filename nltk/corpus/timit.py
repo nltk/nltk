@@ -226,7 +226,7 @@ documents = {
 
 speakers = sorted(documents.keys())
 
-items =  reduce(lambda a,b:a.union(b), documents.values(), set())
+items = sorted(reduce(lambda a,b:a.union(b), documents.values(), set()))
 
 # read dictionary
 def dictionary():

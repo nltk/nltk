@@ -14,16 +14,36 @@ from util import *
 import os
 
 lexicons = {'en': 'English Wordlist'}
-items = list(lexicons)
+items = sorted(lexicons)
 
-def read_lexicon(item='en'):
+def read_lexicon(item='en', format='listed'):
     filename = find_corpus_file('words', item)
-    return open(filename).read().split()
+    if format == 'raw':
+        return open(filename).read()
+    elif format == 'listed':
+        return open(filename).read().split()
+    else:
+        raise ValueError('Expected format to be raw or listed')
 read = read_lexicon
 
+######################################################################
+#{ Convenience Functions
+######################################################################
+read = read_document
+
+def raw(name):
+    """@Return the given document as a single string."""
+    return read_document(name, 'raw')
+
+def listed(name):
+    """@Return the given document as a list"""
+    return read_document(name, 'listed')
+
+######################################################################
+#{ Demo
+######################################################################
 def demo():
     from nltk.corpus import words
-    from itertools import islice
     from pprint import pprint
 
     pprint(words.read()[0:20])

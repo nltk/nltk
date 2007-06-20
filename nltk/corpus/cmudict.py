@@ -49,7 +49,7 @@ from util import *
 import os
 
 lexicons = {'cmudict': 'The Carnegie Mellon Pronouncing Dictionary'}
-items = list(lexicons)
+items = sorted(lexicons)
 
 def read_cmudict_block(stream):
     line = stream.readline().split()

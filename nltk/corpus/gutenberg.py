@@ -46,7 +46,7 @@ documents = {
 }
 
 #: A list of all documents in this corpus.
-items = list(documents)
+items = sorted(documents)
 
 class GutenbergCorpusView(StreamBackedCorpusView):
     """

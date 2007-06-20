@@ -60,7 +60,7 @@ documents = {
     }
 
 #: A list of all documents in this corpus.
-items = list(documents)
+items = sorted(documents)
 
 class BrownCorpusView(StreamBackedCorpusView):
     def __init__(self, corpus_file, tagged, grouped_by_sent, grouped_by_para):
