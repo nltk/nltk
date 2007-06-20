@@ -35,7 +35,7 @@ documents = {
 }
 
 #: A list of all documents in this corpus.
-items = list(documents)
+items = sorted(documents)
 
 def read_document(item, format='tokenized'):
     """

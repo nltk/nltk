@@ -184,7 +184,8 @@ documents = {
     'cowulf.o34': 'Wulfstan''s Homilies'
     }
 
-items = documents.keys()
+#: A list of all documents in this corpus.
+items = sorted(documents)
 
 """
 Reads files from a given list, and converts them via the conversion_function.

@@ -49,6 +49,9 @@ documents = {
     'test': 'test set'
     }
 
+#: A list of all documents in this corpus.
+items = sorted(documents)
+
 class PPAttachment:
     def __init__(self, sent, verb, noun1, prep, noun2, attachment):
         self.sent = sent

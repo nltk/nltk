@@ -26,7 +26,7 @@ lexicons = {
     'spanish':    'Spanish stopwords',
     'swedish':    'Swedish stopwords',
     }
-items = list(lexicons)
+items = sorted(lexicons)
 
 def read_lexicon(item='english', format='listed'):
     filename = find_corpus_file('stopwords', item)
