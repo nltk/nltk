@@ -111,7 +111,7 @@ def demo():
     from pprint import pprint
 
     pprint(ppattach.read('training')[0:5])
-    pprint(ppattach.read('training', as_objects=True)[0:5])
+    pprint(ppattach.read('training', format='object')[0:5])
 
 if __name__ == '__main__':
     demo()
