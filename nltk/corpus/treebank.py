@@ -64,24 +64,27 @@ documents = dict([('wsj_%04d' % i, 'Wall Street Journal document %d' % i)
                    for i in range(1, 100)])
 
 def read_document(name, format='combined'):
-    if format == 'combined':
+    if format == 'parsed':
         filename = find_corpus_file('treebank/combined', name, '.mrg')
-        return StreamBackedCorpusView(filename, parsed_treebank_tokenizer)
-    elif format == 'parsed':
+        return StreamBackedCorpusView(filename, read_parsed_tb_block)
+    elif format == 'parsed-no-pos':
         filename = find_corpus_file('treebank/parsed', name, '.prd')
-        return StreamBackedCorpusView(filename, parsed_treebank_tokenizer)
+        return StreamBackedCorpusView(filename, read_parsed_tb_block)
     elif format == 'chunked':
         filename = find_corpus_file('treebank/tagged', name, '.pos')
-        return StreamBackedCorpusView(filename, chunked_treebank_tokenizer)
+        return StreamBackedCorpusView(filename, read_chunked_tb_block)
     elif format == 'tagged':
         filename = find_corpus_file('treebank/tagged', name, '.pos')
-        return StreamBackedCorpusView(filename, tagged_treebank_tokenizer)
-    elif format == 'raw':
+        return StreamBackedCorpusView(filename, read_tagged_tb_block)
+    elif format == 'tokenized':
         filename = find_corpus_file('treebank/raw', name)
-        return StreamBackedCorpusView(filename, raw_treebank_tokenizer)
+        return StreamBackedCorpusView(filename, read_tokenized_tb_block)
+    elif format == 'raw':
+        filename = find_corpus_file('treebank/parsed', name, '.prd')
+        return open(filename).read()
     else:
         raise ValueError('Expected one of the following formats:\n'
-                         'combined parsed chunked tagged raw')
+                  'parsed chunked tagged tokenized raw parsed-no-pos')
 read = read_document
 
 def treebank_bracket_parse(t):
@@ -92,46 +95,73 @@ def treebank_bracket_parse(t):
         # strip first and last brackets before parsing
         return tree.bracket_parse(t.strip()[1:-1]) 
 
-def parsed_treebank_tokenizer(stream):
+def read_parsed_tb_block(stream):
     return [treebank_bracket_parse(t) for t in 
-            tokenize_sexpr(stream)]
+            read_sexpr_block(stream)]
 
-def chunked_treebank_tokenizer(stream):
+def read_chunked_tb_block(stream):
     return [chunk.tagstr2tree(t) for t in
-            tokenize.blankline(stream.read())]
+            read_blankline_block(stream)]
 
-def tagged_treebank_tokenizer(stream):
+def read_tagged_tb_block(stream):
     return [[tag2tuple(t) for t in tokenize.whitespace(sent)
              if t != '[' and t != ']']
-            for sent in tokenize.blankline(stream.read())]
+            for sent in read_blankline_block(stream)]
 
-def raw_treebank_tokenizer(stream):
+def read_tokenized_tb_block(stream):
     return [list(tokenize.whitespace(sent))
-            for sent in tokenize.blankline(stream.read())
+            for sent in read_blankline_block(stream)
             if sent.strip() != '.START']
 
+######################################################################
+#{ Convenience Functions
+######################################################################
+read = read_document
+
+def tagged(name):
+    """@Return the given document as a list of sentences, where each
+    sentence is a list of tagged words.  Tagged words are encoded as
+    tuples of (word, part-of-speech)."""
+    return read_document(name, format='tagged')
+
+def tokenized(name):
+    """@Return the given document as a list of sentences, where each
+    sentence is a list of words."""
+    return read_document(name, format='tokenized')
+
+def raw(name):
+    """@Return the given document as a single string."""
+    return read_document(name, format='raw')
+
+def parsed(name):
+    return read_document(name, format='parsed')
+
+def parsed_no_pos(name):
+    return read_document(name, format='parsed-no-pos')
+
+######################################################################
+#{ Demo
+######################################################################
 def demo():
-    from nltk.corpora import treebank
-    from itertools import islice
-    add_corpus_path('../../corpora')
+    from nltk.corpus import treebank
 
     print "Parsed:"
-    for tree in read('wsj_0003', format='parsed')[:3]:
+    for tree in treebank.read('wsj_0003', format='parsed')[:3]:
         print tree
     print
 
     print "Chunked:"
-    for tree in read('wsj_0003', format='chunked')[:3]:
+    for tree in treebank.read('wsj_0003', format='chunked')[:3]:
         print tree
     print
 
     print "Tagged:"
-    for sent in read('wsj_0003', format='tagged')[:3]:
+    for sent in treebank.read('wsj_0003', format='tagged')[:3]:
         print sent
     print
 
-    print "Raw:"
-    for sent in read('wsj_0003', format='raw')[:3]:
+    print "Tokenized:"
+    for sent in treebank.read('wsj_0003', format='tokenized')[:3]:
         print sent
     print
 

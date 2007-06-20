@@ -203,10 +203,12 @@ def _read(name, conversion_function):
         if sent != "":
             yield conversion_function(sent, sep="_")
 
-def read(name, format='parsed', chunk_types=('NP',),
+def read_document(name, format='parsed', chunk_types=('NP',),
          top_node="S", partial_match=False, collapse_partials=True,
          cascade=False):
     if format == 'raw':
+        return open(find_corpus_file('ycoe/psd', name, '.psd')).read()
+    if format == 'tokenized':
         return list(_read(name, string2words))
     elif format == 'tagged':
         return list(_read(name, string2tags))
@@ -330,15 +332,42 @@ def _chunk_parse(files, chunk_types, top_node, partial_match, collapse_partials,
                         inTag = [] + inTag[:-2]
             yield stack
 
-""" 
-Demonstrates the functionality available in the corpus reader.
-"""
+######################################################################
+#{ Convenience Functions
+######################################################################
+read = read_document
+
+def tagged(name):
+    """@Return the given document as a list of sentences, where each
+    sentence is a list of tagged words.  Tagged words are encoded as
+    tuples of (word, part-of-speech)."""
+    return read_document(name, format='tagged')
+
+def tokenized(name):
+    """@Return the given document as a list of sentences, where each
+    sentence is a list of words."""
+    return read_document(name, format='tokenized')
+
+def raw(name):
+    """@Return the given document as a single string."""
+    return read_document(name, format='raw')
+
+def parsed(name):
+    return read_document(name, format='parsed')
+
+def chunked(name, chunk_types=('NP',), top_node="S",
+            partial_match=False, collapse_partials=True, cascade=False):
+    return read_document(name, 'chunked', chunk_types, top_node,
+                         partial_match, collapse_partials, cascade)
+######################################################################
+#{ Demo
+######################################################################
 def demo():
     from nltk.corpus import ycoe
     from pprint import pprint
 
-    print 'Raw Data:'
-    pprint(ycoe.read('cocuraC', 'raw')[:4])
+    print 'Tokenized Data:'
+    pprint(ycoe.read('cocuraC', 'tokenized')[:4])
 
     print '\nTagged Data:'
     pprint(ycoe.read('cocuraC', 'tagged')[:4])

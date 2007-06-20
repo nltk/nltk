@@ -26,6 +26,8 @@ from util import *
 from nltk import tokenize
 import os, re
 
+#: A dictionary whose keys are the names of documents in this corpus;
+#: and whose values are descriptions of those documents' contents.
 documents = {
   'austen-emma':         'Jane Austen: Emma',
   'austen-persuasion':   'Jane Austen: Persuasion',
@@ -43,6 +45,9 @@ documents = {
   'whitman-leaves':      'Walt Whitman: Leaves of Grass',
 }
 
+#: A list of all documents in this corpus.
+items = list(documents)
+
 class GutenbergCorpusView(StreamBackedCorpusView):
     """
     Version of StreamBackedCorpusView that skips the Gutenberg preamble
@@ -52,7 +57,7 @@ class GutenbergCorpusView(StreamBackedCorpusView):
         StreamBackedCorpusView.__init__(self, corpus_file)
         self._skipped_preamble = False
 
-    def tokenize_block(self, stream):
+    def read_block(self, stream):
         # Skip the preamble.
         if not self._skipped_preamble:
             while True:
@@ -65,16 +70,45 @@ class GutenbergCorpusView(StreamBackedCorpusView):
         # Then tokenize using wordpunct.
         return tokenize_wordpunct(stream)
 
-def read_document(name='english-kjv'):
+def read_document(name='english-kjv', format='tokenized'):
+    """
+    Read the given document from the corpus, and return its contents.
+    C{format} determines the format that the result will be returned
+    in:
+      - C{'raw'}: a single C{string}
+      - C{'tokenized'}: a list of words and punctuation symbols.
+    """
     filename = find_corpus_file('gutenberg', name, '.txt')
-    return GutenbergCorpusView(filename)
+    if format == 'raw':
+        return open(filename).read()
+    elif format == 'tokenized':
+        return GutenbergCorpusView(filename)
+    else:
+        raise ValueError('Bad format: expected raw or tokenized')
+
+######################################################################
+#{ Convenience Functions
+######################################################################
 read = read_document
 
-def demo():
-    from nltk.corpora import gutenberg
-    from itertools import islice
+def raw(name):
+    """@Return the given document as a single string."""
+    return read_document(name, 'raw')
 
-    for word in read('bible-kjv')[0:100]:
+def tokenized(name):
+    """@Return the given document as a list of words and punctuation
+    symbols.
+    @rtype: C{list} of C{str}"""
+    return read_document(name, 'tokenized')
+
+######################################################################
+#{ Demo
+######################################################################
+
+def demo():
+    from nltk.corpus import gutenberg
+
+    for word in gutenberg.read('bible-kjv')[0:100]:
         print word,
 
 if __name__ == '__main__':

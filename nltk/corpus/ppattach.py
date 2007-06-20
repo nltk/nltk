@@ -64,34 +64,54 @@ class PPAttachment:
                 (self.sent, self.verb, self.noun1, self.prep,
                  self.noun2, self.attachment))
 
-def read_document(name, as_objects=False):
+def read_document(name, format='tuple'):
+    """
+    @param format: raw, object, or tuple.  If tuple, then the elements
+    of each tuple are (sentid, verb, noun1, prep, noun2, attachment).
+    """
     filename = find_corpus_file('ppattach', name)
-    if as_objects:
-        return StreamBackedCorpusView(filename, ppattach_object_tokenizer)
+    if format == 'raw':
+        return open(filename).read()
+    elif format == 'object':
+        return StreamBackedCorpusView(filename, read_ppattach_obj_block)
+    elif format == 'tuple':
+        return StreamBackedCorpusView(filename, read_ppattach_tuple_block)
     else:
-        return StreamBackedCorpusView(filename, ppattach_tuple_tokenizer)
-read = read_document
+        raise ValueError('Expected format to be raw, object, or tuple.')
 
-def ppattach_tuple_tokenizer(stream):
+def read_ppattach_tuple_block(stream):
     line = stream.readline()
     if line:
         return [tuple(line.split())]
     else:
         return []
 
-def ppattach_object_tokenizer(stream):
+def read_ppattach_obj_block(stream):
     line = stream.readline()
     if line:
         return [PPAttachment(*line.split())]
     else:
         return []
 
+
+######################################################################
+#{ Convenience Functions
+######################################################################
+read = read_document
+
+def raw(name):
+    """@Return the given document as a single string."""
+    return read_document(name, 'raw')
+
+######################################################################
+#{ Demo
+######################################################################
 def demo():
-    from nltk.corpora import ppattach
+    from nltk.corpus import ppattach
     from pprint import pprint
 
-    pprint(read('training')[0:5])
-    pprint(read('training', as_objects=True)[0:5])
+    pprint(ppattach.read('training')[0:5])
+    pprint(ppattach.read('training', as_objects=True)[0:5])
 
 if __name__ == '__main__':
     demo()

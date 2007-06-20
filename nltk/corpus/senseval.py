@@ -27,6 +27,7 @@ from nltk import tokenize
 import os, re, xml.sax
 
 documents = ["hard", "interest", "line", "serve"]
+items = list(documents)
 
 class SensevalParser(xml.sax.ContentHandler):
 
@@ -103,8 +104,15 @@ def read_document(name):
     filename = find_corpus_file('senseval', name, '.pos')
     parser = SensevalParser()
     return parser.parse(open(filename).read())
+
+######################################################################
+#{ Convenience Functions
+######################################################################
 read = read_document
 
+######################################################################
+#{ Demo
+######################################################################
 def demo():
     from nltk.corpus import senseval
     from itertools import islice
