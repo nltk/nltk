@@ -50,3 +50,70 @@ nltk.corpus.cmudict: The Carnegie Mellon Pronouncing Dictionary
     ('T', 'UW1', 'L')
     >>> print cmu['KIT'][0]
     ('K', 'IH1', 'T')
+
+
+Demo Functions
+~~~~~~~~~~~~~~
+    # Ignore sys.stdout output -- just check if we get an exception.
+    # We do this because some of the demos produce nondeterministic
+    # or platform-specific output.
+    >>> import sys, tempfile
+    >>> sys.stdout = tempfile.TemporaryFile()
+    >>> # Run all demos.
+    >>> from nltk.corpus import abc
+    >>> abc.demo()
+    >>> from nltk.corpus import brown
+    >>> brown.demo()
+    >>> from nltk.corpus import chat80
+    >>> #chat80.demo() -- no demo funciton
+    >>> from nltk.corpus import cmudict
+    >>> cmudict.demo()
+    >>> from nltk.corpus import conll2000
+    >>> conll2000.demo()
+    >>> from nltk.corpus import conll2002
+    >>> conll2002.demo()
+    >>> from nltk.corpus import genesis
+    >>> genesis.demo()
+    >>> from nltk.corpus import gutenberg
+    >>> gutenberg.demo()
+    >>> from nltk.corpus import ieer
+    >>> ieer.demo()
+    >>> from nltk.corpus import inaugural
+    >>> inaugural.demo()
+    >>> from nltk.corpus import indian
+    >>> indian.demo()
+    >>> from nltk.corpus import names
+    >>> names.demo()
+    >>> from nltk.corpus import ppattach
+    >>> ppattach.demo()
+    >>> from nltk.corpus import senseval
+    >>> senseval.demo()
+    >>> from nltk.corpus import shakespeare
+    >>> shakespeare.demo()
+    >>> from nltk.corpus import sinica_treebank
+    >>> sinica_treebank.demo(draw=False)
+    >>> from nltk.corpus import state_union
+    >>> state_union.demo()
+    >>> from nltk.corpus import stopwords
+    >>> stopwords.demo()
+    >>> from nltk.corpus import timit
+    >>> timit.demo(audio=False)
+    >>> from nltk.corpus import toolbox
+    >>> toolbox.demo()
+    >>> from nltk.corpus import treebank
+    >>> treebank.demo()
+    >>> from nltk.corpus import udhr
+    >>> udhr.demo()
+    >>> from nltk.corpus import web
+    >>> web.demo()
+    >>> from nltk.corpus import webtext
+    >>> webtext.demo()
+    >>> from nltk.corpus import words
+    >>> words.demo()
+    >>> from nltk.corpus import ycoe
+    >>> #ycoe.demo() -- corpus not distributed w/ nltk
+    >>> # Restore sys.stdout.
+    >>> sys.stdout.close()
+    >>> sys.stdout = sys.__stdout__
+
+
