@@ -60,12 +60,29 @@ Parsed:
       (. .) ))
 """
 
+#: A dictionary whose keys are the names of documents in this corpus;
+#: and whose values are descriptions of those documents' contents.
 documents = dict([('wsj_%04d' % i, 'Wall Street Journal document %d' % i)
                    for i in range(1, 100)])
 
+#: A list of all documents in this corpus.
 items = sorted(documents)
 
 def read_document(item, format='parsed'):
+    """
+    Read the given document from the corpus, and return its contents.
+    C{format} determines the format that the result will be returned
+    in:
+      - C{'raw'}: a single C{string}
+      - C{'tokenized'}: a list of words and punctuation symbols.
+      - C{'tagged'}: a list of (word, part-of-speech) tuples.
+      - C{'chunked'}: a list of chunk tree structures, where chunks
+        are used for base noun phrases.
+      - C{'parsed-no-pos'}: a list of parse trees, without part of
+        speech tags included.
+      - C{'parsed'}: a list of parse trees, with part of
+        speech tags included.
+    """
     if format == 'parsed':
         filename = find_corpus_file('treebank/combined', item, '.mrg')
         return StreamBackedCorpusView(filename, read_parsed_tb_block)
@@ -121,24 +138,28 @@ def read_tokenized_tb_block(stream):
 read = read_document
 
 def tagged(item):
-    """@Return the given document as a list of sentences, where each
+    """@return: the given document as a list of sentences, where each
     sentence is a list of tagged words.  Tagged words are encoded as
     tuples of (word, part-of-speech)."""
     return read_document(item, format='tagged')
 
 def tokenized(item):
-    """@Return the given document as a list of sentences, where each
+    """@return: the given document as a list of sentences, where each
     sentence is a list of words."""
     return read_document(item, format='tokenized')
 
 def raw(item):
-    """@Return the given document as a single string."""
+    """@return: the given document as a single string."""
     return read_document(item, format='raw')
 
 def parsed(item):
+    """@return: the given document as a list of parse trees, with
+    part of speech tags included in the parse structure."""
     return read_document(item, format='parsed')
 
 def parsed_no_pos(item):
+    """@return: the given document as a list of parse trees, without
+    part of speech tags included in the parse structure."""
     return read_document(item, format='parsed-no-pos')
 
 ######################################################################

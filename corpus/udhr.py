@@ -17,6 +17,7 @@ import os
 from util import *
 from nltk import tokenize
 
+#: A list of all documents in this corpus.
 documents = ['Abkhaz-Cyrillic+Abkh', 'Abkhaz-UTF8', 'Achehnese-Latin1', 'Achuar-Shiwiar-Latin1', 'Adja-UTF8',
          'Afaan_Oromo_Oromiffa-Latin1', 'Afrikaans-Latin1', 'Aguaruna-Latin1', 'Akuapem_Twi-UTF8',
          'Albanian_Shqip-Latin1', 'Amahuaca-Latin1', 'Amahuaca', 'Amarakaeri-Latin1',
@@ -94,6 +95,8 @@ documents = ['Abkhaz-Cyrillic+Abkh', 'Abkhaz-UTF8', 'Achehnese-Latin1', 'Achuar-
          'WesternSotho_Tswana-Setswana-Latin1', 'Wolof-Latin1', 'Xhosa-Latin1', 'Yagua-Latin1', 'Yao-Latin1',
          'Yapese-Latin1', 'Yoruba-UTF8', 'Zapoteco-Latin1', 'Zapoteco-SanLucasQuiavini-Latin1', 'Zhuang-Latin1',
          'Zulu-Latin1']
+
+#: A list of all documents in this corpus.
 items = sorted(documents)
 
 def read_document(item='English-Latin1', format='tokenized'):
@@ -118,11 +121,11 @@ def read_document(item='English-Latin1', format='tokenized'):
 read = read_document
 
 def raw(item):
-    """@Return the given document as a single string."""
+    """@return: the given document as a single string."""
     return read_document(item, 'raw')
 
 def tokenized(item):
-    """@Return the given document as a list of words and punctuation
+    """@return: the given document as a list of words and punctuation
     symbols.
     @rtype: C{list} of C{str}"""
     return read_document(item, 'tokenized')

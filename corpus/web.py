@@ -38,6 +38,16 @@ class MarkupCleaner(HTMLParser):
         return ''.join(self.fed)
 
 def read_document(url, format='tokenized'):
+    """
+    Read the document at the given URL, and return its contents.
+    C{format} determines the format that the result will be returned
+    in:
+      - C{'raw'}: a single C{string}
+      - C{'tokenized'}: a list of words and punctuation symbols.
+        HTML markup will be removed, and various other 'clean-up'
+        steps may be applied to the raw HTML, in an attempt to
+        extract the text of the webpage.
+    """
     if format == 'tokenized':
         html = urlopen(url).read()
         cleaner = MarkupCleaner()
@@ -56,12 +66,14 @@ read = read_document
 read = read_document
 
 def tokenized(item):
-    """@Return the given document as a list of sentences, where each
-    sentence is a list of words."""
+    """@return: the given document as a list of words and punctuation
+    symbols.  HTML markup will be removed, and various other
+    'clean-up' steps may be applied to the raw HTML, in an attempt to
+    extract the text of the webpage."""
     return read_document(item, format='tokenized')
 
 def raw(item):
-    """@Return the given document as a single string."""
+    """@return: the given document as a single string."""
     return read_document(item, format='raw')
 
 ######################################################################

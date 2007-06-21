@@ -55,11 +55,11 @@ def read_names_block(stream):
 read = read_document
 
 def raw(item):
-    """@Return the given document as a single string."""
+    """@return: the given document as a single string."""
     return read_document(item, 'raw')
 
 def listed(item):
-    """@Return the given document as a list"""
+    """@return: the given document as a list"""
     return read_document(item, 'listed')
 
 ######################################################################
