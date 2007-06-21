@@ -27,6 +27,8 @@ from nltk import tokenize
 import os, re, xml.sax
 
 documents = ["hard", "interest", "line", "serve"]
+
+#: A list of all documents in this corpus.
 items = sorted(documents)
 
 class SensevalParser(xml.sax.ContentHandler):
@@ -99,8 +101,15 @@ class SensevalParser(xml.sax.ContentHandler):
 def _to_ascii(text):
     return text.encode('Latin-1')
 
-
 def read_document(item, format='listed'):
+    """
+    Read the given document from the corpus, and return its contents.
+    C{format} determines the format that the result will be returned
+    in:
+      - C{'raw'}: a single C{string}
+      - C{'listed'}: a list of entries.  Each entry is a tuple
+        (senses, position, context).  
+    """
     filename = find_corpus_file('senseval', item, '.pos')
     if format == 'raw':
         return open(filename).read()
@@ -116,11 +125,11 @@ def read_document(item, format='listed'):
 read = read_document
 
 def raw(name):
-    """@Return the given document as a single string."""
+    """@return: the given document as a single string."""
     return read_document(name, 'raw')
 
 def listed(name):
-    """@Return the given document as a list of instances"""
+    """@return: the given document as a list of instances"""
     return read_document(name, 'listed')
 
 ######################################################################

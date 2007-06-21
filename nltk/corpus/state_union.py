@@ -17,6 +17,11 @@ from util import *
 from nltk import tokenize
 import os, re
 
+#: A list of the documents in this corpus.  Each document's name
+#: consists of a year followed by the President's last name
+#: (separated by a dash).  When a president made multiple
+#: State of the Union Addresses in a given year, the names
+#: are followed by a counter (-1, -2, etc.).
 documents = [
     '1945-Truman',
     '1946-Truman',
@@ -109,11 +114,11 @@ def read_document(item, format='tokenized'):
 read = read_document
 
 def raw(item):
-    """@Return the given document as a single string."""
+    """@return: the given document as a single string."""
     return read_document(item, 'raw')
 
 def tokenized(item):
-    """@Return the given document as a list of words and punctuation
+    """@return: the given document as a list of words and punctuation
     symbols.
     @rtype: C{list} of C{str}"""
     return read_document(item, 'tokenized')

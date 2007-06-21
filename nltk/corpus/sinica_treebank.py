@@ -97,21 +97,22 @@ def read_parsed_sinica_block(stream):
 read = read_document
 
 def tagged(item='parsed'):
-    """@Return the given document as a list of sentences, where each
+    """@return: the given document as a list of sentences, where each
     sentence is a list of tagged words.  Tagged words are encoded as
     tuples of (word, part-of-speech)."""
     return read_document(item, format='tagged')
 
 def tokenized(item='raw'):
-    """@Return the given document as a list of sentences, where each
+    """@return: the given document as a list of sentences, where each
     sentence is a list of words."""
     return read_document(item, format='tokenized')
 
 def raw(item='parsed'):
-    """@Return the given document as a single string."""
+    """@return: the given document as a single string."""
     return read_document(item, format='raw')
 
 def parsed(item='parsed'):
+    """@return: the given document as a list of parse trees."""
     return read_document(item, format='parsed')
 
 ######################################################################

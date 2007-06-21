@@ -71,17 +71,17 @@ def read_tagged_indian_block(stream):
 read = read_document
 
 def raw(item):
-    """@Return the given document as a single string."""
+    """@return: the given document as a single string."""
     return read_document(item, 'raw')
 
 def tokenized(item):
-    """@Return the given document as a list of words and punctuation
+    """@return: the given document as a list of words and punctuation
     symbols.
     @rtype: C{list} of C{str}"""
     return read_document(item, 'tokenized')
 
 def tagged(item):
-    """@Return the given document as a list of sentences, where each
+    """@return: the given document as a list of sentences, where each
     sentence is a list of tagged words.  Tagged words are encoded as
     tuples of (word, part-of-speech)."""
     return read_document(item)

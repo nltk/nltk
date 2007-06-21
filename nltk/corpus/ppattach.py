@@ -112,7 +112,7 @@ def read_ppattach_obj_block(stream):
 read = read_document
 
 def raw(item):
-    """@Return the given document as a single string."""
+    """@return: the given document as a single string."""
     return read_document(item, 'raw')
 
 ######################################################################
