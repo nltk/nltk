@@ -754,7 +754,8 @@ def _do_unify(feature1, feature2, bindings1, bindings2, memo, fail, depth=0):
     # If it's not a mapping or variable, it's a base object, so we just
     # compare for equality.
     if not _is_mapping(feature1):
-        if feature1 == feature2: return feature1
+        if feature1 == feature2:
+            return feature1
         else: 
             return fail(feature1, feature2)
     if not _is_mapping(feature2):
@@ -763,7 +764,7 @@ def _do_unify(feature1, feature2, bindings1, bindings2, memo, fail, depth=0):
     # At this point, we know they're both mappings.
     # Do the destructive part of unification.
 
-    while _FORWARD in feature2:
+    while feature2.has_key(_FORWARD):
         feature2 = feature2[_FORWARD]
     if feature1 is not feature2:
         feature2[_FORWARD] = feature1
@@ -787,7 +788,7 @@ def _apply_forwards(feature, visited):
 
     for fname, fval in feature.items():
         if _is_mapping(fval):
-            while _FORWARD in fval:
+            while fval.has_key(_FORWARD):
                 fval = fval[_FORWARD]
                 feature[fname] = fval
             _apply_forwards(fval, visited)
@@ -846,8 +847,8 @@ def _apply_forwards_to_bindings(bindings):
     identities.
     """
     for (key, value) in bindings.items():
-        if _is_mapping(value) and _FORWARD in value:
-            while _FORWARD in value:
+        if _is_mapping (value) and value.has_key(_FORWARD):
+            while value.has_key(_FORWARD):
                 value = value[_FORWARD]
             bindings[key] = value
 
