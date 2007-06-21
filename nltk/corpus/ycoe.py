@@ -230,10 +230,11 @@ def read_document(item, format='parsed', chunk_types=('NP',),
         f = open(filename, 'r')
         return [tree.bracket_parse(sent) for sent in _parse(f.read())]
 
-"""
-Rudimentary parsing, used by bracket parser to obtained parsed raw data
-"""
 def _parse(s):
+    """
+    Rudimentary parsing, used by bracket parser to obtained parsed raw
+    data
+    """
     rx_pattern = re.compile(r"""
         \(CODE .*\)
         |\(ID .*\d\)
@@ -257,12 +258,11 @@ def _parse(s):
     if fullPhrase != "":
         yield fullPhrase
 
-""" 
-Helper function, strips tabs, extra spaces, and an erroneous leading
-and ending bracket.
-"""
-
 def _strip_spaces(s):
+    """ 
+    Helper function, strips tabs, extra spaces, and an erroneous leading
+    and ending bracket.
+    """
     s = re.sub(r'^\(', '', s)
     s = re.sub(r'\)\s*$', '', s)
     s = re.sub(r'^\s*', '', s)
@@ -272,11 +272,11 @@ def _strip_spaces(s):
   
     return s
 
-"""
-Parses the files to return chunks of type chunk_types.  Partial matching, collapsed
-partials, and cascading are all supported.
-"""          
 def _chunk_parse(files, chunk_types, top_node, partial_match, collapse_partials, cascade):
+    """
+    Parses the files to return chunks of type chunk_types.  Partial
+    matching, collapsed partials, and cascading are all supported.
+    """          
     # allow any kind of bracketing for flexibility
 
     L_BRACKET = re.compile(r'[\(\[\{<]')
