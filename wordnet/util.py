@@ -8,7 +8,7 @@
 # For license information, see LICENSE.TXT
 
 import os, string, types
-from nltk.corpora import get_basedir
+from nltk.corpus import find_corpus_file
 
 ANTONYM = 'antonym'
 HYPERNYM = 'hypernym'
@@ -158,19 +158,6 @@ def normalizePOS(pos):
 # Work around a Windows Python bug
 FILE_OPEN_MODE = os.name in ('dos', 'nt') and 'rb' or 'r'
 
-def indexFilePathname(filenameroot):
-    """
-    @type  filenameroot: {string}
-    @param filenameroot: base form of the index file's filename.
-    @return: the full path to the index file.
-    """
-
-    if os.name in ('dos', 'nt'):
-        path = os.path.join(get_basedir(), "wordnet", filenameroot + ".idx")
-        if os.path.exists(path):
-            return path
-
-    return os.path.join(get_basedir(), "wordnet", "index." + filenameroot)
 
 def dataFilePathname(filenameroot):
     """
@@ -179,12 +166,7 @@ def dataFilePathname(filenameroot):
     @return: the full path to the data file.
     """
 
-    if os.name in ('dos', 'nt'):
-        path = os.path.join(get_basedir(), "wordnet", filenameroot + ".dat")
-        if os.path.exists(path):
-            return path
 
-    return os.path.join(get_basedir(), "wordnet", "data." + filenameroot)
 
 def binarySearchFile(file, key, cache={}, cacheDepth=-1):
     """
@@ -258,7 +240,8 @@ class IndexFile(object):
         @param filenameroot: The base filename of the index file.
         """
         self.pos = pos
-        self.file = open(indexFilePathname(filenameroot), FILE_OPEN_MODE)
+        path = find_corpus_file('wordnet', "index", extension="." + filenameroot)
+        self.file = open(path, FILE_OPEN_MODE)
 
         # Table of (pathname, offset) -> (line, nextOffset)
         self.offsetLineCache = {}

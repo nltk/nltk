@@ -4,7 +4,7 @@ import sys
 
 from itertools import islice
 
-from nltk.corpora import brown
+from nltk.corpus import brown
 from nltk.probability import FreqDist
 from util import *
 
@@ -146,7 +146,7 @@ def brown_information_content(output_filename, compounds_filename, \
 
     sys.stdout.write("Building initial frequency distributions")
 
-    for sentence in brown.tagged():
+    for sentence in brown.read():
 
         if len(sentence) == 0:
             continue
