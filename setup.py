@@ -30,7 +30,7 @@ setup(
     
     #############################################
     ## Package List
-    packages = ['nltk', 'nltk.corpora', 'nltk.test', 'nltk.corpus',
+    packages = ['nltk', 'nltk.test', 'nltk.corpus',
                 'nltk.tokenize', 'nltk.stem', 'nltk.tag',
                 'nltk.parse', 'nltk.chunk', 'nltk.chat', 'nltk.draw',
                 'nltk.misc', 'nltk.model', 'nltk.cluster',
