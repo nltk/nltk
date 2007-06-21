@@ -99,11 +99,11 @@ def read_document(item, format='tokenized'):
 read = read_document
 
 def raw(item):
-    """@Return the given document as a single string."""
+    """@return: the given document as a single string."""
     return read_document(item, 'raw')
 
 def tokenized(item):
-    """@Return the given document as a list of words and punctuation
+    """@return: the given document as a list of words and punctuation
     symbols.
     @rtype: C{list} of C{str}"""
     return read_document(item, 'tokenized')

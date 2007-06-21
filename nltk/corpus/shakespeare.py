@@ -55,11 +55,11 @@ read = read_document
 read = read_document
 
 def raw(item):
-    """@Return the given document as a single string."""
+    """@return: the given document as a single string."""
     return read_document(item, 'raw')
 
 def xml(item):
-    """@Return the given document as an xml ElementTree."""
+    """@return: the given document as an xml ElementTree."""
     return read_document(item, 'xml')
 
 ######################################################################

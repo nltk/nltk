@@ -13,6 +13,9 @@ Read tokens from the Stopwords Corpus.
 from util import *
 import os
 
+#: A dictionary specifying the list of lexicons defined by this
+#: corpus.  The keys of this dictionary are the lexicon names;
+#: and the values are plaintext descriptions.
 lexicons = {
     'danish':     'Danish stopwords',
     'dutch':      'Dutch stopwords',
@@ -26,9 +29,18 @@ lexicons = {
     'spanish':    'Spanish stopwords',
     'swedish':    'Swedish stopwords',
     }
+
+#: A list of all lexicons in this corpus.
 items = sorted(lexicons)
 
 def read_lexicon(item='english', format='listed'):
+    """
+    Read the given lexicon from the corpus, and return its contents.
+    C{format} determines the format that the result will be returned
+    in:
+      - C{'raw'}: a single C{string}
+      - C{'listed'}: a list of names
+    """
     filename = find_corpus_file('stopwords', item)
     if format == 'listed':
         return open(filename).read().split()
@@ -43,11 +55,11 @@ def read_lexicon(item='english', format='listed'):
 read = read_lexicon
 
 def raw(item):
-    """@Return the given document as a single string."""
+    """@return: the given document as a single string."""
     return read_lexicon(item, 'raw')
 
 def listed(item):
-    """@Return the given document as a list"""
+    """@return: the given document as a list"""
     return read_lexicon(item, 'listed')
 
 ######################################################################

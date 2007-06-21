@@ -78,9 +78,7 @@ from nltk.tag import string2tags, string2words
 from string import split
 import os, re
 
-""" 
-All files within the corpora
-"""
+#: All files within the corpora
 documents = {
     'coadrian.o34': 'Adrian and Ritheus',
     'coaelhom.o3': 'Ælfric, Supplemental Homilies',
@@ -187,11 +185,11 @@ documents = {
 #: A list of all documents in this corpus.
 items = sorted(documents)
 
-"""
-Reads files from a given list, and converts them via the conversion_function.
-Can return raw or tagged read files.
-"""
 def _read(item, conversion_function):
+    """
+    Reads files from a given list, and converts them via the
+    conversion_function.  Can return raw or tagged read files.
+    """
     filename = find_corpus_file('ycoe/pos', item)
     f = open(filename)
     rx_pattern = re.compile(r"""
@@ -207,6 +205,17 @@ def _read(item, conversion_function):
 def read_document(item, format='parsed', chunk_types=('NP',),
          top_node="S", partial_match=False, collapse_partials=True,
          cascade=False):
+    """
+    Read the given document from the corpus, and return its contents.
+    C{format} determines the format that the result will be returned
+    in:
+      - C{'raw'}: a single C{string}
+      - C{'tokenized'}: a list of words and punctuation symbols.
+      - C{'tagged'}: a list of (word, part-of-speech) tuples.
+      - C{'chunked'}: a list of chunk tree structures, where chunks
+        are used for base noun phrases.
+      - C{'parsed'}: a list of parse trees.
+    """
     if format == 'raw':
         return open(find_corpus_file('ycoe/psd', item, '.psd')).read()
     if format == 'tokenized':
@@ -339,18 +348,18 @@ def _chunk_parse(files, chunk_types, top_node, partial_match, collapse_partials,
 read = read_document
 
 def tagged(item):
-    """@Return the given document as a list of sentences, where each
+    """@return: the given document as a list of sentences, where each
     sentence is a list of tagged words.  Tagged words are encoded as
     tuples of (word, part-of-speech)."""
     return read_document(item, format='tagged')
 
 def tokenized(item):
-    """@Return the given document as a list of sentences, where each
+    """@return: the given document as a list of sentences, where each
     sentence is a list of words."""
     return read_document(item, format='tokenized')
 
 def raw(item):
-    """@Return the given document as a single string."""
+    """@return: the given document as a single string."""
     return read_document(item, format='raw')
 
 def parsed(item):
