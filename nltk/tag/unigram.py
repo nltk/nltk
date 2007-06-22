@@ -283,20 +283,23 @@ def demo():
     unigram tagger and a default tagger.  It trains and tests the
     tagger using the Brown corpus.
     """
-    from nltk.corpora import brown
+    from nltk.corpus import brown
     from nltk import tag
     import sys
+
+    train_data = brown.read('a')
+    test_data = brown.read('b')[:1000]
 
     print 'Training taggers.'
 
     # Create a default tagger
     t0 = tag.Default('nn')
-
+    
     t1 = tag.Unigram(cutoff=1, backoff=t0)
-    t1.train(brown.tagged('a'), verbose=True)
+    t1.train(train_data, verbose=True)
 
     t2 = tag.Affix(-3, 5, cutoff=2, backoff=t0)
-    t2.train(brown.tagged('a'), verbose=True)
+    t2.train(train_data, verbose=True)
 
     t3 = tag.Regexp([(r'.*ed', 'vbd')], backoff=t0)  # no training
 
@@ -309,23 +312,23 @@ def demo():
     print 'Running the taggers on test data...'
     print '  Default (nn) tagger: ',
     sys.stdout.flush()
-    _demo_tagger(t0, brown.tagged('b'))
+    _demo_tagger(t0, test_data)
 
     print '  Unigram tagger:      ',
     sys.stdout.flush()
-    _demo_tagger(t1, list(brown.tagged('b'))[:1000])
+    _demo_tagger(t1, test_data)
 
     print '  Affix tagger:        ',
     sys.stdout.flush()
-    _demo_tagger(t2, list(brown.tagged('b'))[:1000])
+    _demo_tagger(t2, test_data)
 
     print '  Regexp tagger:       ',
     sys.stdout.flush()
-    _demo_tagger(t3, list(brown.tagged('b'))[:1000])
+    _demo_tagger(t3, test_data)
 
     print '  Lookup tagger:       ',
     sys.stdout.flush()
-    _demo_tagger(t4, list(brown.tagged('b'))[:1000])
+    _demo_tagger(t4, test_data)
 
 if __name__ == '__main__':
     demo()

@@ -898,10 +898,9 @@ def demo():
 
 
 def load_pos(num_sents):
-    from nltk.corpora import brown
-    from itertools import islice
+    from nltk.corpus import brown
 
-    sentences = list(islice(brown.tagged(), num_sents))
+    sentences = brown.read('a')[:num_sents]
 
     tag_set = ["'", "''", '(', ')', '*', ',', '.', ':', '--', '``', 'abl',
         'abn', 'abx', 'ap', 'ap$', 'at', 'be', 'bed', 'bedz', 'beg', 'bem',
