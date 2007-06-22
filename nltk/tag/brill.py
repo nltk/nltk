@@ -1099,7 +1099,7 @@ def demo(num_sents=100, max_rules=200, min_score=3, error_output = "errors.out",
     @type trace: L{int}
     """
 
-    from nltk.corpora import treebank
+    from nltk.corpus import treebank
     from nltk import tag
     from nltk.tag import brill
 
@@ -1109,7 +1109,10 @@ def demo(num_sents=100, max_rules=200, min_score=3, error_output = "errors.out",
     # for testing.
 
     print "Loading tagged data..."
-    sents = list(treebank.tagged())
+    sents = []
+    for item in treebank.items:
+        sents.extend(treebank.read(item, format='tagged'))
+
     if randomize:
         random.seed(len(sents))
         random.shuffle(sents)
