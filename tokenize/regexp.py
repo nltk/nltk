@@ -305,7 +305,7 @@ def demo():
     _display(tokenize.wordpunct(s))
     print
     print 'Tokenize words according to the rules of the Punkt system:'
-    _display(tokenize.punkt(s))
+    _display(tokenize.pword(s))
     print
     print 'Tokenize by lines:'
     _display(tokenize.line(s))

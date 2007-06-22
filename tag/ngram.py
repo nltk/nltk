@@ -160,8 +160,11 @@ def demo():
     unigram tagger and a default tagger.  It trains and tests the
     tagger using the Brown corpus.
     """
-    from nltk.corpora import brown
+    from nltk.corpus import brown
     import sys
+    
+    train_data = brown.read('a')
+    test_data = brown.read('b')[:1000]
 
     print 'Training taggers.'
 
@@ -174,13 +177,9 @@ def demo():
     t2 = Bigram(cutoff=1, backoff=t1)
     t3 = Trigram(backoff=t2)
 
-    t1.train(brown.tagged('a'), verbose=True)
-    t2.train(brown.tagged('a'), verbose=True)
-    t3.train(brown.tagged('a'), verbose=True)
-
-    # Tokenize the testing files
-    test_tokens = []
-    num_words = 0
+    t1.train(train_data, verbose=True)
+    t2.train(train_data, verbose=True)
+    t3.train(train_data, verbose=True)
 
     # Run the taggers.  For t0, t1, and t2, back-off to the default tagger.
     # This is especially important for t1 and t2, which count on
@@ -192,19 +191,19 @@ def demo():
     print 'Running the taggers on test data...'
     print '  Default (nn) tagger: ',
     sys.stdout.flush()
-    _demo_tagger(t0, brown.tagged('b'))
+    _demo_tagger(t0, test_data)
 
     print '  Unigram tagger:      ',
     sys.stdout.flush()
-    _demo_tagger(t1, list(brown.tagged('b'))[:1000])
+    _demo_tagger(t1, test_data)
 
     print '  Bigram tagger:       ',
     sys.stdout.flush()
-    _demo_tagger(t2, list(brown.tagged('b'))[:1000])
+    _demo_tagger(t2, test_data)
 
     print '  Trigram tagger:      ',
     sys.stdout.flush()
-    _demo_tagger(t3, list(brown.tagged('b'))[:1000])
+    _demo_tagger(t3, test_data)
 
 #        print '\nUsage statistics for the trigram tagger:\n'
 #        trigram.print_usage_stats()
@@ -212,4 +211,3 @@ def demo():
 
 if __name__ == '__main__':
     demo()
-
