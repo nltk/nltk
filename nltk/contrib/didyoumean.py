@@ -2,7 +2,7 @@
 # http://snippets.dzone.com/posts/show/3395
 
 from nltk.stem.porter import Porter
-from nltk.corpora import brown
+from nltk.corpus import brown
 from nltk import tokenize
  
 import sys
@@ -48,7 +48,7 @@ class DidYouMean:
     def learn(self, listofsentences=[], n=2000):
         self.learned = defaultdict(mydict)
         if listofsentences == []:
-            listofsentences = brown.raw()
+            listofsentences = brown.tokenized()
         for i, sent in enumerate(listofsentences):
             if i >= n: # Limit to the first nth sentences of the corpus
                 break

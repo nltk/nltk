@@ -21,12 +21,9 @@ via index notation ``word[n]`` or via the ``word.getSenses()`` method.
     >>> N['dog'].taggedSenseCount
     1
     >>> N['dog'].synsets()
-    [{noun: dog, domestic dog, Canis familiaris}, {noun: frump, dog}, {noun: dog}, {noun: cad, bounder, blackguard, dog, hound, heel}, {noun: frank, frankfurter, hotdog, hot dog, dog, wiener, wienerwurst, weenie}, {noun: pawl, detent, click, dog}, {noun: andiron, firedog, dog, dog-iron}]
-
+    [{noun: dog, domestic_dog, Canis_familiaris}, {noun: frump, dog}, {noun: dog}, {noun: cad, bounder, blackguard, dog, hound, heel}, {noun: frank, frankfurter, hotdog, hot_dog, dog, wiener, wienerwurst, weenie}, {noun: pawl, detent, click, dog}, {noun: andiron, firedog, dog, dog-iron}]
     >>> N['dog'].isTagged()
     True
-    >>> ADJ['clear'].getAdjectivePositions()
-    [None, 'predicative']
     >>> N['cat'] < N['dog']
     True
     >>> N['dog'] < V['dog']
@@ -34,11 +31,8 @@ via index notation ``word[n]`` or via the ``word.getSenses()`` method.
     >>> str(N['dog'])
     'dog (noun)'
 
-If ReadableRepresentations is true, return a human-readable
-representation, e.g. 'dog(n.)'.
-
-If ReadableRepresentations is false, return a machine-readable
-representation, e.g. "getWord('dog', 'noun')".
+..   >>> ADJ['clear'].getAdjectivePositions()
+..   [None, 'predicative']
 
 ---------------------------------------------------------------------------
 Synsets
@@ -63,18 +57,18 @@ map(Pointer.getTarget(), synset.getPointerTargets(...)).
     ['Something think something Adjective/Noun', 'Somebody think somebody']
 
     >>> N['dog'][0]
-    [{noun: dog, domestic dog, Canis familiaris}, {noun: dog, domestic dog, Canis familiaris}, {noun: dog, domestic dog, Canis familiaris}]
+    {noun: dog, domestic_dog, Canis_familiaris}
 
     >>> N['dog'][0].relations()
     {'hypernym': {noun: canine, canid}, 'member meronym': {noun: Canis, genus Canis}, 'member meronym': {noun: pack}, 'hyponym': {noun: puppy}, 'hyponym': {noun: pooch, doggie, doggy, barker, bow-wow}}
 
     >>> N['dog'][0][HYPERNYM]
-    {noun: canine, canid}
+    [{noun: canine, canid}, {noun: domestic_animal, domesticated_animal}]
 
     >>> len(N['dog'][0])
     3
     >>> N['cat'][6]
-    {noun: big cat, cat}
+    {noun: big_cat, cat}
 
 hypernyms(self):
 Get the set of parent hypernym synsets of this synset.

@@ -11,7 +11,7 @@ of a Shoebox text without reference to its metadata.
 
 import re
 from utilities import Field, SequentialDictionary
-from nltk.corpora.toolbox import StandardFormat
+from nltk.corpus.toolbox import StandardFormat
 
 
 # --------------------------------------------------------
