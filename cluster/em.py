@@ -200,7 +200,7 @@ def demo():
     vector = numpy.array([2, 2])
     print 'classification_probdist(%s):' % vector
     pdist = clusterer.classification_probdist(vector)
-    for sample in pdist.samples():
+    for sample in pdist:
         print '%s => %.0f%%' % (sample,
                     pdist.prob(sample) *100)
 
@@ -236,7 +236,7 @@ def demo():
 #     vector = numpy.array([2.2, 2])
 #     print 'classification_probdist(%s)' % vector
 #     pdist = clusterer.classification_probdist(vector)
-#     for sample in pdist.samples():
+#     for sample in pdist:
 #         print '%s => %.0f%%' % (sample, pdist.prob(sample) *100)
 
 if __name__ == '__main__':

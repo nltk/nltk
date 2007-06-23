@@ -107,8 +107,8 @@ def wordfinder(words, rows=20, cols=20, attempts=50, alph='ABCDEFGHIJKLMNOPQRSTU
     return grid, used
 
 def demo():
-    from nltk.corpora import words
-    wordlist = list(words.raw())
+    from nltk.corpus import words
+    wordlist = words.read()
     random.shuffle(wordlist)
     wordlist = wordlist[:200]
     wordlist = [w for w in wordlist if 3 <= len(w) <= 12]

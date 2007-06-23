@@ -280,7 +280,6 @@ def demo():
     """A demonstration of the lancaster stemmer on a samples described in
     Paice, Chris D. "Another Stemmer." ACM SIGIR Forum 24.3 (1990): 56-61.
     """
-    from nltk.corpora import treebank
     from nltk import stem
 
     stemmer = stem.Lancaster()

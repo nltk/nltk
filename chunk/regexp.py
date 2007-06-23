@@ -946,18 +946,16 @@ def demo():
 
 # Evaluation
 
-    from nltk.corpora import conll2000
+    from nltk.corpus import conll2000
 
     print
     print "Demonstration of empty grammar:"
     
     cp = chunk.Regexp("")
-    print chunk.accuracy(cp, conll2000.chunked(files='test', chunk_types=('NP',)))
+    print chunk.accuracy(cp, conll2000.chunked('test', chunk_types=('NP',)))
 
     print
     print "Demonstration of accuracy evaluation using CoNLL tags:"
-
-    from itertools import islice
 
     grammar = r"""
     NP:
@@ -966,7 +964,7 @@ def demo():
       <DT|JJ>{}<NN.*>     # merge det/adj with nouns
     """
     cp = chunk.Regexp(grammar)
-    print chunk.accuracy(cp, islice(conll2000.chunked(chunk_types=('NP', 'PP', 'VP')), 0, 5))
+    print chunk.accuracy(cp, conll2000.chunked('test')[:5])
 
     print
     print "Demonstration of tagged token input"

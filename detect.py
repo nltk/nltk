@@ -51,12 +51,12 @@ def stem_feature(stemmer):
 ######################################################################
 
 def demo():
-    from nltk.corpora import brown
+    from nltk.corpus import brown
     from nltk import detect
 
     detector = detect.feature({'initial': lambda t:[t[0]], 'len': lambda t:[len(t)]})
 
-    for sent in list(brown.raw('a'))[:10]:
+    for sent in brown.tokenized('a')[:10]:
         print detector(sent)
 
 if __name__ == '__main__': demo()
