@@ -900,7 +900,7 @@ def demo():
 def load_pos(num_sents):
     from nltk.corpus import brown
 
-    sentences = brown.read('a')[:num_sents]
+    sentences = brown.tagged('a')[:num_sents]
 
     tag_set = ["'", "''", '(', ')', '*', ',', '.', ':', '--', '``', 'abl',
         'abn', 'abx', 'ap', 'ap$', 'at', 'be', 'bed', 'bedz', 'beg', 'bem',

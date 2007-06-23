@@ -1111,7 +1111,7 @@ def demo(num_sents=100, max_rules=200, min_score=3, error_output = "errors.out",
     print "Loading tagged data..."
     sents = []
     for item in treebank.items:
-        sents.extend(treebank.read(item, format='tagged'))
+        sents.extend(treebank.tagged(item))
 
     if randomize:
         random.seed(len(sents))

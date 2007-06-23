@@ -146,127 +146,125 @@ def brown_information_content(output_filename, compounds_filename, \
 
     sys.stdout.write("Building initial frequency distributions")
 
-    for sentence in brown.read():
+    for item in brown.items:
+        for sentence in brown.tagged(item):
 
-        if len(sentence) == 0:
-            continue
+            if len(sentence) == 0:
+                continue
 
-        # Greedily search for compound nouns/verbs. The search is naive and
-        # doesn't account for inflected words within the compound (so
-        # variant forms of the compound will not be identified e.g. the
-        # compound 'abdominal cavities' will not be recognised as the plural of
-        # 'abdominal cavity'); this is in keeping with the original Perl
-        # implementation. Rectifying this is mildy tricky in that some compound
-        # constituents are expected to be inflected e.g. 'abandoned ship' so
-        # it isn't possible to simply uninflect each constituent before
-        # searching; rather, a list of variant compounds containing all possible
-        # inflected/uninflected constituents would be needed (compounds rarely
-        # exceed length four so the quadratic search space wouldn't be too scary).
+            # Greedily search for compound nouns/verbs. The search is naive and
+            # doesn't account for inflected words within the compound (so
+            # variant forms of the compound will not be identified e.g. the
+            # compound 'abdominal cavities' will not be recognised as the plural of
+            # 'abdominal cavity'); this is in keeping with the original Perl
+            # implementation. Rectifying this is mildy tricky in that some compound
+            # constituents are expected to be inflected e.g. 'abandoned ship' so
+            # it isn't possible to simply uninflect each constituent before
+            # searching; rather, a list of variant compounds containing all possible
+            # inflected/uninflected constituents would be needed (compounds rarely
+            # exceed length four so the quadratic search space wouldn't be too scary).
 
-        new_sentence = []
-        compound = sentence.pop(0)
+            new_sentence = []
+            compound = sentence.pop(0)
 
-        # Pop (word token, PoS tag) tuples from the sentence until all words
-        # have been consumed. Glue the word tokens together while they form
-        # a substring of a valid compound. When adding a new token makes the
-        # compound invalid, append the current compound onto the new sentence
-        # queue and assign the new (token, tag) tuple as the current compound
-        # base. 
+            # Pop (word token, PoS tag) tuples from the sentence until all words
+            # have been consumed. Glue the word tokens together while they form
+            # a substring of a valid compound. When adding a new token makes the
+            # compound invalid, append the current compound onto the new sentence
+            # queue and assign the new (token, tag) tuple as the current compound base. 
 
-        while len(sentence) > 0:
+            while len(sentence) > 0:
+                (token, tag) = sentence.pop(0)
+                token = token.lower()
 
-            (token, tag) = sentence.pop(0)
+                # Add this token to the current compound string, creating a
+                # candidate compound token that may or may not exist in Wordnet.
+                compound_token = compound[0] + ' ' + token
 
-            # Convert all tokens to lowercase
-            token = token.lower()
+                # Perform a binary search through the list of all compounds. The
+                # search necessarily accepts partial matches. The search returns
+                # the compound type ('nc' for noun compound or 'vbc' for verb
+                # compound) of the matched compound, or False if no match was
+                # found. Recording the compound type is necessary so that the
+                # correct frequency distribution can be updated later.
 
-            # Add this token to the current compound string, creating a
-            # candidate compound token that may or may not exist in Wordnet.
-            compound_token = compound[0] + ' ' + token
+                compound_tag = substr_binary_search(compound_token, compounds)
 
-            # Perform a binary search through the list of all compounds. The
-            # search necessarily accepts partial matches. The search returns
-            # the compound type ('nc' for noun compound or 'vbc' for verb
-            # compound) of the matched compound, or False if no match was
-            # found. Recording the compound type is necessary so that the
-            # correct frequency distribution can be updated later.
+                if compound_tag:
+                    compound = (compound_token, compound_tag)
 
-            compound_tag = substr_binary_search(compound_token, compounds)
+                # If appending the new token to the current compound results in
+                # an invalid compound, append the current compound to the new
+                # sentence queue and reset it, placing the new token as the
+                # beginning of a (possible) new compound.
 
-            if compound_tag:
-                compound = (compound_token, compound_tag)
+                else:
+                    new_sentence.append(compound)
+                    compound = (token, tag)
 
-            # If appending the new token to the current compound results in
-            # an invalid compound, append the current compound to the new
-            # sentence queue and reset it, placing the new token as the
-            # beginning of a (possible) new compound.
+            # The final (possibly compound) token in each sentence needs to be
+            # manually appended onto the new sentence list.
 
-            else:
-                new_sentence.append(compound)
-                compound = (token, tag)
+            new_sentence.append(compound)
 
-        # The final (possibly compound) token in each sentence needs to be
-        # manually appended onto the new sentence list.
+            for (token, tag) in new_sentence:
 
-        new_sentence.append(compound)
+                # Give the user some feedback to let him or her know the
+                # distributions are still being built. The initial stage can take
+                # quite some time (half an hour or more).
 
-        for (token, tag) in new_sentence:
+                count += 1
 
-            # Give the user some feedback to let him or her know the
-            # distributions are still being built. The initial stage can take
-            # quite some time (half an hour or more).
+                if count % increment == 0:
+                    sys.stdout.write('.')
 
-            count += 1
+                # Basic splitting based on the word token's POS. Later this could
+                # be further developed using the additional (now commented out)
+                # tag types and adding conditional checks to turn e.g. "you'll"
+                # into "you" + "will". This would increase the accuracy of the
+                # distribution, as currently all such contractions are discarded
+                # (because they won't match any entries in the dictionary).
 
-            if count % increment == 0:
-                sys.stdout.write('.')
+                if tag in noun_tags:
+                    pos = "noun"
+                    dictionary = N
+                    freq_dist = noun_fd
 
-            # Basic splitting based on the word token's POS. Later this could
-            # be further developed using the additional (now commented out)
-            # tag types and adding conditional checks to turn e.g. "you'll"
-            # into "you" + "will". This would increase the accuracy of the
-            # distribution, as currently all such contractions are discarded
-            # (because they won't match any entries in the dictionary).
+                elif tag in verb_tags:
+                    pos = "verb"
+                    dictionary = V
+                    freq_dist = verb_fd
 
-            if tag in noun_tags:
-                pos = "noun"
-                dictionary = N
-                freq_dist = noun_fd
+                else:
+                    token = None
 
-            elif tag in verb_tags:
-                pos = "verb"
-                dictionary = V
-                freq_dist = verb_fd
+                # If the word form is inflected e.g. plural, retrieve its base
+                # or uninflected form.
 
-            else: token = None
+                if token is not None:
 
-            # If the word form is inflected e.g. plural, retrieve its base
-            # or uninflected form.
+                    if dictionary.has_key(token):
+                        uninflected_token = token
+                    else:
+                        uninflected_token = morphy(token, pos)
 
-            if token is not None:
+                else: uninflected_token = None
 
-                if dictionary.has_key(token): uninflected_token = token
-                else: uninflected_token = morphy(token, pos)
+                # Increment the count for each sense of the word token, there
+                # being no practical way to distinguish between word senses in the
+                # Brown corpus (SemCor would be another story).
 
-            else: uninflected_token = None
-
-            # Increment the count for each sense of the word token, there
-            # being no practical way to distinguish between word senses in the
-            # Brown corpus (SemCor would be another story).
-
-            if uninflected_token:
-                for synset in dictionary[uninflected_token]:
-                    freq_dist.inc(synset)
+                if uninflected_token:
+                    for synset in dictionary[uninflected_token]:
+                        freq_dist.inc(synset)
 
     # If smoothing is True perform Laplacian smoothing i.e. add 1 to each
     # synset's frequency count.
 
     if smoothing:
-
-        for sample in noun_fd.samples():
+        for sample in noun_fd:
             noun_fd.inc(sample)
-
-        for sample in verb_fd.samples():
+        for sample in verb_fd:
             verb_fd.inc(sample)
 
     # Propogate the frequency counts up the taxonomy structure. Thus the
@@ -312,10 +310,10 @@ def brown_information_content(output_filename, compounds_filename, \
 
     root = N['entity'][0].synset
 
-    for sample in noun_fd.samples():
+    for sample in noun_fd:
         noun_dict[sample.offset] = (noun_fd[sample], noun_fd[root])
 
-    for sample in verb_fd.samples():
+    for sample in verb_fd:
         root = sample.hypernym_paths()[0][0]
         verb_dict[sample.offset] = (verb_fd[sample], verb_fd[root])
 

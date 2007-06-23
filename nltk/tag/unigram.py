@@ -287,8 +287,8 @@ def demo():
     from nltk import tag
     import sys
 
-    train_data = brown.read('a')
-    test_data = brown.read('b')[:1000]
+    train_data = brown.tagged('a')
+    test_data = brown.tagged('b')[:1000]
 
     print 'Training taggers.'
 

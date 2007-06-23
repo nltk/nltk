@@ -706,10 +706,9 @@ def pcfg_demo():
     A demonstration showing how PCFG C{Grammar}s can be created and used.
     """
 
-    from nltk.corpora import treebank
+    from nltk.corpus import treebank
     from nltk import extract, cfg, treetransforms
     from nltk.parse import pchart
-    from itertools import islice
 
     pcfg_prods = cfg.toy_pcfg1.productions()
 
@@ -736,12 +735,13 @@ def pcfg_demo():
     print "Induce PCFG grammar from treebank data:"
 
     productions = []
-    for tree in islice(treebank.parsed(),3):
-        # perform optional tree transformations, e.g.:
-        # tree = tree.collapse_unary(collapsePOS = False)
-        # tree = tree.chomsky_normal_form(horzMarkov = 2)
+    for item in treebank.items[:2]:
+        for tree in treebank.parsed(item):
+            # perform optional tree transformations, e.g.:
+            tree.collapse_unary(collapsePOS = False)
+            tree.chomsky_normal_form(horzMarkov = 2)
 
-        productions += tree.productions()
+            productions += tree.productions()
 
     S = Nonterminal('S')
     grammar = cfg.induce_pcfg(S, productions)
@@ -753,7 +753,8 @@ def pcfg_demo():
     parser = pchart.InsideParse(grammar)
     parser.trace(3)
 
-    sent = extract(0, treebank.raw())
+#    sent = treebank.tokenized('wsj_0001')[0]   # doesn't work as tokens are different!
+    sent = treebank.parsed('wsj_0001')[0].leaves()
     print sent
     for parse in parser.get_parse_list(sent):
         print parse
