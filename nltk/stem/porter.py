@@ -573,21 +573,18 @@ def demo():
     the Penn Treebank corpus.
     """
 
-    from nltk.corpora import treebank
+    from nltk.corpus import treebank
     from nltk import stem
 
     stemmer = stem.Porter()
 
-    i = 0
     orig = []
     stemmed = []
-    for sent in treebank.raw():
-        for word in sent:
-            orig.append(word)
-            sword = stemmer.stem(word)
-            stemmed.append(sword)
-        i+=1
-        if i>3: break
+    for item in treebank.items[:3]:
+        for sent in treebank.tokenized(item):
+            for word in sent:
+                orig.append(word)
+                stemmed.append(stemmer.stem(word))
 
     # Convert the results to a string, and word-wrap them.
     results = string.join(stemmed)

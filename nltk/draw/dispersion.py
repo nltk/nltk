@@ -40,7 +40,7 @@ def plot(text, words, rowheight=15, rowwidth=800):
     canvas.mainloop()
 
 if __name__ == '__main__':
-    from nltk.corpora import gutenberg
+    from nltk.corpus import gutenberg
     from nltk.draw import dispersion
     words = ['Elinor', 'Marianne', 'Edward', 'Willoughby']
-    dispersion.plot(gutenberg.raw('austen-sense'), words)
+    dispersion.plot(gutenberg.tokenized('austen-sense'), words)
