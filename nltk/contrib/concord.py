@@ -849,7 +849,7 @@ def demo():
     Demonstrates how to use IndexConcordance and Aggregator.
     """
     print "Reading Brown Corpus into memory..."
-    corpus = list(brown.tagged('a')))
+    corpus = list(brown.tagged('a'))
     print "Generating index..."
     ic = IndexConcordance(corpus)
     print "Showing all occurences of 'plasma' in the Brown Corpus..."
