@@ -15,7 +15,7 @@ Cosine distance, NaiveBayes, and Spearman-rho
 
 from nltk.contrib import classify
 from nltk import detect
-from nltk.corpora import udhr
+from nltk.corpus import udhr
 import string
 
 def run(classifier, training_data, gold_data):

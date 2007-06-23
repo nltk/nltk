@@ -74,7 +74,7 @@ Unit tests for the Unigram, Affix, Regexp and Lookup taggers
 --------------------------------------------------------------------------------
 
     >>> from nltk.tag.unigram import *
-    >>> from nltk.corpora import brown 
+    >>> from nltk.corpus import brown 
 
 Unigram tagger
 

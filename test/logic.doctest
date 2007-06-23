@@ -1,8 +1,8 @@
-   >>> from nltk.semantics import *
+   >>> from nltk.sem import *
 
 Test for equality under alpha-conversion. 
 
-   >>> lp = Parser()
+   >>> lp = LogicParser()
    >>> e1 = lp.parse('some x.(P x)')
    >>> print e1
    some x.(P x)
