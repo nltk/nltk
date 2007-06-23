@@ -3,7 +3,7 @@ Unit tests for the Chunk classes
 --------------------------------------------------------------------------------
 
     >>> from nltk.chunk import *
-    >>> from nltk.parse.tree import Tree
+    >>> from nltk import Tree
 
     >>> tagged_text = "[ The/DT cat/NN ] sat/VBD on/IN [ the/DT mat/NN ] [ the/DT dog/NN ] chewed/VBD ./."
     >>> gold_chunked_text = tagstr2tree(tagged_text)
@@ -30,8 +30,19 @@ Create and score a series of chunk parsers, successively more complex.
 
     >>> chunk_parser = RegexpChunk([chunk_rule], chunk_node='NP')
     >>> chunked_text = chunk_parser.parse(unchunked_text)
-    >>> chunked_text
-    ('S': ('NP': ('The', 'DT') ('cat', 'NN') ('sat', 'VBD') ('on', 'IN') ('the', 'DT') ('mat', 'NN') ('the', 'DT') ('dog', 'NN') ('chewed', 'VBD') ('.', '.')))
+    >>> print chunked_text
+    (S
+      (NP
+        ('The', 'DT')
+        ('cat', 'NN')
+        ('sat', 'VBD')
+        ('on', 'IN')
+        ('the', 'DT')
+        ('mat', 'NN')
+        ('the', 'DT')
+        ('dog', 'NN')
+        ('chewed', 'VBD')
+        ('.', '.')))
 
     >>> chunkscore = ChunkScore()
     >>> chunkscore.score(gold_chunked_text, chunked_text)
@@ -52,8 +63,14 @@ Create and score a series of chunk parsers, successively more complex.
 
     >>> chunk_parser = RegexpChunk([chunk_rule, chink_rule], chunk_node='NP')
     >>> chunked_text = chunk_parser.parse(unchunked_text)
-    >>> chunked_text
-    ('S': ('NP': ('The', 'DT') ('cat', 'NN')) ('sat', 'VBD') ('on', 'IN') ('NP': ('the', 'DT') ('mat', 'NN') ('the', 'DT') ('dog', 'NN')) ('chewed', 'VBD') ('.', '.'))
+    >>> print chunked_text
+    (S
+      (NP The/DT cat/NN)
+      ('sat', 'VBD')
+      ('on', 'IN')
+      (NP the/DT mat/NN the/DT dog/NN)
+      ('chewed', 'VBD')
+      ('.', '.'))
 
     >>> chunkscore = ChunkScore()
     >>> chunkscore.score(gold_chunked_text, chunked_text)
@@ -75,8 +92,15 @@ Create and score a series of chunk parsers, successively more complex.
     >>> chunk_parser = RegexpChunk([chunk_rule, chink_rule, split_rule],
     ...                            chunk_node='NP')
     >>> chunked_text = chunk_parser.parse(unchunked_text)
-    >>> chunked_text
-    ('S': ('NP': ('The', 'DT') ('cat', 'NN')) ('sat', 'VBD') ('on', 'IN') ('NP': ('the', 'DT') ('mat', 'NN')) ('NP': ('the', 'DT') ('dog', 'NN')) ('chewed', 'VBD') ('.', '.'))
+    >>> print chunked_text
+    (S
+      (NP The/DT cat/NN)
+      ('sat', 'VBD')
+      ('on', 'IN')
+      (NP the/DT mat/NN)
+      (NP the/DT dog/NN)
+      ('chewed', 'VBD')
+      ('.', '.'))
 
     >>> chunkscore = ChunkScore()
     >>> chunkscore.score(gold_chunked_text, chunked_text)

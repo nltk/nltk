@@ -1,11 +1,13 @@
 ===============================
 Unit test cases for ``toolbox``
 ===============================
-    >>> from nltk.corpora import toolbox
+
+    >>> from nltk.corpus import toolbox
 
 --------------------------
 ``toolbox.StandardFormat``
 --------------------------
+
     >>> f = toolbox.StandardFormat()
 
 ``toolbox.StandardFormat.open()``

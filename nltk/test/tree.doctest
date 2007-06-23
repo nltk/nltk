@@ -1,43 +1,26 @@
 Unit test cases for L{tree.Tree}.
 
-    >>> from nltk.parse.tree import *
+    >>> from nltk.tree import *
 
-C{Trees} are used to encode hierarchical structures.  Each C{Tree}
-object encodes a single grouping in the hierarchy.  A C{Tree} is
-actually a specialized subclass of C{list} that:
-
-  - Adds a new attribute, the C{node} value.
-
-  - Conceptually divides its children into two groups: C{Tree}
-    children (called \"subtrees\") and non-C{Tree} children (called
-    \"leaves\").
-
-  - Adds several tree-specific operations.
-
-  - Adds a new tree-specific indexing scheme.
-
-Trees are created from a node and a list (or any iterable) of
-children:
-
-    >>> Tree(1, [2, 3, 4])
-    (1: 2 3 4)
-    >>> Tree('S', [Tree('NP', ['I']), 
-    ...            Tree('VP', [Tree('V', ['saw']),
-    ...                        Tree('NP', ['him'])])])
-    ('S': ('NP': 'I') ('VP': ('V': 'saw') ('NP': 'him')))
+    >>> print Tree(1, [2, 3, 4])
+    (1 2 3 4)
+    >>> print Tree('S', [Tree('NP', ['I']), 
+    ...                 Tree('VP', [Tree('V', ['saw']),
+    ...                             Tree('NP', ['him'])])])
+    (S (NP I) (VP (V saw) (NP him)))
 
 One exception to \"any iterable\": in order to avoid confusion,
 strings are I{not} accepted as children lists:
 
-    >>> Tree('NP', 'Bob')
+    >>> print Tree('NP', 'Bob')
     Traceback (most recent call last):
       ...
     TypeError: children should be a list, not a string
 
 A single level can contain both leaves and subtrees:
 
-    >>> Tree(1, [2, Tree(3, [4]), 5])
-    (1: 2 (3: 4) 5)
+    >>> print Tree(1, [2, Tree(3, [4]), 5])
+    (1 2 (3 4) 5)
 
 Some trees to run tests on:
 
@@ -46,9 +29,7 @@ Some trees to run tests on:
     >>> vp = Tree('vp', [Tree('v', ['chased']), dp2])
     >>> tree = Tree('s', [dp1, vp])
     >>> print tree
-    (s:
-      (dp: (d: 'the') (np: 'dog'))
-      (vp: (v: 'chased') (dp: (d: 'the') (np: 'cat'))))
+    (s (dp (d the) (np dog)) (vp (v chased) (dp (d the) (np cat))))
 
 The node value is stored using the C{node} attribute:
 
@@ -60,38 +41,32 @@ This attribute can be modified directly:
     >>> dp1.node = 'np'
     >>> dp2.node = 'np'
     >>> print tree
-    (s:
-      (np: (d: 'the') (np: 'dog'))
-      (vp: (v: 'chased') (np: (d: 'the') (np: 'cat'))))
+    (s (np (d the) (np dog)) (vp (v chased) (np (d the) (np cat))))
 
 Children can be accessed with indexing, just as with normal lists:
 
-    >>> tree[0]
-    ('np': ('d': 'the') ('np': 'dog'))
-    >>> tree[1][1]
-    ('np': ('d': 'the') ('np': 'cat'))
+    >>> print tree[0]
+    (np (d the) (np dog))
+    >>> print tree[1][1]
+    (np (d the) (np cat))
 
 Children can be modified directly, as well:
 
     >>> tree[0], tree[1][1] = tree[1][1], tree[0]
     >>> print tree
-    (s:
-      (np: (d: 'the') (np: 'cat'))
-      (vp: (v: 'chased') (np: (d: 'the') (np: 'dog'))))
+    (s (np (d the) (np cat)) (vp (v chased) (np (d the) (np dog))))
 
 The C{Tree} class adds a new method of indexing, using tuples rather
 than ints.  C{t[a,b,c]} is equivalant to C{t[a][b][c]}.  The sequence
 C{(a,b,c)} is called a \"tree path\".
 
     >>> print tree[1,1][0]
-    (d: 'the')
+    (d the)
 
     >>> # Switch the cat & dog back the way they were.
     >>> tree[1,1], tree[0] = tree[0], tree[1,1]
     >>> print tree
-    (s:
-      (np: (d: 'the') (np: 'dog'))
-      (vp: (v: 'chased') (np: (d: 'the') (np: 'cat'))))
+    (s (np (d the) (np dog)) (vp (v chased) (np (d the) (np cat))))
 
     >>> path = (1,1,1,0)
     >>> print tree[path]
@@ -104,22 +79,7 @@ The length of a tree is the number of children it has.
     >>> len(Tree('x', []))
     0
 
-The current repr for trees looks like this:
-
-    >>> print repr(tree)
-    ('s': ('np': ('d': 'the') ('np': 'dog')) ('vp': ('v': 'chased') ('np': ('d': 'the') ('np': 'cat'))))
-
-But this might change in the future.  Similarly, the current str looks
-like:
-
-    >>> print str(tree)
-    (s:
-      (np: (d: 'the') (np: 'dog'))
-      (vp: (v: 'chased') (np: (d: 'the') (np: 'cat'))))
-    
-(Note line-wrapping).  But the details of both reprs might change.
-
-The C{leaves} method returns a list of a trees leaves:
+The C{leaves} method returns a list of a tree's leaves:
 
     >>> print tree.leaves()
     ['the', 'dog', 'chased', 'the', 'cat']
@@ -168,50 +128,47 @@ could upper-case all leaves with:
     >>> for pos in tree.treepositions('leaves'):
     ...     tree[pos] = tree[pos].upper()
     >>> print tree
-    (s:
-      (np: (d: 'THE') (np: 'DOG'))
-      (vp: (v: 'CHASED') (np: (d: 'THE') (np: 'CAT'))))
+    (s (np (d THE) (np DOG)) (vp (v CHASED) (np (d THE) (np CAT))))
 
 In addition to C{str} and C{repr}, several methods exist to convert a
 tree object to one of several standard tree encodings:
 
-    >>> print tree.pp_treebank()
-    (s (np (d THE) (np DOG)) (vp (v CHASED) (np (d THE) (np CAT))))
-    >>> print tree.pp_latex_qtree()
+    >>> print tree.pprint_latex_qtree()
     \Tree [.s
-            [.np [.d 'THE' ] [.np 'DOG' ] ]
-            [.vp [.v 'CHASED' ] [.np [.d 'THE' ] [.np 'CAT' ] ] ] ]
+            [.np [.d THE ] [.np DOG ] ]
+            [.vp [.v CHASED ] [.np [.d THE ] [.np CAT ] ] ] ]
 
 Trees can be parsed from treebank strings with the static
 C{Tree.parse} method:
 
     >>> tree2 = bracket_parse('(S (NP I) (VP (V enjoyed) (NP my cookie)))')
     >>> print tree2
-    (S: (NP: 'I') (VP: (V: 'enjoyed') (NP: 'my' 'cookie')))
+    (S (NP I) (VP (V enjoyed) (NP my cookie)))
 
 Trees can be compared for equality:
 
-    >>> tree == bracket_parse(tree.pp_treebank())
+    >>> tree == bracket_parse(str(tree))
     True
-    >>> tree2 == bracket_parse(tree2.pp_treebank())
+    >>> tree2 == bracket_parse(str(tree2))
     True
     >>> tree == tree2
     False
-    >>> tree == bracket_parse(tree2.pp_treebank())
+    >>> tree == bracket_parse(str(tree2))
     False
-    >>> tree2 == bracket_parse(tree.pp_treebank())
+    >>> tree2 == bracket_parse(str(tree))
     False
 
-    >>> tree != bracket_parse(tree.pp_treebank())
+    >>> tree != bracket_parse(str(tree))
     False
-    >>> tree2 != bracket_parse(tree2.pp_treebank())
+    >>> tree2 != bracket_parse(str(tree2))
     False
     >>> tree != tree2
     True
-    >>> tree != bracket_parse(tree2.pp_treebank())
+    >>> tree != bracket_parse(str(tree2))
     True
-    >>> tree2 != bracket_parse(tree.pp_treebank())
+    >>> tree2 != bracket_parse(str(tree))
     True
     
     >>> tree < tree2 or tree > tree2
     True
+

@@ -6,6 +6,8 @@ Unit test cases for ``toolbox``
 --------------------------
 ``Language``
 --------------------------
-    >>> from nltk.corpora import get_basedir
+
+    >>> from nltk.corpus import find_corpus_file
     >>> import os.path
-    >>> lang = Language(os.path.join(get_basedir(), 'toolbox', 'MDF', 'English.lng'))
+    >>> lang = Language(find_corpus_file('toolbox', 'MDF', 'English.lng'))
+    

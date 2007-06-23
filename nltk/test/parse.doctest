@@ -8,7 +8,7 @@ Unit tests for the utility parse functions.
 Unit tests for the CFG (Context Free Grammar) class
 --------------------------------------------------------------------------------
 
-    >>> from nltk.parse import cfg
+    >>> from nltk import cfg
 
     >>> nt1 = cfg.Nonterminal('NP')
     >>> nt2 = cfg.Nonterminal('VP')
@@ -70,15 +70,27 @@ and unambiguous sentence.
     >>> sentence1 = list(tokenize.whitespace('the cat chased the dog'))
     >>> sentence2 = list(tokenize.whitespace('the cat chased the dog on the rug'))
 
-    >>> rd.get_parse_list(sentence1)
-    [('S': ('NP': ('DT': 'the') ('N': 'cat')) ('VP': ('V': 'chased') ('NP': ('DT': 'the') ('N': 'dog'))))]
+    >>> for t in rd.get_parse_list(sentence1):
+    ...     print t
+    (S (NP (DT the) (N cat)) (VP (V chased) (NP (DT the) (N dog))))
 
-    >>> rd.get_parse_list(sentence2)
-    [('S': ('NP': ('DT': 'the') ('N': 'cat')) ('VP': ('V': 'chased') ('NP': ('DT': 'the') ('N': 'dog') ('PP': ('P': 'on') ('NP': ('DT': 'the') ('N': 'rug')))))), ('S': ('NP': ('DT': 'the') ('N': 'cat')) ('VP': ('V': 'chased') ('NP': ('DT': 'the') ('N': 'dog')) ('PP': ('P': 'on') ('NP': ('DT': 'the') ('N': 'rug')))))]
+    >>> for t in rd.get_parse_list(sentence2):
+    ...     print t
+    (S
+      (NP (DT the) (N cat))
+      (VP
+        (V chased)
+        (NP (DT the) (N dog) (PP (P on) (NP (DT the) (N rug))))))
+    (S
+      (NP (DT the) (N cat))
+      (VP
+        (V chased)
+        (NP (DT the) (N dog))
+        (PP (P on) (NP (DT the) (N rug)))))
 
---------------------------------------------------------------------------------
+-------------------------------------------------
 Unit tests for the sr (Shift Reduce Parser) class
---------------------------------------------------------------------------------
+-------------------------------------------------
 
 Create and run a shift reduce parser over both a syntactically ambiguous
 and unambiguous sentence. Note that unlike the recursive descent parser, one
@@ -90,15 +102,17 @@ and only one parse is ever returned.
     >>> sentence1 = list(tokenize.whitespace('the cat chased the dog'))
     >>> sentence2 = list(tokenize.whitespace('the cat chased the dog on the rug'))
 
-    >>> sr.get_parse_list(sentence1)
-    [('S': ('NP': ('DT': 'the') ('N': 'cat')) ('VP': ('V': 'chased') ('NP': ('DT': 'the') ('N': 'dog'))))]
+    >>> for t in sr.get_parse_list(sentence1):
+    ...     print t
+    (S (NP (DT the) (N cat)) (VP (V chased) (NP (DT the) (N dog))))
+
 
 The shift reduce parser uses heuristics to decide what to do when there are
 multiple possible shift or reduce operations available - for the supplied
 grammar clearly the wrong operation is selected.
 
-    >>> sr.get_parse_list(sentence2)
-    []
+    >>> for t in sr.get_parse_list(sentence2):
+    ...     print t
 
 --------------------------------------------------------------------------------
 Unit tests for the Chart parser class
@@ -128,21 +142,43 @@ Create a chart parser. First give it a bottom-up strategy.
 
     >>> parser = ChartParse(grammar, BU_STRATEGY)
 
-    >>> parser.get_parse_list(sentence1)
-    [('S': ('NP': ('N': 'Marc')) ('VP': ('V': 'has') ('NP': ('DT': 'a') ('N': 'telescope'))))]
+    >>> for t in parser.get_parse_list(sentence1):
+    ...     print t
+    (S (NP (N Marc)) (VP (V has) (NP (DT a) (N telescope))))
 
-    >>> parser.get_parse_list(sentence2)
-    [('S': ('NP': ('N': 'Marc')) ('VP': ('V': 'saw') ('NP': ('NP': ('DT': 'a') ('N': 'man')) ('PP': ('P': 'in') ('NP': ('DT': 'the') ('N': 'park')))))), ('S': ('NP': ('N': 'Marc')) ('VP': ('VP': ('V': 'saw') ('NP': ('DT': 'a') ('N': 'man'))) ('PP': ('P': 'in') ('NP': ('DT': 'the') ('N': 'park')))))]
+    >>> for t in parser.get_parse_list(sentence2):
+    ...     print t
+    (S
+      (NP (N Marc))
+      (VP
+        (V saw)
+        (NP (NP (DT a) (N man)) (PP (P in) (NP (DT the) (N park))))))
+    (S
+      (NP (N Marc))
+      (VP
+        (VP (V saw) (NP (DT a) (N man)))
+        (PP (P in) (NP (DT the) (N park)))))
 
 Redefine the chart parser to use a top-down strategy.
 
     >>> parser = ChartParse(grammar, TD_STRATEGY)
 
-    >>> parser.get_parse_list(sentence1)
-    [('S': ('NP': ('N': 'Marc')) ('VP': ('V': 'has') ('NP': ('DT': 'a') ('N': 'telescope'))))]
+    >>> for t in parser.get_parse_list(sentence1):
+    ...     print t
+    (S (NP (N Marc)) (VP (V has) (NP (DT a) (N telescope))))
 
-    >>> parser.get_parse_list(sentence2)
-    [('S': ('NP': ('N': 'Marc')) ('VP': ('V': 'saw') ('NP': ('NP': ('DT': 'a') ('N': 'man')) ('PP': ('P': 'in') ('NP': ('DT': 'the') ('N': 'park')))))), ('S': ('NP': ('N': 'Marc')) ('VP': ('VP': ('V': 'saw') ('NP': ('DT': 'a') ('N': 'man'))) ('PP': ('P': 'in') ('NP': ('DT': 'the') ('N': 'park')))))]
+    >>> for t in parser.get_parse_list(sentence2):
+    ...     print t
+    (S
+      (NP (N Marc))
+      (VP
+        (V saw)
+        (NP (NP (DT a) (N man)) (PP (P in) (NP (DT the) (N park))))))
+    (S
+      (NP (N Marc))
+      (VP
+        (VP (V saw) (NP (DT a) (N man)))
+        (PP (P in) (NP (DT the) (N park)))))
 
 Create and test the Earley variant chart parser. This requires a lexicon.
 
@@ -176,23 +212,34 @@ Create and test the Earley variant chart parser. This requires a lexicon.
 
     >>> parser = EarleyChartParse(grammar, lexicon)
 
-    >>> parser.get_parse_list(sentence1)
-    [('S': ('NP': ('N': 'Marc')) ('VP': ('V': 'has') ('NP': ('DT': 'a') ('N': 'telescope'))))]
+    >>> for t in parser.get_parse_list(sentence1):
+    ...     print t
+    (S (NP (N Marc)) (VP (V has) (NP (DT a) (N telescope))))
 
-    >>> parser.get_parse_list(sentence2)
-    [('S': ('NP': ('N': 'Marc')) ('VP': ('V': 'saw') ('NP': ('NP': ('DT': 'a') ('N': 'man')) ('PP': ('P': 'in') ('NP': ('DT': 'the') ('N': 'park')))))), ('S': ('NP': ('N': 'Marc')) ('VP': ('VP': ('V': 'saw') ('NP': ('DT': 'a') ('N': 'man'))) ('PP': ('P': 'in') ('NP': ('DT': 'the') ('N': 'park')))))]
+    >>> for t in parser.get_parse_list(sentence2):
+    ...     print t
+    (S
+      (NP (N Marc))
+      (VP
+        (V saw)
+        (NP (NP (DT a) (N man)) (PP (P in) (NP (DT the) (N park))))))
+    (S
+      (NP (N Marc))
+      (VP
+        (VP (V saw) (NP (DT a) (N man)))
+        (PP (P in) (NP (DT the) (N park)))))
 
 ------------------
 GrammarFile class
 ------------------
 
     >>> from nltk.parse import GrammarFile
-    >>> g = GrammarFile.read_file('../parse/test.cfg')
+    >>> g = GrammarFile('../parse/test.cfg')
     >>> print g.earley_grammar()
-    Grammar with 3 productions (start state = S[])
-        S[ sem = ApplicationExpression('?vp', '?subj') ] -> NP[ sem = ?subj ] VP[ sem = ?vp ]
-        VP[ sem = ApplicationExpression('?v', '?obj') ] -> V[ sem = ?v ] NP[ sem = ?obj ]
-        VP[ sem = ?v ] -> V[ sem = ?v ]
+    Grammar with 3 productions (start state = S)
+        S[sem=ApplicationExpression('?vp', '?subj')] -> NP[sem=?subj] VP[sem=?vp]
+        VP[sem=ApplicationExpression('?v', '?obj')] -> V[sem=?v] NP[sem=?obj]
+        VP[sem=?v] -> V[sem=?v]
     >>> print g.earley_lexicon()
     {'I': [NP[sem='i']], 'sleeps': [V[sem='\\x.(sleeps x)', tns=pres]], 'like': [V[sem='\\x y.(like x y)', tns=pres]], 'Kim': [NP[sem='kim']]}
     >>> p = g.earley_parser()
@@ -201,13 +248,12 @@ GrammarFile class
 Unit tests for the Probabilistic CFG class
 --------------------------------------------------------------------------------
 
-    >>> from nltk.corpora import treebank
+    >>> from nltk.corpus import treebank
     >>> from itertools import islice
-    >>> from nltk.parse import pcfg
 
 Create a set of probabilistic CFG productions.
 
-    >>> grammar = pcfg.parse_pcfg("""
+    >>> grammar = cfg.parse_pcfg("""
     ... A -> B B [.3] | C B C [.7]
     ... B -> B D [.5] | C [.5]
     ... C -> 'a' [.1] | 'b' [0.9]
@@ -235,10 +281,10 @@ Create a set of probabilistic CFG productions.
 Induce some productions using parsed Treebank data.
 
     >>> productions = []
-    >>> for tree in islice(treebank.parsed(), 3):
-    ...     productions += tree.productions()
+    >>> for t in treebank.parsed()[:3]:
+    ...     productions += t.productions()
 
-    >>> grammar = pcfg.induce(S, productions)
+    >>> grammar = cfg.induce_pcfg(S, productions)
     >>> grammar
     <Grammar with 71 productions>
 
@@ -250,7 +296,7 @@ Unit tests for the Probabilistic Chart Parse classes
 --------------------------------------------------------------------------------
 
     >>> tokens = list(tokenize.whitespace("Jack saw Bob with my cookie"))
-    >>> grammar = pcfg.toy2
+    >>> grammar = cfg.toy_pcfg2
     >>> print grammar
     Grammar with 23 productions (start state = S)
         S -> NP VP [1.0]
@@ -308,285 +354,13 @@ Unit tests for the Viterbi Parse classes
 
     >>> from nltk.parse import ViterbiParse
     >>> tokens = list(tokenize.whitespace("Jack saw Bob with my cookie"))
-    >>> grammar = pcfg.toy2
+    >>> grammar = cfg.toy_pcfg2
 
 Parse the tokenized sentence.
 
     >>> parser = ViterbiParse(grammar)
     >>> parser.get_parse_list(tokens)
     [('S': ('NP': ('Name': 'Jack') (p=0.52)) (p=0.1456) ('VP': ('V': 'saw') (p=0.21) ('NP': ('NP': ('Name': 'Bob') (p=0.48)) (p=0.1344) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.28) ('N': 'cookie') (p=0.12)) (p=0.013776)) (p=0.00840336)) (p=0.00035011759104)) (p=4.33795695299e-05)) (p=6.31606532355e-06)]
-
------------------------------
-Unit tests for the Tree class
------------------------------
-
-C{Trees} are used to encode hierarchical structures.  Each C{Tree}
-object encodes a single grouping in the hierarchy.  A C{Tree} is
-actually a specialized subclass of C{list} that:
-
-  - Adds a new attribute, the C{node} value.
-
-  - Conceptually divides its children into two groups: C{Tree}
-    children (called \"subtrees\") and non-C{Tree} children (called
-    \"leaves\").
-
-  - Adds several tree-specific operations.
-
-  - Adds a new tree-specific indexing scheme.
-
-Trees are created from a node and a list (or any iterable) of
-children:
-
-    >>> from nltk.parse import Tree
-    >>> Tree(1, [2, 3, 4])
-    (1: 2 3 4)
-    >>> Tree('S', [Tree('NP', ['I']), 
-    ...            Tree('VP', [Tree('V', ['saw']),
-    ...                        Tree('NP', ['him'])])])
-    ('S': ('NP': 'I') ('VP': ('V': 'saw') ('NP': 'him')))
-
-One exception to \"any iterable\": in order to avoid confusion,
-strings are I{not} accepted as children lists:
-
-    >>> Tree('NP', 'Bob')
-    Traceback (most recent call last):
-      ...
-    TypeError: children should be a list, not a string
-
-A single level can contain both leaves and subtrees:
-
-    >>> Tree(1, [2, Tree(3, [4]), 5])
-    (1: 2 (3: 4) 5)
-
-Some trees to run tests on:
-
-    >>> dp1 = Tree('dp', [Tree('d', ['the']), Tree('np', ['dog'])])
-    >>> dp2 = Tree('dp', [Tree('d', ['the']), Tree('np', ['cat'])])
-    >>> vp = Tree('vp', [Tree('v', ['chased']), dp2])
-    >>> tree = Tree('s', [dp1, vp])
-    >>> print tree
-    (s:
-      (dp: (d: 'the') (np: 'dog'))
-      (vp: (v: 'chased') (dp: (d: 'the') (np: 'cat'))))
-
-The node value is stored using the C{node} attribute:
-
-    >>> dp1.node, dp2.node, vp.node, tree.node
-    ('dp', 'dp', 'vp', 's')
-
-This attribute can be modified directly:
-
-    >>> dp1.node = 'np'
-    >>> dp2.node = 'np'
-    >>> print tree
-    (s:
-      (np: (d: 'the') (np: 'dog'))
-      (vp: (v: 'chased') (np: (d: 'the') (np: 'cat'))))
-
-Children can be accessed with indexing, just as with normal lists:
-
-    >>> tree[0]
-    ('np': ('d': 'the') ('np': 'dog'))
-    >>> tree[1][1]
-    ('np': ('d': 'the') ('np': 'cat'))
-
-Children can be modified directly, as well:
-
-    >>> tree[0], tree[1][1] = tree[1][1], tree[0]
-    >>> print tree
-    (s:
-      (np: (d: 'the') (np: 'cat'))
-      (vp: (v: 'chased') (np: (d: 'the') (np: 'dog'))))
-
-The C{Tree} class adds a new method of indexing, using tuples rather
-than ints.  C{t[a,b,c]} is equivalant to C{t[a][b][c]}.  The sequence
-C{(a,b,c)} is called a \"tree path\".
-
-    >>> print tree[1,1][0]
-    (d: 'the')
-
-    >>> # Switch the cat & dog back the way they were.
-    >>> tree[1,1], tree[0] = tree[0], tree[1,1]
-    >>> print tree
-    (s:
-      (np: (d: 'the') (np: 'dog'))
-      (vp: (v: 'chased') (np: (d: 'the') (np: 'cat'))))
-
-    >>> path = (1,1,1,0)
-    >>> print tree[path]
-    cat
-
-The length of a tree is the number of children it has.
-
-    >>> len(tree), len(dp1), len(dp2), len(dp1[0])
-    (2, 2, 2, 1)
-    >>> len(Tree('x', []))
-    0
-
-The current repr for trees looks like this:
-
-    >>> print repr(tree)
-    ('s': ('np': ('d': 'the') ('np': 'dog')) ('vp': ('v': 'chased') ('np': ('d': 'the') ('np': 'cat'))))
-
-But this might change in the future.  Similarly, the current str looks
-like:
-
-    >>> print str(tree)
-    (s:
-      (np: (d: 'the') (np: 'dog'))
-      (vp: (v: 'chased') (np: (d: 'the') (np: 'cat'))))
-    
-(Note line-wrapping).  But the details of both reprs might change.
-
-The C{leaves} method returns a list of a trees leaves:
-
-    >>> print tree.leaves()
-    ['the', 'dog', 'chased', 'the', 'cat']
-
-The C{height} method returns the height of the tree.  A tree with no
-children is considered to have a height of 1; a tree with only
-children is considered to have a height of 2; and any other tree's
-height is one plus the maximum of its children's heights:
-
-    >>> print tree.height()
-    5
-    >>> print tree[1,1,1].height()
-    2
-    >>> print tree[0].height()
-    3
-
-The C{treepositions} method returns a list of the tree positions of
-subtrees and leaves in a tree.  By default, it gives the position of
-every tree, subtree, and leaf, in prefix order:
-
-    >>> print tree.treepositions()
-    [(), (0,), (0, 0), (0, 0, 0), (0, 1), (0, 1, 0), (1,), (1, 0), (1, 0, 0), (1, 1), (1, 1, 0), (1, 1, 0, 0), (1, 1, 1), (1, 1, 1, 0)]
-
-The order can also be specified explicitly.  Four orders are currently
-supported:
-
-    # Prefix order
-    >>> print tree.treepositions('preorder')
-    [(), (0,), (0, 0), (0, 0, 0), (0, 1), (0, 1, 0), (1,), (1, 0), (1, 0, 0), (1, 1), (1, 1, 0), (1, 1, 0, 0), (1, 1, 1), (1, 1, 1, 0)]
-
-    # Postfix order
-    >>> print tree.treepositions('postorder')
-    [(0, 0, 0), (0, 0), (0, 1, 0), (0, 1), (0,), (1, 0, 0), (1, 0), (1, 1, 0, 0), (1, 1, 0), (1, 1, 1, 0), (1, 1, 1), (1, 1), (1,), ()]
-    
-    # Both prefix & postfix order (subtrees listed twice, leaves once)
-    >>> print tree.treepositions('bothorder')
-    [(), (0,), (0, 0), (0, 0, 0), (0, 0), (0, 1), (0, 1, 0), (0, 1), (0,), (1,), (1, 0), (1, 0, 0), (1, 0), (1, 1), (1, 1, 0), (1, 1, 0, 0), (1, 1, 0), (1, 1, 1), (1, 1, 1, 0), (1, 1, 1), (1, 1), (1,), ()]
-    
-    # Leaves only (in order)
-    >>> print tree.treepositions('leaves')
-    [(0, 0, 0), (0, 1, 0), (1, 0, 0), (1, 1, 0, 0), (1, 1, 1, 0)]
-
-C{treepositions} can be useful for modifying a tree.  For example, we
-could upper-case all leaves with:
-
-    >>> for pos in tree.treepositions('leaves'):
-    ...     tree[pos] = tree[pos].upper()
-    >>> print tree
-    (s:
-      (np: (d: 'THE') (np: 'DOG'))
-      (vp: (v: 'CHASED') (np: (d: 'THE') (np: 'CAT'))))
-
-In addition to C{str} and C{repr}, several methods exist to convert a
-tree object to one of several standard tree encodings:
-
-    >>> print tree.pp_treebank()
-    (s (np (d THE) (np DOG)) (vp (v CHASED) (np (d THE) (np CAT))))
-    >>> print tree.pp_latex_qtree()
-    \Tree [.s
-            [.np [.d 'THE' ] [.np 'DOG' ] ]
-            [.vp [.v 'CHASED' ] [.np [.d 'THE' ] [.np 'CAT' ] ] ] ]
-
-Trees can be parsed from treebank strings with the C{bracket_parse} method:
-
-    >>> from nltk.parse import bracket_parse
-    >>> tree2 = bracket_parse('(S (NP I) (VP (V enjoyed) (NP my cookie)))')
-    >>> print tree2
-    (S: (NP: 'I') (VP: (V: 'enjoyed') (NP: 'my' 'cookie')))
-
-Trees can be compared for equality:
-
-    >>> tree == bracket_parse(tree.pp_treebank())
-    True
-    >>> tree2 == bracket_parse(tree2.pp_treebank())
-    True
-    >>> tree == tree2
-    False
-    >>> tree == bracket_parse(tree2.pp_treebank())
-    False
-    >>> tree2 == bracket_parse(tree.pp_treebank())
-    False
-
-    >>> tree != bracket_parse(tree.pp_treebank())
-    False
-    >>> tree2 != bracket_parse(tree2.pp_treebank())
-    False
-    >>> tree != tree2
-    True
-    >>> tree != bracket_parse(tree2.pp_treebank())
-    True
-    >>> tree2 != bracket_parse(tree.pp_treebank())
-    True
-    
-    >>> tree < tree2 or tree > tree2
-    True
-
---------------------------------------------------------------------------------
-Unit tests for the TreeTransformation class
---------------------------------------------------------------------------------
-
-    >>> from copy import deepcopy
-    >>> from nltk.parse.treetransforms import *
-
-    >>> sentence = "(TOP (S (S (VP (VBN Turned) (ADVP (RB loose)) (PP (IN in) (NP (NP (NNP Shane) (NNP Longman) (POS 's)) (NN trading) (NN room))))) (, ,) (NP (DT the) (NN yuppie) (NNS dealers)) (VP (AUX do) (NP (NP (RB little)) (ADJP (RB right)))) (. .)))"
-
-    >>> tree = bracket_parse(sentence)
-    >>> tree
-    ('TOP': ('S': ('S': ('VP': ('VBN': 'Turned') ('ADVP': ('RB': 'loose')) ('PP': ('IN': 'in') ('NP': ('NP': ('NNP': 'Shane') ('NNP': 'Longman') ('POS': "'s")) ('NN': 'trading') ('NN': 'room'))))) (',': ',') ('NP': ('DT': 'the') ('NN': 'yuppie') ('NNS': 'dealers')) ('VP': ('AUX': 'do') ('NP': ('NP': ('RB': 'little')) ('ADJP': ('RB': 'right')))) ('.': '.')))
-
-Make a copy of the original tree and collapse the subtrees with only one child
-
-    >>> collapsedTree = deepcopy(tree)
-    >>> collapseUnary(collapsedTree)
-    >>> collapsedTree
-    ('TOP': ('S': ('S+VP': ('VBN': 'Turned') ('ADVP': ('RB': 'loose')) ('PP': ('IN': 'in') ('NP': ('NP': ('NNP': 'Shane') ('NNP': 'Longman') ('POS': "'s")) ('NN': 'trading') ('NN': 'room')))) (',': ',') ('NP': ('DT': 'the') ('NN': 'yuppie') ('NNS': 'dealers')) ('VP': ('AUX': 'do') ('NP': ('NP': ('RB': 'little')) ('ADJP': ('RB': 'right')))) ('.': '.')))
-
-    >>> collapsedTree2 = deepcopy(tree)
-    >>> collapseUnary(collapsedTree2, collapsePOS=True, collapseRoot=True)
-    >>> collapsedTree2
-    ('TOP+S': ('S+VP': ('VBN': 'Turned') ('ADVP+RB': 'loose') ('PP': ('IN': 'in') ('NP': ('NP': ('NNP': 'Shane') ('NNP': 'Longman') ('POS': "'s")) ('NN': 'trading') ('NN': 'room')))) (',': ',') ('NP': ('DT': 'the') ('NN': 'yuppie') ('NNS': 'dealers')) ('VP': ('AUX': 'do') ('NP': ('NP+RB': 'little') ('ADJP+RB': 'right'))) ('.': '.'))
-
-Convert the tree to Chomsky Normal Form i.e. each subtree has either two
-subtree children or a single leaf value. This conversion can be performed
-using either left- or right-factoring.
-
-    >>> cnfTree = deepcopy(collapsedTree)
-    >>> chomskyNormalForm(cnfTree, factor='left')
-    >>> cnfTree
-    ('TOP': ('S': ('S|<S+VP-,-NP-VP>': ('S|<S+VP-,-NP>': ('S|<S+VP-,>': ('S+VP': ('S+VP|<VBN-ADVP>': ('VBN': 'Turned') ('ADVP': ('RB': 'loose'))) ('PP': ('IN': 'in') ('NP': ('NP|<NP-NN>': ('NP': ('NP|<NNP-NNP>': ('NNP': 'Shane') ('NNP': 'Longman')) ('POS': "'s")) ('NN': 'trading')) ('NN': 'room')))) (',': ',')) ('NP': ('NP|<DT-NN>': ('DT': 'the') ('NN': 'yuppie')) ('NNS': 'dealers'))) ('VP': ('AUX': 'do') ('NP': ('NP': ('RB': 'little')) ('ADJP': ('RB': 'right'))))) ('.': '.')))
-
-    >>> cnfTree = deepcopy(collapsedTree)
-    >>> chomskyNormalForm(cnfTree, factor='right')
-    >>> cnfTree
-    ('TOP': ('S': ('S+VP': ('VBN': 'Turned') ('S+VP|<ADVP-PP>': ('ADVP': ('RB': 'loose')) ('PP': ('IN': 'in') ('NP': ('NP': ('NNP': 'Shane') ('NP|<NNP-POS>': ('NNP': 'Longman') ('POS': "'s"))) ('NP|<NN-NN>': ('NN': 'trading') ('NN': 'room')))))) ('S|<,-NP-VP-.>': (',': ',') ('S|<NP-VP-.>': ('NP': ('DT': 'the') ('NP|<NN-NNS>': ('NN': 'yuppie') ('NNS': 'dealers'))) ('S|<VP-.>': ('VP': ('AUX': 'do') ('NP': ('NP': ('RB': 'little')) ('ADJP': ('RB': 'right')))) ('.': '.'))))))
-
-Employ some Markov smoothing to make the artificial node labels a bit more
-readable. See the treetransforms.py documentation for more details.
-
-    >>> markovTree = deepcopy(collapsedTree)
-    >>> chomskyNormalForm(markovTree, horzMarkov=2, vertMarkov=1)
-    >>> markovTree
-    ('TOP': ('S^<TOP>': ('S+VP^<S>': ('VBN': 'Turned') ('S+VP|<ADVP-PP>^<S>': ('ADVP^<S+VP>': ('RB': 'loose')) ('PP^<S+VP>': ('IN': 'in') ('NP^<PP>': ('NP^<NP>': ('NNP': 'Shane') ('NP|<NNP-POS>^<NP>': ('NNP': 'Longman') ('POS': "'s"))) ('NP|<NN-NN>^<PP>': ('NN': 'trading') ('NN': 'room')))))) ('S|<,-NP>^<TOP>': (',': ',') ('S|<NP-VP>^<TOP>': ('NP^<S>': ('DT': 'the') ('NP|<NN-NNS>^<S>': ('NN': 'yuppie') ('NNS': 'dealers'))) ('S|<VP-.>^<TOP>': ('VP^<S>': ('AUX': 'do') ('NP^<VP>': ('NP^<NP>': ('RB': 'little')) ('ADJP^<NP>': ('RB': 'right')))) ('.': '.'))))))
-
-Convert the transformed tree back to its original form
-
-    >>> unChomskyNormalForm(markovTree)
-    >>> tree == markovTree
-    True
 
 --------------------------------------------------------------------------------
 Unit tests for the Category class

@@ -5,7 +5,7 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk.corpora import brown
+from nltk.corpus import brown
 from math import *
 import re, string
 from nltk.probability import *
@@ -849,7 +849,7 @@ def demo():
     Demonstrates how to use IndexConcordance and Aggregator.
     """
     print "Reading Brown Corpus into memory..."
-    corpus = list(brown.tagged(('a','j')))
+    corpus = list(brown.tagged('a')))
     print "Generating index..."
     ic = IndexConcordance(corpus)
     print "Showing all occurences of 'plasma' in the Brown Corpus..."

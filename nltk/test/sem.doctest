@@ -1,4 +1,4 @@
-   >>> from nltk.semantics import *
+   >>> from nltk.sem import *
 
 Characteristic Functions
 ========================
@@ -116,13 +116,13 @@ relations rather than characteristic functions as interpretations.
    >>> val = Valuation()
    >>> val.read(setval)
    >>> print val
-   {'adam': 'b1',
-    'betty': 'g1',
-    'boy': {'b1': True, 'b2': True},
-    'girl': {'g2': True, 'g1': True},
-    'love': {'b1': {'g2': True, 'g1': True},
-             'g1': {'b1': True},
-             'g2': {'b2': True}}}
+    {'adam': 'b1',
+     'betty': 'g1',
+     'boy': {'b1': True, 'b2': True},
+     'girl': {'g1': True, 'g2': True},
+     'love': {'b1': {'g1': True, 'g2': True},
+              'g1': {'b1': True},
+              'g2': {'b2': True}}}
 
 Valuations have a C{domain} attribute, like L{CharFun}, and also a C{symbols}
 attribute.

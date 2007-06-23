@@ -16,7 +16,7 @@ fields can have.
 """
 
 from nltk.etree.ElementTree import TreeBuilder
-from nltk.corpora.toolbox import StandardFormat
+from nltk.corpus.toolbox import StandardFormat
 #from nltk.parse.tree import Tree
 
 class ToolboxSettings(StandardFormat):

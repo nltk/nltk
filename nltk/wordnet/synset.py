@@ -59,17 +59,18 @@ class Word(object):
         """
         return self.taggedSenseCount > 0
     
-    def getAdjectivePositions(self):
-        """
-        >>> from nltk.wordnet import *
-        >>> ADJ['clear'].getAdjectivePositions()
-        [None, 'predicative']
-
-        @return: Return a list of adjective positions that this word can
-        appear in. These are elements of ADJECTIVE_POSITIONS.
-        """
-
-        return list(set(synset.position for synset in word))
+# Broken
+#    def getAdjectivePositions(self):
+#        """
+#        >>> from nltk.wordnet import *
+#        >>> ADJ['clear'].getAdjectivePositions()
+#        [None, 'predicative']
+#
+#        @return: Return a list of adjective positions that this word can
+#        appear in. These are elements of ADJECTIVE_POSITIONS.
+#        """
+#
+#        return list(set(synset.position for synset in self))
 
     def __getitem__(self, idx):
         return self.synsets()[idx]
@@ -209,41 +210,6 @@ class Synset(object):
         verbFrameStrings = [vf % form for vf in verbFrames]
         return verbFrameStrings
             
-#    def words(self):
-#        """
-#        Return a sequence of Words.
-#
-#         >>> from nltk.wordnet import *
-#         >>> N['dog'].words
-#         ['dog', 'domestic dog', 'Canis familiaris']
-#         @return: A list of the L{Word}s in this L{Synset}.
-#         """
-
-#         # Load the senses from the Wordnet files if necessary.
-#         if not hasattr(self, '_senses'):
-#             self._senses = []
-#             senseVerbFrames = None
-
-#             if self.pos == VERB: 
-#                 senseVerbFrames = self._senseVerbFrames
-
-#             for word in self.words:
-#                 position = None
-#                 m = re.match(r'.*(\(.*\))$', word)
-#                 if m:
-#                     if m.group(1) == 'a': position = ATTRIBUTIVE
-#                     elif m.group(1) == 'p': position = PREDICATIVE
-#                     elif m.group(1) == 'ip': position = IMMEDIATE_POSTNOMINAL
-#                     else: raise "Unknown attribute '%s'" % (key)
-#                 self._senses.append(position)
-
-#             if self.pos == VERB: 
-#                 del self._senseVerbFrames
-                
-#             del self.words
-
-#         return self._senses
-    
     def relations(self):
         """
         Return a dictionary of synsets
@@ -337,7 +303,7 @@ class Synset(object):
         >>> len(N['dog'][0].synset)
         3
         """
-        return len(self.words())
+        return len(self.words)
     
     def max_depth(self):
         """
