@@ -23,6 +23,9 @@ Variable objects are used during unification.
     None
 
     >>> x == y
+    True
+
+    >>> x is y
     False
 
     >>> x.name() == y.name()
@@ -144,7 +147,8 @@ A base value unifies with itself, but not much else.
     ... '''))
     >>> f3 = unify(f1, f2)
     >>> print f3
-    {'G': {'H': {...}}, 'F': {'H': {...}}}
+    [ F = {'H': {...}} ]
+    [ G = {'H': {...}} ]   
     >>> print f3['F'] is f3['G']
     True
     >>> print f3['F'] is f3['G']['H']
@@ -185,10 +189,7 @@ A base value unifies with itself, but not much else.
     >>> # defaults, with unify(f1, f2) -- but we want to be able to examine
     >>> # the bindings afterward.
     >>> print unify(f1, f2, bindings1, bindings2)
-    a: 1
-    b: 1
-    c: 2
-    d: 2
+    {'a': 1, 'c': 2, 'b': 1, 'd': 2}
     >>> print bindings1
     {'x': 2}
     >>> print bindings2
@@ -204,9 +205,9 @@ A base value unifies with itself, but not much else.
     ... '''))
     >>> bindings = {}
     >>> print unify(f1, f2, bindings)
-    a: &id001 ?y
-    b: *id001
-    c: *id001
+    [ a = ?y ]
+    [ b = ?y ]
+    [ c = ?y ]
     >>> print bindings
     {'x': ?y}
 
@@ -218,8 +219,8 @@ made after the fact:
     >>> f2 = unify(f1, FeatStruct(a = {}), bindings)
     >>> f3 = unify(f2, FeatStruct(b = Variable('x')), bindings)
     >>> print f3
-    a: &id001 {}
-    b: *id001
+    [ a = {} ]
+    [ b = {} ]
     >>> print bindings
     {'x': {}}
 
