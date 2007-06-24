@@ -1,5 +1,4 @@
-from nltk.parse import *
-from nltk.parse.featurechart import *
+from nltk.book import *
 import unittest
 
 class TestGermanGrammar(unittest.TestCase):
@@ -7,9 +6,10 @@ class TestGermanGrammar(unittest.TestCase):
     Unit tests for German CFG.
     """
     def setUp(self):
-        self.test_grammar = 'german0.cfg'
+        self.test_grammar = 'german.cfg'
+        self.cp = parse.load_earley(self.test_grammar, trace=0)
     
-    def evaluate(self, grammar, show_trees=False):
+    def evaluate(self, cp, show_trees=False):
         """
         Sentences in the test suite are divided into two classes:
          - grammatical (C{accept}) and
@@ -21,7 +21,7 @@ class TestGermanGrammar(unittest.TestCase):
         for key in self.suite:
             for sent in self.suite[key]:
                 tokens = list(tokenize.whitespace(sent))
-                trees = grammar.parse(tokens)
+                trees = cp.parse(tokens)
                 if show_trees and trees:
                     print
                     print sent
@@ -35,7 +35,7 @@ class TestGermanGrammar(unittest.TestCase):
     def testPerson(self):
         "Tests for person agreement"
 
-        cp = load_earley(self.test_grammar, trace=0)
+        
         self.suite = {} 
         #for some reason, 'ihr kommst' fails to parse
         #if it is processed after 'wir kommen'!??
@@ -74,13 +74,12 @@ class TestGermanGrammar(unittest.TestCase):
             'sie hilfst mir',
         ]
 
-        self.evaluate(cp)
+        self.evaluate(self.cp)
 
 
     def testNumber(self):
         "Tests for number agreement"
         
-        cp = load_earley(self.test_grammar, trace=0)
         self.suite = {} 
         self.suite['accept'] = [
             'der hund kommt',
@@ -100,12 +99,12 @@ class TestGermanGrammar(unittest.TestCase):
             'ich folge den hund', 
         ]
 
-        self.evaluate(cp)
+        self.evaluate(self.cp)
         
     def testCase(self):
         "Tests for case government and subcategorization"
 
-        cp = load_earley(self.test_grammar, trace=0)
+        #cp = load_earley(self.test_grammar, trace=0)
         self.suite = {} 
         self.suite['accept'] = [
             'der hund sieht mich', 
@@ -129,7 +128,7 @@ class TestGermanGrammar(unittest.TestCase):
             'ich sehe dem hund',
         ]
 
-        self.evaluate(cp)
+        self.evaluate(self.cp)
 
 
 def testsuite():
