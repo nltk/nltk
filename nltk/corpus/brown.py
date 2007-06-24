@@ -70,10 +70,10 @@ class BrownCorpusView(StreamBackedCorpusView):
     objects are typically created by L{read_document()} (not directly by
     the brown corpus modules' users).
     """
-    def __init__(self, corpus_file, tagged, grouped_by_sent, grouped_by_para):
+    def __init__(self, corpus_file, tagged, group_by_sent, group_by_para):
         self.tagged = tagged
-        self.grouped_by_sent = grouped_by_sent
-        self.grouped_by_para = grouped_by_para
+        self.group_by_sent = group_by_sent
+        self.group_by_para = group_by_para
         StreamBackedCorpusView.__init__(self, corpus_file)
         
     def read_block(self, stream):
@@ -86,20 +86,19 @@ class BrownCorpusView(StreamBackedCorpusView):
                     words = string2tags(line)
                 else:
                     words = string2words(line)
-                if self.grouped_by_sent:
+                if self.group_by_sent:
                     para.append(words)
                 else:
                     para.extend(words)
             elif para:
-                if self.grouped_by_para:
+                if self.group_by_para:
                     return [para]
                 else:
                     return para
             else:
                 return []
 
-def read_document(item, format='tagged', grouped_by_sent=True,
-                  grouped_by_para = False):
+def read_document(item, format='tagged', group_by_sent=True, group_by_para = False):
     """
     Read and return the given document.
 
@@ -111,11 +110,11 @@ def read_document(item, format='tagged', grouped_by_sent=True,
       - C{'tokenized'}: a list of words and punctuation symbols.
       - C{'tagged'}: a list of (word, part-of-speech) tuples.
       
-    @param grouped_by_sent: If true, then the result will contain one
+    @param group_by_sent: If true, then the result will contain one
         list for each sentence.
         
-    @param grouped_by_para: If true, then the result will contain one
-        list for each paragraph.  If C{grouped_by_sent} is also true,
+    @param group_by_para: If true, then the result will contain one
+        list for each paragraph.  If C{group_by_sent} is also true,
         then each of these paragraphs will contain a list of sentences.
     """
     filename = find_corpus_file('brown', item)
@@ -123,39 +122,38 @@ def read_document(item, format='tagged', grouped_by_sent=True,
         return open(filename).read()
     elif format not in ('tagged', 'tokenized'):
         raise ValueError('Expected format to be raw, tagged, or tokenized')
-    return BrownCorpusView(filename, format=='tagged',
-                           grouped_by_sent, grouped_by_para)
+    return BrownCorpusView(filename, format=='tagged', group_by_sent, group_by_para)
 
 ######################################################################
 #{ Convenience Functions
 ######################################################################
 read = read_document
 
-def tagged(item, grouped_by_sent=True, grouped_by_para=False):
+def tagged(item, group_by_sent=True, group_by_para=False):
     """
     @return the given document as a list of sentences, where each
     sentence is a list of tagged words.  Tagged words are encoded as
     tuples of (word, part-of-speech).
-    @param grouped_by_sent, grouped_by_para: Controls whether the
+    @param group_by_sent, group_by_para: Controls whether the
         result groups words by sentence or paragraph, or both or neither.
         By default, words are grouped by sentence.
     """
-    return read_document(item, 'tagged', grouped_by_sent, grouped_by_para)
+    return read_document(item, 'tagged', group_by_sent, group_by_para)
 
-def tokenized(item, grouped_by_sent=True, grouped_by_para=False):
+def tokenized(item, group_by_sent=True, group_by_para=False):
     """
     @return the given document as a list of sentences, where each
     sentence is a list of words.
-    @param grouped_by_sent, grouped_by_para: Controls whether the
+    @param group_by_sent, group_by_para: Controls whether the
         result groups words by sentence or paragraph, or both or neither.
         By default, words are grouped by sentence.
     """
-    return read_document(item, 'tokenized', grouped_by_sent, grouped_by_para)
+    return read_document(item, 'tokenized', group_by_sent, group_by_para)
 
 def raw(item):
     """
     @return the given document as a single string.
-    @param grouped_by_sent, grouped_by_para: Controls whether the
+    @param group_by_sent, group_by_para: Controls whether the
         result groups words by sentence or paragraph, or both or neither.
         By default, words are grouped by sentence.
     """
@@ -172,10 +170,10 @@ def demo():
     for sent in d1[3:5]:
         print 'Sentence from a:', sent
 
-    d2 = brown.read('b', grouped_by_sent=False)
+    d2 = brown.read('b', group_by_sent=False)
     print 'Words from b:', d2[220:240]
                        
-    d3 = brown.read('c', grouped_by_sent=False, format='tagged')
+    d3 = brown.read('c', group_by_sent=False, format='tagged')
     print 'Untagged words from c:', d3[220:240]
                        
 if __name__ == '__main__':
