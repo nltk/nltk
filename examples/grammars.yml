@@ -7,14 +7,14 @@
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
 #
-# $Id:$
+# $Id$
 
 feat0.cfg: examples/parse/
 feat1.cfg: examples/parse/
 feat2.cfg: examples/parse/
 feat_agr.cfg: examples/parse/
 feat_agr0.cfg: examples/parse/
-german0.cfg: examples/parse/
+german.cfg: examples/parse/
 
 chat80.cfg: examples/semantics/
 chat_pnames.cfg: examples/semantics/
