@@ -18,7 +18,7 @@ WHITESPACE = r'\s+'
 NEWLINE    = r'\n'
 BLANKLINE  = r'\s*\n\s*\n\s*'
 WORD       = r'\w+'
-WORDPUNCT  = r'[a-zA-Z]+|[^a-zA-Z\s]+'
+WORDPUNCT  = r'\w+|[^\w\s]+'
 SHOEBOXSEP = r'^\\'
 TREEBANK   = r'^\(.*?(?=^\(|\Z)'
 
