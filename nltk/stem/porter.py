@@ -78,7 +78,6 @@ __docformat__ = 'plaintext'
 
 import sys
 import re
-import string
 
 ## --NLTK--
 ## Import the nltk.stemmer module, which defines the stemmer interface
@@ -508,15 +507,14 @@ class Porter(StemI):
         return self.b[self.k0:self.k+1]
 
     def adjust_case(self, word, stem):
-        lower = string.lower(word)
+        lower = word.lower()
 
         ret = ""
-
         for x in xrange(len(stem)):
             if lower[x] == stem[x]:
-                ret = ret + word[x]
+                ret += word[x]
             else:
-                ret = ret + stem[x]
+                ret += stem[x]
 
         return ret
 
@@ -542,7 +540,7 @@ class Porter(StemI):
     ## --NLTK--
     ## Define a stem() method that implements the StemmerI interface.
     def stem(self, word):
-        stem = self.stem_word(string.lower(word), 0, len(word) - 1)
+        stem = self.stem_word(word.lower(), 0, len(word) - 1)
         return self.adjust_case(word, stem)
 
     ## --NLTK--
@@ -587,11 +585,11 @@ def demo():
                 stemmed.append(stemmer.stem(word))
 
     # Convert the results to a string, and word-wrap them.
-    results = string.join(stemmed)
+    results = ' '.join(stemmed)
     results = re.sub(r"(.{,70})\s", r'\1\n', results+' ').rstrip()
 
     # Convert the original to a string, and word wrap it.
-    original = string.join(orig)
+    original = ' '.join(orig)
     original = re.sub(r"(.{,70})\s", r'\1\n', original+' ').rstrip()
 
     # Print the results.
