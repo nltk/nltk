@@ -12,6 +12,7 @@
 from api import *
 from nltk.tree import Tree
 from nltk import cfg
+from nltk.compat import defaultdict
 
 """
 Data classes and parser implementations for \"chart parsers\", which
@@ -1278,9 +1279,13 @@ class EarleyChartParse(AbstractParse):
         self._trace = trace
         AbstractParse.__init__(self)
 
+    def lexicon(self):
+        return self._lexicon
+
     def get_parse_list(self, tokens, tree_class=Tree):
         tokens = list(tokens)
-        # self._check_coverage(tokens)  # doesn't work for Earley Parser as its grammar omits lexical productions
+        self._check_coverage(tokens)
+        
         chart = Chart(list(tokens))
         grammar = self._grammar
 
@@ -1316,6 +1321,11 @@ class EarleyChartParse(AbstractParse):
 
         # Output a list of complete parses.
         return chart.parses(grammar.start(), tree_class=tree_class)
+    
+    def _check_coverage(self, tokens):
+        for token in tokens:
+            if token not in self._lexicon.keys():
+                raise ValueError, "Grammar does not cover some of the input words ('%s')" % token
             
 ########################################################################
 ##  Generic Chart Parser
@@ -1574,9 +1584,9 @@ def demo():
         ]
 
     # Convert the grammar productions to an earley-style lexicon.
-    earley_lexicon = {}
+    earley_lexicon = defaultdict(list)
     for prod in lexical_productions:
-        earley_lexicon.setdefault(prod.rhs()[0], []).append(prod.lhs())
+        earley_lexicon[prod.rhs()[0]].append(prod.lhs())
 
     # The grammar for ChartParse and SteppingChartParse:
     grammar = cfg.Grammar(S, grammatical_productions+lexical_productions)
