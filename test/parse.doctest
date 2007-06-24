@@ -118,7 +118,7 @@ grammar clearly the wrong operation is selected.
 Unit tests for the Chart parser class
 --------------------------------------------------------------------------------
 
-    >>> from nltk.parse import ChartParse, EarleyChartParse, BU_STRATEGY, TD_STRATEGY
+    >>> from nltk.parse import ChartParse, EarleyChartParse, BU_STRATEGY, TD_STRATEGY, FeatureEarleyChartParse
 
 Define a grammar.
 
@@ -240,9 +240,13 @@ GrammarFile class
         S[sem=ApplicationExpression('?vp', '?subj')] -> NP[sem=?subj] VP[sem=?vp]
         VP[sem=ApplicationExpression('?v', '?obj')] -> V[sem=?v] NP[sem=?obj]
         VP[sem=?v] -> V[sem=?v]
-    >>> print g.earley_lexicon()
-    {'I': [NP[sem='i']], 'sleeps': [V[sem='\\x.(sleeps x)', tns=pres]], 'like': [V[sem='\\x y.(like x y)', tns=pres]], 'Kim': [NP[sem='kim']]}
-    >>> p = g.earley_parser()
+    >>> earley_lexicon = g.earley_lexicon()
+    >>> for word in earley_lexicon:
+    ...     print word + ':', ','.join(`ent` for ent in earley_lexicon[word])
+    I: NP[sem=VariableExpression('i')]
+    sleeps: V[sem=LambdaExpression('x', '(sleeps x)'), tns='pres']
+    like: V[sem=LambdaExpression('x', '\y.(like x y)'), tns='pres']
+    Kim: NP[sem=VariableExpression('kim')]
 
 --------------------------------------------------------------------------------
 Unit tests for the Probabilistic CFG class
@@ -281,8 +285,9 @@ Create a set of probabilistic CFG productions.
 Induce some productions using parsed Treebank data.
 
     >>> productions = []
-    >>> for t in treebank.parsed()[:3]:
-    ...     productions += t.productions()
+    >>> for item in treebank.items[:2]:
+    ...     for t in treebank.parsed(item):
+    ...         productions += t.productions()
 
     >>> grammar = cfg.induce_pcfg(S, productions)
     >>> grammar
@@ -329,24 +334,72 @@ resulting parses.
     >>> from nltk.parse import pchart
     
     >>> parser = pchart.InsideParse(grammar)
-    >>> parser.get_parse_list(tokens)
-    [('S': ('NP': ('Name': 'Jack') (p=0.52)) (p=0.1456) ('VP': ('V': 'saw') (p=0.21) ('NP': ('NP': ('Name': 'Bob') (p=0.48)) (p=0.1344) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.28) ('N': 'cookie') (p=0.12)) (p=0.013776)) (p=0.00840336)) (p=0.00035011759104)) (p=4.33795695299e-05)) (p=6.31606532355e-06), ('S': ('NP': ('Name': 'Jack') (p=0.52)) (p=0.1456) ('VP': ('VP': ('V': 'saw') (p=0.21) ('NP': ('Name': 'Bob') (p=0.48)) (p=0.1344)) (p=0.01665216) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.28) ('N': 'cookie') (p=0.12)) (p=0.013776)) (p=0.00840336)) (p=1.39934095258e-06)) (p=2.03744042695e-07)]
+    >>> for t in parser.get_parse_list(tokens):
+    ...     print t
+    (S
+      (NP (Name Jack))
+      (VP
+        (V saw)
+        (NP
+          (NP (Name Bob))
+          (PP (P with) (NP (Det my) (N cookie)))))) (p=6.31606532355e-06)
+    (S
+      (NP (Name Jack))
+      (VP
+        (VP (V saw) (NP (Name Bob)))
+        (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744042695e-07)
 
     >>> parser = pchart.RandomParse(grammar)
-    >>> parser.get_parse_list(tokens)
-    [('S': ('NP': ('Name': 'Jack') (p=0.52)) (p=0.1456) ('VP': ('V': 'saw') (p=0.21) ('NP': ('NP': ('Name': 'Bob') (p=0.48)) (p=0.1344) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.28) ('N': 'cookie') (p=0.12)) (p=0.013776)) (p=0.00840336)) (p=0.00035011759104)) (p=4.33795695299e-05)) (p=6.31606532355e-06), ('S': ('NP': ('Name': 'Jack') (p=0.52)) (p=0.1456) ('VP': ('VP': ('V': 'saw') (p=0.21) ('NP': ('Name': 'Bob') (p=0.48)) (p=0.1344)) (p=0.01665216) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.28) ('N': 'cookie') (p=0.12)) (p=0.013776)) (p=0.00840336)) (p=1.39934095258e-06)) (p=2.03744042695e-07)]
-
+    >>> for t in parser.get_parse_list(tokens):
+    ...     print t
+    (S
+      (NP (Name Jack))
+      (VP
+        (V saw)
+        (NP
+          (NP (Name Bob))
+          (PP (P with) (NP (Det my) (N cookie)))))) (p=6.31606532355e-06)
+    (S
+      (NP (Name Jack))
+      (VP
+        (VP (V saw) (NP (Name Bob)))
+        (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744042695e-07)
+        
     >>> parser = pchart.UnsortedParse(grammar)
-    >>> parser.get_parse_list(tokens)
-    [('S': ('NP': ('Name': 'Jack') (p=0.52)) (p=0.1456) ('VP': ('V': 'saw') (p=0.21) ('NP': ('NP': ('Name': 'Bob') (p=0.48)) (p=0.1344) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.28) ('N': 'cookie') (p=0.12)) (p=0.013776)) (p=0.00840336)) (p=0.00035011759104)) (p=4.33795695299e-05)) (p=6.31606532355e-06), ('S': ('NP': ('Name': 'Jack') (p=0.52)) (p=0.1456) ('VP': ('VP': ('V': 'saw') (p=0.21) ('NP': ('Name': 'Bob') (p=0.48)) (p=0.1344)) (p=0.01665216) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.28) ('N': 'cookie') (p=0.12)) (p=0.013776)) (p=0.00840336)) (p=1.39934095258e-06)) (p=2.03744042695e-07)]
+    >>> for t in parser.get_parse_list(tokens):
+    ...     print t
+    (S
+      (NP (Name Jack))
+      (VP
+        (V saw)
+        (NP
+          (NP (Name Bob))
+          (PP (P with) (NP (Det my) (N cookie)))))) (p=6.31606532355e-06)
+    (S
+      (NP (Name Jack))
+      (VP
+        (VP (V saw) (NP (Name Bob)))
+        (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744042695e-07)
 
     >>> parser = pchart.LongestParse(grammar)
-    >>> parser.get_parse_list(tokens)
-    [('S': ('NP': ('Name': 'Jack') (p=0.52)) (p=0.1456) ('VP': ('V': 'saw') (p=0.21) ('NP': ('NP': ('Name': 'Bob') (p=0.48)) (p=0.1344) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.28) ('N': 'cookie') (p=0.12)) (p=0.013776)) (p=0.00840336)) (p=0.00035011759104)) (p=4.33795695299e-05)) (p=6.31606532355e-06), ('S': ('NP': ('Name': 'Jack') (p=0.52)) (p=0.1456) ('VP': ('VP': ('V': 'saw') (p=0.21) ('NP': ('Name': 'Bob') (p=0.48)) (p=0.1344)) (p=0.01665216) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.28) ('N': 'cookie') (p=0.12)) (p=0.013776)) (p=0.00840336)) (p=1.39934095258e-06)) (p=2.03744042695e-07)]
+    >>> for t in parser.get_parse_list(tokens):
+    ...     print t
+    (S
+      (NP (Name Jack))
+      (VP
+        (V saw)
+        (NP
+          (NP (Name Bob))
+          (PP (P with) (NP (Det my) (N cookie)))))) (p=6.31606532355e-06)
+    (S
+      (NP (Name Jack))
+      (VP
+        (VP (V saw) (NP (Name Bob)))
+        (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744042695e-07)
 
     >>> parser = pchart.InsideParse(grammar, beam_size = len(tokens)+1)
-    >>> parser.get_parse_list(tokens)
-    []
+    >>> for t in parser.get_parse_list(tokens):
+    ...     print t
 
 ----------------------------------------
 Unit tests for the Viterbi Parse classes
@@ -359,8 +412,15 @@ Unit tests for the Viterbi Parse classes
 Parse the tokenized sentence.
 
     >>> parser = ViterbiParse(grammar)
-    >>> parser.get_parse_list(tokens)
-    [('S': ('NP': ('Name': 'Jack') (p=0.52)) (p=0.1456) ('VP': ('V': 'saw') (p=0.21) ('NP': ('NP': ('Name': 'Bob') (p=0.48)) (p=0.1344) ('PP': ('P': 'with') (p=0.61) ('NP': ('Det': 'my') (p=0.28) ('N': 'cookie') (p=0.12)) (p=0.013776)) (p=0.00840336)) (p=0.00035011759104)) (p=4.33795695299e-05)) (p=6.31606532355e-06)]
+    >>> for t in parser.get_parse_list(tokens):
+    ...     print t
+    (S
+      (NP (Name Jack))
+      (VP
+        (V saw)
+        (NP
+          (NP (Name Bob))
+          (PP (P with) (NP (Det my) (N cookie)))))) (p=6.31606532355e-06)
 
 --------------------------------------------------------------------------------
 Unit tests for the Category class
@@ -411,80 +471,60 @@ Define some lexical productions.
     ...     cfg.Production(P, ('with',)), cfg.Production(P, ('under',))]
     
     >>> earley_grammar = cfg.Grammar(S, grammatical_productions)
-    >>> earley_lexicon = {}
+    >>> from nltk.compat import defaultdict
+    >>> earley_lexicon = defaultdict(list)
 
     >>> for prod in lexical_productions:
-    ...     earley_lexicon.setdefault(prod.rhs()[0].upper(), []).append(prod.lhs())
+    ...     earley_lexicon[prod.rhs()[0]].append(prod.lhs())
 
     >>> tokens = list(tokenize.whitespace('I saw John with a dog with my cookie'))
     >>> cp = FeatureEarleyChartParse(earley_grammar, earley_lexicon)
     >>> trees = cp.get_parse_list(tokens)
-    >>> for tree in trees:
-    ...     print tree
-    ([INIT][]:
-      (S[]:
-        (NP[]: 'I')
-        (VP[]:
-          (VP[]:
-            (VP[]: (V[]: 'saw') (NP[]: 'John'))
-            (PP[]:
-              (P[]: 'with')
-              (NP[]: (Det[]: 'a') (N[ pl  = False ]: 'dog'))))
-          (PP[]:
-            (P[]: 'with')
-            (NP[]: (Det[]: 'my') (N[ pl  = False ]: 'cookie'))))))
-    ([INIT][]:
-      (S[]:
-        (NP[]: 'I')
-        (VP[]:
-          (VP[]: (V[]: 'saw') (NP[]: 'John'))
-          (PP[]:
-            (P[]: 'with')
-            (NP[]:
-              (NP[]: (Det[]: 'a') (N[ pl  = False ]: 'dog'))
-              (PP[]:
-                (P[]: 'with')
-                (NP[]: (Det[]: 'my') (N[ pl  = False ]: 'cookie'))))))))
-    ([INIT][]:
-      (S[]:
-        (NP[]: 'I')
-        (VP[]:
-          (VP[]:
-            (V[]: 'saw')
-            (NP[]:
-              (NP[]: 'John')
-              (PP[]:
-                (P[]: 'with')
-                (NP[]: (Det[]: 'a') (N[ pl  = False ]: 'dog')))))
-          (PP[]:
-            (P[]: 'with')
-            (NP[]: (Det[]: 'my') (N[ pl  = False ]: 'cookie'))))))
-    ([INIT][]:
-      (S[]:
-        (NP[]: 'I')
-        (VP[]:
-          (V[]: 'saw')
-          (NP[]:
-            (NP[]:
-              (NP[]: 'John')
-              (PP[]:
-                (P[]: 'with')
-                (NP[]: (Det[]: 'a') (N[ pl  = False ]: 'dog'))))
-            (PP[]:
-              (P[]: 'with')
-              (NP[]: (Det[]: 'my') (N[ pl  = False ]: 'cookie')))))))
-    ([INIT][]:
-      (S[]:
-        (NP[]: 'I')
-        (VP[]:
-          (V[]: 'saw')
-          (NP[]:
-            (NP[]: 'John')
-            (PP[]:
-              (P[]: 'with')
-              (NP[]:
-                (NP[]: (Det[]: 'a') (N[ pl  = False ]: 'dog'))
-                (PP[]:
-                  (P[]: 'with')
-                  (NP[]: (Det[]: 'my') (N[ pl  = False ]: 'cookie')))))))))
-
+    >>> for t in trees:
+    ...     print t
+    ([INIT]
+      (S
+        (NP I)
+        (VP
+          (VP
+            (VP (V saw) (NP John))
+            (PP (P with) (NP (Det a) (N[-pl] dog))))
+          (PP (P with) (NP (Det my) (N[-pl] cookie))))))
+    ([INIT]
+      (S
+        (NP I)
+        (VP
+          (VP (V saw) (NP John))
+          (PP
+            (P with)
+            (NP
+              (NP (Det a) (N[-pl] dog))
+              (PP (P with) (NP (Det my) (N[-pl] cookie))))))))
+    ([INIT]
+      (S
+        (NP I)
+        (VP
+          (VP
+            (V saw)
+            (NP (NP John) (PP (P with) (NP (Det a) (N[-pl] dog)))))
+          (PP (P with) (NP (Det my) (N[-pl] cookie))))))
+    ([INIT]
+      (S
+        (NP I)
+        (VP
+          (V saw)
+          (NP
+            (NP (NP John) (PP (P with) (NP (Det a) (N[-pl] dog))))
+            (PP (P with) (NP (Det my) (N[-pl] cookie)))))))
+    ([INIT]
+      (S
+        (NP I)
+        (VP
+          (V saw)
+          (NP
+            (NP John)
+            (PP
+              (P with)
+              (NP
+                (NP (Det a) (N[-pl] dog))
+                (PP (P with) (NP (Det my) (N[-pl] cookie)))))))))

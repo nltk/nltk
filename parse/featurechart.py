@@ -18,6 +18,7 @@ from chart import *
 from nltk.featstruct import unify, substitute_bindings, UnificationFailure
 from category import Category, GrammarFile, GrammarCategory
 from nltk import cfg
+from nltk.compat import defaultdict
 
 
 def load_earley(filename, trace=1, verbose=False):
@@ -254,7 +255,7 @@ class FeatureEarleyChartParse(EarleyChartParse):
         
     def get_parse_list(self, tokens):
         tokens = list(tokens)
-        # self._check_coverage(tokens) # doesn't work for Earley Parser as its grammar omits lexical productions
+        self._check_coverage(tokens)
 
         chart = Chart(tokens)
         grammar = self._grammar
@@ -282,7 +283,7 @@ class FeatureEarleyChartParse(EarleyChartParse):
             # of a proper FeatureScannerRule at the moment.
             if end > 0 and end-1 < chart.num_leaves():
                 leaf = chart.leaf(end-1)
-                for pos in self._lexicon(leaf):
+                for pos in self.lexicon()[leaf]:
                     new_leaf_edge = LeafEdge(leaf, end-1)
                     chart.insert(new_leaf_edge, ())
                     new_pos_edge = FeatureTreeEdge((end-1, end), pos, [leaf], 1,
@@ -308,7 +309,8 @@ class FeatureEarleyChartParse(EarleyChartParse):
 
         # Output a list of complete parses.
         return chart.parses(root)
-
+    
+# TODO: update to use grammar parser
 def demo():
     import sys, time
 
@@ -345,18 +347,18 @@ def demo():
         ]
     
     earley_grammar = cfg.Grammar(S, grammatical_productions)
-    earley_lexicon = {}
+    earley_lexicon = defaultdict(list)
     for prod in lexical_productions:
-        earley_lexicon.setdefault(prod.rhs()[0].upper(), []).append(prod.lhs())
-    def lexicon(word):
-        return earley_lexicon.get(word.upper(), [])
+        earley_lexicon[prod.rhs()[0]].append(prod.lhs())
+    print "Lexicon:"
+    print earley_lexicon
 
     sent = 'I saw John with a dog with my cookie'
     print "Sentence:\n", sent
     from nltk import tokenize	
     tokens = list(tokenize.whitespace(sent))
     t = time.time()
-    cp = FeatureEarleyChartParse(earley_grammar, lexicon, trace=1)
+    cp = FeatureEarleyChartParse(earley_grammar, earley_lexicon, trace=1)
     trees = cp.get_parse_list(tokens)
     print "Time: %s" % (time.time() - t)
     for tree in trees: print tree

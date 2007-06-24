@@ -6,18 +6,6 @@ Unit tests for the FeatStruct classes
 
     >>> from nltk.featstruct import *
 
-
-Returns true/false whether the supplied object can be used as a feature
-structure i.e. contains mappings.
-
-    >>> obj = 42
-    >>> isMapping(obj)
-    False
-
-    >>> obj = {}
-    >>> isMapping(obj)
-    True
-
 Variable objects are used during unification.
 
     >>> x = Variable(name="importantFeature")
@@ -39,23 +27,6 @@ Variable objects are used during unification.
 
     >>> x.name() == y.name()
     True
-
-    >>> f1 = yaml.load('''
-    ... A:
-    ...   B: b
-    ...   D: d
-    ... ''')
-    >>> f2 = yaml.load('''
-    ... A:
-    ...   C: c
-    ...   D: d
-    ... ''')
-    >>> print show(unify(f1, f2))
-    A:
-      B: b
-      C: c
-      D: d
-
 
     >>> unify(3, None)
     3
@@ -92,25 +63,14 @@ A base value unifies with itself, but not much else.
 
     >>> f1 = yaml.load("number: singular")
     >>> f2 = yaml.load("person: 3")
-    >>> print show(unify(f1, f2))
-    number: singular
-    person: 3
-
-    >>> f1 = yaml.load('''
-    ... A:
-    ...   B: b
-    ...   D: d
-    ... ''')
-    >>> f2 = yaml.load('''
-    ... A:
-    ...   C: c
-    ...   D: d
-    ... ''')
-    >>> print show(unify(f1, f2))
-    A:
-      B: b
-      C: c
-      D: d
+    >>> print unify(f1, f2)
+    {'person': 3, 'number': 'singular'}
+        
+    >>> f1 = FeatStruct(number = 'singular')
+    >>> f2 = FeatStruct(person = 3)
+    >>> print unify(f1, f2)
+    [ number = 'singular' ]
+    [ person = 3          ]
 
     >>> bindings = {}
     >>> print unify(Variable('x'), 5, bindings)
@@ -122,68 +82,66 @@ A base value unifies with itself, but not much else.
     >>> print unify({'a': Variable('x')}, {}, bindings)
     {'a': 5}
 
-    >>> f1 = yaml.load('''
+    >>> f1 = FeatStruct(yaml.load('''
     ... a: 1
     ... b: 1
     ... c: ?x
     ... d: ?x
-    ... ''')
-    >>> f2 = yaml.load('''
+    ... '''))
+    >>> f2 = FeatStruct(yaml.load('''
     ... a: ?x
     ... b: ?x
     ... c: 2
     ... d: 2
-    ... ''')
+    ... '''))
     >>> bindings1 = {}
     >>> bindings2 = {}
-    >>> print show(unify(f1, f2, bindings1, bindings2))
-    a: 1
-    b: 1
-    c: 2
-    d: 2
+    >>> print unify(f1, f2, bindings1, bindings2)
+    [ a = 1 ]
+    [ b = 1 ]
+    [ c = 2 ]
+    [ d = 2 ]
     >>> print bindings1
     {'x': 2}
 
     >>> print bindings2
     {'x': 1}
 
-    >>> f1 = yaml.load('''
+    >>> f1 = FeatStruct(yaml.load('''
     ... A: &1                # &1 defines a reference in YAML...
     ...   B: b
     ... E:
     ...   F: *1              # and *1 uses the previously defined reference.
-    ... ''')
+    ... '''))
     >>> f1['E']['F']['B']
     'b'
     >>> f1['A'] is f1['E']['F']
     True
-    >>> f2 = yaml.load('''
+    
+    >>> f2 = FeatStruct(yaml.load('''
     ... A:
     ...   C: c
     ... E:
     ...   F:
     ...     D: d
-    ... ''')
+    ... '''))
     >>> f3 = unify(f1, f2)
-    >>> print show(f3)
-    A: &id001
-      B: b
-      C: c
-      D: d
-    E:
-      F: *id001
+    >>> print f3
+    [ A = {'C': 'c', 'B': 'b', 'D': 'd'}        ]
+    [ E = {'F': {'C': 'c', 'B': 'b', 'D': 'd'}} ]
+
     >>> f3['A'] is f3['E']['F']    # Showing that the reentrance still holds.
     True
 
-    >>> f1 = yaml.load('''
+    >>> f1 = FeatStruct(yaml.load('''
     ... F: &1 {}
     ... G: *1
-    ... ''')
-    >>> f2 = yaml.load('''
+    ... '''))
+    >>> f2 = FeatStruct(yaml.load('''
     ... F:
     ...   H: &2 {}
     ... G: *2
-    ... ''')
+    ... '''))
     >>> f3 = unify(f1, f2)
     >>> print f3
     {'G': {'H': {...}}, 'F': {'H': {...}}}
@@ -226,7 +184,7 @@ A base value unifies with itself, but not much else.
     >>> # We could avoid defining two empty dictionaries by simply using the
     >>> # defaults, with unify(f1, f2) -- but we want to be able to examine
     >>> # the bindings afterward.
-    >>> print show(unify(f1, f2, bindings1, bindings2))
+    >>> print unify(f1, f2, bindings1, bindings2)
     a: 1
     b: 1
     c: 2
@@ -236,16 +194,16 @@ A base value unifies with itself, but not much else.
     >>> print bindings2
     {'x': 1}
 
-    >>> f1 = yaml.load('''
+    >>> f1 = FeatStruct(yaml.load('''
     ... a: ?x
     ... b: ?x
-    ... ''')
-    >>> f2 = yaml.load('''
+    ... '''))
+    >>> f2 = FeatStruct(yaml.load('''
     ... b: ?y
     ... c: ?y
-    ... ''')
+    ... '''))
     >>> bindings = {}
-    >>> print show(unify(f1, f2, bindings))
+    >>> print unify(f1, f2, bindings)
     a: &id001 ?y
     b: *id001
     c: *id001
@@ -256,10 +214,10 @@ Reusing the same variable bindings ensures that appropriate bindings are
 made after the fact:
 
     >>> bindings = {}
-    >>> f1 = {'a': Variable('x')}
-    >>> f2 = unify(f1, {'a': {}}, bindings)
-    >>> f3 = unify(f2, {'b': Variable('x')}, bindings)
-    >>> print show(f3)
+    >>> f1 = FeatStruct(a = Variable('x'))
+    >>> f2 = unify(f1, FeatStruct(a = {}), bindings)
+    >>> f3 = unify(f2, FeatStruct(b = Variable('x')), bindings)
+    >>> print f3
     a: &id001 {}
     b: *id001
     >>> print bindings
@@ -293,7 +251,7 @@ Merging a nested structure
     >>> fs3 = fs1.unify(fs2)
     >>> repr(fs3)
     "[A=[B='b', C='c']]"
-
+    
 A basic case of reentrant unification
 
     >>> fs1 = FeatStruct.parse('[A=(1)[B=b], E=[F->(1)]]')
@@ -359,16 +317,16 @@ Check that we got the cyclicity right.
 
 Create a cyclic structure with variables.
 
-    >>> x = FeatureVariable('x')
-    >>> fs1 = FeatureStructure(F=FeatStruct(H=x))
-    >>> fs2 = FeatureStructure(F=x)
+    >>> x = Variable('x')
+    >>> fs1 = FeatStruct(F=FeatStruct(H=x))
+    >>> fs2 = FeatStruct(F=x)
     >>> fs3 = fs1.unify(fs2)
 
 Check that we got the value right.
 
     >>> repr(fs3)
     '[F=(1)[H->(1)]]'
-
+    
 Check that we got the cyclicity right.
 
     >>> fs3['F'] is fs3['F','H']
