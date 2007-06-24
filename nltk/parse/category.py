@@ -12,6 +12,7 @@
 
 from nltk import cfg, featstruct
 from nltk.sem import LogicParser, ApplicationExpression
+from nltk.compat import defaultdict
 from api import *
 import filebroker
 
@@ -640,12 +641,10 @@ class GrammarFile(object):
         return cfg.Grammar(self.start, self.grammatical_productions)
     
     def earley_lexicon(self):
-        lexicon = {}
+        lexicon = defaultdict(list)
         for prod in self.lexical_productions:
-            lexicon.setdefault(prod.rhs()[0].upper(), []).append(prod.lhs())
-        def lookup(word):
-            return lexicon.get(word.upper(), [])
-        return lookup
+            lexicon[prod.rhs()[0]].append(prod.lhs())
+        return lexicon
 
     def kimmo_lexicon(self):
         def lookup(word):
