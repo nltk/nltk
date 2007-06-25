@@ -305,7 +305,7 @@ class VariableBindingsList(list):
 
         ## TASK: ADD A CHECK TO ENSURE NEW VB WOULDN'T CAUSE A CYCLE
 
-        if binding is None:
+        if not binding:
             return True
         
         else:
@@ -338,14 +338,14 @@ class VariableBindingsList(list):
 
     def __add__(self, other):
         try:
-            l = VariableBindingList()
+            l = VariableBindingsList()
             for vb in self:
                 l.append(vb)
             for vb in other:
                 l.append(vb)
             return l
         except VariableBindingException:
-            raise VariableBindingException, 'Attempting to add two contradicting VariableBindingLists'
+            raise VariableBindingException, 'Attempting to add two contradicting VariableBindingsLists'
 
     def __str__(self):
         accum = '['
@@ -584,7 +584,7 @@ class ApplicationExpression(Expression):
         first_clausified  = self.first.second.compile_pos(fresh_index)
         second_clausified[0].dependencies.append(fresh_index[0])
 
-        new_gf = glue.GlueFormula('V%s' % fresh_index[0], first_clausified[0], set([fresh_index[0]]))
+        new_gf = glue.GlueFormula('v%s' % fresh_index[0], first_clausified[0], set([fresh_index[0]]))
         fresh_index[0]+=1
         return (second_clausified[0],
                 [new_gf]+first_clausified[1]+second_clausified[1])
