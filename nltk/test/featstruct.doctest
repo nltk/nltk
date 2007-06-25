@@ -226,23 +226,23 @@ made after the fact:
 
 Copying from self to other.
 
-    >>> fs1 = FeatStruct(number='singular')
-    >>> fs2 = fs1.unify(FeatStruct())
-    >>> repr(fs2)
+    >>> f4 = FeatStruct(number='singular')
+    >>> f5 = f4.unify(FeatStruct())
+    >>> repr(f5)
     "[number='singular']"
 
 Copying from other to self
 
-    >>> fs1 = FeatStruct()
-    >>> fs2 = fs1.unify(FeatStruct(number='singular'))
-    >>> repr(fs2)
+    >>> f6 = FeatStruct()
+    >>> f7 = f6.unify(FeatStruct(number='singular'))
+    >>> repr(f7)
     "[number='singular']"
 
 Cross copying
 
-    >>> fs1 = FeatStruct(number='singular')
-    >>> fs2 = fs1.unify(FeatStruct(person=3))
-    >>> repr(fs2)
+    >>> f8 = FeatStruct(number='singular')
+    >>> f9 = f8.unify(FeatStruct(person=3))
+    >>> repr(f9)
     "[number='singular', person=3]"
 
 Merging a nested structure
@@ -255,31 +255,33 @@ Merging a nested structure
     
 A basic case of reentrant unification
 
-    >>> fs1 = FeatStruct.parse('[A=(1)[B=b], E=[F->(1)]]')
-    >>> fs2 = FeatStruct.parse("[A=[C='c'], E=[F=[D='d']]]")
-    >>> fs3 = fs1.unify(fs2)
-    >>> repr(fs3)
+    >>> fs4 = FeatStruct.parse('[A=(1)[B=b], E=[F->(1)]]')
+    >>> fs5 = FeatStruct.parse("[A=[C='c'], E=[F=[D='d']]]")
+    >>> fs6 = fs4.unify(fs5)
+    >>> repr(fs6)
     "[A=(1)[B='b', C='c', D='d'], E=[F->(1)]]"
 
 Try unifying both ways
 
-    >>> fs3 = fs2.unify(fs1)
-    >>> repr(fs3)
+    >>> fs6 = fs5.unify(fs4)
+    >>> repr(fs6)
     "[A=(1)[B='b', C='c', D='d'], E=[F->(1)]]"
 
 More than 2 paths to a value
 
-    >>> fs1 = FeatStruct.parse("[a=[],b=[],c=[],d=[]]")
-    >>> fs2 = FeatStruct.parse('[a=(1)[], b->(1), c->(1), d->(1)]')
-    >>> fs3 = fs1.unify(fs2)
-    >>> repr(fs3)
+    >>> ft1 = FeatStruct.parse("[a=[],b=[],c=[],d=[]]")
+    >>> ft2 = FeatStruct.parse('[a=(1)[], b->(1), c->(1), d->(1)]')
+    >>> ft3 = ft1.unify(ft2)
+    >>> repr(ft3)
     '[a=(1)[], b->(1), c->(1), d->(1)]'
 
 fs1[a] gets unified with itself
 
-    >>> fs1 = FeatStruct.parse('[x=(1)[], y->(1)]')
-    >>> fs2 = FeatStruct.parse('[x=(1)[], y->(1)]')
-    >>> fs3 = fs1.unify(fs2)
+    >>> fr1 = FeatStruct.parse('[x=(1)[], y->(1)]')
+    >>> fr2 = FeatStruct.parse('[x=(1)[], y->(1)]')
+    >>> fr3 = fr1.unify(fr2)
+    >>> repr(fr3)
+    '[x=(1)[], y->(1)]'
 
 Bound variables should get forwarded appropriately
 
@@ -290,53 +292,54 @@ Bound variables should get forwarded appropriately
     >>> fs3 = fs1.unify(fs2)
     >>> repr(fs3)
     "[A=(1)[X='x', Y='y', Z='z'], B->(1), C->(1), D->(1)]"
+    >>> print fs3
 
 Create a cyclic structure via unification.
 
-    >>> fs1 = FeatStruct.parse('[F=(1)[], G->(1)]')
-    >>> fs2 = FeatStruct.parse('[F=[H=(2)[]], G->(2)]')
-    >>> fs3 = fs1.unify(fs2)
+    >>> fc1 = FeatStruct.parse('[F=(1)[], G->(1)]')
+    >>> fc2 = FeatStruct.parse('[F=[H=(2)[]], G->(2)]')
+    >>> fc3 = fs1.unify(fc2)
 
 Check that we got the value right.
 
-    >>> repr(fs3)
+    >>> repr(fc3)
     '[F=(1)[H->(1)], G->(1)]'
 
 Check that we got the cyclicity right.
 
-    >>> fs3['F'] is fs3['G']
+    >>> fc3['F'] is fc3['G']
     True
 
-    >>> fs3['F'] is fs3['G', 'H']
+    >>> fc3['F'] is fc3['G', 'H']
     True
 
-    >>> fs3['F'] is fs3['G', 'H', 'H']
+    >>> fc3['F'] is fc3['G', 'H', 'H']
     True
 
-    >>> fs3['F'] is fs3[('G',)+(('H',)*10)]
+    >>> fc3['F'] is fc3[('G',)+(('H',)*10)]
     True
 
 Create a cyclic structure with variables.
 
     >>> x = Variable('x')
-    >>> fs1 = FeatStruct(F=FeatStruct(H=x))
-    >>> fs2 = FeatStruct(F=x)
-    >>> fs3 = fs1.unify(fs2)
+    >>> fv1 = FeatStruct(F=FeatStruct(H=x))
+    >>> fv2 = FeatStruct(F=x)
+    >>> fv3 = fv1.unify(fv2)
 
 Check that we got the value right.
 
-    >>> repr(fs3)
+    >>> repr(fv3)
     '[F=(1)[H->(1)]]'
     
 Check that we got the cyclicity right.
 
-    >>> fs3['F'] is fs3['F','H']
+    >>> fv3['F'] is fv3['F','H']
     True
 
-    >>> fs3['F'] is fs3['F','H','H']
+    >>> fv3['F'] is fv3['F','H','H']
     True
 
-    >>> fs3['F'] is fs3[('F',)+(('H',)*10)]
+    >>> fv3['F'] is fv3[('F',)+(('H',)*10)]
     True
 
 Cyclic structure as LHS
