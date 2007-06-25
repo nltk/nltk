@@ -1,12 +1,12 @@
-import logic
+from nltk.sem import logic
 import linearlogic
-from parse import *
+from nltk.parse import *
 
 class GlueFormula:
     def __init__(self, meaning, glue, indices=set([])):
         if isinstance(meaning, str):
             try:
-                self.meaning = logic.Parser().parse(meaning)    # lp.parse('\\x.(<word> x)') -> LambdaExpression('x', '(<word> x)')
+                self.meaning = logic.LogicParser().parse(meaning)    # lp.parse('\\x.(<word> x)') -> LambdaExpression('x', '(<word> x)')
             except Exception:
                 raise RuntimeError, 'Meaning string %s' % (meaning)
         elif isinstance(meaning, logic.Expression):
@@ -51,9 +51,9 @@ class GlueFormula:
             raise linearlogic.LinearLogicApplicationError, '%s applied to %s' % (self, arg)
 
         arg_meaning_abstracted = arg.meaning
-        if not return_indices == set([]):
+        if return_indices:
             for dep in self.glue.simplify().first.second.dependencies[::-1]: # if self.glue is (A -o B), dep is in A.dependencies
-                arg_meaning_abstracted = logic.LambdaExpression(logic.Variable('V%s' % dep), arg_meaning_abstracted)
+                arg_meaning_abstracted = logic.LambdaExpression(logic.Variable('v%s' % dep), arg_meaning_abstracted)
         return_meaning = logic.ApplicationExpression(self.meaning, arg_meaning_abstracted)
 
         return self.__class__(return_meaning, return_glue, return_indices)
@@ -148,6 +148,8 @@ class GlueDict(dict):
             for gf in self[entry]:
                 if not first:
                     accum += ' '*(len(entry)+3)
+                else:
+                    first = False
                 accum += '%s\n' % (gf)
         return accum
 
@@ -182,11 +184,12 @@ class GlueDict(dict):
 
 class FStructure(dict):
     def __init__(self, pt, current_label = [0], parent = None):
-##        try:
-##            assert isinstance(pt, tree.Tree)
-##        except AssertionError:
-##            print 'Error Tree: \n%s\nis of type %s' % (pt, type(pt))
-##            raise
+        try:
+            from nltk.tree import Tree
+            assert isinstance(pt, Tree)
+        except AssertionError:
+            print 'Error Tree: \n%s\nis of type %s' % (pt, type(pt))
+            raise
 
         self.pred = None
 
@@ -331,6 +334,7 @@ class FStructure(dict):
             raise RuntimeError, 'FStructure creation from\n%s\nwas unsuccessful.' % (pt)
 
     def __repr__(self):
+        from nltk.tree import Tree
         try:
             accum = '%s:[' % self.label
         except NameError:
@@ -343,7 +347,7 @@ class FStructure(dict):
         for feature in self:
             if isinstance(self[feature], FStructure):
                 accum += ' %s %s' % (feature, self[feature].__repr__())
-            elif isinstance(self[feature], tree.Tree):
+            elif isinstance(self[feature], Tree):
                 accum += ' %s \'%s\'' % (feature, self[feature][0])
             elif isinstance(self[feature], list):
                 accum += ' %s {' % (feature)
@@ -355,43 +359,55 @@ class FStructure(dict):
         return accum+']'
 
     def __str__(self, indent=3):
-        accum = '%s:[pred \'%s\'' % (self.label, self.pred[0])
+        from nltk.tree import Tree
+        try:
+            accum = '%s:[' % self.label
+        except NameError:
+            accum = '['
+        try:
+            accum += 'pred \'%s\'' % self.pred[0]
+        except NameError:
+            pass
+
         for feature in self:
             if isinstance(self[feature], FStructure):
                 next_indent = indent+len(feature)+3+len(self.label)
-                accum += '\n%s%s %s' % (" "*(indent), feature, self[feature].__str__(next_indent))
-            elif isinstance(self[feature], tree.Tree):
-                accum += '\n%s%s \'%s\'' % (" "*(indent), feature, self[feature][0])
+                accum += '\n%s%s %s' % (' '*(indent), feature, self[feature].__str__(next_indent))
+            elif isinstance(self[feature], Tree):
+                accum += '\n%s%s \'%s\'' % (' '*(indent), feature, self[feature][0])
             elif isinstance(self[feature], list):
-                accum += '\n%s%s {' % (" "*(indent), feature)
-                first = True
-                for entry in self[feature]:
-                    if not first:
-                        accum += '\n%s' % (" "*(indent+len(feature)+2))
-                    accum += '%s' % entry
-                    first = False
-                accum += '}'
+                #############
+                accum += '\n%s%s {%s}' % (' '*(indent), feature, ('\n%s' % (' '*(indent+len(feature)+2))).join(self[feature]))
+                #############
+##                accum += '\n%s%s {' % (' '*(indent), feature)
+##                first = True
+##                for entry in self[feature]:
+##                    if not first:
+##                        accum += '\n%s' % (' '*(indent+len(feature)+2))
+##                    accum += '%s' % entry
+##                    first = False
+##                accum += '}'
             else: # ERROR
                 raise Exception, 'feature %s is not an FStruct, a list, or a Tree' % feature
         return accum+']'
 
     def to_glueformula_list(self, glue_pos_dict, labels_added=[], current_subj=None):
-        
+        from nltk.tree import Tree
         glueformulas = []
 
-        if current_subj == None:
+        if not current_subj:
             current_subj = self
 
         # lookup 'pred'
-        glueformulas.extend(glue_pos_dict.lookup(self.pred.node.get_feature('sem').head(), self.pred[0], current_subj, self))
+        glueformulas.extend(glue_pos_dict.lookup(self.pred.node['sem'], self.pred[0], current_subj, self))
 
         for feature in self:
             if isinstance(self[feature], FStructure):
                 if not self[feature].label in labels_added:
                     glueformulas.extend(self[feature].to_glueformula_list(glue_pos_dict, labels_added,self))
                     labels_added.append(self[feature].label)
-            elif isinstance(self[feature], tree.Tree):
-                glueformulas.extend(glue_pos_dict.lookup(self[feature].node.get_feature('sem').head(), self[feature][0], None, self))
+            elif isinstance(self[feature], Tree):
+                glueformulas.extend(glue_pos_dict.lookup(self[feature].node['sem'], self[feature][0], None, self))
             elif isinstance(self[feature], list):
                 for entry in self[feature]:
                     glueformulas.extend(entry.to_glueformula_list(glue_pos_dict, labels_added))
@@ -439,41 +455,6 @@ def _get_n_and_adjs(pt, current_label, parent):
         
     #if it doesn't match a pattern
     raise RuntimeError, '%s is not of a valid N rule.' % (pt[0])
-
-def parse_demo(show_example=-1, show_parsetree=False):
-    examples = ['David sees Mary',
-                'David eats a sandwich',
-                'every man chases a dog',
-                'every man believes a dog yawns',
-                'every big gray cat leaves',
-                'John gives David a sandwich',
-                'John chases himself',
-                'John tries to go',
-                'John persuades David to order a pizza',
-                'John tries to find a unicorn',
-                'John seems to vanish',
-                'a unicorn seems to approach',
-                #'a possibly swedish student leaves',
-                #'a very big mouse leaves',
-                'an alleged criminal from london leaves',
-                'a former senator leaves']
-
-    example_num = 0
-    for sentence in examples:
-        if example_num==show_example or show_example==-1:
-            parsetrees = parse(sentence)
-            fstructs = [pt_to_fstruct(pt) for pt in parsetrees]
-            glueformulas = [fstruct_to_glue(f) for f in fstructs]
-
-            for i in range(len(parsetrees)):
-                print '[[[Example %s]]]' % i
-                if show_parsetree:
-                    print parsetrees[i]
-                print fstructs[i]
-                for j in range(len(glueformulas[i])):
-                    print '[%s] %s' % (j, glueformulas[i][j].simplify().infixify())
-                print '\n'
-        example_num += 1
 
 def parse_to_meaning(sentence):
     readings = []
@@ -543,15 +524,17 @@ def parse_to_glue(sentence='every big gray cat leaves'):
     return [fstruct_to_glue(f) for f in fstructs]
 
 def parse(sentence='a man sees Mary'):
+    from nltk.parse import GrammarFile
+    grammar = GrammarFile(r'../contrib/gluesemantics/glue_grammar.cfg')
 
-    return GrammarFile.read_file('grammar.cfg').earley_parser(0).get_parse_list(list(tokenize.whitespace(sentence)))
+    return grammar.earley_parser(0).get_parse_list(list(tokenize.whitespace(sentence)))
 
 def pt_to_fstruct(pt):
     return FStructure(pt[0], [0])
 
 def fstruct_to_glue(fstruct):
     glue_pos_dict = GlueDict()
-    glue_pos_dict.read_file('glue.cfg')
+    glue_pos_dict.read_file(r'../contrib/gluesemantics/glue.cfg')
     return fstruct.to_glueformula_list(glue_pos_dict, [], None)
 
 def gfl_to_compiled(gfl):
@@ -706,14 +689,12 @@ def demo(show_example=-1):
                 'every big gray cat leaves',
                 'a former senator leaves']
 
-    example_num = 0
-    for sentence in examples:
-        if example_num==show_example or show_example==-1:
-            print '[[[Example %s]]]  %s' % (example_num, sentence)
+    for (i, sentence) in zip(range(len(examples)), examples):
+        if i==show_example or show_example==-1:
+            print '[[[Example %s]]]  %s' % (i, sentence)
             for reading in parse_to_meaning(sentence):
                 print reading.simplify().infixify()
             print ''
-        example_num += 1
     
 if __name__ == '__main__':
     demo()
