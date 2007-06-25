@@ -77,16 +77,16 @@ class FeatStruct(dict):
             if not isinstance(fval, FeatStruct):
                 segments.append('%s=%r' % (fname, fval))
             elif id(fval) in reentrance_ids:
-                segments.append('%s->(%s)' % (fname,
-                                              reentrance_ids[id(fval)]))
+                segments.append('%s->(%s)' % (fname, reentrance_ids[id(fval)]))
+                if fname == FORWARD:
+                    raise ValueError, `(fname, fval, id(fval), reentrance_ids, id(fval) in reentrance_ids)`
             else:
                 fval_repr = fval._repr(reentrances, reentrance_ids)
                 segments.append('%s=%s' % (fname, fval_repr))
 
         # If it's reentrant, then add on an identifier tag.
         if reentrances[id(self)]:
-            return '(%s)[%s]' % (reentrance_ids[id(self)],
-                                ', '.join(segments))
+            return '(%s)[%s]' % (reentrance_ids[id(self)], ', '.join(segments))
         else:
             return '[%s]' % (', '.join(segments))
 
