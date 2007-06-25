@@ -525,7 +525,7 @@ def parse_to_glue(sentence='every big gray cat leaves'):
 
 def parse(sentence='a man sees Mary'):
     from nltk.parse import GrammarFile
-    grammar = GrammarFile(r'../contrib/gluesemantics/glue_grammar.cfg')
+    grammar = GrammarFile(r'glue_grammar.cfg')
 
     return grammar.earley_parser(0).get_parse_list(list(tokenize.whitespace(sentence)))
 
@@ -534,7 +534,7 @@ def pt_to_fstruct(pt):
 
 def fstruct_to_glue(fstruct):
     glue_pos_dict = GlueDict()
-    glue_pos_dict.read_file(r'../contrib/gluesemantics/glue.cfg')
+    glue_pos_dict.read_file(r'glue.cfg')
     return fstruct.to_glueformula_list(glue_pos_dict, [], None)
 
 def gfl_to_compiled(gfl):
