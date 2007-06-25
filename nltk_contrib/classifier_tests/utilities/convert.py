@@ -1,5 +1,5 @@
 import re
-from nltk.contrib.classifier import format
+from nltk_contrib.classifier import format
 import os, os.path
 
 def convert_and_shift(file_path, ext, suffix = 'conv', sep = ' '):

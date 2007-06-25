@@ -5,9 +5,9 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk.contrib.classifier import confusionmatrix as cm
-from nltk.contrib.classifier.exceptions import systemerror as se
-from nltk.contrib.classifier_tests import *
+from nltk_contrib.classifier import confusionmatrix as cm
+from nltk_contrib.classifier.exceptions import systemerror as se
+from nltk_contrib.classifier_tests import *
 
 class ConfusionMatrixTestCase(unittest.TestCase):
     def setUp(self):

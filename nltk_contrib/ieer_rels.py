@@ -12,7 +12,7 @@ Subsequent processing can try to identify interesting relations expressed in
 C{filler}.
 """
 
-from nltk.corpora import ieer, conll2002
+from nltk.corpus import ieer, conll2002
 from nltk import tree, Tree
 from nltk.tag import tag2tuple
 from string import join

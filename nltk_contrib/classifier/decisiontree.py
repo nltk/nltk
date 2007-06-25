@@ -6,7 +6,7 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk.contrib.classifier import oner
+from nltk_contrib.classifier import oner
 
 class DecisionTree(oner.OneR):
     def __init__(self, training, attributes, klass, internal=False):

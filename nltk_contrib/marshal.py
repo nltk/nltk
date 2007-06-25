@@ -9,8 +9,8 @@
 from itertools import islice
 import re
 
-import nltk.tag as tag
-from nltk.corpora import brown
+from nltk import tag
+from nltk.corpus import brown
 
 # marshal-classes
 
@@ -194,7 +194,7 @@ class MarshalNgram (tag.Ngram):
 
 def demo ():
     # load train corpus
-    train_sents = list(islice(brown.tagged(), 500))
+    train_sents = brown.tagged('a')[:500]
 
     # create taggers
     tagger = MarshalNgram(3)

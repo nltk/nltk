@@ -14,7 +14,7 @@ Toolbox.
 """
 
 from nltk.etree.ElementTree import TreeBuilder
-from nltk.contrib.toolbox.settings import ToolboxSettings
+from nltk_contrib.toolbox.settings import ToolboxSettings
 import re
 
 class Letter(object):

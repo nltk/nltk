@@ -11,7 +11,7 @@ A module for finite state automata.
 Operations are based on Aho, Sethi & Ullman (1986) Chapter 3.
 """
 
-from nltk import tokenize, Tree, cfg, pcfg
+from nltk import tokenize, Tree, cfg
 from nltk.parse import pchart
 import yaml
 
@@ -460,22 +460,22 @@ class FSA(yaml.YAMLObject):
 
 def grammar(terminals):
     (S, Expr, Star, Plus, Qmk, Paren) = [cfg.Nonterminal(s) for s in 'SE*+?(']
-    rules = [pcfg.WeightedProduction(Expr, [Star], prob=0.2),
-             pcfg.WeightedProduction(Expr, [Plus], prob=0.2),
-             pcfg.WeightedProduction(Expr, [Qmk], prob=0.2),
-             pcfg.WeightedProduction(Expr, [Paren], prob=0.2),
-             pcfg.WeightedProduction(S, [Expr], prob=0.5),
-             pcfg.WeightedProduction(S, [S, Expr], prob=0.5),
-             pcfg.WeightedProduction(Star, [Expr, '*'], prob=1),
-             pcfg.WeightedProduction(Plus, [Expr, '+'], prob=1),
-             pcfg.WeightedProduction(Qmk, [Expr, '?'], prob=1),
-             pcfg.WeightedProduction(Paren, ['(', S, ')'], prob=1)]
+    rules = [cfg.WeightedProduction(Expr, [Star], prob=0.2),
+             cfg.WeightedProduction(Expr, [Plus], prob=0.2),
+             cfg.WeightedProduction(Expr, [Qmk], prob=0.2),
+             cfg.WeightedProduction(Expr, [Paren], prob=0.2),
+             cfg.WeightedProduction(S, [Expr], prob=0.5),
+             cfg.WeightedProduction(S, [S, Expr], prob=0.5),
+             cfg.WeightedProduction(Star, [Expr, '*'], prob=1),
+             cfg.WeightedProduction(Plus, [Expr, '+'], prob=1),
+             cfg.WeightedProduction(Qmk, [Expr, '?'], prob=1),
+             cfg.WeightedProduction(Paren, ['(', S, ')'], prob=1)]
 
     prob_term = 0.2/len(terminals) # divide remaining pr. mass
     for terminal in terminals:
-        rules.append(pcfg.WeightedProduction(Expr, [terminal], prob=prob_term))
+        rules.append(cfg.WeightedProduction(Expr, [terminal], prob=prob_term))
 
-    return pcfg.WeightedGrammar(S, rules)
+    return cfg.WeightedGrammar(S, rules)
 
 _parser = pchart.InsideParse(grammar('abcde'))
 

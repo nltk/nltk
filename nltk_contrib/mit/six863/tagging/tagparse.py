@@ -1,8 +1,9 @@
 #!/usr/bin/env python2.5
-from nltk.parse import chart, cfg
+from nltk.parse import chart
+from nltk import cfg
 from drawchart import ChartDemo
 from nltk.tokenize.regexp import wordpunct
-#from nltk.contrib.mit.six863.kimmo import *
+#from nltk_contrib.mit.six863.kimmo import *
 import re, pickle
 
 def chart_tagger(tagger):

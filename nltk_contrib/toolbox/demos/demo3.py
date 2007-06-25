@@ -13,8 +13,8 @@ demonstration of grammar parsing
 """
 
 from nltk.etree.ElementTree import ElementTree
-from nltk.contrib import toolbox
-from nltk.corpora import get_basedir
+from nltk_contrib import toolbox
+from nltk.corpus import find_corpus_file
 import os.path
 
 grammar = {
@@ -30,7 +30,7 @@ grammar = {
 }
 
 db = toolbox.ToolboxData()
-db.open(os.path.join(get_basedir(), 'toolbox', 'iu_mien_samp.db'))
+db.open(find_corpus_file('toolbox', 'iu_mien_samp.db'))
 lexicon = db.grammar_parse('toolbox', grammar, encoding='utf8')
 tree = ElementTree(lexicon)
 tree.write('iu_mien_samp.xml', encoding='utf8')

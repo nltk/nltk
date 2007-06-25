@@ -10,8 +10,7 @@
 # $Id: chart.py 4157 2007-02-28 09:56:25Z stevenbird $
 
 from __init__ import *
-from tree import Tree
-import cfg
+from nltk import cfg, Tree
 
 """
 Data classes and parser implementations for \"chart parsers\", which

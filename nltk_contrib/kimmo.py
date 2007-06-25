@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Kimmo Morphological Analyzer
 #
-# Copyright (C) 2001-2006 MIT
+# Copyright (C) 2001-2007 MIT
 # Author: Carl de Marcken <carl@demarcken.org>
 #         Beracah Yankama <beracah@mit.edu>
 #         Robert Berwick <berwick@ai.mit.edu>
@@ -19,8 +19,8 @@ also .rul compatible with old pckimmo.
 import Tkinter
 import os, re, sys, types, string, glob, time, md5
 
-from nltk.contrib.fsa import *
-from nltk.corpora import get_basedir
+from nltk_contrib.fsa import *
+from nltk.corpus import find_corpus_file
 from nltk import tokenize
 
 ############################# KIMMO GUI ##################################
@@ -2829,7 +2829,7 @@ def read_kimmo_file(filename, gui=None):
     try:
         f = open(path, 'r')
     except IOError, e:
-        path = os.path.join(get_basedir(), "kimmo", filename)
+        path = find_corpus_file("kimmo", filename)
         try:
             f = open(path, 'r')
         except IOError, e:

@@ -192,11 +192,11 @@ class Paradigm(object):
         self.data[6]['content']     # content for the sixth data object
         """
 
-        from nltk.corpora import get_basedir
+        from nltk.corpus import find_corpus_file
         basedir = get_basedir()
 
         # Look for the file
-        try_filename = os.path.join(get_basedir(), "paradigms", p_filename)
+        try_filename = find_corpus_file("paradigms", p_filename)
         try:
             f = open(try_filename)
             p_filename = try_filename

@@ -11,7 +11,7 @@
 # $Id: category.py 4162 2007-03-01 00:46:05Z stevenbird $
 
 import logic
-from cfg import *
+from nltk.cfg import *
 from kimmo import kimmo
 
 from featurelite import *

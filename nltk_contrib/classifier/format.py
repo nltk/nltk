@@ -1,5 +1,5 @@
-from nltk.contrib.classifier import cfile, item, attribute as a, instance as ins, instances as inss
-from nltk.contrib.classifier.exceptions import systemerror as se, filenotfounderror as fnf
+from nltk_contrib.classifier import cfile, item, attribute as a, instance as ins, instances as inss
+from nltk_contrib.classifier.exceptions import systemerror as se, filenotfounderror as fnf
 
 class FormatI:    
     def __init__(self, name):

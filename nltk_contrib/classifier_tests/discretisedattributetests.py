@@ -4,9 +4,9 @@
 #
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
-from nltk.contrib.classifier import discretisedattribute as da, numrange as nr, attribute as attr
-from nltk.contrib.classifier.exceptions import invaliddataerror as inv
-from nltk.contrib.classifier_tests import *
+from nltk_contrib.classifier import discretisedattribute as da, numrange as nr, attribute as attr
+from nltk_contrib.classifier.exceptions import invaliddataerror as inv
+from nltk_contrib.classifier_tests import *
 
 class DiscretisedAttributeTestCase(unittest.TestCase):
     def test_binary_search(self):

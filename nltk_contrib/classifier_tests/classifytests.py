@@ -4,8 +4,8 @@
 #
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
-from nltk.contrib.classifier import classify as c
-from nltk.contrib.classifier_tests import *
+from nltk_contrib.classifier import classify as c
+from nltk_contrib.classifier_tests import *
 
 class ClassifyTestCase(unittest.TestCase):
     def setUp(self):

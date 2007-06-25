@@ -74,7 +74,7 @@ class DecisionStump:
         """
         Returns the entropy of class disctribution for a particular attribute value
         """
-        from nltk.contrib.classifier import entropy_of_key_counts
+        from nltk_contrib.classifier import entropy_of_key_counts
         return entropy_of_key_counts(self.counts[attr_value])
     
     def mean_information(self):
@@ -88,7 +88,7 @@ class DecisionStump:
         return float(total) / total_num_of_instances
     
     def information_gain(self):
-        from nltk.contrib.classifier import entropy_of_key_counts
+        from nltk_contrib.classifier import entropy_of_key_counts
         return entropy_of_key_counts(self.root) - self.mean_information()
     
     def gain_ratio(self):
@@ -101,7 +101,7 @@ class DecisionStump:
             class_values = self.counts[attribute_value]
             for class_value in class_values:
                 instance_distrbn.inc(attribute_value, self.counts[attribute_value][class_value])
-        from nltk.contrib.classifier import entropy_of_freq_dist
+        from nltk_contrib.classifier import entropy_of_freq_dist
         return entropy_of_freq_dist(instance_distrbn)
     
     def __str__(self):

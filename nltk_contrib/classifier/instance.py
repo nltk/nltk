@@ -9,7 +9,7 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk.contrib.classifier.exceptions import systemerror as system, invaliddataerror as inv
+from nltk_contrib.classifier.exceptions import systemerror as system, invaliddataerror as inv
 import item, copy
 
 class Instance:

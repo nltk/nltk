@@ -3,9 +3,9 @@
 # Author: Sumukh Ghodke <sumukh dot ghodke at gmail dot com>
 #
 # URL: <http://nltk.sf.net>
-from nltk.contrib.classifier import numrange as r
-from nltk.contrib.classifier_tests import *
-from nltk.contrib.classifier.exceptions import systemerror as se
+from nltk_contrib.classifier import numrange as r
+from nltk_contrib.classifier_tests import *
+from nltk_contrib.classifier.exceptions import systemerror as se
 
 class RangeTestCase(unittest.TestCase):
     def test_within_range(self):

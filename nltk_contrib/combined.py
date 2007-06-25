@@ -5,11 +5,11 @@ import os
 from nltk import tag
 from nltk.tag import SequentialBackoff
 # work-around while marshal is not moved into standard tree
-from nltk.contrib.marshal import MarshalDefault ; Default = MarshalDefault
-from nltk.contrib.marshal import MarshalUnigram ; Unigram = MarshalUnigram
-from nltk.contrib.marshal import MarshalAffix   ; Affix   = MarshalAffix
-from nltk.contrib.marshal import MarshalNgram   ; Ngram   = MarshalNgram
-from nltk.contrib.marshalbrill import *
+from nltk_contrib.marshal import MarshalDefault ; Default = MarshalDefault
+from nltk_contrib.marshal import MarshalUnigram ; Unigram = MarshalUnigram
+from nltk_contrib.marshal import MarshalAffix   ; Affix   = MarshalAffix
+from nltk_contrib.marshal import MarshalNgram   ; Ngram   = MarshalNgram
+from nltk_contrib.marshalbrill import *
 
 class CombinedTagger (SequentialBackoff):
     def __init__ (self):

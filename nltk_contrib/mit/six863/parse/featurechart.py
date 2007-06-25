@@ -16,7 +16,7 @@ import yaml
 from parse import *
 #from chart import *
 #from category import *
-import cfg
+from nltk import cfg
 
 from featurelite import *
 

@@ -5,7 +5,7 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk.contrib.classifier import item
+from nltk_contrib.classifier import item
 import unittest
 
 class ItemTestCase(unittest.TestCase):

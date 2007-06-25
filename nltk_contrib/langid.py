@@ -13,7 +13,7 @@ Cosine distance, NaiveBayes, and Spearman-rho
 
 """
 
-from nltk.contrib import classify
+from nltk_contrib import classify
 from nltk import detect
 from nltk.corpus import udhr
 import string
