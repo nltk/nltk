@@ -1,0 +1,140 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Title:  defs
+%
+% Doc: /home/ewan/Teach/Intro/src/defs.tex
+% Original Author:     Ewan Klein (ewan@zangfu)
+% Created:             Tue Oct  8 1996
+% Revised: Time-stamp: <2005-10-28 16:38:35 ewan>
+% $Log$
+% Revision 1.1  2006/03/09 09:13:21  ehk
+% *** empty log message ***
+%
+% Revision 1.1  2005/11/03 10:42:49  ewan
+% *** empty log message ***
+%
+% Revision 1.1  2004/09/28 07:28:46  ewan
+% *** empty log message ***
+%
+% Revision 1.2  1996/10/11  16:01:58  ewan
+% Installed in /projects/ltg/users/colin/Teach/Intro
+%
+% Revision 1.2  1996/10/09  03:41:25  ewan
+% *** empty log message ***
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\newcommand{\iupp}{\^\i}
+%\newcommand{\nasa}{\diatop[\~|a]}
+%\newcommand{\nase}{\diatop[\~|\niepsilon]}
+%\newcommand{\naso}{\diatop[\~|\openo]}
+%\newcommand{\slt}{\diatop[/|t]}
+%\newcommand{\hand}{\ding{43}}
+%\newcommand{\hand}{$\Rightarrow$}
+\newcommand{\bad}{\sqz{*}}
+\newcommand{\cat}[1]{\textit{#1\/}} %linguistic categories
+\newcommand{\con}[1]{\textbf{#1\/}} %constituents etc in examples
+\newcommand{\dash}{$\underline{\hspace{1em}}$}
+\newcommand{\Easy}{\ling{easy}-Constructions}
+\newcommand{\Feat}[1]{\textsc{#1}}
+\newcommand{\feat}[1]{\textsc{#1}}
+\newcommand{\featval}[2]{\textsc{#1}\ \textsc{#2}}
+\newcommand{\fun}[1]{\mbox{\textsl{#1}}}
+\newcommand{\mygloss}[1]{`{#1}'}
+\newcommand{\group}[1]{$\underbrace{\mbox{#1}}$}
+\newcommand{\hpsg}{\textsc{hpsg}}
+\newcommand{\latin}[1]{\textit{#1\/}} 
+%\newcommand{\lextab}{\begin{tabular}{l l @{:\extracolsep{.5in}} l}}
+\newcommand{\lextab}{\begin{tabular}{l l l}}
+\newcommand{\lingloss}[2]{\ling{#1} \gloss{#2}}
+\newcommand{\ling}[1]{\mbox{\textit{#1}}}
+\newcommand{\quot}[1]{\textit{#1\/}}
+\newcommand{\scare}[1]{`#1'}
+\newcommand{\str}[1]{$ #1 $}
+\newcommand{\sxref}[2]{(\ref{ex:#1}\ref{ex:#1#2})} %(3a) type example references
+\newcommand{\term}[1]{\textsc{#1}}
+\newcommand{\type}[1]{\textit{#1\/}}
+\newcommand{\val}[1]{\textsc{#1}}
+\newcommand{\whIs}{\ling{wh}-Interrogatives}
+\newcommand{\whs}{\ling{wh} expressions}
+\newcommand{\Whs}{\ling{Wh} expressions}
+\newcommand{\xref}[1]{(\ref{ex:#1})} %(3) type example references
+%
+%\newcommand{\AP}{\textsc{ap\xspace}}
+%\newcommand{\NP}{\textsc{np\xspace}}
+%\newcommand{\PP}{\textsc{pp\xspace}}
+%\newcommand{\VP}{\textsc{vp\xspace}}
+%%%%
+% changed \textsc to \textsf, 2002-12-02
+%%%
+\newcommand{\AP}{\textsf{AP}}
+\newcommand{\NP}{\textsf{NP}}
+\newcommand{\PP}{\textsf{PP}}
+\newcommand{\VP}{\textsf{VP}}
+\newcommand{\Adj}{\textsf{Adj}}
+\newcommand{\Adv}{\textsf{Adv}}
+\newcommand{\Aux}{\textsf{Aux}}
+\newcommand{\Nom}{\textsf{Nom}}
+\newcommand{\Conj}{\textsf{Conj}}
+\newcommand{\Pro}{\textsf{Pro}}
+\newcommand{\Card}{\textsf{Card}}
+\newcommand{\Quant}{\textsf{Quant}}
+\newcommand{\Ord}{\textsf{Ord}}
+\newcommand{\AdvP}{\textsf{AdvP}}
+\newcommand{\A}{\textsf{A}}
+\newcommand{\Det}{\textsf{Det}}
+\newcommand{\N}{\textsf{N}}
+\newcommand{\PropN}{\textsf{PropN}}
+\newcommand{\Prep}{\textsf{P}}
+\newcommand{\V}{\textsf{V}}
+\newcommand{\Se}{\textsf{S}}
+\newcommand{\Ntbar}{$\overline{\overline{\overline{\mbox{N}}}}$}
+\newcommand{\Ndbar}{$\overline{\overline{\mbox{N}}}$}
+\newcommand{\Nbar}{$\overline{\mbox{N}}$}
+\newcommand{\Atbar}{$\overline{\overline{\overline{\mbox{A}}}}$}
+\newcommand{\Adbar}{$\overline{\overline{\mbox{A}}}$}
+\newcommand{\Abar}{$\overline{\mbox{A}}$}
+\newcommand{\Ptbar}{$\overline{\overline{\overline{\mbox{P}}}}$}
+\newcommand{\Pdbar}{$\overline{\overline{\mbox{P}}}$}
+\newcommand{\Pbar}{$\overline{\mbox{P}}$}
+\newcommand{\Vtbar}{$\overline{\overline{\overline{\mbox{V}}}}$}
+\newcommand{\Vdbar}{$\overline{\overline{\mbox{V}}}$}
+\newcommand{\Vbar}{$\overline{\mbox{V}}$}
+\newcommand{\Xtbar}{$\overline{\overline{\overline{\mbox{X}}}}$}
+\newcommand{\Xdbar}{$\overline{\overline{\mbox{X}}}$}
+\newcommand{\Xbar}{$\overline{\mbox{X}}$}
+\newcommand{\PS}{\textsc{ps}}
+\newcommand{\PSG}{\textsc{psg}}
+\newcommand{\Vintrans}{V$_{intrans}$}
+\newcommand{\Vtrans}{V$_{trans}$}
+\newcommand{\Vsent}{V$_{sent}$}
+\newcommand{\XP}{\textsf{XP}}
+%
+%\newcommand{\W}[1]{\makebox[.75in]{#1}}
+%
+\newcommand{\cf}{\textsl{c\,f\xspace}}
+\newcommand{\ie}{\textsl{i\,e\xspace}}
+\newcommand{\eg}{\textsl{e\,g\xspace}}
+%
+\newcommand{\Book}[1]{\textit{#1\/}}
+%
+\newenvironment{gram}{%
+    \begin{verse}}%
+    {\end{verse}}
+
+% Lists
+\newenvironment{shortlist}{%
+    \begin{itemize}%
+        \setlength{\parsep}{0pt}
+        \setlength{\itemsep}{0pt}}{%
+    \end{itemize}}
+
+\newenvironment{enum}{%
+    \begin{enumerate}%
+        \setlength{\parsep}{0pt}
+        \setlength{\itemsep}{0pt}}{%
+    \end{enumerate}}
+
+\newenvironment{desc}{%
+    \begin{description}%
+        \setlength{\parsep}{0pt}
+        \setlength{\itemsep}{0pt}}{%
+    \end{description}}

@@ -1,6 +1,0 @@
-This directory contains a prototype interpreter for LPath,
-a linguistic path language extending XPath.  It converts
-LPath expressions into SQL, for execution against a treebank
-stored in a database (MySQL, Postgresql, Oracle have been tested).
-Work is ongoing to produce more efficient SQL output.
-http://projects.ldc.upenn.edu/QLDB/

@@ -1,0 +1,409 @@
+\usepackage{amsmath}
+\usepackage{color}
+\title{n-gram models}
+\author{Steve Renals \newline \mbox{ }s.renals@ed.ac.uk\mbox{ }}
+\date{ICL --- 17 October 2005}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\mode<presentation>{\newcommand{\myquote}[1]{\textcolor{blue}{#1}}}
+\mode<article>{\newcommand{\myquote}[1]{\textsf{#1}}}
+
+\mode<presentation>{\newcommand{\myemphquote}[1]{\textcolor{red}{#1}}}
+\mode<article>{\newcommand{\myemphquote}[1]{\textsf{\slshape#1}}}
+
+\mode<article>{\section[Outline]{ICL/n-grams/2005--10--17}}
+\mode<presentation>{
+  \section[Outline]{}
+}
+
+\frame{\tableofcontents}
+
+
+\section{Grammatical and statistical approaches}
+
+\begin{frame}
+  \mode<presentation>{\frametitle{Grammatical and statistical approaches}}
+  \begin{itemize}
+  \item  \alert{The rules governing the generation of linguistic
+      events.} Grammatical approaches are powerful in limited domains --- but
+    they are not always robust.  
+  \item \alert{The assignment of probabilities to linguistic
+      events.}  Statistical approaches are more general but typically more
+    shallow.  
+  \item Estimate the parameters of statistical models from large text
+    corpora 
+  \item N-gram models --- directly assign probabilities to word
+    sequences 
+  \end{itemize}
+\end{frame}
+
+\subsection{Guess the next word}
+
+\begin{frame}
+  \mode<presentation>{\frametitle{Guess the next word} }
+  \begin{itemize}
+  \item \uncover<1->{\myquote{Warning of big fall in house}}
+    \uncover<2->{\myemphquote{prices}}
+  \item \uncover<3-> {\myquote{Variety reports Sean Connery may be}}
+    \uncover<4->{\myemphquote{retiring}}
+  \item \uncover<5->{\myquote{Arsenal stranded in}}
+    \uncover<6-> {\myemphquote{Trondheim}}
+  \end{itemize}
+
+  \uncover<7->{  
+      Guessing the next word is an essential
+      component of many tasks such as speech recognition, handwriting
+      recognition, and context-sensitive spelling correction
+    }
+\end{frame}
+
+\begin{frame}
+  \frametitle{How to make a good guess}
+  \begin{itemize}
+  \item<1-> A word is easy to guess if it is much probable than any other
+    word
+  \item<2-> Order is important:
+    \begin{itemize}
+    \item<3-> \myquote{Variety reports Sean Connery may be}
+    \item<4-> \myquote{Variety Sean may reports  Connery  be}
+    \item<5-> \myquote{be may Connery Sean reports Variety}
+    \end{itemize}
+  \item<6-> Context helps:
+    \begin{itemize}
+    \item<7-> \myquote{...}
+    \item<8-> \myquote{Warning...}
+    \item<9-> \myquote{Warning of...}
+    \item<10-> \myquote{Warning of big...}
+    \item<11-> \myquote{Warning of big fall...}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\subsection{Counting words}
+
+\begin{frame}
+  \mode<presentation>{\frametitle{Counting words}}
+  \begin{itemize}
+  \item<1-> The best way to guess the next word is to first try the most
+    probable, then the second-most probable, and so on
+  \item<1-> So we need to estimate the \alert{probability of a word}
+  \item<2-> To estimate word probabilities we can count words---how many
+    tokens of each type?
+  \item<2-> More generally we count \alert{n-grams} not just words
+  \end{itemize}
+\end{frame}
+
+\section{Basic n-gram models}
+
+\begin{frame}
+  \frametitle{n-grams}
+  \begin{itemize}
+  \item<1-> An n-gram is a sequence of n words
+  \item<2-> Eg: \myquote{warning of big fall in house prices}
+    \begin{itemize}
+    \item<3-> Unigrams: \myquote{warning} ; \myquote{of} ; \myquote{big} ; \myquote{fall ;
+        in} ; \myquote{house} ; \myquote{prices}
+    \item<4-> Bigrams: \myquote{warning of} ; \myquote{of big} ; \myquote{big fall
+       } ; \myquote{fall in} ; \myquote{in house} ; \myquote{house prices}
+    \item<5-> Trigrams: \myquote{warning of big} ; \myquote{of big fall
+       } ; \myquote{big fall in; fall in house} ; \myquote{in house prices}
+    \item<6-> 4-grams: \myquote{warning of big fall} ; \myquote{of big fall
+        in} ; \myquote{big fall in house} ; \myquote{fall in house prices}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example: BBC new transcripts}
+  The THISL corpus of transcribed BBC TV and radio news programmes,
+  containing 7,488,445 word tokens.
+
+  Counts and relative frequencies of eight most frequent words:
+
+  \medskip
+  \begin{center}
+  \begin{tabular}{|r|r|r||r|r|r|}
+    \hline
+    word & count & rel freq. & word & count & rel freq. \\
+    \hline
+    \hline
+    the & 394\,481 & 0.0527 & and & 133\,962 & 0.0179 \\ 
+    \hline 
+    to & 240\,001 & 0.0320 & as & 109\,217 & 0.0146 \\
+    \hline
+    a & 225\,506 & 0.0301 & be & 84\,020 & 0.0112 \\
+    \hline
+    in & 177\,997 & 0.0238 & that & 69\,265 & 0.0092 \\
+    \hline
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Probability of a word sequence}
+  \begin{itemize}
+  \item<1-> \myquote{wonderland} is an infrequent word... unless
+    we have just seen the words \myquote{alice in}
+  \item<2-> We can better estimate the probability of a word if we take
+    into account the word sequence
+  \item<3-> Consider a string of $n$ words:
+    $w_1,w_2,w_3,\ldots,w_{n-1},w_n$.
+  \item<3-> Decompose the probability of the string as follows:
+\mode<presentation>{
+    \begin{multline*}
+          P(w_1,w_2,w_3,\ldots,w_{n-1},w_n) = \\
+    P(w_1) P(w_2|w_1) P(w_3|w_1,w_2) P(w_4|w_3,w_2,w_1) \dots \\
+    \ldots P(w_{n-1} | w_{n-2},\ldots,w_1) P(w_n | w_{n-1},w_{n-2},\ldots,w_1)
+    \end{multline*}
+}
+\mode<article>{
+    \begin{multline*}
+          P(w_1,w_2,w_3,\ldots,w_{n-1},w_n) = 
+    P(w_1) P(w_2|w_1) P(w_3|w_1,w_2) P(w_4|w_3,w_2,w_1) \dots \\
+    \ldots P(w_{n-1} | w_{n-2},\ldots,w_1) P(w_n | w_{n-1},w_{n-2},\ldots,w_1)
+    \end{multline*}
+}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{N-gram approximation}
+  \begin{itemize}
+  \item<1-> Taking \alert{all} the previous words into account results in
+    a \alert{huge} table of probabilities
+  \item<2-> The \alert{Markov} assumption --- consider only the previous
+    (n-1) words
+  \item<3-> Bigram (n=2) has one word of context:
+\mode<presentation>{
+    \begin{multline*}
+      P(w_1,w_2,w_3,\ldots,w_{n-1},w_n) = \\
+    P(w_1) P(w_2|w_1) P(w_3|w_2) \ldots P(w_{n-1}|w_{n-2}) P(w_n | w_{n-1})
+    \end{multline*}
+}
+\mode<article>{
+  \[       P(w_1,w_2,w_3,\ldots,w_{n-1},w_n) = 
+    P(w_1) P(w_2|w_1) P(w_3|w_2) \ldots P(w_{n-1}|w_{n-2}) P(w_n | w_{n-1}) \]
+}
+  \item<4-> View a bigram as a simple Markov chain --- or a (weighted)
+    finite state machine with a state for each word
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example bigrams}
+  $P(\bullet | fast)$ in the ICSI meetings corpus.
+
+  \medskip
+  \begin{center}
+  \begin{tabular}{|l|rr|}
+    \hline
+    bigram & prob & log(prob) \\
+    \hline
+    fast [end-sent] & 0.202 & -0.695 \\
+    fast enough & 0.049 & -1.312 \\
+    fast forward & 0.030 & -1.530 \\
+    fast and    & 0.027 & -1.571 \\
+    fast because & 0.019 & -1.723 \\
+    fast that & 0.012 & -1.934 \\
+    fast the & 0.011 & -1.952 \\
+    \hline
+  \end{tabular}
+  \end{center}
+
+  \pause
+  Bigram probabilities are usually very small --- often use log(prob)
+  to avoid floating point underflow 
+\end{frame}
+
+\subsection{Maximum likelihood estimation}
+
+\begin{frame}
+  \frametitle{Estimating bigram probabilities}
+  \begin{itemize}
+  \item<1-> Consider a vocabulary of 50\,000 words (typical for a speech
+    recognition system): $2.5 \times 10^9$ possible bigrams; $1.25
+    \times 10^{14}$ possible trigrams.  Therefore most trigrams and
+    bigrams will not be observed in a given corpus 
+  \item<2-> The relative frequency estimate of a bigram is given by:
+    \[ p(w|v) = \frac{c(v,w)}{\sum_{w'}c(v,w')} = \frac{c(v,w)}{c(v)} \]
+    $c(v,w)$ is the frequency (count) of word pair $(v,w)$
+  \item<2-> For a given corpus,  $c(v,w) = 0$ for most word pairs, hence
+    most n-grams estimated in this way will be 0!
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Estimating n-gram probabilities}
+
+  \begin{itemize}
+  \item<1-> Notation: $w_{n-N+1}^{n-1}$ represents $(N-1)$ words of
+    context, $w_{n-(N-1)}, w_{n-(N-2)}, \ldots, w_{n-1}$
+  \item<1-> General estimate of n-gram probabilities:
+    \[ p(w_n | w_{n-N+1}^{n-1}) = \frac{c(w_{n-N+1}^{n-1},
+      w_n)}{c(w_{n-N+1}^{n-1})} \]
+  \item<2-> This ratio is referred to as the \alert{relative frequency}
+  \item<2-> Estimating probabilities with relative frequencies is an
+    example of \alert{maximum likelihood estimation}
+  \item <3-> Jurafsky and Martin p.202--206 for examples of n-gram
+    \alert{generation} of text 
+  \end{itemize}
+\end{frame}
+
+\section{Discounting and smoothing}
+
+\begin{frame}
+  \frametitle{The Zero Probability Problem}
+  \begin{itemize}
+  \item If an event has a zero probability then we are saying it can
+    never occur!
+  \item Since probabilities sum to 1 this is equivalent to saying that
+    the probabilities of observed n-grams are over-estimated
+  \item Solution: \alert{Smooth} the n-gram probabilities so that
+    every event has probability greater than zero
+    \begin{itemize}
+    \item Discounting --- reserve some probability for unseen events
+    \item Smoothing with lower-level n-grams --- use the most precise
+      model allowed by the data
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Laplace's law --- add one}
+
+  Consider estimating a unigram probability $P(w_i)$ (vocabulary size
+  is $V$):
+  \begin{itemize}
+  \item<1-> Unsmoothed maximum likelihood estimate:
+    \[ P_{ML}(w_i) = \frac{c(w_i)}{\sum_{x=1}^Vc(w_x)} = \frac{c(w_i)}{N}  \]
+  \item<2-> Could just add one to each count (so no more zero counts) and
+    renormalize:
+    \[ P_{LAP}(w_i) = \frac{c(w_i) + 1}{\sum_{x=1}^V(c(w_x)+1)}
+    = \frac{c(w_i) + 1}{N+V} \]
+  \item<3-> This does not work very well, particularly if there are a
+    lot of unseen events (eg if applied to bigram or trigram
+    estimation)
+  \item<3-> Better results if $\lambda < 1$ is added to the counts (eg
+    $\lambda = 1/2$)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Discounting}
+  \begin{itemize}
+  \item<1-> \alert{Discounting} schemes reduce, or discount, the
+    probability estimates of observed events 
+  \item<1-> The freed probability mass is used for unseen events
+  \item<2-> What is the best way to estimate the probability of an unseen
+    event? --- Look at the distribution of events seen precisely
+    once!
+  \item<3-> Many discounting schemes: Good-Turing, Witten-Bell, Absolute.
+    All work similarly in practice (although there are some
+    sophistications in their exact implementation).
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Absolute discounting}
+  \begin{itemize}
+  \item<1-> Subtract a constant $k$ from each non-zero count and
+    redistribute over unseen events (zero counts)
+  \item<2-> Let $c(e)$ be the count of event $e$, and $\hat{c}(e)$ be the
+    discounted count:
+    \[
+    \hat{c}(e) = \left\{ \begin{array}{ll}
+        c(e) - k & \text{if } c(e) > 0 \\
+        {\displaystyle \frac{k}{u_0}\times \sum_r u_r}\quad & \text{if } c(e) = 0 \enspace ,
+        \end{array} \right.
+      \]
+      where $u_i$ is the number of events with a count of $i$.
+    \item<2-> The value of $k$ is typically based on $u_1$ and $u_2$, eg
+      $k \sim u_1 / (u_1 + 2u_2)$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Interpolation}
+  \begin{itemize}
+  \item<1-> Linearly combine n-gram models --- discounted estimates of
+    lower-order n-grams more reliable than directly estimating
+    probabilities of unseen higher-order n-grams.  
+  \item<2-> For a trigram $(u,v,w)$,
+    smoothly estimate $p(w|u,v)$ as:
+    \[ p_{int}(w|u,v) = \lambda_3 \hat{p}(w|u,v) +
+    \lambda_2 \hat{p}(w|v) + \lambda_1 \hat{p}(w) + \lambda_0 \]
+    Such that
+    \[ \sum_i \lambda_i = 1 \]
+  \item<3-> Estimate $\lambda$ to maximize the likelihood of a
+    \alert{held-out} corpus  (separate from the main training corpus)
+  \item<3-> $\lambda$ can be context-independent or a function of the
+    history
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Backing off}
+  \begin{itemize}
+  \item Rather than combining different order models, choose the most
+    appropriate n-gram level
+  \item Probability mass reserved from discounting is then partitioned
+    among lower-order n-grams (and so on, recursively)
+  \item In interpolation always use lower order n-gram information
+  \item In backoff if the trigram counts are above a threshold (eg 1)
+    only use the trigram estimates
+  \end{itemize}
+\end{frame}
+
+\section{Applications}
+
+\begin{frame}
+  \frametitle{Language modelling}
+  \begin{itemize}
+  \item In speech recognition, many word sequences can match the
+    acoustics reasonably well (especially in noisy conditions)
+  \item Can constrain the problem by giving more weight to more
+    probable word sequences
+  \item Combine acoustic model (matching word sequence with the
+    acoustics) with \alert{language model} (probability of a word
+    sequence).
+  \item Language model: estimate $P(w_1, \dots, w_n)$ using n-grams
+  \item This component is used in all large vocabulary speech recognition
+    systems 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Context-sensitive spelling correction}
+  \begin{itemize}
+  \item Homophones: \myquote{Their is a house in New Orleans}
+  \item Typos: \myquote{Three is a house in New Orleans}
+  \item An n-gram model is likely to have:
+    \begin{align*}
+      P(is|there) &> P(is|their) \\
+      P(is|there) &> P(is|three) 
+    \end{align*}
+  \item Use this intuition to design a context-sensitive spelling
+    corrector 
+  \end{itemize}
+\end{frame}
+
+\section{Summary}
+
+\begin{frame}
+  \mode<presentation>{\frametitle{Summary}}
+  \begin{itemize}
+    \item \textbf{Reading:} Jurafsky and Martin, chapter 6
+  \item Statistical models of language by directly considering the
+    probabilities of word sequences --- n-grams
+  \item The zero probability problem --- estimating the probabilities
+    of unseen words and and word sequences
+  \item Discounting and smoothing
+  \item Next lecture: PoS tagging with n-grams
+  \end{itemize}
+\end{frame}
+
+
+\end{document}

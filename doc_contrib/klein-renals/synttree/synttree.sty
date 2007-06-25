@@ -1,0 +1,438 @@
+%%
+%% This is file `synttree.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% synttree.dtx 
+%% 
+%% IMPORTANT NOTICE:
+%% 
+%% For the copyright see the source file.
+%% 
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from synttree.sty.
+%% 
+%% For distribution of the original source see the terms
+%% for copying and modification in the file synttree.dtx.
+%% 
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
+%% \CheckSum{774}
+%% synttree.dtx
+%% Package `synttree' for use with LaTeX 2e
+%% Version 1.4
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+\def\@AfterFi#1\fi{\fi#1}
+\def\@AfterElseFi#1\else#2\fi{\fi#1}
+\def\MTr@latexdrawline(#1,#2)(#3,#4){%
+  {%
+    \count0=#1 \advance\count0 by #3 \divide\count0 2
+    \count1=#2 \advance\count1 by #4 \divide\count1 2
+    \qbezier(#1,#2)(\count0,\count1)(#3,#4)%
+  }%
+}
+\def\MTr@etexdrawline(#1,#2)(#3,#4){%
+  {%
+    \count0=\@wholewidth \divide\count0 by 4736
+    \special{pn \the\count0}%
+    \count0= #1\advance \count0 2368 \divide \count0 4736
+    \count1=-#2\advance \count1 -2368 \divide \count1 4736
+    \special{pa \the\count0 \space \the\count1}%
+    \count0= #3\advance \count0 2368 \divide \count0 4736
+    \count1=-#4\advance \count1 -2368 \divide \count1 4736
+    \special{pa \the\count0 \space \the\count1}%
+    \special{fp}%
+  }%
+}
+\DeclareOption{specials}{
+  \let\MTr@drawline\MTr@etexdrawline%
+}
+\DeclareOption{nospecials}{
+  \let\MTr@drawline\MTr@latexdrawline%
+}
+\ExecuteOptions{nospecials}%
+\ProcessOptions%
+\newcount\MTr@level
+\newcount\MTr@numchildren
+\newcount\MTr@maxlevel
+\newcount\MTr@mybranchmult
+\newif\ifMTr@mytriangle
+\newif\ifMTr@uselabel
+\newbox\MTr@labelbox
+\newbox\MTr@treebox
+\def\MTr@makechildcounter#1{
+    \expandafter\newcount\csname MTr@child#1\endcsname%
+}
+\def\MTr@makechildstoreage#1{
+    \expandafter\newsavebox\csname MTr@child#1box\endcsname%
+    \MTr@makechildcounter{#1x}
+    \MTr@makechildcounter{#1y}
+    \MTr@makechildcounter{#1v}
+    \MTr@makechildcounter{#1w}
+    \MTr@makechildcounter{#1height}
+    \MTr@makechildcounter{#1depth}
+    \MTr@makechildcounter{#1branchmult}
+    \MTr@makechildcounter{#1picheight}
+    \MTr@makechildcounter{#1triangle}
+}
+\def\MTr@childparam#1#2{\csname MTr@child#1#2\endcsname}
+\newcount\MTr@treev
+\newcount\MTr@treew
+\newcount\MTr@treeheight
+\newcount\MTr@treedepth
+\newcount\MTr@branchmult
+\MTr@branchmult 1
+\newif\ifMTr@triangle
+\newcount\MTr@labeldepth
+\newcount\MTr@labelheight
+\newcount\MTr@labelhalfwidth
+\newcount\MTr@morex
+\newcount\MTr@parenty
+\newcount\MTr@picwidth
+\newcount\MTr@picheight
+\newlength{\MTr@templength}
+\newcount\MTr@loopcnta
+\newcount\MTr@tempcnta
+\newcount\MTr@tempcntb
+\newcount\MTr@tempcntc
+\newcount\MTr@branchheight%
+\newcommand{\branchheight}[1]{%
+  \setlength{\MTr@templength}{#1}%
+  \MTr@branchheight\MTr@templength%
+}
+\branchheight{.5in}%
+\newcount\MTr@trianglemultright%
+\newcount\MTr@trianglemultleft%
+\newcommand{\trianglebalance}[1]{%
+  \MTr@trianglemultleft100%
+  \MTr@trianglemultright#1%
+  \advance\MTr@trianglemultleft-#1%
+}
+\trianglebalance{50}%
+\newcount\MTr@lineoffset
+\setlength{\MTr@templength}{2pt}%
+\MTr@lineoffset\MTr@templength%
+\newlength{\MTr@minheight}
+\setlength{\MTr@minheight}{8pt}%
+\newcount\MTr@childsidesep
+\newcommand{\childsidesep}[1]{%
+  \setlength{\MTr@templength}{#1}%
+  \MTr@childsidesep\MTr@templength%
+  \ignorespaces%
+}
+\childsidesep{1em}
+\newcount\MTr@childattachsep
+\newcommand{\childattachsep}[1]{%
+    \setlength{\MTr@templength}{#1}%
+    \MTr@childattachsep\MTr@templength%
+    \ignorespaces%
+}
+\childattachsep{0.5in}
+\def\synttree{%
+    \@ifnextchar[{\MTr@synttree{0}}{\MTr@synttree}%]
+}
+\def\MTr@synttree#1{%
+  \MTr@maxlevel#1%
+  \unitlength 1sp%
+  \MTr@level=0%
+  \MTr@numchildren=0%
+  \MTr@uselabelfalse%
+  \MTr@parserightbracket%
+}
+\def\MTr@parserightbracket#1]{%
+  \MTr@parseleftbracket#1[:\END%
+  \advance\MTr@level by -1%
+  \MTr@dorightbracket%
+  \ifnum\MTr@level=0%
+    \unhbox\MTr@childibox%
+  \else
+    \@AfterFi{\MTr@parserightbracket}%
+  \fi%
+}
+\def\MTr@parseleftbracket#1[#2\END{%
+  \ifMTr@uselabel%
+    \MTr@bottomnodefalse%
+    \MTr@mytrianglefalse%
+    \MTr@parsedot#1.: \END%
+  \fi%
+  \ifx:#2
+  \else
+    \MTr@doleftbracket%
+    \advance\MTr@level by 1%
+    \@AfterFi{\MTr@parseleftbracket#2\END}%
+  \fi%
+}
+\def\MTr@parsedot#1.#2 #3\END{
+  \ifx:#2
+    \setbox\MTr@labelbox\hbox{}
+    \MTr@setlabel #1 \END
+  \else
+    \ifx#2b\MTr@bottomnodetrue\else%
+    \ifx#2x\MTr@bottomnodetrue\MTr@mytriangletrue\else%
+    \ifx#2t\MTr@mytriangletrue\else%
+    \typeout{synttree Warning: unknown dot option #1 in tree}%
+    \fi\fi\fi%
+    \MTr@parsedot#3\END
+  \fi
+}
+\def\MTr@setlabel#1 #2\END{
+  \if\space#1
+  \else
+    \setbox\MTr@labelbox\hbox{\unhbox\MTr@labelbox #1}
+  \fi
+  \if\space#2
+  \else
+    \if\space#1
+    \else
+      \setbox\MTr@labelbox\hbox{\unhbox\MTr@labelbox{} }
+    \fi
+    \MTr@setlabel#2\END
+  \fi
+}
+\def\MTr@doleftbracket{%
+  \bgroup%
+  \MTr@numchildren=0%
+  \MTr@uselabeltrue%
+}
+\def\MTr@dorightbracket{%
+  \MTr@maketreebox%
+  \egroup%
+  \MTr@uselabelfalse%
+  \MTr@savecurrentchildbox%
+}
+\def\MTr@savecurrentchildbox{%
+  \advance\MTr@numchildren by 1
+  \ifnum\MTr@numchildren<1%
+    \typeout{synttree internal warning: There is no child box to save.}%
+  \else
+    \ifnum\MTr@numchildren>10%
+      \typeout{synttree warning: More than 10 child boxes.
+      Can this be true?}%
+    \fi
+    \MTr@savechildbox{\romannumeral\MTr@numchildren}%
+  \fi
+}
+\def\MTr@savechildbox#1{%
+  \expandafter
+  \ifx\csname MTr@child#1box\endcsname\relax%
+    \MTr@makechildstoreage{#1}%
+  \fi%
+  \setbox%
+  \csname MTr@child#1box\endcsname%
+  \hbox{\unhbox\MTr@treebox}%
+  \csname MTr@child#1v\endcsname\MTr@treev%
+  \csname MTr@child#1w\endcsname\MTr@treew%
+  \csname MTr@child#1x\endcsname\MTr@treev%
+  \csname MTr@child#1height\endcsname\MTr@treeheight%
+  \csname MTr@child#1depth\endcsname\MTr@treedepth%
+  \csname MTr@child#1branchmult\endcsname\MTr@branchmult%
+  \ifMTr@triangle%
+    \csname MTr@child#1triangle\endcsname 1%
+  \else%
+    \csname MTr@child#1triangle\endcsname 0%
+  \fi
+}
+\def\MTr@bottomnodetrue{%
+  \MTr@branchmult\MTr@maxlevel%
+  \advance\MTr@branchmult-\MTr@level%
+  \advance\MTr@branchmult 1%
+  \ifnum\MTr@branchmult<1%
+    \typeout{synttree Warning: Tree has more levels than indicated.}%
+    \typeout{>> Indicated: \the\MTr@maxlevel.}%
+    \typeout{>> Level now: \the\MTr@level.}%
+    \MTr@branchmult1%
+  \fi%
+  \MTr@mybranchmult\MTr@branchmult%
+}
+\def\MTr@bottomnodefalse{%
+  \MTr@mybranchmult1%
+}
+\def\MTr@setverticalchilddimens#1{%
+    \MTr@tempcnta-\MTr@branchheight%
+    \multiply\MTr@tempcnta\MTr@childparam{#1}{branchmult}%
+    \MTr@tempcntb-\MTr@tempcnta%
+    \advance\MTr@tempcntb\csname MTr@child#1depth\endcsname%
+    \advance\MTr@tempcnta-\MTr@labelheight%
+    \advance\MTr@tempcnta\csname MTr@child#1height\endcsname%
+    \csname MTr@child#1y\endcsname\MTr@tempcnta%
+    \csname MTr@child#1picheight\endcsname\MTr@tempcntb%
+}
+\def\MTr@adjustdistance#1#2{%
+  \MTr@tempcnta\MTr@childparam{#1}{w}%
+  \advance\MTr@tempcnta\MTr@childsidesep%
+  \advance\MTr@tempcnta\csname MTr@child#2v\endcsname%
+  \ifnum\MTr@tempcnta<\MTr@childattachsep%
+    \MTr@tempcnta\MTr@childattachsep%
+  \fi%
+  \csname MTr@child#2x\endcsname\MTr@childparam{#1}{x}%
+  \advance\csname MTr@child#2x\endcsname\MTr@tempcnta%
+}
+\def\MTr@setparentdimens#1#2{%
+    \MTr@tempcnta\MTr@childparam{#2}{x}%
+    \advance \MTr@tempcnta -\MTr@childparam{#1}{x}%
+    \divide\MTr@tempcnta 2%
+    \MTr@treev\MTr@tempcnta%
+    \MTr@treew\MTr@treev%
+    \advance \MTr@treev \csname MTr@child#1x\endcsname%
+    \advance \MTr@treew \csname MTr@child#2w\endcsname%
+    \MTr@morex\MTr@labelhalfwidth%
+    \advance\MTr@morex-\MTr@treev%
+    \ifnum\MTr@morex<0\MTr@morex0\fi%
+    \ifnum\MTr@treew<\MTr@labelhalfwidth
+        \MTr@treew\MTr@labelhalfwidth
+    \fi%
+    \ifnum\MTr@treev<\MTr@labelhalfwidth
+        \MTr@treev\MTr@labelhalfwidth
+    \fi%
+    \MTr@picwidth\MTr@treev%
+    \advance\MTr@picwidth\MTr@treew%
+}
+\def\MTr@setpictureparameters{%
+    \global\MTr@treedepth\MTr@picheight%
+    \advance\MTr@picheight\MTr@labelheight%
+    \global\MTr@treeheight\MTr@labelheight%
+    \MTr@parenty-\MTr@labelheight%
+    \advance\MTr@parenty-\MTr@labeldepth%
+    \advance\MTr@parenty-\MTr@lineoffset%
+    \global\MTr@treev\MTr@treev%
+    \global\MTr@treew\MTr@treew%
+}
+\def\MTr@drawlabel{%
+  \put(\MTr@treev,0){%
+    \makebox(0,0)[t]{%
+      \rule{0pt}{\MTr@minheight}%
+      \usebox{\MTr@labelbox}}}%
+}
+\def\MTr@drawchild#1{%
+  \MTr@tempcnta\MTr@childparam{#1}{x}
+  \advance\MTr@tempcnta-\MTr@childparam{#1}{v}
+  \put(\MTr@tempcnta,\MTr@childparam{#1}{y}){%
+    \makebox(0,0)[tl]{%
+      \usebox{\csname MTr@child#1box\endcsname}}}%
+}
+\def\MTr@drawchildline#1{
+  \MTr@tempcnta\MTr@childparam{#1}{y}
+  \advance\MTr@tempcnta\MTr@lineoffset%
+  \expandafter
+  \ifnum\csname MTr@child#1triangle\endcsname=1%
+    \MTr@tempcntb\MTr@childparam{#1}{x}%
+    \MTr@tempcntc\MTr@tempcntb%
+    \advance\MTr@tempcntb \MTr@childparam{#1}{w}%
+    \advance\MTr@tempcntc -\MTr@childparam{#1}{v}%
+    \put(0,0){\MTr@drawline%
+        (\MTr@treev,\MTr@parenty)%
+        (\MTr@tempcntc,\MTr@tempcnta)}%
+    \put(0,0){\MTr@drawline%
+        (\MTr@treev,\MTr@parenty)%
+        (\MTr@tempcntb,\MTr@tempcnta)}%
+    \put(0,0){\MTr@drawline%
+        (\MTr@tempcntc,\MTr@tempcnta)%
+        (\MTr@tempcntb,\MTr@tempcnta)}%
+  \else%
+    \put(0,0){\MTr@drawline%
+      (\MTr@treev,\MTr@parenty)%
+      (\MTr@childparam{#1}{x},\MTr@tempcnta)}%
+  \fi%
+}
+\def\MTr@maketreebox{%
+  \MTr@labelheight\ht\MTr@labelbox%
+  \ifnum\MTr@labelheight<\MTr@minheight\MTr@labelheight\MTr@minheight\fi%%
+  \MTr@labeldepth\dp\MTr@labelbox%
+  \MTr@labelhalfwidth\wd\MTr@labelbox%
+  \divide\MTr@labelhalfwidth 2%
+  \ifnum\MTr@numchildren=0%
+    \global\setbox\MTr@treebox\hbox{\MTr@outputlabel}
+  \fi
+  \ifnum\MTr@numchildren>0%
+    \global\setbox\MTr@treebox\hbox{\MTr@outputchildren{\the\MTr@numchildren}}%
+  \fi
+
+  \global\MTr@branchmult\MTr@mybranchmult%
+  \ifMTr@mytriangle%
+    \global\MTr@triangletrue%
+  \else%
+    \global\MTr@trianglefalse%
+  \fi%
+}
+\def\MTr@outputlabel{%
+    \global\MTr@treeheight\MTr@labelheight%
+    \global\MTr@treedepth\MTr@labeldepth%
+    \ifMTr@mytriangle%
+      \MTr@treew\MTr@labelhalfwidth%
+      \MTr@treev\MTr@labelhalfwidth%
+      \multiply\MTr@treew \MTr@trianglemultright%
+      \multiply\MTr@treev \MTr@trianglemultleft%
+      \divide\MTr@treew 50%
+      \divide\MTr@treev 50%
+      \global\MTr@treew\MTr@treew%
+      \global\MTr@treev\MTr@treev%
+    \else%
+      \global\MTr@treew\MTr@labelhalfwidth%
+      \global\MTr@treev\MTr@labelhalfwidth%
+    \fi%
+    \MTr@picwidth\wd\MTr@labelbox%
+    \MTr@picheight\MTr@treeheight%
+    \advance\MTr@picheight\MTr@treedepth%
+    \begin{picture}%
+        (\MTr@picwidth,\MTr@picheight)%
+        (-\MTr@treev,-\MTr@picheight)%
+      %\put(-\MTr@treev,-\MTr@picheight){\framebox(\MTr@picwidth,\MTr@picheight){}}%
+      \put(-\MTr@treev,0){%
+        \makebox(0,0)[tl]{%
+          \rule{0pt}{\MTr@minheight}%
+          \usebox{\MTr@labelbox}}}%
+    \end{picture}%
+}
+\def\MTr@outputchildren#1{%
+    \ifnum#1>1
+      \MTr@loopcnta 1
+      \loop
+\edef\MTr@temp{\romannumeral\MTr@loopcnta}%
+\ifnum\MTr@loopcnta<#1
+  \advance \MTr@loopcnta by 1
+  \MTr@adjustdistance{\MTr@temp}{\romannumeral\MTr@loopcnta}%
+      \repeat
+    \fi
+    \MTr@setparentdimens{i}{\romannumeral#1}%
+    \MTr@picheight 0%
+    \MTr@loopcnta #1
+    \loop
+      \edef\MTr@temp{\romannumeral\MTr@loopcnta}%
+      \advance\MTr@childparam{\MTr@temp}{x}\MTr@morex%
+      \MTr@setverticalchilddimens{\romannumeral\MTr@loopcnta}%
+      \ifnum\MTr@childparam{\MTr@temp}{picheight}>\MTr@picheight%
+\MTr@picheight\MTr@childparam{\MTr@temp}{picheight}%
+      \fi%
+    \advance \MTr@loopcnta by -1 \ifnum\MTr@loopcnta>0 \repeat
+  \MTr@setpictureparameters%
+  \begin{picture}(\MTr@picwidth,\MTr@picheight)(0,-\MTr@picheight)%
+    %\put(0,-\MTr@picheight){\framebox(\MTr@picwidth,\MTr@picheight){}}%
+    \MTr@drawlabel%
+    \MTr@loopcnta #1
+    \loop
+      \expandafter\MTr@drawchild{\romannumeral\MTr@loopcnta}%
+      \expandafter\MTr@drawchildline{\romannumeral\MTr@loopcnta}
+    \advance \MTr@loopcnta by -1 \ifnum\MTr@loopcnta>0 \repeat
+  \end{picture}%
+}
+\endinput
+%%
+%% End of file `synttree.sty'.

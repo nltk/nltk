@@ -1,0 +1,13 @@
+Each of the subdirectories <foo>.d contains files of the following kind:
+
+<foo>n?.tex   -- latex file with slides in beamer format
+<foo>n?-notes.tex -- wrapper file to produce handouts
+<foo>n?-lec.tex -- wrapper file to produce pdf for the lecture slides
+
+For example, chart.d contains:
+
+chart1.tex
+chart1-notes.tex
+chart1-lec.tex
+
+and similarly for chart2.tex etc.
