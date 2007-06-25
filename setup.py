@@ -35,11 +35,9 @@ setup(
                 'nltk.tokenize', 'nltk.stem', 'nltk.tag',
                 'nltk.parse', 'nltk.chunk', 'nltk.chat', 'nltk.draw',
                 'nltk.misc', 'nltk.model', 'nltk.cluster',
-                'nltk.sem', 'nltk.wordnet', 'nltk.etree',
-                'nltk.contrib', 'nltk.contrib.toolbox',
-                'nltk.contrib.fst', 'yaml',
-                'nltk.contrib.classifier', 'nltk.contrib.classifier.exceptions',
-                'nltk.contrib.classifier_tests',
-                'nltk.contrib.dependency'
+                'nltk.sem', 'nltk.wordnet', 'nltk.etree', 'yaml',
+                'nltk_contrib', 'nltk_contrib.toolbox', 'nltk_contrib.fst',
+                'nltk_contrib.classifier', 'nltk_contrib.classifier.exceptions',
+                'nltk_contrib.classifier_tests', 'nltk_contrib.dependency'
                 ],
     )
