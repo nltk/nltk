@@ -1,0 +1,49 @@
+
+
+( (S (NP-SBJ Allergan Inc.)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP received
+                      (NP Food and Drug Administration approval
+                          (S (NP-SBJ *)
+                             (VP to
+                                 (VP sell
+                                     (NP (NP the PhacoFlex intraocular lens)
+                                         ,
+                                         (NP (NP the first foldable silicone lens)
+                                             (ADJP available
+                                                   (PP for
+                                                       (NP cataract surgery)))))))))))))
+     .))
+( (S (S-TPC-3 (NP-SBJ (NP The len 's)
+		      foldability)
+	      (VP enables
+		  (S (NP-SBJ-1 it)
+		     (VP to
+			 (VP be
+			     (VP inserted
+				 (NP *-1)
+				 (PP in
+				     (NP (NP smaller incisions)
+					 (SBAR than
+					       (S (NP-SBJ *)
+						  (VP are
+						      (ADVP-TMP now)
+						      (ADJP-PRD possible
+								(PP for
+								    (NP cataract surgery))))))))))))))
+     ,
+     (NP-SBJ the eye care and skin care concern)
+     (VP said
+	 (SBAR 0
+	       (S *T*-3)))
+     .))
+( (S (NP-SBJ Cataracts)
+     (VP refer
+         (PP-CLR to
+		 (NP (NP a clouding)
+		     (PP of
+			 (NP (NP the eye 's)
+			     natural lens)))))
+     .))

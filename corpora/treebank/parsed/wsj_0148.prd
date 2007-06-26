@@ -1,0 +1,501 @@
+
+
+( (NP (NP A nickname)
+      (PP for
+	  (NP (NP measures)
+	      (SBAR (WHADVP-1 0)
+		    (S (NP-SBJ *)
+		       (VP to
+			   (VP stop
+			       (NP-2 the market)
+			       (PP-CLR from
+				       (S-NOM (NP-SBJ *-2)
+					      (VP plunging
+						  (ADVP too far)
+						  (ADVP-MNR too fast))))
+			       (ADVP-MNR *T*-1))))))) 
+      .))
+( (S (NP-SBJ-1 Several moves)
+     (VP were
+         (VP taken
+	     (NP *-1)
+             (PP-TMP following
+		     (NP the October 1987 crash))
+	     (S-PRP (NP-SBJ *)
+		    (VP to
+			(VP coordinate
+			    (PRN -- and
+				 (VP (ADVP-TMP sometimes)
+				     (ADVP-MNR deliberately)
+				     disconnect
+				     (NP *PPA*-2))
+				 --)
+			    (NP-2 the stock and futures markets)
+			    (PP-TMP in
+				    (NP (NP times)
+					(PP of
+					    (NP heightened volatility)))))
+			))))
+     .))
+( (S (PP-LOC On
+	     (NP the Big Board))
+     ,
+     (NP-SBJ-1 a `` side car '')
+     (VP is
+         (VP put
+             (NP *-1)
+             (PP-PUT into
+		     (NP effect))
+             (SBAR-TMP (WHADVP-2 when)
+		       (S (NP-SBJ the S&P futures)
+			  (VP rise or fall
+			      (NP-ADV 12 points)
+			      (ADVP-TMP *T*-2))))))
+     .))
+( (S (NP-SBJ The side car)
+     (VP routes
+         (NP program trades)
+         (PP-DIR into
+		 (NP (NP a special computer file)
+		     (SBAR (WHNP-1 that)
+			   (S (NP-SBJ *T*-1)
+			      (VP scans
+				  (PP-CLR for
+					  (NP (NP imbalances)
+					      (PP of
+						  (NP buy and sell orders))))))))))
+     .))
+( (S (PP-LOC On
+	     (NP the Chicago Mercantile Exchange))
+     ,
+     (NP-SBJ-1 S&P 500 futures)
+     (VP are not
+         (VP allowed
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP fall
+			(NP-EXT (QP further
+				    than
+				    12) points)
+			(PP-DIR from
+				(NP (NP the previous day 's)
+				    close))
+			(PP-TMP for
+				(NP half an hour)))))))
+     .))
+( (S (SBAR-ADV If
+	       ,
+	       (S (SBAR-TMP (WHADVP-1 when)
+			    (S (NP-SBJ trading)
+			       (VP resumes
+				   (ADVP-TMP *T*-1))))
+		  ,
+		  (NP-SBJ the S&P futures)
+		  (VP fall
+		      (NP-EXT 30 points)
+		      (PP-DIR from
+			      (NP (NP the previous day 's)
+				  close)))))
+     ,
+     (NP-SBJ a one-hour trading halt)
+     (VP takes
+	 (NP-CLR effect))
+     .))
+( (S (ADVP Also)
+     ,
+     (NP-SBJ the reforms)
+     (VP allow
+         (S (NP-SBJ the Big Board)
+            (VP to
+                (VP (VP halt
+			(NP trading)
+			(PP-TMP-1 for
+				  (NP one hour))
+			(SBAR-ADV-2 if
+				    (S (NP-SBJ the Dow Jones Industrial Average)
+				       (VP falls
+					   (NP-EXT 250 points)))))
+                    , and
+                    (VP (PP-TMP=1 for
+				  (NP two more hours))
+			(SBAR-ADV=2 if
+				    (S (NP-SBJ the Dow)
+				       (VP slides
+					   (NP-EXT an additional 150 points)
+					   (PP-TMP on
+						   (NP the same day))))))))))
+     .))
+( (NP (NP-HLN DOT System)
+      --
+      (S (NP-SBJ-1 (NP The `` Designated Order Turnaround '' System))
+	 (VP was
+	     (VP launched
+		 (NP *-1)
+		 (PP by
+		     (NP-LGS the New York Stock Exchange))
+		 (PP-TMP in
+			 (NP March 1976))
+		 ,
+		 (S-PRP (NP-SBJ *)
+			(VP to
+			    (VP offer
+				(NP automatic , high-speed
+				    order processing)))))))
+      .))
+( (S (NP-SBJ-1 (NP A faster version)
+               ,
+               (NP the SuperDot)
+               ,)
+     (VP was
+         (VP launched
+             (NP *-1)
+             (PP-TMP in
+		     (NP 1984))))
+     .))
+( (S (S-ADV (NP-SBJ-1 *-2)
+	    (VP Used
+		(NP *-1)
+		(PP by
+		    (NP-LGS program traders and others))
+		(S-CLR (NP-SBJ *)
+		       (VP to
+			   (VP zip
+			       (NP orders)
+			       (PP-DIR into
+				       (NP the exchange)))))))
+     ,
+     (NP-SBJ-2 SuperDot)
+     (VP handles
+	 (NP (NP about 80 %)
+	     (PP of
+		 (NP (NP all orders)
+		     (VP entered
+			 (NP *)
+			 (PP-LOC at
+				 (NP the exchange)))))))
+     .))
+( (NP (NP-HLN Futures Contracts)
+      --
+      (NP Obligations
+	  (S (NP-SBJ *)
+	     (VP to
+		 (VP buy
+		     (PRN -LRB-
+			  (PP for
+			      (NP (NP those)
+				  (SBAR (WHNP-1 who)
+					(S (NP-SBJ *T*-1)
+					   (VP have
+					       (VP purchased
+						   (NP a contract)))))))
+			  -RRB-)
+		     or
+		     deliver
+		     (PRN -LRB-
+			  (PP for
+			      (NP (NP those)
+				  (SBAR (WHNP-2 who)
+					(S (NP-SBJ *T*-2)
+					   (VP sold
+					       (NP one))))))
+			  -RRB-)
+		     (NP (NP a quantity)
+			 (PP of
+			     (NP the (NX (NX underlying commodity) or (NX financial instrument)))))
+		     (PP-CLR at
+			     (NP the agreed-upon price))
+		     (PP-TMP by
+			     (NP a certain date))))))
+      .))
+( (S (NP-SBJ-1 Most contracts)
+     (VP are
+         (ADVP simply)
+         (VP nullified
+	     (NP *-1)
+             (PP by
+                 (NP-LGS an opposite trade))
+	     (SBAR-TMP before
+		       (S (NP-SBJ they)
+			  (VP come
+			      (ADJP-PRD due))))))
+     .))
+( (NP (NP-HLN Indexing)
+      --
+      (S (NP-SBJ (NP Many investors)
+		 ,
+		 (NP mainly institutions)
+		 ,)
+	 (VP follow
+	     (NP (NP an investment strategy)
+		 (PP of
+		     (S-NOM (NP-SBJ *)
+			    (VP buying and holding
+				(NP (NP a mix)
+				    (PP of
+					(NP stocks))
+				    (SBAR (WHNP-1 0)
+					  (S (NP-SBJ *T*-1)
+					     (VP to
+						 (VP match
+						     (NP (NP the performance)
+							 (PP of
+							     (NP (NP a broad stock-market barometer)
+								 such
+								 as
+								 (NP the S&P 500)))))))))))))))
+      .))
+( (S (NP-SBJ-1 Many institutional index funds)
+     (VP are
+         (NP-PRD active program traders)
+	 ,
+	 (S-ADV (NP-SBJ *-1)
+		(VP swapping
+		    (NP their stocks)
+		    (PP-CLR for
+			    (NP futures))
+		    (SBAR-TMP (WHADVP-2 when)
+			      (FRAG (ADJP-PRD profitable)
+				    (S (NP-SBJ *)
+				       (VP to
+					   (VP do
+					       (ADVP so)
+					       (ADVP-TMP *T*-2)))))))))
+     .))
+( (NP (NP Program trading)
+      --
+      (NP (NP A wide range)
+	  (PP of
+	      (NP (NP computer-assisted portfolio trading strategies)
+		  (VP involving
+		      (NP (NP the simultaneous purchase or sale)
+			  (PP of
+			      (NP (QP 15 or more) stocks)))))))
+      .))
+( (NP (NP Quant)
+      --
+      (ADVP Generally)
+      ,
+      (NP (NP any Wall Street analyst)
+	  (SBAR (WHNP-1 who)
+		(S (NP-SBJ *T*-1)
+		   (VP employs
+		       (NP quantitive research techniques)))))
+      .))
+( (S (NP-SBJ (NP The newest breed)
+             ,
+             (VP (ADVP also)
+                 called
+		 (S (NP-SBJ *)
+		    (NP-PRD `` rocket scientists ''))
+		 (PP-PRP because
+			 of
+			 (NP (NP their backgrounds)
+			     (PP in
+				 (NP physics and mathematics)))))
+             ,)
+     (VP devise
+         (NP (NP the complex hedging and trading strategies)
+             (SBAR (WHNP-1 that)
+                   (S (NP-SBJ-2 *T*-1)
+                      (VP are
+                          (ADVP popularly)
+                          (VP known
+			      (NP *-2)
+                              (PP-CLR as
+				      (NP program trading))))))))
+     .))
+( (NP (NP Stock-index arbitrage)
+      --
+      (S-NOM (NP-SBJ-1 *)
+	     (VP Buying or selling
+		 (NP (NP baskets)
+		     (PP of
+			 (NP stocks)))
+		 (SBAR-ADV while
+			   (S (PP-TMP at
+				      (NP the same time))
+			      (NP-SBJ *-1)
+			      (VP executing
+				  (NP (NP offsetting trades)
+				      (PP in
+					  (NP stock-index futures or options))))))))
+      .))
+( (S (NP-SBJ-1 Traders)
+     (VP profit
+         (PP-MNR by
+		 (S-NOM (NP-SBJ-2 *-1)
+			(VP trying
+			    (S (NP-SBJ *-2)
+			       (VP to
+				   (VP capture
+				       (NP (NP fleeting price discrepancies)
+					   (PP between
+					       (NP (NP stocks)
+						   and
+						   (NP the index futures or options)))))))))))
+     .))
+( (S (SBAR-ADV If
+	       (S (NP-SBJ stocks)
+		  (VP are
+		      (ADVP-TMP temporarily)
+		      (ADJP-PRD `` (ADJP cheaper) ''
+				(PP than
+				    (NP futures))))))
+     ,
+     (PP for
+         (NP example))
+     ,
+     (NP-SBJ an arbitrager)
+     (VP will
+         (VP (VP buy
+                 (NP stocks))
+             and
+             (VP sell
+                 (NP futures))))
+     .))
+( (NP (NP Stock-index futures)
+      --
+      (NP Contracts
+	  (S (NP-SBJ *)
+	     (VP to
+		 (VP buy or sell
+		     (NP (NP the cash value)
+			 (PP of
+			     (NP a stock index)))
+		     (PP-TMP by
+			     (NP a certain date))))))
+      .))
+( (S (NP-SBJ-1 The cash value)
+     (VP is
+         (VP determined
+             (NP *-1)
+             (PP-MNR by
+		     (S-NOM (NP-SBJ *)
+			    (VP multiplying
+				(NP the index number)
+				(PP-CLR by
+					(NP a specified amount)))))))
+     .))
+( (S (NP-SBJ The (ADJP most common) program-trading vehicles)
+     (VP are
+         (NP-PRD (NP (NP futures contracts)
+		     (PP on
+			 (NP (NP Standard & poor 's)
+			     500-stock index))
+		     (PRN -LRB-
+			  (VP traded
+			      (NP *)
+			      (PP-LOC on
+				      (NP the Chicago Mercantile Exchange)))
+			  -RRB-))
+		 ;
+		 (NP (NP (NP the Major Market Index)
+			 ,
+			 (NP (NP a 20-stock index)
+			     (SBAR (WHNP-1 that)
+				   (S (NP-SBJ *T*-1)
+				      (VP mimics
+					  (NP the Dow Jones Industrial Average))))))
+		     (PRN -LRB-
+			  (VP traded
+			      (NP *)
+			      (PP-LOC on
+				      (NP (NP the chicago Board)
+					  (PP of
+					      (NP Trade)))))
+			  -RRB-))
+		 ; and
+		 (NP (NP the S&P 100 options)
+		     (PRN -LRB-
+			  (VP (VP traded
+				  (NP *)
+				  (PP-LOC on
+					  (NP the Chicago Board Options Exchange)))
+			      , and
+			      (VP based
+				  (NP *)
+				  (PP-LOC-CLR on
+					      (NP (NP 100 stocks)
+						  (VP selected
+						      (NP *)
+						      (PP from
+							  (NP the S&P 500)))))))
+			  -RRB-))))
+     .))
+( (NP (NP Stock-index options)
+      --
+      (S (NP-SBJ Options)
+	 (VP give
+	     (NP holders)
+	     (NP (NP the right
+		     (S *RNR*-1))
+		 ,
+		 but
+		 not
+		 (NP the obligation
+		     (S *RNR*-1))
+		 ,
+		 (S-1 (NP-SBJ *)
+		      to
+		      (VP buy
+			  (PRN -LRB-
+			       (NP a call)
+			       -RRB-)
+			  or
+			  sell
+			  (PRN -LRB-
+			       (NP a put)
+			       -RRB-)
+			  (NP (NP a specified amount)
+			      (PP of
+				  (NP an underlying investment)))
+			  (PP-TMP by
+				  (NP a certin date))
+			  (PP-CLR at
+				  (NP (NP a preset price)
+				      ,
+				      (VP known
+					  (NP *)
+					  (PP-CLR as
+						  (NP the strike price))))))))))
+      .))
+( (S (PP For
+         (NP stock indexes))
+     ,
+     (NP-SBJ the underlying investment)
+     (VP may
+         (VP be
+             (NP-PRD (NP a stock-index futures contract)
+		     or
+		     (NP (NP the cash value)
+			 (PP of
+			     (NP a stock index))))))
+     .))
+( (S (PP For
+         (NP example))
+     ,
+     (NP-SBJ there)
+     (VP are
+         (NP-PRD (NP options)
+		 (PP (PP on
+			 (NP the S&P 500 futures contract))
+		     and
+		     (PP on
+			 (NP the S&P 100 index)))))
+     .))
+( (NP (NP Uptick)
+      --
+      (NP (NP An expression)
+	  (VP signifying
+	      (SBAR that
+		    (S (NP-SBJ (NP a transaction)
+			       (PP-LOC in
+				       (NP a listed security)))
+		       (VP occurred
+			   (PP-CLR at
+				   (NP (NP a higher price)
+				       (PP than
+					   (NP (NP the previous transaction)
+					       (PP-LOC in
+						       (NP that security)))))))))))
+      .))

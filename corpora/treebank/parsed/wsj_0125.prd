@@ -1,0 +1,632 @@
+
+
+( (S (NP-SBJ The following)
+     (VP were
+         (PP-PRD among
+		 (NP (NP (NP yesterday 's)
+			 offerings and pricings)
+		     (PP-LOC in
+			     (NP the U.S. and non-U.S. capital markets))
+		     ,
+		     (PP with
+			 (NP terms and syndicate manager))
+		     ,))
+         (SBAR-ADV as
+		   (S (NP-SBJ-1 *)
+		      (VP compiled
+			  (NP *-1) 
+			  (PP by
+			      (NP-LGS Dow Jones Capital Markets Report))))))
+     :))
+((NP-HLN International Business Machines Corp.
+	 --))
+((NP (NP (NP (QP $ 750 million) *U*)
+	 (PP of
+	     (NP (ADJP 8 3 %) debentures))
+          (ADJP due
+                (NP-TMP Nov. 1 , 2019))
+          ,
+          (VP priced
+	      (NP *)
+	      (PP-CLR at
+		      (NP 99))
+	      (S-CLR (NP-SBJ *)
+		     (VP to
+			 (VP yield
+			     (NP 8.467 %))))))
+      .))
+( (S (NP-SBJ-1 The 30-year non-callable issue)
+     (VP was
+         (VP priced
+             (NP *-1)
+             (PP-CLR at
+		     (NP (NP a spread)
+			 (PP of
+			     (NP (NP 57 basis points)
+				 (PP above
+				     (NP (NP the Treasury 's)
+					 (ADJP 8 1 %)
+					 bellwether long bond))))))))
+     .))
+( (S (S (NP-SBJ-2 *-1)
+        (VP Rated
+	    (S (NP-SBJ *-2)
+	       (ADJP-PRD triple-A))
+            (PP by
+                (NP-LGS both
+			(NP (NP Moody 's)
+			    Investors Service Inc.)
+			and
+			(NP (NP Standard & Poor 's)
+			    Corp.)))))
+     ,
+     (NP-SBJ-1 the issue)
+     (VP will
+	 (VP be
+	     (VP sold
+		 (NP *-1)
+		 (PP-MNR through
+			 (NP (NP underwriters)
+			     (VP led
+				 (NP *)
+				 (PP by
+				     (NP-LGS Salomon Brothers Inc))))))))
+     .))
+( (S (NP-SBJ-1 (NP The size)
+               (PP of
+                   (NP the issue)))
+     (VP was
+         (VP increased
+             (NP *-1)
+             (PP from
+                 (NP an
+                     (ADJP originally planned)
+                     (QP $ 500 million)
+		     *U*))))
+     .))
+((NP-HLN Detroit
+	 --))
+((NP (NP (QP $ 130 million)
+	 *U*)
+     (PP of
+	 (NP general obligation distributable state aid bonds))
+     (ADJP due
+	   (NP-TMP 1991-2000 and 2009))
+     ,
+     (VP (ADVP tentatively)
+	 priced
+	 (NP *)
+	 (PP by
+	     (NP-LGS a Chemical Securities Inc. group))
+	 (S-CLR (NP-SBJ *)
+		(VP to
+		    (VP yield
+			(PP-DIR from
+				(NP (NP 6.20 %)
+				    (PP-TMP in
+					    (NP 1991))))
+			(PP-DIR to
+				(NP (NP 7.272 %)
+				    (PP-TMP in
+					    (NP 2009))))))))
+     .))
+( (S (NP-SBJ There)
+     (VP is
+         (NP-PRD (NP $ 81.8 million *U*)
+		 (PP of
+		     (NP (ADJP 7.20 %) term bonds))
+		 (ADJP due
+		       (NP-TMP 2009))
+		 (VP priced
+		     (NP *)
+		     (PP-CLR at
+			     (NP 99 1))
+		     (S-CLR (NP-SBJ *)
+			    (VP to
+				(VP yield
+				    (NP 7.272 %)))))))
+     .))
+( (S (NP-SBJ-1 Serial bonds)
+     (VP are
+         (VP priced
+	     (NP *-1)
+             (S-CLR (NP-SBJ *)
+		    (VP to
+			(VP yield
+			    (PP-DIR from
+				    (NP (NP 6.20 %)
+					(PP-TMP in
+						(NP 1991))))
+			    (PP-DIR to
+				    (NP (NP 7 %)
+					(PP-TMP in
+						(NP 2000)))))))))
+     .))
+( (S (NP-SBJ The bonds)
+     (VP are
+	 (ADJP-PRD (ADJP insured)
+		   and
+		   (ADJP triple-A-rated)))
+     .))
+((NP-HLN (NP Santa Ana Community Redevelopment Agency)
+	 ,
+	 (NP-LOC Calif.)
+	 --))
+((NP (NP (QP $ 107 million)
+	 *U*)
+     (PP of
+	 (NP tax allocation bonds))
+     ,
+     (NP 1989 Series A-D)
+     ,
+     (ADJP due
+	   (NP-TMP 1991-1999 , 2009 and 2019))
+     ,
+     (VP (ADVP tentatively)
+	 priced
+	 (NP *)
+	 (PP by
+	     (NP-LGS a Donaldson Lufkin & Jenrette Securities Corp. group))
+	 (S-CLR (NP-SBJ *)
+		(VP to
+		    (VP yield
+			(PP-DIR from
+				(NP (NP 6.40 %)
+				    (PP-TMP in
+					    (NP 1991))))
+			(PP-DIR to
+				(NP (NP 7.458 %)
+				    (PP-TMP in
+					    (NP 2019))))))))
+     .))
+( (S (S (NP-SBJ-1 (NP The (ADJP 7 3 %) term bonds)
+                  (ADJP due
+			(NP-TMP 2009)))
+        (VP are
+            (VP priced
+		(NP *-1)
+                (PP-CLR at
+			(NP 99 1))
+                (S-CLR (NP-SBJ *)
+		       (VP to
+			   (VP yield
+			       (NP 7.422 %)))))))
+     , and
+     (S (NP-SBJ-2 (NP 7 3 % term bonds)
+                  (ADJP due
+                        (NP-TMP 2019)))
+        (VP are
+            (VP priced
+		(NP *-2)
+                (PP-CLR at
+			(NP 99))
+                (S-CLR (NP-SBJ *)
+		       (VP to
+			   (VP yield
+			       (NP 7.458 %)))))))
+     .))
+( (S (NP-SBJ-1 Serial bonds)
+     (VP are
+         (VP priced
+	     (NP *-1)
+             (PP-CLR at
+		     (NP par))
+             (S-CLR (NP-SBJ *)
+		    (VP to
+			(VP yield
+			    (PP-DIR from
+				    (NP (NP 6.40 %)
+					(PP-TMP in
+						(NP 1991))))
+			    (PP-DIR to
+				    (NP (NP 7.15 %)
+					(PP-TMP in
+						(NP 1999)))))))))
+     .))
+( (S (NP-SBJ-1 The bonds)
+     (VP are
+         (VP rated
+             (S (NP-SBJ *-1)
+		(ADJP-PRD single-A))
+             (PP by
+                 (NP-LGS S&P))
+	     ,
+	     (PP according
+		 (PP to
+		     (NP the lead underwriter)))))
+     .))
+((NP-HLN (NP Maryland Community Development Administration)
+	 ,
+	 (NP (NP Department)
+	     (PP of
+		 (NP Housing and Community Development)))
+	 --))
+( (NP (NP (QP $ 80.8 million)
+	  *U*)
+      (PP of
+	  (NP single-family program bonds))
+      ,
+      (NP 1989 fourth and fifth series)
+      ,
+      (VP (ADVP tentatively)
+	  priced
+	  (NP *)
+	  (PP by
+	      (NP-LGS a Merrill Lynch Capital Markets group))
+	  (S-CLR (NP-SBJ *)
+		 (VP to
+		     (VP yield
+			 (PP-DIR from
+				 (NP (NP 6.25 %)
+				     (PP-TMP in
+					     (NP 1992))
+				     (PP for
+					 (NP fourth series bonds))))
+			 (PP-DIR to
+				 (NP (NP 7.74 %)
+				     (PP-TMP in
+					     (NP 2029))
+				     (PP for
+					 (NP fifth series bonds))))))))
+      .))
+( (S (NP-SBJ There)
+     (VP is
+         (NP-PRD (NP (QP $ 30.9 million)
+		     *U*)
+		 (PP of
+		     (NP (NP fourth series bonds)))
+		 ,
+		 (SBAR (WHNP-1 (WHNP the interest)
+			       (WHPP on
+				     (WHNP which)))
+		       (S (NP-SBJ *T*-1)
+			  (VP is not
+			      (ADJP-PRD subject
+					(PP to
+					    (NP the federal alternative minimum tax))))))))
+     .))
+( (S (NP-SBJ They)
+     (VP mature
+         (NP-TMP-CLR 1992-1999 , 2009 and 2017))
+     .))
+( (S (NP-SBJ-1 Fourth series serial bonds)
+     (VP are
+         (VP priced
+	     (NP *-1)
+             (PP-CLR at
+		     (NP par))
+             (S-CLR (NP-SBJ *)
+		    (VP to
+			(VP yield
+			    (PP-DIR from
+				    (NP (NP 6.25 %)
+					(PP-TMP in
+						(NP 1992))))
+			    (PP-DIR to
+				    (NP (NP 7 %)
+					(PP-TMP in
+						(NP 1999)))))))))
+     .))
+( (S (S (NP-SBJ-1 (NP The (ADJP 7.40 %) term bonds)
+		  (ADJP due
+			(NP-TMP 2009)))
+        (VP are
+            (VP priced
+		(NP *-1)
+                (S-CLR (NP-SBJ *)
+		       (VP to
+			   (VP yield
+			       (NP 7.45 %)))))))
+     , and
+     (S (NP-SBJ-2 (NP (ADJP 7.40 %) term bonds)
+		  (ADJP due
+			(NP-TMP 2017)))
+        (VP are
+            (VP priced
+		(NP *-2)
+                (S-CLR (NP-SBJ *)
+		       (VP to
+			   (VP yield
+			       (NP 7.50 %)))))))
+     .))
+( (S (NP-SBJ There)
+     (VP is
+         (NP-PRD (NP (QP $ 49.9 million)
+		     *U*)
+		 (PP of
+		     (NP (NP fifth series bonds)))
+		 ,
+		 (SBAR (WHNP-1 which)
+		       (S (NP-SBJ *T*-1)
+			  (VP are
+			      (ADJP-PRD subject
+					(PP to
+					    (NP the federal alternative minimum tax))))))))
+     .))
+( (S (NP-SBJ They)
+     (VP mature
+         (PP-TMP-CLR in
+		     (NP 2005 , 2009 and 2029)))
+     .))
+( (S (NP-SBJ-1 (NP Bonds)
+	       (ADJP due
+		     (PP-TMP in
+			     (NP 2005))))
+     (VP (VP have
+	     (NP a (ADJP 7 1 %) coupon))
+	 and
+	 (VP are
+	     (VP priced
+		 (NP *-1)
+		 (PP-CLR at
+			 (NP par)))))
+     .))
+( (S (S (NP-SBJ-2 (NP The (ADJP 7 5 %) bonds)
+		  (ADJP due
+			(NP-TMP 2009)))
+        (VP are
+            (VP priced
+		(NP *-2)
+                (S-CLR (NP-SBJ *)
+		       (VP to
+			   (VP yield
+			       (NP 7.65 %)))))))
+     , and
+     (S (NP-SBJ-1 (NP (ADJP 7 5 %) bonds)
+                  (ADJP due
+                        (NP-TMP 2029)))
+        (VP are
+            (VP priced
+		(NP *-1)
+                (PP-CLR at
+			(NP 98 1))
+                (S-CLR (NP-SBJ *)
+		       (VP to
+			   (VP yield
+			       (NP 7.74 %)))))))
+     .))
+( (S (NP-SBJ The underwriters)
+     (VP expect
+         (NP (NP a double-A rating)
+	     (PP from
+		 (NP Moody 's))))
+     .))
+((NP-HLN (NP Heiwado Co .)
+	 (PRN -LRB-
+	      (NP-LOC Japan)
+	      -RRB-)
+	 --))
+( (NP (NP (QP $ 100 million)
+	  *U*)
+      (PP of
+	  (NP Eurobonds))
+      (ADJP due
+	    (NP-TMP Nov. 16 , 1993))
+      ,
+      (PP with
+	  (NP equity-purchase warrants))
+      ,
+      (VP indicating
+	  (NP (NP a (ADJP 3 7 %) coupon)
+	      (PP at
+		  (NP par)))
+	  ,
+	  (PP via
+	      (NP Daiwa Europe Ltd)))
+      .))
+( (S (NP-SBJ Each (ADJP $ 5,000 *U*) bond)
+     (VP carries
+         (NP (NP one warrant)
+             ,
+             (ADJP exercisable
+                   (PP-TMP (PP from
+			       (NP Nov. 30 , 1989))
+			   ,
+			   (PP through
+			       (NP Nov. 2 , 1993))))
+	     ,
+	     (SBAR (WHADVP-3 0)
+		   (S (NP-SBJ *)
+		      (VP to
+			  (VP buy
+			      (NP shares)
+			      (PP-CLR at
+				      (NP (NP an expected premium)
+					  (PP of
+					      (NP (NP 2 1 %)
+						  (PP to
+						      (NP the closing price))))))
+			      (SBAR-TMP (WHADVP-2 when)
+					(S (NP-SBJ-1 terms)
+					   (VP are
+					       (VP fixed
+						   (NP *-1)
+						   (NP-TMP Tuesday)
+						   (ADVP-TMP *T*-2)))))
+			      (ADVP *T*-3)))))))
+     .))
+( (NP (NP Fees)
+      (QP 2 1) 
+      .))
+((NP-HLN (NP Svenska Intecknings Garanti Aktiebolaget)
+	 (PRN -LRB-
+	      (NP-LOC Sweden)
+	      -RRB-)
+	 --))
+( (NP (NP (QP 20 billion) yen)
+      (PP of
+	  (NP (ADJP 6 %) Eurobonds))
+      (ADJP due
+	    (NP-TMP Nov. 21 , 1994))
+      ,
+      (VP priced
+	  (NP *)
+	  (PP-CLR at
+		  (NP 101 3))
+	  (S-CLR (NP-SBJ *)
+		 (VP to
+		     (VP yield
+			 (NP (NP 6.03 %)
+			     (PP less
+				 (NP full fees)))))))
+      ,
+      (PP via
+	  (NP Mitsui Finance International))
+      .))
+( (S (NP-SBJ-1 *)
+     (VP Guaranteed
+	 (NP *-1)
+         (PP by
+             (NP-LGS Svenska Handelsbanken)))
+     .))
+( (NP (NP Fees) 
+      (QP 1 7) .))
+( (NP-HLN (NP Takashima & Co .)
+	  (PRN -LRB-
+	       (NP-LOC Japan)
+	       -RRB-)
+	  --))
+( (NP (NP (QP 50 million) Swiss francs)
+      (PP of
+	  (NP (ADJP privately placed)
+	      convertible notes))
+      (ADJP due
+	    (NP-TMP March 31 , 1994))
+      ,
+      (PP with
+	  (NP (NP a fixed (ADJP 0.25 %) coupon)
+	      (PP at
+		  (NP par))))
+      (PP via
+	  (NP (NP Yamaichi Bank)
+	      (PRN -LRB-
+		   (NP-LOC Switzerland)
+		   -RRB-)))
+      .))
+( (NP (NP Put option) 
+      (NP-TMP March 31 , 1992)
+      ,
+      (PP at
+	  (NP a fixed 107 7))
+      (S (NP-SBJ *)
+	 (VP to
+	     (VP yield
+		 (NP 3.43 %))))
+      .))
+( (S (NP-SBJ Each 50,000 Swiss franc note)
+     (VP is
+         (ADJP-PRD convertible)
+	 (PP-TMP (PP from
+		     (NP Nov. 30 , 1989))
+		 ,
+		 (PP to
+		     (NP March 16 , 1994)))
+	 (PP-CLR at
+		 (NP (NP a (ADJP 5 %) premium)
+		     (PP over
+			 (NP the closing share price))))
+	 (NP-TMP (NP Monday)
+		 ,
+		 (SBAR (WHADVP-2 when)
+		       (S (NP-SBJ-3 terms)
+			  (VP are
+			      (VP scheduled
+				  (S (NP-SBJ-1 *-3)
+				     (VP to
+					 (VP be
+					     (VP fixed
+						 (NP *-1)))))
+				  (ADVP-TMP-CLR *T*-2)))))))
+     .))
+( (NP (NP Fees) 
+      (QP 1 3) .))
+( (NP-HLN (NP Mitsubishi Pencil Co .)
+	  (PRN -LRB-
+	       (NP-LOC Japan)
+	       -RRB-)
+	  --))
+( (NP (NP 60 million Swiss francs)
+      (PP of
+	  (NP (ADJP privately placed)
+	      convertible notes))
+      (ADJP due
+	    (NP-TMP Dec. 31 , 1993))
+      ,
+      (PP with
+	  (NP (NP a fixed 0.25 % coupon)
+	      (PP at
+		  (NP par))))
+      (PP via
+	  (NP (NP Union Bank)
+	      (PP of
+		  (NP Switzerland))))
+      .))
+( (NP (NP Put option)
+      (PP-TMP on
+	      (NP Dec. 31 , 1991))
+      ,
+      (PP at
+	  (NP a fixed 106 7))
+      (S (NP-SBJ *)
+	 (VP to
+	     (VP yield
+		 (NP 3.42 %))))
+      .))
+( (S (NP-SBJ Each 50,000 Swiss franc note)
+     (VP is
+         (ADJP-PRD convertible)
+	 (PP-TMP (PP from
+		     (NP Dec. 5 , 1989))
+		 ,
+		 (PP to
+		     (NP Dec. 31 , 1993)))
+	 ,
+	 (PP at
+	     (NP (NP a (ADJP 5 %) premium)
+		 (PP over
+		     (NP the closing share price))))
+	 (NP-TMP (NP Tuesday)
+		 ,
+		 (SBAR (WHADVP-2 when)
+		       (S (NP-SBJ-3 terms)
+			  (VP are
+			      (VP scheduled
+				  (S (NP-SBJ-1 *-3)
+				     (VP to
+					 (VP be
+					     (VP fixed
+						 (NP *-1)))))
+				  (ADVP-TMP-CLR *T*-2)))))))
+     .))
+( (NP (NP Fees) 
+      (QP 1 5) .))
+( (NP-HLN (NP Koizumi Sangyo Corp .)
+	  (PRN -LRB-
+	       (NP-LOC Japan)
+	       -RRB-)
+	  --))
+( (NP (NP (QP 20 million)
+	  Swiss francs)
+      (PP of
+	  (NP (ADJP 6 1/2 %)
+	      (ADJP privately placed)
+	      notes))
+      (ADJP due
+	    (NP-TMP Nov. 29 , 1996))
+      ,
+      (VP priced
+	  (NP *)
+	  (PP-CLR at
+		  (NP 99 1))
+	  (PP via
+	      (NP (NP Dai-Ichi Kangyo Bank)
+		  (PRN -LRB-
+		       (NP-LOC Schweiz)
+		       -RRB-))))
+      .))
+( (NP (NP Guarantee)
+      (PP by
+          (NP Dai-Ichi Kangyo Bank Ltd))
+      .))
+( (NP (NP Fees)
+      (QP 1 3) .))

@@ -1,0 +1,134 @@
+
+
+( (S (NP-SBJ (NAC First
+		  (PP of
+		      (NP America)))
+	     Bank Corp.)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP completed
+                      (NP (NP its acquisition)
+                          (PP of
+                              (NP Midwest Financial Group Inc.))
+                          (PP for
+                              (NP (QP about $ 250 million) *U*)))))))
+     .))
+( (S (NP-SBJ (NP First)
+	     (PP of
+		 (NP America))
+             ,
+             (SBAR (WHNP-1 which)
+                   (S (NP-SBJ *T*-1)
+		      (ADVP-TMP now)
+                      (VP has
+                          (NP (NP 45 banks)
+                              and
+                              (NP (NP (QP $ 12.5 billion) *U*)
+				  (PP in
+				      (NP assets)))))))
+             ,)
+     (VP announced
+         (NP an agreement
+             (S (NP-SBJ *)
+                (VP to
+                    (VP acquire
+                        (NP the
+                            (NAC-LOC Peoria
+				     ,
+				     Ill.
+				     ,)
+                            bank holding company)))))
+	 (PP-TMP in
+		 (NP January)))
+     .))
+( (S (NP-SBJ Midwest Financial)
+     (VP has
+         (NP (NP (NP (QP $ 2.3 billion)
+		     *U*)
+		 (PP in
+		     (NP assets)))
+             and
+             (NP eight banks)))
+     .))
+( (S (NP-SBJ-1 The Midwest Financial subsidiary banks)
+     (VP will
+         (VP continue
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP operate
+                        (PP-MNR under
+				(NP their current names)))))
+	     (PP-TMP until
+		     (NP (NP early 1990)
+			 ,
+			 (SBAR (WHADVP-2 when)
+			       (S (NP-SBJ each)
+				  (VP will
+				      (VP adopt
+					  (NP the
+					      (NAC First
+						   (PP of
+						       (NP America)))
+					      name)
+					  (ADVP-TMP *T*-2)))))))))
+     .))
+( (S (NP-SBJ (NP (ADJP Kalamazoo , Mich.-based)
+		 First)
+             (PP of
+                 (NP America)))
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP will
+                      (VP eliminate
+                          (NP (NP the 13 management positions)
+                              (PP of
+                                  (NP the former Midwest Financial parent company))))))))
+     .))
+( (S (NP-SBJ (NP First)
+             (PP of
+                 (NP America)))
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ (NP some)
+                          (PP of
+                              (NP the managers)))
+                  (VP will
+                      (VP take
+                          (NP (NP other jobs)
+                              (PP with
+                                  (NP (NP First)
+                                      (PP of
+                                          (NP America))))))))))
+     .))
+( (S But
+     (NP-SBJ it)
+     (VP said
+         (SBAR that
+               (S (NP-SBJ (NP severance payments)
+                          (PP to
+                              (NP (NP those executives)
+                                  (VP not staying
+                                      (PP with
+                                          (NP the company))))))
+                  (VP will
+                      (VP reduce
+                          (NP (NP (NP (NP First)
+				      (PP of
+					  (NP America))
+				      's)
+				  operating results)
+			      (PP for
+				  (NP 1989)))
+                          (PP-EXT by
+				  (NP (QP $ 3 million) *U*))
+                          (PP-DIR to
+				  (NP (NP (QP $ 4 million) *U*)
+				      , or
+				      (NP (NP (QP 15 cents
+						  to
+						  20)
+					      cents)
+					  (NP-ADV a share)))))))))
+     .))

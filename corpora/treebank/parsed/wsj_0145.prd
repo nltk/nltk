@@ -1,0 +1,99 @@
+
+
+( (S (NP-SBJ (NP The British Department)
+             (PP of
+                 (NP Trade and Industry)))
+     (VP ordered
+         (NP (NP an investigation)
+             (PP of
+                 (NP (NP the competitive impact)
+                     (PP of
+                         (NP (NP (NP Michelin Tyre PLC 's)
+				 planned acquisition)
+			     (PP of
+				 (NP National Tyre Service Ltd))))))))
+     .))
+( (S (NP-SBJ The department)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP referred
+                      (NP the takeover)
+                      (PP-CLR to
+			      (NP the Monopolies and Mergers Commission))
+                      (PP-PRP because
+			      of
+			      (NP (NP (NP the purchase 's)
+				      possible effects)
+				  (PP on
+				      (NP (NP the U.K. market)
+					  (PP for
+					      (NP (NP distribution)
+						  (PP of
+						      (NP replacement tires))))))))))))
+     .))
+( (S (NP-SBJ (NP BTR PLC)
+             ,
+             (NP a U.K. industrial conglomerate)
+             ,)
+     (VP said
+         (PP-TMP in
+		 (NP June))
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP had
+                      (VP sold
+                          (NP its National Tyre Service business)
+                          (PP-DTV to
+				  (NP (NP Michelin Investment Ltd.)
+				      ,
+				      (NP (NP a U.K. unit)
+					  (PP of
+					      (NP the tire maker)))
+				      ,))
+                          (PP-CLR for
+				  (NP (NP (QP # 140 million) *U*)
+				      (PRN -LRB-
+					   (NP (QP $ 221.4 million) *U*)
+					   -RRB-))))))))
+     .))
+( (S (NP-SBJ Michelin Tyre)
+     (VP is
+         (NP-PRD (NP a unit)
+		 (PP of
+		     (NP (NP France 's)
+			 Michelin S.A))))
+     .))
+( (S (S (NP-SBJ Michelin officials)
+        (VP could n't
+            (ADVP-TMP immediately)
+            (VP comment
+                (PP-CLR on
+			(NP the referral)))))
+     , but
+     (S (NP-SBJ they)
+        (VP noted
+            (SBAR 0
+                  (S (NP-SBJ-1 (NP the purchase)
+                               (PP from
+                                   (NP BTR)))
+                     (VP has
+                         (ADVP-TMP already)
+                         (VP been
+                             (VP concluded
+                                 (NP *-1))))))))
+     .))
+( (S (NP-SBJ (NP National Tyre)
+             ,
+             (SBAR (WHNP-1 which)
+                   (S (NP-SBJ *T*-1)
+                      (VP has
+                          (NP 420 branches)
+                          (PP-LOC throughout
+				  (NP the U.K.)))))
+             ,)
+     (VP had
+         (NP (NP 1988 pretax profit)
+             (PP of
+                 (NP (QP # 8.5 million) *U*))))
+     .))

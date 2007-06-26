@@ -1,0 +1,44 @@
+
+( (S 
+    (NP-SBJ (NNP Trinity) (NNPS Industries) (NNP Inc.) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP it) )
+          (VP (VBD reached) 
+            (NP (DT a) (JJ preliminary) (NN agreement) 
+              (S 
+                (NP-SBJ (-NONE- *) )
+                (VP (TO to) 
+                  (VP (VB sell) 
+                    (NP (CD 500) (NN railcar) (NNS platforms) )
+                    (PP-DTV (TO to) 
+                      (NP 
+                        (NP (NNP Trailer) (NNP Train) (NNP Co.) )
+                        (PP (IN of) 
+                          (NP (NNP Chicago) ))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (NNS Terms) )
+    (VP (VBD were) (RB n't) 
+      (VP (VBN disclosed) 
+        (NP (-NONE- *-1) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Trinity) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 (PRP it) )
+          (VP (VBZ plans) 
+            (S 
+              (NP-SBJ (-NONE- *-1) )
+              (VP (TO to) 
+                (VP (VB begin) 
+                  (NP (NN delivery) )
+                  (PP-TMP (IN in) 
+                    (NP 
+                      (NP (DT the) (JJ first) (NN quarter) )
+                      (PP (IN of) 
+                        (NP (JJ next) (NN year) )))))))))))
+    (. .) ))

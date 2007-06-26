@@ -1,0 +1,703 @@
+
+
+( (S (SBAR-ADV If
+	       (S (NP-SBJ you)
+		  (VP 'd
+		      (ADVP really)
+		      (ADVP rather)
+		      (VP have
+			  (NP a Buick)))))
+     ,
+     (NP-SBJ *)
+     (VP do n't
+         (VP leave
+             (NP home)
+             (PP without
+                 (NP the American Express card))))
+     .))
+( (S Or
+     (ADVP so)
+     (NP-SBJ the slogan)
+     (VP might
+         (VP go))
+     .))
+( (S (NP-SBJ (NP American Express Co.)
+             and
+             (NP (NP General Motors Corp. 's)
+                 beleaguered Buick division))
+     (VP are
+         (VP joining
+             (NP forces)
+             (PP-LOC in
+		     (NP (NP a promotion)
+			 (VP aimed
+			     (NP *)
+			     (PP-CLR at
+				     (S-NOM (NP-SBJ *)
+					    (VP boosting
+						(NP (NP Buick 's)
+						    sales)
+						(SBAR-ADV while
+							  (S (NP-SBJ *)
+							     (VP encouraging
+								 (NP (NP broader use)
+								     (PP of
+									 (NP the American Express card))))))))))))))
+     .))
+( (S (NP-SBJ The companies)
+     (VP are
+         (VP giving
+             (NP (NP four-day vacations)
+                 (PP for
+                     (NP two)))
+             (PP-DTV to
+		     (NP (NP Buick buyers)
+			 (SBAR (WHNP-51 who)
+			       (S (NP-SBJ *T*-51)
+				  (VP charge
+				      (NP (NP all or part)
+					  (PP of
+					      (NP their down payments)))
+				      (PP-CLR on
+					      (NP the American Express green card)))))))))
+     .))
+( (S (NP-SBJ-1 They)
+     (VP have
+         (VP begun
+             (S (NP-SBJ *-1)
+		(VP sending
+		    (NP (NP letters)
+			(VP explaining
+			    (NP (NP the program)
+				,
+				(SBAR (WHNP-52 which)
+				      (S (NP-SBJ *T*-52)
+					 (VP (VP began
+						 (NP-TMP-CLR Oct. 18))
+					     and
+					     (VP will
+						 (VP end
+						     (NP-TMP-CLR Dec. 18)))))))))
+		    ,
+		    (PP-DTV to
+			    (NP (QP about five million) card holders))))))
+     .))
+( (S (NP-SBJ Neither company)
+     (VP would
+         (VP disclose
+             (NP (NP the program 's)
+                 cost)))
+     .))
+( (SINV (S-TPC-1 (NP-SBJ Buick)
+		 (VP approached
+		     (NP American Express)
+		     (PP about
+			 (NP a joint promotion))
+		     (SBAR-PRP because
+			       (S (NP-SBJ its card holders)
+				  (ADVP generally)
+				  (VP (VP have
+					  (NP a `` good credit history ''))
+				      and
+				      (VP are ``
+					  (ADJP-PRD good
+						    (PP at
+							(S-NOM (NP-SBJ *)
+							       (VP making
+								   (NP payments)))))))))))
+	, ''
+	(VP says
+	    (S *T*-1))
+	(NP-SBJ (NP a spokeswoman)
+		(PP for
+		    (NP the division)))
+	.))
+( (S (S-TPC-3 (NP-SBJ American Express)
+	      (ADVP also)
+	      (VP represents
+		  (NP (NP the upscale image)
+		      (SBAR (WHNP-1 0)
+			    ``
+			    (S (NP-SBJ-2 we)
+			       (VP 're
+				   (VP trying
+				       (S (NP-SBJ *-2)
+					  (VP to
+					      (VP project
+						  (NP *T*-1)))))))))))
+     , ''
+     (NP-SBJ she)
+     (VP adds
+	 (S *T*-3))
+     .))
+( (S (NP-SBJ-1 Buick)
+     (VP has
+         (VP been
+             (VP seeking
+                 (PP-TMP for
+			 (NP the past few years))
+                 (S (NP-SBJ *-1)
+                    (VP to
+                        (VP restore
+                            (NP (NP its reputation)
+                                (PP as
+                                    (NP (NP ``
+                                            (NP the doctor 's)
+                                            car '')
+                                        --
+                                        (NP (NP a product)
+                                            (PP for
+                                                (NP upscale professionals))))))))))))
+     .))
+( (S (NP-SBJ Sales)
+     (VP were
+         (ADJP-PRD roughly flat)
+	 (PP-TMP in
+		 (NP the 1989 model year))
+         (PP compared
+             (PP with
+                 (ADVP (NP a year)
+		       earlier)))
+	 ,
+	 (SBAR-ADV though
+		   (S (NP-SBJ industry sales)
+		      (VP fell))))
+     .))
+( (S But
+     (SBAR-TMP since
+	       (S (NP-SBJ the 1990 model year)
+		  (VP began
+		      (NP-TMP-CLR Oct. 1))))
+     ,
+     (NP-SBJ Buick sales)
+     (VP have
+	 (VP plunged
+	     (NP-EXT 33 %)))
+     .))
+( (S (PP For
+         (NP American Express))
+     ,
+     (NP-SBJ the promotion)
+     (VP is
+         (NP-PRD (NP part)
+		 (PP of
+		     (NP an effort
+			 (S (NP-SBJ *)
+			    (VP to
+				(VP broaden
+				    (NP (NP the use)
+					(PP of
+					    (NP its card))
+					(PP for
+					    (NP (NP retail sales)
+						,
+						(SBAR-LOC (WHADVP-1 where) 
+							  (S (NP-SBJ-2 the company)
+							     (VP expects
+								 (S (NP-SBJ *-2)
+								    (VP to
+									(VP get
+									    (NP (NP much)
+										(PP of
+										    (NP (NP the future growth)
+											(PP-LOC in
+												(NP its card business)))))
+									    (ADVP-LOC *T*-1)))))))))))))))))
+     .))
+( (S (ADVP Traditionally)
+     ,
+     (NP-SBJ-66 the card)
+     (VP has
+         (VP been
+             (VP used
+                 (NP *-66)
+		 (PP-CLR (ADVP mainly)
+			 for
+			 (NP travel and entertainment expenses)))))
+     .))
+( (S (NP-SBJ (NP Phillip Riese)
+             ,
+             (NP an American Express executive vice president)
+             ,)
+     (VP says
+         (SBAR 0
+               (S (NP-SBJ (NP the promotion)
+			  (PP with
+			      (NP Buick)))
+                  (VP (VP is
+			  (NP-PRD (NP (NP his company 's)
+				      first)
+				  (PP with
+				      (NP an auto maker))))
+		      , but
+		      ``
+		      (VP (ADVP hopefully)
+			  -LCB-
+			  will
+			  (VP be
+			      -RCB-
+			      (NP-PRD (NP the
+					  first)
+				      (PP of
+					  (NP (NP many)
+					      ''
+					      (PP in
+						  (NP (NP the company 's)
+						      effort
+						      (S (NP-SBJ *)
+							 (VP to
+							     (VP promote
+								 (NP its green card)
+								 (PP-CLR as ``
+									 (NP the total car-care card))))))))))))))))
+     .
+     ''))
+( (S (PP To
+         (NP that end))
+     ,
+     (NP-SBJ American Express)
+     (VP has
+         (VP been
+             (VP signing
+		 (PRT up)
+                 (NP-1 (NP gasoline companies)
+		       ,
+		       (NP car repair shops)
+		       ,
+		       (NP tire companies)
+		       and
+		       (NP car dealers))
+                 (S-CLR (NP-SBJ *-1) 
+			(VP to
+			    (VP accept
+				(NP the card)))))))
+     .))
+( (S (S-TPC-1 (S (NP-SBJ Many auto dealers)
+		 (ADVP-TMP now)
+		 (VP let
+		     (S (NP-SBJ car buyers)
+			(VP charge
+			    (NP (NP part or all)
+				(PP of
+				    (NP their purchase)))
+			    (PP-CLR on
+				    (NP the American Express card))))))
+	      , but
+	      (S (NP-SBJ few card holders)
+		 (VP realize
+		     (NP this))))
+     ,
+     (NP-SBJ Mr. Riese)
+     (VP says
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+((SINV (S-TPC-2 (PP-TMP Until
+			(NP now))
+		,
+		(ADVP however)
+		,
+		(NP-SBJ (NP buyers)
+			(SBAR (WHNP-53 who)
+			      (S (NP-SBJ-1 *T*-53)
+				 (VP wanted
+				     (S (NP-SBJ *-1)
+					(VP to
+					    (VP finance
+						(NP (NP part)
+						    (PP of
+							(NP a car purchase)))
+						(PP through
+						    (NP General Motors Acceptance Corp.)))))))))
+		(VP could n't
+		    (VP put
+			(NP their down payment)
+			(PP-PUT on
+				(NP a charge card))
+			(PP-PRP because of
+				(NP (NP possible conflicts)
+				    (PP with
+					(NP (NP truth-in-lending and state disclosure laws)
+					    (PP over
+						(NP finance rates)))))))))
+       ,
+       (VP says
+	   (S *T*-2))
+       (NP-SBJ (NP a spokesman)
+	       (PP for
+		   (NP the GM finance arm)))
+       .))
+( (S-1 But
+       (NP-SBJ GMAC)
+       (VP approved
+	   (NP the Buick program)
+	   (PRN ,
+		(S (NP-SBJ he)
+		   (VP says
+		       (SBAR 0
+			     (S *T*-1))))
+		,)
+	   (SBAR-PRP because
+		     (S (NP-SBJ the American Express green card)
+			(VP (VP requires
+				(NP (NP payment)
+				    (PP in
+					(NP full)))
+				(PP-TMP upon
+					(NP billing)))
+			    , and
+			    (ADVP so)
+			    (VP does n't
+				(VP carry
+				    (NP any finance rates)))))))
+       .))
+( (S (NP-SBJ Mr. Riese)
+     (VP says
+         (SBAR 0
+               (S (NP-SBJ American Express)
+                  (VP considers
+                      (S (NP-SBJ GM
+				 and
+				 Buick)
+			 ``
+			 (NP-PRD (ADJP very sophisticated) direct-mail marketers))
+		      ,
+		      ''
+                      (SBAR-ADV so
+				(S ``
+				   (PP-MNR by
+					   (S-NOM (NP-SBJ *-1)
+						  (VP joining
+						      (NP forces)
+						      (PP-CLR with
+							      (NP them)))))
+				   (NP-SBJ-1 we)
+				   (VP have
+				       (VP managed
+					   (S (NP-SBJ *-1)
+					      (VP to
+						  (VP maximize
+						      (NP our direct-mail capability))))))))))))
+     .
+     ''))
+((SINV (S-TPC-1 (PP In
+		    (NP addition))
+		,
+		(NP-SBJ Buick)
+		(VP is
+		    (NP-PRD a
+			    (ADJP relatively respected)
+			    nameplate)
+		    (PP-LOC among
+			    (NP American Express card holders))))
+       ,
+       (VP says
+	   (SBAR 0
+		 (S *T*-1)))
+       (NP-SBJ an American Express spokeswoman)
+       .))
+( (S (S-TPC-4 (SBAR-TMP (WHADVP-1 When)
+			(S (NP-SBJ the company)
+			   (VP asked
+			       (NP members)
+			       (PP-LOC in
+				       (NP a mailing))
+			       (SBAR (WHNP-2 which cars)
+				     (S (NP-SBJ-3 they)
+					(VP would
+					    (VP like
+						(S (NP-SBJ *-3)
+						   (VP to
+						       (VP get
+							   (NP (NP information)
+							       (PP about
+								   (NP *T*-2)))
+							   (PP-PRP for
+								   (NP possible future purchases)))))))))
+			       (ADVP-TMP *T*-1))))
+	      ,
+	      (NP-SBJ Buick)
+	      (VP came
+		  (PRT in)
+		  (UCP (ADVP fourth
+			     (PP among
+				 (NP U.S. cars)))
+		       and
+		       (PP in
+			   (NP (NP the top 10)
+			       (PP of
+				   (NP all cars)))))))
+     ,
+     (NP-SBJ the spokeswoman)
+     (VP says
+	 (SBAR 0
+	       (S *T*-4)))
+     .))
+( (S (S (NP-SBJ American Express)
+	(VP has
+	    (NP (NP (QP more than 24 million)
+		    card holders)
+		(PP-LOC in
+			(NP the U.S.)))))
+     , and
+     (S (NP-SBJ over half)
+        (VP have
+            (NP the green card)))
+     .))
+( (S (S-TPC-1 (NP-SBJ GMAC)
+	      (VP screened
+		  (NP the card-member list)
+		  (PP-CLR for
+			  (NP (NP holders)
+			      (ADJP (NP (QP more than 30)
+					years)
+				    old)
+			      (PP with
+				  (NP (NP household incomes)
+				      (PP over
+					  (NP $ 45,000 *U*))))
+			      (SBAR (WHNP-54 who)
+				    (S (NP-SBJ *T*-54)
+				       (VP had n't
+					   ``
+					   (VP missed
+					       (NP any payments)))))))))
+     , ''
+     (NP-SBJ the Buick spokeswoman)
+     (VP says
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (NP-SBJ-67 (NP Some 3.8 million)
+		(PP of
+		    (NP (NP the five million)
+			(SBAR (WHNP-55 who)
+			      (S (NP-SBJ *T*-55)
+				 (VP will
+				     (VP get
+					 (NP letters))))))))
+     (VP were
+         (VP preapproved
+             (NP *-67)
+             (PP-CLR for
+		     (NP (NP credit)
+			 (PP with
+			     (NP GMAC))))))
+     .))
+( (S (NP-SBJ-1 These (QP 3.8 million) people)
+     (ADVP also)
+     (VP are
+         (ADJP-PRD eligible
+		   (S (NP-SBJ *-1)
+		      (VP to
+			  (VP get
+			      (NP (NP one percentage point)
+				  (PP off
+				      (NP (NP (NP GMAC 's)
+					      advertised finance rates)
+					  ,
+					  (SBAR (WHNP-56 which)
+						(S (NP-SBJ *T*-56)
+						   (VP start
+						       (PP-CLR at
+							       (NP 6.9 %))
+						       (PP for
+							   (NP two-year loan contracts)))))))))))))
+     .))
+( (S (NP-SBJ (NP A spokesman)
+             (PP for
+                 (NP (NP Visa International 's)
+                     U.S. subsidiary)))
+     (VP says
+         (SBAR 0
+               (S (NP-SBJ-1 his company)
+                  (VP (VP is
+			  (VP using
+			      (NP promotions)
+			      (S-CLR (NP-SBJ *-1)
+				     (VP to
+					 (VP increase
+					     (NP (NP use)
+						 (PP of
+						     (NP its cards))))))))
+		      , but
+		      (VP does n't
+			  (VP have
+			      (NP (NP plans)
+				  (PP for
+				      (NP (NP a tie-in)
+					  (ADJP similar
+						(PP to
+						    (NP the American Express-Buick link))))))))))))
+     .))
+( (S (NP-SBJ (NP Three divisions)
+	     (PP-LOC at
+		     (NP American Express))
+	     (NP *ICH*-1))
+     (VP are
+         (VP working
+             (PP with
+                 (NP Buick))
+             (PP-CLR on
+		     (NP the promotion))))
+     :
+     (NP-1 (NP (NP the establishment services division)
+	       ,
+	       (SBAR (WHNP-57 which)
+		     (S (NP-SBJ *T*-57)
+			(VP is
+			    (ADJP-PRD responsible
+				      (PP for
+					  (NP (NP all merchants and companies)
+					      (SBAR (WHNP-2 that)
+						    (S (NP-SBJ *T*-2)
+						       (VP accept
+							   (NP the card)))))))))))
+	   ;
+	   (NP the travel division)
+	   ; and
+	   (NP the merchandise sales division))
+     .))
+( (S (NP-SBJ The vacation packages)
+     (VP include
+         (NP (NP (NP hotel accommodations)
+                 and
+		 (PRN ,
+		      (PP in
+			  (NP some cases))
+		      ,)
+                 (NP (NP tours or tickets)
+                     (PP-DIR to
+			     (NP local attractions))))
+             , but not
+             (NP meals)))
+     .))
+( (S (NP-SBJ Destinations)
+     (VP are
+         (NP-PRD (NP Chicago)
+		 ;
+		 (NP Honolulu)
+		 ;
+		 (NP (NP Las Vegas)
+		     ,
+		     (NP Nev.))
+		 ;
+		 (NP Los Angeles)
+		 ;
+		 (NP (NP Miami Beach)
+		     ,
+		     (NP Fla.))
+		 ;
+		 (NP New Orleans)
+		 ;
+		 (NP New York)
+		 ;
+		 (NP (NP Orlando)
+		     ,
+		     (NP Fla.))
+		 ;
+		 (NP San Francisco)
+		 ; and
+		 (NP (NP Washington)
+		     ,
+		     (NP D.C.))))))
+( (S (NP-SBJ (NP A buyer)
+	     (SBAR (WHNP-58 who)
+		   (S (NP-SBJ-1 *T*-58)
+		      (VP chooses
+			  (S (NP-SBJ *-1)
+			     (VP to
+				 (VP fly
+				     (PP-DIR to
+					     (NP his destination)))))))))
+     (VP (VP must
+	     (VP pay
+		 (PP-CLR for
+			 (NP his own ticket))))
+	 but
+	 (VP gets
+	     (NP (NP a companion 's)
+		 ticket free)
+	     (SBAR-ADV if
+		       (S (NP-SBJ they)
+			  (VP fly
+			      (PP-MNR on
+				      (NP United Airlines)))))))
+     .))
+( (S (PP In
+         (NP (NP lieu)
+             (PP of
+                 (NP the vacation))))
+     ,
+     (NP-SBJ buyers)
+     (VP can
+         (VP choose
+             (PP-CLR among
+		     (NP (NP several prizes)
+			 ,
+			 (PP including
+			     (NP (NP a grandfather clock)
+				 or
+				 (NP a stereo videocassette recorder)))))))
+     .))
+( (S (NP-SBJ (NP Card holders)
+             (SBAR (WHNP-59 who)
+                   (S (NP-SBJ *T*-59)
+                      (VP receive
+                          (NP the letter)))))
+     (ADVP also)
+     (VP are
+         (ADJP-PRD eligible
+		   (PP for
+		       (NP (NP a sweepstakes)
+			   (PP with
+			       (NP (NP (NP Buick cars)
+				       or
+				       (NP a Hawaii vacation))
+				   (PP as
+				       (NP prizes))))))))
+     .))
+( (S (SBAR-ADV If
+	       (S (NP-SBJ they)
+		  (VP test-drive
+		      (NP a Buick))))
+     ,
+     (NP-SBJ they)
+     (VP get
+         (NP an American Express calculator))
+     .))
+( (S (NP-SBJ This)
+     (VP is n't
+         (NP-PRD (NP Buick 's)
+		 first travel-related promotion))
+     .))
+( (S (ADVP-TMP (NP A few years)
+	       ago)
+     ,
+     (NP-SBJ the company)
+     (VP offered
+         (NP (NP two round-trip tickets)
+             (PP-LOC on
+		     (NP Trans World Airlines)))
+         (PP-DTV to
+		 (NP (NP buyers)
+		     (PP of
+			 (NP its Riviera luxury car)))))
+     .))
+( (S (S-TPC-1 (NP-SBJ The promotion)
+	      (VP helped
+		  (S (NP-SBJ Riviera sales)
+		     (VP exceed
+			 (NP (NP the division 's)
+			     forecast)
+			 (PP-EXT by
+				 (NP (QP more than 10)
+				     %))))))
+     ,
+     (NP-SBJ Buick)
+     (VP said
+	 (SBAR 0
+	       (S *T*-1))
+	 (PP-TMP at
+		 (NP the time)))
+     .))

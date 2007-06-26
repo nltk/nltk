@@ -1,0 +1,634 @@
+
+( (S 
+    (SBAR-ADV (IN Although) 
+      (S 
+        (NP-SBJ (PRP$ his) (NN team) )
+        (VP (VBD lost) 
+          (NP (DT the) (NNP World) (NNP Series) ))))
+    (, ,) 
+    (NP-SBJ-1 (NNP San) (NNP Francisco) (NNPS Giants) (NN owner) (NNP Bob) (NNP Lurie) )
+    (VP (VBZ hopes) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB have) 
+            (NP 
+              (NP (DT a) (JJ new) (NN home) )
+              (PP (IN for) 
+                (NP (PRP them) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP He) )
+    (VP (VBZ is) 
+      (NP-PRD 
+        (NP (DT an) (JJ avid) (NN fan) )
+        (PP (IN of) 
+          (NP 
+            (NP (DT a) (NN proposition) )
+            (PP-LOC (IN on) 
+              (NP 
+                (NP (JJ next) (NN week) (POS 's) )
+                (NN ballot) ))
+            (SBAR 
+              (WHADVP-1 (-NONE- 0) )
+              (S 
+                (NP-SBJ-2 (-NONE- *) )
+                (VP (TO to) 
+                  (VP (VB help) 
+                    (S 
+                      (NP-SBJ (-NONE- *-2) )
+                      (VP (VB build) 
+                        (NP 
+                          (NP (DT a) (NN replacement) )
+                          (PP (IN for) 
+                            (NP (NNP Candlestick) (NNP Park) )))
+                        (ADVP (-NONE- *T*-1) )))))))))))
+    (. .) ))
+( (FRAG 
+    (NP (JJ Small) (NN wonder) )
+    (, ,) 
+    (SBAR-PRP (IN since) 
+      (S 
+        (NP-SBJ (PRP he) )
+        (VP (VBZ 's) 
+          (VP (VBG asking) 
+            (NP-1 (NNP San) (NNP Francisco) (NNS taxpayers) )
+            (S 
+              (NP-SBJ (-NONE- *-1) )
+              (VP (TO to) 
+                (VP (VB sink) 
+                  (NP 
+                    (QP (IN up) (TO to) ($ $) (CD 100) (CD million) )
+                    (-NONE- *U*) )
+                  (PP-CLR (IN into) 
+                    (NP (DT the) (JJ new) (NN stadium) )))))))))
+    (. .) ))
+( (S 
+    (SBAR-ADV (IN As) 
+      (S 
+        (NP-SBJ (NNP San) (NNP Francisco) )
+        (VP (VBZ digs) 
+          (PRT (RP out) )
+          (PP (IN from) 
+            (NP (DT The) (NNP Pretty) (NNP Big) (CD One) )))))
+    (, ,) 
+    (NP-SBJ (NNS opponents) )
+    (VP (VBP say) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (DT the) (JJ last) (NN thing) )
+            (SBAR 
+              (WHNP-1 (-NONE- 0) )
+              (S 
+                (NP-SBJ (DT the) (NN city) )
+                (VP (MD can) 
+                  (VP (VB afford) 
+                    (NP (-NONE- *T*-1) ))))))
+          (VP (VBZ is) 
+            (NP-PRD (DT an) (JJ expensive) (JJ new) (NN stadium) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT A) (NN stadium) (NN craze) )
+    (VP (VBZ is) 
+      (VP (VBG sweeping) 
+        (NP (DT the) (NN country) )))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (PRP It) )
+    (VP (VBZ 's) 
+      (VP (VBN fueled) 
+        (NP (-NONE- *-1) )
+        (PP (IN by) 
+          (NP-LGS 
+            (NP (DT the) (VBG increasing) (NN profitability) )
+            (PP (IN of) 
+              (NP (JJ major-league) (NNS teams) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NN Something) )
+      (PP (IN like) 
+        (NP 
+          (NP (NN one-third) )
+          (PP (IN of) 
+            (NP 
+              (NP (DT the) (NN nation) (POS 's) )
+              (CD 60) (JJS largest) (NNS cities) ))))
+      (VP (-NONE- *ICH*-1) ))
+    (VP (VBP are) 
+      (VP (VBG thinking) 
+        (PP-CLR (IN about) 
+          (NP (JJ new) (NNS stadiums) ))
+        (, ,) 
+        (VP-1 (VBG ranging) 
+          (PP 
+            (PP (IN from) 
+              (NP (NNP Cleveland) ))
+            (PP (TO to) 
+              (NP 
+                (NP (NNP San) (NNP Antonio) )
+                (CC and) 
+                (NP (NNP St.) (NNP Petersburg) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (JJS Most) (NNS boosters) )
+    (VP (VBP claim) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (DT the) (JJ new) (NNS sports) (NNS complexes) )
+          (VP (MD will) 
+            (VP (VB be) 
+              (NP-PRD 
+                (NP (NNS moneymakers) )
+                (PP (IN for) 
+                  (NP (PRP$ their) (NN city) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Pepperdine) (NNP University) (NN economist) (NNP Dean) (NNP Baim) )
+    (VP (VBZ scoffs) 
+      (PP-CLR (IN at) 
+        (NP (DT that) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP He) )
+    (VP (VBZ has) 
+      (VP 
+        (VP (VBN looked) 
+          (PP-CLR (IN at) 
+            (NP (CD 14) (NN baseball) 
+              (CC and)
+              (NN football) (NNS stadiums) )))
+        (CC and) 
+        (VP (VBN found) 
+          (SBAR (IN that) 
+            (S 
+              (NP-SBJ 
+                (NP (RB only) (CD one) )
+                (: --) 
+                (NP (JJ private) (NNP Dodger) (NNP Stadium) )
+                (: --) )
+              (VP (VBD brought) 
+                (NP 
+                  (NP (JJR more) (NN money) )
+                  (SBAR (-NONE- *ICH*-1) ))
+                (PP-DIR (IN into) 
+                  (NP (DT a) (NN city) ))
+                (SBAR-1 (IN than) 
+                  (S 
+                    (NP-SBJ (PRP it) )
+                    (VP (VBD took) 
+                      (PRT (IN out) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (NNS Stadiums) )
+    (VP (VBP tend) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP 
+            (VP (VB redistribute) 
+              (NP (VBG existing) (NN wealth) )
+              (PP-LOC (IN within) 
+                (NP (DT a) (NN community) )))
+            (, ,) (RB not) 
+            (VP (VB create) 
+              (NP 
+                (NP (JJR more) )
+                (PP (IN of) 
+                  (NP (PRP it) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNS Voters) )
+    (ADVP (RB generally) )
+    (VP (VBP agree) 
+      (SBAR-TMP 
+        (WHADVP-2 (WRB when) )
+        (S 
+          (NP-SBJ-1 (PRP they) )
+          (VP (VBP are) 
+            (VP (VBN given) 
+              (NP (-NONE- *-1) )
+              (NP (DT a) (NN chance) 
+                (S 
+                  (NP-SBJ (-NONE- *) )
+                  (VP (TO to) 
+                    (VP (VB decide) 
+                      (SBAR (IN if) 
+                        (S 
+                          (NP-SBJ-3 (PRP they) )
+                          (VP (VBP want) 
+                            (S 
+                              (NP-SBJ (-NONE- *-3) )
+                              (VP (TO to) 
+                                (VP (VB sink) 
+                                  (NP (PRP$ their) (JJ own) (NN tax) (NNS dollars) )
+                                  (PP-CLR (IN into) 
+                                    (NP (DT a) (JJ new) (NN mega-stadium) ))))))))))))
+              (ADVP-TMP (-NONE- *T*-2) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP San) (NNP Francisco) (NNS voters) )
+    (VP (VBD rejected) 
+      (NP (DT a) (JJ new) (NN ballpark) )
+      (ADVP-TMP 
+        (NP (CD two) (NNS years) )
+        (IN ago) ))
+    (. .) ))
+( (S 
+    (NP-TMP (JJ Last) (NN month) )
+    (, ,) 
+    (NP-SBJ (NNP Phoenix) (NNS voters) )
+    (VP (VBD turned) 
+      (NP (NNS thumbs) )
+      (PRT (RP down) )
+      (PP-CLR (IN on) 
+        (NP (DT a) 
+          (ADJP 
+            (QP ($ $) (CD 100) (CD million) )
+            (-NONE- *U*) )
+          (NN stadium) (NN bond) 
+          (CC and)
+          (NN tax) (NN proposition) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP$ Its) (NNS backers) )
+    (VP 
+      (VP (VBD fielded) 
+        (NP 
+          (NP (DT every) (JJ important) (NN interest) )
+          (PP-LOC (IN on) 
+            (NP (PRP$ their) (NN team) ))
+          (PRN (: --) 
+            (NP 
+              (NP (DT a) (JJ popular) (NN mayor) )
+              (, ,) 
+              (NP 
+                (NP (DT the) (NNP Chamber) )
+                (PP (IN of) 
+                  (NP (NNP Commerce) )))
+              (, ,) 
+              (NP (DT the) (JJ major) (NNS media) ))
+            (: --) )))
+      (CC and) 
+      (VP (VBD spent) 
+        (NP ($ $) (CD 100,000) (-NONE- *U*) )
+        (PP-CLR (IN on) 
+          (NP (NN promotion) ))))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ (NNS voters) )
+    (VP 
+      (VP (VBD decided) 
+        (SBAR (IN that) 
+          (S 
+            (SBAR-ADV (IN if) 
+              (S 
+                (NP-SBJ (DT the) (NN stadium) )
+                (VP (VBD was) 
+                  (NP-PRD (PDT such) (DT a) (JJ good) (NN idea) ))))
+            (NP-SBJ (NN someone) )
+            (VP (MD would) 
+              (VP (VB build) 
+                (NP (PRP it) )
+                (NP-ADV (PRP himself) ))))))
+      (, ,) 
+      (CC and)
+      (VP (VBD rejected) 
+        (NP (PRP it) )
+        (NP-ADV 
+          (QP (CD 59) (NN %) (TO to) (CD 41) (NN %) )
+          (-NONE- *U*) )))
+    (. .) ))
+( (S 
+    (PP-LOC (IN In) 
+      (NP (NNP San) (NNP Francisco) ))
+    (, ,) 
+    (NP-SBJ (PRP$ its) (NNS backers) )
+    (VP (VBP concede) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (DT the) (NN ballpark) )
+          (VP (VBZ is) 
+            (ADVP (IN at) (JJS best) )
+            (VP (VBG running) 
+              (ADVP (RB even) )
+              (PP-LOC-CLR (IN in) 
+                (NP (DT the) (NNS polls) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP George) (NNP Christopher) )
+      (, ,) 
+      (NP 
+        (NP (DT the) (JJ former) (NNP San) (NNP Francisco) (NN mayor) )
+        (SBAR 
+          (WHNP-1 (WP who) )
+          (S 
+            (NP-SBJ (-NONE- *T*-1) )
+            (VP (VBD built) 
+              (NP (NNP Candlestick) (NNP Park) )
+              (PP (IN for) 
+                (NP (DT the) (NNPS Giants) ))
+              (PP-TMP (IN in) 
+                (NP (DT the) (CD 1960s) ))))))
+      (, ,) )
+    (VP (MD wo) (RB n't) 
+      (VP (VB endorse) 
+        (NP (DT the) (JJ new) (NN ballpark) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP He) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP he) )
+          (VP (VBD had) 
+            (S 
+              (NP-SBJ (NNP Candlestick) )
+              (VP (VBN built) ))
+            (SBAR-PRP (IN because) 
+              (S 
+                (NP-SBJ (DT the) (NNPS Giants) )
+                (VP (VBD claimed) 
+                  (SBAR (-NONE- 0) 
+                    (S 
+                      (NP-SBJ (PRP they) )
+                      (VP (VBD needed) 
+                        (NP (CD 10,000) (NN parking) (NNS spaces) )))))))))))
+    (. .) ))
+( (S 
+    (SBAR-PRP (IN Since) 
+      (S 
+        (NP-SBJ (DT the) (JJ new) (NN park) )
+        (VP (MD will) 
+          (VP (VB have) 
+            (NP (RB only) (CD 1,500) (NNS spaces) )))))
+    (, ,) 
+    (NP-SBJ (NNP Mr.) (NNP Christopher) )
+    (VP (VBZ thinks) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (NNS backers) )
+          (VP (VBP are) 
+            (VP (VBG playing) 
+              (NP 
+                (NP (DT some) (JJ fiscal) (`` ``) (NNS games) ('' '') )
+                (PP (IN of) 
+                  (NP (PRP$ their) (JJ own) )))
+              (PP-CLR (IN with) 
+                (NP (DT the) (NNS voters) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NN Stadium) (NNS boosters) )
+    (VP (VBP claim) 
+      (SBAR (IN that) 
+        (S 
+          (PP (IN without) 
+            (NP (JJ public) (NN money) ))
+          (NP-SBJ-1 (PRP they) )
+          (VP (MD would) 
+            (ADVP-TMP (RB never) )
+            (VP (VB be) 
+              (VP (VBN built) 
+                (NP (-NONE- *-1) )))))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ (NNP Miami) (NNPS Dolphins) (NN owner) (NNP Joe) (NNP Robbie) )
+      (VP (VBZ disagrees) ))
+    (, ,) 
+    (CC and)
+    (S 
+      (NP-SBJ (PRP he) )
+      (VP (MD can) 
+        (VP (VB prove) 
+          (NP (PRP it) ))))
+    (. .) ))
+( (S 
+    (ADVP-TMP 
+      (NP (JJ Several) (NNS years) )
+      (IN ago) )
+    (NP-SBJ-3 (PRP he) )
+    (VP 
+      (VP (VBD gave) 
+        (PRT (RP up) )
+        (S 
+          (NP-SBJ-1 (-NONE- *-3) )
+          (VP (VBG trying) 
+            (S 
+              (NP-SBJ (-NONE- *-1) )
+              (VP (TO to) 
+                (VP (VB persuade) 
+                  (NP-2 (NNP Miami) )
+                  (S 
+                    (NP-SBJ (-NONE- *-2) )
+                    (VP (TO to) 
+                      (VP (VB improve) 
+                        (NP (PRP$ its) (JJ city-owned) (NNP Orange) (NNP Bowl) ))))))))))
+      (, ,) 
+      (CC and)
+      (ADVP (RB instead) )
+      (VP (VBD built) 
+        (NP (PRP$ his) (JJ own) 
+          (ADJP 
+            (QP ($ $) (CD 100) (CD million) )
+            (-NONE- *U*) )
+          (NN coliseum) )
+        (PP (IN with) 
+          (NP (JJ private) (NNS funds) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP He) )
+    (VP (VBD did) (RB n't) 
+      (VP (VB see) 
+        (SBAR 
+          (WHADVP (WRB why) )
+          (S 
+            (NP-SBJ-2 (DT the) (NNS taxpayers) )
+            (VP (MD should) 
+              (VP (VB help) 
+                (S 
+                  (NP-SBJ (-NONE- *-2) )
+                  (VP (VB build) 
+                    (NP 
+                      (NP (NN something) )
+                      (SBAR 
+                        (WHNP-1 (-NONE- 0) )
+                        (S 
+                          (NP-SBJ (PRP he) )
+                          (VP (MD would) 
+                            (ADVP (RB then) )
+                            (VP (VB use) 
+                              (NP (-NONE- *T*-1) )
+                              (S-CLR 
+                                (NP-SBJ (-NONE- *) )
+                                (VP (TO to) 
+                                  (VP (VB turn) 
+                                    (NP (DT a) (JJ healthy) (NN profit) )))))))))))))))))
+    (. .) ))
+( (S (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ (DT This) (NN stadium) )
+      (VP (VBZ shows) 
+        (SBAR (IN that) 
+          (S 
+            (NP-TPC-3 
+              (NP (NN anything) )
+              (SBAR 
+                (WHNP-2 (-NONE- 0) )
+                (S 
+                  (NP-SBJ (NN government) )
+                  (VP (MD can) 
+                    (VP (VB do) 
+                      (NP (-NONE- *T*-2) ))))))
+            (, ,) 
+            (NP-SBJ (PRP we) )
+            (VP (MD can) 
+              (VP (VB do) 
+                (NP (-NONE- *-3) )
+                (ADVP-MNR (RBR better) )))))))
+    (, ,) ('' '') 
+    (NP-SBJ (NNP Mr.) (NNP Robbie) )
+    (VP (VBZ says) 
+      (S (-NONE- *T*-1) ))
+    (. .) ))
+( (S (CC But) 
+    (PP (TO to) 
+      (NP 
+        (NP (NNP Moon) (NNP Landrieu) )
+        (, ,) 
+        (NP 
+          (NP (DT the) (JJ former) (NNP New) (NNP Orleans) (NN mayor) )
+          (SBAR 
+            (WHNP-1 (WP who) )
+            (S 
+              (NP-SBJ-3 (-NONE- *T*-1) )
+              (VP (VBD helped) 
+                (S 
+                  (NP-SBJ (-NONE- *-3) )
+                  (VP (VB build) 
+                    (NP 
+                      (NP (DT that) (NN city) (POS 's) )
+                      (JJ cavernous) 
+                      (, ,)
+                      (JJ money-losing) (NNP Superdome) )))))))))
+    (, ,) 
+    (NP-SBJ 
+      (NP (NNS questions) )
+      (PP (IN of) 
+        (NP 
+          (SBAR-NOM 
+            (WHNP-2 (WP who) )
+            (S 
+              (NP-SBJ (-NONE- *T*-2) )
+              (VP (VBZ benefits) )))
+          (CC or) 
+          (NP (DT the) (NN bottom) (NN line) ))))
+    (VP (VBP are) 
+      (PP-PRD (IN of) 
+        (NP (JJ little) (NN relevance) )))
+    (. .) ))
+( (S (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ (DT The) (NNP Superdome) )
+      (VP (VBZ is) 
+        (NP-PRD 
+          (NP 
+            (NP (DT an) (NN exercise) )
+            (PP (IN in) 
+              (NP (NN optimism) )))
+          (, ,) 
+          (NP 
+            (NP (DT a) (NN statement) )
+            (PP (IN of) 
+              (NP (NN faith) ))))))
+    (, ,) ('' '') 
+    (NP-SBJ (PRP he) )
+    (VP (VBZ has) 
+      (VP (VBN said) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S-CLF (`` ``) 
+    (NP-SBJ (PRP It) )
+    (VP (VBZ is) 
+      (NP-PRD 
+        (NP (DT the) (JJ very) (NN building) )
+        (PP (IN of) 
+          (NP (PRP it) ))
+        (NP (-NONE- *ICH*-4) ))
+      (SBAR 
+        (WHNP-2 (WDT that) )
+        (S 
+          (NP-SBJ (-NONE- *T*-2) )
+          (VP (VBZ is) 
+            (ADJP-PRD (JJ important) ))))
+      (, ,) (RB not) 
+      (NP-4 
+        (SBAR-NOM 
+          (WHNP-3 
+            (WHNP (WRB how) (RB much) )
+            (WHPP (IN of) 
+              (WHNP (PRP it) )))
+          (S 
+            (NP-SBJ-1 (-NONE- *T*-3) )
+            (VP (VBZ is) 
+              (VP (VBN used) 
+                (NP (-NONE- *-1) )))))
+        (CC or) 
+        (NP (PRP$ its) (NN economics) )))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ (DT An) (JJ Egyptian) (NNP Pharaoh) )
+    (VP (MD could) (RB n't) 
+      (VP (VB have) 
+        (VP (VBN justified) 
+          (NP (PRP$ his) (NNS pyramids) )
+          (ADVP-MNR (RB any) (RBR better) ))))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ (NN civilization) )
+    (VP (VBZ has) 
+      (VP (VBN moved) 
+        (ADVP-DIR (RB forward) )
+        (PP-TMP (IN since) 
+          (NP (RB then) ))))
+    (. .) ))
+( (S 
+    (NP-TMP (NN Today) )
+    (NP-SBJ-1 (NNS taxpayers) )
+    (VP (VBP get) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB vote) 
+            (, ,)
+            (NP-TMP 
+              (NP (JJS most) )
+              (PP (IN of) 
+                (NP (DT the) (NN time) )))
+            (, ,) 
+            (PP-CLR (IN on) 
+              (SBAR-NOM (IN whether) 
+                (S 
+                  (NP-SBJ-2 (PRP they) )
+                  (VP (VBP want) 
+                    (S 
+                      (NP-SBJ (-NONE- *-2) )
+                      (VP (TO to) 
+                        (VP 
+                          (VP (VB finance) 
+                            (NP 
+                              (NP (DT the) (VBG building) (NNS schemes) )
+                              (PP (IN of) 
+                                (NP (PRP$ our) (JJ modern) (JJ political) (NNS pharaohs) ))))
+                          (, ,) (CC or) 
+                          (VP (VB let) 
+                            (S 
+                              (NP-SBJ (JJ private) (NN money) )
+                              (VP (VB erect) 
+                                (NP 
+                                  (NP (DT these) (NNS playgrounds) )
+                                  (PP (IN for) 
+                                    (NP (JJ public) (NNS passions) )))))))))))))))))
+    (. .) ))

@@ -1,0 +1,218 @@
+
+( (S 
+    (NP-SBJ 
+      (NP (NNP Coleco) (NNPS Industries) (NNP Inc.) )
+      (, ,) 
+      (NP 
+        (NP (DT a) 
+          (ADJP (RB once) (JJ high-flying) )
+          (NN toy) (NN maker) )
+        (SBAR 
+          (WHNP-2 (WP$ whose) (NN stock) )
+          (S 
+            (NP-SBJ (-NONE- *T*-2) )
+            (VP (JJ peaked) 
+              (PP-CLR (IN at) 
+                (NP 
+                  (NP ($ $) (CD 65) (-NONE- *U*) )
+                  (NP-ADV (DT a) (NN share) )))
+              (PP-TMP (IN in) 
+                (NP (DT the) (JJ early) (CD 1980s) ))))))
+      (, ,) )
+    (VP (VBD filed) 
+      (NP 
+        (NP (DT a) (NN Chapter) (CD 11) (NN reorganization) (NN plan) )
+        (SBAR 
+          (WHNP-1 (WDT that) )
+          (S 
+            (NP-SBJ (-NONE- *T*-1) )
+            (VP (VBZ provides) 
+              (NP 
+                (NP (RB just) (CD 1.125) (NNS cents) )
+                (NP-ADV (DT a) (NN share) ))
+              (PP-BNF (IN for) 
+                (NP (JJ common) (NNS stockholders) )))))))
+    (. .) ))
+( (S 
+    (PP-LOC (IN Under) 
+      (NP (DT the) (NN plan) ))
+    (, ,) 
+    (NP-SBJ 
+      (NP (JJ unsecured) (NNS creditors) )
+      (, ,) 
+      (SBAR 
+        (WHNP-3 (WP who) )
+        (S 
+          (NP-SBJ-1 (-NONE- *T*-3) )
+          (VP (VBP are) 
+            (VP (VBN owed) 
+              (NP (-NONE- *-1) )
+              (NP 
+                (QP (IN about) ($ $) (CD 430) (CD million) )
+                (-NONE- *U*) )))))
+      (, ,) )
+    (VP (MD would) 
+      (VP (VB receive) 
+        (NP 
+          (NP 
+            (QP (IN about) ($ $) (CD 92) (CD million) )
+            (-NONE- *U*) )
+          (, ,) (CC or) 
+          (NP 
+            (NP (CD 21) (NNS cents) )
+            (PP (IN for) 
+              (NP 
+                (NP (DT each) (NN dollar) )
+                (SBAR 
+                  (WHNP-4 (-NONE- 0) )
+                  (S 
+                    (NP-SBJ-2 (PRP they) )
+                    (VP (VBP are) 
+                      (VP (VBN owed) 
+                        (NP (-NONE- *-2) )
+                        (NP (-NONE- *T*-4) )))))))))))
+    (. .) ))
+( (S 
+    (PP (IN In) 
+      (NP (NN addition) ))
+    (, ,) 
+    (NP-SBJ (PRP they) )
+    (VP (MD will) 
+      (VP (VB receive) 
+        (NP 
+          (NP (NN stock) )
+          (PP (IN in) 
+            (NP 
+              (NP (DT the) (VBN reorganized) (NN company) )
+              (, ,) 
+              (SBAR 
+                (WHNP-2 (WDT which) )
+                (S 
+                  (NP-SBJ-1 (-NONE- *T*-2) )
+                  (VP (MD will) 
+                    (VP (VB be) 
+                      (VP (VBN named) 
+                        (S 
+                          (NP-SBJ (-NONE- *-1) )
+                          (NP-PRD (NNP Ranger) (NNPS Industries) (NNP Inc) ))))))))))))
+    (. .) ))
+( (S 
+    (PP-TMP (IN After) 
+      (NP (DT these) (NNS payments) ))
+    (, ,) 
+    (NP-SBJ 
+      (QP (IN about) ($ $) (CD 225,000) )
+      (-NONE- *U*) )
+    (VP (MD will) 
+      (VP (VB be) 
+        (ADJP-PRD (JJ available) 
+          (PP (IN for) 
+            (NP 
+              (NP (DT the) 
+                (QP (CD 20) (CD million) )
+                (JJ common) (NNS shares) )
+              (ADJP (JJ outstanding) ))))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ 
+        (NP (DT The) 
+          (NAC-LOC (NNP Avon) 
+            (, ,)
+            (NNP Conn.) 
+            (, ,)
+            )
+          (NN company) (POS 's) )
+        (NN stock) )
+      (VP (VBD hit) 
+        (NP (DT a) (JJ high) )
+        (PP-TMP (IN in) 
+          (NP (CD 1983) ))
+        (SBAR-TMP (IN after) 
+          (S 
+            (NP-SBJ (PRP it) )
+            (VP (VBD unveiled) 
+              (NP (PRP$ its) (NNP Adam) (NN home) (NN computer) ))))))
+    (, ,) (CC but) 
+    (S 
+      (S 
+        (NP-SBJ-1 (DT the) (NN product) )
+        (VP (VBD was) 
+          (VP (VBN plagued) 
+            (NP (-NONE- *-1) )
+            (PP-CLR (IN with) 
+              (NP (NNS glitches) )))))
+      (CC and) 
+      (S 
+        (NP-SBJ 
+          (NP (DT the) (NN company) (POS 's) )
+          (NNS fortunes) )
+        (VP (VBD plunged) )))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ (NNP Coleco) )
+    (VP (VBD bounced) 
+      (PRT (RP back) )
+      (PP (IN with) 
+        (NP 
+          (NP (DT the) (NN introduction) )
+          (PP (IN of) 
+            (NP 
+              (NP (DT the) (NNP Cabbage) (NNP Patch) (NNS dolls) )
+              (, ,) 
+              (SBAR 
+                (WHNP-1 (WP$ whose) (NNS sales) )
+                (S 
+                  (NP-SBJ (-NONE- *T*-1) )
+                  (VP (VBD hit) 
+                    (NP 
+                      (QP ($ $) (CD 600) (CD million) )
+                      (-NONE- *U*) )
+                    (PP-TMP (IN in) 
+                      (NP (CD 1985) ))))))))))
+    (. .) ))
+( (S (CC But) 
+    (SBAR-TMP (IN as) 
+      (S 
+        (NP-SBJ (DT the) (NN craze) )
+        (VP (VBD died) )))
+    (, ,) 
+    (NP-SBJ-1 (NNP Coleco) )
+    (VP 
+      (VP (VBD failed) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB come) 
+              (PRT (RP up) )
+              (PP-CLR (IN with) 
+                (NP (DT another) (NN winner) ))))))
+      (CC and) 
+      (VP (VBD filed) 
+        (PP-CLR (IN for) 
+          (NP (JJ bankruptcy-law) (NN protection) ))
+        (PP-TMP (IN in) 
+          (NP (NNP July) (CD 1988) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (DT The) (NN plan) )
+    (VP 
+      (VP (VBD was) 
+        (VP (VBN filed) 
+          (NP (-NONE- *-1) )
+          (ADVP-MNR (RB jointly) )
+          (PP-CLR (IN with) 
+            (NP (JJ unsecured) (NNS creditors) ))
+          (PP-LOC (IN in) 
+            (NP 
+              (NP (JJ federal) (NN bankruptcy) (NN court) )
+              (PP-LOC (IN in) 
+                (NP (NNP New) (NNP York) ))))))
+      (CC and) 
+      (VP (MD must) 
+        (VP (VB be) 
+          (VP (VBN approved) 
+            (NP (-NONE- *-1) )
+            (PP (IN by) 
+              (NP-LGS (DT the) (NN court) ))))))
+    (. .) ))

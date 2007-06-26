@@ -1,0 +1,103 @@
+
+
+( (S (NP-SBJ Hadson Corp.)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 it)
+                  (VP expects
+                      (S (NP-SBJ *-1)
+                         (VP to
+                             (VP report
+                                 (NP (NP a third-quarter net loss)
+                                     (PP of
+                                         (NP (QP $ 17 million to $ 19 million)
+					     *U*)))
+				 (PP-PRP because of
+					 (NP (NP special reserves)
+					     and
+					     (NP continued low natural-gas prices))))))))))
+     .))
+( (S (NP-SBJ The Oklahoma City energy and defense concern)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP will
+                      (VP record
+                          (NP a (ADJP (QP $ 7.5 million) *U*) reserve)
+			  (PP for
+			      (NP its defense group))
+			  ,
+			  (PP including
+			      (NP (NP a
+				      (ADJP (QP $ 4.7 million) *U*)
+				      charge)
+				  (VP related
+				      (NP *)
+				      (PP-CLR to
+					      (NP (NP (NP problems)
+						      (PP-LOC under
+							      (NP a fixed-price development contract)))
+						  and
+						  (NP (NP (QP $ 2.8 million)
+							  *U*)
+						      (PP in
+							  (NP (NP overhead costs)
+							      (SBAR (WHNP-2 that)
+								    (S (NP-SBJ-1 *T*-2)
+								       (VP wo n't
+									   (VP be
+									       (VP reimbursed
+										   (NP *-1)))))))))))))))))))
+     .))
+( (S (PP In
+         (NP addition))
+     ,
+     (NP-SBJ Hadson)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP will
+                      (VP write
+			  (PRT off)
+                          (NP (NP (QP about $ 3.5 million)
+				  *U*)
+			      (PP in
+				  (NP (NP costs)
+				      (VP related
+					  (NP *)
+					  (PP-CLR to
+						  (NP (NP international exploration leases)
+						      (SBAR (WHADVP-1 where)
+							    (S (NP-SBJ exploration efforts)
+							       (VP have
+								   (VP been
+								       (ADJP-PRD unsuccessful)
+								       (ADVP-LOC *T*-1))))))))))))))))
+     .))
+( (S (NP-SBJ The company)
+     (ADVP also)
+     (VP cited
+         (NP (NP interest costs and amortization)
+             (PP of
+                 (NP goodwill)))
+         (PP-CLR as
+		 (NP (NP factors)
+		     (PP in
+			 (NP the loss)))))
+     .))
+( (S (ADVP-TMP (NP A year)
+	       earlier)
+     ,
+     (NP-SBJ net income)
+     (VP was
+         (NP-PRD (NP (QP $ 2.1 million) *U*)
+		 , or
+		 (NP (NP six cents)
+		     (NP-ADV a share))
+		 ,)
+	 (PP on
+	     (NP (NP revenue)
+		 (PP of
+		     (NP (QP $ 169.9 million)
+			 *U*)))))
+     .))

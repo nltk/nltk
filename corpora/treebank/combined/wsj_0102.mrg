@@ -1,0 +1,909 @@
+
+( (S-HLN 
+    (NP-SBJ (NN Beauty) )
+    (VP (VBZ Takes) 
+      (NP (NN Backseat) )
+      (PP (TO To) 
+        (NP (NNP Safety) ))
+      (PP-LOC (IN on) 
+        (NP (NNPS Bridges) )))))
+( (S 
+    (NP-SBJ (NN EVERYONE) )
+    (VP (VBZ AGREES) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ-1 
+            (NP (JJS most) )
+            (PP (IN of) 
+              (NP 
+                (NP (DT the) (NN nation) (POS 's) )
+                (JJ old) (NNS bridges) )))
+          (VP (VBP need) 
+            (S 
+              (NP-SBJ-13 (-NONE- *-1) )
+              (VP (TO to) 
+                (VP (VB be) 
+                  (VP (VBN repaired) (CC or) (VBN replaced) 
+                    (NP (-NONE- *-13) )))))))))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ (EX there) )
+    (VP (VBZ 's) 
+      (NP-PRD 
+        (NP (NN disagreement) )
+        (PP (IN over) 
+          (SBAR-NOM 
+            (WHADVP-1 (WRB how) )
+            (S 
+              (NP-SBJ (-NONE- *) )
+              (VP (TO to) 
+                (VP (VB do) 
+                  (NP (PRP it) )
+                  (ADVP-MNR (-NONE- *T*-1) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NN Highway) (NNS officials) )
+    (VP (VBP insist) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (DT the) (JJ ornamental) (NNS railings) )
+            (PP-LOC (IN on) 
+              (NP (JJR older) (NNS bridges) )))
+          (VP (VBP are) (RB n't) 
+            (ADJP-PRD (JJ strong) (RB enough) 
+              (S 
+                (NP-SBJ (-NONE- *) )
+                (VP (TO to) 
+                  (VP (VB prevent) 
+                    (NP (NNS vehicles) )
+                    (PP (IN from) 
+                      (S-NOM 
+                        (NP-SBJ (-NONE- *) )
+                        (VP (VBG crashing) 
+                          (ADVP (IN through) ))))))))))))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ-1 (JJ other) (NNS people) )
+    (VP (VBP do) (RB n't) 
+      (VP (VB want) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB lose) 
+              (NP 
+                (NP (DT the) (NNS bridges) (POS ') )
+                (JJ beautiful) 
+                (, ,)
+                (ADJP 
+                  (ADVP-TMP (RB sometimes) )
+                  (JJ historic) )
+                (, ,) (NNS features) ))))))
+    (. .) ))
+( (SINV (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ 
+        (NP (DT The) (JJ primary) (NN purpose) )
+        (PP (IN of) 
+          (NP (DT a) (NN railing) )))
+      (VP (VBZ is) 
+        (S-PRD 
+          (NP-SBJ (-NONE- *) )
+          (VP 
+            (VP (TO to) 
+              (VP (VB contain) 
+                (NP (DT a) (NN vehicle) )))
+            (CC and) (RB not) 
+            (VP (TO to) 
+              (VP (VB provide) 
+                (NP (DT a) (JJ scenic) (NN view) )))))))
+    (, ,) ('' '') 
+    (VP (VBZ says) 
+      (S (-NONE- *T*-1) ))
+    (NP-SBJ 
+      (NP (NNP Jack) (NNP White) )
+      (, ,) 
+      (NP 
+        (NP (DT a) (NN planner) )
+        (PP (IN with) 
+          (NP (DT the) (NNP Indiana) (NNP Highway) (NNP Department) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (PRP He) 
+      (CC and)
+      (NNS others) )
+    (VP (VBP prefer) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB install) 
+            (NP 
+              (NP (NNS railings) )
+              (PP (JJ such) (IN as) 
+                (NP 
+                  (NP (DT the) (`` ``) (NN type) (NN F) (NN safety) (NN shape) )
+                  (, ,) ('' '') 
+                  (NP 
+                    (NP (DT a) (JJ four-foot-high) (JJ concrete) (NN slab) )
+                    (PP (IN with) 
+                      (NP (DT no) (NNS openings) ))))))))))
+    (. .) ))
+( (S 
+    (PP-LOC (IN In) 
+      (NP 
+        (NP (NNP Richmond) )
+        (, ,) 
+        (NP (NNP Ind.) )
+        (, ,) ))
+    (NP-SBJ-1 (DT the) (NN type) (NN F) (NN railing) )
+    (VP (VBZ is) 
+      (VP (VBG being) 
+        (VP (VBN used) 
+          (NP-2 (-NONE- *-1) )
+          (S-CLR 
+            (NP-SBJ (-NONE- *-2) )
+            (VP (TO to) 
+              (VP (VB replace) 
+                (NP 
+                  (NP (JJ arched) (NNS openings) )
+                  (PP-LOC (IN on) 
+                    (NP (DT the) (NNP G) (NNP Street) (NNP Bridge) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Garret) (NNP Boone) )
+      (, ,) 
+      (SBAR 
+        (WHNP-11 (WP who) )
+        (S 
+          (NP-SBJ (-NONE- *T*-11) )
+          (VP (VBZ teaches) 
+            (NP (NN art) )
+            (PP-LOC (IN at) 
+              (NP (NNP Earlham) (NNP College) )))))
+      (, ,) )
+    (VP (VBZ calls) 
+      (S 
+        (NP-SBJ (DT the) (JJ new) (NN structure) )
+        (NP-PRD 
+          (NP (`` ``) (RB just) (DT an) (JJ ugly) (NN bridge) ('' '') )
+          (CC and) 
+          (NP 
+            (NP (CD one) )
+            (SBAR 
+              (WHNP-1 (WDT that) )
+              (S 
+                (NP-SBJ (-NONE- *T*-1) )
+                (VP (VBZ blocks) 
+                  (NP 
+                    (NP (DT the) (NN view) )
+                    (PP (IN of) 
+                      (NP 
+                        (NP (DT a) (JJ new) (NN park) )
+                        (ADVP-LOC (IN below) )))))))))))
+    (. .) ))
+( (S 
+    (PP-LOC (IN In) 
+      (NP 
+        (NP (NNP Hartford) )
+        (, ,) 
+        (NP (NNP Conn.) )))
+    (, ,) 
+    (NP-SBJ-14 (DT the) (NNP Charter) (NNP Oak) (NNP Bridge) )
+    (VP (MD will) 
+      (ADVP-TMP (RB soon) )
+      (VP (VB be) 
+        (VP (VBN replaced) 
+          (NP (-NONE- *-14) )
+          (, ,) 
+          (S-ADV 
+            (NP-SBJ 
+              (NP (DT the) (JJ cast-iron) (NNS medallions) )
+              (PP (IN from) 
+                (NP (PRP$ its) (NNS railings) )))
+            (VP (VBN relegated) 
+              (PP-DIR (TO to) 
+                (NP (DT a) (NN park) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNS Compromises) )
+    (VP (VBP are) 
+      (ADJP-PRD (JJ possible) ))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 
+      (NP (NNS Citizens) )
+      (PP-LOC (IN in) 
+        (NP 
+          (NP (NNP Peninsula) )
+          (, ,) 
+          (NP (NNP Ohio) ))))
+    (, ,) 
+    (S-ADV 
+      (NP-SBJ (-NONE- *-1) )
+      (ADJP-PRD (VBN upset) 
+        (PP (IN over) 
+          (NP 
+            (NP (NNS changes) )
+            (PP (TO to) 
+              (NP (DT a) (NN bridge) ))))))
+    (, ,) 
+    (VP (VBD negotiated) 
+      (NP 
+        (NP (DT a) (NN deal) )
+        (: :) 
+        (S 
+          (NP-SBJ 
+            (NP (DT The) (NN bottom) (NN half) )
+            (PP (IN of) 
+              (NP (DT the) (NN railing) )))
+          (VP (MD will) 
+            (VP (VB be) 
+              (NP-PRD (NN type) (NN F) )
+              (, ,) 
+              (SBAR-ADV (IN while) 
+                (S 
+                  (NP-SBJ (DT the) (JJ top) (NN half) )
+                  (VP (MD will) 
+                    (VP (VB have) 
+                      (NP 
+                        (NP (DT the) (JJ old) (NN bridge) (POS 's) )
+                        (JJ floral) (NN pattern) ))))))))))
+    (. .) ))
+( (S 
+    (ADVP (RB Similarly) )
+    (, ,) 
+    (NP-SBJ-1 (NN highway) (NNS engineers) )
+    (VP (VBD agreed) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB keep) 
+            (NP 
+              (NP (DT the) (JJ old) (NNS railings) )
+              (PP-LOC (IN on) 
+                (NP 
+                  (NP (DT the) (NNP Key) (NNP Bridge) )
+                  (PP-LOC (IN in) 
+                    (NP 
+                      (NP (NNP Washington) )
+                      (, ,) 
+                      (NP (NNP D.C.) )
+                      (, ,) )))))
+            (ADVP 
+              (ADVP (RB as) (RB long) )
+              (SBAR (IN as) 
+                (S 
+                  (NP-SBJ (PRP they) )
+                  (VP (MD could) 
+                    (VP (VB install) 
+                      (NP (DT a) (JJ crash) (NN barrier) )
+                      (PP-LOC-CLR (IN between) 
+                        (NP 
+                          (NP (DT the) (NN sidewalk) )
+                          (CC and) 
+                          (NP (DT the) (NN road) ))))))))))))
+    (. .) ))
+( (X-HLN (NNP Tray) (NNP Bon) (. ?) ))
+( (S-HLN 
+    (NP-SBJ (NN Drink) (NN Carrier) )
+    (VP (VBZ Competes) 
+      (PP-CLR (IN With) 
+        (NP (NNS Cartons) )))))
+( (S 
+    (S 
+      (S-NOM-SBJ 
+        (NP-SBJ (-NONE- *) )
+        (VP (VBG PORTING) 
+          (NP (NNS POTABLES) )))
+      (ADVP (RB just) )
+      (VP (VBD got) 
+        (ADJP (JJR easier) )))
+    (, ,) (CC or) 
+    (SINV 
+      (ADVP (RB so) )
+      (VP (VBZ claims) )
+      (NP-SBJ 
+        (NP (NNP Scypher) (NNP Corp.) )
+        (, ,) 
+        (NP 
+          (NP (DT the) (NN maker) )
+          (PP (IN of) 
+            (NP (DT the) (NNP Cup-Tote) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 
+      (NP (DT The) (NNP Chicago) (NN company) (POS 's) )
+      (NN beverage) (NN carrier) )
+    (, ,) 
+    (S-ADV 
+      (NP-SBJ-2 (-NONE- *-1) )
+      (VP (VBD meant) 
+        (S 
+          (NP-SBJ (-NONE- *-2) )
+          (VP (TO to) 
+            (VP (VB replace) 
+              (NP (NN cardboard) (NNS trays) )))
+          (PP-LOC (IN at) 
+            (NP 
+              (NP (NN concession) (NNS stands) )
+              (CC and) 
+              (NP (NN fast-food) (NNS outlets) ))))))
+    (, ,) 
+    (VP (VBZ resembles) 
+      (NP 
+        (NP (DT the) (JJ plastic) (NNS loops) )
+        (VP (VBN used) 
+          (NP (-NONE- *) )
+          (PP-LOC (IN on) 
+            (NP 
+              (NP (NNS six-packs) )
+              (PP (IN of) 
+                (NP (NN beer) ))))))
+      (, ,) 
+      (SBAR (RB only) 
+        (S 
+          (NP-SBJ (DT the) (NNS loops) )
+          (VP (VBP hang) 
+            (PP-DIR (IN from) 
+              (NP 
+                (NP (DT a) (NN web) )
+                (PP (IN of) 
+                  (NP (NNS strings) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (JJ new) (NN carrier) )
+    (VP (MD can) 
+      (VP (VB tote) 
+        (NP 
+          (QP (RB as) (JJ many) (IN as) (CD four) )
+          (NNS cups) )
+        (PP-TMP (IN at) 
+          (NP (RB once) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Inventor) (NNP Claire) (NNP Marvin) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP$ his) (NN design) )
+          (ADVP (RB virtually) )
+          (VP (VBZ eliminates) 
+            (NP (NN spilling) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (NNS Lids) )
+    (VP (VBP are) (RB n't) 
+      (ADVP (RB even) )
+      (VP (VBN needed) 
+        (NP (-NONE- *-1) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP He) )
+    (ADVP (RB also) )
+    (VP (VBZ claims) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (DT the) (NN carrier) )
+          (VP 
+            (VP (VBZ costs) 
+              (ADJP (JJR less) ))
+            (CC and) 
+            (VP (VBZ takes) 
+              (PRT (RP up) )
+              (NP 
+                (NP (JJR less) (NN space) )
+                (PP (IN than) 
+                  (NP (JJS most) (NN paper) (NNS carriers) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT A) (JJ few) (NN fast-food) (NNS outlets) )
+    (VP (VBP are) 
+      (VP (VBG giving) 
+        (NP (PRP it) )
+        (NP (DT a) (NN try) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN company) )
+    (VP (VBZ acknowledges) 
+      (NP (DT some) (NNS problems) ))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (DT A) (NN driver) )
+    (VP (VBZ has) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB find) 
+            (NP 
+              (NP (NN something) )
+              (SBAR 
+                (WHNP-2 (-NONE- 0) )
+                (S 
+                  (NP-SBJ (-NONE- *) )
+                  (VP (TO to) 
+                    (VP (VB hang) 
+                      (NP (DT the) (NN carrier) )
+                      (PP-LOC (IN on) 
+                        (NP (-NONE- *T*-2) ))))))))))
+      (, ,) 
+      (SBAR-ADV (IN so) 
+        (S 
+          (NP-SBJ (DT the) (NN company) )
+          (VP (VBZ supplies) 
+            (NP (DT a) (NN window) (NN hook) )))))
+    (. .) ))
+( (S 
+    (SBAR-ADV (IN While) 
+      (S 
+        (NP-SBJ (PRP it) )
+        (VP (VBZ breaks) 
+          (PRT (RP down) )
+          (PP-LOC-CLR (IN in) 
+            (NP (VBN prolonged) (NN sunlight) )))))
+    (, ,) 
+    (NP-SBJ (PRP it) )
+    (VP (VBZ is) (RB n't) 
+      (ADJP-PRD (JJ recyclable) ))
+    (. .) ))
+( (S (CC And) 
+    (PP (IN unlike) 
+      (NP (DT some) (NNS trays) ))
+    (, ,) 
+    (NP-SBJ (EX there) )
+    (VP (VBZ 's) 
+      (NP-PRD 
+        (NP (DT no) (NN place) )
+        (PP (IN for) 
+          (NP (NN food) ))))
+    (. .) ))
+( (S-HLN 
+    (NP-SBJ 
+      (NP (NN Spirit) )
+      (PP (IN of) 
+        (NP (FW Perestroika) )))
+    (VP (VBZ Touches) 
+      (NP (NN Design) (NN World) ))))
+( (S 
+    (NP-SBJ 
+      (NP (DT AN) (NN EXCHANGE) )
+      (PP (IN of) 
+        (NP (NNP U.S.) 
+          (CC and)
+          (JJ Soviet) (NNS designers) )))
+    (VP (VBZ promises) 
+      (NP 
+        (NP (NN change) )
+        (PP-LOC (IN on) 
+          (NP (DT both) (NNS sides) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 
+      (NP (DT An) (NN exhibition) )
+      (PP (IN of) 
+        (NP (JJ American) (NN design) 
+          (CC and)
+          (NN architecture) )))
+    (VP 
+      (VP (VBD opened) 
+        (PP-TMP (IN in) 
+          (NP (NNP September) ))
+        (PP-LOC (IN in) 
+          (NP (NNP Moscow) )))
+      (CC and) 
+      (VP (MD will) 
+        (VP (VB travel) 
+          (PP-DIR (TO to) 
+            (NP (CD eight) (JJ other) (JJ Soviet) (NNS cities) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN show) )
+    (VP (VBZ runs) 
+      (NP 
+        (NP (DT the) (NN gamut) )
+        (, ,) 
+        (PP (IN from) 
+          (NP (DT a) (NN blender) ))
+        (PP (TO to) 
+          (NP (NNS chairs) ))
+        (PP (TO to) 
+          (NP 
+            (NP (DT a) (NN model) )
+            (PP (IN of) 
+              (NP (DT the) (NNP Citicorp) (NN building) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN event) )
+    (VP 
+      (VP (VBZ continues) 
+        (PP-TMP-CLR (IN into) 
+          (NP (JJ next) (NN year) )))
+      (CC and) 
+      (VP (VBZ includes) 
+        (NP (DT an) (NN exchange) (NN program) 
+          (S 
+            (NP-SBJ (-NONE- *) )
+            (VP (TO to) 
+              (VP (VB swap) 
+                (NP 
+                  (NP (NN design) (NNS teachers) )
+                  (PP-LOC (IN at) 
+                    (NP 
+                      (NP (NNP Carnegie-Mellon) )
+                      (CC and) 
+                      (NP 
+                        (NP (NNP Leningrad) (POS 's) )
+                        (NNP Mutchin) (NNP Institute) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Dan) (NNP Droz) )
+      (, ,) 
+      (NP 
+        (NP (NN leader) )
+        (PP (IN of) 
+          (NP (DT the) (NNP Carnegie-Mellon) (NN group) )))
+      (, ,) )
+    (VP (VBZ sees) 
+      (NP (NNS benefits) )
+      (ADVP-LOC (DT all) (IN around) ))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (NP-SBJ 
+        (NP (DT The) (NNPS Soviets) )
+        (, ,) 
+        (SBAR 
+          (WHNP-12 (WP who) )
+          (S 
+            (NP-SBJ (-NONE- *T*-12) )
+            (ADVP (RB normally) )
+            (VP (VBP have) 
+              (NP 
+                (NP (JJ few) (NNS clients) )
+                (ADJP (JJ other) 
+                  (PP (IN than) 
+                    (NP (DT the) (NN state) )))))))
+        (, ,) )
+      (VP (MD will) 
+        (VP (VB get) 
+          (NP 
+            (NP (`` ``) (NN exposure) )
+            (PP (TO to) 
+              (NP (DT a) (NN market) (NN system) ))))))
+    (, ,) ('' '') 
+    (NP-SBJ (PRP he) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNPS Americans) )
+    (VP (MD will) 
+      (VP (VB learn) 
+        (NP 
+          (NP (RBR more) )
+          (PP (IN about) 
+            (S-NOM 
+              (NP-SBJ (-NONE- *) )
+              (VP (VBG making) 
+                (NP (NNS products) )
+                (PP-BNF (IN for) 
+                  (NP (DT the) (NNPS Soviets) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Mr.) (NNP Droz) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (DT the) (NNPS Soviets) )
+          (VP (MD could) 
+            (ADVP (RB even) )
+            (VP (VB help) 
+              (S 
+                (NP-SBJ (NNP U.S.) (NNS designers) )
+                (VP (VB renew) 
+                  (NP 
+                    (NP (PRP$ their) (NN sense) )
+                    (PP (IN of) 
+                      (NP (NN purpose) ))))))))))
+    (. .) ))
+( (S (`` ``) 
+    (S-TPC-1 
+      (PP-LOC (IN In) 
+        (NP (NNP Moscow) ))
+      (, ,) 
+      (NP-SBJ-5 (PRP they) )
+      (VP (VBD kept) 
+        (S 
+          (NP-SBJ (-NONE- *-5) )
+          (VP (VBG asking) 
+            (NP (PRP us) )
+            (NP 
+              (NP (NNS things) )
+              (PP (IN like) 
+                (, ,)
+                (`` `) 
+                (SBARQ-NOM 
+                  (WHADVP-2 (WRB Why) )
+                  (SQ (VBP do) 
+                    (NP-SBJ (PRP you) )
+                    (VP (VB make) 
+                      (NP (CD 15) (JJ different) (NNS corkscrews) )
+                      (, ,) 
+                      (SBAR-TMP 
+                        (WHADVP-4 (WRB when) )
+                        (S 
+                          (NP-SBJ 
+                            (NP 
+                              (NP (DT all) )
+                              (SBAR 
+                                (WHNP-3 (-NONE- 0) )
+                                (S 
+                                  (NP-SBJ (PRP you) )
+                                  (VP (VBP need) 
+                                    (NP (-NONE- *T*-3) ))))))
+                          (VP (VBZ is) 
+                            (NP-PRD (CD one) (JJ good) (CD one) )
+                            (ADVP-TMP (-NONE- *T*-4) ))))
+                      (ADVP-PRP (-NONE- *T*-2) )))
+                  (. ?) )
+                ('' ') ))))))
+    ('' '') 
+    (NP-SBJ (PRP he) )
+    (VP (VBZ says) 
+      (S (-NONE- *T*-1) ))
+    (. .) ))
+( (S (`` ``) 
+    (NP-SBJ (PRP They) )
+    (VP (VBD got) 
+      (S 
+        (NP-SBJ (PRP us) )
+        (VP (VBG thinking) 
+          (SBAR (-NONE- 0) 
+            (S 
+              (ADVP (RB maybe) )
+              (NP-SBJ-1 (PRP we) )
+              (VP (MD should) 
+                (VP (VB be) 
+                  (VP (VBG helping) 
+                    (S 
+                      (NP-SBJ (NNP U.S.) (NNS companies) )
+                      (VP (VB improve) 
+                        (NP (VBG existing) (NNS products) )
+                        (PP (RB rather) (IN than) 
+                          (S-NOM 
+                            (NP-SBJ (-NONE- *-1) )
+                            (ADVP-TMP (RB always) )
+                            (VP (VBG developing) 
+                              (NP (JJ new) (NNS ones) ))))))))))))))
+    (. .) ('' '') ))
+( (S-HLN 
+    (NP-SBJ-1 
+      (NP (NN Seed) )
+      (PP (IN for) 
+        (NP (NN Jail) (NN Solution) )))
+    (VP (VBZ Fails) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB Take) 
+            (NP (NN Root) )))))))
+( (S 
+    (S 
+      (NP-SBJ (PRP IT) )
+      (VP (VBZ 'S) 
+        (NP-PRD (DT A) 
+          (NAC (CD TWO) (NNS BIRDS) 
+            (PP (IN with) 
+              (NP (CD one) (NN stone) )))
+          (NN deal) )))
+    (: :) 
+    (S 
+      (NP-SBJ-2 (NNP Eggers) (NNP Group) (NNS architects) )
+      (VP (VBP propose) 
+        (S 
+          (NP-SBJ (-NONE- *-2) )
+          (VP (VBG using) 
+            (NP-1 (NN grain) (NNS elevators) )
+            (S-CLR 
+              (NP-SBJ (-NONE- *-1) )
+              (VP (TO to) 
+                (VP (VB house) 
+                  (NP (NNS prisoners) ))))))))
+    (. .) ))
+( (S 
+    (S-TPC-2 
+      (NP-SBJ-1 (PRP It) )
+      (VP (MD would) 
+        (VP (VB ease) 
+          (NP (NN jail) (NN overcrowding) )
+          (SBAR-ADV (IN while) 
+            (S 
+              (NP-SBJ (-NONE- *-1) )
+              (VP (VBG preserving) 
+                (NP (JJ historic) (NNS structures) )))))))
+    (, ,) 
+    (NP-SBJ (DT the) (NN company) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-2) )))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ 
+      (NP (NNP New) (NNP York) (NN state) )
+      (, ,) 
+      (SBAR 
+        (WHNP-13 (WDT which) )
+        (S 
+          (NP-SBJ (-NONE- *T*-13) )
+          (VP (VBZ is) 
+            (VP (VBG seeking) 
+              (NP 
+                (NP (NNS solutions) )
+                (PP (TO to) 
+                  (NP (PRP$ its) (NN prison) (NN cell) (NN shortage) )))))))
+      (, ,) )
+    (VP (VBZ says) (`` ``) 
+      (INTJ (UH no) ))
+    (. .) ('' '') ))
+( (S 
+    (S-TPC-2 
+      (NP-SBJ 
+        (NP (NN Grain) (NNS elevators) )
+        (VP (VBN built) 
+          (NP (-NONE- *) )
+          (PP-TMP (IN in) 
+            (NP (DT the) (CD 1920s) 
+              (CC and)
+              (CD '30s) ))))
+      (VP (VBP have) 
+        (NP 
+          (NP (JJ six-inch) (JJ concrete) (NNS walls) )
+          (CC and) 
+          (NP 
+            (NP (DT a) (JJ tubular) (NN shape) )
+            (SBAR 
+              (WHNP-1 (WDT that) )
+              (S 
+                (NP-SBJ (-NONE- *T*-1) )
+                (VP (MD would) 
+                  (VP 
+                    (ADVP-MNR (RB easily) )
+                    (VB contain) 
+                    (NP 
+                      (NP (JJ semicircular) (NNS cells) )
+                      (PP (IN with) 
+                        (NP 
+                          (NP (DT a) (NN control) (NN point) )
+                          (PP-LOC (IN in) 
+                            (NP (DT the) (NN middle) )))))))))))))
+    (, ,) 
+    (NP-SBJ (DT the) (NNP New) (NNP York) (NN firm) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-2) )))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (JJ Many) )
+    (VP (VBP are) 
+      (ADJP 
+        (ADJP (RB far) (RB enough) 
+          (PP (IN from) 
+            (NP (JJ residential) (NNS areas) ))
+          (S 
+            (NP-SBJ (-NONE- *) )
+            (VP (TO to) 
+              (VP (VB pass) 
+                (NP (JJ public) (NN muster) )))))
+        (, ,) (CC yet) 
+        (ADJP (RB close) (RB enough) 
+          (S 
+            (NP-SBJ (-NONE- *) )
+            (VP (TO to) 
+              (VP (VB permit) 
+                (NP (NN family) (NNS visits) )))))))
+    (. .) ))
+( (S 
+    (S-1 
+      (ADVP (IN Besides) )
+      (PRN 
+        (, ,)
+        (S 
+          (NP-SBJ (NNP Eggers) )
+          (VP (VBZ says) 
+            (SBAR (-NONE- 0) 
+              (S (-NONE- *T*-1) ))))
+        (, ,) )
+      (NP-SBJ (NN grain) (NNS elevators) )
+      (VP (VBP are) 
+        (PP-PRD (IN worth) 
+          (S-NOM 
+            (NP-SBJ (-NONE- *) )
+            (VP (VBG preserving) 
+              (PP-PRP (IN for) 
+                (NP (JJ aesthetic) (NNS reasons) )))))))
+    (: --) 
+    (S 
+      (NP-SBJ (CD one) (JJ famed) (NN architect) )
+      (VP (VBD compared) 
+        (NP (PRP them) )
+        (PP-CLR (TO to) 
+          (NP 
+            (NP (DT the) (NNS pyramids) )
+            (PP (IN of) 
+              (NP (NNP Egypt) ))))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (NP-SBJ 
+        (NP (DT A) (NN number) )
+        (PP (IN of) 
+          (NP (NNS cities) ))
+        (: --) 
+        (PP (VBG including) 
+          (NP (NNP Minneapolis) 
+            (, ,)
+            (NNP Philadelphia) 
+            (CC and)
+            (NNP Houston) ))
+        (: --) )
+      (VP (VBP have) 
+        (NP (JJ vacant) (NN grain) (NNS elevators) )))
+    (, ,) 
+    (NP-SBJ (NNP Eggers) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S-1 
+    (NP-SBJ-2 
+      (NP (DT A) (JJ medium-sized) (CD one) )
+      (PP-LOC (IN in) 
+        (NP (NNP Brooklyn) )))
+    (PRN 
+      (, ,)
+      (S 
+        (NP-SBJ (PRP it) )
+        (VP (VBZ says) 
+          (SBAR (-NONE- 0) 
+            (S (-NONE- *T*-1) ))))
+      (, ,) )
+    (VP (MD could) 
+      (VP (VB be) 
+        (VP (VBN altered) 
+          (S 
+            (NP-SBJ (-NONE- *-2) )
+            (VP (TO to) 
+              (VP (VB house) 
+                (NP 
+                  (QP (IN up) (TO to) (CD 1,000) )
+                  (NNS inmates) )
+                (PP (IN at) 
+                  (NP 
+                    (NP (DT a) (JJR lower) (NN cost) )
+                    (PP (IN than) 
+                      (S-NOM 
+                        (NP-SBJ (-NONE- *) )
+                        (VP (VBG building) 
+                          (NP (DT a) (JJ new) (NN prison) )
+                          (PP-LOC (IN in) 
+                            (NP (JJ upstate) (NNP New) (NNP York) )))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT A) (NN spokesman) )
+      (PP (IN for) 
+        (NP (DT the) (NN state) )))
+    (, ,) 
+    (ADVP (RB however) )
+    (, ,) 
+    (VP (VBZ calls) 
+      (S 
+        (NP-SBJ (DT the) (NN idea) )
+        (`` ``) (RB not) 
+        (ADJP-PRD 
+          (ADJP (JJ effective) )
+          (CC or) 
+          (ADJP (NN cost) (JJ efficient) ))))
+    (. .) ))

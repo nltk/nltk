@@ -1,0 +1,113 @@
+
+( (S 
+    (NP-SBJ (NNP American) (NNP City) (NNP Business) (NNPS Journals) (NNP Inc.) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (PRP$ its) (NN president) )
+            (, ,) 
+            (NP (NNP Michael) (NNP K.) (NNP Russell) )
+            (, ,) )
+          (VP (MD will) 
+            (VP 
+              (VP (VB resign) )
+              (CONJP (RB rather) (IN than) )
+              (VP (NN relocate) 
+                (PP-CLR (TO to) 
+                  (NP 
+                    (NP (JJ new) (NNS headquarters) )
+                    (PP-LOC (IN in) 
+                      (NP 
+                        (NP (NNP Charlotte) )
+                        (, ,) 
+                        (NP (NNP N.C) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Mr.) (NNP Russell) )
+      (, ,) 
+      (SBAR 
+        (WHNP-1 (WP who) )
+        (S 
+          (NP-SBJ (-NONE- *T*-1) )
+          (VP (VBD co-founded) 
+            (NP 
+              (NP (DT the) 
+                (ADJP (NNP Kansas) (NNP City) 
+                  (, ,)
+                  (JJ Mo.-based) )
+                (JJ local) (NN business) (NNS publications) (NN concern) )
+              (ADVP-LOC (RB here) )))))
+      (, ,) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP he) )
+          (VP (MD would) 
+            (VP (VB have) 
+              (NP (DT a) (JJ five-year) (NN consulting) (NN agreement) )
+              (PP-CLR (IN with) 
+                (NP 
+                  (NP (DT the) (NN company) )
+                  (, ,) 
+                  (SBAR 
+                    (WHNP-2 (WDT which) )
+                    (S 
+                      (NP-SBJ (-NONE- *T*-2) )
+                      (ADVP-TMP (RB recently) )
+                      (VP (VBD underwent) 
+                        (NP (DT an) (NN ownership) (NN change) )))))))))))
+    (. .) ))
+( (S 
+    (NP-TMP-TPC-1 (RBR Earlier) (DT this) (NN year) )
+    (NP-SBJ 
+      (NP (NNP Shaw) (NNP Publishing) (NNP Inc.) )
+      (, ,) 
+      (NP (NNP Charlotte) )
+      (, ,) )
+    (VP 
+      (VP (VBD acquired) 
+        (NP 
+          (NP (CD 30) (NN %) )
+          (PP (IN of) 
+            (NP (NNP American) (NNP City) )))
+        (NP-TMP (-NONE- *T*-1) ))
+      (CC and) 
+      (VP (VBZ has) 
+        (NP (DT an) (NN agreement) 
+          (S 
+            (NP-SBJ (-NONE- *) )
+            (VP (TO to) 
+              (VP (VB acquire) 
+                (NP (DT a) (JJ further) (CD 25) (NN %) )
+                (PP-CLR (IN from) 
+                  (NP (NNP E.W.) (NNP Scripps) (NNP Co.) ))
+                (NP-TMP (JJ next) (NN year) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Ray) (NNP Shaw) )
+      (, ,) 
+      (NP 
+        (NP (NN chairman) )
+        (PP (IN of) 
+          (NP (NNP American) (NNP City) )))
+      (, ,) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP he) )
+          (VP (MD would) 
+            (VP (VB assume) 
+              (NP 
+                (NP (NNP Mr.) (NNP Russell) (POS 's) )
+                (NNS responsibilities) )
+              (SBAR-ADV (IN if) 
+                (S 
+                  (NP-SBJ-1 (DT a) (NN successor) )
+                  (VP (VBZ is) (RB n't) 
+                    (VP (VBN found) 
+                      (NP (-NONE- *-1) )
+                      (NP-TMP (DT this) (NN month) ))))))))))
+    (. .) ))

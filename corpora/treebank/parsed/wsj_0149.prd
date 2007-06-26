@@ -1,0 +1,417 @@
+
+
+( (S (NP-SBJ-1 New York financier Saul Steinberg)
+     (VP sought
+	 (NP federal permission
+	     (S (NP-SBJ *)
+		(VP to
+		    (VP buy
+			(NP (NP (QP more than 15)
+				%)
+			    (PP of
+				(NP (NP (NP United Airlines ')
+					parent)
+				    ,
+				    (NP UAL Corp.))))))))
+	 ,
+	 (S-ADV (NP-SBJ *-1)
+		(VP saying
+		    (SBAR 0
+			  (S (NP-SBJ he)
+			     (VP might
+				 (VP seek
+				     (NP (NP control)
+					 (PP of
+					     (NP (NP the nation 's)
+						 second-largest airline))))))))))
+     .))
+( (S (SBAR-ADV Although
+	       (S (NP-SBJ takeover experts)
+		  (VP said
+		      (SBAR 0
+			    (S (NP-SBJ they)
+			       (VP doubted
+				   (SBAR 0
+					 (S (NP-SBJ Mr. Steinberg)
+					    (VP will
+						(VP make
+						    (NP a bid)
+						    (PP by
+							(NP himself))))))))))))
+     ,
+     (NP-SBJ (NP the application)
+             (PP by
+                 (NP his Reliance Group Holdings Inc.)))
+     (VP could
+         (VP signal
+             (NP (NP his interest)
+                 (PP in
+                     (S-NOM (NP-SBJ-1 *)
+			    (VP helping
+				(S (NP-SBJ *-1)
+				   (VP revive
+				       (NP a failed labor-management bid)))))))))
+     .))
+( (S (NP-SBJ (NP Such an application)
+             (PP for
+                 (NP federal antitrust clearance)))
+     (VP is
+         (ADJP-PRD necessary
+		   (PP for
+		       (NP (NP any investor)
+			   (SBAR (WHNP-1 that)
+				 (S (NP-SBJ *T*-1)
+				    (VP might
+					(VP seek
+					    (NP control)))))))))
+     .))
+( (S But
+     (NP-SBJ-1 some investors)
+     (VP have
+         (VP used
+             (NP such filings)
+	     (S-CLR (NP-SBJ *-1)
+		    (VP to
+			(VP boost
+			    (NP (NP the value)
+				(PP of
+				    (NP (NP their stock holdings)
+					,
+					(SBAR (WHNP-3 which)
+					      (S (PRN --
+						      (PP without
+							  (S-NOM (NP-SBJ *-2)
+								 (VP buying
+								     (NP more stock))))
+						      --)
+						 (NP-SBJ-2 they)
+						 (ADVP-TMP then)
+						 (VP sold
+						     (NP *T*-3))))))))))))
+     .))
+( (S (NP-SBJ-1 Takeover stock traders)
+     (VP (VP were
+	     (VP puzzled
+		 (NP *-1)
+		 (PP by
+		     (NP-LGS the Reliance filing))))
+	 and
+	 (VP cautioned
+	     (SBAR that
+		   (S (NP-SBJ it)
+		      (VP does n't
+			  (VP mean
+			      (SBAR 0
+				    (S (NP-SBJ Mr. Steinberg)
+				       (VP will
+					   (ADVP definitely)
+					   (VP seek
+					       (NP control)))))))))))
+     .))
+( (SINV ``
+	(S-TPC-1 (ADVP Maybe)
+		 (NP-SBJ-2 he)
+		 (ADVP just)
+		 (VP wants
+		     (S (NP-SBJ *-2)
+			(VP to
+			    (VP make
+				(S (NP-SBJ something)
+				   (VP happen)))))))
+	, ''
+	(VP said
+	    (S *T*-1))
+	(NP-SBJ one takeover expert)
+	.))
+( (S (NP-SBJ One investment banker)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-2 Mr. Steinberg)
+                  (VP may
+                      (VP be
+                          (VP trying
+                              (S (NP-SBJ *-2)
+                                 (VP to
+                                     (VP position
+                                         (NP himself)
+                                         (PP-CLR as
+						 (NP (NP a friendly investor)
+						     (SBAR (WHNP-1 who)
+							   (S (NP-SBJ *T*-1)
+							      (VP could
+								  (VP help
+								      (S (NP-SBJ UAL Chairman Stephen Wolf)
+									 (VP revive
+									     (NP a failed labor-management bid))))))))))))))))))
+     .))
+( (S-2 (NP-SBJ Mr. Steinberg)
+       (PRN ,
+	    (S (NP-SBJ he)
+	       (VP suggested
+		   (SBAR 0
+			 (S *T*-2))))
+	    ,)
+       (VP could
+	   (VP replace
+	       (NP (NP British Airways PLC)
+		   ,
+		   (SBAR (WHNP-1 which)
+			 (S (NP-SBJ *T*-1)
+			    (VP has
+				(VP withdrawn
+				    (PP-DIR from
+					    (NP the buy-out group)))))))))
+       .))
+( (S (NP-SBJ-1 Reliance)
+     (VP had
+         (ADVP-TMP already)
+         (VP bought and sold
+             (NP UAL stock)
+             (PP-CLR at
+		     (NP a big profit))
+             (PP without
+		 (S-NOM (NP-SBJ *-1)
+			(VP making
+			    (NP an antitrust filing)
+			    (PP-TMP before
+				    (NP (NP the collapse)
+					(NP-TMP Oct. 13)
+					(PP of
+					    (NP the (ADJP (QP $ 6.79 billion) *U*)
+						, (ADJP $ 300-a-share *U*)
+						labor-management buy-out)))))))))
+     .))
+( (S (NP-SBJ Reliance)
+     (VP (VP acquired
+             (NP a (ADJP 7 %) UAL stake)
+             (NP-TMP early this year)
+             (PP-CLR at
+		     (NP (NP an average cost)
+			 (PP of
+			     (NP (NP $ 110 *U*)
+				 (NP-ADV a share))))))
+         , and
+         (VP reduced
+             (NP its stake)
+             (PP-CLR to
+		     (NP 4.7 %))
+             (SBAR-TMP after
+		       (S (NP-SBJ UAL)
+			  (VP accepted
+			      (NP the bid)
+			      (PP-CLR at
+				      (NP (NP prices)
+					  (ADJP (ADJP higher)
+						(PP than
+						    (NP (NP $ 282 *U*)
+							(NP-ADV a share)))))))))))
+     .))
+( (S (NP-SBJ Market sources)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ Reliance)
+                  (VP (VP has
+			  (ADVP-TMP already)
+			  (VP sold
+			      (NP its entire UAL stake)))
+		      , and thus
+		      (VP would n't
+			  (VP have
+			      (NP any reason
+				  (S (NP-SBJ *)
+				     (VP to
+					 (VP file
+					     (NP the application)
+					     (S-PRP (ADVP simply)
+						    (NP-SBJ *)
+						    (VP to
+							(VP boost
+							    (NP (NP the value)
+								(PP of
+								    (NP its stock))))))))))))))))
+     .))
+( (S But
+     (NP-SBJ-1 (NP the exact amount)
+	       (PP of
+		   (NP (NP Reliance 's)
+		       current holding)))
+     (VP has n't
+         (VP been
+             (ADVP formally)
+	     (VP disclosed
+		 (NP *-1))))
+     .))
+( (S (NP-SBJ The filing)
+     (VP adds
+         (NP a new twist)
+         (PP-CLR to
+		 (NP market speculation
+		     (SBAR that
+			   (S (NP-SBJ (NP Coniston Partners)
+				      ,
+				      (NP a New York money manager)
+				      ,)
+			      (VP (VP has
+				      (VP bought
+					  (NP (NP (QP more than 5)
+						  %)
+					      (PP of
+						  (NP UAL stock)))))
+				  and
+				  (VP may
+				      (VP challenge
+					  (NP (NP (NP the UAL board 's)
+						  decision
+						  (S *ICH*-1))
+					      (NP-TMP last week)
+					      (S-1 (NP-SBJ *)
+						   (VP to
+						       (VP remain
+							   (ADJP-PRD independent)))))))))))))
+     .))
+( (S (NP-SBJ (NP Speculation)
+             (PP about
+                 (NP Coniston)))
+     (VP has
+         (VP caused
+	     (S (NP-SBJ the stock)
+		(VP to
+                    (VP rebound
+                        (PP from
+                            (NP (NP a low)
+                                (PP of
+                                    (NP $ 145 *U*)))))))))
+     .))
+( (S (NP-SBJ (NP UAL 's)
+             announcement)
+     (VP came
+         (SBAR-TMP after
+		   (S (NP-SBJ the market)
+		      (VP closed
+			  (NP-TMP yesterday)))))
+     .))
+( (S (PP-LOC In
+	     (NP composite New York Stock Exchange trading))
+     ,
+     (NP-SBJ the shares)
+     (VP closed
+         (PP-CLR at
+		 (NP $ 177 *U*))
+         ,
+         (ADVP-CLR up
+		   (NP $ 1.50 *U*)))
+     .))
+( (S (NP-SBJ UAL)
+     (VP would n't
+         (VP elaborate
+             (PP-CLR on
+		     (NP a statement
+			 (SBAR that
+			       (S (NP-SBJ-1 it)
+				  (VP had
+				      (VP been
+					  (VP notified
+					      (NP *-1)
+					      (PP-CLR of
+						      (NP the filing))
+					      (PP by
+						  (NP-LGS Reliance)))))))))))
+     .))
+( (S (NP-SBJ Reliance)
+     (VP (VP confirmed
+	     (NP the filing))
+	 but
+	 (VP would n't
+	     (VP elaborate)))
+     .))
+( (S (NP-SBJ-1 Some takeover experts)
+     (VP were
+         (ADJP-PRD skeptical)
+	 ,
+	 (S-ADV (NP-SBJ *-1)
+		(VP saying
+		    (SBAR 0
+			  (S (NP-SBJ (NP it)
+				     (SBAR *EXP*-2))
+			     (VP was
+				 (ADJP-PRD possible)
+				 (SBAR-2 that
+					 (S (NP-SBJ-3 Mr. Steinberg)
+					    (VP made
+						(NP the filing)
+						(S-PRP (ADVP only)
+						       (NP-SBJ-4 *-3)
+						       (VP to
+							   (VP help
+							       (S (NP-SBJ *-4)
+								  (VP boost
+								      (NP (NP the value)
+									  (PP of
+									      (NP (NP any remaining Reliance stake)
+										  (PP-LOC in
+											  (NP UAL)))))))))))))))))))
+     .))
+( (S (NP-SBJ-1 Mr. Steinberg)
+     (VP is
+         (VP thought
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP be
+                        (PP-PRD on
+				(NP (NP friendly terms)
+				    (PP with
+					(NP (NP UAL 's)
+					    Mr. Wolf)))))))))
+     .))
+( (S (NP-SBJ The investor)
+     (VP was
+         (ADJP-PRD instrumental)
+	 (PP in
+	     (S-NOM (NP-SBJ *)
+		    (VP tapping
+			(S (NP-SBJ Mr. Wolf)
+			   (VP to
+			       (VP run
+				   (NP (NP the air cargo unit)
+				       (PP of
+					   (NP Tiger International Inc))))))))))
+     .))
+( (S (NP-SBJ (NP (NP Mr. Wolf 's)
+		 success)
+             (PP in
+                 (NP that job)))
+     (VP helped
+         (S (NP-SBJ him)
+	    (VP land
+		(NP (NP the top job)
+		    (PP with
+			(NP UAL)))
+		(PP-TMP in
+			(NP December 1987)))))
+     .))
+( (S But
+     (NP-SBJ-2 any potential acquirer)
+     (VP must
+         (VP attempt
+             (S (NP-SBJ *-2)
+                (VP to
+                    (VP reach
+                        (NP (NP some kind)
+                            (PP of
+                                (NP accord)))
+                        (PP with
+                            (NP (NP (NP the company 's)
+                                    employees)
+                                ,
+                                (NP primarily
+                                    (NP its pilots)
+                                    and
+                                    (NP (NP (NP the powerful machinists ')
+                                            union)
+                                        ,
+                                        (SBAR (WHNP-1 which)
+                                              (S (NP-SBJ *T*-1)
+                                                 (VP has
+                                                     (VP opposed
+                                                         (NP a takeover))))))))))))))
+     .))

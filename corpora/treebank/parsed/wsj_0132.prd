@@ -1,0 +1,138 @@
+
+
+( (S (NP-SBJ N.V . DSM)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ (NP net income)
+                          (PP-TMP in
+				  (NP the third quarter)))
+                  (VP jumped
+                      (NP-ADV 63 %)
+		      (SBAR-ADV as
+				(S (NP-SBJ the company)
+				   (VP had
+				       (NP (ADJP substantially lower) extraordinary charges)
+				       (S-PRP (NP-SBJ *)
+					      (VP to
+						  (VP account
+						      (PP-CLR for
+							      (NP a restructuring program))))))))))))
+     .))
+( (S (NP-SBJ The Dutch chemical group)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ net income)
+                  (VP gained
+                      (PP-CLR to
+			      (NP (NP (NP (QP 235 million) guilders)
+				      (PRN -LRB-
+					   (NP (QP $ 113.2 million) *U*)
+					   -RRB-))
+				  , or
+				  (NP (NP 6.70 guilders)
+				      (NP-ADV a share))
+				  ,))
+                      (PP-CLR from
+			      (NP (NP (QP 144 million) guilders)
+				  , or
+				  (NP (NP 4.10 guilders)
+				      (NP-ADV a share))
+				  ,
+				  (ADVP-TMP (NP a year)
+					    ago)))))))
+     .))
+( (S (NP-SBJ The (ADJP (NP-ADV 32 %) state-owned) DSM)
+     (VP had
+         (NP (NP (QP eight million)
+		 guilders)
+	     (PP of
+		 (NP extraordinary charges)))
+         (PP-TMP in
+		 (NP the latest quarter))
+         ,
+         (S-PRP (ADVP mainly)
+		(NP-SBJ *)
+		(VP to
+		    (VP reflect
+			(NP (NP one-time losses)
+			    (PP in
+				(NP (NP connection)
+				    (PP with
+					(NP (NP the disposal)
+					    (PP of
+						(NP some operations)))))))))))
+     .))
+( (S (NP-SBJ-1 The charges)
+     (VP were
+         (VP offset
+             (NP *-1)
+             (PP in
+                 (NP part))
+             (PP by
+                 (NP-LGS (NP a gain)
+			 (PP from
+			     (NP (NP the sale)
+				 (PP of
+				     (NP (NP the company 's)
+					 construction division))))))))
+     .))
+( (S (NP-TMP Last year)
+     ,
+     (NP-SBJ DSM)
+     (VP had
+         (NP (NP (QP 71 million)
+		 guilders)
+	     (PP of
+		 (NP extraordinary charges))
+	     (PP for
+		 (NP (NP the restructuring program) and (NP other transactions)))))
+     .))
+( (S (NP-SBJ-1 The earnings growth)
+     (ADVP also)
+     (VP was
+         (VP fueled
+             (NP *-1)
+             (PP by
+                 (NP-LGS (NP the company 's)
+			 ability
+			 (S (NP-SBJ *)
+			    (VP to
+				(VP cut
+				    (NP net financing spending)
+				    (PP-CLR by
+					    (NP half))
+				    (PP-CLR to
+					    (NP (QP around 15 million) guilders)))))))))
+     .))
+( (S (S-TPC-1 (ADVP Also)
+	      ,
+	      (NP-SBJ (ADJP substantially lower) Dutch corporate tax rates)
+	      (VP helped
+		  (S (NP-SBJ the company)
+		     (VP keep
+			 (S (NP-SBJ its tax outlay)
+			    (ADJP-PRD flat)
+			    (ADVP relative
+				  (PP to
+				      (NP earnings growth))))))))
+     ,
+     (NP-SBJ the company)
+     (VP added
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (NP-SBJ-1 Sales)
+     ,
+     (ADVP however)
+     ,
+     (VP were
+         (ADVP little)
+	 (VP changed
+	     (NP *-1)
+             (PP-CLR at
+		     (NP (QP 2.46 billion) guilders))
+             ,
+             (PP compared
+                 (PP with
+                     (NP (QP 2.42 billion) guilders)))))
+     .))

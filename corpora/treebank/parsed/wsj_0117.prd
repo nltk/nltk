@@ -1,0 +1,421 @@
+
+
+( (S (NP-SBJ The United Kingdom High Court)
+     (VP declared
+         (S (ADJP-PRD illegal)
+	    (NP-SBJ (NP a variety)
+		    (PP of
+			(NP (NP interest-rate swap transactions and options deals)
+			    (PP between
+				(NP (NP a London borough council)
+				    and
+				    (NP commercial banks))))))))
+     .))
+( (S (NP-SBJ The ruling)
+     (VP could
+         (VP lead
+             (PP-CLR to
+		     (NP (NP the cancellation)
+			 (PP of
+			     (NP (NP huge bank debts)
+				 (SBAR (WHNP-1 0)
+				       (S (NP-SBJ-2 (NP the London Borough)
+						    (PP of
+							(NP Hammersmith
+							    and
+							    Fulham)))
+					  (VP ran
+					      (PRT up)
+					      (NP *T*-1)
+					      (PP-TMP after
+						      (S-NOM (NP-SBJ *-2)
+							     (VP losing
+								 (ADVP-MNR heavily)
+								 (PP on
+								     (NP swap transactions))))))))))))))
+     .))
+( (S (NP-SBJ-1 (QP As many as 70)
+	       U.K. and international banks)
+     (VP stand
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP lose
+                    (NP (QP several hundred million) pounds)
+                    (SBAR-ADV (SINV should
+				    (NP-SBJ-2 the decision)
+				    (VP (VP be
+					    (VP upheld
+						(NP *-2)))
+					and
+					(VP set
+					    (NP (NP a precedent)
+						(PP for
+						    (NP other municipalities)))))))))))
+     .))
+( (S (NP-SBJ-68 An appeal)
+     (VP is
+         (VP expected
+             (NP *-68)))
+     .))
+( (S (PP In
+         (NP (NP response)
+             (PP to
+                 (NP the ruling))))
+     ,
+     (NP-SBJ-1 gilt futures)
+     (ADVP-MNR swiftly)
+     (VP plunged
+         (NP-ADV (NP more)
+		 (PP than
+		     (NP a point)))
+         (NP-TMP yesterday)
+	 (PP-TMP before
+		 (S-NOM (NP-SBJ *-1)
+			(VP recovering
+			    (NP (NP much)
+				(PP of
+				    (NP the loss)))
+			    (PP-TMP by
+				    (NP (NP the end)
+					(PP of
+					    (NP the session))))))))
+     .))
+( (S (NP-SBJ-1 (NP (NP Gilts)
+		   , or
+		   (NP British government bonds))
+	       ,
+	       (SBAR (WHNP-60 which)
+		     (S (NP-SBJ *T*-60)
+			(ADVP also)
+			(VP fell
+			    (ADVP-MNR sharply)
+			    (ADVP initially)))) 
+	       ,)
+     (VP retraced
+         (NP (NP some)
+             (PP of
+                 (NP the losses)))
+         (S-ADV (NP-SBJ *-1)
+		(VP to
+		    (VP end
+			(ADVP (NP (QP about 3)
+				  point)
+			      lower)))))
+     .))
+( (S (NP-SBJ (NP The council)
+             ,
+             (SBAR (WHNP-61 which)
+                   (S (NP-SBJ-1 *T*-61)
+                      (VP is
+                          (VP alleged
+                              (S (NP-SBJ *-1)
+                                 (VP to
+                                     (VP have
+                                         (VP engaged
+                                             (PP-CLR in
+						     (NP (NP over 600 deals)
+							 (VP valued
+							     (NP *)
+							     (PP-CLR at
+								     (NP (NP (QP over # 6 billion) *U*)
+									 -LRB-
+									 (NP (QP $ 9.5 billion) *U*)
+									 -RRB-)))))))))))))
+             ,)
+     (VP lost
+         (NP (NP millions)
+             (PP of
+                 (NP pounds)))
+         (PP from
+             (NP soured swap deals)))
+     .))
+( (S (PP-TMP At
+	     (NP one point))
+     ,
+     (NP-SBJ-1 Hammersmith)
+     (VP is
+         (VP reported
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP have
+                        (VP accounted
+                            (PP-CLR for
+				    (NP (NP (QP as much as 10)
+					    %)
+					(PP of
+					    (NP the sterling market))))
+			    (PP in
+				(NP interest-rate swap dealings))))))))
+     .))
+( (S (SBAR-TMP (WHADVP-1 When)
+	       (S (NP-SBJ two parties)
+		  (VP engage
+		      (PP-CLR in
+			      (NP an interest-rate swap))
+		      (ADVP-TMP *T*-1))))
+     ,
+     (NP-SBJ they)
+     (VP are
+         (VP betting
+             (PP-CLR against
+		     (NP each other))
+             (PP-CLR on
+		     (NP future rates))))
+     .))
+( (S (ADVP Thus)
+     ,
+     (NP-SBJ (NP an institution)
+             (VP obligated
+                 (S (NP-SBJ *)
+                    (VP to
+                        (VP make
+                            (NP (NP fixed-rate interest payments)
+                                (PP on
+                                    (NP debt))))))))
+     (VP swaps
+         (NP the payments)
+         (PP-CLR with
+		 (NP (NP another)
+		     (VP making
+			 (NP floating-rate payments)))))
+     .))
+( (S (PP In
+         (NP (NP most)
+	     (PP of
+		 (NP the British transactions))))
+     ,
+     (NP-SBJ-1 the municipalities)
+     (VP agreed
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP make
+                    (NP floating-rate payments)
+                    (PP-CLR to
+			    (NP (NP banks)
+				,
+				(SBAR (WHNP-62 which)
+				      (S (NP-SBJ *T*-62)
+					 (VP would
+					     (VP make
+						 (NP fixed-rate payments)))))))))))
+     .))
+( (S (SBAR-ADV As
+	       (S (NP-SBJ interest rates)
+		  (VP rose)))
+     ,
+     (NP-SBJ municipalities)
+     (VP owed
+         (NP the banks)
+         (NP (NP more)
+	     (SBAR than
+		   (S (NP-SBJ the banks)
+		      (VP were
+			  (VP paying
+			      (NP them)))))))
+     .))
+( (S (NP-SBJ The court hearing)
+     (VP began
+         (PP-TMP-CLR in
+		     (NP early October))
+         (PP at
+             (NP (NP the request)
+                 (PP of
+                     (NP (NP Anthony Hazell)
+			 ,
+			 (NP (NP district auditor)
+			     (PP for
+				 (NP Hammersmith)))
+                         ,
+                         (SBAR (WHNP-63 who)
+                               (S (NP-SBJ *T*-63)
+                                  (VP argued
+                                      (SBAR that
+                                            (S (NP-SBJ local councils)
+                                               (VP are n't
+                                                   (VP vested
+                                                       (PP-CLR with
+							       (NP constitutional authority
+								   (S (NP-SBJ *)
+								      (VP to
+									  (VP engage
+									      (PP-CLR in
+										      (NP such capital-markets activities)))))))))))))))))))
+     .))
+( (S (NP-SBJ The council)
+     (VP backed
+         (NP (NP the audit commission 's)
+             stand
+             (SBAR that
+                   (S (NP-SBJ the swap transactions)
+                      (VP are
+                          (ADJP-PRD illegal))))))
+     .))
+( (S (SBAR-ADV Although
+	       (S (NP-SBJ the Hammersmith and Fulham council)
+		  (VP was
+		      (PP-PRD by (ADVP far))
+		      (NP (NP the (ADJP most active)
+			      local authority)
+			  (VP engaging
+			      (PP-CLR in
+				      (NP such capital-markets transactions)))))))
+     ,
+     (NP-SBJ the court decision)
+     (VP could
+         (VP set
+             (NP (NP a precedent)
+                 (PP for
+                     (NP (NP similar transactions)
+                         (PP by
+                             (NP 77 other local councils)))))))
+     .))
+( (S ``
+     (S-TPC-1 (SBAR-ADV While
+			(S (NP-SBJ this court ruling)
+			   (VP was
+			       (ADVP-PRD only)
+			       (PP on
+				   (NP Hammersmith)))))
+	      ,
+	      (NP-SBJ it)
+	      (VP will
+		  (ADVP obviously)
+		  (VP be
+		      (ADJP-PRD very persuasive)
+		      (PP in
+			  (NP (NP other cases)
+			      (PP of
+				  (NP a similar nature)))))))
+     , ''
+     (NP-SBJ (NP a solicitor)
+	     (VP representing
+		 (NP (NP one)
+		     (PP of
+			 (NP the banks)))))
+     (VP said
+	 (S *T*-1))
+     .))
+( (S (ADVP Already) 
+     ,
+     (NP-SBJ-1 10 local councils)
+     (VP have
+         (VP refused
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP honor
+                        (NP (NP fees and payments)
+			    (PP to
+				(NP banks))
+                            (VP incurred
+                                (NP *)
+                                (PP-TMP during
+					(NP various swaps dealings)))))))))
+     .))
+( (S (NP-SBJ (NP Other financial institutions)
+             (VP involved
+                 (NP *)))
+     (VP include
+         (NP (NP Barclays Bank PLC)
+             ,
+             (NP Midland Bank PLC)
+             ,
+             (NP Security Pacific Corp.)
+             ,
+             (NP (NP Chemical Banking Corp. 's)
+                 Chemical Bank)
+             ,
+             (NP (NP Citicorp 's)
+                 Citibank)
+             and
+             (NP Mitsubishi Finance International)))
+     .))
+( (S (S-TPC-2 (SBAR-ADV If
+			(S (NP-SBJ the banks)
+			   (VP exhaust
+			       (NP (NP all avenues)
+				   (PP of
+				       (NP appeal))))))
+	      ,
+	      (NP-SBJ (NP it)
+		      (SBAR *EXP*-1))
+	      (VP is
+		  (ADJP-PRD possible)
+		  (SBAR-1 that
+			  (S (NP-SBJ-3 they)
+			     (VP would
+				 (VP seek
+				     (S (NP-SBJ *-3)
+					(VP to
+					    (VP have
+						(S (NP-SBJ the illegality ruling)
+						   (VP work
+						       (NP both ways))))))))))))
+     ,
+     (NP-SBJ some market sources)
+     (VP said
+	 (SBAR 0
+	       (S *T*-2)))
+     .))
+( (S (NP-SBJ-1 Banks)
+     (VP could
+         (VP seek
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP recover
+                        (NP (NP payments)
+                            (PP to
+                                (NP local authorities)))
+                        (PP-LOC in
+				(NP (NP instances)
+				    (SBAR (WHADVP-2 where)
+					  (S (NP-SBJ the banks)
+					     (VP made
+						 (NP net payments)
+						 (PP-CLR to
+							 (NP councils))
+						 (ADVP-LOC *T*-2)))))))))))
+     .))
+( (S (NP-SBJ-1 (NP Officials)
+	       (PP from
+		   (NP (NP the various banks)
+		       (VP involved
+			   (NP *)))))
+     (VP are
+         (VP expected
+             (S (NP-SBJ-2 *-1)
+                (VP to
+                    (VP meet
+                        (PP-TMP during
+				(NP the next few days))
+                        (S-PRP-CLR (NP-SBJ *-2)
+				   (VP to
+				       (VP consider
+					   (NP (NP other arrangements)
+					       (PP with
+						   (NP local authorities))
+					       (SBAR (WHNP-3 that)
+						     (S (NP-SBJ *T*-3)
+							(VP could
+							    (VP be
+								(ADJP-PRD questionable))))))))))))))
+     .))
+( (S (NP-SBJ-1 The banks)
+     (VP (VP have
+	     (NP (NP 28 days)
+		 (SBAR (WHADVP-2 0)
+		       (S (NP-SBJ *) 
+			  (VP to
+			      (VP file
+				  (NP (NP an appeal)
+				      (PP against
+					  (NP the ruling)))
+				  (ADVP-TMP *T*-2)))))))
+	 and
+	 (VP are
+	     (VP expected
+		 (S (NP-SBJ *-1)
+		    (VP to
+			(VP do
+			    (ADVP so)
+			    (ADVP-TMP shortly)))))))
+     .))

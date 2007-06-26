@@ -1,0 +1,287 @@
+
+( (S 
+    (NP-SBJ-1 
+      (NP (DT The) (JJ Finnish) (NN government) )
+      (CC and) 
+      (NP 
+        (NP (JJ major) (NNS creditors) )
+        (PP (IN of) 
+          (NP (JJ bankrupt) (NN shipyard) (NNP Waertsilae) (NNP Marine) (NNPS Industries) (NNP Oy) ))))
+    (VP (VBD agreed) 
+      (PP-MNR (IN in) 
+        (NP (NN principle) ))
+      (S 
+        (NP-SBJ-2 (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB form) 
+            (NP (DT a) (JJ new) (NN company) )
+            (S-PRP 
+              (NP-SBJ (-NONE- *-2) )
+              (VP (TO to) 
+                (VP (VB complete) 
+                  (NP 
+                    (NP (JJS most) )
+                    (PP (IN of) 
+                      (NP 
+                        (NP 
+                          (NP (DT the) (JJ troubled) (NN shipyard) (POS 's) )
+                          (NN backlog) )
+                        (PP (IN of) 
+                          (NP (CD 15) (NNS ships) ))))))))))))
+    (. .) ))
+( (S 
+    (S-2 
+      (NP-SBJ-1 (DT The) (JJ new) (NN company) )
+      (VP (MD will) 
+        (VP (VB attempt) 
+          (S 
+            (NP-SBJ (-NONE- *-1) )
+            (VP (TO to) 
+              (VP (VB limit) 
+                (NP 
+                  (NP (DT the) (NN shipyard) (POS 's) )
+                  (NNS losses) )))))))
+    (, ,) 
+    (NP-SBJ (NNS participants) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-2) )))
+    (. .) ))
+( (S (`` ``) 
+    (NP-SBJ (DT The) (NN situation) )
+    (VP (VBZ is) 
+      (SBAR-PRD (IN that) 
+        (S 
+          (NP-SBJ (DT the) (NN bankruptcy) (NN court) )
+          (VP (MD will) 
+            (VP (VB get) 
+              (PP-CLR (IN out) 
+                (PP (IN of) 
+                  (NP (DT the) (NN shipbuilding) (NN business) ))))))))
+    (. .) ))
+( (SINV 
+    (S-TPC-2 
+      (NP-SBJ-1 (NN Everything) )
+      (VP (MD will) 
+        (VP (VB be) 
+          (VP (VBN taken) 
+            (PRT (RP over) )
+            (NP (-NONE- *-1) )
+            (PP (IN by) 
+              (NP-LGS (DT the) (JJ new) (NN company) ))))))
+    (, ,) ('' '') 
+    (VP (VBD said) 
+      (S (-NONE- *T*-2) ))
+    (NP-SBJ 
+      (NP (NNP Christian) (NNP Andersson) )
+      (, ,) 
+      (NP 
+        (NP (JJ executive) (NN vice) (NN president) )
+        (PP (IN of) 
+          (NP 
+            (NP (NNP Oy) (NNP Waertsilae) )
+            (, ,) 
+            (NP 
+              (NP (JJ former) (NN parent) )
+              (PP (IN of) 
+                (NP (NNP Waertsilae) (NNP Marine) )))))))
+    (. .) ))
+( (S 
+    (SBAR-TMP (RB Once) 
+      (S 
+        (NP-SBJ-1 (PRP$ its) (NN ownership) )
+        (VP (VBZ is) 
+          (VP (VBN finalized) 
+            (NP (-NONE- *-1) )))))
+    (, ,) 
+    (NP-SBJ (DT the) (JJ new) (NN company) )
+    (VP (MD will) 
+      (VP (VB open) 
+        (NP 
+          (NP (NNS talks) )
+          (SBAR (-NONE- *ICH*-3) ))
+        (PP-CLR (IN with) 
+          (NP (JJ state-appointed) (NNS receivers) ))
+        (SBAR-PRP-3 
+          (WHADVP-2 (-NONE- 0) )
+          (S 
+            (NP-SBJ (-NONE- *) )
+            (VP (TO to) 
+              (VP (VB buy) (CC or) (VB lease) 
+                (NP 
+                  (NP (NNP Waertsilae) (NNP Marine) (POS 's) )
+                  (NN shipyard) (NNS facilities) )
+                (ADVP (-NONE- *T*-2) )))))))
+    (. .) ))
+( (S 
+    (S-TPC-3 
+      (S 
+        (NP-SBJ-1 (NNS Subcontractors) )
+        (VP (MD will) 
+          (VP (VB be) 
+            (VP (VBN offered) 
+              (NP (-NONE- *-1) )
+              (NP (DT a) (NN settlement) )))))
+      (CC and) 
+      (S 
+        (NP-SBJ-2 
+          (NP (DT a) (NN swift) (NN transition) )
+          (PP (TO to) 
+            (NP (JJ new) (NN management) )))
+        (VP (VBZ is) 
+          (VP (VBN expected) 
+            (S 
+              (NP-SBJ (-NONE- *-2) )
+              (VP (TO to) 
+                (VP (VB avert) 
+                  (NP 
+                    (NP (DT an) (NN exodus) )
+                    (PP (IN of) 
+                      (NP (JJ skilled) (NNS workers) ))
+                    (PP (IN from) 
+                      (NP 
+                        (NP (NNP Waertsilae) (NNP Marine) (POS 's) )
+                        (CD two) (JJ big) (NNS shipyards) ))))))))))
+    (, ,) 
+    (NP-SBJ (NN government) (NNS officials) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-3) )))
+    (. .) ))
+( (S 
+    (PP-LOC (IN Under) 
+      (NP 
+        (NP (DT an) (NN accord) )
+        (VP (VBN signed) 
+          (NP (-NONE- *) )
+          (NP-TMP (NN yesterday) ))))
+    (, ,) 
+    (NP-SBJ 
+      (NP (DT the) (NN government) )
+      (CC and) 
+      (NP 
+        (NP (NNP Union) (NNP Bank) )
+        (PP (IN of) 
+          (NP (NNP Finland) ))))
+    (VP (MD would) 
+      (VP (VB become) 
+        (NP-PRD 
+          (NP (JJ major) (NNS shareholders) )
+          (PP-LOC (IN in) 
+            (NP (DT the) (JJ new) (NN company) )))
+        (, ,) 
+        (S-ADV 
+          (NP-SBJ (DT each) )
+          (VP (VBG injecting) 
+            (NP 
+              (NP 
+                (QP (CD 100) (CD million) )
+                (JJ Finnish) (NN markkaa) )
+              (PRN 
+                (-LRB- -LRB-)
+                (NP 
+                  (QP ($ $) (CD 23.5) (CD million) )
+                  (-NONE- *U*) )
+                (-RRB- -RRB-) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (NNP Oy) (NNP Waertsilae) )
+    (VP (VBZ is) 
+      (S-PRD 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP 
+            (VP (VB contribute) 
+              (NP 
+                (NP 
+                  (QP (CD 200) (CD million) )
+                  (NN markkaa) )
+                (, ,) 
+                (NP 
+                  (NP (JJS most) )
+                  (PP (IN of) 
+                    (NP (PRP it) ))
+                  (PP (IN as) 
+                    (NP (VBN subordinated) (NN debt) )))
+                (, ,) ))
+            (CC and) 
+            (VP (VB take) 
+              (NP 
+                (NP (DT a) (NN minority) (NN stake) )
+                (PP-LOC (IN in) 
+                  (NP (DT the) (JJ new) (NN company) ))))))))
+    (. .) ))
+( (S 
+    (S-TPC-2 
+      (NP-SBJ-1 
+        (NP (NNS Customers) )
+        (VP (VBG holding) 
+          (NP 
+            (NP (NNS contracts) )
+            (PP (IN for) 
+              (NP 
+                (NP (NNP Waertsilae) (NNP Marine) (POS 's) )
+                (JJ undelivered) (NNS ships) )))))
+      (VP (VBP are) 
+        (VP (VBN expected) 
+          (S 
+            (NP-SBJ (-NONE- *-1) )
+            (VP (TO to) 
+              (VP (VB subscribe) 
+                (NP 
+                  (NP (JJS most) )
+                  (PP (IN of) 
+                    (NP (DT the) (VBG remaining) 
+                      (QP (CD 170) (CD million) )
+                      (NN markkaa) )))
+                (PP (IN in) 
+                  (NP (NN share) (NN capital) ))))))))
+    (, ,) 
+    (NP-SBJ (NN government) (NNS officials) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-2) )))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Waertsilae) (NNP Marine) (POS 's) )
+      (JJS biggest) (NN creditor) )
+    (VP (VBZ is) 
+      (NP-PRD (JJ Miami-based) (NNP Carnival) (NNP Cruise) (NNPS Lines) (NNP Inc) ))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Carnival) )
+      (, ,) 
+      (SBAR 
+        (WHNP-1 (WDT which) )
+        (S 
+          (NP-SBJ (-NONE- *T*-1) )
+          (VP (VBZ has) 
+            (NP (CD three) (NNS ships) )
+            (PP-CLR (IN on) 
+              (NP 
+                (NP (NN order) )
+                (PP (IN from) 
+                  (NP (NNP Waertsilae) (NNP Marine) )))))))
+      (, ,) )
+    (VP (VBD presented) 
+      (NP 
+        (NP (NNS claims) )
+        (PP (IN for) 
+          (NP 
+            (QP ($ $) (CD 1.5) (CD billion) )
+            (-NONE- *U*) (NNS damages) )))
+      (PP-LOC (IN in) 
+        (NP (DT the) (NN bankruptcy) (NN court) ))
+      (NP-TMP (DT this) (NN week) ))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Waertsilae) (NNP Marine) (POS 's) )
+      (NN bankruptcy) (NNS proceedings) )
+    (VP (VBD began) 
+      (NP-TMP (NNP Tuesday) )
+      (PP-LOC (IN in) 
+        (NP (DT a) (NNP Helsinki) (NN court) )))
+    (. .) ))

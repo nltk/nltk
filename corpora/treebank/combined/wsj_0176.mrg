@@ -1,0 +1,174 @@
+
+( (S 
+    (NP-SBJ (NNP Xerox) (NNP Corp.) )
+    (VP (VBZ has) 
+      (VP (VBN told) 
+        (NP 
+          (NP (NNS employees) )
+          (PP-LOC (IN in) 
+            (NP (PRP$ its) (NNP Crum) (CC &) (NNP Forster) (JJ personal) (NN insurance) (NNS operations) )))
+        (SBAR (IN that) 
+          (S 
+            (NP-SBJ (PRP it) )
+            (VP (VBZ is) 
+              (VP (VBG laying) 
+                (PRT (RP off) )
+                (NP 
+                  (NP 
+                    (QP (IN about) (CD 300) )
+                    (NNS people) )
+                  (, ,) (CC or) 
+                  (NP 
+                    (NP (CD 25) (NN %) )
+                    (PP (IN of) 
+                      (NP (DT the) (NN staff) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT A) (NN spokeswoman) )
+      (PP (IN for) 
+        (NP (NNP Crum) (CC &) (NNP Forster) )))
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 (NNS employees) )
+          (VP (VBD were) 
+            (VP (VBN told) 
+              (NP (-NONE- *-1) )
+              (NP-TMP (RB early) (DT this) (NN week) )
+              (SBAR (IN that) 
+                (S 
+                  (NP-SBJ-3 
+                    (NP (JJ numerous) (NN staff) (NNS functions) )
+                    (PP (IN for) 
+                      (NP (DT the) (JJ personal) (NN insurance) (NNS lines) )))
+                  (VP (VBD were) 
+                    (VP (VBG going) 
+                      (S 
+                        (NP-SBJ-2 (-NONE- *-3) )
+                        (VP (TO to) 
+                          (VP (VB be) 
+                            (VP (VBN centralized) 
+                              (NP (-NONE- *-2) )))))
+                      (PP (IN as) 
+                        (NP (DT a) (JJ cost-cutting) (NN move) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP She) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (DT the) (NN move) )
+          (VP (MD would) 
+            (VP (VB result) 
+              (PP-CLR (IN in) 
+                (NP 
+                  (NP (DT a) (JJ after-tax) (NN charge) )
+                  (PP (IN of) 
+                    (NP 
+                      (QP (JJR less) (IN than) ($ $) (CD 4) (CD million) )
+                      (-NONE- *U*) ))
+                  (SBAR 
+                    (WHNP-2 (-NONE- 0) )
+                    (S 
+                      (NP-SBJ-1 (-NONE- *T*-2) )
+                      (VP (TO to) 
+                        (VP (VB be) 
+                          (VP (VBN spread) 
+                            (NP (-NONE- *-1) )
+                            (PP-CLR (IN over) 
+                              (NP (DT the) (JJ next) (CD three) (NNS quarters) ))))))))))))))
+    (. .) ))
+( (S 
+    (PP (IN By) 
+      (NP (NN comparison) ))
+    (, ,) 
+    (PP-TMP (IN for) 
+      (NP (DT the) (JJ first) (CD nine) (NNS months) ))
+    (, ,) 
+    (NP-SBJ (NNP Xerox) )
+    (VP (VBD earned) 
+      (NP 
+        (NP 
+          (QP ($ $) (CD 492) (CD million) )
+          (-NONE- *U*) )
+        (, ,) (CC or) 
+        (NP 
+          (NP ($ $) (CD 4.55) (-NONE- *U*) )
+          (NP-ADV (DT a) (NN share) ))
+        (, ,) )
+      (PP (IN on) 
+        (NP 
+          (NP (NN revenue) )
+          (PP (IN of) 
+            (NP 
+              (QP ($ $) (CD 12.97) (CD billion) )
+              (-NONE- *U*) )))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ 
+        (NP (NNS Earnings) )
+        (PP-LOC (IN at) 
+          (NP 
+            (NP (NNP Xerox) (POS 's) )
+            (JJ financial-services) (NNS operations) )))
+      (ADVP (RB actually) )
+      (VP (VBD rose) 
+        (ADVP-EXT (RB slightly) )))
+    (, ,) (CC but) 
+    (S 
+      (NP-SBJ (DT that) )
+      (VP (VBD was) 
+        (SBAR-PRP-PRD 
+          (ADVP (RB largely) )
+          (IN because) 
+          (S 
+            (NP-SBJ 
+              (NP (NN capital) (NNS gains) )
+              (PP-LOC (IN at) 
+                (NP (NNP Crum) (CC &) (NNP Forster) )))
+            (VP (VBP offset) 
+              (NP 
+                (NP (NNP Hurricane) (NNP Hugo) (NNS payments) )
+                (CC and) 
+                (NP 
+                  (NP (DT the) (NNS reserves) )
+                  (VP (VBD set) 
+                    (PRT (RP up) )
+                    (NP (-NONE- *) )
+                    (S-PRP 
+                      (NP-SBJ (-NONE- *) )
+                      (VP (TO to) 
+                        (VP (VB cover) 
+                          (NP (JJ future) (NNS payments) ))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NN Property\/casualty) (NN insurance) )
+    (VP (VBZ has) 
+      (VP (VBN been) 
+        (NP-PRD (DT a) (JJ tough) (NN business) )
+        (PP-TMP (IN in) 
+          (NP (JJ recent) (NNS quarters) ))
+        (, ,) 
+        (SBAR-ADV (IN as) 
+          (S 
+            (S 
+              (NP-SBJ (NN pricing) )
+              (VP (VBZ has) 
+                (VP (VBN been) 
+                  (ADJP-PRD (JJ cutthroat) ))))
+            (CC and) 
+            (S 
+              (NP-SBJ 
+                (NP (JJ natural) (NNS disasters) )
+                (PP (JJ such) (IN as) 
+                  (NP 
+                    (NP (NNP Hurricane) (NNP Hugo) )
+                    (CC and) 
+                    (NP (DT the) (NNP California) (NN earthquake) ))))
+              (VP (VBP have) 
+                (VP (VBN resulted) 
+                  (PP-CLR (IN in) 
+                    (NP (JJ huge) (NNS payments) )))))))))
+    (. .) ))

@@ -1,0 +1,383 @@
+
+( (S 
+    (NP-SBJ (NNP Reuters) (NNP Holdings) (NNP PLC) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 (NNP Michael) (NNP Reupke) )
+          (VP 
+            (VP (VBD resigned) 
+              (PP-CLR (IN as) 
+                (NP (JJ general) (NN manager) ))
+              (S-PRP 
+                (NP-SBJ (-NONE- *-1) )
+                (VP (TO to) 
+                  (VP (VB pursue) 
+                    (NP (JJ unspecified) (NNS interests) )))))
+            (, ,) 
+            (NP 
+              (NP (DT a) (NN move) )
+              (SBAR 
+                (WHNP-2 (-NONE- 0) )
+                (S 
+                  (NP-SBJ (DT the) (NN news) (NN organization) )
+                  (VP (VBD termed) 
+                    (S 
+                      (NP-SBJ (-NONE- *T*-2) )
+                      (NP-PRD (DT an) (`` ``) (JJ amicable) (NN separation) ))))))))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Mr.) (NNP Reupke) )
+      (, ,) 
+      (UCP 
+        (ADJP 
+          (NP (CD 52) (NNS years) )
+          (JJ old) )
+        (CC and) 
+        (NP (DT a) (JJ 27-year) (NNP Reuters) (NN veteran) ))
+      (, ,) )
+    (VP (VBD had) 
+      (VP (VBN been) 
+        (NP-PRD 
+          (NP (DT the) (NNS information-services) (NN company) (POS 's) )
+          (JJ general) (NN manager) )
+        (PP-TMP (IN for) 
+          (NP (RB only) (CD six) (NNS months) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (PRP$ His) (NN appointment) )
+      (PP (TO to) 
+        (NP 
+          (NP (DT that) (NN post) )
+          (, ,) 
+          (SBAR 
+            (WHNP-1 (WDT which) )
+            (S 
+              (NP-SBJ (-NONE- *T*-1) )
+              (VP (VBZ has) 
+                (NP (JJ senior) 
+                  (UCP (JJ administrative) 
+                    (, ,)
+                    (NN staff) 
+                    (CC and)
+                    (NN policy) )
+                  (NNS responsibilities) ))))
+          (, ,) )))
+    (VP (VBD followed) 
+      (NP 
+        (NP (DT a) (JJ several-year) (NN tenure) )
+        (PP (IN as) 
+          (NP 
+            (NP 
+              (NP (NNP Reuters) (POS 's) )
+              (NN editor) )
+            (PP (IN in) 
+              (NP (NN chief) ))))))
+    (. .) ))
+( (S 
+    (S-TPC-3 
+      (S 
+        (NP-SBJ-1 (DT No) (NN successor) )
+        (VP (VBD was) 
+          (VP (VBN named) 
+            (NP (-NONE- *-1) ))))
+      (, ,) 
+      (CC and)
+      (S 
+        (NP-SBJ-2 
+          (NP (NNP Mr.) (NNP Reupke) (POS 's) )
+          (NNS duties) )
+        (VP (MD will) 
+          (VP (VB be) 
+            (VP (VBN split) 
+              (NP (-NONE- *-2) )
+              (PP (IN among) 
+                (NP (CD three) (JJ other) (JJ senior) (NNP Reuters) (NNS executives) )))))))
+    (, ,) 
+    (NP-SBJ (DT the) (NN company) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-3) )))
+    (. .) ))
+( (S 
+    (PP-LOC (IN In) 
+      (NP (DT a) (NN telephone) (NN interview) ))
+    (, ,) 
+    (NP-SBJ (NNP Mr.) (NNP Reupke) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP$ his) (NN departure) )
+          (VP (VBD was) 
+            (PP-PRD (IN for) 
+              (NP (`` ``) 
+                (NP (JJ personal) (NNS reasons) )
+                (, ,) ('' '') 
+                (SBAR 
+                  (WHNP-1 (WDT which) )
+                  (S 
+                    (NP-SBJ-2 (PRP he) )
+                    (VP (VBD declined) 
+                      (S 
+                        (NP-SBJ (-NONE- *-2) )
+                        (VP (TO to) 
+                          (VP (VB specify) 
+                            (NP (-NONE- *T*-1) )))))))))))))
+    (. .) ))
+( (S (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ (EX There) )
+      (VP (VBZ is) 
+        (NP-PRD 
+          (NP 
+            (NP (DT no) (NN business) (NN reason) )
+            (PP (IN for) 
+              (NP (PRP$ my) (NN departure) )))
+          (, ,) ('' '') (CC nor) 
+          (NP 
+            (NP (DT any) (NN disagreement) )
+            (PP (IN over) 
+              (NP (NN policy) ))))))
+    (, ,) 
+    (NP-SBJ (PRP he) )
+    (VP (VBD added) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP He) )
+    (ADVP (RB also) )
+    (VP (VBD rejected) 
+      (NP (NNS reports) 
+        (SBAR (IN that) 
+          (S 
+            (NP-SBJ (PRP$ his) (NN departure) )
+            (VP (VBD stemmed) 
+              (PP-CLR (IN from) 
+                (NP (NN disappointment) 
+                  (SBAR (-NONE- 0) 
+                    (S 
+                      (NP-SBJ 
+                        (NP (DT the) (JJ general) (NN manager) (POS 's) )
+                        (NN post) )
+                      (VP (VBD had) (RB n't) 
+                        (ADVP (RB also) )
+                        (VP (VBN led) 
+                          (PP-CLR (TO to) 
+                            (NP 
+                              (NP (DT a) (NN board) (NN directorship) )
+                              (PP-LOC (IN at) 
+                                (NP (DT the) (JJ London-based) (NN news) (NN organization) )))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Mr.) (NNP Reupke) )
+    (VP (VBD was) 
+      (NP-PRD 
+        (NP (CD one) )
+        (PP (IN of) 
+          (NP 
+            (NP (CD three) (NNS executives) )
+            (PP-LOC (IN on) 
+              (NP 
+                (NP (NNP Reuters) (POS 's) )
+                (JJ eight-person) (NN executive) (NN committee) ))
+            (SBAR 
+              (WHNP-1 (WP who) )
+              (S 
+                (NP-SBJ (-NONE- *T*-1) )
+                (VP (VBD did) (RB n't) 
+                  (ADVP (RB also) )
+                  (VP (VB serve) 
+                    (PP-CLR (IN on) 
+                      (NP 
+                        (NP 
+                          (NP (DT the) (NN company) (POS 's) )
+                          (NN board) )
+                        (PP (IN of) 
+                          (NP (NNS directors) ))))))))))))
+    (. .) ))
+( (S (`` ``) 
+    (S-TPC-2 
+      (SBAR-ADV (IN If) 
+        (S 
+          (NP-SBJ (PRP I) )
+          (VP (VBD were) 
+            (VP (VBG choosing) 
+              (NP 
+                (NP (DT the) (NNS people) )
+                (PP (IN of) 
+                  (NP (NN tomorrow) )))))))
+      (, ,) 
+      (NP-SBJ (PRP I) )
+      (VP (MD would) 
+        (VP (VB have) 
+          (VP (VBN chosen) 
+            (NP 
+              (NP (DT the) (NNS people) )
+              (SBAR 
+                (WHNP-1 (WP who) )
+                (S 
+                  (NP-SBJ (-NONE- *T*-1) )
+                  (VP (VBP are) 
+                    (ADVP-TMP (RB now) )
+                    (PP-PRD (IN on) 
+                      (NP (DT the) (NN board) ))))))))))
+    (, ,) ('' '') 
+    (NP-SBJ (PRP he) )
+    (VP (VBD said) 
+      (S (-NONE- *T*-2) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT A) (NNP Reuters) (NN spokesman) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (DT the) (NN departure) )
+          (VP (VBZ reflects) (`` ``) 
+            (NP 
+              (NP (DT no) (NN change) )
+              (PP (IN in) 
+                (NP (NN strategy) (CC or) (NNS profits) )))))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Mark) (NNP Shepperd) )
+      (, ,) 
+      (NP 
+        (NP (DT an) (NN analyst) )
+        (PP-LOC (IN at) 
+          (NP 
+            (NP (NNP UBS) (NNP Phillips) (CC &) (NNP Drew) )
+            (PP-LOC (IN in) 
+              (NP (NNP London) )))))
+      (, ,) )
+    (VP (VBD said) 
+      (, ,)
+      (`` ``) 
+      (S 
+        (NP-SBJ (PRP I) )
+        (VP (VBP suspect) 
+          (SBAR (-NONE- 0) 
+            (S 
+              (-LRB- -LRB-)
+              (NP-SBJ (DT the) (NN departure) )
+              (-RRB- -RRB-) 
+              (VP (MD will) 
+                (VP (VB be) 
+                  (ADJP-PRD (RB fairly) (JJ irrelevant) )
+                  (PP (IN for) 
+                    (NP (DT the) (NN company) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP I) )
+    (VP (MD would) 
+      (VP (VB be) 
+        (ADJP-PRD (RB very) (VBN surprised) )
+        (SBAR-ADV (IN if) 
+          (S 
+            (NP-SBJ (PRP$ his) (NN departure) )
+            (VP (VBZ signals) 
+              (NP (DT any) 
+                (NAC 
+                  (NAC (NN change) 
+                    (PP (IN in) 
+                      (NP (NN strategy) )))
+                  (CC or) 
+                  (NAC (NN change) 
+                    (PP (IN in) 
+                      (NP (NN profit) (NNS expectations) ))))))))))
+    (. .) ('' '') ))
+( (S 
+    (PP-LOC (IN On) 
+      (NP 
+        (NP (NNP London) (POS 's) )
+        (NNP Stock) (NNP Exchange) ))
+    (, ,) 
+    (NP-SBJ (NNP Reuters) (NNS shares) )
+    (VP (VBD rose) 
+      (NP-EXT (CD five) (NN pence) )
+      (PP-CLR (TO to) 
+        (NP 
+          (NP (CD 913) (NN pence) )
+          (PRN 
+            (-LRB- -LRB-)
+            (NP ($ $) (CD 14.43) (-NONE- *U*) )
+            (-RRB- -RRB-) ))))
+    (. .) ))
+( (S 
+    (PP-LOC (IN In) 
+      (NP (DT the) (NNP U.S.) (JJ over-the-counter) (NN market) ))
+    (, ,) 
+    (NP-SBJ-1 
+      (NP (JJ American) (NN depositary) (NNS shares) )
+      (PP (IN for) 
+        (NP (NNP Reuters) )))
+    (, ,) 
+    (S-ADV 
+      (NP-SBJ (DT each) )
+      (VP (VBG representing) 
+        (NP (CD three) (NNS shares) )
+        (PP-LOC (IN in) 
+          (NP (DT the) (NNP London) (NN market) ))))
+    (, ,) 
+    (VP (VBD closed) 
+      (ADJP-ADV (JJ unchanged) )
+      (PP-CLR (IN at) 
+        (NP ($ $) (CD 43.875) (-NONE- *U*) )))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (NN senior) )
+      (PP (IN of) 
+        (NP 
+          (NP (DT the) (CD three) (NNS executives) )
+          (SBAR 
+            (WHNP-1 (WP who) )
+            (S 
+              (NP-SBJ (-NONE- *T*-1) )
+              (VP (MD will) 
+                (VP (VB assume) 
+                  (NP 
+                    (NP (NNP Mr.) (NNP Reupke) (POS 's) )
+                    (NNS duties) ))))))))
+    (VP (VBZ is) 
+      (NP-PRD 
+        (NP (NNP Nigel) (NNP Judah) )
+        (, ,) 
+        (NP (CD 58) )
+        (, ,) 
+        (NP 
+          (NP (NN finance) (NN director) )
+          (CC and) 
+          (NP (DT a) (NNP Reuters) (NN board) (NN director) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Peter) (NNP Holland) )
+      (, ,) 
+      (NP (CD 45) )
+      (, ,) 
+      (NP (JJ deputy) (JJ general) (NN manager) )
+      (, ,) )
+    (VP (VBZ becomes) 
+      (NP-PRD 
+        (NP (NN director) )
+        (PP (IN of) 
+          (NP (JJ corporate) (NNS affairs) ))))
+    (. .) ))
+( (S (CC And) 
+    (NP-SBJ 
+      (NP (NNP Patrick) (NNP Mannix) )
+      (, ,) 
+      (NP (CD 46) )
+      (, ,) 
+      (NP (JJ international) (JJ technical) (NN manager) )
+      (, ,) )
+    (VP (VBZ becomes) 
+      (NP-PRD 
+        (NP (NN director) )
+        (PP (IN of) 
+          (NP (NN group) (NN quality) (NNS programs) ))))
+    (. .) ))

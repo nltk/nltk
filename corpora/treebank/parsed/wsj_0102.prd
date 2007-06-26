@@ -1,0 +1,711 @@
+
+
+( (S-HLN (NP-SBJ Beauty)
+	 (VP Takes
+	     (NP Backseat)
+	     (PP To
+		 (NP Safety))
+	     (PP-LOC on
+		     (NP Bridges)))))
+( (S (NP-SBJ EVERYONE)
+     (VP AGREES
+         (SBAR that
+               (S (NP-SBJ-1 (NP most)
+			    (PP of
+				(NP (NP the nation 's)
+				    old bridges)))
+                  (VP need
+                      (S (NP-SBJ-13 *-1)
+                         (VP to
+                             (VP be
+                                 (VP repaired
+                                     or replaced
+				     (NP *-13)))))))))
+     .))
+( (S But
+     (NP-SBJ there)
+     (VP 's
+         (NP-PRD (NP disagreement)
+		 (PP over
+		     (SBAR-NOM (WHADVP-1 how)
+			       (S (NP-SBJ *)
+				  (VP to
+				      (VP do
+					  (NP it)
+					  (ADVP-MNR *T*-1))))))))
+     .))
+( (S (NP-SBJ Highway officials)
+     (VP insist
+         (SBAR 0
+               (S (NP-SBJ (NP the ornamental railings)
+                          (PP-LOC on
+				  (NP older bridges)))
+                  (VP are n't
+                      (ADJP-PRD strong enough
+				(S (NP-SBJ *)  
+				   (VP to
+				       (VP prevent
+					   (NP vehicles)
+					   (PP from
+					       (S-NOM (NP-SBJ *)  
+						      (VP crashing
+							  (ADVP through))))))))))))
+     .))
+( (S But
+     (NP-SBJ-1 other people)
+     (VP do n't
+         (VP want
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP lose
+                        (NP (NP the bridges ')
+                            beautiful ,
+			    (ADJP (ADVP-TMP sometimes) historic)
+			    ,
+                            features))))))
+     .))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ (NP The primary purpose)
+			 (PP of
+			     (NP a railing)))
+		 (VP is
+		     (S-PRD (NP-SBJ *)
+			    (VP (VP to
+				    (VP contain
+					(NP a vehicle)))
+				and not
+				(VP to
+				    (VP provide
+					(NP a scenic view)))))))
+	, ''
+	(VP says
+	    (S *T*-1))
+	(NP-SBJ (NP Jack White)
+		,
+		(NP (NP a planner)
+		    (PP with
+			(NP the Indiana Highway Department))))
+	.))
+( (S (NP-SBJ-1 He
+	       and
+	       others)
+     (VP prefer
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP install
+                    (NP (NP railings)
+			(PP such as
+			    (NP (NP the `` type F safety shape)
+				, ''
+				(NP (NP a four-foot-high concrete slab)
+				    (PP with
+					(NP no openings))))))))))
+     .))
+( (S (PP-LOC In
+	     (NP (NP Richmond)
+		 ,
+		 (NP Ind.)
+		 ,))
+     (NP-SBJ-1 the type F railing)
+     (VP is
+         (VP being
+             (VP used
+		 (NP-2 *-1)
+                 (S-CLR (NP-SBJ *-2) 
+			(VP to
+			    (VP replace
+				(NP (NP arched openings)
+				    (PP-LOC on
+					    (NP the G Street Bridge)))))))))
+     .))
+( (S (NP-SBJ (NP Garret Boone)
+             ,
+             (SBAR (WHNP-11 who)
+                   (S (NP-SBJ *T*-11)
+                      (VP teaches
+                          (NP art)
+			  (PP-LOC at
+				  (NP Earlham College)))))
+             ,)
+     (VP calls
+         (S (NP-SBJ the new structure)
+	    (NP-PRD (NP `` just an ugly bridge '')
+		    and
+		    (NP (NP one)
+			(SBAR (WHNP-1 that)
+			      (S (NP-SBJ *T*-1)
+				 (VP blocks
+				     (NP (NP the view)
+					 (PP of
+					     (NP (NP a new park)
+						 (ADVP-LOC below)))))))))))
+     .))
+( (S (PP-LOC In
+	     (NP (NP Hartford)
+		 ,
+		 (NP Conn.)))
+     ,
+     (NP-SBJ-14 the Charter Oak Bridge)
+     (VP will
+         (ADVP-TMP soon)
+         (VP be
+             (VP replaced
+                 (NP *-14)
+		 ,
+		 (S-ADV (NP-SBJ (NP the cast-iron medallions)
+				(PP from
+				    (NP its railings)))
+			(VP relegated
+			    (PP-DIR to
+				    (NP a park)))))))
+     .))
+( (S (NP-SBJ Compromises)
+     (VP are
+         (ADJP-PRD possible))
+     .))
+( (S (NP-SBJ-1 (NP Citizens)
+	       (PP-LOC in
+		       (NP (NP Peninsula)
+			   ,
+			   (NP Ohio))))
+     ,
+     (S-ADV (NP-SBJ *-1)
+	    (ADJP-PRD upset
+		      (PP over
+			  (NP (NP changes)
+			      (PP to
+				  (NP a bridge))))))
+     ,
+     (VP negotiated
+         (NP (NP a deal)
+             :
+             (S (NP-SBJ (NP The bottom half)
+                        (PP of
+                            (NP the railing)))
+                (VP will
+                    (VP be
+                        (NP-PRD type F)
+			,
+			(SBAR-ADV while
+				  (S (NP-SBJ the top half)
+				     (VP will
+					 (VP have
+					     (NP (NP the old bridge 's)
+						 floral pattern))))))))))
+     .))
+( (S (ADVP Similarly)
+     ,
+     (NP-SBJ-1 highway engineers)
+     (VP agreed
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP keep
+                    (NP (NP the old railings)
+                        (PP-LOC on
+				(NP (NP the Key Bridge)
+				    (PP-LOC in
+					    (NP (NP Washington)
+						,
+						(NP D.C.)
+						,)))))
+		    (ADVP (ADVP as long)
+			  (SBAR as
+				(S (NP-SBJ they)
+				   (VP could
+				       (VP install
+					   (NP a crash barrier)
+					   (PP-LOC-CLR between
+						       (NP (NP the sidewalk)
+							   and
+							   (NP the road))))))))))))
+     .))
+( (X-HLN Tray Bon ?))
+( (S-HLN (NP-SBJ Drink Carrier)
+	 (VP Competes
+	     (PP-CLR With
+		     (NP Cartons)))))
+( (S (S (S-NOM-SBJ (NP-SBJ *)
+		   (VP PORTING
+		       (NP POTABLES)))
+        (ADVP just)
+        (VP got
+            (ADJP easier)))
+     , or
+     (SINV (ADVP so)
+           (VP claims)
+           (NP-SBJ (NP Scypher Corp.)
+		   ,
+		   (NP (NP the maker)
+		       (PP of
+			   (NP the Cup-Tote)))))
+     .))
+( (S (NP-SBJ-1 (NP The Chicago company 's)
+	       beverage carrier)
+     ,
+     (S-ADV (NP-SBJ-2 *-1)
+	    (VP meant
+		(S (NP-SBJ *-2)
+		   (VP to
+		       (VP replace
+			   (NP cardboard trays)))
+		   (PP-LOC at
+			   (NP (NP concession stands)
+			       and
+			       (NP fast-food outlets))))))
+     ,
+     (VP resembles
+         (NP (NP the plastic loops)
+             (VP used
+                 (NP *)
+                 (PP-LOC on
+			 (NP (NP six-packs)
+			     (PP of
+				 (NP beer))))))
+	 ,
+	 (SBAR only
+	       (S (NP-SBJ the loops)
+		  (VP hang
+		      (PP-DIR from
+			      (NP (NP a web)
+				  (PP of
+				      (NP strings))))))))
+     .))
+( (S (NP-SBJ The new carrier)
+     (VP can
+         (VP tote
+             (NP (QP as many
+		     as
+		     four)
+                 cups)
+	     (PP-TMP at
+		     (NP once))))
+     .))
+( (S (NP-SBJ Inventor
+             Claire Marvin)
+     (VP says
+         (SBAR 0
+               (S (NP-SBJ his design)
+                  (ADVP virtually)
+                  (VP eliminates
+                      (NP spilling)))))
+     .))
+( (S (NP-SBJ-1 Lids)
+     (VP are n't
+         (ADVP even)
+         (VP needed
+	     (NP *-1)))
+     .))
+( (S (NP-SBJ He)
+     (ADVP also)
+     (VP claims
+         (SBAR 0
+               (S (NP-SBJ the carrier)
+                  (VP (VP costs
+                          (ADJP less))
+                      and
+                      (VP takes
+			  (PRT up)
+                          (NP (NP less space)
+                              (PP than
+                                  (NP most paper carriers))))))))
+     .))
+( (S (NP-SBJ A few fast-food outlets)
+     (VP are
+         (VP giving
+             (NP it)
+             (NP a try)))
+     .))
+( (S (NP-SBJ The company)
+     (VP acknowledges
+         (NP some problems))
+     .))
+( (S (NP-SBJ-1 A driver)
+     (VP has
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP find
+                    (NP (NP something)
+                        (SBAR (WHNP-2 0)
+			      (S (NP-SBJ *)
+				 (VP to
+				     (VP hang
+					 (NP the carrier)
+					 (PP-LOC on
+						 (NP *T*-2))))))))))
+	 ,
+	 (SBAR-ADV so
+		   (S (NP-SBJ the company)
+		      (VP supplies
+			  (NP a window hook)))))
+     .))
+( (S (SBAR-ADV While
+	       (S (NP-SBJ it)
+		  (VP breaks
+		      (PRT down)
+		      (PP-LOC-CLR in
+				  (NP prolonged
+				      sunlight)))))
+     ,
+     (NP-SBJ it)
+     (VP is n't
+         (ADJP-PRD recyclable))
+     .))
+( (S And
+     (PP unlike
+         (NP some trays))
+     ,
+     (NP-SBJ there)
+     (VP 's
+         (NP-PRD (NP no place)
+		 (PP for
+		     (NP food))))
+     .))
+( (S-HLN (NP-SBJ (NP Spirit)
+		 (PP of
+		     (NP Perestroika)))
+	 (VP Touches
+	     (NP Design World))))
+( (S (NP-SBJ (NP AN EXCHANGE)
+             (PP of
+                 (NP U.S. and Soviet designers)))
+     (VP promises
+         (NP (NP change)
+             (PP-LOC on
+		     (NP both sides))))
+     .))
+( (S (NP-SBJ-1 (NP An exhibition)
+	       (PP of
+		   (NP American design and architecture)))
+     (VP (VP opened
+	     (PP-TMP in
+		     (NP September))
+	     (PP-LOC in
+		     (NP Moscow)))
+	 and
+	 (VP will
+	     (VP travel
+		 (PP-DIR to
+			 (NP eight other Soviet cities)))))
+     .))
+( (S (NP-SBJ The show)
+     (VP runs
+         (NP (NP the gamut)
+             ,
+             (PP from
+                 (NP a blender))
+             (PP to
+                 (NP chairs))
+             (PP to
+                 (NP (NP a model)
+                     (PP of
+                         (NP the Citicorp building))))))
+     .))
+( (S (NP-SBJ The event)
+     (VP (VP continues
+	     (PP-TMP-CLR into
+			 (NP next year)))
+	 and
+	 (VP includes
+	     (NP an exchange program
+		 (S (NP-SBJ *)
+		    (VP to
+			(VP swap
+			    (NP (NP design teachers)
+				(PP-LOC at
+					(NP (NP Carnegie-Mellon)
+					    and
+					    (NP (NP Leningrad 's)
+						Mutchin Institute))))))))))
+     .))
+( (S (NP-SBJ (NP Dan Droz)
+             ,
+             (NP (NP leader)
+                 (PP of
+                     (NP the Carnegie-Mellon group)))
+             ,)
+     (VP sees
+         (NP benefits)
+	 (ADVP-LOC all
+		   around))
+     .))
+( (S (S-TPC-1 (NP-SBJ (NP The Soviets)
+		      ,
+		      (SBAR (WHNP-12 who)
+			    (S (NP-SBJ *T*-12)
+			       (ADVP normally)
+			       (VP have
+				   (NP (NP few clients)
+				       (ADJP other
+					     (PP than
+						 (NP the state)))))))
+		      ,)
+	      (VP will
+		  (VP get
+		      (NP (NP `` exposure)
+			  (PP to
+			      (NP a market system))))))
+     , ''
+     (NP-SBJ he)
+     (VP says
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (NP-SBJ Americans)
+     (VP will
+         (VP learn
+             (NP (NP more)
+		 (PP about
+		     (S-NOM (NP-SBJ *)
+			    (VP making
+				(NP products)
+				(PP-BNF for
+					(NP the Soviets))))))))
+     .))
+( (S (NP-SBJ Mr. Droz)
+     (VP says
+         (SBAR 0
+               (S (NP-SBJ the Soviets)
+                  (VP could
+                      (ADVP even)
+                      (VP help
+                          (S (NP-SBJ U.S. designers)
+                             (VP renew
+                                 (NP (NP their sense)
+                                     (PP of
+                                         (NP purpose))))))))))
+     .))
+( (S ``
+     (S-TPC-1 (PP-LOC In
+		      (NP Moscow))
+	      ,
+	      (NP-SBJ-5 they)
+	      (VP kept
+		  (S (NP-SBJ *-5)
+		     (VP asking
+			 (NP us)
+			 (NP (NP things)
+			     (PP like
+				 ,
+				 `
+				 (SBARQ-NOM (WHADVP-2 Why)
+					    (SQ do
+						(NP-SBJ you)
+						(VP make
+						    (NP 15 different corkscrews)
+						    ,
+						    (SBAR-TMP (WHADVP-4 when)
+							      (S (NP-SBJ (NP (NP all)
+									     (SBAR (WHNP-3 0)
+										   (S (NP-SBJ you)
+										      (VP need
+											  (NP *T*-3))))))
+								 (VP is
+								     (NP-PRD one good one)
+								     (ADVP-TMP *T*-4))))
+						    (ADVP-PRP *T*-2)))
+					    ?)
+				 '))))))
+     ''
+     (NP-SBJ he)
+     (VP says
+	 (S *T*-1))
+     .))
+( (S ``
+     (NP-SBJ They)
+     (VP got
+         (S (NP-SBJ us)
+            (VP thinking
+                (SBAR 0
+                      (S (ADVP maybe)
+			 (NP-SBJ-1 we)
+			 (VP should
+			     (VP be
+				 (VP helping
+				     (S (NP-SBJ U.S. companies)
+					(VP improve
+					    (NP existing products)
+					    (PP rather
+						than
+						(S-NOM (NP-SBJ *-1)
+						       (ADVP-TMP always)
+						       (VP developing
+							   (NP new ones))))))))))))))
+     .
+     ''))
+( (S-HLN (NP-SBJ-1 (NP Seed)
+		   (PP for
+		       (NP Jail Solution)))
+	 (VP Fails
+	     (S (NP-SBJ *-1)
+		(VP to
+		    (VP Take
+			(NP Root)))))))
+( (S (S (NP-SBJ IT)
+        (VP 'S
+            (NP-PRD A (NAC TWO BIRDS
+			   (PP with
+			       (NP one stone)))
+		    deal)))
+     :
+     (S (NP-SBJ-2 Eggers Group architects)
+        (VP propose
+            (S (NP-SBJ *-2)
+	       (VP using
+		   (NP-1 grain elevators)
+		   (S-CLR (NP-SBJ *-1)
+			  (VP to
+			      (VP house
+				  (NP prisoners))))))))
+     .))
+( (S (S-TPC-2 (NP-SBJ-1 It)
+	      (VP would
+		  (VP ease
+		      (NP jail overcrowding)
+		      (SBAR-ADV while
+				(S (NP-SBJ *-1)
+				   (VP preserving
+				       (NP historic structures)))))))
+     ,
+     (NP-SBJ the company)
+     (VP says
+	 (SBAR 0
+	       (S *T*-2)))
+     .))
+( (S But
+     (NP-SBJ (NP New York state)
+             ,
+             (SBAR (WHNP-13 which)
+                   (S (NP-SBJ *T*-13)
+                      (VP is
+                          (VP seeking
+                              (NP (NP solutions)
+                                  (PP to
+                                      (NP its prison cell shortage)))))))
+             ,)
+     (VP says
+	 ``
+         (INTJ no))
+     .
+     ''))
+( (S (S-TPC-2 (NP-SBJ (NP Grain elevators)
+		      (VP built
+			  (NP *)
+			  (PP-TMP in
+				  (NP the 1920s and '30s))))
+	      (VP have
+		  (NP (NP six-inch concrete walls)
+		      and
+		      (NP (NP a tubular shape)
+			  (SBAR (WHNP-1 that)
+				(S (NP-SBJ *T*-1)
+				   (VP would
+				       (VP (ADVP-MNR easily)
+					   contain
+					   (NP (NP semicircular cells)
+					       (PP with
+						   (NP (NP a control point)
+						       (PP-LOC in
+							       (NP the middle)))))))))))))
+     ,
+     (NP-SBJ the New York firm)
+     (VP says
+	 (SBAR 0
+	       (S *T*-2)))
+     .))
+( (S (NP-SBJ-1 Many)
+     (VP are
+         (ADJP (ADJP far enough
+                     (PP from
+                         (NP residential areas))
+                     (S (NP-SBJ *)
+                        (VP to
+                            (VP pass
+                                (NP public muster)))))
+               , yet
+               (ADJP close enough
+                     (S (NP-SBJ *)
+                        (VP to
+                            (VP permit
+                                (NP family visits)))))))
+     .))
+( (S (S-1 (ADVP Besides)
+	  (PRN ,
+	       (S (NP-SBJ Eggers)
+		  (VP says
+		      (SBAR 0
+			    (S *T*-1))))
+	       ,)
+	  (NP-SBJ grain elevators)
+	  (VP are
+	      (PP-PRD worth
+		      (S-NOM (NP-SBJ *)
+			     (VP preserving
+				 (PP-PRP for
+					 (NP aesthetic reasons)))))))
+     --
+     (S (NP-SBJ one famed architect)
+	(VP compared
+	    (NP them)
+	    (PP-CLR to
+		    (NP (NP the pyramids)
+			(PP of
+			    (NP Egypt))))))
+     .))
+( (S (S-TPC-1 (NP-SBJ (NP A number)
+		      (PP of
+			  (NP cities))
+		      --
+		      (PP including
+			  (NP Minneapolis
+			      ,
+			      Philadelphia
+			      and
+			      Houston))
+		      --)
+	      (VP have
+		  (NP vacant grain elevators)))
+     ,
+     (NP-SBJ Eggers)
+     (VP says
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S-1 (NP-SBJ-2 (NP A medium-sized one)
+		 (PP-LOC in
+			 (NP Brooklyn)))
+       (PRN ,
+	    (S (NP-SBJ it)
+	       (VP says
+		   (SBAR 0
+			 (S *T*-1))))
+	    ,)
+       (VP could
+	   (VP be
+	       (VP altered
+		   (S (NP-SBJ *-2)
+		      (VP to
+			  (VP house
+			      (NP (QP up to 1,000) inmates)
+			      (PP at
+				  (NP (NP a lower cost)
+				      (PP than
+					  (S-NOM (NP-SBJ *)
+						 (VP building
+						     (NP a new prison)
+						     (PP-LOC in
+							     (NP upstate New York)))))))))))))
+       .))
+( (S (NP-SBJ (NP A spokesman)
+             (PP for
+                 (NP the state)))
+     ,
+     (ADVP however)
+     ,
+     (VP calls
+         (S (NP-SBJ the idea)
+	    ``
+	    not
+	    (ADJP-PRD (ADJP effective)
+		      or
+		      (ADJP cost efficient))))
+     .))

@@ -1,0 +1,56 @@
+
+( (S 
+    (NP-SBJ 
+      (NP (NNP Standard) (CC &) (NNP Poor) (POS 's) )
+      (NNP Corp.) )
+    (VP (VBD lowered) 
+      (PP-DIR (TO to) 
+        (NP (NN double-C) ))
+      (PP-DIR (IN from) 
+        (NP (NN triple-C) ))
+      (NP 
+        (NP (DT the) (NN rating) )
+        (PP (IN on) 
+          (NP 
+            (NP (IN about) 
+              (QP ($ $) (CD 130) (CD million) )
+              (-NONE- *U*) )
+            (PP (IN of) 
+              (NP (NN debt) ))))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ (DT The) (NN rating) (NN concern) )
+      (VP (VBD said) 
+        (SBAR (-NONE- 0) 
+          (S 
+            (NP-SBJ 
+              (NP (DT the) (NN textile) 
+                (CC and)
+                (NN clothing) (NN company) (POS 's) )
+              (NN interest) (NN expense) )
+            (VP (VBZ exceeds) 
+              (NP (NN operating) (NN profit) )
+              (`` ``) 
+              (PP (IN by) 
+                (NP (DT a) (JJ wide) (NN margin) ))
+              ('' '') )))))
+    (CC and) 
+    (S 
+      (NP-SBJ (PRP it) )
+      (VP (VBD noted) 
+        (NP 
+          (NP 
+            (NP (NNP United) (POS 's) )
+            (VBN estimated) (JJ after-tax) (NN loss) )
+          (PP (IN of) 
+            (NP 
+              (NP 
+                (QP ($ $) (CD 24) (CD million) )
+                (-NONE- *U*) )
+              (PP (IN for) 
+                (NP 
+                  (NP (DT the) (NN year) )
+                  (VP (VBD ended) 
+                    (NP-TMP-CLR (NNP June) (CD 30) )))))))))
+    (. .) ))

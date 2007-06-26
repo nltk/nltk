@@ -1,0 +1,41 @@
+
+( (S 
+    (NP-SBJ-1 
+      (NP 
+        (NP (NNP Leon) (NNP J.) (NNP Level) )
+        (, ,) 
+        (NP 
+          (NP 
+            (NP (NN vice) (NN president) )
+            (CC and) 
+            (NP (NN chief) (JJ financial) (NN officer) ))
+          (PP (IN of) 
+            (NP (DT this) (NN computer) (NNS services) (NN concern) )))
+        (, ,) )
+      (CC and) 
+      (NP 
+        (NP (NNP F.) (NNP Warren) (NNP McFarlan) )
+        (, ,) 
+        (NP 
+          (NP (DT a) (NN professor) )
+          (PP-LOC (IN at) 
+            (NP 
+              (NP 
+                (NP (NNP Harvard) (NNP University) (POS 's) )
+                (NNP Graduate) (NNP School) )
+              (PP (IN of) 
+                (NP (NNP Business) )))))
+        (, ,) ))
+    (VP (VBD were) 
+      (VP (VBN elected) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (NP-PRD (NNS directors) ))
+        (, ,) 
+        (S-ADV 
+          (NP-SBJ (-NONE- *) )
+          (VP (VBG increasing) 
+            (NP (NN board) (NN membership) )
+            (PP-CLR (TO to) 
+              (NP (CD nine) ))))))
+    (. .) ))

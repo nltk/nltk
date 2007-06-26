@@ -1,0 +1,31 @@
+
+
+( (S (NP-SBJ-1 (NP (NP Leon J. Level)
+                   ,
+                   (NP (NP (NP vice president)
+			   and
+			   (NP chief financial officer))
+		       (PP of
+			   (NP this computer services concern)))
+                   ,)
+               and
+               (NP (NP F. Warren McFarlan)
+                   ,
+                   (NP (NP a professor)
+                       (PP-LOC at
+			       (NP (NP (NP Harvard University 's)
+				       Graduate School)
+				   (PP of
+				       (NP Business)))))
+                   ,))
+     (VP were
+         (VP elected
+             (S (NP-SBJ *-1)
+		(NP-PRD directors))
+	     ,
+	     (S-ADV (NP-SBJ *)
+		    (VP increasing
+			(NP board membership)
+			(PP-CLR to
+				(NP nine))))))
+     .))

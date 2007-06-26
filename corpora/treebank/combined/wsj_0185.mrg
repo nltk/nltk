@@ -1,0 +1,37 @@
+
+( (NP-HLN 
+    (NP (NNP INTER-TEL) (NNP Inc) (. .) )
+    (PRN 
+      (-LRB- -LRB-)
+      (NP-LOC (NNP Chandler) 
+        (, ,)
+        (NNP Ariz.) )
+      (-RRB- -RRB-) )
+    (: --) ))
+( (S 
+    (NP-SBJ-1 
+      (NP (NNP Jerry) (NNP Chapman) )
+      (, ,) 
+      (NP 
+        (NP (VBG managing) (NN director) )
+        (PP (IN of) 
+          (NP (NNP WayMar) (NNPS Associates) )))
+      (, ,) )
+    (VP (VBD was) 
+      (VP (VBN elected) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (NP-PRD 
+            (NP (DT a) (NN director) )
+            (PP (IN of) 
+              (NP (DT this) (NN business) (NNS telecommunications) (NN software) 
+                (CC and)
+                (NNS systems) (NN concern) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP He) )
+    (VP (VBZ increases) 
+      (NP (DT the) (NN board) )
+      (PP-CLR (TO to) 
+        (NP (CD seven) )))
+    (. .) ))

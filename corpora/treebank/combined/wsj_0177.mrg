@@ -1,0 +1,210 @@
+
+( (S 
+    (NP-SBJ 
+      (NP (NNP Komatsu) (NNP Ltd.) )
+      (, ,) 
+      (NP 
+        (NP (DT a) (JJ large) (VBN integrated) (NN maker) )
+        (PP (IN of) 
+          (NP (NN construction) (NN machinery) )))
+      (, ,) )
+    (VP (VBD posted) 
+      (NP 
+        (NP (DT a) 
+          (ADJP (CD 32) (NN %) )
+          (JJ unconsolidated) (NN gain) )
+        (PP (IN in) 
+          (NP (JJ first-half) (NN pretax) (NN profit) ))))
+    (. .) ))
+( (S 
+    (PP-TMP (IN For) 
+      (NP 
+        (NP (DT the) (NN period) )
+        (VP (VBD ended) 
+          (NP-TMP-CLR (CD Sept.30) ))))
+    (, ,) 
+    (NP-SBJ (PRP it) )
+    (VP (VBD earned) 
+      (NP 
+        (NP 
+          (NP 
+            (QP (CD 16.68) (CD billion) )
+            (NN yen) )
+          (, ,) 
+          (PRN 
+            (-LRB- -LRB-)
+            (NP 
+              (QP ($ US$) (CD 116.7) (CD million) )
+              (-NONE- *U*) )
+            (-RRB- -RRB-) ))
+        (ADVP (RB up) 
+          (PP (IN from) 
+            (NP 
+              (NP 
+                (QP (CD 12.68) (CD billion) )
+                (NN yen) )
+              (ADVP-TMP 
+                (NP (DT the) (NN year) )
+                (IN before) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNS Sales) )
+    (VP (VBD rose) 
+      (NP-EXT (CD 11) (NN %) )
+      (PP-DIR (TO to) 
+        (NP 
+          (QP (CD 292.32) (CD billion) )
+          (NN yen) ))
+      (PP-DIR (IN from) 
+        (NP 
+          (QP (CD 263.07) (CD billion) )
+          (NN yen) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (JJ Net) (NN income) )
+    (VP (VBD surged) 
+      (NP-EXT (CD 31) (NN %) )
+      (PP-DIR (TO to) 
+        (NP 
+          (QP (CD 7.63) (CD billion) )
+          (NN yen) ))
+      (PP-DIR (IN from) 
+        (NP 
+          (QP (CD 5.82) (CD billion) )
+          (NN yen) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (JJ Per-share) (NN net) )
+    (VP (VBD rose) 
+      (PP-DIR (TO to) 
+        (NP (CD 7.84) (NN yen) ))
+      (PP-DIR (IN from) 
+        (NP (CD 6.53) (NN yen) )))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (JJ Brisk) (JJ domestic) (NN demand) )
+      (ADJP (JJ due) 
+        (PP (TO to) 
+          (NP (VBG increasing) (NN capital) (NN investment) ))))
+    (VP (VBD pushed) 
+      (ADVP-DIR (RP up) )
+      (NP (NNS sales) )
+      (ADVP-MNR (RB sharply) )
+      (PP-LOC (IN in) 
+        (NP 
+          (NP (NN construction) )
+          (CC and) 
+          (NP (JJ industrial) (NN machinery) (NNS divisions) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (JJ Domestic) (NNS sales) )
+      (PP (IN of) 
+        (NP 
+          (NP (NN construction) (NN machinery) )
+          (, ,) 
+          (PP (JJ such) (IN as) 
+            (NP 
+              (NP (NN power) (NNS shovels) )
+              (CC and) 
+              (NP (NNS bulldozers) ))))))
+    (VP (VBD rose) 
+      (PP-DIR (TO to) 
+        (NP 
+          (QP (CD 142.84) (CD billion) )
+          (NN yen) ))
+      (PP-DIR (IN from) 
+        (NP 
+          (QP (CD 126.15) (CD billion) )
+          (NN yen) )))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ 
+        (NP (NN Demand) )
+        (PP (IN from) 
+          (NP 
+            (NP (NNP Europe) )
+            (CC and) 
+            (NP (NNP Southeast) (NNP Asia) ))))
+      (ADVP (RB also) )
+      (VP (VBD grew) ))
+    (, ,) (CC but) 
+    (S 
+      (ADVP-PRP (RB due) 
+        (PP (TO to) 
+          (NP 
+            (NP (VBG increasing) (NN production) )
+            (PP-LOC (IN at) 
+              (NP (JJ local) (NNS plants) )))))
+      (, ,) 
+      (NP-SBJ (JJ overseas) (NNS sales) )
+      (VP (VBD edged) 
+        (ADVP-DIR (RB down) 
+          (NP (CD 2.8) (NN %) ))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ (NNP Komatsu) )
+      (VP (VBD predicted) 
+        (SBAR (IN that) 
+          (S 
+            (PP (IN for) 
+              (NP 
+                (NP (DT the) (JJ fiscal) (NN year) )
+                (VP (VBG ending) 
+                  (NP-TMP-CLR (NNP March) (CD 31) ))))
+            (NP-SBJ (NNS sales) )
+            (VP (MD will) 
+              (VP (VB climb) 
+                (PP-DIR (TO to) 
+                  (NP 
+                    (QP (CD 600) (CD billion) )
+                    (NN yen) ))
+                (PP-DIR (IN from) 
+                  (NP 
+                    (QP (CD 566.54) (CD billion) )
+                    (NN yen) ))))))))
+    (: ;) 
+    (S 
+      (NP-SBJ-1 (NN pretax) (NN profit) )
+      (VP (VBD was) 
+        (VP (VBN forecast) 
+          (NP (-NONE- *-1) )
+          (PP-CLR (IN at) 
+            (NP 
+              (NP 
+                (QP (CD 35) (CD billion) )
+                (NN yen) )
+              (, ,) 
+              (ADVP (RB up) 
+                (PP (IN from) 
+                  (NP 
+                    (NP 
+                      (QP (CD 28.53) (CD billion) )
+                      (NN yen) )
+                    (PP-TMP (IN in) 
+                      (NP (JJ fiscal) (CD 1989) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (NN Net) )
+    (VP (VBZ is) 
+      (VP (VBN expected) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB rise) 
+              (PP-DIR (TO to) 
+                (NP 
+                  (QP (CD 17) (CD billion) )
+                  (NN yen) ))
+              (PP-DIR (IN from) 
+                (NP 
+                  (NP 
+                    (QP (CD 12.82) (CD billion) )
+                    (NN yen) )
+                  (ADVP-TMP 
+                    (NP (DT a) (NN year) )
+                    (JJR earlier) ))))))))
+    (. .) ))

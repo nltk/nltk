@@ -1,0 +1,105 @@
+
+
+( (S (NP-SBJ Savin Corp.)
+     (VP reported
+         (NP (NP a third-quarter net loss)
+             (PP of
+                 (NP (NP (QP $ 35.2 million) *U*)
+                     , or
+                     (NP (NP 31 cents)
+                         (NP-ADV a share))
+                     ,)))
+	 (PP compared
+	     (PP with
+		 (NP (NP year-earlier profit)
+		     (PP of
+			 (NP (NP (QP $ 3.8 million) *U*)
+			     , or
+			     (NP (NP one cent)
+				 (NP-ADV a share))))))))
+     .))
+( (S (S (NP-SBJ (NP A spokesman)
+                (PP for
+                    (NP the
+                        (ADJP Stamford , Conn.based)
+                        company)))
+        (VP said
+            (SBAR 0
+                  (S (NP-SBJ operations)
+                     (VP had
+                         (NP (NP a loss)
+                             (PP of
+                                 (NP (QP $ 5.5 million) *U*))
+                             (PP for
+                                 (NP the quarter))))))))
+     ;
+     (S (PP in
+            (NP addition))
+        ,
+        (NP-SBJ-1 the loss)
+        (VP was
+            (VP magnified
+                (NP *-1)
+                (PP by
+                    (NP-LGS (NP (NP nonrecurring charges)
+				(VP totaling
+				    (NP (QP $ 23.5 million) *U*)))
+			    and
+			    (NP (NP (QP $ 8.2 million)
+				    *U*)
+				(PP in
+				    (NP asset-valuation adjustments))
+				(SBAR (WHNP-2 that)
+				      (S (NP-SBJ he)
+					 (VP described
+					     (NP *T*-2)
+					     (PP-CLR as ``
+						     (ADJP unusual)))))))))))
+     . ''))
+( (S (S-TPC-2 (NP-SBJ-1 The charges)
+	      (VP were
+		  (ADVP partly)
+		  (VP offset
+		      (NP *-1)
+		      (PP by
+			  (NP-LGS (NP a (ADJP (QP $ 2 million) *U*)
+				      gain)
+				  (PP on
+				      (NP (NP the sale)
+					  (PP of
+					      (NP (NP investments)
+						  (PP of
+						      (NP two joint ventures)))))))))))
+     ,
+     (NP-SBJ he)
+     (VP said
+	 (SBAR 0
+	       (S *T*-2)))
+     .))
+( (S (NP-SBJ Revenue)
+     (VP declined
+         (NP-EXT 8 %)
+         (PP-CLR to
+		 (NP (QP $ 85.7 million) *U*))
+         ,
+         (PP-CLR from
+		 (NP (NP (QP $ 93.3 million) *U*)
+		     (ADVP-TMP (NP a year)
+			       earlier))))
+     .))
+( (S (NP-SBJ Savin)
+     (VP cited
+	 ``
+         (NP (NP a general softening)
+             (PP-LOC in
+		     (NP (NP the demand)
+			 (PP for
+			     (NP office products))
+			 (PP-LOC in
+				 (NP (NP the market segments)
+				     (SBAR (WHPP-1 in
+						   (WHNP which))
+					   (S (NP-SBJ Savin)
+					      (VP competes
+						  (PP-LOC *T*-1))))))))))
+     .))

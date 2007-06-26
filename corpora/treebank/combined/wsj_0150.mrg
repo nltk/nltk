@@ -1,0 +1,166 @@
+
+( (S 
+    (S-TPC-2 
+      (NP-SBJ-1 (NNP A.L.) (NNP Williams) (NNP Corp.) )
+      (VP (VBD was) 
+        (VP (VBN merged) 
+          (NP (-NONE- *-1) )
+          (PP-CLR (IN into) 
+            (NP 
+              (NP (NNP Primerica) (NNP Corp.) )
+              (, ,) 
+              (NP-LOC (NNP New) (NNP York) )
+              (, ,) ))
+          (SBAR-TMP (IN after) 
+            (S 
+              (NP-SBJ 
+                (NP (DT a) (JJ special) (NN meeting) )
+                (PP (IN of) 
+                  (NP (NNP Williams) (NNS shareholders) )))
+              (VP (VBD cleared) 
+                (NP (DT the) (NN transaction) )))))))
+    (, ,) 
+    (NP-SBJ (DT the) (NNS companies) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-2) )))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Primerica) )
+      (, ,) 
+      (SBAR 
+        (WHNP-1 (WDT which) )
+        (S 
+          (NP-SBJ (-NONE- *T*-1) )
+          (VP (VBD had) 
+            (VP (VBN owned) 
+              (NP 
+                (NP (RB nearly) (CD 70) (NN %) )
+                (PP (IN of) 
+                  (NP (NNP Williams) )))))))
+      (, ,) )
+    (VP (MD will) 
+      (VP (VB pay) 
+        (NP 
+          (NP 
+            (QP (IN about) (CD 16.7) (CD million) )
+            (NNS shares) )
+          (, ,) 
+          (VP 
+            (ADVP-TMP (RB currently) )
+            (VBN valued) 
+            (NP (-NONE- *) )
+            (PP-CLR (IN at) 
+              (NP 
+                (QP (RB almost) ($ $) (CD 472) (CD million) )
+                (-NONE- *U*) )))
+          (, ,) )
+        (PP-CLR (IN for) 
+          (NP 
+            (NP (DT the) (NN rest) )
+            (PP (IN of) 
+              (NP (NNP Williams) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NNS financial-services) (NN company) )
+    (VP (MD will) 
+      (VP (VB pay) 
+        (NP (CD 0.82) (NN share) )
+        (PP-CLR (IN for) 
+          (NP (DT each) (NNP Williams) (NN share) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Williams) (NNS shares) )
+      (, ,) 
+      (SBAR 
+        (WHNP-2 (WDT which) )
+        (S 
+          (NP-SBJ (-NONE- *T*-2) )
+          (VP (VBD were) 
+            (S-PRD 
+              (NP-SBJ-1 (-NONE- *-2) )
+              (VP (TO to) 
+                (VP (VB be) 
+                  (VP (VBN delisted) 
+                    (NP (-NONE- *-1) )
+                    (PP-CLR (IN from) 
+                      (NP (DT the) (NNP New) (NNP York) (NNP Stock) (NNP Exchange) ))
+                    (PP-TMP (IN after) 
+                      (NP 
+                        (NP (DT the) (NN close) )
+                        (PP (IN of) 
+                          (NP (JJ composite) (NN trading) ))
+                        (NP-TMP (NN yesterday) ))))))))))
+      (, ,) )
+    (VP (VBD closed) 
+      (PP-CLR (IN at) 
+        (NP ($ $) (CD 23.25) (-NONE- *U*) ))
+      (, ,) 
+      (ADVP-CLR (RB off) 
+        (NP (CD 12.5) (NNS cents) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Primerica) )
+    (VP (VBD closed) 
+      (PP-CLR (IN at) 
+        (NP ($ $) (CD 28.25) (-NONE- *U*) ))
+      (, ,) 
+      (ADVP-CLR (RB down) 
+        (NP (CD 50) (NNS cents) )))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Williams) )
+      (, ,) 
+      (NP-LOC 
+        (NP (NNP Duluth) )
+        (, ,) 
+        (NP (NNP Ga.) )
+        (, ,) ))
+    (VP (VBZ is) 
+      (NP-PRD (DT an) (NN insurance) 
+        (CC and)
+        (NNS financial-services) (VBG holding) (NN company) ))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 
+      (NP (PRP$ Its) (NNS subsidiaries) (POS ') )
+      (NNS services) )
+    (VP (VBP are) 
+      (VP (VBN marketed) 
+        (NP (-NONE- *-1) )
+        (PP (IN by) 
+          (NP-LGS 
+            (ADJP (RB closely) (VBN held) )
+            (NNP A.L.) (NNP Williams) (CC &) (NNPS Associates) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Primerica) )
+    (, ,) 
+    (SBAR (IN as) 
+      (S 
+        (NP-SBJ (-NONE- *) )
+        (VP (VBN expected) )))
+    (, ,) 
+    (ADVP (RB also) )
+    (VP 
+      (VP (VBD acquired) 
+        (NP 
+          (NP (JJ certain) (NNS assets) )
+          (PP (IN of) 
+            (NP (DT the) (NN agency) ))))
+      (CC and) 
+      (VP (VBD assumed) 
+        (NP 
+          (NP (JJ certain) )
+          (PP (IN of) 
+            (NP (PRP$ its) (NNS liabilities) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (NNS Terms) )
+    (VP (VBD were) (RB n't) 
+      (VP (VBN disclosed) 
+        (NP (-NONE- *-1) )))
+    (. .) ))

@@ -1,0 +1,150 @@
+
+( (S 
+    (NP-SBJ (NNP Meridian) (NNP National) (NNP Corp.) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP it) )
+          (VP (VBD sold) 
+            (NP 
+              (NP (CD 750,000) (NNS shares) )
+              (PP (IN of) 
+                (NP (PRP$ its) (JJ common) (NN stock) )))
+            (PP-DTV (TO to) 
+              (NP (DT the) (NNP McAlpine) (NN family) (NNS interests) ))
+            (, ,) 
+            (PP-CLR (IN for) 
+              (NP 
+                (NP 
+                  (QP ($ $) (CD 1) (CD million) )
+                  (-NONE- *U*) )
+                (, ,) (CC or) 
+                (NP 
+                  (NP ($ $) (CD 1.35) (-NONE- *U*) )
+                  (NP-ADV (DT a) (NN share) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN sale) )
+    (VP (VBZ represents) 
+      (NP 
+        (NP (CD 10.2) (NN %) )
+        (PP (IN of) 
+          (NP 
+            (NP 
+              (NP (NNP Meridian) (POS 's) )
+              (NNS shares) )
+            (ADJP (JJ outstanding) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (NNP McAlpine) (NN family) )
+      (, ,) 
+      (SBAR 
+        (WHNP-1 (WDT which) )
+        (S 
+          (NP-SBJ (-NONE- *T*-1) )
+          (VP (VBZ operates) 
+            (NP 
+              (NP (DT a) (NN number) )
+              (PP (IN of) 
+                (NP (JJ multinational) (NNS companies) ))
+              (, ,) 
+              (PP (VBG including) 
+                (NP (DT a) (JJ London-based) (NN engineering) 
+                  (CC and)
+                  (NN construction) (NN company) ))))))
+      (, ,) )
+    (ADVP (RB also) )
+    (VP (VBD lent) 
+      (PP-DTV (TO to) 
+        (NP (NNP Meridian) (NNP National) ))
+      (NP ($ $) (CD 500,000) (-NONE- *U*) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT That) (NN amount) )
+    (VP (VBZ is) 
+      (ADJP-PRD (JJ convertible) 
+        (PP (IN into) 
+          (NP 
+            (NP (NNS shares) )
+            (PP (IN of) 
+              (NP (NNP Meridian) (JJ common) (NN stock) ))))
+        (PP (IN at) 
+          (NP 
+            (NP ($ $) (CD 2) (-NONE- *U*) )
+            (NP-ADV (DT a) (NN share) ))))
+      (PP-TMP (IN during) 
+        (NP (PRP$ its) (JJ one-year) (NN term) )))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (DT The) (NN loan) )
+    (VP (MD may) 
+      (VP (VB be) 
+        (VP (VBN extended) 
+          (NP (-NONE- *-1) )
+          (PP (IN by) 
+            (NP-LGS (DT the) (NNP McAlpine) (NN group) ))
+          (PP-TMP (IN for) 
+            (NP (DT an) (JJ additional) (NN year) ))
+          (PP (IN with) 
+            (NP 
+              (NP (DT an) (NN increase) )
+              (PP (IN in) 
+                (NP (DT the) (NN conversion) (NN price) ))
+              (PP (TO to) 
+                (NP 
+                  (NP ($ $) (CD 2.50) (-NONE- *U*) )
+                  (NP-ADV (DT a) (NN share) ))))))))
+    (. .) ))
+( (SINV 
+    (S-TPC-1 
+      (NP-SBJ 
+        (NP (DT The) (NN sale) )
+        (PP (IN of) 
+          (NP (NNS shares) ))
+        (PP (TO to) 
+          (NP (DT the) (NNP McAlpine) (NN family) ))
+        (PP (IN along) 
+          (PP (IN with) 
+            (NP 
+              (NP 
+                (NP (DT the) (JJ recent) (NN sale) )
+                (PP (IN of) 
+                  (NP 
+                    (NP (CD 750,000) (NNS shares) )
+                    (PP (IN of) 
+                      (NP (NNP Meridian) (NN stock) ))))
+                (PP (TO to) 
+                  (NP 
+                    (NP (NNP Haden) (NNP MacLellan) (NNP Holding) (NNP PLC) )
+                    (PP (IN of) 
+                      (NP-LOC (NNP Surrey) 
+                        (, ,)
+                        (NNP England) )))))
+              (CC and) 
+              (NP (DT a) (JJ recent) (JJ public) (NN offering) )))))
+      (VP (VBP have) 
+        (VP (VBN increased) 
+          (NP 
+            (NP (NNP Meridian) (POS 's) )
+            (JJ net) (NN worth) )
+          (PP-CLR (TO to) 
+            (NP 
+              (QP ($ $) (CD 8.5) (CD million) )
+              (-NONE- *U*) )))))
+    (, ,) 
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (NP-SBJ 
+      (NP (NNP William) (NNP Feniger) )
+      (, ,) 
+      (NP 
+        (NP (NN chief) (NN executive) (NN officer) )
+        (PP (IN of) 
+          (NP 
+            (ADJP (NNP Toledo) 
+              (, ,)
+              (JJ Ohio-based) )
+            (NNP Meridian) ))))
+    (. .) ))

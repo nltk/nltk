@@ -1,0 +1,345 @@
+
+( (S 
+    (NP-SBJ (NNP Upjohn) (NNP Co.) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP it) )
+          (VP (MD will) 
+            (VP (VB offer) 
+              (NP (DT an) (JJ early) (NN retirement) (NN package) )
+              (PP-DTV (TO to) 
+                (NP 
+                  (QP (RB as) (JJ many) (IN as) (CD 1,100) )
+                  (NNS employees) ))
+              (PP (IN in) 
+                (NP 
+                  (NP (DT a) (JJ cost-cutting) (NN move) )
+                  (VP (VBN expected) 
+                    (S 
+                      (NP-SBJ (-NONE- *) )
+                      (VP (TO to) 
+                        (VP (VB result) 
+                          (PP-CLR (IN in) 
+                            (NP (DT a) (NN fourth-quarter) (NN charge) )))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Upjohn) (NNS officials) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP they) )
+          (VP (MD could) (RB n't) 
+            (VP (VB estimate) 
+              (NP 
+                (NP (DT the) (NN size) )
+                (PP (IN of) 
+                  (NP (DT the) (NN charge) )))
+              (SBAR-TMP (IN until) 
+                (S 
+                  (NP-SBJ (PRP they) )
+                  (VP (VBP determine) 
+                    (SBAR 
+                      (WHNP-1 
+                        (WHNP (WDT which) (NNS employees) )
+                        (PRN 
+                          (, ,)
+                          
+                          (CC and)
+                          (WHNP (WRB how) (JJ many) )
+                          (, ,) ))
+                      (S 
+                        (NP-SBJ (-NONE- *T*-1) )
+                        (VP (MD will) 
+                          (VP (VB participate) 
+                            (PP-CLR (IN in) 
+                              (NP (DT the) (NN retirement) (NN plan) ))))))))))))))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ (DT the) (JJ pharmaceutical) (NN company) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP it) )
+          (`` ``) 
+          (VP (VBZ anticipates) 
+            (SBAR (-NONE- 0) 
+              (S 
+                (NP-SBJ 
+                  (NP (DT the) (JJ long-term) (NNS savings) )
+                  (VP (VBG resulting) 
+                    (PP-CLR (IN from) 
+                      (NP 
+                        (NP (DT the) (NN plan) (POS 's) )
+                        (NN implementation) ))))
+                (VP (MD will) 
+                  (VP 
+                    (ADVP (RBR more) (IN than) )
+                    (VBN offset) 
+                    (NP (JJ short-term) (NNS costs) )))))))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (NN program) )
+      (, ,) 
+      (ADJP (JJ available) 
+        (PP (TO to) 
+          (NP 
+            (NP (NNP Upjohn) (NNS employees) )
+            (ADJP 
+              (ADJP 
+                (NP (CD 55) (NNS years) )
+                (JJ old) )
+              (CC or) 
+              (ADJP (JJR older) )))))
+      (, ,) )
+    (VP (MD could) 
+      (VP (VB increase) 
+        (NP 
+          (NP (DT an) (NN individual) (POS 's) )
+          (NN retirement) (NNS benefits) )
+        (NP-ADV 
+          (QP (CD 10) (NN %) (TO to) (CD 20) (NN %) )
+          (-NONE- *U*) )))
+    (. .) ))
+( (S 
+    (PP (IN In) 
+      (NP (NN addition) ))
+    (, ,) 
+    (NP-SBJ (NNP Upjohn) )
+    (VP (VBZ is) 
+      (VP (VBG offering) 
+        (NP 
+          (NP (DT a) (JJ one-time) (NN retirement) (NN bonus) )
+          (ADJP (JJ equal) 
+            (PP (TO to) 
+              (NP 
+                (NP (CD six) (NNS months) )
+                (PP (IN of) 
+                  (NP (NN base) (NN pay) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Chairman) (NNP Theodore) (NNP Cooper) )
+    (VP (VBD called) 
+      (S 
+        (NP-SBJ (DT the) (NN program) )
+        (NP-PRD 
+          (NP (NN part) )
+          (PP (IN of) 
+            (NP 
+              (NP 
+                (NP (DT the) (NN company) (POS 's) )
+                (JJ two-year) (NN strategy) )
+              (SBAR 
+                (WHADVP-1 (-NONE- 0) )
+                (S 
+                  (NP-SBJ (-NONE- *) )
+                  (VP (TO to) 
+                    (VP (VB implement) 
+                      (NP 
+                        (NP (NN budget) (NNS constraints) )
+                        (CC and) (`` ``) 
+                        (NP (DT an) (JJ effective) (NN headcount-control) (NN program) ))
+                      (ADVP (-NONE- *T*-1) ))))))))))
+    (. .) ('' '') ))
+( (S (CC But) 
+    (NP-SBJ (DT some) (NNS analysts) )
+    (VP (VBD questioned) 
+      (SBAR 
+        (WHNP-1 
+          (WHNP (WRB how) (RB much) )
+          (PP (IN of) 
+            (NP (DT an) (NN impact) )))
+        (S 
+          (NP-SBJ (DT the) (NN retirement) (NN package) )
+          (VP (MD will) 
+            (VP (VB have) 
+              (NP (-NONE- *T*-1) )))))
+      (, ,) 
+      (SBAR-PRP (IN because) 
+        (S 
+          (NP-SBJ-2 (JJ few) (NNS jobs) )
+          (VP (MD will) 
+            (VP (VB end) 
+              (PRT (RP up) )
+              (S 
+                (NP-SBJ-3 (-NONE- *-2) )
+                (VP (VBG being) 
+                  (VP (VBN eliminated) 
+                    (NP (-NONE- *-3) )))))))))
+    (. .) ))
+( (SINV (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ (PRP It) )
+      (VP (VBZ 's) 
+        (NP-PRD (DT a) (JJ cosmetic) (NN move) )))
+    (, ,) ('' '') 
+    (VP (VBD said) 
+      (S (-NONE- *T*-1) ))
+    (NP-SBJ 
+      (NP (NNP Jonathan) (NNP S.) (NNP Gelles) )
+      (PP (IN of) 
+        (NP (NNP Wertheim) (NNP Schroder) (CC &) (NNP Co) )))
+    (. .) ))
+( (S 
+    (PP (VBG According) 
+      (PP (TO to) 
+        (NP 
+          (NP (NNP Upjohn) (POS 's) )
+          (NNS estimates) )))
+    (, ,) 
+    (NP-SBJ (RB only) 
+      (NP 
+        (NP 
+          (QP (CD 50) (NN %) (TO to) (CD 60) (NN %) )
+          (-NONE- *U*) )
+        (PP (IN of) 
+          (NP (DT the) (CD 1,100) (JJ eligible) (NNS employees) ))))
+    (VP (MD will) 
+      (VP (VB take) 
+        (NP-CLR (NN advantage) )
+        (PP-CLR (IN of) 
+          (NP (DT the) (NN plan) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Upjohn) )
+    (ADVP (RB further) )
+    (VP (VBD estimated) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ-1 
+            (NP 
+              (QP (IN about) (CD 50) )
+              (NN %) )
+            (PP (IN of) 
+              (NP 
+                (NP (DT the) (NNS employees) )
+                (SBAR 
+                  (WHNP-2 (WP who) )
+                  (S 
+                    (NP-SBJ (-NONE- *T*-2) )
+                    (VP (VBP leave) 
+                      (PP-PRP (IN for) 
+                        (NP (JJ early) (NN retirement) ))))))))
+          (VP (MD may) 
+            (VP (VB be) 
+              (VP (VBN replaced) 
+                (NP (-NONE- *-1) )))))))
+    (. .) ))
+( (S 
+    (PP-PRP (IN As) 
+      (NP (DT a) (NN result) ))
+    (, ,) 
+    (NP-SBJ (NNP Upjohn) )
+    (VP (MD will) 
+      (ADVP (RB likely) )
+      (VP (VB trim) 
+        (NP 
+          (NP 
+            (QP (RB only) (IN about) (CD 275) (TO to) (CD 350) ))
+          (PP (IN of) 
+            (NP (PRP$ its) 
+              (QP (JJR more) (IN than) (CD 21,000) )
+              (NNS jobs) )))
+        (ADVP-LOC (JJ world-wide) )))
+    (. .) ))
+( (S 
+    (PP-LOC (IN In) 
+      (NP 
+        (NP (JJ composite) (NN trading) )
+        (PP-LOC (IN on) 
+          (NP (DT the) (NNP New) (NNP York) (NNP Stock) (NNP Exchange) ))))
+    (NP-TMP (NN yesterday) )
+    (, ,) 
+    (NP-SBJ (NNP Upjohn) (NNS shares) )
+    (VP (VBD rose) 
+      (NP-EXT (CD 87.5) (NNS cents) )
+      (PP-DIR (TO to) 
+        (NP 
+          (NP ($ $) (CD 38.875) (-NONE- *U*) )
+          (ADVP (RB apiece) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT An) (NNP Upjohn) (NN spokesman) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP he) )
+          (VP (VBD had) (`` ``) 
+            (VP (VBN heard) 
+              (NP 
+                (NP (NN nothing) )
+                ('' '') 
+                (SBAR 
+                  (WHNP-3 (-NONE- 0) )
+                  (S 
+                    (NP-SBJ (-NONE- *T*-3) )
+                    (VP (TO to) 
+                      (VP (VB suggest) 
+                        (SBAR (-NONE- 0) 
+                          (S 
+                            (NP-SBJ-1 (DT the) (JJ early) (NN retirement) (NN package) )
+                            (VP (VBD was) 
+                              (VP (VBN spurred) 
+                                (NP (-NONE- *-1) )
+                                (PP (IN by) 
+                                  (NP-LGS 
+                                    (NP (NN shareholder) (NN pressure) )
+                                    (CC or) 
+                                    (NP 
+                                      (NP (DT a) (JJ potential) (NN bidder) )
+                                      (PP (IN for) 
+                                        (NP 
+                                          (NP (DT the) (NN company) )
+                                          (, ,) 
+                                          (SBAR 
+                                            (WHNP-2 (WDT which) )
+                                            (S 
+                                              (NP-SBJ (-NONE- *T*-2) )
+                                              (ADVP-TMP (RB occasionally) )
+                                              (VP (VBZ has) 
+                                                (VP (VBN been) 
+                                                  (NP-PRD 
+                                                    (NP (DT the) (NN target) )
+                                                    (PP (IN of) 
+                                                      (NP (NN takeover) (NN speculation) ))))))))))))))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (DT The) (NN company) )
+    (ADVP-TMP (RBR earlier) (DT this) (NN year) )
+    (VP (VBD adopted) 
+      (NP (DT a) (JJ shareholder-rights) (NN plan) )
+      (S-PRP 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB ward) 
+            (PRT (RP off) )
+            (NP (JJ unwanted) (NNS suitors) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN spokesman) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP it) )
+          (VP (VBZ is) 
+            (NP-PRD 
+              (NP (DT the) (RB first) (JJ early) (NN retirement) (NN plan) )
+              (VP (VBN offered) 
+                (PP-LOC (IN under) 
+                  (NP (PRP$ its) (JJ two-year) (JJ cost-control) (NN strategy) ))))))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (NP-SBJ (JJR Earlier) (NN staff-reduction) (NNS moves) )
+      (VP (VBP have) 
+        (VP (VBN trimmed) 
+          (NP 
+            (QP (IN about) (CD 300) )
+            (NNS jobs) ))))
+    (, ,) 
+    (NP-SBJ (DT the) (NN spokesman) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))

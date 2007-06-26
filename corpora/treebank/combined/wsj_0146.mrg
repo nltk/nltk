@@ -1,0 +1,466 @@
+
+( (S 
+    (NP-SBJ-2 
+      (NP (NNP Rep.) (NNP John) (NNP Dingell) )
+      (, ,) 
+      (NP 
+        (NP (DT an) (JJ important) (NN sponsor) )
+        (PP (IN of) 
+          (NP 
+            (NP (NNP President) (NNP Bush) (POS 's) )
+            (JJ clean-air) (NN bill) )))
+      (, ,) )
+    (VP (VBZ plans) 
+      (S 
+        (NP-SBJ (-NONE- *-2) )
+        (VP (TO to) 
+          (VP (VB unveil) 
+            (NP 
+              (NP (DT a) (NN surprise) (NN proposal) )
+              (SBAR 
+                (WHNP-1 (WDT that) )
+                (S 
+                  (NP-SBJ (-NONE- *T*-1) )
+                  (VP (MD would) 
+                    (VP (VB break) 
+                      (PP (IN with) 
+                        (NP (DT the) (NNP White) (NNP House) ))
+                      (PP (IN on) 
+                        (NP 
+                          (NP (DT a) (NN centerpiece) (NN issue) )
+                          (: :) 
+                          (NP (JJ acid) (NN rain) ))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 
+      (NP 
+        (NP (DT The) (NNP Michigan) (NNP Democrat) (POS 's) )
+        (NN proposal) )
+      (, ,) 
+      (SBAR 
+        (WHNP-4 (WDT which) )
+        (S 
+          (NP-SBJ-2 (-NONE- *T*-4) )
+          (VP (VBZ is) 
+            (VP (VBN expected) 
+              (NP (-NONE- *-2) )
+              (NP-TMP (NN today) )))))
+      (, ,) )
+    (VP (VBZ is) 
+      (VP (VBN described) 
+        (NP (-NONE- *-1) )
+        (PP (IN by) 
+          (NP-LGS (NN government) (NNS sources) 
+            (CC and)
+            (NNS lobbyists) ))
+        (PP-CLR (RB as) 
+          (ADJP 
+            (ADJP (RB significantly) (JJR weaker) )
+            (PP (IN than) 
+              (NP 
+                (NP (DT the) (NNP Bush) (NN administration) (POS 's) )
+                (NN plan) 
+                (S 
+                  (NP-SBJ (-NONE- *) )
+                  (VP (TO to) 
+                    (VP (VB cut) 
+                      (NP 
+                        (NP (NN utility) (NNS emissions) )
+                        (SBAR 
+                          (WHNP-3 (WDT that) )
+                          (S 
+                            (NP-SBJ (-NONE- *T*-3) )
+                            (VP (VBP lead) 
+                              (PP-CLR (TO to) 
+                                (NP (JJ acid) (NN rain) )))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (NN administration) (POS 's) )
+      (NN plan) )
+    (VP (MD could) 
+      (VP (VB cost) 
+        (NP 
+          (NP (NNS utilities) )
+          (, ,) 
+          (ADVP (RB mainly) )
+          (NP 
+            (NP (DT those) )
+            (SBAR 
+              (WHNP-1 (WDT that) )
+              (S 
+                (NP-SBJ (-NONE- *T*-1) )
+                (VP (VBP use) 
+                  (NP (NN coal) )))))
+          (, ,) )
+        (NP 
+          (NP 
+            (QP (RB up) (TO to) ($ $) (CD 4) (CD billion) )
+            (-NONE- *U*) )
+          (NP-ADV (DT a) (NN year) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN proposal) )
+    (VP 
+      (VP (VBZ comes) 
+        (PP-CLR (IN as) 
+          (NP (DT a) (NN surprise) ))
+        (PP 
+          (ADVP (RB even) )
+          (TO to) 
+          (NP (NN administration) (NNS officials) )))
+      (CC and) 
+      (VP 
+        (ADVP (RB temporarily) )
+        (VBZ throws) 
+        (PP-DIR (IN into) 
+          (NP (NN chaos) ))
+        (NP 
+          (NP 
+            (NP (DT the) (NNP House) (POS 's) )
+            (NN work) )
+          (PP (IN on) 
+            (NP (JJ clean-air) (NN legislation) )))))
+    (. .) ))
+( (S 
+    (PP (IN As) 
+      (NP 
+        (NP (NN chairman) )
+        (PP (IN of) 
+          (NP (DT the) (NNP House) (NNP Energy) 
+            (CC and)
+            (NNP Commerce) (NNP Committee) ))))
+    (, ,) 
+    (NP-SBJ (NNP Mr.) (NNP Dingell) )
+    (VP (VBZ has) 
+      (NP 
+        (NP 
+          (ADJP (RB almost) (JJ single-handed) )
+          (NN control) )
+        (PP (IN over) 
+          (NP (JJ clean-air) (NN legislation) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNS People) )
+      (ADJP (JJ close) 
+        (PP (TO to) 
+          (NP (DT the) (NN utility) (NN industry) ))))
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-3 
+            (NP (NNP Mr.) (NNP Dingell) (POS 's) )
+            (NN proposal) )
+          (VP (VBZ appears) 
+            (S 
+              (NP-SBJ (-NONE- *-3) )
+              (VP (TO to) 
+                (VP (VB guarantee) 
+                  (NP 
+                    (NP (RB only) (DT an) 
+                      (ADJP (VBN estimated) (JJ seven-million-ton) )
+                      (NN cut) )
+                    (PP (IN in) 
+                      (NP 
+                        (NP (JJ annual) (NN sulfur-dioxide) (NNS emissions) )
+                        (SBAR 
+                          (WHNP-2 (WDT that) )
+                          (S 
+                            (NP-SBJ (-NONE- *T*-2) )
+                            (VP (VBP lead) 
+                              (PP-CLR (TO to) 
+                                (NP (NN acid) (NN rain) ))))))))
+                  (, ,) 
+                  (SBAR-ADV (IN though) 
+                    (S 
+                      (NP-SBJ-1 (JJ additional) (NNS cuts) )
+                      (VP (MD could) 
+                        (VP (VB be) 
+                          (VP (VBN ordered) 
+                            (NP (-NONE- *-1) )
+                            (ADVP-TMP (JJ later) )))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 
+      (NP (NNP Mr.) (NNP Bush) (POS 's) )
+      (JJ legislative) (NN package) )
+    (VP (VBZ promises) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB cut) 
+            (NP (NNS emissions) )
+            (PP 
+              (PP (IN by) 
+                (NP 
+                  (QP (CD 10) (CD million) )
+                  (NNS tons) ))
+              (PRN (: --) 
+                (ADVP (RB basically) )
+                (PP (IN in) 
+                  (NP (DT half) ))
+                (: --) ))
+            (PP-TMP (IN by) 
+              (NP (DT the) (NN year) (CD 2000) ))))))
+    (. .) ))
+( (S 
+    (SBAR-ADV (IN Although) 
+      (S 
+        (NP-SBJ (JJ final) (NNS details) )
+        (VP (VBD were) (RB n't) 
+          (ADJP-PRD (JJ available) ))))
+    (, ,) 
+    (NP-SBJ (NNS sources) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (DT the) (NNP Dingell) (NN plan) )
+          (VP (MD would) 
+            (VP (VB abandon) 
+              (NP 
+                (NP (DT the) (NN president) (POS 's) )
+                (NN proposal) 
+                (PP (IN for) 
+                  (NP 
+                    (NP (DT a) (NN cap) )
+                    (PP (IN on) 
+                      (NP 
+                        (NP (NNS utilities) (POS ') )
+                        (NN sulfur-dioxide) (NNS emissions) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (DT That) (NN proposal) )
+    (VP (VBD had) 
+      (VP (VBN been) 
+        (VP 
+          (VP (VBN hailed) 
+            (NP (-NONE- *-1) )
+            (PP (IN by) 
+              (NP-LGS (NNS environmentalists) )))
+          (CC but) 
+          (VP (VBN despised) 
+            (NP (-NONE- *-1) )
+            (PP (IN by) 
+              (NP-LGS (NNS utilities) ))
+            (SBAR-PRP (IN because) 
+              (S 
+                (NP-SBJ (PRP they) )
+                (VP (VBD feared) 
+                  (SBAR (-NONE- 0) 
+                    (S 
+                      (NP-SBJ (PRP it) )
+                      (VP (MD would) 
+                        (VP (VB limit) 
+                          (NP (PRP$ their) (NN growth) ))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP It) )
+    (ADVP (RB also) )
+    (VP (MD would) 
+      (VP (VB junk) 
+        (NP 
+          (NP (DT an) (JJ innovative) (JJ market-based) (NN system) )
+          (PP (IN for) 
+            (S-NOM 
+              (NP-SBJ (-NONE- *) )
+              (VP (VBG trading) 
+                (NP (NNS emissions) (NNS credits) )
+                (PP-CLR (IN among) 
+                  (NP (NNS polluters) ))))))))
+    (. .) ))
+( (S 
+    (PP (IN In) 
+      (NP (NN addition) ))
+    (, ,) 
+    (NP-SBJ-1 (PRP it) )
+    (VP (VBZ is) 
+      (VP (VBN believed) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB offer) 
+              (NP 
+                (NP (DT a) (JJ cost-sharing) (NN mechanism) )
+                (SBAR 
+                  (WHNP-2 (WDT that) )
+                  (S 
+                    (NP-SBJ-3 (-NONE- *T*-2) )
+                    (VP (MD would) 
+                      (VP (VB help) 
+                        (S 
+                          (NP-SBJ (-NONE- *-3) )
+                          (VP (VB subsidize) 
+                            (NP 
+                              (NP (DT the) (JJ clean-up) (NNS costs) )
+                              (PP (IN for) 
+                                (NP 
+                                  (NP (DT the) (JJS dirtiest) (JJ coal-fired) (NNS utilities) )
+                                  (PP-LOC (IN in) 
+                                    (NP (DT the) (NN country) )))))
+                            (, ,) 
+                            (S-ADV 
+                              (NP-SBJ (-NONE- *-3) )
+                              (VP (VBG sparing) 
+                                (NP (PRP$ their) (NNS customers) )
+                                (PP-CLR (IN from) 
+                                  (NP 
+                                    (NP (JJ exorbitant) (NNS jumps) )
+                                    (PP (IN in) 
+                                      (NP (PRP$ their) (JJ electric) (NNS bills) ))))))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (DT The) (NN administration) )
+    (, ,) 
+    (S-ADV 
+      (NP-SBJ (-NONE- *-1) )
+      (VP (VBG sticking) 
+        (PP (TO to) 
+          (NP 
+            (NP (PRP$ its) (NN vow) )
+            (PP (IN of) 
+              (S-NOM 
+                (NP-SBJ (-NONE- *) )
+                (VP (VBG avoiding) 
+                  (NP (NN tax) (NNS increases) ))))))))
+    (, ,) 
+    (VP (VBZ has) 
+      (ADVP-MNR (RB staunchly) )
+      (VP (VBN opposed) 
+        (NP (NN cost-sharing) )))
+    (. .) ))
+( (S 
+    (NP-SBJ-2 
+      (NP (NNP Mr.) (NNP Dingell) (POS 's) )
+      (NN staff) )
+    (VP (VBD was) 
+      (VP (VBN expected) 
+        (S 
+          (NP-SBJ (-NONE- *-2) )
+          (VP (TO to) 
+            (VP (VB present) 
+              (NP (PRP$ its) (NN acid-rain) (NN alternative) )
+              (PP-DTV (TO to) 
+                (NP (JJ other) (NN committee) (NNS members) ))
+              (, ,) 
+              (ADVP (RB apparently) )
+              (PP (IN in) 
+                (NP (DT an) (NN attempt) 
+                  (S 
+                    (NP-SBJ (-NONE- *) )
+                    (VP (TO to) 
+                      (VP (VB appease) 
+                        (NP 
+                          (NP (JJ Midwestern) (NNS lawmakers) )
+                          (PP (IN from) 
+                            (NP (JJ high-polluting) (NNS states) ))
+                          (SBAR 
+                            (WHNP-1 (WP who) )
+                            (S 
+                              (NP-SBJ (-NONE- *T*-1) )
+                              (VP (VBP insist) 
+                                (PP-CLR (IN on) 
+                                  (NP (NN cost-sharing) ))))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (PRP It) )
+      (SBAR (-NONE- *EXP*-1) ))
+    (VP (VBZ is) (RB n't) 
+      (ADJP-PRD (JJ clear) )
+      (, ,) 
+      (ADVP (RB however) )
+      (, ,) 
+      (SBAR-1 (IN whether) 
+        (S 
+          (NP-SBJ 
+            (NP (NN support) )
+            (PP (IN for) 
+              (NP (DT the) (NN proposal) )))
+          (VP (MD will) 
+            (VP (VB be) 
+              (ADJP-PRD (JJ broad) (RB enough) 
+                (S 
+                  (NP-SBJ (-NONE- *) )
+                  (VP (TO to) 
+                    (VP (VB pose) 
+                      (NP 
+                        (NP (DT a) (JJ serious) (NN challenge) )
+                        (PP (TO to) 
+                          (NP 
+                            (NP (DT the) (NNP White) (NNP House) (POS 's) )
+                            (NN acid-rain) (NN plan) ))))))))))))
+    (. .) ))
+( (S 
+    (SBAR-ADV (IN While) 
+      (S 
+        (NP-SBJ (DT the) (JJ new) (NN proposal) )
+        (VP (MD might) 
+          (VP (VB appeal) 
+            (PP-CLR (TO to) 
+              (NP (DT the) (JJS dirtiest) (NNS utilities) ))))))
+    (, ,) 
+    (NP-SBJ (PRP it) )
+    (VP (MD might) (RB not) 
+      (VP (VB win) 
+        (NP 
+          (NP (DT the) (NN support) )
+          (PP (IN of) 
+            (NP 
+              (NP (NNS utilities) )
+              (PRN 
+                (, ,)
+                (NP 
+                  (NP (JJ many) )
+                  (PP-LOC (IN in) 
+                    (NP (DT the) (NN West) )))
+                (, ,) )
+              (SBAR 
+                (WHNP-1 (WDT that) )
+                (S 
+                  (NP-SBJ (-NONE- *T*-1) )
+                  (ADVP-TMP (RB already) )
+                  (VP 
+                    (VP (VBP have) 
+                      (VP (VBN added) 
+                        (NP (JJ expensive) (NN cleanup) (NN equipment) )))
+                    (CC or) 
+                    (VP (VBP burn) 
+                      (NP (JJ cleaner-burning) (NNS fuels) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 
+      (NP (NNS Lawmakers) )
+      (VP (VBG representing) 
+        (NP 
+          (NP (DT some) )
+          (PP (IN of) 
+            (NP (DT the) (JJR cleaner) (NNS utilities) )))))
+    (VP (VBP have) 
+      (VP (VBN been) 
+        (ADVP-MNR (RB quietly) )
+        (VP (VBG working) 
+          (PP-CLR (IN with) 
+            (NP (DT the) (NNP White) (NNP House) ))
+          (S-PRP 
+            (NP-SBJ (-NONE- *-1) )
+            (VP (TO to) 
+              (VP (VB devise) 
+                (NP 
+                  (NP (NNS ways) )
+                  (SBAR 
+                    (WHADVP-2 (-NONE- 0) )
+                    (S 
+                      (NP-SBJ (-NONE- *) )
+                      (VP (TO to) 
+                        (VP (VB tinker) 
+                          (PP-CLR (IN with) 
+                            (NP (DT the) (NN administration) (NN bill) ))
+                          (ADVP-MNR (-NONE- *T*-2) )
+                          (S-PRP-3 
+                            (NP-SBJ (-NONE- *) )
+                            (VP (TO to) 
+                              (VP (VB address) 
+                                (NP (PRP$ their) (NN acid-rain) (NNS concerns) )))))))))
+                (S-PRP (-NONE- *PPA*-3) )))))))
+    (. .) ))

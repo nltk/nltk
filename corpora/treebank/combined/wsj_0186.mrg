@@ -1,0 +1,998 @@
+
+( (S 
+    (NP-SBJ 
+      (NP (`` ``) (NNP Feeding) (NNP Frenzy) ('' '') )
+      (PRN 
+        (-LRB- -LRB-)
+        (NP (NNP Henry) (NNP Holt) )
+        (, ,) 
+        (NP (CD 326) (NNS pages) )
+        (, ,) 
+        (NP ($ $) (CD 19.95) (-NONE- *U*) )
+        (-RRB- -RRB-) )
+      (, ,) 
+      (NP 
+        (NP (DT a) (RB highly) (VBN detailed) (NN account) )
+        (PP (IN of) 
+          (NP (DT the) (NNP Wedtech) (NN scandal) )))
+      (, ,) )
+    (VP (VBZ begins) 
+      (PP-MNR (IN on) 
+        (NP (DT a) (JJ reassuring) (NN note) )))
+    (. .) ))
+( (S 
+    (ADVP-LOC 
+      (ADVP (RB Right) (IN up) (NN front) )
+      (PP (IN in) 
+        (NP (DT the) (NN preface) )))
+    (, ,) 
+    (NP-SBJ (NN co-author) (NNP William) (NNP Sternberg) )
+    (VP (VBZ gives) 
+      (NP (PRP us) )
+      (NP 
+        (NP (DT an) (NN example) )
+        (PP (IN of) 
+          (NP (PRP$ his) (JJ own) (NN integrity) ))))
+    (. .) ))
+( (S 
+    (SBAR-TMP 
+      (WHADVP-2 (WRB When) )
+      (S 
+        (NP-SBJ-3 (-NONE- *-4) )
+        (VP (VBN offered) 
+          (NP (-NONE- *-3) )
+          (NP 
+            (NP (DT a) (JJ free) (NN trip) )
+            (PP-DIR (IN from) 
+              (NP 
+                (NP (DT the) (NNP Bronx) )
+                (, ,) 
+                (NP 
+                  (NP (NNP Wedtech) (POS 's) )
+                  (NN home) )
+                (, ,) ))
+            (PP-DIR (TO to) 
+              (NP (NNP Washington) 
+                (, ,)
+                (NNP D.C.) 
+                (, ,)
+                )))
+          (PP (IN by) 
+            (NP-LGS 
+              (NP (CD one) )
+              (PP (IN of) 
+                (NP 
+                  (NP (NNP Wedtech) (POS 's) )
+                  (NNS principals) ))))
+          (ADVP-TMP (-NONE- *T*-2) ))))
+    (, ,) 
+    (NP-SBJ-4 (PRP he) )
+    (VP (VBZ tells) 
+      (NP (DT the) (NN reader) )
+      (, ,) (`` ``) 
+      (S 
+        (S-ADV 
+          (NP-SBJ (-NONE- *-5) )
+          (ADJP-PRD (JJ mindful) 
+            (PP (IN of) 
+              (S-NOM 
+                (NP-SBJ (-NONE- *) )
+                (VP (VBG accepting) 
+                  (NP 
+                    (NP (NN anything) )
+                    (PP (IN of) 
+                      (NP (NN value) ))
+                    (PP (IN from) 
+                      (NP 
+                        (NP (DT those) )
+                        (SBAR 
+                          (WHNP-1 (-NONE- 0) )
+                          (S 
+                            (NP-SBJ (PRP I) )
+                            (VP (VBD was) 
+                              (VP (VBG writing) 
+                                (PP (IN about) 
+                                  (NP (-NONE- *T*-1) ))))))))))))))
+        (, ,) 
+        (NP-SBJ-5 (PRP I) )
+        (VP (VBD declined) )))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ-1 
+      (NP (DT Any) (NN question) )
+      (PP (IN as) 
+        (PP (TO to) 
+          (SBAR 
+            (WHADVP-2 (WRB why) )
+            (S 
+              (NP-SBJ (DT an) (NN author) )
+              (VP (MD would) 
+                (VP (VB believe) 
+                  (SBAR (-NONE- 0) 
+                    (S 
+                      (NP-SBJ 
+                        (NP (DT this) (JJ plaintive) 
+                          (, ,)
+                          (JJ high-minded) (NN note) )
+                        (PP (IN of) 
+                          (NP (NN assurance) )))
+                      (VP (VBZ is) 
+                        (ADJP-PRD (JJ necessary) ))))
+                  (ADVP-PRP (-NONE- *T*-2) ))))))))
+    (VP (VBZ is) 
+      (VP (VBN answered) 
+        (NP (-NONE- *-1) )
+        (PP-MNR (IN by) 
+          (S-NOM 
+            (NP-SBJ (-NONE- *) )
+            (VP (VBG reading) 
+              (NP 
+                (NP (DT this) (NN book) )
+                (PP (IN about) 
+                  (NP 
+                    (NP (JJ sticky) (NNS fingers) )
+                    (CC and) 
+                    (NP (JJ sweaty) (NNS scammers) )))))))))
+    (. .) ))
+( (S 
+    (NP-ADV 
+      (NP (NN Bribe) )
+      (PP (IN by) 
+        (NP (NN bribe) )))
+    (, ,) 
+    (NP-SBJ 
+      (NP (NNP Mr.) (NNP Sternberg) )
+      (CC and) 
+      (NP 
+        (NP (PRP$ his) (NN co-author) )
+        (, ,) 
+        (NP (NNP Matthew) (NNP C.) (NNP Harrison) (NNP Jr.) )))
+    (, ,) 
+    (VP (VBP lead) 
+      (NP (PRP us) )
+      (PP-DIR (IN along) 
+        (NP 
+          (NP (DT the) (NN path) )
+          (SBAR 
+            (WHNP-1 (-NONE- 0) )
+            (S 
+              (NP-SBJ (NNP Wedtech) )
+              (VP (VBD traveled) 
+                (NP (-NONE- *T*-1) ))))
+          (, ,) 
+          (PP (IN from) 
+            (NP 
+              (NP (PRP$ its) (NN inception) )
+              (PP (IN as) 
+                (NP (DT a) (JJ small) (VBG manufacturing) (NN company) ))))
+          (PP (TO to) 
+            (NP 
+              (NP (DT the) (NN status) )
+              (PP (IN of) 
+                (NP 
+                  (NP (JJ full-fledged) (NN defense) (NN contractor) )
+                  (, ,) 
+                  (VP (VBN entrusted) 
+                    (NP (-NONE- *) )
+                    (PP-CLR (IN with) 
+                      (NP 
+                        (NP (DT the) (NN task) )
+                        (PP (IN of) 
+                          (S-NOM 
+                            (NP-SBJ (-NONE- *) )
+                            (VP (VBG producing) 
+                              (NP (JJ vital) (NN equipment) )
+                              (PP (IN for) 
+                                (NP (DT the) (NNP Army) 
+                                  (CC and)
+                                  (NNP Navy) )))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN book) )
+    (VP (VBZ revolves) 
+      (PP-DIR (IN around) 
+        (NP 
+          (NP 
+            (NP (NNP John) (NNP Mariotta) )
+            (, ,) 
+            (NP 
+              (NP (DT the) (NN founder) )
+              (PP (IN of) 
+                (NP (DT the) (NN company) )))
+            (, ,) )
+          (CC and) 
+          (NP 
+            (NP (NNP Fred) (NNP Neuberger) )
+            (, ,) 
+            (SBAR 
+              (WHNP-1 (WP who) )
+              (S 
+                (NP-SBJ (-NONE- *T*-1) )
+                (VP (VBD became) 
+                  (NP-PRD (PRP$ his) (NN partner) )
+                  (PP-TMP 
+                    (ADVP (RB soon) )
+                    (IN after) 
+                    (NP 
+                      (NP (NNP Wedtech) (POS 's) )
+                      (NN creation) )))))))))
+    (. .) ))
+( (S 
+    (SBAR-ADV (IN Although) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (VBN started) 
+          (PP-TMP-CLR (IN in) 
+            (NP (CD 1965) )))))
+    (, ,) 
+    (NP-SBJ-1 (NNP Wedtech) )
+    (VP (VBD did) (RB n't) 
+      (ADVP (RB really) )
+      (VP (VB get) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (VBG rolling) 
+            (PP-TMP (IN until) 
+              (NP 
+                (NP (CD 1975) )
+                (, ,) 
+                (SBAR 
+                  (WHADVP-2 (WRB when) )
+                  (S 
+                    (NP-SBJ (NNP Mr.) (NNP Neuberger) )
+                    (VP (VBD discovered) 
+                      (NP 
+                        (NP (DT the) (JJ federal) (NN government) (POS 's) )
+                        (NN Section) (CD 8) 
+                        (-LRB- -LRB-)
+                        (NN A) 
+                        (-RRB- -RRB-)
+                        (NN minority) (NN business) (NN program) )
+                      (ADVP-TMP (-NONE- *T*-2) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT This) )
+    (VP (VBZ is) 
+      (NP-PRD 
+        (NP (DT a) (NN Johnson-era) 
+          (, ,)
+          (NNP Great) (NNP Society) (NN creation) )
+        (SBAR 
+          (WHNP-2 (WDT that) )
+          (S 
+            (NP-SBJ (-NONE- *T*-2) )
+            (VP (VBZ mandates) 
+              (SBAR (-NONE- 0) 
+                (S 
+                  (NP-SBJ-1 (JJ certain) (NN government) (NNS contracts) )
+                  (VP (VB be) 
+                    (VP (VBN awarded) 
+                      (NP (-NONE- *-1) )
+                      (ADVP-MNR (RB noncompetitively) )
+                      (PP-DTV (TO to) 
+                        (NP (NN minority) (NNS businesses) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Mr.) (NNP Neuberger) )
+    (VP (VBD realized) 
+      (SBAR (IN that) 
+        (, ,)
+        (S 
+          (SBAR-ADV (IN although) 
+            (PP (IN of) 
+              (NP (JJ Italian) (NN ancestry) )))
+          (, ,) 
+          (NP-SBJ (NNP Mr.) (NNP Mariotta) )
+          (ADVP (RB still) )
+          (VP (MD could) 
+            (VP (VB qualify) 
+              (PP-CLR (IN as) 
+                (NP (DT a) (NN minority) (NN person) ))
+              (SBAR-PRP (IN since) 
+                (S 
+                  (NP-SBJ-1 (PRP he) )
+                  (VP (VBD was) 
+                    (VP (VBN born) 
+                      (NP (-NONE- *-1) )
+                      (PP-LOC-CLR (IN in) 
+                        (NP (NNP Puerto) (NNP Rico) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (DT The) (CD two) (NNS partners) )
+    (ADVP (RB merely) )
+    (VP (VBD had) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB falsify) 
+            (NP 
+              (NP (DT the) (JJ true) (NN ownership) )
+              (PP (IN of) 
+                (NP (DT the) (NN corporation) )))))))
+    (. .) ))
+( (S 
+    (S 
+      (PP (RB Instead) (IN of) 
+        (NP (CD 50\/50) ))
+      (NP-SBJ (PRP it) )
+      (VP (VBD became) 
+        (, ,)
+        (PP-LOC (IN on) 
+          (NP (NN paper) )
+          (ADVP (RB only) ))
+        (, ,) 
+        (NP-PRD 
+          (NP (NNS two-thirds) (NNP Mariotta) )
+          (, ,) 
+          (NP (NN one-third) (NNP Neuberger) ))))
+    (, ,) 
+    (CC and)
+    (S 
+      (NP-SBJ (PRP they) )
+      (VP (VBD were) 
+        (PP-PRD 
+          (PP (IN in) 
+            (NP (DT the) (NN program) ))
+          (CC and) 
+          (PP (IN off) 
+            (PP (TO to) 
+              (NP (DT the) (NNS races) ))))))
+    (. .) ))
+( (S 
+    (PP (IN Besides) 
+      (S-NOM 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (VBG being) 
+          (NP-PRD (DT a) (`` ``) (JJ minority-owned) (NN company) ('' '') ))))
+    (NP-SBJ-1 (NNP Wedtech) )
+    (VP (VBD was) 
+      (VP (VBN located) 
+        (NP (-NONE- *-1) )
+        (PP-LOC (IN in) 
+          (NP 
+            (NP (DT the) (NNP South) (NNP Bronx) )
+            (, ,) 
+            (NP 
+              (NP (DT a) (JJ blighted) (NN area) )
+              (, ,) 
+              (VP (VBN made) 
+                (S 
+                  (NP-SBJ (-NONE- *) )
+                  (ADJP-PRD (JJ famous) ))
+                (PP (IN by) 
+                  (NP-LGS (NNP Jimmy) (NNP Carter) ))
+                (PP-LOC (IN in) 
+                  (NP (PRP$ his) (CD 1976) (JJ presidential) (NN campaign) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (DT The) (NN company) )
+    (VP 
+      (VP (VBD plugged) 
+        (NP (PRP itself) )
+        (PP-DIR (RB right) (IN into) 
+          (NP 
+            (NP (NNP Carter) (NN campaign) (NN rhetoric) )
+            (PP (IN about) 
+              (S-NOM 
+                (NP-SBJ (-NONE- *) )
+                (VP (VBG rebuilding) 
+                  (NP (DT the) (NNP South) (NNP Bronx) )))))))
+      (CC and) 
+      (VP (VBD kept) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (VBG using) 
+            (NP (DT the) (NN minority) (: --) (NNP South) (NNP Bronx) (NN angle) )
+            (PP-TMP (IN through) 
+              (NP (DT the) (NNP Reagan) (CD '80s) ))))))
+    (. .) ))
+( (S 
+    (S-ADV 
+      (NP-SBJ (-NONE- *-1) )
+      (VP (VBG Starting) 
+        (PP-CLR (IN with) 
+          (NP 
+            (NP (NNP Congressman) (NNP Mario) (NNP Biaggi) )
+            (PRN 
+              (-LRB- -LRB-)
+              (VP 
+                (ADVP-TMP (RB now) )
+                (VBG serving) 
+                (NP (DT a) (NN jail) (NN sentence) ))
+              (-RRB- -RRB-) )))))
+    (, ,) 
+    (NP-SBJ-1 (DT the) (NN company) )
+    (VP (VBD began) 
+      (NP 
+        (NP (DT a) (NN career) )
+        (PP (IN of) 
+          (S-NOM 
+            (NP-SBJ (-NONE- *) )
+            (VP (VBG bribing) 
+              (NP 
+                (NP 
+                  (UCP (JJ federal) 
+                    (, ,)
+                    (NN state) 
+                    (CC and)
+                    (JJ local) )
+                  (JJ public) (NNS officials) )
+                (CC and) 
+                (NP 
+                  (NP 
+                    (NP (DT those) )
+                    (ADVP-LOC (JJ close) 
+                      (PP (TO to) 
+                        (NP (JJ public) (NNS officials) ))))
+                  (, ,) 
+                  (PP 
+                    (ADVP (RB right) )
+                    (PP (IN up) 
+                      (PP (TO to) 
+                        (NP (-NONE- *RNR*-2) )))
+                    (CC and) 
+                    (PP (VBG including) 
+                      (NP (-NONE- *RNR*-2) ))
+                    (NP-2 
+                      (NP (NNP E.) (NNP Robert) (NNP Wallach) )
+                      (, ,) 
+                      (NP 
+                        (NP 
+                          (NP (JJ close) (NN friend) )
+                          (CC and) 
+                          (NP (NN adviser) ))
+                        (PP (TO to) 
+                          (NP (JJ former) (NNP Attorney) (NNP General) (NNP Ed) (NNP Meese) ))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Wedtech) )
+    (VP (VBD did) (RB n't) 
+      (ADVP (RB just) )
+      (VP (VB use) 
+        (NP 
+          (ADJP (JJ old) (VBN fashioned) )
+          (NN bribery) )))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (PRP It) )
+    (VP (VBD made) 
+      (NP-CLR (JJ ample) (NN use) )
+      (PP-CLR (IN of) 
+        (NP 
+          (NP (DT the) (JJ modern) (NNS techniques) )
+          (PP (IN of) 
+            (NP (NN influence) (NN peddling) ))))
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (VBG retaining) 
+          (NP 
+            (NP 
+              (ADJP (RB politically) (VBN connected) )
+              (`` ``) (JJ respectable) ('' '') (NN law) (NNS firms) )
+            (, ,) 
+            (NP (NN investment) (NNS bankers) )
+            (CC and) 
+            (NP 
+              (NP (JJ political) (NNS consultants) )
+              (, ,) 
+              (PP (VBG including) 
+                (NP (NNP Reagan) (NN confidant) (NNP Lyn) (NNP Nofzinger) )))))))
+    (. .) ))
+( (S 
+    (SBAR-TMP 
+      (WHADVP (WRB When) )
+      (FRAG 
+        (ADJP (JJ necessary) )))
+    (, ,) 
+    (NP-SBJ (PRP it) )
+    (VP (VBD sought) 
+      (CC and)
+      (VBD received) 
+      (NP (NN assistance) )
+      (PP-CLR (IN from) 
+        (NP (VBN organized) (NN crime) )))
+    (. .) ))
+( (S 
+    (ADVP-TMP (RB Sometimes) )
+    (NP-SBJ (DT the) (VBN bribed) )
+    (VP (VBD became) 
+      (NP-PRD 
+        (NP (NNS partners) )
+        (PP (IN in) 
+          (NP (DT the) (NN company) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Wedtech) (NN management) )
+    (VP (VBD used) 
+      (NP (DT the) (NN merit) (NN system) ))
+    (. .) ))
+( (S 
+    (SBAR-ADV (IN If) 
+      (S 
+        (NP-SBJ (PRP you) )
+        (VP (VBD were) 
+          (ADJP-PRD (RB especially) (JJ helpful) 
+            (PP (IN in) 
+              (NP (DT a) (JJ corrupt) (NN scheme) ))))))
+    (NP-SBJ (PRP you) )
+    (VP (VBD received) 
+      (NP 
+        (CONJP (RB not) (RB just) )
+        (NP 
+          (NP (NN cash) )
+          (PP-LOC (IN in) 
+            (NP (DT a) (NN bag) )))
+        (, ,) (CC but) 
+        (NP (NN equity) )))
+    (. .) ))
+( (S 
+    (SBAR-ADV (IN If) 
+      (S 
+        (NP-SBJ (PRP you) )
+        (VP (VBD were) (RB not) 
+          (NP-PRD (DT an) (JJ effective) (NN crook) ))))
+    (, ,) 
+    (NP-SBJ (PRP you) )
+    (VP 
+      (VP (VBD found) 
+        (NP (PRP yourself) )
+        (ADVP-LOC-CLR (IN out) 
+          (PP (IN in) 
+            (NP (DT the) (NN cold) ))))
+      (, ,) 
+      (NP-ADV 
+        (NP (DT a) (NN fate) )
+        (SBAR 
+          (WHNP-1 (WDT that) )
+          (S 
+            (NP-SBJ (-NONE- *T*-1) )
+            (ADVP-TMP (RB eventually) )
+            (VP (VBD befell) 
+              (NP 
+                (NP (NNP Mr.) (NNP Mariotta) )
+                (, ,) 
+                (NP 
+                  (NP (DT the) (NN firm) (POS 's) )
+                  (JJ semiliterate) (`` ``) (NN minority) ('' '') (NN person) )))))))
+    (. .) ))
+( (S (CC But) 
+    (PP (IN despite) 
+      (NP 
+        (NP 
+          (NP (DT the) (JJ sensational) (NN nature) )
+          (PP (IN of) 
+            (NP (DT the) (NNS revelations) )))
+        (CC and) 
+        (NP (DT the) (JJ breezy) 
+          (, ,)
+          (JJ easy-to-read) (JJ tabloid) (NN writing) (NN style) )))
+    (, ,) 
+    (NP-SBJ (`` ``) (NNP Feeding) (NNP Frenzy) ('' '') )
+    (ADVP-TMP (RB often) )
+    (VP (VBZ falls) 
+      (ADJP (JJ short) 
+        (PP (IN of) 
+          (NP (JJ gripping) (NN reading) ))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ 
+        (NP (NN None) )
+        (PP (IN of) 
+          (NP (DT the) (NNS scams) )))
+      (VP (VBP show) 
+        (NP (JJ much) (NN ingenuity) )))
+    (: :) 
+    (S 
+      (NP-SBJ (NNS Auditors) )
+      (VP (VBD found) 
+        (NP (NN crookery) )
+        (NP-TMP 
+          (NP (DT the) (JJ first) (NN day) )
+          (PP-LOC (IN on) 
+            (NP (DT the) (NN job) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Wedtech) (POS 's) )
+      (NNS scammers) )
+    (ADVP (RB simply) )
+    (VP (VBD bribed) 
+      (S 
+        (NP-SBJ (PRP them) )
+        (VP (TO to) 
+          (VP (VB shut) 
+            (PRT (IN up) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (NNS scammers) )
+      (NP (PRP themselves) ))
+    (VP (VBD were) 
+      (NP-PRD 
+        (NP (NN garden-variety) (JJ low) (NNS lifes) )
+        (, ,) 
+        (NP 
+          (NP (JJ conspicuous) (NNS consumers) )
+          (SBAR 
+            (WHNP-1 (WP who) )
+            (S 
+              (NP-SBJ (-NONE- *T*-1) )
+              (VP (VBD wanted) 
+                (NP 
+                  (NP (JJ big) (NNS houses) )
+                  (, ,) 
+                  (NP (NNPS Mercedes) (NNS cars) )
+                  (, ,) 
+                  (NP (JJ beautiful) (NNS women) )
+                  (, ,) 
+                  (NP (JJ expensive) (NNS clothes) ))))))))
+    (. .) ))
+( (S 
+    (PP (IN Among) 
+      (NP 
+        (NP (DT the) (NN lot) )
+        (PP (IN of) 
+          (NP (PRP them) ))))
+    (, ,) 
+    (NP-SBJ (RB not) (CD one) )
+    (VP (VBZ is) 
+      (UCP-PRD 
+        (VP (VBG wrestling) 
+          (PP (IN with) 
+            (NP (JJ good) 
+              (CC and)
+              (JJ evil) )))
+        (, ,) (CC or) 
+        (ADJP-PRD 
+          (ADJP (RB especially) (JJ intelligent) )
+          (CC or) 
+          (ADJP (RB even) (RB temporarily) (JJ insane) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (CD one) (NN character) )
+      (ADJP 
+        (ADVP 
+          (ADVP (IN at) (JJS least) )
+          (RB somewhat) )
+        (JJ interesting) ))
+    (VP (VBD was) 
+      (NP-PRD 
+        (NP (NNP Irving) (NNP Louis) (NNP Lobsenz) )
+        (, ,) 
+        (NP 
+          (NP (DT a) (NN pediatrician) )
+          (SBAR 
+            (WHNP-1 (WP who) )
+            (S 
+              (NP-SBJ (-NONE- *T*-1) )
+              (VP 
+                (VP (VBD changed) 
+                  (NP (PRP$ his) (NN name) )
+                  (PP-CLR (TO to) 
+                    (NP (NNP Rusty) (NNP Kent) (NNP London) )))
+                (CC and) 
+                (VP (VBD became) 
+                  (NP-PRD 
+                    (NP (DT a) (NN master) (NN gambler) )
+                    (CC and) 
+                    (NP 
+                      (NP (NN author) )
+                      (PP (IN of) 
+                        (NP 
+                          (NP (DT a) (NN book) )
+                          (PP (IN on) 
+                            (NP (NN blackjack) )))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP He) )
+    (VP (VBZ enters) 
+      (NP (DT the) (NN story) )
+      (PP-TMP 
+        (PP (IN toward) 
+          (NP (DT the) (NN end) ))
+        (, ,) 
+        (PP (RB just) (IN in) 
+          (NP 
+            (NP (NN time) )
+            (SBAR 
+              (WHADVP-2 (-NONE- 0) )
+              (S 
+                (NP-SBJ-1 (-NONE- *) )
+                (VP (TO to) 
+                  (VP (VB get) 
+                    (S 
+                      (NP-SBJ (-NONE- *-1) )
+                      (VP (VBN arrested) 
+                        (NP (-NONE- *-1) )
+                        (ADVP (-NONE- *T*-2) )))))))))))
+    (. .) ))
+( (S 
+    (S-ADV 
+      (NP-SBJ (-NONE- *-1) )
+      (VP (VBN Absorbed) 
+        (PP (IN in) 
+          (S-NOM 
+            (NP-SBJ (-NONE- *) )
+            (VP (VBG doling) 
+              (PRT (RP out) )
+              (NP (`` ``) 
+                (NP (NNP Feeding) (NNP Frenzy) (POS 's) )
+                ('' '') (NNS tidbits) ))))))
+    (, ,) 
+    (NP-SBJ-1 (DT the) (NNS authors) )
+    (VP (VBP gloss) 
+      (PP-CLR (IN over) 
+        (NP 
+          (NP (DT the) (NN root) (NNS causes) )
+          (PP (IN of) 
+            (NP (NNP Wedtech) ))
+          (, ,) 
+          (ADVP (RB namely) )
+          (NP 
+            (NP (DT the) (NN Section) (CD 8) 
+              (-LRB- -LRB-)
+              (NN A) 
+              (-RRB- -RRB-)
+              (JJ federal) (NN program) )
+            (SBAR 
+              (WHPP-2 (IN under) 
+                (WHNP (WP$ whose) (NNS auspices) ))
+              (S 
+                (NP-SBJ (DT the) (NN scandal) )
+                (VP (VBD took) 
+                  (NP-CLR (NN place) )
+                  (PP (-NONE- *T*-2) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP They) )
+    (VP (VBP do) 
+      (ADVP (IN at) (JJS least) )
+      (VP (VB come) 
+        (ADVP-CLR (RB around) )
+        (PP-CLR (TO to) 
+          (S-NOM 
+            (NP-SBJ (-NONE- *) )
+            (VP (VBG saying) 
+              (SBAR (IN that) 
+                (S 
+                  (NP-SBJ-1 (DT the) (NNS courts) )
+                  (VP (MD might) 
+                    (VP (VB want) 
+                      (S 
+                        (NP-SBJ (-NONE- *-1) )
+                        (VP (TO to) 
+                          (VP (VB end) (`` ``) 
+                            (NP (JJ rigid) (JJ affirmative) (NN action) (NNS programs) )))))))))))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ 
+      (NP (NNS Programs) )
+      (PP (IN like) 
+        (NP (NN Section) (CD 8) 
+          (-LRB- -LRB-)
+          (NN A) 
+          (-RRB- -RRB-)
+          )))
+    (VP (VBP are) 
+      (PP-PRD 
+        (NP-ADV (DT a) (RB little) )
+        (IN like) 
+        (S-NOM 
+          (NP-SBJ (-NONE- *) )
+          (VP 
+            (VP (VBG leaving) 
+              (NP (NN gold) )
+              (PP-LOC (IN in) 
+                (NP (DT the) (NN street) )))
+            (CC and) (RB then) 
+            (VP (VBG expressing) 
+              (NP (NN surprise) )
+              (SBAR-TMP 
+                (WHADVP-1 (WRB when) )
+                (S 
+                  (NP-SBJ-2 (NNS thieves) )
+                  (VP (VBP walk) 
+                    (PRT (RP by) )
+                    (S-PRP-CLR 
+                      (NP-SBJ (-NONE- *-2) )
+                      (VP (TO to) 
+                        (VP (VB scoop) 
+                          (NP (PRP it) )
+                          (PRT (IN up) ))))
+                    (ADVP-TMP (-NONE- *T*-1) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (JJ Numerous) (JJ other) (NNS scandals) )
+      (, ,) 
+      (PP (IN among) 
+        (NP (PRP them) ))
+      (NP 
+        (NP (DT the) (NNS ones) )
+        (PP (IN at) 
+          (NP (NNP HUD) )))
+      (, ,) )
+    (VP (VBP have) 
+      (NP 
+        (NP (DT the) (JJ same) (NNS characteristics) )
+        (PP (IN as) 
+          (NP (NNP Wedtech) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP They) )
+    (VP (VBP take) 
+      (NP-CLR (NN place) )
+      (PP (IN in) 
+        (NP 
+          (NP (NN government) (NNS programs) )
+          (SBAR 
+            (WHNP-1 (WDT that) )
+            (S 
+              (NP-SBJ (-NONE- *T*-1) )
+              (VP (VBP seem) 
+                (ADJP-PRD (JJ tailor-made) 
+                  (PP (IN for) 
+                    (NP (NN corruption) )))))))))
+    (. .) ))
+( (SBARQ 
+    (WHADVP-1 (WRB Why) )
+    (SQ (VBP are) 
+      (NP-SBJ-2 
+        (NP (NNS programs) )
+        (PP (IN like) 
+          (NP (DT this) )))
+      (RB not) 
+      (VP (VBN eliminated) 
+        (NP (-NONE- *-2) )
+        (ADVP-PRP (-NONE- *T*-1) )))
+    (. ?) ))
+( (S (`` ``) 
+    (NP-SBJ (NNP Feeding) (NNP Frenzy) )
+    ('' '') 
+    (VP (VBZ does) 
+      (VP (VB provide) 
+        (NP (DT a) (JJ few) (NNS clues) )))
+    (. .) ))
+( (SINV 
+    (PP-LOC-3 (IN In) 
+      (CC and)
+      (IN around) 
+      (NP 
+        (NP (DT all) (NNS levels) )
+        (PP (IN of) 
+          (NP (NN government) ))
+        (PP-LOC (IN in) 
+          (NP (DT the) (NNP U.S.) ))))
+    (VP (VBP are) 
+      (PP-LOC-PRD (-NONE- *T*-3) ))
+    (NP-SBJ 
+      (NP (NNS groups) )
+      (PP (IN of) 
+        (NP 
+          (NP (NNS people) )
+          (SBAR 
+            (WHNP-2 (WP who) )
+            (S 
+              (NP-SBJ-1 (-NONE- *T*-2) )
+              (VP (MD can) 
+                (ADVP (JJS best) )
+                (VP (VB be) 
+                  (VP (VBN described) 
+                    (NP-4 (-NONE- *-1) )
+                    (PP-CLR (IN as) 
+                      (S-NOM 
+                        (NP-SBJ (-NONE- *-4) )
+                        (VP (VBG belonging) 
+                          (PP-CLR (TO to) 
+                            (NP (DT a) (JJ political) (NN insider) (JJ commercial) (NN party) )))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP They) )
+    (VP (VBP know) 
+      (SBAR (IN that) 
+        (S 
+          (SBAR-TMP 
+            (WHADVP-2 (WRB whenever) )
+            (S 
+              (NP-SBJ (NN government) )
+              (VP (VBZ is) 
+                (VP 
+                  (VP (VBG redistributing) 
+                    (NP (NN wealth) ))
+                  (, ,) 
+                  (VP (VBG regulating) 
+                    (NP (NN commerce) ))
+                  (CC or) 
+                  (VP (VBG maintaining) 
+                    (NP (DT a) (JJ large) (NN defense) (NN establishment) ))
+                  (ADVP-TMP (-NONE- *T*-2) )))))
+          (, ,) 
+          (NP-SBJ (EX there) )
+          (VP (VBZ is) 
+            (NP-PRD 
+              (NP (JJ big) (NN money) )
+              (SBAR 
+                (WHNP-3 (-NONE- 0) )
+                (S 
+                  (NP-SBJ-1 (-NONE- *T*-3) )
+                  (VP (TO to) 
+                    (VP (VB be) 
+                      (VP (VBN made) 
+                        (NP (-NONE- *-1) )
+                        (PP (IN in) 
+                          (S-NOM 
+                            (NP-SBJ (-NONE- *) )
+                            (VP (VBG influencing) 
+                              (, ,)
+                              (VBG brokering) (CC or) (VBG selling) 
+                              (NP 
+                                (NP (DT the) (NNS processes) 
+                                  (CC and)
+                                  (NNS decisions) )
+                                (PP (IN of) 
+                                  (NP (NN government) ))))))))))))))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ (PRP They) )
+      (VP (VBP are) 
+        (NP-PRD 
+          (NP (PRP$ our) (NN version) )
+          (PP (IN of) 
+            (NP 
+              (NP (DT the) (NNP East) (NN bloc) (POS 's) )
+              (NN Nomenklatura) )))))
+    (CC and) 
+    (S 
+      (NP-SBJ (PRP they) )
+      (VP (VBP have) 
+        (NP (RB absolutely) (DT no) (NN wish) 
+          (S 
+            (NP-SBJ (-NONE- *) )
+            (VP (TO to) 
+              (VP (VB see) 
+                (S 
+                  (NP-SBJ (NN anything) )
+                  (VP (VB change) ))))))))
+    (. .) ))
+( (SBARQ 
+    (WHNP-1 (WRB How) (JJ many) (NN government) (NNS programs) 
+      (CC and)
+      (NNS policies) )
+    (SQ 
+      (NP-SBJ (-NONE- *T*-1) )
+      (VP (VBP exist) 
+        (SBAR-PRP (IN because) 
+          (S 
+            (NP-SBJ (PRP they) )
+            (VP (VBP line) 
+              (NP 
+                (NP (DT the) (NNS pockets) )
+                (PP (IN of) 
+                  (NP (JJ political) (NNS insiders) ))))))))
+    (. ?) ))
+( (S 
+    (NP-SBJ (DT This) )
+    (VP (VBZ is) 
+      (NP-PRD 
+        (NP (DT the) (JJ real) (NN issue) )
+        (VP (VBN raised) 
+          (NP (-NONE- *) )
+          (PP (IN by) 
+            (NP-LGS (DT the) (NNP Wedtech) (NN scandal) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Mr.) (NNP Stern) )
+    (VP (VBD was) 
+      (NP-PRD 
+        (NP (NN chairman) 
+          (CC and)
+          (NN chief) (JJ executive) (NN officer) )
+        (PP (IN of) 
+          (NP (DT the) (NNP New) (NNP York) (NNP State) (NNP Urban) (NNP Development) (NNP Corp.) )))
+      (, ,) 
+      (NP-TMP (CD 1983-85) ))
+    (. .) ))

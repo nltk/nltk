@@ -1,0 +1,162 @@
+
+
+( (S (NP-SBJ (NP DD Acquisition Corp.)
+             ,
+             (NP (NP a partnership)
+                 (PP of
+                     (NP (NP (NP Unicorp Canada Corp. 's)
+                             Kingsbridge Capital Group)
+                         and
+                         (NP Cara Operations Ltd.))))
+             ,)
+     (VP extended
+         (PP-CLR to
+		 (NP Nov. 20))
+         (NP (NP its
+		 (ADJP $ 45-a-share)
+		 offer)
+	     (PP for
+		 (NP (NP all Dunkin' Donuts Inc. shares)
+		     (ADJP outstanding)))))
+     .))
+( (S (NP-SBJ (NP The offer)
+             ,
+             (SBAR (WHNP-2 which)
+                   (S (NP-SBJ-3 *T*-2)
+                      (VP was
+                          (ADJP-PRD due
+				    (S (NP-SBJ *-3)
+				       (VP to
+					   (VP expire
+					       (NP-TMP-CLR yesterday))))))))
+             ,)
+     (VP is
+         (ADJP-PRD conditional
+		   (PP (PP on
+			   (S-NOM (NP-SBJ-1 (NP 50.1 %)
+					    (PP of
+						(NP Dunkin' common shares)))
+				  ,
+				  (PP on
+				      (NP (NP a
+					      (ADJP fully diluted)
+					      basis)))
+				  ,
+				  (VP being
+				      (VP tendered
+					  (NP *-1)))))
+		       and
+		       (PP on
+			   (NP (NP the withdrawal)
+			       (PP of
+				   (NP (NP the company 's)
+				       poison pill rights plan)))))))
+     .))
+( (S (NP-SBJ-2 DD Acquisition)
+     (VP has
+         (VP launched
+             (NP a suit)
+             (PP-LOC in
+		     (NP a Delaware court))
+             (S-CLR (NP-SBJ *-2)
+		    (VP seeking
+			(NP (NP the withdrawal)
+			    (PP of
+				(NP (NP (NP (NP Dunkin 's)
+					    poison pill rights)
+					and
+					(NP employee stock ownership plans))
+				    ,
+				    (SBAR (WHNP-3 which)
+					  (S (NP-SBJ it)
+					     (VP claims
+						 (SBAR 0
+						       (S (NP-SBJ-1 *T*-3)
+							  (VP were
+							      (VP put
+								  (NP *-1)
+								  (PP-PUT in
+									  (NP place))
+								  (S-PRP (NP-SBJ *)
+									 (VP to
+									     (VP deter
+										 (NP bidders))))))))))))))))))
+     .))
+( (S (NP-SBJ DD Acquisition)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 (NP (QP 2.2 million)
+				shares)
+                            , or
+                            (NP (NP (QP about 38.5)
+				    %)
+				(PP of
+				    (NP (NP the shares)
+					(ADJP outstanding))))
+                            ,)
+                  (VP have
+                      (VP been
+                          (VP tendered
+                              (NP *-1)
+                              (PP-LOC under
+				      (NP its offer))))))))
+     .))
+( (S (NP-SBJ The partners)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ they)
+                  (ADVP already)
+                  (VP hold
+                      (NP (NP 15 %)
+                          (PP of
+                              (NP (NP all shares)
+                                  (ADJP outstanding))))))))
+     .))
+( (S (NP-SBJ Dunkin')
+     (VP has
+         (VP set
+             (NP Nov. 10)
+             (PP-CLR as
+		     (NP (NP the deadline)
+			 (PP for
+			     (NP (NP the receipt)
+				 (PP of
+				     (NP any competing bids))))))))
+     .))
+( (S (NP-SBJ DD Acquisition)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ the extension)
+                  (VP is
+                      (S-PRP-PRD (NP-SBJ *)
+				 (VP to
+				     (VP allow
+					 (S (NP-SBJ-2 this process)
+					    (VP to
+						(VP be
+						    (VP completed
+							(NP *-2))))))))))))
+     .))
+( (S (NP-SBJ-1 Dunkin')
+     (VP is
+         (VP based
+             (NP *-1)
+             (PP-LOC-CLR in
+			 (NP (NP Randolph)
+			     ,
+			     (NP Mass)))))
+     .))
+( (S (NP-SBJ-1 (NP (NP Cara)
+                   ,
+                   (NP a food services chain operator))
+               and
+               (NP (NP Unicorp)
+                   ,
+                   (NP a holding company)
+                   ,))
+     (VP are
+         (VP based
+             (NP *-1)
+             (PP-LOC-CLR in
+			 (NP Toronto))))
+     .))

@@ -1,0 +1,113 @@
+
+
+( (S (NP-SBJ (NP Oshkosh Truck Corp.)
+             ,
+             (NP-LOC (NP Oshkosh)
+		     ,
+		     (NP Wis.))
+             ,)
+     (VP estimated
+         (SBAR 0
+               (S (NP-SBJ (NP earnings)
+                          (PP for
+                              (NP (NP its fourth quarter)
+                                  (VP ended
+                                      (NP-TMP-CLR Sept. 30)))))
+                  (VP fell
+                      (NP-EXT 50 %)
+                      (PP-CLR to
+			      (NP 75 %))
+                      (PP below
+                          (NP (NP the year-earlier (QP $ 4.5 million) *U*)
+                              , or
+                              (NP (NP 51 cents)
+                                  (NP-ADV a share))))))))
+     .))
+( (S (NP-SBJ The truck maker)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ (NP the significant drop)
+                          (PP in
+                              (NP net income)))
+                  (VP will
+                      (VP result
+                          (PP-CLR in
+				  (NP (NP lower earnings)
+				      (PP for
+					  (NP the fiscal year)))))))))
+     .))
+( (S (PP-TMP In
+	     (NP fiscal 1988))
+     ,
+     (NP-SBJ the company)
+     (VP earned
+         (NP (NP (QP $ 17.3 million) *U*)
+             , or
+             (NP (NP $ 1.92 *U*)
+                 (NP-ADV a share))
+             ,)
+         (PP on
+             (NP (NP revenue)
+                 (PP of
+                     (NP (QP $ 352.9 million) *U*)))))
+     .))
+( (S (NP-SBJ Oshkosh Truck)
+     (VP attributed
+         (NP (NP the downturn)
+             (PP-LOC in
+		     (NP its earnings)))
+         (PP-CLR to
+		 (NP (NP (NP higher start-up costs)
+			 (PP of
+			     (NP its new chassis division)))
+		     ,
+		     (NP a softer motor-home market)
+		     and
+		     (NP (NP higher administrative costs)
+			 (PP of
+			     (NP (NP compliance)
+				 (PP with
+				     (NP government contractor regulations))))))))
+     .))
+( (S (NP-SBJ The company)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP is
+                      (PP-PRD in
+			      (NP (NP the process)
+				  (PP of
+				      (S-NOM (NP-SBJ *)
+					     (VP phasing
+						 (PRT out)
+						 (NP (NP John Deere)
+						     ,
+						     (NP (NP its current source)
+							 (PP of
+							     (NP production))
+							 (PP for
+							     (NP midsized motor home chassis)))))))))))))
+     .))
+( (S (PP In
+         (NP (NP anticipation)
+             (PP of
+                 (NP (NP the start-up)
+                     (PP of
+                         (NP its new factory))))))
+     ,
+     (NP-SBJ the company)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 a larger-than-normal chassis supply)
+                  (VP has
+                      (VP been
+                          (VP built
+			      (NP (NP *-1)
+				  (SBAR-PRP (WHNP-2 0) 
+					    (S (NP-SBJ *T*-2)
+					       (VP to
+						   (VP carry
+						       (NP it)
+						       (PP through
+							   (NP the transition period)))))))))))))
+     .))

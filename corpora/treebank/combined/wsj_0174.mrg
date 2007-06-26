@@ -1,0 +1,846 @@
+
+( (S 
+    (NP-SBJ (NNP ORTEGA) )
+    (VP 
+      (VP (VBD ENDED) 
+        (NP 
+          (NP (DT a) (NN truce) )
+          (PP (IN with) 
+            (NP (DT the) (NNPS Contras) ))))
+      (CC and) 
+      (VP (VBD said) 
+        (SBAR (-NONE- 0) 
+          (S 
+            (NP-SBJ-1 (NNS elections) )
+            (VP (VBD were) 
+              (VP (VBN threatened) 
+                (NP (-NONE- *-1) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (DT The) (JJ Nicaraguan) (NN president) )
+    (, ,) 
+    (S-ADV 
+      (NP-SBJ (-NONE- *-1) )
+      (VP (VBG citing) 
+        (NP 
+          (NP (NNS attacks) )
+          (PP (IN by) 
+            (NP (DT the) (JJ U.S.-backed) (NNS rebels) )))))
+    (, ,) 
+    (VP 
+      (VP (VBD suspended) 
+        (NP (DT a) (JJ 19-month-old) (NN cease-fire) ))
+      (CC and) 
+      (VP (VBD accused) 
+        (NP (NNP Bush) )
+        (PP-CLR (IN of) (`` ``) 
+          (S-NOM 
+            (NP-SBJ (-NONE- *) )
+            (VP (VBG promoting) 
+              (NP (NN death) ))))))
+    (. .) ('' '') ))
+( (S 
+    (SBAR-ADV (IN While) 
+      (S 
+        (NP-SBJ (PRP he) )
+        (VP (VBD reaffirmed) 
+          (NP 
+            (NP (NN support) )
+            (PP (IN for) 
+              (NP 
+                (NP (DT the) (NN country) (POS 's) )
+                (NNP Feb.) (CD 25) (NNS elections) ))))))
+    (, ,) 
+    (NP-SBJ (NNP Ortega) )
+    (VP (VBD indicated) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ 
+            (NP (VBN renewed) (NNP U.S.) (JJ military) (NN aid) )
+            (PP (TO to) 
+              (NP (DT the) (NNPS Contras) )))
+          (VP (MD could) 
+            (VP (VB thwart) 
+              (NP (DT the) (NN balloting) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP He) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 (NNP U.S.) (NN assistance) )
+          (VP (MD should) 
+            (VP (VB be) 
+              (VP (VBN used) 
+                (NP (-NONE- *-1) )
+                (S-CLR 
+                  (NP-SBJ (-NONE- *) )
+                  (VP (TO to) 
+                    (VP (VB demobilize) 
+                      (NP (DT the) (NNS rebels) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT A) (NNP White) (NNP House) (NN spokesman) )
+    (VP 
+      (VP (VBD condemned) 
+        (NP (DT the) (NN truce) (NN suspension) )
+        (PP-CLR (IN as) (`` ``) 
+          (ADJP (JJ deplorable) )
+          ('' '') ))
+      (CC but) 
+      (VP (VBD brushed) 
+        (PRT (RP off) )
+        (NP 
+          (NP (NN talk) )
+          (PP (IN of) 
+            (S-NOM 
+              (NP-SBJ (-NONE- *) )
+              (VP (VBG renewing) 
+                (NP 
+                  (NP (JJ military) (NN funding) )
+                  (PP (IN for) 
+                    (NP (DT the) (NNS insurgents) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NNP Contra) (JJ military) (NN command) )
+    (, ,) 
+    (PP-LOC (IN in) 
+      (NP 
+        (NP (DT a) (NN statement) )
+        (PP (IN from) 
+          (NP (NNP Honduras) ))))
+    (, ,) 
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (NNP Sandinista) (NNS troops) )
+          (VP (VBD had) 
+            (VP (VBN launched) 
+              (NP (DT a) (JJ major) (NN offensive) )
+              (PP-CLR (IN against) 
+                (NP (DT the) (NN rebel) (NNS forces) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 
+      (ADJP (NNP East) (NNP German) )
+      (NN leader) (NNP Krenz) )
+    (VP (VBD called) 
+      (S 
+        (NP-SBJ 
+          (NP (DT the) (NNS protests) )
+          (PP (IN in) 
+            (NP (PRP$ his) (NN country) )))
+        (NP-PRD (DT a) (`` ``) (JJ good) (NN sign) ))
+      (, ,) ('' '') 
+      (S-ADV 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (VBG saying) 
+          (SBAR (IN that) 
+            (S 
+              (NP-SBJ 
+                (NP (JJ many) )
+                (PP (IN of) 
+                  (NP 
+                    (NP (DT those) )
+                    (VP (VBG marching) 
+                      (PP (IN for) 
+                        (NP (JJ democratic) (NNS freedoms) ))))))
+              (VP (VBD were) 
+                (VP (VBG showing) 
+                  (NP 
+                    (NP (NN support) )
+                    (PP (IN for) (`` ``) 
+                      (NP 
+                        (NP (DT the) (NN renovation) )
+                        (PP (IN for) 
+                          (NP (NN socialism) ))))))))))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ-1 (DT The) (NNP Communist) (NNP Party) (NN chief) )
+    (, ,) 
+    (S-ADV 
+      (NP-SBJ (-NONE- *-1) )
+      (PP-PRD (IN in) 
+        (NP (NNP Moscow) ))
+      (PP-PRP (IN for) 
+        (NP 
+          (NP (NNS talks) )
+          (PP (IN with) 
+            (NP (JJ Soviet) (NNS officials) )))))
+    (, ,) 
+    (ADVP (RB also) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (NNP East) (NNP Germany) )
+          (VP (MD would) 
+            (VP (VB follow) 
+              (NP 
+                (NP (NNP Gorbachev) (POS 's) )
+                (NN restructuring) (NNS plans) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNS Thousands) )
+      (PP (IN of) 
+        (NP (NNP East) (NNPS Germans) )))
+    (VP (VBD fled) 
+      (PP-DIR (TO to) 
+        (NP (NNP Czechoslovakia) ))
+      (SBAR-TMP (IN after) 
+        (S 
+          (NP-SBJ (DT the) (NNP East) (NNP Berlin) (NN government) )
+          (VP (VBD lifted) 
+            (NP (NN travel) (NNS restrictions) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 
+      (NP (DT The) (NN ban) )
+      (PP (IN on) 
+        (NP (JJ cross-border) (NN movement) )))
+    (VP (VBD was) 
+      (VP (VBN imposed) 
+        (NP (-NONE- *-1) )
+        (NP-TMP (JJ last) (NN month) )
+        (PP-TMP (IN after) 
+          (NP 
+            (NP (DT a) (JJ massive) (NN exodus) )
+            (PP (IN of) 
+              (NP (NNS emigres) ))
+            (PP-DIR (TO to) 
+              (NP (NNP West) (NNP Germany) ))))))
+    (. .) ))
+( (S 
+    (ADVP (RB Also) )
+    (, ,) 
+    (NP-SBJ (DT a) (NNP Communist) (NN official) )
+    (PP-TMP (IN for) 
+      (NP (DT the) (JJ first) (NN time) ))
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (DT the) (NN future) )
+            (PP (IN of) 
+              (NP (DT the) (NNP Berlin) (NNP Wall) )))
+          (VP (MD could) 
+            (VP (VB be) 
+              (ADJP-PRD (JJ open) 
+                (PP (TO to) 
+                  (NP (NN discussion) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (NNP Health) (NNS officials) )
+    (VP (VBP plan) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB extend) 
+            (NP 
+              (NP (DT a) (NN moratorium) )
+              (PP (IN on) 
+                (NP 
+                  (NP (JJ federal) (NN funding) )
+                  (PP (IN of) 
+                    (NP 
+                      (NP (NN research) )
+                      (VP (VBG involving) 
+                        (NP (NN fetal-tissue) (NNS transplants) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (JJ assistant) (NNP HHS) (NN secretary) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 (DT the) (NN ban) )
+          (`` ``) 
+          (VP (MD should) 
+            (VP (VB be) 
+              (VP (VBN continued) 
+                (NP (-NONE- *-1) )
+                (ADVP-TMP (RB indefinitely) )))))))
+    (. .) ('' '') ))
+( (S 
+    (SBAR-ADV (IN While) 
+      (S 
+        (NP-SBJ (NNS researchers) )
+        (VP (VBP believe) 
+          (SBAR (-NONE- 0) 
+            (S 
+              (NP-SBJ-1 (JJ such) (NNS transplants) )
+              (VP (MD could) 
+                (VP (VB help) 
+                  (S 
+                    (NP-SBJ (-NONE- *-1) )
+                    (VP (VB treat) 
+                      (NP 
+                        (NP (NNS diseases) )
+                        (PP (IN like) 
+                          (NP (NNP Alzheimer) (POS 's) ))))))))))))
+    (, ,) 
+    (NP-SBJ (NNS anti-abortionists) )
+    (VP (VBP oppose) 
+      (NP (DT the) (NN research) ))
+    (. .) ))
+( (S 
+    (NP-SBJ-3 
+      (NP (NNP Rep.) (NNP Dingell) )
+      (PP (IN of) 
+        (NP-LOC (NNP Michigan) )))
+    (VP (VBP plans) 
+      (S 
+        (NP-SBJ (-NONE- *-3) )
+        (VP (TO to) 
+          (VP (VB unveil) 
+            (NP-TMP (NN today) )
+            (NP 
+              (NP (DT a) (NN proposal) )
+              (SBAR 
+                (WHNP-1 (WDT that) )
+                (S 
+                  (NP-SBJ (-NONE- *T*-1) )
+                  (VP (MD would) 
+                    (VP (VB break) 
+                      (PP-CLR (IN with) 
+                        (NP 
+                          (NP (NNP Bush) (POS 's) )
+                          (JJ clean-air) (NN bill) ))
+                      (PP (IN on) 
+                        (NP 
+                          (NP (DT the) (NN issue) )
+                          (PP (IN of) 
+                            (NP 
+                              (NP (NNS emissions) )
+                              (SBAR 
+                                (WHNP-2 (WDT that) )
+                                (S 
+                                  (NP-SBJ (-NONE- *T*-2) )
+                                  (VP (VBP lead) 
+                                    (PP-CLR (TO to) 
+                                      (NP (JJ acid) (NN rain) ))))))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 
+      (NP (DT The) (NNP Democrat) (POS 's) )
+      (NN proposal) )
+    (VP (VBZ is) 
+      (VP (VBN described) 
+        (NP (-NONE- *-1) )
+        (PP (IN by) 
+          (NP-LGS (NN government) (NNS sources) 
+            (CC and)
+            (NNS lobbyists) ))
+        (PP-CLR (RB as) 
+          (ADJP 
+            (ADJP (RB significantly) (JJR weaker) )
+            (PP (IN than) 
+              (NP 
+                (NP (DT the) (NN president) (POS 's) )
+                (NN plan) 
+                (S 
+                  (NP-SBJ (-NONE- *) )
+                  (VP (TO to) 
+                    (VP (VB cut) 
+                      (NP (NN utility) (NNS emissions) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP House-Senate) (NNS conferees) )
+    (VP (VBD approved) 
+      (NP 
+        (NP (JJ major) (NNS portions) )
+        (PP (IN of) 
+          (NP 
+            (NP (DT a) (NN package) )
+            (PP (IN for) 
+              (NP 
+                (NP 
+                  (QP (RBR more) (IN than) ($ $) (CD 500) (CD million) )
+                  (-NONE- *U*) )
+                (PP (IN in) 
+                  (NP 
+                    (NP (JJ economic) (NN aid) )
+                    (PP (IN for) 
+                      (NP (NNP Poland) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN plan) )
+    (VP (VBZ relies) 
+      (ADVP-MNR (RB heavily) )
+      (PP-CLR (IN on) 
+        (NP 
+          (NP 
+            (QP ($ $) (CD 240) (CD million) )
+            (-NONE- *U*) )
+          (PP (IN in) 
+            (NP 
+              (NP (NN credit) 
+                (CC and)
+                (NN loan) (NNS guarantees) )
+              (PP-TMP (IN in) 
+                (NP (JJ fiscal) (CD 1990) ))))))
+      (PP (IN in) 
+        (NP 
+          (NP (NNS hopes) )
+          (PP (IN of) 
+            (S-NOM 
+              (NP-SBJ (-NONE- *) )
+              (VP (VBG stimulating) 
+                (NP (JJ future) (NN trade) 
+                  (CC and)
+                  (NN investment) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP South) (NNP Africa) )
+    (VP (VBD accused) 
+      (NP 
+        (NP (VBN armed) (JJ Namibian) (JJ nationalist) (NNS guerrillas) )
+        (PP (IN of) 
+          (S-NOM 
+            (NP-SBJ-1 (-NONE- *) )
+            (VP (VBG crossing) 
+              (PP-DIR (IN from) 
+                (NP 
+                  (NP (NNS bases) )
+                  (PP-LOC (IN in) 
+                    (NP (VBG neighboring) (NNP Angola) ))))
+              (, ,) 
+              (S-ADV 
+                (NP-SBJ (-NONE- *-1) )
+                (VP (VBG violating) 
+                  (NP 
+                    (NP (JJ U.N.-supervised) (NN peace) (NNS plans) )
+                    (PP (IN for) 
+                      (NP 
+                        (NP 
+                          (NP (DT the) (NN territory) (POS 's) )
+                          (NN independence) )
+                        (PP (IN from) 
+                          (NP (NNP Pretoria) ))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (NNP South) (NNP African) (NNS troops) )
+    (VP (VBD were) 
+      (VP (VBN placed) 
+        (NP (-NONE- *-1) )
+        (PP-CLR (IN on) 
+          (NP (NN alert) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NN Guerrilla) (NNS leaders) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 (NNP Pretoria) )
+          (VP (VBD was) 
+            (VP (VBG attempting) 
+              (S 
+                (NP-SBJ (-NONE- *-1) )
+                (VP (TO to) 
+                  (VP (VB sabotage) 
+                    (NP 
+                      (NP 
+                        (NP (JJ next) (NN week) (POS 's) )
+                        (NNS elections) )
+                      (PP-LOC (IN in) 
+                        (NP (NNP Namibia) )))))))))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ 
+        (NP (NNS Gunmen) )
+        (PP-LOC (IN in) 
+          (NP (NNP Lebanon) )))
+      (VP (VBD assassinated) 
+        (NP (DT a) 
+          (ADJP (NNP Saudi) (NNP Arabian) )
+          (NNP Embassy) (NN employee) )))
+    (, ,) 
+    (CC and)
+    (S 
+      (NP-SBJ (DT the) (JJ pro-Iranian) (NNP Islamic) (NNP Jihad) )
+      (VP (VBD took) 
+        (NP-CLR (NN responsibility) )
+        (PP-CLR (IN for) 
+          (NP 
+            (NP (DT the) (NN slaying) )
+            (SBAR 
+              (WHNP-1 (-NONE- 0) )
+              (S 
+                (NP-SBJ (-NONE- *T*-1) )
+                (VP (TO to) 
+                  (VP (VB avenge) 
+                    (NP 
+                      (NP (DT the) (NN beheading) )
+                      (PP (IN of) 
+                        (NP (CD 16) (NNS terrorists) ))
+                      (PP (IN by) 
+                        (NP 
+                          (NP (NNP Riyadh) (POS 's) )
+                          (NN government) ))
+                      (PP-TMP (IN in) 
+                        (NP (NNP September) )))))))))))
+    (. .) ))
+( (S 
+    (ADVP (RB Also) )
+    (PP-LOC (IN in) 
+      (NP (NNP Beirut) ))
+    (, ,) 
+    (NP-SBJ-1 (DT a) (NNP Moslem) (NN group) )
+    (VP (VBD vowed) 
+      (S 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB kill) 
+            (NP (NNPS Americans) )
+            (SBAR-ADV (IN if) 
+              (S 
+                (NP-SBJ (DT the) (NNP U.S.) )
+                (VP (VBZ implements) 
+                  (NP 
+                    (NP (DT a) (NN policy) )
+                    (SBAR 
+                      (WHNP-2 (-NONE- 0) )
+                      (S 
+                        (NP-SBJ (-NONE- *T*-2) )
+                        (VP (TO to) 
+                          (VP (VB seize) 
+                            (NP (NNS suspects) )
+                            (ADVP-LOC (RB abroad) )))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (NNP Nixon) )
+    (VP 
+      (VP (VBD concluded) 
+        (NP 
+          (NP (CD five) (NNS days) )
+          (PP (IN of) 
+            (NP 
+              (NP (JJ private) (NNS talks) )
+              (PP (IN with) 
+                (NP (JJ Chinese) (NNS leaders) ))
+              (PP-LOC (IN in) 
+                (NP (NNP Beijing) ))))))
+      (, ,) (CC but) 
+      (VP 
+        (ADVP (RB apparently) )
+        (VBD failed) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB ease) 
+              (NP 
+                (NP (NNS strains) )
+                (PP-LOC (IN in) 
+                  (NP (JJ Sino-U.S.) (NNS ties) ))
+                (VP (VBN caused) 
+                  (NP (-NONE- *) )
+                  (PP (IN by) 
+                    (NP-LGS 
+                      (NP 
+                        (NP (NNP China) (POS 's) )
+                        (NN crackdown) )
+                      (PP (IN against) 
+                        (NP (JJ pro-democracy) (NNS protesters) ))
+                      (PP-TMP (IN in) 
+                        (NP (NNP June) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Beijing) (POS 's) )
+      (NNS rulers) )
+    (VP (VBD complained) 
+      (PP (TO to) 
+        (NP (DT the) (JJ former) (NN president) ))
+      (PP (IN about) 
+        (NP 
+          (NP (NNP U.S.) (`` ``) (NN interference) ('' '') )
+          (PP-LOC (IN in) 
+            (NP 
+              (NP (NNP China) (POS 's) )
+              (JJ domestic) (NNS affairs) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Mexico) (POS 's) )
+      (NNP President) (NNP Salinas) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (S 
+            (NP-SBJ 
+              (NP (DT the) (NN country) (POS 's) )
+              (NN recession) )
+            (VP (VBD had) 
+              (VP (VBN ended) )))
+          (CC and) 
+          (S 
+            (NP-SBJ (DT the) (NN economy) )
+            (VP (VBD was) 
+              (VP (VBG growing) 
+                (ADVP (RB again) )))))))
+    (. .) ))
+( (S 
+    (PP-LOC (IN In) 
+      (NP 
+        (NP (PRP$ his) (JJ first) (NN state) )
+        (PP (IN of) 
+          (NP (DT the) (NN nation) (NN address) ))))
+    (, ,) 
+    (NP-SBJ-1 (NNP Salinas) )
+    (VP 
+      (VP (VBD pledged) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB continue) 
+              (NP 
+                (NP (PRP$ his) (NN program) )
+                (PP (IN of) 
+                  (NP (NN modernization) )))))))
+      (CC and) 
+      (VP (VBD warned) 
+        (NP (NN opposition) (NNS politicians) )
+        (SBAR (IN that) 
+          (S 
+            (S-NOM-SBJ 
+              (NP-SBJ (-NONE- *) )
+              (VP (VBG impeding) 
+                (NP (NN progress) )))
+            (VP (MD could) 
+              (VP (VB cost) 
+                (NP (PRP them) )
+                (NP (JJ popular) (NN support) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-2 
+      (NP (NNP Pakistan) (POS 's) )
+      (NNP Bhutto) )
+    (VP (VBD defeated) 
+      (NP 
+        (NP (DT the) (JJ first) (NN no-confidence) (NN motion) )
+        (PP (IN in) 
+          (NP 
+            (NP (DT the) (NN nation) (POS 's) )
+            (JJ 42-year) (NN history) )))
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ (-NONE- *-2) )
+        (VP (VBG surviving) 
+          (NP 
+            (NP (DT the) (NN vote) )
+            (SBAR 
+              (WHNP-1 (WDT that) )
+              (S 
+                (NP-SBJ (-NONE- *T*-1) )
+                (VP (MD could) 
+                  (VP (VB have) 
+                    (VP (VBN brought) 
+                      (PRT (RP down) )
+                      (NP (PRP$ her) (JJ 11-month-old) (NN government) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (JJ prime) (NN minister) (POS 's) )
+      (NNS opponents) )
+    (VP (VBD claimed) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 
+            (NP (DT the) (NN balloting) )
+            (, ,) 
+            (ADJP 
+              (NP (CD 12) (NNS votes) )
+              (JJ short) 
+              (PP (IN of) 
+                (NP 
+                  (NP (DT a) (NN majority) )
+                  (PP-LOC (IN in) 
+                    (NP 
+                      (NP (NNP Islamabad) (POS 's) )
+                      (JJ 237-seat) (NN assembly) )))))
+            (, ,) )
+          (VP (VBD was) 
+            (VP (VBN rigged) 
+              (NP (-NONE- *-1) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NNP White) (NNP House) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (DT the) (NN shipboard) (NNS meetings) )
+            (NP-TMP (JJ next) (NN month) )
+            (PP (IN between) 
+              (NP 
+                (NP (NNP Bush) )
+                (CC and) 
+                (NP (NNP Soviet) (NN leader) (NNP Gorbachev) ))))
+          (VP (MD will) 
+            (VP (VB take) 
+              (NP-CLR (NN place) )
+              (PP-LOC (IN in) 
+                (NP 
+                  (NP (DT the) (NNS waters) )
+                  (PP-LOC (IN off) 
+                    (NP (NNP Malta) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-4 (DT The) (NN location) )
+    (VP (VBD was) 
+      (VP (VBN disclosed) 
+        (NP (-NONE- *-4) )
+        (SBAR-TMP (IN as) 
+          (S 
+            (NP-SBJ-1 (DT the) (NNP U.S.) )
+            (VP (VBD began) 
+              (S 
+                (NP-SBJ (-NONE- *-1) )
+                (VP (VBG planning) 
+                  (NP 
+                    (NP (DT the) (NNS issues) )
+                    (SBAR 
+                      (WHNP-2 (-NONE- 0) )
+                      (S 
+                        (NP-SBJ-5 (-NONE- *T*-2) )
+                        (VP (TO to) 
+                          (VP (VB be) 
+                            (VP (VBN discussed) 
+                              (NP (-NONE- *-5) )
+                              (PP-LOC-CLR (IN at) 
+                                (NP (DT the) (NNP Dec.) (CD 2-3) (NN tete-a-tete) )))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Bush) )
+    (VP (VBD unveiled) 
+      (NP 
+        (NP (DT a) (NN package) )
+        (PP (IN of) 
+          (NP 
+            (NP (NN trade) (NNS initiatives) )
+            (SBAR 
+              (WHNP-1 (-NONE- 0) )
+              (S 
+                (NP-SBJ-2 (-NONE- *T*-1) )
+                (VP (TO to) 
+                  (VP (VB help) 
+                    (S 
+                      (NP-SBJ (-NONE- *-2) )
+                      (VP (VB establish) (`` ``) 
+                        (NP 
+                          (NP (JJ economic) (NNS alternatives) )
+                          (PP (TO to) 
+                            (NP (NN drug) (NN trafficking) )))
+                        ('' '') 
+                        (PP-LOC (IN in) 
+                          (NP 
+                            (NP (DT the) (JJ Andean) (NNS nations) )
+                            (PP (IN of) 
+                              (NP (NNP South) (NNP America) ))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (NN president) (POS 's) )
+      (NN plan) )
+    (VP (VBZ includes) 
+      (NP (DT a) (NN commitment) 
+        (S 
+          (NP-SBJ-1 (-NONE- *) )
+          (VP (TO to) 
+            (VP (VB help) 
+              (S 
+                (NP-SBJ (-NONE- *-1) )
+                (VP (VB negotiate) 
+                  (NP (DT a) (JJ new) (JJ international) (NN coffee) (NN agreement) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Pan) (VBP Am) )
+    (VP (VBZ has) 
+      (VP (VBN subpoenaed) 
+        (NP 
+          (NP (JJ several) (NN government) (NNS agencies) )
+          (, ,) 
+          (PP (VBG including) 
+            (NP (DT the) (NNP CIA) 
+              (CC and)
+              (NNP FBI) ))
+          (, ,) )
+        (S-PRP 
+          (NP-SBJ (-NONE- *) )
+          (VP (TO to) 
+            (VP (VB determine) 
+              (SBAR (IN whether) 
+                (S 
+                  (NP-SBJ-1 (PRP they) )
+                  (VP (VBD were) 
+                    (VP (VBN warned) 
+                      (NP (-NONE- *-1) )
+                      (SBAR (IN that) 
+                        (S 
+                          (NP-SBJ-2 (DT a) (NN bomb) )
+                          (VP (VBD had) 
+                            (VP (VBN been) 
+                              (VP (VBN planted) 
+                                (NP (-NONE- *-2) )
+                                (PP-LOC (IN aboard) 
+                                  (NP 
+                                    (NP (DT a) (NN jet) )
+                                    (SBAR 
+                                      (WHNP-3 (WDT that) )
+                                      (S 
+                                        (NP-SBJ-4 (-NONE- *T*-3) )
+                                        (VP (VBD exploded) 
+                                          (PP-LOC (IN over) 
+                                            (NP (NNP Scotland) ))
+                                          (NP-TMP (JJ last) (NNP December) )
+                                          (, ,) 
+                                          (S-ADV 
+                                            (NP-SBJ (-NONE- *-4) )
+                                            (VP (VBG killing) 
+                                              (NP (CD 270) (NNS people) ))))))))))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (DT The) (NN airline) )
+    (VP (VBZ is) 
+      (VP (VBG attempting) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB show) 
+              (SBAR (IN that) 
+                (S 
+                  (NP-SBJ 
+                    (NP (NNP Israel) )
+                    (CC and) 
+                    (NP (NNP West) (NNP Germany) ))
+                  (VP (VBD warned) 
+                    (NP (DT the) (NNP U.S.) )
+                    (PP-CLR (IN about) 
+                      (NP (DT the) (JJ impending) (NN attack) ))))))))))
+    (. .) ))
+( (FRAG 
+    (VP (VBD Died) )
+    (: :) 
+    (NP-SBJ 
+      (NP (NNP James) (NNP A.) (NNP Attwood) )
+      (, ,) 
+      (NP (CD 62) )
+      (, ,) 
+      (NP 
+        (NP (VBN retired) (NN chairman) 
+          (CC and)
+          (NN president) )
+        (PP (IN of) 
+          (NP 
+            (NP (NNP Mutual) (NNP Life) (NNP Insurance) (NNP Co.) )
+            (PP-LOC (IN of) 
+              (NP (NNP New) (NNP York) ))))))
+    (, ,) 
+    (NP-TMP (NNP Tuesday) )
+    (, ,) 
+    (PP-LOC (IN in) 
+      (NP (NNP New) (NNP York) (NNP City) ))
+    (, ,) 
+    (PP-MNR (IN of) 
+      (NP (DT an) (JJ acute) (JJ anemic) (NN condition) ))
+    (. .) ))

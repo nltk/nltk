@@ -1,0 +1,66 @@
+
+( (S 
+    (NP-SBJ (NNP Allergan) (NNP Inc.) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP it) )
+          (VP (VBD received) 
+            (NP (NNP Food) 
+              (CC and)
+              (NNP Drug) (NNP Administration) (NN approval) 
+              (S 
+                (NP-SBJ (-NONE- *) )
+                (VP (TO to) 
+                  (VP (VB sell) 
+                    (NP 
+                      (NP (DT the) (NNP PhacoFlex) (JJ intraocular) (NN lens) )
+                      (, ,) 
+                      (NP 
+                        (NP (DT the) (JJ first) (JJ foldable) (NN silicone) (NN lens) )
+                        (ADJP (JJ available) 
+                          (PP (IN for) 
+                            (NP (NN cataract) (NN surgery) )))))))))))))
+    (. .) ))
+( (S 
+    (S-TPC-3 
+      (NP-SBJ 
+        (NP (DT The) (NN len) (POS 's) )
+        (NN foldability) )
+      (VP (VBZ enables) 
+        (S 
+          (NP-SBJ-1 (PRP it) )
+          (VP (TO to) 
+            (VP (VB be) 
+              (VP (VBN inserted) 
+                (NP (-NONE- *-1) )
+                (PP (IN in) 
+                  (NP 
+                    (NP (JJR smaller) (NNS incisions) )
+                    (SBAR (IN than) 
+                      (S 
+                        (NP-SBJ (-NONE- *) )
+                        (VP (VBP are) 
+                          (ADVP-TMP (RB now) )
+                          (ADJP-PRD (JJ possible) 
+                            (PP (IN for) 
+                              (NP (NN cataract) (NN surgery) ))))))))))))))
+    (, ,) 
+    (NP-SBJ (DT the) (NN eye) (NN care) 
+      (CC and)
+      (NN skin) (NN care) (NN concern) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-3) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNS Cataracts) )
+    (VP (VBP refer) 
+      (PP-CLR (TO to) 
+        (NP 
+          (NP (DT a) (NN clouding) )
+          (PP (IN of) 
+            (NP 
+              (NP (DT the) (NN eye) (POS 's) )
+              (JJ natural) (NN lens) )))))
+    (. .) ))

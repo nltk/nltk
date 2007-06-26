@@ -1,0 +1,294 @@
+
+( (S 
+    (NP-SBJ (NNP Ralston) (NNP Purina) (NNP Co.) )
+    (VP (VBD reported) 
+      (NP 
+        (NP (DT a) 
+          (ADJP (CD 47) (NN %) )
+          (NN decline) )
+        (PP (IN in) 
+          (NP (NN fourth-quarter) (NNS earnings) )))
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ (-NONE- *) )
+        (VP (VBG reflecting) 
+          (NP 
+            (NP (NN restructuring) (NNS costs) )
+            (CONJP (RB as) (RB well) (IN as) )
+            (NP (DT a) 
+              (ADJP (RBR more) (JJ difficult) )
+              (NN pet) (NN food) (NN market) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NNP St.) (NNP Louis) (NN company) )
+    (VP (VBD earned) 
+      (NP 
+        (NP 
+          (QP ($ $) (CD 45.2) (CD million) )
+          (-NONE- *U*) )
+        (, ,) (CC or) 
+        (NP 
+          (NP (CD 65) (NNS cents) )
+          (NP-ADV (DT a) (NN share) ))
+        (, ,) )
+      (PP (VBN compared) 
+        (PP (IN with) 
+          (NP 
+            (NP 
+              (NP 
+                (QP ($ $) (CD 84.9) (CD million) )
+                (-NONE- *U*) )
+              (, ,) (CC or) 
+              (NP 
+                (NP ($ $) (CD 1.24) (-NONE- *U*) )
+                (NP-ADV (DT a) (NN share) ))
+              (, ,) )
+            (ADVP-TMP 
+              (NP (DT a) (NN year) )
+              (JJR earlier) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNS Sales) )
+      (PP-TMP (IN in) 
+        (NP (DT the) (JJS latest) (NN period) )))
+    (VP (VBD were) 
+      (NP-PRD 
+        (NP 
+          (QP ($ $) (CD 1.76) (CD billion) )
+          (-NONE- *U*) )
+        (, ,) 
+        (NP 
+          (NP (DT a) 
+            (ADJP (CD 13) (NN %) )
+            (NN increase) )
+          (PP (IN from) 
+            (NP 
+              (NP (JJ last) (NN year) (POS 's) )
+              (QP ($ $) (CD 1.55) (CD billion) )
+              (-NONE- *U*) )))))
+    (. .) ))
+( (S 
+    (PP (IN For) 
+      (NP 
+        (NP (DT the) (NN year) )
+        (VP (VBD ended) 
+          (NP-TMP-CLR (NNP Sept.) (CD 30) ))))
+    (, ,) 
+    (NP-SBJ (NNP Ralston) )
+    (VP (VBD earned) 
+      (NP 
+        (NP 
+          (QP ($ $) (CD 422.5) (CD million) )
+          (-NONE- *U*) )
+        (, ,) (CC or) 
+        (NP 
+          (NP ($ $) (CD 6.44) (-NONE- *U*) )
+          (NP-ADV (DT a) (NN share) ))
+        (, ,) )
+      (ADVP (RB up) 
+        (NP (CD 8.9) (NN %) )
+        (PP (IN from) 
+          (NP 
+            (NP 
+              (QP ($ $) (CD 387.8) (CD million) )
+              (-NONE- *U*) )
+            (, ,) (CC or) 
+            (NP 
+              (NP ($ $) (CD 5.63) (-NONE- *U*) )
+              (NP-ADV (DT a) (NN share) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT This) (NN year) (POS 's) )
+      (NNS results) )
+    (VP (VBD included) 
+      (NP 
+        (NP (DT a) (NN gain) )
+        (PP (IN of) 
+          (NP 
+            (QP ($ $) (CD 70.2) (CD million) )
+            (-NONE- *U*) ))
+        (PP (IN on) 
+          (NP 
+            (NP (DT the) (NN disposal) )
+            (PP (IN of) 
+              (NP (NN seafood) (NNS operations) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNS Sales) )
+      (PP (IN for) 
+        (NP (DT the) (JJ full) (NN year) )))
+    (VP (VBD were) 
+      (NP-PRD 
+        (QP ($ $) (CD 6.6) (CD billion) )
+        (-NONE- *U*) )
+      (, ,) 
+      (ADVP (RB up) 
+        (NP (CD 13) (NN %) )
+        (PP (IN from) 
+          (NP 
+            (QP ($ $) (CD 5.8) (CD billion) )
+            (-NONE- *U*) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Ralston) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP$ its) (NN restructuring) (NNS costs) )
+          (VP (VBP include) 
+            (NP 
+              (NP 
+                (NP (DT the) (NN phase-out) )
+                (PP (IN of) 
+                  (NP 
+                    (NP (DT a) (NN battery) (NN facility) )
+                    (PP-LOC (IN in) 
+                      (NP (NNP Greenville) 
+                        (, ,)
+                        (NNP N.C.) )))))
+              (, ,) 
+              (NP 
+                (NP (DT the) (JJ recent) (NN closing) )
+                (PP (IN of) 
+                  (NP 
+                    (NP (DT a) (NNP Hostess) (NN cake) (NN bakery) )
+                    (PP-LOC (IN in) 
+                      (NP (NNP Cincinnati) )))))
+              (CC and) 
+              (NP 
+                (NP (DT a) (NN reduction) )
+                (PP (IN in) 
+                  (NP (NN staff) ))
+                (PP-LOC (IN throughout) 
+                  (NP (DT the) (NN company) ))))))))
+    (. .) ))
+( (S 
+    (S-TPC-3 
+      (NP-SBJ-1 
+        (NP (DT The) (NN battery) (NN plant) )
+        (, ,) 
+        (SBAR 
+          (WHNP-2 (WDT which) )
+          (S 
+            (NP-SBJ (-NONE- *T*-2) )
+            (VP (VBZ makes) 
+              (NP (JJ rechargeable) (NN nickel) (NN cadmium) 
+                (CC and)
+                (NN carbon) (NN zinc) (NNS products) ))))
+        (, ,) )
+      (VP (MD will) 
+        (VP (VB be) 
+          (VP (VBN closed) 
+            (NP (-NONE- *-1) )
+            (PP-TMP (IN over) 
+              (NP (DT the) (JJ next) (NN year) 
+                (QP (CC or) (RB so) )))))))
+    (, ,) 
+    (NP-SBJ (DT a) (NN spokesman) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-3) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Ralston) )
+    (VP (VBD attributed) 
+      (NP (PRP$ its) (NN fourth-quarter) (NN slump) )
+      (PP-CLR 
+        (ADVP (RB partly) )
+        (TO to) 
+        (NP 
+          (NP 
+            (NP (JJR higher) (NNS costs) )
+            (PP (IN of) 
+              (NP (NNS ingredients) ))
+            (PP-LOC (IN in) 
+              (NP (DT the) (NN pet) (NN food) (NN business) )))
+          (CONJP (RB as) (RB well) (IN as) )
+          (NP 
+            (NP (JJ competitive) (NNS pressures) )
+            (, ,) 
+            (SBAR 
+              (WHNP-1 (WDT which) )
+              (S 
+                (NP-SBJ (-NONE- *T*-1) )
+                (VP (VBD required) 
+                  (NP (JJR higher) (NN advertising) (NN spending) ))))))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (PP-TMP (IN For) 
+        (NP (DT the) (NN year) ))
+      (, ,) 
+      (NP-SBJ (NN pet) (NN food) (NN volume) )
+      (VP (VBD was) 
+        (ADJP-PRD (JJ flat) )))
+    (, ,) 
+    (NP-SBJ (DT the) (NN company) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP$ Its) (NN cereal) (NN division) )
+    (VP 
+      (VP (VBD realized) 
+        (NP (JJR higher) (VBG operating) (NN profit) )
+        (PP (IN on) 
+          (NP (NN volume) (NNS increases) )))
+      (, ,) (CC but) 
+      (ADVP (RB also) )
+      (VP (VBD spent) 
+        (NP-ADV (JJR more) )
+        (PP-CLR (IN on) 
+          (NP (NN promotion) ))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (NP-SBJ (DT The) (NNP Continental) (NNP Baking) (NN business) )
+      (VP (VBD benefited) 
+        (PP (IN from) 
+          (NP 
+            (NP (JJR higher) (NNS margins) )
+            (PP 
+              (PP (IN on) 
+                (NP (NN bread) ))
+              (CC and) 
+              (PP (IN on) 
+                (NP (VBN increased) (NN cake) (NNS sales) )))))))
+    (, ,) 
+    (NP-SBJ (PRP it) )
+    (VP (VBD added) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Ralston) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 (PRP$ its) (NNP Eveready) (NN battery) (NN unit) )
+          (VP (VBD was) 
+            (VP (VBN hurt) 
+              (NP (-NONE- *-1) )
+              (PP (IN by) 
+                (NP-LGS 
+                  (NP (VBG continuing) (JJ economic) (NNS problems) )
+                  (PP-LOC (IN in) 
+                    (NP (NNP South) (NNP America) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Ralston) (NNS shares) )
+    (VP (VBD closed) 
+      (NP-TMP (NN yesterday) )
+      (PP-CLR (IN at) 
+        (NP ($ $) (CD 80.50) (-NONE- *U*) ))
+      (, ,) 
+      (ADVP-CLR (RB off) 
+        (NP ($ $) (CD 1) (-NONE- *U*) ))
+      (, ,) 
+      (PP-LOC (IN in) 
+        (NP (NNP New) (NNP York) (NNP Stock) (NNP Exchange) (JJ composite) (NN trading) )))
+    (. .) ))

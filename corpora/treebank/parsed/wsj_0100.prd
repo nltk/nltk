@@ -1,0 +1,727 @@
+
+
+( (S (PP-TMP For
+	     (NP six years))
+     ,
+     (NP-SBJ T. Marshall Hahn Jr.)
+     (VP has
+         (VP made
+             (NP corporate acquisitions)
+             (PP-MNR in
+		     (NP (NP the George Bush mode)
+			 :
+			 (ADJP kind and gentle)))))
+     .))
+( (NP (NP (NP The question)
+	  (ADVP-TMP now))
+      :
+      (SQ Can
+	  (NP-SBJ he)
+	  (VP act
+	      (PP (ADVP more)
+		  like
+		  (NP hard-charging Teddy Roosevelt))))
+      ?))
+( (S (NP-SBJ (NP Mr. Hahn)
+             ,
+             (NP (NP the 62-year-old
+		     (NX (NX chairman)
+			 and
+			 (NX chief executive officer)))
+                 (PP of
+                     (NP Georgia-Pacific Corp.))))
+     (VP is
+         (VP leading
+             (NP (NP (NP the forest-product concern 's)
+		     unsolicited
+		     (ADJP (QP $ 3.19 billion) *U*)
+		     bid)
+		 (PP for
+		     (NP Great Northern Nekoosa Corp)))))
+     .))
+( (S (NP-SBJ Nekoosa)
+     (VP has
+         (VP given
+             (NP the offer)
+             (NP (NP a public cold shoulder)
+                 ,
+                 (NP (NP a reaction)
+                     (SBAR (WHNP-2 0)
+                           (S (NP-SBJ Mr. Hahn)
+                              (VP has n't
+                                  (VP faced
+                                      (NP *T*-2)
+				      (PP-LOC in
+					      (NP (NP his 18 earlier acquisitions)
+						  ,
+						  (SBAR (WHNP-3 all
+								(WHPP of
+								      (WHNP which)))
+							(S (NP-SBJ-1 *T*-3)
+							   (VP were
+							       (VP negotiated
+								   (NP *-1)
+								   (PP-LOC behind
+									   (NP the scenes))))))))))))))))
+     .))
+( (S (ADVP-TMP So
+	       far)
+     ,
+     (NP-SBJ-1 Mr. Hahn)
+     (VP is
+         (VP trying
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP entice
+                        (NP Nekoosa)
+                        (PP into
+                            (S-NOM (NP-SBJ *)
+				   (VP negotiating
+				       (NP a friendly surrender)))))))
+	     (SBAR-ADV while
+		       (S (NP-SBJ *-1)
+			  (VP talking
+			      (ADVP-MNR tough))))))
+     .))
+( (S ``
+     (S-2 (NP-SBJ-1 We)
+	  (VP are
+	      (VP prepared
+		  (S (NP-SBJ *-1)
+		     (VP to
+			 (VP pursue
+			     (ADVP-MNR aggressively)
+			     (NP (NP completion)
+				 (PP of
+				     (NP this transaction)))))))))
+     , ''
+     (NP-SBJ he)
+     (VP says
+	 (S *T*-2))
+     .))
+( (S But
+     (NP-SBJ a takeover battle)
+     (VP opens
+         (PRT up)
+         (NP (NP the possibility)
+             (PP of
+                 (NP (NP a bidding war)
+		     ,
+                     (PP with
+                         (NP (NP all)
+                             (SBAR (WHNP-1 0)
+                                   (S (NP-SBJ that)
+                                      (VP implies
+                                          (NP *T*-1))))))))))
+     .))
+( (S (SBAR-ADV If
+	       (S (NP-SBJ a competitor)
+		  (VP enters
+		      (NP the game))))
+     ,
+     (PP for
+	 (NP example))
+     ,
+     (NP-SBJ Mr. Hahn)
+     (VP could
+         (VP face
+             (NP (NP the dilemma)
+                 (PP of
+                     (S-NOM (NP-SBJ *)
+			    (VP (VP paying
+				    (NP a premium)
+				    (PP-CLR for
+					    (NP Nekoosa)))
+				or
+				(VP seeing
+				    (S (NP-SBJ the company)
+				       (VP fall
+					   (PP-DIR into
+						   (NP (NP the arms)
+						       (PP of
+							   (NP a rival)))))))))))))
+     .))
+((S (S-ADV (NP-SBJ-3 *-2)
+	   (VP Given
+	       (NP *-3) 
+	       (NP that choice)))
+    ,
+    (NP-SBJ (NP (NP associates)
+		(PP of
+		    (NP Mr. Hahn)))
+	    and
+	    (NP industry observers))
+    (VP say
+	(SBAR 0
+	      (S (NP-SBJ-2 (NP the former university president)
+			   (PRN --
+				(SBAR (WHNP-1 who)
+				      (S (NP-SBJ *T*-1)
+					 (VP has
+					     (VP developed
+						 (NP (NP a reputation)
+						     (PP for
+							 (S-NOM (NP-SBJ *)
+								not
+								(VP overpaying
+								    (PP-CLR for
+									    (NP anything))))))))))
+				--))
+		 (VP would
+		     (VP fold)))))
+    .))
+((SINV ``
+       (S-2 (NP-SBJ There)
+	    (VP 's
+		(NP (NP a price)
+		    (SBAR (WHPP-1 above
+				  (WHNP which))
+			  (S (NP-SBJ I)
+			     (VP 'm
+				 (ADJP-PRD positive
+					   (SBAR 0
+						 (S (NP-SBJ Marshall)
+						    (VP has
+							(NP (NP the courage)
+							    (SBAR (WHADVP-3 0)
+								  (S (NP-SBJ *)
+								     not
+								     (VP to
+									 (VP pay
+									     (PP *T*-1)
+									     (ADVP *T*-3))))))))))))))))
+       ,
+       ''
+       (VP says
+	   (S *T*-2))
+       (NP-SBJ (NP A.D. Correll)
+	       ,
+	       (NP (NP (NP Georgia-Pacific 's)
+		       executive vice president)
+		   (PP for
+		       (NP pulp and paper))))
+       .))
+( (SINV (VP Says
+	    (S *ICH*-1))
+        (NP-SBJ (NP long-time associate
+		    Jerry Griffin)
+		,
+		(NP (NP vice president)
+		    ,
+		    (NP corporate development)
+		    ,
+		    (PP-LOC at
+			    (NP WTD Industries Inc.))))
+        : ``
+        (S-1 (NP-SBJ He)
+	     (VP is n't
+		 (PP-PRD of
+			 (NP (NP the old school)
+			     (PP of
+				 (S-NOM (NP-SBJ *)
+					(VP winning
+					    (PP-CLR at
+						    (NP any cost)))))))))
+	.
+	''))
+( (S (S-TPC-1 (NP-SBJ He)
+	      (ADVP also)
+	      (VP is
+		  (NP-PRD a consensus manager)))
+     ,
+     (NP-SBJ insiders)
+     (VP say
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+((SINV (S-1 (NP-SBJ-2 The decision
+		      (S (NP-SBJ *)
+			 (VP to
+			     (VP make
+				 (NP (NP the bid)
+				     (PP for
+					 (NP Nekoosa)))))))
+	    ,
+	    (PP for
+		(NP example))
+	    ,
+	    (VP was
+		(VP made
+		    (NP *-2)
+		    (SBAR-TMP (ADVP only)
+			      after
+			      (S (NP-SBJ (NP all six members)
+					 (PP of
+					     (NP (NP Georgia-Pacific 's)
+						 management committee)))
+				 (VP signed
+				     (PP onto
+					 (NP the deal)))))
+		    --
+		    (SBAR-ADV even
+			      though
+			      (S (NP-SBJ Mr. Hahn)
+				 (VP knew
+				     (SBAR 0
+					   (S (NP-SBJ-3 he)
+					      (VP wanted
+						  (S (NP-SBJ *-3)
+						     (VP to
+							 (VP go
+							     (PP after
+								 (NP the company))))))))
+				     (ADVP-TMP early on)))))))
+       ,
+       (VP says
+	   (SBAR 0
+		 (S *T*-1)))
+       (NP-SBJ Mr. Correll)
+       .))
+( (S (NP-SBJ Associates)
+     (VP say
+         (SBAR 0
+               (S (NP-SBJ Mr. Hahn)
+                  (VP picked
+                      (PRT up)
+                      (NP (NP that careful approach)
+                          (PP to
+                              (NP management)))
+		      (PP as
+			  (NP (NP president)
+			      (PP of
+				  (NP Virginia Polytechnic Institute))))))))
+     .))
+((SINV (S-3 (S (NP-SBJ *-1)
+	       (VP Assuming
+		   (NP that post)
+		   (PP-TMP at
+			   (NP (NP the age)
+			       (PP of
+				   (NP 35))))))
+	    ,
+	    (NP-SBJ-1 he)
+	    (VP managed
+		(PP-MNR by
+			(NP consensus))
+		,
+		(SBAR-ADV as
+			  (S (NP-SBJ *) 
+			     (VP is
+				 (NP-PRD the rule)
+				 (PP-LOC in
+					 (NP universities)))))))
+       ,
+       (VP says
+	   (SBAR 0
+		 (S *T*-3)))
+       (NP-SBJ (NP Warren H. Strother)
+	       ,
+	       (NP (NP a university official)
+		   (SBAR (WHNP-2 who)
+			 (S (NP-SBJ *T*-2)
+			    (VP is
+				(VP researching
+				    (NP (NP a book)
+					(PP on
+					    (NP Mr. Hahn)))))))))
+       .))
+( (S But
+     (NP-SBJ-1 he)
+     (ADVP also)
+     (VP showed
+         (NP a willingness
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP take
+                        (NP a strong stand))))))
+     .))
+( (S (PP-TMP In
+	     (NP 1970))
+     ,
+     (NP-SBJ Mr. Hahn)
+     (VP called
+	 (PRT in) 
+	 (S (NP-SBJ state police)
+	    (VP to
+                (VP arrest
+                    (NP (NP student protesters)
+                        (SBAR (WHNP-3 who)
+                              (S (NP-SBJ *T*-3)
+                                 (VP were
+                                     (VP occupying
+                                         (NP a university building))))))))))
+     .))
+( (S (NP-SBJ That)
+     (VP impressed
+         (NP (NP (NP Robert B. Pamplin)
+                 ,
+                 (NP (NP (NP Georgia-Pacific 's)
+			 chief executive)
+                     (PP-TMP at
+			     (NP the time))))
+             ,
+             (SBAR (WHNP-4 whom)
+                   (S (NP-SBJ-1 Mr. Hahn)
+                      (VP had
+                          (VP met
+                              (NP *T*-4)
+			      (SBAR-ADV while
+					(S (NP-SBJ *-1)
+					   (VP fundraising
+					       (PP for
+						   (NP the institute)))))))))))
+     .))
+( (S (PP-TMP In
+	     (NP 1975))
+     ,
+     (NP-SBJ Mr. Pamplin)
+     (VP enticed
+         (NP Mr. Hahn)
+         (PP into
+             (S-NOM (NP-SBJ *)
+		    (VP joining
+			(NP the company)
+			(PP as
+			    (NP (NP executive vice president)
+				(PP in
+				    (NP (NP charge)
+					(PP of
+					    (NP chemicals))))))))))
+     ;
+     (S (NP-SBJ the move)
+        (VP befuddled
+            (NP (NP many)
+		(PP in
+		    (NP Georgia-Pacific))
+                (SBAR (WHNP-5 who)
+                      (S (NP-SBJ *T*-5)
+                         (VP did n't
+                             (VP believe
+                                 (SBAR 0
+                                       (S (NP-SBJ a university administrator)
+                                          (VP could
+                                              (VP make
+                                                  (NP (NP the transition)
+                                                      (PP to
+                                                          (NP the corporate world))))))))))))))
+     .))
+( (S But
+     (NP-SBJ-1 Mr. Hahn)
+     (VP rose
+         (ADVP-MNR swiftly)
+         (PP-DIR through
+		 (NP the ranks))
+	 ,
+	 (S-ADV (NP-SBJ *-1)
+		(VP demonstrating
+		    (NP (NP a raw intelligence)
+			(SBAR (WHNP-2 that)
+			      (S (NP-SBJ he)
+				 (VP says
+				     (SBAR 0
+					   (S (NP-SBJ he)
+					      (VP knew
+						  (SBAR 0
+							(S (NP-SBJ he)
+							   (VP possessed
+							       (NP *T*-2)))))
+					      (ADVP-TMP early on))))))))))
+     .))
+( (S (S-ADV (NP-SBJ *-1)
+	    (NP-PRD (NP The son)
+		    (PP of
+			(NP a physicist))))
+     ,
+     (NP-SBJ-1 Mr. Hahn)
+     (VP skipped
+         (NP first grade)
+	 (SBAR-PRP because
+		   (S (NP-SBJ his reading ability)
+		      (VP was
+			  (PP-PRD (ADJP so far)
+				  above
+				  (NP his classmates))))))
+     .))
+((S (S-ADV (NP-SBJ *-1)
+	   (VP Moving
+	       (ADVP-MNR rapidly)
+	       (PP through
+		   (NP school))))
+    ,
+    (NP-SBJ-1 he)
+    (VP graduated
+	(NP-MNR Phi Beta Kappa)
+	(PP-CLR from
+		(NP (NP the University)
+		    (PP of
+			(NP Kentucky))))
+	(PP-TMP at
+		(NP age 18))
+	,
+	(PP-TMP after
+		(S-NOM (NP-SBJ *)
+		       (VP spending
+			   (NP-TMP (QP only 2 1) years)
+			   (PP-LOC in
+				   (NP college))))))
+    .))
+( (S (NP-SBJ He)
+     (VP earned
+         (NP (NP his doctorate)
+             (PP in
+		 (NP nuclear physics)))
+	 (PP-CLR from
+		 (NP (NP the Massachusetts Institute)
+		     (PP of
+			 (NP Technology)))))
+     .))
+( (S (S (NP-SBJ Mr. Hahn)
+	(VP agrees
+	    (SBAR that
+		  (S (NP-SBJ he)
+		     (VP has
+			 (NP a `` retentive '' memory))))))
+     ,
+     but
+     (S (NP-SBJ friends)
+	(VP say
+	    (SBAR 0
+		  (S (NP-SBJ that)
+		     (VP 's
+			 (NP-PRD an understatement))))))
+     .))
+( (S (NP-SBJ They)
+     (VP call
+         (S (NP-SBJ it)
+	    (ADJP-PRD `` photographic '')))
+     .))
+( (S (NP-SBJ Mr. Hahn)
+     (ADVP also)
+     (VP has
+         (VP engineered
+             (NP (NP a surprising turnaround)
+                 (PP of
+                     (NP Georgia-Pacific)))))
+     .))
+((S (S-ADV (NP-SBJ *-1)
+	   (VP Taking
+	       (PRT over)
+	       (PP as
+		   (NP chief executive officer))
+	       (PP-TMP in
+		       (NP 1983))))
+    ,
+    (NP-SBJ-1 he)
+    (VP inherited
+	(NP (NP a company)
+	    (SBAR (WHNP-6 that)
+		  (S (NP-SBJ-2 *T*-6)
+		     (VP was
+			 (VP (VP mired
+				 (NP *-2)
+				 (PP-CLR in
+					 (NP debt)))
+			     and
+			     (VP hurt
+				 (NP *-2)
+				 (PP by
+				     (NP-LGS (NP a recession-inspired slide)
+					     (PP-LOC in
+						     (NP its building-products business)))))))))))
+    .))
+( (S (NP-SBJ-1 Mr. Hahn)
+     (VP began
+         (S (NP-SBJ *-1)
+	    (VP selling
+		(NP (NP non-core businesses)
+		    ,
+		    (PP such as
+			(NP oil and gas and chemicals))))))
+     .))
+( (S (NP-SBJ He)
+     (ADVP even)
+     (VP sold
+         (NP (NP one unit)
+             (SBAR (WHNP-7 that)
+                   (S (NP-SBJ *T*-7)
+                      (VP made
+                          (NP vinyl checkbook covers))))))
+     .))
+( (S (PP-TMP At
+	     (NP the same time))
+     ,
+     (NP-SBJ-1 he)
+     (VP began
+         (S (NP-SBJ *-1)
+	    (VP building
+		(PRT up)
+		(NP (NP the pulp and paper segment)
+		    (PP of
+			(NP the company)))
+		(SBAR-ADV while
+			  (S (NP-SBJ *-1)
+			     (VP refocusing
+				 (NP building
+				     products)
+				 (PP on
+				     (NP (NP home repair and remodeling)
+					 ,
+					 (PP rather
+					     than
+					     (NP (NP materials)
+						 (PP for
+						     (NP new-home construction))))))))))))
+     .))
+( (S (NP-SBJ The idea)
+     (VP was
+         (S-PRD (NP-SBJ *)
+		(VP to
+		    (VP buffet
+			(NP building products)
+			(PP-CLR from
+				(NP (NP cycles)
+				    (PP-LOC in
+					    (NP new-home construction))))))))
+     .))
+( (S (NP-SBJ The formula)
+     (VP has
+         (VP paid
+	     (PRT off)
+	     ,
+	     (ADVP-TMP so far)))
+     .))
+( (S (NP-SBJ-2 (NP Georgia-Pacific 's)
+	       sales)
+     (VP climbed
+         (PP-DIR to
+		 (NP (QP $ 9.5 billion) *U*))
+	 (NP-TMP last year)
+	 ,
+	 (PP compared
+	     (PP with
+		 (NP (NP (QP $ 6 billion) *U*)
+		     (PP-TMP in
+			     (NP (NP 1983)
+				 ,
+				 (SBAR-TMP (WHADVP-1 when)
+					   (S (NP-SBJ Mr. Hahn)
+					      (VP took
+						  (NP the reins)
+						  (ADVP-TMP *T*-1))))))))))
+     .))
+( (S (NP-SBJ (NP Profit)
+             (PP from
+                 (NP continuing
+                     operations)))
+     (VP has
+         (VP soared
+             (PP-DIR to
+		     (NP (QP $ 467 million) *U*))
+             (PP-DIR from
+		     (NP (QP $ 75 million) *U*))))
+     .))
+( (S (NP-SBJ Mr. Hahn)
+     (VP attributes
+         (NP the gains)
+         (PP-CLR to
+		 (NP (NP the philosophy)
+		     (PP of
+			 (S-NOM (NP-SBJ *)
+				(VP concentrating
+				    (PP-CLR on
+					    (SBAR-NOM (WHNP-1 what)
+						      (S (NP-SBJ a company)
+							 (VP knows
+							     (S (NP-SBJ *T*-1)
+								(ADJP-PRD best))))))))))))
+     .))
+((S (S-TPC-1 ``
+	     (NP-SBJ (NP The record)
+		     (PP of
+			 (NP (NP companies)
+			     (SBAR (WHNP-8 that)
+				   (S (NP-SBJ *T*-8)
+				      (VP have
+					  (VP diversified)))))))
+	     (VP is n't
+		 (ADJP-PRD (ADVP all that)
+			   impressive))
+	     , '')
+    (NP-SBJ he)
+    (VP says
+	(S *T*-1))
+    .))
+( (S (NP-SBJ Nekoosa)
+     (VP would n't
+         (VP be
+             (NP-PRD a diversification)))
+     .))
+( (S-1 (NP-SBJ It)
+       (VP would
+	   (VP be
+	       (NP-PRD (NP a good match)
+		       (PRN ,
+			    (S (NP-SBJ (NP Mr. Hahn)
+				       and
+				       (NP many analysts))
+			       (VP say
+				   (SBAR 0
+					 (S *T*-1))))
+			    ,)
+		       (PP of
+			   (NP (NP two healthy companies)
+			       (PP with
+				   (NP (NP high-quality assets)
+				       and
+				       (NP strong cash flows))))))))
+       .))
+( (S (NP-SBJ The resulting company)
+     (VP would
+         (VP be
+             (NP-PRD (NP the largest forest-products concern)
+		     (PP-LOC in
+			     (NP the world))
+		     (PP with
+			 (NP (NP combined
+				 sales)
+			     (PP of
+				 (NP (QP more than $ 13 billion)
+				     *U*)))))))
+     .))
+( (SQ But
+      can
+      (NP-SBJ Mr. Hahn)
+      (VP carry
+	  (NP it)
+	  (PRT off))
+      ?))
+( (S-1 (PP-TMP In
+	       (NP this instance))
+       (PRN ,
+	    (S (NP-SBJ industry observers)
+	       (VP say
+		   (SBAR 0
+			 (S *T*-1))))
+	    ,)
+       (NP-SBJ he)
+       (VP is
+	   (VP entering
+	       (NP uncharted waters)))
+       .))
+( (SINV (VP Says
+	    (S *ICH*-1)) 
+        (NP-SBJ (NP Kathryn McAuley)
+		,
+		(NP (NP an analyst)
+		    (PP-LOC at
+			    (NP First Manhattan Co.))))
+        : ``
+        (S-1 (NP-SBJ This)
+	     (VP is
+		 (NP-PRD (NP the greatest acquisition challenge)
+			 (SBAR (WHNP-2 0)
+			       (S (NP-SBJ he)
+				  (VP has
+				      (VP faced
+					  (NP *T*-2))))))))
+        .))

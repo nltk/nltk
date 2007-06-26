@@ -1,0 +1,92 @@
+
+
+( (S (NP-SBJ Dell Computer Corp.)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP cut
+                      (NP (NP prices)
+                          (PP on
+                              (NP (NP several)
+                                  (PP of
+                                      (NP its personal computer lines)))))
+                      (PP by
+			  (NP (QP 5 % to 17 %)
+			      *U*))))))
+     .))
+( (S (NP-SBJ (NP The (ADJP Austin , Texas-based) company)
+             ,
+             (SBAR (WHNP-1 which)
+                   (S (NP-SBJ *T*-1)
+                      (VP specializes
+                          (PP-CLR in
+				  (NP (NP the direct sale)
+				      (PP of
+					  (NP (NP personal computers)
+					      and
+					      (NP accessories))))))))
+             ,)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ its price cuts)
+                  (VP include
+                      (NP (NP a
+			      (ADJP (QP $ 100) *U*)
+			      reduction)
+			  (PP on
+			      (NP (NP its System 210 computer)
+				  (PP with
+				      (NP (NP (NP 512 kilobytes)
+					      (PP of
+						  (NP memory)))
+					  ,
+					  (NP a 40-megabyte hard disk)
+					  and
+					  (NP a color monitor))))))))))
+     .))
+( (S (NP-SBJ That package)
+     (ADVP-TMP now)
+     (VP sells
+         (PP-CLR for
+		 (NP (QP about $ 2,099) *U*)))
+     .))
+( (S (NP-SBJ (NP A computer)
+             (VP using
+                 (NP the more-advanced Intel Corp. 386 microprocessor))
+             ,
+             (PP with
+                 (NP (NP (NP four megabytes)
+                         (PP of
+                             (NP memory)))
+                     and
+                     (NP a 100-megabyte hard disk))))
+     (ADVP-TMP now)
+     (VP sells
+         (PP-CLR for
+		 (NP (NP $ 5,699 *U*)
+		     ,
+		     (ADVP down
+			   (PP from
+			       (NP $ 6,799 *U*))))))
+     .))
+( (S (NP-SBJ (NP Personal computer prices)
+             (PP for
+                 (NP (NP models)
+                     (VP using
+                         (NP (NP the Intel 286 and 386 microprocessors)
+                             ,
+                             (SBAR (WHNP-1 which)
+                                   (S (NP-SBJ the Dell models)
+                                      (VP use
+                                          (NP *T*-1))))
+                             ,)))))
+     (ADVP generally)
+     (VP have
+         (VP been
+             (VP coming
+		 (ADVP-DIR down)
+                 (SBAR-ADV as
+			   (S (NP-SBJ chip prices)
+			      (VP have
+				  (VP fallen)))))))
+     .))

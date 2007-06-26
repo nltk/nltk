@@ -1,0 +1,157 @@
+
+
+( (S (NP-SBJ-2 (NP Lewis C. Veraldi)
+	       ,
+	       (NP (NP the father)
+		   (PP of
+		       (NP (NP the team)
+			   (SBAR (WHNP-1 that)
+				 (S (NP-SBJ *T*-1)
+				    (VP created
+					(NP the
+					    (ADJP highly successful)
+					    Ford Taurus and Mercury Sable cars))))))))
+     ,
+     (VP retired
+         (ADVP early)
+         (PP-TMP after
+		 (S-NOM (NP-SBJ *-2)
+			(VP experiencing
+			    (NP recent heart problems)))))
+     .))
+( (S (ADVP-TMP Most recently)
+     ,
+     (NP-SBJ (NP Mr. Veraldi)
+             ,
+             (NP 59 years old)
+             ,)
+     (VP has
+         (VP been
+             (NP-PRD (NP vice president)
+		     (PP of
+			 (NP product and manufacturing engineering))
+		     (PP-LOC at
+			     (NP Ford Motor Co)))))
+     .))
+( (S But
+     (NP-SBJ-3 he)
+     (VP is
+         (VP (ADVP best)
+             known
+	     (NP *-3)
+             (PP-LOC in
+		     (NP the auto industry))
+             (PP-CLR as
+		     (NP (NP the creator)
+			 (PP of
+			     (NP (NP a team car-development approach)
+				 (SBAR (WHNP-1 that)
+				       (S (NP-SBJ *T*-1)
+					  (VP produced
+					      (NP (NP the two midsized cars)
+						  (SBAR (WHNP-2 that)
+							(S (NP-SBJ *T*-2)
+							   (VP were
+							       (ADJP-PRD instrumental
+									 (PP (PP in
+										 (S-NOM (NP-SBJ *)
+											(VP helping
+											    (S (NP-SBJ the No. 2 auto maker)
+											       (VP record
+												   (NP profits)
+												   (PP-TMP in
+													   (NP recent years)))))))
+									     and
+									     (PP in
+										 (S-NOM (NP-SBJ *)
+											(VP enabling
+											    (S (NP-SBJ (NP the company 's)
+												       Ford division)
+											       (VP to
+												   (VP eclipse
+												       (NP (NP General Motors Corp. 's)
+													   Chevrolet division)
+												       (PP-CLR as
+													       (NP (NP the top-selling nameplate)
+														   (PP-LOC in
+															   (NP the U.S)))))))))))))))))))))))))
+     .))
+( (S (PP-LOC Under
+	     (NP the so-called Team Taurus approach))
+     ,
+     (NP-SBJ (NP Mr. Veraldi)
+             and
+             (NP other Ford product planners))
+     (VP sought
+         (NP (NP the involvement)
+             (PP of
+                 (NP (NP parts suppliers)
+                     ,
+                     (NP assembly-line workers)
+                     ,
+                     (NP auto designers)
+                     and
+                     (NP financial staff members))))
+	 (PP-TMP from
+		 (NP (NP the initial stages)
+		     (PP of
+			 (NP the development cycle)))))
+     .))
+( (S (NP-SBJ (NP The concept 's)
+             goal)
+     (VP was
+         (S-PRD (NP-SBJ *)
+		(VP to
+		    (VP (VP eliminate
+			    (NP bureaucracy))
+			and
+			(VP make
+			    (S (NP-SBJ (NP Ford 's)
+				       product development)
+			       (ADJP-PRD more responsive
+					 (PP to
+					     (NP consumer demands)))))))))
+     .))
+( (S (NP-SBJ It)
+     (VP was
+         (ADVP-TMP later)
+	 (VP applied
+             (PP-CLR to
+		     (NP (NP other new-car programs)
+			 ,
+			 (PP including
+			     (NP (NP those)
+				 (SBAR (WHNP-1 that)
+				       (S (NP-SBJ *T*-1)
+					  (VP produced
+					      (NP the Ford Thunderbird and Mercury Cougar))))))))))
+     .))
+( (S (NP-SBJ Ford Chairman Donald E. Petersen)
+     (VP said
+         (NP-TMP yesterday)
+         (SBAR that
+               (S (NP-SBJ-1 Mr. Veraldi)
+                  (VP has
+		      ``
+		      (VP helped
+                          (S (NP-SBJ *-1)
+                             (VP to
+                                 (VP change
+                                     (NP (NP (NP the world 's)
+					     perception)
+					 (PP of
+					     (NP American-made cars)))))))))))
+     . ''))
+( (S (NP-SBJ-1 Mr. Veraldi)
+     (VP worked
+         (PP-LOC at
+		 (NP Ford))
+         (PP-TMP for
+		 (NP 40 years))
+         ,
+         (S-ADV (NP-SBJ *-1)
+		(VP holding
+		    (NP (NP a variety)
+			(PP of
+			    (NP car and parts-engineering positions))))))
+     .))

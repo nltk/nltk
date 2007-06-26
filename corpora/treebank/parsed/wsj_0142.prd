@@ -1,0 +1,1090 @@
+
+
+( (S (PP Despite
+         (NP (NP a deluge)
+             (PP of
+                 (NP economic news))))
+     ,
+     (S (NP-SBJ the Treasury market)
+        (VP remained
+            (ADJP-PRD quiet)))
+     but
+     (S (NP-SBJ the corporate market)
+        (VP was
+            (ADJP-PRD abuzz
+		      (PP over
+			  (NP (NP International Business Machines Corp. 's)
+			      huge debt offering)))))
+     .))
+( (SINV ``
+	(S-TPC-1 (S (NP-SBJ There)
+		    (VP were
+			(NP-PRD (ADJP so many) economic reports)))
+		 but
+		 (S (NP-SBJ the market)
+		    (VP did n't
+			(VP care
+			    (PP-CLR about
+				    (NP (NP any)
+					(PP of
+					    (NP them))))))))
+	, ''
+	(VP said
+	    (S *T*-1))
+	(NP-SBJ (NP Kathleen Camilli)
+		,
+		(NP (NP a money market economist)
+		    (PP-LOC at
+			    (NP Drexel Burnham Lambert Inc))))
+	.))
+( (S ``
+     (S-TPC-1 So
+	      (NP-SBJ the focus)
+	      (VP turned
+		  (PP-CLR to
+			  (NP (NP other fixed-income markets)
+			      ,
+			      (UCP (ADJP corporate)
+				   and
+				   (NP mortgages))
+			      (PP in
+				  (ADJP particular))))))
+     , ''
+     (NP-SBJ she)
+     (VP said
+	 (S *T*-1))
+     .))
+( (S (NP-SBJ (NP IBM)
+             ,
+             (NP the giant computer maker)
+             ,)
+     (VP offered
+         (NP (NP (QP $ 750 million) *U*)
+	     (PP of
+		 (NP non-callable 30-year debentures))
+             (VP priced
+		 (NP-1 *)
+		 (S-CLR (NP-SBJ *-1)
+			(VP to
+			    (VP yield
+				(NP-EXT (NP 8.47 %)
+					, or 
+					(ADJP (ADJP (NP-ADV (QP about 1)
+							    percentage point)
+						    higher)
+					      (PP than
+						  (NP (NP the yield)
+						      (PP on
+							  (NP 30-year Treasury bonds))))))))))))
+     .))
+( (S (NP-SBJ-1 (NP The size)
+               (PP of
+                   (NP (NP IBM 's)
+                       issue)))
+     (VP was
+         (VP increased
+             (NP *-1)
+             (PP-CLR from
+		     (NP an
+			 (ADJP originally planned)
+			 (QP $ 500 million)
+			 *U*))
+             (SBAR-ADV as
+		       (S (NP-SBJ-2 money managers and investors)
+			  (VP scrambled
+			      (S (NP-SBJ *-2)
+				 (VP to
+				     (VP buy
+					 (NP the bonds)))))))))
+     .))
+( (SINV (S-TPC-2 (PP-LOC In
+			 (NP the investment-grade corporate market))
+		 , ``
+		 (NP-SBJ it)
+		 (VP 's
+		     (ADJP-PRD rare
+			       (SBAR that
+				     (S (NP-SBJ you)
+					(VP get
+					    (NP an opportunity
+						(S (NP-SBJ *)
+						   (VP to
+						       (VP buy
+							   (NP (NP a name)
+							       (SBAR (WHNP-1 that)
+								     (S (NP-SBJ *T*-1)
+									(VP (VP has
+										(NP such broad appeal))
+									    and
+									    (VP has
+										(NP such attractive call features))))))))))))))))
+	,
+	''
+	(VP said
+	    (SBAR 0
+		  (S *T*-2)))
+	(NP-SBJ (NP James Ednie)
+		,
+		(NP a Drexel industrial bond trader))
+	.))
+( (S (NP-SBJ Money managers)
+     (VP ranked
+         (NP (NP IBM 's)
+             offering)
+         (PP-CLR as
+		 (NP (NP the (ADJP most significant) investment-grade sale)
+		     (PP of
+			 (NP the year))))
+         (SBAR-PRP because
+		   (S (NP-SBJ (NP large issues)
+			      (PP of
+				  (NP long-term debt))
+			      (PP by
+				  (NP (NP companies)
+				      (PP with
+					  (NP triple-A credit)))))
+		      (VP are
+			  (ADJP-PRD infrequent)))))
+     .))
+( (S (NP-SBJ-1 (NP Syndicate officials)
+	       (PP-LOC at
+		       (NP lead underwriter Salomon Brothers Inc.)))
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ the debentures)
+                  (VP were
+                      (VP snapped
+                          (X (PP by)) 
+			  (PRT up)
+			  (NP *-1)
+			  (X (NP-LGS (NP pension funds)
+				     ,
+				     (NP banks)
+				     ,
+				     (NP insurance companies)
+				     and
+				     (NP other institutional investors))))))))
+     .))
+( (S (PP-LOC In
+	     (NP the Treasury market))
+     ,
+     (NP-SBJ investors)
+     (VP paid
+         (NP (NP scant attention)
+             (PP to
+                 (NP (NP (NP the day 's)
+                         economic reports)
+                     ,
+                     (SBAR (WHNP-1 which)
+                           (S (NP-SBJ *T*-1)
+			      (PP for
+                                  (NP the most part))
+                              (VP provided
+                                  (NP (NP a mixed view)
+                                      (PP of
+                                          (NP the economy))))))))))
+     .))
+( (SINV ``
+	(S-TPC-1 (SBAR-ADV Whether
+			   (S (NP-SBJ you)
+			      (VP thought
+				  (SBAR 0
+					(S (NP-SBJ the economy)
+					   (VP was
+					       (VP (VP growing
+						       (ADJP-PRD weak))
+						   or
+						   (VP holding
+						       (S-ADV (NP-SBJ *)
+							      (ADJP-PRD steady))))))))))
+		 ,
+		 (NP-SBJ (NP yesterday 's)
+			 economic indicators)
+		 (VP did n't
+		     (VP change
+			 (NP your opinion))))
+	, ''
+	(VP said
+	    (S *T*-1))
+	(NP-SBJ (NP Charles Lieberman)
+		,
+		(NP (NP a managing director)
+		    (PP-LOC at
+			    (NP Manufacturers Hanover Securities Corp))))
+	.))
+( (S (NP-SBJ The government)
+     (VP reported
+         (SBAR that
+               (S (NP-SBJ (NP orders)
+                          (PP for
+                              (NP manufactured goods)))
+                  (VP were
+                      (ADJP-PRD essentially unchanged)
+		      (PP-TMP in
+			      (NP September))
+		      (SBAR-ADV while
+				(S (NP-SBJ construction spending)
+				   (VP was
+				       (ADJP-PRD slightly lower))))))))
+     .))
+( (S (NP-SBJ-1 Both indicators)
+     (VP were
+         (VP viewed
+             (NP *-1)
+             (PP-CLR as
+		     (NP signs
+			 (SBAR that
+			       (S (NP-SBJ (NP the nation 's)
+					  industrial sector)
+				  (VP is
+				      (VP growing
+					  (ADVP-MNR very slowly)
+					  ,
+					  (FRAG-ADV if
+						    (ADVP at all))))))))))
+     .))
+( (S (NP-SBJ (NP (NP A survey)
+                 (PP by
+                     (NP (NP the Federal Reserve 's)
+                         12 district banks)))
+             and
+             (NP (NP the latest report)
+                 (PP by
+                     (NP (NP the National Association)
+                         (PP of
+                             (NP Purchasing Management))))))
+     (VP blurred
+         (NP (NP that picture)
+             (PP of
+                 (NP the economy))))
+     .))
+( (S (PP-LOC In
+	     (NP (NP a monthly report)
+		 (VP prepared
+		     (NP *)
+		     (PP-CLR for
+			     (NP (NP use)
+				 (PP at
+				     (NP (NP (NP the Fed 's)
+					     next Federal Open Market Committee meeting)
+					 (PP-TMP on
+						 (NP Nov. 14.)))))))))
+     ,
+     (NP-SBJ (NP the nation 's)
+             central bank)
+     (VP found
+         (SBAR that
+               (S (S (NP-SBJ price increases)
+                     (VP have
+                         (VP moderated)))
+                  and
+                  (S (NP-SBJ economic activity)
+                     (VP has
+                         (VP grown
+                             (PP-MNR at
+				     (NP a sluggish pace))
+                             (PP-TMP in
+				     (NP recent weeks))))))))
+     .))
+( (S (PP Among
+         (NP other things))
+     ,
+     (NP-SBJ the survey)
+     (VP found
+         (SBAR that
+               (S (NP-SBJ manufacturing activity)
+                  (VP varied
+                      (ADVP considerably)
+                      (PP-LOC (PP across
+				  (NP districts))
+			      and
+			      (PP among
+				  (NP industries)))))))
+     .))
+( (S (NP-SBJ The Philadelphia and Cleveland districts)
+     ,
+     (PP for
+         (NP example))
+     ,
+     (VP reported
+         (NP (NP declines)
+             (PP-LOC in
+		     (NP manufacturing activity)))
+         (SBAR-ADV while
+		   (S (NP-SBJ the Boston ,
+			      Dallas
+			      and San Francisco banks)
+		      (VP noted
+			  (SBAR that
+				(S (NP-SBJ business)
+				   (VP expanded)))))))
+     .))
+( (S (NP-SBJ (NP The purchasing managers index)
+             (PP of
+                 (NP economic activity)))
+     (VP rose
+         (PP-TMP in
+		 (NP October))
+         ,
+         (SBAR-ADV although
+		   (S (NP-SBJ it)
+		      (VP remains
+			  (PP-CLR below
+				  (NP 50 %))))))
+     .))
+( (S (NP-SBJ (NP A reading)
+             (PP below
+                 (NP 50 %)))
+     (VP indicates
+         (SBAR that
+               (S (NP-SBJ the manufacturing sector)
+                  (VP is
+                      (VP slowing))))
+	 (SBAR-ADV while
+		   (S (NP-SBJ (NP a reading)
+			      (PP above
+				  (NP 50 %)))
+		      (VP suggests
+			  (SBAR that
+				(S (NP-SBJ the industry)
+				   (VP is
+				       (VP expanding))))))))
+     .))
+( (S (NP-SBJ Mr. Lieberman)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ (NP the diverse showing)
+                          (PP-LOC in
+				  (NP (NP yesterday 's)
+				      reports)))
+		  ``
+		  (ADVP only)
+		  (VP enhances
+                      (NP (NP the importance)
+                          (PP of
+                              (NP the employment data)))))))
+     . ''))
+( (S (NP-SBJ (NP The employment report)
+             ,
+             (SBAR (WHNP-1 which)
+                   (S (PP-TMP at
+			      (NP times))
+                      (NP-SBJ *T*-1)
+                      (VP has
+                          (VP caused
+                              (NP (NP wide swings)
+                                  (PP-LOC in
+					  (NP bond prices)))))))
+             ,)
+     (VP is
+         (ADJP-PRD due out)
+         (NP-TMP tomorrow))
+     .))
+( (S (NP-SBJ (NP The average estimate)
+             (PP of
+                 (NP (NP 22 economists)
+                     (VP polled
+                         (NP *)
+                         (PP by
+                             (NP-LGS Dow Jones Capital Markets Report))))))
+     (VP was
+         (SBAR-PRD that
+		   (S (NP-SBJ non-farm payrolls)
+		      (VP expanded
+			  (PP-EXT by
+				  (NP 152,000))
+			  (PP-TMP in
+				  (NP October))))))
+     .))
+( (S (NP-SBJ The economists)
+     (VP forecast
+         (NP (NP a (ADJP 0.1 %) rise)
+             (PP in
+                 (NP the unemployment rate))
+             (PP-DIR to
+		     (NP 5.4 %))))
+     .))
+( (NP-HLN Treasury Securities))
+( (S (PP-LOC In
+	     (NP a surprise announcement))
+     ,
+     (NP-SBJ the Treasury)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP will
+                      (VP (VP reopen
+                              (NP the outstanding benchmark 30-year bond))
+                          (CONJP rather
+				 than)
+			  (VP create
+			      (NP a new one))
+                          (PP for
+                              (NP (NP (NP next week 's)
+				      quarterly refunding)
+				  (PP of
+				      (NP the federal debt)))))))))
+     .))
+( (S (NP-SBJ-1 The Treasury)
+     (VP will
+         (VP raise
+             (NP (NP (QP $ 10 billion)
+		     *U*)
+		 (PP in
+		     (NP fresh cash)))
+             (PP-MNR by
+		     (S-NOM (NP-SBJ *-1)
+			    (VP selling
+				(NP (NP (QP $ 30 billion) *U*)
+				    (PP of
+					(NP securities))
+				    ,
+				    (PP including
+					(NP (NP (NP (QP $ 10 billion)
+						    *U*)
+						(PP of
+						    (NP new three-year notes)))
+					    and
+					    (NP (NP (QP $ 10 billion)
+						    *U*)
+						(PP of
+						    (NP new 10-year notes)))))))))))
+     .))
+( (S But
+     (PP rather
+	 than
+	 (S-NOM (NP-SBJ *)
+		(VP sell
+		    (NP new 30-year bonds))))
+     ,
+     (NP-SBJ-2 the Treasury)
+     (VP will
+         (VP issue
+             (NP (NP (QP $ 10 billion)
+		     *U*)
+		 (PP of
+		     (NP 29year , nine-month
+			 bonds)))
+	     --
+	     (S-ADV (NP-SBJ *-2)
+		    (ADVP essentially)
+		    (VP increasing
+			(NP (NP the size)
+			    (PP of
+				(NP (NP the current benchmark 30-year bond)
+				    (SBAR (WHNP-3 that)
+					  (S (NP-SBJ-1 *T*-3)
+					     (VP was
+						 (VP sold
+						     (NP *-1)
+						     (PP-LOC at
+							     (NP the previous refunding))
+						     (PP-TMP in
+							     (NP August)))))))))))))
+     .))
+( (S (NP-SBJ Credit market analysts)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ the decision
+                          (S (NP-SBJ *)
+                             (VP to
+                                 (VP reopen
+                                     (NP (NP the current benchmark)
+                                         ,
+                                         (NP (NP the (ADJP (QP 8 1) %) bond)
+                                             (ADJP due
+                                                   (NP August 2019)))
+                                         ,)))))
+                  (VP is
+                      (ADJP-PRD unusual)
+                      (SBAR-PRP because
+				(S (NP-SBJ the issue)
+				   (VP trades
+				       (PP-CLR at
+					       (NP (NP a premium)
+						   (PP to
+						       (NP its face amount)))))))))))
+     .))
+( (S (NP-SBJ Some dealers)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ (NP the Treasury 's)
+                          intent)
+                  (VP is
+		      (S-PRD (NP-SBJ *)
+			     (VP to
+				 (VP help
+				     (S (NP-SBJ government bond dealers)
+					(VP gauge
+					    (NP (NP investor demand)
+						(PP for
+						    (NP the securities))))))))
+		      ,
+		      (S-ADV (NP-SBJ *)
+			     (VP given
+				 (NP (NP uncertainties)
+				     (PP about
+					 (SBAR-NOM (WHADVP-1 when)
+						   (S (NP-SBJ the auction)
+						      (VP will
+							  (VP occur
+							      (ADVP-TMP *T*-1)))))))))))))
+     .))
+( (S (NP-SBJ The Treasury)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ the refunding)
+                  (VP is
+                      (NP-PRD (NP contingent)
+			      (PP upon
+				  (NP (NP (ADJP congressional and presidential) passage)
+				      (PP of
+					  (NP (NP an increase)
+					      (PP in
+						  (NP the federal debt ceiling)))))))))))
+     .))
+( (S (SBAR-TMP Until
+	       (S (NP-SBJ such action)
+		  (VP takes
+		      (NP places))))
+     ,
+     (NP-SBJ the Treasury)
+     (VP has
+         (NP no ability
+             (S (NP-SBJ *)
+                (VP to
+                    (VP issue
+                        (NP (NP new debt)
+                            (PP of
+                                (NP any kind))))))))
+     .))
+( (S (ADVP-TMP Meanwhile)
+     ,
+     (NP-SBJ Treasury bonds)
+     (VP ended
+         (ADVP-CLR modestly higher)
+         (PP-LOC in
+		 (NP quiet trading)))
+     .))
+( (NP (NP The benchmark 30-year bond)
+      (NP (NP (QP about 1)
+	      point)
+	  , or
+	  (NP $ 2.50 *U*))
+      (PP for
+	  (NP (NP each)
+	      (ADJP $ 1,000 *U*) face amount))
+      .))
+( (S (NP-SBJ-1 The benchmark)
+     (VP was
+         (VP priced
+	     (NP-2 *-1)
+             (PP-CLR at
+		     (NP 102 22))
+             (S-CLR (NP-SBJ *-2)
+		    (VP to
+			(VP yield
+			    (NP 7.88 %))))
+	     (PP compared
+		 (PP with
+		     (NP (NP 102 12)
+			 (S-CLR (NP-SBJ *)
+				(VP to
+				    (VP yield
+					(NP 7.90 %))))
+			 (NP-TMP Tuesday))))))
+     .))
+( (S (NP-SBJ-1 The latest 10-year notes)
+     (VP were
+         (VP quoted
+             (PP-CLR at
+		     (NP 100 22))
+             (S-CLR (NP-SBJ *-1)
+		    (VP to
+			(VP yield
+			    (NP 7.88 %))))
+	     (PP compared
+		 (PP with
+		     (NP (NP 100 16)
+			 (S-CLR (NP-SBJ *)
+				(VP to
+				    (VP yield
+					(NP 7.90 %)))))))))
+     .))
+( (S (NP-SBJ (NP The discount rate)
+             (PP on
+                 (NP three-month Treasury bills)))
+     (VP was
+         (ADJP-PRD essentially unchanged)
+	 (PP-CLR at
+		 (NP 7.79 %))
+         ,
+         (SBAR-ADV while
+		   (S (NP-SBJ (NP the rate)
+			      (PP on
+				  (NP six-month bills)))
+		      (VP was
+			  (ADJP-PRD slightly lower)
+			  (PP-CLR at
+				  (NP 7.52 %))
+			  (PP compared
+			      (PP with
+				  (NP (NP 7.60 %)
+				      (NP-TMP Tuesday))))))))
+     .))
+( (NP-HLN Corporate Issues))
+( (S (NP-SBJ (NP IBM 's)
+             (ADJP (QP $ 750 million) *U*)
+	     debenture offering)
+     (VP dominated
+         (NP (NP activity)
+             (PP-LOC in
+		     (NP the corporate debt market))))
+     .))
+( (S (ADVP-TMP Meanwhile)
+     ,
+     (NP-SBJ most investment-grade bonds)
+     (VP ended
+         (ADJP-CLR unchanged)
+	 (PP-DIR to
+		 (ADVP (NP (QP as much
+			       as
+			       1) point)
+		       higher)))
+     .))
+( (S (PP-LOC In
+	     (NP (NP its latest compilation)
+		 (PP of
+		     (NP performance statistics))))
+     ,
+     (NP-SBJ (NP Moody 's)
+	     Investors Service)
+     (VP found
+	 (SBAR that
+	       (S (NP-SBJ investment-grade bonds)
+		  (VP posted
+		      (NP (NP a total return)
+			  (PP of
+			      (NP 2.7 %)))
+		      (PP-TMP in
+			      (NP October))
+		      (SBAR-ADV while
+				(S (NP-SBJ junk bonds)
+				   (VP showed
+				       (NP (NP a negative return)
+					   (PP of
+					       (NP 1.5 %))))))))))
+     .))
+( (S (NP-SBJ Moody 's)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ those returns)
+                  (VP compare
+                      (PP with
+                          (NP (NP a (ADJP 3.8 %)
+				  total return)
+			      (PP for
+				  (NP longer-term Treasury notes and bonds))))))))
+     .))
+( (S (NP-SBJ Total return)
+     (VP measures
+         (NP (NP price changes)
+             and
+             (NP interest income)))
+     .))
+( (S (PP For
+	 (NP (NP the year)
+	     (PP to
+		 (NP date))))
+     ,
+     (NP-SBJ Moody 's)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 total returns)
+                  (VP were
+                      (VP topped
+                          (NP *-1)
+                          (PP by
+                              (NP-LGS-2 (NP the 16.5 %)
+					(PP of
+					    (NP longer-term Treasury issues))))
+			  ,
+			  (S-ADV (NP-SBJ-3 *-2) 
+				 (ADVP closely)
+				 (VP followed
+				     (NP *-3)
+				     (PP by
+					 (NP-LGS (NP 15 %)
+						 (PP for
+						     (NP investment-grade bonds)))))))))))
+     .))
+( (S (NP-SBJ Junk bonds)
+     (VP trailed
+         (NP the group)
+         (ADVP-TMP again))
+     .))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ (NP Even the (ADJP 7.2 %) return)
+			 (PP from
+			     (NP the risk-free three-month Treasury bill)))
+		 (VP has
+		     (ADVP-MNR easily)
+		     (VP outdistanced
+			 (NP (NP the (ADJP 4.1 %)
+				 return)
+			     (PP from
+				 (NP junk bonds))))))
+	, ''
+	(VP wrote
+	    (S *T*-1))
+	(NP-SBJ (NP Moody 's)
+		economist John Lonski)
+	(PP-LOC in
+		(NP (NP yesterday 's)
+		    market report))
+	.))
+( (S ``
+     (FRAG-TPC-2 (NP Little wonder)
+		 (SBAR that
+		       (S (NP-SBJ-1 (NP buyers)
+				    (PP for
+					(NP junk)))
+			  (VP have
+			      (VP been
+				  (VP found
+				      (S (NP-SBJ *-1)
+					 (ADJP-PRD wanting))))))))
+     , ''
+     (NP-SBJ he)
+     (VP said
+	 (FRAG *T*-2))
+     .))
+( (S (NP-SBJ Moody 's)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ (NP the average net asset value)
+                          (PP of
+                              (NP 24 junk-bond mutual funds)))
+                  (VP fell
+                      (PP-EXT by
+			      (NP 4.2 %))
+		      (PP-TMP in
+			      (NP October))))))
+     .))
+( (NP-HLN Mortgage-Backed Issues))
+( (S (NP-SBJ Mortgage securities)
+     (VP (VP ended
+             (ADVP-CLR slightly higher))
+         but
+         (VP trailed
+             (NP (NP gains)
+                 (PP-LOC in
+			 (NP the Treasury market)))))
+     .))
+( (S (S (NP-SBJ-1 (NP (NP Ginnie Mae 's)
+		      (ADJP 9 %)
+		      issue)
+		  (PP for
+		      (NP November delivery)))
+        (VP finished
+            (PP-CLR-2 at
+		      (NP 98 5))
+            ,
+            (ADVP-3 up
+		    (NP 2))))
+     , and
+     (S (NP-SBJ=1 its 9 1 % issue)
+        (PP-CLR=2 at
+		  (NP 100 22))
+        ,
+        (ADVP also)
+	(ADVP=3 up
+		(NP 2)))
+     .))
+( (S (NP-SBJ The Ginnie Mae (ADJP 9 %) securities)
+     (VP were
+         (VP yielding
+             (NP 9.32 %)
+             (PP-CLR to
+		     (NP a 12-year average life))))
+     .))
+( (S (NP-SBJ Activity)
+     (VP was
+         (ADJP-PRD light)
+         (PP-LOC in
+		 (NP derivative markets))
+         ,
+         (PP with
+	     (S-NOM (NP-SBJ-1 no new issues)
+		    (VP priced
+			(NP *-1)))))
+     .))
+( (NP-HLN Municipal Issues))
+( (S (NP-SBJ Municipal bonds)
+     (VP were
+         (ADJP-PRD mostly unchanged)
+	 (PP-DIR to
+		 (ADVP up
+		       (NP 1 point)))
+         (PP in
+             (NP (NP light , cautious trading)
+		 (ADVP-PRD prior
+			   (PP to
+			       (NP (NP tomorrow 's)
+				   unemployment report))))))
+     .))
+( (S (NP-SBJ-1 (NP A (ADJP (QP $ 114 million) *U*) issue)
+	       (PP of
+		   (NP health facility revenue bonds))
+	       (PP from
+		   (NP the California Health Facilities Financing Authority)))
+     (VP was
+         (ADVP temporarily)
+         (VP withdrawn
+	     (NP *-1)
+	     (PP-TMP after
+		     (S-NOM (NP-SBJ-2 *-1)
+			    (VP being
+				(ADVP-MNR tentatively)
+				(VP priced
+				    (NP *-2)
+				    (PP by
+					(NP-LGS a First Boston Corp. group))))))))
+     .))
+( (S (S (NP-SBJ-1 (NP An official)
+		  (PP for
+		      (NP the lead underwriter)))
+	(VP declined
+	    (S (NP-SBJ *-1)
+	       (VP to
+		   (VP comment
+		       (PP-CLR on
+			       (NP (NP the reason)
+				   (PP for
+				       (NP the delay)))))))))
+     , but
+     (S (NP-SBJ market participants)
+        (VP speculated
+            (SBAR that
+                  (S (NP-SBJ (NP a number)
+			     (PP of
+				 (NP factors))
+			     ,
+			     (PP including
+				 (NP (NP a lack)
+				     (PP of
+					 (NP investor interest))))
+			     ,)
+                     (VP were
+                         (ADJP-PRD responsible))))))
+     .))
+( (S (NP-SBJ-1 The issue)
+     (VP could
+         (VP be
+             (VP relaunched
+                 (NP *-1)
+                 ,
+                 (PP-MNR (ADVP possibly)
+			 in
+			 (NP a restructured form))
+                 ,
+                 (ADVP-TMP (ADVP as early)
+			   (PP as
+			       (NP next week)))
+		 ,
+		 (PP according
+		     (PP to
+			 (NP the lead underwriter))))))
+     .))
+( (S (NP-SBJ-1 (NP A (ADJP (QP $ 107.03 million) *U*) offering)
+	       (PP of
+		   (NP Santa Ana Community Redevelopment Agency , Calif. , tax allocation bonds)))
+     (VP (VP got
+	     (PRT off)
+	     (PP-CLR to
+		     (NP a slow start)))
+	 and
+	 (VP may
+	     (VP be
+		 (VP repriced
+		     (NP *-1)
+		     (PP-CLR at
+			     (NP lower levels))
+		     (NP-TMP today))))
+	 ,
+	 (PP according
+	     (PP to
+		 (NP (NP an official)
+		     (PP with
+			 (NP lead underwriter Donaldson Lufkin & Jenrette Securities Corp))))))
+     .))
+( (S (NP-SBJ-1 The Santa Ana bonds)
+     (VP were
+         (ADVP-MNR tentatively)
+	 (VP priced
+	     (NP-2 *-1)
+             (S-CLR (NP-SBJ *-2)
+		    (VP to
+			(VP yield
+			    (PP-CLR (PP from
+					(NP (NP 6.40 %)
+					    (PP-TMP in
+						    (NP 1991))))
+				    (PP to
+					(NP (NP 7.458 %)
+					    (PP in))))))))))) 
+( (S (S-ADV (NP-SBJ *-1)
+	    (VP Bucking
+		(NP the market trend)))
+     ,
+     (NP-SBJ-1 (NP an issue)
+	       (PP of
+		   (NP (NP (ADJP (QP $ 130 million) *U*)
+			   general obligation distributable state aid bonds)
+		       (PP from
+			   (NP-LOC (NP Detroit)
+				   ,
+				   (NP Mich.)
+				   ,)))))
+     (ADVP apparently)
+     (VP drew
+	 (NP solid investor interest))
+     .))
+( (S (NP-SBJ-1 They)
+     (VP were
+         (ADVP-MNR tentatively)
+	 (VP priced
+	     (NP-2 *-1)
+             (S-CLR (NP-SBJ *-2)
+		    (VP to
+			(VP yield
+			    (PP (PP from
+				    (NP (NP 6.20 %)
+					(PP-TMP in
+						(NP 1991))))
+				(PP to
+				    (NP (NP 7.272 %)
+					(PP in))))))))))) 
+( (NP-HLN Foreign Bond))
+( (S (NP-SBJ (ADJP West German)
+             dealers)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ there)
+                  (VP was
+                      (NP-PRD (NP little interest)
+			      (PP in
+				  (NP Treasury bonds)))
+		      (ADVP-TMP ahead
+				(PP of
+				    (NP (NP Thursday 's)
+					new government bond issue)))))))
+     .))
+( (S-2 (ADVP-TMP So far)
+       (PRN ,
+	    (S (NP-SBJ they)
+	       (VP said
+		   (SBAR 0
+			 (S *T*-2))))
+	    ,)
+       (NP-SBJ investors)
+       (VP (VP appear
+	       (ADJP-PRD unenthusiastic
+			 (PP about
+			     (NP the new issue))))
+	   (SBAR (WHNP-1 which)
+		 (S (NP-SBJ *T*-1)
+		    (VP might
+			(VP force
+			    (S (NP-SBJ the government)
+			       (VP to
+				   (VP raise
+				       (NP the coupon)
+				       (PP-CLR to
+					       (NP (QP more than 7)
+						   %))))))))))
+       .))
+( (S (NP-SBJ-1 It)
+     (VP is
+         (ADVP generally)
+         (VP expected
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP be
+                        (NP-PRD the usual 10-year
+				,
+				(ADJP (QP four billion) mark)
+				issue))))))
+     .))
+( (S (NP-SBJ (NP Rumors)
+             (PP to
+                 (NP the contrary)))
+     (VP have
+         (VP been
+             (SBAR-PRD (SBAR that
+			     (S (NP-SBJ it)
+				(VP would
+				    (VP be
+					(NP-PRD a (ADJP (QP six billion) mark) issue)))))
+		       , or
+		       (SBAR that
+			     (S (NP-SBJ-1 (NP the last Bund)
+					  ,
+					  (NP (NP a (ADJP 7 %) issue)
+					      (ADJP due
+						    (NP-TMP October 1999)))
+					  ,)
+				(VP would
+				    (VP be
+					(VP increased
+					    (NP *-1)
+					    (PP by
+						(NP-LGS two billion marks))))))))))
+     .))
+( (ADVP-HLN Elsewhere :))
+( (S (LST --)
+     (PP-LOC In
+	     (NP Japan))
+     ,
+     (NP-SBJ-1 (NP the benchmark No. 111 (ADJP 4.6 %) issue)
+	       (ADJP due
+		     (NP-TMP 1998)))
+     (VP ended
+         (PP-LOC on
+		 (NP brokers screens))
+         (ADJP unchanged)
+	 (PP-CLR at
+		 (NP 95.09))
+         (S-CLR (NP-SBJ *-1)
+		(VP to
+		    (VP yield
+			(NP 5.435 %)))))
+     .))
+( (S (LST --)
+     (PP-LOC In
+	     (NP Britain))
+     ,
+     (NP-SBJ-1 (NP the benchmark (ADJP (QP 11 3) %) bond)
+	       (ADJP due
+		     (NP-TMP 2003)))
+     (VP fell
+         (NP-EXT 14)
+         (PP-CLR to
+		 (NP 111 2))
+         (S-CLR (NP-SBJ *-1)
+		(VP to
+		    (VP yield
+			(NP 10.19 %)))))
+     .))
+( (S (NP-SBJ-1 (NP The (ADJP 12 %) notes)
+	       (ADJP due
+		     (NP-TMP 1995)))
+     (VP fell
+         (NP-EXT 9)
+         (PP-CLR to
+		 (NP 103 3))
+         (S-CLR (NP-SBJ *-1)
+		(VP to
+		    (VP yield
+			(NP 11.10 %)))))
+     .))

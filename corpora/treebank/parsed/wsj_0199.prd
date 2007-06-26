@@ -1,0 +1,36 @@
+
+
+( (S (NP-SBJ Trinity Industries Inc.)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP reached
+                      (NP a preliminary agreement
+                          (S (NP-SBJ *)
+                             (VP to
+                                 (VP sell
+                                     (NP 500 railcar platforms)
+                                     (PP-DTV to
+					     (NP (NP Trailer Train Co.)
+						 (PP of
+						     (NP Chicago))))))))))))
+     .))
+( (S (NP-SBJ-1 Terms)
+     (VP were n't
+         (VP disclosed
+	     (NP *-1)))
+     .))
+( (S (NP-SBJ Trinity)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 it)
+                  (VP plans
+                      (S (NP-SBJ *-1)
+                         (VP to
+                             (VP begin
+                                 (NP delivery)
+                                 (PP-TMP in
+					 (NP (NP the first quarter)
+					     (PP of
+						 (NP next year)))))))))))
+     .))

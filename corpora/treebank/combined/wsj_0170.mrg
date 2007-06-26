@@ -1,0 +1,177 @@
+
+( (S 
+    (NP-SBJ (NNP Carnival) (NNP Cruise) (NNP Lines) (NNP Inc.) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 
+            (NP (JJ potential) (NNS problems) )
+            (PP (IN with) 
+              (NP 
+                (NP (DT the) (NN construction) )
+                (PP (IN of) 
+                  (NP 
+                    (NP (CD two) (JJ big) (NN cruise) (NNS ships) )
+                    (PP (IN from) 
+                      (NP (NNP Finland) )))))))
+          (VP (VBP have) 
+            (VP (VBN been) 
+              (VP (VBN averted) 
+                (NP (-NONE- *-1) )))))))
+    (. .) ))
+( (S 
+    (NP-TMP (JJ Last) (NN week) )
+    (, ,) 
+    (NP-SBJ (JJ Miami-based) (NNP Carnival) )
+    (VP (VBD disclosed) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ-2 
+            (NP (NNP Waertsilae) (NNP Marine) (NNPS Industries) )
+            (, ,) 
+            (NP 
+              (NP (DT the) (JJ Finnish) (NN shipyard) )
+              (SBAR 
+                (WHNP-1 (WDT that) )
+                (S 
+                  (NP-SBJ (-NONE- *T*-1) )
+                  (VP (VBZ is) 
+                    (VP (VBG building) 
+                      (NP 
+                        (NP (NNP Carnival) (POS 's) )
+                        (JJ new) (NN cruise) (NNS ships) ))))))
+            (, ,) )
+          (VP (VBD planned) 
+            (S 
+              (NP-SBJ (-NONE- *-2) )
+              (VP (TO to) 
+                (VP (VB file) 
+                  (PP-CLR (IN for) 
+                    (NP (NN bankruptcy) )))))))))
+    (. .) ))
+( (S 
+    (NP-TMP (NN Yesterday) )
+    (, ,) 
+    (NP-SBJ (NNP Carnival) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-2 
+            (NP (DT a) (JJ new) (NN company) )
+            (SBAR (-NONE- *ICH*-1) ))
+          (VP (VBZ has) 
+            (VP (VBN been) 
+              (VP (VBN formed) 
+                (NP (-NONE- *-2) )
+                (PP-LOC (IN in) 
+                  (NP (NNP Finland) ))
+                (SBAR-1 
+                  (WHNP-3 (WDT that) )
+                  (S 
+                    (NP-SBJ (-NONE- *T*-3) )
+                    (VP (MD will) 
+                      (VP (VB carry) 
+                        (PRT (RP on) )
+                        (NP 
+                          (NP (NNP Waertsilae) (POS 's) )
+                          (NN shipbuilding) (NNS operations) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Carnival) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP it) )
+          (VP (MD will) 
+            (VP (VB be) 
+              (NP-PRD 
+                (NP (DT an) 
+                  (ADJP (CD 11) (NN %) )
+                  (NN shareholder) )
+                (PP (IN in) 
+                  (NP (DT the) (JJ new) (NN company) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Carnival) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 
+            (NP (DT the) (NNP Fantasy) )
+            (, ,) 
+            (NP 
+              (NP (DT a) (JJ 2,050-passenger) (NN ship) )
+              (SBAR 
+                (WHNP-3 (WDT that) )
+                (S 
+                  (NP-SBJ-4 (-NONE- *T*-3) )
+                  (VP (VBD was) 
+                    (VP (VBN slated) 
+                      (S 
+                        (NP-SBJ-2 (-NONE- *-4) )
+                        (VP (TO to) 
+                          (VP (VB be) 
+                            (VP (VBN delivered) 
+                              (NP (-NONE- *-2) )
+                              (NP-TMP (DT this) (NN month) ))))))))))
+            (, ,) )
+          (VP (MD will) 
+            (VP (VB be) 
+              (VP (VBN delivered) 
+                (NP (-NONE- *-1) )
+                (PP-TMP (IN in) 
+                  (NP (NNP January) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-2 (DT A) (JJ second) (NN ship) )
+    (VP (VBZ is) 
+      (ADVP-TMP (RB now) )
+      (VP (VBN expected) 
+        (S 
+          (NP-SBJ-1 (-NONE- *-2) )
+          (VP (TO to) 
+            (VP (VB be) 
+              (VP (VBN delivered) 
+                (NP (-NONE- *-1) )
+                (ADVP-TMP 
+                  (NP-ADV (JJ late) (JJ next) (NN year) )
+                  (CC or) 
+                  (ADVP (RB early) 
+                    (PP (IN in) 
+                      (NP (CD 1991) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Carnival) )
+    (VP (VBD had) 
+      (VP (VBN expected) 
+        (S 
+          (NP-SBJ-1 (DT that) (NN ship) )
+          (VP (TO to) 
+            (VP (VB be) 
+              (VP (VBN delivered) 
+                (NP (-NONE- *-1) )
+                (NP-TMP (JJ next) (NN fall) )))))))
+    (. .) ))
+( (S 
+    (S-TPC-2 
+      (NP-SBJ-1 (DT A) (VBN planned) (JJ third) (NN ship) )
+      (ADVP (RB still) )
+      (VP 
+        (VP (MD may) 
+          (VP (VB be) 
+            (VP (VBN built) 
+              (NP (-NONE- *-1) )
+              (PP-LOC (IN in) 
+                (NP (DT the) (JJ Finnish) (NN shipyard) )))))
+        (, ,) (CC or) 
+        (VP (MD may) 
+          (VP (VB be) 
+            (VP (VBN built) 
+              (NP (-NONE- *-1) )
+              (ADVP-LOC (RB elsewhere) ))))))
+    (, ,) 
+    (NP-SBJ (NNP Carnival) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-2) )))
+    (. .) ))

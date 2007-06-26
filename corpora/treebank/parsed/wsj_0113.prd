@@ -1,0 +1,438 @@
+
+
+( (S (PP Despite
+         (NP (NP one)
+             (PP of
+                 (NP (NP the
+			 (ADJP most devastating)
+			 droughts)
+		     (PP-LOC on
+			     (NP record))))))
+     ,
+     (NP-SBJ (NP net cash income)
+             (PP-LOC in
+		     (NP the Farm Belt)))
+     (VP rose
+         (PP-DIR to
+		 (NP (NP a new high)
+		     (PP of
+			 (NP (QP $ 59.9 billion) *U*))))
+	 (NP-TMP last year))
+     .))
+( (S (NP-SBJ The previous record)
+     (VP was
+         (NP-PRD (QP $ 57.7 billion) *U*)
+         (PP-TMP in
+		 (NP 1987))
+	 ,
+	 (PP according
+	     (PP to
+		 (NP the Agriculture Department))))
+     .))
+((S (S-TPC-1 (NP-SBJ (NP Net cash income)
+		     (PRN --
+			  (NP (NP the amount)
+			      (VP left
+				  (NP *)
+				  (PP-LOC in
+					  (NP (NP farmers ')
+					      pockets))
+				  (PP-TMP after
+					  (S-NOM (NP-SBJ *)
+						 (VP deducting
+						     (NP expenses)
+						     (PP from
+							 (NP gross cash income)))))))
+			  --))
+	     (VP increased
+		 (PP-LOC in
+			 (NP 33 states))
+		 (PP-TMP in
+			 (NP 1988))
+		 ,
+		 (SBAR-ADV as
+			   (S (NP-SBJ the drought)
+			      (VP (VP cut
+				      (PP into
+					  (NP crop yields)))
+				  and
+				  (VP drove
+				      (PRT up)
+				      (NP commodity prices)))))))
+    ,
+    (NP-SBJ (NP the department 's)
+	    Economic Research Service)
+    (VP reported
+	(SBAR 0
+	      (S *T*-1))
+	(NP-TMP yesterday))
+    .))
+( (S (NP-SBJ (NP Most)
+             (PP of
+                 (NP those states)))
+     (VP set
+         (NP farm income records))
+     .))
+( (S (NP-SBJ The worst crop damage)
+     (VP occurred
+         (PP-LOC in
+		 (NP (NP the Midwestern Corn Belt)
+		     and
+		     (NP the northern Great Plains))))
+     .))
+( (S (SBAR-NOM-SBJ (WHNP-42 What)
+		   (S (NP-SBJ *T*-42)
+		      (VP saved
+			  (NP many farmers)
+			  (PP from
+			      (NP a bad year)))))
+     (VP was
+         (NP-PRD the opportunity
+		 (S (NP-SBJ *)
+		    (VP to
+			(VP reclaim
+			    (NP (NP large quantities)
+				(PP of
+				    (NP (NP (NP grain)
+					    and
+					    (NP other crops))
+					(SBAR (WHNP-1 that)
+					      (S (NP-SBJ they)
+						 (VP had
+						     (VP `` mortgaged ''
+							 (NP *T*-1)
+							 (PP to
+							     (NP the government))
+							 (PP-LOC under 
+								 (NP price-support loan programs))))))))))))))
+     .))
+((S (S-2 (PP With
+	     (S-NOM (NP-SBJ prices)
+		    (VP soaring)))
+	 ,
+	 (NP-SBJ-1 they)
+	 (VP were
+	     (ADJP-PRD able
+		       (S (NP-SBJ *-1)
+			  (VP to
+			      (VP sell
+				  (NP the reclaimed commodities)
+				  (PP at ``
+				      (NP considerable profit))))))))
+    ,
+    ''
+    (NP-SBJ (NP the agency 's)
+	    240-page report)
+    (VP said
+	(SBAR 0
+	      (S *T*-2)))
+    .))
+( (S (PP-LOC In
+	     (NP (ADJP less parched)
+		 areas))
+     ,
+     (ADVP meanwhile)
+     ,
+     (NP-SBJ (NP farmers)
+	     (SBAR (WHNP-43 who)
+		   (S (NP-SBJ *T*-43)
+		      (VP had
+			  (NP (NP little or no loss)
+			      (PP of
+				  (NP production)))))))
+     (VP profited
+	 (ADVP greatly)
+	 (PP from
+	     (NP the higher prices)))
+     .))
+( (S (PP To
+         (NP (NP the surprise)
+             (PP of
+                 (NP some analysts))))
+     ,
+     (NP-SBJ net cash income)
+     (VP rose
+         (PP-LOC in
+		 (NP (NP some)
+		     (PP of
+			 (NP (NP the hardest-hit states)
+			     ,
+			     (PP including
+				 (NP (NP Indiana)
+				     ,
+				     (NP Illinois)
+				     ,
+				     (NP Nebraska)
+				     and
+				     (NP the Dakotas))))))))
+     .))
+( (S (NP-SBJ Analysts)
+     (VP attributed
+	 (NP the increases)
+	 (ADVP partly)
+	 (PP to
+	     (NP (NP the
+		     (ADJP (QP $ 4 billion) *U*)
+		     disaster-assistance package)
+		 (VP enacted
+		     (NP *)
+		     (PP by
+			 (NP-LGS Congress))))))
+     .))
+( (S (NP-SBJ (NP Last year 's)
+             record net cash income)
+     (VP confirms
+         (NP (NP (NP the farm sector 's)
+		 rebound)
+	     (PP from
+		 (NP (NP the agricultural depression)
+		     (PP of
+			 (NP the early 1980s))))))
+     .))
+( (S (NP-SBJ-2 It)
+     (ADVP also)
+     (VP helps
+         (S (NP-SBJ *-2)
+	    (VP explain
+		(NP (NP the reluctance
+			(S *ICH*-1))
+		    (PP of
+			(NP (NP the major farm lobbies)
+			    and
+			    (NP many lawmakers)))
+		    (S-1 (NP-SBJ *)
+			 (VP to
+			     (VP make
+				 (NP any significant changes)
+				 (PP-LOC in
+					 (NP the 1985 farm program))
+				 (NP-TMP next year))))))))
+     .))
+( (S (NP-SBJ Commodity prices)
+     (VP have
+         (VP been
+             (VP rising
+                 (PP-TMP in
+			 (NP recent years))
+                 ,
+                 (PP with
+		     (S-NOM (NP-SBJ the farm price index)
+			    (VP hitting
+				(NP record peaks)
+				(NP-TMP earlier
+					this year))))
+                 ,
+                 (SBAR-ADV as
+			   (S (NP-SBJ-1 the government)
+			      (VP curtailed
+				  (NP production)
+				  (PP-MNR with
+					  (NP land-idling programs))
+				  (S-PRP (NP-SBJ *-1)
+					 (VP to
+					     (VP reduce
+						 (NP price-depressing surpluses))))))))))
+     .))
+((SINV (S-TPC-1 (PP-TMP At
+			(NP the same time))
+		,
+		(NP-SBJ (NP export demand)
+			(PP for
+			    (NP U.S. wheat , corn and other commodities)))
+		(VP strengthened))
+       ,
+       (VP said
+	   (S *T*-1))
+       (NP-SBJ (NP Keith Collins)
+	       ,
+	       (NP a department analyst))
+       .))
+( (S (NP-SBJ Farmers)
+     (ADVP also)
+     (VP benefited
+         (PP-CLR from
+		 (NP strong livestock prices))
+         ,
+         (SBAR-ADV as
+		   (S (NP-SBJ (NP the nation 's)
+			      cattle inventory)
+		      (VP dropped
+			  (ADVP-DIR close
+				    (PP to
+					(NP a 30-year low)))))))
+     .))
+( (S ``
+     (S-TPC-1 (NP-SBJ (NP All)
+		      (PP of
+			  (NP these forces)))
+	      (VP came
+		  (ADVP together)
+		  (PP-TMP in
+			  (NP 1988))
+		  (S-PRP (NP-SBJ *)
+			 (VP to
+			     (VP benefit
+				 (NP agriculture))))))
+     , ''
+     (NP-SBJ Mr. Collins)
+     (VP said
+	 (S *T*-1))
+     .))
+( (S (NP-SBJ-1 California)
+     (VP led
+         (NP the nation)
+         (PP with
+             (NP (NP (QP $ 6.5 billion) *U*)
+		 (PP in
+		     (NP net cash income))))
+         (NP-TMP last year)
+         ,
+         (PP followed
+	     (PP by
+		 (NP (NP (NP Texas)
+			 ,
+			 (NP (QP $ 3.9 billion) *U*))
+		     ;
+		     (NP (NP Iowa)
+			 ,
+			 (NP (QP $ 3.4 billion) *U*))
+		     ;
+		     (NP (NP Florida)
+			 ,
+			 (NP (QP $ 3.1 billion) *U*))
+		     ; and
+		     (NP (NP Minnesota)
+			 ,
+			 (NP (QP $ 2.7 billion) *U*))))))
+     .))
+( (S (NP-SBJ Iowa
+             and
+             Minnesota)
+     (VP were
+         (PP-PRD among
+		 (NP (NP the few major farm states)
+		     (SBAR (WHNP-1 0)
+			   (S (NP-SBJ *T*-1)
+			      (VP to
+				  (VP log
+				      (NP (NP a decline)
+					  (PP-LOC in
+						  (NP net cash income))))))))))
+     .))
+( (S (PP Despite
+         (NP federal disaster relief))
+     ,
+     (NP-SBJ (NP the drought)
+             (PP-TMP of
+		     (NP 1988)))
+     (VP was
+         (NP-PRD (NP a severe financial setback)
+		 (PP for
+		     (NP (QP an estimated 10,000 to 15,000)
+			 farmers)))
+	 ,
+	 (PP according
+	     (PP to
+		 (NP the department))))
+     .))
+( (S (NP-SBJ Many)
+     (VP lost
+         (NP their farms))
+     .))
+( (S (NP-SBJ Department economists)
+     (VP do n't
+         (VP expect
+	     (S (NP-SBJ 1989)
+		(VP to
+		    (VP be
+			(NP-PRD (NP (ADJP as good)
+				    a year)
+				(SBAR as
+				      (S (NP-SBJ 1988)
+					 (VP was
+					     (NP-PRD *?*))))))))))
+     .))
+( (S (ADVP Indeed)
+     ,
+     (NP-SBJ-1 net cash income)
+     (VP is
+         (ADJP-PRD likely
+		   (S (NP-SBJ *-1)
+		      (VP to
+			  (VP fall
+			      (NP-TMP this year)
+			      (SBAR-ADV as
+					(S (S (NP-SBJ farm expenses)
+					      (VP rise))
+					   and
+					   (S (NP-SBJ (NP government payments)
+						      (PP to
+							  (NP farmers)))
+					      (VP decline)))))))))
+     .))
+( (S (PP-TMP At
+	     (NP the same time))
+     ,
+     (NP-SBJ (NP an increase)
+	     (PP of
+		 (NP (NP land)
+		     (PP under
+			 (NP cultivation))))
+	     (PP-TMP after
+		     (NP the drought)))
+     (VP has
+         (VP boosted
+             (NP (NP production)
+                 (PP of
+                     (NP (NP corn)
+                         ,
+                         (NP soybeans)
+                         and
+                         (NP other commodities))))
+	     ,
+             (S-ADV (NP-SBJ *)
+		    (VP causing
+			(NP (NP a fall)
+			    (PP-LOC in
+				    (NP prices))
+			    (SBAR (WHNP-2 that)
+				  (S (NP-SBJ-3 *T*-2)
+				     (VP has
+					 (VP been
+					     (ADVP only partly) 
+					     (VP cushioned
+						 (NP *-3)
+						 (PP by
+						     (NP-LGS (NP heavy grain buying)
+							     (PP by
+								 (NP the Soviets))))))))))))))
+     .))
+( (S (NP-TMP Last year)
+     ,
+     (NP-SBJ (NP government payments)
+             (PP to
+                 (NP farmers)))
+     (VP slipped
+         (PP-DIR to
+		 (NP (QP less
+			 than
+			 $ 14.5 billion)
+		     *U*))
+         (PP-DIR from
+		 (NP (NP a record (QP $ 16.7 billion)
+			 *U*)
+		     (PP-TMP in
+			     (NP 1987)))))
+     .))
+( (S (NP-SBJ-1 Payments)
+     (VP are
+         (VP expected
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP range
+                        (PP between
+                            (NP (NP (QP $ 9 billion) *U*)
+                                and
+                                (NP (QP $ 12 billion) *U*))))))
+	     (NP-TMP this year)))
+     .))
