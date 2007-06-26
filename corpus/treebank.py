@@ -96,6 +96,7 @@ def read_document(item, format='parsed'):
         filename = find_corpus_file('treebank/tagged', item, '.pos')
         return StreamBackedCorpusView(filename, read_tagged_tb_block)
     elif format == 'tokenized':
+        raise NotImplementedError, "Use the tagged or parsed methods and extract tokens"
         filename = find_corpus_file('treebank/raw', item)
         return StreamBackedCorpusView(filename, read_tokenized_tb_block)
     elif format == 'raw':
