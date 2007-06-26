@@ -13,6 +13,7 @@ Code (major):
 - known bug: when the LHS of an edge contains an ApplicationExpression,
     variable values in the RHS bindings aren't copied over when the
     fundamental rule applies
+- known bug: HMM tagger is broken
 Tutorials:
 - global updates to NLTK and docs
 - ongoing polishing
