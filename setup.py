@@ -38,6 +38,7 @@ setup(
                 'nltk.sem', 'nltk.wordnet', 'nltk.etree', 'yaml',
                 'nltk_contrib', 'nltk_contrib.toolbox', 'nltk_contrib.fst',
                 'nltk_contrib.classifier', 'nltk_contrib.classifier.exceptions',
-                'nltk_contrib.classifier_tests', 'nltk_contrib.dependency'
+                'nltk_contrib.classifier_tests', 'nltk_contrib.dependency',
+                'nltk_contrib.drt', 'nltk_contrib.gluesemantics'
                 ],
     )
