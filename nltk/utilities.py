@@ -503,9 +503,14 @@ def guess_encoding(data):
 
 
 ##########################################################################
-# extract from iterator
+# Invert a dictionary
 ##########################################################################
 
-from itertools import islice
-def extract(n, i):
-    return list(islice(i, n, n+1))[0]
+from nltk import defaultdict
+
+def invert_dict(d):
+    inverted_dict = defaultdict(list)
+    for key in d:
+        for term in d[key]:
+            inverted_dict[term].append(key)
+    return inverted_dict

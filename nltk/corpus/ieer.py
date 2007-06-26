@@ -22,7 +22,7 @@ APW_19980429, NYT_19980315, NYT_19980403, and NYT_19980407.
 """
 
 from util import *
-from nltk import chunk, extract
+from nltk import chunk
 from nltk.etree import ElementTree as ET
 import os
 
