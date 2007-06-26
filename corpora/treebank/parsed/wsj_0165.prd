@@ -1,0 +1,132 @@
+
+
+( (S (NP-SBJ (NP Heritage Media Corp.)
+             ,
+             (NP-LOC New York)
+             ,)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-2 it)
+                  (VP offered
+                      (S (NP-SBJ *-2)
+                         (VP to
+                             (VP buy
+                                 (NP (NP the shares)
+				     (PP of
+					 (NP POP Radio Corp.))
+                                     (SBAR (WHNP-1 0)
+                                           (S (NP-SBJ it)
+                                              (VP does n't
+                                                  (ADVP already)
+						  (VP own
+                                                      (NP *T*-1))))))
+                                 (PP-LOC in
+					 (NP a stock swap)))))))))
+     .))
+( (S (NP-SBJ (NP Heritage)
+             ,
+             (SBAR (WHNP-1 which)
+                   (S (NP-SBJ *T*-1)
+                      (VP owns
+                          (NP (NP 51 %)
+                              (PP of
+                                  (NP (NP (NP POP 's)
+                                          (QP 3.6 million)
+					  shares)
+                                      (ADJP outstanding)))))))
+             ,)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP will
+                      (VP exchange
+                          (NP (NP one share)
+                              (PP of
+                                  (NP a new preferred stock)))
+                          (PP for
+                              (NP (NP each POP common share)
+                                  (SBAR (WHNP-2 0)
+                                        (S (NP-SBJ it)
+                                           (VP does n't
+                                               (ADVP already)
+					       (VP own
+						   (NP *T*-2))))))))))))
+     .))
+( (S (S-TPC-3 (S-ADV (NP-SBJ *)
+		     (VP Depending
+			 (PP upon
+			     (SBAR (WHNP-2 (WHADJP how many)
+					   warrants and options)
+				   (S (NP-SBJ-1 *T*-2)
+				      (VP are
+					  (VP exercised
+					      (NP *-1)
+					      (ADVP-TMP prior
+							(PP to
+							    (NP (NP completion)
+								(PP of
+								    (NP the transaction))))))))))))
+	      ,
+	      (NP-SBJ Heritage)
+	      (VP would
+		  (VP issue
+		      (NP (QP between 1.8 million and 2.35 million)
+			  preferred shares))))
+     ,
+     (NP-SBJ a Heritage spokesman)
+     (VP estimated
+	 (SBAR 0
+	       (S *T*-3)))
+     .))
+( (S (PP-LOC In
+	     (NP national over-the-counter trading))
+     (NP-TMP yesterday)
+     ,
+     (NP-SBJ POP)
+     (VP plunged
+         (NP-EXT $ 4 *U*)
+         (PP-DIR to
+		 (NP $ 14.75 *U*)))
+     .))
+( (S (NP-SBJ (NP The preferred stock)
+             ,
+             (SBAR (WHNP-1 which)
+                   (S (NP-SBJ *T*-1)
+                      (VP would
+                          (VP have
+                              (NP (NP a dividend rate)
+                                  (PP of
+                                      (NP (NP $ 1.76 *U*)
+                                          (NP-ADV a year))))))))
+             ,)
+     (VP would
+         (VP be
+             (ADJP-PRD convertible
+		       (PP into
+			   (NP Heritage common))
+		       (PP at
+			   (NP (NP a rate)
+			       (PP of
+				   (NP (NP four common shares)
+				       (PP for
+					   (NP each preferred)))))))))
+     .))
+( (S (NP-SBJ (ADJP New York-based)
+             POP Radio)
+     (VP provides
+	 ,
+         (PP through
+             (NP a national , in-store network))
+         ,
+         (NP (NP a customized music , information and advertising service)
+             (SBAR (WHNP-1 which)
+                   (S (NP-SBJ *T*-1)
+                      (VP simulates
+                          (NP live radio))))))
+     .))
+( (S (NP-SBJ Heritage)
+     (VP owns and operates
+         (NP (NP television and radio stations)
+             and
+             (NP in-store advertising and promotion programs)))
+     .))

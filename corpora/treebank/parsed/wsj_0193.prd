@@ -1,0 +1,35 @@
+
+
+( (S (NP-SBJ NCR Corp.)
+     (VP (VP unveiled
+             (NP (NP two models)
+                 (PP of
+                     (NP (NP its Tower line)
+                         (PP of
+                             (NP midrange computers))))))
+         and
+         (VP introduced
+             (NP (NP advanced networking software)
+                 (SBAR (WHADVP-1 0)
+		       (S (NP-SBJ *)
+			  (VP to
+			      (VP allow
+				  (S (NP-SBJ the Tower family)
+				     (VP to
+					 (VP operate
+					     (PP-MNR as
+						     (NP (NP a central hub)
+							 (PP-LOC in
+								 (NP (NP a network)
+								     (PP of
+									 (NP computers)))))))))
+				  (ADVP *T*-1))))))))
+     .))
+( (S (NP-SBJ-1 The new software)
+     (VP is
+         (VP based
+             (NP *-1)
+             (PP-CLR on
+		     (NP (NP Novell Inc. 's)
+			 NetWare network operating system software))))
+     .))

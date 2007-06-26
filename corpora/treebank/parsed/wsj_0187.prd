@@ -1,0 +1,214 @@
+
+
+( (S (NP-SBJ-1 (NP The Finnish government)
+	       and
+	       (NP (NP major creditors)
+		   (PP of
+		       (NP bankrupt shipyard Waertsilae Marine Industries Oy))))
+     (VP agreed
+         (PP-MNR in
+		 (NP principle))
+         (S (NP-SBJ-2 *-1)
+            (VP to
+                (VP form
+                    (NP a new company)
+		    (S-PRP (NP-SBJ *-2)
+			   (VP to
+			       (VP complete
+				   (NP (NP most)
+				       (PP of
+					   (NP (NP (NP the troubled shipyard 's)
+						   backlog)
+					       (PP of
+						   (NP 15 ships))))))))))))
+     .))
+( (S (S-2 (NP-SBJ-1 The new company)
+	  (VP will
+	      (VP attempt
+		  (S (NP-SBJ *-1)
+		     (VP to
+			 (VP limit
+			     (NP (NP the shipyard 's)
+				 losses)))))))
+     ,
+     (NP-SBJ participants)
+     (VP said
+	 (SBAR 0
+	       (S *T*-2)))
+     .))
+( (S ``
+     (NP-SBJ The situation)
+     (VP is
+         (SBAR-PRD that
+		   (S (NP-SBJ the bankruptcy court)
+		      (VP will
+			  (VP get
+			      (PP-CLR out
+				      (PP of
+					  (NP the shipbuilding business))))))))
+     .))
+( (SINV (S-TPC-2 (NP-SBJ-1 Everything)
+		 (VP will
+		     (VP be
+			 (VP taken
+			     (PRT over)
+			     (NP *-1)
+			     (PP by
+				 (NP-LGS the new company))))))
+	, ''
+	(VP said
+	    (S *T*-2))
+	(NP-SBJ (NP Christian Andersson)
+		,
+		(NP (NP executive vice president)
+		    (PP of
+			(NP (NP Oy Waertsilae)
+			    ,
+			    (NP (NP former parent)
+				(PP of
+				    (NP Waertsilae Marine)))))))
+	.))
+( (S (SBAR-TMP Once
+	       (S (NP-SBJ-1 its ownership)
+		  (VP is
+		      (VP finalized
+			  (NP *-1)))))
+     ,
+     (NP-SBJ the new company)
+     (VP will
+         (VP open
+             (NP (NP talks)
+		 (SBAR *ICH*-3))
+             (PP-CLR with
+		     (NP state-appointed receivers))
+	     (SBAR-PRP-3 (WHADVP-2 0) 
+			 (S (NP-SBJ *)
+			    (VP to
+				(VP buy or lease
+				    (NP (NP Waertsilae Marine 's)
+					shipyard facilities)
+				    (ADVP *T*-2)))))))
+     .))
+( (S (S-TPC-3 (S (NP-SBJ-1 Subcontractors)
+		 (VP will
+		     (VP be
+			 (VP offered
+			     (NP *-1)
+			     (NP a settlement)))))
+	      and
+	      (S (NP-SBJ-2 (NP a swift transition)
+			   (PP to
+			       (NP new management)))
+		 (VP is
+		     (VP expected
+			 (S (NP-SBJ *-2)
+			    (VP to
+				(VP avert
+				    (NP (NP an exodus)
+					(PP of
+					    (NP skilled workers))
+					(PP from
+					    (NP (NP Waertsilae Marine 's)
+						two big shipyards))))))))))
+     ,
+     (NP-SBJ government officials)
+     (VP said
+	 (SBAR 0
+	       (S *T*-3)))
+     .))
+( (S (PP-LOC Under
+	     (NP (NP an accord)
+		 (VP signed
+		     (NP *)
+		     (NP-TMP yesterday))))
+     ,
+     (NP-SBJ (NP the government)
+             and
+             (NP (NP Union Bank)
+                 (PP of
+                     (NP Finland))))
+     (VP would
+         (VP become
+             (NP-PRD (NP major shareholders)
+		     (PP-LOC in
+			     (NP the new company)))
+	     ,
+	     (S-ADV (NP-SBJ each)
+		    (VP injecting
+			(NP (NP (QP 100 million) Finnish markkaa)
+			    (PRN -LRB-
+				 (NP (QP $ 23.5 million) *U*)
+				 -RRB-))))))
+     .))
+( (S (NP-SBJ-1 Oy Waertsilae)
+     (VP is
+	 (S-PRD (NP-SBJ *-1)
+		(VP to
+		    (VP (VP contribute
+			    (NP (NP (QP 200 million) markkaa)
+				,
+				(NP (NP most)
+				    (PP of
+					(NP it))
+				    (PP as
+					(NP subordinated debt)))
+				,))
+			and
+			(VP take
+			    (NP (NP a minority stake)
+				(PP-LOC in
+					(NP the new company))))))))
+     .))
+( (S (S-TPC-2 (NP-SBJ-1 (NP Customers)
+			(VP holding
+			    (NP (NP contracts)
+				(PP for
+				    (NP (NP Waertsilae Marine 's)
+					undelivered ships)))))
+	      (VP are
+		  (VP expected
+		      (S (NP-SBJ *-1)
+			 (VP to
+			     (VP subscribe
+				 (NP (NP most)
+				     (PP of
+					 (NP the remaining (QP 170 million) markkaa)))
+				 (PP in
+				     (NP share capital))))))))
+     ,
+     (NP-SBJ government officials)
+     (VP said
+	 (SBAR 0
+	       (S *T*-2)))
+     .))
+( (S (NP-SBJ (NP Waertsilae Marine 's)
+             biggest creditor)
+     (VP is
+         (NP-PRD Miami-based Carnival Cruise Lines Inc))
+     .))
+( (S (NP-SBJ (NP Carnival)
+             ,
+             (SBAR (WHNP-1 which)
+                   (S (NP-SBJ *T*-1)
+                      (VP has
+                          (NP three ships)
+                          (PP-CLR on
+				  (NP (NP order)
+				      (PP from
+					  (NP Waertsilae Marine)))))))
+             ,)
+     (VP presented
+         (NP (NP claims)
+             (PP for
+                 (NP (QP $ 1.5 billion) *U* damages)))
+         (PP-LOC in
+		 (NP the bankruptcy court))
+         (NP-TMP this week))
+     .))
+( (S (NP-SBJ (NP Waertsilae Marine 's)
+             bankruptcy proceedings)
+     (VP began
+         (NP-TMP Tuesday)
+         (PP-LOC in
+		 (NP a Helsinki court)))
+     .))

@@ -1,0 +1,151 @@
+
+( (S 
+    (NP-SBJ-1 
+      (NP (JJ Criminal) (NNS charges) )
+      (VP (-NONE- *ICH*-2) ))
+    (VP (VBD were) 
+      (VP (VBN filed) 
+        (NP (-NONE- *-1) )
+        (PP-CLR (IN against) 
+          (NP 
+            (NP (NNP Diceon) (NNP Electronics) (NNP Inc.) )
+            (CC and) 
+            (NP (CD two) (NN company) (NNS officials) )))
+        (VP-2 (VBG alleging) 
+          (NP 
+            (NP (NN waste) (NN disposal) (NNS violations) )
+            (PP (IN in) 
+              (NP (PRP$ its) 
+                (NAC-LOC (NNP Chatsworth) 
+                  (, ,)
+                  (NNP Calif.) 
+                  (, ,)
+                  )
+                (NN facility) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (NNP Los) (NNP Angeles) (NNP County) (NN district) (NN attorney) (POS 's) )
+      (NN office) )
+    (VP (VBD filed) 
+      (NP 
+        (NP (CD seven) (NN felony) 
+          (CC and)
+          (CD five) (NN misdemeanor) (NNS counts) )
+        (VP (VBG charging) 
+          (SBAR (IN that) 
+            (S 
+              (NP-TMP 
+                (NP (JJ late) (JJ last) (NN year) )
+                (CC and) 
+                (NP (RB early) (DT this) (NN year) ))
+              (NP-SBJ (DT the) 
+                (ADJP (NNP Irvine) 
+                  (, ,)
+                  (JJ Calif.-based) )
+                (NN circuit-board) (NN manufacturer) )
+              (ADVP (RB illegally) )
+              (VP 
+                (VP (VBD disposed) 
+                  (PP-CLR (IN of) 
+                    (NP 
+                      (NP (NN acid) )
+                      (, ,) 
+                      (NP (JJ caustic) )
+                      (CC and) 
+                      (NP (JJ heavy) (NNS metals) )))
+                  (PP-DIR (IN into) 
+                    (NP (DT the) (NN sewer) (NN system) )))
+                (, ,) 
+                (CC and)
+                (VP (VBD stored) 
+                  (NP (JJ hazardous) (NNS materials) )
+                  (PP-LOC-CLR (IN in) 
+                    (NP 
+                      (ADJP (JJ leaky) 
+                        (, ,)
+                        (JJ unlabeled) (CC or) (JJ open-top) )
+                      (NNS containers) )))))))))
+    (. .) ))
+( (SINV 
+    (VP-TPC-1 (VBN Named) 
+      (NP (-NONE- *-2) )
+      (PP-CLR (IN as) 
+        (NP (NNS defendants) )))
+    (VP (VBD were) 
+      (VP (-NONE- *T*-1) ))
+    (NP-SBJ-2 
+      (NP 
+        (NP (NNP Roland) (NNP Matthews) )
+        (, ,) 
+        (NP (NN president) )
+        (, ,) )
+      (CC and) 
+      (NP 
+        (NP (NNP Peter) (NNP Jonas) )
+        (, ,) 
+        (NP 
+          (NP 
+            (NP (JJ executive) (NN vice) (NN president) )
+            (CC and) 
+            (NP (NN chief) (JJ financial) (NN officer) ))
+          (, ,) 
+          (PP (RB as) (RB well) (IN as) 
+            (NP (DT a) (JJ former) (NN plant) (NN manager) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN company) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (JJ local) (NNS authorities) )
+          (VP 
+            (VP (VBD held) 
+              (NP 
+                (NP (NNS hearings) )
+                (PP (IN on) 
+                  (NP (DT the) (NNS allegations) )))
+              (NP-TMP (JJ last) (NN spring) ))
+            (CC and) 
+            (VP (VBD had) 
+              (VP (VBN returned) 
+                (NP (DT the) (NN plant) )
+                (PP-CLR (TO to) (`` ``) 
+                  (NP (JJ routine) (NN inspection) )
+                  ('' '') )
+                (PP-TMP (IN in) 
+                  (NP (NNP August) ))))))))
+    (. .) ))
+( (S (`` ``) 
+    (S 
+      (NP-SBJ (DT The) (NN company) )
+      (VP (VBZ does) (RB not) 
+        (VP (VB feel) 
+          (SBAR (IN that) 
+            (S 
+              (NP-SBJ 
+                (NP (PRP it) )
+                (CC or) 
+                (NP 
+                  (NP (DT any) )
+                  (PP (IN of) 
+                    (NP (DT the) (NNS individuals) ))))
+              (VP (VBD violated) 
+                (NP (DT any) (JJ criminal) (NN statute) )))))))
+    (CC and) 
+    (S 
+      (NP-SBJ (DT the) (NN company) )
+      (VP (VBZ expects) 
+        (NP 
+          (NP (JJ full) (NN vindication) )
+          (PP-LOC (IN in) 
+            (NP (NN court) )))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ-1 (NNS Arraignments) )
+    (VP (VBP are) 
+      (VP (VBN scheduled) 
+        (NP (-NONE- *-1) )
+        (PP-TMP-CLR (IN for) 
+          (NP (NNP Nov.) (CD 14) ))))
+    (. .) ))

@@ -1,0 +1,402 @@
+
+
+( (S (NP-SBJ Consumer confidence)
+     (VP stayed
+         (ADJP-PRD strong) 
+         (PP-TMP in
+		 (NP October))
+         ,
+         (PP despite
+             (NP (NP the unsettling gyrations)
+                 (PP of
+                     (NP the stock market)))))
+     .))
+( (SINV ``
+	(S-TPC-2 (NP-SBJ-1 (NP The sharp stock market decline)
+			   (PP-TMP in
+				   (NP late October)))
+		 (VP appears
+		     (S (NP-SBJ *-1)
+			(VP to
+			    (VP have
+				(VP had
+				    (NP little or no effect)
+				    (PP-CLR on
+					    (NP consumers))))))))
+	, ''
+	(VP said
+	    (S *T*-2))
+	(NP-SBJ (NP Fabian Linden)
+		,
+		(NP (NP executive director)
+		    (PP of
+			(NP (NP the Conference Board 's)
+			    consumer research center))))
+	.))
+( (S ``
+     (NP-SBJ (NP Survey returns)
+	     (VP received
+		 (NP *)
+		 (PP-TMP after
+			 (NP (NP the drop)
+			     (PP in
+				 (NP the Dow Jones average))))))
+     (VP were
+         (NP-PRD (NP about the same)
+		 (SBAR as 
+		       (S (NP-SBJ the views)
+			  (VP expressed
+			      (ADVP-TMP prior
+					(PP to
+					    (NP that event))))))))
+     . ''))
+( (S (NP-SBJ The
+             nonprofit , industry-supported
+             group)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 its Consumer Confidence Index)
+                  (VP was
+                      (NP-PRD 116.4)
+                      (PP-TMP in
+			      (NP October))
+                      ,
+                      (S-ADV (NP-SBJ-2 *-1)
+			     (VP (ADVP barely)
+				 changed
+				 (NP *-2)
+				 (PP from
+				     (NP (NP a revised 116.3)
+					 (PP-TMP in
+						 (NP September))))))))))
+     .))
+( (S (NP-SBJ The index)
+     (VP (VP was
+	     (NP-PRD 116.9)
+	     (PP-TMP in
+		     (NP October 1988)))
+	 and
+	 (VP (PP-TMP in
+		     (NP the past year))
+	     has
+	     (VP ranged
+		 (PP (PP from
+			 (NP (NP a low)
+			     (PP of
+				 (NP 112.9))))
+		     (PP to
+			 (NP (NP a high)
+			     (PP of
+				 (NP 120.7))))))))
+     .))
+( (S (NP-SBJ It)
+     (VP uses
+         (NP (NP a base)
+             (PP of
+                 (NP 100))
+             (PP-TMP in
+		     (NP 1985))))
+     .))
+( (S (PP-TMP In
+	     (NP October))
+     ,
+     (NP-SBJ (NP more people)
+	     (PP *ICH*-1))
+     (VP said
+	 (SBAR that
+	       (S (NP-SBJ present business conditions)
+		  (VP were
+		      ``
+		      (ADJP-PRD good)
+		      '')))
+	 (PP-1 than
+	       (PP-TMP in
+		       (NP September))))
+     .))
+( (S (NP-SBJ (NP An equal number)
+             (PP-TMP in
+		     (NP each month)))
+     (VP said
+         (SBAR that
+               (S (NP-SBJ employment conditions)
+                  (VP were
+                      (ADJP-PRD good)))))
+     .))
+( (S And
+     (NP-SBJ (NP 19.6 %)
+             (PP of
+                 (NP (NP consumers)
+                     (VP contacted
+                         (NP *)))))
+     (VP believed
+         (SBAR 0
+               (S (NP-SBJ business conditions)
+                  (VP will
+                      (VP improve
+                          (PP-TMP in
+				  (NP the coming six months))))))
+	 ,
+	 (PP compared
+	     (PP with
+		 (NP (NP 18.3 %)
+		     (PP-TMP in
+			     (NP September))))))
+     .))
+( (S (ADVP Also)
+     ,
+     (NP-SBJ more people)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ conditions)
+                  (VP will
+                      (VP worsen
+                          (PP-TMP in
+				  (NP the period)))))))
+     .))
+( (S -LRB-
+     (NP-SBJ Fewer)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ conditions)
+                  (VP wo n't
+                      (VP change)))))
+     . -RRB-))
+( (S (PP-TMP In
+	     (NP October 1988))
+     ,
+     (NP-SBJ 21.1 %)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ business conditions)
+                  (VP would
+                      (VP improve)))))
+     .))
+( (S (PP-TMP In
+	     (NP October 1989))
+     ,
+     (NP-SBJ 16.9 %)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 more jobs)
+                  (VP will
+                      (VP be
+                          (VP created
+                              (NP *-1)
+                              (PP-TMP in
+				      (NP the coming six months)))))))
+	 ,
+	 (PP compared
+	     (PP with
+		 (NP (NP (NP 17.4 %)
+			 (PP-TMP in
+				 (NP September)))
+		     and
+		     (NP (NP 18.6 %)
+			 (PP-TMP in
+				 (NP October 1988)))))))
+     .))
+( (S (NP-SBJ (NP Only 26.8 %)
+	     (PP-TMP in
+		     (NP October)))
+     ,
+     (PP compared
+	 (PP with
+	     (NP (NP (NP 28.5 %)
+		     (PP-TMP in
+			     (NP September)))
+		 and
+		 (NP (NP 26.8 %)
+		     (PP-TMP in
+			     (NP October 1988))))))
+     ,
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ income)
+                  (VP would
+                      (VP increase)))))
+     .))
+( (SINV ``
+	(S-TPC-2 (NP-SBJ-3 (NP The sustained level)
+			   (PP of
+			       (NP confidence)))
+		 (VP can
+		     (VP be
+			 (VP attributed
+			     (NP *-3)
+			     (PP-CLR to
+				     (NP (NP the continued favorable circumstances)
+					 (SBAR (WHNP-1 which)
+					       (S (NP-SBJ *T*-1)
+						  (VP affect
+						      (NP (NP the consumer 's)
+							  day-to-day economic life))))))))))
+	, ''
+	(VP said
+	    (S *T*-2))
+	(NP-SBJ Mr. Linden)
+	.))
+( (S ``
+     (S (NP-SBJ Unemployment)
+        (VP continues
+            (PP-CLR at
+		    (NP a relatively low level))
+	    ,
+	    (S-ADV (NP-SBJ *)
+		   (VP providing
+		       (NP (NP a sense)
+			   (PP of
+			       (NP job security)))))))
+     , and
+     (S (NP-SBJ a low inflation rate)
+        (VP has
+            (VP kept
+                (S (NP-SBJ (NP the purchasing power)
+			   (PP of
+			       (NP the weekly paycheck)))
+		   (ADJP-PRD reasonably strong)))))
+     . ''))
+( (S (NP-SBJ-2 The consumer confidence survey)
+     ,
+     (S-ADV (NP-SBJ *-2)
+	    (VP covering
+		(NP 5,000 U.S. households)))
+     ,
+     (VP is
+         (VP conducted
+             (NP *-2)
+             (PP-TMP in
+		     (NP (NP the first two weeks)
+			 (PP of
+			     (NP each month))))
+             (PP for
+                 (NP the Conference Board))
+             (PP by
+                 (NP-LGS (NP National Family Opinion Inc.)
+			 ,
+			 (NP a
+			     (NAC-LOC Toledo
+				      ,
+				      Ohio
+				      ,)
+			     market researcher)))))
+     .))
+( (S (NP-SBJ Buying plans)
+     (VP were
+         (ADJP-PRD mixed)
+	 (PP-TMP in
+		 (NP October))
+	 ,
+	 (PP with 
+	     (S-NOM (S (NP-SBJ fewer households)
+		       (VP indicating
+			   (NP plans
+			       (S (NP-SBJ *)
+				  (VP to
+				      (VP buy
+					  (NP cars)))))))
+		    and
+		    (S (NP-SBJ more)
+		       (VP saying
+			   (SBAR 0
+				 (S (NP-SBJ they)
+				    (VP will
+					(VP buy
+					    (NP homes
+						and
+						appliances)
+					    (PP-TMP in
+						    (NP the coming six months)))))))))))
+     .))
+( (S (PP-TMP In
+	     (NP October))
+     ,
+     (NP-SBJ (NP 6.7 %)
+	     (PP of
+		 (NP respondents)))
+     (VP said
+	 (SBAR 0
+	       (S (NP-SBJ they)
+		  (VP will
+		      (VP buy
+			  (NP a car)))))
+	 ,
+	 (S-ADV (NP-SBJ *)
+		(VP easing
+		    (PP-CLR from
+			    (NP (NP September)
+				(SBAR (WHADVP-1 when)
+				      (S (NP-SBJ 8.1 %)
+					 (VP anticipated
+					     (NP a purchase)
+					     (ADVP-TMP *T*-1)))))))))
+     .))
+( (S (PP-TMP In
+	     (NP October 1988))
+     ,
+     (NP-SBJ 7.3 %)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ they)
+                  (VP would
+                      (VP buy
+                          (NP a car))))))
+     .))
+( (S (NP-SBJ Home purchase plans)
+     (VP increased
+         (PP-DIR to
+		 (NP 3.3 %))
+         (PP-DIR from
+		 (NP 3.1 %))
+         (PP-TMP in
+		 (NP the two recent months)))
+     .))
+( (S (PP-TMP In
+	     (NP October 1988))
+     ,
+     (NP-SBJ 3.7 %)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ they)
+                  (VP would
+                      (VP buy
+                          (NP a house))))))
+     .))
+( (S (PP-TMP In
+	     (NP 1989))
+     ,
+     (NP-SBJ home purchase plans)
+     (VP have
+         (VP ranged
+             (ADVP-TMP monthly)
+             (PP-DIR (PP from
+			 (NP (NP 2.9 %)
+			     (PP *RNR*-1)))
+		     (PP to
+			 (NP (NP 3.7 %)
+			     (PP *RNR*-1)))
+		     (PP-1 of
+			   (NP respondents)))))
+     .))
+( (S (PP-TMP In
+	     (NP October))
+     ,
+     (NP-SBJ 30.6 %)
+     (VP said
+	 (SBAR 0
+	       (S (NP-SBJ they)
+		  (VP will
+		      (VP buy
+			  (NP appliances)
+			  (PP-TMP in
+				  (NP the coming six months))))))
+	 ,
+	 (PP compared
+	     (PP with
+		 (NP (NP (NP 27.4 %)
+			 (PP-TMP in
+				 (NP September)))
+		     and
+		     (NP (NP 26.5 %)
+			 (PP-TMP in
+				 (NP October 1988)))))))
+     .))

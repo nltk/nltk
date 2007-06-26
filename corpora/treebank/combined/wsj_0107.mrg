@@ -1,0 +1,540 @@
+
+( (S 
+    (NP-SBJ (DT The) (NNP House) )
+    (VP (VBD passed) 
+      (NP 
+        (NP (NN legislation) )
+        (VP (VBN designed) 
+          (S 
+            (NP-SBJ (-NONE- *) )
+            (VP (TO to) 
+              (VP (VB make) 
+                (S 
+                  (NP-SBJ (PRP it) )
+                  (ADJP-PRD (JJR easier) 
+                    (SBAR (IN for) 
+                      (S 
+                        (NP-SBJ (DT the) (NNP Transportation) (NNP Department) )
+                        (VP (TO to) 
+                          (VP (VB block) 
+                            (NP (NN airline) (JJ leveraged) (NNS buy-outs) )))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (JJ final) (NN vote) )
+    (VP (VBD came) 
+      (SBAR-TMP (IN after) 
+        (S 
+          (NP-SBJ (DT the) (NNP House) )
+          (VP 
+            (VP (VBD rejected) 
+              (NP (JJ Republican) (NNS efforts) 
+                (S 
+                  (NP-SBJ (-NONE- *) )
+                  (VP (TO to) 
+                    (VP (VB weaken) 
+                      (NP (DT the) (NN bill) ))))))
+            (CC and) 
+            (VP (VBD approved) 
+              (NP 
+                (NP (CD two) (NNS amendments) )
+                (VP (VBN sought) 
+                  (NP (-NONE- *) )
+                  (PP (IN by) 
+                    (NP-LGS (VBN organized) (NN labor) )))))))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ-1 (DT The) (NNP Bush) (NN administration) )
+      (VP (VBZ has) 
+        (VP (VBN threatened) 
+          (S 
+            (NP-SBJ (-NONE- *-1) )
+            (VP (TO to) 
+              (VP (VB veto) 
+                (NP (PDT such) (DT a) (NN bill) ))))
+          (PP-PRP (IN because) (IN of) 
+            (SBAR-NOM 
+              (WHNP-2 (WP what) )
+              (S 
+                (NP-SBJ (PRP it) )
+                (VP (VBZ views) 
+                  (NP (-NONE- *T*-2) )
+                  (PP-CLR (IN as) 
+                    (NP 
+                      (NP (DT an) (JJ undesirable) (NN intrusion) )
+                      (PP (IN into) 
+                        (NP 
+                          (NP (DT the) (NNS affairs) )
+                          (PP (IN of) 
+                            (NP (NN industry) )))))))))))))
+    (, ,) (CC but) 
+    (S 
+      (NP-SBJ (DT the) (CD 300-113) (NN vote) )
+      (VP (VBZ suggests) 
+        (SBAR (IN that) 
+          (S 
+            (NP-SBJ (NNS supporters) )
+            (VP (VBP have) 
+              (NP 
+                (NP (DT the) (NN potential) )
+                (SBAR 
+                  (WHADVP-3 (-NONE- 0) )
+                  (S 
+                    (NP-SBJ (-NONE- *) )
+                    (VP (TO to) 
+                      (VP (VB override) 
+                        (NP (DT a) (NN veto) )
+                        (ADVP (-NONE- *T*-3) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (JJR broader) (NN question) )
+    (VP (VBZ is) 
+      (SBAR-PRD 
+        (WHADVP-1 (WRB where) )
+        (S 
+          (NP-SBJ (DT the) (NNP Senate) )
+          (VP (VBZ stands) 
+            (ADVP-LOC-CLR (-NONE- *T*-1) )
+            (PP-CLR (IN on) 
+              (NP (DT the) (NN issue) ))))))
+    (. .) ))
+( (S 
+    (SBAR-ADV (IN While) 
+      (S 
+        (NP-SBJ (DT the) (NNP Senate) (NNP Commerce) (NNP Committee) )
+        (VP (VBZ has) 
+          (VP (VBN approved) 
+            (NP 
+              (NP (NN legislation) )
+              (ADJP (JJ similar) 
+                (PP (TO to) 
+                  (NP (DT the) (NNP House) (NN bill) )))
+              (PP (IN on) 
+                (NP (NN airline) (JJ leveraged) (NNS buy-outs) )))))))
+    (, ,) 
+    (NP-SBJ (DT the) (NN measure) )
+    (VP (VBZ has) (RB n't) 
+      (ADVP (RB yet) )
+      (VP (VBN come) 
+        (PP-DIR (TO to) 
+          (NP (DT the) (JJ full) (NN floor) ))))
+    (. .) ))
+( (S 
+    (SBAR-ADV (IN Although) 
+      (S 
+        (NP-SBJ (DT the) (NN legislation) )
+        (VP (MD would) 
+          (VP (VB apply) 
+            (PP-CLR (TO to) 
+              (NP 
+                (NP (NNS acquisitions) )
+                (VP (VBG involving) 
+                  (NP (DT any) (JJ major) (NN airline) ))))))))
+    (, ,) 
+    (NP-SBJ-25 (PRP it) )
+    (VP (VBZ is) 
+      (VP (VBN aimed) 
+        (NP (-NONE- *-25) )
+        (PP-CLR (IN at) 
+          (S-NOM 
+            (NP-SBJ (-NONE- *) )
+            (VP (VBG giving) 
+              (NP (DT the) (NNP Transportation) (NNP Department) )
+              (NP (DT the) (NN chance) 
+                (S 
+                  (NP-SBJ (-NONE- *) )
+                  (VP (TO to) 
+                    (VP (VB review) 
+                      (PP-TMP (IN in) 
+                        (NP (NN advance) ))
+                      (NP-1 
+                        (NP (NNS transactions) )
+                        (VP (VBN financed) 
+                          (NP (-NONE- *) )
+                          (PP (IN by) 
+                            (NP-LGS 
+                              (NP (JJ large) (NNS amounts) )
+                              (PP (IN of) 
+                                (NP (NN debt) )))))))))))))))
+    (. .) ))
+( (S (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ 
+        (NP (DT The) (NN purpose) )
+        (PP (IN of) 
+          (NP (DT the) (NN bill) )))
+      (VP (VBZ is) 
+        (S-PRD 
+          (NP-SBJ (-NONE- *) )
+          (VP (TO to) 
+            (VP (VB put) 
+              (NP (DT the) (NNS brakes) )
+              (PP-PUT (IN on) 
+                (NP 
+                  (NP (NN airline) (NNS acquisitions) )
+                  (SBAR 
+                    (WHNP-2 (WDT that) )
+                    (S 
+                      (NP-SBJ (-NONE- *T*-2) )
+                      (VP (MD would) 
+                        (ADVP (RB so) )
+                        (VP (VB load) 
+                          (NP (DT a) (NN carrier) )
+                          (PRT (RP up) )
+                          (PP (IN with) 
+                            (NP (NN debt) ))
+                          (SBAR-ADV (IN that) 
+                            (S 
+                              (NP-SBJ (PRP it) )
+                              (VP (MD would) 
+                                (VP (VB impede) 
+                                  (NP 
+                                    (NP (NN safety) )
+                                    (CC or) 
+                                    (NP 
+                                      (NP (DT a) (NN carrier) (POS 's) )
+                                      (NN ability) 
+                                      (S 
+                                        (NP-SBJ (-NONE- *) )
+                                        (VP (TO to) 
+                                          (VP (VB compete) ))))))))))))))))))))
+    (, ,) ('' '') 
+    (NP-SBJ 
+      (NP (NNP Rep.) (NNP John) (NNP Paul) (NNP Hammerschmidt) )
+      (, ,) 
+      (PRN 
+        (-LRB- -LRB-)
+        (NP 
+          (NP (NNP R.) )
+          (, ,) 
+          (NP (NNP Ark) (. .) ))
+        (-RRB- -RRB-) ))
+    (VP (VBD said) 
+      (S (-NONE- *T*-1) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN bill) )
+    (, ,) 
+    (SBAR-ADV (IN as) 
+      (S 
+        (NP-SBJ-26 (PRP it) )
+        (VP (VBD was) 
+          (VP (VBN approved) 
+            (NP (-NONE- *-26) )
+            (PP (IN by) 
+              (NP-LGS (DT the) (NNP House) (NNP Public) (NNPS Works) 
+                (CC and)
+                (NNP Transportation) (NNP Committee) ))))))
+    (, ,) 
+    (VP (MD would) 
+      (VP (VB give) 
+        (NP (DT the) (NNP Transportation) (NNP Department) )
+        (NP 
+          (NP 
+            (QP (IN up) (TO to) (CD 50) )
+            (NNS days) )
+          (SBAR 
+            (WHADVP-1 (-NONE- 0) )
+            (S 
+              (NP-SBJ (-NONE- *) )
+              (VP (TO to) 
+                (VP (VB review) 
+                  (NP 
+                    (NP (DT any) (NN purchase) )
+                    (PP (IN of) 
+                      (NP 
+                        (NP (CD 15) (NN %) 
+                          (QP (CC or) (JJR more) ))
+                        (PP (IN of) 
+                          (NP 
+                            (NP (DT the) (NN stock) )
+                            (PP (IN in) 
+                              (NP (DT an) (NN airline) )))))))
+                  (ADVP-TMP (-NONE- *T*-1) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (DT The) (NN department) )
+    (VP (MD would) 
+      (VP (VB be) 
+        (VP (VBN required) 
+          (S 
+            (NP-SBJ (-NONE- *-1) )
+            (VP (TO to) 
+              (VP (VB block) 
+                (NP (DT the) (NN buy-out) ))))
+          (SBAR-ADV 
+            (SBAR (IN if) 
+              (S 
+                (NP-SBJ-2 (DT the) (NN acquisition) )
+                (VP (VBZ is) 
+                  (ADJP-PRD (JJ likely) 
+                    (S 
+                      (NP-SBJ (-NONE- *-2) )
+                      (VP (TO to) 
+                        (VP 
+                          (ADVP-MNR (RB financially) )
+                          (VB weaken) 
+                          (NP (DT a) (NN carrier) )
+                          (SBAR-ADV (IN so) (IN that) 
+                            (S 
+                              (S 
+                                (NP-SBJ-27 (NN safety) )
+                                (VP (MD would) 
+                                  (VP (VB be) 
+                                    (VP (VBN impaired) 
+                                      (NP (-NONE- *-27) )))))
+                              (: ;) 
+                              (S 
+                                (NP-SBJ-3 (PRP$ its) (NN ability) 
+                                  (S 
+                                    (NP-SBJ (-NONE- *) )
+                                    (VP (TO to) 
+                                      (VP (VB compete) ))))
+                                (VP (MD would) 
+                                  (VP (VB be) 
+                                    (VP 
+                                      (ADVP-MNR (RB sharply) )
+                                      (VBN diminished) 
+                                      (NP (-NONE- *-3) )))))
+                              (: ;) 
+                              (S 
+                                (NP-SBJ-28 (PRP it) )
+                                (VP (MD would) 
+                                  (VP (VB be) 
+                                    (VP (VBN put) 
+                                      (NP (-NONE- *-28) )
+                                      (PP-PUT (IN into) 
+                                        (NP (JJ foreign) (NN control) )))))))))))))))
+            (: ;) (CC or) 
+            (SBAR (IN if) 
+              (S 
+                (NP-SBJ (DT the) (NN transaction) )
+                (VP (MD would) 
+                  (VP (VB result) 
+                    (PP-CLR (IN in) 
+                      (NP 
+                        (NP (DT the) (NN sale) )
+                        (PP (IN of) 
+                          (NP (JJ airline-related) (NNS assets) ))))
+                    (: --) 
+                    (SBAR-ADV (IN unless) 
+                      (S 
+                        (S-NOM-SBJ 
+                          (NP-SBJ (-NONE- *) )
+                          (VP (VBG selling) 
+                            (NP (JJ such) (NNS assets) )))
+                        (VP (VBD had) 
+                          (NP (DT an) (VBG overriding) (NN public) (NN benefit) ))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NNP House) )
+    (VP (VBD approved) 
+      (NP 
+        (NP (DT an) (NN amendment) )
+        (VP (VBN offered) 
+          (NP (-NONE- *) )
+          (PP (IN by) 
+            (NP-LGS 
+              (NP (NNP Rep.) (NNP Peter) (NNP DeFazio) )
+              (PRN 
+                (-LRB- -LRB-)
+                (NP 
+                  (NP (NNP D.) )
+                  (, ,) 
+                  (NP (NNP Ore.) ))
+                (-RRB- -RRB-) ))))
+        (SBAR 
+          (WHNP-1 (WDT that) )
+          (S 
+            (NP-SBJ (-NONE- *T*-1) )
+            (VP (MD would) 
+              (PRN 
+                (, ,)
+                (PP (IN in) 
+                  (NP 
+                    (NP (NN addition) )
+                    (PP (TO to) 
+                      (NP (DT the) (JJ previous) (NNS criteria) ))))
+                (, ,) )
+              (ADVP (RB also) )
+              (VP (VB require) 
+                (S 
+                  (NP-SBJ (DT the) (NN department) )
+                  (VP (TO to) 
+                    (VP (VB block) 
+                      (NP 
+                        (NP (DT the) (NN acquisition) )
+                        (PP (IN of) 
+                          (NP (DT an) (NN airline) )))
+                      (SBAR-ADV (IN if) 
+                        (S 
+                          (NP-SBJ-2 
+                            (NP (DT the) (VBN added) (NN debt) )
+                            (VP (VBN incurred) 
+                              (NP (-NONE- *) )))
+                          (VP (VBD were) 
+                            (ADJP-PRD (JJ likely) 
+                              (S 
+                                (NP-SBJ (-NONE- *-2) )
+                                (VP (TO to) 
+                                  (VP (VB result) 
+                                    (PP (IN in) 
+                                      (NP 
+                                        (NP (DT a) (NN reduction) )
+                                        (PP (IN in) 
+                                          (NP 
+                                            (NP 
+                                              (NP (DT the) (NN number) )
+                                              (PP (IN of) 
+                                                (NP 
+                                                  (NP (DT the) (NN carrier) (POS 's) )
+                                                  (NNS employees) )))
+                                            (, ,) (CC or) 
+                                            (NP (PRP$ their) (NNS wages) (CC or) (NNS benefits) )))))))))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Rep.) (NNP James) (NNP Traficant) )
+      (PRN 
+        (-LRB- -LRB-)
+        (NP 
+          (NP (NNP D.) )
+          (, ,) 
+          (NP (NNP Ohio) ))
+        (-RRB- -RRB-) ))
+    (, ,) 
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (DT the) (NN amendment) )
+            (, ,) 
+            (SBAR 
+              (WHNP-19 (WDT which) )
+              (S 
+                (NP-SBJ (-NONE- *T*-19) )
+                (VP (VBD passed) 
+                  (ADVP (CD 271-147) ))))
+            (, ,) )
+          (VP (MD would) (`` ``) 
+            (VP (VB let) 
+              (S 
+                (NP-SBJ (DT the) (JJ American) (NN worker) )
+                (VP (VB know) 
+                  (SBAR (IN that) 
+                    (S 
+                      (NP-SBJ (PRP we) )
+                      (VP (VBP consider) 
+                        (NP (PRP them) )
+                        (ADVP-TMP (RB occasionally) )))))))))))
+    (. .) ('' '') ))
+((S (CC But) 
+    (NP-SBJ (NNP Rep.) (NNP Hammerschmidt) )
+    (VP (VBD said) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ-1 
+            (NP (DT the) (NN provision) )
+            (, ,) 
+            (SBAR 
+              (WHNP-2 (WDT which) )
+              (S 
+                (NP-SBJ (PRP he) )
+                (VP (VBD dubbed) 
+                  (S 
+                    (NP-SBJ (-NONE- *T*-2) )
+                    (NP-PRD (DT a) (`` ``) (JJ special) (NN interest) ('' '') (NN amendment) )))))
+            (, ,) )
+          (VP (VBD was) 
+            (ADJP-PRD (JJ likely) 
+              (S 
+                (NP-SBJ (-NONE- *-1) )
+                (VP (TO to) 
+                  (VP (VB make) 
+                    (S 
+                      (NP-SBJ (DT the) (NN bill) )
+                      (ADJP-PRD (RB even) (RBR more) (JJ controversial) ))))))))))
+    (. .) ))
+( (S 
+    (PP-TMP (IN On) 
+      (NP (NNP Tuesday) ))
+    (, ,) 
+    (NP-SBJ (DT the) (NNP House) )
+    (VP (VBD approved) 
+      (NP 
+        (NP (DT a) (JJ labor-backed) (NN amendment) )
+        (SBAR 
+          (WHNP-1 (WDT that) )
+          (S 
+            (NP-SBJ (-NONE- *T*-1) )
+            (VP (MD would) 
+              (VP (VB require) 
+                (S 
+                  (NP-SBJ (DT the) (NNP Transportation) (NNP Department) )
+                  (VP (TO to) 
+                    (VP (VB reject) 
+                      (NP (NN airline) (NNS acquisitions) )
+                      (SBAR-ADV (IN if) 
+                        (S 
+                          (NP-SBJ 
+                            (NP (DT the) (NN person) )
+                            (VP (VBG seeking) 
+                              (S 
+                                (NP-SBJ (-NONE- *) )
+                                (VP (TO to) 
+                                  (VP (VB purchase) 
+                                    (NP (DT a) (NN carrier) ))))))
+                          (VP (VBD had) 
+                            (VP (VBN run) 
+                              (NP 
+                                (NP (CD two) (CC or) (JJR more) (NNS airlines) )
+                                (SBAR (-NONE- *ICH*-4) ))
+                              (ADVP-TMP (RB previously) )
+                              (SBAR-4 
+                                (WHNP-2 (WDT that) )
+                                (S 
+                                  (NP-SBJ (-NONE- *T*-2) )
+                                  (VP (VBP have) 
+                                    (VP (VBN filed) 
+                                      (PP-CLR (IN for) 
+                                        (NP 
+                                          (NP (NN protection) )
+                                          (PP (IN from) 
+                                            (NP (NNS creditors) ))
+                                          (PP-LOC (IN under) 
+                                            (NP 
+                                              (NP (NN Chapter) (CD 11) )
+                                              (PP (IN of) 
+                                                (NP (DT the) (JJ federal) (NNP Bankruptcy) (NNP Code) )))))))))))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-29 
+      (NP (DT The) (NN provision) )
+      (, ,) 
+      (VP (VBN called) 
+        (S 
+          (NP-SBJ (-NONE- *) )
+          (NP-PRD (DT the) (`` ``) (JJ two-time-losers) ('' '') (NN amendment) ))
+        (PP (IN by) 
+          (NP-LGS (PRP$ its) (NNS supporters) )))
+      (, ,) )
+    (ADVP (RB apparently) )
+    (VP (VBD was) 
+      (VP (VBN aimed) 
+        (NP (-NONE- *-29) )
+        (PP-CLR (IN at) 
+          (S-NOM 
+            (NP-SBJ (-NONE- *) )
+            (VP (VBG preventing) 
+              (NP-1 (NNP Texas) (NNP Air) (NNP Corp.) (NNP Chairman) (NNP Frank) (NNP Lorenzo) )
+              (SBAR-CLR (IN from) 
+                (S-NOM 
+                  (NP-SBJ (-NONE- *-1) )
+                  (VP (VBG attempting) 
+                    (S 
+                      (NP-SBJ (-NONE- *) )
+                      (VP (TO to) 
+                        (VP (VB take) 
+                          (PRT (RP over) )
+                          (NP (DT another) (NN airline) ))))))))))))
+    (. .) ))

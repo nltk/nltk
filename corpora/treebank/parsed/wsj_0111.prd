@@ -1,0 +1,443 @@
+
+
+( (S (NP-SBJ (NP Robert L. Bernstein)
+             ,
+             (NP (NP chairman and president)
+                 (PP of
+                     (NP Random House Inc.)))
+             ,)
+     (VP announced
+         (NP (NP his resignation)
+             (PP from
+                 (NP (NP the publishing house)
+                     (SBAR (WHNP-1 0)
+                           (S (NP-SBJ he)
+                              (VP has
+                                  (VP run
+                                      (NP *T*-1)
+				      (PP-TMP for
+					      (NP 23 years))))))))))
+     .))
+( (S (NP-SBJ-1 A successor)
+     (VP was n't
+	 (VP named
+	     (NP *-1)
+	     ,
+	     (SBAR-ADV (WHNP-35 which)
+		       (S (NP-SBJ *T*-35)
+			  (VP fueled
+			      (NP speculation
+				  (SBAR that
+					(S (NP-SBJ Mr. Bernstein)
+					   (VP may
+					       (VP have
+						   (VP clashed
+						       (PP-CLR with
+							       (NP (NP S.I. Newhouse Jr.)
+								   ,
+								   (SBAR (WHNP-2 (WHNP whose family company)
+										 ,
+										 (NP Advance Publications Inc.)
+										 ,)
+									 (S (NP-SBJ *T*-2)
+									    (VP owns
+										(NP Random House)))))))))))))))))
+     .))
+( (S (NP-SBJ-1 Abrupt departures)
+     (VP are n't
+         (ADJP-PRD unheard
+		   (PP of
+		       (NP *-1)))
+	 (PP-LOC within
+		 (NP the Newhouse empire)))
+     .))
+( (S (PP-LOC In
+	     (NP an interview))
+     ,
+     (NP-SBJ Mr. Bernstein)
+     (VP said
+         (SBAR 0
+               (S (S (NP-SBJ his departure)
+		     ``
+		     (VP evolved
+			 (PP-CLR out
+				 (PP of
+				     (NP (NP discussions)
+					 (PP with
+					     (NP Si Newhouse)))))))
+		  and
+		  (S (NP-SBJ that)
+		     (VP 's
+			 (NP-PRD (NP the decision)
+				 (SBAR (WHNP-1 0)
+				       (S (NP-SBJ I)
+					  (VP reached
+					      (NP *T*-1))))))))))
+     .
+     ''))
+( (S (NP-SBJ-1 He)
+     (VP declined
+         (S (NP-SBJ *-1)
+	    (VP to
+		(VP elaborate
+		    ,
+		    (ADVP (ADVP other)
+			  (SBAR than
+				(S (NP-SBJ *-1)
+				   (VP to
+				       (VP say
+					   , ``
+					   (S (NP-SBJ It)
+					      (ADVP just)
+					      (VP seemed
+						  (NP (NP the right thing)
+						      (SBAR (WHNP-2 0)
+							    (S (NP-SBJ *)
+							       (VP to
+								   (VP do
+								       (NP *T*-2)
+								       (PP-TMP at
+									       (NP this minute))))))))))))))))))
+     .))
+( (S (ADVP-TMP Sometimes)
+     (NP-SBJ you)
+     (ADVP just)
+     (VP go
+         (PP-CLR with
+		 (NP your gut)))
+     . ''))
+( (S (NP-SBJ Mr. Bernstein)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ he)
+                  (VP will
+                      (VP (VP stay
+                              (PP-TMP-CLR until
+					  (NP Dec. 31)))
+                          and
+                          (VP work
+                              (PP-CLR with
+				      (NP (NP his successor)
+					  ,
+					  (SBAR (WHNP-36 who)
+						(S (NP-SBJ-1 *T*-36)
+						   (VP is
+						       (S-PRD (NP-SBJ-43 *-1)
+							      (VP to
+								  (VP be
+								      (VP named
+									  (NP *-43)
+									  (ADVP-TMP soon))))))))))))))))
+     .))
+( (S (NP-SBJ Mr. Newhouse)
+     ,
+     (ADVP-TMP meanwhile)
+     ,
+     (VP insisted
+         (SBAR that
+               (S (NP-SBJ he)
+                  (VP is n't
+                      (ADJP-PRD unhappy
+				(PP with
+				    (NP (NP Mr. Bernstein)
+					or
+					(NP (NP the performance)
+					    (PP of
+						(NP (NP Random House)
+						    ,
+						    (NP (NP the largest trade publishing house)
+							(PP-LOC in
+								(NP the U.S)))))))))))))
+     .))
+( (S (NP-SBJ The company)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ (NP the publisher 's)
+                          annual sales volume)
+                  (VP increased
+                      (PP-DIR to
+			      (NP (QP $ 800 million) *U*))
+		      (PP-DIR from
+			      (NP (QP $ 40 million) *U*))
+		      (PP-TMP during
+			      (NP (NP Mr. Bernstein 's)
+				  tenure))))))
+     .))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ Bob)
+		 (VP has
+		     (VP handled
+			 (NP (NP the extraordinary growth)
+			     (PP of
+				 (NP the company)))
+			 (ADVP-MNR quite
+				   brilliantly))))
+	, ''
+	(VP said
+	    (S *T*-1))
+	(NP-SBJ Mr. Newhouse)
+	.))
+( (S (S ``
+        (NP-SBJ The company)
+        (VP is
+            (VP doing
+                (ADVP-MNR well))))
+     ,
+     (S (NP-SBJ it)
+        (VP 's
+            (ADJP-PRD stable)))
+     ,
+     (S (NP-SBJ it)
+        (VP 's
+            (VP got
+                (NP good people))))
+     .))
+( (S (S (NP-SBJ Bob)
+        (VP has
+            (NP an agenda)))
+     and
+     (S (NP-SBJ this)
+        (VP seemed 
+            (PP-CLR like
+		    (NP the natural time))))
+     . ''))
+( (S (NP-SBJ Publishing officials)
+     (VP believe
+         (SBAR that
+               (S (SBAR-ADV while
+			    (S (NP-SBJ Random House)
+			       (VP (VP has
+				       (VP enjoyed
+					   (NP spectacular growth)))
+				   and
+				   (VP has
+				       (VP (ADVP-MNR smoothly)
+					   integrated
+					   (NP many acquisitions)))
+				   (PP-TMP in
+					   (NP recent years)))))
+		  ,
+		  (NP-SBJ-44 (NP some)
+			     (PP of
+				 (NP the bigger ones)))
+		  (VP have n't
+		      (VP been
+			  (VP absorbed
+			      (NP *-44)
+			      (ADVP-MNR so
+					easily)))))))
+     .))
+( (S (NP-SBJ-1 (NP Crown Publishing Group)
+	       ,
+	       (VP acquired
+		   (NP *)
+		   (NP-TMP last year))
+	       ,)
+     (VP is
+         (VP said
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP be
+                        (VP turning
+			    (PRT in)
+                            (NP disappointing results)))))))
+     .))
+( (S (PP As
+         (NP a private company))
+     ,
+     (NP-SBJ Random House)
+     (VP does n't
+         (VP report
+             (NP its earnings)))
+     .))
+( (S (NP-SBJ (NP Mr. Bernstein)
+             ,
+             (SBAR (WHNP-37 who)
+                   (S (NP-SBJ *T*-37)
+                      (VP succeeded
+                          (NP Bennett Cerf))))
+             ,)
+     (VP has
+         (VP been
+             (NP-PRD (NP only the second president)
+		     (PP of
+			 (NP Random House)))
+	     (SBAR-TMP since
+		       (S (NP-SBJ-45 it)
+			  (VP was
+			      (VP founded
+				  (NP *-45)
+				  (PP-TMP in
+					  (NP 1925))))))))
+     .))
+( (S (NP-SBJ (NP Speculation)
+             (PP on
+                 (NP his successor)))
+     (VP centers
+         (PP-CLR on
+		 (NP (NP a number)
+		     (PP of
+			 (NP (NP division heads)
+			     (PP-LOC at
+				     (NP the house)))))))
+     .))
+( (S (NP-SBJ Possible candidates)
+     (VP include
+         (NP (NP Susan Petersen)
+             ,
+             (NP (NP president)
+                 (PP of
+                     (NP (NP Ballantine/Del Rey/Fawcett)
+                         ,
+                         (NP (NP Random House 's)
+                             huge and successful paperback division))))))
+     .))
+( (S (NP-SBJ Some)
+     (VP say
+         (SBAR 0
+               (S (NP-SBJ-46 (NP Anthony Cheetham)
+                             ,
+                             (NP (NP head)
+                                 (PP of
+                                     (NP (NP a recently acquired British company)
+                                         ,
+                                         (NP Century Hutchinson))))
+                             ,)
+                  (VP could
+                      (VP be
+                          (VP chosen
+                              (NP *-46)))))))
+     .))
+( (S (NP-SBJ There)
+     (VP is
+         (ADVP also)
+         (NP-PRD speculation
+		 (SBAR that
+		       (S (NP-SBJ Mr. Newhouse)
+			  (VP could
+			      (VP bring
+				  (ADVP-DIR in)
+				  (NP (NP (NP a powerhouse businessman)
+					  or
+					  (NP another Newhouse family member))
+				      (SBAR-PRP (WHNP-1 0)
+						(S (NP-SBJ *T*-1)
+						   (VP to
+						       (VP run
+							   (NP the business side)
+							   ,
+							   (PP in
+							       (NP (NP combination)
+								   (PP with
+								       (NP (NP a publishing executive)
+									   (PP like
+									       (NP (NP Robert Gottlieb)
+										   ,
+										   (SBAR (WHNP-38 who)
+											 (S (NP-SBJ-2 *T*-38)
+											    (VP left
+												(NP (NP Random House 's)
+												    Alfred A. Knopf)
+												(S-PRP (NP-SBJ *-2)
+												       (VP to
+													   (VP run
+													       (NP (NP the New Yorker)
+														   ,
+														   (VP (ADVP also)
+														       owned
+														       (NP *)
+														       (PP by
+															   (NP-LGS the Newhouse family)))))))))))))))))))))))))))
+     .))
+( (SINV Not
+        (PP-PRD included
+		(PP on
+		    (NP the most-likely-successor list)))
+        are
+        (NP-SBJ (NP (NP Joni Evans)
+		    ,
+		    (VP recruited
+			(NP *)
+			(ADVP-TMP (NP two years)
+				  ago)
+			(S-PRP (NP-SBJ *)
+			       (VP to
+				   (VP be
+				       (NP-PRD (NP publisher)
+					       (PP of
+						   (NP adult trade books))
+					       (PP for
+						   (NP Random House))))))))
+		, and
+		(NP (NP Sonny Mehta)
+		    ,
+		    (NP (NP president)
+			(PP of
+			    (NP the prestigious Alfred A. Knopf unit)))))
+        .))
+( (S (SBAR-TMP (WHADVP-1 When)
+	       (S (NP-SBJ Ms. Evans)
+		  (VP took
+		      (NP her job)
+		      (ADVP-TMP *T*-1))))
+     ,
+     (NP-SBJ-3 (NP several important divisions)
+	       (SBAR (WHNP-2 that)
+		     (S (NP-SBJ *T*-2)
+			(VP had
+			    (VP reported
+				(PP to
+				    (NP her predecessor)))))))
+     (VP were n't
+         (VP included
+	     (NP *-3)
+	     (SBAR-PRP (ADVP partly)
+		       because
+		       (S (NP-SBJ-4 she)
+			  (VP did n't
+			      (VP wish
+				  (S (NP-SBJ *-4)
+				     (VP to
+					 (VP be
+					     (NP-PRD a full-time administrator))))))))))
+     .))
+( (S (NP-SBJ Mr. Mehta)
+     (VP is
+         (ADVP widely)
+         (VP viewed
+             (PP-CLR as
+		     (NP (NP a brilliant editor)
+			 but
+			 (NP a less-than-brilliant administrator)))))
+     and
+     (S (NP-SBJ-47 his own departure)
+        (VP was
+            (VP rumored
+                (NP *-47)))
+	(ADVP-TMP recently))
+     .))
+( (S (NP-SBJ (NP Mr. Bernstein)
+             ,
+             (NP (NP a
+                     tall
+		     ,
+		     energetic
+                     man)
+                 (SBAR (WHNP-39 who)
+                       (S (NP-SBJ *T*-39)
+                          (VP is
+                              (ADVP widely)
+                              (VP respected
+                                  (PP-CLR as
+					  (NP a publishing executive)))))))
+             ,)
+     (VP has
+         (VP spent
+             (NP (NP much)
+                 (PP of
+                     (NP his time)))
+	     (PP-TMP in
+		     (NP recent years))
+	     (PP-CLR on
+		     (NP human rights issues))))
+     .))

@@ -1,0 +1,90 @@
+
+
+( (S (NP-SBJ ROGERS COMMUNICATIONS Inc.)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 it)
+                  (VP plans
+                      (S (NP-SBJ *-1)
+                         (VP to
+                             (VP raise
+                                 (NP (NP (QP 175 million
+					     to
+					     180 million)
+					 Canadian dollars)
+                                     (PRN -LRB-
+					  (NP (QP US$ 148.9 million
+						  to
+						  $ 153.3 million)
+					      *U*)
+					  -RRB-))
+                                 (PP-MNR through
+					 (NP (NP a private placement)
+					     (PP of
+						 (NP perpetual preferred shares)))))))))))
+     .))
+( (S (S-TPC-1 (NP-SBJ Perpetual
+		      preferred
+		      shares)
+	      (VP are n't
+		  (ADJP-PRD retractable
+			    (PP by
+				(NP the holders)))))
+     ,
+     (NP-SBJ the company)
+     (VP said
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (NP-SBJ Rogers)
+     (VP said
+         (SBAR (SBAR 0
+                     (S (NP-SBJ the shares)
+                        (VP will
+                            (VP be
+                                (ADJP-PRD convertible
+					  (PP into
+					      (NP Class B shares)))))))
+               , but
+               (SBAR that
+                     (S (NP-SBJ the company)
+                        (VP has
+                            (NP the option
+                                (S (NP-SBJ *)
+                                   (VP to
+                                       (VP redeem
+                                           (NP the shares)
+					   (SBAR-TMP before
+						     (S (NP-SBJ a conversion)
+							(VP takes
+							    (NP place)))))))))))))
+     .))
+( (S (NP-SBJ (NP A spokesman)
+             (PP for
+                 (NP the Toronto cable television and telecommunications concern)))
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 the coupon rate)
+                  (VP (VP has n't 
+			  (ADVP yet)
+			  (VP been
+			      (VP fixed
+				  (NP *-1))))
+		      , but
+		      (VP will 
+			  (ADVP probably)
+			  (VP be
+			      (VP set
+				  (NP *-1)
+				  (PP-CLR at
+					  (NP (QP around 8) %)))))))))
+     .))
+( (S (NP-SBJ-1 He)
+     (VP declined
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP discuss
+                    (NP (NP other terms)
+                        (PP of
+                            (NP the issue)))))))
+     .))

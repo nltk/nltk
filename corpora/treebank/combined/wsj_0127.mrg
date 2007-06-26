@@ -1,0 +1,202 @@
+
+( (S 
+    (NP-SBJ (NNP Reed) (NNP International) (NNP PLC) )
+    (VP (VBD said) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ 
+            (NP (JJ net) (NN income) )
+            (PP (IN for) 
+              (NP 
+                (NP (DT the) (CD six) (NNS months) )
+                (VP (VBD ended) 
+                  (NP-TMP (NNP Oct.) (CD 1) )))))
+          (VP (VBD slipped) 
+            (NP-EXT (CD 5) (NN %) )
+            (PP-DIR (TO to) 
+              (NP 
+                (NP 
+                  (NP 
+                    (QP (# #) (CD 89.7) (CD million) )
+                    (-NONE- *U*) )
+                  (PRN 
+                    (-LRB- -LRB-)
+                    (NP 
+                      (QP ($ $) (CD 141.9) (CD million) )
+                      (-NONE- *U*) )
+                    (-RRB- -RRB-) ))
+                (, ,) (CC or) 
+                (NP 
+                  (NP (CD 16) (NN pence) )
+                  (NP-ADV (DT a) (NN share) ))
+                (, ,) ))
+            (PP-DIR (IN from) 
+              (NP 
+                (NP 
+                  (NP 
+                    (QP (# #) (CD 94.8) (CD million) )
+                    (-NONE- *U*) )
+                  (PRN 
+                    (-LRB- -LRB-)
+                    (NP 
+                      (QP ($ $) (CD 149.9) (CD million) )
+                      (-NONE- *U*) )
+                    (-RRB- -RRB-) ))
+                (, ,) (CC or) 
+                (NP 
+                  (NP (CD 17.3) (NN pence) )
+                  (NP-ADV (DT a) (NN share) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (JJ British) (NN paper) 
+      (, ,)
+      (NN packaging) 
+      (CC and)
+      (NN publishing) (NN concern) 
+      (, ,)
+      )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (NN profit) )
+            (PP (IN from) 
+              (NP (VBG continuing) (NNS lines) )))
+          (VP (VBD fell) 
+            (NP-EXT (CD 10) (NN %) )
+            (PP-DIR (TO to) 
+              (NP 
+                (QP (# #) (CD 118) (CD million) )
+                (-NONE- *U*) ))
+            (PP-DIR (IN from) 
+              (NP 
+                (QP (# #) (CD 130.6) (CD million) )
+                (-NONE- *U*) ))))))
+    (. .) ))
+( (S 
+    (SBAR-ADV (IN While) 
+      (S 
+        (NP-SBJ (EX there) )
+        (VP (VBD were) 
+          (NP-PRD 
+            (NP (DT no) (JJ one-time) (NNS gains) (CC or) (NNS losses) )
+            (PP-TMP (IN in) 
+              (NP (DT the) (JJS latest) (NN period) ))))))
+    (, ,) 
+    (NP-SBJ (EX there) )
+    (VP (VBD was) 
+      (NP 
+        (NP (DT a) (JJ one-time) (NN gain) )
+        (PP (IN of) 
+          (NP 
+            (QP (# #) (CD 18) (CD million) )
+            (-NONE- *U*) ))
+        (PP-TMP (IN in) 
+          (NP (DT the) (CD 1988) (NN period) ))))
+    (. .) ))
+( (S (CC And) 
+    (SBAR-ADV (IN while) 
+      (S 
+        (NP-SBJ (EX there) )
+        (VP (VBD was) 
+          (NP-PRD 
+            (NP (DT no) (NN profit) )
+            (PP (-NONE- *ICH*-1) ))
+          (NP-TMP (DT this) (NN year) )
+          (PP-1 (IN from) 
+            (NP (VBN discontinued) (NNS operations) )))))
+    (, ,) 
+    (NP-TMP (JJ last) (NN year) )
+    (NP-SBJ (PRP they) )
+    (VP (VBD contributed) 
+      (NP 
+        (QP (# #) (CD 34) (CD million) )
+        (-NONE- *U*) )
+      (, ,) 
+      (PP-TMP (IN before) 
+        (NP (NN tax) )))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ (NN Pretax) (NN profit) )
+      (VP 
+        (VP (VBD fell) 
+          (NP-EXT (CD 3.7) (NN %) )
+          (PP-DIR (TO to) 
+            (NP 
+              (QP (# #) (CD 128) (CD million) )
+              (-NONE- *U*) ))
+          (PP-DIR (IN from) 
+            (NP 
+              (QP (# #) (CD 133) (CD million) )
+              (-NONE- *U*) )))
+        (CC and) 
+        (VP (VBD was) 
+          (PP-PRD (IN below) 
+            (NP 
+              (NP 
+                (NP (NNS analysts) (POS ') )
+                (NNS expectations) )
+              (PP (IN of) 
+                (NP 
+                  (QP (# #) (CD 130) (CD million) (TO to) (# #) (CD 135) (CD million) )
+                  (-NONE- *U*) )))))))
+    (, ,) (CC but) 
+    (S 
+      (NP-SBJ (NNS shares) )
+      (VP (VBD rose) 
+        (NP-EXT (CD 6) (NN pence) )
+        (PP-DIR (TO to) 
+          (NP (CD 388) (NN pence) ))
+        (PP-LOC (IN in) 
+          (NP (JJ early) (NN trading) ))
+        (NP-TMP (NN yesterday) )
+        (PP-LOC (IN in) 
+          (NP (NNP London) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Reed) )
+    (VP (VBZ is) 
+      (VP (VBG paying) 
+        (NP 
+          (NP (DT an) (JJ interim) (NN dividend) )
+          (PP (IN of) 
+            (NP (CD 4.6) (NN pence) )))
+        (, ,) 
+        (ADVP-CLR (RB up) 
+          (NP (CD 15) (NN %) )
+          (PP (IN from) 
+            (NP 
+              (NP (CD 4) (NN pence) )
+              (ADVP-TMP 
+                (NP (DT a) (NN year) )
+                (JJR earlier) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNS Sales) )
+    (VP (VBD fell) 
+      (NP-EXT (CD 20) (NN %) )
+      (PP-DIR (TO to) 
+        (NP 
+          (QP (# #) (CD 722) (CD million) )
+          (-NONE- *U*) )))
+    (. .) ))
+( (S 
+    (S-TPC-2 
+      (NP-SBJ-1 (NNS Earnings) )
+      (VP (VBD were) 
+        (VP (VBN hurt) 
+          (NP (-NONE- *-1) )
+          (PP (IN by) 
+            (NP-LGS 
+              (NP (NN disposal) )
+              (PP (IN of) 
+                (NP (NNS operations) ))
+              (PP (IN in) 
+                (NP (PRP$ its) (NN restructuring) )))))))
+    (, ,) 
+    (NP-SBJ (NNP Reed) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-2) )))
+    (. .) ))

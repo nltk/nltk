@@ -1,0 +1,133 @@
+
+
+( (S (NP-SBJ Xerox Corp.)
+     (VP has
+         (VP told
+             (NP (NP employees)
+                 (PP-LOC in
+			 (NP its
+			     Crum & Forster
+			     personal insurance operations)))
+             (SBAR that
+                   (S (NP-SBJ it)
+                      (VP is
+                          (VP laying
+			      (PRT off)
+                              (NP (NP (QP about 300) people)
+                                  , or
+                                  (NP (NP 25 %)
+                                      (PP of
+                                          (NP the staff))))))))))
+     .))
+( (S (NP-SBJ (NP A spokeswoman)
+             (PP for
+                 (NP Crum & Forster)))
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 employees)
+                  (VP were
+                      (VP told
+                          (NP *-1)
+                          (NP-TMP early this week)
+                          (SBAR that
+                                (S (NP-SBJ-3 (NP numerous staff functions)
+					     (PP for
+						 (NP the personal insurance lines)))
+                                   (VP were
+                                       (VP going
+                                           (S (NP-SBJ-2 *-3)
+                                              (VP to
+                                                  (VP be
+                                                      (VP centralized
+                                                          (NP *-2)))))
+					   (PP as
+					       (NP a cost-cutting move)))))))))))
+     .))
+( (S (NP-SBJ She)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ the move)
+                  (VP would
+                      (VP result
+                          (PP-CLR in
+				  (NP (NP a after-tax charge)
+				      (PP of
+					  (NP (QP less than $ 4 million)
+					      *U*))
+				      (SBAR (WHNP-2 0)
+					    (S (NP-SBJ-1 *T*-2)
+					       (VP to
+						   (VP be
+						       (VP spread
+							   (NP *-1)
+							   (PP-CLR over
+								   (NP the next three quarters))))))))))))))
+     .))
+( (S (PP By
+         (NP comparison))
+     ,
+     (PP-TMP for
+	     (NP the first nine months))
+     ,
+     (NP-SBJ Xerox)
+     (VP earned
+	 (NP (NP (QP $ 492 million) *U*)
+	     , or
+	     (NP (NP $ 4.55 *U*)
+		 (NP-ADV a share))
+	     ,)
+	 (PP on
+	     (NP (NP revenue)
+		 (PP of
+		     (NP (QP $ 12.97 billion) *U*)))))
+     .))
+( (S (S (NP-SBJ (NP Earnings)
+                (PP-LOC at
+			(NP (NP Xerox 's)
+			    financial-services operations)))
+        (ADVP actually)
+	(VP rose
+            (ADVP-EXT slightly)))
+     , but
+     (S (NP-SBJ that)
+        (VP was
+	    (SBAR-PRP-PRD (ADVP largely)
+			  because
+			  (S (NP-SBJ (NP capital gains)
+				     (PP-LOC at
+					     (NP Crum & Forster)))
+			     (VP offset
+				 (NP (NP Hurricane Hugo payments)
+				     and
+				     (NP (NP the reserves)
+					 (VP set
+					     (PRT up)
+					     (NP *)
+					     (S-PRP (NP-SBJ *)
+						    (VP to
+							(VP cover
+							    (NP future payments))))))))))))
+     .))
+( (S (NP-SBJ Property/casualty insurance)
+     (VP has
+         (VP been
+             (NP-PRD a tough business)
+	     (PP-TMP in
+		     (NP recent quarters))
+	     ,
+	     (SBAR-ADV as
+		       (S (S (NP-SBJ pricing)
+			     (VP has
+				 (VP been
+				     (ADJP-PRD cutthroat))))
+			  and
+			  (S (NP-SBJ (NP natural disasters)
+				     (PP such as
+					 (NP (NP Hurricane Hugo)
+					     and
+					     (NP the California earthquake))))
+			     (VP have
+				 (VP resulted
+				     (PP-CLR in
+					     (NP huge payments)))))))))
+     .))

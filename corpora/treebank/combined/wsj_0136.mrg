@@ -1,0 +1,153 @@
+
+( (S 
+    (NP-SBJ 
+      (NP (NNP Oshkosh) (NNP Truck) (NNP Corp.) )
+      (, ,) 
+      (NP-LOC 
+        (NP (NNP Oshkosh) )
+        (, ,) 
+        (NP (NNP Wis.) ))
+      (, ,) )
+    (VP (VBN estimated) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (NNS earnings) )
+            (PP (IN for) 
+              (NP 
+                (NP (PRP$ its) (JJ fourth) (NN quarter) )
+                (VP (VBD ended) 
+                  (NP-TMP-CLR (NNP Sept.) (CD 30) )))))
+          (VP (VBD fell) 
+            (NP-EXT (CD 50) (NN %) )
+            (PP-CLR (TO to) 
+              (NP (CD 75) (NN %) ))
+            (PP (IN below) 
+              (NP 
+                (NP (DT the) (JJ year-earlier) 
+                  (QP ($ $) (CD 4.5) (CD million) )
+                  (-NONE- *U*) )
+                (, ,) (CC or) 
+                (NP 
+                  (NP (CD 51) (NNS cents) )
+                  (NP-ADV (DT a) (NN share) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN truck) (NN maker) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (DT the) (JJ significant) (NN drop) )
+            (PP (IN in) 
+              (NP (JJ net) (NN income) )))
+          (VP (MD will) 
+            (VP (VB result) 
+              (PP-CLR (IN in) 
+                (NP 
+                  (NP (JJR lower) (NNS earnings) )
+                  (PP (IN for) 
+                    (NP (DT the) (JJ fiscal) (NN year) )))))))))
+    (. .) ))
+( (S 
+    (PP-TMP (IN In) 
+      (NP (JJ fiscal) (CD 1988) ))
+    (, ,) 
+    (NP-SBJ (DT the) (NN company) )
+    (VP (VBD earned) 
+      (NP 
+        (NP 
+          (QP ($ $) (CD 17.3) (CD million) )
+          (-NONE- *U*) )
+        (, ,) (CC or) 
+        (NP 
+          (NP ($ $) (CD 1.92) (-NONE- *U*) )
+          (NP-ADV (DT a) (NN share) ))
+        (, ,) )
+      (PP (IN on) 
+        (NP 
+          (NP (NN revenue) )
+          (PP (IN of) 
+            (NP 
+              (QP ($ $) (CD 352.9) (CD million) )
+              (-NONE- *U*) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Oshkosh) (NNP Truck) )
+    (VP (VBD attributed) 
+      (NP 
+        (NP (DT the) (NN downturn) )
+        (PP-LOC (IN in) 
+          (NP (PRP$ its) (NNS earnings) )))
+      (PP-CLR (TO to) 
+        (NP 
+          (NP 
+            (NP (JJR higher) (JJ start-up) (NNS costs) )
+            (PP (IN of) 
+              (NP (PRP$ its) (JJ new) (NN chassis) (NN division) )))
+          (, ,) 
+          (NP (DT a) (JJR softer) (NN motor-home) (NN market) )
+          (CC and) 
+          (NP 
+            (NP (JJR higher) (JJ administrative) (NNS costs) )
+            (PP (IN of) 
+              (NP 
+                (NP (NN compliance) )
+                (PP (IN with) 
+                  (NP (NN government) (NN contractor) (NNS regulations) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN company) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP it) )
+          (VP (VBZ is) 
+            (PP-PRD (IN in) 
+              (NP 
+                (NP (DT the) (NN process) )
+                (PP (IN of) 
+                  (S-NOM 
+                    (NP-SBJ (-NONE- *) )
+                    (VP (VBG phasing) 
+                      (PRT (RP out) )
+                      (NP 
+                        (NP (NNP John) (NNP Deere) )
+                        (, ,) 
+                        (NP 
+                          (NP (PRP$ its) (JJ current) (NN source) )
+                          (PP (IN of) 
+                            (NP (NN production) ))
+                          (PP (IN for) 
+                            (NP (JJ midsized) (NN motor) (NN home) (NN chassis) )))))))))))))
+    (. .) ))
+( (S 
+    (PP (IN In) 
+      (NP 
+        (NP (NN anticipation) )
+        (PP (IN of) 
+          (NP 
+            (NP (DT the) (NN start-up) )
+            (PP (IN of) 
+              (NP (PRP$ its) (JJ new) (NN factory) ))))))
+    (, ,) 
+    (NP-SBJ (DT the) (NN company) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 (DT a) (JJ larger-than-normal) (NN chassis) (NN supply) )
+          (VP (VBZ has) 
+            (VP (VBN been) 
+              (VP (VBN built) 
+                (NP 
+                  (NP (-NONE- *-1) )
+                  (SBAR-PRP 
+                    (WHNP-2 (-NONE- 0) )
+                    (S 
+                      (NP-SBJ (-NONE- *T*-2) )
+                      (VP (TO to) 
+                        (VP (VB carry) 
+                          (NP (PRP it) )
+                          (PP (IN through) 
+                            (NP (DT the) (NN transition) (NN period) )))))))))))))
+    (. .) ))

@@ -1,0 +1,178 @@
+
+( (S 
+    (NP-SBJ-1 
+      (NP (NNP William) (NNP C.) (NNP Walbrecher) (NNP Jr.) )
+      (, ,) 
+      (NP 
+        (NP (DT an) (NN executive) )
+        (PP-LOC (IN at) 
+          (NP 
+            (NAC-LOC (NNP San) (JJ Francisco-based) )
+            (CD 1st) (NNP Nationwide) (NNP Bank) )))
+      (, ,) )
+    (VP (VBD was) 
+      (VP (VBN named) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (NP-PRD 
+            (NP 
+              (NP (NN president) )
+              (PP (-NONE- *RNR*-2) ))
+            (CC and) 
+            (NP 
+              (NP (NN chief) (JJ executive) (NN officer) )
+              (PP (-NONE- *ICH*-2) ))
+            (PP-2 (IN of) 
+              (NP 
+                (NP (NNP Citadel) (NNP Holding) (NNP Corp.) )
+                (CC and) 
+                (NP 
+                  (NP (PRP$ its) (JJ principal) (VBG operating) (NN unit) )
+                  (, ,) 
+                  (NP (NNP Fidelity) (NNP Federal) (NNP Bank) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN appointment) )
+    (VP (VBZ takes) 
+      (NP (NN effect) )
+      (NP-TMP (NNP Nov.) (CD 13) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP He) )
+    (VP (VBZ succeeds) 
+      (NP 
+        (NP (NNP James) (NNP A.) (NNP Taylor) )
+        (, ,) 
+        (SBAR 
+          (WHNP-1 (WP who) )
+          (S 
+            (NP-SBJ (-NONE- *T*-1) )
+            (VP (VBD stepped) 
+              (PRT (RP down) )
+              (PP-CLR (IN as) 
+                (NP 
+                  (NP (NN chairman) )
+                  (, ,) 
+                  (NP (NN president) )
+                  (CC and) 
+                  (NP (NN chief) (NN executive) )))
+              (PP-TMP (IN in) 
+                (NP (NNP March) ))
+              (PP-PRP (IN for) 
+                (NP (NN health) (NNS reasons) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Edward) (NNP L.) (NNP Kane) )
+    (VP (VBD succeeded) 
+      (NP (NNP Mr.) (NNP Taylor) )
+      (PP-CLR (IN as) 
+        (NP (NN chairman) )))
+    (. .) ))
+( (S 
+    (ADVP (RB Separately) )
+    (, ,) 
+    (NP-SBJ (NNP Citadel) )
+    (VP (VBD posted) 
+      (NP 
+        (NP 
+          (NP (DT a) (NN third-quarter) (JJ net) (NN loss) )
+          (PP (IN of) 
+            (NP 
+              (NP 
+                (QP ($ $) (CD 2.3) (CD million) )
+                (-NONE- *U*) )
+              (, ,) (CC or) 
+              (NP 
+                (NP (CD 68) (NNS cents) )
+                (NP-ADV (DT a) (NN share) )))))
+        (, ,) 
+        (PP (CC versus) 
+          (NP 
+            (NP 
+              (NP (JJ net) (NN income) )
+              (PP (IN of) 
+                (NP 
+                  (NP 
+                    (QP ($ $) (CD 5.3) (CD million) )
+                    (-NONE- *U*) )
+                  (, ,) (CC or) 
+                  (NP 
+                    (NP ($ $) (CD 1.61) (-NONE- *U*) )
+                    (NP-ADV (DT a) (NN share) )))))
+            (, ,) 
+            (ADVP-TMP 
+              (NP (DT a) (NN year) )
+              (JJR earlier) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (JJS latest) (NNS results) )
+    (VP (VBP include) 
+      (NP 
+        (NP (DT some) (JJ unusual) (NNS write-downs) )
+        (, ,) 
+        (SBAR 
+          (WHNP-1 (WDT which) )
+          (S 
+            (NP-SBJ (-NONE- *T*-1) )
+            (VP (VBD had) 
+              (NP 
+                (NP (DT an) (JJ after-tax) (NN impact) )
+                (PP (IN of) 
+                  (NP 
+                    (QP ($ $) (CD 4.9) (CD million) )
+                    (-NONE- *U*) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT Those) )
+    (VP (VBD included) 
+      (NP 
+        (NP (NNS costs) )
+        (VP (VBN associated) 
+          (NP (-NONE- *) )
+          (PP-CLR (IN with) 
+            (NP 
+              (NP (DT the) (JJ potential) (NNP Valley) (NNP Federal) (NNP Savings) 
+                (CC and)
+                (NNP Loan) (NNP Association) (NN acquisition) )
+              (, ,) 
+              (SBAR 
+                (WHNP-2 (WDT which) )
+                (S 
+                  (NP-SBJ-1 (-NONE- *T*-2) )
+                  (VP (VBD was) 
+                    (VP (VBN terminated) 
+                      (NP (-NONE- *-1) )
+                      (PP-TMP (IN on) 
+                        (NP (NNP Sept.) (CD 27) 
+                          (, ,)
+                          (CD 1989) )))))))))))
+    (. .) ))
+( (S 
+    (PP (IN In) 
+      (NP (NN addition) ))
+    (, ,) 
+    (NP-SBJ-1 (VBG operating) (NNS results) )
+    (VP (VBD were) 
+      (VP (VBN hit) 
+        (NP (-NONE- *-1) )
+        (PP (IN by) 
+          (NP-LGS 
+            (NP (DT an) (NN increase) )
+            (PP-LOC (IN in) 
+              (NP (NN loan) 
+                (CC and)
+                (JJ real) (NN estate) (NN loss) (NNS reserves) ))))))
+    (. .) ))
+( (S 
+    (PP-LOC (IN In) 
+      (NP (NNP American) (NNP Stock) (NNP Exchange) (JJ composite) (NN trading) ))
+    (, ,) 
+    (NP-SBJ (NNP Citadel) (NNS shares) )
+    (VP (VBD closed) 
+      (NP-TMP (NN yesterday) )
+      (PP-CLR (IN at) 
+        (NP ($ $) (CD 45.75) (-NONE- *U*) ))
+      (, ,) 
+      (ADVP-CLR (RB down) 
+        (NP (CD 25) (NNS cents) )))
+    (. .) ))

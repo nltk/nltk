@@ -1,0 +1,36 @@
+
+
+( (S (NP-SBJ-1 (NP David A. DiLoreto)
+               ,
+               (NP (NP president)
+                   (PP of
+                       (NP metal container division)))
+               ,)
+     (VP was
+         (VP named
+             (NP *-1)
+             (PP-CLR to
+		     (NP (NP the additional post)
+			 (PP of
+			     (NP (NP group vice president)
+				 ,
+				 (NP packaging products)
+				 ,))))
+	     (PP-LOC at
+		     (NP this (UCP packaging , industrial and aerospace products) concern))
+	     ,
+	     (S-ADV (NP-SBJ *-1)
+		    (VP succeeding
+			(NP (NP Delmont A. Davis)
+			    ,
+			    (SBAR (WHNP-3 who)
+				  (S (NP-SBJ-2 *T*-3)
+				     (VP was
+					 (VP named
+					     (S (NP-SBJ *-2)
+						(NP-PRD (NP president)
+							and
+							(NP chief operating officer)))
+					     (PP-TMP in
+						     (NP August)))))))))))
+     .))

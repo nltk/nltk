@@ -1,0 +1,1282 @@
+
+
+( (S (NP-SBJ-1 Congress) 
+     (VP learned
+         (PP-TMP during
+		 (NP the Reagan administration))
+         (SBAR that
+               (S (NP-SBJ it)
+                  (VP could
+                      (VP intimidate
+                          (NP the executive branch)
+                          (PP-MNR by
+				  (S-NOM (NP-SBJ *-1)
+					 (VP uttering
+					     (ADVP-TMP again and again)
+					     (NP (NP the same seven words)
+						 : ``
+						 (SBAR-ADV Provided
+							   ,
+							   that
+							   (S (NP-SBJ-48 no funds)
+							      (VP shall
+								  (VP be
+								      (VP spent
+									  (NP *-48)))))))))))))))
+     ... . ''))
+( (S (NP-SBJ-49 This phrase)
+     (ADVP-TMP once again)
+     (VP is
+         (VP found
+             (NP *-49)
+             (PP throughout
+		 (NP (NP the many appropriations bills)
+		     (VP (ADVP-TMP now)
+			 moving
+			 (PP-DIR through
+				 (NP Congress)))))))
+     .))
+( (S (NP-SBJ It)
+     (VP signals
+         (NP (NP Congress 's)
+             attempt
+	     (PRN ,
+		  (PP under
+		      (NP (NP the pretext)
+			  (PP of
+			      (S-NOM (NP-SBJ *)
+				     (VP guarding
+					 (NP the public purse))))))
+		  ,)
+             (S (NP-SBJ *)
+                (VP to
+                    (VP deny
+                        (NP the president) 
+                        (NP (NP the funding)
+                            (ADJP necessary
+                                  (S (NP-SBJ *)
+                                     (VP to
+                                         (VP execute
+                                             (NP (NP certain)
+						 (PP of
+						     (NP his duties and prerogatives))
+                                                 (VP specified
+                                                     (NP *)
+                                                     (PP-LOC in
+							     (NP (NP Article II)
+								 (PP of
+								     (NP the Constitution))))))))))))))))
+     .))
+( (S (NP-SBJ-50 (NP This species)
+                (PP of
+                    (NP congressional action)))
+     (VP is
+         (VP predicated
+             (NP *-50)
+             (PP on
+                 (NP (NP an interpretation)
+		     (PP of
+			 (NP the appropriations clause))
+                     (SBAR (WHNP-1 that)
+                           (S (NP-SBJ *T*-1)
+                              (VP is
+                                  (ADJP-PRD erroneous and unconstitutional))))))))
+     .))
+( (S (NP-SBJ The appropriations clause)
+     (VP states
+         (SBAR that
+	       ``
+               (S (NP-SBJ-51 No Money)
+                  (VP shall
+                      (VP be
+                          (VP drawn
+                              (NP *-51)
+                              (PP-DIR from
+				      (NP the Treasury))
+                              ,
+                              (PP but 
+                                  (PP in
+                                      (NP (NP Consequence)
+                                          (PP of
+                                              (NP (NP Appropriations)
+                                                  (VP made
+                                                      (NP *)
+                                                      (PP by
+                                                          (NP-LGS Law))))))))))))))
+     ... . '')) 
+( (S (NP-SBJ (NP The prevailing interpretation)
+             (PP of
+                 (NP the clause))
+             (PP-LOC on
+		     (NP Capitol Hill)))
+     (VP is
+         (SBAR-PRD that
+		   (S (NP-SBJ it)
+		      (VP gives
+			  (NP Congress)
+			  (NP (NP an omnipresent veto)
+			      (PP over
+				  (NP (NP every conceivable action)
+				      (PP of
+					  (NP the president)))))
+			  (PP-MNR through
+				  (NP the ability
+				      (S (NP-SBJ *)
+					 (VP to
+					     (VP withhold
+						 (NP funding))))))))))
+     .))
+( (S (NP-SBJ-1 This interpretation)
+     (VP was
+         (ADVP officially)
+         (VP endorsed
+	     (NP *-1)
+             (PP by
+                 (NP-LGS Congress))
+             (PP-TMP in
+		     (NP 1987))
+             (PP-LOC in
+		     (NP the Iran-Contra Report))))
+     .))
+( (S (SBAR-ADV As
+	       (S (NP-SBJ (NP partisans)
+			  (PP of
+			      (NP congressional power)))
+		  (VP understand)))
+     ,
+     (NP-SBJ (NP a `` power)
+	     (PP of
+		 (NP the purse))
+	     ''
+	     (VP (ADVP-MNR so broadly)
+		 construed
+                 (NP *)))
+     (VP would
+         (VP (VP emasculate
+                 (NP the presidency))
+             and
+             (VP swallow
+                 (NP (NP the principle)
+                     (PP of
+                         (NP (NP separation)
+                             (PP of
+                                 (NP powers))))))))
+     .))
+( (S (NP-SBJ It)
+     (VP is not
+         (VP supported
+             (PP by
+                 (NP (NP the text or history)
+                     (PP of
+                         (NP the Constitution))))))
+     .))
+( (S (NP-SBJ The framers)
+     (ADVP hardly)
+     (VP discussed
+         (NP the appropriations clause)
+         (PP-LOC at
+		 (NP (NP the Constitutional Convention)
+		     (PP of
+			 (NP 1787))))
+	 ,
+	 (PP according
+	     (PP to
+		 (NP (NP Madison 's)
+		     notes))))
+     .))
+( (S (PP To
+         (NP the extent
+             (SBAR 0
+                   (S (NP-SBJ they)
+                      (VP did)))))
+     ,
+     (NP-SBJ-1 their concern)
+     (VP was
+         (S-PRD (NP-SBJ *-1)
+		(VP to
+		    (VP ensure
+			(NP fiscal accountability)))))
+     .))
+( (S (ADVP Moreover)
+     ,
+     (NP-SBJ the framers)
+     (VP believed
+         (SBAR that
+               (S (NP-SBJ the nation)
+                  (VP needed
+                      (NP (NP a unitary executive)
+                          (PP with
+                              (NP (NP the independence and resources)
+                                  (SBAR (WHADVP-1 0)
+					(S (NP-SBJ *)
+					   (VP to
+					       (VP perform
+						   (NP (NP the executive functions)
+						       (SBAR (WHNP-2 that)
+							     (S (NP-SBJ the Confederation Congress)
+								(VP had
+								    (VP performed
+									(NP *T*-2)
+									(ADVP-MNR poorly)
+									(PP-LOC under
+										(NP (NP the Articles)
+										    (PP of
+											(NP Confederation)))))))))
+						   (ADVP *T*-1))))))))))))
+     .))
+( (S (NP-SBJ It)
+     (VP would
+         (VP contradict
+             (NP that objective)
+             (SBAR-ADV if
+		       (S (NP-SBJ-52 (NP the appropriations clause)
+				     (PRN -LRB-
+					  (ADVP technically)
+					  (NP (NP a limitation)
+					      (PP on
+						  (NP legislative power)))
+					  -RRB-))
+			  (VP could
+			      (VP be
+				  (VP read
+				      (NP *-52)
+				      (SBAR-CLR as
+						(S (S (NP-SBJ *-52)
+						      (VP placing
+							  (NP the president)
+							  (PP-LOC on
+								  (NP (NP Congress 's)
+								      short leash))))
+						   ,
+						   (S (NP-SBJ *-52)
+						      (VP making
+							  (S (NP-SBJ the executive)
+							     (VP consist
+								 (PP-CLR of
+									 (NP (NP the president)
+									     and
+									     (NP (NP every member)
+										 (PP of
+										     (NP Congress))))))))))))))))))
+     .))
+( (S (SBAR-TMP As
+	       (S (NP-SBJ it)
+		  (VP went
+		      (PP-DIR to
+			      (NP (NP the conference panel)
+				  (VP (ADVP-TMP now)
+				      deliberating))))))
+     ,
+     (NP-SBJ (NP the appropriations bill)
+             (PP for
+                 (NP (NP the executive office)
+                     (PP of
+                         (NP the president))))
+             (PP-TMP for
+		     (NP fiscal 1990)))
+     (VP contained
+         (NP (NP some breathtaking attempts
+		 (S *ICH*-1))
+             (PP by
+                 (NP Congress))
+             (S-1 (NP-SBJ *)
+		  (VP to
+		      (VP rewrite
+			  (NP the Constitution)
+			  (PP under
+			      (NP (NP the pretext)
+				  (PP of
+				      (S-NOM (NP-SBJ *)
+					     (VP protecting
+						 (NP (NP the public 's)
+						     money)))))))))))
+     .))
+( (S (PP-TMP During
+	     (NP the coming weeks))
+     ,
+     (NP-SBJ President Bush)
+     (VP must
+         (VP decide
+             (SBAR whether
+                   (S (S (NP-SBJ *)
+                         (VP to
+                             (VP veto
+                                 (NP (NP the bills)
+                                     (VP containing
+                                         (NP them))))))
+                      -- 
+		      or ,
+                      (ADVP alternatively)
+                      ,
+                      (S (NP-SBJ *)
+                         (VP to
+                             (VP sign
+                                 (NP these bills)
+                                 (PP-CLR into
+					 (NP law))
+                                 (PP with
+                                     (NP (NP a statement)
+                                         (VP declaring
+					     (S (NP-SBJ (NP their intrusions)
+							(PP on
+							    (NP executive power)))
+						(VP to
+						    (VP be
+							(UCP-PRD (PP in
+								     (NP (NP violation)
+									 (PP of
+									     (NP Article II))))
+								 , and thus
+								 (ADJP void and severable)))))))))))))))
+     .))
+( (S (NP-SBJ-1 The 1990 appropriations legislation)
+     (VP attempts
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP strip
+                    (NP (NP the president)
+                        (PP of
+                            (NP his powers
+                                (S (NP-SBJ *)
+                                   (VP to
+                                       (VP make
+                                           (NP certain appointments)
+                                           (SBAR-ADV as
+						     (S (NP-SBJ-2 *) 
+							(VP provided
+							    (NP *-2)
+							    (PP by
+								(NP-LGS Article II)))))))))))))))
+     .))
+( (S (NP-SBJ Article II)
+     (VP places
+         (PP-LOC on
+		 (NP the president))
+         (NP the duty
+             (S (NP-SBJ *)
+                (VP to
+                    (VP (VP nominate
+			    (NP *RNR*-1))
+                        ,
+			`` and
+			(VP (PP by and with
+				(NP (NP the Advice and Consent)
+				    (PP of
+					(NP the Senate))))
+			    ''
+			    appoint
+			    (NP *RNR*-1))
+			,
+			(NP-1 (NP ambassadors)
+			      ,
+			      (NP judges)
+			      , and
+			      (NP (NP other officers)
+				  (PP of
+				      (NP the U.S)))))))))
+     .))
+( (S (S (NP-SBJ It)
+        (ADVP also)
+        (VP empowers
+            (S (NP-SBJ the president)
+               (VP to
+                   (VP make
+                       (NP recess appointments)
+                       ,
+                       (PP without
+                           (NP Senate approval)))))))
+     : ``
+     (S (NP-SBJ The President)
+        (VP shall
+            (VP have
+                (NP Power
+                    (S (NP-SBJ-2 *)
+                       (VP to
+                           (VP fill
+			       (PRT up)
+                               (NP (NP all Vacancies)
+                                   (SBAR (WHNP-1 that)
+                                         (S (NP-SBJ *T*-1)
+                                            (VP may
+                                                (VP happen
+                                                    (PP-TMP during
+							    (NP (NP the Recess)
+								(PP of
+								    (NP the Senate)))))))))
+                               ,
+                               (PP by
+				   (S-MNR (NP-SBJ *-2)
+					  (VP granting
+					      (NP (NP Commissions)
+						  (SBAR (WHNP-40 which)
+							(S (NP-SBJ *T*-40)
+							   (VP shall
+							       (VP expire
+								   (PP-TMP at
+									   (NP (NP the End)
+									       (PP of
+										   (NP their next Session)))))))))))))))))))
+     .
+     ''))
+( (S (ADVP Yet)
+     (NP-SBJ (NP Section 605)
+             (PP of
+                 (NP (NP the appropriations bill)
+                     (PP for
+                         (NP the executive office)))))
+     (VP provides
+	 : ``
+         (S (NP-SBJ-53 (NP No part)
+                       (PP of
+                           (NP (NP any appropriation)
+			       (PP-TMP for
+				       (NP the current fiscal year))
+                               (VP contained
+                                   (NP *)
+                                   (PP-LOC in
+					   (NP this or any other Act))))))
+            (VP shall
+                (VP be
+                    (VP paid
+                        (NP *-53)
+                        (PP-DTV to
+				(NP any person))
+                        (PP-CLR for
+				(NP (NP the filling)
+				    (PP of
+					(NP (NP any position)
+					    (SBAR (WHPP-1 for
+							  (WHNP which))
+						  (S (NP-SBJ-54 he
+								or
+								she)
+						     (VP has
+							 (VP been
+							     (VP nominated
+								 (NP *-54)
+								 (PP-CLR *T*-1))))))))))
+                        (SBAR-TMP after
+				  (S (NP-SBJ-2 the Senate)
+				     (VP has
+					 (VP voted
+					     (S (NP-SBJ *-2)
+						not
+						(VP to
+						    (VP approve
+							(NP (NP the nomination)
+							    (PP of
+								(NP said
+								    person)))))))))))))))
+     .
+     ''))
+( (S (ADVP Thus)
+     ,
+     (PP with
+         (NP (NP one brief passage)
+             (PP-LOC in
+		     (NP an appropriations bill))))
+     ,
+     (NP-SBJ Congress)
+     (VP repeals
+	 (NP (NP the president 's)
+	     power
+	     (S (NP-SBJ *)
+		(VP to
+		    (VP make
+			(NP recess appointments)
+			(PP-LOC under
+				(NP Article II)))))))
+     .))
+( (S (NP-SBJ Section 605)
+     (ADVP also)
+     (VP imposes
+         (NP unconstitutional conditions)
+         (PP-CLR on
+		 (NP (NP the president 's)
+		     ability
+		     (S (NP-SBJ *)
+			(VP to
+			    (VP nominate
+				(NP (NP candidates)
+				    (PP of
+					(NP his choosing)))))))))
+     .))
+( (S (NP-SBJ (NP The language)
+             (PP of
+                 (NP the appropriations rider)))
+     (VP implies
+         (SBAR that
+               (S (NP-SBJ (NP any nomination)
+                          (PP to
+                              (NP (NP any position)
+                                  (PP of
+                                      (NP a rejected nominee)))))
+                  (VP will
+                      (VP result
+                          (PP-CLR in
+				  (S-NOM (NP-SBJ-55 the president)
+					 (VP being
+					     (VP denied
+						 (NP *-55)
+						 (NP (NP funding)
+						     (SBAR (WHADVP-1 0)
+							   (S (NP-SBJ *)
+							      (VP to
+								  (VP pay
+								      (NP (NP that person 's)
+									  salary)
+								      (ADVP *T*-1)))))))))))))))
+     .))
+( (S (NP-SBJ-1 The president)
+     (VP could
+         (ADVP probably)
+         not
+         (VP avoid
+             (NP this restriction)
+             (PP-MNR by
+		     (S-NOM (NP-SBJ *-1)
+			    (VP choosing
+				(NP (NP people)
+				    (ADJP willing
+					  (S (NP-SBJ *)
+					     (VP to
+						 (VP serve
+						     (PP without
+							 (NP pay))))))))))
+             ,
+             (SBAR-PRP because
+		       (S (NP-SBJ the Anti-Deficiency Act)
+			  (VP prohibits
+			      (NP (NP voluntary service)
+				  (PP to
+				      (NP the government))))))))
+     .))
+( (S (NP-SBJ The 1990 appropriations bills)
+     (ADVP also)
+     (VP contain
+         (NP (NP a number)
+             (PP of
+                 (NP (NP `` muzzling '' provisions)
+                     (SBAR (WHNP-1 that)
+                           (S (NP-SBJ *T*-1)
+                              (VP violate
+                                  (NP (NP the recommendation clause)
+                                      (PP-LOC in
+					      (NP (NP Article II)
+						  (PP of
+						      (NP the Constitution))))))))))))
+     .))
+( (S (NP-SBJ (NP Muzzling provisions)
+             ,
+             (SBAR (WHNP-1 which)
+                   (S (NP-SBJ-56 *T*-1)
+                      (VP might
+                          (VP be
+                              (VP called
+                                  (S (NP-SBJ *-56)
+				     ``
+				     (NP-PRD blindfold laws)
+				     '')
+                                  (ADVP as well))))))
+             ,)
+     (VP prevent
+         (NP-2 the executive branch)
+	 (PP (PP from 
+		 (ADVP even) 
+		 (S-NOM (NP-SBJ *-2)
+			(VP looking
+			    (PP-CLR at
+				    (NP certain policy options)))))
+	     ,
+	     (PP (ADVP let alone) 
+		 from
+		 (S-NOM (NP-SBJ *-2)
+			(VP recommending
+			    (NP them)
+			    (PP-CLR to
+				    (NP Congress)))))))
+     .))
+( (S (NP-SBJ Such laws)
+     (VP violate
+         (NP (NP the provision)
+	     (PP-LOC in
+		     (NP Article II))
+             (SBAR (SBAR (WHNP-1 that)
+			 (S (NP-SBJ *T*-1)
+			    (VP requires
+				(S (NP-SBJ the president)
+				   (VP to
+				       (VP make
+					   (NP recommendations)
+					   (PP-CLR to
+						   (NP Congress))))))))
+		   , but
+		   (SBAR (WHNP-41 which)
+			 (S (NP-SBJ *T*-41)
+			    (VP gives
+				(NP the president)
+				(NP (NP the discretion)
+				    (SBAR (WHADVP-2 0)
+					  (S (NP-SBJ *)
+					     (VP to
+						 (VP select
+						     (NP (NP the subject matter)
+							 (PP of
+							     (NP those recommendations)))
+						     (ADVP *T*-2))))))))))))
+     .))
+( (S (ADVP Typically)
+     ,
+     (NP-SBJ-1 these laws)
+     (VP seek
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP prevent
+                    (NP-2 executive branch officials)
+                    (PP-CLR from
+			    (S-NOM (NP-SBJ *-2)
+				   (VP (VP inquiring
+					   (PP-CLR into
+						   (SBAR whether
+							 (S (NP-SBJ certain federal programs)
+							    (VP make
+								(NP any economic sense))))))
+				       or
+				       (VP proposing
+					   (NP (NP (ADJP more market-oriented)
+						   alternatives)
+					       (PP to
+						   (NP regulations)))))))))))
+     .))
+( (S (ADVP Probably)
+     (NP-SBJ the
+             (ADJP most egregious)
+             example)
+     (VP is
+         (NP-PRD (NP a proviso)
+		 (PP-LOC in
+			 (NP (NP the appropriations bill)
+			     (PP for
+				 (NP the executive office))))
+		 (SBAR (WHNP-1 that)
+		       (S (NP-SBJ *T*-1)
+			  (VP prevents
+			      (NP-2 (NP (NP the president 's)
+					Office)
+				    (PP of
+					(NP Management and Budget)))
+			      (PP-CLR from
+				      (S-NOM (NP-SBJ *-2)
+					     (VP subjecting
+						 (NP agricultural marketing orders)
+						 (PP-CLR to
+							 (NP any cost-benefit scrutiny))))))))))
+     .))
+( (S (NP-SBJ There)
+     (VP is
+         (NP-PRD (NP something)
+		 (ADJP inherently suspect)
+		 (PP about
+		     (NP (NP Congress 's)
+			 (VP prohibiting
+			     (NP-1 the executive)
+			     (PP-CLR from
+				     (S-NOM (NP-SBJ *-1)
+					    (ADVP even)
+					    (VP studying
+						(SBAR whether
+						      (S (NP-SBJ-57 public funds)
+							 (VP are
+							     (VP being
+								 (VP wasted
+								     (NP *-57)
+								     (PP-LOC in
+									     (NP some favored program or other)))))))))))))))
+     .))
+( (S (ADVP Perhaps)
+     (NP-SBJ (NP none) 
+	     (PP of
+		 (NP the unconstitutional conditions))
+             (VP contained 
+		 (NP *)
+                 (PP-LOC in
+			 (NP (NP the appropriations bills)
+			     (PP-TMP for
+				     (NP fiscal 1990))))))
+     (ADVP (ADVP better)
+	   (PP *ICH*-1))
+     (VP illustrates
+         (NP (NP Congress 's)
+             attempt
+             (S (NP-SBJ *)
+                (VP to
+                    (VP usurp
+                        (NP executive power)))))
+         (PP-1 than
+	       (NP (NP (NP Section 609)
+		       (PP of
+			   (NP the executive-office bill)))
+		   : ``
+		   (S (NP-SBJ-2 (NP None) 
+				(PP of
+				    (NP (NP the funds)
+					(VP made
+					    (S (NP-SBJ *)
+					       (ADJP-PRD available))
+					    (ADJP-ADV pursuant
+						      (PP to
+							  (NP (NP the provisions)
+							      (PP of
+								  (NP this Act))))))))) 
+		      (VP shall
+			  (VP be
+			      (VP used
+				  (NP *-2)
+				  (S-CLR (NP-SBJ *)
+					 (VP to
+					     (VP implement , administer , or enforce
+						 (NP (NP any regulation)
+						     (SBAR (WHNP-3 which)
+							   (S (NP-SBJ-58 *T*-3)
+							      (VP has
+								  (VP been
+								      (VP disapproved 
+									  (NP *-58)
+									  (ADJP-ADV pursuant
+										    (PP to
+											(NP (NP a resolution)
+											    (PP of
+												(NP disapproval))
+											    (VP (ADVP duly)
+												adopted
+												(NP *)
+												(PP in
+												    (NP (NP accordance)
+													(PP with
+													    (NP (NP the applicable law)
+														(PP of
+														    (NP the United States))))))))))))))))))))))))))
+     .
+     ''))
+( (S (NP-SBJ This provision)
+     (VP amounts
+         (PP-CLR to
+		 (NP (NP a legislative veto)
+		     (PP over
+			 (NP (NP (NP the president 's)
+				 execution)
+			     (PP of
+				 (NP the law))))))
+         ,
+         (SBAR-PRP since
+		   (S (NP-SBJ-1 a one-house resolution)
+		      (VP could
+			  (VP be
+			      (VP said
+				  (S (NP-SBJ *-1)
+				     (VP to
+					 (VP be
+					     (ADJP-PRD `` duly adopted ''))))
+				  (SBAR-ADV even though
+					    (S (NP-SBJ it)
+					       (VP would
+						   (VP require
+						       (NP neither
+							   (NP (NP bicameral action)
+							       (PP-LOC in
+								       (NP Congress)))
+							   nor
+							   (NP (NP presentation)
+							       (PP to
+								   (NP the president))
+							       (PP-PRP for
+								       (NP his signature or veto))))))))))))))
+     .))
+( (S (NP-SBJ (NP (NP The Supreme Court 's)
+		 decision)
+             (PP-LOC in
+		     (NP (NP INS)
+			 v.
+			 (NP Chadha))))
+     (VP held
+         (SBAR that
+               (S (NP-SBJ legislative vetoes)
+                  (VP are
+                      (ADJP-PRD unconstitutional)))))
+     .))
+( (S (NP-SBJ President Bush)
+     (VP should
+         (VP veto
+             (NP (NP appropriations acts)
+                 (SBAR (WHNP-1 that)
+                       (S (NP-SBJ *T*-1)
+                          (VP contain
+                              (NP (NP these kinds)
+                                  (PP of
+                                      (NP (NP unconstitutional conditions)
+                                          (PP on
+                                              (NP (NP the president 's)
+                                                  ability
+                                                  (S (NP-SBJ *)
+                                                     (VP to
+                                                         (VP (VP discharge
+                                                                 (NP his duties))
+                                                             and
+                                                             (VP exercise
+                                                                 (NP his prerogatives))))))))))))))))
+     .))
+( (S (SBAR-ADV If
+	       (S (NP-SBJ-1 President Bush)
+		  (VP fails
+		      (S (NP-SBJ *-1)
+			 (VP to
+			     (VP do
+				 (ADVP so)
+				 (PP-TMP in
+					 (NP his first year))))))))
+     ,
+     (NP-SBJ he)
+     (VP will
+         (VP invite
+             (NP-2 Congress)
+             (PRN ,
+		  (PP-TMP for
+			  (NP (NP the remainder)
+			      (PP of
+				  (NP his presidency))))
+		  ,)
+             (S (NP-SBJ-3 *-2)
+                (VP to
+                    (VP rewrite
+                        (NP (NP Article II)
+                            (PP of
+                                (NP the Constitution)))
+                        (S-PRP (NP-SBJ *-3)
+			       (VP to
+				   (VP suit
+				       (NP its purposes)))))))))
+     .))
+( (S (SBAR-NOM-SBJ (WHNP-1 What)
+		   (S (NP-SBJ *T*-1)
+		      (VP becomes
+			  (NP-PRD custom)
+			  (PP-LOC in
+				  (NP the Bush administration)))))
+     (VP will
+         (ADVP only)
+         (VP become
+             (ADJP-PRD more difficult
+		       (SBAR (WHNP-2 0)
+			     for
+			     (S (NP-SBJ (NP future presidents)
+					,
+					(PP including
+					    (NP Democrats))
+					,)
+				(VP to
+				    (VP undo
+					(NP *T*-2))))))))
+     .))
+( (S (NP-SBJ President Reagan)
+     (VP learned
+         (NP that lesson))
+     .))
+( (S (PP-TMP By
+	     (NP 1987))
+     ,
+     (NP-SBJ-1 then-Speaker Jim Wright)
+     (VP was
+         (VP (VP discussing
+                 (NP arms control)
+                 (PP-LOC in
+			 (NP Moscow))
+                 (PP with
+                     (NP Mikhail Gorbachev)))
+             and
+	     (VP (ADVP-TMP then)
+		 attempting
+                 (S (NP-SBJ *-1)
+                    (VP to
+                        (VP direct
+                            (NP-2 the president)
+                            ,
+			    (PP-MNR through
+				    (NP an appropriations rider))
+			    ,
+                            (S (NP-SBJ *-2)
+                               (VP to
+                                   (VP treat
+                                       (NP the Soviets)
+                                       (SBAR-MNR as though
+						 (S (NP-SBJ the Senate)
+						    (VP had
+							(VP ratified
+							    (NP SALT II))))))))))))))
+     .))
+( (S (SBAR-ADV If
+	       (S (NP-SBJ a veto)
+		  (VP is
+		      (ADJP-PRD unworkable)
+		      (SBAR-PRP because
+				(S (NP-SBJ it)
+				   (VP would
+				       (VP leave
+					   (S (NP-SBJ (NP part)
+						      (PP of
+							  (NP the executive branch)))
+					      (ADJP-PRD unfunded)))))))))
+     ,
+     (NP-SBJ-1 the president)
+     (VP could
+	 (VP (VP sign
+		 (NP the appropriations bills)
+		 (PP-CLR into
+			 (NP law)))
+	     and
+	     (VP assert
+		 (NP (NP a power)
+		     (PP of
+			 (NP excision)))
+		 ,
+		 (S-ADV (NP-SBJ *-1)
+			(VP declaring
+			    (S (NP-SBJ (NP the rider)
+				       (VP restricting
+					   (NP his Article II powers)))
+			       (VP to
+				   (VP be
+				       (ADJP-PRD unconstitutional and severable)))))))))
+     .))
+( (S (NP-SBJ The Constitution)
+     (VP does not
+         (ADVP expressly)
+         (VP give
+             (NP the president)
+             (NP such power)))
+     .))
+( (S (ADVP However)
+     ,
+     (NP-SBJ the president)
+     (VP does
+         (VP have
+             (NP a duty
+		 (S (NP-SBJ *)
+		    not
+		    (VP to
+			(VP violate
+			    (NP the Constitution)))))))
+     .))
+( (S (NP-SBJ The question)
+     (VP is
+         (SBAR-PRD whether
+		   (S (NP-SBJ (NP his only means)
+			      (PP of
+				  (NP defense)))
+		      (VP is
+			  (NP-PRD the veto)))))
+     .))
+( (S (NP-SBJ (NP Excision)
+             (PP of
+                 (NP (NP appropriations riders)
+                     (SBAR (WHNP-1 that)
+                           (S (NP-SBJ *T*-1)
+                              (VP trespass
+                                  (PP-CLR on
+					  (NP (NP (NP the president 's)
+						  duties and prerogative)
+					      (PP-LOC under
+						      (NP Article II))))))))))
+     (VP would
+         (VP be
+             (ADJP-PRD different
+		       (PP from
+			   (NP the line-item veto)))))
+     .))
+( (S (SBAR-ADV As
+	       (S (NP-SBJ *)
+		  (VP discussed
+		      (PP-LOC in
+			      (NP (NP the context)
+				  (PP of
+				      (S-NOM (NP-SBJ *)
+					     (VP controlling
+						 (NP federal spending)))))))))
+     ,
+     (NP-SBJ-59 the line-item veto)
+     (VP is
+	 (VP characterized
+	     (NP *-59)
+	     (PP-CLR as
+		     (NP (NP a way)
+			 (SBAR (WHADVP-1 0)
+			       for
+			       (S (NP-SBJ the president)
+				  (VP to
+				      (VP excise
+					  (NP (NP (ADJP perfectly constitutional) 
+						  provisions)
+					      (PP-LOC in
+						      (NP a spending bill))
+					      (SBAR (WHNP-2 that)
+						    (S (NP-SBJ *T*-2)
+						       (VP are
+							   (ADJP-PRD objectionable)
+							   (SBAR-PRP (ADVP merely)
+								     because
+								     (S (NP-SBJ they)
+									(VP conflict
+									    (PP-CLR with
+										    (NP his policy objectives)))))))))
+					  (ADVP *T*-1))))))))) 
+     .))
+( (S (NP-SBJ (NP The excision)
+             (PP of
+                 (NP (NP unconstitutional conditions)
+                     (PP-LOC in
+			     (NP an appropriations bill)))))
+     (VP would
+         (VP be
+             (NP-PRD (NP a power)
+		     (PP of
+			 (NP (ADJP (ADVP far more) limited)
+			     applicability)))))
+     .))
+( (S (NP-SBJ One)
+     (VP could
+         (VP argue
+             (SBAR that
+                   (S (NP-SBJ (NP it)
+			      (SBAR *EXP*-1))
+                      (VP is not
+                          (NP-PRD (NP an assertion)
+				  (PP of
+				      (NP a item veto)))
+                          (ADVP at all)
+                          (SBAR-1 for
+				  (S (NP-SBJ-2 the president)
+				     ,
+				     (PP-MNR by 
+					     (S-NOM (NP-SBJ *-2)
+						    (VP exerting
+							(NP (NP a power)
+							    (PP of
+								(NP excision))))))
+				     ,
+				     (VP to
+					 (VP resist
+					     (NP (NP unconstitutional conditions)
+						 (PP-LOC in
+							 (NP legislation))
+						 (SBAR (WHNP-3 that)
+						       (S (NP-SBJ *T*-3)
+							  (VP violate
+							      (NP (NP the separation)
+								  (PP of
+								      (NP powers))))))))))))))))
+     .))
+( (S (NP-SBJ There)
+     (VP is
+         (NP-PRD no downside)
+         (SBAR-ADV if
+		   (S (NP-SBJ the president)
+		      (VP asserts
+			  (NP (NP a right)
+			      (PP of
+				  (NP excision))
+			      (PP over
+				  (NP (NP unconstitutional conditions)
+				      (PP-LOC in
+					      (NP the fiscal 1990 appropriations bills)))))))))
+     .))
+( (S (SBAR-ADV If
+	       (S (NP-SBJ Congress)
+		  (VP does
+		      (NP nothing))))
+     ,
+     (NP-SBJ President Bush)
+     (VP will
+	 (VP have
+	     (VP won)))
+     .))
+( (S (SBAR-ADV If
+	       (S (NP-SBJ-2 Congress)
+		  (VP takes
+		      (NP the dispute)
+		      (PP-DIR to
+			      (NP the Supreme Court)))))
+     (PRN -LRB-
+	  (S-ADV (NP-SBJ *-2)
+		 (VP assuming
+		     (SBAR 0
+			   (S (NP-SBJ it)
+			      (VP can
+				  (VP establish
+				      (NP (NP standing)
+					  (SBAR (WHADVP-1 0)
+						(S (NP-SBJ *)
+						   (VP to
+						       (VP sue
+							   (ADVP *T*-1))))))))))))
+	  -RRB-)
+     ,
+     (NP-SBJ President Bush)
+     (VP might
+	 (VP win))
+     .))
+( (S (PP In
+         (NP that case))
+     ,
+     (NP-SBJ he)
+     (VP might
+         (VP receive
+             (NP (NP an opinion)
+		 (SBAR *ICH*-2))
+	     (PP-CLR from
+		     (NP the court))
+	     (SBAR-2 (WHNP-1 that)
+		     (S (NP-SBJ *T*-1)
+			(VP is
+			    (NP-PRD (NP a vindication)
+				    (PP of
+					(NP (NP the president 's)
+					    right
+					    (S (NP-SBJ *)
+					       (VP to
+						   (VP (VP perform
+							   (NP the duties))
+						       and
+						       (VP exercise
+							   (NP (NP the prerogatives)
+							       (SBAR (WHNP-3 0)
+								     (S (NP-SBJ the framers)
+									(VP thought
+									    (SBAR 0
+										  (S (NP-SBJ-60 *T*-3)
+										     (VP should
+											 (VP be
+											     (VP entrusted
+												 (NP *-60)
+												 (PP-CLR to
+													 (NP the executive)))))))))))))))))))))))
+     .))
+( (S (SBAR-ADV If
+	       (S (NP-SBJ President Bush)
+		  (VP loses
+		      (PP-LOC at
+			      (NP the court)))))
+     ,
+     (NP-SBJ it)
+     (VP might
+         (VP be
+             (ADJP-PRD disappointing)
+	     ,
+	     (SBAR-ADV as
+		       (S (NP-SBJ (NP Morrison)
+				  v.
+				  (NP Olson))
+			  (VP was
+			      (ADJP-PRD *?*)
+			      (PP for
+				  (NP the Reagan administration)))))))
+     .))
+( (S But
+     (NP-SBJ the presidency)
+     (VP would
+         (VP be
+             (ADJP-PRD (ADJP no worse off)
+		       (SBAR than
+			     (S (NP-SBJ it)
+				(VP is
+				    (ADJP-PRD *?*)
+				    (ADVP-TMP now)))))))
+     .))
+( (S (ADVP Moreover)
+     ,
+     (NP-SBJ the electorate)
+     (VP would
+         (VP have
+             (VP received
+                 (NP (NP a valuable civics lesson)
+                     (PP in
+                         (SBAR-NOM (WHADVP-1 how)
+				   (S (NP-SBJ (NP the separation)
+					      (PP of
+						  (NP powers)))
+				      (VP works
+					  (PP-LOC in
+						  (NP practice))
+					  (ADVP-MNR *T*-1)))))))))
+     .))
+( (S (SBAR-ADV As
+	       (S (NP-SBJ it)
+		  (VP stands
+		      (ADVP-TMP now))))
+     ,
+     (NP-SBJ Congress)
+     (VP presumes
+         (PP-TMP after
+		 (NP the Reagan administration))
+         (SBAR that
+               (S (NP-SBJ-1 the White House)
+                  (VP will
+                      (VP take
+                          (NP (NP unconstitutional provisions)
+                              (PP-LOC in
+				      (NP appropriations bills)))
+                          (S-ADV (NP-SBJ *-1)
+				 (VP lying
+				     (PP down))))))))
+     .))
+( (S (NP-SBJ President Bush)
+     (VP should
+         (VP set
+             (S (NP-SBJ things)
+		(ADJP-PRD straight))))
+     .))
+( (S (SBAR-ADV If
+	       (S (NP-SBJ he)
+		  (VP does not)))
+     ,
+     (NP-SBJ-1 he)
+     (VP will
+         (VP help
+             (S (NP-SBJ *-1)
+		(VP realize
+		    (NP (NP (NP Madison 's)
+			    fear)
+			(PP-LOC in
+				(NP The Federalist No. 48))
+			(PP of
+			    (NP (NP a legislature)
+				``
+				(VP (ADVP-LOC everywhere)
+				    (VP extending
+					(NP (NP the sphere)
+					    (PP of
+						(NP its activity))))
+				    and
+				    (VP drawing
+					(NP all powers)
+					(PP-DIR into
+						(NP its impetuous vortex)))))))))))
+     . ''))
+( (S (NP-SBJ Mr. Sidak)
+     (VP served
+         (PP-CLR as
+		 (NP an attorney))
+         (PP-TMP in
+		 (NP the Reagan administration)))
+     .))
+( (S (NP-SBJ-1 (NP His longer analysis)
+	       (PP of
+		   (NP (NP executive power)
+		       and
+		       (NP the appropriations clause))))
+     (VP is
+	 (S-PRD (NP-SBJ *-1)
+		(VP to
+		    (VP appear
+			(PP-LOC in
+				(NP the Duke Law Journal))
+			(NP-TMP later this year)))))
+     .))

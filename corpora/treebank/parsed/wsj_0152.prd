@@ -1,0 +1,101 @@
+
+
+( (S (NP-SBJ Dow Jones & Co.)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP extended
+                      (NP (NP its (ADJP $ 18-a-share *U*)
+			      offer)
+			  (PP for
+			      (NP Telerate Inc. common stock)))
+                      (PP-TMP-CLR until
+				  (NP 5 p.m. EST Nov. 9))))))
+     .))
+( (S (NP-SBJ-2 (NP The offer)
+	       ,
+	       (VP valued
+		   (NP *)
+		   (PP-CLR at
+			   (NP (QP about $ 576 million) *U*))
+		   (PP for
+		       (NP (NP the 33 %)
+			   (PP of
+			       (NP Telerate))
+			   (SBAR (WHNP-1 that)
+				 (S (NP-SBJ Dow Jones)
+				    (VP does n't
+					(ADVP already)
+					(VP own
+					    (NP *T*-1))))))))
+	       ,)
+     (VP had
+         (VP been
+             (VP set
+                 (S (NP-SBJ *-2)
+                    (VP to
+                        (VP expire
+                            (NP-TMP-CLR Nov. 6)))))))
+     .))
+( (S (NP-SBJ (NP Dow Jones)
+             ,
+             (SBAR (WHNP-1 which)
+                   (S (NP-SBJ *T*-1)
+                      (VP owns
+                          (NP (NP (QP about 64 million) )
+			      (PP of
+				  (NP (NP (NP Telerate 's)
+					  (QP 95 million)
+					  common shares)
+				      (ADJP outstanding)))))))
+             ,)
+     (VP said
+         (SBAR that
+               (S (NP-SBJ-2 (QP about 24,000)
+			    shares)
+		  (VP have
+		      (VP been
+			  (VP tendered
+			      (NP *-2)
+			      (PP-LOC under
+				      (NP its offer))))))))
+     .))
+( (S (NP-SBJ (NP Telerate 's)
+             two independent directors)
+     (VP have
+         (VP rejected
+             (NP the offer)
+             (PP-CLR as
+		     (ADJP inadequate))))
+     .))
+( (S (PP-LOC In
+	     (NP (NP composite trading)
+		 (PP-LOC on
+			 (NP the New York Stock Exchange))))
+     ,
+     (NP-SBJ Telerate shares)
+     (VP closed
+         (PP-CLR at
+		 (NP $ 19.50 *U*))
+         ,
+         (ADVP-CLR up
+		   (NP 12.5 cents)))
+     .))
+( (S (NP-SBJ Telerate)
+     (VP provides
+         (NP an electronic financial information network))
+     .))
+( (S (NP-SBJ Dow Jones)
+     (VP (VP publishes
+             (NP (NP The Wall Street Journal)
+                 ,
+                 (NP (NP Barron 's)
+                     magazine)
+                 , and
+                 (NP community newspapers)))
+         and
+         (VP operates
+             (NP (NP financial news services)
+                 and
+                 (NP computer data bases))))
+     .))

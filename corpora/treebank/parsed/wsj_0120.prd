@@ -1,0 +1,755 @@
+
+
+( (S (NP-SBJ FALL BALLOT ISSUES)
+     (VP set
+	 (NP (NP a record)
+	     (PP for
+		 (NP off-year elections))))
+     .))
+( (S (NP-SBJ Odd-year elections)
+     (VP attract
+         (NP (ADJP relatively few) ballot issues))
+     .))
+( (SINV (S-TPC-1 But
+		 (NP-SBJ (NP the 1989 fall total)
+			 (PP of
+			     (NP 80)))
+		 ,
+		 (SBAR-ADV while
+			   (FRAG (PP (ADVP well) below
+				     (NP 1988 activity))))
+		 ,
+		 (VP shows
+		     ``
+		     (NP (NP a steady ratcheting)
+			 (ADVP up)
+			 (PP in
+			     (NP citizen referenda and initiatives)))))
+	,
+	''
+	(VP says
+	    (SBAR 0
+		  (S *T*-1)))
+	(NP-SBJ (NP Patrick McGuigan)
+		,
+		(NP (NP editor)
+		    (PP of
+			(NP Family , Law and Democracy Report))))
+	.))
+( (S (NP-SBJ He)
+     (VP says
+         (SBAR 0
+               (S (NP-SBJ (NP the 10 citizen-sparked issues)
+			  (PP-LOC on
+				  (NP state ballots))
+                          (NP-TMP this fall))
+                  (VP represent
+                      (NP (NP the most)
+                          (PP-TMP in
+				  (NP (NP any odd-year)
+				      (NP this decade))))))))
+     .))
+( (S (NP-SBJ Ballot questions)
+     (VP range
+         (PP-CLR (PP from
+		     (NP (NP a Maine initiative)
+			 (PP on
+			     (S-NOM (NP-SBJ *)
+				    (VP banning
+					(NP Cruise missiles))))))
+		 (PP to
+		     (NP (NP a referendum)
+			 (PP on
+			     (S-NOM (NP-SBJ *)
+				    (VP increasing
+					(NP the North Dakota income tax))))))))
+     .))
+( (S (NP-SBJ Ballot watchers)
+     (VP say
+         (SBAR 0
+               (S (NP-SBJ-1 attention)
+                  (ADVP-TMP already)
+                  (VP is
+                      (VP focused
+                          (NP *-1)
+                          (PP-CLR on
+				  (NP the 1990 elections)))))))
+     .))
+( (SINV (S-TPC-1 (PP-LOC In
+			 (NP California))
+		 ,
+		 (NP-SBJ (NP two petition drives)
+			 (PP for
+			     (NP (NP next year 's)
+				 election)))
+		 (VP are
+		     ``
+		     (ADJP-PRD essentially
+			       finished)))
+	, ''
+	(VP says
+	    (SBAR 0
+		  (S *T*-1)))
+	(NP-SBJ (NP David Schmidt)
+		,
+		(NP (NP author)
+		    (PP of
+			``
+			(NP Citizen Lawmakers))))
+	. ''))
+( (S (NP-SBJ Mr. McGuigan)
+     (VP cites
+         (NP (NP three completed efforts)
+             (PP-LOC in
+		     (NP Oklahoma))))
+     .))
+( (S (NP-SBJ-1 Hot ballot topics)
+     (VP are
+         (VP expected
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP be
+                        (NP-PRD (NP abortion)
+				,
+				(NP the environment)
+				and
+				(NP insurance reform)))))))
+     .))
+( (SINV (S-TPC-2 (S-ADV (NP-SBJ *-1)
+			(VP Taking
+			    (NP a cue)
+			    (PP-CLR from
+				    (NP California))))
+		 ,
+		 (NP-SBJ-1 more politicians)
+		 (VP will
+		     (VP launch
+			 (NP their campaigns)
+			 (PP by
+			     (S-NOM (NP-SBJ *-1)
+				    (VP backing
+					(NP initiatives)))))))
+	,
+	(VP says
+	    (SBAR 0
+		  (S *T*-2)))
+	(NP-SBJ (NP David Magleby)
+		(PP of
+		    (NP Brigham Young University)))
+	.))
+( (S (NP-SBJ PHOTOGRAPH COLLECTING)
+     (VP gains
+	 (NP new stature)
+	 (SBAR-ADV as
+		   (S (NP-SBJ prices)
+		      (VP rise))))
+     .))
+( (S (NP-SBJ Price records)
+     (VP are
+         (VP being
+             (VP set
+                 (PP-LOC at
+			 (NP auctions))
+                 (NP-TMP this week))))
+     .))
+( (S (PP-LOC At
+	     (NP Christie 's))
+     ,
+     (NP-SBJ (NP a folio)
+             (PP of
+                 (NP (NP 21 prints)
+                     (PP from
+                         (NP (NP Alfred Stieglitz 's)
+                             `` Equivalents '' series)))))
+     (VP sold
+         (PP-CLR for
+		 (NP (NP $ 396,000 *U*)
+		     ,
+		     (NP a single-lot record))))
+     .))
+( (S (NP-SBJ Other works)
+     (ADVP also)
+     (VP have
+         (VP been
+             (VP exceeding
+                 (NP price estimates))))
+     .))
+( (S (PP In
+         (NP part))
+     ,
+     (NP-SBJ prices)
+     (VP reflect
+         (NP (NP development)
+             (PP of
+                 (NP (NP a market structure)
+                     (VP based
+                         (NP *)
+                         (PP-CLR on
+				 (NP (NP such variables)
+				     (PP as
+					 (NP (NP the number)
+					     (PP of
+						 (NP prints)))))))))))
+     .))
+( (SINV (S-TPC-2 (NP-SBJ-1 This information)
+		 (VP used
+		     (S (NP-SBJ *-1)
+			(VP to
+			    (VP be
+				(ADJP-PRD (ADJP poorly documented)
+					  and
+					  (ADJP largely anecdotal)))))))
+	,
+	(VP says
+	    (SBAR 0
+		  (S *T*-2)))
+	(NP-SBJ (NP Beth Gates-Warren)
+		(PP of
+		    (NP Sotheby 's)))
+	.))
+( (S ``
+     (S-TPC-1 (NP-SBJ There)
+	      (VP is
+		  (ADVP finally)
+		  (NP-PRD (NP some sort)
+			  (PP of
+			      (NP sense)))
+		  (PP-LOC in
+			  (NP the market))))
+     , ''
+     (NP-SBJ she)
+     (VP says
+	 (S *T*-1))
+     .))
+( (SINV (S-TPC-1 (NP-SBJ Corporations and museums)
+		 (VP are
+		     (PP-PRD among
+			     (NP the serious buyers))
+		     ,
+		     (S-ADV (NP-SBJ *)
+			    (VP giving
+				(NP greater market stability)))))
+	,
+	(VP says
+	    (SBAR 0
+		  (S *T*-1)))
+	(NP-SBJ (NP Robert Persky)
+		(PP of
+		    (NP the Photograph Collector)))
+	.))
+( (S ``
+     (SBAR-TMP (WHADVP-1 When)
+	       (S (NP-SBJ I)
+		  (VP see
+		      (S (NP-SBJ prints)
+			 (VP going
+			     (PP-DIR into
+				     (NP (NP the hands)
+					 (PP of
+					     (NP institutions))))))
+		      (ADVP-TMP *T*-1))))
+     ,
+     (NP-SBJ I)
+     (VP know
+	 (SBAR 0
+	       (S (NP-SBJ-2 they)
+		  (VP are n't
+		      (VP going
+			  (S (NP-SBJ *-2)
+			     (VP to
+				 (VP come
+				     (ADVP back)
+				     (PP-LOC on
+					     (NP the market))))))))))
+     . ''))
+( (FRAG (PP (ADVP Most)
+	    in
+	    (NP demand))
+	:
+	(NP (NP classic photographs)
+	    (PP by
+		(NP (NP masters)
+		    (PP such as
+			(NP (NP Stieglitz)
+			    and
+			    (NP Man Ray))))))
+	.))
+( (SINV (S-TPC-1 But
+		 (NP-SBJ much contemporary work)
+		 (VP is
+		     (ADVP also)
+		     (VP fetching
+			 ``
+			 (NP (NP a great deal)
+			     (PP of
+				 (NP money))))))
+	,
+	''
+	(VP says
+	    (SBAR 0
+		  (S *T*-1)))
+	(NP-SBJ (NP Miles Barth)
+		(PP of
+		    (NP (NP the International Center)
+			(PP of
+			    (NP Photography)))))
+	.))
+( (S (S-NOM-SBJ (NP-SBJ *)
+		(VP DIALING
+		    (NP 900)))
+     (VP brings
+	 (NP callers)
+	 (NP (NP a growing number)
+	     (PP of
+		 (NP services))))
+     .))
+( (SINV (S-TPC-2 (S-ADV (NP-SBJ *-1)
+			(ADVP-TMP Currently)
+			(NP-PRD a (ADJP $ 300 million-a-year) business))
+		 ,
+		 (NP-SBJ-1 900 telephone service)
+		 (VP is
+		     (VP expected
+			 (S (NP-SBJ *-1)
+			    (VP to
+				(VP (VP hit
+					(NP (QP $ 500 million) *U*)
+					(NP-TMP next year))
+				    and
+				    (VP near
+					(NP (QP $ 2 billion) *U*)
+					(PP-TMP by
+						(NP 1992))))))
+			 (SBAR-ADV as
+				   (S (NP-SBJ-3 (NP uses)
+						(PP for
+						    (NP the service)))
+				      (VP continue
+					  (S (NP-SBJ *-3)
+					     (VP to
+						 (VP expand)))))))))
+	,
+	(VP says
+	    (SBAR 0
+		  (S *T*-2)))
+	(NP-SBJ (NP Joel Gross)
+		(PP of
+		    (NP Donaldson , Lufkin & Jenrette Inc)))
+	.))
+( (S (NP-SBJ-1 (NP The service)
+               --
+               (SBAR (WHNP-2 which)
+                     (S (NP-SBJ *T*-2)
+                        (VP costs
+                            (NP the caller)
+                            (NP (NP (QP from
+					30 cents
+					to
+					$ 25 ) *U*)
+				(NP-ADV a minute)))))
+               --)
+     (ADVP-TMP currently)
+     (VP is
+         (VP dominated
+             (NP *-1)
+             (PP by
+                 (NP-LGS (NP celebrity chatter)
+			 ,
+			 (NP horoscopes)
+			 and
+			 (NP romance lines)))))
+     .))
+( (S But
+     (S (NP-SBJ more serious applications)
+        (VP are
+            (PP-PRD in
+		    (NP the wings))))
+     , and
+     (S (NP-SBJ that)
+        (VP is
+            (SBAR-PRD (WHADVP-2 where)
+		      (S (NP-SBJ-1 the future growth)
+			 (VP is
+			     (VP expected
+				 (NP *-1)
+				 (ADVP-LOC *T*-2)))))))
+     .))
+( (SINV ``
+	(S-TPC-2 (NP-SBJ-1 I)
+		 (VP 'm
+		     (VP starting
+			 (S (NP-SBJ *-1)
+			    (VP to
+				(VP see
+				    (NP more business transactions)))))))
+	, ''
+	(VP says
+	    (S *T*-2))
+	(NP-SBJ-3 (NP Andrea West)
+		  (PP of
+		      (NP American Telephone & Telegraph Co.)))
+	,
+	(S-ADV (NP-SBJ *-3)
+	       (VP noting
+		   (NP (NP growing interest)
+		       (PP in
+			   (NP (NP use)
+			       (PP of
+				   (NP 900 service))
+			       (PP for
+				   (NP (NP stock sales)
+				       ,
+				       (NP software tutorials)
+				       and
+				       (NP even service contracts))))))))
+	.))
+( (S-1 (NP-SBJ Colleges)
+       (PRN ,
+	    (S (NP-SBJ she)
+	       (VP says
+		   (SBAR 0
+			 (S *T*-1))))
+	    ,)
+       (VP are
+	   (VP eyeing
+	       (NP (NP registration)
+		   (PP through
+		       (NP 900 service)))))
+       .))
+( (S (S (NP-SBJ Charities)
+        (VP test
+            (NP the waters)))
+     , but
+     (S (NP-SBJ they)
+        (VP face
+            (NP (NP legal barriers)
+                (PP to
+                    (NP electronic fund raising)))))
+     .))
+( (S ``
+     (S-TPC-2 (NP-SBJ (NP The thing)
+		      (SBAR (WHNP-1 that)
+			    (S (NP-SBJ *T*-1)
+			       (VP will
+				   (ADVP really)
+				   (VP break
+				       (NP this market)
+				       (ADVP-CLR right open))))))
+	      (VP is
+		  (NP-PRD merchandising)))
+     , ''
+     (NP-SBJ Ms. West)
+     (VP says
+	 (S *T*-2))
+     .))
+( (SINV (S-TPC-1 (NP-SBJ (NP Much)
+			 (PP of
+			     (NP the 800 service)))
+		 (VP will
+		     ``
+		     (VP migrate
+			 (PP-DIR to
+				 (NP 900)))))
+	,
+	''
+	(VP predicts
+	    (S *T*-1))
+	(NP-SBJ (NP Jack Lawless)
+		,
+		(NP (NP general manager)
+		    (PP of
+			(NP (NP US Sprint 's)
+			    900 product))))
+	.))
+( (S (NP-SBJ FAMILY PETS)
+     (VP are
+	 (VP improving
+	     (NP (NP recovery rates)
+		 (PP of
+		     (NP patients)))
+	     (PP-LOC at
+		     (NP (NP Columbia Hospital)
+			 ,
+			 (NP Milwaukee)))))
+     .))
+( (SINV (S-TPC-3 (NP-SBJ-2 (NP Patients)
+			   (SBAR (WHNP-1 who)
+				 (S (NP-SBJ *T*-1)
+				    (VP receive
+					(NP canine or feline visitors)))))
+		 (VP are
+		     (VP found
+			 (S (NP-SBJ *-2)
+			    (VP to
+				(VP (VP have
+					(NP (NP lower blood pressure)
+					    and
+					    (NP improved appetite)))
+				    and
+				    (VP be
+					(ADJP-PRD (ADJP more receptive)
+						  (PP to
+						      (NP therapy))))))))))
+	,
+	(VP says
+	    (SBAR 0
+		  (S *T*-3)))
+	(NP-SBJ (NP Mary Ann O'Loughlin)
+		,
+		(NP program coordinator))
+	.))
+( (SQ (FRAG (ADJP TIRED
+		  (PP OF
+		      (S-NOM (NP-SBJ *)
+			     (VP TRIMMING))))
+	    ?)))
+( (S (NP-SBJ Hammacher Schlemmer & Co.)
+     (VP offers
+         (NP (NP a fiber-optic Christmas tree)
+             (SBAR (WHNP-1 that)
+                   (S (NP-SBJ *T*-1)
+                      (VP eliminates
+                          (NP the need
+                              (S (NP-SBJ *)
+                                 (VP to
+                                     (VP string
+                                         (NP lights))))))))))
+     .))
+( (S (NP-SBJ-1 The (ADJP $ 6,500 *U*) tree)
+     (VP is
+         (VP designed
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP send
+                        (NP (ADJP continuously changing)
+                            colored light)
+                        (PP-DTV to
+				(NP (NP dozens)
+				    (PP of
+					(NP fiber-end bunches)))))))))
+     .))
+( (FRAG-HLN (NP MEDICINE TRANSPLANT)
+	    :
+	    (S (NP-SBJ (NP Growth)
+		       (PP of
+			   (NP Japanese trade and travel)))
+	       (VP prompts
+		   (S (NP-SBJ (NP Beth Israel Medical Center)
+			      ,
+			      (NP-LOC New York)
+			      ,)
+		      (VP to
+			  (VP set
+			      (PRT up)
+			      (NP a bilingual medical practice))))))
+	    .))
+( (S (S-ADV (NP-SBJ-2 *-1)
+	    (VP Funded
+		(NP *-2)
+		(PP by
+		    (NP-LGS (NP a (ADJP (QP $ 1 million) *U*) gift)
+			    (PP from
+				(NP Tokio Marine & Fire Insurance))))))
+     ,
+     (NP-SBJ-1 the service)
+     (VP will
+	 (VP follow
+	     (NP (NP Japanese medical protocols)
+		 ,
+		 (PP including
+		     (NP (NP emphasis)
+			 (PP on
+			     (NP preventative medicine)))))))
+     .))
+( (S (NP-SBJ DIAPER SERVICES)
+     (VP make
+         (NP a comeback)
+         (PP-LOC amid
+		 (NP growing environmental concerns)))
+     .))
+( (S (S-ADV (NP-SBJ *-1)
+	    (VP Concerned
+		(PP-CLR about
+			(NP (NP shrinking landfills)
+			    and
+			    (NP (NP the safety)
+				(PP of
+				    (NP (NP chemicals)
+					(VP used
+					    (NP *)
+					    (PP-LOC in
+						    (NP super-absorbent disposables))))))))))
+     ,
+     (NP-SBJ-1 parents)
+     (VP are
+	 (VP returning
+	     (PP-DIR to
+		     (NP the cloth diaper))))
+     .))
+( (S (NP-SBJ (NP Tiny Tots Inc.)
+             ,
+             (NP-LOC (NP Campbell)
+		     ,
+		     (NP Calif.))
+             ,)
+     (VP says
+         (SBAR 0
+               (S (NP-SBJ business)
+                  (VP is
+                      (ADVP-PRD up
+				(NP 35 %))
+		      (PP-TMP in
+			      (NP the past year))))))
+     .))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ We)
+		 (VP 're
+		     (VP gaining
+			 (NP 1,200 new customers)
+			 (NP-TMP each week))))
+	, ''
+	(VP says
+	    (S *T*-1))
+	(NP-SBJ (NP Jack Mogavero)
+		(PP of
+		    (NP (NP General Health Care Corp.)
+			,
+			(NP-LOC (NP Piscataway)
+				,
+				(NP N.J)))))
+	.))
+( (S (PP-LOC In
+	     (NP (NP Syracuse)
+		 ,
+		 (NP N.Y.)
+		 ,))
+     (NP-SBJ (NP DyDee Service 's)
+             new marketing push)
+     (VP stresses
+         (NP environmental awareness))
+     .))
+( (FRAG (PP Among
+	    (NP its new customers))
+	:
+	(NP (NP day-care centers)
+	    (SBAR (WHNP-1 that)
+		  (S (NP-SBJ *T*-1)
+		     (ADVP-TMP previously)
+		     (VP spurned
+			 (NP the service)))))
+	.))
+( (S (NP-SBJ (NP The National Association)
+	     (PP of
+		 (NP Diaper Services))
+             ,
+             (NP-LOC Philadelphia)
+             ,)
+     (VP says
+         (SBAR that
+               (S (PP-TMP since
+			  (NP January))
+                  (NP-SBJ it)
+                  (VP has
+                      (VP gotten
+                          (NP (QP more than 672)
+                              inquiries)
+                          (PP from
+                              (NP (NP people)
+                                  (ADJP interested
+                                        (PP in
+                                            (S-NOM (NP-SBJ *)
+						   (VP starting
+						       (NP diaper services))))))))))))
+     .))
+( (S (NP-SBJ Elisa Hollis)
+     (VP launched
+         (NP a diaper service)
+	 (NP-TMP last year)
+	 (SBAR-PRP because
+		   (S (NP-SBJ (NP-LOC (NP State College)
+				      ,
+				      (NP Pa.)
+				      ,)
+			      (SBAR (WHADVP-1 where)
+				    (S (NP-SBJ she)
+				       (VP lives
+					   (ADVP-LOC-CLR *T*-1))))
+			      ,)
+		      (VP did n't
+			  (VP have
+			      (NP one))))))
+     .))
+( (S (NP-SBJ (NP Diaper shortages)
+	     (NP-TMP this summer))
+     (VP limited
+         (NP (NP growth)
+             (PP-LOC at
+		     (NP (NP Stork Diaper Services)
+			 ,
+			 (NP-LOC (NP Springfield)
+				 ,
+				 (NP Mass.)
+				 ,)
+			 (SBAR (WHADVP-1 where)
+			       (S (NP-SBJ business)
+				  (VP is
+				      (ADVP-PRD up
+						(NP 25 %))
+				      (PP in) 
+				      (ADVP-LOC *T*-1))))))))))
+( (FRAG (S-ADV (NP-SBJ *)
+	       (ADVP Also)
+	       (VP spurring
+		   (NP (NP the move)
+		       (PP to
+			   (NP cloth)))))
+	:
+	(NP (NP diaper covers)
+	    (PP with
+		(NP Velcro fasteners))
+	    (SBAR (WHNP-1 that)
+		  (S (NP-SBJ *T*-1)
+		     (VP eliminate
+			 (NP (NP the need)
+			     (PP for
+				 (NP safety pins)))))))
+	.))
+((NP-HLN BRIEFS
+	 :))
+( (SINV (S-TPC-1 (NP-SBJ (NP Only 57.6 %)
+			 (PP of
+			     (NP New Yorkers)))
+		 (VP watch
+		     (NP the local news)
+		     ,
+		     (NP-ADV (NP the lowest viewership)
+			     (PP-LOC in
+				     (NP the country)))))
+	,
+	(VP says
+	    (SBAR 0
+		  (S *T*-1)))
+	(NP-SBJ (NP a new study)
+		(PP by
+		    (NP (NP Impact Resources Inc.)
+			,
+			(NP-LOC (NP Columbus)
+				,
+				(NP Ohio)))))
+	... .))
+( (S (NP-SBJ-1 (NP FreudToy)
+               ,
+               (NP (NP a pillow)
+                   (VP bearing
+                       (NP (NP the likeness)
+                           (PP of
+                               (NP Sigmund Freud)))))
+               ,)
+     (VP is
+         (VP marketed
+             (NP *-1)
+             (PP-CLR as
+		     (NP (NP a (ADJP $ 24.95 *U*) tool)
+			 (PP for
+			     (NP do-it-yourself analysis))))))
+     .))

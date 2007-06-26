@@ -1,0 +1,60 @@
+
+
+( (S (NP-SBJ (NP Companies)
+             (VP listed
+                 (NP *)
+                 (ADVP-LOC below)))
+     (VP reported
+         (NP (NP quarterly profit)
+             (ADJP substantially different
+                   (PP from
+                       (NP (NP the average)
+                           (PP of
+                               (NP (NP analysts ')
+                                   estimates)))))))
+     .))
+( (S (NP-SBJ-1 The companies)
+     (VP (VP are
+	     (VP followed
+		 (NP *-1)
+		 (PP by
+		     (NP-LGS (ADVP at least)
+			     three analysts))))
+	 , and
+	 (VP had
+	     (NP (NP a minimum five-cent change)
+		 (PP in
+		     (NP (NP actual earnings)
+			 (PP per
+			     (NP share)))))))
+     .))
+( (S (NP-SBJ-1 (NP (ADJP Estimated and actual) results)
+               (VP involving
+                   (NP losses)))
+     (VP are
+         (VP omitted
+             (NP *-1)))
+     .))
+( (S (NP-SBJ The percent difference)
+     (VP compares
+         (NP actual profit)
+         (PP-CLR with
+		 (NP the 30-day estimate))
+	 (SBAR-ADV (WHADVP-1 where)
+		   (S (NP-SBJ (QP at least three) analysts)
+		      (VP have
+			  (VP issues
+			      (NP forecasts)
+			      (PP-TMP in
+				      (NP the past 30 days))
+			      (ADVP-LOC *T*-1))))))
+     .))
+( (S (ADVP Otherwise)
+     ,
+     (NP-SBJ-1 actual profit)
+     (VP is
+         (VP compared
+             (NP *-1)
+             (PP-CLR with
+		     (NP the 300-day estimate))))
+     .))

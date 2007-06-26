@@ -1,0 +1,477 @@
+
+( (S 
+    (NP-SBJ 
+      (NP (NNS Researchers) )
+      (PP-LOC (IN at) 
+        (NP 
+          (NP (NNP American) (NNP Telephone) (CC &) (NNP Telegraph) (NNP Co.) (POS 's) )
+          (NNP Bell) (NNPS Laboratories) )))
+    (VP (VBD reported) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 (PRP they) )
+          (VP (VBD raised) 
+            (NP 
+              (NP (DT the) (JJ electrical) (JJ current-carrying) (NN capacity) )
+              (PP (IN of) 
+                (NP (JJ new) (NN superconductor) (NNS crystals) )))
+            (PP (IN by) 
+              (NP 
+                (NP (DT a) (NN factor) )
+                (PP (IN of) 
+                  (NP (CD 100) ))))
+            (, ,) 
+            (S-ADV 
+              (NP-SBJ (-NONE- *-1) )
+              (VP (VBG moving) 
+                (NP (DT the) (NNS materials) )
+                (ADVP-DIR (JJR closer) 
+                  (PP (TO to) 
+                    (NP (JJ commercial) (NN use) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NNS scientists) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-2 (PRP they) )
+          (VP (VBD created) 
+            (NP 
+              (NP (JJ small) (NNS changes) )
+              (PP-LOC (IN in) 
+                (NP 
+                  (NP (DT the) (JJ crystal-lattice) (NNS structures) )
+                  (PP (IN of) 
+                    (NP (DT the) (NNS superconductors) )))))
+            (S-PRP 
+              (NP-SBJ (-NONE- *-2) )
+              (VP (TO to) 
+                (VP (VB raise) 
+                  (NP 
+                    (NP (DT the) (NN amount) )
+                    (PP (IN of) 
+                      (NP (NN current) ))
+                    (SBAR 
+                      (WHNP-1 (IN that) )
+                      (S 
+                        (NP-SBJ (JJ single) (NNS crystals) )
+                        (VP (MD could) 
+                          (VP (VB carry) 
+                            (NP (-NONE- *T*-1) ))))))
+                  (PP-CLR (TO to) 
+                    (NP 
+                      (NP (CD 600,000) (NNS amps) )
+                      (PP (IN per) 
+                        (NP (JJ square) (NN centimeter) ))
+                      (PP-LOC (IN in) 
+                        (NP (DT a) 
+                          (ADJP (RB moderately) (JJ strong) )
+                          (JJ magnetic) (NN field) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NNS scientists) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP they) )
+          (VP (VBD made) 
+            (NP (DT the) (NN advance) )
+            (PP (IN with) 
+              (NP 
+                (NP (JJ yttrium-containing) (NNS superconductors) )
+                (VP (VBN cooled) 
+                  (NP (-NONE- *) )
+                  (PP-CLR (TO to) 
+                    (NP 
+                      (NP (NN liquid-nitrogen) (NN temperature) )
+                      (, ,) (CC or) 
+                      (NP 
+                        (QP (CC minus) (CD 321) )
+                        (NNS degrees) (NN Fahrenheit) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP$ Their) (NN report) )
+    (VP (VBZ appears) 
+      (PP-LOC-CLR (IN in) 
+        (NP 
+          (NP 
+            (NP (NN today) (POS 's) )
+            (NN issue) )
+          (PP (IN of) 
+            (NP (DT the) (NN journal) (NNP Nature) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN finding) )
+    (VP (VBZ marks) 
+      (NP 
+        (NP (DT a) (JJ significant) (NN step) )
+        (PP-LOC (IN in) 
+          (NP 
+            (NP (NN research) )
+            (PP (IN on) 
+              (NP 
+                (NP (`` ``) (NN bulk) ('' '') (NNS superconductors) )
+                (, ,) 
+                (SBAR 
+                  (WHNP-2 (WDT which) )
+                  (S 
+                    (NP-SBJ-1 (-NONE- *T*-2) )
+                    (VP (VBP are) 
+                      (VP (VBN aimed) 
+                        (NP (-NONE- *-1) )
+                        (PP-CLR (IN at) 
+                          (NP 
+                            (NP (NN use) )
+                            (PP (IN in) 
+                              (NP 
+                                (NP (NNS wires) )
+                                (PP (IN for) 
+                                  (NP 
+                                    (NP (NNS motors) )
+                                    (, ,) 
+                                    (NP (NNS magnets) )
+                                    (, ,) 
+                                    (NP (NNS generators) )
+                                    (CC and) 
+                                    (NP (JJ other) (NNS applications) )))))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-2 (NNS Scientists) )
+    (VP 
+      (VP (VBD had) 
+        (VP (VBN obtained) 
+          (NP 
+            (ADJP (RB even) (JJR higher) )
+            (JJ current-carrying) (NN capacity) )
+          (PP-LOC (IN in) 
+            (NP 
+              (NP (JJ thin) (NNS films) )
+              (PP (IN of) 
+                (NP (DT the) (JJ new) (NNS superconductors) ))))))
+      (, ,) (CC but) 
+      (VP (VBP have) 
+        (VP (VBN had) 
+          (NP (NNS problems) )
+          (S-CLR 
+            (NP-SBJ (-NONE- *-2) )
+            (VP (VBG increasing) 
+              (NP 
+                (NP (DT the) (NN amount) )
+                (PP (IN of) 
+                  (NP (NN current) ))
+                (SBAR 
+                  (WHNP-1 (IN that) )
+                  (S 
+                    (NP-SBJ (NN bulk) (NNS crystals) )
+                    (VP (MD could) 
+                      (VP (VB carry) 
+                        (NP (-NONE- *T*-1) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-3 (NNS Superconductors) )
+    (VP (VBP conduct) 
+      (NP (NN electricity) )
+      (PP-MNR (IN without) 
+        (NP (NN resistance) ))
+      (SBAR-TMP 
+        (WHADVP-1 (WRB when) )
+        (S 
+          (NP-SBJ-2 (-NONE- *-3) )
+          (VP (VBN cooled) 
+            (NP (-NONE- *-2) )
+            (ADVP-TMP (-NONE- *T*-1) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT A) (NN family) )
+      (PP (IN of) 
+        (NP 
+          (NP (JJ ceramic) (NNS superconductors) )
+          (VP (VBN discovered) 
+            (NP (-NONE- *) )
+            (PP-TMP (IN during) 
+              (NP (DT the) (JJ past) (CD three) (NNS years) ))))))
+    (VP (VBP promise) 
+      (NP 
+        (NP (JJ new) (NNS technologies) )
+        (PP (JJ such) (IN as) 
+          (NP (JJR cheaper) (JJ electrical) (NN generation) )))
+      (: --) (CC but) 
+      (FRAG 
+        (SBAR-ADV 
+          (ADVP (RB only) )
+          (IN if) 
+          (S 
+            (NP-SBJ-1 (PRP$ their) (JJ current-carrying) (NN capacity) )
+            (VP (MD can) 
+              (VP (VB be) 
+                (VP (VBN raised) 
+                  (NP (-NONE- *-1) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NNP AT&T) (NN advance) )
+    (VP (VBZ shows) 
+      (SBAR 
+        (WHADVP-2 (WRB how) )
+        (S 
+          (NP-SBJ-1 
+            (NP (CD one) (NN aspect) )
+            (PP (IN of) 
+              (NP (DT the) (JJ current-carrying) (NN problem) )))
+          (VP (MD can) 
+            (VP (VB be) 
+              (VP (VBN overcome) 
+                (NP (-NONE- *-1) )
+                (ADVP-MNR (-NONE- *T*-2) )))))))
+    (. .) ))
+( (SINV 
+    (S-TPC-1 (CC But) (`` ``) 
+      (NP-SBJ (PRP it) )
+      (VP (MD wo) (RB n't) 
+        (VP (VB lead) 
+          (PP-CLR (TO to) 
+            (NP 
+              (NP (JJ imminent) (NN use) ('' '') )
+              (PP (IN of) 
+                (NP (JJ new) (NNS superconductors) )))))))
+    (, ,) 
+    (VP (VBD cautioned) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (NP-SBJ 
+      (NP (NNP Robert) (NNP B.) (NNP van) (NNP Dover) )
+      (, ,) 
+      (NP 
+        (NP (CD one) )
+        (PP (IN of) 
+          (NP (DT the) (NNP AT&T) (NNS researchers) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP He) )
+    (VP (VBD added) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ 
+            (NP (DT the) (JJ current-carrying) (NN capacity) )
+            (PP (IN of) 
+              (NP 
+                (NP (JJ multi-crystal) (NNS samples) )
+                (PP (IN of) 
+                  (NP (NNS superconductors) )))))
+          (VP (VBZ remains) 
+            (ADJP-PRD 
+              (ADJP (RB too) (RB low) )
+              (PP (IN for) 
+                (NP (JJS most) (JJ practical) (NNS uses) )))
+            (PP-PRP (IN because) (IN of) 
+              (NP 
+                (NP (JJ so-called) (JJ weak) (NNS links) )
+                (PP (IN between) 
+                  (NP (NNS crystals) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (JJ Such) (JJ multi-crystal) (NNS materials) )
+    (VP (MD will) 
+      (ADVP (RB probably) )
+      (VP (VB be) 
+        (VP (VBN needed) 
+          (NP (-NONE- *-1) )
+          (PP-CLR (IN for) 
+            (NP (JJ commercial) (NNS applications) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Mr.) (NNP van) (NNP Dover) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-2 (DT the) (NNP AT&T) (NN team) )
+          (VP (VBD created) 
+            (NP (DT the) (VBN desired) (NN crystal) (NNS changes) )
+            (PP-MNR (IN by) 
+              (S-NOM 
+                (NP-SBJ (-NONE- *-2) )
+                (VP 
+                  (VP (VBG bombarding) 
+                    (NP (NN superconductor) (NNS samples) )
+                    (PP-CLR (IN with) 
+                      (NP (NNS neutrons) )))
+                  (, ,) 
+                  (NP-ADV 
+                    (NP (DT a) (NN process) )
+                    (SBAR 
+                      (WHNP-1 (WDT that) )
+                      (S 
+                        (NP-SBJ (-NONE- *T*-1) )
+                        (VP 
+                          (VP (VBZ creates) 
+                            (NP 
+                              (NP (DT some) (NN radioactivity) )
+                              (PP (IN in) 
+                                (NP (DT the) (NNS samples) ))))
+                          (CC and) 
+                          (VP (MD may) (RB not) 
+                            (VP (VB be) 
+                              (ADJP-PRD (JJ feasible) 
+                                (PP (IN for) 
+                                  (NP (JJ large-scale) (JJ commercial) (NN use) ))))))))))))))))
+    (. .) ))
+( (S 
+    (ADVP (RB Still) )
+    (, ,) 
+    (NP-SBJ (NNS scientists) )
+    (VP (VBD breathed) 
+      (NP 
+        (NP (DT a) (JJ collective) (NN sigh) )
+        (PP (IN of) 
+          (NP (NN relief) )))
+      (PP-CLR (IN about) 
+        (NP (DT the) (NN finding) ))
+      (, ,) 
+      (SBAR-PRP (IN because) 
+        (S 
+          (NP-SBJ (PRP it) )
+          (VP (VBZ demonstrates) 
+            (SBAR 
+              (WHADVP-2 (WRB how) )
+              (S 
+                (NP-SBJ (-NONE- *) )
+                (VP (TO to) 
+                  (VP (VB overcome) 
+                    (NP 
+                      (NP (DT the) (`` ``) (NN flux) (NN pinning) ('' '') (NN problem) )
+                      (SBAR 
+                        (WHNP-1 (IN that) )
+                        (S 
+                          (NP-SBJ (-NONE- *T*-1) )
+                          (NP-TMP (RBR earlier) (DT this) (NN year) )
+                          (VP (VBD was) 
+                            (ADVP-MNR (RB widely) )
+                            (VP (VBN publicized) 
+                              (PP-CLR (IN as) 
+                                (S-NOM 
+                                  (NP-SBJ (-NONE- *) )
+                                  (VP (VBG undercutting) 
+                                    (NP 
+                                      (NP (JJ new) (NNS superconductors) (POS ') )
+                                      (NN potential) )))))))))
+                    (ADVP-MNR (-NONE- *T*-2) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN problem) )
+    (VP (VBZ involves) 
+      (NP 
+        (NP (DT the) (NN motion) )
+        (PP (IN of) 
+          (NP 
+            (NP (JJ small) (JJ magnetic) (NNS fields) )
+            (PP-LOC (IN within) 
+              (NP (NN superconductor) (NNS crystals) )))))
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ (-NONE- *) )
+        (VP (VBG limiting) 
+          (NP (PRP$ their) (JJ current-carrying) (NN capacity) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Mr.) (NNP van) (NNP Dover) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (DT the) (NN crystal) (VBZ changes) )
+            (SBAR 
+              (WHNP-1 (-NONE- 0) )
+              (S 
+                (NP-SBJ (PRP$ his) (NN team) )
+                (VP (VBD introduced) 
+                  (NP (-NONE- *T*-1) )))))
+          (ADVP (RB apparently) )
+          (VP (VBZ pins) 
+            (NP (DT the) (JJ magnetic) (NNS fields) )
+            (PP-LOC-CLR (IN in) 
+              (NP (NN place) ))
+            (, ,) 
+            (S-ADV 
+              (NP-SBJ (-NONE- *) )
+              (VP (VBG preventing) 
+                (NP-3 (PRP them) )
+                (PP-CLR (IN from) 
+                  (S-NOM 
+                    (NP-SBJ (-NONE- *-3) )
+                    (VP (VBG lowering) 
+                      (NP (JJ current-carrying) (NN capacity) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Mr.) (NNP van) (NNP Dover) )
+    (VP (VBD added) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ-2 (NNS researchers) )
+          (VP (VBP are) 
+            (VP (VBG trying) 
+              (S 
+                (NP-SBJ (-NONE- *-2) )
+                (VP (TO to) 
+                  (VP (VB determine) 
+                    (ADVP-MNR (RB precisely) )
+                    (SBAR 
+                      (WHNP-1 (WDT what) (NN crystal) (NNS changes) )
+                      (S 
+                        (NP-SBJ (-NONE- *T*-1) )
+                        (VP (VBD solved) 
+                          (NP (DT the) (NN problem) ))))))))))))
+    (. .) ))
+( (S 
+    (S-NOM-SBJ 
+      (NP-SBJ (-NONE- *) )
+      (VP (VBG Determining) 
+        (NP (DT that) )))
+    (VP (MD may) 
+      (VP (VB enable) 
+        (S 
+          (NP-SBJ (PRP them) )
+          (VP (TO to) 
+            (VP (VB develop) 
+              (NP 
+                (NP (JJR better) (NNS ways) )
+                (SBAR 
+                  (WHADVP-1 (-NONE- 0) )
+                  (S 
+                    (NP-SBJ (-NONE- *) )
+                    (VP (TO to) 
+                      (VP (VB introduce) 
+                        (NP (DT the) (VBN needed) (NN crystal-lattice) (NNS patterns) )
+                        (ADVP-MNR (-NONE- *T*-1) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (DT The) (NNP AT&T) (NN team) )
+    (ADVP (RB also) )
+    (VP (VBZ is) 
+      (VP (VBG trying) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB combine) 
+              (NP (PRP$ their) (JJS latest) (NN superconductor) (NN process) )
+              (PP (IN with) 
+                (NP (`` ``) 
+                  (NP (JJ melt-textured) (NN growth) )
+                  (, ,) ('' '') 
+                  (NP 
+                    (NP (DT a) (NN process) )
+                    (VP (VBN discovered) 
+                      (NP (-NONE- *) )
+                      (ADVP-TMP (JJR earlier) )
+                      (PP-LOC (IN at) 
+                        (NP (NNP Bell) (NNPS Laboratories) )))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (VBN combined) (NNS processes) )
+    (VP (MD may) 
+      (ADVP (RB significantly) )
+      (VP (VB raise) 
+        (NP 
+          (NP (DT the) (JJ current-carrying) (NN capacity) )
+          (PP (IN of) 
+            (NP (JJ multi-crystal) (NNS samples) )))))
+    (. .) ))

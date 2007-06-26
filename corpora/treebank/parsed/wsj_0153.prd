@@ -1,0 +1,329 @@
+
+
+( (S (NP-SBJ Rockwell International Corp.)
+     (VP reported
+         (NP flat operating earnings)
+	 (PP-TMP for
+		 (NP (NP the fourth quarter)
+		     (VP ended
+			 (NP-TMP-CLR Sept. 30)))))
+     .))
+( (S (NP-SBJ The (UCP aerospace , automotive supply , electronics and printing-press) concern)
+     (ADVP also)
+     (VP indicated
+         (SBAR that
+               (S (NP-SBJ (NP the first half)
+                          (PP of
+                              (NP fiscal 1990)))
+                  (VP could
+                      (VP be
+                          (ADJP-PRD rough))))))
+     .))
+( (S (PP-LOC In
+	     (NP an interview))
+     ,
+     (NP-SBJ (NP Donald Beall)
+             ,
+             (NP chairman)
+             ,)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ first-half profit)
+                  (ADVP certainly)
+                  (VP would
+                      (VP trail
+                          (NP the past year 's)
+                          ,
+			  (PP-PRP (ADVP primarily)
+				  because
+				  of
+				  (NP (NP weakness)
+				      (PP-LOC in
+					      (NP the
+						  (ADJP heavy-truck and passenger-car)
+						  markets)))))))))
+     .))
+( (S-1 (ADVP Still)
+       (PRN ,
+	    (S (NP-SBJ he)
+	       (VP added
+		   (SBAR 0
+			 (S *T*-1))))
+	    ,)
+       (SBAR-ADV if
+		 (S (NP-SBJ the industrial sector)
+		    (VP remains
+			(ADJP-PRD relatively stable))))
+       ,
+       (NP-SBJ-2 Rockwell)
+       (VP should
+	   (VP be
+	       (ADJP-PRD able
+			 (S (NP-SBJ *-2)
+			    (VP to
+				(VP (VP recover
+					(PP-TMP in
+						(NP the second half)))
+				    and
+				    (VP (ADVP about)
+					equal
+					(NP (NP (NP fiscal 1989 's)
+						operating profit)
+					    (PP of
+						(NP (QP $ 630.9 million) *U*))))))))))
+       .))
+( (S (PP-TMP For
+	     (NP (NP fiscal 1989 's)
+		 fourth quarter))
+     ,
+     (NP-SBJ (NP Rockwell 's)
+             net income)
+     (VP totaled
+         (NP (NP (QP $ 126.1 million) *U*)
+             , or
+             (NP (NP 50 cents)
+                 (NP-ADV a share))))
+     .))
+( (S (NP-SBJ That)
+     (VP compares
+         (PP with
+             (NP (NP operating earnings)
+		 (PP of
+		     (NP (NP (QP $ 132.9 million) *U*)
+			 , or
+			 (NP (NP 49 cents)
+			     (NP-ADV a share))
+			 ,))
+		 (NP-TMP (NP the year)
+			 (ADVP earlier)))))
+     .))
+( (S (NP-SBJ The prior-year period)
+     (VP includes
+         (NP (NP (NP a one-time favorable tax adjustment)
+		 (PP on
+		     (NP the B-1B bomber program)))
+             and
+             (NP (NP another gain)
+                 (PP from
+                     (NP (NP sale)
+			 (PP of
+			     (NP the industrial sewing-machine business))
+                         ,
+                         (SBAR (WHNP-1 which)
+                               (S (NP-SBJ *T*-1)
+                                  (VP made
+                                      (NP (NP net (QP $ 185.9 million) *U*)
+                                          , or
+                                          (NP (NP 70 cents)
+                                              (NP-ADV a share)))))))))))
+     .))
+( (S (NP-SBJ Sales)
+     (VP rose
+         (NP-EXT 4 %)
+         (PP-DIR to
+		 (NP (QP $ 3.28 billion) *U*))
+         (PP-DIR from
+		 (NP (QP $ 3.16 billion) *U*)))
+     .))
+( (S (NP-SBJ Mr. Beall)
+     (VP (VP said
+             (SBAR that
+                   (S (NP-SBJ he)
+                      (VP was
+                          (ADVP-PRD generally)
+                          (ADVP pleased
+				(PP with
+				    (NP the latest numbers)))))))
+         and
+         (VP cited
+             (NP (NP a particularly strong showing)
+                 (PP by
+                     (NP (NP the company 's)
+                         electronics segment)))))
+     .))
+( (S (ADVP Overall)
+     ,
+     (NP-SBJ pretax electronics earnings)
+     (VP soared
+	 (NP-EXT 12 %)
+	 (PP-DIR to
+		 (NP (QP $ 107.9 million) *U*))
+	 (PP-DIR from
+		 (NP (QP $ 96.4 million) *U*)))
+     .))
+( (S (NP-SBJ All four areas)
+     (VP had
+         (NP higher revenue)
+	 (PP-TMP for
+		 (NP (NP the three months)
+		     (VP ended
+			 (NP-TMP-CLR Sept. 30)))))
+     .))
+( (S (PP-TMP For
+	     (NP the year))
+     ,
+     (NP-SBJ-1 electronics)
+     (VP emerged
+         (PP-CLR as
+		 (NP (NP Rockwell 's)
+		     largest sector))
+         (PP in
+             (NP (NP terms)
+                 (PP of
+                     (NP sales and earnings))))
+	 ,
+	 (S-ADV (NP-SBJ *-1)
+		(VP muscling
+		    (PRT out)
+		    (NP aerospace)
+		    (PP-TMP for
+			    (NP the first time)))))
+     .))
+( (S (NP-SBJ (NP The graphics business)
+             ,
+             (SBAR (WHNP-2 which)
+		   (S (NP-SBJ-1 *T*-2)
+		      (ADVP also)
+		      (VP was
+                          (VP singled
+                              (PRT out)
+			      (NP *-1)
+                              (PP by
+                                  (NP-LGS the chairman))
+                              (PP-CLR as
+				      (NP a positive))))))
+             ,)
+     (VP saw
+         (S (NP-SBJ (NP its operating earnings)
+		    (PP-TMP for
+			    (NP the quarter)))
+	    (VP jump
+		(NP-EXT 79 %)
+		(PP-DIR to
+			(NP (QP $ 42.1 million) *U*))
+		(PP-DIR from
+			(NP (QP $ 23.5 million) *U*)))))
+     .))
+( (S (PP-TMP For
+	     (NP the year))
+     ,
+     (S-ADV (NP-SBJ-2 *-1)
+	    (VP bolstered
+		(NP *-2)
+		(PP by
+		    (NP-LGS (NP the introduction)
+			    (PP of
+				(NP the Colorliner newspaper-printing press))))))
+     ,
+     (NP-SBJ-1 graphics earnings)
+     (ADVP almost)
+     (VP doubled)
+     .))
+( (S (S (NP-SBJ Aerospace earnings)
+        (VP sagged
+            (NP-EXT (NP (NP 37 %)
+			(PP-TMP for
+				(NP the quarter)))
+		    and
+		    (NP (NP 15 %)
+			(PP-TMP for
+				(NP the year))))
+            ,
+            (ADVP-PRP largely due
+		      (PP to
+			  (NP lower B-1B program profit)))))
+     ;
+     (S (NP-SBJ (NP the last)
+                (PP of
+                    (NP the bombers)))
+        (VP rolled
+	    (ADVP-DIR out)
+            (PP-TMP in
+		    (NP April 1988))))
+     .))
+( (S (NP-SBJ-1 That)
+     (VP was
+         (ADVP partially)
+	 (VP offset
+	     (NP *-1)
+             (PP by
+                 (NP-LGS (NP (NP the resumption)
+			     (PP of
+				 (NP space shuttle flights)))
+			 and
+			 (NP (NP increased demand)
+			     (PP for
+				 (NP expendable launch-vehicle engines)))))))
+     .))
+( (S (NP-SBJ The company)
+     (ADVP also)
+     (VP took
+         (NP-CLR hits)
+         (PP-TMP in
+		 (NP (NP the fourth quarters)
+		     (PP of
+			 (NP 1989 and 1988))))
+         (PP-CLR on
+		 (NP (NP a fixed-price weapons-modernization development program)
+		     --
+		     (NP probably the C-130 gunship)))
+	 ,
+	 (PP according
+	     (PP to
+		 (NP analysts))))
+     .))
+( (S (PP-TMP For
+	     (NP fiscal 1989))
+     ,
+     (NP-SBJ the company)
+     (VP posted
+         (NP (NP net)
+             (PP of
+                 (NP (NP (QP $ 734.9 million) *U*)
+		     , or
+		     (NP (NP $ 2.87 *U*)
+			 (NP-ADV a share))
+		     ,)))
+	 (ADVP down
+	       (PP from
+		   (NP (NP (QP $ 811.9 million) *U*)
+		       , or
+		       (NP (NP $ 3.04 *U*)
+			   (NP-ADV a share))
+		       ,
+		       (PP-TMP in
+			       (NP fiscal 1988))))))
+     .))
+( (S (S-ADV (NP-SBJ *)
+	    (VP Excluding
+		(NP (NP one-time additions)
+		    (PP to
+			(NP profit))
+		    (PP-TMP in
+			    (NP each year)))))
+     ,
+     (NP-SBJ (NP earnings)
+	     (PP per
+		 (NP share)))
+     (VP were
+	 (NP-PRD $ 2.47 *U*)
+	 ,
+	 (ADVP-CLR up
+		   (NP 7.4 %)
+		   (PP from
+		       (NP (NP $ 2.30 *U*)
+			   (PP-TMP in
+				   (NP fiscal 1988))))))
+     .))
+( (S (NP-SBJ (NP Sales)
+             (PP for
+                 (NP the year)))
+     (VP rose
+         (NP-EXT 5 %)
+         (PP-DIR to
+		 (NP (QP $ 12.52 billion) *U*))
+         (PP-DIR from
+		 (NP (QP $ 11.95 billion) *U*))
+         (PP-TMP in
+		 (NP fiscal 1988)))
+     .))

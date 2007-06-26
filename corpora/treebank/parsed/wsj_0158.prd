@@ -1,0 +1,296 @@
+
+
+( (S (NP-SBJ Reuters Holdings PLC)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 Michael Reupke)
+                  (VP (VP resigned
+			  (PP-CLR as
+				  (NP general manager))
+			  (S-PRP (NP-SBJ *-1)
+				 (VP to
+				     (VP pursue
+					 (NP unspecified interests)))))
+		      ,
+		      (NP (NP a move)
+			  (SBAR (WHNP-2 0)
+				(S (NP-SBJ the news organization)
+				   (VP termed
+				       (S (NP-SBJ *T*-2)
+					  (NP-PRD an `` amicable separation))))))))))
+     . ''))
+( (S (NP-SBJ (NP Mr. Reupke)
+             ,
+             (UCP (ADJP (NP 52 years)
+			old)
+		  and
+		  (NP a 27-year Reuters veteran))
+	     ,)
+     (VP had
+         (VP been
+             (NP-PRD (NP the information-services company 's) general manager)
+             (PP-TMP for
+		     (NP only six months))))
+     .))
+( (S (NP-SBJ (NP His appointment)
+             (PP to
+                 (NP (NP that post)
+                     ,
+                     (SBAR (WHNP-1 which)
+                           (S (NP-SBJ *T*-1)
+                              (VP has
+                                  (NP senior
+				      (UCP administrative , staff and policy)
+				      responsibilities))))
+                     ,)))
+     (VP followed
+         (NP (NP a several-year tenure)
+             (PP as
+                 (NP (NP (NP Reuters 's)
+			 editor)
+		     (PP in
+			 (NP chief))))))
+     .))
+( (S (S-TPC-3 (S (NP-SBJ-1 No successor)
+		 (VP was
+		     (VP named
+			 (NP *-1))))
+	      , and
+	      (S (NP-SBJ-2 (NP Mr. Reupke 's)
+			   duties)
+		 (VP will
+		     (VP be
+			 (VP split
+			     (NP *-2)
+			     (PP among
+				 (NP three other senior Reuters executives)))))))
+     ,
+     (NP-SBJ the company)
+     (VP said
+	 (SBAR 0
+	       (S *T*-3)))
+     .))
+( (S (PP-LOC In
+	     (NP a telephone interview))
+     ,
+     (NP-SBJ Mr. Reupke)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ his departure)
+                  (VP was
+                      (PP-PRD for
+			      (NP ``
+				  (NP personal reasons)
+				  ,
+				  ''
+				  (SBAR (WHNP-1 which)
+					(S (NP-SBJ-2 he)
+					   (VP declined
+					       (S (NP-SBJ *-2)
+						  (VP to
+						      (VP specify
+							  (NP *T*-1)))))))))))))
+     .))
+( (S ``
+     (S-TPC-1 (NP-SBJ There)
+	      (VP is
+		  (NP-PRD (NP (NP no business reason)
+			      (PP for
+				  (NP my departure)))
+			  ,
+			  ''
+			  nor
+			  (NP (NP any disagreement)
+			      (PP over
+				  (NP policy))))))
+     ,
+     (NP-SBJ he)
+     (VP added
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (NP-SBJ He)
+     (ADVP also)
+     (VP rejected
+         (NP reports
+             (SBAR that
+                   (S (NP-SBJ his departure)
+                      (VP stemmed
+                          (PP-CLR from
+				  (NP disappointment
+				      (SBAR 0
+					    (S (NP-SBJ (NP the general manager 's)
+						       post)
+					       (VP had n't
+						   (ADVP also)
+						   (VP led
+						       (PP-CLR to
+							       (NP (NP a board directorship)
+								   (PP-LOC at
+									   (NP the London-based news organization)))))))))))))))
+     .))
+( (S (NP-SBJ Mr. Reupke)
+     (VP was
+         (NP-PRD (NP one)
+		 (PP of
+		     (NP (NP three executives)
+			 (PP-LOC on
+				 (NP (NP Reuters 's)
+				     eight-person executive committee))
+			 (SBAR (WHNP-1 who)
+			       (S (NP-SBJ *T*-1)
+				  (VP did n't
+				      (ADVP also)
+				      (VP serve
+					  (PP-CLR on
+						  (NP (NP (NP the company 's)
+							  board)
+						      (PP of
+							  (NP directors))))))))))))
+     .))
+( (S ``
+     (S-TPC-2 (SBAR-ADV If
+			(S (NP-SBJ I)
+			   (VP were
+			       (VP choosing
+				   (NP (NP the people)
+				       (PP of
+					   (NP tomorrow)))))))
+	      ,
+	      (NP-SBJ I)
+	      (VP would
+		  (VP have
+		      (VP chosen
+			  (NP (NP the people)
+			      (SBAR (WHNP-1 who)
+				    (S (NP-SBJ *T*-1)
+				       (VP are
+					   (ADVP-TMP now)
+					   (PP-PRD on
+						   (NP the board))))))))))
+     , ''
+     (NP-SBJ he)
+     (VP said
+	 (S *T*-2))
+     .))
+( (S (NP-SBJ A Reuters spokesman)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ the departure)
+                  (VP reflects
+		      ``
+		      (NP (NP no change)
+                          (PP in
+                              (NP strategy or profits)))))))
+     . ''))
+( (S (NP-SBJ (NP Mark Shepperd)
+             ,
+             (NP (NP an analyst)
+                 (PP-LOC at
+			 (NP (NP UBS Phillips & Drew)
+			     (PP-LOC in
+				     (NP London)))))
+             ,)
+     (VP said ,
+	 ``
+	 (S (NP-SBJ I)
+            (VP suspect
+                (SBAR 0
+                      (S -LRB-
+                         (NP-SBJ the departure)
+                         -RRB-
+                         (VP will
+                             (VP be
+                                 (ADJP-PRD fairly irrelevant)
+                                 (PP for
+                                     (NP the company)))))))))
+     .))
+( (S (NP-SBJ I)
+     (VP would
+         (VP be
+             (ADJP-PRD very surprised)
+             (SBAR-ADV if
+		       (S (NP-SBJ his departure)
+			  (VP signals
+			      (NP any
+				  (NAC (NAC change
+					    (PP in
+						(NP strategy)))
+				       or
+				       (NAC change
+					    (PP in
+						(NP profit expectations))))))))))
+     .
+     ''))
+( (S (PP-LOC On
+	     (NP (NP London 's)
+		 Stock Exchange))
+     ,
+     (NP-SBJ Reuters shares)
+     (VP rose
+         (NP-EXT five pence)
+         (PP-CLR to
+		 (NP (NP 913 pence)
+		     (PRN -LRB-
+			  (NP $ 14.43 *U*)
+			  -RRB-))))
+     .))
+( (S (PP-LOC In
+	     (NP the U.S. over-the-counter market))
+     ,
+     (NP-SBJ-1 (NP American depositary shares)
+	       (PP for
+		   (NP Reuters)))
+     ,
+     (S-ADV (NP-SBJ each)
+	    (VP representing
+		(NP three shares)
+		(PP-LOC in
+			(NP the London market))))
+     ,
+     (VP closed
+         (ADJP-ADV unchanged)
+         (PP-CLR at
+		 (NP $ 43.875 *U*)))
+     .))
+( (S (NP-SBJ (NP The senior)
+             (PP of
+                 (NP (NP the three executives)
+                     (SBAR (WHNP-1 who)
+                           (S (NP-SBJ *T*-1)
+                              (VP will
+                                  (VP assume
+                                      (NP (NP Mr. Reupke 's)
+                                          duties))))))))
+     (VP is
+         (NP-PRD (NP Nigel Judah)
+		 ,
+		 (NP 58)
+		 ,
+		 (NP (NP finance director)
+		     and
+		     (NP a Reuters board director))))
+     .))
+( (S (NP-SBJ (NP Peter Holland)
+             ,
+             (NP 45)
+             ,
+             (NP deputy general manager)
+             ,)
+     (VP becomes
+         (NP-PRD (NP director)
+		 (PP of
+		     (NP corporate affairs))))
+     .))
+( (S And
+     (NP-SBJ (NP Patrick Mannix)
+             ,
+             (NP 46)
+             ,
+             (NP international technical manager)
+             ,)
+     (VP becomes
+         (NP-PRD (NP director)
+		 (PP of
+		     (NP group quality programs))))
+     .))

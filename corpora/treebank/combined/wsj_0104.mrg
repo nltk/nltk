@@ -1,0 +1,26 @@
+
+( (S 
+    (PP-PRP (JJ Due) 
+      (PP (TO to) 
+        (NP (DT an) (NN editing) (NN error) )))
+    (, ,) 
+    (NP-SBJ 
+      (NP (DT a) (NN letter) )
+      (PP (TO to) 
+        (NP (DT the) (NN editor) ))
+      (PP-LOC (IN in) 
+        (NP 
+          (NP (NN yesterday) (POS 's) )
+          (NN edition) ))
+      (PP (IN from) 
+        (NP (NNP Frederick) (NNP H.) (NNP Hallett) )))
+    (ADVP (RB mistakenly) )
+    (VP (VBD identified) 
+      (NP (DT the) (NNP NRDC) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP It) )
+    (VP (MD should) 
+      (VP (VB be) 
+        (NP-PRD (DT the) (NNP Natural) (NNPS Resources) (NNP Defense) (NNP Council) )))
+    (. .) ))

@@ -1,0 +1,1030 @@
+
+
+( (S (NP-SBJ World sugar futures prices)
+     (VP soared
+         (PP-CLR on
+		 (NP rumors
+		     (SBAR that
+			   (S (NP-SBJ (NP Brazil)
+				      ,
+				      (NP a major grower and exporter)
+				      ,)
+			      (VP might not
+				  (VP ship
+				      (NP sugar)
+				      (NP-TMP (NP this crop year)
+					      and
+					      (NP next))))))))) 
+     .))
+( (S (NP-SBJ-1 Prices)
+     (ADVP also)
+     (VP were
+         (VP boosted
+             (NP *-1)
+             (PP by
+                 (NP-LGS another rumor
+			 (SBAR that
+			       (S (NP-SBJ-2 (NP Mexico)
+					    ,
+					    (NP usually a large producer and exporter)
+					    ,)
+				  (VP might
+				      (VP have
+					  (S (NP-SBJ *-2)
+					     (VP to
+						 (VP buy
+						     (NP (NP a large quantity)
+							 (PP of
+							     (NP sugar))))))))))))))
+     .))
+( (S (S-TPC-2 (SBAR-ADV Although
+			(S (NP-SBJ-3 traders)
+			   (VP rushed
+			       (S (NP-SBJ *-3)
+				  (VP to
+				      (VP buy
+					  (NP futures contracts)))))))
+	      ,
+	      (NP-SBJ many)
+	      (VP remained
+		  (ADJP-PRD skeptical
+			    (PP about
+				(NP (NP the Brazilian development)
+				    ,
+				    (SBAR (WHNP-4 which)
+					  (S (NP-SBJ-1 *T*-4)
+					     (VP could n't
+						 (VP be
+						     (VP confirmed
+							 (NP *-1)))))))))))
+     ,
+     (NP-SBJ analysts)
+     (VP said
+	 (SBAR 0
+	       (S *T*-2)))
+     .))
+( (S (NP-SBJ The March and May contracts)
+     (VP rose
+         (PP-CLR to
+		 (NP (NP fresh life-of-contract highs)
+		     (PP of
+			 (NP (NP 14.54 cents)
+			     and
+			     (NP 14.28 cents)))))
+         (PP at
+             (NP (NP their best levels)
+                 (PP of
+                     (NP the day)))))
+     .))
+( (S (NP-SBJ (NP The March delivery)
+             ,
+             (SBAR (WHNP-1 which)
+                   (S (NP-SBJ *T*-1)
+                      (VP has
+                          (NP no limits))))
+             ,)
+     (VP settled
+         (PP-CLR at
+		 (NP (NP 14.53 cents)
+		     ,
+		     (ADVP up
+			   (NP (NP 0.56 cent)
+			       (NP-ADV a pound))))))
+     .))
+( (S (NP-SBJ (NP The May contract)
+             ,
+             (SBAR (WHNP-1 which)
+                   (S (NP-SBJ *T*-1)
+		      (ADVP also)
+                      (VP is
+                          (PP-PRD without
+				  (NP restraints)))))
+             ,)
+     (VP ended
+         (PP with
+             (NP (NP a gain)
+                 (PP of
+                     (NP 0.54 cent))
+                 (PP to
+                     (NP 14.26 cents)))))
+     .))
+( (S (NP-SBJ The July delivery)
+     (VP rose
+         (NP-ADV (NP its daily permissible limit)
+		 (PP of
+		     (NP (NP 0.50 cent)
+			 (NP-ADV a pound))))
+         (PP-CLR to
+		 (NP 14.00 cents))
+         ,
+         (SBAR-ADV while
+		   (S (NP-SBJ other contract months)
+		      (VP showed
+			  (NP near-limit advances)))))
+     .))
+( (S (PP According
+         (PP to
+             (NP (NP reports)
+                 (VP carried
+                     (NP *)
+                     (PP by
+                         (NP-LGS various news services))))))
+     ,
+     (NP-SBJ the Brazilian government)
+     (VP told
+	 (NP its sugar producers)
+	 (SBAR that
+	       (S (NP-SBJ-1 they)
+		  (VP wo n't
+		      (VP be
+			  (VP allowed
+			      (S (NP-SBJ *-1)
+				 (VP to
+				     (VP export
+					 (NP sugar)
+					 (PP-TMP during
+						 (NP (NP (NP the current 1989-90 season)
+							 ,
+							 (SBAR (WHNP-92 which)
+							       (S (NP-SBJ *T*-92)
+								  (VP began
+								      (NP-TMP-CLR May 1))))
+							 ,)
+						     and
+						     (NP the 1990-91 season)))
+					 (SBAR-PRP so that
+						   (S (NP-SBJ-2 it)
+						      (VP can
+							  (VP be
+							      (VP used
+								  (NP *-2)
+								  (S-CLR (NP-SBJ *)
+									 (VP to
+									     (VP produce
+										 (NP alcohol)
+										 (PP-CLR for
+											 (NP automobile fuel)))))))))))))))))))
+     .))
+( (S (NP-SBJ (NP One analyst)
+             ,
+             (NP Arthur Stevenson)
+             ,
+             (PP of
+                 (NP (NP Prudential-Bache Securities)
+                     ,
+                     (NP-LOC New York)
+                     ,)))
+     (VP estimated
+         (SBAR that
+               (S (NP-SBJ (NP 65 %
+			      (QP or
+				  more))
+			  (PP of
+			      (NP (NP Brazil 's)
+				  (ADJP newly made)
+				  automobiles)))
+                  (VP (VP run
+			  (PP-CLR on
+				  (NP alcohol)))
+		      and
+		      (VP ca n't
+			  (VP use
+			      (NP gasoline)))))))
+     .))
+( (SINV ``
+	(S-TPC-2 (NP-SBJ This)
+		 (VP is
+		     (NP-PRD (NP a demand)
+			     (SBAR (WHNP-3 that)
+				   (S (NP-SBJ-1 *T*-3)
+				      (VP must
+					  (VP be
+					      (VP met
+						  (NP *-1)
+						  ,
+						  (ADVP regardless
+							(PP of
+							    (NP (NP the price)
+								(PP of
+								    (NP oil)))))
+						  ,))))))))
+	''
+	(VP said
+	    (S *T*-2))
+	(NP-SBJ Mr. Stevenson)
+	.))
+( (S (NP-SBJ Brazil)
+     (VP is
+         (NP-PRD (NP (NP (NP the third-largest producer)
+			 (PP *RNR*-1))
+		     and
+		     (NP (NP the fifth-largest exporter)
+			 (PP *RNR*-1))
+		     (PP-1 of
+			   (NP sugar)))
+		 (PP-LOC in
+			 (NP the world))))
+     .))
+( (S (S (NP-SBJ-1 (NP A shift)
+                  (PP to
+                      (S-NOM (NP-SBJ *)
+			     (VP producing
+				 (NP (NP more alcohol)
+				     and
+				     (NP less sugar))))))
+        (VP had
+            (VP been
+                (VP expected
+                    (NP *-1)))))
+     , but
+     (S (NP-SBJ the latest news)
+        ,
+        (SBAR-ADV if
+		  (FRAG (ADJP true)))
+        ,
+        (VP indicates
+            (NP (NP a more drastic shift)
+                (SBAR (WHNP-2 0) 
+		      than 
+		      (S (NP-SBJ-3 *T*-2)
+			 (VP had
+			     (VP been
+				 (VP anticipated
+				     (NP *-3)))))))))
+     .))
+( (S (PP-TMP During
+	     (NP the current crop year))
+     ,
+     (NP-SBJ-1 Brazil)
+     (VP was
+         (VP expected
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP produce
+                        (NP (NP (NP (QP 6.9 million) tons)
+				(PP of
+				    (NP sugar)))
+                            ,
+                            (NP (NP a drop)
+                                (PP from
+                                    (NP (NP (QP 8.1 million) tons)
+					(PP-TMP in
+						(NP 1988-89)))))))))))
+     .))
+( (S (NP-SBJ-1 Its 1989-90 exports)
+     (VP were
+         (VP expected
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP total
+                        (NP 645,000 tons)
+                        (PP in
+                            (NP (NP contrast)
+                                (PP to
+                                    (NP (NP shipments)
+                                        (PP of
+                                            (NP (QP 1.5 million) tons
+						(X (PP in))))))))))))))) 
+( (SINV ``
+	(S-CLF-TPC-2 (NP-SBJ It)
+		     (VP is
+			 (NP-PRD these 645,000 tons))
+		     (SBAR (WHNP-1 that)
+			   (S (NP-SBJ *T*-1)
+			      (VP are
+				  (PP-PRD in
+					  (NP question))
+				  (PP for
+				      (NP this crop year))))))
+	, ''
+	(VP explained
+	    (S *T*-2))
+	(NP-SBJ (NP Judith Ganes)
+		,
+		(NP (NP analyst)
+		    (PP for
+			(NP (NP Shearson Lehman Hutton)
+			    ,
+			    (NP-LOC New York)))))
+	.))
+( (S ``
+     (S (NP-SBJ-2 Producers)
+        (VP were
+            (VP granted
+                (NP *-2)
+                (NP the right
+                    (S *ICH*-1))
+                (NP-TMP earlier this year)
+                (S-1 (NP-SBJ *)
+                     (VP to
+			 (VP ship
+			     (NP sugar)))))))
+     and
+     (S (NP-SBJ-4 the export licenses)
+        (VP were
+            (VP expected
+                (S (NP-SBJ-5 *-4)
+                   (VP to
+                       (VP have
+                           (VP begun
+                               (S (NP-SBJ-3 *-5)
+                                  (VP to
+                                      (VP be
+                                          (VP issued
+                                              (NP *-3)))))
+			       ''
+			       (NP-TMP yesterday))))))))
+     .))
+( (S-2 (PP As
+	   (NP a result))
+       (PRN ,
+	    (S (NP-SBJ Ms. Ganes)
+	       (VP said
+		   (SBAR 0
+			 (S *T*-2))))
+	    ,)
+       (NP-SBJ it)
+       (VP is
+	   (VP believed
+	       (SBAR that
+		     (S (NP-SBJ-1 (NP little or no sugar)
+				  (PP from
+				      (NP the 1989-90 crop)))
+			(VP has
+			    (VP been
+				(VP shipped
+				    (NP *-1)
+				    (ADVP yet)
+				    ,
+				    (SBAR-ADV even though
+					      (S (NP-SBJ the crop year)
+						 (VP is
+						     (ADJP-PRD (NP six months)
+							       old)))))))))))
+       .))
+( (S (NP-SBJ (NP More)
+	     (PP than
+		 (NP (NP a half)
+		     (PP of
+			 (NP (NP all sugar)
+			     (VP produced
+				 (NP *)
+				 (PP-LOC in
+					 (NP Brazil))))))))
+     (VP goes
+         (PP-CLR for
+		 (NP alcohol production))
+	 ,
+	 (PP according
+	     (PP to
+		 (NP Ms. Ganes))))
+     .))
+( (S (S-TPC-2 (ADVP Also)
+	      ,
+	      (S (NP-SBJ there)
+		 (VP has
+		     (VP been
+			 (NP-PRD (NP a switch)
+				 (PP *ICH*-3))
+			 (PP-TMP in
+				 (NP the past decade))
+			 (PP-3 to
+			       (NP (NP planting)
+				   (PP of
+				       (NP orange trees))
+				   (PP-LOC in
+					   (NP (NP areas)
+					       (SBAR (WHNP-5 that)
+						     (S (NP-SBJ-1 *T*-5)
+							(VP were
+							    (ADVP-TMP previously)
+							    (VP used
+								(NP *-1)
+								(PP-CLR for
+									(NP cane)))))))))))))
+	      , and
+	      (S (NP-SBJ-4 this change)
+		 (VP is
+		     (VP being
+			 (VP felt
+			     (NP-PRD *-4)
+			     (ADVP-TMP now))))))
+     ,
+     (NP-SBJ she)
+     (VP said
+	 (SBAR 0
+	       (S *T*-2)))
+     .))
+( (S-2 (ADVP Most important)
+       (PRN ,
+	    (S (NP-SBJ Ms. Ganes)
+	       (VP noted
+		   (SBAR 0
+			 (S *T*-2))))
+	    ,)
+       ``
+       (NP-SBJ Brazilian officials)
+       (VP said
+	   (SBAR that
+		 (S (NP-SBJ-1 no decision)
+		    (VP has
+			(ADVP as yet)
+			(VP been
+			    (VP made
+				(NP *-1)
+				(PP-CLR on
+					(NP (NP the suspension)
+					    (PP of
+						(NP exports))))))))))
+       . ''))
+( (S (NP-SBJ (NP Thomas Oxnard)
+             ,
+             (NP (NP sugar analyst)
+                 (PP for
+                     (NP (NP PaineWebber)
+                         (PP-LOC in
+				 (NP (NP Hackensack)
+				     ,
+				     (NP N.J.))))))
+	     ,)
+     (VP said
+	 :
+	 ``
+	 (S (NP-SBJ I)
+            (VP am
+                (ADJP-PRD highly skeptical
+			  (SBAR that
+				(S (NP-SBJ Brazil)
+				   (VP will
+				       (VP curtail
+					   (NP sugar exports)
+					   ,
+					   (SBAR-ADV (ADVP particularly)
+						     with
+						     (S (NP-SBJ (NP the price)
+								(PP of
+								    (NP sugar)))
+							(PP-PRD at
+								(NP (NP (QP over 14)
+									cents)
+								    (NP-ADV a pound)))))))))))))
+     . ''))
+( (S-1 (ADVP Above all)
+       (PRN ,
+	    (S (NP-SBJ Mr. Oxnard)
+	       (VP noted
+		   (SBAR 0
+			 (S *T*-1))))
+	    ,)
+       (NP-SBJ the situation)
+       (VP is
+	   (ADJP-PRD extremely confused))
+       .))
+( (S ``
+     (S-TPC-2 (NP-SBJ-3 (NP Professional sugar people)
+			(ADVP-LOC here)
+			(SBAR (WHNP-1 who)
+			      (S (NP-SBJ *T*-1)
+				 (VP have
+				     (NP (NP strong contacts)
+					 (PP with
+					     (NP the Brazilian sugar industry)))))))
+	      (VP have
+		  (VP been
+		      (ADJP-PRD unable
+				(S (NP-SBJ *-3)
+				   (VP to
+				       (VP (VP confirm
+					       (NP the reports))
+					   or
+					   (VP get
+					       (NP (NP enough information)
+						   (SBAR (WHADVP-4 0)
+							 (S (NP-SBJ *)
+							    (VP to
+								(VP clarify
+								    (NP the situation)
+								    (ADVP *T*-4))))))))))))))
+     , ''
+     (NP-SBJ he)
+     (VP said
+	 (S *T*-2))
+     .))
+( (S ``
+     (NP-SBJ It)
+     (VP 's
+         (NP-PRD (NP the type)
+		 (PP of
+		     (NP nervous atmosphere))
+		 (SBAR (WHPP-2 in
+			       (WHNP which))
+		       (S (S (NP-SBJ-6 (NP a report)
+				       (PP *ICH*-1))
+			     (VP can
+				 (VP be
+				     (VP put
+					 (PRT out)
+					 (NP *-6)
+					 (PP-LOC *T*-2)
+					 ,
+					 (PP-1 such
+					       as
+					       (NP (NP the one)
+						   (VP saying
+						       (SBAR 0
+							     (S (NP-SBJ-7 exports)
+								(VP will
+								    (VP be
+									(VP suspended
+									    (NP *-7)))))))))))))
+			  , and
+			  (S (NP-SBJ no one)
+			     (VP can
+				 (VP confirm
+				     (NP it))))))))
+     . ''))
+( (S (NP-SBJ Mr. Oxnard)
+     (VP observed
+         (SBAR that
+               (S (NP-SBJ (NP the situation)
+                          (PP-LOC in
+				  (NP Brazil)))
+                  (VP is
+                      (ADVP also)
+                      (ADJP-PRD very complicated)))))
+     .))
+( (S (PP On
+         (NP the one hand))
+     ,
+     (NP-SBJ-1 Brazil)
+     (VP (VP started
+	     (NP an ethanol program)
+	     (ADVP-TMP (NP (QP about 15)
+			   years)
+		       ago)
+	     (S-PRP (NP-SBJ *-1)
+		    (VP to
+			(VP fuel
+			    (NP (NP a huge portion)
+				(PP of
+				    (NP (NP its national fleet)
+					(PP of
+					    (NP cars)))))))))
+	 and
+	 (VP is
+	     (ADVP-TMP now)
+	     (ADJP-PRD committed
+		       (PP to
+			   (NP this program)))))
+     .))
+( (S ``
+     (S-TPC-2 (NP-SBJ-1 It)
+	      (VP has
+		  (S (NP-SBJ *-1)
+		     (VP to
+			 (VP weigh
+			     ,
+			     (PP on
+				 (NP the other hand))
+			     ,
+			     (NP (NP the (ADJP relatively high) price)
+				 (PP of
+				     (NP sugar))
+				 (SBAR (WHNP-3 0)
+				       (S (NP-SBJ it)
+					  (VP can
+					      (VP earn
+						  (NP *T*-3)
+						  (PP-LOC on
+							  (NP the export market)))))))
+			     (PP in
+				 (S-NOM (NP-SBJ *)
+					(VP making
+					    (NP (NP decisions)
+						(PP as to
+						    (SBAR whether
+							  (S (NP-SBJ *)
+							     (VP to
+								 (VP produce
+								     (NP sugar
+									 or
+									 alcohol)))))))))))))))
+     , ''
+     (NP-SBJ Mr. Oxnard)
+     (VP said
+	 (S *T*-2))
+     .))
+( (S (S-TPC-2 (NP-SBJ (NP Mexico)
+		      ,
+		      (SBAR (WHNP-1 which)
+			    (S (NP-SBJ *T*-1)
+			       (VP is
+				   (ADVP normally)
+				   (NP-PRD a sugar exporter))))
+		      ,)
+	      (VP has
+		  (VP had
+		      (NP production problems)
+		      (PP-TMP in
+			      (NP the past two years)))))
+     ,
+     (NP-SBJ analysts)
+     (VP said
+	 (SBAR 0
+	       (S *T*-2)))
+     .))
+( (S (S-TPC-3 (NP-TMP Last year)
+	      ,
+	      (NP-SBJ-1 it)
+	      (VP had
+		  (S (NP-SBJ-2 *-1)
+		     (VP to
+			 (VP buy
+			     (NP sugar)
+			     (PP-LOC on
+				     (NP the world market))
+			     (S-PRP (NP-SBJ *-2)
+				    (VP to
+					(VP meet
+					    (NP export commitments)))))))))
+     ,
+     (NP-SBJ they)
+     (VP noted
+	 (SBAR 0
+	       (S *T*-3)))
+     .))
+( (S (S-TPC-4 (NP-TMP This year)
+	      (NP-SBJ-1 it)
+	      (VP (VP is
+		      (VP expected
+			  (S (NP-SBJ *-1)
+			     (VP to
+				 (VP be
+				     (NP-PRD a net importer))))))
+		  and
+		  (VP is
+		      (VP said
+			  (S (NP-SBJ-2 *-1)
+			     (VP to
+				 (VP be
+				     (VP seeking
+					 (S (NP-SBJ-3 *-2)
+					    (VP to
+						(VP buy
+						    (NP (NP (QP about 200,000)
+							    tons)
+							(PP of
+							    (NP sugar)))
+						    (S-PRP (NP-SBJ *-3)
+							   (VP to
+							       (VP meet
+								   (NP internal needs)))))))))))))))
+     ,
+     (NP-SBJ analysts)
+     (VP said
+	 (SBAR 0
+	       (S *T*-4)))
+     .))
+( (FRAG-HLN (PP-LOC In
+		    (NP other commodity markets))
+	    (NP-TMP yesterday)
+	    :))
+( (NP-HLN (NP ENERGY)
+	  :))
+( (S (NP-SBJ Petroleum futures)
+     (VP were
+	 (ADJP-PRD generally higher)
+	 (PP with
+	     (S-NOM (NP-SBJ heating oil)
+		    (VP leading
+			(NP the way)))))
+     .))
+( (S (PP-LOC On
+	     (NP the New York Mercantile Exchange))
+     ,
+     (NP-SBJ-1 (NP heating oil)
+	       (PP for
+		   (NP December delivery)))
+     (VP increased
+         (NP-EXT 1.25 cents)
+         (S-CLR (NP-SBJ *-1)
+		(VP to
+		    (VP settle
+			(PP-CLR at
+				(NP (NP 60.36 cents)
+				    (NP-ADV a gallon)))))))
+     .))
+( (S (NP-SBJ Gasoline futures)
+     (VP were
+         (ADJP-PRD mixed
+		   (PP to 
+		       (ADJP unchanged))))
+     .))
+( (S But
+     (NP-SBJ-1 (NP the strength)
+	       (PP in
+		   (NP heating oil)))
+     (VP helped
+         (S (NP-SBJ *-1)
+	    (VP push
+		(PRT up)
+		(NP crude oil))))
+     .))
+( (S (NP-SBJ-1 (NP West Texas Intermediate crude)
+	       (PP for
+		   (NP December delivery)))
+     (VP rose
+         (NP-EXT (NP 13 cents)
+		 (NP-ADV a barrel))
+         (S-CLR (NP-SBJ *-1)
+		(VP to
+		    (VP settle
+			(PP-CLR at
+				(NP $ 20.07 *U*))))))
+     .))
+( (S (NP-SBJ-1 (NP The firmness)
+               (PP in
+                   (NP heating oil)))
+     (VP was
+         (VP attributed
+             (NP *-1)
+             (PP-CLR (PP to
+			 (NP (NP colder weather)
+			     (PP-LOC in
+				     (NP (NP parts)
+					 (PP of
+					     (NP the U.S.))))))
+		     and
+		     (PP to
+			 (NP (NP the latest weekly report)
+			     (PP by
+				 (NP the American Petroleum Institute))
+			     ,
+			     (SBAR (WHNP-2 which)
+				   (S (NP-SBJ *T*-2)
+				      (VP showed
+					  (NP (NP a decline)
+					      (PP in
+						  (NP (NP inventories)
+						      (PP of
+							  (NP the fuel)))))))))))))
+     .))
+( (NP-HLN (NP GRAINS AND SOYBEANS)
+	  :))
+( (S (NP-SBJ Prices)
+     (VP closed
+	 (ADVP mostly higher)
+	 (PP-LOC in
+		 (NP relatively light trading))
+	 (SBAR-ADV as
+		   (S (NP-SBJ-1 farmers)
+		      (VP continued
+			  (S (NP-SBJ *-1)
+			     (VP to
+				 (VP withhold
+				     (NP their crops)
+				     (PP-CLR from
+					     (NP the marketplace))
+				     (PP in
+					 (NP (NP the hope)
+					     (PP of
+						 (NP (NP higher prices)
+						     (SBAR (WHNP-2 0)
+							   (S (NP-SBJ *T*-2)
+							      (VP to
+								  (VP come)))))))))))))))
+     .))
+( (S (NP-SBJ-1 Trading)
+     (VP was
+         (VP muted
+             (NP *-1)
+	     (PP in
+		 (NP part))
+	     (PP-PRP because
+		     of
+		     (NP (NP the observance)
+			 (PP of
+			     (NP All Saints ' Day))
+			 (PP-LOC across
+				 (NP (NP much)
+				     (PP of
+					 (NP Europe))))))))
+     .))
+( (S (NP-SBJ Continued export demand)
+     (ADVP also)
+     (VP supported
+         (NP prices))
+     .))
+( (S (PP As
+         (NP (NP an indicator)
+             (PP of
+                 (NP (NP the tight grain supply situation)
+                     (PP-LOC in
+			     (NP the U.S.))))))
+     ,
+     (NP-SBJ market analysts)
+     (VP said
+         (SBAR that
+               (S (NP-TMP late Tuesday)
+                  (NP-SBJ-2 (NP the Chinese government)
+			    ,
+			    (SBAR (WHNP-1 which)
+				  (S (NP-SBJ *T*-1)
+				     (ADVP-TMP often)
+				     (VP buys
+					 (NP U.S. grains)
+					 (PP-MNR in
+						 (NP quantity)))))
+			    ,)
+                  (VP turned
+                      (ADVP instead)
+                      (PP-DIR to
+			      (NP Britain))
+                      (S-PRP (NP-SBJ *-2)
+			     (VP to
+				 (VP buy
+				     (NP (NP 500,000 metric tons)
+					 (PP of
+					     (NP wheat))))))))))
+     .))
+( (S (NP-SBJ Traders)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 prices)
+                  (ADVP also)
+                  (VP were
+                      (VP supported
+                          (NP *-1)
+                          (PP by
+                              (NP-LGS widespread rumors
+				      (SBAR that
+					    (S (NP-SBJ the Soviet Union)
+					       (VP is
+						   (PP-PRD on
+							   (NP (NP the verge)
+							       (PP of
+								   (S-NOM (NP-SBJ *)
+									  (VP receiving
+									      (NP (ADJP most favored) nation status)
+									      (PP-DIR from
+										      (NP the U.S)))))))))))))))))
+     .))
+( (S (NP-SBJ That designation)
+     (VP would
+	 ,
+         (PP among
+             (NP other things))
+         ,
+         (VP provide
+             (NP (NP more generous credit terms)
+                 (SBAR (WHPP-1 under
+			       (WHNP which))
+                       (S (NP-SBJ the Soviets)
+                          (VP could
+                              (VP purchase
+                                  (NP grain)
+				  (PP *T*-1))))))))
+     .))
+( (S (NP-SBJ-1 The Soviets)
+     (VP are
+         (ADVP widely)
+         (VP believed
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP need
+                        (NP additional supplies))))
+             ,
+             (PP despite
+                 (S-NOM (NP-SBJ *)
+			(VP running
+			    (PRT up)
+			    (NP (NP record one-month purchases)
+				(PP of
+				    (NP (NP (QP 310 million)
+					    bushels)
+					(PP of
+					    (NP corn)))))
+			    (PP-TMP in
+				    (NP October)))))))
+     .))
+( (NP-HLN (NP COPPER)
+	  :))
+( (S (NP-SBJ-1 Futures prices)
+     (VP rose
+	 ,
+	 (S-ADV (NP-SBJ *-1)
+		(VP extending
+		    (NP (NP Tuesday 's)
+			gains))))
+     .))
+( (S (NP-SBJ The December contract)
+     (VP advanced
+         (NP-EXT (NP 2.50 cents)
+		 (NP-ADV a pound))
+         (PP-CLR to
+		 (NP $ 1.1650 *U*)))
+     .))
+( (S (S-TPC-1 (S (NP-SBJ Buying)
+		 (PP for
+		     (NP the most part))
+		 (VP carried
+		     (PRT over)
+		     (PP-CLR from
+			     (NP the previous session))))
+	      , and
+	      (S (NP-SBJ traders)
+		 (ADVP apparently)
+		 (VP ignored
+		     (NP reports
+			 (SBAR that
+			       (S (NP-SBJ a Chilean mine strike)
+				  (VP may
+				      (VP have
+					  (VP ended
+					      (SBAR-TMP (ADVP almost)
+							before
+							(S (NP-SBJ it)
+							   (VP began))))))))))))
+     ,
+     (NP-SBJ an analyst)
+     (VP said
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (PP According
+         (PP to
+             (NP news service reports)))
+     ,
+     (NP-SBJ (NP most workers)
+	     (PP-LOC at
+		     (NP (NP the Disputado mines)
+			 (VP owned
+			     (NP *)
+			     (PP by
+				 (NP-LGS Exxon Corp.))))))
+     (VP agreed
+	 (PP-CLR to
+		 (NP (NP a new two-year wage contract)
+		     (SBAR (WHNP-1 that)
+			   (S (NP-SBJ *T*-1)
+			      (VP includes
+				  (NP (NP a (ADJP 5 %) increase)
+				      and
+				      (NP other benefits))))))))
+     .))
+( (S (S-TPC-1 (ADVP However)
+	      ,
+	      (NP-SBJ some workers)
+	      (VP (VP have n't
+		      (ADVP yet)
+		      (VP accepted
+			  (NP the new contract)))
+		  and
+		  (VP are
+		      (VP continuing
+			  (NP negotiations)))))
+     ,
+     (NP-SBJ the analyst)
+     (VP said
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (ADVP Separately)
+     ,
+     (NP-SBJ Reuter)
+     (VP reported
+         (SBAR that
+               (S (NP-SBJ the Papua-New Guinea government)
+                  (VP urged
+                      (NP-1 its Parliament)
+                      (S (NP-SBJ *-1)
+                         (VP to
+                             (VP extend
+                                 (NP (NP a state)
+                                     (PP of
+                                         (NP emergency)))
+                                 (PP-LOC in
+					 (NP copper-rich Bougainville Island))
+                                 (PP-TMP for
+					 (NP two months)))))))))
+     .))
+( (S (NP-SBJ The Bougainville copper mine)
+     (VP has
+         (VP been
+             (ADJP-PRD inoperative)
+             (PP-TMP since
+		     (NP May 15))
+             (PP-PRP because
+		     of
+		     (NP (NP attacks)
+			 (PP by
+			     (NP (NP native landowners)
+				 (SBAR (WHNP-1 who)
+				       (S (NP-SBJ *T*-1)
+					  (VP want
+					      (S (NP-SBJ Bougainville)
+						 (VP to
+						     (VP secede
+							 (PP-CLR from
+								 (NP Papua-New Guinea))))))))))))))
+     .))

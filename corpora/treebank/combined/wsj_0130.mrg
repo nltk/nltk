@@ -1,0 +1,891 @@
+
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (NNS limits) )
+      (PP (TO to) 
+        (NP (JJ legal) (NN absurdity) )))
+    (VP (VBD stretched) 
+      (NP-ADV (DT another) (NN notch) )
+      (NP-TMP (DT this) (NN week) )
+      (SBAR-TMP 
+        (WHADVP (WRB when) )
+        (S 
+          (NP-SBJ-2 (DT the) (NNP Supreme) (NNP Court) )
+          (VP (VBD refused) 
+            (S 
+              (NP-SBJ (-NONE- *-2) )
+              (VP (TO to) 
+                (VP (VB hear) 
+                  (NP 
+                    (NP (DT an) (NN appeal) )
+                    (PP (IN from) 
+                      (NP 
+                        (NP (DT a) (NN case) )
+                        (SBAR 
+                          (WHNP-1 (WDT that) )
+                          (S 
+                            (NP-SBJ (-NONE- *T*-1) )
+                            (VP (VBZ says) 
+                              (SBAR (-NONE- 0) 
+                                (S 
+                                  (NP-SBJ-3 (JJ corporate) (NNS defendants) )
+                                  (VP (MD must) 
+                                    (VP (VB pay) 
+                                      (NP (NNS damages) )
+                                      (PP-TMP (RB even) (IN after) 
+                                        (S-NOM 
+                                          (NP-SBJ (-NONE- *-3) )
+                                          (VP (VBG proving) 
+                                            (SBAR (IN that) 
+                                              (S 
+                                                (NP-SBJ (PRP they) )
+                                                (VP (MD could) (RB not) 
+                                                  (ADVP (RB possibly) )
+                                                  (VP (VB have) 
+                                                    (VP (VBN caused) 
+                                                      (NP (DT the) (NN harm) ))))))))))))))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP We) )
+    (VP (MD can) 
+      (VP (VB understand) 
+        (CC and)
+        (VB share) 
+        (NP 
+          (NP (DT the) (NN compassion) )
+          (SBAR 
+            (WHNP-2 (WDT that) )
+            (S 
+              (NP-SBJ (-NONE- *T*-2) )
+              (VP (VBZ makes) 
+                (S 
+                  (NP-SBJ-3 (NNS judges) )
+                  (ADVP-TMP (RB sometimes) )
+                  (VP (VB wish) 
+                    (S 
+                      (NP-SBJ (-NONE- *-3) )
+                      (VP (TO to) 
+                        (VP (VB offer) 
+                          (NP 
+                            (NP (DT a) (NN kind) )
+                            (PP (IN of) 
+                              (NP (JJ Solomonic) (NN aid) )))
+                          (PP (TO to) 
+                            (NP 
+                              (NP (DT those) )
+                              (SBAR 
+                                (WHNP-4 (WP who) )
+                                (S 
+                                  (NP-SBJ-1 (-NONE- *T*-4) )
+                                  (VP (VBP 've) 
+                                    (VP (VBN been) 
+                                      (VP (VBN hurt) 
+                                        (NP (-NONE- *-1) )))))))))))))))))))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ (DT this) (NN case) )
+    (VP (VBZ is) 
+      (NP-PRD 
+        (NP (DT a) (JJ stark) (NN lesson) )
+        (PP (IN in) 
+          (SBAR-NOM 
+            (WHADVP-1 (WRB how) )
+            (S 
+              (NP-SBJ 
+                (NP (DT the) (NNS failures) )
+                (PP (IN of) 
+                  (NP (DT the) (JJ traditional) (JJ policy-making) (NN process) )))
+              (VP (VBP have) 
+                (VP (VBN left) 
+                  (NP (DT the) (NNS courts) )
+                  (PP-CLR (IN as) 
+                    (NP 
+                      (NP (DT the) (JJ only) (NN forum) )
+                      (SBAR 
+                        (WHNP-2 (-NONE- 0) )
+                        (S 
+                          (NP-SBJ (DT this) (NN country) )
+                          (VP (VBZ has) 
+                            (NP (-NONE- *T*-2) ))))
+                      (SBAR 
+                        (WHADVP-3 (-NONE- 0) )
+                        (S 
+                          (NP-SBJ (-NONE- *) )
+                          (VP (TO to) 
+                            (VP (VB debate) 
+                              (NP (NN risk) 
+                                (, ,)
+                                (NN technology) 
+                                (CC and)
+                                (NN innovation) )
+                              (ADVP (-NONE- *T*-3) )))))))
+                  (ADVP-MNR (-NONE- *T*-1) ))))))))
+    (. .) ))
+( (S 
+    (ADVP-TMP (RB Too) (RB often) )
+    (ADVP-TMP (RB now) )
+    (, ,) 
+    (NP-SBJ (DT a) (JJ single) (NN court) (NN decision) )
+    (VP (VBZ becomes) 
+      (NP-PRD 
+        (NP (DT the) (NN precedent) )
+        (PP (IN for) 
+          (NP (JJ other) 
+            (, ,)
+            (ADJP (RBR less) (JJ compelling) )
+            (NNS cases) ))))
+    (. .) ))
+( (S 
+    (PP-TMP 
+      (PP (IN From) 
+        (NP (DT the) (CD 1940s) ))
+      (PP (IN until) 
+        (NP (CD 1971) )))
+    (, ,) 
+    (NP-SBJ-1 
+      (QP (DT some) (CD two) (CD million) )
+      (NNS women) )
+    (VP (VBD took) 
+      (NP 
+        (NP (DT the) (JJ synthetic) (NN hormone) (NN diethylstilbestrol) )
+        (PRN 
+          (-LRB- -LRB-)
+          (NP (NNP DES) )
+          (-RRB- -RRB-) ))
+      (S-PRP 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB prevent) 
+            (NP (NNS miscarriages) 
+              (CC and)
+              (NN morning) (NN sickness) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (DT The) (NN drug) )
+    (VP (VBD was) 
+      (VP 
+        (VP (VBN approved) 
+          (NP (-NONE- *-1) )
+          (PP (IN by) 
+            (NP-LGS (DT the) (NNP Food) 
+              (CC and)
+              (NNP Drug) (NNP Administration) )))
+        (CC and) 
+        (VP (VBN marketed) 
+          (NP (-NONE- *-1) )
+          (PP (IN by) 
+            (NP-LGS 
+              (QP (DT some) (CD 300) )
+              (JJ pharmaceutical) (NNS companies) ))
+          (, ,) 
+          (PP 
+            (ADVP-TMP (RB often) )
+            (IN under) 
+            (NP (JJ generic) (NNS labels) )))))
+    (. .) ))
+( (S 
+    (PP-TMP (IN In) 
+      (NP (DT the) (CD 1970s) ))
+    (, ,) 
+    (NP-SBJ (NNS scientists) )
+    (VP (VBD reported) 
+      (NP 
+        (NP (NN cancer) (NNS cases) )
+        (PP (IN among) 
+          (NP 
+            (NP (DT the) (NNS daughters) )
+            (PP (IN of) 
+              (NP (NNP DES) (NNS users) ))))))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ (DT The) (NNS cases) )
+      (ADVP-MNR (RB quickly) )
+      (VP (VBD went) 
+        (PP-DIR (TO to) 
+          (NP (NN court) ))))
+    (, ,) (CC but) 
+    (S 
+      (NP-SBJ 
+        (NP (DT the) (NNS mothers) )
+        (PP (IN of) 
+          (NP (JJ several) (CD thousand) (NNP DES) (NNS plaintiffs) )))
+      (VP (MD could) (RB n't) 
+        (VP (VB recall) 
+          (SBAR 
+            (WHNP-1 (WP$ whose) (NN brand) )
+            (S 
+              (NP-SBJ (PRP they) )
+              (VP (VBD used) 
+                (NP (-NONE- *T*-1) )))))))
+    (. .) ))
+( (S 
+    (S-TMP 
+      (NP-SBJ (-NONE- *) )
+      (VP (VBG Beginning) 
+        (PP-TMP-CLR (IN in) 
+          (NP (CD 1980) ))))
+    (, ,) 
+    (NP-SBJ-2 
+      (NP (NNS courts) )
+      (PP (IN in) 
+        (NP 
+          (NP (JJ several) (NNS states) )
+          (PP (VBG including) 
+            (NP 
+              (NP (NNP California) )
+              (CC and) 
+              (NP (NNP New) (NNP York) ))))))
+    (VP (VBD decided) 
+      (S 
+        (NP-SBJ (-NONE- *-2) )
+        (VP (TO to) 
+          (VP (VB suspend) 
+            (NP (DT the) (NN common-law) (NN rule) 
+              (SBAR (IN that) 
+                (S 
+                  (NP-SBJ (NNS plaintiffs) )
+                  (VP (MD must) 
+                    (VP (VB prove) 
+                      (SBAR (IN that) 
+                        (S 
+                          (NP-SBJ (DT the) (NNS defendants) )
+                          (VP (VBP are) 
+                            (NP-PRD 
+                              (NP (DT the) (NNS ones) )
+                              (SBAR 
+                                (WHNP-1 (WP who) )
+                                (S 
+                                  (NP-SBJ (-NONE- *T*-1) )
+                                  (VP (VBP are) 
+                                    (ADJP-PRD (JJ liable) )))))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNS Courts) )
+    (VP 
+      (VP (VBD made) 
+        (NP (DT the) (NN assumption) 
+          (SBAR (IN that) 
+            (S 
+              (NP-SBJ (DT all) (NNP DES) (NNS pills) )
+              (VP (VBD were) 
+                (ADVP (RB essentially) )
+                (NP-PRD (DT the) (JJ same) ))))))
+      (, ,) 
+      (CC and)
+      (VP (VBD created) 
+        (NP (DT a) (JJ market-share) (NN test) )
+        (SBAR-PRP (IN so) (IN that) 
+          (S 
+            (NP-SBJ-1 (NNS damages) )
+            (VP (MD would) 
+              (VP (VB be) 
+                (VP (VBN assessed) 
+                  (NP (-NONE- *-1) )
+                  (PP-CLR (IN against) 
+                    (NP (NN drug) (NNS makers) ))
+                  (PP (IN in) 
+                    (NP 
+                      (NP (DT the) (NN proportion) )
+                      (PP (IN of) 
+                        (NP 
+                          (NP (PRP$ their) (NN share) )
+                          (PP (IN of) 
+                            (NP (DT the) (JJ original) (NNS sales) )))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT This) )
+    (VP (VBZ has) 
+      (NP (DT some) (NN logic) ))
+    (. .) ))
+( (S 
+    (NP-SBJ-2 (NN Drug) (NNS makers) )
+    (VP (MD should) (RB n't) 
+      (VP (VB be) 
+        (ADJP-PRD (JJ able) 
+          (S 
+            (NP-SBJ (-NONE- *-2) )
+            (VP (TO to) 
+              (VP (VB duck) 
+                (NP (NN liability) )
+                (SBAR-PRP (IN because) 
+                  (S 
+                    (NP-SBJ (NNS people) )
+                    (VP (MD could) (RB n't) 
+                      (VP (VB identify) 
+                        (ADVP-MNR (RB precisely) )
+                        (SBAR 
+                          (WHNP-3 (WDT which) (JJ identical) (NN drug) )
+                          (S 
+                            (NP-SBJ-1 (-NONE- *T*-3) )
+                            (VP (VBD was) 
+                              (VP (VBN used) 
+                                (NP (-NONE- *-1) )))))))))))))))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ (NNS courts) )
+    (ADVP-MNR (RB quickly) )
+    (VP (VBD tumbled) 
+      (PP-DIR (IN down) 
+        (NP (DT a) (JJ slippery) (NN slope) )))
+    (. .) ))
+( (S 
+    (SBAR-ADV (RB Just) (IN as) 
+      (S 
+        (NP-SBJ (DT all) (NNS plaintiffs) )
+        (VP (VBP are) (RB not) 
+          (ADJP-PRD (RB alike) ))))
+    (, ,) 
+    (NP-SBJ (PRP it) )
+    (VP (VBZ turns) 
+      (PRT (RP out) )
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ (NNP DES) (NNS defendants) )
+          (VP 
+            (VP (VBD marketed) 
+              (NP (DT the) (NNS drugs) )
+              (ADVP-MNR (RB differently) ))
+            (CC and) 
+            (VP (MD may) 
+              (VP (VB have) 
+                (VP (VBN offered) 
+                  (NP (JJ different) (NNS warranties) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (JJ ultimate) (NN result) )
+    (VP (VBD came) 
+      (PP-LOC-CLR (IN in) 
+        (NP 
+          (NP (NNP Hymowitz) (CC v.) (NNP Lilly) )
+          (, ,) 
+          (SBAR 
+            (WHADVP-2 (WRB where) )
+            (S 
+              (NP-SBJ (DT the) (JJS highest) (NNP New) (NNP York) (NN court) )
+              (VP (VBD expanded) 
+                (NP (DT the) (JJ market-share) (NN approach) )
+                (PP (IN for) 
+                  (NP (DT the) (JJ first) (NN time) ))
+                (S-CLR 
+                  (NP-SBJ (-NONE- *) )
+                  (VP (TO to) 
+                    (VP (VB say) 
+                      (SBAR (IN that) 
+                        (S 
+                          (NP-SBJ 
+                            (NP (NN drug) (NNS makers) )
+                            (SBAR 
+                              (WHNP-1 (WDT that) )
+                              (S 
+                                (NP-SBJ (-NONE- *T*-1) )
+                                (VP (MD could) 
+                                  (VP (VB prove) 
+                                    (SBAR (-NONE- 0) 
+                                      (S 
+                                        (NP-SBJ 
+                                          (NP (NNP Mindy) (NNP Hymowitz) (POS 's) )
+                                          (NN mother) )
+                                        (VP (VBD did) (RB n't) 
+                                          (VP (VB use) 
+                                            (NP (PRP$ their) (NN pill) ))))))))))
+                          (VP (MD must) 
+                            (ADVP (RB still) )
+                            (VP (VB pay) 
+                              (NP 
+                                (NP (PRP$ their) (NN share) )
+                                (PP (IN of) 
+                                  (NP (DT any) (NNS damages) ))))))))))
+                (ADVP-LOC (-NONE- *T*-2) )))))))
+    (. .) ))
+( (S (CC But) 
+    (SBAR-ADV (IN as) 
+      (S 
+        (NP-SBJ (NNP Duke) (NNP University) (NN law) (NN professor) (NNP William) (NNP Van) (NNP Alstyne) )
+        (VP (VBZ notes) )))
+    (, ,) 
+    (PP-MNR (IN by) 
+      (NP (DT this) (NN reasoning) ))
+    (NP-SBJ-1 (DT a) (NN defendant) )
+    (VP (MD could) 
+      (VP (VB be) 
+        (VP (VBN held) 
+          (S 
+            (NP-SBJ (-NONE- *-1) )
+            (ADJP-PRD (JJ liable) ))
+          (PP-LOC (IN in) 
+            (NP (NNP New) (NNP York) ))
+          (PP-CLR (IN for) 
+            (NP (DT a) (JJ bad) (NN apple) ))
+          (SBAR-ADV (RB even) (IN if) 
+            (S 
+              (NP-SBJ (PRP he) )
+              (VP (VBD sold) 
+                (NP (PDT all) (PRP$ his) (NNS apples) )
+                (PP-LOC (IN in) 
+                  (NP (NNP California) ))))))))
+    (. .) ))
+( (S 
+    (PP (IN Despite) 
+      (NP 
+        (NP (DT the) (NNP Supreme) (NNP Court) (POS 's) )
+        (NN refusal) 
+        (S 
+          (NP-SBJ (-NONE- *) )
+          (VP (TO to) 
+            (VP (VB hear) 
+              (NP (DT the) (NN case) ))))))
+    (, ,) 
+    (NP-SBJ (EX there) )
+    (VP (VBP are) 
+      (NP-PRD 
+        (NP (JJ serious) (JJ constitutional) (NNS issues) )
+        (PP (IN of) 
+          (NP 
+            (NP (JJ due) (NN process) )
+            (CC and) 
+            (NP 
+              (NP (JJ uncompensated) (NNS takings) )
+              (PP (IN from) 
+                (NP (DT the) (NNS defendants) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (JJ big) (NN problem) )
+    (, ,) 
+    (ADVP (RB however) )
+    (, ,) 
+    (VP (VBZ is) 
+      (SBAR-PRD (IN that) 
+        (S 
+          (NP-SBJ (EX there) )
+          (VP (VBZ 's) 
+            (NP-PRD (DT no) (NN guarantee) 
+              (SBAR (IN that) 
+                (S 
+                  (NP-SBJ-1 (DT this) (NN reasoning) )
+                  (VP (MD will) 
+                    (VP (VB be) 
+                      (VP (VBN limited) 
+                        (NP (-NONE- *-1) )
+                        (PP 
+                          (PP (TO to) 
+                            (NP (NNP DES) ))
+                          (CC or) 
+                          (PP (TO to) 
+                            (NP (NNS drugs) )))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN problem) )
+    (ADVP-LOC (RB here) )
+    (VP (VBZ goes) 
+      (PP 
+        (ADVP (RB well) )
+        (IN beyond) 
+        (S-NOM 
+          (NP-SBJ (-NONE- *) )
+          (VP (VBG twisting) 
+            (NP (JJ legal) (NN doctrine) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (DT The) (NNP California) (NNP Supreme) (NNP Court) )
+    (NP-TMP (JJ last) (NN year) )
+    (VP (VBD reversed) 
+      (NP (NN direction) )
+      (S-CLR 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (TO to) 
+          (VP (VB make) 
+            (S 
+              (NP-SBJ 
+                (NP (PRP it) )
+                (S (-NONE- *EXP*-2) ))
+              (ADJP-PRD (RB much) (JJR harder) )
+              (S-2 
+                (NP-SBJ (-NONE- *) )
+                (VP (TO to) 
+                  (VP (VB win) 
+                    (NP (NNP DES) (NNS cases) ))))))))
+      (SBAR-PRP (IN because) 
+        (S 
+          (NP-SBJ (DT the) (NNS justices) )
+          (VP (VBD saw) 
+            (SBAR-NOM 
+              (WHADVP-3 (WRB how) )
+              (S 
+                (NP-SBJ (PDT all) (DT the) (JJ pharmaceutical) (NN litigation) )
+                (VP (VBZ has) 
+                  (VP (VBN chilled) 
+                    (NP 
+                      (NP (DT the) (NN introduction) )
+                      (PP (IN of) 
+                        (NP (JJ new) (NNS drugs) )))
+                    (ADVP-MNR (-NONE- *T*-3) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (DT The) (NN court) )
+    (VP (VBD rejected) 
+      (NP 
+        (NP (JJ strict) (NN liability) )
+        (PP (IN for) 
+          (NP (NN prescription) (NNS drugs) )))
+      (, ,) 
+      (S-ADV 
+        (NP-SBJ (-NONE- *-1) )
+        (VP (VBG citing) 
+          (NP (DT the) (JJ huge) 
+            (, ,)
+            (VBN hidden) (JJ social) (NNS costs) ))))
+    (. .) ))
+( (S (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ (JJ Public) (NN policy) )
+      (VP (VBZ favors) 
+        (NP 
+          (NP (DT the) (NN development) 
+            (CC and)
+            (NN marketing) )
+          (PP (IN of) 
+            (NP (JJ beneficial) (JJ new) (NNS drugs) )))
+        (, ,) 
+        (SBAR-ADV (RB even) (IN though) 
+          (S 
+            (NP-SBJ 
+              (NP (DT some) (NNS risks) )
+              (, ,) 
+              (NP (RB perhaps) (JJ serious) (NNS ones) )
+              (, ,) )
+            (VP (MD might) 
+              (VP (VB accompany) 
+                (NP (PRP$ their) (NN introduction) )))))
+        (SBAR-PRP (IN because) 
+          (S 
+            (NP-SBJ (NNS drugs) )
+            (VP (MD can) 
+              (VP 
+                (VP (VB save) 
+                  (NP (NNS lives) ))
+                (CC and) 
+                (VP (VB reduce) 
+                  (NP (NN pain) 
+                    (CC and)
+                    (NN suffering) ))))))))
+    (, ,) ('' '') 
+    (NP-SBJ (DT the) (JJ unanimous) (NN court) )
+    (VP (VBD said) 
+      (S (-NONE- *T*-1) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NNP California) (NNS justices) )
+    (VP (VBD noted) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ 
+            (NP (DT the) (NN fear) )
+            (PP (IN of) 
+              (NP (NN litigation) )))
+          (ADVP-TMP (RB already) )
+          (VP (VBD forced) 
+            (NP 
+              (NP (DT the) (JJ only) (VBG remaining) (JJ anti-morning-sickness) (NN drug) )
+              (, ,) 
+              (NP (NNP Bendectin) )
+              (, ,) )
+            (PP-CLR (IN off) 
+              (NP (DT the) (NNP U.S.) (NN market) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT This) )
+    (VP (VBZ raises) 
+      (NP 
+        (NP (DT the) (JJ key) (NN issue) )
+        (: :) 
+        (SBAR-NOM 
+          (WHNP-2 (WP What) )
+          (S 
+            (NP-SBJ (-NONE- *) )
+            (VP (TO to) 
+              (VP (VB do) 
+                (NP (-NONE- *T*-2) )
+                (PP-CLR (IN about) 
+                  (NP 
+                    (NP (NNS people) )
+                    (SBAR 
+                      (WHNP-1 (WP who) )
+                      (S 
+                        (NP-SBJ (-NONE- *T*-1) )
+                        (VP (VBP suffer) 
+                          (NP 
+                            (NP (JJ serious) (NNS injuries) )
+                            (PP (IN from) 
+                              (NP (JJ beneficial) (NNS drugs) ))))))))))))))
+    (. ?) ))
+( (S 
+    (NP-SBJ (PRP We) )
+    (ADVP-TMP (RB now) )
+    (VP (VBP know) 
+      (SBAR (IN that) 
+        (S 
+          (S-NOM-SBJ 
+            (NP-SBJ (-NONE- *) )
+            (VP (VBG holding) 
+              (S 
+                (NP-SBJ (NN drug) (NNS makers) )
+                (ADJP-PRD (JJ liable) ))
+              (SBAR-TMP 
+                (WHADVP-1 (WRB where) )
+                (S 
+                  (NP-SBJ (EX there) )
+                  (VP (VBZ 's) 
+                    (NP-PRD (DT no) (NN evidence) 
+                      (SBAR (IN that) 
+                        (S 
+                          (NP-SBJ 
+                            (NP (PRP they) )
+                            (CC or) 
+                            (NP (NN anyone) (RB else) ))
+                          (VP (VBD knew) 
+                            (PP-CLR (IN of) 
+                              (NP (DT any) (NNS risks) ))))))
+                    (ADVP-LOC (-NONE- *T*-1) ))))))
+          (ADVP (RB only) )
+          (VP (VBZ means) 
+            (SBAR (-NONE- 0) 
+              (S 
+                (NP-SBJ (DT the) (NNS drugs) )
+                (VP (MD wo) (RB n't) 
+                  (VP (VB be) 
+                    (ADJP-PRD (JJ available) 
+                      (PP (TO to) 
+                        (NP (NN anyone) )))))))))))
+    (. .) ))
+( (S 
+    (SBAR-ADV (IN As) 
+      (S 
+        (NP-SBJ (NN liability) (NN expert) (NNP Peter) (NNP Huber) )
+        (VP (VBZ tells) 
+          (NP (PRP us) ))))
+    (, ,) 
+    (PP-TMP (IN after) 
+      (NP (DT the) (NNP Hymowitz) (NN case) ))
+    (, ,) 
+    (SBAR-ADV (IN if) 
+      (S 
+        (NP-SBJ (DT any) (NN drug) (NN maker) )
+        (VP (VBZ introduces) 
+          (NP (DT an) (JJ anti-miscarriage) (NN drug) ))))
+    (`` ``) 
+    (NP-SBJ (PRP it) )
+    (VP (VBZ 's) 
+      (NP-PRD 
+        (NP (NN time) )
+        (SBAR 
+          (WHADVP-1 (-NONE- 0) )
+          (S 
+            (NP-SBJ (-NONE- *) )
+            (VP (TO to) 
+              (VP (VB sell) 
+                (NP 
+                  (NP (DT that) (NN company) (POS 's) )
+                  (NN stock) )
+                (ADVP-CLR (RB short) )
+                (ADVP-TMP (-NONE- *T*-1) )))))))
+    (. .) ('' '') ))
+( (S 
+    (S 
+      (NP-SBJ (PRP We) )
+      (ADVP (RB also) )
+      (VP (VBP know) 
+        (SBAR (IN that) 
+          (S 
+            (NP-SBJ (DT the) (NN tort) (NN system) )
+            (VP (VBZ is) 
+              (NP-PRD 
+                (NP (DT a) (JJ lousy) (NN way) )
+                (SBAR 
+                  (WHADVP-1 (-NONE- 0) )
+                  (S 
+                    (NP-SBJ (-NONE- *) )
+                    (VP (TO to) 
+                      (VP (VB compensate) 
+                        (NP (NNS victims) )
+                        (ADVP-MNR (-NONE- *T*-1) ))))))
+              (ADVP (RB anyway) ))))))
+    (: ;) 
+    (S 
+      (S 
+        (NP-SBJ (DT some) )
+        (VP (VBP win) 
+          (NP (DT the) (JJ legal) (NN lottery) )))
+      (, ,) 
+      (S 
+        (NP-SBJ (NNS others) )
+        (VP (VBP get) 
+          (NP (RB much) (JJR less) )))
+      (CC and) 
+      (S 
+        (NP-SBJ (JJ contingency-fee) (NNS lawyers) )
+        (VP (VBP take) 
+          (NP (DT a) (JJ big) (NN cut) )
+          (NP-ADV (DT either) (NN way) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP DES) (NNS daughters) )
+      (CC and) 
+      (NP 
+        (NP (JJ other) (NNS victims) )
+        (PP (IN of) 
+          (NP (NNS drugs) ))))
+    (VP (MD would) 
+      (VP (VB be) 
+        (ADJP-PRD (JJR better) (IN off) )
+        (SBAR-ADV (IN if) 
+          (S 
+            (NP-SBJ-1 (PRP$ their) (NNS cases) )
+            (VP (VBD were) 
+              (VP (VBN taken) 
+                (NP (-NONE- *-1) )
+                (PP-DIR (IN out) 
+                  (PP (IN of) 
+                    (NP (DT the) (NNS courts) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Congress) )
+    (VP (MD could) 
+      (VP (VB create) 
+        (NP 
+          (NP (DT a) (NN compensation) (NN program) )
+          (SBAR-PRP 
+            (WHNP-1 (-NONE- 0) )
+            (S 
+              (NP-SBJ-2 (-NONE- *T*-1) )
+              (VP (TO to) 
+                (VP (VB help) 
+                  (NP (JJ such) (NNS victims) )
+                  (SBAR-ADV (IN while) 
+                    (S 
+                      (NP-SBJ (-NONE- *-2) )
+                      (VP (VBG protecting) 
+                        (NP 
+                          (NP (DT the) (JJ national) (NN interest) )
+                          (PP (IN in) 
+                            (S-NOM 
+                              (NP-SBJ (-NONE- *) )
+                              (VP (VBG encouraging) 
+                                (NP (JJ new) (NNS drugs) )))))))))))))))
+    (. .) ))
+( (S (CC But) 
+    (NP-SBJ 
+      (NP (DT a) (CD 1986) (NN law) )
+      (SBAR 
+        (WHNP-1 (WDT that) )
+        (S 
+          (NP-SBJ (-NONE- *T*-1) )
+          (ADVP (RB supposedly) )
+          (VP (VBD replaced) 
+            (NP 
+              (NP (NNS lawsuits) )
+              (PP (IN over) 
+                (NP 
+                  (NP (NNS children) (POS 's) )
+                  (NNS vaccines) )))
+            (PP-CLR (IN with) 
+              (NP (DT a) (NN compensation) (NN fund) ))))))
+    (VP (VBZ has) 
+      (ADVP (RB predictably) )
+      (VP (VBN led) 
+        (PP-DIR (TO to) 
+          (NP 
+            (ADJP (VB even) (JJR more) )
+            (NN litigation) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NN Everyone) )
+    (PP-TMP (IN by) 
+      (NP (RB now) ))
+    (VP (VBZ understands) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ (NNP Congress) )
+          (VP (VBZ is) 
+            (ADJP-PRD (RB utterly) (JJ incapable) 
+              (PP (IN of) 
+                (S-NOM 
+                  (NP-SBJ (-NONE- *) )
+                  (VP (VBG writing) 
+                    (NP 
+                      (NP (NN legislation) )
+                      (SBAR-PRP 
+                        (WHADVP-1 (-NONE- 0) )
+                        (S 
+                          (NP-SBJ (-NONE- *) )
+                          (VP (TO to) 
+                            (VP (VB help) 
+                              (NP (JJ deserving) (NNS people) )
+                              (ADVP-MNR (-NONE- *T*-1) ))))))
+                    (PP (IN without) 
+                      (S-NOM 
+                        (NP-SBJ (PRP$ its) )
+                        (VP (VBG becoming) 
+                          (NP-PRD (DT some) (JJ billion-dollar) (NN morass) ))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP We) )
+    (VP (VBP have) 
+      (NP (DT no) (NN doubt) 
+        (SBAR (-NONE- 0) 
+          (S 
+            (NP-SBJ (DT this) )
+            (VP (VBZ is) 
+              (NP-PRD (CD one) (NN reason) 
+                (SBAR (-NONE- 0) 
+                  (S 
+                    (NP-SBJ-1 
+                      (NP 
+                        (NP (NNS judges) )
+                        (PP-LOC (IN in) 
+                          (NP (NNP New) (NNP York) )))
+                      (CC and) 
+                      (NP 
+                        (NP (NNS justices) )
+                        (PP-LOC (IN on) 
+                          (NP (DT the) (NNP Supreme) (NNP Court) ))))
+                    (VP (VBP are) 
+                      (ADJP-PRD (JJ willing) 
+                        (S 
+                          (NP-SBJ (-NONE- *-1) )
+                          (VP (TO to) 
+                            (VP (VB trash) 
+                              (NP (DT the) (NN law) )
+                              (PP-LOC (IN in) 
+                                (NP (DT the) (NNP DES) (NNS cases) )))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (PRP They) )
+    (VP (MD must) 
+      (VP 
+        (VP (VB figure) 
+          (SBAR (IN that) 
+            (S 
+              (NP-SBJ-2 (NN justice) )
+              (VP (VBZ has) 
+                (S 
+                  (NP-SBJ-3 (-NONE- *-2) )
+                  (VP (TO to) 
+                    (VP (VB get) 
+                      (VP (VBN done) 
+                        (NP (-NONE- *-3) )
+                        (PP (IN by) 
+                          (NP-LGS (NN somebody) ))))))))))
+        (, ,) (CC but) 
+        (VP (VB know) 
+          (SBAR (-NONE- 0) 
+            (S 
+              (NP-SBJ-1 (PRP it) )
+              (VP (MD wo) (RB n't) 
+                (VP (VB be) 
+                  (VP (VBN done) 
+                    (NP (-NONE- *-1) )
+                    (PP (IN by) 
+                      (NP-LGS (NNP Congress) ))))))))))
+    (. .) ))

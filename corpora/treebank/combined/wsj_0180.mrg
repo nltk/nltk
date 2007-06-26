@@ -1,0 +1,193 @@
+
+( (S 
+    (NP-SBJ 
+      (NP (NNP Genetics) (NNP Institute) (NNP Inc.) )
+      (, ,) 
+      (NP-LOC (NNP Cambridge) 
+        (, ,)
+        (NNP Mass.) )
+      (, ,) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-4 (PRP it) )
+          (VP (VBD was) 
+            (VP (VBN awarded) 
+              (NP (-NONE- *-4) )
+              (NP (NNP U.S.) (NNS patents) )
+              (PP-CLR (IN for) 
+                (NP 
+                  (NP (NN Interleukin-3) )
+                  (CC and) 
+                  (NP (NN bone) (JJ morphogenetic) (NN protein) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT The) (NN patent) )
+      (PP (IN for) 
+        (NP (NN Interleukin-3) )))
+    (VP (VBZ covers) 
+      (NP 
+        (NP (NNS materials) 
+          (CC and)
+          (NNS methods) )
+        (VP (VBN used) 
+          (NP (-NONE- *) )
+          (S-CLR 
+            (NP-SBJ (-NONE- *) )
+            (VP (TO to) 
+              (VP (VB make) 
+                (NP (DT the) (JJ human) (NN blood) (NN cell) (NN growth) (NN factor) )
+                (PP-MNR (IN via) 
+                  (NP (JJ recombinant) (NNP DNA) (NN technology) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Sandoz) (NNP Ltd.) )
+    (VP 
+      (VP (VBZ has) 
+        (VP (VBN licensed) 
+          (NP 
+            (NP (JJ certain) (NN manufacturing) 
+              (CC and)
+              (NN marketing) (NNS rights) )
+            (PP (IN for) 
+              (NP (NN Interleukin-3) )))
+          (PP-CLR (IN from) 
+            (NP (NNP Genetics) (NNP Institute) ))))
+      (CC and) 
+      (VP (VBZ is) 
+        (VP (VBG conducting) 
+          (NP (JJ preclinical) (NNS studies) )
+          (PP-MNR (IN with) 
+            (NP (PRP it) )))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (NP-SBJ (NN Interleukin-3) )
+      (VP (MD may) 
+        (VP (VB help) 
+          (PP (IN in) 
+            (S-NOM 
+              (NP-SBJ (-NONE- *) )
+              (VP (VBG treating) 
+                (NP 
+                  (NP (NN blood) (NN cell) (NNS deficiencies) )
+                  (VP (VBN associated) 
+                    (NP (-NONE- *) )
+                    (PP-CLR (IN with) 
+                      (NP 
+                        (NP (NN cancer) (NN treatment) )
+                        (, ,) 
+                        (NP (NN bone) (NN marrow) (NNS transplants) )
+                        (CC and) 
+                        (NP (JJ other) (NN blood-cell) (NNS disorders) )))))))))))
+    (, ,) 
+    (NP-SBJ (NNP Genetics) (NNP Institute) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (JJ second) (NN patent) )
+    (VP (VBZ describes) 
+      (NP 
+        (NP (NN bone) (JJ morphogenetic) (NN protein-1) )
+        (, ,) 
+        (NP 
+          (NP (DT a) (NN substance) )
+          (SBAR 
+            (WHNP-2 (WDT that) )
+            (S 
+              (NP-SBJ (-NONE- *T*-2) )
+              (VP (MD can) 
+                (VP (VB induce) 
+                  (NP 
+                    (NP (NN formation) )
+                    (PP (IN of) 
+                      (NP (JJ new) (NN cartilage) ))))))))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (NP-SBJ (DT The) (NN patent) )
+      (VP (VBZ covers) 
+        (NP 
+          (NP (NN BMP-1) (NN type) (NNS proteins) )
+          (CC and) 
+          (NP 
+            (NP (JJ pharmaceutical) (NNS compositions) 
+              (CC and)
+              (NNS methods) )
+            (PP (IN for) 
+              (S-NOM 
+                (NP-SBJ (-NONE- *) )
+                (VP (VBG treating) 
+                  (NP (NN bone) (CC or) (NN cartilage) (NNS defects) ))))))))
+    (, ,) 
+    (NP-SBJ (NNP Genetics) (NNP Institute) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ (DT The) (NN company) )
+      (VP (VBD added) 
+        (SBAR (IN that) 
+          (S 
+            (NP-SBJ (PRP it) )
+            (VP (VBZ has) 
+              (VP (VBN filed) 
+                (NP (NN patent) (NNS applications) )
+                (`` ``) 
+                (PP-CLR (IN on) 
+                  (NP 
+                    (NP (DT a) (JJ large) (NN number) )
+                    (PP (IN of) 
+                      (NP (JJ different) (NN BMP) (NNS proteins) ))))
+                ('' '') ))))))
+    (CC and) 
+    (S 
+      (NP-SBJ 
+        (NP (DT the) (NN patent) )
+        (PP (IN on) 
+          (NP (NN BMP-1) )))
+      (VP (VBZ is) 
+        (NP-PRD 
+          (NP (DT the) (JJ first) )
+          (SBAR 
+            (WHNP-1 (-NONE- 0) )
+            (S 
+              (NP-SBJ (PRP it) )
+              (VP (VBZ has) 
+                (VP (VBN received) 
+                  (NP (-NONE- *T*-1) ))))))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (NP-SBJ (NN BMP) (NNS products) )
+      (VP (MD may) 
+        (VP (VB be) 
+          (ADJP-PRD (JJ useful) )
+          (PP 
+            (PP (IN in) 
+              (NP (NN fracture) (NN healing) ))
+            (CC and) 
+            (PP (IN in) 
+              (S-NOM 
+                (NP-SBJ (-NONE- *) )
+                (VP (VBG treating) 
+                  (NP 
+                    (NP (NN bone) (NN loss) )
+                    (VP (VBN associated) 
+                      (NP (-NONE- *) )
+                      (PP-CLR (IN with) 
+                        (NP 
+                          (NP (JJ periodontal) (NN disease) )
+                          (CC and) 
+                          (NP (JJ certain) (NNS cancers) ))))))))))))
+    (, ,) 
+    (NP-SBJ (DT the) (NN company) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))

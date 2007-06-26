@@ -1,0 +1,371 @@
+
+
+( (S (NP-SBJ (NP Researchers)
+             (PP-LOC at
+		     (NP (NP American Telephone & Telegraph Co. 's)
+			 Bell Laboratories)))
+     (VP reported
+         (SBAR 0
+               (S (NP-SBJ-1 they)
+                  (VP raised
+                      (NP (NP the electrical current-carrying capacity)
+                          (PP of
+                              (NP new superconductor crystals)))
+                      (PP by
+                          (NP (NP a factor)
+                              (PP of
+                                  (NP 100))))
+                      ,
+                      (S-ADV (NP-SBJ *-1)
+			     (VP moving
+				 (NP the materials)
+				 (ADVP-DIR closer
+					   (PP to
+					       (NP commercial use)))))))))
+     .))
+( (S (NP-SBJ The scientists)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-2 they)
+                  (VP created
+                      (NP (NP small changes)
+                          (PP-LOC in
+				  (NP (NP the crystal-lattice structures)
+				      (PP of
+					  (NP the superconductors)))))
+		      (S-PRP (NP-SBJ *-2)
+			     (VP to
+				 (VP raise
+				     (NP (NP the amount)
+					 (PP of
+					     (NP current))
+					 (SBAR (WHNP-1 that)
+					       (S (NP-SBJ single crystals)
+						  (VP could
+						      (VP carry
+							  (NP *T*-1))))))
+				     (PP-CLR to
+					     (NP (NP 600,000 amps)
+						 (PP per
+						     (NP square centimeter))
+						 (PP-LOC in
+							 (NP a
+							     (ADJP moderately strong)
+							     magnetic field)))))))))))
+     .))
+( (S (NP-SBJ The scientists)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ they)
+                  (VP made
+                      (NP the advance)
+                      (PP with
+                          (NP (NP yttrium-containing superconductors)
+                              (VP cooled
+                                  (NP *)
+                                  (PP-CLR to
+					  (NP (NP liquid-nitrogen temperature)
+					      , or
+					      (NP (QP minus 321) degrees Fahrenheit))))))))))
+     .))
+( (S (NP-SBJ Their report)
+     (VP appears
+         (PP-LOC-CLR in
+		     (NP (NP (NP today 's)
+			     issue)
+			 (PP of
+			     (NP the journal
+				 Nature)))))
+     .))
+( (S (NP-SBJ The finding)
+     (VP marks
+         (NP (NP a significant step)
+             (PP-LOC in
+		     (NP (NP research)
+			 (PP on
+			     (NP (NP `` bulk '' superconductors)
+				 ,
+				 (SBAR (WHNP-2 which)
+				       (S (NP-SBJ-1 *T*-2)
+					  (VP are
+					      (VP aimed
+						  (NP *-1)
+						  (PP-CLR at
+							  (NP (NP use)
+							      (PP in
+								  (NP (NP wires)
+								      (PP for
+									  (NP (NP motors)
+									      ,
+									      (NP magnets)
+									      ,
+									      (NP generators)
+									      and
+									      (NP other applications)))))))))))))))))
+     .))
+( (S (NP-SBJ-2 Scientists)
+     (VP (VP had
+	     (VP obtained
+		 (NP (ADJP even higher)
+		     current-carrying
+		     capacity)
+		 (PP-LOC in
+			 (NP (NP thin films)
+			     (PP of
+				 (NP the new superconductors))))))
+	 , but
+	 (VP have
+	     (VP had
+		 (NP problems)
+		 (S-CLR (NP-SBJ *-2)
+			(VP increasing
+			    (NP (NP the amount)
+				(PP of
+				    (NP current))
+				(SBAR (WHNP-1 that)
+				      (S (NP-SBJ bulk crystals)
+					 (VP could
+					     (VP carry
+						 (NP *T*-1)))))))))))
+     .))
+( (S (NP-SBJ-3 Superconductors)
+     (VP conduct
+         (NP electricity)
+         (PP-MNR without
+		 (NP resistance))
+	 (SBAR-TMP (WHADVP-1 when)
+		   (S (NP-SBJ-2 *-3)
+		      (VP cooled
+			  (NP *-2)
+			  (ADVP-TMP *T*-1)))))
+     .))
+( (S (NP-SBJ (NP A family)
+	     (PP of
+		 (NP (NP ceramic superconductors)
+		     (VP discovered
+			 (NP *)
+			 (PP-TMP during
+				 (NP the past three years))))))
+     (VP promise
+	 (NP (NP new technologies)
+	     (PP such
+		 as
+		 (NP cheaper electrical generation)))
+	 --
+	 but
+	 (FRAG (SBAR-ADV (ADVP only)
+			 if
+			 (S (NP-SBJ-1 their current-carrying capacity)
+			    (VP can
+				(VP be
+				    (VP raised
+					(NP *-1))))))))
+     .))
+( (S (NP-SBJ The AT&T advance)
+     (VP shows
+         (SBAR (WHADVP-2 how)
+               (S (NP-SBJ-1 (NP one aspect)
+                            (PP of
+                                (NP the current-carrying problem)))
+                  (VP can
+                      (VP be
+                          (VP overcome
+                              (NP *-1)
+			      (ADVP-MNR *T*-2)))))))
+     .))
+( (SINV (S-TPC-1 But
+		 ``
+		 (NP-SBJ it)
+		 (VP wo n't
+		     (VP lead
+			 (PP-CLR to
+				 (NP (NP imminent use '')
+				     (PP of
+					 (NP new superconductors)))))))
+	,
+	(VP cautioned
+	    (SBAR 0
+		  (S *T*-1)))
+	(NP-SBJ (NP Robert B. van Dover)
+		,
+		(NP (NP one)
+		    (PP of
+			(NP the AT&T researchers))))
+	.))
+( (S (NP-SBJ He)
+     (VP added
+         (SBAR that
+               (S (NP-SBJ (NP the current-carrying capacity)
+                          (PP of
+                              (NP (NP multi-crystal samples)
+                                  (PP of
+                                      (NP superconductors)))))
+                  (VP remains
+                      (ADJP-PRD (ADJP too low)
+				(PP for
+				    (NP most practical uses)))
+                      (PP-PRP because
+			      of
+			      (NP (NP so-called weak links)
+				  (PP between
+				      (NP crystals))))))))
+     .))
+( (S (NP-SBJ-1 Such multi-crystal materials)
+     (VP will
+         (ADVP probably)
+         (VP be
+             (VP needed
+                 (NP *-1)
+                 (PP-CLR for
+			 (NP commercial applications)))))
+     .))
+( (S (NP-SBJ Mr. van Dover)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-2 the AT&T team)
+                  (VP created
+                      (NP the desired crystal changes)
+                      (PP-MNR by
+			      (S-NOM (NP-SBJ *-2)
+				     (VP (VP bombarding
+					     (NP superconductor samples)
+					     (PP-CLR with
+						     (NP neutrons)))
+					 ,
+					 (NP-ADV (NP a process)
+						 (SBAR (WHNP-1 that)
+						       (S (NP-SBJ *T*-1)
+							  (VP (VP creates
+								  (NP (NP some radioactivity)
+								      (PP in
+									  (NP the samples))))
+							      and
+							      (VP may not
+								  (VP be
+								      (ADJP-PRD feasible
+										(PP for
+										    (NP large-scale commercial use))))))))))))))))
+     .))
+( (S (ADVP Still)
+     ,
+     (NP-SBJ scientists)
+     (VP breathed
+	 (NP (NP a collective sigh)
+	     (PP of
+		 (NP relief)))
+	 (PP-CLR about
+		 (NP the finding))
+	 ,
+	 (SBAR-PRP because
+		   (S (NP-SBJ it)
+		      (VP demonstrates
+			  (SBAR (WHADVP-2 how)
+				(S (NP-SBJ *)
+				   (VP to
+				       (VP overcome
+					   (NP (NP the `` flux pinning '' problem)
+					       (SBAR (WHNP-1 that)
+						     (S (NP-SBJ *T*-1)
+							(NP-TMP earlier this year)
+							(VP was
+							    (ADVP-MNR widely)
+							    (VP publicized
+								(PP-CLR as
+									(S-NOM (NP-SBJ *)
+									       (VP undercutting
+										   (NP (NP new superconductors ')
+										       potential)))))))))
+					   (ADVP-MNR *T*-2)))))))))
+     .))
+( (S (NP-SBJ The problem)
+     (VP involves
+         (NP (NP the motion)
+             (PP of
+                 (NP (NP small magnetic fields)
+                     (PP-LOC within
+			     (NP superconductor crystals)))))
+         ,
+         (S-ADV (NP-SBJ *)
+		(VP limiting
+		    (NP their current-carrying capacity))))
+     .))
+( (S (NP-SBJ Mr. van Dover)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ (NP the crystal changes)
+			  (SBAR (WHNP-1 0)
+				(S (NP-SBJ his team)
+				   (VP introduced
+				       (NP *T*-1)))))
+                  (ADVP apparently)
+		  (VP pins
+                      (NP the magnetic fields)
+                      (PP-LOC-CLR in
+				  (NP place))
+                      ,
+                      (S-ADV (NP-SBJ *)
+			     (VP preventing
+				 (NP-3 them)
+				 (PP-CLR from
+					 (S-NOM (NP-SBJ *-3)
+						(VP lowering
+						    (NP current-carrying capacity))))))))))
+     .))
+( (S (NP-SBJ Mr. van Dover)
+     (VP added
+         (SBAR that
+               (S (NP-SBJ-2 researchers)
+                  (VP are
+                      (VP trying
+                          (S (NP-SBJ *-2)
+                             (VP to
+                                 (VP determine
+                                     (ADVP-MNR precisely)
+				     (SBAR (WHNP-1 what crystal changes)
+                                           (S (NP-SBJ *T*-1)
+                                              (VP solved
+                                                  (NP the problem))))))))))))
+     .))
+( (S (S-NOM-SBJ (NP-SBJ *)
+		(VP Determining
+		    (NP that)))
+     (VP may
+         (VP enable
+             (S (NP-SBJ them)
+                (VP to
+                    (VP develop
+                        (NP (NP better ways)
+                            (SBAR (WHADVP-1 0)
+				  (S (NP-SBJ *)
+				     (VP to
+					 (VP introduce
+					     (NP the needed crystal-lattice patterns)
+					     (ADVP-MNR *T*-1)))))))))))
+     .))
+( (S (NP-SBJ-1 The AT&T team)
+     (ADVP also)
+     (VP is
+         (VP trying
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP combine
+                        (NP their latest superconductor process)
+                        (PP with
+                            (NP ``
+				(NP melt-textured growth)
+                                , ''
+                                (NP (NP a process)
+                                    (VP discovered
+                                        (NP *)
+                                        (ADVP-TMP earlier)
+                                        (PP-LOC at
+						(NP Bell Laboratories)))))))))))
+     .))
+( (S (NP-SBJ The combined processes)
+     (VP may
+         (ADVP significantly)
+         (VP raise
+             (NP (NP the current-carrying capacity)
+                 (PP of
+                     (NP multi-crystal samples)))))
+     .))

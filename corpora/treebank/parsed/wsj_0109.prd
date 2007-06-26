@@ -1,0 +1,804 @@
+
+
+( (S (NP-SBJ-37 R. Gordon McGovern)
+     (VP was
+	 (VP forced
+	     (NP *-37)
+	     (ADVP-DIR out)
+	     (PP-CLR as
+		     (NP (NP Campbell Soup Co. 's)
+			 president and chief executive officer))
+	     ,
+	     (NP-ADV (NP the strongest evidence yet)
+		     (PP of
+			 (NP (NP the power)
+			     (SBAR (WHNP-1 that)
+				   (S (NP-SBJ-2 Dorrance family members)
+				      (VP intend
+					  (S (NP-SBJ *-2)
+					     (VP to
+						 (VP wield
+						     (NP *T*-1)
+						     (PP in
+							 (S-NOM (NP-SBJ *)  
+								(VP reshaping
+								    (NP the troubled food company)))))))))))))))
+     .))
+( (S (NP-SBJ-1 (NP (NP Herbert M. Baum)
+		   ,
+		   (NP (NP the 53-year-old president)
+		       (PP of
+			   (NP (NP the company 's)
+			       Campbell U.S.A. unit))))
+	       , and
+	       (NP (NP Edwin L. Harper)
+		   ,
+		   (NP 47)
+		   ,
+		   (NP the chief financial officer)
+		   ,))
+     (VP will
+         (VP run
+             (NP Campbell)
+             (PP as
+		 (NP a team))
+	     ,
+	     (S-ADV (NP-SBJ *-1)
+		    (VP dividing
+			(NP responsibilities)
+			(ADVP-MNR rather evenly)
+			(SBAR-TMP until
+				  (S (NP-SBJ-38 a successor)
+				     (VP is
+					 (VP named
+					     (NP *-38)))))))))
+     .))
+( (S (NP-SBJ The board)
+     (ADVP-TMP already)
+     (VP has
+         (VP been
+             (VP searching
+                 (PP-CLR for
+			 (NP (NP strong outside candidates)
+			     ,
+			     (PP including
+				 (NP (NP food-industry executives)
+				     (PP with
+					 (NP considerable international experience)))))))))
+     .))
+( (S (NP-SBJ Wall Street)
+     (VP reacted
+         (ADVP-MNR favorably)
+         (PP-CLR to
+		 (NP (NP (NP Mr. McGovern 's)
+			 departure)
+		     and
+		     (NP its implications))))
+     .))
+( (S (PP-LOC In
+	     (NP (NP heavy trading)
+		 (PP-LOC on
+			 (NP the New York Stock Exchange))))
+     ,
+     (NP-SBJ (NP Campbell 's)
+             shares)
+     (VP rose
+         (NP-EXT $ 3.375 *U*)
+	 (S-CLR (NP-SBJ *)
+		(VP to
+		    (VP close
+			(PP-CLR at
+				(NP $ 47.125 *U*))))))
+     .))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ (NP The profit motive)
+			 (PP of
+			     (NP the major shareholders)))
+		 (VP has
+		     (ADVP-MNR clearly)
+		     (VP changed
+			 (PP for
+			     (NP the better)))))
+	, ''
+	(VP said
+	    (S *T*-1))
+	(NP-SBJ (NP John McMillin)
+		,
+		(NP (NP a food industry analyst)
+		    (PP for
+			(NP (NP Prudential-Bache)
+			    (PP-LOC in
+				    (NP New York))))))
+	.))
+( (S (NP-SBJ-1 Mr. McGovern)
+     (VP was
+         (ADVP-LOC widely)
+         (VP seen
+	     (NP *-1)
+             (PP-CLR as
+		     (ADJP sales (PRN , and not profit ,) oriented))))
+     .))
+( (S ``
+     (S-TPC-1 (NP-SBJ New managers)
+	      (VP would
+		  (VP think
+		      (PP (ADVP (NP-ADV a little)
+				more)
+			  like
+			  (NP Wall Street)))))
+     , ''
+     (NP-SBJ Mr. McMillin)
+     (VP added
+	 (S *T*-1))
+     .))
+( (S (NP-SBJ-1 (NP Some)
+	       (PP of
+		   (NP (NP the surge)
+		       (PP in
+			   (NP (NP the stock 's)
+			       price)))))
+     (VP appeared
+         (S (NP-SBJ-39 *-1)
+            (VP to
+                (VP be
+                    (VP linked
+                        (NP *-39)
+                        (PP-CLR to
+				(NP (NP revived
+					takeover speculation)
+				    ,
+				    (SBAR (WHNP-28 which)
+					  (S (NP-SBJ *T*-28)
+					     (VP has
+						 (VP contributed
+						     (PP-CLR to
+							     (NP (NP volatility)
+								 (PP of
+								     (NP Campbell shares))
+								 (PP-TMP in
+									 (NP recent months)))))))))))))))
+     .))
+( (S (NP-SBJ-1 (NP (NP Campbell 's)
+		   international businesses)
+	       ,
+	       (PP-LOC (ADVP particularly)
+		       in
+		       (NP (NP the U.K.)
+			   and
+			   (NP Italy)))
+	       ,)
+     (VP appear
+         (S (NP-SBJ *-1)
+            (VP to
+                (VP be
+                    (PP-PRD at
+			    (NP (NP the heart)
+				(PP of
+				    (NP its problems))))))))
+     .))
+( (S (S (NP-SBJ Growth)
+        (VP has
+            (VP fallen
+                (ADVP short
+		      (PP of
+			  (NP targets))))))
+     and
+     (S (NP-SBJ operating earnings)
+        (VP are
+	    (PP-PRD (ADVP far)
+		    below
+		    (NP (NP results)
+			(PP-LOC in
+				(NP U.S. units))))))
+     .))
+( (S (PP For
+         (NP example))
+     ,
+     (NP-SBJ Campbell)
+     (VP is
+         (NP-PRD (NP a distant third)
+		 (PP-LOC in
+			 (NP (NP the U.K. frozen foods market)
+			     ,
+			     (SBAR (WHADVP-1 where)
+				   (S (NP-SBJ it)
+				      (ADVP-TMP recently)
+				      (VP (VP paid
+					      (NP (QP 24 times)
+						  earnings)
+					      (PP-CLR for
+						      (NP Freshbake Foods PLC)))
+					  and
+					  (VP wound
+					      (PRT up)
+					      (PP with
+						  (NP (NP (ADJP far more) capacity)
+						      (SBAR than
+							    (S (NP-SBJ it)
+							       (VP could
+								   (VP use
+								       (NP *?*))))))))
+					  (ADVP-LOC *T*-1))))))))
+     .))
+( (S (ADVP Similarly)
+     ,
+     (NP-SBJ-40 (NP (NP Campbell 's)
+                    Italian biscuit operation)
+                ,
+                (NP D. Lazzaroni & Co.)
+                ,)
+     (VP has
+         (VP been
+             (VP hurt
+                 (NP *-40)
+                 (PP by
+                     (NP-LGS (NP overproduction)
+			     and
+			     (NP distribution problems))))))
+     .))
+( (S (NP-SBJ Such problems)
+     (VP will
+         (VP require
+             (NP considerable skill)
+	     (S-PRP (NP-SBJ *)
+		    (VP to
+			(VP resolve)))))
+     .))
+( (S (ADVP However)
+     ,
+     (NP-SBJ neither
+             (NP Mr. Baum)
+             nor
+             (NP Mr. Harper))
+     (VP has
+         (NP much international experience))
+     .))
+( (S (NP-SBJ (NP Mr. Baum)
+             ,
+             (NP (NP a seasoned marketer)
+                 (SBAR (WHNP-29 who)
+                       (S (NP-SBJ-1 *T*-29)
+                          (VP is
+                              (VP said
+                                  (S (NP-SBJ *-1)
+                                     (VP to
+                                         (VP have
+                                             (NP (NP a good rapport)
+                                                 (PP with
+                                                     (NP Campbell employees)))))))))))
+             ,)
+     (VP will
+         (VP have
+             (NP (NP responsibility)
+                 (PP for
+                     (NP (NP all domestic operations)
+                         (PP except
+                             (NP the Pepperidge Farm unit)))))))
+     .))
+( (S (NP-SBJ (NP Mr. Harper)
+             ,
+             (NP (NP a veteran)
+		 (PP of
+		     (NP several manufacturing companies))
+                 (SBAR (WHNP-30 who)
+                       (S (NP-SBJ *T*-30)
+                          (VP joined
+                              (NP Campbell)
+			      (PP-TMP in
+				      (NP 1986))))))
+             ,)
+     (VP will
+         (VP take
+             (NP (NP charge)
+                 (PP of
+                     (NP (NP all overseas operations)
+                         (PP as well as
+                             (NP Pepperidge)))))))
+     .))
+( (S (PP-LOC In
+	     (NP an joint interview))
+     (NP-TMP yesterday)
+     ,
+     (NP-SBJ both men)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 they)
+                  (VP would
+                      (VP like
+                          (S (NP-SBJ *-1)
+                             (VP to
+                                 (VP be
+                                     (NP-PRD (NP the company 's)
+					     next chief executive)))))))))
+     .))
+( (S (NP-SBJ (NP Mr. McGovern)
+             ,
+             (NP 63)
+             ,)
+     (VP had
+         (VP been
+             (PP-PRD under
+		     (NP (NP intense pressure
+			     (S *ICH*-1))
+			 (PP from
+			     (NP the board))
+			 (S-1 (NP-SBJ *)
+			      (VP to
+				  (VP boost
+				      (NP (NP Campbell 's)
+					  mediocre performance)
+				      (PP-DIR-CLR to
+						  (NP (NP the level)
+						      (PP of
+							  (NP other food companies)))))))))))
+     .))
+( (S (NP-SBJ-41 The board)
+     (VP is
+         (VP dominated
+             (NP *-41)
+             (PP by
+                 (NP-LGS (NP the heirs)
+			 (PP of
+			     (NP (NP the late John T. Dorrance Jr.)
+				 ,
+				 (SBAR (WHNP-31 who)
+				       (S (NP-SBJ *T*-31)
+					  (VP controlled
+					      (NP (NP (QP about 58)
+						      %)
+						  (PP of
+						      (NP (NP Campbell 's)
+							  stock)))
+					      (SBAR-TMP (WHADVP-1 when)
+							(S (NP-SBJ he)
+							   (VP died
+							       (PP-TMP in
+								       (NP April))
+							       (ADVP-TMP *T*-1)))))))))))))
+     .))
+( (S (PP-TMP In
+	     (NP recent months))
+     ,
+     (NP-SBJ (NP (NP Mr. Dorrance 's)
+                 children)
+             and
+             (NP other family members))
+     (VP have
+         (VP pushed
+             (PP-CLR for
+		     (NP (NP improved
+			     profitability)
+			 and
+			 (NP (NP higher returns)
+			     (PP on
+				 (NP their equity)))))))
+     .))
+( (S (PP-TMP In
+	     (NP August))
+     ,
+     (NP-SBJ the company)
+     (VP took
+         (NP (NP a
+		 (ADJP (QP $ 343 million) *U*)
+		 pretax charge)
+	     (PP against
+		 (NP fiscal 1989 earnings)))
+	 (SBAR-TMP (WHADVP-1 when)
+		   (S (NP-SBJ it)
+		      (VP announced
+			  (NP a world-wide restructuring plan)
+			  (ADVP-TMP *T*-1)))))
+     .))
+( (S (NP-SBJ The plan)
+     (VP calls
+         (PP for
+             (S-NOM (NP-SBJ *)
+		    (VP (VP closing
+			    (NP (QP at
+				    least
+				    nine)
+				plants))
+			and
+			(VP eliminating
+			    (NP (QP about 3,600) jobs))))))
+     .))
+( (S But
+     (NP-SBJ analysts)
+     (VP said
+         (SBAR 0
+               (S (S (NP-SBJ (NP early results)
+			     (PP-DIR from
+				     (NP the reorganization)))
+		     (VP have
+			 (VP been
+			     (ADJP-PRD disappointing)
+			     ,
+			     (PP-LOC (ADVP especially)
+				     in
+				     (NP Europe)))))
+		  , and
+		  (S (NP-SBJ there)
+		     (VP were
+			 (NP-PRD signs
+				 (SBAR that
+				       (S (NP-SBJ the board)
+					  (VP became
+					      (ADJP-PRD impatient))))))))))
+     .))
+( (S (NP-SBJ Campbell officials)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 Mr. McGovern)
+                  (VP was n't
+                      (ADJP-PRD available
+				(S *ICH*-2))
+		      (NP-TMP yesterday)
+		      (S-2 (NP-SBJ *-1)
+			   (VP to
+			       (VP discuss
+				   (NP (NP the circumstances)
+				       (PP of
+					   (NP his departure))))))))))
+     .))
+( (S (NP-SBJ (NP The company 's)
+             prepared statement)
+     (VP quoted
+         (NP-1 him)
+         (PP-CLR as
+		 (S-NOM (NP-SBJ *-1)
+			(VP saying
+			    ,
+			    ``
+			    (S (S (NP-SBJ The CEO succession)
+				  (VP is
+				      (ADVP-PRD well along)))
+			       and
+			       (S (NP-SBJ-2 I)
+				  (VP 've
+				      (VP decided
+					  (PP-PRP for
+						  (NP personal reasons))
+					  (S (NP-SBJ *-2)
+					     (VP to
+						 (VP take
+						     (NP early retirement))))))))))))
+     .
+     ''))
+( (S But
+     (NP-SBJ (NP people)
+             (ADJP familiar
+                   (PP with
+                       (NP (NP the agenda)
+                           (PP of
+                               (NP (NP (NP the board 's)
+				       meeting)
+                                   (NP-TMP last week)
+                                   (PP-LOC in
+					   (NP London))))))))
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-42 Mr. McGovern)
+                  (VP was
+                      (VP fired
+                          (NP *-42))))))
+     .))
+( (S (NP-SBJ (NP Mr. McGovern)
+             (NP himself))
+     (VP had
+         (VP said
+             (ADVP-TMP repeatedly)
+             (SBAR that
+                   (S (NP-SBJ-1 he)
+                      (VP intended
+                          (S (NP-SBJ *-1)
+                             (VP to
+                                 (VP stay
+				     (PRT on)
+				     (SBAR-TMP until
+					       (S (NP-SBJ he)
+						  (VP reached
+						      (NP (NP the conventional retirement age)
+							  (PP of
+							      (NP 65)))
+						      (PP-TMP in
+							      (NP October 1991)))))
+				     ,
+				     ``
+				     (SBAR-ADV unless
+					       (S (NP-SBJ I)
+						  (VP get
+						      (VP fired))))))))))))
+     . ''))
+( (S (NP-SBJ Campbell)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ Mr. McGovern)
+                  (VP had
+                      (VP withdrawn
+                          (NP his name)
+                          (PP as
+                              (NP (NP a candidate)
+                                  (PP for
+                                      (NP (NP re-election)
+					  (PP as
+					      (NP a director))
+					  (PP-TMP at
+						  (NP (NP the annual shareholder meeting)
+						      ,
+						      (VP scheduled
+							  (NP *)
+							  (PP-TMP for
+								  (NP Nov. 17))))))))))))))
+     .))
+( (S (PP-TMP For
+	     (NP fiscal 1989))
+     ,
+     (NP-SBJ Mr. McGovern)
+     (VP received
+         (NP (NP a salary)
+             (PP of
+                 (NP $ 877,663 *U*))))
+     .))
+( (S (NP-SBJ He)
+     (VP (VP owns
+             (NP (NP (QP about 45,000)
+		     shares)
+		 (PP of
+		     (NP Campbell stock))))
+         and
+         (VP has
+             (NP options
+                 (S (NP-SBJ *)
+                    (VP to
+                        (VP buy
+                            (NP (QP more
+				    than
+				    100,000)
+				additional shares)))))))
+     .))
+( (S (NP-SBJ He)
+     (VP will
+         (VP be
+             (ADJP-PRD eligible
+		       (PP for
+			   (NP (NP an annual pension)
+			       (PP of
+				   (NP (QP more
+					   than
+					   $ 244,000)
+				       *U*))
+			       (PP with
+				   (NP certain other fringe benefits)))))))
+     .))
+( (S (S-TPC-1 (PP-TMP During
+		      (NP (NP (NP Mr. McGovern 's)
+			      nine-year term)
+			  (PP as
+			      (NP president))))
+	      ,
+	      (S (NP-SBJ (NP the company 's)
+			 sales)
+		 (VP rose
+		     (PP-DIR to
+			     (NP (QP $ 5.7 billion) *U*))
+		     (PP-DIR from
+			     (NP (QP $ 2.8 billion) *U*))))
+	      and
+	      (S (NP-SBJ net income)
+		 (VP increased
+		     (PP-DIR to
+			     (NP (QP $ 274 million) *U*))
+		     (PP-DIR from
+			     (NP (QP $ 130 million) *U*)))))
+     ,
+     (NP-SBJ the statement)
+     (VP said
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (NP-SBJ Mr. Baum)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 (NP he)
+			    and
+			    (NP Mr. Harper)
+			    both)
+		  (VP advocated
+                      (S (NP-SBJ *-1)
+			 (VP closing
+			     (NP some plants)))
+                      (ADVP-TMP (ADVP as
+				      long
+				      ago)
+				(PP as
+				    (NP early 1988)))))))
+     .))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ-2 You)
+		 (VP 've
+		     (VP got
+			 (S (NP-SBJ *-2)
+			    (VP to
+				(VP make
+				    (S (NP-SBJ the restructuring)
+				       (VP work))))))))
+	, ''
+	(VP said
+	    (S *T*-1))
+	(NP-SBJ Mr. Baum)
+	.))
+( (S ``
+     (NP-SBJ-1 You)
+     (VP 've
+         (VP got
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP make
+                        (NP those savings)
+			(ADVP-TMP now))))))
+     .
+     ''))
+( (S (NP-SBJ Mr. Harper)
+     (VP expressed
+         (NP confidence
+             (SBAR that
+                   (S (NP-SBJ (NP he)
+                              and
+                              (NP Mr. Baum))
+                      (VP can
+                          (VP convince
+                              (NP (NP the board)
+                                  (PP of
+                                      (NP their worthiness
+                                          (S (NP-SBJ *)
+                                             (VP to
+                                                 (VP run
+                                                     (NP the company)))))))))))))
+     .))
+( (S ``
+     (S-1 (NP-SBJ We)
+	  (VP look
+	      (PP upon
+		  (NP this))
+	      (PP-CLR as
+		      (NP a great opportunity
+			  (S (NP-SBJ *)
+			     (VP to
+				 (VP prove
+				     (NP the fact
+					 (SBAR that
+					       (S (NP-SBJ we)
+						  (VP have
+						      (NP a tremendous management team))))))))))))
+     , ''
+     (NP-SBJ he)
+     (VP said
+	 (S *T*-1))
+     .))
+( (S (NP-SBJ He)
+     (VP predicted
+         (SBAR that
+               (S (NP-SBJ-1 the board)
+                  (VP would
+                      (VP give
+                          (NP the current duo)
+                          (PP-TMP until
+				  (NP early next year))
+			  (PP-TMP before
+				  (S-NOM (NP-SBJ *)  
+					 (VP naming
+					     (NP a new chief executive)))))))))
+     .))
+( (S (NP-SBJ Mr. Baum)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ the two)
+                  (VP have
+                      (NP orders
+                          (S (NP-SBJ *)
+			     (VP (VP to
+				     ``
+				     (VP focus
+					 (PP-CLR on
+						 (NP bottom-line profits)))
+				     '')
+				 and
+				 (VP to
+				     ``
+				     (VP take
+					 (NP (NP a hard look)
+					     (PP at
+						 (NP our businesses))
+					     (PRN --
+						  (SBAR (SBAR (WHNP-32 what)
+							      (S (NP-SBJ *T*-32)
+								 (VP is
+								     (ADJP-PRD good))))
+							,
+							(SBAR (WHNP-33 what)
+							      (S (NP-SBJ *T*-33)
+								 (VP is not
+								     (ADJP-PRD so
+									       good))))))))))))))))
+     .
+     ''))
+( (S (NP-SBJ Analysts)
+     (ADVP generally)
+     (VP applaud
+         (NP (NP the performance)
+             (PP of
+                 (NP (NP Campbell U.S.A.)
+		     ,
+		     (NP (NP the company 's)
+			 largest division)
+                     ,
+                     (SBAR (WHNP-34 which)
+                           (S (NP-SBJ *T*-34)
+                              (VP posted
+                                  (NP (NP (ADJP 6 %) unit sales growth)
+                                      and
+                                      (NP (NP a (ADJP 15 %) improvement)
+                                          (PP-LOC in
+						  (NP operating profit))))
+                                  (PP-TMP for
+					  (NP fiscal 1989)))))))))
+     .))
+( (S ``
+     (S-TPC-1 (NP-SBJ (NP The way)
+		      (SBAR (WHADVP-2 that)
+			    (S (NP-SBJ we)
+			       (VP 've
+				   (VP been
+				       (VP managing
+					   (NP Campbell U.S.A.)
+					   (ADVP-CLR *T*-2)))))))
+	      (VP can
+		  (ADVP hopefully)
+		  (VP spread
+		      (PP-DIR to
+			      (NP (NP other areas)
+				  (PP of
+				      (NP the company)))))))
+     , ''
+     (NP-SBJ Mr. Baum)
+     (VP said
+	 (S *T*-1))
+     .))
+( (S (PP-LOC In
+	     (NP (NP the interview)
+		 (PP-LOC at
+			 (NP headquarters))
+		 (NP-TMP yesterday afternoon)))
+     ,
+     (NP-SBJ-1 both men)
+     (VP (VP exuded
+             (NP confidence))
+         and
+         (VP seemed
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP work
+                        (ADVP well)
+                        (ADVP together))))))
+     .))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ You)
+		 (VP 've
+		     (VP got
+			 (NP (NP two champions)
+			     (VP sitting
+				 (PP-LOC (ADVP right)
+					 before
+					 (NP you)))))))
+	, ''
+	(VP said
+	    (S *T*-1))
+	(NP-SBJ Mr. Baum)
+	.))
+( (S ``
+     (NP-SBJ-1 We)
+     (VP play
+	 (S-CLR (NP-SBJ *-1)
+		(VP to
+		    (VP win))))
+     .))

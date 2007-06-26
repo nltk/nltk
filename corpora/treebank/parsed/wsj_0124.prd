@@ -1,0 +1,128 @@
+
+
+( (S (NP-SBJ-1 (NP William C. Walbrecher Jr.)
+               ,
+               (NP (NP an executive)
+                   (PP-LOC at
+			   (NP (NAC-LOC San Francisco-based)
+			       1st Nationwide Bank)))
+               ,)
+     (VP was
+         (VP named
+             (S (NP-SBJ *-1)
+		(NP-PRD (NP (NP president)
+			    (PP *RNR*-2))
+			and
+			(NP (NP chief executive officer)
+			    (PP *ICH*-2)) 
+			(PP-2 of
+			      (NP (NP Citadel Holding Corp.)
+				  and
+				  (NP (NP its principal operating unit)
+				      ,
+				      (NP Fidelity Federal Bank))))))))
+     .))
+( (S (NP-SBJ The appointment)
+     (VP takes
+         (NP effect)
+	 (NP-TMP Nov. 13))
+     .))
+( (S (NP-SBJ He)
+     (VP succeeds
+         (NP (NP James A. Taylor)
+             ,
+             (SBAR (WHNP-1 who)
+                   (S (NP-SBJ *T*-1)
+                      (VP stepped
+			  (PRT down)
+                          (PP-CLR as
+				  (NP (NP chairman)
+				      ,
+				      (NP president)
+				      and
+				      (NP chief executive)))
+                          (PP-TMP in
+				  (NP March))
+                          (PP-PRP for
+				  (NP health reasons)))))))
+     .))
+( (S (NP-SBJ Edward L. Kane)
+     (VP succeeded
+         (NP Mr. Taylor)
+         (PP-CLR as
+		 (NP chairman)))
+     .))
+( (S (ADVP Separately)
+     ,
+     (NP-SBJ Citadel)
+     (VP posted
+         (NP (NP (NP a third-quarter net loss)
+		 (PP of
+		     (NP (NP (QP $ 2.3 million) *U*)
+			 , or
+			 (NP (NP 68 cents)
+			     (NP-ADV a share)))))
+	     ,
+	     (PP versus
+		 (NP (NP (NP net income)
+			 (PP of
+			     (NP (NP (QP $ 5.3 million) *U*)
+				 , or
+				 (NP (NP $ 1.61 *U*)
+				     (NP-ADV a share)))))
+		     ,
+		     (ADVP-TMP (NP a year)
+			       earlier)))))
+     .))
+( (S (NP-SBJ The latest results)
+     (VP include
+         (NP (NP some unusual write-downs)
+             ,
+             (SBAR (WHNP-1 which)
+                   (S (NP-SBJ *T*-1)
+                      (VP had
+                          (NP (NP an after-tax impact)
+                              (PP of
+                                  (NP (QP $ 4.9 million) *U*))))))))
+     .))
+( (S (NP-SBJ Those)
+     (VP included
+         (NP (NP costs)
+             (VP associated
+                 (NP *)
+                 (PP-CLR with
+			 (NP (NP the potential Valley Federal Savings and Loan Association acquisition)
+			     ,
+			     (SBAR (WHNP-2 which)
+				   (S (NP-SBJ-1 *T*-2)
+				      (VP was
+					  (VP terminated
+					      (NP *-1)
+					      (PP-TMP on
+						      (NP Sept. 27 , 1989)))))))))))
+     .))
+( (S (PP In
+         (NP addition))
+     ,
+     (NP-SBJ-1 operating
+               results)
+     (VP were
+         (VP hit
+             (NP *-1)
+             (PP by
+                 (NP-LGS (NP an increase)
+			 (PP-LOC in
+				 (NP loan and real estate loss reserves))))))
+     .))
+( (S (PP-LOC In
+	     (NP American Stock Exchange composite trading))
+     ,
+     (NP-SBJ Citadel shares)
+     (VP closed
+         (NP-TMP yesterday)
+         (PP-CLR at
+		 (NP $ 45.75 *U*))
+         ,
+         (ADVP-CLR down
+		   (NP 25 cents)))
+     .))

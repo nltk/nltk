@@ -1,0 +1,127 @@
+
+
+( (S (S-TPC-2 (NP-SBJ-1 A.L. Williams Corp.)
+	      (VP was
+		  (VP merged
+		      (NP *-1)
+		      (PP-CLR into
+			      (NP (NP Primerica Corp.)
+				  ,
+				  (NP-LOC New York)
+				  ,))
+		      (SBAR-TMP after
+				(S (NP-SBJ (NP a special meeting)
+					   (PP of
+					       (NP Williams shareholders)))
+				   (VP cleared
+				       (NP the transaction)))))))
+     ,
+     (NP-SBJ the companies)
+     (VP said
+	 (SBAR 0
+	       (S *T*-2)))
+     .))
+( (S (NP-SBJ (NP Primerica)
+             ,
+             (SBAR (WHNP-1 which)
+                   (S (NP-SBJ *T*-1)
+                      (VP had
+                          (VP owned
+                              (NP (NP nearly 70 %)
+                                  (PP of
+                                      (NP Williams)))))))
+             ,)
+     (VP will
+         (VP pay
+             (NP (NP (QP about 16.7 million) shares)
+                 ,
+                 (VP (ADVP-TMP currently)
+                     valued
+		     (NP *)
+		     (PP-CLR at
+			     (NP (QP almost $ 472 million) *U*)))
+                 ,)
+             (PP-CLR for
+		     (NP (NP the rest)
+			 (PP of
+			     (NP Williams))))))
+     .))
+( (S (NP-SBJ The financial-services company)
+     (VP will
+         (VP pay
+             (NP 0.82 share)
+             (PP-CLR for
+		     (NP each Williams share))))
+     .))
+( (S (NP-SBJ (NP Williams shares)
+             ,
+             (SBAR (WHNP-2 which)
+                   (S (NP-SBJ *T*-2)
+                      (VP were
+			  (S-PRD (NP-SBJ-1 *-2)
+				 (VP to
+				     (VP be
+					 (VP delisted
+					     (NP *-1)
+					     (PP-CLR from
+						     (NP the New York Stock Exchange))
+					     (PP-TMP after
+						     (NP (NP the close)
+							 (PP of
+							     (NP composite trading))
+							 (NP-TMP yesterday))))))))))
+             ,)
+     (VP closed
+         (PP-CLR at
+		 (NP $ 23.25 *U*))
+         ,
+         (ADVP-CLR off
+		   (NP 12.5 cents)))
+     .))
+( (S (NP-SBJ Primerica)
+     (VP closed
+         (PP-CLR at
+		 (NP $ 28.25 *U*))
+         ,
+         (ADVP-CLR down
+		   (NP 50 cents)))
+     .))
+( (S (NP-SBJ (NP Williams)
+             ,
+             (NP-LOC (NP Duluth)
+		     ,
+		     (NP Ga.)
+		     ,))
+     (VP is
+         (NP-PRD an insurance and financial-services holding company))
+     .))
+( (S (NP-SBJ-1 (NP Its subsidiaries ')
+               services)
+     (VP are
+         (VP marketed
+             (NP *-1)
+             (PP by
+                 (NP-LGS (ADJP closely held) A.L. Williams & Associates))))
+     .))
+( (S (NP-SBJ Primerica)
+     ,
+     (SBAR as
+	   (S (NP-SBJ *)
+	      (VP expected)))
+     ,
+     (ADVP also)
+     (VP (VP acquired
+             (NP (NP certain assets)
+                 (PP of
+                     (NP the agency))))
+         and
+         (VP assumed
+             (NP (NP certain)
+		 (PP of
+		     (NP its liabilities)))))
+     .))
+( (S (NP-SBJ-1 Terms)
+     (VP were n't
+         (VP disclosed
+	     (NP *-1)))
+     .))

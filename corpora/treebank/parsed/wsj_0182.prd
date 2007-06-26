@@ -1,0 +1,120 @@
+
+
+( (S (NP-SBJ Metallgesellschaft AG)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 it)
+                  (VP agreed
+                      (S (NP-SBJ *-1)
+                         (VP to
+                             (VP acquire
+                                 (NP (NP 51 %)
+                                     (PP of
+                                         (NP Lentjes AG)))
+                                 (PP-CLR from
+					 (NP the Ferdinand Lentjes Foundation)))))))))
+     .))
+( (S (NP-SBJ-1 Terms)
+     (VP were n't
+         (VP disclosed
+	     (NP *-1)))
+     .))
+( (S (NP-SBJ (NP Metallgesellschaft)
+             ,
+             (NP a diversified
+                 (ADJP Frankfurt , West Germany-based)
+                 metals group)
+             ,)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 it)
+                  (VP is
+                      (VP buying
+                          (NP (NP the stake)
+                              (PP in
+                                  (NP the specialized engineering company)))
+			  (S-PRP (NP-SBJ *-1)
+				 (VP to
+				     (VP expand
+					 (NP (NP its production)
+					     (PP of
+						 (NP (NP environmental supplies)
+						     (PP for
+							 (NP power plants)))))))))))))
+     .))
+( (S (S-TPC-1 (NP-SBJ (NP (NP Lentjes ')
+			  product mix)
+		      (PP of
+			  (NP specialized boilers and pipes)))
+	      (VP provides
+		  (NP (NP a good fit)
+		      (PP with
+			  (NP its own Lurgi G.m.b . H. plant engineering unit)))))
+     ,
+     (NP-SBJ the company)
+     (VP said
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (S-TPC-2 (NP-SBJ The move)
+	      (VP is
+		  (NP-PRD (NP part)
+			  (PP of
+			      (NP (NP a strategy)
+				  (SBAR (WHNP-3 0)
+					(S (NP-SBJ-1 *T*-3)
+					   (VP to
+					       (VP focus
+						   (PP-CLR on
+							   (NP its core metals trading , processing and plant engineering activities))
+						   (SBAR-TMP while
+							     (S (NP-SBJ *-1)
+								(VP shedding
+								    (NP peripheral units)))))))))))))
+     ,
+     (NP-SBJ the company)
+     (VP said
+	 (SBAR 0
+	       (S *T*-2)))
+     .))
+( (S (NP-SBJ Lentjes)
+     (VP (VP had
+             (NP (NP 1988 sales)
+                 (PP of
+                     (NP (NP (QP 800 million) marks)
+                         (PRN -LRB-
+			      (NP (QP $ 434.4 million) *U*)
+			      -RRB-)))))
+         and
+         (VP has
+             (NP (NP a current order backlog)
+                 (PP of
+                     (NP (QP 2.5 billion) marks)))))
+     .))
+( (S (NP-SBJ The sale)
+     (VP comes
+         (PP in
+             (NP (NP place)
+                 (PP of
+                     (NP (NP a planned initial public offering)
+                         (PP of
+                             (NP Lentjes stock)))))))
+     .))
+( (S (NP-SBJ-1 A plan
+	       (S (NP-SBJ *)
+		  (VP to
+		      (VP bring
+			  (NP the stock)
+			  (PP-DIR to
+				  (NP market))
+			  (PP-TMP before
+				  (NP year end))))))
+     (ADVP apparently)
+     (VP was
+         (VP upset
+	     (NP *-1)
+             (PP by
+                 (NP-LGS (NP the recent weakness)
+			 (PP of
+			     (NP Frankfurt share prices))))))
+     .))

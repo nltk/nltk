@@ -1,0 +1,574 @@
+
+( (S 
+    (PP (IN Despite) 
+      (NP 
+        (NP (CD one) )
+        (PP (IN of) 
+          (NP 
+            (NP (DT the) 
+              (ADJP (RBS most) (JJ devastating) )
+              (NNS droughts) )
+            (PP-LOC (IN on) 
+              (NP (NN record) ))))))
+    (, ,) 
+    (NP-SBJ 
+      (NP (JJ net) (NN cash) (NN income) )
+      (PP-LOC (IN in) 
+        (NP (DT the) (NNP Farm) (NNP Belt) )))
+    (VP (VBD rose) 
+      (PP-DIR (TO to) 
+        (NP 
+          (NP (DT a) (JJ new) (NN high) )
+          (PP (IN of) 
+            (NP 
+              (QP ($ $) (CD 59.9) (CD billion) )
+              (-NONE- *U*) ))))
+      (NP-TMP (JJ last) (NN year) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (JJ previous) (NN record) )
+    (VP (VBD was) 
+      (NP-PRD 
+        (QP ($ $) (CD 57.7) (CD billion) )
+        (-NONE- *U*) )
+      (PP-TMP (IN in) 
+        (NP (CD 1987) ))
+      (, ,) 
+      (PP (VBG according) 
+        (PP (TO to) 
+          (NP (DT the) (NNP Agriculture) (NNP Department) ))))
+    (. .) ))
+((S 
+    (S-TPC-1 
+      (NP-SBJ 
+        (NP (JJ Net) (NN cash) (NN income) )
+        (PRN (: --) 
+          (NP 
+            (NP (DT the) (NN amount) )
+            (VP (VBN left) 
+              (NP (-NONE- *) )
+              (PP-LOC (IN in) 
+                (NP 
+                  (NP (NNS farmers) (POS ') )
+                  (NNS pockets) ))
+              (PP-TMP (IN after) 
+                (S-NOM 
+                  (NP-SBJ (-NONE- *) )
+                  (VP (VBG deducting) 
+                    (NP (NNS expenses) )
+                    (PP (IN from) 
+                      (NP (JJ gross) (NN cash) (NN income) )))))))
+          (: --) ))
+      (VP (VBD increased) 
+        (PP-LOC (IN in) 
+          (NP (CD 33) (NNS states) ))
+        (PP-TMP (IN in) 
+          (NP (CD 1988) ))
+        (, ,) 
+        (SBAR-ADV (IN as) 
+          (S 
+            (NP-SBJ (DT the) (NN drought) )
+            (VP 
+              (VP (VBD cut) 
+                (PP (IN into) 
+                  (NP (NN crop) (NNS yields) )))
+              (CC and) 
+              (VP (VBD drove) 
+                (PRT (RP up) )
+                (NP (NN commodity) (NNS prices) )))))))
+    (, ,) 
+    (NP-SBJ 
+      (NP (DT the) (NN department) (POS 's) )
+      (NNP Economic) (NNP Research) (NNP Service) )
+    (VP (VBD reported) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) ))
+      (NP-TMP (NN yesterday) ))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (JJS Most) )
+      (PP (IN of) 
+        (NP (DT those) (NNS states) )))
+    (VP (VBP set) 
+      (NP (NN farm) (NN income) (NNS records) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (JJS worst) (NN crop) (NN damage) )
+    (VP (VBD occurred) 
+      (PP-LOC (IN in) 
+        (NP 
+          (NP (DT the) (NNP Midwestern) (NNP Corn) (NNP Belt) )
+          (CC and) 
+          (NP (DT the) (JJ northern) (NNP Great) (NNPS Plains) ))))
+    (. .) ))
+( (S 
+    (SBAR-NOM-SBJ 
+      (WHNP-42 (WP What) )
+      (S 
+        (NP-SBJ (-NONE- *T*-42) )
+        (VP (VBD saved) 
+          (NP (JJ many) (NNS farmers) )
+          (PP (IN from) 
+            (NP (DT a) (JJ bad) (NN year) )))))
+    (VP (VBD was) 
+      (NP-PRD (DT the) (NN opportunity) 
+        (S 
+          (NP-SBJ (-NONE- *) )
+          (VP (TO to) 
+            (VP (VB reclaim) 
+              (NP 
+                (NP (JJ large) (NNS quantities) )
+                (PP (IN of) 
+                  (NP 
+                    (NP 
+                      (NP (NN grain) )
+                      (CC and) 
+                      (NP (JJ other) (NNS crops) ))
+                    (SBAR 
+                      (WHNP-1 (IN that) )
+                      (S 
+                        (NP-SBJ (PRP they) )
+                        (VP (VBD had) 
+                          (VP (`` ``) (VBN mortgaged) ('' '') 
+                            (NP (-NONE- *T*-1) )
+                            (PP (TO to) 
+                              (NP (DT the) (NN government) ))
+                            (PP-LOC (IN under) 
+                              (NP (JJ price-support) (NN loan) (NNS programs) ))))))))))))))
+    (. .) ))
+((S 
+    (S-2 
+      (PP (IN With) 
+        (S-NOM 
+          (NP-SBJ (NNS prices) )
+          (VP (VBG soaring) )))
+      (, ,) 
+      (NP-SBJ-1 (PRP they) )
+      (VP (VBD were) 
+        (ADJP-PRD (JJ able) 
+          (S 
+            (NP-SBJ (-NONE- *-1) )
+            (VP (TO to) 
+              (VP (VB sell) 
+                (NP (DT the) (VBN reclaimed) (NNS commodities) )
+                (PP (IN at) (`` ``) 
+                  (NP (JJ considerable) (NN profit) ))))))))
+    (, ,) ('' '') 
+    (NP-SBJ 
+      (NP (DT the) (NN agency) (POS 's) )
+      (JJ 240-page) (NN report) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-2) )))
+    (. .) ))
+( (S 
+    (PP-LOC (IN In) 
+      (NP 
+        (ADJP (JJR less) (VBN parched) )
+        (NNS areas) ))
+    (, ,) 
+    (ADVP (RB meanwhile) )
+    (, ,) 
+    (NP-SBJ 
+      (NP (NNS farmers) )
+      (SBAR 
+        (WHNP-43 (WP who) )
+        (S 
+          (NP-SBJ (-NONE- *T*-43) )
+          (VP (VBD had) 
+            (NP 
+              (NP (JJ little) (CC or) (DT no) (NN loss) )
+              (PP (IN of) 
+                (NP (NN production) )))))))
+    (VP (VBD profited) 
+      (ADVP (RB greatly) )
+      (PP (IN from) 
+        (NP (DT the) (JJR higher) (NNS prices) )))
+    (. .) ))
+( (S 
+    (PP (TO To) 
+      (NP 
+        (NP (DT the) (NN surprise) )
+        (PP (IN of) 
+          (NP (DT some) (NNS analysts) ))))
+    (, ,) 
+    (NP-SBJ (JJ net) (NN cash) (NN income) )
+    (VP (VBD rose) 
+      (PP-LOC (IN in) 
+        (NP 
+          (NP (DT some) )
+          (PP (IN of) 
+            (NP 
+              (NP (DT the) (JJ hardest-hit) (NNS states) )
+              (, ,) 
+              (PP (VBG including) 
+                (NP 
+                  (NP (NNP Indiana) )
+                  (, ,) 
+                  (NP (NNP Illinois) )
+                  (, ,) 
+                  (NP (NNP Nebraska) )
+                  (CC and) 
+                  (NP (DT the) (NNPS Dakotas) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNS Analysts) )
+    (VP (VBD attributed) 
+      (NP (DT the) (NNS increases) )
+      (ADVP (RB partly) )
+      (PP (TO to) 
+        (NP 
+          (NP (DT the) 
+            (ADJP 
+              (QP ($ $) (CD 4) (CD billion) )
+              (-NONE- *U*) )
+            (JJ disaster-assistance) (NN package) )
+          (VP (VBN enacted) 
+            (NP (-NONE- *) )
+            (PP (IN by) 
+              (NP-LGS (NNP Congress) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (JJ Last) (NN year) (POS 's) )
+      (NN record) (NN net) (NN cash) (NN income) )
+    (VP (VBZ confirms) 
+      (NP 
+        (NP 
+          (NP (DT the) (NN farm) (NN sector) (POS 's) )
+          (NN rebound) )
+        (PP (IN from) 
+          (NP 
+            (NP (DT the) (JJ agricultural) (NN depression) )
+            (PP (IN of) 
+              (NP (DT the) (JJ early) (CD 1980s) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-2 (PRP It) )
+    (ADVP (RB also) )
+    (VP (VBZ helps) 
+      (S 
+        (NP-SBJ (-NONE- *-2) )
+        (VP (VB explain) 
+          (NP 
+            (NP (DT the) (NN reluctance) 
+              (S (-NONE- *ICH*-1) ))
+            (PP (IN of) 
+              (NP 
+                (NP (DT the) (JJ major) (NN farm) (NNS lobbies) )
+                (CC and) 
+                (NP (JJ many) (NNS lawmakers) )))
+            (S-1 
+              (NP-SBJ (-NONE- *) )
+              (VP (TO to) 
+                (VP (VB make) 
+                  (NP (DT any) (JJ significant) (NNS changes) )
+                  (PP-LOC (IN in) 
+                    (NP (DT the) (CD 1985) (NN farm) (NN program) ))
+                  (NP-TMP (IN next) (NN year) ))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NN Commodity) (NNS prices) )
+    (VP (VBP have) 
+      (VP (VBN been) 
+        (VP (VBG rising) 
+          (PP-TMP (IN in) 
+            (NP (JJ recent) (NNS years) ))
+          (, ,) 
+          (PP (IN with) 
+            (S-NOM 
+              (NP-SBJ (DT the) (NN farm) (NN price) (NN index) )
+              (VP (VBG hitting) 
+                (NP (NN record) (NNS peaks) )
+                (NP-TMP (JJR earlier) (DT this) (NN year) ))))
+          (, ,) 
+          (SBAR-ADV (IN as) 
+            (S 
+              (NP-SBJ-1 (DT the) (NN government) )
+              (VP (VBD curtailed) 
+                (NP (NN production) )
+                (PP-MNR (IN with) 
+                  (NP (JJ land-idling) (NNS programs) ))
+                (S-PRP 
+                  (NP-SBJ (-NONE- *-1) )
+                  (VP (TO to) 
+                    (VP (VB reduce) 
+                      (NP (JJ price-depressing) (NNS surpluses) ))))))))))
+    (. .) ))
+((SINV 
+    (S-TPC-1 
+      (PP-TMP (IN At) 
+        (NP (DT the) (JJ same) (NN time) ))
+      (, ,) 
+      (NP-SBJ 
+        (NP (NN export) (NN demand) )
+        (PP (IN for) 
+          (NP (NNP U.S.) (NN wheat) 
+            (, ,)
+            (NN corn) 
+            (CC and)
+            (JJ other) (NNS commodities) )))
+      (VP (VBD strengthened) ))
+    (, ,) 
+    (VP (VBD said) 
+      (S (-NONE- *T*-1) ))
+    (NP-SBJ 
+      (NP (NNP Keith) (NNP Collins) )
+      (, ,) 
+      (NP (DT a) (NN department) (NN analyst) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNS Farmers) )
+    (ADVP (RB also) )
+    (VP (VBD benefited) 
+      (PP-CLR (IN from) 
+        (NP (JJ strong) (NN livestock) (NNS prices) ))
+      (, ,) 
+      (SBAR-ADV (IN as) 
+        (S 
+          (NP-SBJ 
+            (NP (DT the) (NN nation) (POS 's) )
+            (NNS cattle) (NN inventory) )
+          (VP (VBD dropped) 
+            (ADVP-DIR (RB close) 
+              (PP (TO to) 
+                (NP (DT a) (JJ 30-year) (NN low) )))))))
+    (. .) ))
+( (S (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ 
+        (NP (DT All) )
+        (PP (IN of) 
+          (NP (DT these) (NNS forces) )))
+      (VP (VBD came) 
+        (ADVP (RB together) )
+        (PP-TMP (IN in) 
+          (NP (CD 1988) ))
+        (S-PRP 
+          (NP-SBJ (-NONE- *) )
+          (VP (TO to) 
+            (VP (VB benefit) 
+              (NP (NN agriculture) ))))))
+    (, ,) ('' '') 
+    (NP-SBJ (NNP Mr.) (NNP Collins) )
+    (VP (VBD said) 
+      (S (-NONE- *T*-1) ))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (NNP California) )
+    (VP (VBD led) 
+      (NP (DT the) (NN nation) )
+      (PP (IN with) 
+        (NP 
+          (NP 
+            (QP ($ $) (CD 6.5) (CD billion) )
+            (-NONE- *U*) )
+          (PP (IN in) 
+            (NP (JJ net) (NN cash) (NN income) ))))
+      (NP-TMP (JJ last) (NN year) )
+      (, ,) 
+      (PP (VBN followed) 
+        (PP (IN by) 
+          (NP 
+            (NP 
+              (NP (NNP Texas) )
+              (, ,) 
+              (NP 
+                (QP ($ $) (CD 3.9) (CD billion) )
+                (-NONE- *U*) ))
+            (: ;) 
+            (NP 
+              (NP (NNP Iowa) )
+              (, ,) 
+              (NP 
+                (QP ($ $) (CD 3.4) (CD billion) )
+                (-NONE- *U*) ))
+            (: ;) 
+            (NP 
+              (NP (NNP Florida) )
+              (, ,) 
+              (NP 
+                (QP ($ $) (CD 3.1) (CD billion) )
+                (-NONE- *U*) ))
+            (: ;) 
+            (CC and)
+            (NP 
+              (NP (NNP Minnesota) )
+              (, ,) 
+              (NP 
+                (QP ($ $) (CD 2.7) (CD billion) )
+                (-NONE- *U*) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Iowa) 
+      (CC and)
+      (NNP Minnesota) )
+    (VP (VBD were) 
+      (PP-PRD (IN among) 
+        (NP 
+          (NP (DT the) (JJ few) (JJ major) (NN farm) (NNS states) )
+          (SBAR 
+            (WHNP-1 (-NONE- 0) )
+            (S 
+              (NP-SBJ (-NONE- *T*-1) )
+              (VP (TO to) 
+                (VP (VB log) 
+                  (NP 
+                    (NP (DT a) (NN decline) )
+                    (PP-LOC (IN in) 
+                      (NP (JJ net) (NN cash) (NN income) ))))))))))
+    (. .) ))
+( (S 
+    (PP (IN Despite) 
+      (NP (JJ federal) (NN disaster) (NN relief) ))
+    (, ,) 
+    (NP-SBJ 
+      (NP (DT the) (NN drought) )
+      (PP-TMP (IN of) 
+        (NP (CD 1988) )))
+    (VP (VBD was) 
+      (NP-PRD 
+        (NP (DT a) (JJ severe) (JJ financial) (NN setback) )
+        (PP (IN for) 
+          (NP 
+            (QP (DT an) (VBN estimated) (CD 10,000) (TO to) (CD 15,000) )
+            (NNS farmers) )))
+      (, ,) 
+      (PP (VBG according) 
+        (PP (TO to) 
+          (NP (DT the) (NN department) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (JJ Many) )
+    (VP (VBD lost) 
+      (NP (PRP$ their) (NNS farms) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (NN Department) (NNS economists) )
+    (VP (VBP do) (RB n't) 
+      (VP (VB expect) 
+        (S 
+          (NP-SBJ (CD 1989) )
+          (VP (TO to) 
+            (VP (VB be) 
+              (NP-PRD 
+                (NP 
+                  (ADJP (RB as) (JJ good) )
+                  (DT a) (NN year) )
+                (SBAR (IN as) 
+                  (S 
+                    (NP-SBJ (CD 1988) )
+                    (VP (VBD was) 
+                      (NP-PRD (-NONE- *?*) ))))))))))
+    (. .) ))
+( (S 
+    (ADVP (RB Indeed) )
+    (, ,) 
+    (NP-SBJ-1 (JJ net) (NN cash) (NN income) )
+    (VP (VBZ is) 
+      (ADJP-PRD (JJ likely) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB fall) 
+              (NP-TMP (DT this) (NN year) )
+              (SBAR-ADV (IN as) 
+                (S 
+                  (S 
+                    (NP-SBJ (NN farm) (NNS expenses) )
+                    (VP (VBP rise) ))
+                  (CC and) 
+                  (S 
+                    (NP-SBJ 
+                      (NP (NN government) (NNS payments) )
+                      (PP (TO to) 
+                        (NP (NNS farmers) )))
+                    (VP (VBP decline) )))))))))
+    (. .) ))
+( (S 
+    (PP-TMP (IN At) 
+      (NP (DT the) (JJ same) (NN time) ))
+    (, ,) 
+    (NP-SBJ 
+      (NP (DT an) (NN increase) )
+      (PP (IN of) 
+        (NP 
+          (NP (NN land) )
+          (PP (IN under) 
+            (NP (NN cultivation) ))))
+      (PP-TMP (IN after) 
+        (NP (DT the) (NN drought) )))
+    (VP (VBZ has) 
+      (VP (VBN boosted) 
+        (NP 
+          (NP (NN production) )
+          (PP (IN of) 
+            (NP 
+              (NP (NN corn) )
+              (, ,) 
+              (NP (NNS soybeans) )
+              (CC and) 
+              (NP (JJ other) (NNS commodities) ))))
+        (, ,) 
+        (S-ADV 
+          (NP-SBJ (-NONE- *) )
+          (VP (VBG causing) 
+            (NP 
+              (NP (DT a) (NN fall) )
+              (PP-LOC (IN in) 
+                (NP (NNS prices) ))
+              (SBAR 
+                (WHNP-2 (WDT that) )
+                (S 
+                  (NP-SBJ-3 (-NONE- *T*-2) )
+                  (VP (VBZ has) 
+                    (VP (VBN been) 
+                      (ADVP (RB only) (RB partly) )
+                      (VP (VBN cushioned) 
+                        (NP (-NONE- *-3) )
+                        (PP (IN by) 
+                          (NP-LGS 
+                            (NP (JJ heavy) (NN grain) (NN buying) )
+                            (PP (IN by) 
+                              (NP (DT the) (NNPS Soviets) ))))))))))))))
+    (. .) ))
+( (S 
+    (NP-TMP (JJ Last) (NN year) )
+    (, ,) 
+    (NP-SBJ 
+      (NP (NN government) (NNS payments) )
+      (PP (TO to) 
+        (NP (NNS farmers) )))
+    (VP (VBD slipped) 
+      (PP-DIR (TO to) 
+        (NP 
+          (QP (JJR less) (IN than) ($ $) (CD 14.5) (CD billion) )
+          (-NONE- *U*) ))
+      (PP-DIR (IN from) 
+        (NP 
+          (NP (DT a) (NN record) 
+            (QP ($ $) (CD 16.7) (CD billion) )
+            (-NONE- *U*) )
+          (PP-TMP (IN in) 
+            (NP (CD 1987) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (NNS Payments) )
+    (VP (VBP are) 
+      (VP (VBN expected) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB range) 
+              (PP (IN between) 
+                (NP 
+                  (NP 
+                    (QP ($ $) (CD 9) (CD billion) )
+                    (-NONE- *U*) )
+                  (CC and) 
+                  (NP 
+                    (QP ($ $) (CD 12) (CD billion) )
+                    (-NONE- *U*) ))))))
+        (NP-TMP (DT this) (NN year) )))
+    (. .) ))

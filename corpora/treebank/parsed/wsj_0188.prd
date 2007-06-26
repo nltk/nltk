@@ -1,0 +1,173 @@
+
+
+( (S (S-ADV (NP-SBJ-2 Its plans
+		      (S (NP-SBJ-1 *)
+			 (VP to
+			     (VP be
+				 (VP acquired
+				     (NP *-1))))))
+	    (VP dashed
+		(NP *-2)))
+     ,
+     (NP-SBJ Comprehensive Care Corp.)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-3 it)
+                  (VP plans
+                      (S (NP-SBJ *-3)
+                         (VP to
+                             (VP sell
+                                 (NP (NP (NP most)
+					 (PP of
+					     (NP (NP its (UCP psychiatric and drug abuse) facilities)
+						 (PP-LOC in
+							 (NP California)))))
+                                     and
+                                     (NP some other assets)))))
+		      (S-PRP (NP-SBJ *-3)
+			     (VP to
+				 (VP (VP pay
+					 (NP its debt))
+				     and
+				     (VP provide
+					 (NP working capital)))))))))
+     .))
+( (S (S-TPC-3 (PP In
+		  (NP all))
+	      ,
+	      (NP-SBJ-2 the company)
+	      (VP hopes
+		  (S (NP-SBJ *-2)
+		     (VP to
+			 (VP repay
+			     (NP (NP (QP $ 45 million)
+				     *U*)
+				 (PP in
+				     (NP debt)))
+			     (PP-MNR through
+				     (NP (NP the sales)
+					 ,
+					 (SBAR (WHNP-1 which)
+					       (S (NP-SBJ *T*-1)
+						  (VP will
+						      (ADVP completely)
+						      (VP discharge
+							  (NP its secured debt))))))))))))
+     ,
+     (NP-SBJ the company)
+     (VP said
+	 (SBAR 0
+	       (S *T*-3)))
+     .))
+( (S (PP In
+         (NP addition))
+     ,
+     (NP-SBJ-1 the company)
+     (VP has
+         (VP replaced
+             (NP its president and chief executive)
+	     ,
+	     (S-ADV (NP-SBJ *-1)
+		    (VP naming
+			(S (NP-SBJ (NP W. James Nichol)
+				   ,
+				   (NP (NP head)
+				       (PP of
+					   (NP (NP the company 's)
+					       contract health services)))
+				   ,)
+			   (VP to
+			       (VP succeed
+				   (NP B. Lee Karns))))))))
+     .))
+( (S (NP-SBJ Mr. Nichol)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ he)
+                  (VP was
+		      ``
+		      (ADJP-PRD extremely disappointed
+				(PP in
+				    (NP (NP the continuing deterioration)
+					(PP of
+					    (NP (NP the company 's)
+						operations))
+					(SBAR-TMP while
+						  (S (NP-SBJ-1 it)
+						     (VP attempted
+							 (S (NP-SBJ *-1)
+							    (VP to
+								(VP conclude
+								    (NP the reorganization)
+								    (PP-TMP during
+									    (NP the past four months)))))))))))))))
+     . ''))
+( (S (ADJP-TMP Concurrent
+	       (PP with
+		   (NP (NP Mr. Nichol 's)
+		       appointment)))
+     ,
+     (NP-SBJ Comprehensive Care)
+     (VP moved
+	 (NP its corporate headquarters)
+	 (PP-DIR from
+		 (NP Irvine
+		     ,
+		     Calif.
+		     ,))
+	 (PP-DIR to
+		 (NP (NP St. Louis)
+		     ,
+		     (SBAR (WHADVP-1 where)
+			   (S (NP-SBJ the company)
+			      (VP maintained
+				  (NP its contract services offices)
+				  (ADVP-LOC *T*-1)))))))
+     .))
+( (S (NP-SBJ Mr. Karns)
+     (VP continues
+         (PP-CLR as
+		 (NP chairman)))
+     .))
+( (S (S (NP-SBJ-2 Comprehensive Care)
+        (VP had
+            (VP agreed
+                (S (NP-SBJ-1 *-2)
+                   (VP to
+                       (VP be
+                           (VP acquired
+                               (NP *-1)
+                               (PP by
+                                   (NP-LGS (NP (ADJP closely held)
+					       First Hospital Corp.)
+					   (PP of
+					       (NP-LOC Norfolk
+						       ,
+						       Va.
+						       ,)))))))))))
+     but
+     (S (NP-SBJ the sale)
+        (VP (VP sputtered
+		(PP-TMP (ADVP almost)
+			from
+			(NP the beginning)))
+            and
+            (VP (ADVP finally)
+                collapsed
+                (NP-TMP last week))))
+     .))
+( (S (PP-LOC In
+	     (NP (NP composite trading)
+		 (PP-LOC on
+			 (NP the New York Stock Exchange))))
+     (NP-TMP yesterday)
+     ,
+     (NP-SBJ Comprehensive Care)
+     (VP closed
+         (PP-CLR at
+		 (NP (NP $ 3.75 *U*)
+		     (NP-ADV a share)))
+         ,
+         (ADVP-CLR up
+		   (NP 12.5 cents)))
+     .))

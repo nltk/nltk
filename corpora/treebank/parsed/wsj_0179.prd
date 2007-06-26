@@ -1,0 +1,719 @@
+
+
+( (NP (NP Junk-bond markdowns)
+      ,
+      (NP an ongoing Securities and Exchange Commission investigation)
+      ,
+      (NP a Drexel Burnham Lambert connection)
+      ,
+      (NP a fizzled buy-out rumor)
+      .))
+( (S (NP-SBJ All this)
+     (VP has
+         (VP cast
+             (NP a pall)
+             (PP-CLR over
+		     (NP (NP Columbia Savings & Loan Association)
+			 and
+			 (NP (NP its high-rolling 43-year-old chairman)
+			     ,
+			     (NP Thomas Spiegel)
+			     ,
+			     (SBAR (WHNP-1 who)
+				   (S (NP-SBJ *T*-1)
+				      (VP built
+					  (NP the (ADJP (QP $ 12.7 billion) *U*)
+					      (NAC-LOC Beverly Hills
+						       ,
+						       Calif.
+						       ,)
+					      thrift)
+					  (PP-MNR with
+						  (NP high-yield junk bonds))))))))))
+     .))
+( (S (NP-SBJ Bears)
+     (VP have
+         (VP targeted
+             (NP (NP Columbia 's)
+                 stock)
+             (PP-PRP because of
+		     (NP (NP (NP the thrift 's)
+			     exposure)
+			 (PP to
+			     (NP the shaky junk market))))))
+     .))
+( (S (S And
+        (NP-SBJ some investors)
+        (VP fault
+            (NP (NP Mr. Spiegel 's)
+                life style)))
+     ;
+     (S (NP-SBJ he)
+        (VP (VP earns
+                (NP (NP millions)
+		    (PP of
+			(NP dollars))
+                    (NP-ADV a year)))
+            and
+            (VP flies
+		(ADVP-DIR around)
+                (PP-LOC in
+			(NP (NP Columbia 's)
+			    jet planes)))))
+     .))
+( (S (NP-SBJ Columbia stock)
+     (ADVP-TMP recently)
+     (VP hit
+         (NP 4 1)
+	 ,
+	 (PP-TMP after
+		 (S-NOM (NP-SBJ *)
+			(VP reaching
+			    (NP 11 3)
+			    (NP-TMP earlier
+				    this year)
+			    (PP on
+				(NP rumors
+				    (SBAR that
+					  (S (NP-SBJ Mr. Spiegel)
+					     (VP would
+						 (VP take
+						     (S (NP-SBJ the thrift)
+							(ADJP-PRD private))))))))))))
+     .))
+( (S (ADVP Moreover)
+     ,
+     (NP-SBJ junk professionals)
+     (VP think
+         (S (NP-SBJ (NP (NP Columbia 's)
+			huge third-quarter markdown)
+                    (PP of
+                        (NP its junk portfolio))
+                    (PP to
+                        (NP (QP $ 4.4 billion) *U*)))
+            (VP was n't
+                (ADJP-PRD enough)))
+	 ,
+	 (S-ADV (NP-SBJ *)
+		(VP meaning
+		    (SBAR 0
+			  (S (NP-SBJ another markdown)
+			     (VP could
+				 (VP be
+				     (VP coming))))))))
+     .))
+( (S But
+     (PP-TMP in
+	     (NP recent days))
+     ,
+     (NP-SBJ-1 Columbia)
+     (VP has
+         (VP edged
+	     (ADVP-DIR up)
+	     ,
+	     (S-ADV (NP-SBJ *-1)
+		    (VP closing
+			(PP-LOC at
+				(NP 5 1))
+			,
+			(ADVP up
+			      (NP 3))
+			,
+			(NP-TMP yesterday)
+			(PP on
+			    (NP revived speculation
+				(SBAR that
+				      (S (NP-SBJ the thrift)
+					 (VP might
+					     (VP restructure))))))))))
+     .))
+( (S (S (NP-SBJ (NP Mr. Spiegel 's)
+                fans)
+        (VP say
+            (SBAR 0
+                  (S (NP-SBJ (NP Columbia 's)
+                             Southern California branches)
+                     (VP are
+                         (ADJP-PRD highly salable))))))
+     , and
+     (S (NP-SBJ the thrift)
+        (VP has
+            (S (NP-SBJ (NP (QP $ 458 million) *U*)
+		       (PP of
+			   (NP shareholders equity)))
+	       (VP underlying
+		   (NP its assets)))))
+     .))
+( (S (NP-SBJ That)
+     (VP 's
+         (NP-PRD (NP (QP almost $ 10)
+		     *U*)
+		 (PP of
+		     (NP equity))
+		 (PP for
+		     (NP (NP each Columbia share)
+			 ,
+			 (PP including
+			     (NP convertible preferred shares)))))
+	 ,
+	 (SBAR-ADV though
+		   (S (NP-SBJ more junk markdowns)
+		      (VP would
+			  (VP reduce
+			      (NP the cushion))))))
+     .))
+( (S (NP-SBJ Columbia)
+     (VP has
+         (NP (NP only (QP about 10 million) common shares)
+             (PP-LOC in 
+		     (NP public hands))))
+     .))
+( (S (NP-SBJ The Spiegel family)
+     (VP has
+         (NP (NP (NP 25 %)
+                 (PP of
+                     (NP the common)))
+             and
+             (NP (NP 75 %)
+                 (PP of
+                     (NP the votes)))))
+     .))
+( (S (NP-SBJ Other big common holders)
+     (VP are
+         (NP-PRD (NP (NP Carl Lindner 's)
+		     American Financial)
+		 ,
+		 (NP investor
+		     Irwin Jacobs)
+		 and
+		 (NP Pacific Financial Research))
+	 ,
+	 (SBAR-ADV though
+		   (S (NP-SBJ the latter)
+		      (VP cut
+			  (NP its stake)
+			  (NP-TMP this summer)))))
+     .))
+( (S (SBAR-ADV While
+	       (S (NP-SBJ many problems)
+		  (VP would
+		      (VP attend
+			  (NP (NP a restructuring)
+			      (PP of
+				  (NP Columbia)))))))
+     ,
+     (NP-SBJ investors)
+     (VP say
+         (SBAR 0
+               (S (NP-SBJ Mr. Spiegel)
+                  (VP is
+                      (VP mulling
+                          (NP (NP such a plan)
+                              (SBAR (WHADVP-1 0)
+				    (S (NP-SBJ *)
+				       (VP to
+					   (VP mitigate
+					       (NP (NP Columbia 's)
+						   junk problems)
+					       (ADVP-MNR *T*-1)))))))))))
+     .))
+( (S (ADVP Indeed)
+     ,
+     (NP-SBJ Columbia executives)
+     (ADVP-TMP recently)
+     (VP told
+         (NP reporters)
+         (SBAR 0
+               (S (NP-SBJ they)
+                  (VP were
+                      (ADJP-PRD interested
+				(PP in
+				    (S-NOM (NP-SBJ *)
+					   (VP creating
+					       (NP (NP a separate unit)
+						   (SBAR-PRP (WHNP-1 0)
+							     (S (NP-SBJ *T*-1)
+								(VP to
+								    (VP (VP hold
+									    (NP (NP Columbia 's)
+										junk bonds))
+									and
+									(ADVP perhaps)
+									(VP do
+									    (NP merchant banking)))))))))))))))
+     .))
+( (S (NP-SBJ Columbia)
+     (VP wo n't
+         (VP comment
+             (PP-CLR on
+		     (NP all the speculation))))
+     .))
+( (S But
+     (PP like
+         (NP other thrifts))
+     ,
+     (NP-SBJ-1 it)
+     (VP 's
+         (VP expected
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP seek
+                        (NP (NP regulators ')
+                            consent
+                            (S (NP-SBJ *)
+                               (VP to
+                                   (VP create
+                                       (NP a distinct junk-bond entity))))))))))
+     .))
+( (S (NP-SBJ Plans
+             (S (NP-SBJ *)
+                (VP to
+                    (VP do
+                        (NP this)))))
+     (VP are
+         (ADJP-PRD due
+		   (S (NP-SBJ-1 *)
+		      (VP to
+			  (VP be
+			      (VP filed
+				  (NP *-1)
+				  (PP-TMP in
+					  (NP a week or so))))))))
+     .))
+( (S (NP-SBJ New rules)
+     (VP force
+	 (S (NP-SBJ thrifts)
+	    (VP to
+                (VP (VP write 
+			(PRT down)
+                        (NP their junk)
+                        (PP-CLR to
+				(NP market value)))
+                    ,
+                    then
+		    (VP sell
+                        (NP the bonds)
+                        (PP-TMP over
+				(NP five years)))))))
+     .))
+( (S (NP-SBJ That)
+     (VP 's
+         (SBAR-PRD (WHADVP-1 why)
+		   (S (NP-SBJ Columbia)
+		      (ADVP just)
+		      (VP (VP wrote
+			      (PRT off)
+			      (NP (NP (QP $ 130 million)
+				      *U*)
+				  (PP of
+				      (NP its junk))))
+			  and
+			  (VP reserved
+			      (NP (QP $ 227 million) *U*)
+			      (PP-CLR for
+				      (NP future junk losses)))
+			  (ADVP-PRP *T*-1)))))
+     .))
+( (S But
+     (SBAR-ADV if
+	       (S (NP-SBJ Columbia)
+		  (VP could
+		      (VP keep
+			  (S (NP-SBJ its junk bonds)
+			     (ADJP-PRD separate
+				       (PP from
+					   (NP the thrift))))
+			  (SBAR-TMP till
+				    (S (NP-SBJ they)
+				       (VP mature
+					   (PRN --
+						(PP at
+						    (NP full value))
+						,
+						(SBAR-ADV unless
+							  (S (NP-SBJ the issuer)
+							     (VP (VP goes
+								     (NP-CLR bust))
+								 or
+								 (VP restructures))))
+						--))))))))
+     (NP-SBJ the junk portfolio)
+     (VP might
+         (VP do
+             (ADVP all right)))
+     .))
+( (S (NP-SBJ (NP Columbia)
+             ,
+             (NP a longtime Drexel client)
+             ,)
+     (VP wo n't
+         (VP provide
+             (NP (NP current data)
+                 (PP on
+                     (NP its junk)))))
+     .))
+( (S But
+     (NP-SBJ its 17 big junk holdings)
+     (PP-TMP at
+	     (NP year end))
+     (VP showed
+         (NP (NP only a few bonds)
+             (SBAR (WHNP-1 that)
+                   (S (NP-SBJ-2 *T*-1)
+                      (VP have
+                          (VP been
+			      (VP (ADVP really)
+				  battered
+				  (NP *-2))))))))
+     .))
+( (S (NP-SBJ These)
+     (VP were
+         (NP-PRD (NP Allied Stores)
+		 ,
+		 (NP Western Union Telegraph)
+		 ,
+		 (NP Gillett Holdings)
+		 ,
+		 (NP SCI Television)
+		 and
+		 (NP Texas Air))
+	 ,
+	 (SBAR-ADV though
+		   (S (NP-SBJ (NP many other bonds)
+			      (PP-LOC in
+				      (NP (NP Columbia 's)
+					  portfolio)))
+		      (ADVP also)
+		      (VP have
+			  (VP lost
+			      (NP value))))))
+     .))
+( (S (S-ADV (NP-SBJ *)
+	    (ADVP Possibly)
+	    (VP offsetting
+		(NP that)))
+     ,
+     (NP-SBJ Columbia)
+     (ADVP-TMP recently)
+     (VP estimated
+	 (SBAR 0
+	       (S (NP-SBJ it)
+		  (VP has
+		      (NP (NP unrealized gains)
+			  (PP on
+			      (NP (ADJP publicly traded)
+				  equity investments))
+			  (PP of
+			      (NP (QP more than $ 70 million)
+				  *U*)))))))
+     .))
+( (S (NP-SBJ It)
+     (ADVP also)
+     (VP hopes
+         (PP for
+             (NP (NP ultimate gains)
+                 (PP of
+                     (NP (QP as much as $ 300 million)
+			 *U*))
+                 (PP on
+                     (NP (NP equity investments)
+			 (PP in
+			     (NP buy-outs and restructurings)))))))
+     .))
+( (FRAG (NP (NP One trial balloon)
+	    (SBAR (WHNP-3 0)
+		  (S (NP-SBJ-4 Mr. Spiegel)
+		     (VP is
+			 (VP said
+			     (S (NP-SBJ *-4)
+				(VP to
+				    (VP have
+					(VP floated
+					    (NP *T*-3)
+					    (PP-CLR to
+						    (NP investors)))))))))))
+	:
+	(S (NP-SBJ-1 Columbia)
+	   (VP might
+	       (VP be
+		   (VP broken
+		       (PRT up)
+		       (NP *-1)
+		       ,
+		       (SBAR-MNR as
+				 (S (NP-SBJ-2 Mellon Bank)
+				    (VP was
+					(VP split
+					    (NP *-2)
+					    (PP-CLR into
+						    (NP (NP a good bank)
+							and
+							(NP a bad bank)))))))))))
+	.))
+( (S But
+     (NP-SBJ (NP Columbia 's)
+             good bank)
+     (VP would
+         (VP be
+             (NP-PRD a regulated thrift)
+	     ,
+	     (SBAR-ADV while
+		       (S (NP-SBJ the bad bank)
+			  (VP would
+			      (VP be
+				  (NP-PRD (NP a private investment company)
+					  ,
+					  (VP holding
+					      (NP (NP some)
+						  (PP of
+						      (NP (NP Columbia 's)
+							  (NX (NX junk bonds)
+							      , 
+							      (NX real estate)
+							      and 
+							      (NX equity investments)))))))))))))
+     .))
+( (S (NP-SBJ Some)
+     (VP think
+         (SBAR 0
+               (S (NP-SBJ-3 (NP (NP Columbia 's)
+				thrift)
+			    ,
+			    (SBAR (WHNP-1 which)
+				  (S (NP-SBJ *T*-1)
+				     (ADVP-TMP now)
+				     (VP is
+					 (VP seeking
+					     (NP a new chief operating officer)))))
+			    ,)
+                  (VP might
+                      (VP be
+                          (VP (VP capitalized
+				  (NP *-3)
+                                  (PP-CLR at
+					  (PRN ,
+					       (INTJ say))
+					  (NP (QP $ 300 million) *U*)))
+			      ,
+                              and
+                              (VP shopped
+				  (NP *-3)
+                                  (PP-CLR to
+					  (NP (NP a commercial bank)
+					      (SBAR (WHNP-2 that)
+						    (S (NP-SBJ *T*-2)
+						       (VP wants
+							   (NP a California presence)))))))))))))
+     .))
+( (S (S-TPC-2 (NP-SBJ-1 The thrift)
+	      (ADVP surely)
+	      (VP could
+		  (VP be
+		      (VP sold
+			  (NP *-1)
+			  (PP-CLR for
+				  (NP (NP more)
+				      (PP than
+					  (NP (NP the value)
+					      (PP of
+						  (NP its equity))))))))))
+     ,
+     (NP-SBJ financial industry executives)
+     (VP say
+	 (SBAR 0
+	       (S *T*-2)))
+     .))
+( (S (S-TPC-3 (ADVP Meanwhile)
+	      ,
+	      (NP-SBJ-1 (NP the bad bank)
+			(PP with
+			    (NP (NP the junk bonds)
+				-- and
+				(NP some capital)
+				--)))
+	      (VP might
+		  (VP be
+		      (VP spun
+			  (PRT off)
+			  (NP *-1)
+			  (PP-CLR to
+				  (NP (NP Columbia shareholders)
+				      ,
+				      (PP including
+					  (NP Mr. Spiegel))
+				      ,
+				      (SBAR (WHNP-2 who)
+					    (S (NP-SBJ *T*-2)
+					       (VP might
+						   (ADVP-TMP then)
+						   (VP have
+						       (NP a new career)))))))))))
+     ,
+     (NP-SBJ investors)
+     (VP say
+	 (SBAR 0
+	       (S *T*-3)))
+     .))
+( (S (NP-SBJ (NP It)
+             (SBAR *EXP*-1))
+     (VP is n't
+         (ADJP-PRD clear)
+	 (SBAR-1 (WHADVP-2 how much)
+		 (S (NP-SBJ a restructuring)
+		    (VP would
+			(VP help
+			    (NP Columbia stockholders)
+			    (ADVP *T*-2))))))
+     .))
+( (S But
+     ``
+     (NP-SBJ the concept)
+     (VP is
+	 (ADJP-PRD workable))
+     .))
+( (SINV (S-TPC-2 (NP-SBJ-1 You)
+		 (VP (VP sell
+			 (NP the good bank)
+			 (PP-CLR as
+				 (NP an ongoing operation)))
+		     and
+		     (VP use
+			 (NP (NP some)
+			     (PP of
+				 (NP the proceeds)))
+			 (S-CLR (NP-SBJ *-1)
+				(VP to
+				    (VP capitalize
+					(NP the bad bank)))))))
+	,
+	''
+	(VP says
+	    (S *T*-2))
+	(NP-SBJ (NP thrift specialist
+		    Lewis Ranieri)
+		(PP of
+		    (NP (NP Ranieri Associates)
+			(PP-LOC in
+				(NP New York)))))
+	.))
+( (S (NP-SBJ (NP Mr. Spiegel 's)
+             next career move)
+     (VP is
+         (NP-PRD (NP a subject)
+		 (PP of
+		     (NP speculation)))
+	 (PP-LOC on
+		 (NP Wall Street)))
+     .))
+( (S (NP-SBJ Few people)
+     (VP think
+         (SBAR 0
+               (S (NP-SBJ-1 Mr. Spiegel)
+                  (VP wants
+                      (S (NP-SBJ *-1)
+                         (VP to
+                             (VP run
+                                 (NP (NP a bread-and-butter thrift)
+                                     ,
+                                     (SBAR (WHNP-2 which)
+                                           (S (NP-SBJ current rules)
+                                              (VP would
+                                                  (VP force
+						      (S (NP-SBJ Columbia)
+							 (VP to
+                                                             (VP become
+                                                                 (NP-PRD *T*-2))))))))))))))))
+     .))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ They)
+		 (VP are n't
+		     (ADVP really)
+		     (NP-PRD a thrift)))
+	, ''
+	(VP says
+	    (S *T*-1))
+	(NP-SBJ (NP Jonathan Gray)
+		,
+		(NP a Sanford C. Bernstein analyst))
+	.))
+( (S (PP Of
+         (NP course))
+     ,
+     (NP-SBJ-1 regulators)
+     (VP would
+         (VP have
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP approve
+                        (NP (NP Columbia 's)
+                            reorganization))))))
+     .))
+( (S And
+     (NP-SBJ some investment bankers)
+     (VP say
+         (SBAR 0
+               (S (NP-SBJ a restructuring)
+                  (VP is n't
+                      (ADJP-PRD feasible)
+		      (SBAR-TMP while
+				(S (NP-SBJ the SEC)
+				   (ADVP still)
+				   (VP is
+				       (VP scrutinizing
+					   (NP (NP Mr. Spiegel 's)
+					       past junk-bond trades)))))))))
+     .))
+( (S (NP-SBJ (NP Pauline Yoshihashi)
+             (PP-LOC in
+		     (NP Los Angeles)))
+     (VP contributed
+         (PP-CLR to
+		 (NP this article)))
+     .))
+( (NP (NP Columbia Savings & Loan)
+      (PRN -LRB-
+	   (NP NYSE)
+	   ;
+	   (NP (NP Symbol)
+	       :
+	       (NP CSV))
+	   -RRB-)))
+( (NP (NP Business)
+      :
+      (NP Savings and loan)))
+( (NP (NP-TMP (NP Year)
+	      (VP ended
+		  (NP-TMP-CLR Dec. 31 , 1988)))
+      :
+      (NP (NP Net income)
+	  :
+	  (NP (NP (QP $ 65 million) *U*)
+	      ; or
+	      (NP (NP $ 1.49 *U*)
+		  (NP-ADV a share))))))
+( (NP (NP-TMP (NP Third quarter)
+	      ,
+	      (NP Sept. 30 , 1989))
+      :
+      (NP (NP (NP Net loss)
+	      :
+	      (NP (NP $ 11.57 *U*)
+		  (NP-ADV a share)))
+	  (PP vs.
+	      (NP (NP net income)
+		  :
+		  (NP (NP 37 cents)
+		      (NP-ADV a share)))))))
+( (NP (NP Average daily trading volume)
+      :
+      (NP 83,206 shares)))
+( (NP (NP (NP Common shares)
+	  (ADJP outstanding))
+      :
+      (NP 19.6 million)))
+( (NP (NP Note)
+      :
+      (S (NP-SBJ All per-share figures)
+	 (VP are
+	     (ADJP-PRD fully diluted)))
+      .))

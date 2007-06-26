@@ -1,0 +1,909 @@
+
+( (S 
+    (SBAR-ADV (IN If) 
+      (S 
+        (NP-SBJ (PRP you) )
+        (VP (MD 'd) 
+          (ADVP (RB really) )
+          (ADVP (RB rather) )
+          (VP (VB have) 
+            (NP (DT a) (NNP Buick) )))))
+    (, ,) 
+    (NP-SBJ (-NONE- *) )
+    (VP (VB do) (RB n't) 
+      (VP (VB leave) 
+        (NP (NN home) )
+        (PP (IN without) 
+          (NP (DT the) (NNP American) (NNP Express) (NN card) ))))
+    (. .) ))
+( (S (CC Or) 
+    (ADVP (IN so) )
+    (NP-SBJ (DT the) (NN slogan) )
+    (VP (MD might) 
+      (VP (VB go) ))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP American) (NNP Express) (NNP Co.) )
+      (CC and) 
+      (NP 
+        (NP (NNP General) (NNPS Motors) (NNP Corp.) (POS 's) )
+        (VBN beleaguered) (NNP Buick) (NN division) ))
+    (VP (VBP are) 
+      (VP (VBG joining) 
+        (NP (NNS forces) )
+        (PP-LOC (IN in) 
+          (NP 
+            (NP (DT a) (NN promotion) )
+            (VP (VBN aimed) 
+              (NP (-NONE- *) )
+              (PP-CLR (IN at) 
+                (S-NOM 
+                  (NP-SBJ (-NONE- *) )
+                  (VP (VBG boosting) 
+                    (NP 
+                      (NP (NNP Buick) (POS 's) )
+                      (NNS sales) )
+                    (SBAR-ADV (IN while) 
+                      (S 
+                        (NP-SBJ (-NONE- *) )
+                        (VP (VBG encouraging) 
+                          (NP 
+                            (NP (JJR broader) (NN use) )
+                            (PP (IN of) 
+                              (NP (DT the) (NNP American) (NNP Express) (NN card) ))))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NNS companies) )
+    (VP (VBP are) 
+      (VP (VBG giving) 
+        (NP 
+          (NP (JJ four-day) (NNS vacations) )
+          (PP (IN for) 
+            (NP (CD two) )))
+        (PP-DTV (TO to) 
+          (NP 
+            (NP (NNP Buick) (NNS buyers) )
+            (SBAR 
+              (WHNP-51 (WP who) )
+              (S 
+                (NP-SBJ (-NONE- *T*-51) )
+                (VP (VBP charge) 
+                  (NP 
+                    (NP (DT all) (CC or) (NN part) )
+                    (PP (IN of) 
+                      (NP (PRP$ their) (IN down) (NNS payments) )))
+                  (PP-CLR (IN on) 
+                    (NP (DT the) (NNP American) (NNP Express) (JJ green) (NN card) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (PRP They) )
+    (VP (VBP have) 
+      (VP (VBN begun) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (VBG sending) 
+            (NP 
+              (NP (NNS letters) )
+              (VP (VBG explaining) 
+                (NP 
+                  (NP (DT the) (NN program) )
+                  (, ,) 
+                  (SBAR 
+                    (WHNP-52 (WDT which) )
+                    (S 
+                      (NP-SBJ (-NONE- *T*-52) )
+                      (VP 
+                        (VP (VBD began) 
+                          (NP-TMP-CLR (NNP Oct.) (CD 18) ))
+                        (CC and) 
+                        (VP (MD will) 
+                          (VP (VB end) 
+                            (NP-TMP-CLR (NNP Dec.) (CD 18) )))))))))
+            (, ,) 
+            (PP-DTV (TO to) 
+              (NP 
+                (QP (IN about) (CD five) (CD million) )
+                (NN card) (NNS holders) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT Neither) (NN company) )
+    (VP (MD would) 
+      (VP (VB disclose) 
+        (NP 
+          (NP (DT the) (NN program) (POS 's) )
+          (NN cost) )))
+    (. .) ))
+( (SINV 
+    (S-TPC-1 
+      (NP-SBJ (NNP Buick) )
+      (VP (VBD approached) 
+        (NP (NNP American) (NNP Express) )
+        (PP (IN about) 
+          (NP (DT a) (JJ joint) (NN promotion) ))
+        (SBAR-PRP (IN because) 
+          (S 
+            (NP-SBJ (PRP$ its) (NN card) (NNS holders) )
+            (ADVP (RB generally) )
+            (VP 
+              (VP (VBP have) 
+                (NP (DT a) (`` ``) (JJ good) (NN credit) (NN history) ('' '') ))
+              (CC and) 
+              (VP (VBP are) (`` ``) 
+                (ADJP-PRD (JJ good) 
+                  (PP (IN at) 
+                    (S-NOM 
+                      (NP-SBJ (-NONE- *) )
+                      (VP (VBG making) 
+                        (NP (NNS payments) )))))))))))
+    (, ,) ('' '') 
+    (VP (VBZ says) 
+      (S (-NONE- *T*-1) ))
+    (NP-SBJ 
+      (NP (DT a) (NN spokeswoman) )
+      (PP (IN for) 
+        (NP (DT the) (NN division) )))
+    (. .) ))
+( (S 
+    (S-TPC-3 
+      (NP-SBJ (NNP American) (NNP Express) )
+      (ADVP (RB also) )
+      (VP (VBZ represents) 
+        (NP 
+          (NP (DT the) (NN upscale) (NN image) )
+          (SBAR 
+            (WHNP-1 (-NONE- 0) )
+            (`` ``) 
+            (S 
+              (NP-SBJ-2 (PRP we) )
+              (VP (VBP 're) 
+                (VP (VBG trying) 
+                  (S 
+                    (NP-SBJ (-NONE- *-2) )
+                    (VP (TO to) 
+                      (VP (VB project) 
+                        (NP (-NONE- *T*-1) )))))))))))
+    (, ,) ('' '') 
+    (NP-SBJ (PRP she) )
+    (VP (VBZ adds) 
+      (S (-NONE- *T*-3) ))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (NNP Buick) )
+    (VP (VBZ has) 
+      (VP (VBN been) 
+        (VP (VBG seeking) 
+          (PP-TMP (IN for) 
+            (NP (DT the) (JJ past) (JJ few) (NNS years) ))
+          (S 
+            (NP-SBJ (-NONE- *-1) )
+            (VP (TO to) 
+              (VP (VB restore) 
+                (NP 
+                  (NP (PRP$ its) (NN reputation) )
+                  (PP (IN as) 
+                    (NP 
+                      (NP (`` ``) 
+                        (NP (DT the) (NN doctor) (POS 's) )
+                        (NN car) ('' '') )
+                      (: --) 
+                      (NP 
+                        (NP (DT a) (NN product) )
+                        (PP (IN for) 
+                          (NP (NN upscale) (NNS professionals) ))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNS Sales) )
+    (VP (VBD were) 
+      (ADJP-PRD (RB roughly) (JJ flat) )
+      (PP-TMP (IN in) 
+        (NP (DT the) (CD 1989) (NN model) (NN year) ))
+      (PP (VBN compared) 
+        (PP (IN with) 
+          (ADVP 
+            (NP (DT a) (NN year) )
+            (JJR earlier) )))
+      (, ,) 
+      (SBAR-ADV (IN though) 
+        (S 
+          (NP-SBJ (NN industry) (NNS sales) )
+          (VP (VBD fell) ))))
+    (. .) ))
+( (S (CC But) 
+    (SBAR-TMP (IN since) 
+      (S 
+        (NP-SBJ (DT the) (CD 1990) (NN model) (NN year) )
+        (VP (VBD began) 
+          (NP-TMP-CLR (NNP Oct.) (CD 1) ))))
+    (, ,) 
+    (NP-SBJ (NNP Buick) (NNS sales) )
+    (VP (VBP have) 
+      (VP (VBN plunged) 
+        (NP-EXT (CD 33) (NN %) )))
+    (. .) ))
+( (S 
+    (PP (IN For) 
+      (NP (NNP American) (NNP Express) ))
+    (, ,) 
+    (NP-SBJ (DT the) (NN promotion) )
+    (VP (VBZ is) 
+      (NP-PRD 
+        (NP (NN part) )
+        (PP (IN of) 
+          (NP (DT an) (NN effort) 
+            (S 
+              (NP-SBJ (-NONE- *) )
+              (VP (TO to) 
+                (VP (VB broaden) 
+                  (NP 
+                    (NP (DT the) (NN use) )
+                    (PP (IN of) 
+                      (NP (PRP$ its) (NN card) ))
+                    (PP (IN for) 
+                      (NP 
+                        (NP (JJ retail) (NNS sales) )
+                        (, ,) 
+                        (SBAR-LOC 
+                          (WHADVP-1 (WRB where) )
+                          (S 
+                            (NP-SBJ-2 (DT the) (NN company) )
+                            (VP (VBZ expects) 
+                              (S 
+                                (NP-SBJ (-NONE- *-2) )
+                                (VP (TO to) 
+                                  (VP (VB get) 
+                                    (NP 
+                                      (NP (RB much) )
+                                      (PP (IN of) 
+                                        (NP 
+                                          (NP (DT the) (JJ future) (NN growth) )
+                                          (PP-LOC (IN in) 
+                                            (NP (PRP$ its) (NN card) (NN business) )))))
+                                    (ADVP-LOC (-NONE- *T*-1) )))))))))))))))))
+    (. .) ))
+( (S 
+    (ADVP (RB Traditionally) )
+    (, ,) 
+    (NP-SBJ-66 (DT the) (NN card) )
+    (VP (VBZ has) 
+      (VP (VBN been) 
+        (VP (VBN used) 
+          (NP (-NONE- *-66) )
+          (PP-CLR 
+            (ADVP (RB mainly) )
+            (IN for) 
+            (NP (NN travel) 
+              (CC and)
+              (NN entertainment) (NNS expenses) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Phillip) (NNP Riese) )
+      (, ,) 
+      (NP (DT an) (NNP American) (NNP Express) (JJ executive) (NN vice) (NN president) )
+      (, ,) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ 
+            (NP (DT the) (NN promotion) )
+            (PP (IN with) 
+              (NP (NNP Buick) )))
+          (VP 
+            (VP (VBZ is) 
+              (NP-PRD 
+                (NP 
+                  (NP (PRP$ his) (NN company) (POS 's) )
+                  (JJ first) )
+                (PP (IN with) 
+                  (NP (DT an) (NN auto) (NN maker) ))))
+            (, ,) (CC but) (`` ``) 
+            (VP 
+              (ADVP (RB hopefully) )
+              (-LRB- -LCB-) (MD will) 
+              (VP (VB be) 
+                (-RRB- -RCB-)
+                (NP-PRD 
+                  (NP (DT the) (JJ first) )
+                  (PP (IN of) 
+                    (NP 
+                      (NP (JJ many) )
+                      ('' '') 
+                      (PP (IN in) 
+                        (NP 
+                          (NP (DT the) (NN company) (POS 's) )
+                          (NN effort) 
+                          (S 
+                            (NP-SBJ (-NONE- *) )
+                            (VP (TO to) 
+                              (VP (VB promote) 
+                                (NP (PRP$ its) (JJ green) (NN card) )
+                                (PP-CLR (IN as) (`` ``) 
+                                  (NP (DT the) (JJ total) (JJ car-care) (NN card) ))))))))))))))))
+    (. .) ('' '') ))
+( (S 
+    (PP (TO To) 
+      (NP (DT that) (NN end) ))
+    (, ,) 
+    (NP-SBJ (NNP American) (NNP Express) )
+    (VP (VBZ has) 
+      (VP (VBN been) 
+        (VP (VBG signing) 
+          (PRT (RP up) )
+          (NP-1 
+            (NP (NN gasoline) (NNS companies) )
+            (, ,) 
+            (NP (NN car) (NN repair) (NNS shops) )
+            (, ,) 
+            (NP (NN tire) (NNS companies) )
+            (CC and) 
+            (NP (NN car) (NNS dealers) ))
+          (S-CLR 
+            (NP-SBJ (-NONE- *-1) )
+            (VP (TO to) 
+              (VP (VB accept) 
+                (NP (DT the) (NN card) )))))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (S 
+        (NP-SBJ (JJ Many) (NN auto) (NNS dealers) )
+        (ADVP-TMP (RB now) )
+        (VP (VBP let) 
+          (S 
+            (NP-SBJ (NN car) (NNS buyers) )
+            (VP (VB charge) 
+              (NP 
+                (NP (NN part) (CC or) (DT all) )
+                (PP (IN of) 
+                  (NP (PRP$ their) (NN purchase) )))
+              (PP-CLR (IN on) 
+                (NP (DT the) (NNP American) (NNP Express) (NN card) ))))))
+      (, ,) (CC but) 
+      (S 
+        (NP-SBJ (JJ few) (NN card) (NNS holders) )
+        (VP (VBP realize) 
+          (NP (DT this) ))))
+    (, ,) 
+    (NP-SBJ (NNP Mr.) (NNP Riese) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+((SINV 
+    (S-TPC-2 
+      (PP-TMP (IN Until) 
+        (NP (RB now) ))
+      (, ,) 
+      (ADVP (RB however) )
+      (, ,) 
+      (NP-SBJ 
+        (NP (NNS buyers) )
+        (SBAR 
+          (WHNP-53 (WP who) )
+          (S 
+            (NP-SBJ-1 (-NONE- *T*-53) )
+            (VP (VBD wanted) 
+              (S 
+                (NP-SBJ (-NONE- *-1) )
+                (VP (TO to) 
+                  (VP (VB finance) 
+                    (NP 
+                      (NP (NN part) )
+                      (PP (IN of) 
+                        (NP (DT a) (NN car) (NN purchase) )))
+                    (PP (IN through) 
+                      (NP (NNP General) (NNPS Motors) (NNP Acceptance) (NNP Corp.) )))))))))
+      (VP (MD could) (RB n't) 
+        (VP (VB put) 
+          (NP (PRP$ their) (NN down) (NN payment) )
+          (PP-PUT (IN on) 
+            (NP (DT a) (NN charge) (NN card) ))
+          (PP-PRP (IN because) (IN of) 
+            (NP 
+              (NP (JJ possible) (NNS conflicts) )
+              (PP (IN with) 
+                (NP 
+                  (NP (NN truth-in-lending) 
+                    (CC and)
+                    (NN state) (NN disclosure) (NNS laws) )
+                  (PP (IN over) 
+                    (NP (NN finance) (NNS rates) )))))))))
+    (, ,) 
+    (VP (VBZ says) 
+      (S (-NONE- *T*-2) ))
+    (NP-SBJ 
+      (NP (DT a) (NN spokesman) )
+      (PP (IN for) 
+        (NP (DT the) (NNP GM) (NN finance) (NN arm) )))
+    (. .) ))
+( (S-1 (CC But) 
+    (NP-SBJ (NNP GMAC) )
+    (VP (VBD approved) 
+      (NP (DT the) (NNP Buick) (NN program) )
+      (PRN 
+        (, ,)
+        (S 
+          (NP-SBJ (PRP he) )
+          (VP (VBZ says) 
+            (SBAR (-NONE- 0) 
+              (S (-NONE- *T*-1) ))))
+        (, ,) )
+      (SBAR-PRP (IN because) 
+        (S 
+          (NP-SBJ (DT the) (NNP American) (NNP Express) (JJ green) (NN card) )
+          (VP 
+            (VP (VBZ requires) 
+              (NP 
+                (NP (NN payment) )
+                (PP (IN in) 
+                  (NP (JJ full) )))
+              (PP-TMP (IN upon) 
+                (NP (NN billing) )))
+            (, ,) 
+            (CC and)
+            (ADVP (RB so) )
+            (VP (VBZ does) (RB n't) 
+              (VP (VB carry) 
+                (NP (DT any) (NN finance) (NNS rates) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Mr.) (NNP Riese) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (NNP American) (NNP Express) )
+          (VP (VBZ considers) 
+            (S 
+              (NP-SBJ (NNP GM) 
+                (CC and)
+                (NNP Buick) )
+              (`` ``) 
+              (NP-PRD 
+                (ADJP (RB very) (JJ sophisticated) )
+                (JJ direct-mail) (NNS marketers) ))
+            (, ,) ('' '') 
+            (SBAR-ADV (IN so) 
+              (S (`` ``) 
+                (PP-MNR (IN by) 
+                  (S-NOM 
+                    (NP-SBJ (-NONE- *-1) )
+                    (VP (VBG joining) 
+                      (NP (NNS forces) )
+                      (PP-CLR (IN with) 
+                        (NP (PRP them) )))))
+                (NP-SBJ-1 (PRP we) )
+                (VP (VBP have) 
+                  (VP (VBN managed) 
+                    (S 
+                      (NP-SBJ (-NONE- *-1) )
+                      (VP (TO to) 
+                        (VP (VB maximize) 
+                          (NP (PRP$ our) (JJ direct-mail) (NN capability) ))))))))))))
+    (. .) ('' '') ))
+((SINV 
+    (S-TPC-1 
+      (PP (IN In) 
+        (NP (NN addition) ))
+      (, ,) 
+      (NP-SBJ (NNP Buick) )
+      (VP (VBZ is) 
+        (NP-PRD (DT a) 
+          (ADJP (RB relatively) (VBN respected) )
+          (NN nameplate) )
+        (PP-LOC (IN among) 
+          (NP (NNP American) (NNP Express) (NN card) (NNS holders) ))))
+    (, ,) 
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (NP-SBJ (DT an) (NNP American) (NNP Express) (NN spokeswoman) )
+    (. .) ))
+( (S 
+    (S-TPC-4 
+      (SBAR-TMP 
+        (WHADVP-1 (WRB When) )
+        (S 
+          (NP-SBJ (DT the) (NN company) )
+          (VP (VBD asked) 
+            (NP (NNS members) )
+            (PP-LOC (IN in) 
+              (NP (DT a) (NN mailing) ))
+            (SBAR 
+              (WHNP-2 (WDT which) (NNS cars) )
+              (S 
+                (NP-SBJ-3 (PRP they) )
+                (VP (MD would) 
+                  (VP (VB like) 
+                    (S 
+                      (NP-SBJ (-NONE- *-3) )
+                      (VP (TO to) 
+                        (VP (VB get) 
+                          (NP 
+                            (NP (NN information) )
+                            (PP (IN about) 
+                              (NP (-NONE- *T*-2) )))
+                          (PP-PRP (IN for) 
+                            (NP (JJ possible) (JJ future) (NNS purchases) )))))))))
+            (ADVP-TMP (-NONE- *T*-1) ))))
+      (, ,) 
+      (NP-SBJ (NNP Buick) )
+      (VP (VBD came) 
+        (PRT (RP in) )
+        (UCP 
+          (ADVP (JJ fourth) 
+            (PP (IN among) 
+              (NP (NNP U.S.) (NNS cars) )))
+          (CC and) 
+          (PP (IN in) 
+            (NP 
+              (NP (DT the) (NN top) (CD 10) )
+              (PP (IN of) 
+                (NP (DT all) (NNS cars) )))))))
+    (, ,) 
+    (NP-SBJ (DT the) (NN spokeswoman) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-4) )))
+    (. .) ))
+( (S 
+    (S 
+      (NP-SBJ (NNP American) (NNP Express) )
+      (VP (VBZ has) 
+        (NP 
+          (NP 
+            (QP (JJR more) (IN than) (CD 24) (CD million) )
+            (NN card) (NNS holders) )
+          (PP-LOC (IN in) 
+            (NP (DT the) (NNP U.S.) )))))
+    (, ,) 
+    (CC and)
+    (S 
+      (NP-SBJ (IN over) (DT half) )
+      (VP (VBP have) 
+        (NP (DT the) (JJ green) (NN card) )))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (NP-SBJ (NNP GMAC) )
+      (VP (VBD screened) 
+        (NP (DT the) (NN card-member) (NN list) )
+        (PP-CLR (IN for) 
+          (NP 
+            (NP (NNS holders) )
+            (ADJP 
+              (NP 
+                (QP (JJR more) (IN than) (CD 30) )
+                (NNS years) )
+              (JJ old) )
+            (PP (IN with) 
+              (NP 
+                (NP (NN household) (NNS incomes) )
+                (PP (IN over) 
+                  (NP ($ $) (CD 45,000) (-NONE- *U*) ))))
+            (SBAR 
+              (WHNP-54 (WP who) )
+              (S 
+                (NP-SBJ (-NONE- *T*-54) )
+                (VP (VBD had) (RB n't) (`` ``) 
+                  (VP (VBN missed) 
+                    (NP (DT any) (NNS payments) )))))))))
+    (, ,) ('' '') 
+    (NP-SBJ (DT the) (NNP Buick) (NN spokeswoman) )
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S 
+    (NP-SBJ-67 
+      (NP (DT Some) (CD 3.8) (CD million) )
+      (PP (IN of) 
+        (NP 
+          (NP (DT the) (CD five) (CD million) )
+          (SBAR 
+            (WHNP-55 (WP who) )
+            (S 
+              (NP-SBJ (-NONE- *T*-55) )
+              (VP (MD will) 
+                (VP (VB get) 
+                  (NP (NNS letters) ))))))))
+    (VP (VBD were) 
+      (VP (VBN preapproved) 
+        (NP (-NONE- *-67) )
+        (PP-CLR (IN for) 
+          (NP 
+            (NP (NN credit) )
+            (PP (IN with) 
+              (NP (NNP GMAC) ))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (DT These) 
+      (QP (CD 3.8) (CD million) )
+      (NNS people) )
+    (ADVP (RB also) )
+    (VP (VBP are) 
+      (ADJP-PRD (JJ eligible) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (VP (TO to) 
+            (VP (VB get) 
+              (NP 
+                (NP (CD one) (NN percentage) (NN point) )
+                (PP (IN off) 
+                  (NP 
+                    (NP 
+                      (NP (NNP GMAC) (POS 's) )
+                      (VBN advertised) (NN finance) (NNS rates) )
+                    (, ,) 
+                    (SBAR 
+                      (WHNP-56 (WDT which) )
+                      (S 
+                        (NP-SBJ (-NONE- *T*-56) )
+                        (VP (VBP start) 
+                          (PP-CLR (IN at) 
+                            (NP (CD 6.9) (NN %) ))
+                          (PP (IN for) 
+                            (NP (JJ two-year) (NN loan) (NNS contracts) )))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (DT A) (NN spokesman) )
+      (PP (IN for) 
+        (NP 
+          (NP (NNP Visa) (NNP International) (POS 's) )
+          (NNP U.S.) (NN subsidiary) )))
+    (VP (VBZ says) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 (PRP$ his) (NN company) )
+          (VP 
+            (VP (VBZ is) 
+              (VP (VBG using) 
+                (NP (NNS promotions) )
+                (S-CLR 
+                  (NP-SBJ (-NONE- *-1) )
+                  (VP (TO to) 
+                    (VP (VB increase) 
+                      (NP 
+                        (NP (NN use) )
+                        (PP (IN of) 
+                          (NP (PRP$ its) (NNS cards) ))))))))
+            (, ,) (CC but) 
+            (VP (VBZ does) (RB n't) 
+              (VP (VB have) 
+                (NP 
+                  (NP (NNS plans) )
+                  (PP (IN for) 
+                    (NP 
+                      (NP (DT a) (NN tie-in) )
+                      (ADJP (JJ similar) 
+                        (PP (TO to) 
+                          (NP (DT the) (NNP American) (NNP Express-Buick) (NN link) ))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (CD Three) (NNS divisions) )
+      (PP-LOC (IN at) 
+        (NP (NNP American) (NNP Express) ))
+      (NP (-NONE- *ICH*-1) ))
+    (VP (VBP are) 
+      (VP (VBG working) 
+        (PP (IN with) 
+          (NP (NNP Buick) ))
+        (PP-CLR (IN on) 
+          (NP (DT the) (NN promotion) ))))
+    (: :) 
+    (NP-1 
+      (NP 
+        (NP (DT the) (NN establishment) (NNS services) (NN division) )
+        (, ,) 
+        (SBAR 
+          (WHNP-57 (WDT which) )
+          (S 
+            (NP-SBJ (-NONE- *T*-57) )
+            (VP (VBZ is) 
+              (ADJP-PRD (JJ responsible) 
+                (PP (IN for) 
+                  (NP 
+                    (NP (DT all) (NNS merchants) 
+                      (CC and)
+                      (NNS companies) )
+                    (SBAR 
+                      (WHNP-2 (WDT that) )
+                      (S 
+                        (NP-SBJ (-NONE- *T*-2) )
+                        (VP (VBP accept) 
+                          (NP (DT the) (NN card) )))))))))))
+      (: ;) 
+      (NP (DT the) (NN travel) (NN division) )
+      (: ;) 
+      (CC and)
+      (NP (DT the) (NN merchandise) (NNS sales) (NN division) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN vacation) (NNS packages) )
+    (VP (VBP include) 
+      (NP 
+        (NP 
+          (NP (NN hotel) (NNS accommodations) )
+          (CC and) 
+          (PRN 
+            (, ,)
+            (PP (IN in) 
+              (NP (DT some) (NNS cases) ))
+            (, ,) )
+          (NP 
+            (NP (NNS tours) (CC or) (NNS tickets) )
+            (PP-DIR (TO to) 
+              (NP (JJ local) (NNS attractions) ))))
+        (, ,) (CC but) (RB not) 
+        (NP (NNS meals) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNS Destinations) )
+    (VP (VBP are) 
+      (NP-PRD 
+        (NP (NNP Chicago) )
+        (: ;) 
+        (NP (NNP Honolulu) )
+        (: ;) 
+        (NP 
+          (NP (NNP Las) (NNP Vegas) )
+          (, ,) 
+          (NP (NNP Nev.) ))
+        (: ;) 
+        (NP (NNP Los) (NNP Angeles) )
+        (: ;) 
+        (NP 
+          (NP (NNP Miami) (NNP Beach) )
+          (, ,) 
+          (NP (NNP Fla.) ))
+        (: ;) 
+        (NP (NNP New) (NNP Orleans) )
+        (: ;) 
+        (NP (NNP New) (NNP York) )
+        (: ;) 
+        (NP 
+          (NP (NNP Orlando) )
+          (, ,) 
+          (NP (NNP Fla.) ))
+        (: ;) 
+        (NP (NNP San) (NNP Francisco) )
+        (: ;) 
+        (CC and)
+        (NP 
+          (NP (NNP Washington) )
+          (, ,) 
+          (NP (NNP D.C.) ))))))
+( (S 
+    (NP-SBJ 
+      (NP (DT A) (NN buyer) )
+      (SBAR 
+        (WHNP-58 (WP who) )
+        (S 
+          (NP-SBJ-1 (-NONE- *T*-58) )
+          (VP (VBZ chooses) 
+            (S 
+              (NP-SBJ (-NONE- *-1) )
+              (VP (TO to) 
+                (VP (VB fly) 
+                  (PP-DIR (TO to) 
+                    (NP (PRP$ his) (NN destination) )))))))))
+    (VP 
+      (VP (MD must) 
+        (VP (VB pay) 
+          (PP-CLR (IN for) 
+            (NP (PRP$ his) (JJ own) (NN ticket) ))))
+      (CC but) 
+      (VP (VBZ gets) 
+        (NP 
+          (NP (DT a) (NN companion) (POS 's) )
+          (NN ticket) (JJ free) )
+        (SBAR-ADV (IN if) 
+          (S 
+            (NP-SBJ (PRP they) )
+            (VP (VBP fly) 
+              (PP-MNR (IN on) 
+                (NP (NNP United) (NNPS Airlines) )))))))
+    (. .) ))
+( (S 
+    (PP (IN In) 
+      (NP 
+        (NP (NN lieu) )
+        (PP (IN of) 
+          (NP (DT the) (NN vacation) ))))
+    (, ,) 
+    (NP-SBJ (NNS buyers) )
+    (VP (MD can) 
+      (VP (VB choose) 
+        (PP-CLR (IN among) 
+          (NP 
+            (NP (JJ several) (NNS prizes) )
+            (, ,) 
+            (PP (VBG including) 
+              (NP 
+                (NP (DT a) (NN grandfather) (NN clock) )
+                (CC or) 
+                (NP (DT a) (NN stereo) (NN videocassette) (NN recorder) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NN Card) (NNS holders) )
+      (SBAR 
+        (WHNP-59 (WP who) )
+        (S 
+          (NP-SBJ (-NONE- *T*-59) )
+          (VP (VBP receive) 
+            (NP (DT the) (NN letter) )))))
+    (ADVP (RB also) )
+    (VP (VBP are) 
+      (ADJP-PRD (JJ eligible) 
+        (PP (IN for) 
+          (NP 
+            (NP (DT a) (NN sweepstakes) )
+            (PP (IN with) 
+              (NP 
+                (NP 
+                  (NP (NNP Buick) (NNS cars) )
+                  (CC or) 
+                  (NP (DT a) (NNP Hawaii) (NN vacation) ))
+                (PP (IN as) 
+                  (NP (NNS prizes) ))))))))
+    (. .) ))
+( (S 
+    (SBAR-ADV (IN If) 
+      (S 
+        (NP-SBJ (PRP they) )
+        (VP (VBP test-drive) 
+          (NP (DT a) (NNP Buick) ))))
+    (, ,) 
+    (NP-SBJ (PRP they) )
+    (VP (VBP get) 
+      (NP (DT an) (NNP American) (NNP Express) (NN calculator) ))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT This) )
+    (VP (VBZ is) (RB n't) 
+      (NP-PRD 
+        (NP (NNP Buick) (POS 's) )
+        (JJ first) (JJ travel-related) (NN promotion) ))
+    (. .) ))
+( (S 
+    (ADVP-TMP 
+      (NP (DT A) (JJ few) (NNS years) )
+      (IN ago) )
+    (, ,) 
+    (NP-SBJ (DT the) (NN company) )
+    (VP (VBD offered) 
+      (NP 
+        (NP (CD two) (JJ round-trip) (NNS tickets) )
+        (PP-LOC (IN on) 
+          (NP (NNP Trans) (NNP World) (NNPS Airlines) )))
+      (PP-DTV (TO to) 
+        (NP 
+          (NP (NNS buyers) )
+          (PP (IN of) 
+            (NP (PRP$ its) (NNP Riviera) (NN luxury) (NN car) )))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (NP-SBJ (DT The) (NN promotion) )
+      (VP (VBD helped) 
+        (S 
+          (NP-SBJ (NNP Riviera) (NNS sales) )
+          (VP (VB exceed) 
+            (NP 
+              (NP (DT the) (NN division) (POS 's) )
+              (NN forecast) )
+            (PP-EXT (IN by) 
+              (NP 
+                (QP (JJR more) (IN than) (CD 10) )
+                (NN %) ))))))
+    (, ,) 
+    (NP-SBJ (NNP Buick) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) ))
+      (PP-TMP (IN at) 
+        (NP (DT the) (NN time) )))
+    (. .) ))

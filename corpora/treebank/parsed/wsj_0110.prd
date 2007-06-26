@@ -1,0 +1,411 @@
+
+
+((NP-TMP-HLN (NP Wednesday)
+	     ,
+	     (NP November 1 , 1989)))
+((S (NP-SBJ (NP The key
+		(UCP U.S. and foreign)
+		annual interest rates)
+	     (ADVP-LOC below))
+     (VP (VP are
+	     (NP-PRD (NP a guide)
+		     (VP to
+			 (NP general levels))))
+	 but
+	 (VP do n't
+	     (ADVP-TMP always)
+	     (VP represent
+		 (NP actual transactions))))
+     .))
+( (NP (NP PRIME RATE)
+      :
+      (NP 10 1 %) 
+      .))
+( (NP (NP The base rate)
+      (PP on
+          (NP (NP corporate loans)
+              (PP-LOC at
+		      (NP large U.S. money center commercial banks))))
+      .))
+( (NP (NP FEDERAL FUNDS)
+      :
+      (NP (NP (NP (NP 9 1 %)
+                  (ADJP high))
+              ,
+              (NP (NP 8 3 %)
+                  (ADJP low))
+              ,
+              (NP (NP 8 3 %)
+                  (PP near
+                      (NP closing bid)))
+              ,
+              (NP (NP 9 %)
+                  (VP offered
+		      (NP *)))))
+      .))
+( (NP (NP Reserves)
+      (VP traded
+          (NP *)
+          (PP among
+              (NP commercial banks))
+          (PP-TMP for
+		  (NP overnight use))
+	  (PP in
+	      (NP (NP amounts)
+		  (PP of
+		      (NP (QP $ 1 million
+			      or more) *U*)))))
+      .))
+( (NP (NP Source)
+      :
+      (NP Fulton Prebon
+	  (PRN -LRB-
+	       (NP U.S.A .)
+	       -RRB-)
+	  Inc)
+      .))
+( (NP (NP DISCOUNT RATE)
+      :
+      (NP 7 %)
+      .))
+( (NP (NP The charge)
+      (PP on
+          (NP (NP loans)
+              (PP to
+                  (NP depository institutions))))
+      (PP by
+          (NP the New York Federal Reserve Bank))
+      .))
+( (NP (NP CALL MONEY)
+      :
+      (NP 9 3 %)
+      .))
+( (NP (NP The charge)
+      (PP on
+          (NP (NP loans)
+              (PP to
+                  (NP brokers))
+	      (PP on
+		  (NP stock exchange collateral))))
+      .))
+( (NP (NP (NP COMMERCIAL PAPER)
+          (VP placed
+              (NP *)
+              (ADVP-MNR directly)
+              (PP by
+                  (NP-LGS General Motors Acceptance Corp.))))
+      :
+      (NP (NP (NP 8.55 %) 
+              (NP (QP 30 to 44)
+		  days))
+          ;
+          (NP (NP 8.25 %)
+              (NP (QP 45 to 59)
+		  days))
+          ;
+          (NP (NP 8.45 %)
+              (NP (QP 60 to 89)
+		  days))
+          ;
+          (NP (NP 8 %)
+              (NP (QP 90 to 119)
+		  days))
+          ;
+          (NP (NP 7.90 %)
+              (NP (QP 120 to 149)
+		  days))
+          ;
+          (NP (NP 7.80 %)
+              (NP (QP 150 to 179)
+		  days))
+          ;
+          (NP (NP 7.55 %)
+              (NP (QP 180 to 270)
+		  days)))
+      .))
+( (NP (NP COMMERCIAL PAPER)
+      :
+      (NP (NP (NP High-grade unsecured notes)
+              (VP sold
+                  (NP *)
+                  (PP through
+		      (NP dealers))
+                  (PP by
+                      (NP-LGS major corporations))
+                  (PP in
+		      (NP (NP multiples)
+			  (PP of
+			      (NP $ 1,000 *U*))))))
+          :
+          (NP (NP 8.65 %)
+              (NP 30 days))
+          ;
+          (NP (NP 8.575 %)
+              (NP 60 days))
+          ;
+          (NP (NP 8.50 %)
+              (NP 90 days)))
+      .))
+( (NP (NP (NP CERTIFICATES)
+          (PP OF
+              (NP DEPOSIT)))
+      :
+      (NP (NP (NP 8.07 %)
+              (NP one month))
+          ;
+          (NP (NP 8.06 %)
+              (NP two months))
+          ;
+          (NP (NP 8.04 %)
+              (NP three months))
+          ;
+          (NP (NP 7.95 %)
+              (NP six months))
+          ;
+          (NP (NP 7.88 %)
+              (NP one year)))
+      .))
+( (NP (NP (NP Average)
+          (PP of
+              (NP top rates)))
+      (VP paid
+          (NP *)
+          (PP by
+              (NP-LGS major
+                      New York banks))
+          (PP-CLR (PP on
+		      (NP (NP primary new issues)
+			  (PP of
+			      (NP negotiable C.D.s))))
+		  ,
+		  (ADVP usually) 
+		  (PP on
+		      (NP (NP amounts)
+			  (PP of
+			      (NP (QP $ 1 million
+				      and more) *U*))))))
+      .))
+( (S (NP-SBJ The minimum unit)
+     (VP is
+         (NP-PRD $ 100,000 *U*))
+     .))
+( (NP (NP (NP Typical rates)
+          (PP-LOC in
+		  (NP the secondary market)))
+      :
+      (NP (NP (NP 8.60 %)
+              (NP one month))
+          ;
+          (NP (NP 8.55 %)
+              (NP three months))
+          ;
+          (NP (NP 8.35 %)
+              (NP six months)))
+      .))
+( (NP (NP BANKERS ACCEPTANCES)
+      :
+      (NP (NP (NP 8.50 %)
+              (NP 30 days))
+          ;
+          (NP (NP 8.48 %)
+              (NP 60 days))
+          ;
+          (NP (NP 8.30 %)
+              (NP 90 days))
+          ;
+          (NP (NP 8.15 %)
+              (NP 120 days))
+          ;
+          (NP (NP 8.07 %)
+              (NP 150 days))
+          ;
+          (NP (NP 7.95 %)
+              (NP 180 days)))
+      .))
+( (NP (NP Negotiable , bank-backed business credit instruments)
+      (VP (ADVP typically)
+	  financing
+	  (NP an import order))
+      .))
+( (NP (NP LONDON LATE EURODOLLARS)
+      :
+      (NP (NP (NP (QP 8 3 % to 8 5 %)
+		  *U*)
+              (NP one month))
+          ;
+          (NP (NP (QP 8 13 % to 8 11 %)
+		  *U*)
+              (NP two months))
+          ;
+          (NP (NP (QP 8 3 % to 8 5 %)
+		  *U*)
+              (NP three months))
+          ;
+          (NP (NP (QP 8 5 % to 8 1 %)
+		  *U*)
+              (NP four months))
+          ;
+          (NP (NP (QP 8 1 % to 8 7 %)
+		  *U*)
+              (NP five months))
+          ;
+          (NP (NP (QP 8 1 % to 8 3 %)
+		  *U*)
+              (NP six months)))
+      .))
+( (NP (NP (NP LONDON INTERBANK OFFERED RATES)
+          (PRN -LRB- (NP LIBOR) -RRB-))
+      :
+      (NP (NP (NP (QP 8 3) %)
+              (NP one month))
+          ;
+          (NP (NP (QP 8 3) %)
+              (NP three months))
+          ;
+          (NP (NP (QP 8 1) %)
+              (NP six months))
+          ;
+          (NP (NP (QP 8 7) %)
+	      (NP one year)))
+      .))
+( (NP (NP (NP The average)
+	  (PP of
+	      (NP (NP interbank offered rates)
+		  (PP for
+		      (NP dollar deposits))
+		  (PP-LOC in
+			  (NP the London market)))))
+      (VP based
+          (NP *)
+          (PP-CLR on
+		  (NP (NP quotations)
+		      (PP-LOC at
+			      (NP five major banks)))))
+      .))
+( (NP (NP FOREIGN PRIME RATES)
+      :
+      (NP (NP (NP Canada) (NP 13.50 %))
+          ;
+	  (NP (NP Germany (NP 9 %)))
+          ;
+          (NP (NP Japan) (NP 4.875 %))
+          ;
+          (NP (NP Switzerland) (NP 8.50 %))
+          ;
+          (NP (NP Britain) (NP 15 %)))
+      .))
+( (S (S (NP-SBJ These rate indications)
+        (VP are n't
+	    (ADJP-PRD directly
+		      comparable)))
+     ;
+     (S (NP-SBJ lending practices)
+        (VP vary
+            (ADVP widely)
+            (PP-MNR by
+		    (NP location))))
+     .))
+( (NP (NP TREASURY BILLS)
+      :
+      (NP (NP (NP Results)
+              (PP of
+                  (NP (NP the (NAC-TMP Monday , October 30 , 1989
+				       ,)
+			  auction)
+		      (PP of
+			  (NP (NP short-term U.S. government bills)
+			      ,
+			      (VP sold
+				  (NP *)
+				  (PP-CLR at
+					  (NP (NP a discount)
+					      (PP from
+						  (NP face value))))
+				  (PP-CLR in
+					  (NP (NP units)
+					      (PP of
+						  (NP (QP $ 10,000
+							  to
+							  $ 1 million)
+						      *U*)))))))))
+              :
+              (NP (NP (NP 7.78 %)
+                      (NP 13 weeks))
+                  ;
+                  (NP (NP 7.62 %)
+                      (NP 26 weeks)))))
+      .))
+( (NP (NP (NP FEDERAL HOME LOAN MORTGAGE CORP .)
+          (PRN -LRB-
+	       (NP Freddie Mac)
+	       -RRB-))
+      :
+      (VP Posted
+	  (NP (NP yields)
+	      (PP on
+		  (NP (NP 30-year mortgage commitments)
+		      (PP for
+			  (NP (NP delivery)
+			      (PP-TMP within
+				      (NP 30 days))))))))
+      .))
+((NP (NP (NP 9.82 %)
+	 ,
+	 (NP standard conventional fixed-rate mortgages))
+     ;
+     (NP (NP 8.25 %)
+	 ,
+	 (NP 2 % rate capped one-year adjustable rate mortgages))
+     .))
+( (NP (NP Source)
+      :
+      (NP Telerate Systems Inc)
+      .))
+( (NP (NP (NP FEDERAL NATIONAL MORTGAGE ASSOCIATION)
+          (PRN -LRB-
+	       (NP Fannie Mae)
+	       -RRB-))
+      :
+      (VP Posted
+	  (NP (NP yields)
+	      (PP on
+		  (NP (NP 30 year mortgage commitments)
+		      (PP for
+			  (NP (NP delivery)
+			      (PP-TMP within
+				      (NP 30 days))))))
+	      (PRN -LRB-
+		   (VP priced
+		       (NP *)
+		       (PP-CLR at
+			       (NP par)))
+		   -RRB-)
+	      (NP (NP (NP 9.75 %)
+		      ,
+		      (NP standard conventional fixed-rate mortgages))
+		  ;
+		  (NP (NP 8.70 %)
+		      ,
+		      (NP 6 rate capped one-year adjustable rate mortgages)))))
+      .))
+( (NP (NP Source)
+      :
+      (NP Telerate Systems Inc)
+      .))
+( (NP (NP MERRILL LYNCH READY ASSETS TRUST)
+      :
+      (NP 8.64 %)
+      .))
+( (NP (NP (NP Annualized average rate)
+	  (PP of
+	      (NP return))
+          (PP after
+              (NP expenses))
+          (PP-TMP for
+		  (NP the past 30 days)))
+      ;
+      not
+      (NP (NP a forecast)
+          (PP of
+              (NP future returns)))
+      .))

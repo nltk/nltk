@@ -1,0 +1,773 @@
+
+
+( (S (NP-SBJ (NP A lack)
+             (PP of
+                 (NP (NP enthusiasm)
+                     (PP with
+                         (NP the latest economic data)))))
+     (VP hampered
+         (NP (NP the stock market 's)
+             bid
+             (S (NP-SBJ *)
+                (VP to
+                    (VP extend
+                        (NP (NP Tuesday 's)
+                            sharp gains)))))
+	 ,
+	 (SBAR-ADV as
+		   (S (NP-SBJ prices)
+		      (VP closed
+			  (ADVP slightly higher)
+			  (PP-LOC in
+				  (NP sluggish trading))))))
+     .))
+( (S (SBAR-ADV While
+	       (S (NP-SBJ (NP renewed optimism)
+			  (PP about
+			      (NP (NP the outlook)
+				  (PP for
+				      (NP takeover activity)))))
+		  (VP boosted
+		      (NP several so-called deal stocks))))
+     ,
+     (NP-SBJ traders)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ profit-taking)
+                  (VP weighed
+                      (PP-CLR on
+			      (NP the market))
+		      ,
+		      (PP with
+			  (S-NOM (NP-SBJ blue-chips)
+				 (VP bearing
+				     (NP (NP the brunt)
+					 (PP of
+					     (NP the selling))))))))))
+     .))
+( (S (NP-SBJ (NP The Dow Jones Industrial Average)
+             ,
+             (SBAR (WHNP-1 which)
+                   (S (NP-SBJ *T*-1)
+                      (VP had
+                          (VP jumped
+                              (NP-ADV 41.60 points)
+			      (PP-TMP on
+				      (NP Tuesday))))))
+             ,)
+     (VP (VP drifted
+             (PP-LOC on
+		     (NP (NP either side)
+			 (PP of
+			     (NP its previous close)))))
+         and
+         (VP finished
+             (PP with
+                 (NP (NP a gain)
+                     (PP of
+                         (NP just 0.82))))
+             (PP-CLR at
+		     (NP 2645.90))))
+     .))
+( (S (S (NP-SBJ (NP Standard & Poor 's)
+                500-Stock Index)
+        (VP added
+            (NP-EXT 0.84)
+            (PP-CLR to
+		    (NP 341.20))))
+     ;
+     (S (NP-SBJ the rise)
+        (VP was
+            (ADJP-PRD equivalent
+		      (PP to
+			  (NP (NP a gain)
+			      (PP of
+				  (NP (QP about six) points))
+			      (PP-LOC in
+				      (NP the industrial average)))))))
+     .))
+( (S (S (NP-SBJ The Dow Jones Equity Market Index)
+        (VP gained
+            (NP-EXT 0.99)
+            (PP-CLR to
+		    (NP 319.75))))
+     and
+     (S (NP-SBJ the New York Stock Exchange Composite Index)
+        (VP went
+	    (ADVP-DIR up)
+            (NP-EXT 0.60)
+            (PP-CLR to
+		    (NP 188.84))))
+     .))
+( (S (NP-SBJ Advancing stocks)
+     (VP led
+         (NP decliners)
+         (PP-LOC on
+		 (NP the New York Stock Exchange))
+         (PP by
+             (NP 847))
+         (PP-CLR to
+		 (NP 644)))
+     .))
+( (S (NP-SBJ Big Board volume)
+     (VP amounted
+         (PP-CLR to
+		 (NP (NP 154,240,000 shares)
+		     ,
+		     (ADVP down
+			   (PP from
+			       (NP (NP 176.1 million)
+				   (NP-TMP Tuesday)))))))
+     .))
+( (S (NP-SBJ (NP The October survey)
+	     (PP of
+		 (NP corporate purchasing managers)))
+     ,
+     (SBAR-ADV as
+	       (S (NP-SBJ *)
+		  (VP expected)))
+     ,
+     (VP provided
+         (NP evidence
+             (SBAR that
+                   (S (NP-SBJ economic growth)
+                      (VP remains
+                          (ADJP-PRD subdued))))))
+     .))
+( (S (S (NP-SBJ (NP An index)
+		(PP of
+		    (NP economic activity))
+                (VP drawn
+                    (NP *)
+                    (PP-CLR from
+			    (NP the survey))))
+        (VP stood
+            (NP-TMP last month)
+            (PP-CLR at
+		    (NP 47.6 %))))
+     ;
+     (S (NP-SBJ (NP a reading)
+                (PP above
+                    (NP 50 %)))
+        (VP would
+            (VP have
+                (VP indicated
+                    (SBAR that
+                          (S (NP-SBJ the manufacturing sector)
+                             (VP was
+                                 (VP improving))))))))
+     .))
+( (S But
+     (SBAR-ADV with
+	       (S (S (NP-SBJ the index)
+		     (VP proving
+			 (ADJP-PRD (ADJP somewhat better)
+				   (SBAR than
+					 (S (NP-SBJ *)
+					    (VP expected))))))
+		  and
+		  (S (NP-SBJ-1 (NP the
+				   (ADJP widely
+					 anticipated)
+				   report)
+			       (PP on
+				   (NP October employment)))
+		     (VP scheduled
+			 (S (NP-SBJ *-1)
+			    (VP to
+				(VP arrive
+				    (NP-TMP tomorrow))))))))
+     ,
+     (NP-SBJ stock prices)
+     (VP (VP firmed
+             (ADVP-MNR only modestly)
+             (PP in
+                 (NP (NP response)
+                     (PP to
+                         (NP the report)))))
+         and
+         (VP (ADVP-TMP then)
+             faltered))
+     .))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ This market)
+		 (VP 's
+		     (ADVP still)
+		     (VP going
+			 (PP through
+			     (NP its pains)))))
+	, ''
+	(VP said
+	    (S *T*-1))
+	(NP-SBJ (NP Philip Puccio)
+		,
+		(NP (NP head)
+		    (PP of
+			(NP equity trading))
+		    (PP-LOC at
+			    (NP Prudential-Bache Securities))))
+	.))
+( (S ``
+     (NP-SBJ The psychology)
+     (VP is
+         (ADVP-PRD still)
+         :
+	 `
+	 (S (S (NP-SBJ We)
+               (VP want
+		   (S -LRB-
+		      (NP-SBJ stocks)
+		      -RRB-
+		      (ADVP-PRD up))))
+            , but
+            (S (SBAR-ADV if
+			 (S (NP-SBJ they)
+			    (VP do n't
+				(VP carry))))
+               (NP-SBJ-1 we)
+               (VP 're
+                   (VP going
+                       (S (NP-SBJ *-1)
+                          (VP to
+                              (VP sell
+                                  (NP them)))))))))
+     . ' ''))
+( (S (S-TPC-1 (NP-SBJ (NP Uncertainty)
+		      (PP about
+			  (NP (NP the prospects)
+			      (PP for
+				  (NP further action
+				      (S (NP-SBJ *)
+					 (VP to
+					     (VP curtail
+						 (NP (NP stock-index arbitrage)
+						     ,
+						     (NP (NP a form)
+							 (PP of
+							     (NP program trading))
+							 (VP blamed
+							     (NP *)
+							     (PP-CLR for
+								     (NP (NP recent volatility)
+									 (PP-LOC in
+										 (NP the market))))))
+						     ,)))))))))
+	      (ADVP also)
+	      (VP contributed
+		  (PP-CLR to
+			  (NP (NP its lack)
+			      (PP of
+				  (NP direction))))))
+     ,
+     (NP-SBJ Mr. Puccio)
+     (VP said
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (NP-SBJ-1 (NP Arbitrage-related trading)
+               (PP-TMP during
+		       (NP the session)))
+     (VP was
+         (VP confined
+             (NP *-1)
+	     (PP-CLR (ADVP largely)
+		     to
+		     (NP (NP a round)
+			 (PP of
+			     (NP buy programs))
+			 (PP-TMP near
+				 (NP the close))
+			 ,
+			 (SBAR (WHNP-2 which)
+			       (S (NP-SBJ-3 *T*-2)
+				  (VP helped
+				      (S (NP-SBJ *-3)
+					 (VP offset
+					     (NP (NP the impact)
+						 (PP of
+						     (NP profit-taking))
+						 (PP among
+						     (NP blue chips))))))))))))
+     .))
+( (S (NP-SBJ-1 Trading)
+     (VP is
+         (VP expected
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP remain
+			(ADJP-PRD subdued)
+			(SBAR-TMP as
+				  (S (NP-SBJ the market)
+				     (VP awaits
+					 (NP (NP (NP tomorrow 's)
+						 release)
+					     (PP of
+						 (NP the jobs data)))
+					 (PP with
+					     (NP the hope
+						 (SBAR that
+						       (S (NP-SBJ it)
+							  (VP will
+							      (VP point
+								  (PP-DIR toward
+									  (NP (NP a decline)
+									      (PP in
+										  (NP interest rates))))))))))))))))))
+     .))
+( (SINV ``
+	(S-TPC-1 (NP-SBJ I)
+		 (VP sense
+		     (SBAR that
+			   (S (NP-SBJ-2 some people)
+			      (VP are
+				  (ADJP-PRD reluctant
+					    (S (NP-SBJ *-2)
+					       (VP to
+						   (VP stick
+						       (NP their necks)
+						       (PRT out)
+						       (PP-MNR in
+							       (NP any aggressive way))
+						       (PP-TMP until
+							       (SBAR after
+								     (S (NP-SBJ the figures)
+									(VP come
+									    (ADVP-DIR out))))))))))))))
+	, ''
+	(VP said
+	    (S *T*-1))
+	(NP-SBJ (NP Richard Eakle)
+		,
+		(NP (NP president)
+		    (PP of
+			(NP (NP Eakle Associates)
+			    ,
+			    (NP-LOC Fair Haven)
+			    ,))))))
+( (S (NP-SBJ Campbell Soup)
+     (VP jumped
+         (NP-EXT 3 3/8)
+         (PP-CLR to
+		 (NP 47 1/8))
+	 (SBAR-ADV as
+		   (S (NP-SBJ (NP the resignation)
+			      (PP of
+				  (NP R. Gordon McGovern))
+			      (PP as
+				  (NP president and chief executive officer)))
+		      (VP sparked
+			  (NP (NP a revival)
+			      (PP of
+				  (NP rumors
+				      (SBAR that
+					    (S (NP-SBJ the company)
+					       (VP could
+						   (VP become
+						       (NP-PRD a takeover target))))))))))))
+     .))
+( (S (S (NP-SBJ Prudential-Bache Securities)
+        (VP boosted
+            (NP (NP the stock 's)
+                short-term investment rating)
+	    (PP in
+		(NP (NP response)
+		    (PP to
+			(NP the departure))))))
+     ;
+     (S (NP-SBJ analyst John McMillin)
+        (VP said
+            (SBAR 0
+                  (S (NP-SBJ he)
+                     (VP believes
+                         (SBAR 0
+                               (S (NP-SBJ the company)
+                                  (VP will
+                                      (VP turn
+                                          (PP-CLR to
+						  (NP (NP new management)
+						      ``
+						      (SBAR (WHNP-1 that)
+							    (S (NP-SBJ *T*-1)
+							       (VP 's
+								   (ADJP-PRD (ADVP more financially) oriented)))))))))))))))
+     . ''))
+( (S (NP-SBJ (NP Other rumored
+		 takeover and restructuring
+		 candidates)
+             (SBAR (WHNP-2 0)
+		   (S (NP-SBJ *T*-2)
+		      (VP to
+			  (VP attract
+			      (NP buyers))))))
+     (VP included
+         (NP (NP (NP-3 Woolworth)
+                 ,
+                 (SBAR (WHNP-1 which)
+                       (S (NP-SBJ *T*-1)
+                          (VP went
+                              (ADVP-DIR-4 up
+					  (NP 1 3/4)
+					  (PP to
+					      (NP 59 1/2)))
+))))
+             ;
+             (NP (NP=3 Avon Products) 
+                 ,
+                 (ADVP-DIR=4 up
+			     (NP 1 3/4)
+			     (PP to
+				 (NP 29 1/4))))
+             ;
+             (NP (NP=3 Paramount Communications)
+                 ,
+                 (ADVP-DIR=4 up
+			     (NP 2)
+			     (PP to
+				 (NP 57 7/8)))
+		 ,)
+             and
+             (NP (NP=3 Ferro)
+                 ,
+                 (ADVP-DIR=4 up
+			     (NP 2 5/8)
+			     (PP to
+				 (NP 28 3/4))))))
+     .))
+( (S (NP-SBJ (NP Upjohn)
+             ,
+             (NP (NP a rumored target)
+                 (PP-LOC within
+			 (NP the drug industry)))
+             ,)
+     (VP advanced
+         (NP-EXT 7/8)
+         (PP-DIR to
+		 (NP 38 7/8)))
+     .))
+( (S (NP-SBJ The company)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP plans
+                      (NP (NP a fourth-quarter charge)
+                          ,
+                          (SBAR (WHNP-1 which)
+                                (S (NP-SBJ it)
+                                   (VP did n't
+                                       (VP specify
+                                           (NP *T*-1)))))
+                          ,
+                          (PP for
+                              (NP an early-retirement program)))))))
+     .))
+( (S (NP-SBJ AMR)
+     (VP climbed
+         (NP-EXT 1 3/4)
+         (PP-DIR to
+		 (NP 73 1/8))
+	 (PP amid
+	     (NP rumors
+		 (SBAR that
+		       (S (NP-SBJ New York developer Donald Trump)
+			  (VP was
+			      (VP seeking
+				  (NP (NP financing)
+				      (SBAR-PRP (WHADVP-1 0)
+						(S (NP-SBJ *)
+						   (VP to
+						       (VP mount
+							   (NP (NP a new , lower offer)
+							       (PP for
+								   (NP (NP the parent company)
+								       (PP of
+									   (NP American Airlines)))))
+							   (ADVP *T*-1)))))))))))))
+     .))
+( (S (NP-SBJ Mr. Trump)
+     (VP withdrew
+         (NP a (ADJP $ 120-a-share *U*) bid)
+	 (NP-TMP last month))
+     .))
+( (S (NP-SBJ UAL)
+     (VP rose
+         (NP-EXT 1 1/2)
+         (PP-DIR to
+		 (NP 177)))
+     .))
+( (S (NP-SBJ Drexel Burnham Lambert analyst Michael Derchin)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ he)
+                  (VP sees
+                      (NP a (ADJP 70 %) chance
+                          (SBAR that
+                                (S (NP-SBJ-1 (NP (NP the parent)
+                                                 (PP of
+                                                     (NP United Airlines)))
+                                             ,
+                                             (NP (NP the target)
+                                                 (PP of
+                                                     (NP (NP a failed (ADJP $ 300-a-share *U*) offer)
+							 (PP from
+							     (NP a labor-management group)))))
+                                             ,)
+                                   (VP will
+                                       (VP be
+                                           (VP acquired or restructured
+					       (NP *-1)
+                                               (PP-TMP within
+						       (NP six months))))))))))))
+     .))
+( (S (NP-SBJ Georgia Gulf)
+     (VP added
+	 (NP-ADV 1 3/4)
+	 (PP-CLR to
+		 (NP 51 1/4))
+	 (SBAR-TMP after
+		   (S (NP-SBJ-2 (NP NL Industries)
+				,
+				(VP controlled
+				    (NP *)
+				    (PP by
+					(NP-LGS Dallas investor
+						Harold Simmons)))
+				,)
+		      (VP offered
+			  (S (NP-SBJ *-2)
+			     (VP to
+				 (VP acquire
+				     (NP (NP the stock)
+					 (SBAR (WHNP-1 0)
+					       (S (NP-SBJ it)
+						  (VP does n't
+						      (ADVP already)
+						      (VP own
+							  (NP *T*-1))))))
+				     (PP-CLR for
+					     (NP (NP $ 50 *U*)
+						 (NP-ADV a share))))))))))
+     .))
+( (S (NP-SBJ (NP NL)
+             ,
+             (SBAR (WHNP-1 which)
+                   (S (NP-SBJ-2 *T*-1)
+                      (VP closed
+			  (S-CLR (NP-SBJ *-2)
+				 (ADJP-PRD unchanged))
+                          (PP-CLR at
+				  (NP 22 3/4)))))
+             ,)
+     (VP has
+         (NP (NP a stake)
+             (PP of
+                 (NP (QP just under 10)
+		     %))))
+     .))
+( (S (NP-SBJ (NP Great Northern Nekoosa)
+             ,
+             (SBAR (WHNP-1 which)
+                   (S (NP-SBJ *T*-1)
+                      (VP surged
+                          (NP-EXT 20 1/8)
+			  (NP-TMP Tuesday)
+			  (SBAR-TMP after
+				    (S (NP-SBJ Georgia-Pacific)
+				       (VP launched
+					   (NP (NP a (ADJP (QP $ 3.18 billion) *U*)
+						   offer)
+					       (PP for
+						   (NP the company)))))))))
+             ,)
+     (VP dropped
+         (NP-EXT 1 3/8)
+         (PP-CLR to
+		 (NP 61 1/2))
+	 (PP-TMP in
+		 (NP (NP Big Board composite trading)
+		     (PP of
+			 (NP (QP 5.1 million) shares)))))
+     .))
+( (S (NP-SBJ (NP Georgia-Pacific)
+             ,
+             (SBAR (WHNP-1 which)
+                   (S (NP-SBJ *T*-1)
+                      (VP went
+			  (ADVP-DIR down
+				    (NP-ADV 2 1/2))
+			  (NP-TMP Tuesday))))
+             ,)
+     (VP lost
+         (NP-ADV another 1/2)
+         (PP-CLR to
+		 (NP 50 3/8)))
+     .))
+( (S (NP-SBJ-1 Other (UCP paper and forest-products) stocks)
+     (VP closed
+	 (S-CLR (NP-SBJ *-1)
+		(ADJP-PRD mixed)))
+     .))
+( (S (S (NP-SBJ Mead)
+        (VP rose
+            (NP-EXT 3/4)
+            (PP-CLR to
+		    (NP 39 1/2))))
+     ,
+     (S (NP-SBJ Federal Paper Board)
+        (VP added
+            (NP 1/2)
+            (PP-CLR to
+		    (NP 24 3/8))))
+     and
+     (S (NP-SBJ Scott Paper)
+        (VP gained
+            (NP-EXT 1/2)
+            (PP-CLR to
+		    (NP 48 3/8))))
+     ,
+     (SBAR-ADV while
+	       (S (S (NP-SBJ International Paper)
+		     (VP fell
+			 (NP-EXT 7/8)
+			 (PP-DIR to
+				 (NP 48 7/8))))
+		  ,
+		  (S (NP-SBJ Champion International)
+		     (VP lost
+			 (NP 3/8)
+			 (PP-CLR to
+				 (NP 31 1/2))))
+		  and
+		  (S (NP-SBJ Louisiana-Pacific)
+		     (VP dropped
+			 (NP-EXT 1/8)
+			 (PP-DIR to
+				 (NP 40 1/4))))))
+     .))
+( (S (NP-SBJ Texaco)
+     (VP rose
+         (NP-EXT 3/4)
+         (PP-DIR to
+		 (NP 53 3/8))
+	 (SBAR-ADV as
+		   (S (NP-SBJ (QP 4.4 million) shares)
+		      (VP changed
+			  (NP-CLR hands)))))
+     .))
+( (S (S (NP-SBJ (NP Most)
+                (PP of
+                    (NP the volume)))
+        (VP came
+            (PP-DIR from
+		    (NP (NP trades)
+			(VP designed
+			     (NP *)
+			     (S-CLR (NP-SBJ *)
+				    (VP to
+					(VP capture
+					    (NP (NP the stock 's)
+						next dividend)))))))))
+     ;
+     (S (NP-SBJ Texaco)
+        (VP (VP has
+                (NP (NP a yield)
+                    (PP of
+                        (NP 5.6 %))))
+            and
+            (VP goes
+		(ADJP-PRD ex-dividend)
+		(NP-TMP today))))
+     .))
+( (S (NP-SBJ Santa Fe Pacific)
+     (VP dropped
+         (NP-EXT 1 1/8)
+         (PP-CLR to
+		 (NP 17 3/4)))
+     .))
+( (S (NP-SBJ (NP The company 's)
+             proposal
+             (S (NP-SBJ *)
+                (VP to
+                    (VP sell
+                        (NP (NP a (ADJP 20 %) stake)
+			    (PP in
+				(NP its real-estate unit)))
+                        (PP-CLR for
+				(NP (QP around $ 400 million) *U*))))))
+     (VP has
+         (VP caused
+             (S (NP-SBJ-1 analysts)
+                (VP to
+                    (VP consider
+                        (SBAR whether
+                              (S (NP-SBJ *-1)
+                                 (VP to
+                                     (VP cut
+                                         (NP (NP their estimates)
+                                             (PP of
+                                                 (NP (NP Santa Fe 's)
+                                                     asset value))))))))))))
+     .))
+( (S (NP-SBJ GenCorp)
+     (VP tumbled
+         (NP-EXT 2)
+         (PP-DIR to
+		 (NP 14)))
+     .))
+( (S (NP-SBJ The company)
+     (VP forecast
+         (SBAR that
+               (S (NP-SBJ (NP fourth-quarter income)
+                          (PP from
+                              (NP continuing operations)))
+                  (VP would
+                      (VP be
+                          (ADJP-PRD (ADJP `` significantly '' lower)
+				    (PP than
+					(ADVP-TMP (NP a year)
+						  earlier))))))))
+     .))
+( (S (NP-SBJ Allergan)
+     (VP went
+	 (ADVP-DIR up
+		   (NP 1/2)
+		   (PP to
+		       (NP 19 3/8))))
+     .))
+( (S (NP-SBJ The Food and Drug Administration)
+     (VP allowed
+         (S (NP-SBJ-1 the company)
+            (VP to
+                (VP begin
+                    (S (NP-SBJ *-1)
+                       (VP marketing
+                           (NP (NP a new lens)
+                               (PP for
+                                   (NP (NP use)
+                                       (PP in
+                                           (NP cataract patients)))))))))))
+     .))
+( (S (NP-SBJ The American Stock Exchange Market Value Index)
+     (VP gained
+         (NP-EXT 1.56)
+         (PP-DIR to
+		 (NP 372.14)))
+     .))
+( (S (NP-SBJ Volume)
+     (VP totaled
+         (NP 11,390,000 shares))
+     .))
+( (S (NP-SBJ Old Spaghetti Warehouse)
+     (VP rose
+         (NP-EXT 1)
+         (PP-DIR to
+		 (NP 16 1/8)))
+     .))
+( (S (NP-SBJ (NP Its net income)
+             (PP for
+                 (NP the September quarter)))
+     (VP rose
+         (NP-EXT (QP about 41) %)
+         (PP-CLR from
+		 (ADVP-TMP (NP a year)
+			   ago)))
+     .))

@@ -1,0 +1,40 @@
+
+
+( (S (NP-SBJ (NP Standard & Poor 's)
+             Corp.)
+     (VP lowered
+         (PP-DIR to
+		 (NP double-C))
+         (PP-DIR from
+		 (NP triple-C))
+         (NP (NP the rating)
+             (PP on
+                 (NP (NP about (QP $ 130 million)
+			 *U*)
+		     (PP of
+			 (NP debt))))))
+     .))
+( (S (S (NP-SBJ The rating concern)
+        (VP said
+            (SBAR 0
+                  (S (NP-SBJ (NP the textile and clothing company 's)
+                             interest expense)
+                     (VP exceeds
+                         (NP operating profit)
+			 ``
+			 (PP by
+                             (NP a wide margin))
+			 '')))))
+     and
+     (S (NP-SBJ it)
+        (VP noted
+            (NP (NP (NP United 's)
+		    estimated after-tax loss)
+		(PP of
+		    (NP (NP (QP $ 24 million)
+			    *U*)
+			(PP for
+			    (NP (NP the year)
+				(VP ended
+				    (NP-TMP-CLR June 30)))))))))
+     .))

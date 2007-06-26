@@ -1,0 +1,919 @@
+
+
+( (S (NP-SBJ Tokyo stocks)
+     (VP edged
+	 (ADVP-DIR up)
+         (NP-TMP Wednesday)
+         (PP in
+             (NP (ADJP (ADJP relatively active)
+		       but
+		       (ADJP unfocused))
+		 trading)))
+     .))
+( (S (NP-SBJ London shares)
+     (VP finished
+         (ADJP moderately higher))
+     .))
+( (S (PP-LOC At
+	     (NP Tokyo))
+     ,
+     (NP-SBJ (NP the Nikkei index)
+	     (PP of
+		 (NP 225 selected issues))
+             ,
+             (SBAR (WHNP-1 which)
+                   (S (NP-SBJ *T*-1)
+                      (VP gained
+                          (NP 132 points)
+			  (NP-TMP Tuesday))))
+             ,)
+     (VP added
+         (NP 14.99 points)
+         (PP-CLR to
+		 (NP 35564.43)))
+     .))
+( (S (PP-LOC In
+	     (NP (NP early trading)
+		 (PP-LOC in
+			 (NP Tokyo))))
+     (NP-TMP Thursday)
+     ,
+     (NP-SBJ the Nikkei index)
+     (VP fell
+         (NP-EXT 63.79 points)
+         (PP-DIR to
+		 (NP 35500.64)))
+     .))
+( (S (NP-SBJ-1 (NP (NP Wednesday 's)
+		   volume)
+               (PP on 
+                   (NP the First Section)))
+     (VP was
+         (VP estimated
+             (NP *-1)
+             (PP-CLR at
+		     (NP (QP 900 million) shares))
+	     ,
+	     (PP in
+		 (NP (NP line)
+		     (PP with
+			 (NP (NP Tuesday 's)
+			     (QP 909 million)))))))
+     .))
+( (S (NP-SBJ Declining issues)
+     (VP (ADVP slightly)
+	 outnumbered
+         (NP advancing issues)
+         ,
+         (NP-ADV (NP 454)
+		 (PP to
+		     (NP 451))))
+     .))
+( (S (S-TPC-2 (NP-SBJ-1 Investors)
+	      (VP switched
+		  (NP trading focus)
+		  (ADVP-MNR quickly)
+		  (SBAR-ADV as
+			    (S (NP-SBJ they)
+			       (VP did
+				   (NP-ADV Tuesday))))
+		  ,
+		  (S-ADV (NP-SBJ *-1)
+			 (VP reflecting
+			     (NP (NP uncertainty)
+				 (PP about
+				     (NP (NP long-term commitments)
+					 (PP to
+					     (NP any issue or sector)))))))))
+     ,
+     (NP-SBJ traders)
+     (VP said
+	 (SBAR 0
+	       (S *T*-2)))
+     .))
+( (S (NP-SBJ Speculation)
+     ,
+     (PP on
+         (NP the other hand)) 
+     ,
+     (VP sparked
+         (NP (NP buying)
+	     (PP-LOC in
+		     (NP certain incentive-backed issues)))
+	 ,
+	 (SBAR-ADV though
+		   (S (NP-SBJ (NP rumors)
+			      (VP underlying
+				  (NP such shares)))
+		      (ADVP-TMP eventually)
+		      (VP proved
+			  (ADJP-PRD untrue)))))
+     .))
+( (S-1 (NP-SBJ The development)
+       (PRN ,
+	    (S (NP-SBJ traders)
+	       (VP said
+		   (SBAR 0
+			 (S *T*-1))))
+	    ,)
+       (VP showed
+	   (SBAR that
+		 (S (NP-SBJ there)
+		    (VP is
+			(NP-PRD (NP (ADJP (ADVP more than) ample)
+				    liquidity)
+				(ADJP available
+				      (PP for
+					  (NP investment))))
+			(PP despite
+			    (NP (NP the market 's)
+				recent directionless trend))))))
+       .))
+( (S (S-TPC-2 (NP-SBJ-1 Dealers)
+	      (VP led
+		  (NP the market)
+		  (NP-TMP Wednesday)
+		  (PP-MNR by
+			  (S-NOM (NP-SBJ *-1)
+				 (ADVP-MNR actively)
+				 (VP trading
+				     (PP for
+					 (NP their own accounts)))))))
+     ,
+     (NP-SBJ observers)
+     (VP said
+	 (SBAR 0
+	       (S *T*-2)))
+     .))
+( (S (NP-SBJ Institutions)
+     (ADVP mostly)
+     (VP remained
+         (PP-LOC on
+		 (NP the sidelines))
+	 (PP-PRP because of
+		 (NP (NP uncertainty)
+		     (VP regarding
+			 (NP (NP interest rates)
+			     and
+			     (NP the dollar))))))
+     .))
+( (S (NP-SBJ (NP The Tokyo Stock Price Index)
+	     (PRN -LRB- (NP Topix) -RRB-)
+	     (PP of
+		 (NP (NP all issues)
+		     (VP listed
+			 (NP *)
+			 (PP-LOC-CLR in
+				     (NP the First Section)))))
+             ,
+             (SBAR (WHNP-1 which)
+                   (S (NP-SBJ *T*-1)
+                      (VP gained
+                          (NP 16.05 points)
+			  (NP-TMP Tuesday))))
+             ,)
+     (VP was
+         (ADVP-PRD down
+		   (NP (NP 1.46 points)
+		       , or
+		       (NP 0.05 %)
+		       ,))
+         (PP-CLR at
+		 (NP 2691.19)))
+     .))
+( (S (NP-SBJ-2 (NP The Second Section index)
+	       ,
+	       (SBAR (WHNP-1 which)
+		     (S (NP-SBJ *T*-1)
+			(VP added
+			    (NP 6.84 points)
+			    (NP-TMP Tuesday))))
+	       ,)
+     (VP was
+         (ADVP-PRD up
+		   (NP (NP 5.92 points)
+		       , or
+		       (NP 0.16 %)
+		       ,))
+	 (S-CLR (NP-SBJ *-2)
+		(VP to
+		    (VP close
+			(PP-CLR at
+				(NP 3648.82))))))
+     .))
+( (S (NP-SBJ-1 (NP Volume)
+               (PP-LOC in
+		       (NP the second section)))
+     (VP was
+         (VP estimated
+             (NP *-1)
+             (PP-CLR at
+		     (NP 18 million shares))
+             ,
+             (ADVP-CLR up
+		       (PP from
+			   (NP (NP 14 million)
+			       (NP-TMP Tuesday))))))
+     .))
+( (S (NP-SBJ (NP Akio Yamamoto)
+             ,
+             (NP (NP managing director)
+                 (PP of
+                     (NP Nomura Investment Trust Management)))
+             ,)
+     (VP said
+         (SBAR that
+               (S (SBAR-ADV if
+			    (S (NP-SBJ the U.S. federal funds rate)
+			       (VP declines
+				   (PP-CLR to
+					   (NP (QP around 8.5) %)))))
+                  ,
+                  (NP-SBJ institutions)
+                  (VP would
+                      (VP (VP acquire
+                              (NP (NP a clearer idea)
+                                  (VP regarding
+                                      (NP (NP the direction)
+                                          (PP of
+                                              (NP the market))))))
+                          and
+                          (ADVP thus)
+			  (VP (ADVP-MNR more comfortably)
+                              participate
+                              (PP-CLR in
+				      (NP active buying))))))))
+     .))
+( (S (NP-SBJ (NP (NP Tokyu Group)
+                 ,
+                 (NP Mitsubishi Estate)
+                 and
+                 (NP Bridgestone/Firestone))
+             ,
+             (SBAR (WHNP-1 which)
+                   (S (NP-SBJ *T*-1)
+                      (VP advanced
+			  (NP-TMP Tuesday))))
+             ,)
+     (VP declined
+         (PP on
+             (NP profit-taking)))
+     .))
+( (S (NP-SBJ (NP Wednesday 's)
+             dominant issue)
+     (VP was
+         (NP-PRD (NP Yasuda Fire & Marine Insurance)
+		 ,
+		 (SBAR (WHNP-1 which)
+		       (S (NP-SBJ-2 *T*-1)
+			  (VP continued
+			      (S (NP-SBJ *-2)
+				 (VP to
+				     (VP surge)))
+			      (PP on
+				  (NP (NP rumors)
+				      (PP of
+					  (NP speculative buying)))))))))
+     .))
+( (S (NP-SBJ It)
+     (VP ended
+         (NP the day)
+         (ADVP-CLR up
+		   (NP (NP 80 yen)
+		       (PRN -LRB-
+			    (NP 56 cents)
+			    -RRB-))
+		   (PP-DIR to
+			   (NP (NP 1,880 yen)
+			       (PRN -LRB-
+				    (NP $ 13.15 *U*)
+				    -RRB-)))))
+     .))
+( (S (PP Due
+	 to
+	 (NP (NP (ADJP continuingly high) gold prices)
+	     (VP tied
+		 (NP *)
+		 (PP-CLR to
+			 (NP (NP uncertainty)
+			     (PP about
+				 (NP the U.S. currency)))))))
+     ,
+     (NP-SBJ-1 investor interest)
+     (VP was
+	 (VP (VP directed
+		 (NP *-1)
+		 (PP-DIR toward
+			 (NP oil and mining shares)))
+	     ,
+	     (SBAR (WHNP-2 which)
+		   (S (NP-SBJ traders)
+		      (VP called
+			  (S (NP-SBJ *T*-2)
+			     (NP-PRD (NP a `` defensive '' action)
+				     (VP (ADVP-TMP frequently)
+					 taken
+					 (NP *)
+					 (UCP-TMP (SBAR (WHADVP-3 when)
+							(S (NP-SBJ-4 the dollar)
+							   (VP is
+							       (VP expected
+								   (S (NP-SBJ *-4)
+								      (VP to
+									  (VP fall)))
+								   (ADVP-TMP *T*-3)))))
+						  or
+						  (PP during
+						      (NP (NP times)
+							  (PP of
+							      (NP inflation)))))))))))))
+     .))
+( (S (NP-SBJ (NP Teikoku Oil)
+             ,
+             (VP (ADVP also)
+                 stimulated
+                 (NP *)
+		 (PP by
+                     (NP-LGS (NP rumors)
+			     (PP of
+				 (NP speculative buying)))))
+             ,)
+     (VP advanced
+         (NP-ADV 100 yen)
+         (PP-DIR to
+		 (NP 1,460)))
+     .))
+( (S (S (NP-SBJ Showa Shell)
+        (VP gained
+            (NP-EXT 20)
+            (PP-DIR to
+		    (NP 1,570))))
+     and
+     (S (NP-SBJ Mitsubishi Oil)
+        (VP rose
+            (NP-EXT 50)
+            (PP-DIR to
+		    (NP 1,500))))
+     .))
+( (S (S (NP-SBJ Sumitomo Metal Mining)
+        (VP fell
+            (NP-EXT five yen)
+            (PP-DIR to
+		    (NP 692))))
+     and
+     (S (NP-SBJ Nippon Mining)
+        (VP added
+            (NP-EXT 15)
+            (PP-DIR to
+		    (NP 960))))
+     .))
+( (SINV (PP-PRD-2 Among
+		  (NP other winners))
+	(NP-TMP Wednesday)
+	(VP was
+	    (PP-PRD *T*-2))
+	(NP-SBJ (NP Nippon Shokubai)
+		,
+		(SBAR (WHNP-1 which)
+		      (S (NP-SBJ *T*-1)
+			 (VP was
+			     (ADVP-PRD up
+				       (NP 80))
+			     (PP-CLR at
+				     (NP 2,410))))))
+	.))
+( (S (NP-SBJ Marubeni)
+     (VP advanced
+         (NP-EXT 11)
+         (PP-DIR to
+		 (NP 890)))
+     .))
+( (S (NP-SBJ-1 London share prices)
+     (VP were
+         (VP bolstered
+             (NP *-1)
+	     (PP (ADVP largely)
+		 by
+                 (NP-LGS (NP (NP continued gains)
+			     (PP-LOC on
+				     (NP Wall Street)))
+			 and
+			 (NP (NP technical factors)
+			     (VP affecting
+				 (NP (NP demand)
+				     (PP for
+					 (NP (NP London 's)
+					     blue-chip stocks)))))))))
+     .))
+( (S (NP-SBJ The Financial Times-Stock Exchange 100-share index)
+     (VP closed
+         (ADVP-CLR (NP 17.5 points)
+		   higher)
+         (PP-CLR at
+		 (NP 2160.1)))
+     .))
+( (S (NP-SBJ-1 It)
+     (VP rose
+         (ADVP largely)
+         (PP-TMP throughout
+		 (NP the session))
+         (PP-TMP after
+		 (S-NOM (NP-SBJ *-1)
+			(VP posting
+			    (NP (NP an intraday low)
+				(PP of
+				    (NP 2141.7)))
+			    (PP-TMP in
+				    (NP (NP the first 40 minutes)
+					(PP of
+					    (NP trading))))))))
+     .))
+( (S (NP-SBJ The index)
+     (VP ended
+         (NP the day)
+         (PP-CLR near
+		 (NP (NP its session high)
+		     (PP of
+			 (NP 2163.2))
+		     ,
+		     (SBAR (WHNP-2 which)
+			   (S (NP-SBJ-1 *T*-2)
+			      (VP was
+				  (VP posted
+				      (NP *-1)
+				      (PP-TMP within
+					      (NP (NP the last half-hour)
+						  (PP of
+						      (NP trading)))))))))))
+     .))
+( (S (NP-SBJ Dealers)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 most investor interest)
+                  (VP was
+                      (VP focused
+                          (NP *-1)
+                          (PP-CLR on
+				  (NP (NP defensive blue-chip stocks)
+				      ,
+				      (NP (NP particularly those)
+					  (PP with
+					      (NP limited U.K. exposure))))))))))
+     .))
+( (S (ADVP Also)
+     ,
+     (NP-SBJ-1 several key blue chips)
+     (VP were
+         (VP pushed
+	     (ADVP-CLR higher)
+	     (PP in
+		 (NP thin volume))
+             (PP-PRP because of
+		     (NP (NP a technical squeeze)
+			 (PP-LOC among
+				 (NP market makers))))))
+     .))
+( (S (S-TPC-1 (NP-SBJ (NP (NP Sterling 's)
+			  firm tone)
+		      ,
+		      (PP combined
+			  (PP with
+			      (NP (NP a steady opening)
+				  (PP-LOC on
+					  (NP Wall Street)))))
+		      ,)
+	      (ADVP also)
+	      (VP tempted
+		  (S (NP-SBJ some investors)
+		     (VP to
+			 (VP come
+			     (ADVP back)
+			     (PP-DIR to
+				     (NP the market)))))))
+     ,
+     (NP-SBJ dealers)
+     (VP said
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (NP-SBJ There)
+     (VP were
+         (NP-PRD concerns
+		 (SBAR *ICH*-1))
+         (ADVP-TMP early
+		   (PP in
+		       (NP the day)))
+         (SBAR-1 that
+		 (S (NP-SBJ (NP (NP Wall Street 's)
+				sharp gains)
+			    (PP-TMP on
+				    (NP Tuesday)))
+		    (VP were
+			(ADJP-PRD (ADJP overdone)
+				  and
+				  (ADJP due
+					(PP for
+					    (NP a reversal))))))))
+     .))
+( (S (NP-SBJ The FT 30-share index)
+     (VP settled
+         (ADVP-CLR (NP 16.7 points)
+		   higher)
+         (PP-CLR at
+		 (NP 1738.1)))
+     .))
+( (S (NP-SBJ Volume)
+     (VP was
+         (NP-PRD 372.9 million shares)
+         ,
+         (ADVP-CLR up
+		   (PP from
+		       (NP (NP (QP 334.5 million))
+			   (PP-TMP on
+				   (NP Tuesday))))))
+     .))
+( (S (NP-SBJ Dealers)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ institutions)
+                  (VP were
+                      (ADVP-TMP still)
+                      (ADVP largely)
+		      (VP hugging
+                          (NP the sidelines)
+                          (PP on
+                              (NP fears
+                                  (SBAR that
+                                        (S (NP-SBJ (NP the market 's)
+                                                   recent technical rally)
+                                           (VP might
+                                               (VP prove
+                                                   (ADJP-PRD fragile))))))))))))
+     .))
+( (S (NP-SBJ They)
+     (VP cited
+         (NP (NP (NP Wall Street 's)
+                 recent volatility)
+             and
+             (NP (NP the lack)
+                 (PP of
+                     (NP (NP a clear indication)
+                         (PP over
+                             (NP (NP the market 's)
+                                 short-term direction))))))
+         (PP-CLR as
+		 (NP (NP factors)
+		     (PP in
+			 (NP the institutional caution)))))
+     .))
+( (S (NP-SBJ-1 (NP Jaguar)
+	       ,
+	       (NP (NP a U.K. luxury auto maker)
+		   (VP being
+		       (VP pursued
+			   (NP *)
+			   (PP by
+			       (NP-LGS (NP Ford Motor)
+				       and
+				       (NP General Motors))))))
+	       ,)
+     (VP gained
+         (NP-EXT (NP 10 pence)
+		 (PRN -LRB-
+		      (NP 16 cents)
+		      -RRB-)
+		 (NP-ADV a share))
+         (S-CLR (NP-SBJ *-1)
+		(VP to
+		    (VP close
+			(PP-CLR at
+				(NP (NP 879 pence)
+				    (PRN -LRB-
+					 (NP $ 13.90 *U*)
+					 -RRB-)))))))
+     .))
+( (S (NP-SBJ It)
+     (VP shed
+         (NP-EXT (QP about 7) pence)
+         ,
+         (ADVP however)
+         ,
+	 (SBAR-TMP after
+		   (S (NP-SBJ dealers)
+		      (VP said
+			  (SBAR 0
+				(S (NP-SBJ the market)
+				   (VP was
+				       (VP disappointed
+					   (SBAR that
+						 (S (NP-SBJ-1 Ford)
+						    (VP did n't
+							(VP move
+							    (S (NP-SBJ *-1)
+							       (VP to
+								   (VP tender
+								       (NP (NP a bid)
+									   (PP for
+									       (NP (NP control)
+										   (PP of
+										       (NP the company))))))))))))))))))))
+     .))
+( (S (NP-SBJ Dealers)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ (NP (NP the U.K. government 's)
+			      decision
+			      (S *ICH*-1))
+                          (NP-TMP Tuesday)
+                          (S-1 (NP-SBJ *)
+			       (VP to
+				   (VP waive
+				       (NP (NP its
+					       protective
+					       `` golden share '')
+					   (PP in
+					       (NP the auto maker)))))))
+                  (VP raised
+                      (NP (NP prospects)
+                          (PP of
+                              (NP (NP a bidding war)
+                                  (PP between
+                                      (NP the two U.S. auto giants)))))))))
+     .))
+( (S But
+     (NP-SBJ-1 the waiver)
+     (ADVP also)
+     (VP was
+         (VP seen
+	     (NP *-1)
+             (PP-CLR as
+		     (NP a signal
+			 (SBAR that
+			       (S (NP-SBJ-2 (NP Ford)
+					    ,
+					    (NP a major U.K. auto industry employer)
+					    ,)
+				  (VP was
+				      (ADJP-PRD able
+						(S (NP-SBJ *-2)
+						   (VP to
+						       (VP gain
+							   (NP (NP government acceptance)
+							       (PP of
+								   (NP (NP its bid)
+								       (PP for
+									   (NP (NP control)
+									       (PP of
+										   (NP Jaguar))))))))))))))))))
+     .))
+( (S (NP-SBJ Dealers)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ that interpretation)
+                  (VP sparked
+                      (NP (NP expectations)
+                          (PP of
+                              (NP (NP an imminent bid)
+                                  (PP by
+                                      (NP Ford)))))))))
+     .))
+( (S (S-TPC-3 (NP-SBJ (NP B.A.T Industries)
+		      ,
+		      (SBAR (WHNP-2 which)
+			    (S (NP-SBJ-1 *T*-2)
+			       (VP is
+				   (VP being
+				       (VP pursued
+					   (NP *-1)
+					   (PP by
+					       (NP-LGS (NP Sir James Goldsmith 's)
+						       Hoylake Investments)))))))
+		      ,)
+	      (VP rose
+		  (NP-EXT 9)
+		  (PP-CLR to
+			  (NP 753))
+		  (PP on
+		      (NP speculation
+			  (SBAR that
+				(S (NP-SBJ Hoylake)
+				   (VP will
+				       (VP sweeten
+					   (NP its bid)))))))))
+     ,
+     (NP-SBJ dealers)
+     (VP said
+	 (SBAR 0
+	       (S *T*-3)))
+     .))
+( (S (PP Like
+         (NP Jaguar))
+     ,
+     (NP-SBJ B.A.T)
+     (ADVP also)
+     (VP eased
+	 (PP-CLR off
+		 (NP its highs))
+	 (PP-TMP in
+		 (NP afternoon dealings)))
+     .))
+( (S (NP-SBJ (NP Reed International)
+             ,
+             (NP a U.K. publishing group)
+             ,)
+     (VP gained
+         (NP-EXT 15)
+         (PP-CLR to
+		 (NP 397))
+         (PP despite
+             (S-NOM (NP-SBJ *)
+		    (VP reporting
+			(NP (NP a (ADJP 3.7 %) drop)
+			    (PP in
+				(NP interim pretax profit)))))))
+     .))
+( (S (NP-SBJ Analysts)
+     (VP said
+         (SBAR (SBAR 0
+                     (S (NP-SBJ (NP the fall)
+                                (PP-LOC in
+					(NP pretax profit)))
+                        (VP was
+                            (ADJP-PRD due
+				      (PP to
+					  (NP (NP (NP the group 's)
+						  recent restructuring and sale)
+					      (PP of
+						  (NP peripheral units))))))))
+               , and
+               (SBAR that
+                     (S (NP-SBJ its remaining businesses)
+                        (VP are
+                            (VP performing
+                                (ADVP-MNR well)))))))
+     .))
+( (S (NP-SBJ Dealers)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ the market)
+                  (VP agreed))))
+     .))
+( (S (NP-SBJ (NP Stocks)
+             (VP boosted
+                 (NP *)
+                 (PP by
+                     (NP-LGS (NP market-makers)
+                             (VP shopping
+                                 (S-PRP (NP-SBJ *)
+					(VP to
+					    (VP cover
+						(NP (NP book requirements)
+						    (PP in
+							(NP FT-SE 100 shares)))))))))))
+     (VP included
+         (NP (NP Carlton Communications)
+             ,
+             (SBAR (WHNP-1 which)
+                   (S (NP-SBJ *T*-1)
+                      (VP climbed
+                          (NP-EXT 32)
+                          (PP-CLR to
+				  (NP 778)))))))
+     .))
+( (S (NP-SBJ (NP Drug companies)
+             (PP-LOC in
+		     (NP the key index)))
+     (ADVP also)
+     (VP notched
+         (NP gains)
+	 (SBAR-ADV as
+		   (S (NP-SBJ market-makers)
+		      (VP searched
+			  (PP-CLR for
+				  (NP stock))
+			  (PP in
+			      (NP (NP anticipation)
+				  (PP of
+				      (NP (NP demand)
+					  (ADJP due
+						(PP to
+						    (NP (NP the sector 's)
+							defensive qualities)))))))))))
+     .))
+( (S (NP-SBJ Wellcome)
+     (VP gained
+         (NP-EXT 18)
+         (PP-CLR to
+		 (NP 666))
+         (PP on
+             (NP a modest (QP 1.1 million) shares)))
+     .))
+( (S (NP-SBJ (NP Glaxo)
+             ,
+             (NP (NP the U.K. 's)
+                 largest pharmaceutical concern)
+             ,)
+     (VP advanced
+         (NP-EXT 23)
+         (PP-CLR to
+		 (NP # 14.13 *U*)))
+     .))
+( (S (NP-SBJ Stock prices)
+     (VP (VP closed
+	     (ADVP-CLR higher)
+	     (PP-LOC-2 in
+		       (NP Stockholm
+			   ,
+			   Amsterdam
+			   and
+			   Frankfurt)))
+	 and
+	 (VP (ADJP-PRD=1 lower)
+	     (PP-LOC=2 in
+		       (NP Zurich))))
+     .))
+( (S (NP-SBJ Paris
+	     ,
+	     Brussels
+	     , and
+	     Milan)
+     (VP were
+         (ADJP-PRD closed
+		   (PP for
+		       (NP a holiday))))
+     .))
+( (S (NP-SBJ (ADJP South African)
+             gold stocks)
+     (VP closed
+         (ADJP marginally lower))
+     .))
+( (S (ADVP-LOC Elsewhere)
+     ,
+     (NP-SBJ share prices)
+     (VP (VP closed
+             (ADVP-CLR higher)
+	     (PP-LOC in
+		     (NP Singapore
+			 ,
+			 Taipei
+			 and
+			 Wellington)))
+         ,
+         (VP (VP were
+		 (ADJP-PRD-1 mixed)
+		 (PP-LOC-2 in
+			   (NP Hong Kong)))
+	     ,
+	     (VP (ADJP-PRD=1 lower)
+		 (PP-LOC=2 in
+			   (NP Seoul)))
+	     and
+	     (VP (ADJP-PRD=1 little changed)
+		 (PP-LOC=2 in
+			   (NP Sydney)))))
+     .))
+( (S (NP-SBJ Manila markets)
+     (VP were
+         (ADJP-PRD closed
+		   (PP for
+		       (NP a holiday))))
+     .))
+( (SINV (ADVP-LOC-PRD-1 Here)
+	(VP are
+	    (ADVP-LOC-PRD *T*-1))
+	(NP-SBJ (NP price trends)
+		(PP-LOC on
+			(NP (NP the world 's)
+			    major stock markets))
+		,
+		(SBAR-ADV as
+			  (S (NP-SBJ-2 *) 
+			     (VP calculated
+				 (NP *-2)
+				 (PP by
+				     (NP-LGS (NP Morgan Stanley Capital International Perspective)
+					     ,
+					     (NP-LOC Geneva)))))))
+	.))
+( (S (S-PRP (NP-SBJ *)
+	    (VP To
+		(VP make
+		    (S (NP-SBJ them)
+		       (ADJP-PRD directly comparable)))))
+     ,
+     (NP-SBJ-1 each index)
+     (VP is
+	 (VP based
+	     (NP *-1)
+	     (PP-LOC-CLR on
+			 (S-NOM (NP-SBJ (NP the close)
+					(PP of
+					    (NP 1969)))
+				(VP equaling
+				    (NP 100))))))
+     .))
+( (S (NP-SBJ The percentage change)
+     (VP is
+         (PP-TMP-PRD since
+		     (NP year-end)))
+     .))

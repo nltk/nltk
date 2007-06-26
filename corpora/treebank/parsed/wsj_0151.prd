@@ -1,0 +1,177 @@
+
+
+( (S (NP-SBJ (NP Intelogic Trace Inc.)
+             ,
+             (NP-LOC (NP San Antonio)
+		     ,
+		     (NP Texas)
+		     ,))
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP bought
+                      (NP (NP (NP (QP 2.7 million) shares)
+			      (PP *RNR*-1))
+                          , or
+                          (NP (NP (QP about 18) %)
+			      (PP *RNR*-1))
+                          ,
+                          (PP-1 of
+				(NP its common stock)))
+		      (PP-CLR from
+			      (NP an unaffiliated shareholder))
+                      (PP-CLR for
+			      (NP (NP (NP $ 3.625 *U*)
+				      (NP-ADV a share))
+				  , or
+				  (NP (QP $ 9.9 million) *U*)))))))
+     .))
+( (S (NP-SBJ-2 The move)
+     (VP (VP boosts
+	     (NP (NP Intelogic Chairman Asher Edelman 's)
+		 stake)
+	     (PP-DIR to
+		     (NP 20 %))
+	     (PP-DIR from
+		     (NP 16.2 %)))
+	 and
+	 (VP may
+	     (VP help
+		 (S (NP-SBJ *-2)
+		    (VP prevent
+			(NP-1 Martin Ackerman)
+			(PP from
+			    (S-NOM (NP-SBJ *-1)
+				   (VP making
+				       (NP-CLR a run)
+				       (PP-CLR at
+					       (NP the computer-services concern))))))))))
+     .))
+( (S (NP-SBJ-1 Mr. Ackerman)
+     (ADVP already)
+     (VP is
+         (VP seeking
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP oust
+                        (NP Mr. Edelman)
+                        (PP-CLR as
+				(NP (NP chairman)
+				    (PP of
+					(NP (NP Datapoint Corp.)
+					    ,
+					    (NP an Intelogic affiliate))))))))))
+     .))
+( (S (NP-SBJ The action)
+     (VP followed
+         (PP by
+             (NP one day))
+         (NP an Intelogic announcement
+             (SBAR that
+                   (S (NP-SBJ it)
+                      (VP will
+                          (VP retain
+                              (NP an investment banker)
+			      (S-PRP (NP-SBJ *)
+				     (VP to
+					 (VP explore
+					     (NP (NP alternatives)
+						 ``
+						 (SBAR (WHNP-1 0)
+						       (S (NP-SBJ *T*-1)
+							  (VP to
+							      (VP maximize
+								  (NP shareholder value)))))
+						 , ''
+						 (PP including
+						     (NP (NP the possible sale)
+							 (PP of
+							     (NP the company))))))))))))))
+     .))
+( (S (PP-LOC In
+	     (NP (NP New York Stock Exchange composite trading)
+		 (NP-TMP yesterday)))
+     ,
+     (NP-SBJ-1 Intelogic shares)
+     (VP rose
+         (NP-EXT 37.5 cents)
+         (S-CLR (NP-SBJ *-1)
+		(VP to
+		    (VP close
+			(PP-CLR at
+				(NP $ 2.75 *U*))))))
+     .))
+( (S (NP-SBJ-2 Mr. Edelman)
+     (VP declined
+         (S (NP-SBJ *-2)
+            (VP to
+                (VP specify
+                    (SBAR (WHNP-1 what)
+                          (S (NP-SBJ *T*-1)
+                             (VP prompted
+                                 (NP the recent moves)))))))
+	 ,
+	 (S-ADV (NP-SBJ *-2)
+		(VP saying
+		    (SBAR 0
+			  (S (NP-SBJ-4 they)
+			     (VP are
+				 (VP meant
+				     (ADVP only)
+				     (S (NP-SBJ *-4)
+					(VP to
+					    (VP benefit
+						(NP shareholders)
+						(SBAR-TMP (WHADVP-3 when)
+							  ``
+							  (S (NP-SBJ the company)
+							     (VP is
+								 (PP-PRD on
+									 (NP a roll))
+								 (ADVP-TMP *T*-3))))))))))))))
+     . ''))
+( (S (NP-SBJ He)
+     (VP added
+	 ,
+	 ``
+	 (S (S (NP-SBJ This)
+               (VP has
+                   (NP (NP nothing)
+		       (SBAR (WHNP-1 0)
+			     (S (NP-SBJ *)
+				(VP to
+				    (VP do
+					(NP *T*-1)
+					(PP-CLR with
+						(NP Marty Ackerman)))))))))
+            and
+            (S (NP-SBJ-2 it)
+               (VP is not
+                   (VP designed
+		       ,
+                       (ADVP particularly)
+                       ,
+                       (S (NP-SBJ *-2)
+                          (VP to
+                              (VP take
+                                  (S (NP-SBJ the company)
+				     (ADJP-PRD private))))))))))
+     . ''))
+( (S But 
+     (NP-SBJ Mr. Ackerman)
+     (VP said
+	 (SBAR 0
+	       (S (NP-SBJ (NP the buy-back)
+			  , and
+			  (NP (NP the above-market price)
+			      (VP paid
+				  (NP *)))
+			  ,)
+		  (VP prove
+		      (SBAR that
+			    (S (NP-SBJ-1 Mr. Edelman)
+			       (VP is
+				   (VP running
+				       (S-ADV (NP-SBJ *-1)
+					      (VP scared))))))))))
+     .))

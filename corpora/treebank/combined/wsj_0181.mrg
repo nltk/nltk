@@ -1,0 +1,241 @@
+
+( (S 
+    (NP-SBJ 
+      (NP 
+        (NP (DT The) (NNP Bush) (NN administration) (POS 's) )
+        (NN nomination) )
+      (PP (IN of) 
+        (NP (NNP Clarence) (NNP Thomas) ))
+      (PP (TO to) 
+        (NP 
+          (NP (DT a) (NN seat) )
+          (PP (IN on) 
+            (NP 
+              (NP (DT the) (JJ federal) (NNS appeals) (NN court) )
+              (ADVP-LOC (RB here) ))))))
+    (VP (VBD received) 
+      (NP (DT a) (NN blow) )
+      (NP-TMP (DT this) (NN week) )
+      (SBAR-TMP 
+        (WHADVP-1 (WRB when) )
+        (S 
+          (NP-SBJ (DT the) (NNP American) (NNP Bar) (NNP Association) )
+          (VP (VBD gave) 
+            (NP (NNP Mr.) (NNP Thomas) )
+            (NP 
+              (NP (RB only) (DT a) (`` ``) (JJ qualified) ('' '') (NN rating) )
+              (, ,) 
+              (PP (RB rather) (IN than) 
+                (ADJP (`` ``) (RB well) (VBN qualified) )))
+            (ADVP-TMP (-NONE- *T*-1) )))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ 
+      (NP (NNS People) )
+      (ADJP (JJ familiar) 
+        (PP (IN with) 
+          (NP 
+            (NP (DT the) (NNP Senate) (NNP Judiciary) (NNP Committee) )
+            (, ,) 
+            (SBAR 
+              (WHNP-1 (WDT which) )
+              (S 
+                (NP-SBJ (-NONE- *T*-1) )
+                (VP (MD will) 
+                  (VP (VB vote) 
+                    (PP-CLR (IN on) 
+                      (NP (DT the) (NN nomination) ))))))
+            (, ,) ))))
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-2 
+            (NP (DT some) (JJ liberal) (NNS members) )
+            (PP (IN of) 
+              (NP (DT the) (NN panel) )))
+          (VP (VBP are) 
+            (ADJP-PRD (JJ likely) 
+              (S 
+                (NP-SBJ (-NONE- *-2) )
+                (VP (TO to) 
+                  (VP (VB question) 
+                    (NP (DT the) (NNP ABA) (NN rating) )
+                    (PP (IN in) 
+                      (NP 
+                        (NP (NNS hearings) )
+                        (PP (IN on) 
+                          (NP (DT the) (NN matter) ))))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NNP Mr.) (NNP Thomas) )
+      (, ,) 
+      (NP 
+        (NP (RB currently) (NN chairman) )
+        (PP (IN of) 
+          (NP (DT the) (NNP Equal) (NNP Employment) (NNP Opportunity) (NNP Commission) )))
+      (, ,) )
+    (VP (MD would) 
+      (VP (VB add) 
+        (NP (DT another) (JJ conservative) (NN voice) )
+        (PP-CLR (TO to) 
+          (NP (DT the) 
+            (ADJP (RB closely) (VBN divided) )
+            (NN court) ))))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNS Groups) )
+    (VP (VBP have) 
+      (VP (VBN accused) 
+        (NP 
+          (NP (PRP him) )
+          (PP 
+            (PP (IN of) 
+              (S-NOM 
+                (NP-SBJ (-NONE- *) )
+                (VP (VBG advocating) 
+                  (NP 
+                    (NP (NNS policies) )
+                    (SBAR 
+                      (WHNP-1 (WDT that) )
+                      (S 
+                        (NP-SBJ (-NONE- *T*-1) )
+                        (VP (VBD narrowed) 
+                          (NP 
+                            (NP (NNS rights) )
+                            (PP (IN of) 
+                              (NP (JJR older) (NNS workers) ))))))))))
+            (CC and) 
+            (PP (IN of) 
+              (S-NOM 
+                (NP-SBJ (-NONE- *) )
+                (VP (VBG ignoring) 
+                  (NP 
+                    (NP (NN discrimination) )
+                    (PP (IN by) 
+                      (NP (JJ large) (NNS companies) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (CD Fourteen) (NNS members) )
+      (PP (IN of) 
+        (NP (DT the) (NNP House) ))
+      (PP (IN with) 
+        (NP 
+          (NP (NN jurisdiction) )
+          (PP (IN over) 
+            (NP (DT the) (NNP EEOC) )))))
+    (VP (VBP have) 
+      (VP (VBN said) 
+        (SBAR (-NONE- 0) 
+          (S 
+            (NP-SBJ (PRP they) )
+            (VP (VBP oppose) 
+              (NP 
+                (NP (NNP Mr.) (NNP Thomas) (POS 's) )
+                (NN nomination) )
+              (PP-PRP (IN because) (IN of) (`` ``) 
+                (NP 
+                  (NP (JJ serious) (NNS questions) )
+                  (PP (IN about) 
+                    (NP (PRP$ his) 
+                      (NX 
+                        (NX (NN judgment) )
+                        (-LRB- -LCB-) 
+                        (CC and)
+                        
+                        (-RRB- -RCB-)
+                        (NX (NN respect) 
+                          (PP (IN for) 
+                            (NP (DT the) (NN law) )))))))))))))
+    (. .) ('' '') ))
+( (S 
+    (NP-SBJ (DT A) (JJ senior) (NNP Justice) (NNP Department) (NN official) )
+    (, ,) 
+    (ADVP (RB however) )
+    (, ,) 
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (DT the) (NN administration) )
+          (VP (VBZ is) (RB n't) 
+            (VP (VBN worried) 
+              (PP-CLR (IN about) 
+                (NP (DT the) (NNP ABA) (NN rating) )))))))
+    (. .) ))
+( (S (`` ``) 
+    (S-TPC-1 
+      (NP-SBJ (PRP We) )
+      (VP (VBP 're) 
+        (ADJP-PRD (VBN pleased) 
+          (SBAR (-NONE- 0) 
+            (S 
+              (NP-SBJ (DT the) (NNP ABA) )
+              (VP (VBD rated) 
+                (S 
+                  (NP-SBJ (PRP him) )
+                  (ADJP-PRD (VBN qualified) ))))))))
+    (, ,) ('' '') 
+    (NP-SBJ 
+      (NP (NNP David) (NNP Runkel) )
+      (, ,) 
+      (NP 
+        (NP (DT the) (NN department) (POS 's) )
+        (NN chief) (NN spokesman) )
+      (, ,) )
+    (VP (VBD said) 
+      (S (-NONE- *T*-1) )
+      (PP-LOC (IN in) 
+        (NP (DT an) (NN interview) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NNP ABA) )
+    (VP (VBZ gives) 
+      (NP (DT a) (`` ``) 
+        (ADJP (VBN qualified) )
+        ('' '') (VBG rating) )
+      (PP-DTV (TO to) 
+        (NP 
+          (NP (NNS nominees) )
+          (SBAR 
+            (WHNP-1 (-NONE- 0) )
+            (S 
+              (NP-SBJ (PRP it) )
+              (VP (VBZ believes) 
+                (SBAR (-NONE- 0) 
+                  (S 
+                    (NP-SBJ (-NONE- *T*-1) )
+                    (VP (MD would) 
+                      (VP (VB perform) (`` ``) 
+                        (ADVP-MNR (RB satisfactorily) )
+                        ('' '') 
+                        (PP-LOC (IN on) 
+                          (NP (DT the) (NN bench) ))))))))))))
+    (. .) ))
+( (S 
+    (PP (IN In) 
+      (NP (NN contrast) ))
+    (, ,) 
+    (NP-SBJ 
+      (NP (DT the) (NNS lawyers) (POS ') )
+      (NN association) )
+    (VP (VBZ gives) 
+      (NP (DT a) (`` ``) 
+        (ADJP (RB well) (VBN qualified) )
+        ('' '') (NN rating) )
+      (PP-DTV (TO to) 
+        (NP 
+          (NP (DT those) )
+          (`` ``) 
+          (VP (VBN regarded) 
+            (NP (-NONE- *) )
+            (PP-CLR (IN as) 
+              (NP 
+                (NP (CD one) )
+                (PP (IN of) 
+                  (NP 
+                    (NP (DT the) (JJS best) )
+                    (ADJP (JJ available) 
+                      (PP (IN for) 
+                        (NP (DT the) (NN vacancy) )))))))))))
+    (. .) ))

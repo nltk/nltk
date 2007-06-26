@@ -1,0 +1,124 @@
+
+
+( (S (NP-SBJ-1 The following issues)
+     (VP were
+         (ADVP-TMP recently)
+         (VP filed
+	     (NP *-1)
+             (PP-CLR with
+		     (NP the Securities and Exchange Commission))))
+     :))
+( (NP (NP Intermec Corp.)
+      ,
+      (NP (NP offering)
+	  (PP of
+	      (NP 1,050,000 common shares)))
+      ,
+      (PP via
+	  (NP (NP Goldman , Sachs & Co.)
+	      and
+	      (NP Piper , Jaffray & Hopwood Inc)))
+      .))
+( (NP (NP Middlesex Water Co.)
+      ,
+      (NP (NP offering)
+	  (PP of
+	      (NP (NP 150,000 shares)
+		  (PP of
+		      (NP common stock)))))
+      ,
+      (PP via
+	  (NP (NP Legg Mason Wood Walker Inc.)
+	      and
+	      (NP Howard , Weil , Labouisse , Friedrichs Inc)))
+      .))
+( (NP (NP Midwesco Filter Resources Inc.)
+      ,
+      (NP (NP initial offering)
+	  (PP of
+	      (NP (NP 830,000 common shares)
+		  (SBAR *PPA*-3)))
+	  ,
+	  (SBAR-3 (WHNP-2 0)
+		  (S (NP-SBJ-1 *T*-2)
+		     (VP to
+			 (VP be
+			     (VP offered
+				 (NP *-1)
+				 (PP by
+				     (NP-LGS the company))))))))
+      ,
+      (PP via
+	  (NP Chicago Corp))
+      .))
+( (NP (NP Nylev Municipal Fund Inc.)
+      ,
+      (NP (NP offering)
+	  (PP of
+	      (NP (QP five million) common shares)))
+      .))
+( (NP (NP Occidental Petroleum Corp.)
+      ,
+      (NP (NP shelf offering)
+	  (PP of
+	      (NP (NP (QP $ 1.5 billion)
+		      *U*)
+		  (PP in
+		      (NP senior debt securities)))))
+      .))
+( (NP (NP Prime Motor Inns Inc.)
+      ,
+      (NP (NP offering)
+	  (PP of
+	      (NP (ADJP (QP up to $ 300 million) *U*)
+		  zero coupon convertible debentures)))
+      ,
+      (PP via
+	  (NP (NP Drexel Burnham Lambert Inc.)
+	      and
+	      (NP Montgomery Securities)))
+      .))
+( (NP (NP Service Fracturing Co.)
+      ,
+      (NP (NP proposed offering)
+	  (PP of
+	      (NP (NP (QP 1.2 million) shares)
+		  (PP of
+		      (NP common stock)))))
+      ,
+      (PP via
+	  (NP (NP Lovett Mitchell Webb & Garrison , Inc.)
+	      , and
+	      (NP Blunt Ellis & Loewi Inc)))
+      .))
+( (NP (NP Western Gas Resources Inc.)
+      ,
+      (NP (NP initial offering)
+	  (PP of
+	      (NP (NP 3,250,000 shares)
+		  (PP of
+		      (NP common stock))
+		  ,
+		  (SBAR (WHPP-2 of
+				(WHNP which))
+			(S (S (NP-SBJ-1 (NP 3,040,000 shares)
+					(PP *T*-2))
+			      (VP will
+				  (VP be
+				      (VP sold
+					  (NP *-1)
+					  (PP-3 by
+						(NP-LGS the company))))))
+			   and
+			   (S (NP-SBJ=1 (NP 210,000 shares)
+					(PP *T*-2))
+			      (PP=3 by
+				    (NP-LGS a holder))))))))
+      ,
+      (PP via
+	  (NP (NP Prudential-Bache Capital Funding)
+	      ,
+	      (NP Smith Barney , Harris Upham & Co.)
+	      , and
+	      (NP Hanifen , Imhoff Inc)))
+      .))

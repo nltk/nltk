@@ -1,0 +1,211 @@
+
+
+( (S (NP-SBJ Ralston Purina Co.)
+     (VP reported
+         (NP (NP a (ADJP 47 %) decline)
+	     (PP in
+		 (NP fourth-quarter earnings)))
+	 ,
+	 (S-ADV (NP-SBJ *)
+		(VP reflecting
+		    (NP (NP restructuring costs)
+			(CONJP as well as)
+			(NP a (ADJP more difficult) pet food market)))))
+     .))
+( (S (NP-SBJ The St. Louis company)
+     (VP earned
+         (NP (NP (QP $ 45.2 million) *U*)
+             , or
+             (NP (NP 65 cents)
+                 (NP-ADV a share))
+             ,)
+	 (PP compared
+	     (PP with
+		 (NP (NP (NP (QP $ 84.9 million) *U*)
+			 , or
+			 (NP (NP $ 1.24 *U*)
+			     (NP-ADV a share))
+			 ,)
+		     (ADVP-TMP (NP a year)
+			       earlier)))))
+     .))
+( (S (NP-SBJ (NP Sales)
+             (PP-TMP in
+		     (NP the latest period)))
+     (VP were
+         (NP-PRD (NP (QP $ 1.76 billion) *U*)
+		 ,
+		 (NP (NP a (ADJP 13 %) increase)
+		     (PP from
+			 (NP (NP last year 's)
+			     (QP $ 1.55 billion)
+			     *U*)))))
+     .))
+( (S (PP For
+         (NP (NP the year)
+             (VP ended
+                 (NP-TMP-CLR Sept. 30))))
+     ,
+     (NP-SBJ Ralston)
+     (VP earned
+         (NP (NP (QP $ 422.5 million) *U*)
+             , or
+             (NP (NP $ 6.44 *U*)
+                 (NP-ADV a share))
+             ,)
+         (ADVP up
+               (NP 8.9 %)
+               (PP from
+                   (NP (NP (QP $ 387.8 million) *U*)
+                       , or
+                       (NP (NP $ 5.63 *U*)
+                           (NP-ADV a share))))))
+     .))
+( (S (NP-SBJ (NP This year 's)
+             results)
+     (VP included
+         (NP (NP a gain)
+             (PP of
+                 (NP (QP $ 70.2 million) *U*))
+             (PP on
+                 (NP (NP the disposal)
+                     (PP of
+                         (NP seafood operations))))))
+     .))
+( (S (NP-SBJ (NP Sales)
+             (PP for
+                 (NP the full year)))
+     (VP were
+         (NP-PRD (QP $ 6.6 billion) *U*)
+         ,
+         (ADVP up
+               (NP 13 %)
+               (PP from
+                   (NP (QP $ 5.8 billion) *U*))))
+     .))
+( (S (NP-SBJ Ralston)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ its restructuring costs)
+                  (VP include
+                      (NP (NP (NP the phase-out)
+                              (PP of
+                                  (NP (NP a battery facility)
+                                      (PP-LOC in
+					      (NP Greenville
+						  ,
+						  N.C.)))))
+                          ,
+                          (NP (NP the recent closing)
+                              (PP of
+                                  (NP (NP a Hostess cake bakery)
+                                      (PP-LOC in
+					      (NP Cincinnati)))))
+                          and
+                          (NP (NP a reduction)
+                              (PP in
+                                  (NP staff))
+                              (PP-LOC throughout
+				      (NP the company))))))))
+     .))
+( (S (S-TPC-3 (NP-SBJ-1 (NP The battery plant)
+			,
+			(SBAR (WHNP-2 which)
+			      (S (NP-SBJ *T*-2)
+				 (VP makes
+				     (NP rechargeable nickel cadmium and carbon zinc products))))
+			,)
+	      (VP will
+		  (VP be
+		      (VP closed
+			  (NP *-1)
+			  (PP-TMP over
+				  (NP the next year
+				      (QP or so)))))))
+     ,
+     (NP-SBJ a spokesman)
+     (VP said
+	 (SBAR 0
+	       (S *T*-3)))
+     .))
+( (S (NP-SBJ Ralston)
+     (VP attributed
+         (NP its fourth-quarter slump)
+	 (PP-CLR (ADVP partly)
+		 to
+		 (NP (NP (NP higher costs)
+			 (PP of
+			     (NP ingredients))
+			 (PP-LOC in
+				 (NP the pet food business)))
+		     (CONJP as well as)
+		     (NP (NP competitive pressures)
+			 ,
+			 (SBAR (WHNP-1 which)
+			       (S (NP-SBJ *T*-1)
+				  (VP required
+				      (NP higher advertising spending))))))))
+     .))
+( (S (S-TPC-1 (PP-TMP For
+		      (NP the year))
+	      ,
+	      (NP-SBJ pet food volume)
+	      (VP was
+		  (ADJP-PRD flat)))
+     ,
+     (NP-SBJ the company)
+     (VP said
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (NP-SBJ Its cereal division)
+     (VP (VP realized
+             (NP higher operating profit)
+             (PP on
+                 (NP volume increases)))
+         , but
+         (ADVP also)
+         (VP spent
+             (NP-ADV more)
+             (PP-CLR on
+		     (NP promotion))))
+     .))
+( (S (S-TPC-1 (NP-SBJ The Continental Baking business)
+	      (VP benefited
+		  (PP from
+		      (NP (NP higher margins)
+			  (PP (PP on
+				  (NP bread))
+			      and
+			      (PP on
+				  (NP increased cake sales)))))))
+     ,
+     (NP-SBJ it)
+     (VP added
+	 (SBAR 0
+	       (S *T*-1)))
+     .))
+( (S (NP-SBJ Ralston)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 its Eveready battery unit)
+                  (VP was
+                      (VP hurt
+                          (NP *-1)
+                          (PP by
+                              (NP-LGS (NP continuing economic problems)
+				      (PP-LOC in
+					      (NP South America)))))))))
+     .))
+( (S (NP-SBJ Ralston shares)
+     (VP closed
+         (NP-TMP yesterday)
+         (PP-CLR at
+		 (NP $ 80.50 *U*))
+         ,
+         (ADVP-CLR off
+		   (NP $ 1 *U*))
+         ,
+         (PP-LOC in
+		 (NP New York Stock Exchange composite trading)))
+     .))

@@ -1,0 +1,140 @@
+
+
+( (S (NP-SBJ (NP Komatsu Ltd.)
+             ,
+             (NP (NP a large integrated maker)
+                 (PP of
+                     (NP construction machinery)))
+             ,)
+     (VP posted
+         (NP (NP a (ADJP 32 %) unconsolidated gain)
+	     (PP in
+		 (NP first-half pretax profit))))
+     .))
+( (S (PP-TMP For
+	     (NP (NP the period)
+		 (VP ended
+		     (NP-TMP-CLR Sept.30))))
+     ,
+     (NP-SBJ it)
+     (VP earned
+         (NP (NP (NP (QP 16.68 billion) yen)
+                 ,
+		 (PRN -LRB-
+		      (NP (QP US$ 116.7 million) *U*)
+		      -RRB-))
+             (ADVP up
+                   (PP from
+                       (NP (NP (QP 12.68 billion) yen)
+                           (ADVP-TMP (NP the year)
+				     before))))))
+     .))
+( (S (NP-SBJ Sales)
+     (VP rose
+         (NP-EXT 11 %)
+         (PP-DIR to
+		 (NP (QP 292.32 billion) yen))
+         (PP-DIR from
+		 (NP (QP 263.07 billion) yen)))
+     .))
+( (S (NP-SBJ Net income)
+     (VP surged
+         (NP-EXT 31 %)
+         (PP-DIR to
+		 (NP (QP 7.63 billion) yen))
+         (PP-DIR from
+		 (NP (QP 5.82 billion) yen)))
+     .))
+( (S (NP-SBJ Per-share net)
+     (VP rose
+         (PP-DIR to
+		 (NP 7.84 yen))
+         (PP-DIR from
+		 (NP 6.53 yen)))
+     .))
+( (S (NP-SBJ (NP Brisk domestic demand)
+             (ADJP due
+                   (PP to
+                       (NP increasing capital investment))))
+     (VP pushed
+         (ADVP-DIR up)
+         (NP sales)
+         (ADVP-MNR sharply)
+         (PP-LOC in
+		 (NP (NP construction)
+		     and
+		     (NP industrial machinery divisions))))
+     .))
+( (S (NP-SBJ (NP Domestic sales)
+             (PP of
+                 (NP (NP construction machinery)
+                     ,
+                     (PP such as
+			 (NP (NP power shovels) and (NP bulldozers))))))
+     (VP rose
+         (PP-DIR to
+		 (NP (QP 142.84 billion) yen))
+         (PP-DIR from
+		 (NP (QP 126.15 billion) yen)))
+     .))
+( (S (S (NP-SBJ (NP Demand)
+                (PP from
+                    (NP (NP Europe)
+                        and
+                        (NP Southeast Asia))))
+        (ADVP also)
+	(VP grew))
+     , but
+     (S (ADVP-PRP due
+		  (PP to
+		      (NP (NP increasing production)
+			  (PP-LOC at
+				  (NP local plants)))))
+        ,
+        (NP-SBJ overseas sales)
+	(VP edged
+	    (ADVP-DIR down
+		      (NP 2.8 %))))
+     .))
+( (S (S (NP-SBJ Komatsu)
+        (VP predicted
+            (SBAR that
+                  (S (PP for
+                         (NP (NP the fiscal year)
+                             (VP ending
+                                 (NP-TMP-CLR March 31))))
+                     (NP-SBJ sales)
+                     (VP will
+                         (VP climb
+                             (PP-DIR to
+				     (NP (QP 600 billion) yen))
+                             (PP-DIR from
+				     (NP (QP 566.54 billion) yen))))))))
+     ;
+     (S (NP-SBJ-1 pretax profit)
+        (VP was
+            (VP forecast
+                (NP *-1)
+                (PP-CLR at
+			(NP (NP (QP 35 billion) yen)
+			    ,
+			    (ADVP up
+				  (PP from
+				      (NP (NP (QP 28.53 billion)
+					      yen)
+					  (PP-TMP in
+						  (NP fiscal 1989))))))))))
+     .))
+( (S (NP-SBJ-1 Net)
+     (VP is
+         (VP expected
+             (S (NP-SBJ *-1)
+                (VP to
+                    (VP rise
+                        (PP-DIR to
+				(NP (QP 17 billion) yen))
+                        (PP-DIR from
+				(NP (NP (QP 12.82 billion) yen)
+				    (ADVP-TMP (NP a year)
+					      earlier))))))))
+     .))

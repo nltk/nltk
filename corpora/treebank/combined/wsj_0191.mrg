@@ -1,0 +1,22 @@
+
+( (S 
+    (NP-SBJ (NNP First) (NNP Chicago) (NNP Corp.) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP it) )
+          (VP (VBD completed) 
+            (NP 
+              (NP (PRP$ its) 
+                (ADJP 
+                  (QP ($ $) (CD 55.1) (CD million) )
+                  (-NONE- *U*) )
+                (JJ cash-and-stock) (NN acquisition) )
+              (PP (IN of) 
+                (NP 
+                  (NP 
+                    (ADJP (RB closely) (VBN held) )
+                    (NNP Ravenswood) (NNP Financial) (NNP Corp.) )
+                  (, ,) 
+                  (NP (DT another) (NNP Chicago) (NN bank) (VBG holding) (NN company) ))))))))
+    (. .) ))

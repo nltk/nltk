@@ -1,0 +1,94 @@
+
+( (S 
+    (NP-SBJ 
+      (NP 
+        (NP (NNP Young) (POS 's) )
+        (NNP Market) (NNP Co.) )
+      (, ,) 
+      (NP 
+        (NP (DT a) (NN wholesaler) )
+        (PP (IN of) 
+          (NP 
+            (NP (NNS spirits) )
+            (, ,) 
+            (NP (NNS wines) )
+            (CC and) 
+            (NP (JJ other) (NNS goods) ))))
+      (, ,) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ (PRP it) )
+          (VP (MD will) 
+            (VP (VB merge) 
+              (PP-CLR (IN with) 
+                (NP 
+                  (NP (DT a) (JJ new) (NN corporation) )
+                  (VP (VBN formed) 
+                    (NP (-NONE- *) )
+                    (PP (IN by) 
+                      (NP-LGS 
+                        (NP (DT the) (NNP Underwood) (NN family) )
+                        (, ,) 
+                        (SBAR 
+                          (WHNP-1 (WDT which) )
+                          (S 
+                            (NP-SBJ (-NONE- *T*-1) )
+                            (VP (VBZ controls) 
+                              (NP (NNP Young) (POS 's) ))))))))))))))
+    (. .) ))
+( (S 
+    (PP (IN Under) 
+      (NP 
+        (NP (NNS terms) )
+        (PP (IN of) 
+          (NP (DT the) (NN agreement) ))))
+    (, ,) 
+    (NP-SBJ 
+      (NP (NNS shareholders) )
+      (ADJP (JJ other) 
+        (PP (IN than) 
+          (NP (DT the) (NNPS Underwoods) ))))
+    (VP (MD will) 
+      (VP (VB receive) 
+        (NP 
+          (NP ($ $) (CD 3,500) (-NONE- *U*) )
+          (NP-ADV (DT a) (NN share) ))
+        (PP-TMP (IN at) 
+          (NP 
+            (NP (NN closing) )
+            (, ,) 
+            (SBAR 
+              (WHNP-2 (WDT which) )
+              (S 
+                (NP-SBJ-1 (-NONE- *T*-2) )
+                (VP (VBZ is) 
+                  (VP (VBN expected) 
+                    (NP (-NONE- *-1) )
+                    (PP-TMP (IN in) 
+                      (NP (NNP December) ))))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NNP Underwood) (NN family) )
+    (VP (VBD said) 
+      (SBAR (IN that) 
+        (S 
+          (NP-SBJ 
+            (NP (NNS holders) )
+            (PP (IN of) 
+              (NP 
+                (NP (JJR more) )
+                (PP (IN than) 
+                  (NP 
+                    (NP (DT a) (NN majority) )
+                    (PP (IN of) 
+                      (NP 
+                        (NP (DT the) (NN stock) )
+                        (PP (IN of) 
+                          (NP (DT the) (NN company) )))))))))
+          (VP (VBP have) 
+            (VP (VBN approved) 
+              (NP (DT the) (NN transaction) )
+              (PP-MNR (IN by) 
+                (NP (VBN written) (NN consent) )))))))
+    (. .) ))

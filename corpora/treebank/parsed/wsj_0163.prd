@@ -1,0 +1,124 @@
+
+
+( (S (NP-SBJ Freeport-McMoRan Inc.)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ it)
+                  (VP will
+                      (VP convert
+                          (NP its Freeport-McMoRan Energy Partners Ltd. partnership)
+                          (PP-CLR into
+				  (NP a
+				      (ADJP publicly
+					    traded)
+				      company))
+			  (PP-MNR through
+				  (NP (NP the exchange)
+				      (PP of
+					  (NP (NP units)
+					      (PP of
+						  (NP the partnership))))
+				      (PP for
+					  (NP common shares)))))))))
+     .))
+( (S (NP-SBJ The company)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ-1 the restructuring)
+                  (VP is n't
+                      (VP expected
+                          (S (NP-SBJ *-1)
+                             (VP to
+                                 (VP have
+                                     (NP (NP any impact)
+                                         ,
+                                         (ADJP adverse or otherwise)
+                                         ,
+                                         (PP on
+                                             (NP its financial results)))))))))))
+     .))
+( (S (NP-SBJ (NP Freeport-McMoRan)
+             ,
+             (NP a (ADJP New Orleans-based)
+		 diversified energy conglomerate)
+             ,)
+     (VP said
+         (SBAR 0
+               (S (NP-SBJ the partnership)
+                  (VP will
+                      (VP exchange
+                          (NP its assets)
+                          (PP-CLR for
+				  (NP (NP common shares)
+				      (PP of
+					  (NP a yet-to-be-formed entity)))))))))
+     .))
+( (S (S (NP-SBJ-1 Freeport-McMoRan Energy Partners)
+        (VP will
+            (VP be
+                (VP-2 liquidated
+		      (NP *-1)))))
+     and
+     (S (NP-SBJ=1-3 (NP shares)
+		    (PP of
+			(NP the new company)))
+        (VP=2 distributed
+	      (NP *-3)
+	      (PP-CLR to
+		      (NP (NP the partnership 's)
+			  unitholders))))
+     .))
+( (S (S-TPC-2 (NP-SBJ Unitholders)
+	      (VP will
+		  (VP receive
+		      (NP two additional
+			  (ADJP 55 cents-a-unit)
+			  distribution payments)
+		      (SBAR-TMP before
+				(S (NP-SBJ-1 the trust)
+				   (VP is
+				       (VP liquidated
+					   (NP *-1)
+					   (PP-TMP in
+						   (NP early 1990)))))))))
+     ,
+     (NP-SBJ the company)
+     (VP said
+	 (SBAR 0
+	       (S *T*-2)))
+     .))
+( (S (NP-SBJ-2 It)
+     (VP is
+         (VP expected
+	     (SBAR that
+		   (S (NP-SBJ-3 (NP common shares)
+				(ADJP equal
+				      (PP to
+					  (NP (NP (NP the number)
+						  (PP of
+						      (NP (NP units)
+							  (ADJP outstanding))))
+					      --
+					      (NP (NP (QP about 108 million)) 
+						  (PP-TMP on
+							  (NP Sept. 30)))
+					      --))))
+		      (VP will
+			  (VP be
+			      (VP issued
+				  (NP *-3)
+				  (PP-TMP during
+					  (NP (NP the first quarter)
+					      (PP of
+						  (NP 1990)))))))))))
+     .))
+( (S (NP-SBJ (NP Freeport-McMoRan)
+             ,
+             (NP the parent company)
+             ,)
+     (VP holds
+         (NP (NP (QP roughly 80) %)
+             (PP of
+                 (NP (NP the units)
+                     (ADJP outstanding)))))
+     .))

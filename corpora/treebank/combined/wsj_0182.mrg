@@ -1,0 +1,169 @@
+
+( (S 
+    (NP-SBJ (NNP Metallgesellschaft) (NNP AG) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 (PRP it) )
+          (VP (VBD agreed) 
+            (S 
+              (NP-SBJ (-NONE- *-1) )
+              (VP (TO to) 
+                (VP (VB acquire) 
+                  (NP 
+                    (NP (CD 51) (NN %) )
+                    (PP (IN of) 
+                      (NP (NNP Lentjes) (NNP AG) )))
+                  (PP-CLR (IN from) 
+                    (NP (DT the) (NNP Ferdinand) (NNP Lentjes) (NNP Foundation) )))))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (NNS Terms) )
+    (VP (VBD were) (RB n't) 
+      (VP (VBN disclosed) 
+        (NP (-NONE- *-1) )))
+    (. .) ))
+( (S 
+    (NP-SBJ 
+      (NP (NN Metallgesellschaft) )
+      (, ,) 
+      (NP (DT a) (JJ diversified) 
+        (ADJP (NNP Frankfurt) 
+          (, ,)
+          (NNP West) (JJ Germany-based) )
+        (NNS metals) (NN group) )
+      (, ,) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S 
+          (NP-SBJ-1 (PRP it) )
+          (VP (VBZ is) 
+            (VP (VBG buying) 
+              (NP 
+                (NP (DT the) (NN stake) )
+                (PP (IN in) 
+                  (NP (DT the) (VBN specialized) (NN engineering) (NN company) )))
+              (S-PRP 
+                (NP-SBJ (-NONE- *-1) )
+                (VP (TO to) 
+                  (VP (VB expand) 
+                    (NP 
+                      (NP (PRP$ its) (NN production) )
+                      (PP (IN of) 
+                        (NP 
+                          (NP (JJ environmental) (NNS supplies) )
+                          (PP (IN for) 
+                            (NP (NN power) (NNS plants) )))))))))))))
+    (. .) ))
+( (S 
+    (S-TPC-1 
+      (NP-SBJ 
+        (NP 
+          (NP (NNP Lentjes) (POS ') )
+          (NN product) (NN mix) )
+        (PP (IN of) 
+          (NP (VBN specialized) (NNS boilers) 
+            (CC and)
+            (NNS pipes) )))
+      (VP (VBZ provides) 
+        (NP 
+          (NP (DT a) (JJ good) (NN fit) )
+          (PP (IN with) 
+            (NP (PRP$ its) (JJ own) (NNP Lurgi) (NNP G.m.b) (. .) (NN H.) (NN plant) (VBG engineering) (NN unit) )))))
+    (, ,) 
+    (NP-SBJ (DT the) (NN company) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-1) )))
+    (. .) ))
+( (S 
+    (S-TPC-2 
+      (NP-SBJ (DT The) (NN move) )
+      (VP (VBZ is) 
+        (NP-PRD 
+          (NP (NN part) )
+          (PP (IN of) 
+            (NP 
+              (NP (DT a) (NN strategy) )
+              (SBAR 
+                (WHNP-3 (-NONE- 0) )
+                (S 
+                  (NP-SBJ-1 (-NONE- *T*-3) )
+                  (VP (TO to) 
+                    (VP (VB focus) 
+                      (PP-CLR (IN on) 
+                        (NP (PRP$ its) (NN core) (NNS metals) (NN trading) 
+                          (, ,)
+                          (NN processing) 
+                          (CC and)
+                          (NN plant) (NN engineering) (NNS activities) ))
+                      (SBAR-TMP (IN while) 
+                        (S 
+                          (NP-SBJ (-NONE- *-1) )
+                          (VP (VBG shedding) 
+                            (NP (JJ peripheral) (NNS units) )))))))))))))
+    (, ,) 
+    (NP-SBJ (DT the) (NN company) )
+    (VP (VBD said) 
+      (SBAR (-NONE- 0) 
+        (S (-NONE- *T*-2) )))
+    (. .) ))
+( (S 
+    (NP-SBJ (NNP Lentjes) )
+    (VP 
+      (VP (VBD had) 
+        (NP 
+          (NP (CD 1988) (NNS sales) )
+          (PP (IN of) 
+            (NP 
+              (NP 
+                (QP (CD 800) (CD million) )
+                (NNS marks) )
+              (PRN 
+                (-LRB- -LRB-)
+                (NP 
+                  (QP ($ $) (CD 434.4) (CD million) )
+                  (-NONE- *U*) )
+                (-RRB- -RRB-) )))))
+      (CC and) 
+      (VP (VBZ has) 
+        (NP 
+          (NP (DT a) (JJ current) (NN order) (NN backlog) )
+          (PP (IN of) 
+            (NP 
+              (QP (CD 2.5) (CD billion) )
+              (NNS marks) )))))
+    (. .) ))
+( (S 
+    (NP-SBJ (DT The) (NN sale) )
+    (VP (VBZ comes) 
+      (PP (IN in) 
+        (NP 
+          (NP (NN place) )
+          (PP (IN of) 
+            (NP 
+              (NP (DT a) (VBN planned) (JJ initial) (JJ public) (NN offering) )
+              (PP (IN of) 
+                (NP (NNP Lentjes) (NN stock) )))))))
+    (. .) ))
+( (S 
+    (NP-SBJ-1 (DT A) (NN plan) 
+      (S 
+        (NP-SBJ (-NONE- *) )
+        (VP (TO to) 
+          (VP (VB bring) 
+            (NP (DT the) (NN stock) )
+            (PP-DIR (TO to) 
+              (NP (NN market) ))
+            (PP-TMP (IN before) 
+              (NP (NN year) (NN end) ))))))
+    (ADVP (RB apparently) )
+    (VP (VBD was) 
+      (VP (VBN upset) 
+        (NP (-NONE- *-1) )
+        (PP (IN by) 
+          (NP-LGS 
+            (NP (DT the) (JJ recent) (NN weakness) )
+            (PP (IN of) 
+              (NP (NNP Frankfurt) (NN share) (NNS prices) ))))))
+    (. .) ))

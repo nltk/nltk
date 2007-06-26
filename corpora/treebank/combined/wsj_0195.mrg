@@ -1,0 +1,33 @@
+
+( (S 
+    (NP-SBJ-1 
+      (NP (NNP John) (NNP F.) (NNP Barrett) )
+      (, ,) 
+      (NP (CD 40) )
+      (, ,) 
+      (ADVP-TMP (RB formerly) )
+      (NP 
+        (NP (JJ executive) (NN vice) (NN president) )
+        (CC and) 
+        (NP (NN chief) (JJ financial) (NN officer) ))
+      (, ,) )
+    (VP (VBD was) 
+      (VP (VBN named) 
+        (S 
+          (NP-SBJ (-NONE- *-1) )
+          (NP-PRD 
+            (NP 
+              (NP (NN president) )
+              (CC and) 
+              (NP (NN chief) (VBG operating) (NN officer) ))
+            (, ,) 
+            (NP 
+              (NP (NNS posts) )
+              (SBAR 
+                (WHNP-2 (WDT which) )
+                (S 
+                  (NP-SBJ (-NONE- *T*-2) )
+                  (VP (VBD had) 
+                    (VP (VBN been) 
+                      (ADJP-PRD (JJ vacant) ))))))))))
+    (. .) ))
