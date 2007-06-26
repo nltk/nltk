@@ -707,7 +707,7 @@ def pcfg_demo():
     """
 
     from nltk.corpus import treebank
-    from nltk import extract, cfg, treetransforms
+    from nltk import cfg, treetransforms
     from nltk.parse import pchart
 
     pcfg_prods = cfg.toy_pcfg1.productions()

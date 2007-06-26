@@ -91,7 +91,6 @@ def tagged(item):
 ######################################################################
 def demo():
     from nltk.corpus import indian
-    from nltk import extract
     
     def sample(language):
         print language.capitalize() + ":"
