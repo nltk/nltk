@@ -1,3 +1,26 @@
+Version 0.8b2 2007-06-26
+
+Code (major):
+- new corpus package, obsoleting old corpora package
+  - supports caching, slicing, corpus search path
+  - more flexible API
+  - global updates so all NLTK modules use new corpus package
+- moved nltk/contrib to separate top-level package nltk_contrib
+- changed wordpunct tokenizer to use \w instead of a-zA-Z0-9
+  as this will be more robust for languages other than English,
+  with implications for many corpus readers that use it
+- known bug: certain re-entrant structures in featstruct
+- known bug: when the LHS of an edge contains an ApplicationExpression,
+    variable values in the RHS bindings aren't copied over when the
+    fundamental rule applies
+Tutorials:
+- global updates to NLTK and docs
+- ongoing polishing
+Corpora:
+- treebank sample reverted to published multi-file structure
+Contrib:
+- DRT and Glue Semantics code (nltk_contrib.drt, nltk_contrib.gluesemantics, by Dan Garrette)
+
 Version 0.8b1 2007-06-18
 
 Code (major):
