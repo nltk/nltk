@@ -76,3 +76,13 @@ class ConfusionMatrix:
             if i == index: continue
             sum += self.matrix[index][i]
         return sum
+
+    def __str__(self):
+        strn = '{'
+        for i in range(self.__num_class_vals): 
+            values = []
+            for j in range(self.__num_class_vals): 
+                values.append(str(self.matrix[i][j]))
+            strn += ','.join(values) + '\n'
+        strn += '}'
+        return strn

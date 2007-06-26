@@ -5,7 +5,7 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_contrib.classifier import instances as ins, instance, attribute as a, discretisedattribute as da, numrange as nr, format
+from nltk_contrib.classifier import instances as ins, instance, attribute as a, discretisedattribute as da, numrange as nr, format, util
 from nltk_contrib.classifier.exceptions import systemerror as system, invaliddataerror as inv
 from nltk_contrib.classifier_tests import *
 import math
@@ -86,9 +86,10 @@ class InstancesTestCase(unittest.TestCase):
         path = datasetsDir(self) + 'numerical' + SEP + 'weather'
         training = format.C45_FORMAT.get_training_instances(path)
         try:
-            ranges = training.value_ranges([a.Attribute('outlook', ['sunny','overcast','rainy'], 0)]    )
+            training.value_ranges([a.Attribute('outlook', ['sunny','overcast','rainy'], 0)])
             self.fail('should throw error')
         except inv.InvalidDataError:
+            print("dwerrftregre")
             pass
         
     def test_discretise_using_discretised_attributes(self):
@@ -280,14 +281,14 @@ class InstancesTestCase(unittest.TestCase):
         class_freq_dist = training.class_freq_dist()
         self.assertEqual(6, class_freq_dist.N())
         self.assertEqual(2, class_freq_dist.B())
-        self.assertEqual(4, class_freq_dist.count('yes'))
-        self.assertEqual(2, class_freq_dist.count('no'))
+        self.assertEqual(4, class_freq_dist['yes'])
+        self.assertEqual(2, class_freq_dist['no'])
         
     def test_class_freq_dist_in_reverse_to_store_classes(self):
         path = datasetsDir(self) + 'numerical' + SEP + 'person'
         training = format.C45_FORMAT.get_training_instances(path)
         class_freq_dist = training.class_freq_dist()
-        self.assertEqual(['yes', 'no'], class_freq_dist.sorted_samples())
+        self.assertEqual(['yes','no'], class_freq_dist.sorted())
         
         
     def test_posterior_probablities_with_discrete_values(self):
@@ -312,7 +313,7 @@ class InstancesTestCase(unittest.TestCase):
         
         posterior_probabilities = training.posterior_probablities(attributes, klass)
         #numerical verification
-        values_for_class_yes = ins.StatList([25,21,34,31])#from data set
+        values_for_class_yes = util.StatList([25,21,34,31])#from data set
         mean = values_for_class_yes.mean()
         sd = values_for_class_yes.std_dev()
         expected_value = (1.0 / math.sqrt(2 * math.pi * sd)) * math.exp(-pow((30 - mean), 2)/ (2 * pow(sd, 2)))

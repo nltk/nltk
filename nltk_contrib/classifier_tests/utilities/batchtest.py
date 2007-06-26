@@ -1,3 +1,11 @@
+# Natural Language Toolkit
+#
+# Author: Sumukh Ghodke <sumukh dot ghodke at gmail dot com>
+#
+# URL: <http://nltk.sf.net>
+# This software is distributed under GPL, for license information see LICENSE.TXT
+
+
 import os
 import os.path
 from nltk_contrib.classifier import format as fmt, discretise as d, featureselect as f, classify as c
@@ -47,11 +55,20 @@ def process(path, log_path):
         disc_suffixes.append(disc.get_suffix())
 
         for naive_mod_alg in [d.NAIVE_SUPERVISED_V1, d.NAIVE_SUPERVISED_V2]:
+            options = [len(training) / 15] * len(indices)
             disc = d.Discretise()
             params = ['-a', naive_mod_alg, '-f', path, '-A', int_array_to_string(indices), '-o', int_array_to_string(options), '-l', log_path]
             print "Params " + str(params)
             disc.run(params)
             disc_suffixes.append(disc.get_suffix())
+            
+        disc = d.Discretise()
+        depths = [3] * len(indices) # 3 will result in 8 classes(closest to 10)
+        params = ['-a', d.ENTROPY_BASED_SUPERVISED, '-f', path, '-A', int_array_to_string(indices), '-o', int_array_to_string(depths), '-l', log_path]
+        print "Params " + str(params)
+        disc.run(params)
+        disc_suffixes.append(disc.get_suffix())
+        
     
     filter_inputs = ['']
     filter_inputs.extend(disc_suffixes)

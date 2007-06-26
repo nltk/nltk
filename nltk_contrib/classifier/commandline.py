@@ -117,6 +117,20 @@ class CommandLineInterface(OptionParser):
         if self.log is not None: 
             print >>self.log, 'Operation: ' + name
             print >>self.log, '\nAlgorithm: ' + str(self.algorithm) + '\nTraining: ' + str(self.training_path) + '\nTest: ' + str(self.test_path) + '\nGold: ' + str(self.gold_path)
+            
+    def log_created_files(self, files_names, message):
+        if self.log is None:
+            print message
+        else:
+            print >>self.log, "NumberOfFilesCreated: " + str(len(files_names))
+        count = 0
+        for file_name in files_names:
+            if self.log is None:
+                print file_name
+            else:
+                print >>self.log, "CreatedFile" + str(count) + ": " + file_name
+            count += 1
+
 
 def as_integers(name, com_str):
     indices = []

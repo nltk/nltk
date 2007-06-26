@@ -6,7 +6,7 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_contrib.classifier import instance as ins, item, cfile, confusionmatrix as cm, numrange as r
+from nltk_contrib.classifier import instance as ins, item, cfile, confusionmatrix as cm, numrange as r, util
 from nltk_contrib.classifier.exceptions import systemerror as system, invaliddataerror as inv
 from nltk import probability as prob
 import operator, UserList, UserDict, math
@@ -138,7 +138,7 @@ class TrainingInstances(Instances):
             for attribute in cont_attrs:
                 stat_list_values[attribute] = {}
                 for klass_value in klass_values:
-                    stat_list_values[attribute][klass_value] = StatList()
+                    stat_list_values[attribute][klass_value] = util.StatList()
         for instance in self.data:
             for attribute in attributes:
                 if attribute.is_continuous():
@@ -188,7 +188,7 @@ class SupervisedBreakpoints(UserList.UserList):
         frequencies = prob.FreqDist()
         for index in range(len(self.klass_values) - 1):
             frequencies.inc(self.klass_values[index])
-            if frequencies.count(frequencies.max()) >= min_size:
+            if frequencies[frequencies.max()] >= min_size:
                 self.append(index)
                 frequencies = prob.FreqDist()
         
@@ -230,7 +230,7 @@ class SupervisedBreakpoints(UserList.UserList):
         to_remove,frequencies = [], prob.FreqDist()
         for breakpoint in self.data:
             frequencies.inc(self.klass_values[breakpoint], breakpoint - prev)
-            if frequencies.count(frequencies.max()) < min_size:
+            if frequencies[frequencies.max()] < min_size:
                 to_remove.append(breakpoint)
             else:
                 frequencies = prob.FreqDist()
@@ -285,28 +285,6 @@ def calc_prob_based_on_distrbn(mean, sd, value):
             return 1
         else: return 0
     return (1.0 / math.sqrt(2 * math.pi * sd)) * math.exp(-pow((value - mean), 2)/ (2 * pow(sd, 2)))
-
-class StatList(UserList.UserList):
-    def __init__(self, values=None):
-        UserList.UserList.__init__(self, values)
-        
-    def mean(self):
-        sum = 0
-        if len(self.data) == 0: return 0
-        for each in self.data:
-            sum += each
-        return float(sum) / len(self.data)
-    
-    def variance(self):
-        _mean = self.mean()
-        if len(self.data) < 2: return 0
-        sum = 0
-        for each in self.data:
-            sum += pow((each - _mean), 2)
-        return float(sum) / (len(self.data) - 1)
-    
-    def std_dev(self):
-        return math.sqrt(self.variance())
         
 def training_as_gold(instances):
     gold = []

@@ -72,8 +72,6 @@ class FeatureSelect(cl.CommandLineInterface):
             self.error("Invalid options for Rank based Feature selection.")
         if (self.algorithm == FORWARD_SELECTION or self.algorithm == BACKWARD_ELIMINATION) and wrapper_options_invalid(self.options):
             self.error("Invalid options for Wrapper based Feature selection. Options Found: " + str(self.options))
-        self.log_common_params('FeatureSelection')
-        if self.log is not None: print >>self.log, 'Options: ' + str(self.options)
         self.select_features_and_write_to_file()
 
     def select_features_and_write_to_file(self):
@@ -83,14 +81,14 @@ class FeatureSelect(cl.CommandLineInterface):
             self.training_path, self.test_path, self.gold_path = [self.files] * 3
             ignore_missing = True
         training, attributes, klass, test, gold = self.get_instances(self.training_path, self.test_path, self.gold_path, ignore_missing)
+        self.log_common_params('FeatureSelection')
+        if self.log is not None: print >>self.log, 'Options: ' + str(self.options)
 
         feature_sel = FeatureSelection(training, attributes, klass, test, gold, self.options)
         getattr(feature_sel, ALGORITHM_MAPPINGS[self.algorithm])()
         
         files_written = self.write_to_file(self.get_suffix(), training, attributes, klass, test, gold, False)
-        print >>self.log, 'The following files were created after feature selection...'
-        for file_name in files_written:
-            print >>self.log, file_name
+        self.log_created_files(files_written, 'The following files were created after feature selection...')
             
     def get_suffix(self):
         if self.options is None: return '-' + self.algorithm
@@ -178,6 +176,7 @@ class FeatureSelection:
                 attr_with_max_acc = attribute
             selected.remove(attribute)
         if max_at_level - max < delta: return selected
+        
         selected.append(attr_with_max_acc)
         others.remove(attr_with_max_acc)
         return self.__select_attributes(max_at_level, selected, others, delta)

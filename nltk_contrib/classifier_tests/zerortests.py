@@ -40,8 +40,10 @@ class ZeroRTestCase(unittest.TestCase):
             
     def test_verify_returns_correct_confusion_matrix(self):
         path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
-        zeror = z.ZeroR(format.C45_FORMAT.get_training_instances(path), format.C45_FORMAT.get_attributes(path), format.C45_FORMAT.get_klass(path))
+        klasses = format.C45_FORMAT.get_klass(path)
+        zeror = z.ZeroR(format.C45_FORMAT.get_training_instances(path), format.C45_FORMAT.get_attributes(path), klasses)
         confusion_matrix = zeror.verify(format.C45_FORMAT.get_gold_instances(path))
+        
         self.assertEqual(0.75, confusion_matrix.accuracy())
         self.assertEqual(0.25, confusion_matrix.error())
         self.assertEqual(1, confusion_matrix.tpr())

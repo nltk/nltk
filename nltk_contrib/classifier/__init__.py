@@ -18,7 +18,10 @@ class Classifier:
         self.training = training
         self.internal = internal
         self.convert_continuous_values_to_numbers(self.training)
-        sorted_klass_values = self.training.class_freq_dist().sorted_samples()
+        sorted_klass_freqs = self.training.class_freq_dist().sorted()
+        sorted_klass_values = []
+        for each in sorted_klass_freqs:
+            sorted_klass_values.append(each)
         for each in klass:
             if not sorted_klass_values.__contains__(each):
                 sorted_klass_values.append(each)

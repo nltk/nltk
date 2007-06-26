@@ -64,8 +64,6 @@ class Discretise(cl.CommandLineInterface):
         
         if not self.algorithm == NAIVE_SUPERVISED and self.options is None: 
             self.error("Invalid arguments. One or more required arguments are not present.")
-        self.log_common_params('Discretisation')    
-        if self.log is not None: print >>self.log, 'Options: ' + str(self.options)
         self.discretise_and_write_to_file()
         
     def discretise_and_write_to_file(self):
@@ -75,12 +73,13 @@ class Discretise(cl.CommandLineInterface):
             self.training_path, self.test_path, self.gold_path = [self.files] * 3
             ignore_missing = True
         training, attributes, klass, test, gold = self.get_instances(self.training_path, self.test_path, self.gold_path, ignore_missing)
+        self.log_common_params('Discretisation')    
+        if self.log is not None: print >>self.log, 'Options: ' + str(self.options)
+
         disc = Discretiser(training, attributes, klass, test, gold, cl.as_integers('Attribute indices', self.attributes_indices), cl.as_integers('Options', self.options))
         getattr(disc, ALGORITHM_MAPPINGS[self.algorithm])()
         files_written = self.write_to_file(self.get_suffix(), training, attributes, klass, test, gold, False)
-        print >>self.log, 'The following files were created with discretised values...'
-        for file_name in files_written:
-            print >>self.log, file_name
+        self.log_created_files(files_written, 'The following files were created with discretised values...')
             
     def get_suffix(self):
         indices_str = ''
