@@ -129,7 +129,7 @@ RSYNC_OPTS = -lrtvz -e ssh --relative --cvs-exclude
 
 rsync:	clean_up
 	$(MAKE) -C doc rsync
-	rsync $(RSYNC_OPTS) nltk examples $(WEB)
+	rsync $(RSYNC_OPTS) nltk nltk_lite examples $(WEB)
 	touch .rsync.done
 
 ########################################################################
