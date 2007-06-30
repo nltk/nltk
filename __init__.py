@@ -52,11 +52,22 @@ __author_email__ = __maintainer_email__
 
 from compat import *
 from cfg import *
-from detect import *
 from evaluate import *
 from featstruct import *
 from probability import *
 from tree import *
 from utilities import *
 from yamltags import *
+
+__all__ = ["chunk", "cluster", "corpus", "draw", "parse",
+           "sem", "stem", "tag", "tokenize", "wordnet"]\
+          + compat.__all__\
+          + cfg.__all__\
+          + evaluate.__all__\
+          + featstruct.__all__\
+          + probability.__all__\
+          + tree.__all__\
+          + utilities.__all__\
+          + yamltags.__all__
+
 

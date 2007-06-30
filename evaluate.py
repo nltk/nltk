@@ -11,7 +11,7 @@
 Utility functions for evaluating processing modules.
 """
 
-import sets, math
+import math
 
 def accuracy(reference, test):
     """
@@ -277,13 +277,17 @@ def demo():
     print 'Accuracy:', accuracy(reference, test)
 
     print '-'*75
-    reference_set = sets.Set(reference)
-    test_set = sets.Set(test)
+    reference_set = set(reference)
+    test_set = set(test)
     print 'Reference =', reference_set
     print 'Test =   ', test_set
     print 'Precision:', precision(reference_set, test_set)
     print '   Recall:', recall(reference_set, test_set)
     print 'F-Measure:', f_measure(reference_set, test_set)
     print '-'*75
+
 if __name__ == '__main__':
     demo()
+
+__all__ = ['ConfusionMatrix', 'accuracy', 'demo',
+           'f_measure', 'log_likelihood', 'precision', 'recall']

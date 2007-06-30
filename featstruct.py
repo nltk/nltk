@@ -1007,3 +1007,7 @@ def demo(trace=False):
 if __name__ == "__main__":
     demo()
 
+
+__all__ = ['FeatStruct', 'SubstituteBindingsI', 'SubstituteBindingsMixin',
+           'UnificationFailure', 'Variable', 'demo', 'display_unification',
+           'substitute_bindings', 'unify', 'variable_constructor', 'variable_representer', 'yaml']

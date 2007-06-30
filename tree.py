@@ -688,3 +688,6 @@ def demo():
 
 if __name__ == '__main__':
     demo()
+
+__all__ = ['ImmutableProbabilisticTree', 'ImmutableTree', 'ProbabilisticMixIn',
+           'ProbabilisticTree', 'Tree', 'bracket_parse', 'demo', 'sinica_parse']
