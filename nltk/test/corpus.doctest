@@ -22,10 +22,10 @@ nltk.corpus.brown: The Brown Corpus
     >>> d = brown.read('a')
     >>> print d[3][:4]
     [('``', '``'), ('Only', 'rb'), ('a', 'at'), ('relative', 'jj')]
-    >>> d = brown.read('a', grouped_by_sent=False)
+    >>> d = brown.read('a', group_by_sent=False)
     >>> print d[:3]
     [('The', 'at'), ('Fulton', 'np-tl'), ('County', 'nn-tl')]
-    >>> d = brown.read('a', grouped_by_para=True)
+    >>> d = brown.read('a', group_by_para=True)
     >>> print [para[0][0] for para in d[:5]]
     [('The', 'at'), ('The', 'at'), ('The', 'at'), ('``', '``'), ('The', 'at')]
     >>> d = brown.read('a', format='tokenized')
