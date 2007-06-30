@@ -30,3 +30,4 @@ def register_tag(tag, classpath):
 register_tag(u'tag.Unigram', 'nltk.tag.unigram.Unigram')
 register_tag(u'tag.Brill', 'nltk.tag.brill.Brill')
 
+__all__ = ['custom_import', 'metaloader', 'register_tag']

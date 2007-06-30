@@ -47,3 +47,5 @@ except ImportError:
                 dict.__setitem__(self, s, self.default_constructor())
                 return dict.__getitem__(self,s)
 
+
+__all__ = ['ElementTree', 'defaultdict']

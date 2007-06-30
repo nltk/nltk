@@ -766,3 +766,7 @@ def demo():
 if __name__ == '__main__':
     demo()
 
+__all__ = ['Grammar', 'ImmutableProbabilisticMixIn', 'Nonterminal', 'Production',
+  'WeightedGrammar', 'WeightedProduction', 'cfg_demo', 'demo', 'induce_pcfg',
+  'nonterminals', 'parse_cfg', 'parse_cfg_production', 'parse_pcfg',
+  'parse_pcfg_production', 'pcfg_demo', 'toy_pcfg1', 'toy_pcfg2']
