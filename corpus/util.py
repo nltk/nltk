@@ -177,7 +177,7 @@ class StreamBackedCorpusView:
 	self._len = None
         # Initialize our input stream.
         if isinstance(corpus_file, basestring):
-            self._stream = open(corpus_file, 'r')
+            self._stream = open(corpus_file, 'rb')
         else:
             self._stream = corpus_file
         # Find the character position of the end of the file.
