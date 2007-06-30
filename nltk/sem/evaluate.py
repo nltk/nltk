@@ -871,7 +871,7 @@ def satdemo(trace=None):
         print "The satisfiers of '%s' are: %s" % (fmla, list(m2.satisfiers(fmla, 'x', g2, trace)))
 
         
-def demo(num, trace=None):
+def demo(num=0, trace=None):
     """
     Run some demos.
 
@@ -888,18 +888,11 @@ def demo(num, trace=None):
              3: foldemo,
              4: satdemo}
     
-    
     try:
         demos[num](trace=trace)
     except KeyError:
         for num in demos.keys():
             demos[num](trace=trace)
-    
-
 
 if __name__ == "__main__":
-    demo(5, trace=0)
-
-        
-        
-        
+    demo(trace=0)

@@ -1562,3 +1562,12 @@ def demo(numsamples=6, numoutcomes=500):
 if __name__ == '__main__':
     demo(6, 10)
     demo(5, 5000)
+
+__all__ = ['ConditionalFreqDist', 'ConditionalProbDist',
+           'ConditionalProbDistI', 'CrossValidationProbDist',
+           'DictionaryConditionalProbDist', 'DictionaryProbDist', 'ELEProbDist',
+           'FreqDist', 'GoodTuringProbDist', 'HeldoutProbDist',
+           'ImmutableProbabilisticMixIn', 'LaplaceProbDist', 'LidstoneProbDist',
+           'MLEProbDist', 'MutableProbDist', 'ProbDistI', 'ProbabilisticMixIn',
+           'UniformProbDist', 'WittenBellProbDist', 'add_logs', 'demo',
+           'log_likelihood', 'sum_logs']

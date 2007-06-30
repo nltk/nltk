@@ -9,8 +9,10 @@
 
 """
 Visualization tools for CFGs.
-
 """
+
+import re
+
 
 """
 Idea for a nice demo:

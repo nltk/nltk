@@ -514,3 +514,9 @@ def invert_dict(d):
         for term in d[key]:
             inverted_dict[term].append(key)
     return inverted_dict
+
+
+
+__all__ = ['Counter', 'MinimalSet', 'OrderedDict', 'SortedDict', 'Trie', 'breadth_first',
+           'edit_dist', 'filestring', 'guess_encoding', 'invert_dict', 'pr',
+           'print_string', 're_show']
