@@ -148,7 +148,7 @@ A base value unifies with itself, but not much else.
     >>> f3 = unify(f1, f2)
     >>> print f3
     [ F = {'H': {...}} ]
-    [ G = {'H': {...}} ]   
+    [ G = {'H': {...}} ]
     >>> print f3['F'] is f3['G']
     True
     >>> print f3['F'] is f3['G']['H']
@@ -298,7 +298,7 @@ Create a cyclic structure via unification.
 
     >>> fc1 = FeatStruct.parse('[F=(1)[], G->(1)]')
     >>> fc2 = FeatStruct.parse('[F=[H=(2)[]], G->(2)]')
-    >>> fc3 = fs1.unify(fc2)
+    >>> fc3 = fc1.unify(fc2)
 
 Check that we got the value right.
 
