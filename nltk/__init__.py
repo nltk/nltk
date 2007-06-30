@@ -61,6 +61,8 @@ from yamltags import *
 
 __all__ = ["chunk", "corpus", "draw", "parse",
            "sem", "stem", "tag", "tokenize", "wordnet"]\
+          + ["compat", "cfg", "evaluate", "featstruct",
+             "probability", "tree", "utilities", "yamltags"]\
           + compat.__all__\
           + cfg.__all__\
           + evaluate.__all__\
@@ -69,5 +71,3 @@ __all__ = ["chunk", "corpus", "draw", "parse",
           + tree.__all__\
           + utilities.__all__\
           + yamltags.__all__
-
-
