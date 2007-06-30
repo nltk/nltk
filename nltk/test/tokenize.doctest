@@ -60,7 +60,7 @@ Tokenize sequences of letters and sequences of nonletters
 
     >>> token_list = wordpunct(s)
     >>> list(token_list)
-    ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York', '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+    ['Good', 'muffins', 'cost', '$', '3', '.', '88', 'in', 'New', 'York', '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
     
 Tokenize by lines '\n'
 
