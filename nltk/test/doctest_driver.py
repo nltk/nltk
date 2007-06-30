@@ -111,8 +111,10 @@ class MyDocTestParser(DocTestParser):
                     pysrc = example[example.find('\n'):]
                     pysrc = self.DOCTEST_OPTION_RE.sub('', pysrc)
                     pysrc = textwrap.dedent(pysrc)
+                    print 'PYSRC', `pysrc`
 
-                    for ex in self.PYLISTING_EX.findall(pysrc):
+                    #for ex in self.PYLISTING_EX.findall(pysrc):
+                    for ex in split_pysrc_into_statements(pysrc):
                         source = ex.strip()
                         if not source: continue
                         want = ''
@@ -602,6 +604,47 @@ def find_module_from_filename(filename):
         module_name = '.'.join(package+[module_name])
 
     return (basedir, module_name)
+
+def split_pysrc_into_statements(s):
+    parens = 0              # Number of parens deep we're nested?
+    quote = None            # What type of string are we in (if any)?
+    statements = []         # List of statements we've found
+    continuation = False    # Did last line end with a backslash?
+    for line in s.lstrip().split('\n'):
+        # Check indentation level.
+        indent = re.match(r'\s*', line).end()
+
+        # [DEBUG PRINTF]
+        #print '%4d %6r %6s %5s %r' % (parens, quote, continuation,
+        #                              indent, line[:40])
+
+        # Add the line as a new statement or a continuation.
+        if (parens == 0 and quote is None and indent == 0 and
+            not continuation and line.strip()):
+            statements.append(line)
+        else:
+            statements[-1] += '\n'+line
+
+        # Scan the line, checking for quotes, parens, and comment
+        # markers (so we can decide when a line is a continuation).
+        line_has_comment = False
+        for c in re.findall(r'\\.|"""|\'\'\'|"|\'|\(|\)|\[|\]|\{|\}|\#', line):
+            if quote:
+                if c == quote:
+                    quote = None
+            elif c in '([{':
+                parens += 1
+            elif c in ')]}':
+                parens -= 1
+            elif c == '#':
+                line_has_comment = True
+                break
+            elif c[0] != '\\':
+                quote = c
+        if not line_has_comment:
+            continuation = line.strip().endswith('\\')
+
+    return statements
 
 ###########################################################################
 # Basic Actions
