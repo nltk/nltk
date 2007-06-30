@@ -184,10 +184,10 @@ def demo():
         print sent
     print
 
-    print "Tokenized:"
-    for sent in treebank.read('wsj_0003', format='tokenized')[:3]:
-        print sent
-    print
+#    print "Tokenized:"
+#    for sent in treebank.read('wsj_0003', format='tokenized')[:3]:
+#        print sent
+#    print
 
 if __name__ == '__main__':
     demo()
