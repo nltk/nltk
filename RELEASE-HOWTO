@@ -12,6 +12,7 @@ A. ERROR CHECKING
   3. API docs (cd doc; make api)  (check latest version of epydoc is installed)
   4. Tutorial examples (cd doc/en; make errs)
   5. Check trackers: http://sourceforge.net/tracker/?group_id=30982
+  6. Make dist, install .exe version on Windows, and test demos
 
 B. CHANGELOG
 
@@ -22,14 +23,13 @@ C. NLTK VERSION NUMBERS
 
   1. Modify nltk/__init__.py with the version number (2 places)
   2. Edit doc/definitions.txt with new version number
-  3. Edit wiki installation instructions with new version number
-  5. Commit these changes
+  3. Commit these changes
 
 D. THIRD-PARTY SOFTWARE VERSIONS
 
   1. Check for new versions of Python, Numeric, Matplotlib
   2. Modify top level Makefile and commit
-  3. Modify wiki installation instructions
+  3. Modify wiki installation instructions with these new versions, including new NLTK version
   4. Save wiki installation page and FAQ in HTML format to /nltk
   5. Commit these changes
 
