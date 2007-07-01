@@ -24,10 +24,6 @@ via index notation ``word[n]`` or via the ``word.getSenses()`` method.
     [{noun: dog, domestic_dog, Canis_familiaris}, {noun: frump, dog}, {noun: dog}, {noun: cad, bounder, blackguard, dog, hound, heel}, {noun: frank, frankfurter, hotdog, hot_dog, dog, wiener, wienerwurst, weenie}, {noun: pawl, detent, click, dog}, {noun: andiron, firedog, dog, dog-iron}]
     >>> N['dog'].isTagged()
     True
-    >>> N['cat'] < N['dog']
-    True
-    >>> N['dog'] < V['dog']
-    True
     >>> str(N['dog'])
     'dog (noun)'
 
@@ -43,12 +39,9 @@ L{Synset}: a set of synonyms that share a common meaning.
 Each synset contains one or more lemmas, which represent a specific
 sense of a specific word.  Senses can be retrieved via
 synset.getSenses() or through the index notations synset[0],
-synset[string], or synset[word]. Synsets also originate zero or more
-typed pointers, which can be accessed via synset.getPointers() or
-synset.getPointers(pointerType). The targets of a synset pointer can
-be retrieved via synset.getPointerTargets() or
-synset.getPointerTargets(pointerType), which are equivalent to
-map(Pointer.getTarget(), synset.getPointerTargets(...)).
+synset[string], or synset[word]. Synsets are related to other
+synsets, and we can get a dictionary of relations using the
+relations() function.
 
     >>> V['think'][0].verbFrames
     (5, 9)
@@ -60,7 +53,7 @@ map(Pointer.getTarget(), synset.getPointerTargets(...)).
     {noun: dog, domestic_dog, Canis_familiaris}
 
     >>> N['dog'][0].relations()
-    {'hypernym': {noun: canine, canid}, 'member meronym': {noun: Canis, genus Canis}, 'member meronym': {noun: pack}, 'hyponym': {noun: puppy}, 'hyponym': {noun: pooch, doggie, doggy, barker, bow-wow}}
+    {'hypernym': [{noun: canine, canid}, {noun: domestic_animal, domesticated_animal}], 'part holonym': [{noun: flag}], 'member meronym': [{noun: Canis, genus_Canis}, {noun: pack}], 'hyponym': [{noun: puppy}, {noun: pooch, doggie, doggy, barker, bow-wow}, {noun: cur, mongrel, mutt}, {noun: lapdog}, {noun: toy_dog, toy}, {noun: hunting_dog}, {noun: working_dog}, {noun: dalmatian, coach_dog, carriage_dog}, {noun: basenji}, {noun: pug, pug-dog}, {noun: Leonberg}, {noun: Newfoundland, Newfoundland_dog}, {noun: Great_Pyrenees}, {noun: spitz}, {noun: griffon, Brussels_griffon, Belgian_griffon}, {noun: corgi, Welsh_corgi}, {noun: poodle, poodle_dog}, {noun: Mexican_hairless}]}
 
     >>> N['dog'][0][HYPERNYM]
     [{noun: canine, canid}, {noun: domestic_animal, domesticated_animal}]

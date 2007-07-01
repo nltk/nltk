@@ -1,3 +1,11 @@
+Version 0.8 2007-07-01
+
+Code:
+- changed nltk.__init__ imports to explicitly import names from top-level modules
+- changed corpus.util to use the 'rb' flag for opening files, to fix problems
+  reading corpora under MSWindows
+- updated stale examples in engineering.txt
+
 Version 0.8b2 2007-06-26
 
 Code (major):
