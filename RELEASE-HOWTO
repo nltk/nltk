@@ -30,6 +30,7 @@ D. THIRD-PARTY SOFTWARE VERSIONS
   1. Check for new versions of Python, Numeric, Matplotlib
   2. Modify top level Makefile and commit
   3. Modify wiki installation instructions with these new versions, including new NLTK version
+     (do install instructions in cloned wiki page Installation-N.N)
   4. Save wiki installation page and FAQ in HTML format to /nltk
   5. Commit these changes
 
