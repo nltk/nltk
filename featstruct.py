@@ -33,6 +33,19 @@ class FeatStruct(dict):
 
     def yaml(self):
         return yaml.dump(self, default_flow_style=False).strip()
+    
+    def __getitem__(self, idx):
+        from types import TupleType
+        if isinstance(idx, TupleType):
+            next = dict.__getitem__(self, idx[0])
+            if len(idx) == 1:
+                return next
+            elif _is_mapping(next):
+                return next[idx[1:]]
+            else:
+                raise KeyError, idx[1:]
+        else:
+            return dict.__getitem__(self, idx)
 
     #################################################################
     ## String Representations

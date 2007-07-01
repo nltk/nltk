@@ -13,6 +13,7 @@ from util import *
 from similarity import *
 from dictionary import *
 from lexname import Lexname
+from nltk.compat import defaultdict
 
 class Word(object):
     def __init__(self, line):
@@ -223,29 +224,27 @@ class Synset(object):
 
         # Load the pointers from the Wordnet files if necessary.
         if not hasattr(self, '_relations'):
-            self._relations = {}
+            relations = defaultdict(list)
 
             for (type, offset, pos, indices) in self._pointerTuples:
-                key = _RELATION_TABLE[type]
-                if key not in self._relations:
-                    self._relations[key] = []
+                rel = _RELATION_TABLE[type]
                 idx = int(indices, 16) & 255
-                synset_ref = normalizePOS(pos), int(offset), idx
-                self._relations[key].append(synset_ref)
+                pos = normalizePOS(pos)
+                offset = int(offset)
+
+                synset = getSynset(pos, offset)
+                if idx:
+                    relations[rel].append(synset[idx-1])
+                else:
+                    relations[rel].append(synset)
             del self._pointerTuples
+            self._relations = dict(relations)
+            
         return self._relations
 
     def relation(self, rel):
-        synsets = []
-        for synset_ref in self.relations().get(rel, []):
-            pos, offset, idx = synset_ref
-            synset = getSynset(pos, offset)
-            if idx:
-                synsets.append(synset[idx-1])
-            else:
-                synsets.append(synset)
-        return synsets
-    
+        return self.relations().get(rel, [])
+
     ### BROKEN:
     def isTagged(self):
         """
