@@ -5,6 +5,11 @@ Code:
 - changed corpus.util to use the 'rb' flag for opening files, to fix problems
   reading corpora under MSWindows
 - updated stale examples in engineering.txt
+- extended feature stucture interface to permit chained features, e.g. fs['F','G']
+- further misc improvements to test code plus some bugfixes
+Tutorials:
+- rewritten opening section of tagging chapter
+- reorganized some exercises
 
 Version 0.8b2 2007-06-26
 
