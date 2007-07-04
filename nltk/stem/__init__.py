@@ -23,3 +23,5 @@ from api import *
 from regexp import *
 from porter import *
 from lancaster import *
+from wordnet import *
+
