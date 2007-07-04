@@ -195,9 +195,9 @@ Parse and evaluate some sentences.
     'John walks with a girl in Noosa',
     'who walks']
     
-    sents = ['John walks']
+    sents = ['f a']
     
-    gramfile = 'sem2.cfg'
+    gramfile = 'foo.cfg'
         
     if options.sentences:
         sentsfile = options.sentences
