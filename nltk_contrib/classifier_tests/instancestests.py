@@ -89,7 +89,6 @@ class InstancesTestCase(unittest.TestCase):
             training.value_ranges([a.Attribute('outlook', ['sunny','overcast','rainy'], 0)])
             self.fail('should throw error')
         except inv.InvalidDataError:
-            print("dwerrftregre")
             pass
         
     def test_discretise_using_discretised_attributes(self):
