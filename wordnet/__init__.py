@@ -59,3 +59,5 @@ from lexname import *
 from similarity import *
 from synset import *
 from browse import *
+from morphy import *
+
