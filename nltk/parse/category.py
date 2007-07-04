@@ -11,7 +11,8 @@
 # $Id$
 
 from nltk import cfg, featstruct
-from nltk.sem import LogicParser, ApplicationExpression
+from nltk.sem import ApplicationExpression, Expression, LogicParser
+from nltk.sem import AllExpressionSubst, ApplicationExpressionSubst, LambdaExpressionSubst, SomeExpressionSubst
 from nltk.compat import defaultdict
 from api import *
 import filebroker
@@ -28,7 +29,7 @@ def makevar(varname):
     """
     return featstruct.Variable(varname[1:])
 
-class Category(cfg.Nonterminal):
+class Category(cfg.Nonterminal, featstruct.SubstituteBindingsI):
     """
     A C{Category} is a wrapper for feature dictionaries, intended for use in
     parsing. It can act as a C{Nonterminal}.
@@ -99,7 +100,7 @@ class Category(cfg.Nonterminal):
 
     def __hash__(self):
         if self._hash is not None: return self._hash
-        return hash(str(self))
+        return hash(self.__class__._str(self, {}, {}, True))
     
     def freeze(self):
         """
@@ -183,6 +184,9 @@ class Category(cfg.Nonterminal):
         Category._remove_unbound_vars(self)
         return selfcopy
 
+    def substitute_bindings(self, bindings):
+        return self.__class__(substitute_bindings(self._features, bindings))
+    
     @staticmethod
     def _remove_unbound_vars(obj):
         for (key, value) in obj.items():
@@ -209,7 +213,7 @@ class Category(cfg.Nonterminal):
         return self.__class__._str(self, {}, {})
     
     @classmethod
-    def _str(cls, obj, reentrances, reentrance_ids):
+    def _str(cls, obj, reentrances, reentrance_ids, normalize=False):
         segments = []
 
         keys = obj.keys()
@@ -220,8 +224,10 @@ class Category(cfg.Nonterminal):
             if isinstance(fval, bool):
                 if fval: segments.append('+%s' % fname)
                 else: segments.append('-%s' % fname)
+            elif normalize and isinstance(fval, Expression):
+                segments.append('%s=%s' % (fname, fval.normalize()))
             elif not isinstance(fval, dict):
-                segments.append('%s=%r' % (fname, fval))
+                segments.append('%s=%s' % (fname, fval))
             else:
                 fval_repr = cls._str(fval, reentrances, reentrance_ids)
                 segments.append('%s=%s' % (fname, fval_repr))
@@ -520,7 +526,7 @@ class GrammarCategory(Category):
     yaml_tag = '!parse.GrammarCategory'
     
     @classmethod
-    def _str(cls, obj, reentrances, reentrance_ids):
+    def _str(cls, obj, reentrances, reentrance_ids, normalize=False):
         segments = []
 
         keys = obj.keys()
@@ -532,8 +538,10 @@ class GrammarCategory(Category):
             if isinstance(fval, bool):
                 if fval: segments.append('+%s' % fname)
                 else: segments.append('-%s' % fname)
+            elif normalize and isinstance(fval, Expression):
+                segments.append('%s=%s' % (fname, fval.normalize()))
             elif not isinstance(fval, dict):
-                segments.append('%s=%r' % (fname, fval))
+                segments.append('%s=%s' % (fname, fval))
             else:
                 fval_repr = cls._str(fval, reentrances, reentrance_ids)
                 segments.append('%s=%s' % (fname, fval_repr))
@@ -584,18 +592,6 @@ class GrammarCategory(Category):
             body['/'] = False
         return cls(body), position
     
-class SubstituteBindingsI:
-    """
-    An interface for classes that can perform substitutions for feature
-    variables.
-    """
-    def substitute_bindings(self, bindings):
-        """
-        @return: The object that is obtained by replacing
-        each variable bound by C{bindings} with its values.
-        @rtype: (any)
-        """
-        raise NotImplementedError
 
 class ParserSubstitute(LogicParser):
     """
@@ -604,22 +600,14 @@ class ParserSubstitute(LogicParser):
     """
     def make_ApplicationExpression(self, first, second):
         return ApplicationExpressionSubst(first, second)
+    def make_LambdaExpression(self, first, second):
+        return LambdaExpressionSubst(first, second)
+    def make_SomeExpression(self, first, second):
+        return SomeExpressionSubst(first, second)
+    def make_AllExpression(self, first, second):
+        return AllExpressionSubst(first, second)
+    
 
-class ApplicationExpressionSubst(ApplicationExpression, SubstituteBindingsI):
-    """
-    A lambda application expression, extended to implement the
-    SubstituteBindingsI interface.
-    """
-    def substitute_bindings(self, bindings):
-        newval = self
-        for semvar in self.variables():
-            varstr = str(semvar)
-            # discard Variables which are not FeatureVariables
-            if varstr.startswith('?'): 
-                var = makevar(varstr)
-                if bindings.is_bound(var):
-                    newval = newval.replace(semvar, bindings.lookup(var))
-        return newval
 
 ############################################################################
 # Read a grammar from a file
@@ -707,10 +695,15 @@ def demo():
     print Category(pos='n', agr=dict(number='pl', gender='f'))
     print repr(Category(pos='n', agr=dict(number='pl', gender='f')))
     print
-    print "GrammarCategory.parse('NP/NP'):"
+    print "GrammarCategory.parse('NP[sem=<bob>/NP'):"
     print
-    print GrammarCategory.parse('NP/NP')
-    print repr(GrammarCategory.parse('NP/NP'))
+    print GrammarCategory.parse(r'NP[sem=<bob>]/NP')
+    print repr(GrammarCategory.parse(r'NP[sem=<bob>]/NP'))
+    print
+    print "GrammarCategory.parse('S[sem=<app(walk, bob)>]):"
+    print
+    print GrammarCategory.parse(r'S[sem=<app(?x, ?y)>]')
+    print repr(GrammarCategory.parse(r'S[sem=<app(?x, ?y)>]'))
     print
     print "GrammarCategory.parse('?x/?x'):"
     print
@@ -721,6 +714,11 @@ def demo():
     print
     print GrammarCategory.parse('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]')
     print repr(GrammarCategory.parse('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]'))
+    print
+    print "GrammarCategory.parse('S[sem = <app(?subj, ?vp)>]'):"
+    print
+    print GrammarCategory.parse('S[sem = <app(?subj, ?vp)>]')
+    print repr(GrammarCategory.parse('S[sem = <app(?subj, ?vp)>]'))
     print
     print "Find grammar file name in 'grammars.yml' and fetch from Sourceforge:"
     g = GrammarFile("sem2.cfg")
