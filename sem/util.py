@@ -176,15 +176,10 @@ Parse and evaluate some sentences.
     opts.add_option("-T", "--semtrace", action="count", dest="semtrace",
                     help="set semantic tracing on")
 
-
-
     (options, args) = opts.parse_args()
     
     SPACER = '-' * 30
 
-
-
-    #initialize model0
     demo_model0()
 
     sents = [
@@ -195,9 +190,7 @@ Parse and evaluate some sentences.
     'John walks with a girl in Noosa',
     'who walks']
     
-    sents = ['f a']
-    
-    gramfile = 'foo.cfg'
+    gramfile = 'sem2.cfg'
         
     if options.sentences:
         sentsfile = options.sentences
@@ -208,18 +201,16 @@ Parse and evaluate some sentences.
     
     if sents is None:
         sents = read_sents(sentsfile)
-    
 
     gram = GrammarFile(gramfile)
-
-    #m = model.m
-    #g = model.g
-    m = m0
+    
+    # Set model and assignment
+    model = m0
     g = g0
 
     if options.evaluate: 
         evaluations = \
-            text_evaluate(sents, gram, m, g, semtrace=options.semtrace)
+            text_evaluate(sents, gram, model, g, semtrace=options.semtrace)
     else:
         semreps = \
             text_interpret(sents, gram, beta_reduce=options.beta, syntrace=options.syntrace)
