@@ -12,7 +12,7 @@
 
 import logic
 from nltk.cfg import *
-from kimmo import kimmo
+#from kimmo import kimmo
 
 from featurelite import *
 from copy import deepcopy
