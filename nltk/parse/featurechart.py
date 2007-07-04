@@ -21,7 +21,7 @@ from nltk import cfg
 from nltk.compat import defaultdict
 
 
-def load_earley(filename, trace=1, verbose=False):
+def load_earley(filename, trace=0, verbose=False):
     """
     Load a grammar from a file, and build an Earley feature parser based on
     that grammar.
@@ -174,8 +174,7 @@ class FeatureFundamentalRule(FundamentalRule):
         new_edge = FeatureTreeEdge(span=(left_edge.start(), right_edge.end()),
                             lhs=left_edge.lhs(), rhs=left_edge.rhs(),
                             dot=left_edge.dot()+1, vars=left_bindings)
-        
-        # Add it to the chart, with appropraite child pointers.
+        # Add it to the chart, with appropriate child pointers.
         changed_chart = False
         for cpl1 in chart.child_pointer_lists(left_edge):
             if chart.insert(new_edge, cpl1+(right_edge,)):
@@ -303,7 +302,8 @@ class FeatureEarleyChartParse(EarleyChartParse):
                 #        if self._trace > 0:
                 #            print 'Scanner  ', chart.pp_edge(e,w)
                 if edge.is_complete():
-                    for e in completer.apply(chart, grammar, edge):
+                    for e in list(completer.apply_iter(chart, grammar, edge)):
+                    #for e in completer.apply(chart, grammar, edge):
                         if self._trace > 0:
                             print 'Completer', chart.pp_edge(e,w)
 
