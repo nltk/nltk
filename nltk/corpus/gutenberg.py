@@ -55,11 +55,10 @@ class GutenbergCorpusView(StreamBackedCorpusView):
     """
     def __init__(self, corpus_file):
         StreamBackedCorpusView.__init__(self, corpus_file)
-        self._skipped_preamble = False
 
     def read_block(self, stream):
         # Skip the preamble.
-        if not self._skipped_preamble:
+        if stream.tell() == 0:
             while True:
                 line = stream.readline()
                 if line.rstrip()[:5] == '*END*':
