@@ -112,7 +112,7 @@ class StreamBackedCorpusView:
 
       1. First, it searches the toknum/filepos mapping for the token
          index closest to (but less than or equal to) M{i}.
-	 
+         
       2. Then, starting at the file position corresponding to that
          index, it reads one block at a time using the block reader
          until it reaches the requested token.
@@ -128,14 +128,14 @@ class StreamBackedCorpusView:
 
     @note: Each C{CorpusView} object internally maintains an open file
         object for its underlying corpus file.  This file should be
-	automatically closed when the C{CorpusView} is garbage collected,
-	but if you wish to close it manually, use the L{close()}
-	method.  If you access a C{CorpusView}'s items after it has been
-	closed, the file object will be automatically re-opened.
-	
+        automatically closed when the C{CorpusView} is garbage collected,
+        but if you wish to close it manually, use the L{close()}
+        method.  If you access a C{CorpusView}'s items after it has been
+        closed, the file object will be automatically re-opened.
+        
     @warning: If the contents of the file are modified during the
         lifetime of the C{CorpusView}, then the C{CorpusView}'s beahvior
-	is undefined.
+        is undefined.
 
     @ivar _block_reader: The function used to read 
         a single block from the underlying file stream.
@@ -171,10 +171,10 @@ class StreamBackedCorpusView:
         if block_reader:
             self._block_reader = block_reader
         # Initialize our toknum/filepos mapping.
-	self._toknum = [0]
-	self._filepos = [0]
+        self._toknum = [0]
+        self._filepos = [0]
         # We don't know our length (number of tokens) yet.
-	self._len = None
+        self._len = None
         # Initialize our input stream.
         if isinstance(corpus_file, basestring):
             self._stream = open(corpus_file, 'rb')
@@ -194,82 +194,82 @@ class StreamBackedCorpusView:
         raise NotImplementedError('Abstract Method')
 
     def close(self):
-	"""
-	Close the file stream associated with this corpus view.  This
-	can be useful if you are worried about running out of file
-	handles (although the stream should automatically be closed
-	upon garbage collection of the corpus view).  The corpus view
-	should not be used after it is closed -- doing so will raise
-	C{IOError}s or C{OSError}s.
-	"""
-	self._stream.close()
+        """
+        Close the file stream associated with this corpus view.  This
+        can be useful if you are worried about running out of file
+        handles (although the stream should automatically be closed
+        upon garbage collection of the corpus view).  The corpus view
+        should not be used after it is closed -- doing so will raise
+        C{IOError}s or C{OSError}s.
+        """
+        self._stream.close()
 
     def __len__(self):
-	"""
-	Return the number of tokens in the corpus file underlying this
-	corpus view.
-	"""
-	if self._len is None:
-	    # _iterate_from() sets self._len when it reaches the end
-	    # of the file:
-	    for tok in self._iterate_from(self._toknum[-1]): pass
-	return self._len
+        """
+        Return the number of tokens in the corpus file underlying this
+        corpus view.
+        """
+        if self._len is None:
+            # _iterate_from() sets self._len when it reaches the end
+            # of the file:
+            for tok in self._iterate_from(self._toknum[-1]): pass
+        return self._len
     
     def __getitem__(self, i):
-	"""
-	Return the C{i}th token in the corpus file underlying this
-	corpus view.  Negative indices and spans are both supported.
-	"""
-	if isinstance(i, slice):
-	    start, stop = i.start, i.stop
+        """
+        Return the C{i}th token in the corpus file underlying this
+        corpus view.  Negative indices and spans are both supported.
+        """
+        if isinstance(i, slice):
+            start, stop = i.start, i.stop
             # Handle negative indices
-	    if start < 0: start = max(0, len(self)+start)
-	    if stop < 0: stop = max(0, len(self)+stop)
+            if start < 0: start = max(0, len(self)+start)
+            if stop < 0: stop = max(0, len(self)+stop)
             # Check if it's n the cache.
             offset = self._cache[0]
             if offset <= start and stop < self._cache[1]:
                 return self._cache[2][start-offset:stop-offset]
             # Construct & return the result.
-	    result = []
-	    for i,tok in enumerate(self._iterate_from(start)):
-		if i+start >= stop: return result
-		result.append(tok)
-	    return result
-	else:
+            result = []
+            for i,tok in enumerate(self._iterate_from(start)):
+                if i+start >= stop: return result
+                result.append(tok)
+            return result
+        else:
             # Handle negative indices
-	    if i < 0: i = max(0, len(self)+i)
+            if i < 0: i = max(0, len(self)+i)
             # Check if it's in the cache.
             offset = self._cache[0]
             if offset <= i < self._cache[1]:
                 #print 'using cache', self._cache[:2]
                 return self._cache[2][i-offset]
             # Use _iterate_from to extract it.
-	    try:
-		return self._iterate_from(i).next()
-	    except StopIteration:
-		raise KeyError(i)
+            try:
+                return self._iterate_from(i).next()
+            except StopIteration:
+                raise KeyError(i)
 
     def __iter__(self):
-	"""
-	Return an iterator that generates the tokens in the corpus
-	file underlying this corpus view.
-	"""
-	return self._iterate_from(0)
+        """
+        Return an iterator that generates the tokens in the corpus
+        file underlying this corpus view.
+        """
+        return self._iterate_from(0)
 
     # If we wanted to be thread-safe, then this method would need to
     # do some locking.
     def _iterate_from(self, start_tok):
-	"""
-	Return an iterator that generates the tokens in the corpus
-	file underlying this corpus view, starting at the token number
-	C{start}.  If C{start>=len(self)}, then this iterator will
-	generate no tokens.
-	"""
+        """
+        Return an iterator that generates the tokens in the corpus
+        file underlying this corpus view, starting at the token number
+        C{start}.  If C{start>=len(self)}, then this iterator will
+        generate no tokens.
+        """
         # Decide where in the file we should start.  If `start` is in
         # our mapping, then we can jump streight to the correct block;
         # otherwise, start at the last block we've processed.
-	if start_tok < self._toknum[-1]:
-	    i = bisect.bisect_right(self._toknum, start_tok)-1
+        if start_tok < self._toknum[-1]:
+            i = bisect.bisect_right(self._toknum, start_tok)-1
             toknum = self._toknum[i]
             filepos = self._filepos[i]
         else:
@@ -278,32 +278,37 @@ class StreamBackedCorpusView:
 
         # Each iteration through this loop, we read a single block
         # from the stream.
-	while True:
-	    # Read the next block.
-	    self._stream.seek(filepos)
-	    tokens = self._block_reader(self._stream)
+        while True:
+            # Read the next block.
+            self._stream.seek(filepos)
+            tokens = self._block_reader(self._stream)
             assert isinstance(tokens, list) # tokenizer should return list.
-	    num_toks = len(tokens)
+            num_toks = len(tokens)
+            new_filepos = self._stream.tell()
+
             # Update our cache.
-            self._cache = (toknum, toknum+len(tokens), tokens)
-	    # Update our mapping.
-	    if num_toks+toknum > self._toknum[-1]:
-		assert num_toks > 0 # is this always true here?
-		self._filepos.append(self._stream.tell())
-		self._toknum.append(toknum+num_toks)
-	    # Generate the tokens in this block (but skip any tokens
-	    # before start_tok).  Note that between yields, our state
-	    # may be modified.
-	    for tok in tokens[max(0, start_tok-toknum):]:
-		yield tok
-	    # Update our indices
-	    toknum += len(tokens)
-	    filepos = self._stream.tell()
+            self._cache = (toknum, toknum+num_toks, tokens)
+            
+            # Update our mapping.
+            assert toknum <= self._toknum[-1]
+            if toknum == self._toknum[-1] and num_toks > 0:
+                assert new_filepos > self._filepos[-1] # monotonic!
+                self._filepos.append(new_filepos)
+                self._toknum.append(toknum+num_toks)
+                    
+            # Generate the tokens in this block (but skip any tokens
+            # before start_tok).  Note that between yields, our state
+            # may be modified.
+            for tok in tokens[max(0, start_tok-toknum):]:
+                yield tok
             # If we're at the end of the file, then we're done; set
             # our length and terminate the generator.
-            if filepos == self._eofpos:
-		self._len = toknum
-		return
+            if new_filepos == self._eofpos:
+                self._len = toknum
+                return
+            # Update our indices
+            toknum += num_toks
+            filepos = new_filepos
 
     _MAX_REPR_SIZE = 60
     def __repr__(self):
