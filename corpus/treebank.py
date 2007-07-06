@@ -63,7 +63,7 @@ Parsed:
 #: A dictionary whose keys are the names of documents in this corpus;
 #: and whose values are descriptions of those documents' contents.
 documents = dict([('wsj_%04d' % i, 'Wall Street Journal document %d' % i)
-                   for i in range(1, 100)])
+                   for i in range(1, 200)])
 
 #: A list of all documents in this corpus.
 items = sorted(documents)
