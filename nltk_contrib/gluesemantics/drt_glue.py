@@ -1,4 +1,4 @@
-from nltk.contrib.drt import DRT
+from nltk_contrib.drt import DRT
 import linearlogic
 
 class GlueFormula:
