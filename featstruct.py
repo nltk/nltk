@@ -1009,8 +1009,8 @@ def demo(trace=False):
         if result is not None:
             for i, fstruct in all_fstructs:
                 if `result` == `fstruct`: break
-            else:
-                all_fstructs.append((len(all_fstructs), result))
+                else:
+                    all_fstructs.append((len(all_fstructs), result))
 
         print '\nType "Enter" to continue unifying; or "q" to quit.'
         input = sys.stdin.readline().strip()
