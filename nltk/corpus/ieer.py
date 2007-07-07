@@ -45,7 +45,7 @@ def read_document(item, format='parsed'):
     Read the given document from the corpus, and return its contents.
     C{format} determines the format that the result will be returned
     in:
-      - C{'parsed'}: a list of parse trees
+      - C{'parsed'}: a list of dictionaries whose values are parse trees
       - C{'raw'}: a single C{string}
       - C{'docs'}: a list of strings, each containing a single document.
     """
@@ -85,7 +85,7 @@ def raw(item):
     return read_document(item, format='raw')
 
 def parsed(item):
-    """@return: the given item as a list of parsed trees."""
+    """@return: the given item as a list of dictionaries, where the keys are ['headline', 'text'] and a value is a parse tree."""
     return read_document(item, format='parsed')
 
 def docs(item):
