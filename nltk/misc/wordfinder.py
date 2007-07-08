@@ -9,14 +9,12 @@
 # http://fswordfinder.sourceforge.net/
 
 import random
-from string import strip, join
+from string import strip
 
 # reverse a word with probability 0.5
 def revword(word):
     if random.randint(1,2) == 1:
-        word = list(word)
-        word.reverse()
-        return ''.join(word)
+        return word[::-1]
     return word
 
 # try to insert word at position x,y; direction encoded in xf,yf
