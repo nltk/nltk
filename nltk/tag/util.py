@@ -12,7 +12,7 @@ from nltk import tokenize
 def tag2tuple(s, sep='/'):
     loc = s.rfind(sep)
     if loc >= 0:
-        return (s[:loc], s[loc+1:])
+        return (s[:loc], s[loc+1:].upper())
     else:
         return (s, None)
 
