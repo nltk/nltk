@@ -10,21 +10,22 @@ import math
 def euclidean_distance(instance1, instance2, attributes):
     total = 0
     for attribute in attributes:
-        d = distance(instance1.value(attribute), instance2.value(attribute))
+        d = distance(instance1.value(attribute), instance2.value(attribute), attribute.is_continuous())
         total += d * d
     return math.sqrt(total)
         
 def hamiltonian_distance(instance1, instance2, attributes):
     total = 0
     for attribute in attributes:
-        d = distance(instance1.value(attribute), instance2.value(attribute))
+        d = distance(instance1.value(attribute), instance2.value(attribute), attribute.is_continuous())
         total += d
     return total
 
-def distance(value1, value2):
-    if type(value1) is str or type(value2) is str:
-        if value1 is value2:
-            return 0
-        else: return 1
-    return abs(value1 - value2)
+def distance(value1, value2, is_continuous):
+    if is_continuous:
+        return abs(value1 - value2)    
+    if value1 == value2:
+        return 0
+    return 1
+    
     

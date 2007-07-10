@@ -20,17 +20,26 @@ class Instance:
         return AssertionError()
     
     def value(self, attribute):
+        """
+        Returns the value corresponding to @param:attribute
+        """
         if attribute.is_continuous():
             return float(self.attrs[attribute.index])
         return self.attrs[attribute.index]
     
     def values(self, attributes):
+        """
+        Returns a list of attribute values corresponding to @param:attributes
+        """
         _values = []
         for attribute in attributes:
             _values.append(self.attrs[attribute.index])
         return _values
 
     def discretise(self, discretised_attributes):
+        """
+        Set discretised values for continuous attributes
+        """
         for discretised_attribute in discretised_attributes:
             index = discretised_attribute.index
             self.attrs[index] = discretised_attribute.mapping(float(self.attrs[index]))
