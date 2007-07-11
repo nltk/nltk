@@ -55,6 +55,8 @@ relations() function.
     >>> N['dog'][0].relations()
     {'hypernym': [{noun: canine, canid}, {noun: domestic_animal, domesticated_animal}], 'part holonym': [{noun: flag}], 'member meronym': [{noun: Canis, genus_Canis}, {noun: pack}], 'hyponym': [{noun: puppy}, {noun: pooch, doggie, doggy, barker, bow-wow}, {noun: cur, mongrel, mutt}, {noun: lapdog}, {noun: toy_dog, toy}, {noun: hunting_dog}, {noun: working_dog}, {noun: dalmatian, coach_dog, carriage_dog}, {noun: basenji}, {noun: pug, pug-dog}, {noun: Leonberg}, {noun: Newfoundland, Newfoundland_dog}, {noun: Great_Pyrenees}, {noun: spitz}, {noun: griffon, Brussels_griffon, Belgian_griffon}, {noun: corgi, Welsh_corgi}, {noun: poodle, poodle_dog}, {noun: Mexican_hairless}]}
 
+    >>> N['dog'][0].relations()[HYPERNYM]
+
     >>> N['dog'][0][HYPERNYM]
     [{noun: canine, canid}, {noun: domestic_animal, domesticated_animal}]
 
