@@ -19,7 +19,11 @@ class IB1(Classifier):
                 dist = dm.euclidean_distance(each_test, each_training, self.attributes)
                 id.distance(dist, each_training)
             each_test.set_klass(id.klass(majority_klass_vote))
-        
+    
+    def can_handle_continuous_attributes(self):
+        return True
+    can_handle_continuous_attributes = classmethod(can_handle_continuous_attributes)
+
 class InstanceDistances:
     """
     Maps instances to the distance they are from a common test_instance

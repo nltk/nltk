@@ -109,8 +109,6 @@ def process(path, log_path):
             print "Params " + str(params)
             c.Classify().run(params)    
         
-            
-
 def get_number_of_filter_attributes(len_attrs):
     if len_attrs <= 10:
         return len_attrs * 2 / 3
@@ -134,7 +132,16 @@ def delete_generated_files(path):
         os.remove(each)
                 
 if __name__ == "__main__":
-    params = sys.argv[1:]
-    if len(params) != 2:
-        print("Usage: python batchtest.py dir_tree_path log_file")
-    run(params[0], params[1])
+    resp = 0
+    while(resp != 1 and resp != 2):
+        try:
+            resp = int(raw_input("Select one of following options:\n1. Run all tests\n2. Delete generated files\n"))
+        except ValueError:
+            pass
+    if resp == 1:
+        dir_tree_path = raw_input("Enter directory tree path")
+        log_file = raw_input("Enter log file")
+        run(dir_tree_path, log_file)
+    elif resp == 2:
+        dir_path = raw_input("Enter directory path")
+        delete_generated_files(dir_path)

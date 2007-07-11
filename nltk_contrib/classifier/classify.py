@@ -1,10 +1,11 @@
 from nltk_contrib.classifier import commandline as cl
-from nltk_contrib.classifier import oner, zeror, decisiontree, format, naivebayes
+from nltk_contrib.classifier import oner, zeror, decisiontree, format, naivebayes, knn
 import sys
 
 a_help = "Selects the classification algorithm                  " \
         + "Options: 0R for Zero R, 1R for One R, DT for Decision" \
-        + " Trees, NB for Naive Bayes.                           " \
+        + " Trees, NB for Naive Bayes, IB1 for Instance Based   " \
+        + " Learner with one nearest neighbour.                " \
         + "Default: 0R."
 
 f_help = "Specifies the base name of test, training or gold files." \
@@ -59,8 +60,9 @@ ZERO_R = '0R'
 ONE_R = '1R'
 DECISION_TREE = 'DT'
 NAIVE_BAYES = 'NB'
+IB1 = 'IB1'
 
-ALGORITHM_MAPPINGS = {ZERO_R:zeror.ZeroR, ONE_R:oner.OneR, DECISION_TREE:decisiontree.DecisionTree, NAIVE_BAYES:naivebayes.NaiveBayes}
+ALGORITHM_MAPPINGS = {ZERO_R:zeror.ZeroR, ONE_R:oner.OneR, DECISION_TREE:decisiontree.DecisionTree, NAIVE_BAYES:naivebayes.NaiveBayes, IB1:knn.IB1}
 
 VERIFY='verify'
 ACCURACY='accuracy'
