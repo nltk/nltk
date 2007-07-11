@@ -310,13 +310,15 @@ Check that we got the cyclicity right.
     >>> fc3['F'] is fc3['G']
     True
 
-    >>> fc3['F'] is fc3['G', 'H']
+    >>> fc3['F'] is fc3['G']['H']
     True
 
-    >>> fc3['F'] is fc3['G', 'H', 'H']
+    >>> fc3['F'] is fc3['G']['H']['H']
     True
 
-    >>> fc3['F'] is fc3[('G',)+(('H',)*10)]
+    >>> fc4 = fc3['G']
+    >>> for i in range(10): fc4 = fc4['H']
+    >>> fc3['F'] is fc4
     True
 
 Create a cyclic structure with variables.
@@ -333,19 +335,19 @@ Check that we got the value right.
     
 Check that we got the cyclicity right.
 
-    >>> fv3['F'] is fv3['F','H']
+    >>> fv3['F'] is fv3['F']['H']
     True
 
-    >>> fv3['F'] is fv3['F','H','H']
+    >>> fv3['F'] is fv3['F']['H']['H']
     True
 
-    >>> fv3['F'] is fv3[('F',)+(('H',)*10)]
+    >>> fv3['F'] is fv3['F']['H']['H']['H']['H']['H']['H']['H']['H']
     True
 
 Cyclic structure as LHS
 
     >>> fs4 = FeatStruct.parse('[F=[H=[H=[H=(1)[]]]], K->(1)]')
-    >>> fs5 = fs3.unify(fs4)
+    >>> fs5 = fv3.unify(fs4)
     >>> repr(fs5)
     '[F=(1)[H->(1)], K->(1)]'
 

@@ -222,6 +222,9 @@ class StreamBackedCorpusView:
         """
         if isinstance(i, slice):
             start, stop = i.start, i.stop
+            # Handle None indices
+            if start is None: start = 0
+            if stop is None: stop = len(self)
             # Handle negative indices
             if start < 0: start = max(0, len(self)+start)
             if stop < 0: stop = max(0, len(self)+stop)
