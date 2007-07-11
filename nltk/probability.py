@@ -311,7 +311,7 @@ class ProbDistI(object):
             # depends on your system's float implementation.
             return _NINF
         else:
-            return math.log(p)
+            return math.log(p, 2)
 
     def max(self):
         """
@@ -384,7 +384,7 @@ class DictionaryProbDist(ProbDistI):
             if log:
                 value_sum = sum_logs(self._prob_dict.values())
                 if value_sum <= _NINF:
-                    logp = math.log(1.0/len(prob_dict))
+                    logp = math.log(1.0/len(prob_dict), 2)
                     for x in prob_dict.keys():
                         self._prob_dict[x] = logp
                 else:
@@ -404,7 +404,7 @@ class DictionaryProbDist(ProbDistI):
     def prob(self, sample):
         if self._log:
             if sample not in self._prob_dict: return 0
-            else: return math.exp(self._prob_dict[sample])
+            else: return 2**(self._prob_dict[sample])
         else:
             return self._prob_dict.get(sample, 0)
 
@@ -413,7 +413,8 @@ class DictionaryProbDist(ProbDistI):
             return self._prob_dict.get(sample, _NINF)
         else:
             if sample not in self._prob_dict: return _NINF
-            else: return math.log(self._prob_dict[sample])
+            elif self._prob_dict[sample] == 0: return _NINF
+            else: return math.log(self._prob_dict[sample], 2)
 
     def max(self):
         if not hasattr(self, '_max'):
@@ -1025,7 +1026,7 @@ class MutableProbDist(ProbDistI):
         i = self._sample_dict.get(sample)
         if i != None:
             if self._logs:
-                return exp(self._data[i])
+                return 2**(self._data[i])
             else:
                 return self._data[i]
         else:
@@ -1038,7 +1039,7 @@ class MutableProbDist(ProbDistI):
             if self._logs:
                 return self._data[i]
             else:
-                return log(self._data[i])
+                return math.log(self._data[i], 2)
         else:
             return float('-inf')
 
@@ -1061,9 +1062,9 @@ class MutableProbDist(ProbDistI):
         assert i != None
         if self._logs:
             if log: self._data[i] = prob
-            else:   self._data[i] = log(prob)
+            else:   self._data[i] = math.log(prob, 2)
         else:
-            if log: self._data[i] = exp(prob)
+            if log: self._data[i] = 2**(prob)
             else:   self._data[i] = prob
 
 ##//////////////////////////////////////////////////////
@@ -1072,8 +1073,12 @@ class MutableProbDist(ProbDistI):
 
 def log_likelihood(test_pdist, actual_pdist):
     # Is this right?
-    return sum(actual_pdist.prob(s) * math.log(test_pdist.prob(s))
+    return sum(actual_pdist.prob(s) * math.log(test_pdist.prob(s), 2)
                 for s in actual_pdist.keys())
+
+def entropy(pdist):
+    probs = [pdist.prob(s) for s in pdist.samples()]
+    return -sum([p * math.log(p,2) for p in probs])
 
 ##//////////////////////////////////////////////////////
 ##  Conditional Distributions
@@ -1287,6 +1292,9 @@ class ConditionalProbDist(ConditionalProbDistI):
                 pdist = probdist_factory(cfdist[c], *factory_args)
             self._pdists[c] = pdist
 
+    def __contains__(self, condition):
+        return condition in self._pdists
+
     def __getitem__(self, condition):
         if condition not in self._pdists:
             # If it's a condition we haven't seen, create a new prob
@@ -1337,13 +1345,13 @@ class DictionaryConditionalProbDist(ConditionalProbDistI):
 ##//////////////////////////////////////////////////////
 
 # If the difference is bigger than this, then just take the bigger one:
-_ADD_LOGS_MAX_DIFF = math.log(1e-30)
+_ADD_LOGS_MAX_DIFF = math.log(1e-30, 2)
 
 def add_logs(logx, logy):
     """
     Given two numbers C{logx}=M{log(x)} and C{logy}=M{log(y)}, return
     M{log(x+y)}.  Conceptually, this is the same as returning
-    M{log(exp(C{logx})+exp(C{logy}))}, but the actual implementation
+    M{log(2**(C{logx})+2**(C{logy}))}, but the actual implementation
     avoids overflow errors that could result from direct computation.
     """
     if (logx < logy + _ADD_LOGS_MAX_DIFF):
@@ -1351,7 +1359,7 @@ def add_logs(logx, logy):
     if (logy < logx + _ADD_LOGS_MAX_DIFF):
         return logx
     base = min(logx, logy)
-    return base + math.log(math.exp(logx-base) + math.exp(logy-base))
+    return base + math.log(2**(logx-base) + 2**(logy-base), 2)
 
 def sum_logs(logs):
     if len(logs) == 0:
@@ -1425,7 +1433,7 @@ class ProbabilisticMixIn(object):
         """
         Set the log probability associated with this object to
         C{logprob}.  I.e., set the probability associated with this
-        object to C{exp(logprob)}.
+        object to C{2**(logprob)}.
         @param logprob: The new log probability
         @type logprob: C{float}
         """
@@ -1439,7 +1447,7 @@ class ProbabilisticMixIn(object):
         """
         if self.__prob is None:
             if self.__logprob is None: return None
-            self.__prob = math.exp(self.__logprob)
+            self.__prob = 2**(self.__logprob)
         return self.__prob
 
     def logprob(self):
@@ -1451,7 +1459,7 @@ class ProbabilisticMixIn(object):
         """
         if self.__logprob is None:
             if self.__prob is None: return None
-            self.__logprob = math.log(self.__prob)
+            self.__logprob = math.log(self.__prob, 2)
         return self.__logprob
 
 class ImmutableProbabilisticMixIn(ProbabilisticMixIn):
@@ -1570,4 +1578,4 @@ __all__ = ['ConditionalFreqDist', 'ConditionalProbDist',
            'ImmutableProbabilisticMixIn', 'LaplaceProbDist', 'LidstoneProbDist',
            'MLEProbDist', 'MutableProbDist', 'ProbDistI', 'ProbabilisticMixIn',
            'UniformProbDist', 'WittenBellProbDist', 'add_logs', 'demo',
-           'log_likelihood', 'sum_logs']
+           'log_likelihood', 'sum_logs', 'entropy']
