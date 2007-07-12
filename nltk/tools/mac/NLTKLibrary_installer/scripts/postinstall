@@ -1,0 +1,4 @@
+#!/bin/bash
+cd /tmp
+/Library/Frameworks/Python.framework/Versions/Current/bin/python ./setup.py install
+
