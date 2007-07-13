@@ -12,6 +12,7 @@ set-theoretic models.
 
 """
 
-from util import *
+from syn2sem import *
 from evaluate import *
 from logic import *
+
