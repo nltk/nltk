@@ -17,30 +17,33 @@ from nltk.classify.api import *
 from nltk.probability import *
 from nltk import defaultdict
 
-class DecisionTree(ClassifierI):
+class DecisionTree(ClassifyI):
     def __init__(self, label, feature_name=None, decisions=None):
         self._label = label
         self._fname = feature_name
         self._decisions = decisions
 
-    def classify(self, token):
+    def classify(self, featureset):
+        if isinstance(featureset, list): # Handle batch mode.
+            return [self.classify(fs) for fs in featureset]
+        
         # Decision leaf:
         if self._fname is None:
             return self._label
 
         # Decision tree:
-        fval = token[self._fname]
+        fval = featureset[self._fname]
         if fval in self._decisions:
-            return self._decisions[fval].classify(token)
+            return self._decisions[fval].classify(featureset)
         else:
             return self._label
 
-    def error(self, tokens):
+    def error(self, labeled_featuresets):
         errors = 0
-        for token, label in tokens:
-            if self.classify(token) != label:
+        for featureset, label in labeled_featuresets:
+            if self.classify(featureset) != label:
                 errors += 1
-        return float(errors)/len(tokens)
+        return float(errors)/len(labeled_featuresets)
 
     def pp(self, width=70, prefix='', depth=4):
         if self._fname is None:
@@ -59,64 +62,72 @@ class DecisionTree(ClassifierI):
         return self.pp()
 
     @staticmethod
-    def train(training_tokens, entropy_cutoff=0.05, depth_cutoff=100):
+    def train(labeled_featuresets, entropy_cutoff=0.05, depth_cutoff=100,
+              support_cutoff=10):
         # Collect a list of all feature names.
         feature_names = set()
-        for token, label in training_tokens:
-            for fname in token:
+        for featureset, label in labeled_featuresets:
+            for fname in featureset:
                 feature_names.add(fname)
 
         # Start with a stump..
-        tree = DecisionTree.best_stump(feature_names, training_tokens)
+        tree = DecisionTree.best_stump(feature_names, labeled_featuresets)
 
-        tree.refine(training_tokens, entropy_cutoff, depth_cutoff-1)
+        tree.refine(labeled_featuresets, entropy_cutoff, depth_cutoff-1,
+                    support_cutoff)
 
         # Return it
         return tree
 
     @staticmethod
-    def leaf(training_tokens):
-        label = FreqDist([label for (tok,label) in training_tokens]).max()
+    def leaf(labeled_featuresets):
+        label = FreqDist([label for (featureset,label)
+                          in labeled_featuresets]).max()
         return DecisionTree(label)
 
     @staticmethod
-    def stump(feature_name, training_tokens):
-        label = FreqDist([label for (tok,label) in training_tokens]).max()
+    def stump(feature_name, labeled_featuresets):
+        label = FreqDist([label for (featureset,label)
+                          in labeled_featuresets]).max()
 
         # Find the best label for each value.
         freqs = defaultdict(FreqDist) # freq(label|value)
-        for tok, label in training_tokens:
-            feature_value = tok[feature_name]
+        for featureset, label in labeled_featuresets:
+            feature_value = featureset[feature_name]
             freqs[feature_value].inc(label)
 
         decisions = dict([(val, DecisionTree(freqs[val].max()))
                           for val in freqs])
         return DecisionTree(label, feature_name, decisions)
 
-    def refine(self, training_tokens, entropy_cutoff, depth_cutoff):
+    def refine(self, labeled_featuresets, entropy_cutoff, depth_cutoff,
+               support_cutoff):
+        if len(labeled_featuresets) <= support_cutoff: return
         if self._fname is None: return
         if depth_cutoff <= 0: return
         for fval in self._decisions:
-            fval_toks = [(tok,label) for (tok,label) in training_tokens
-                         if tok[self._fname] == fval]
+            fval_featuresets = [(featureset,label) for (featureset,label) 
+                                in labeled_featuresets
+                                if featureset[self._fname] == fval]
 
-            label_freqs = FreqDist([label for (tok,label) in fval_toks])
+            label_freqs = FreqDist([label for (featureset,label)
+                                    in fval_featuresets])
             if entropy(MLEProbDist(label_freqs)) > entropy_cutoff:
                 self._decisions[fval] = DecisionTree.train(
-                    fval_toks, entropy_cutoff, depth_cutoff)
+                    fval_featuresets, entropy_cutoff, depth_cutoff)
 
     @staticmethod
-    def best_stump(feature_names, training_tokens):
-        best_stump = DecisionTree.leaf(training_tokens)
-        best_error = best_stump.error(training_tokens)
+    def best_stump(feature_names, labeled_featuresets):
+        best_stump = DecisionTree.leaf(labeled_featuresets)
+        best_error = best_stump.error(labeled_featuresets)
         for fname in feature_names:
-            stump = DecisionTree.stump(fname, training_tokens)
-            stump_error = stump.error(training_tokens)
+            stump = DecisionTree.stump(fname, labeled_featuresets)
+            stump_error = stump.error(labeled_featuresets)
             if stump_error < best_error:
                 best_error = stump_error
                 best_stump = stump
         print ('best stump for %4d toks uses %20s err=%6.4f' %
-               (len(training_tokens), best_stump._fname, stump_error))
+               (len(labeled_featuresets), best_stump._fname, stump_error))
         return best_stump
 
 ##//////////////////////////////////////////////////////
