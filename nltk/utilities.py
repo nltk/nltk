@@ -5,6 +5,9 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
+import subprocess, os.path
+import locale
+import re
 
 ##########################################################################
 # PRETTY PRINTING
@@ -34,7 +37,6 @@ def print_string(s, width=70):
     @param width: the display width
     @type width: C{int}
     """
-    import re
     while s:
         s = s.strip()
         try:
@@ -276,7 +278,6 @@ class MinimalSet(object):
 ## Regexp display (thanks to David Mertz)
 ######################################################################
 
-import re
 def re_show(regexp, string):
     """
     Search C{string} for substrings matching C{regexp} and wrap
@@ -447,7 +448,6 @@ def breadth_first(tree, children=iter, depth=-1):
 # adapted from io.py in the docutils extension module (http://docutils.sourceforge.net)
 # http://www.pyzine.com/Issue008/Section_Articles/article_Encodings.html
 
-import locale
 def guess_encoding(data):
     """
     Given a byte string, attempt to decode it.
@@ -506,9 +506,8 @@ def guess_encoding(data):
 # Invert a dictionary
 ##########################################################################
 
-from nltk import defaultdict
-
 def invert_dict(d):
+    from nltk import defaultdict
     inverted_dict = defaultdict(list)
     for key in d:
         for term in d[key]:
@@ -516,7 +515,141 @@ def invert_dict(d):
     return inverted_dict
 
 
+##########################################################################
+# Java Via Command-Line
+##########################################################################
+
+_java_bin = None
+_java_options = []
+def config_java(bin=None, options=None):
+    """
+    Configure nltk's java interface, by letting nltk know where it can
+    find the C{java} binary, and what extra options (if any) should be
+    passed to java when it is run.
+
+    @param bin: The full path to the C{java} binary.  If not specified,
+        then nltk will search the system for a C{java} binary; and if
+        one is not found, it will raise a C{LookupError} exception.
+    @type bin: C{string}
+    @param options: A list of options that should be passed to the
+        C{java} binary when it is called.  A common value is
+        C{['-Xmx512m']}, which tells the C{java} binary to increase
+        the maximum heap size to 512 megabytes.  If no options are
+        specified, then do not modify the options list.
+    @type options: C{list} of C{string}
+    """
+    global _java_bin, _java_options
+    if bin is not None:
+        if not os.path.exists(_java_bin):
+            raise ValueError('Could not find java binary at %r' % bin)
+        _java_bin = bin
+    if options is not None:
+        if isinstance(options, basestring):
+            options = options.split()
+        _java_options = list(options)
+
+    # Check the JAVAHOME environment variable.
+    for env_var in ['JAVAHOME', 'JAVA_HOME']:
+        if _java_bin is None and env_var in os.environ:
+            paths = [os.path.join(os.environ[env_var], 'java'),
+                     os.path.join(os.environ[env_var], 'bin', 'java')]
+            for path in paths:
+                if os.path.exists(path):
+                    _java_bin = path
+                    print '[Found java: %s]' % path
+
+    # If we're on a POSIX system, try using the 'which' command to
+    # find a java binary.
+    if _java_bin is None and os.name == 'posix':
+        try:
+            p = subprocess.Popen(['which', 'java'], stdout=subprocess.PIPE)
+            stdout, stderr = p.communicate()
+            path = stdout.strip()
+            if path.endswith('java') and os.path.exists(path):
+                _java_bin = path
+                print '[Found java: %s]' % path
+        except:
+            pass
+
+    if _java_bin is None:
+        raise LookupError('Unable to find java!  Use config_java() '
+                          'or set the JAVAHOME environment variable.')
+
+def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None):
+    """
+    Execute the given java command, by opening a subprocess that calls
+    C{java}.  If java has not yet been configured, it will be configured
+    by calling L{config_java()} with no arguments.
+
+    @param cmd: The java command that should be called, formatted as
+        a list of strings.  Typically, the first string will be the name
+        of the java class; and the remaining strings will be arguments
+        for that java class.
+    @type cmd: C{list} of C{string}
+
+    @param classpath: A C{':'} separated list of directories, JAR
+        archives, and ZIP archives to search for class files.
+    @type classpath: C{string}
+
+    @param stdin, stdout, stderr: Specify the executed programs'
+        standard input, standard output and standard error file
+        handles, respectively.  Valid values are C{subprocess.PIPE},
+        an existing file descriptor (a positive integer), an existing
+        file object, and C{None}.  C{subprocess.PIPE} indicates that a
+        new pipe to the child should be created.  With C{None}, no
+        redirection will occur; the child's file handles will be
+        inherited from the parent.  Additionally, stderr can be
+        C{subprocess.STDOUT}, which indicates that the stderr data
+        from the applications should be captured into the same file
+        handle as for stdout.
+
+    @return: A tuple C{(stdout, stderr)}, containing the stdout and
+        stderr outputs generated by the java command if the C{stdout}
+        and C{stderr} parameters were set to C{subprocess.PIPE}; or
+        C{None} otherwise.
+
+    @raise OSError: If the java command returns a nonzero return code.
+    """
+    if isinstance(cmd, basestring):
+        raise TypeError('cmd should be a list of strings')
+
+    # Make sure we know where a java binary is.
+    if _java_bin is None:
+        config_java()
+        
+    # Construct the full command string.
+    cmd = list(cmd)
+    if classpath is not None:
+        cmd = ['-cp', classpath] + cmd
+    cmd = [_java_bin] + _java_options + cmd
+
+    # Call java via a subprocess
+    p = subprocess.Popen(cmd, stdin=stdin, stdout=stdout, stderr=stderr)
+    (stdout, stderr) = p.communicate()
+
+    # Check the return code.
+    if p.returncode != 0:
+        print stderr
+        raise OSError('Java command failed!')
+
+    return (stdout, stderr)
+
+if 0:
+    #config_java(options='-Xmx512m')
+    # Write:
+    #java('weka.classifiers.bayes.NaiveBayes',
+    #     ['-d', '/tmp/names.model', '-t', '/tmp/train.arff'],
+    #     classpath='/Users/edloper/Desktop/weka/weka.jar')
+    # Read:
+    (a,b) = java(['weka.classifiers.bayes.NaiveBayes',
+                  '-l', '/tmp/names.model', '-T', '/tmp/test.arff',
+                  '-p', '0'],#, '-distribution'],
+                 classpath='/Users/edloper/Desktop/weka/weka.jar')
+
+
+    
+
 
 __all__ = ['Counter', 'MinimalSet', 'OrderedDict', 'SortedDict', 'Trie', 'breadth_first',
            'edit_dist', 'filestring', 'guess_encoding', 'invert_dict', 'pr',
-           'print_string', 're_show']
+           'print_string', 're_show', 'config_java', 'java']
