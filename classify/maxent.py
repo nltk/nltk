@@ -27,7 +27,7 @@ import numpy, time
 #{ Classifier Model
 ######################################################################
 
-class ConditionalExponentialClassifier(ClassifierI):
+class ConditionalExponentialClassifier(ClassifyI):
     def __init__(self, labels, encoding, weights):
         """
         Construct a new conditional exponential classifier model.
@@ -72,11 +72,17 @@ class ConditionalExponentialClassifier(ClassifierI):
         """
         return self._weights
 
-    def classify(self, token_features):
-        return self.label_probs(token_features).max()
-
-    def label_probs(self, token_features):
-        feature_vector = self._encoding.encode(token_features)
+    def classify(self, featureset):
+        if isinstance(featureset, list): # Handle batch mode.
+            return [self.classify(fs) for fs in featureset]
+        
+        return self.probdist(featureset).max()
+        
+    def probdist(self, featureset):
+        if isinstance(featureset, list): # Handle batch mode.
+            return [self.classify(fs) for fs in featureset]
+        
+        feature_vector = self._encoding.encode(featureset)
             
         prob_dict = {}
         for i, label in enumerate(self._labels):
@@ -210,7 +216,7 @@ def calculate_estimated_fcount(classifier, train_toks, encoding, offsets):
     fcount = numpy.zeros(encoding.length()*len(offsets), 'd')
 
     for tok, label in train_toks:
-        pdist = classifier.label_probs(tok)
+        pdist = classifier.probdist(tok)
         for label, offset in offsets.items():
             prob = pdist.prob(label)
             for (index, val) in encoding.encode(tok):
@@ -491,7 +497,7 @@ def calculate_deltas(train_toks, classifier, unattested, ffreq_emperical,
     A = numpy.zeros((len(nfmap), encoding.length()*len(offsets)), 'd')
 
     for tok, label in train_toks:
-        dist = classifier.label_probs(tok)
+        dist = classifier.probdist(tok)
 
         # Find the number of active features.
         feature_vector = encoding.encode(tok)
