@@ -25,11 +25,32 @@ classification}, in which:
     - Each text belongs to zero or more categories.
 """
 
+'''
+
+- training tokens ...... train_toks / labeled_toks
+- testing tokens ....... test_toks / toks
+- training features .... train_feats / labeled_feat_dicts?
+- testing features ..... test_feats / feat_dict?
+
+feat_dict?  featdict?  featuredict?
+feature_dict?  labeled_feature_dict?
+labeled_featuredict?
+labeled_featuredicts?
+
+a better name that "feature dictionary" would be nice!!
+
+featureset?
+
+featureset / labeled_featureset
+
+'''
+
+
 ##//////////////////////////////////////////////////////
-#{ Classifier Interfaces
+#{ Classification Interfaces
 ##//////////////////////////////////////////////////////
 
-class ClassifierI:
+class ClassifyI:
     """
     A processing interface for labeling tokens with a single category
     label (or X{class}).  Labels are typically C{string}s or
@@ -42,41 +63,33 @@ class ClassifierI:
         @rtype: C{list} of (immutable)
         """
         raise NotImplementedError()
-    
-    def classify(self, token_features):
-        """
-        @return: The most appropriate label for a token with the given
-            features.
-        @param token_features: A feature dictionary describing the
-            relevant features of the token.
-        """
-        raise NotImplementedError()
 
-    def label_probs(self, token_features):
+    def probdist(self, featureset):
         """
-        @return: A probability distribution over the posssible labels
-        for a token with the given features.  This method is not
-        implemented by all classifiers.
+        Return a probability distribution over labels for the given
+        featureset.
         
-        @param token_features: A feature dictionary describing the
-            relevant features of the token.
-        @rtype: L{ProbDistI}
+        If C{featureset} is a list of featuresets, then return a
+        corresponding list containing the probability distribution
+        over labels for each of the given featuresets, where the
+        M{i}th element of this list is the most appropriate label for
+        the M{i}th element of C{featuresets}.
         """
         raise NotImplementedError()
 
-    def label_scores(self, token_features):
+    def classify(self, featureset):
         """
-        @return: A dictionary mapping from possible labels for a
-        token with the given features to numeric scores.  This method
-        is not implemented by all classifiers.
+        Return the most appropriate label for the given featureset.
         
-        @param token_features: A feature dictionary describing the
-            relevant features of the token.
-        @rtype: C{dict}
+        If C{featureset} is a list of featuresets, then return a
+        corresponding list containing the most appropriate label for
+        each of the given featuresets, where the M{i}th element of
+        this list is the most appropriate label for the M{i}th element
+        of C{featuresets}.
         """
         raise NotImplementedError()
 
-class MultiClassifierI:
+class MultiClassifyI:
     """
     A processing interface for labeling tokens with zero or more
     category labels (or X{labels}).  Labels are typically C{string}s
@@ -96,36 +109,28 @@ class MultiClassifierI:
         """
         raise NotImplementedError()
     
-    def classify(self, token_features):
+    def probdist(self, featureset):
         """
-        @return: The most appropriate set of labels for a token with
-            the given features.
-        @param token_features: A feature dictionary describing the
-            relevant features of the token.
-        """
-        raise NotImplementedError()
-
-    def label_probs(self, token_features):
-        """
-        @return: A probability distribution over the posssible sets of
-        labels for a token with the given features.  This method is
-        not implemented by all classifiers.
+        Return a probability distribution over sets of labels for the
+        given featureset.
         
-        @param token_features: A feature dictionary describing the
-            relevant features of the token.
-        @rtype: L{ProbDistI}
+        If C{featureset} is a list of featuresets, then return a
+        corresponding list containing the probability distribution
+        over sets of labels for each of the given featuresets, where
+        the M{i}th element of this list is the most appropriate set of
+        labels for the M{i}th element of C{featuresets}.
         """
         raise NotImplementedError()
 
-    def label_scores(self, token_features):
+    def classify(self, featureset):
         """
-        @return: A dictionary mapping from possible sets of labels
-        for a token with the given features to numeric scores.  This
-        method is not implemented by all classifiers.
+        Return the most appropriate set of labels for the given
+        featureset.
         
-        @param token_features: A feature dictionary describing the
-            relevant features of the token.
-        @rtype: C{dict}
+        If C{featureset} is a list of featuresets, then return a
+        corresponding list containing the most appropriate set of
+        labels for each of the given featuresets, where the M{i}th
+        element of this list is the most appropriate set of labels for
+        the M{i}th element of C{featuresets}.
         """
         raise NotImplementedError()
-
