@@ -40,7 +40,7 @@ documents = {
 #: A list of all documents in this corpus.
 items = sorted(documents)
 
-def read_document(item, format='parsed'):
+def read_document(item=items, format='parsed'):
     """
     Read the given document from the corpus, and return its contents.
     C{format} determines the format that the result will be returned
@@ -49,6 +49,8 @@ def read_document(item, format='parsed'):
       - C{'raw'}: a single C{string}
       - C{'docs'}: a list of strings, each containing a single document.
     """
+    if isinstance(item, list):
+        return concat([read(doc, format) for doc in item])
     filename = find_corpus_file('ieer', item)
     if format == 'parsed':
         return StreamBackedCorpusView(filename, read_parsed_ieer_block)
@@ -80,15 +82,15 @@ def read_ieer_block(stream):
 ######################################################################
 read = read_document
 
-def raw(item):
+def raw(item=items):
     """@return: the given item as a single string."""
     return read_document(item, format='raw')
 
-def parsed(item):
+def parsed(item=items):
     """@return: the given item as a list of dictionaries, where the keys are ['headline', 'text'] and a value is a parse tree."""
     return read_document(item, format='parsed')
 
-def docs(item):
+def docs(item=items):
     """@return: the given item as a list of strings, each containing
     one document."""
     return read_document(item, format='docs')
@@ -100,9 +102,9 @@ def demo():
     from nltk.corpus import ieer
     from pprint import pprint
 
-    print '%r ... %r' % (ieer.docs('NYT_19980407')[3][:30],
-                         ieer.docs('NYT_19980407')[3][-30:])
-    pprint(ieer.read('NYT_19980407', format='parsed')[3])
+    print '%r ... %r' % (ieer.docs()[3][:30],
+                         ieer.docs()[3][-30:])
+    pprint(ieer.read(format='parsed')[3])
 
 if __name__ == '__main__':
     demo()

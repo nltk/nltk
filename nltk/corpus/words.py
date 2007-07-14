@@ -29,6 +29,8 @@ def read_lexicon(item='en', format='listed'):
       - C{'raw'}: a single C{string}
       - C{'listed'}: a list of words
     """
+    if isinstance(item, list):
+        return concat([read(doc, format) for doc in item])
     filename = find_corpus_file('words', item)
     if format == 'raw':
         return open(filename).read()
@@ -42,11 +44,11 @@ def read_lexicon(item='en', format='listed'):
 ######################################################################
 read = read_lexicon
 
-def raw(name):
+def raw(name='en'):
     """@return: the given document as a single string."""
     return read_document(name, 'raw')
 
-def listed(name):
+def listed(name='en'):
     """@return: the given document as a list"""
     return read_document(name, 'listed')
 

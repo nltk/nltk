@@ -68,7 +68,7 @@ documents = dict([('wsj_%04d' % i, 'Wall Street Journal document %d' % i)
 #: A list of all documents in this corpus.
 items = sorted(documents)
 
-def read_document(item, format='parsed'):
+def read_document(item=items, format='parsed'):
     """
     Read the given document from the corpus, and return its contents.
     C{format} determines the format that the result will be returned
@@ -83,6 +83,8 @@ def read_document(item, format='parsed'):
       - C{'parsed'}: a list of parse trees, with part of
         speech tags included.
     """
+    if isinstance(item, list):
+        return concat([read(doc, format) for doc in item])
     if format == 'parsed':
         filename = find_corpus_file('treebank/combined', item, '.mrg')
         return StreamBackedCorpusView(filename, read_parsed_tb_block)
@@ -138,27 +140,27 @@ def read_tokenized_tb_block(stream):
 ######################################################################
 read = read_document
 
-def tagged(item):
+def tagged(item=items):
     """@return: the given document as a list of sentences, where each
     sentence is a list of tagged words.  Tagged words are encoded as
     tuples of (word, part-of-speech)."""
     return read_document(item, format='tagged')
 
-def tokenized(item):
+def tokenized(item=items):
     """@return: the given document as a list of sentences, where each
     sentence is a list of words."""
     return read_document(item, format='tokenized')
 
-def raw(item):
+def raw(item=items):
     """@return: the given document as a single string."""
     return read_document(item, format='raw')
 
-def parsed(item):
+def parsed(item=items):
     """@return: the given document as a list of parse trees, with
     part of speech tags included in the parse structure."""
     return read_document(item, format='parsed')
 
-def parsed_no_pos(item):
+def parsed_no_pos(item=items):
     """@return: the given document as a list of parse trees, without
     part of speech tags included in the parse structure."""
     return read_document(item, format='parsed-no-pos')
@@ -183,6 +185,11 @@ def demo():
     for sent in treebank.read('wsj_0003', format='tagged')[:3]:
         print sent
     print
+
+    # Note that this spans across multiple documents:
+    print 'Height of trees:'
+    for tree in treebank.parsed()[:25]:
+        print tree.height(),
 
 #    print "Tokenized:"
 #    for sent in treebank.read('wsj_0003', format='tokenized')[:3]:

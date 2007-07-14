@@ -57,6 +57,8 @@ def read_document(item='parsed', format=None):
         one of 'parsed', 'tagged', or 'tokenized'.  If C{item} is a valid
         format (i.e., not a filename), then it will be used as the format.
     """
+    if isinstance(item, list):
+        return concat([read(doc, format) for doc in item])
     if item in ('parsed', 'tagged', 'tokenized', 'raw'):
         format = item
         if item == 'tokenized': item = 'raw'

@@ -29,7 +29,7 @@ documents = {
 #: A list of all documents in this corpus.
 items = sorted(documents)
 
-def read_document(item, format='listed'):
+def read_document(item=items, format='listed'):
     """
     Return the given list of names.  C{item} can be 'female' or
     'male', or the filename of a file containing a name list.
@@ -38,6 +38,8 @@ def read_document(item, format='listed'):
       - C{'raw'}: a single C{string}
       - C{'listed'}: a list of names
     """
+    if isinstance(item, list):
+        return concat([read(doc, format) for doc in item])
     filename = find_corpus_file('names', item, '.txt')
     if format == 'listed':
         return StreamBackedCorpusView(filename, read_names_block)
@@ -54,11 +56,11 @@ def read_names_block(stream):
 ######################################################################
 read = read_document
 
-def raw(item):
+def raw(item=items):
     """@return: the given document as a single string."""
     return read_document(item, 'raw')
 
-def listed(item):
+def listed(item=items):
     """@return: the given document as a list"""
     return read_document(item, 'listed')
 
@@ -82,4 +84,6 @@ def demo():
 
 if __name__ == '__main__':
     demo()
+
+
 
