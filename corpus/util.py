@@ -7,7 +7,9 @@
 # For license information, see LICENSE.TXT
 
 import os, sys, bisect, re
+from itertools import islice
 from nltk import tokenize
+from nltk.etree import ElementTree
 
 ######################################################################
 #{ Corpus Path
@@ -78,16 +80,16 @@ def get_corpus_path():
 
 class StreamBackedCorpusView:
     """
-    A base class for defining a 'view' for a corpus file.  A
-    C{StreamBackedCorpusView} object acts like a sequence of tokens:
+    A 'view' of a corpus file, which acts like a sequence of tokens:
     it can be accessed by index, iterated over, etc.  However, the
-    tokens are only constructed as-needed.
+    tokens are only constructed as-needed -- the entire corpus is
+    never stored in memory at once.
 
     The constructor to C{StreamBackedCorpusView} takes two arguments:
-    a corpus file (which can be either a filename or a stream); and a
-    block reader.  A X{block reader} is a function that reads
-    and reads zero or more tokens from a stream, and returns them
-    as a list.  A very simple example of a block reader is:
+    a corpus filename; and a block reader.  A X{block reader} is a
+    function that reads and reads zero or more tokens from a stream,
+    and returns them as a list.  A very simple example of a block
+    reader is:
 
         >>> def simple_block_reader(stream):
         ...     return stream.readline().split()
@@ -162,33 +164,27 @@ class StreamBackedCorpusView:
        end_toknum is the token index of the first token not in the
        block; and tokens is a list of the tokens in the block.
     """
-    def __init__(self, corpus_file, block_reader=None):
+    def __init__(self, filename, block_reader=None):
         """
-        Create a new corpus view, based on the file C{corpus_file}, and
+        Create a new corpus view, based on the file C{filename}, and
         read with C{block_reader}.  See the class documentation
         for more information.
         """
         if block_reader:
-            self._block_reader = block_reader
+            self.read_block = block_reader
         # Initialize our toknum/filepos mapping.
         self._toknum = [0]
         self._filepos = [0]
         # We don't know our length (number of tokens) yet.
         self._len = None
-        # Initialize our input stream.
-        if isinstance(corpus_file, basestring):
-            self._stream = open(corpus_file, 'rb')
-        else:
-            self._stream = corpus_file
-        # Find the character position of the end of the file.
-        self._stream.seek(0, 2)
-        self._eofpos = self._stream.tell()
+        self._eofpos = None
+
+        self._filename = filename
+        self._stream = None
+        
         # Maintain a cache of the most recently read block, to
         # increase efficiency of random access.
         self._cache = (-1, -1, None)
-
-    def _block_reader(self, stream):
-        return self.read_block(stream)
 
     def read_block(self, stream):
         raise NotImplementedError('Abstract Method')
@@ -198,11 +194,12 @@ class StreamBackedCorpusView:
         Close the file stream associated with this corpus view.  This
         can be useful if you are worried about running out of file
         handles (although the stream should automatically be closed
-        upon garbage collection of the corpus view).  The corpus view
-        should not be used after it is closed -- doing so will raise
-        C{IOError}s or C{OSError}s.
+        upon garbage collection of the corpus view).  If the corpus
+        view is accessed after it is closed, it will be automatically
+        re-opened.
         """
         self._stream.close()
+        self._stream = None
 
     def __len__(self):
         """
@@ -210,9 +207,9 @@ class StreamBackedCorpusView:
         corpus view.
         """
         if self._len is None:
-            # _iterate_from() sets self._len when it reaches the end
+            # iterate_from() sets self._len when it reaches the end
             # of the file:
-            for tok in self._iterate_from(self._toknum[-1]): pass
+            for tok in self.iterate_from(self._toknum[-1]): pass
         return self._len
     
     def __getitem__(self, i):
@@ -228,40 +225,37 @@ class StreamBackedCorpusView:
             # Handle negative indices
             if start < 0: start = max(0, len(self)+start)
             if stop < 0: stop = max(0, len(self)+stop)
-            # Check if it's n the cache.
+            # Check if it's in the cache.
             offset = self._cache[0]
             if offset <= start and stop < self._cache[1]:
                 return self._cache[2][start-offset:stop-offset]
             # Construct & return the result.
-            result = []
-            for i,tok in enumerate(self._iterate_from(start)):
-                if i+start >= stop: return result
-                result.append(tok)
-            return result
+            return list(islice(self.iterate_from(start), stop-start))
         else:
             # Handle negative indices
-            if i < 0: i = max(0, len(self)+i)
+            if i < 0: i += len(self)
+            if i < 0: raise IndexError('index out of range')
             # Check if it's in the cache.
             offset = self._cache[0]
             if offset <= i < self._cache[1]:
                 #print 'using cache', self._cache[:2]
                 return self._cache[2][i-offset]
-            # Use _iterate_from to extract it.
+            # Use iterate_from to extract it.
             try:
-                return self._iterate_from(i).next()
+                return self.iterate_from(i).next()
             except StopIteration:
-                raise KeyError(i)
+                raise IndexError('index out of range')
 
     def __iter__(self):
         """
         Return an iterator that generates the tokens in the corpus
         file underlying this corpus view.
         """
-        return self._iterate_from(0)
+        return self.iterate_from(0)
 
     # If we wanted to be thread-safe, then this method would need to
     # do some locking.
-    def _iterate_from(self, start_tok):
+    def iterate_from(self, start_tok):
         """
         Return an iterator that generates the tokens in the corpus
         file underlying this corpus view, starting at the token number
@@ -279,12 +273,21 @@ class StreamBackedCorpusView:
             toknum = self._toknum[-1]
             filepos = self._filepos[-1]
 
+        # Open the stream, if it's not open already.
+        if self._stream is None:
+            self._stream = open(self._filename, 'rb')
+            
+        # Find the character position of the end of the file.
+        if self._eofpos is None:
+            self._stream.seek(0, 2)
+            self._eofpos = self._stream.tell()
+        
         # Each iteration through this loop, we read a single block
         # from the stream.
         while True:
             # Read the next block.
             self._stream.seek(filepos)
-            tokens = self._block_reader(self._stream)
+            tokens = self.read_block(self._stream)
             assert isinstance(tokens, list) # tokenizer should return list.
             num_toks = len(tokens)
             new_filepos = self._stream.tell()
@@ -307,7 +310,7 @@ class StreamBackedCorpusView:
             # If we're at the end of the file, then we're done; set
             # our length and terminate the generator.
             if new_filepos == self._eofpos:
-                self._len = toknum
+                self._len = toknum + num_toks
                 return
             # Update our indices
             toknum += num_toks
@@ -330,7 +333,131 @@ class StreamBackedCorpusView:
         else:
             return '[%s]' % ', '.join(pieces)
 
+class ConcatenatedCorpusView:
+    """
+    A 'view' of a corpus file that joins together one or more
+    L{StreamBackedCorpusViews<StreamBackedCorpusView>}.  At most
+    one file handle is left open at any time.
+    """
+    def __init__(self, corpus_views):
+        self._pieces = corpus_views
+        """A list of the corpus subviews that make up this
+        concatination."""
+        
+        self._offsets = [0]
+        """A list of offsets, indicating the index at which each
+        subview begins.  In particular::
+            offsets[i] = sum([len(p) for p in pieces[:i]])"""
+        
+        self._open_piece = None
+        """The most recently accessed corpus subview (or C{None}).
+        Before a new subview is accessed, this subview will be closed."""
 
+    def __len__(self):
+        if len(self._offsets) <= len(self._pieces):
+            # Iterate to the end of the corpus.
+            for tok in self.iterate_from(self._offsets[-1]): pass
+            
+        return self._offsets[-1]
+
+    def __getitem__(self, i):
+        if isinstance(i, slice):
+            start, stop = i.start, i.stop
+            # Handle None indices
+            if start is None: start = 0
+            if stop is None: stop = len(self)
+            # Handle negative indices
+            if start < 0: start = max(0, len(self)+start)
+            if stop < 0: stop = max(0, len(self)+stop)
+            # Construct & return the result.
+            return list(islice(self.iterate_from(start), stop-start))
+        else:
+            # Handle negative indices
+            if i < 0: i += len(self)
+            if i < 0: raise IndexError('index out of range')
+            # Use iterate_from to extract it.
+            try:
+                return self.iterate_from(i).next()
+            except StopIteration:
+                raise IndexError('index out of range')
+
+    def __iter__(self):
+        return self.iterate_from(0)
+
+    def close(self):
+        for piece in self._pieces:
+            piece.close()
+
+    def iterate_from(self, start_tok):
+        piecenum = bisect.bisect_right(self._offsets, start_tok)-1
+
+        while piecenum < len(self._pieces):
+            offset = self._offsets[piecenum]
+            piece = self._pieces[piecenum]
+
+            # If we've got another piece open, close it first.
+            if (self._open_piece != piece and 
+                self._open_piece is not None):
+                self._open_piece.close()
+                self._open_piece = piece
+
+            # Get everything we can from this piece.
+            for tok in piece.iterate_from(start_tok-offset):
+                yield tok
+
+            # Update the offset table.
+            if piecenum+1 == len(self._offsets):
+                self._offsets.append(self._offsets[-1] + len(piece))
+
+            # Move on to the next piece.
+            piecenum += 1
+            start_tok = self._offsets[piecenum]
+        
+    _MAX_REPR_SIZE = 60
+    def __repr__(self):
+        """
+        @return: A string representation for this corpus view.  The
+        representation is similar to a list's representation; but if
+        it would be more than 60 characters long, it is truncated.
+        """
+        pieces = []
+        length = 5
+        for tok in self:
+            pieces.append(repr(tok))
+            length += len(pieces[-1]) + 2
+            if length > self._MAX_REPR_SIZE and len(pieces) > 2:
+                return '[%s, ...]' % ', '.join(pieces[:-1])
+        else:
+            return '[%s]' % ', '.join(pieces)
+
+def concat(docs):
+    """
+    Concatenate together the contents of multiple documents from a
+    single corpus, using an appropriate concatenation function.  This
+    utility function is used by corpus readers when the user requests
+    more than one document at a time.
+    """
+    types = set([d.__class__ for d in docs])
+
+    if types.issubset([StreamBackedCorpusView]):
+        return ConcatenatedCorpusView(docs)
+    
+    elif types.issubset([str, unicode, basestring]):
+        return reduce((lambda a,b:a+b), docs, '')
+
+    elif types.issubset([list]):
+        return reduce((lambda a,b:a+b), docs, [])
+    
+    elif types.issubset([tuple]):
+        return reduce((lambda a,b:a+b), docs, ())
+    
+    elif len(types) == 1 and ElementTree.iselement(list(types)[0]):
+        xmltree = ElementTree.Element('documents')
+        for doc in docs: xmltree.append(doc)
+        return xmltree
+
+    else:
+        raise ValueError("Don't know how to concatenate types: %r" % types)
 
 
 ######################################################################
@@ -448,4 +575,3 @@ def _parse_sexpr_block(block):
         tokens.append(block[start:end])
 
     return tokens, end
-    

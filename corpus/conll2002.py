@@ -47,6 +47,8 @@ def read_document(item, format='chunked', chunk_types=('NP','VP','PP')):
         listed at the top level.  For example, to list the document
         with only noun phrase chunks marked, use ('NP',).
     """
+    if isinstance(item, list):
+        return concat([read(doc, format, chunk_types) for doc in item])
     filename = find_corpus_file('conll2002', item)
     if format == 'raw': return open(filename).read()
     return Conll2000CorpusView(filename, format, chunk_types)

@@ -32,7 +32,7 @@ documents = {'a_and_c':  'Antony and Cleopatra',
 #: A list of all documents in this corpus.
 items = sorted(documents)
 
-def read_document(item, format='xml'):
+def read_document(item=items, format='xml'):
     """
     Read the given document from the corpus, and return its contents.
     C{format} determines the format that the result will be returned
@@ -40,6 +40,8 @@ def read_document(item, format='xml'):
       - C{'raw'}: a single C{string}
       - C{'xml'}: an xml ElementTree.
     """
+    if isinstance(item, list):
+        return concat([read(doc, format) for doc in item])
     filename = find_corpus_file('shakespeare', item, '.xml')
     if format == 'xml':
         return ElementTree.parse(filename).getroot()
@@ -54,11 +56,11 @@ read = read_document
 ######################################################################
 read = read_document
 
-def raw(item):
+def raw(item=items):
     """@return: the given document as a single string."""
     return read_document(item, 'raw')
 
-def xml(item):
+def xml(item=items):
     """@return: the given document as an xml ElementTree."""
     return read_document(item, 'xml')
 
@@ -69,6 +71,9 @@ def demo():
     from nltk.corpus import shakespeare
     from pprint import pprint
     import re
+
+    plays = shakespeare.read(format='xml')
+    print 'Number of plays:', len(plays)
 
     play = shakespeare.read('dream', 'xml')
     

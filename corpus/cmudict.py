@@ -71,6 +71,8 @@ def read_lexicon(item='cmudict', format='listed'):
        - 'dictionary' - as a dictionary, whose keys are upper case words
           and whose values are lists of pronunciation transcriptions.
     """
+    if isinstance(item, list):
+        return concat([read(doc, format) for doc in item])
     filename = find_corpus_file('cmudict', item)
     lexicon = StreamBackedCorpusView(filename, read_cmudict_block)
     if format == 'listed':

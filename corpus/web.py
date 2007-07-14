@@ -48,6 +48,8 @@ def read_document(url, format='tokenized'):
         steps may be applied to the raw HTML, in an attempt to
         extract the text of the webpage.
     """
+    if isinstance(item, list):
+        return concat([read(doc, format) for doc in item])
     if format == 'tokenized':
         html = urlopen(url).read()
         cleaner = MarkupCleaner()
