@@ -34,6 +34,8 @@ class MarkupCleaner(HTMLParser):
     def handle_endtag(self, tag):
         if tag in skip:
             self._flag = True
+    def handle_comment(self, d):
+        pass
     def clean_text(self):
         return ''.join(self.fed)
 
