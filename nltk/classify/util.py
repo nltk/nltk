@@ -178,11 +178,13 @@ def attested_labels(tokens):
     return tuple(set([label for (tok,label) in tokens]))
 
 def classifier_log_likelihood(classifier, gold):
-    ll = [classifier.label_probs(t).logprob(l) for (t,l) in gold]
+    results = classifier.probdist([fs for (fs,l) in gold])
+    ll = [pdist.prob(l) for ((fs,l), pdist) in zip(gold, results)]
     return float(sum(ll))/len(ll)
 
 def classifier_accuracy(classifier, gold):
-    correct = [classifier.classify(t)==l for (t,l) in gold]
+    results = classifier.classify([fs for (fs,l) in gold])
+    correct = [l==r for ((fs,l), r) in zip(gold, results)]
     return float(sum(correct))/len(correct)
 
 ######################################################################
@@ -202,6 +204,8 @@ def names_demo_features(name):
 def binary_names_demo_features(name):
     features = {}
     features['alwayson'] = True
+    features['startswith(vowel)'] = name[0].lower() in 'aeiouy'
+    features['endswith(vowel)'] = name[-1].lower() in 'aeiouy'
     for letter in 'abcdefghijklmnopqrstuvwxyz':
         features['count(%s)' % letter] = name.lower().count(letter)
         features['has(%s)' % letter] = letter in name.lower()
@@ -219,46 +223,39 @@ def names_demo(trainer, features=names_demo_features):
                 [(name, 'female') for name in names.read('female')])
 
     # Randomly split the names into a test & train set.
+    random.seed(123456)
     random.shuffle(namelist)
     train = namelist[:1000]
     test = namelist[1000:1500]
 
-    # Do feature extraction on the training set.
-    train = [(features(name), gender)
-             for (name, gender) in train]
-
     # Train up a classifier.
     print 'Training classifier...'
-    classifier = trainer(train)
+    classifier = trainer( [(features(n), g) for (n,g) in train] )
 
-    # Test the performance of the classifier.
+    # Run the classifier on the test data.
     print 'Testing classifier...'
-    results = [(name, classifier.classify(features(name)), gender)
-               for (name, gender) in test]
+    acc = classifier_accuracy(classifier, [(features(n),g) for (n,g) in test])
+    print 'Accuracy: %6.4f' % acc
 
-    # How's its accuracy?
-    correct = [name for (name, guess, gold) in results if guess == gold]
-    print '\nAccuracy: %6.4f (%d/%d)' % (float(len(correct))/len(test),
-                                         len(correct), len(test))
-
-    # What's the log likelihood of the correct answer?  List a few
-    # examples to illustrate.
+    # For classifiers that can find probabilities, show the log
+    # likelihood and some sample probability distributions.
     try:
-        ll = [classifier.label_probs(features(name)).logprob(gender)
-              for (name, gender) in test]
+        test_featuresets = [features(n) for (n,g) in test]
+        pdists = classifier.probdist(test_featuresets)
+        ll = [pdist.logprob(gold)
+              for ((name, gold), pdist) in zip(test, pdists)]
         print 'Avg. log likelihood: %6.4f' % (sum(ll)/len(test))
         print
         print 'Unseen Names      P(Male)  P(Female)\n'+'-'*40
-        for name, guess, gender in results[:5]:
-            probs = classifier.label_probs(features(name))
+        for ((name, gender), pdist) in zip(test, pdists)[:5]:
             if gender == 'male':
                 fmt = '  %-15s *%6.4f   %6.4f'
             else:
                 fmt = '  %-15s  %6.4f  *%6.4f'
-            print fmt % (name, probs.prob('male'), probs.prob('female'))
+            print fmt % (name, pdist.prob('male'), pdist.prob('female'))
     except NotImplementedError:
         pass
-        
-
+    
     # Return the classifier
     return classifier
+
