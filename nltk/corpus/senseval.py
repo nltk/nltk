@@ -101,7 +101,7 @@ class SensevalParser(xml.sax.ContentHandler):
 def _to_ascii(text):
     return text.encode('Latin-1')
 
-def read_document(item, format='listed'):
+def read_document(item=items, format='listed'):
     """
     Read the given document from the corpus, and return its contents.
     C{format} determines the format that the result will be returned
@@ -110,6 +110,8 @@ def read_document(item, format='listed'):
       - C{'listed'}: a list of entries.  Each entry is a tuple
         (senses, position, context).  
     """
+    if isinstance(item, list):
+        return concat([read(doc, format) for doc in item])
     filename = find_corpus_file('senseval', item, '.pos')
     if format == 'raw':
         return open(filename).read()

@@ -67,7 +67,7 @@ class PPAttachment:
                 (self.sent, self.verb, self.noun1, self.prep,
                  self.noun2, self.attachment))
 
-def read_document(item, format='tuple'):
+def read_document(item=items, format='tuple'):
     """
     Read the given document from the corpus, and return its contents.
     C{format} determines the format that the result will be returned
@@ -81,6 +81,8 @@ def read_document(item, format='tuple'):
       - C{'tuple'}: a list of C{tuple} objects.  The elements 
         of each tuple are (sent, verb, noun1, prep, noun2, attachment).
     """
+    if isinstance(item, list):
+        return concat([read(doc, format) for doc in item])
     filename = find_corpus_file('ppattach', item)
     if format == 'raw':
         return open(filename).read()
@@ -111,7 +113,7 @@ def read_ppattach_obj_block(stream):
 ######################################################################
 read = read_document
 
-def raw(item):
+def raw(item=items):
     """@return: the given document as a single string."""
     return read_document(item, 'raw')
 

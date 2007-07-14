@@ -54,7 +54,7 @@ class Conll2000CorpusView(StreamBackedCorpusView):
         elif self.format == 'tokenized':
             return [[word for (word, tag, chunk_typ) in lines]]
 
-def read_document(item, format='chunked', chunk_types=('NP','VP','PP')):
+def read_document(item='train', format='chunked', chunk_types=('NP','VP','PP')):
     """
     Read the given document from the corpus, and return its contents.
     C{format} determines the format that the result will be returned
@@ -70,6 +70,8 @@ def read_document(item, format='chunked', chunk_types=('NP','VP','PP')):
         listed at the top level.  For example, to list the document
         with only noun phrase chunks marked, use ('NP',).
     """
+    if isinstance(item, list):
+        return concat([read(doc, format, chunk_types) for doc in item])
     filename = find_corpus_file('conll2000', item, '.txt')
     if format == 'raw': return open(filename).read()
     return Conll2000CorpusView(filename, format, chunk_types)
@@ -79,21 +81,21 @@ def read_document(item, format='chunked', chunk_types=('NP','VP','PP')):
 ######################################################################
 read = read_document
 
-def raw(item):
+def raw(item='train'):
     """Return the given document as a single string"""
     return read_document(item, format='raw')
 
-def tokenized(item):
+def tokenized(item='train'):
     """Return the given document as a list of words and punctuation
     symbols."""
     return read_document(item, format='tokenized')
 
-def tagged(item):
+def tagged(item='train'):
     """Return the given document as a list of (word, part-of-speech)
     tuples."""
     return read_document(item, format='tagged')
 
-def chunked(item, chunk_types=('NP','VP','PP')):
+def chunked(item='train', chunk_types=('NP','VP','PP')):
     """Return the given document as a chunk tree, containing tagged
     words."""
     return read_document(item, format='chunked', chunk_types=chunk_types)

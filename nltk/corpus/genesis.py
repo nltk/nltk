@@ -45,6 +45,8 @@ def read_document(item='english-kjv', format='tokenized'):
       - C{'raw'}: a single C{string}
       - C{'tokenized'}: a list of words and punctuation symbols.
     """
+    if isinstance(item, list):
+        return concat([read(doc, format) for doc in item])
     filename = find_corpus_file('genesis', item, '.txt')
     if format == 'raw':
         return open(filename).read()
@@ -58,11 +60,11 @@ def read_document(item='english-kjv', format='tokenized'):
 ######################################################################
 read = read_document
 
-def raw(item):
+def raw(item='english-kjv'):
     """@return: the given document as a single string."""
     return read_document(item, 'raw')
 
-def tokenized(item):
+def tokenized(item='english-kjv'):
     """@return: the given document as a list of words and punctuation
     symbols.
     @rtype: C{list} of C{str}"""

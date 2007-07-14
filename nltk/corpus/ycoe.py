@@ -202,7 +202,7 @@ def _read(item, conversion_function):
         if sent != "":
             yield conversion_function(sent, sep="_")
 
-def read_document(item, format='parsed', chunk_types=('NP',),
+def read_document(item=items, format='parsed', chunk_types=('NP',),
          top_node="S", partial_match=False, collapse_partials=True,
          cascade=False):
     """
@@ -216,6 +216,10 @@ def read_document(item, format='parsed', chunk_types=('NP',),
         are used for base noun phrases.
       - C{'parsed'}: a list of parse trees.
     """
+    if isinstance(item, list):
+        return concat([read(doc, format, chunk_types, top_node,
+                            partial_match, collapse_partials,
+                            cascade) for doc in item])
     if format == 'raw':
         return open(find_corpus_file('ycoe/psd', item, '.psd')).read()
     if format == 'tokenized':
@@ -347,25 +351,25 @@ def _chunk_parse(files, chunk_types, top_node, partial_match, collapse_partials,
 ######################################################################
 read = read_document
 
-def tagged(item):
+def tagged(item=items):
     """@return: the given document as a list of sentences, where each
     sentence is a list of tagged words.  Tagged words are encoded as
     tuples of (word, part-of-speech)."""
     return read_document(item, format='tagged')
 
-def tokenized(item):
+def tokenized(item=items):
     """@return: the given document as a list of sentences, where each
     sentence is a list of words."""
     return read_document(item, format='tokenized')
 
-def raw(item):
+def raw(item=items):
     """@return: the given document as a single string."""
     return read_document(item, format='raw')
 
-def parsed(item):
+def parsed(item=items):
     return read_document(item, format='parsed')
 
-def chunked(item, chunk_types=('NP',), top_node="S",
+def chunked(item=items, chunk_types=('NP',), top_node="S",
             partial_match=False, collapse_partials=True, cascade=False):
     return read_document(item, 'chunked', chunk_types, top_node,
                          partial_match, collapse_partials, cascade)

@@ -41,6 +41,8 @@ def read_lexicon(item='english', format='listed'):
       - C{'raw'}: a single C{string}
       - C{'listed'}: a list of names
     """
+    if isinstance(item, list):
+        return concat([read(doc, format) for doc in item])
     filename = find_corpus_file('stopwords', item)
     if format == 'listed':
         return open(filename).read().split()
@@ -54,11 +56,11 @@ def read_lexicon(item='english', format='listed'):
 ######################################################################
 read = read_lexicon
 
-def raw(item):
+def raw(item='english'):
     """@return: the given document as a single string."""
     return read_lexicon(item, 'raw')
 
-def listed(item):
+def listed(item='english'):
     """@return: the given document as a list"""
     return read_lexicon(item, 'listed')
 
@@ -70,12 +72,18 @@ def demo():
     from nltk.corpus import stopwords
     from itertools import islice
     from pprint import pprint
+    import random
 
     print "20 English stopwords"
     pprint(stopwords.read()[300:320])
 
     print "20 Danish stopwords"
     pprint(stopwords.read('danish')[10:30])
+
+    print "20 stopwords from assorted languages"
+    words = stopwords.read(items)
+    random.shuffle(words)
+    pprint(words[10:30])
 
 if __name__ == '__main__':
     demo()

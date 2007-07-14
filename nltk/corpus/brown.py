@@ -117,6 +117,9 @@ def read_document(item, format='tagged', group_by_sent=True, group_by_para = Fal
         list for each paragraph.  If C{group_by_sent} is also true,
         then each of these paragraphs will contain a list of sentences.
     """
+    if isinstance(item, list):
+        return concat([read_document(doc, format, group_by_sent,
+                                     group_by_para) for doc in item])
     filename = find_corpus_file('brown', item)
     if format == 'raw':
         return open(filename).read()
@@ -129,7 +132,7 @@ def read_document(item, format='tagged', group_by_sent=True, group_by_para = Fal
 ######################################################################
 read = read_document
 
-def tagged(item, group_by_sent=True, group_by_para=False):
+def tagged(item=items, group_by_sent=True, group_by_para=False):
     """
     @return the given document as a list of sentences, where each
     sentence is a list of tagged words.  Tagged words are encoded as
@@ -140,7 +143,7 @@ def tagged(item, group_by_sent=True, group_by_para=False):
     """
     return read_document(item, 'tagged', group_by_sent, group_by_para)
 
-def tokenized(item, group_by_sent=True, group_by_para=False):
+def tokenized(item=items, group_by_sent=True, group_by_para=False):
     """
     @return the given document as a list of sentences, where each
     sentence is a list of words.
@@ -150,7 +153,7 @@ def tokenized(item, group_by_sent=True, group_by_para=False):
     """
     return read_document(item, 'tokenized', group_by_sent, group_by_para)
 
-def raw(item):
+def raw(item=items):
     """
     @return the given document as a single string.
     @param group_by_sent, group_by_para: Controls whether the
@@ -173,9 +176,9 @@ def demo():
     d2 = brown.read('b', group_by_sent=False)
     print 'Words from b:', d2[220:240]
                        
-    d3 = brown.read('c', group_by_sent=False, format='tagged')
+    d3 = brown.read('c', group_by_sent=False, format='tokenized')
     print 'Untagged words from c:', d3[220:240]
-                       
+
 if __name__ == '__main__':
     demo()
 
