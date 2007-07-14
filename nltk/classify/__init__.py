@@ -26,21 +26,21 @@ of the token are relevant to the classification decision.  For
 example, a document classifier might use a separate feature for each
 word, recording how often that word occured in the document.
 
-Feature Dictionaries
---------------------
-The set of features describing a token is encoded using a X{feature
-dictionary}, which maps from X{feature names} to X{feature values}.
-Feature names are unique strings that indicate what aspect of the
-token is encoded by the feature.  Examples include C{'prevword'}, for
-a feature whose value is the previous word; and
+Featuresets
+-----------
+The features describing a token are encoded using a X{featureset},
+which is a dictionary that maps from X{feature names} to X{feature
+values}.  Feature names are unique strings that indicate what aspect
+of the token is encoded by the feature.  Examples include
+C{'prevword'}, for a feature whose value is the previous word; and
 C{'contains-word(library)'} for a feature that is true when a document
 contains the word C{'library'}.  Feature values are typically
 booleans, numbers, or strings, depending on which feature they
 describe.
 
-Feature dictionaries are typically constructed using a X{feature
+Featuresets are typically constructed using a X{feature
 extraction function}, which takes a token as its input, and returns a
-feature dictionary describing that token.  This feature extraction
+featuresets describing that token.  This feature extraction
 function is applied to each token before it is fed to the classifier:
 
     >>> # Define a feature extraction function.
@@ -63,4 +63,9 @@ from api import *
 from util import *
 from naivebayes import *
 from decisiontree import *
-from maxent import *
+try:
+    import numpy
+    from maxent import *
+except ImportError:
+    pass
+
