@@ -23,9 +23,9 @@ from nltk import defaultdict
 ##  Naive Bayes Classifier
 ##//////////////////////////////////////////////////////
 
-class NaiveBayesClassifier(ClassifierI):
+class NaiveBayesClassifier(ClassifyI):
     """
-    A Naive Bayes classifier.  Tokens should be feature dictionaries.
+    A Naive Bayes classifier.
     """
     def __init__(self, label_probdist, feature_probdist):
         """
@@ -39,22 +39,43 @@ class NaiveBayesClassifier(ClassifierI):
     def labels(self):
         return self._labels
 
-    def classify(self, token):
-        return self.label_probs(token).max()
-    
-    def label_probs(self, token):
+    def classify(self, featureset):
+        if isinstance(featureset, list): # Handle batch mode.
+            return [self.classify(fs) for fs in featureset]
+        
+        return self.probdist(featureset).max()
+        
+    def probdist(self, featureset):
+        if isinstance(featureset, list): # Handle batch mode.
+            return [self.probdist(fs) for fs in featureset]
+                
         # Find the log probabilty of each label, given the features.
         logprob = {}
         for label in self._labels:
             logprob[label] = self._label_probdist.logprob(label)
 
         for label in self._labels:
-            for (fname, fval) in token.items():
+            for (fname, fval) in featureset.items():
                 if (label, fname) in self._feature_probdist:
                     feature_probs = self._feature_probdist[label,fname]
                     logprob[label] += feature_probs.logprob(fval)
-            
+
         return DictionaryProbDist(logprob, normalize=True, log=True)
+
+    def show_most_informative_features(self, n=10):
+        # Determine the most relevant features, and display them.
+        cpdist = self._feature_probdist
+        print '\nMost Informative Features    ',
+        print 'P(fval|Male) : P(fval|Female)\n'+'-'*60
+        for (fname, fval) in self.most_informative_features(10):
+            m = cpdist['male',fname].prob(fval)
+            f = cpdist['female',fname].prob(fval)
+            if m == f:
+                print '%14s = %-7r  %16d : %d' % (fname, fval, 1, 1)
+            if m > f:
+                print '%14s = %-7r  %16.1f : %d' % (fname, fval, m/f, 1)
+            else:
+                print '%14s = %-7r  %16d : %.1f' % (fname, fval, 1, f/m)
 
     def most_informative_features(self, n=100):
         """
@@ -90,19 +111,19 @@ class NaiveBayesClassifier(ClassifierI):
         return features[:n]
 
     @staticmethod
-    def train(tokens, estimator=ELEProbDist):
+    def train(labeled_featuresets, estimator=ELEProbDist):
         """
-        @param tokens: A list of classified tokens, i.e., tuples
-            C{(token, label)}.
+        @param labeled_featuresets: A list of classified featuresets,
+            i.e., tuples C{(featureset, label)}.
         """
         label_freqdist = FreqDist()
         feature_freqdist = defaultdict(FreqDist)
         feature_values = defaultdict(set)
 
-        for token, label in tokens:
+        for featureset, label in labeled_featuresets:
             label_freqdist.inc(label)
             
-            for fname, fval in token.items():
+            for fname, fval in featureset.items():
                 # Increment freq(fval|label, fname)
                 feature_freqdist[label, fname].inc(fval)
                 # Record that fname can take the value fval.
@@ -126,16 +147,8 @@ class NaiveBayesClassifier(ClassifierI):
 def demo():
     from nltk.classify.util import names_demo
     classifier = names_demo(NaiveBayesClassifier.train)
-
-    # Determine the most relevant features, and display them.
-    cpdist = classifier._feature_probdist
-    print '\nMost Informative Features    ',
-    print 'P(fval|Male)   P(fval|Female)\n'+'-'*60
-    for (fname, fval) in classifier.most_informative_features(10):
-        m = cpdist['male',fname].prob(fval)
-        f = cpdist['female',fname].prob(fval)
-        print '%14s = %-7r  %12.4f   %12.4f' % (fname, fval, m, f)
-
+    classifier.show_most_informative_features()
+    
 if __name__ == '__main__':
     demo()
     
