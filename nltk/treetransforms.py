@@ -39,9 +39,9 @@ The following is a short tutorial on the available transformations.
   |          Original       Right-Factored     Left-Factored
   |
   |  Example:     A              A                      A 
-  |             / | \          /   \                  /   \
+  |             / | \          /   \                  /   \ 
   |            B  C  D   ==>  B    A|<C-D>   OR   A|<B-C>  D 
-  |                                 /  \          /  \
+  |                                 /  \          /  \ 
   |                                C    D        B    C
 
 2) Parent Annotation
@@ -77,9 +77,9 @@ The following is a short tutorial on the available transformations.
   |             Original          No Smoothing        Markov order 1     Markov order 2   etc...
   |
   |  Example:       A                A                       A                A 
-  |            /  / | \  \         /   \                   /   \            /   \
+  |            /  / | \  \         /   \                   /   \            /   \  
   |           B  C  D  E  F  ==>  B    A|<C-D-E-F>   ==>  B   A|<C>  ==>   B  A|<C-D>
-  |                                      /   \                /   \            /   \
+  |                                      /   \                /   \            /   \  
   |                                     C    ...             C    ...         C    ...
 
   Annotation decisions can be thought about in the vertical direction
@@ -100,7 +100,7 @@ The following is a short tutorial on the available transformations.
   |              A         
   |              |
   |  Example:    B   ==>   A+B
-  |             / \        / \
+  |             / \        / \  
   |            C   D      C   D    
 
 """
@@ -300,4 +300,5 @@ def demo():
     
     draw_trees(tree, collapsedTree, cnfTree, parentTree, original)
 
-if __name__ == '__main__': demo()  
+if __name__ == '__main__':
+    demo()
