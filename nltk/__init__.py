@@ -11,7 +11,7 @@ NLTK -- the Natural Language Toolkit -- is a suite of open source
 Python modules, data sets and tutorials supporting research and
 development in natural language processing.
 
-@version: 0.8
+@version: 0.9b1
 
 """
 
@@ -21,7 +21,7 @@ development in natural language processing.
 
 # Version.  For each new release, the version number should be updated
 # here and in the Epydoc comment (above).
-__version__ = "0.8"
+__version__ = "0.9b1"
 
 # Copyright notice
 __copyright__ = """\
@@ -54,6 +54,7 @@ from compat import *
 from cfg import *
 from evaluate import *
 from featstruct import *
+from olac import *
 from probability import *
 from tree import *
 from utilities import *
@@ -65,6 +66,7 @@ __all__ = ["chunk", "corpus", "draw", "parse",
           + cfg.__all__\
           + evaluate.__all__\
           + featstruct.__all__\
+          + olac.__all__\
           + probability.__all__\
           + tree.__all__\
           + utilities.__all__\
