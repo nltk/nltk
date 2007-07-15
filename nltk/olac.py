@@ -5,9 +5,8 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from lxml import etree
-
 def demo():
+    from lxml import etree
     from nltk.corpus import find_corpus_file
     file = find_corpus_file('treebank', 'olac', '.xml')
     root = etree.parse(file).getroot()
