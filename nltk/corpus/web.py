@@ -14,30 +14,8 @@ Read tokens from a webpage
 
 from util import *
 from urllib import urlopen
-from HTMLParser import HTMLParser
-from nltk import tokenize
+from nltk import tokenize, clean_html
 import string
-
-skip = ['script']   # non-nesting tags to skip
-
-class MarkupCleaner(HTMLParser):
-    def __init__(self):
-        self.reset()
-        self.fed = []
-        self._flag = True
-    def handle_data(self, d):
-        if self._flag:
-            self.fed.append(d)
-    def handle_starttag(self, tag, attrs):
-        if tag in skip:
-            self._flag = False
-    def handle_endtag(self, tag):
-        if tag in skip:
-            self._flag = True
-    def handle_comment(self, d):
-        pass
-    def clean_text(self):
-        return ''.join(self.fed)
 
 def read_document(url, format='tokenized'):
     """
@@ -54,9 +32,7 @@ def read_document(url, format='tokenized'):
         return concat([read(doc, format) for doc in item])
     if format == 'tokenized':
         html = urlopen(url).read()
-        cleaner = MarkupCleaner()
-        cleaner.feed(html)
-        text = cleaner.clean_text()
+        text = clean_html()
         return tokenize.wordpunct(text)
     elif format == 'raw':
         return urlopen(url).read()

@@ -314,10 +314,10 @@ class Counter:
     A counter that auto-increments each time its value is read.
     """
     def __init__(self, initial_value=0):
-	self._value = initial_value
+        self._value = initial_value
     def get(self):
-	self._value += 1
-	return self._value
+        self._value += 1
+        return self._value
 
 
 ##########################################################################
@@ -646,10 +646,43 @@ if 0:
                   '-p', '0'],#, '-distribution'],
                  classpath='/Users/edloper/Desktop/weka/weka.jar')
 
+##########################################################################
+# HTML Cleaning
+##########################################################################
 
+from HTMLParser import HTMLParser
+skip = ['script', 'style']   # non-nesting tags to skip
+
+class HTMLCleaner(HTMLParser):
+    def __init__(self):
+        self.reset()
+        self.fed = []
+        self._flag = True
+    def handle_data(self, d):
+        if self._flag:
+            self.fed.append(d)
+    def handle_starttag(self, tag, attrs):
+        if tag in skip:
+            self._flag = False
+    def handle_endtag(self, tag):
+        if tag in skip:
+            self._flag = True
+    def clean_text(self):
+        return ''.join(self.fed)
+
+def clean_html(html):
+    """
+    Remove HTML markup from the given string.
+
+    @param html: the HTML string to be cleaned
+    @type html: C{string}
+    @rtype: C{string}
+    """
     
-
+    cleaner = HTMLCleaner()
+    cleaner.feed(html)
+    return cleaner.clean_text()
 
 __all__ = ['Counter', 'MinimalSet', 'OrderedDict', 'SortedDict', 'Trie', 'breadth_first',
            'edit_dist', 'filestring', 'guess_encoding', 'invert_dict', 'pr',
-           'print_string', 're_show', 'config_java', 'java']
+           'print_string', 're_show', 'config_java', 'java', 'clean_html']
