@@ -3,10 +3,10 @@
 mkdir ./Corpus_installer/root/usr
 mkdir ./Corpus_installer/root/usr/share
 mkdir ./Corpus_installer/root/usr/share/nltk
-cp -R ../../../corpora ./Corpus_installer/root/usr/share/nltk
+cp -R ../../corpora ./Corpus_installer/root/usr/share/nltk
 chmod -R g+r ./Corpus_installer/root/usr/share/nltk
 
 #Make Lib root
 mkdir ./NLTKLibrary_installer/root/tmp
-unzip ../../../dist/nltk-$1.zip -d ./NLTKLibrary_installer/root/tmp
+unzip ../../dist/nltk-$1.zip -d ./NLTKLibrary_installer/root/tmp
 mv ./NLTKLibrary_installer/root/tmp/nltk-$1/* ./NLTKLibrary_installer/root/tmp/
