@@ -46,10 +46,15 @@ demotest:
 dist: codedist docdist exampledist corporadist
 	touch .dist.done
 
-codedist: clean_code
+codedist: gztardist zipdist rpmdist wininstdist
+
+gztardist: clean_code
 	$(PYTHON) setup.py -q sdist --format=gztar
+zipdist: clean_code
 	$(PYTHON) setup.py -q sdist --format=zip
+rpmdist: clean_code
 	$(PYTHON) setup.py -q bdist --format=rpm
+wininstdist: clean_code
 	$(PYTHON) setup.py -q bdist --format=wininst
 
 docdist:
