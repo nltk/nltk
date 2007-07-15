@@ -439,26 +439,28 @@ def concat(docs):
     """
     types = set([d.__class__ for d in docs])
 
-    if types.issubset([StreamBackedCorpusView]):
-        return ConcatenatedCorpusView(docs)
-    
-    elif types.issubset([str, unicode, basestring]):
+    if types.issubset([str, unicode, basestring]):
         return reduce((lambda a,b:a+b), docs, '')
 
-    elif types.issubset([list]):
-        return reduce((lambda a,b:a+b), docs, [])
-    
-    elif types.issubset([tuple]):
-        return reduce((lambda a,b:a+b), docs, ())
-    
-    elif len(types) == 1 and ElementTree.iselement(list(types)[0]):
-        xmltree = ElementTree.Element('documents')
-        for doc in docs: xmltree.append(doc)
-        return xmltree
+    if len(types) == 1:
+        typ = list(types)[0]
 
-    else:
-        raise ValueError("Don't know how to concatenate types: %r" % types)
+        if issubclass(typ, StreamBackedCorpusView):
+            return ConcatenatedCorpusView(docs)
 
+        if issubclass(typ, list):
+            return reduce((lambda a,b:a+b), docs, [])
+    
+        if issubclass(typ, tuple):
+            return reduce((lambda a,b:a+b), docs, ())
+
+        if ElementTree.iselement(typ):
+            xmltree = ElementTree.Element('documents')
+            for doc in docs: xmltree.append(doc)
+            return xmltree
+
+    # No method found!
+    raise ValueError("Don't know how to concatenate types: %r" % types)
 
 ######################################################################
 #{ Finding Corpus Directories & Files
@@ -501,10 +503,16 @@ def find_corpus_file(corpusname, filename, extension=None):
 ######################################################################
 
 def read_whitespace_block(stream):
-    return stream.readline().split()
+    toks = []
+    for i in range(20): # Read 20 lines at a time.
+        toks.extend(stream.readline().split())
+    return toks
 
 def read_wordpunct_block(stream):
-    return list(tokenize.wordpunct(stream.readline()))
+    toks = []
+    for i in range(20): # Read 20 lines at a time.
+        toks.extend(tokenize.wordpunct(stream.readline()))
+    return toks
 
 def read_blankline_block(stream):
     s = ''
