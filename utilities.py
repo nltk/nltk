@@ -683,6 +683,38 @@ def clean_html(html):
     cleaner.feed(html)
     return cleaner.clean_text()
 
+
+##########################################################################
+# Windowdiff
+# Pevzner, L., and Hearst, M., A Critique and Improvement of an Evaluation Metric for Text Segmentation,
+# Computational Linguistics,, 28 (1), March 2002, pp. 19-36
+##########################################################################
+
+def windowdiff(seg1, seg2, k, boundary="1"):
+    """
+    Compute the windowdiff score for a pair of segmentations.  A segmentation is any sequence
+    over a vocabulary of two items (e.g. "0", "1"), where the specified boundary value is used
+    to mark the edge of a segmentation.
+
+    @param seg1: a segmentation
+    @type seg1: C{string} or C{list}
+    @param seg2: a segmentation
+    @type seg2: C{string} or C{list}
+    @param k: window width
+    @type k: C{int}
+    @param boundary: boundary value
+    @type boundary: C{string} or C{int} or C{bool}
+    @rtype: C{int}
+    """
+
+    if len(seg1) != len(seg2):
+        raise ValueError, "Segmentations have unequal length"
+    wd = 0
+    for i in range(len(seg1) - k):
+        wd += abs(seg1[i:i+k+1].count(boundary) - seg2[i:i+k+1].count(boundary))
+    return wd
+
+
 __all__ = ['Counter', 'MinimalSet', 'OrderedDict', 'SortedDict', 'Trie', 'breadth_first',
            'edit_dist', 'filestring', 'guess_encoding', 'invert_dict', 'pr',
-           'print_string', 're_show', 'config_java', 'java', 'clean_html']
+           'print_string', 're_show', 'config_java', 'java', 'clean_html', 'windowdiff']
