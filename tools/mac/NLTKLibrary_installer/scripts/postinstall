@@ -1,4 +1,5 @@
 #!/bin/bash
-cd /tmp
+cd /tmp/nltk-installer/
 /Library/Frameworks/Python.framework/Versions/Current/bin/python ./setup.py install
 
+# Clean up after ourselves by deleting /tmp/nltk-installer?
