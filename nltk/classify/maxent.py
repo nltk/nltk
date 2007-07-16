@@ -80,7 +80,7 @@ class ConditionalExponentialClassifier(ClassifyI):
         
     def probdist(self, featureset):
         if isinstance(featureset, list): # Handle batch mode.
-            return [self.classify(fs) for fs in featureset]
+            return [self.probdist(fs) for fs in featureset]
         
         feature_vector = self._encoding.encode(featureset)
             
