@@ -902,15 +902,15 @@ def load_pos(num_sents):
 
     sentences = brown.tagged('a')[:num_sents]
 
-    tag_set = ["'", "''", '(', ')', '*', ',', '.', ':', '--', '``', 'abl',
-        'abn', 'abx', 'ap', 'ap$', 'at', 'be', 'bed', 'bedz', 'beg', 'bem',
-        'ben', 'ber', 'bez', 'cc', 'cd', 'cd$', 'cs', 'do', 'dod', 'doz',
-        'dt', 'dt$', 'dti', 'dts', 'dtx', 'ex', 'fw', 'hv', 'hvd', 'hvg',
-        'hvn', 'hvz', 'in', 'jj', 'jjr', 'jjs', 'jjt', 'md', 'nn', 'nn$',
-        'nns', 'nns$', 'np', 'np$', 'nps', 'nps$', 'nr', 'nr$', 'od', 'pn',
-        'pn$', 'pp$', 'ppl', 'ppls', 'ppo', 'pps', 'ppss', 'ql', 'qlp', 'rb',
-        'rb$', 'rbr', 'rbt', 'rp', 'to', 'uh', 'vb', 'vbd', 'vbg', 'vbn',
-        'vbz', 'wdt', 'wp$', 'wpo', 'wps', 'wql', 'wrb']
+    tag_set = ["'", "''", '(', ')', '*', ',', '.', ':', '--', '``', 'ABL',
+        'ABN', 'ABX', 'AP', 'AP$', 'AT', 'BE', 'BED', 'BEDZ', 'BEG', 'BEM',
+        'BEN', 'BER', 'BEZ', 'CC', 'CD', 'CD$', 'CS', 'DO', 'DOD', 'DOZ',
+        'DT', 'DT$', 'DTI', 'DTS', 'DTX', 'EX', 'FW', 'HV', 'HVD', 'HVG',
+        'HVN', 'HVZ', 'IN', 'JJ', 'JJR', 'JJS', 'JJT', 'MD', 'NN', 'NN$',
+        'NNS', 'NNS$', 'NP', 'NP$', 'NPS', 'NPS$', 'NR', 'NR$', 'OD', 'PN',
+        'PN$', 'PP$', 'PPL', 'PPLS', 'PPO', 'PPS', 'PPSS', 'QL', 'QLP', 'RB',
+        'RB$', 'RBR', 'RBT', 'RP', 'TO', 'UH', 'VB', 'VBD', 'VBG', 'VBN',
+        'VBZ', 'WDT', 'WP$', 'WPO', 'WPS', 'WQL', 'WRB']
         
     sequences = []
     sequence = []
