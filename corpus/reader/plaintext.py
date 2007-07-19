@@ -27,7 +27,7 @@ class PlaintextCorpusReader(CorpusReader):
        specify alternative corpus view classes (e.g., to skip the
        preface sections of documents.)"""
     
-    def __init__(self, root, items, extension='',
+    def __init__(self, root, items, extension='', 
                  word_tokenizer=tokenize.wordpunct,
                  sent_tokenizer=None, startpos=0):
         """
@@ -53,14 +53,23 @@ class PlaintextCorpusReader(CorpusReader):
         @param sent_tokenizer: Tokenizer for breaking paragraphs
             into words.
         """
-        if isinstance(items, basestring):
-            items = find_corpus_items(root, items, extension)
+        if not os.path.isdir(root):
+            raise ValueError('Root directory %r not found!' % root)
+        self._items = items
         self._root = root
-        self.items = tuple(items)
         self._extension = extension
         self._word_tokenizer = word_tokenizer
         self._sent_tokenizer = sent_tokenizer
 
+    def _get_items(self):
+        if isinstance(self._items, basestring):
+            self._items = tuple(find_corpus_items(self._root, self._items,
+                                                  self._extension))
+        elif not isinstance(self._items, tuple):
+            self._items = tuple(self._items)
+        return self._items
+    items = property(_get_items)
+            
     def raw(self, items=None):
         return concat([open(filename).read()
                        for filename in self._item_filenames(items)])
@@ -113,6 +122,7 @@ class PlaintextCorpusReader(CorpusReader):
 def demo():
     from nltk.corpus import abc, genesis, inaugural, webtext, udhr
     import textwrap
+
     def show(hdr, info):
         print hdr, textwrap.fill(info, initial_indent=' '*len(hdr),
                                  subsequent_indent=' '*4)[len(hdr):]
