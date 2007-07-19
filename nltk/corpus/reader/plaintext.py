@@ -61,14 +61,13 @@ class PlaintextCorpusReader(CorpusReader):
         self._word_tokenizer = word_tokenizer
         self._sent_tokenizer = sent_tokenizer
 
-    def _get_items(self):
-        if isinstance(self._items, basestring):
-            self._items = tuple(find_corpus_items(self._root, self._items,
-                                                  self._extension))
-        elif not isinstance(self._items, tuple):
-            self._items = tuple(self._items)
-        return self._items
-    items = property(_get_items)
+    @property
+    def items(self):
+        items = self._items
+        if isinstance(items, basestring):
+            items = find_corpus_items(self._root, items, self._extension)
+        self.__dict__['items'] = tuple(items)
+        return self.items
             
     def raw(self, items=None):
         return concat([open(filename).read()
