@@ -70,7 +70,7 @@ def load_nltk_corpora(searchpath='', verbose=False):
                 print 'Warning: corpus %s not found' % corpus_name
 
     # Add all the standard corpora!
-    add_reader('abc', PlaintextCorpusReader, '.*', '.txt')
+    add_reader('abc', PlaintextCorpusReader, '(?!\.svn).*', '.txt')
     add_reader('brown', BrownCorpusReader, list('abcdefghjklmnpr'))
     add_reader('cmudict', CMUDictCorpusReader, ['cmudict'])
     add_reader('conll2000', ConllChunkCorpusReader,
@@ -79,18 +79,18 @@ def load_nltk_corpora(searchpath='', verbose=False):
                ['ned.train', 'ned.testa', 'ned.testb',
                 'esp.train', 'esp.testa', 'ned.testb'], '',
                ('LOC', 'PER', 'ORG', 'MISC'))
-    add_reader('genesis', PlaintextCorpusReader, '.*', '.txt')
-    add_reader('gutenberg', GutenbergCorpusReader, '.*', '.txt')
+    add_reader('genesis', PlaintextCorpusReader, '(?!\.svn).*', '.txt')
+    add_reader('gutenberg', GutenbergCorpusReader, '(?!\.svn).*', '.txt')
     add_reader('ieer', IEERCorpusReader, '(?!README|\.svn).*')
-    add_reader('inaugural', PlaintextCorpusReader, '.*', '.txt')
-    add_reader('indian', IndianCorpusReader, '.*', '.pos')
-    add_reader('names', WordListCorpusReader, '.*', '.txt')
+    add_reader('inaugural', PlaintextCorpusReader, '(?!\.svn).*', '.txt')
+    add_reader('indian', IndianCorpusReader, '(?!\.svn).*', '.pos')
+    add_reader('names', WordListCorpusReader, '(?!\.svn).*', '.txt')
     add_reader('ppattach', PPAttachmentCorpusReader,
                ['training', 'test', 'devset'])
-    add_reader('senseval', SensevalCorpusReader, '.*', '.pos')
-    add_reader('shakespeare', XMLCorpusReader, '.*', '.xml')
+    add_reader('senseval', SensevalCorpusReader, '(?!\.svn).*', '.pos')
+    add_reader('shakespeare', XMLCorpusReader, '(?!\.svn).*', '.xml')
     add_reader('sinica_treebank', SinicaTreebankCorpusReader, ['parsed'])
-    add_reader('state_union', PlaintextCorpusReader, '.*', '.txt')
+    add_reader('state_union', PlaintextCorpusReader, '(?!\.svn).*', '.txt')
     add_reader('stopwords', WordListCorpusReader, '(?!README|\.svn).*')
     add_reader('timit', TimitCorpusReader)
     add_reader('toolbox', ToolboxCorpusReader,
@@ -124,6 +124,15 @@ def find_corpus(searchpath, corpus_dir):
             return p
         
     raise LookupError('Corpus not found!')
+
+def find_corpus_file(corpusname, filename, extension=None):
+    # Look for it in the corpus
+    if not os.path.isabs(filename):
+        corpusname = os.path.join(*corpusname.split('/'))
+        p = os.path.join(find_corpus(corpusname), filename)
+        if extension: p += extension
+        if os.path.exists(p):
+            return p
 
 ######################################################################
 #{ Missing Corpora
