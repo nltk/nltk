@@ -19,6 +19,12 @@ class CorpusReader:
     filename; a list of filenames; or a stream.  If no items are
     specified, then a default list of documents will be used.
     """
+    def __repr__(self):
+        if hasattr(self, '_root'):
+            return '<%s in %r>' % (self.__class__.__name__, self._root)
+        else:
+            return '<%s>' % (self.__class__.__name__)
+    
     def raw(items=None):
         """
         @return: the given document or documents as a single string.
