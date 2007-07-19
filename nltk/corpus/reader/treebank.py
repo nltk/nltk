@@ -63,7 +63,7 @@ Parsed:
       (. .) ))
 """
 
-class TreebankCorpusReader:
+class TreebankCorpusReader(CorpusReader):
     """
     Corpus reader for the treebank.  Combines thee underlying formats:
     parsed, tagged+chunkied, and plaintext.  Each of these formats is
@@ -126,7 +126,7 @@ class TreebankCorpusReader:
             raise ValueError('No %s files were found in your copy '
                              'of the treebank' % name)
 
-class TreebankTreeCorpusReader:
+class TreebankTreeCorpusReader(CorpusReader):
     """
     Reader for corpora that consist of treebank-style trees.  For
     reading the Treebank corpus itself, you may wish to use
@@ -172,7 +172,7 @@ class TreebankTreeCorpusReader:
             return bracket_parse(t.strip()[1:-1])
     
 
-class TreebankChunkCorpusReader:
+class TreebankChunkCorpusReader(CorpusReader):
     """
     Reader for corpora that consist of treebank-style chunked&tagged
     text (i.e., '*.pos' files).  For reading the Treebank corpus
