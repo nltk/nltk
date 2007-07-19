@@ -120,12 +120,7 @@ The 4 functions are as follows.
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from nltk.tree import Tree
-import sys, os, re
-
-if sys.platform.startswith('linux') or sys.platform.startswith('freebsd'):
-    PLAY_ENABLED = True
-else:
-    PLAY_ENABLED = False
+import sys, os, re, wave, tempfile, time
 
 __all__ = ["items", "raw", "phonetic", "speakers", "dictionary", "spkrinfo",
            "audiodata", "play"]
@@ -262,8 +257,32 @@ class TimitCorpusReader(CorpusReader):
                     trees[-1].append(phon_times.pop(0)[0])
         return trees
 
-    def wav(self, item):
-        return open(os.path.join(self._root, item+'.wav')).read()
+    def wav(self, item, start=0, end=None):
+        wav_data = open(os.path.join(self._root, item+'.wav')).read()
+        
+        # If they want the whole thing, return it as-is.
+        if start==0 and end is None:
+            return wav_data
+
+        # Select the piece we want using the 'wave' module.
+        else:
+            w = wave.open(os.path.join(self._root, item+'.wav'))
+            # Skip past frames before start.
+            w.readframes(start)
+            # Read the frames we want.
+            frames = w.readframes(end-start)
+            # Open a new temporary file -- the wave module requires
+            # an actual file, and won't work w/ stringio. :(
+            tf = tempfile.TemporaryFile()
+            out = wave.open(tf, 'w')
+            # Write the parameters & data to the new file.
+            out.setparams(w.getparams())
+            out.writeframes(frames)
+            out.close()
+            # Read the data back from the file, and return it.  The
+            # file will automatically be deleted when we return.
+            tf.seek(0)
+            return tf.read()
 
     def audiodata(self, item, start=0, end=None):
         assert(end is None or end > start)
@@ -281,33 +300,46 @@ class TimitCorpusReader(CorpusReader):
         return [os.path.join(self._root, '%s%s' % (item, extension))
                 for item in items]
 
-    def play(self, data):
+    def play(self, item, start=0, end=None):
         """
         Play the given audio samples.
         
         @param data: audio samples
         @type data: string of bytes of audio samples
         """
-        if not PLAY_ENABLED:
-            print >>sys.stderr, ("sorry, currently we don't support "
-                                 "audio playback on this platform: %s"
-                                 % sys.platform)
-            return
-    
-        import ossaudiodev
+        # Method 1: os audio dev.
         try:
-            dsp = ossaudiodev.open('w')
-        except IOError, e:
-            print >>sys.stderr, ("can't acquire the audio device; please "
-                                 "activate your audio device.")
-            print >>sys.stderr, "system error message:", str(e)
+            import ossaudiodev
+            try:
+                dsp = ossaudiodev.open('w')
+                dsp.setfmt(ossaudiodev.AFMT_S16_LE)
+                dsp.channels(1)
+                dsp.speed(16000)
+                dsp.write(self.audiodata(item, start, end))
+                dsp.close()
+            except IOError, e:
+                print >>sys.stderr, ("can't acquire the audio device; please "
+                                     "activate your audio device.")
+                print >>sys.stderr, "system error message:", str(e)
             return
-        
-        dsp.setfmt(ossaudiodev.AFMT_S16_LE)
-        dsp.channels(1)
-        dsp.speed(16000)
-        dsp.write(data)
-        dsp.close()
+        except ImportError:
+            pass
+
+        # Method 2: pygame
+        try:
+            import pygame.mixer, StringIO
+            pygame.mixer.init(16000)
+            f = StringIO.StringIO(self.wav(item, start, end))
+            pygame.mixer.Sound(f).play()
+            while pygame.mixer.get_busy():
+                time.sleep(0.01)
+            return
+        except ImportError:
+            pass
+
+        # Method 3: complain. :)
+        print >>sys.stderr, ("you must install pygame or ossaudiodev "
+                             "for audio playback.")
     
 class SpeakerInfo:
     def __init__(self, id, sex, dr, use, recdate, birthdate,
@@ -330,7 +362,6 @@ class SpeakerInfo:
         
 def demo(audio=True):
     from nltk.corpus import timit
-    import time
 
     print "6th item (timit.items[5])"
     print "-------------------------"
@@ -381,29 +412,26 @@ def demo(audio=True):
         print "    %-5s:" % word, dictionary[word]
     print
 
-    if PLAY_ENABLED and audio:
+    if audio:
         print "audio playback:"
         print "---------------"
         print "  playing sentence", timit.sentid(itemid), "by speaker",
         print timit.spkrid(itemid), "(a.k.a. %s)..." % record.id
-        data = timit.audiodata(itemid)
-        if audio: timit.play(data)
+        if audio: timit.play(itemid)
         print
         print "  playing words:"
         words = timit.word_times(itemid)
         for word, start, end in words:
             print "    playing %-10s in 1.5 seconds ..." % `word`
-            if PLAY_ENABLED: time.sleep(1.5)
-            data = timit.audiodata(itemid, start, end)
-            if audio: timit.play(data)
+            time.sleep(1.5)
+            if audio: timit.play(itemid, start, end)
         print
         print "  playing phonemes (first 10):"
         phones = timit.phon_times(itemid)
         for phone, start, end in phones[:10]:
             print "    playing %-10s in 1.5 seconds ..." % `phone`
-            if PLAY_ENABLED: time.sleep(1.5)
-            data = timit.audiodata(itemid, start, end)
-            if audio: timit.play(data)
+            time.sleep(1.5)
+            if audio: timit.play(itemid, start, end)
         print
 
         # play sentence sa1 of all female speakers
@@ -412,8 +440,7 @@ def demo(audio=True):
             if timit.spkrinfo(spkr).sex == 'F':
                 itemid = timit.itemid(spkr, sentid)
                 print "  playing sentence %s of speaker %s ..." % (sentid, spkr)
-                data = timit.audiodata(itemid)
-                if audio: timit.play(data)
+                if audio: timit.play(itemid)
         print
     
 if __name__ == '__main__':
