@@ -8,11 +8,10 @@
 
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
-from nltk.corpus.reader.plaintext import PlaintextCorpusReader
-from nltk.tree import Tree, bracket_parse
-from nltk import tokenize, chunk, tree
-from nltk.tag import tag2tuple
-import os
+from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
+from nltk.tree import Tree
+from nltk import tokenize, chunk
+import os.path
 
 """
 Penn Treebank corpus sample: tagged, NP-chunked, and parsed data from
@@ -91,6 +90,11 @@ class TreebankCorpusReader(CorpusReader):
                                  % item)
         self.items = self._mrg_reader.items
 
+    @property
+    def root(self):
+        """The directory where this corpus is stored.."""
+        return self._root
+
     # Delegate to one of our two sub-readers:
     def words(self, items=None):
         return self._pos_reader.words(items)
@@ -120,51 +124,6 @@ class TreebankCorpusReader(CorpusReader):
         filenames = [os.path.join(self._root, 'raw', item) for item in items]
         return concat([re.sub(r'\A\s*\.START\s*', '', open(filename).read())
                        for filename in filenames])
-
-class BracketParseCorpusReader(CorpusReader):
-    """
-    Reader for corpora that consist of treebank-style trees.  For
-    reading the Treebank corpus itself, you may wish to use
-    L{TreebankCorpusReader}, which combines this reader with readers
-    for the other formats available in the treebank.
-    """
-    def __init__(self, root, items, extension=''):
-        """
-        @param root: The root directory for this corpus.
-        @param items: A list of items in this corpus.
-        @param extension: File extension for items in this corpus.
-        """
-        if isinstance(items, basestring):
-            items = find_corpus_items(root, items, extension)
-        self._root = root
-        self.items = tuple(items)
-        self._extension = extension
-
-    def raw(self, items=None):
-        return concat([open(filename).read()
-                       for filename in self._item_filenames(items)])
-
-    def parsed_sents(self, items=None):
-        return concat([StreamBackedCorpusView(filename, self._read_block)
-                       for filename in self._item_filenames(items)])
-
-    def _item_filenames(self, items):
-        if items is None: items = self.items
-        if isinstance(items, basestring): items = [items]
-        return [os.path.join(self._root, '%s%s' % (item, self._extension))
-                for item in items]
-        
-    def _read_block(self, stream):
-        return [self._parse(t) for t in 
-                read_sexpr_block(stream)]
-    
-    def _parse(self, t):
-        # If there's an empty set of brackets surrounding the actual
-        # parse, then strip them off.
-        if re.match(r'\s*\(\s*(', t):
-            t = t.strip()[1:-1]
-        return bracket_parse(t)
-    
 
 class BracketChunkCorpusReader(CorpusReader):
     """
