@@ -75,27 +75,78 @@ Chunk Parse:
 from util import *
 from nltk import tokenize, tree
 from nltk.tag import string2tags, string2words
+from nltk.corpus.reader.treebank import BracketParseCorpusReader
 from string import split
 import os, re
+
+class YCOECorpusReader(CorpusReader):
+    """
+    ...
+    """
+    def __init__(self, root):
+        self._root = root
+        self._psd_reader = YCOEParseCorpusReader(
+            os.path.join(root, 'psd'), '.*', '.psd')
+        self._pos_reader = YCOETaggedCorpusReader(
+            os.path.join(root, 'pos'), '.*', '.pos')
+
+        # Make sure we have a consistent set of items:
+        if set(self._psd_reader.items) != set(self._pos_reader.items):
+            raise ValueError('Items in "psd" and "pos" '
+                             'subdirectories do not match.')
+        self.items = self._psd_reader.items
+
+    # Delegate to one of our two sub-readers:
+    def words(self, items=None):
+        return self._pos_reader.words(items)
+    def sents(self, items=None):
+        return self._pos_reader.sents(items)
+    def paras(self, items=None):
+        return self._pos_reader.paras(items)
+    def tagged_words(self, items=None):
+        return self._pos_reader.tagged_words(items)
+    def tagged_sents(self, items=None):
+        return self._pos_reader.tagged_sents(items)
+    def tagged_paras(self, items=None):
+        return self._pos_reader.tagged_paras(items)
+    def parsed_sents(self, items=None):
+        return self._psd_reader.parsed_sents(items)
+
+class YCOEParseCorpusReader(BracketParseCorpusReader):
+    """Specialized version of the standard bracket parse corpus reader
+    that strips out (CODE ...) and (ID ...) nodes."""
+    def _parse(self, t):
+        s = re.sub(r'(?u)\((CODE|ID)[^\)]*\)', '', t)
+        return BracketParseCorpusReader._parse(t)
+
+class YCOETaggedCorpusReader(TaggedCorpusReader):
+    def __init__(self, root, items, extension):
+        TaggedCorpusReader.__init__(self, root, items, extension, '_',
+                                    sent_tokenizer=self._sent_tokenizer)
+
+    def _sent_tokenizer(self, s):
+        s = re.sub(r'(?u)\S*_CODE|\S*_ID', '', s)
+        return tokenize.regexp(s, r'(?<=/\.)\s', gaps=True)
+
 
 #: All files within the corpora
 documents = {
     'coadrian.o34': 'Adrian and Ritheus',
     'coaelhom.o3': 'Ælfric, Supplemental Homilies',
-    'coaelive.o3': 'Ælfric''s Lives of Saints',
+    'coaelive.o3': 'Ælfric\'s Lives of Saints',
     'coalcuin': 'Alcuin De virtutibus et vitiis',
-    'coalex.o23': 'Alexander''s Letter to Aristotle',
+    'coalex.o23': 'Alexander\'s Letter to Aristotle',
     'coapollo.o3': 'Apollonius of Tyre',
     'coaugust': 'Augustine',
-    'cobede.o2': 'Bede''s History of the English Church',
+    'cobede.o2': 'Bede\'s History of the English Church',
     'cobenrul.o3': 'Benedictine Rule',
     'coblick.o23': 'Blickling Homilies',
-    'coboeth.o2': 'Boethius'' Consolation of Philosophy',
-    'cobyrhtf.o3': 'Byrhtferth''s Manual',
+    'coboeth.o2': 'Boethius\' Consolation of Philosophy',
+    'cobyrhtf.o3': 'Byrhtferth\'s Manual',
     'cocanedgD': 'Canons of Edgar (D)',
     'cocanedgX': 'Canons of Edgar (X)',
-    'cocathom1.o3': 'Ælfric''s Catholic Homilies I',
-    'cocathom2.o3': 'Ælfric''s Catholic Homilies II',
+    'cocathom1.o3': 'Ælfric\'s Catholic Homilies I',
+    'cocathom2.o3': 'Ælfric\'s Catholic Homilies II',
     'cochad.o24': 'Saint Chad',
     'cochdrul': 'Chrodegang of Metz, Rule',
     'cochristoph': 'Saint Christopher',
@@ -114,16 +165,16 @@ documents = {
     'codocu4.o24': 'Documents 4 (O2/O4)',
     'coeluc1': 'Honorius of Autun, Elucidarium 1',
     'coeluc2': 'Honorius of Autun, Elucidarium 1',
-    'coepigen.o3': 'Ælfric''s Epilogue to Genesis',
+    'coepigen.o3': 'Ælfric\'s Epilogue to Genesis',
     'coeuphr': 'Saint Euphrosyne',
     'coeust': 'Saint Eustace and his companions',
     'coexodusP': 'Exodus (P)',
     'cogenesiC': 'Genesis (C)',
-    'cogregdC.o24': 'Gregory''s Dialogues (C)',
-    'cogregdH.o23': 'Gregory''s Dialogues (H)',
+    'cogregdC.o24': 'Gregory\'s Dialogues (C)',
+    'cogregdH.o23': 'Gregory\'s Dialogues (H)',
     'coherbar': 'Pseudo-Apuleius, Herbarium',
-    'coinspolD.o34': 'Wulfstan''s Institute of Polity (D)',
-    'coinspolX': 'Wulfstan''s Institute of Polity (X)',
+    'coinspolD.o34': 'Wulfstan\'s Institute of Polity (D)',
+    'coinspolX': 'Wulfstan\'s Institute of Polity (X)',
     'cojames': 'Saint James',
     'colacnu.o23': 'Lacnunga',
     'colaece.o2': 'Leechdoms',
@@ -132,20 +183,20 @@ documents = {
     'colaw5atr.o3': 'Laws, Æthelred V',
     'colaw6atr.o3': 'Laws, Æthelred VI',
     'colawaf.o2': 'Laws, Alfred',
-    'colawafint.o2': 'Alfred''s Introduction to Laws',
+    'colawafint.o2': 'Alfred\'s Introduction to Laws',
     'colawger.o34': 'Laws, Gerefa',
     'colawine.ox2': 'Laws, Ine',
     'colawnorthu.o3': 'Northumbra Preosta Lagu',
     'colawwllad.o4': 'Laws, William I, Lad',
     'coleofri.o4': 'Leofric',
-    'colsigef.o3': 'Ælfric''s Letter to Sigefyrth',
-    'colsigewB': 'Ælfric''s Letter to Sigeweard (B)',
-    'colsigewZ.o34': 'Ælfric''s Letter to Sigeweard (Z)',
-    'colwgeat': 'Ælfric''s Letter to Wulfgeat',
-    'colwsigeT': 'Ælfric''s Letter to Wulfsige (T)',
-    'colwsigeXa.o34': 'Ælfric''s Letter to Wulfsige (Xa)',
-    'colwstan1.o3': 'Ælfric''s Letter to Wulfstan I',
-    'colwstan2.o3': 'Ælfric''s Letter to Wulfstan II',
+    'colsigef.o3': 'Ælfric\'s Letter to Sigefyrth',
+    'colsigewB': 'Ælfric\'s Letter to Sigeweard (B)',
+    'colsigewZ.o34': 'Ælfric\'s Letter to Sigeweard (Z)',
+    'colwgeat': 'Ælfric\'s Letter to Wulfgeat',
+    'colwsigeT': 'Ælfric\'s Letter to Wulfsige (T)',
+    'colwsigeXa.o34': 'Ælfric\'s Letter to Wulfsige (Xa)',
+    'colwstan1.o3': 'Ælfric\'s Letter to Wulfstan I',
+    'colwstan2.o3': 'Ælfric\'s Letter to Wulfstan II',
     'comargaC.o34': 'Saint Margaret (C)',
     'comargaT': 'Saint Margaret (T)',
     'comart1': 'Martyrology, I',
@@ -160,26 +211,26 @@ documents = {
     'conicodE': 'Gospel of Nicodemus (E)',
     'coorosiu.o2': 'Orosius',
     'cootest.o3': 'Heptateuch',
-    'coprefcath1.o3': 'Ælfric''s Preface to Catholic Homilies I',
-    'coprefcath2.o3': 'Ælfric''s Preface to Catholic Homilies II',
+    'coprefcath1.o3': 'Ælfric\'s Preface to Catholic Homilies I',
+    'coprefcath2.o3': 'Ælfric\'s Preface to Catholic Homilies II',
     'coprefcura.o2': 'Preface to the Cura Pastoralis',
-    'coprefgen.o3': 'Ælfric''s Preface to Genesis',
-    'copreflives.o3': 'Ælfric''s Preface to Lives of Saints',
-    'coprefsolilo': 'Preface to Augustine''s Soliloquies',
+    'coprefgen.o3': 'Ælfric\'s Preface to Genesis',
+    'copreflives.o3': 'Ælfric\'s Preface to Lives of Saints',
+    'coprefsolilo': 'Preface to Augustine\'s Soliloquies',
     'coquadru.o23': 'Pseudo-Apuleius, Medicina de quadrupedibus',
     'corood': 'History of the Holy Rood-Tree',
     'cosevensl': 'Seven Sleepers',
-    'cosolilo': 'St. Augustine''s Soliloquies',
+    'cosolilo': 'St. Augustine\'s Soliloquies',
     'cosolsat1.o4': 'Solomon and Saturn I',
     'cosolsat2': 'Solomon and Saturn II',
-    'cotempo.o3': 'Ælfric''s De Temporibus Anni',
+    'cotempo.o3': 'Ælfric\'s De Temporibus Anni',
     'coverhom': 'Vercelli Homilies',
     'coverhomE': 'Vercelli Homilies (E)',
     'coverhomL': 'Vercelli Homilies (L)',
     'covinceB': 'Saint Vincent (Bodley 343)',
     'covinsal': 'Vindicta Salvatoris',
     'cowsgosp.o3': 'West-Saxon Gospels',
-    'cowulf.o34': 'Wulfstan''s Homilies'
+    'cowulf.o34': 'Wulfstan\'s Homilies'
     }
 
 #: A list of all documents in this corpus.
@@ -190,7 +241,7 @@ def _read(item, conversion_function):
     Reads files from a given list, and converts them via the
     conversion_function.  Can return raw or tagged read files.
     """
-    filename = find_corpus_file('ycoe/pos', item)
+    filename = find_corpus_file('ycoe/pos', item, '.pos')
     f = open(filename)
     rx_pattern = re.compile(r"""
             <.*>_CODE
@@ -229,10 +280,12 @@ def read_document(item=items, format='parsed', chunk_types=('NP',),
     elif format == 'chunked':
         return list(_chunk_parse(item, chunk_types, top_node,
                                  partial_match, collapse_partials, cascade))
-    elif format == 'parsd':
+    elif format == 'parsed':
         filename = find_corpus_file('ycoe/psd', item, '.psd')
         f = open(filename, 'r')
         return [tree.bracket_parse(sent) for sent in _parse(f.read())]
+    else:
+        raise ValueError()
 
 def _parse(s):
     """
@@ -288,7 +341,7 @@ def _chunk_parse(files, chunk_types, top_node, partial_match, collapse_partials,
 
     if type(files) is str: files = (files,)
     for file in files:
-        path = find_corpus_file("ycoe/psd", file + ".psd")
+        path = find_corpus_file("ycoe/psd", file, ".psd")
         f = open(path)
         data = _parse(f.read())
         for s in data:

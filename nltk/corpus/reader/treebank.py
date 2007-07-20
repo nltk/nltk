@@ -72,13 +72,13 @@ class TreebankCorpusReader(CorpusReader):
 
     If your corpus doesn't have this format, but just contains files
     with treebank-style parses, you should use
-    L{TreebankTreeCorpusReader} instead.
+    L{BracketParseCorpusReader} instead.
     """
     def __init__(self, root):
         self._root = root
-        self._mrg_reader = TreebankTreeCorpusReader(
+        self._mrg_reader = BracketParseCorpusReader(
             os.path.join(root, 'combined'), '.*', '.mrg')
-        self._pos_reader = TreebankChunkCorpusReader(
+        self._pos_reader = BracketChunkCorpusReader(
             os.path.join(root, 'tagged'), '.*', '.pos')
 
         # Make sure we have a consistent set of items:
@@ -92,8 +92,6 @@ class TreebankCorpusReader(CorpusReader):
         self.items = self._mrg_reader.items
 
     # Delegate to one of our two sub-readers:
-    def parsed_sents(self, items=None):
-        return self._mrg_reader.parsed_sents(items)
     def words(self, items=None):
         return self._pos_reader.words(items)
     def sents(self, items=None):
@@ -112,6 +110,8 @@ class TreebankCorpusReader(CorpusReader):
         return self._pos_reader.chunked_sents(items)
     def chunked_paras(self, items=None):
         return self._pos_reader.chunked_paras(items)
+    def parsed_sents(self, items=None):
+        return self._mrg_reader.parsed_sents(items)
 
     # Read in the text file, and strip the .START prefix.
     def text(self, items=None):
@@ -120,13 +120,8 @@ class TreebankCorpusReader(CorpusReader):
         filenames = [os.path.join(self._root, 'raw', item) for item in items]
         return concat([re.sub(r'\A\s*\.START\s*', '', open(filename).read())
                        for filename in filenames])
-        
-    def _check_reader(self, reader, name):
-        if reader is None:
-            raise ValueError('No %s files were found in your copy '
-                             'of the treebank' % name)
 
-class TreebankTreeCorpusReader(CorpusReader):
+class BracketParseCorpusReader(CorpusReader):
     """
     Reader for corpora that consist of treebank-style trees.  For
     reading the Treebank corpus itself, you may wish to use
@@ -160,19 +155,18 @@ class TreebankTreeCorpusReader(CorpusReader):
                 for item in items]
         
     def _read_block(self, stream):
-        return [self._treebank_bracket_parse(t) for t in 
+        return [self._parse(t) for t in 
                 read_sexpr_block(stream)]
     
-    def _treebank_bracket_parse(self, t):
-        try:
-            return bracket_parse(t)
-        except IndexError:
-            # in case it's the real treebank format, 
-            # strip first and last brackets before parsing
-            return bracket_parse(t.strip()[1:-1])
+    def _parse(self, t):
+        # If there's an empty set of brackets surrounding the actual
+        # parse, then strip them off.
+        if re.match(r'\s*\(\s*(', t):
+            t = t.strip()[1:-1]
+        return bracket_parse(t)
     
 
-class TreebankChunkCorpusReader(CorpusReader):
+class BracketChunkCorpusReader(CorpusReader):
     """
     Reader for corpora that consist of treebank-style chunked&tagged
     text (i.e., '*.pos' files).  For reading the Treebank corpus
@@ -197,48 +191,39 @@ class TreebankChunkCorpusReader(CorpusReader):
                        for filename in self._item_filenames(items)])
 
     def words(self, items=None):
-        return concat([TreebankChunkCorpusView(filename, False, False,
-                                               False, False)
+        return concat([BracketChunkCorpusView(filename, 0, 0, 0, 0)
                        for filename in self._item_filenames(items)])
 
     def sents(self, items=None):
-        return concat([TreebankChunkCorpusView(filename, False, True,
-                                               False, False)
+        return concat([BracketChunkCorpusView(filename, 0, 1, 0, 0)
                        for filename in self._item_filenames(items)])
 
     def paras(self, items=None):
-        return concat([TreebankChunkCorpusView(filename, False, True,
-                                               True, False)
+        return concat([BracketChunkCorpusView(filename, 0, 1, 1, 0)
                        for filename in self._item_filenames(items)])
 
     def tagged_words(self, items=None):
-        return concat([TreebankChunkCorpusView(filename, True, False,
-                                               False, False)
+        return concat([BracketChunkCorpusView(filename, 1, 0, 0, 0)
                        for filename in self._item_filenames(items)])
 
     def tagged_sents(self, items=None):
-        return concat([TreebankChunkCorpusView(filename, True, True,
-                                               False, False)
+        return concat([BracketChunkCorpusView(filename, 1, 1, 0, 0)
                        for filename in self._item_filenames(items)])
 
     def tagged_paras(self, items=None):
-        return concat([TreebankChunkCorpusView(filename, True, True,
-                                               True, False)
+        return concat([BracketChunkCorpusView(filename, 1, 1, 1, 0)
                        for filename in self._item_filenames(items)])
 
     def chunked_words(self, items=None):
-        return concat([TreebankChunkCorpusView(filename, True, False,
-                                               False, True)
+        return concat([BracketChunkCorpusView(filename, 1, 0, 0, 1)
                        for filename in self._item_filenames(items)])
 
     def chunked_sents(self, items=None):
-        return concat([TreebankChunkCorpusView(filename, True, True,
-                                               False, True)
+        return concat([BracketChunkCorpusView(filename, 1, 1, 0, 1)
                        for filename in self._item_filenames(items)])
 
     def chunked_paras(self, items=None):
-        return concat([TreebankChunkCorpusView(filename, True, True,
-                                               True, True)
+        return concat([BracketChunkCorpusView(filename, 1, 1, 1, 1)
                        for filename in self._item_filenames(items)])
 
     def _item_filenames(self, items):
@@ -251,7 +236,7 @@ class TreebankChunkCorpusReader(CorpusReader):
         return [chunk.tagstr2tree(t) for t in
                 read_blankline_block(stream)]
 
-class TreebankChunkCorpusView(StreamBackedCorpusView):
+class BracketChunkCorpusView(StreamBackedCorpusView):
     def __init__(self, filename, tagged, group_by_sent,
                  group_by_para, chunked):
         StreamBackedCorpusView.__init__(self, filename)
@@ -317,7 +302,7 @@ class TreebankChunkCorpusView(StreamBackedCorpusView):
 ######################################################################
 def demo():
 
-#     tb = TreebankChunkCorpusReader('/Users/edloper/data/projects/nltk/corpora/treebank/tagged', '.*', '.pos')
+#     tb = BracketChunkCorpusReader('/Users/edloper/data/projects/nltk/corpora/treebank/tagged', '.*', '.pos')
 #     print tb.words('wsj_0120')
 #     for para in tb.chunked_paras('wsj_0120')[:3]:
 #         print '='*50

@@ -20,12 +20,16 @@ class PlaintextCorpusReader(CorpusReader):
     are assumed to be split using blank lines.  Sentences and words can
     be tokenized using the default tokenizers, or by custom tokenizers
     specificed as parameters to the constructor.
+
+    This corpus reader can be customized (e.g., to skip preface
+    sections of specific document formats) by creating a subclass and
+    overriding the L{CorpusView} class variable.
     """
 
     CorpusView = StreamBackedCorpusView
-    """The corpus view class used by this reader.  Subclasses may
-       specify alternative corpus view classes (e.g., to skip the
-       preface sections of documents.)"""
+    """The corpus view class used by this reader.  Subclasses of
+       L{PlaintextCorpusReader} may specify alternative corpus view
+       classes (e.g., to skip the preface sections of documents.)"""
     
     def __init__(self, root, items, extension='', 
                  word_tokenizer=tokenize.wordpunct,
@@ -62,28 +66,55 @@ class PlaintextCorpusReader(CorpusReader):
         self._sent_tokenizer = sent_tokenizer
 
     @property
+    def root(self):
+        """The directory where this corpus is stored.."""
+        return self._root
+
+    @property
     def items(self):
+        """A list of the documents in this corpus"""
         items = self._items
         if isinstance(items, basestring):
             items = find_corpus_items(self._root, items, self._extension)
-        self.__dict__['items'] = tuple(items)
+        self.__dict__['items'] = tuple(sorted(items))
         return self.items
             
     def raw(self, items=None):
+        """
+        @return: the given document or documents as a single string.
+        @rtype: C{str}
+        """
         return concat([open(filename).read()
                        for filename in self._item_filenames(items)])
     
     def words(self, items=None):
+        """
+        @return: the given document or documents as a list of words
+            and punctuation symbols.
+        @rtype: C{list} of C{str}
+        """
         return concat([self.CorpusView(filename, self._read_word_block)
                        for filename in self._item_filenames(items)])
     
     def sents(self, items=None):
+        """
+        @return: the given document or documents as a list of
+            sentences or utterances, each encoded as a list of word
+            strings.
+        @rtype: C{list} of (C{list} of C{str})
+        """
         if self._sent_tokenizer is None:
             raise ValueError('No sentence tokenizer for this corpus')
         return concat([self.CorpusView(filename, self._read_sent_block)
                        for filename in self._item_filenames(items)])
 
     def paras(self, items=None):
+        """
+        @return: the given document or documents as a list of
+            paragraphs, each encoded as a list of sentences, which are
+            in turn encoded as lists of word strings.
+        @rtype: C{list} of (C{list} of (C{list} of C{str}))
+        """
         if self._sent_tokenizer is None:
             raise ValueError('No sentence tokenizer for this corpus')
         return concat([self.CorpusView(filename, self._read_para_block)

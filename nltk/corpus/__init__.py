@@ -67,10 +67,11 @@ from reader import *
 globals().update(load_nltk_corpora())
 
 # Allow the user to reload the corpora:
-def reload_corpora():
-    globals().update(load_nltk_corpora())
+def reload(searchpath=''):
+    globals().update(load_nltk_corpora(searchpath, True))
 
 def demo():
+    # This is out-of-date:
     abc.demo()
     brown.demo()
 #    chat80.demo()
@@ -99,6 +100,6 @@ def demo():
 #    ycoe.demo()
 
 if __name__ == '__main__':
-    pass
     #demo()
+    pass
     
