@@ -17,65 +17,14 @@ It is not included with NLTK.
 The YCOE corpus is divided into 100 files, each representing
 an Old English prose text. Tags used within each text complies
 to the YCOE standard: http://www-users.york.ac.uk/~lang22/YCOE/YcoeHome.htm 
-
-Output of the reader is as follows:
-
-Raw:
-['+D+atte',
-  'on',
-  'o+dre',
-  'wisan',
-  'sint',
-  'to',
-  'manianne',
-  '+da',
-  'unge+dyldegan',
-  ',',
-  '&',
-  'on',
-  'o+dre',
-  '+da',
-  'ge+dyldegan',
-  '.']
-
-Tagged:
-[('+D+atte', 'C'),
-  ('on', 'P'),
-  ('o+dre', 'ADJ'),
-  ('wisan', 'N'),
-  ('sint', 'BEPI'),
-  ('to', 'TO'),
-  ('manianne', 'VB^D'),
-  ('+da', 'D^N'),
-  ('unge+dyldegan', 'ADJ^N'),
-  (',', ','),
-  ('&', 'CONJ'),
-  ('on', 'P'),
-  ('o+dre', 'ADJ'),
-  ('+da', 'D^N'),
-  ('ge+dyldegan', 'ADJ^N'),
-  ('.', '.')]
-
-Bracket Parse:
-(CP-THT: (C: '+D+atte') (IP-SUB: (IP-SUB-0: (PP: (P: 'on') (NP: (ADJ: 'o+dre') (N: 'wisan'))) 
-(BEPI: 'sint') (IP-INF: (TO: 'to') (VB^D: 'manianne') (NP: '*-1')) (NP-NOM-1: (D^N: '+da') 
-(ADJ^N: 'unge+dyldegan'))) (,: ',') (CONJP: (CONJ: '&') (IPX-SUB-CON=0: (PP: (P: 'on') 
-(NP: (ADJ: 'o+dre'))) (NP-NOM: (D^N: '+da') (ADJ^N: 'ge+dyldegan'))))) (.: '.')),
-
-Chunk Parse:
-[(S: 
-    ('C', '+D+atte') 
-    (PP: ('P', 'on') ('ADJ', 'o+dre') ('N', 'wisan')) 
-    ('BEPI', 'sint') ('TO', 'to') ('VB^D', 'manianne') 
-    (NP: ('NP', '*-1')) ('D^N', '+da') ('ADJ^N', 'unge+dyldegan') (',', ',') ('CONJ', '&') 
-    (PP: ('P', 'on') ('ADJ', 'o+dre')) ('D^N', '+da') ('ADJ^N', 'ge+dyldegan') ('.', '.'))]
-
 """
 
-from util import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 from nltk import tokenize, tree
 from nltk.tag import string2tags, string2words
-from nltk.corpus.reader.treebank import BracketParseCorpusReader
+from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
+from nltk.corpus.reader.tagged import TaggedCorpusReader
 from string import split
 import os, re
 
@@ -116,8 +65,9 @@ class YCOEParseCorpusReader(BracketParseCorpusReader):
     """Specialized version of the standard bracket parse corpus reader
     that strips out (CODE ...) and (ID ...) nodes."""
     def _parse(self, t):
-        s = re.sub(r'(?u)\((CODE|ID)[^\)]*\)', '', t)
-        return BracketParseCorpusReader._parse(t)
+        t = re.sub(r'(?u)\((CODE|ID)[^\)]*\)', '', t)
+        if re.match(r'\s*\(\s*\)\s*$', t): return None
+        return BracketParseCorpusReader._parse(self, t)
 
 class YCOETaggedCorpusReader(TaggedCorpusReader):
     def __init__(self, root, items, extension):
@@ -128,8 +78,7 @@ class YCOETaggedCorpusReader(TaggedCorpusReader):
         s = re.sub(r'(?u)\S*_CODE|\S*_ID', '', s)
         return tokenize.regexp(s, r'(?<=/\.)\s', gaps=True)
 
-
-#: All files within the corpora
+#: A list of all documents and their titles in ycoe.
 documents = {
     'coadrian.o34': 'Adrian and Ritheus',
     'coaelhom.o3': 'Ælfric, Supplemental Homilies',
@@ -233,199 +182,6 @@ documents = {
     'cowulf.o34': 'Wulfstan\'s Homilies'
     }
 
-#: A list of all documents in this corpus.
-items = sorted(documents)
-
-def _read(item, conversion_function):
-    """
-    Reads files from a given list, and converts them via the
-    conversion_function.  Can return raw or tagged read files.
-    """
-    filename = find_corpus_file('ycoe/pos', item, '.pos')
-    f = open(filename)
-    rx_pattern = re.compile(r"""
-            <.*>_CODE
-            |\s.*_ID
-    """, re.VERBOSE|re.UNICODE)
-    mySents = tokenize.blankline(f.read())
-    for sent in mySents:
-        sent= re.sub(rx_pattern, '', sent)
-        if sent != "":
-            yield conversion_function(sent, sep="_")
-
-def read_document(item=items, format='parsed', chunk_types=('NP',),
-         top_node="S", partial_match=False, collapse_partials=True,
-         cascade=False):
-    """
-    Read the given document from the corpus, and return its contents.
-    C{format} determines the format that the result will be returned
-    in:
-      - C{'raw'}: a single C{string}
-      - C{'tokenized'}: a list of words and punctuation symbols.
-      - C{'tagged'}: a list of (word, part-of-speech) tuples.
-      - C{'chunked'}: a list of chunk tree structures, where chunks
-        are used for base noun phrases.
-      - C{'parsed'}: a list of parse trees.
-    """
-    if isinstance(item, list):
-        return concat([read(doc, format, chunk_types, top_node,
-                            partial_match, collapse_partials,
-                            cascade) for doc in item])
-    if format == 'raw':
-        return open(find_corpus_file('ycoe/psd', item, '.psd')).read()
-    if format == 'tokenized':
-        return list(_read(item, string2words))
-    elif format == 'tagged':
-        return list(_read(item, string2tags))
-    elif format == 'chunked':
-        return list(_chunk_parse(item, chunk_types, top_node,
-                                 partial_match, collapse_partials, cascade))
-    elif format == 'parsed':
-        filename = find_corpus_file('ycoe/psd', item, '.psd')
-        f = open(filename, 'r')
-        return [tree.bracket_parse(sent) for sent in _parse(f.read())]
-    else:
-        raise ValueError()
-
-def _parse(s):
-    """
-    Rudimentary parsing, used by bracket parser to obtained parsed raw
-    data
-    """
-    rx_pattern = re.compile(r"""
-        \(CODE .*\)
-        |\(ID .*\d\)
-    """, re.VERBOSE|re.UNICODE)
-    s = re.sub(rx_pattern, '', s)
-    s = split(s, '\n')
-    fullPhrase = ""
-    # loop through the sentences and parse each sentence
-    # every time a new sentence marker is found
-    for sent in s:
-        if list(tokenize.regexp(sent, r'^\(')) != []:
-            fullPhrase = _strip_spaces(fullPhrase)               
-            if fullPhrase != "":
-                yield fullPhrase
-            fullPhrase = sent
-        else:
-            fullPhrase += sent
-
-    # Get the last of the buffer and output a yield
-    fullPhrase = _strip_spaces(fullPhrase)
-    if fullPhrase != "":
-        yield fullPhrase
-
-def _strip_spaces(s):
-    """ 
-    Helper function, strips tabs, extra spaces, and an erroneous leading
-    and ending bracket.
-    """
-    s = re.sub(r'^\(', '', s)
-    s = re.sub(r'\)\s*$', '', s)
-    s = re.sub(r'^\s*', '', s)
-    s = re.sub(r'\s*$', '', s)
-    s = re.sub(r'\t+', ' ', s)
-    s = re.sub(r'\s+', ' ', s)
-  
-    return s
-
-def _chunk_parse(files, chunk_types, top_node, partial_match, collapse_partials, cascade):
-    """
-    Parses the files to return chunks of type chunk_types.  Partial
-    matching, collapsed partials, and cascading are all supported.
-    """          
-    # allow any kind of bracketing for flexibility
-
-    L_BRACKET = re.compile(r'[\(\[\{<]')
-    R_BRACKET = re.compile(r'[\)\]\}>]')
-
-    if type(files) is str: files = (files,)
-    for file in files:
-        path = find_corpus_file("ycoe/psd", file, ".psd")
-        f = open(path)
-        data = _parse(f.read())
-        for s in data:
-            bracket = 0
-            itmType = None
-            stack = [tree.Tree(top_node, [])]
-            inTag = []
-            for itm in list(tokenize.whitespace(s)):
-                if L_BRACKET.match(itm[0]):
-                    bracket += 1
-                    itm = itm[1:]
-                    matched = False
-                    if partial_match == True:
-                        for eachItm in chunk_types:
-                           if (len(eachItm) <= len(itm) and 
-                               eachItm == itm[:len(eachItm)]):
-                               matched = True
-                               if collapse_partials == True:
-                                   itm = eachItm
-                    else:
-                        if (chunk_types is not None and
-                            itm in chunk_types):
-                            matched = True
-                    if matched == True: # and inTag == 0:
-                        chunk = tree.Tree(itm, [])
-                        if cascade == True:
-                            stack.append(chunk)
-                            inTag += [bracket]
-                        else:
-                            if len(inTag) == 0:
-                                stack[-1].append(chunk)
-                                inTag += [bracket]
-                    itmType=itm
-                if R_BRACKET.match(itm[-1]):
-                    tmpItm = split(itm, itm[-1])
-                    if tmpItm != "":
-                        if len(inTag) > 0 and inTag[-1] <= bracket: #inTag <= bracket:
-                            if cascade == True:
-                                stack[-1].append( (itmType, tmpItm[0]) )
-                            else:
-                                stack[-1][-1].append( (itmType, tmpItm[0]) )
-                        else:
-                            if cascade == True:
-                                if len(stack) > 1:
-                                    stack[-2].append(stack[-1])
-                                    stack = stack[:-1]
-                            stack[-1].append( (itmType, tmpItm[0]) )
-                            inTag = [] + inTag[:-2]
-                    bracket -= (len(tmpItm)-1)
-                    while( len(inTag) > 0 and bracket < inTag[-1] ):
-                        if cascade == True:
-                            if len(stack) > 1:
-                                stack[-2].append(stack[-1])
-                                stack = stack[:-1]
-                        inTag = [] + inTag[:-2]
-            yield stack
-
-######################################################################
-#{ Convenience Functions
-######################################################################
-read = read_document
-
-def tagged(item=items):
-    """@return: the given document as a list of sentences, where each
-    sentence is a list of tagged words.  Tagged words are encoded as
-    tuples of (word, part-of-speech)."""
-    return read_document(item, format='tagged')
-
-def tokenized(item=items):
-    """@return: the given document as a list of sentences, where each
-    sentence is a list of words."""
-    return read_document(item, format='tokenized')
-
-def raw(item=items):
-    """@return: the given document as a single string."""
-    return read_document(item, format='raw')
-
-def parsed(item=items):
-    return read_document(item, format='parsed')
-
-def chunked(item=items, chunk_types=('NP',), top_node="S",
-            partial_match=False, collapse_partials=True, cascade=False):
-    return read_document(item, 'chunked', chunk_types, top_node,
-                         partial_match, collapse_partials, cascade)
 ######################################################################
 #{ Demo
 ######################################################################
@@ -434,26 +190,14 @@ def demo():
     from pprint import pprint
 
     print 'Tokenized Data:'
-    pprint(ycoe.read('cocuraC', 'tokenized')[:4])
+    pprint(ycoe.words('cocuraC')[:4])
 
     print '\nTagged Data:'
-    pprint(ycoe.read('cocuraC', 'tagged')[:4])
+    pprint(ycoe.tagged_words('cocuraC')[:4])
 
     print '\nBracket Parse:'
-    pprint(ycoe.read('cocuraC', 'parsed')[:4])
-
-    print '\nChunk Parse:'
-    pprint(ycoe.read('cocuraC', 'chunked', chunk_types=('NP', 'PP'))[:4])
-
-    print '\nChunk Parse (partials, cascaded):'
-    pprint(ycoe.read('cocuraC', 'chunked', chunk_types=('NP', 'PP'), 
-                     partial_match=True, collapse_partials=False,
-                     cascade=True)[:2])
-
-    print '\nChunk Parse (partials, cascaded, collapsed):'
-    pprint(ycoe.read('cocuraC', 'chunked', chunk_types=('NP', 'PP'), 
-                     partial_match=True, collapse_partials=True,
-                     cascade=True)[:2])
+    for tree in ycoe.parsed_sents('cocuraC')[:4]:
+        print tree
 
 if __name__ == '__main__':
     demo()
