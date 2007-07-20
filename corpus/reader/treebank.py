@@ -19,7 +19,7 @@ Attribution-NonCommercial-ShareAlike License
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
-from nltk.corpus.reader.chunk import ChunkedCorpusReader
+from nltk.corpus.reader.chunked import ChunkedCorpusReader
 from nltk.tree import Tree
 from nltk import tokenize, chunk
 import os.path
