@@ -13,7 +13,7 @@ from nltk.etree import ElementTree
 
 from nltk.corpus.reader.plaintext import PlaintextCorpusReader
 from nltk.corpus.reader.util import find_corpus_items
-from nltk.corpus.reader.brown import BrownCorpusReader
+from nltk.corpus.reader.brown import TaggedCorpusReader
 from nltk.corpus.reader.cmudict import CMUDictCorpusReader
 from nltk.corpus.reader.conll import ConllChunkCorpusReader
 from nltk.corpus.reader.wordlist import WordListCorpusReader
@@ -71,7 +71,7 @@ def load_nltk_corpora(searchpath='', verbose=False):
 
     # Add all the standard corpora!
     add_reader('abc', PlaintextCorpusReader, '(?!\.svn).*', '.txt')
-    add_reader('brown', BrownCorpusReader, list('abcdefghjklmnpr'))
+    add_reader('brown', TaggedCorpusReader, list('abcdefghjklmnpr'))
     add_reader('cmudict', CMUDictCorpusReader, ['cmudict'])
     add_reader('conll2000', ConllChunkCorpusReader,
                ['train', 'test'], '.txt', ('NP','VP','PP'))
