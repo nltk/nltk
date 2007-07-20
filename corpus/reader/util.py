@@ -510,9 +510,6 @@ def _parse_sexpr_block(block):
 #{ Finding Corpus Items
 ######################################################################
 
-def find_corpus_file(*args):
-    raise ValueError, 'DEPRECATED!'
-
 def find_corpus_items(root, regexp, extension=''):
     items = []
     

@@ -56,7 +56,7 @@ def load_nltk_corpora(searchpath='', verbose=False):
     readers = {}
     def add_reader(corpus_name, reader_cls, *args):
         # Search for the corpus, using our search path.
-        try: corpus_dir = find_corpus(searchpath, corpus_name)
+        try: corpus_dir = find_corpus(corpus_name, searchpath)
         except LookupError: corpus_dir = None
 
         # If we found it, construct a reader for it.
@@ -110,13 +110,15 @@ chat80, ycoe
 #{ Finding Corpus Directories & Files
 ######################################################################
 
-def find_corpus(searchpath, corpus_dir):
+def find_corpus(corpus_dir, searchpath=None):
     """
     Search for the given corpus directory in the given search path.
     If the corpus directory name conains multiple path components,
     then they should be expressed using '/', which will automatically
     be converted to the appropriate path component separator.
     """
+    if searchpath is None:
+        searchpath = _CORPUS_PATH
     corpus_dir = os.path.join(*corpus_dir.split('/'))
     for directory in searchpath:
         p = os.path.join(directory, corpus_dir)
@@ -133,6 +135,8 @@ def find_corpus_file(corpusname, filename, extension=None):
         if extension: p += extension
         if os.path.exists(p):
             return p
+    raise LookupError('File %r in corpus %r not found' %
+                      (filename, corpusname))
 
 ######################################################################
 #{ Missing Corpora
@@ -173,5 +177,7 @@ _CORPUS_PATH = [
     '/usr/local/share/nltk',
     '/usr/share/nltk_lite/corpora',
     '/usr/local/share/nltk_lite/corpora',
+    os.path.expanduser('~/nltk/corpora'),
+    os.path.expanduser('~/corpora/nltk'),
     ]
 
