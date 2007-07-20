@@ -379,11 +379,15 @@ class Tree(list):
         # If it doesn't fit on one line, then write it on multi-lines.
         s = '%s%s%s' % (parens[0], self.node, nodesep)
         for child in self:
-            try:
+            if isinstance(child, Tree):
                 s += '\n'+' '*(indent+2)+child.pprint(margin, indent+2,
                                                   nodesep, parens, quotes)
-            except AttributeError:
-                s += '\n'+' '*(indent+2)+repr(child)
+            elif isinstance(child, tuple):
+                s += '\n'+' '*(indent+2)+ "/".join(child)
+            elif isinstance(child, str) and not quotes:
+                s += '\n'+' '*(indent+2)+ '%s' % child
+            else:
+                s += '\n'+' '*(indent+2)+ '%s' % child.__repr__()
         return s+parens[1]
 
     def pprint_latex_qtree(self):
