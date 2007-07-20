@@ -48,8 +48,8 @@ class BracketParseCorpusReader(CorpusReader):
                 for item in items]
         
     def _read_block(self, stream):
-        return [self._parse(t) for t in 
-                read_sexpr_block(stream)]
+        trees = [self._parse(t) for t in read_sexpr_block(stream)]
+        return [tree for tree in trees if tree is not None]
     
     def _parse(self, t):
         # If there's an empty set of brackets surrounding the actual
