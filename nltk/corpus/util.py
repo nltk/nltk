@@ -27,6 +27,7 @@ from nltk.corpus.reader.sinica_treebank import SinicaTreebankCorpusReader
 from nltk.corpus.reader.indian import IndianCorpusReader
 from nltk.corpus.reader.toolbox import ToolboxCorpusReader
 from nltk.corpus.reader.timit import TimitCorpusReader
+from nltk.corpus.reader.ycoe import YCOECorpusReader
 
 ######################################################################
 #{ Corpus Loader
@@ -99,6 +100,7 @@ def load_nltk_corpora(searchpath='', verbose=False):
     add_reader('udhr', PlaintextCorpusReader, '(?!README|\.svn).*')
     add_reader('webtext', PlaintextCorpusReader, '(?!README|\.svn).*')
     add_reader('words', WordListCorpusReader, '(?!README|\.svn).*')
+    add_reader('ycoe', YCOECorpusReader)
 
     return readers
 
