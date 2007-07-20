@@ -13,7 +13,7 @@ from nltk.etree import ElementTree
 
 from nltk.corpus.reader.plaintext import PlaintextCorpusReader
 from nltk.corpus.reader.util import find_corpus_items
-from nltk.corpus.reader.brown import TaggedCorpusReader
+from nltk.corpus.reader.tagged import TaggedCorpusReader
 from nltk.corpus.reader.cmudict import CMUDictCorpusReader
 from nltk.corpus.reader.conll import ConllChunkCorpusReader
 from nltk.corpus.reader.wordlist import WordListCorpusReader
