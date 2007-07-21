@@ -31,7 +31,7 @@ setup(
     
     #############################################
     ## Package List
-    packages = ['nltk', 'nltk.test', 'nltk.classify', 'nltk.corpus',
+    packages = ['nltk', 'nltk.test', 'nltk.classify', 'nltk.corpus', 'nltk.corpus.reader',
                 'nltk.tokenize', 'nltk.stem', 'nltk.tag',
                 'nltk.parse', 'nltk.chunk', 'nltk.chat', 'nltk.draw',
                 'nltk.misc', 'nltk.model', 'nltk.cluster',
