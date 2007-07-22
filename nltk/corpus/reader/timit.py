@@ -120,7 +120,7 @@ The 4 functions are as follows.
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from nltk.tree import Tree
-import sys, os, re, wave, tempfile, time
+import sys, os, re, tempfile, time
 
 __all__ = ["items", "raw", "phonetic", "speakers", "dictionary", "spkrinfo",
            "audiodata", "play"]
@@ -258,6 +258,11 @@ class TimitCorpusReader(CorpusReader):
         return trees
 
     def wav(self, item, start=0, end=None):
+        # We wait to import until here because the wave module wants
+        # to import the stdlib chunk module, and will get confused
+        # if it sees *our* chunk module instead.
+        import wave
+        
         wav_data = open(os.path.join(self._root, item+'.wav')).read()
         
         # If they want the whole thing, return it as-is.
