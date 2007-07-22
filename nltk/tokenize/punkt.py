@@ -54,44 +54,152 @@ overall result.  Here's a list of substanitive differences:
 
 """
 
-import re, math
-from nltk import tokenize, defaultdict
+import re, math, yaml
+from nltk import defaultdict
+from nltk.tokenize.api import TokenizerI
 from nltk.probability import FreqDist
 
-class PunktTokenizer:
+######################################################################
+#{ Orthographic Context Constants
+######################################################################
+# The following constants are used to describe the orthographic
+# contexts in which a word can occur.  BEG=beginning, MID=middle,
+# UNK=unknown, UC=uppercase, LC=lowercase.
+
+_ORTHO_BEG_UC    = 1 << 1
+"""Orthogaphic context: beginning of a sentence with upper case."""
+
+_ORTHO_MID_UC    = 1 << 2
+"""Orthogaphic context: middle of a sentence with upper case."""
+
+_ORTHO_UNK_UC    = 1 << 3
+"""Orthogaphic context: unknown position in a sentence with upper case."""
+
+_ORTHO_BEG_LC    = 1 << 4
+"""Orthogaphic context: beginning of a sentence with lower case."""
+
+_ORTHO_MID_LC    = 1 << 5
+"""Orthogaphic context: middle of a sentence with lower case."""
+
+_ORTHO_UNK_LC    = 1 << 6
+"""Orthogaphic context: unknown position in a sentence with lower case."""
+
+_ORTHO_UC = _ORTHO_BEG_UC + _ORTHO_MID_UC + _ORTHO_UNK_UC
+"""Orthogaphic context: occurs with upper case."""
+
+_ORTHO_LC = _ORTHO_BEG_LC + _ORTHO_MID_LC + _ORTHO_UNK_LC
+"""Orthogaphic context: occurs with lower case."""
+
+#} (end orthographic context constants)
+######################################################################
+
+######################################################################
+#{ Punkt Word Tokenizer
+######################################################################
+
+class PunktWordTokenizer(TokenizerI):
+    def tokenize(self, text):
+        return punkt_word_tokenize(text)
+
+def punkt_word_tokenize(s):
     """
-    @ivar _abbrev_types: A set of word types for known abbreviations.
-    @ivar _collocations: A set of word type tuples for known common
-        collocations where the first word ends in a period.  E.g.,
-        ('S.', 'Bach') is a common collocation in a text that
-        discusses 'Johann S. Bach'.  These count as negative evidence
-        for sentence boundaries.
-    @ivar _sent_starters: A set of word types for words that often
-        appear at the beginning of sentences.
-    @ivar _upper_contexts: A dictionary mapping word types to the
-        set of contexts that word type appears in when capitalized.
-        Contexts are: C{'initial'}, C{'internal'}, and C{'unknown'}.
-    @ivar _lower_contexts: A dictionary mapping word types to the
-        set of contexts that word type appears in when not capitalized.
-        Contexts are: C{'initial'}, C{'internal'}, and C{'unknown'}.
+    Tokenize a string using the rules from the Punkt word tokenizer.
     """
+
+    # Separate punctuation (except period) from words:
+    s = re.sub(r'(?=[\(\"\`{\[:;&\#\*@])(.)', r'\1 ', s)
     
-    def __init__(self, train_text='', verbose=False):
+    s = re.sub(r'(.)(?=[?!)\";}\]\*:@\'])', r'\1 ', s)
+    s = re.sub(r'(?=[\)}\]])(.)', r'\1 ', s)
+    s = re.sub(r'(.)(?=[({\[])', r'\1 ', s)
+    s = re.sub(r'((^|\s)\-)(?=[^\-])', r'\1 ', s)
+
+    # Treat double-hyphen as one token:
+    s = re.sub(r'([^-])(\-\-+)([^-])', r'\1 \2 \3', s)
+    s = re.sub(r'(\s|^)(,)(?=(\S))', r'\1\2 ', s)
+
+    # Only separate comma if space follows:
+    s = re.sub(r'(.)(,)(\s|$)', r'\1 \2\3', s)
+
+    # Combine dots separated by whitespace to be a single token:
+    s = re.sub(r'\.\s\.\s\.', r'...', s)
+
+    # [xx] why is this one commented out?
+    ## Separate "No.6"
+    #s = re.sub(r'([A-Za-z]\.)(\d+)', r'\1 \2', s)
+    
+    #Separate words from ellipses
+    s = re.sub(r'(.|^)(\.{2,})(.)?', r'\1 \2 \3', s)     
+
+    s = re.sub(r'(^|\s)(\.{2,})([^\.\s])', r'\1\2 \3', s)
+    s = re.sub(r'([^\.\s])(\.{2,})($|\s)', r'\1 \2\3', s)
+    
+    return iter(s.split())
+
+######################################################################
+#{ Punkt Sentence Tokenizer
+######################################################################
+
+class PunktSentenceTokenizer(TokenizerI, yaml.YAMLObject):
+    """
+    A sentence tokenizer which uses an unsupervised algorithm to build
+    a model for abbreviation words, collocations, and words that start
+    sentences; and then uses that model to find sentence boundaries.
+    This approach has been shown to work well for many European
+    languages.
+    """
+    yaml_tag = '!nltk.tokenizer.punkt.PunktTokenizer'
+    
+    def __init__(self, train_text=None, verbose=False):
         # These are needed for tokenization:
-        self._upper_contexts = defaultdict(set)
-        self._lower_contexts = defaultdict(set)
-        self._collocations = set()
-        self._sent_starters = set()
         self._abbrev_types = set()
-        # These are not, but they are needed if we want to do
-        # any incremental training:
-        self._type_fdist = FreqDist()
-        self._num_period_toks = 0
-        self._collocation_counts = defaultdict(int)
-        self._sentstart_counts = defaultdict(int)
-        # Train it up!
-        self.train(train_text, verbose)
+        """A set of word types for known abbreviations."""
         
+        self._collocations = set()
+        """A set of word type tuples for known common collocations
+        where the first word ends in a period.  E.g., ('S.', 'Bach')
+        is a common collocation in a text that discusses 'Johann
+        S. Bach'.  These count as negative evidence for sentence
+        boundaries."""
+        
+        self._sent_starters = set()
+        """A set of word types for words that often appear at the
+        beginning of sentences."""
+        
+        self._ortho_context = defaultdict(int)
+        """A dictionary mapping word types to the set of orthographic
+        contexts that word type appears in.  Contexts are represented
+        by adding orthographic context flags: ..."""
+        
+        self._type_fdist = FreqDist()
+        """A frequency distribution giving the frequency of each
+        case-normalized token type in the training data."""
+        
+        self._num_period_toks = 0
+        """The number of words ending in period in the training data."""
+        
+        self._collocation_fdist = FreqDist()
+        """A frequency distribution giving the frequency of all
+        bigrams in the training data where the first word ends in a
+        period.  Bigrams are encoded as tuples of word types.
+        Especially common collocations are extracted from this
+        frequency distribution, and stored in L{_collocations}."""
+        
+        self._sent_starter_fdist = FreqDist()
+        """A frequency distribution giving the frequency of all words
+        that occur at the training data at the beginning of a sentence
+        (after the first pass of annotation).  Especially common
+        sentence starters are extracted from this frequency
+        distribution, and stored in L{sent_starters}.
+        """
+        
+        if train_text:
+            self.train(train_text, verbose)
+        
+    #////////////////////////////////////////////////////////////
+    #{ Tokenization
+    #////////////////////////////////////////////////////////////
+
     def tokenize(self, text):
         sentbreak_toks = set() # words that end a sentence
         abbrev_toks = set()    # abbreviation words
@@ -116,15 +224,43 @@ class PunktTokenizer:
         #self.dump(tokens, abbrev_toks, ellipsis_toks, sentbreak_toks,
         #          parastart_toks, linestart_toks)
 
-        # Splice the words & whitespace together to form a sentence.
+        return self._build_sentence_list(text, tokens, sentbreak_toks)
+
+    def _build_sentence_list(self, text, tokens, sentbreak_toks):
+        """
+        Given the original text, the list of word tokens, and the set
+        of indices at which sentence breaks occur, construct and
+        return a tokenized list of sentence strings.
+        """
+        # Most of the work here is making sure that we put the right
+        # pieces of whitespace back in all the right places.
         sentences = ['']
+
+        # Our position in the source text, used to keep track of which
+        # whitespace to add:
         pos = 0
+
+        # A regular expression that finds pieces of whitespace:
         WS_REGEXP = re.compile(r'\s*')
         
         for i, tok in enumerate(tokens):
             # Find the whitespace before this token, and update pos.
             ws = WS_REGEXP.match(text, pos).group()
-            pos += len(ws) + len(tok)
+            pos += len(ws)
+
+            # Some of the rules used by the punkt word tokenizer
+            # strip whitespace out of the text, resulting in tokens
+            # that contain whitespace in the source text.  If our
+            # token doesn't match, see if adding whitespace helps.
+            # If so, then use the version with whitespace.
+            if text[pos:pos+len(tok)] != tok:
+                pat = '\s*'.join(re.escape(c) for c in tok)
+                m = re.compile(pat).match(text,pos)
+                if m: tok = m.group()
+
+            # Move our position pointer to the end of the token.
+            assert text[pos:pos+len(tok)] == tok
+            pos += len(tok)
 
             # Add this token.  If it's not at the beginning of the
             # sentence, then include any whitespace that separated it
@@ -222,7 +358,7 @@ class PunktTokenizer:
         for line in plaintext.split('\n'):
             linestart_toks.add(len(tokens))
             if line.strip():
-                tokens += tokenize.pword(line)
+                tokens += punkt_word_tokenize(line)
             else:
                 parastart_toks.add(len(tokens))
 
@@ -321,7 +457,7 @@ class PunktTokenizer:
                 # capitalized, then mark as abbrev (eg: J. Bach).
                 if ( is_sent_starter == 'unknown' and tok_is_initial and
                      self.is_upper(next_tok[:1]) and
-                     not self._lower_contexts[next_typ] ):
+                     not (self._ortho_context[next_typ] & _ORTHO_UC) ):
                     sentbreak_toks.discard(i)
                     abbrev_toks.add(i)
 
@@ -333,12 +469,14 @@ class PunktTokenizer:
         if tok in self.PUNCTUATION:
             return False
 
+        ortho_context = self._ortho_context[typ]
+
         # If the word is capitalized, occurs at least once with a
         # lower case first letter, and never occurs with an upper case
         # first letter sentence-internally, then it's a sentence starter.
         if ( self.is_upper(tok[:1]) and
-             self._lower_contexts[typ] and
-             'internal' not in self._upper_contexts[typ] ):
+             (ortho_context & _ORTHO_LC) and
+             not (ortho_context & _ORTHO_MID_UC) ):
             return True
 
         # If the word is lower case, and either (a) we've seen it used
@@ -346,8 +484,8 @@ class PunktTokenizer:
         # sentence-initially with lower case, then it's not a sentence
         # starter.
         if ( self.is_lower(tok[:1]) and
-             (self._upper_contexts[typ] or
-              'initial' not in self._lower_contexts[typ]) ):
+             ((ortho_context & _ORTHO_UC) or
+              not (ortho_context & _ORTHO_BEG_LC)) ):
             return False
 
         # Otherwise, we're not sure.
@@ -366,8 +504,8 @@ class PunktTokenizer:
         """
         self._type_fdist = None
         self._num_period_toks = None
-        self._collocation_counts = None
-        self._sentstart_counts = None
+        self._collocation_fdist = None
+        self._sent_starter_fdist = None
 
     def train(self, text, verbose=False):
         if self._type_fdist is None:
@@ -428,11 +566,7 @@ class PunktTokenizer:
         Collect information about whether each token type occurs
         with different case patterns (i) overall, (ii) at
         sentence-initial positions, and (iii) at sentence-internal
-        positions.  Return this information as a pair of dictionaries,
-        C{upper_contexts} and C{lower_contexts}, mapping each word
-        type to a list of contexts that it has been observed in.  This
-        set of contexts can include the strings C{'initial'},
-        C{'internal'}, and C{'unknown'}.
+        positions.
         """
         # 'initial' or 'internal' or 'unknown'
         context = 'internal'
@@ -454,11 +588,19 @@ class PunktTokenizer:
             # sentence-final token, strip off the period.
             typ = self.type_of_token(token, (i in sentbreak_toks))
             
-            # Update the case frequency distributions.
-            if self.is_upper(token[:1]):
-                self._upper_contexts[typ].add(context)
-            elif self.is_lower(token[:1]):
-                self._lower_contexts[typ].add(context)
+            # Update the orthographic context table.
+            if self.is_upper(token[:1]) and context=='initial':
+                self._ortho_context[typ] |= _ORTHO_BEG_UC
+            elif self.is_upper(token[:1]) and context=='internal':
+                self._ortho_context[typ] |= _ORTHO_MID_UC
+            elif self.is_upper(token[:1]) and context=='unknown':
+                self._ortho_context[typ] |= _ORTHO_UNK_UC
+            elif self.is_lower(token[:1]) and context=='initial':
+                self._ortho_context[typ] |= _ORTHO_BEG_LC
+            elif self.is_lower(token[:1]) and context=='internal':
+                self._ortho_context[typ] |= _ORTHO_MID_LC
+            elif self.is_lower(token[:1]) and context=='unknown':
+                self._ortho_context[typ] |= _ORTHO_UNK_LC
 
             # Decide whether the next word is at a sentence boundary.
             if i in sentbreak_toks:
@@ -568,8 +710,9 @@ class PunktTokenizer:
                     elif self.is_lower(tokens[i+1][:1]):
                         typ2 = self.type_of_token(tokens[i+1],
                                                  (i+1 in sentbreak_toks))
-                        if ('initial' in self._upper_contexts[typ2] and
-                            'internal' not in self._upper_contexts[typ2]):
+                        typ2_ortho_context = self._ortho_context[typ2]
+                        if ( (typ2_ortho_context & _ORTHO_BEG_UC) and
+                             not (typ2_ortho_context & _ORTHO_MID_UC) ):
                             self._abbrev_types.add(typ)
                             if verbose:
                                 print ('  Rare Abbrev: %s' % typ)
@@ -642,7 +785,7 @@ class PunktTokenizer:
 
     def _count_collocations(self, tokens, abbrev_toks, sentbreak_toks):
         """
-        Update C{self._collocation_counts} by counting up any
+        Update C{self._collocation_fdist} by counting up any
         collocations that occur in the given token list.
         """
         for i in range(len(tokens)-1):
@@ -656,7 +799,7 @@ class PunktTokenizer:
                 # then strip that off.
                 typ1 = self.type_of_token(tok1, False)
                 typ2 = self.type_of_token(tok2, (i+1 in sentbreak_toks))
-                self._collocation_counts[typ1,typ2] += 1
+                self._collocation_fdist.inc( (typ1,typ2) )
     
     def _find_collocations(self, tokens, abbrev_toks,
                            sentbreak_toks, verbose):
@@ -666,7 +809,7 @@ class PunktTokenizer:
         # Reset the list of collocations:
         self._collocations = set()
         
-        for (typ1, typ2), col_count in self._collocation_counts.items():
+        for (typ1, typ2), col_count in self._collocation_fdist.items():
             typ1_count = self._type_fdist[typ1]+self._type_fdist[typ1+'.']
             typ2_count = self._type_fdist[typ2]+self._type_fdist[typ2+'.']
             if typ1_count > 1 and typ2_count > 1:
@@ -695,13 +838,13 @@ class PunktTokenizer:
                  (not re.match(r'([A-Za-z]|\d+)\.$', tokens[i-1])) and
                  (re.match(r'[A-Za-z]+$', tokens[i])) ):
                 typ = self.type_of_token(tokens[i], i in sentbreak_toks)
-                self._sentstart_counts[typ] += 1
+                self._sent_starter_fdist.inc(typ)
 
     def _find_sent_starters(self, tokens, sentbreak_toks, verbose):
         # Reset the list of sentence starters:
         self._sent_starters = set()
         
-        for (typ, typ_at_sentbreak_count) in self._sentstart_counts.items():
+        for (typ, typ_at_sentbreak_count) in self._sent_starter_fdist.items():
             typ_count = self._type_fdist[typ]+self._type_fdist[typ+'.']
             sentbreak_count = len(sentbreak_toks)
             
@@ -715,14 +858,23 @@ class PunktTokenizer:
                 self._sent_starters.add(typ)
                 if verbose:
                     print ('  Sent Starter: [%6.4f] %r' % (ll, typ))
-            
+
 if __name__ == '__main__':
-    from nltk.corpus import treebank
-    text = treebank.text()
-    tokenizer = PunktTokenizer.train(text, verbose=True)
-    sents = tokenizer.tokenize(text)
-    for sent in sents[:5]:
-        print `sent`
+    from nltk.corpus.reader.plaintext import PlaintextCorpusReader
+    tb = PlaintextCorpusReader('/Users/edloper/Corpora/treebank/raw', '.*')
+    # Train on the whole treebank at once.
+    print 'loading tb...'
+    all_tb = '\n\n'.join(tb.raw(item) for item in tbraw.items)
+    print 'training...'
+    tokenizer = PunktTokenizer(all_tb, verbose=True)
+    print 'freezing...'
+    tokenizer.freeze()
+    print 'dumping...'
+    out = open('/tmp/punkt-english.yaml', 'w')
+    yaml.dump(tokenizer, out)
+    out.close()
+    print 'all done!'
+
     
             
                     
