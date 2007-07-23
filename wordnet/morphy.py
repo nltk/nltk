@@ -8,6 +8,7 @@
 # For license information, see LICENSE.TXT
 
 from dictionary import dictionaryFor
+import nltk.data
 from util import *
 
 MORPHOLOGICAL_SUBSTITUTIONS = {
@@ -39,7 +40,7 @@ def morphy(form, pos=NOUN, collect=0):
     """
     pos = normalizePOS(pos)
     section = {NOUN: NOUN, VERB: VERB, ADJECTIVE: ADJECTIVE, ADVERB: ADVERB}[pos]
-    excfile = open(find_corpus_file('wordnet', section, extension=".exc"))
+    excfile = open(nltk.data.find('corpora/wordnet/%s.exc' % section))
     substitutions = MORPHOLOGICAL_SUBSTITUTIONS[pos]
     def trySubstitutions(trySubstitutions,    # workaround for lack of nested closures in Python < 2.1
                          form,                # reduced form
