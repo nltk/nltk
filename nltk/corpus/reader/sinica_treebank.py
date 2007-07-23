@@ -5,11 +5,6 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from util import *
-from nltk import tokenize, tree
-from nltk.tag import tag2tuple
-import os, re
-
 """
 Sinica Treebank Corpus Sample
 
@@ -43,6 +38,12 @@ Chen Keh-Jiann and Yu-Ming Hsieh (2004) Chinese Treebanks and Grammar
 Extraction, Proceedings of IJCNLP-04, pp560-565.
 """
 
+from util import *
+from api import *
+from nltk import tokenize, tree
+from nltk.tag import tag2tuple
+import os, re
+
 #: A list of all documents in this corpus.
 items = ['parsed', 'tagged', 'tokenized', 'raw']
 
@@ -51,7 +52,7 @@ APPENDIX = re.compile(r'(?<=\))#.*$')
 TAGWORD = re.compile(r':([^:()|]+):([^:()|]+)')
 
 
-class SinicaTreebankCorpusReader:
+class SinicaTreebankCorpusReader(CorpusReader):
     """
     Reader for corpora that consist of treebank-style trees.  For
     reading the Treebank corpus itself, you may wish to use
