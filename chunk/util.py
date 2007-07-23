@@ -8,6 +8,7 @@
 
 from api import *
 from nltk import tokenize, Tree
+from nltk.tag import tag2tuple
 import re, string
 
 ##//////////////////////////////////////////////////////
@@ -273,7 +274,7 @@ def _chunksets(t, count):
     return set(chunks)
 
 
-def tagstr2tree(s, chunk_node="NP", top_node="S"):
+def tagstr2tree(s, chunk_node="NP", top_node="S", sep='/'):
     """
     Divide a string of bracketted tagged text into
     chunks and unchunked tokens, and produce a C{Tree}.
@@ -308,12 +309,10 @@ def tagstr2tree(s, chunk_node="NP", top_node="S"):
         elif text[0] == ']':
             stack.pop()
         else:
-            slash = text.rfind('/')
-            if slash >= 0:
-                tok = (text[:slash], text[slash+1:])
+            if sep is None:
+                stack[-1].append(text)
             else:
-                tok = (text, None)
-            stack[-1].append(tok)
+                stack[-1].append(tag2tuple(text, sep))
 
     return stack[0]
 
