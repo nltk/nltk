@@ -10,9 +10,9 @@
 """
 A classifier model based on maximum entropy modeling framework.  This
 framework considers all of the probability distributions that are
-emperically consistant with the training data; and chooses the
+empirically consistant with the training data; and chooses the
 distribution with the highest entropy.  A probability distribution is
-X{emperically consistant} with a set of training data if its estimated
+X{empirically consistant} with a set of training data if its estimated
 frequency with which a class and a feature vector value co-occur is
 equal to the actual frequency in the data.
 """
@@ -130,20 +130,20 @@ def gis(train_toks, ll_cutoff=None, lldelta_cutoff=None,
                     for i, label in enumerate(labels)])
 
     # Count how many times each feature occurs in the training data.
-    emperical_fcount = calculate_emperical_fcount(train_toks, encoding,
+    empirical_fcount = calculate_empirical_fcount(train_toks, encoding,
                                                   offsets)
     
-    # Define an array that is 1 whenever emperical_fcount is zero.  In
+    # Define an array that is 1 whenever empirical_fcount is zero.  In
     # other words, it is one for any feature that's not attested in
     # the training data.  This is used to avoid division by zero.
-    unattested = numpy.zeros(len(emperical_fcount))
-    for i in range(len(emperical_fcount)):
-        if emperical_fcount[i] == 0: unattested[i] = 1
+    unattested = numpy.zeros(len(empirical_fcount))
+    for i in range(len(empirical_fcount)):
+        if empirical_fcount[i] == 0: unattested[i] = 1
 
     # Build the classifier.  Start with weight=1 for each feature,
     # except for the unattested features.  Start those out at
     # zero, since we know that's the correct value.
-    weights = numpy.ones(len(emperical_fcount), 'd')
+    weights = numpy.ones(len(empirical_fcount), 'd')
     weights -= unattested
     classifier = ConditionalExponentialClassifier(labels, encoding, weights)
 
@@ -175,7 +175,7 @@ def gis(train_toks, ll_cutoff=None, lldelta_cutoff=None,
         
         # Update the classifier weights
         weights = classifier.weights()
-        weights *= (emperical_fcount / estimated_fcount) ** Cinv
+        weights *= (empirical_fcount / estimated_fcount) ** Cinv
         classifier.set_weights(weights)
 
         # Check log-likelihood cutoffs.
@@ -202,7 +202,7 @@ def gis(train_toks, ll_cutoff=None, lldelta_cutoff=None,
     # Return the classifier.
     return classifier
 
-def calculate_emperical_fcount(train_toks, encoding, offsets):
+def calculate_empirical_fcount(train_toks, encoding, offsets):
     fcount = numpy.zeros(encoding.length()*len(offsets), 'd')
 
     for tok, label in train_toks:
@@ -234,7 +234,11 @@ def iis(train_toks, **kwargs):
     Train a new C{ConditionalExponentialClassifier}, using the given
     training samples.  This C{ConditionalExponentialClassifier} should
     encode the model that maximizes entropy from all the models that
-    are emperically consistant with C{train_toks}.
+    are empirically consistent with C{train_toks}.
+    
+    @param train_toks: Training data, represented as a list of pairs, the first member of which
+    is a feature dictionary, and the second of which is a classification label.
+    @type train_toks: C{list} of C{tuples} of (C{dict}, C{str})
     
     @param kwargs: Keyword arguments.
       - C{iterations}: The maximum number of times IIS should
@@ -310,7 +314,7 @@ def iis(train_toks, **kwargs):
                     for i, label in enumerate(labels)])
 
     # Count how many times each feature occurs in the training data.
-    emperical_ffreq = calculate_emperical_fcount(train_toks, encoding,
+    empirical_ffreq = calculate_empirical_fcount(train_toks, encoding,
                                                  offsets) / len(train_toks)
 
     # Find the nf map, and related variables nfarray and nfident.
@@ -322,17 +326,17 @@ def iis(train_toks, **kwargs):
     nfarray = numpy.array(sorted(nfmap, key=nfmap.__getitem__), 'd')
     nftranspose = numpy.reshape(nfarray, (len(nfarray), 1))
 
-    # An array that is 1 whenever emperical_ffreq is zero.  In
+    # An array that is 1 whenever empirical_ffreq is zero.  In
     # other words, it is one for any feature that's not attested
     # in the data.  This is used to avoid division by zero.
-    unattested = numpy.zeros(len(emperical_ffreq))
-    for i in range(len(emperical_ffreq)):
-        if emperical_ffreq[i] == 0: unattested[i] = 1
+    unattested = numpy.zeros(len(empirical_ffreq))
+    for i in range(len(empirical_ffreq)):
+        if empirical_ffreq[i] == 0: unattested[i] = 1
 
     # Build the classifier.  Start with weight=1 for each feature,
     # except for the unattested features.  Start those out at
     # zero, since we know that's the correct value.
-    weights = numpy.ones(len(emperical_ffreq), 'd')
+    weights = numpy.ones(len(empirical_ffreq), 'd')
     weights -= unattested
     classifier = ConditionalExponentialClassifier(labels, encoding, weights)
             
@@ -351,7 +355,7 @@ def iis(train_toks, **kwargs):
 
         # Calculate the deltas for this iteration, using Newton's method.
         deltas = calculate_deltas(
-            train_toks, classifier, unattested, emperical_ffreq, 
+            train_toks, classifier, unattested, empirical_ffreq, 
             nfmap, nfarray, nftranspose, offsets, encoding)
 
         # Use the deltas to update our weights.
@@ -411,14 +415,14 @@ def calculate_nfmap(train_toks, encoding):
         nfset.add(sum([val for (id,val) in encoding.encode(tok)]))
     return dict([(nf, i) for (i, nf) in enumerate(nfset)])
 
-def calculate_deltas(train_toks, classifier, unattested, ffreq_emperical,
+def calculate_deltas(train_toks, classifier, unattested, ffreq_empirical,
                      nfmap, nfarray, nftranspose, offsets, encoding):
     """
     Calculate the update values for the classifier weights for
     this iteration of IIS.  These update weights are the value of
     C{delta} that solves the equation::
     
-      ffreq_emperical[i]
+      ffreq_empirical[i]
              =
       SUM[t,l] (classifier.prob(LabeledText(t,l)) *
                 fd_list.detect(LabeledText(t,l))[i] *
@@ -433,7 +437,7 @@ def calculate_deltas(train_toks, classifier, unattested, ffreq_emperical,
     M{delta[i]}.  In particular, it starts with a guess of
     C{delta[i]}=1; and iteratively updates C{delta} with::
 
-        delta[i] -= (ffreq_emperical[i] - sum1[i])/(-sum2[i])
+        delta[i] -= (ffreq_empirical[i] - sum1[i])/(-sum2[i])
 
     until convergence, where M{sum1} and M{sum2} are defined as::
     
@@ -465,14 +469,14 @@ def calculate_deltas(train_toks, classifier, unattested, ffreq_emperical,
     @type labels: C{list} of (immutable)
     @param classifier: The current classifier.
     @type classifier: C{ClassifierI}
-    @param ffreq_emperical: An array containing the emperical
+    @param ffreq_empirical: An array containing the empirical
         frequency for each feature.  The M{i}th element of this
-        array is the emperical frequency for feature M{i}.
-    @type ffreq_emperical: C{sequence} of C{float}
+        array is the empirical frequency for feature M{i}.
+    @type ffreq_empirical: C{sequence} of C{float}
     @param unattested: An array that is 1 for features that are
         not attested in the training data; and 0 for features that
         are attested.  In other words, C{unattested[i]==0} iff
-        C{ffreq_emperical[i]==0}. 
+        C{ffreq_empirical[i]==0}. 
     @type unattested: C{sequence} of C{int}
     @param nfmap: A map that can be used to compress C{nf} to a dense
         vector.
@@ -528,10 +532,10 @@ def calculate_deltas(train_toks, classifier, unattested, ffreq_emperical,
         sum2 += unattested
 
         # Update the deltas.
-        deltas -= (ffreq_emperical - sum1) / -sum2
+        deltas -= (ffreq_empirical - sum1) / -sum2
 
         # We can stop once we converge.
-        n_error = (numpy.sum(abs((ffreq_emperical-sum1)))/
+        n_error = (numpy.sum(abs((ffreq_empirical-sum1)))/
                    numpy.sum(abs(deltas)))
         if n_error < NEWTON_CONVERGE:
             return deltas
