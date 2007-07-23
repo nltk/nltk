@@ -613,78 +613,78 @@ class ParserSubstitute(LogicParser):
 # Read a grammar from a file
 ############################################################################
 
-class GrammarFile(object):
-    def __init__(self, filename=None, verbose=False):
-        self.grammatical_productions = []
-        self.lexical_productions = []
-        self.start = GrammarCategory(pos='Start')
-        self.kimmo = None
-        self.apply_file(filename, verbose=verbose)
+#class GrammarFile(object):
+    #def __init__(self, filename=None, verbose=False):
+        #self.grammatical_productions = []
+        #self.lexical_productions = []
+        #self.start = GrammarCategory(pos='Start')
+        #self.kimmo = None
+        #self.apply_file(filename, verbose=verbose)
 
-    def grammar(self):
-        return cfg.Grammar(self.start, self.grammatical_productions +\
-        self.lexical_productions)
+    #def grammar(self):
+        #return cfg.Grammar(self.start, self.grammatical_productions +\
+        #self.lexical_productions)
         
-    def earley_grammar(self):
-        return cfg.Grammar(self.start, self.grammatical_productions)
+    #def earley_grammar(self):
+        #return cfg.Grammar(self.start, self.grammatical_productions)
     
-    def earley_lexicon(self):
-        lexicon = defaultdict(list)
-        for prod in self.lexical_productions:
-            lexicon[prod.rhs()[0]].append(prod.lhs())
-        return lexicon
+    #def earley_lexicon(self):
+        #lexicon = defaultdict(list)
+        #for prod in self.lexical_productions:
+            #lexicon[prod.rhs()[0]].append(prod.lhs())
+        #return lexicon
 
-    def kimmo_lexicon(self):
-        def lookup(word):
-            kimmo_results = self.kimmo.recognize(word.lower())
-            return [GrammarCategory(k[1]) for k in kimmo_results]
-        return lookup
+    #def kimmo_lexicon(self):
+        #def lookup(word):
+            #kimmo_results = self.kimmo.recognize(word.lower())
+            #return [GrammarCategory(k[1]) for k in kimmo_results]
+        #return lookup
 
-    def earley_parser(self, trace=1):
-        from featurechart import FeatureEarleyChartParse
-        if self.kimmo is None: lexicon = self.earley_lexicon()
-        else: lexicon = self.kimmo_lexicon()
+    #def earley_parser(self, trace=1):
+        #from featurechart import FeatureEarleyChartParse
+        #if self.kimmo is None: lexicon = self.earley_lexicon()
+        #else: lexicon = self.kimmo_lexicon()
         
-        return FeatureEarleyChartParse(self.earley_grammar(),
-                           lexicon, trace=trace)
+        #return FeatureEarleyChartParse(self.earley_grammar(),
+                           #lexicon, trace=trace)
 
-    def apply_lines(self, lines):
-        for line in lines:
-            line = line.strip()
-            if not len(line): continue
-            if line[0] == '#': continue
-            if line[0] == '%':
-                parts = line[1:].split()
-                directive = parts[0]
-                args = " ".join(parts[1:])
-                if directive == 'start':
-                    self.start = GrammarCategory.parse(args).freeze()
-                elif directive == 'include':
-                    filename = args.strip('"')
-                    self.apply_file(filename)
-                elif directive == 'tagger_file':
-                    import yaml, nltk.yamltags
-                    filename = args.strip('"')
-                    tagger = yaml.load(filename)
-                    self.tagproc = chart_tagger(tagger)
-                elif directive == 'kimmo':
-                    filename = args.strip('"')
-                    kimmorules = kimmo.load(filename)
-                    self.kimmo = kimmorules
-            else:
-                rules = GrammarCategory.parse_rules(line)
-                for rule in rules:
-                    if len(rule.rhs()) == 1 and isinstance(rule.rhs()[0], str):
-                        self.lexical_productions.append(rule)
-                    else:
-                        self.grammatical_productions.append(rule)
+    #def apply_lines(self, lines):
+        #for line in lines:
+            #line = line.strip()
+            #if not len(line): continue
+            #if line[0] == '#': continue
+            #if line[0] == '%':
+                #parts = line[1:].split()
+                #directive = parts[0]
+                #args = " ".join(parts[1:])
+                #if directive == 'start':
+                    #self.start = GrammarCategory.parse(args).freeze()
+                #elif directive == 'include':
+                    #filename = args.strip('"')
+                    #self.apply_file(filename)
+                #elif directive == 'tagger_file':
+                    #import yaml, nltk.yamltags
+                    #filename = args.strip('"')
+                    #tagger = yaml.load(filename)
+                    #self.tagproc = chart_tagger(tagger)
+                #elif directive == 'kimmo':
+                    #filename = args.strip('"')
+                    #kimmorules = kimmo.load(filename)
+                    #self.kimmo = kimmorules
+            #else:
+                #rules = GrammarCategory.parse_rules(line)
+                #for rule in rules:
+                    #if len(rule.rhs()) == 1 and isinstance(rule.rhs()[0], str):
+                        #self.lexical_productions.append(rule)
+                    #else:
+                        #self.grammatical_productions.append(rule)
 
-    def apply_file(self, filename, verbose=False):
-        lines = filebroker.load(filename, verbose=verbose)
-        if lines:
-            self.apply_lines(lines)
-        else:
-            return None
+    #def apply_file(self, filename, verbose=False):
+        #lines = filebroker.load(filename, verbose=verbose)
+        #if lines:
+            #self.apply_lines(lines)
+        #else:
+            #return None
 
 yaml.add_representer(Category, Category.to_yaml)
 yaml.add_representer(GrammarCategory, GrammarCategory.to_yaml)
