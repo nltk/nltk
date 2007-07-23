@@ -126,6 +126,7 @@ current directory.
 import re
 import shelve, os, sys
 from util import *
+import nltk.data
 
 ###########################################################################
 # Chat-80 relation metadata bundles needed to build the valuation
@@ -355,7 +356,7 @@ def _str2records(filename, rel):
     Read a file into memory and convert each relation clause into a list.
     """ 
     recs = []
-    path = find_corpus_file("chat80", filename)
+    path = nltk.data.find("corpora/chat80/%s" % filename)
     for line in open(path):
         if line.startswith(rel):
             line = re.sub(rel+r'\(', '', line)
