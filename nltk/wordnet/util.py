@@ -8,7 +8,7 @@
 # For license information, see LICENSE.TXT
 
 import os, string, types
-from nltk.corpus import find_corpus_file
+import nltk.data
 
 ANTONYM = 'antonym'
 HYPERNYM = 'hypernym'
@@ -240,7 +240,7 @@ class IndexFile(object):
         @param filenameroot: The base filename of the index file.
         """
         self.pos = pos
-        path = find_corpus_file('wordnet', "index", extension="." + filenameroot)
+        path = nltk.data.find('corpora/wordnet/index.%s' % filenameroot)
         self.file = open(path, FILE_OPEN_MODE)
 
         # Table of (pathname, offset) -> (line, nextOffset)
