@@ -174,13 +174,17 @@ class FeatureFundamentalRule(FundamentalRule):
         right_bindings = right_edge.vars().copy()
         try:
             unified = unify(left_edge.next(), right_edge.lhs(), left_bindings,
-                            right_bindings, memo=self.unify_memo, trace=self.trace-2)
+                            right_bindings,
+                            #memo=self.unify_memo,
+                            memo=None,
+                            trace=self.trace-2)
             if isinstance(unified, Category): unified.freeze()
         except UnificationFailure: return
 
         # Construct the new edge.
         new_edge = FeatureTreeEdge(span=(left_edge.start(), right_edge.end()),
-                                   lhs=left_edge.lhs(), rhs=left_edge.rhs(),
+                                   lhs=left_edge.orig_lhs(),
+                                   rhs=left_edge.orig_rhs(),
                                    dot=left_edge.dot()+1, vars=left_bindings)
         # Add it to the chart, with appropriate child pointers.
         changed_chart = False
@@ -223,7 +227,9 @@ class FeatureTopDownExpandRule(TopDownExpandRule):
             bindings = edge.vars().copy()
             try:
                 unified = unify(edge.next(), prod.lhs(), bindings, {},
-                                memo=self.unify_memo, trace=self.trace-2)
+                                #memo=self.unify_memo,
+                                memo=None,
+                                trace=self.trace-2)
                 if isinstance(unified, Category): unified.freeze()
             except UnificationFailure:
                 continue
