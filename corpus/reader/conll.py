@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 """
-Readh conll-style chunk files.
+Read conll-style chunk files.
 """       
 
 from util import *
@@ -120,7 +120,7 @@ def demo():
     from nltk.corpus import conll2000, conll2002
     print "CONLL Chunked data\n"
 
-    for (lang, corpus,item) in [('English', conll2000, 'train'),
+    for (lang, corpus, item) in [('English', conll2000, 'train'),
                                 ('Dutch', conll2002, 'ned.train'),
                                 ('Spanish', conll2002, 'esp.train')]:
         print "%s Sentences:" % lang
