@@ -17,32 +17,32 @@ read the grammar into NLTK, ready for use in parsing.
     Predictor |> . . .| NP[NUM=?n] -> * N[NUM=?n] {} 
     Predictor |> . . .| NP[NUM=?n] -> * PropN[NUM=?n] {} 
     Predictor |> . . .| NP[NUM=?n] -> * Det[NUM=?n] N[NUM=?n] {} 
-    Predictor |> . . .| NP[NUM='pl'] -> * N[NUM='pl'] {} 
+    Predictor |> . . .| NP[NUM=pl] -> * N[NUM=pl] {} 
     Processing queue 1
-    Scanner   |[-] . .| PropN[NUM='sg'] -> Kim * {} 
-    Completer |[-] . .| NP[NUM='sg'] -> PropN[NUM='sg'] * {'n': 'sg'} 
-    Completer |[-> . .| S -> NP[NUM='sg'] * VP[NUM='sg'] {'n': 'sg'} 
+    Scanner   |[-] . .| PropN[NUM=sg] -> Kim * {} 
+    Completer |[-] . .| NP[NUM=sg] -> PropN[NUM=sg] * {'n': 'sg'} 
+    Completer |[-> . .| S -> NP[NUM=sg] * VP[NUM=sg] {'n': 'sg'} 
     Predictor |. > . .| VP[NUM=?n, TENSE=?t] -> * IV[NUM=?n, TENSE=?t] {} 
     Predictor |. > . .| VP[NUM=?n, TENSE=?t] -> * TV[NUM=?n, TENSE=?t] NP {} 
     Processing queue 2
-    Scanner   |. [-] .| TV[NUM='sg', TENSE='pres'] -> likes * {} 
-    Completer |. [-> .| VP[NUM='sg', TENSE='pres'] -> TV[NUM='sg', TENSE='pres'] * NP {'t': 'pres', 'n': 'sg'} 
+    Scanner   |. [-] .| TV[NUM=sg, TENSE=pres] -> likes * {} 
+    Completer |. [-> .| VP[NUM=sg, TENSE=pres] -> TV[NUM=sg, TENSE=pres] * NP {'t': 'pres', 'n': 'sg'} 
     Predictor |. . > .| NP[NUM=?n] -> * N[NUM=?n] {} 
     Predictor |. . > .| NP[NUM=?n] -> * PropN[NUM=?n] {} 
     Predictor |. . > .| NP[NUM=?n] -> * Det[NUM=?n] N[NUM=?n] {} 
-    Predictor |. . > .| NP[NUM='pl'] -> * N[NUM='pl'] {} 
+    Predictor |. . > .| NP[NUM=pl] -> * N[NUM=pl] {} 
     Processing queue 3
-    Scanner   |. . [-]| N[NUM='pl'] -> children * {} 
-    Completer |. . [-]| NP[NUM='pl'] -> N[NUM='pl'] * {'n': 'pl'} 
-    Completer |. [---]| VP[NUM='sg', TENSE='pres'] -> TV[NUM='sg', TENSE='pres'] NP * {'t': 'pres', 'n': 'sg'} 
-    Completer |[=====]| S -> NP[NUM='sg'] VP[NUM='sg'] * {'n': 'sg'} 
+    Scanner   |. . [-]| N[NUM=pl] -> children * {} 
+    Completer |. . [-]| NP[NUM=pl] -> N[NUM=pl] * {'n': 'pl'} 
+    Completer |. [---]| VP[NUM=sg, TENSE=pres] -> TV[NUM=sg, TENSE=pres] NP * {'t': 'pres', 'n': 'sg'} 
+    Completer |[=====]| S -> NP[NUM=sg] VP[NUM=sg] * {'n': 'sg'} 
     Completer |[=====]| [INIT] -> S * {} 
     >>> for tree in trees: print tree
     (S
-      (NP[NUM='sg'] (PropN[NUM='sg'] Kim))
-      (VP[NUM='sg', TENSE='pres']
-        (TV[NUM='sg', TENSE='pres'] likes)
-        (NP[NUM='pl'] (N[NUM='pl'] children))))
+      (NP[NUM=sg] (PropN[NUM=sg] Kim))
+      (VP[NUM=sg, TENSE=pres]
+        (TV[NUM=sg, TENSE=pres] likes)
+        (NP[NUM=pl] (N[NUM=pl] children))))
 
 Feature structures in NLTK are ... Atomic feature values can be strings or
 integers.
@@ -76,22 +76,18 @@ discussed earlier.
     >>> print fs2['AGR']['PER']
     3
 
-An alternative method of specifying feature structures in NLTK is to
-use the ``load`` method of ``yaml``. This gives us the
-facility to use square bracket notation for embedding one feature
-structure within another.
-
-Representing dictionaries in YAML form is useful for making feature
-structures readable:
+Feature structures can also be constructed using the ``parse()``
+method of the ``nltk.FeatStruct" class. Note that in this case, atomic
+feature values do not need to be enclosed in quotes.
     
-    >>> f1 = nltk.FeatStruct.parse("[NUMBER = 'sg']")
+    >>> f1 = nltk.FeatStruct.parse("[NUMBER = sg]")
     >>> f2 = nltk.FeatStruct.parse("[PERSON = 3]")
     >>> print nltk.unify(f1, f2)
     [ NUMBER = 'sg' ]
     [ PERSON = 3    ]
 
-    >>> f1 = nltk.FeatStruct.parse("[A = [B = 'b', D = 'd']]")
-    >>> f2 = nltk.FeatStruct.parse("[A = [C = 'c', D = 'd']]")
+    >>> f1 = nltk.FeatStruct.parse("[A = [B = b, D = d]]")
+    >>> f2 = nltk.FeatStruct.parse("[A = [C = c, D = d]]")
     >>> print nltk.unify(f1, f2)
     [     [ B = 'b' ] ]
     [ A = [ C = 'c' ] ]
@@ -105,7 +101,7 @@ Feature structures are not inherently tied to linguistic objects; they are
 general purpose structures for representing knowledge. For example, we
 could encode information about a person in a feature structure:
 
-    >>> person01 = nltk.FeatStruct.parse("[NAME='Lee', TELNO='01 27 86 42 96',AGE=33]")
+    >>> person01 = nltk.FeatStruct.parse("[NAME=Lee, TELNO='01 27 86 42 96',AGE=33]")
     >>> print person01
     [ AGE   = 33               ]
     [ NAME  = 'Lee'            ]
@@ -119,8 +115,8 @@ subsequent reference to that structure uses the notation
 ``->(1)``, as shown below.
 
  
-    >>> fs = nltk.FeatStruct.parse("""[NAME='Lee', ADDRESS=(1)[NUMBER=74, STREET='rue Pascal'], 
-    ...                               SPOUSE=[NAME='Kim', ADDRESS->(1)]]""")
+    >>> fs = nltk.FeatStruct.parse("""[NAME=Lee, ADDRESS=(1)[NUMBER=74, STREET='rue Pascal'], 
+    ...                               SPOUSE=[NAME=Kim, ADDRESS->(1)]]""")
     >>> print fs
     [ ADDRESS = (1) [ NUMBER = 74           ] ]
     [               [ STREET = 'rue Pascal' ] ]
@@ -132,7 +128,7 @@ subsequent reference to that structure uses the notation
 
 There can be any number of tags within a single feature structure.
 
-    >>> fs3 = nltk.FeatStruct.parse("[A=(1)[B='b'], C=(2)[], D->(1), E->(2)]")
+    >>> fs3 = nltk.FeatStruct.parse("[A=(1)[B=b], C=(2)[], D->(1), E->(2)]")
     >>> print fs3
     [ A = (1) [ B = 'b' ] ]
     [                     ]
@@ -299,37 +295,13 @@ Let's load a German grammar:
     >>> trees = cp.parse(tokens)
     >>> for tree in trees: print tree
     (S
-      (NP[AGR=[GND='fem', NUM='sg', PER=3], CASE='nom']
-        (Det[AGR=[GND='fem', NUM='sg', PER=3], CASE='nom'] die)
-        (N[AGR=[GND='fem', NUM='sg', PER=3]] katze))
-      (VP[AGR=[NUM='sg', PER=3]]
-        (TV[AGR=[NUM='sg', PER=3], OBJCASE='acc'] sieht)
-        (NP[AGR=[GND='masc', NUM='sg', PER=3], CASE='acc']
-          (Det[AGR=[GND='masc', NUM='sg', PER=3], CASE='acc'] den)
-          (N[AGR=[GND='masc', NUM='sg', PER=3]] hund))))
-
-First attempt at doing semantics with features:
-
-    >>> cp = parse.load_earley('sem3.cfg', trace=2)
-    >>> sent = 'Kim barks'
-    >>> tokens = list(tokenize.whitespace(sent))
-    >>> trees = cp.parse(tokens)
-              |.K.b.|
-    Processing queue 0
-    Predictor |> . .| S[sem=?vp] -> * NP[sem=?np] VP[sem=?vp, subj=?np] {} 
-    Processing queue 1
-    Scanner   |[-] .| NP[sem=[index='k', name='kim']] -> Kim * {} 
-    Completer |[-> .| S[sem=?vp] -> NP[sem=[index='k', name='kim']] * VP[sem=?vp, subj=[index='k', name='kim']] {'np': {'index': 'k', 'name': 'kim'}} 
-    Predictor |. > .| VP[sem=?v, subj=?np] -> * IV[sem=?v, subj=?np] {} 
-    Processing queue 2
-    Scanner   |. [-]| IV[sem=[arg=?i, rel='bark'], subj=[sem=[index=?i]]] -> barks * {} 
-    Completer |. [-]| VP[sem=[arg=?i, rel='bark'], subj=[sem=[index=?i]]] -> IV[sem=[arg=?i, rel='bark'], subj=[sem=[index=?i]]] * {'np': {'sem': {'index': ?i}}, 'v': {'rel': 'bark', 'arg': ?i}} 
-    Completer |[===]| S[sem=[arg=?i, rel='bark']] -> NP[sem=[index='k', name='kim']] VP[sem=[arg=?i, rel='bark'], subj=[index='k', name='kim']] * {'np': {'index': 'k', 'sem': {'index': ?i}, 'name': 'kim'}, 'vp': {'rel': 'bark', 'arg': ?i}} 
-    Completer |[===]| [INIT] -> S * {} 
-    >>> for tree in trees: print tree
-    (S[sem=[arg=?i, rel='bark']]
-      (NP[sem=[index='k', name='kim']] Kim)
-      (VP[sem=[arg=?i, rel='bark'], subj=[sem=[index=?i]]]
-        (IV[sem=[arg=?i, rel='bark'], subj=[sem=[index=?i]]] barks)))
+      (NP[AGR=[GND=fem, NUM=sg, PER=3], CASE=nom]
+        (Det[AGR=[GND=fem, NUM=sg, PER=3], CASE=nom] die)
+        (N[AGR=[GND=fem, NUM=sg, PER=3]] katze))
+      (VP[AGR=[NUM=sg, PER=3]]
+        (TV[AGR=[NUM=sg, PER=3], OBJCASE=acc] sieht)
+        (NP[AGR=[GND=masc, NUM=sg, PER=3], CASE=acc]
+          (Det[AGR=[GND=masc, NUM=sg, PER=3], CASE=acc] den)
+          (N[AGR=[GND=masc, NUM=sg, PER=3]] hund))))
 
 
