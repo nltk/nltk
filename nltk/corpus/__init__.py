@@ -61,14 +61,77 @@ can be accessed using C{nltk.corpus.I{corpus}.olac()}.
 """
 
 from util import *
-from reader import *
+#from reader import *
 
-# Load all corpora from the NLTK corpus package:
-globals().update(load_nltk_corpora())
+from nltk.corpus.reader.plaintext import PlaintextCorpusReader
+from nltk.corpus.reader.util import find_corpus_items
+from nltk.corpus.reader.tagged import TaggedCorpusReader
+from nltk.corpus.reader.cmudict import CMUDictCorpusReader
+from nltk.corpus.reader.conll import ConllChunkCorpusReader
+from nltk.corpus.reader.wordlist import WordListCorpusReader
+from nltk.corpus.reader.gutenberg import GutenbergCorpusReader
+from nltk.corpus.reader.xmldocs import XMLCorpusReader
+from nltk.corpus.reader.ppattach import PPAttachmentCorpusReader
+from nltk.corpus.reader.senseval import SensevalCorpusReader
+from nltk.corpus.reader.ieer import IEERCorpusReader
+from nltk.corpus.reader.treebank import TreebankCorpusReader
+from nltk.corpus.reader.sinica_treebank import SinicaTreebankCorpusReader
+from nltk.corpus.reader.indian import IndianCorpusReader
+from nltk.corpus.reader.toolbox import ToolboxCorpusReader
+from nltk.corpus.reader.timit import TimitCorpusReader
+from nltk.corpus.reader.ycoe import YCOECorpusReader
 
-# Allow the user to reload the corpora:
-def reload(searchpath=''):
-    globals().update(load_nltk_corpora(searchpath, True))
+abc = LazyCorpusLoader(
+    'abc', PlaintextCorpusReader, '(?!\.svn).*', '.txt')
+brown = LazyCorpusLoader(
+    'brown', TaggedCorpusReader, list('abcdefghjklmnpr'))
+cmudict = LazyCorpusLoader(
+    'cmudict', CMUDictCorpusReader, ['cmudict'])
+conll2000 = LazyCorpusLoader(
+    'conll2000', ConllChunkCorpusReader,
+    ['train', 'test'], '.txt', ('NP','VP','PP'))
+conll2002 = LazyCorpusLoader(
+    'conll2002', ConllChunkCorpusReader, '.*\.(test|train).*', '',
+    ('LOC', 'PER', 'ORG', 'MISC'))
+genesis = LazyCorpusLoader(
+    'genesis', PlaintextCorpusReader, '(?!\.svn).*', '.txt')
+gutenberg = LazyCorpusLoader(
+    'gutenberg', GutenbergCorpusReader, '(?!\.svn).*', '.txt')
+ieer = LazyCorpusLoader(
+    'ieer', IEERCorpusReader, '(?!README|\.svn).*')
+inaugural = LazyCorpusLoader(
+    'inaugural', PlaintextCorpusReader, '(?!\.svn).*', '.txt')
+indian = LazyCorpusLoader(
+    'indian', IndianCorpusReader, '(?!\.svn).*', '.pos')
+names = LazyCorpusLoader(
+    'names', WordListCorpusReader, '(?!\.svn).*', '.txt')
+ppattach = LazyCorpusLoader(
+    'ppattach', PPAttachmentCorpusReader, ['training', 'test', 'devset'])
+senseval = LazyCorpusLoader(
+    'senseval', SensevalCorpusReader, '(?!\.svn).*', '.pos')
+shakespeare = LazyCorpusLoader(
+    'shakespeare', XMLCorpusReader, '(?!\.svn).*', '.xml')
+sinica_treebank = LazyCorpusLoader(
+    'sinica_treebank', SinicaTreebankCorpusReader, ['parsed'])
+state_union = LazyCorpusLoader(
+    'state_union', PlaintextCorpusReader, '(?!\.svn).*', '.txt')
+stopwords = LazyCorpusLoader(
+    'stopwords', WordListCorpusReader, '(?!README|\.svn).*')
+timit = LazyCorpusLoader(
+    'timit', TimitCorpusReader)
+toolbox = LazyCorpusLoader(
+    'toolbox', ToolboxCorpusReader, '(?!.*(README|\.svn)).*\.(dic|txt)')
+treebank = LazyCorpusLoader(
+    'treebank', TreebankCorpusReader)
+udhr = LazyCorpusLoader(
+    'udhr', PlaintextCorpusReader, '(?!README|\.svn).*')
+webtext = LazyCorpusLoader(
+    'webtext', PlaintextCorpusReader, '(?!README|\.svn).*')
+words = LazyCorpusLoader(
+    'words', WordListCorpusReader, '(?!README|\.svn).*')
+ycoe = LazyCorpusLoader(
+    'ycoe', YCOECorpusReader)
+
 
 def demo():
     # This is out-of-date:
