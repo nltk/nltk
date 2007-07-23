@@ -10,7 +10,7 @@
 API for corpus readers.
 """
 
-class CorpusReader:
+class CorpusReader(object):
     """
     Generally constructed from a path & a list of items..
 
