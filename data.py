@@ -116,9 +116,10 @@ def load(resource, format='auto', cache=True, verbose=False):
         the cache.
     """
     # If we've cached the resource, then just return it.
-    resource_val = _resource_cache.get(resource)
-    if resource_val is not None:
-        return resource_val
+    if cache:
+        resource_val = _resource_cache.get(resource)
+        if resource_val is not None:
+            return resource_val
     
     # This will raise an exception if we can't find the resource:
     filename = find(resource)
