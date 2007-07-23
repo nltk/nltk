@@ -634,16 +634,23 @@ def earley_lexicon(productions):
         lexicon[prod.rhs()[0]].append(prod.lhs())
     return lexicon
     
-def parse_featcfg(s):
+def parse_featcfg(input):
     """
     Return a tuple (list of grammatical productions,
     lexicon dict).
+    
+    @param input: a grammar, either in the form of a string or else 
+    as a list of strings.
     """
     from nltk.parse.category import GrammarCategory
     from nltk.parse.featurechart import FeatureEarleyChartParse
     grammatical_productions = []
     lexical_productions = []
-    for linenum, line in enumerate(s.split('\n')):
+    if isinstance(input, str):
+        lines = input.split('\n')
+    else:
+        lines = input
+    for linenum, line in enumerate(lines):
         line = line.strip()
         if line.startswith('#') or line=='': continue
         if line[0] == '%':

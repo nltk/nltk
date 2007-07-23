@@ -1,10 +1,38 @@
+ Grammars can be parsed from strings.
+
+    >>> from nltk.book import *
+    >>> from nltk import cfg
+    >>> g = """
+    ... % start DP
+    ... DP[agr=?a] -> D[agr=?a] N[agr=?a]
+    ... D[agr=[num='sg', pers=3]] -> 'this' | 'that'
+    ... D[agr=[num='pl', pers=3]] -> 'these' | 'those'
+    ... D[agr=[num='pl', pers=1]] -> 'we'
+    ... D[agr=[pers=2]] -> 'you'
+    ... N[agr=[num='sg', gend='m']] -> 'boy'
+    ... N[agr=[num='pl', gend='m']] -> 'boys'
+    ... N[agr=[num='sg', gend='f']] -> 'girl'
+    ... N[agr=[num='pl', gend='f']] -> 'girls'
+    ... N[agr=[num='sg']] -> 'student'
+    ... N[agr=[num='pl']] -> 'students'
+    ... """
+    >>> (grammar, lexicon) = cfg.parse_featcfg(g)
+    >>> tokens = 'these girls'.split()
+    >>> parser = parse.FeatureEarleyChartParse(grammar, lexicon)
+    >>> trees = parser.get_parse_list(tokens)
+    >>> for tree in trees: print tree
+    ([INIT]
+      (DP[agr=[num=pl, pers=3]]
+        (D[agr=[num=pl, pers=3]] these)
+        (N[agr=[gend=f, num=pl]] girls)))
+
 In general, when we are trying to develop even a very small grammar,
 it is convenient to put the rules in a file where they can be edited,
 tested and revised. Assuming we have saved feat0cfg_ as a file named
 ``'feat0.cfg'``, the function ``GrammarFile.read_file()`` allows us to
 read the grammar into NLTK, ready for use in parsing.
 
-    >>> from nltk.book import *
+ 
     >>> cp = parse.load_earley('feat0.cfg', trace=2)
     >>> sent = 'Kim likes children'
     >>> tokens = list(tokenize.whitespace(sent))
