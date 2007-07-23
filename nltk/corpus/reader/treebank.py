@@ -52,13 +52,14 @@ class TreebankCorpusReader(CorpusReader):
             if not os.path.exists(os.path.join(root, 'raw', item)):
                 raise ValueError('File %r missing from "raw" subdirectory'
                                  % item)
-        self.items = self._mrg_reader.items
+        self._items = self._mrg_reader.items
 
-    @property
-    def root(self):
-        """The directory where this corpus is stored.."""
-        return self._root
+    root = property(lambda self: self._root, doc="""
+        The directory where this corpus is stored..""")
 
+    items = property(lambda self: self._items, doc="""
+        A list of the documents in this corpus""")
+    
     # Delegate to one of our two sub-readers:
     def words(self, items=None):
         return self._pos_reader.words(items)
