@@ -12,7 +12,7 @@
 
 import types
 from util import *
-from nltk.corpus import find_corpus_file
+import nltk.data
 from cache import entityCache
 
 class Dictionary(object):
@@ -46,7 +46,8 @@ class Dictionary(object):
     def load(self):
         if not self._loaded:
             self.indexFile = IndexFile(self.pos, self._filenameroot)
-            path = find_corpus_file('wordnet', "data", extension='.' + self._filenameroot)
+            path = nltk.data.find('corpora/wordnet/data.%s' %
+                                  self._filenameroot)
             self.dataFile = open(path, FILE_OPEN_MODE)
             self._loaded = True
     
