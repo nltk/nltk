@@ -900,35 +900,26 @@ def demo():
 def load_pos(num_sents):
     from nltk.corpus import brown
 
-    sentences = brown.tagged('a')[:num_sents]
+    sentences = brown.tagged_sents('a')[:num_sents]
 
-    tag_set = ["'", "''", '(', ')', '*', ',', '.', ':', '--', '``', 'ABL',
-        'ABN', 'ABX', 'AP', 'AP$', 'AT', 'BE', 'BED', 'BEDZ', 'BEG', 'BEM',
-        'BEN', 'BER', 'BEZ', 'CC', 'CD', 'CD$', 'CS', 'DO', 'DOD', 'DOZ',
-        'DT', 'DT$', 'DTI', 'DTS', 'DTX', 'EX', 'FW', 'HV', 'HVD', 'HVG',
-        'HVN', 'HVZ', 'IN', 'JJ', 'JJR', 'JJS', 'JJT', 'MD', 'NN', 'NN$',
-        'NNS', 'NNS$', 'NP', 'NP$', 'NPS', 'NPS$', 'NR', 'NR$', 'OD', 'PN',
-        'PN$', 'PP$', 'PPL', 'PPLS', 'PPO', 'PPS', 'PPSS', 'QL', 'QLP', 'RB',
-        'RB$', 'RBR', 'RBT', 'RP', 'TO', 'UH', 'VB', 'VBD', 'VBG', 'VBN',
-        'VBZ', 'WDT', 'WP$', 'WPO', 'WPS', 'WQL', 'WRB']
-        
     sequences = []
     sequence = []
     symbols = set()
-    start_re = re.compile(r'[^-*+]*')
+
+    tag_re = re.compile(r'[*]|--|[^+*-]+')
+    tag_set = set()
+
     for sentence in sentences:
         for i in range(len(sentence)):
             word, tag = sentence[i]
             word = word.lower()  # normalize
             symbols.add(word)    # log this word
-            m = start_re.match(tag)
-            # cleanup the tag
-            tag = m.group(0)
-            if tag not in tag_set:
-                tag = '*'
+            # Clean up the tag.
+            tag = tag_re.match(tag).group()
+            tag_set.add(tag)
             sentence[i] = (word, tag)  # store cleaned-up tagged token
 
-    return sentences, tag_set, list(symbols)
+    return sentences, list(tag_set), list(symbols)
 
 def test_pos(model, sentences, display=False):
     from sys import stdout
