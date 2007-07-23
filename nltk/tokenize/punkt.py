@@ -54,7 +54,7 @@ overall result.  Here's a list of substanitive differences:
 
 """
 
-import re, math, yaml
+import re, math
 from nltk import defaultdict
 from nltk.tokenize.api import TokenizerI
 from nltk.probability import FreqDist
@@ -140,7 +140,7 @@ def punkt_word_tokenize(s):
 #{ Punkt Sentence Tokenizer
 ######################################################################
 
-class PunktSentenceTokenizer(TokenizerI, yaml.YAMLObject):
+class PunktSentenceTokenizer(TokenizerI):
     """
     A sentence tokenizer which uses an unsupervised algorithm to build
     a model for abbreviation words, collocations, and words that start
@@ -148,8 +148,6 @@ class PunktSentenceTokenizer(TokenizerI, yaml.YAMLObject):
     This approach has been shown to work well for many European
     languages.
     """
-    yaml_tag = '!nltk.tokenizer.punkt.PunktTokenizer'
-    
     def __init__(self, train_text=None, verbose=False):
         # These are needed for tokenization:
         self._abbrev_types = set()
@@ -316,6 +314,14 @@ class PunktSentenceTokenizer(TokenizerI, yaml.YAMLObject):
 
     PUNCTUATION = tuple(';:,.!?')
     INTERNAL_PUNCTUATION = tuple(',:;') # might want to extend this..
+
+    INCLUDE_ABBREV_COLLOCS = False
+    """Determines whether the tokenizer will keep track of
+    collocations whose first token is already a known (non-initial)
+    abbreviation.  It should be safe to set this to False, because the
+    decision algorithm currently only uses collocations when looking
+    at initial tokens (e.g., 'B.').  But the original code did find
+    collocations for abbreviations.. who knows why."""
 
     #////////////////////////////////////////////////////////////
     #{ Helper Functions
@@ -793,8 +799,9 @@ class PunktSentenceTokenizer(TokenizerI, yaml.YAMLObject):
 
             # If tok1 is a potential abbreviation...  (if i is already
             # in abbrev_toks, isn't this redundant??)
-            if (i in abbrev_toks or (i in sentbreak_toks and
-                                     re.match('(\d+|[A-Z-a-z])\.$', tok1))):
+            if ((self.INCLUDE_ABBREV_COLLOCS and i in abbrev_toks) or
+                (i in sentbreak_toks and
+                 re.match('(\d+|[A-Z-a-z])\.$', tok1))):
                 # Get the types of both tokens.  If typ1 ends in a period,
                 # then strip that off.
                 typ1 = self.type_of_token(tok1, False)
@@ -859,25 +866,28 @@ class PunktSentenceTokenizer(TokenizerI, yaml.YAMLObject):
                 if verbose:
                     print ('  Sent Starter: [%6.4f] %r' % (ll, typ))
 
-if __name__ == '__main__':
+def demo(): # sorta
+    from nltk.tokenize.punkt import PunktSentenceTokenizer
     from nltk.corpus.reader.plaintext import PlaintextCorpusReader
+    import time, pickle
+    
     tb = PlaintextCorpusReader('/Users/edloper/Corpora/treebank/raw', '.*')
-    # Train on the whole treebank at once.
+    ## Train on the whole treebank at once.
     print 'loading tb...'
-    all_tb = '\n\n'.join(tb.raw(item) for item in tbraw.items)
+    all_tb = '\n\n'.join(tb.raw(item) for item in tb.items)
     print 'training...'
-    tokenizer = PunktTokenizer(all_tb, verbose=True)
+    tokenizer = PunktSentenceTokenizer(all_tb, verbose=True)
     print 'freezing...'
     tokenizer.freeze()
     print 'dumping...'
-    out = open('/tmp/punkt-english.yaml', 'w')
-    yaml.dump(tokenizer, out)
+    t0=time.time()
+    out = open('/tmp/punkt-english.pickle', 'wb')
+    pickle.dump(tokenizer, out, 2)
     out.close()
-    print 'all done!'
-
     
             
-                    
+if __name__ == '__main__':
+    demo()
             
 
                
