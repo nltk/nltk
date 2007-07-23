@@ -32,9 +32,9 @@ def pprint_olac(xml):
 
 def demo():
     from lxml import etree
-    from nltk.corpus import find_corpus_file
-    
-    file = find_corpus_file('treebank', 'olac', '.xml')
+    import nltk.data
+
+    file = nltk.data.find('corpora/treebank/olac.xml')
     xml = open(file).read()
     pprint_olac(xml)
 
