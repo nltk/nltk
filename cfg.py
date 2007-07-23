@@ -620,6 +620,62 @@ def parse_pcfg(s):
     return WeightedGrammar(start, productions)
 
 #################################################################
+# Parsing Feature-based CFGs
+#################################################################
+
+def earley_lexicon(productions):
+    """
+    Convert CFG lexical productions into a dictionary indexed 
+    by the lexical string. 
+    """
+    from nltk import defaultdict
+    lexicon = defaultdict(list)
+    for prod in productions:
+        lexicon[prod.rhs()[0]].append(prod.lhs())
+    return lexicon
+    
+def parse_featcfg(s):
+    """
+    Return a tuple (list of grammatical productions,
+    lexicon dict).
+    """
+    from nltk.parse.category import GrammarCategory
+    from nltk.parse.featurechart import FeatureEarleyChartParse
+    grammatical_productions = []
+    lexical_productions = []
+    for linenum, line in enumerate(s.split('\n')):
+        line = line.strip()
+        if line.startswith('#') or line=='': continue
+        if line[0] == '%':
+                parts = line[1:].split()
+                directive = parts[0]
+                args = " ".join(parts[1:])
+                if directive == 'start':
+                    start = GrammarCategory.parse(args).freeze()
+                elif directive == 'include':
+                    filename = args.strip('"')
+                    self.apply_file(filename)
+        else:
+            try:
+                # expand out the disjunctions on the RHS
+                expanded = GrammarCategory.parse_rules(line)
+                for prod in expanded:
+                    if len(prod.rhs()) == 1 and isinstance(prod.rhs()[0], str):
+                        lexical_productions.append(prod)
+                    else:
+                        grammatical_productions.append(prod)
+            except ValueError:
+                raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
+    if len(grammatical_productions + lexical_productions) == 0:
+        raise ValueError, 'No productions found!'
+    if not start:
+        start = GrammarCategory(pos='Start')
+    
+    grammar = Grammar(start, grammatical_productions)
+    lexicon = earley_lexicon(lexical_productions)
+    return (grammar, lexicon)
+
+#################################################################
 # Demonstration
 #################################################################
 
@@ -769,4 +825,4 @@ if __name__ == '__main__':
 __all__ = ['Grammar', 'ImmutableProbabilisticMixIn', 'Nonterminal', 'Production',
   'WeightedGrammar', 'WeightedProduction', 'cfg_demo', 'demo', 'induce_pcfg',
   'nonterminals', 'parse_cfg', 'parse_cfg_production', 'parse_pcfg',
-  'parse_pcfg_production', 'pcfg_demo', 'toy_pcfg1', 'toy_pcfg2']
+  'parse_featcfg', 'parse_pcfg_production', 'pcfg_demo', 'toy_pcfg1', 'toy_pcfg2']
