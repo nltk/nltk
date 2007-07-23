@@ -92,8 +92,7 @@ def find(resource):
     corpus_not_found = '\n%s\n%s\n%s' % (sep, msg, sep)
     raise LookupError(corpus_not_found)
 
-# [xx] change verbose default to false after debugging.
-def load(resource, format='auto', cache=True, verbose=True):
+def load(resource, format='auto', cache=True, verbose=False):
     """
     Load a given resource from the NLTK corpus package.  The following
     resource formats are currently supported:
