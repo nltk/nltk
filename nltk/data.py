@@ -93,7 +93,7 @@ def find(resource):
     raise LookupError(corpus_not_found)
 
 # [xx] change verbose default to false after debugging.
-def load(resource, cache=True, verbose=True):
+def load(resource, format='auto', cache=True, verbose=True):
     """
     Load a given resource from the NLTK corpus package.  The following
     resource formats are currently supported:
@@ -128,14 +128,18 @@ def load(resource, cache=True, verbose=True):
     if verbose:
         print '<<Loading %s>>' % (resource,)
 
+    # Determine the format of the resource.
+    if format == 'auto':
+        if filename.endswith('.pickle'): format = 'pickle'
+        if filename.endswith('.yaml'): format = 'yaml'
+        
     # Load the resource.
-    if filename.endswith('.pickle'):
+    if format == 'pickle':
         resource_val = pickle.load(open(filename, 'rb'))
-    elif filename.endswith('.yaml'):
+    elif format == 'yaml':
         resource_val = yaml.load(open(filename, 'rb'))
     else:
-        raise ValueError('Unknown resource type!  Expected '
-                         '.pickle or .yaml extension.')
+        raise ValueError('Unknown format type!')
 
     # If requested, add it to the cache.
     if cache:
