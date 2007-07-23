@@ -7,7 +7,7 @@ import re
 from nltk import cfg, Tree
 from nltk import parse
 
-__all__ = ["translate", "get_profile", "get_grammar", "get_base_grammar", "tokenize"]
+__all__ = ["translate", "translate2", "get_profile", "get_grammar", "get_base_grammar", "tokenize"]
 
 
 GR = ""
@@ -21,21 +21,34 @@ GR = ""
 # removind pound signs (#).
 grammar_text = """
 #P -> AP | AP '{' P '}'
-P -> S | P S | P '{' P '}'
+P -> S | P S | P LCB P RCB
 #AP ->  | S AP
 #S -> A T | A T '[' R ']'
-S -> S2 | '(' S2 ')' '*' | '(' S2 ')' '+' | '(' S2 ')' '?' 
+S -> S2 | LRB S2 RRB STAR | LRB S2 RRB PLUS | LRB S2 RRB OPT
 #
-S2 -> S1 | S1 '[' R ']'
+S2 -> S1 | S1 LSB R RSB
 #
 S1 -> A T
 A -> "/" | "//" | "." | "\\" | "\\\\" | "<=" | "=>" | "<==" | "==>" | "<-" | "->" | "<--" | "-->"
 #T -> Qname | "_" | "@" Qname C Qname
 T -> Qname | "_"
-ATT -> "@" Qname C Qname
+ATT -> AT Qname C Qname
 #R -> R "or" R | R "and" R | "not" R | "(" R ")" | P | P C Qname
-R -> R "or" R | R "and" R | "(" R ")" | P | "{" R "}" | ATT | "not" P | "not" ATT | "not" "(" R ")"
+R -> R OR R | R AND R | LRB R RRB | P | LCB R RCB | ATT | NOT P | NOT ATT | NOT LRB R RRB
 C -> "=" | "<=" | ">=" | "<>" | "like"
+LCB -> '{'
+RCB -> '}'
+LRB -> '('
+RRB -> ')'
+LSB -> '['
+RSB -> ']'
+PLUS -> '+'
+STAR -> '*'
+OPT -> '?'
+AT -> '@'
+OR -> 'or'
+AND -> 'and'
+NOT -> 'not'
 """
 
 
@@ -77,7 +90,6 @@ def tokenize(q):
     return tokens
 
 
-
 class SerialNumber:
     def __init__(self):
         self.n = 0
@@ -87,6 +99,7 @@ class SerialNumber:
         return self.n
     def __sub__(self, n):
         return self.n - n
+
     
 class AND(list):
     def __init__(self, *args):
@@ -174,19 +187,6 @@ class Step:
     
 class Trans:
     TR = {
-        '(':'lr',
-        ')':'rr',
-        '{':'lc',
-        '}':'rc',
-        '[':'lb',
-        ']':'rb',
-        'or':'or',
-        'and':'and',
-        'not':'not',
-        '*':'star',
-        '+':'plus',
-        '?':'opt',
-        '@':'at',
         '_':'under',
         }
     
@@ -736,7 +736,7 @@ class Trans:
         self._expand(p)
         self._expand(s)
         
-    def _P_P_lc_P_rc(self, tree):
+    def _P_P_LCB_P_RCB(self, tree):
         p1 = tree[0]
         p2 = tree[2]
         self._expand(p1)
@@ -748,19 +748,19 @@ class Trans:
     def _S_S2(self, tree):
         self._expand(tree[0])
         
-    def _S_lr_S2_rr_star(self, tree):
+    def _S_LRB_S2_RRB_STAR(self, tree):
         s2 = tree[1]
         
         self.step.conditional = '*'
         self._expand(s2)
     
-    def _S_lr_S2_rr_plus(self, tree):
+    def _S_LRB_S2_RRB_PLUS(self, tree):
         s2 = tree[1]
         
         self.step.conditional = '+'
         self._expand(s2)
         
-    def _S_lr_S2_rr_opt(self, tree):
+    def _S_LRB_S2_RRB_OPT(self, tree):
         s2 = tree[1]
         
         self.step.conditional = '?'
@@ -769,7 +769,7 @@ class Trans:
     def _S2_S1(self, tree):
         self._expand(tree[0])
         
-    def _S2_S1_lb_R_rb(self, tree):
+    def _S2_S1_LSB_R_RSB(self, tree):
         s1 = tree[0]
         r = tree[2]
         
@@ -811,9 +811,11 @@ class Trans:
                 ]
 
     def _T_under(self, t):
-        pass
+        self.step.WHERE = [
+            ['type','=',"'syn'"]
+            ]
     
-    def _ATT_at_Qname_C_Qname(self, t):
+    def _ATT_AT_Qname_C_Qname(self, t):
         self.step = Step()
         if self.steps:
             self.step.sn = self.steps[-1].sn + 1
@@ -830,19 +832,19 @@ class Trans:
             ['value',t[2][0],"'%s'" % t[3][0]],
             ]
 
-    def _R_R_or_R(self, t):
+    def _R_R_OR_R(self, t):
         self._beginGrp(OR)
         self._expand(t[0])
         self._expand(t[2])
         self._finishGrp()
 
-    def _R_R_and_R(self, t):
+    def _R_R_AND_R(self, t):
         self._beginGrp(AND)
         self._expand(t[0])
         self._expand(t[2])
         self._finishGrp()
 
-    def _R_lr_R_rr(self, t):
+    def _R_LRB_R_RRB(self, t):
         self._beginGrp(GRP)
         self._expand(t[1])
         self._finishGrp()
@@ -851,7 +853,7 @@ class Trans:
         tr = Trans(t[0], self.sn, self.step, self.tname, self.scope)
         self.WHERE.append(tr)
 
-    def _R_lc_R_rc(self, t):
+    def _R_LCB_R_RCB(self, t):
         oldscope = self.scope
         self.scope = self.step
         self._beginGrp()
@@ -863,15 +865,15 @@ class Trans:
         tr = Trans(t[0], self.sn, self.step, self.tname, self.scope)
         self.WHERE.append(tr)
 
-    def _R_not_P(self, t):
+    def _R_NOT_P(self, t):
         tr = Trans(t[1], self.sn, self.step, self.tname, self.scope)
         self.WHERE.append(NOT(GRP(tr)))
 
-    def _R_not_ATT(self, t):
+    def _R_NOT_ATT(self, t):
         tr = Trans(t[1], self.sn, self.step, self.tname, self.scope)
         self.WHERE.append(NOT(GRP(tr)))
         
-    def _R_not_lr_R_rr(self, t):
+    def _R_NOT_LRB_R_RRB(self, t):
         self._beginGrp(GRP)
         self._expand(t[2])
         self._finishGrp(NOT)
@@ -927,7 +929,7 @@ def translate2(q,tname='T'):
     for typ, t in l:
         if typ == 's':
             GR += "Qname -> '" + t + "'\n"
-    grammar = cfg.parse_grammar(GR)
+    grammar = cfg.parse_cfg(GR)
     parser = parse.ChartParse(grammar, parse.TD_STRATEGY)
     T4 = time.time()
 
