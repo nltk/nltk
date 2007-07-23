@@ -874,7 +874,7 @@ def demo_eval(chunkparser, text):
         for chunk in missed[:10]:
             print '  ', ' '.join(c.__str__() for c in chunk)
         if len(chunkscore.missed()) > 10:
-               print '  ...'
+	    print '  ...'
 
     # Incorrect chunks.
     if chunkscore.incorrect():
@@ -883,7 +883,7 @@ def demo_eval(chunkparser, text):
         for chunk in incorrect[:10]:
             print '  ', ' '.join(c.__str__() for c in chunk)
         if len(chunkscore.incorrect()) > 10:
-               print '  ...'
+	    print '  ...'
     
     print '\\'+('='*75)+'/'
     print
