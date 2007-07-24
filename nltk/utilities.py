@@ -292,6 +292,43 @@ def re_show(regexp, string):
     print re.compile(regexp, re.M).sub("{\g<0>}", string.rstrip())
 
 
+######################################################################
+# Regular Expression Processing
+######################################################################
+
+def convert_regexp_to_nongrouping(pattern):
+    """
+    Convert all grouping parenthases in the given regexp pattern to
+    non-grouping parenthases, and return the result.  E.g.:
+
+        >>> convert_regexp_to_nongrouping('ab(c(x+)(z*))?d')
+        'ab(?:c(?:x+)(?:z*))?d'
+
+    @type pattern: C{str}
+    @rtype: C{str}
+    """
+    # Sanity check: back-references are not allowed!
+    for s in re.findall(r'\\.|\(\?P=', pattern):
+        if s[1] in '0123456789' or s == '(?P=':
+            raise ValueError('Regular expressions with back-references '
+                             'are not supported: %r' % pattern)
+    
+    # This regexp substitution function replaces the string '('
+    # with the string '(?:', but otherwise makes no changes.
+    def subfunc(m):
+        return re.sub('^\((\?P<[^>]*>)?$', '(?:', m.group())
+
+    # Scan through the regular expression.  If we see any backslashed
+    # characters, ignore them.  If we see a named group, then
+    # replace it with "(?:".  If we see any open parens that are part
+    # of an extension group, ignore those too.  But if we see
+    # any other open paren, replace it with "(?:")
+    return re.sub(r'''(?x)
+        \\.           |  # Backslashed character
+        \(\?P<[^>]*>  |  # Named group
+        \(\?          |  # Extension group
+        \(               # Grouping parenthasis''', subfunc, pattern)
+
 ##########################################################################
 # READ FROM FILE OR STRING
 ##########################################################################
@@ -714,7 +751,8 @@ def windowdiff(seg1, seg2, k, boundary="1"):
         wd += abs(seg1[i:i+k+1].count(boundary) - seg2[i:i+k+1].count(boundary))
     return wd
 
-
-__all__ = ['Counter', 'MinimalSet', 'OrderedDict', 'SortedDict', 'Trie', 'breadth_first',
-           'edit_dist', 'filestring', 'guess_encoding', 'invert_dict', 'pr',
-           'print_string', 're_show', 'config_java', 'java', 'clean_html', 'windowdiff']
+__all__ = ['Counter', 'MinimalSet', 'OrderedDict', 'SortedDict', 'Trie',
+           'breadth_first', 'edit_dist', 'filestring', 'guess_encoding',
+           'invert_dict', 'pr', 'print_string', 're_show', 'config_java',
+           'java', 'clean_html', 'windowdiff',
+           'convert_regexp_to_nongrouping']
