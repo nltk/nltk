@@ -7,9 +7,29 @@
 # For license information, see LICENSE.TXT
 
 """
-Functions for tokenizing text.
+Functions for X{tokenizing}, i.e., dividing text strings into
+substrings.
 """
 
 from simple import *
 from regexp import *
+from punkt import *
 from sexpr import *
+
+__all__ = ['WhitespaceTokenizer', 'SpaceTokenizer', 'TabTokenizer',
+           'LineTokenizer', 'RegexpTokenizer', 'BlanklineTokenizer',
+           'WordPunctTokenizer', 'WordTokenizer', 'blankline_tokenize',
+           'wordpunct_tokenize', 'regexp_tokenize', 'word_tokenize',
+           'SExprTokenizer', 'sexpr_tokenize',
+           'PunktWordTokenizer', 'punkt_word_tokenize',
+           'PunktSentenceTokenizer',
+           ]
+
+# backwards compatibility: Remove these once we've deprecated
+# tokenize.blankline and friends.
+blankline = BlanklineTokenizer().tokenize
+wordpunct = WordPunctTokenizer().tokenize
+whitespace = WhitespaceTokenizer().tokenize
+word = WordTokenizer().tokenize
+line = LineTokenizer().tokenize
+

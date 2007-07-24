@@ -8,75 +8,69 @@
 # For license information, see LICENSE.TXT
 
 """
-Functions for tokenizing a text, based on a regular expression
-which matches tokens or gaps.
+Tokenizers that divide strings into substrings using the string
+C{split()} method.
+
+These tokenizers follow the standard L{TokenizerI} interface, and so
+can be used with any code that expects a tokenizer.  For example,
+these tokenizers can be used to specify the tokenization conventions
+when building a L{CorpusReader<nltk.corpus.reader.api.CorpusReader>}.
+But if you are tokenizing a string yourself, consider using string
+C{split()} method directly instead.
 """
 
-SPACE      = ' '
-NEWLINE    = '\n'
-BLANKLINE  = '\n\n'
-SHOEBOXSEP = r'^\\'
+from nltk.tokenize.api import *
 
-def space(s):
-    """
-    Tokenize the text at a single space character.
+class WhitespaceTokenizer(TokenizerI):
+    r"""
+    A tokenizer that divides a string into substrings by treating any
+    sequence of whitespace characters as a separator.  Whitespace
+    characters are space (C{' '}), tab (C{'\t'}), and newline
+    (C{'\n'}).  If you are performing the tokenization yourself
+    (rather than building a tokenizer to pass to some other piece of
+    code), consider using the string C{split()} method instead:
 
-    @param s: the string or string iterator to be tokenized
-    @type s: C{string} or C{iter(string)}
-    @return: An iterator over tokens
+        >>> words = s.split()
     """
-    return s.split(SPACE)
+    def tokenize(self, s):
+        return s.split()
 
-def line(s):
-    """
-    Tokenize the text into lines.
+class SpaceTokenizer(TokenizerI):
+    r"""
+    A tokenizer that divides a string into substrings by treating any
+    single space character as a separator.  If you are performing the
+    tokenization yourself (rather than building a tokenizer to pass to
+    some other piece of code), consider using the string C{split()}
+    method instead:
 
-    @param s: the string or string iterator to be tokenized
-    @type s: C{string} or C{iter(string)}
-    @return: An iterator over tokens
+        >>> words = s.split(' ')
     """
-    return s.split(NEWLINE)
+    def tokenize(self, s):
+        return s.split(' ')
 
-def blankline(s):
-    """
-    Tokenize the text into paragraphs (separated by blank lines).
+class TabTokenizer(TokenizerI):
+    r"""
+    A tokenizer that divides a string into substrings by treating any
+    single tab character as a separator.  If you are performing the
+    tokenization yourself (rather than building a tokenizer to pass to
+    some other piece of code), consider using the string C{split()}
+    method instead:
 
-    @param s: the string or string iterator to be tokenized
-    @type s: C{string} or C{iter(string)}
-    @return: An iterator over tokens
+        >>> words = s.split('\t')
     """
-    return s.split(BLANKLINE)
+    def tokenize(self, s):
+        return s.split('\t')
 
-def shoebox(s):
-    """
-    Tokenize a Shoebox entry into its fields (separated by backslash markers).
+class LineTokenizer(TokenizerI):
+    r"""
+    A tokenizer that divides a string into substrings by treating any
+    single newline character as a separator.  If you are performing
+    the tokenization yourself (rather than building a tokenizer to
+    pass to some other piece of code), consider using the string
+    C{split()} method instead:
 
-    @param s: the string or string iterator to be tokenized
-    @type s: C{string} or C{iter(string)}
-    @return: An iterator over tokens
+        >>> words = s.split('\n')
     """
-    return s.split(SHOEBOXSEP)
+    def tokenize(self, s):
+        return s.split('\n')
 
-##//////////////////////////////////////////////////////
-##  Demonstration
-##//////////////////////////////////////////////////////
-
-def demo():
-    """
-    A demonstration that shows the output of several different
-    tokenizers on the same string.
-    """
-    # Define the test string.
-    s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
-    print 'Input text:'
-    print `s`
-    print
-    print 'Tokenize using individual space characters:'
-    print list(space(s))
-    print
-    print 'Tokenize by lines:'
-    print list(line(s))
-    print
-    
-if __name__ == '__main__':
-    demo()
