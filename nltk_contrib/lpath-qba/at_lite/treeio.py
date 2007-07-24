@@ -14,10 +14,10 @@ class TreeIo:
                 continue
             c = n.children
             if c:
-                s += ' (' + str(n.data[p])
+                s += ' (' + unicode(n.data[p])
                 L = c + [None] + L[1:]
             else:
-                s += ' ' + str(n.data[p])
+                s += ' ' + unicode(n.data[p])
                 L = L[1:]
         return s[1:]
 
