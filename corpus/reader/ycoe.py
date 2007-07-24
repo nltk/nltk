@@ -186,23 +186,3 @@ documents = {
     'cowulf.o34': 'Wulfstan\'s Homilies'
     }
 
-######################################################################
-#{ Demo
-######################################################################
-def demo():
-    from nltk.corpus import ycoe
-    from pprint import pprint
-
-    print 'Tokenized Data:'
-    pprint(ycoe.words('cocuraC')[:4])
-
-    print '\nTagged Data:'
-    pprint(ycoe.tagged_words('cocuraC')[:4])
-
-    print '\nBracket Parse:'
-    for tree in ycoe.parsed_sents('cocuraC')[:4]:
-        print tree
-
-if __name__ == '__main__':
-    demo()
-

@@ -30,15 +30,3 @@ class GutenbergCorpusReader(PlaintextCorpusReader):
             StreamBackedCorpusView.__init__(self, filename,
                                             block_reader, startpos)
     
-######################################################################
-#{ Demo
-######################################################################
-
-def demo():
-    from nltk.corpus import gutenberg
-
-    for word in gutenberg.words('bible-kjv')[0:100]:
-        print word,
-
-if __name__ == '__main__':
-    demo()

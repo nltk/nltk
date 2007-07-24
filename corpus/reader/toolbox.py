@@ -291,25 +291,3 @@ def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
                     l.append("\\%s%s\n" % (mkr, value))
     return ''.join(l[1:])
 
-
-def demo():
-    from nltk.corpus import toolbox
-    from itertools import islice
-    from pprint import pprint
-
-    print 'XML:'
-    print ElementTree.tostring(toolbox.xml('test.dic'))
-    print 'Fields:'
-    for field in toolbox.fields('test.dic'):
-        print field
-    print 'Records from a text toolbox:'
-    river = toolbox.xml('rotokas/river.txt', key='ref')
-    for record in river.findall('record')[:3]:
-        for piece in record:
-            if len(piece.text) > 60:
-                print '%-6s %s...' % (piece.tag, piece.text[:57])
-            else:
-                print '%-6s %s' % (piece.tag, piece.text)
-
-if __name__ == '__main__':
-    demo()

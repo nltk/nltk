@@ -107,16 +107,3 @@ class PPAttachmentCorpusReader(CorpusReader):
         else:
             return []
 
-######################################################################
-#{ Demo
-######################################################################
-def demo():
-    from nltk.corpus import ppattach
-    from pprint import pprint
-
-    pprint(ppattach.tuples('training')[0:5])
-    pprint(ppattach.attachments('training')[0:5])
-
-if __name__ == '__main__':
-    demo()
-

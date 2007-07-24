@@ -103,25 +103,3 @@ def read_cmudict_block(stream):
     else:
         return []
 
-######################################################################
-#{ Demo
-######################################################################
-
-def demo():
-    from nltk.corpus import cmudict
-
-    print "raw method:"
-    for entry in cmudict.entries()[40000:40025]:
-        print entry
-    print
-
-    print "dictionary method:"
-    cmu = cmudict.transcriptions()
-    print 'NATURAL', cmu['NATURAL']
-    print 'LANGUAGE', cmu['LANGUAGE']
-    print 'TOOL', cmu['TOOL']
-    print 'KIT', cmu['KIT']
-
-if __name__ == '__main__':
-    demo()
-

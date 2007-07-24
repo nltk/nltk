@@ -10,6 +10,7 @@
 A reader for corpora that consist of plaintext documents.
 """
 
+import nltk.data
 from nltk import tokenize
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
@@ -32,8 +33,8 @@ class PlaintextCorpusReader(CorpusReader):
        classes (e.g., to skip the preface sections of documents.)"""
     
     def __init__(self, root, items, extension='', 
-                 word_tokenizer=tokenize.wordpunct,
-                 sent_tokenizer=None, startpos=0):
+                 word_tokenizer=tokenize.wordpunct, sent_tokenizer=None,
+                 para_block_reader=read_blankline_block, startpos=0):
         """
         Construct a new plaintext corpus reader for a set of documents
         located at the given root directory.  Example usage:
@@ -59,26 +60,28 @@ class PlaintextCorpusReader(CorpusReader):
         """
         if not os.path.isdir(root):
             raise ValueError('Root directory %r not found!' % root)
+
+        # [xx] somewhat of a hack for now..
+        if sent_tokenizer is None:
+            tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+            # [xx] still expects a function for now!
+            sent_tokenizer = tokenizer.tokenize
+            
+        if isinstance(items, basestring):
+            items = find_corpus_items(root, items, extension)
         self._items = items
         self._root = root
         self._extension = extension
         self._word_tokenizer = word_tokenizer
         self._sent_tokenizer = sent_tokenizer
+        self._para_block_reader = para_block_reader
 
-    @property
-    def root(self):
-        """The directory where this corpus is stored.."""
-        return self._root
+    root = property(lambda self: self._root, doc="""
+        The directory where this corpus is stored..""")
 
-    @property
-    def items(self):
-        """A list of the documents in this corpus"""
-        items = self._items
-        if isinstance(items, basestring):
-            items = find_corpus_items(self._root, items, self._extension)
-        self.__dict__['items'] = tuple(sorted(items))
-        return self.items
-            
+    items = property(lambda self: self._items, doc="""
+        A list of the documents in this corpus""")
+    
     def raw(self, items=None):
         """
         @return: the given document or documents as a single string.
@@ -134,42 +137,21 @@ class PlaintextCorpusReader(CorpusReader):
     
     def _read_sent_block(self, stream):
         sents = []
-        for para in read_blankline_block(stream):
-            sents.extend([self._word_tokenizer(sent)
+        for para in self._para_block_reader(stream):
+            # [xx] remove the list() once tokenizers are changed to
+            # return lists, not iterators.
+            sents.extend([list(self._word_tokenizer(sent))
                           for sent in self._sent_tokenizer(para)])
         return sents
     
     def _read_para_block(self, stream):
         paras = []
-        for para in read_blankline_block(stream):
-            paras.append([self._word_tokenizer(sent)
+        for para in self._para_block_reader(stream):
+            # [xx] remove the list() once tokenizers are changed to
+            # return lists, not iterators.
+            paras.append([list(self._word_tokenizer(sent))
                           for sent in self._sent_tokenizer(para)])
         return paras
             
-######################################################################
-#{ Demo
-######################################################################
-def demo():
-    from nltk.corpus import abc, genesis, inaugural, webtext, udhr
-    import textwrap
-
-    def show(hdr, info):
-        print hdr, textwrap.fill(info, initial_indent=' '*len(hdr),
-                                 subsequent_indent=' '*4)[len(hdr):]
-    
-    show('Rural:', ' '.join(abc.words('rural')[20:100]))
-    show('English genesis:', ' '.join(genesis.words('english-kjv')[:27]))
-    show('Finnish genesis:', ' '.join(genesis.words('finnish')[:27]))
-    show('Webtext (wine):', ' '.join(webtext.words('wine')[:27]))
-    show ('udhr: italian', ' '.join(udhr.words('Italian-Latin1')[:27]))
-    
-    print 'In inaugural speaches, "men" was used...'
-    for speech in inaugural.items:
-        year = speech[:4]
-        freq = list(inaugural.words(speech)).count('men')
-        print '    %d time(s) in %s' % (freq, year)
-
-if __name__ == '__main__':
-    demo()
             
         

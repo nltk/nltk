@@ -179,7 +179,7 @@ class TimitCorpusReader(CorpusReader):
         speaker.
         """
         return [item for item in self.items
-                if item.startswith(speaker)+'/']
+                if item.startswith(speaker+'/')]
 
     def spkrinfo(self, speaker):
         """
@@ -361,93 +361,7 @@ class SpeakerInfo:
         self.comments = comments
 
     def __repr__(self):
-        args = [self.id, self.sex, self.dr, self.use, self.recdate,
-                self.birthdate, self.ht, self.race, self.edu, self.comments]
-        return 'SpeakerInfo(%s)' % (', '.join(['%r' % arg for arg in args]))
-        
-def demo(audio=True):
-    from nltk.corpus import timit
-
-    print "6th item (timit.items[5])"
-    print "-------------------------"
-    itemid = timit.items[5]
-    print "  item id:    ", itemid
-    print "  speaker id: ", timit.spkrid(itemid)
-    print "  sentence id:", timit.sentid(itemid)
-    print
-    record = timit.spkrinfo(itemid)
-    print "  speaker information:"
-    print "    TIMIT speaker id: ", record.id
-    print "    speaker sex:      ", record.sex
-    print "    dialect region:   ", record.dr
-    print "    data type:        ", record.use
-    print "    recording date:   ", record.recdate
-    print "    date of birth:    ", record.birthdate
-    print "    speaker height:   ", record.ht
-    print "    speaker race:     ", record.race
-    print "    speaker education:", record.edu
-    print "    comments:         ", record.comments
-    print
-
-    print "  words of the sentence:"
-    print "   ", timit.words(itemid)
-    print
-
-    print "  words of the sentence with offsets (first 3):"
-    print "   ", timit.word_times(itemid)[:3]
-    print
-    
-    print "  phonemes of the sentence (first 10):"
-    print "   ", timit.phons(itemid)[:10]
-    print
-    
-    print "  phonemes of the sentence with offsets (first 3):"
-    print "   ", timit.phon_times(itemid)[:3]
-    print
-
-    print "  phoneme tree:"
-    for tree in timit.phon_trees(itemid):
-        print tree
-    
-
-    print "  looking up dictionary for words of the sentence..."
-    words = timit.words(itemid)
-    dictionary = timit.transcription_dict()
-    for word in words:
-        print "    %-5s:" % word, dictionary[word]
-    print
-
-    if audio:
-        print "audio playback:"
-        print "---------------"
-        print "  playing sentence", timit.sentid(itemid), "by speaker",
-        print timit.spkrid(itemid), "(a.k.a. %s)..." % record.id
-        if audio: timit.play(itemid)
-        print
-        print "  playing words:"
-        words = timit.word_times(itemid)
-        for word, start, end in words:
-            print "    playing %-10s in 1.5 seconds ..." % `word`
-            time.sleep(1.5)
-            if audio: timit.play(itemid, start, end)
-        print
-        print "  playing phonemes (first 10):"
-        phones = timit.phon_times(itemid)
-        for phone, start, end in phones[:10]:
-            print "    playing %-10s in 1.5 seconds ..." % `phone`
-            time.sleep(1.5)
-            if audio: timit.play(itemid, start, end)
-        print
-
-        # play sentence sa1 of all female speakers
-        sentid = 'sa1'
-        for spkr in timit.speakers:
-            if timit.spkrinfo(spkr).sex == 'F':
-                itemid = timit.itemid(spkr, sentid)
-                print "  playing sentence %s of speaker %s ..." % (sentid, spkr)
-                if audio: timit.play(itemid)
-        print
-    
-if __name__ == '__main__':
-    demo()
-
+        attribs = 'id sex dr use recdate birthdate ht race edu comments'
+        args = ['%s=%r' % (attr, getattr(self, attr))
+                for attr in attribs.split()]
+        return 'SpeakerInfo(%s)' % (', '.join(args))

@@ -115,20 +115,3 @@ class IEERCorpusReader(CorpusReader):
         # Return the document
         return ['\n'.join(out)]
 
-######################################################################
-#{ Demo
-######################################################################
-def demo():
-    from nltk.corpus import ieer
-    from pprint import pprint
-
-    print 'IEER document:'
-    print '%r ... %r' % (ieer.docs()[3][:30],
-                         ieer.docs()[3][-30:])
-    print '\nParsed IEER document:'
-    print ieer.parsed_docs()[3]
-    print ' '.join('%s' % w for w in ieer.parsed_docs()[3].text[:20])+'...'
-
-if __name__ == '__main__':
-    demo()
-
