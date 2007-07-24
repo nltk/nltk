@@ -228,6 +228,25 @@ def as_sets_array(array):
         sets.append(set([element.index]))
     return sets
     
+def batch_filter_select(base_path, suffixes, number_of_attributes, log_path, has_continuous):
+    filter_suffixes = []
+    for each in suffixes:
+        for selection_criteria in [INFORMATION_GAIN, GAIN_RATIO]:
+            feat_sel = FeatureSelect()
+            params = ['-a', RANK, '-f', base_path + each, '-o', selection_criteria + ',' + str(number_of_attributes), '-l', log_path]
+            print "Params " + str(params)
+            feat_sel.run(params)
+            filter_suffixes.append(each + feat_sel.get_suffix())
+    return filter_suffixes
+
+def batch_wrapper_select(base_path, suffixes, classifier, fold, delta, log_path):
+    for each in wrapper_inputs:
+        for alg in [FORWARD_SELECTION, BACKWARD_ELIMINATION]:
+            feat_sel = FeatureSelect()
+            params = ['-a', alg, '-f', path + each, '-o', classification_alg + ',' + str(fold) + str(delta), '-l', log_path]
+            print "Params " + str(params)
+            feat_sel.run(params)
+            wrapper_suffixes.append(each + feat_sel.get_suffix())
 
 if __name__ == "__main__":
     FeatureSelect().run(sys.argv[1:])

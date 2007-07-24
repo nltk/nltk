@@ -6,7 +6,7 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 from nltk_contrib.classifier import split_ignore_space
-from nltk_contrib.classifier import instances as ins, discretisedattribute as da, cfile as f, numrange as r, format, commandline as cl
+from nltk_contrib.classifier import instances as ins, discretisedattribute as da, cfile as f, numrange as r, format, commandline as cl, util
 from nltk_contrib.classifier.exceptions import filenotfounderror as fnf, invaliddataerror as inv
 import sys
 
@@ -177,6 +177,24 @@ def ranges_from_chunks(chunks):
         prev = mid
     ranges.append(r.Range(prev, chunks[-1][-1], True))
     return ranges
+
+def create_and_run(algorithm, path, indices, log_path, options):
+    disc = Discretise()
+    params = ['-a', algorithm, '-f', path, '-A', util.int_array_to_string(indices_string)]
+    if options is not None:
+        params.extend(['-o', options])
+    if log_path is not None:
+        params.extend(['-l', log_path])
+    print "Params " + str(params)
+    disc.run(params)
+    return disc.get_suffix()
+
+def batch_run(path, indices, log_path, options):
+    created_file_suffixes = []
+    for each in options:
+        suffix = self.create_and_run(each, path, indices, log_path, options[each])
+        created_file_suffixes.append(suffix)
+    return created_file_suffixes
 
 if __name__ == "__main__":
     Discretise().run(sys.argv[1:])

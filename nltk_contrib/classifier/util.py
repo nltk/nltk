@@ -26,3 +26,9 @@ class StatList(UserList.UserList):
     
     def std_dev(self):
         return math.sqrt(self.variance())
+
+def int_array_to_string(int_array):
+    str_array = []
+    for each in int_array:
+        str_array.append(str(each))
+    return ','.join(str_array)

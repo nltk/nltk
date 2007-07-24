@@ -13,7 +13,7 @@ import os, os.path
 DISC_METHODS = [ds.UNSUPERVISED_EQUAL_WIDTH, ds.UNSUPERVISED_EQUAL_FREQUENCY, ds.NAIVE_SUPERVISED, ds.NAIVE_SUPERVISED_V1, ds.NAIVE_SUPERVISED_V2, ds.ENTROPY_BASED_SUPERVISED]
 FS_METHODS = [fs.RANK, fs.FORWARD_SELECTION, fs.BACKWARD_ELIMINATION]
 FS_OPTIONS = [fs.INFORMATION_GAIN, fs.GAIN_RATIO]
-CLASSIFIERS = [classify.ZERO_R, classify.ONE_R, classify.DECISION_TREE, classify.NAIVE_BAYES]
+CLASSIFIERS = [classify.ZERO_R, classify.ONE_R, classify.DECISION_TREE, classify.NAIVE_BAYES, classify.IB1]
 
 def convert_and_shift(file_path, ext, suffix = 'conv', sep = ' '):
     """
@@ -181,19 +181,33 @@ def convert_log_to_tex_tables(path):
         
     mean_datasets = ''
     mean_datasets = get_tex_table_header("All Datasets", "Mean Accuracy", cols)   
-    for alg in CLASSIFIERS:
+    test_classifiers = CLASSIFIERS[:]
+    test_classifiers.remove(classify.ZERO_R)
+    for alg in test_classifiers:
         rows += [fs.FORWARD_SELECTION + '_' + alg, fs.BACKWARD_ELIMINATION + '_' + alg]
-        mean_datasets += ' \\multirow{' + str(len(rows)) + '}{*}{' + alg + '}'
+        mean_datasets += '\\hline \\multirow{' + str(len(rows) * 2) + '}{*}{' + alg + '}'
         for row in rows:
-            mean_datasets += ' & ' + get_fs_display_name(row)
+            mean_datasets += ' & \\multirow{2}{*}{' + get_fs_display_name(row) + '}'
+            stat_list_col = {}
             for column in cols:
                 stat_list = util.StatList()
                 for dataset in datasets:
                     if datasets[dataset][alg][classify.ACCURACY].has_key((column, row)):
                         val = datasets[dataset][alg][classify.ACCURACY][(column, row)]
                         if float == type(val) or int == type(val):
-                            stat_list.append(val)
-                mean_datasets += ' & %.4f' %stat_list.mean()
+                            if row.find(fs.FORWARD_SELECTION) != -1:
+                                oner_row = fs.FORWARD_SELECTION + '_' + classify.ZERO_R
+                            elif row.find(fs.BACKWARD_ELIMINATION) != -1:
+                                oner_row = fs.BACKWARD_ELIMINATION + '_' + classify.ZERO_R
+                            else:
+                                oner_row = row
+                            stat_list.append(val - datasets[dataset][classify.ZERO_R][classify.ACCURACY][(column, oner_row)])
+                stat_list_col[column] = stat_list
+            for column in cols:
+                mean_datasets += ' & %.4f' %stat_list_col[column].mean()
+            mean_datasets += '\\\\ \n &'
+            for column in cols:
+                mean_datasets += ' & ($\\pm$ %.4f)' %stat_list_col[column].std_dev()            
             mean_datasets += '\\\\ \n'
         rows.remove(fs.FORWARD_SELECTION + '_' + alg)
         rows.remove(fs.BACKWARD_ELIMINATION + '_' + alg)
@@ -303,7 +317,7 @@ class LogEntry:
     pass
 
 if __name__ == "__main__":
-    convert_log_to_tex_tables('/home/sumukh/texsourcelog')
+    convert_log_to_tex_tables('/home/sumukh/changedlog')
 
 
     
