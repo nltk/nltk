@@ -449,7 +449,7 @@ class CFGEditor(object):
         for line in lines:
             line = line.strip()
             if line=='': continue
-            productions += parse_production(line)
+            productions += parse_cfg_production(line)
             #if line.strip() == '': continue
             #if not CFGEditor._PRODUCTION_RE.match(line):
             #    raise ValueError('Bad production string %r' % line)
