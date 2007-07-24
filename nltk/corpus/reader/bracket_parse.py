@@ -59,16 +59,3 @@ class BracketParseCorpusReader(CorpusReader):
         return bracket_parse(t)
 
 
-######################################################################
-#{ Demo
-######################################################################
-def demo():
-    from nltk.corpus import treebank
-
-    tbtrees = BracketParseCorpusReader(treebank.root, '.*', '.mrg')
-    for tree in tbtrees.parsed_sents('combined/wsj_0003')[:3]:
-        print tree
-
-if __name__ == '__main__':
-    demo()
-

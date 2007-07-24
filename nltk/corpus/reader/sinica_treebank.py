@@ -114,34 +114,3 @@ class SinicaTreebankCorpusReader(CorpusReader):
         sent = re.sub(APPENDIX, '', sent)
         return [tree.sinica_parse(sent)]
 
-######################################################################
-#{ Demo
-######################################################################
-
-def demo(draw=True):
-    from nltk.corpus import sinica_treebank
-    from nltk.draw.tree import draw_trees
-    
-    print "Tokenized:"
-    for sent in sinica_treebank.sents()[:10]:
-        print sent
-    print
-
-    print "Tagged:"
-    for sent in sinica_treebank.tagged_sents()[:10]:
-        print sent
-    print
-
-    print "Parsed:"
-    trees = list(sinica_treebank.parsed_sents()[:10])
-    for tree in trees:
-        print tree
-    print
-
-    if draw:
-        draw_trees(*trees)
-
-if __name__ == '__main__':
-    demo()
-
-

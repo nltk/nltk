@@ -40,23 +40,23 @@ class IndianCorpusReader(CorpusReader):
         self.items = tuple(items)
         self._extension = extension
 
-    def words(self, items):
+    def words(self, items=None):
         return concat([IndianCorpusView(filename, False, False)
                        for filename in self._item_filenames(items)])
 
-    def tagged_words(self, items):
+    def tagged_words(self, items=None):
         return concat([IndianCorpusView(filename, True, False)
                        for filename in self._item_filenames(items)])
 
-    def sents(self, items):
+    def sents(self, items=None):
         return concat([IndianCorpusView(filename, False, True)
                        for filename in self._item_filenames(items)])
 
-    def tagged_sents(self, items):
+    def tagged_sents(self, items=None):
         return concat([IndianCorpusView(filename, True, True)
                        for filename in self._item_filenames(items)])
 
-    def raw(self, items):
+    def raw(self, items=None):
         return concat([open(filename).read()
                        for filename in self._item_filenames(items)])
 
@@ -82,22 +82,3 @@ class IndianCorpusView(StreamBackedCorpusView):
         else:
             return sent
 
-######################################################################
-#{ Demo
-######################################################################
-def demo():
-    from nltk.corpus import indian
-    
-    def sample(language):
-        print language.capitalize() + ":"
-        for word, tag in indian.tagged_words(language)[:8]:
-            print '%s/%s' % (word, tag),
-        print
-
-    sample('bangla')
-    sample('hindi')
-    sample('marathi')
-    sample('telugu')
-
-if __name__ == '__main__':
-    demo()

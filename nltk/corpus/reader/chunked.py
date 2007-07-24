@@ -223,26 +223,3 @@ class ChunkedCorpusView(StreamBackedCorpusView):
                 raise ValueError('expected child to be Tree or tuple')
         return tree
     
-######################################################################
-#{ Demo
-######################################################################
-def demo():
-    from nltk.corpus import treebank
-
-    tbchunked = ChunkedCorpusReader(treebank.root, 'tagged/.*', '.pos')
-    print 'words:\n ',
-    print tbchunked.words('tagged/wsj_0003')
-    print 'tagged words:\n ',
-    print tbchunked.tagged_words('tagged/wsj_0003')
-    print 'chunked words:\n ',
-    for piece in tbchunked.chunked_words('tagged/wsj_0003')[:6]:
-        if isinstance(piece, Tree):
-            print '[%s]' % ' '.join('%s/%s' % w for w in piece),
-        else:
-            print '%s/%s' % piece,
-    
-
-if __name__ == '__main__':
-    demo()
-
-

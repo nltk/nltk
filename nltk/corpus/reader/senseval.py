@@ -41,7 +41,7 @@ class SensevalInstance:
     def __repr__(self):
         return ('SensevalInstance(word=%r, position=%r, '
                 'context=%r, senses=%r)' %
-                (self.word, self.sense, self.position, self.context))
+                (self.word, self.position, self.context, self.senses))
 
 class SensevalCorpusReader(CorpusReader):
     def __init__(self, root, items, extension='.xml'):
@@ -170,33 +170,3 @@ class SensevalCorpusView(StreamBackedCorpusView):
                 assert False, 'unexpected tag %s' % child.tag
         return SensevalInstance(lexelt, position, context, senses)
     
-######################################################################
-#{ Demo
-######################################################################
-def demo():
-    from nltk.corpus import senseval
-    from itertools import islice
-    import string, textwrap
-
-    #senseval = SensevalCorpusReader('/Users/edloper/Corpora/senseval2/corpora/english-group-lex-sample/train', '.*', '.xml')
-
-    # Print one example of each sense
-    seen = set()
-    for instance in senseval.instances('interest')[:100]:
-        if (instance.word, instance.senses) not in seen:
-            seen.add( (instance.word, instance.senses) )
-            print "word=%r, senses=%r" % (instance.word, instance.senses)
-            if isinstance(instance.context[0], tuple):
-                context = ['%s/%s' % ttok for ttok in instance.context]
-            else:
-                context = [ttok for ttok in instance.context]
-            p = instance.position
-            print textwrap.fill('...%s [[%s]] %s...' %
-                                (' '.join(context[max(0,p-3):p]),
-                                 context[p],
-                                 ' '.join(context[p+1:p+4])),
-                                initial_indent='  ',
-                                subsequent_indent='  ')+'\n'
-        
-if __name__ == '__main__':
-    demo()

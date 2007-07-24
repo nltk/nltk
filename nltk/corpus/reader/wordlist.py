@@ -39,38 +39,3 @@ class WordListCorpusReader(CorpusReader):
         return [os.path.join(self._root, '%s%s' % (item, self._extension))
                 for item in items]
         
-######################################################################
-#{ Demo
-######################################################################
-
-def demo():
-    from nltk.corpus import stopwords, words, names
-    import random
-
-    print "20 English stopwords"
-    print ' '.join(stopwords.words('english')[300:320])
-
-    print "20 Danish stopwords"
-    print ' '.join(stopwords.words('danish')[10:30])
-
-    print "20 stopwords from assorted languages"
-    wordlist = stopwords.words(stopwords.items)
-    random.shuffle(wordlist)
-    print ' '.join(wordlist[10:30])
-
-    print "20 English words"
-    print ' '.join(words.words('en')[:20])
-
-    print "20 female names"
-    female = list(names.words('female'))
-    random.shuffle(female)
-    print ' '.join(female[:20])
-
-    print "20 male names"
-    male = list(names.words('male'))
-    random.shuffle(male)
-    print ' '.join(male[:20])
-    
-if __name__ == '__main__':
-    demo()
-
