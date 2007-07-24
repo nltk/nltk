@@ -109,36 +109,3 @@ def tagged_treebank_para_block_reader(stream):
         else:
             para += line
             
-######################################################################
-#{ Demo
-######################################################################
-def demo():
-    from nltk.corpus import treebank
-
-    print "Parsed:"
-    for tree in treebank.parsed_sents('wsj_0003')[:3]:
-        print tree
-    print
-
-    print "Chunked:"
-    for tree in treebank.chunked_sents('wsj_0003')[:3]:
-        print tree
-    print
-
-    print "Tagged:"
-    for sent in treebank.tagged_sents('wsj_0003')[:3]:
-        print sent
-    print
-
-    print "Words:"
-    print ' '.join(treebank.words('wsj_0120')[:30])
-
-    # Note that this spans across multiple documents:
-    print 'Height of trees:'
-    for tree in treebank.parsed_sents()[:25]:
-        print tree.height(),
-
-if __name__ == '__main__':
-    demo()
-
-

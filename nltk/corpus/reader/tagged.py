@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Tagged Corpus Reader
 #
 # Copyright (C) 2001-2007 University of Pennsylvania
-# Author: Steven Bird <sb@ldc.upenn.edu>
-#         Edward Loper <edloper@gradient.cis.upenn.edu>
+# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+#         Steven Bird <sb@ldc.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
@@ -34,7 +34,8 @@ class TaggedCorpusReader(CorpusReader):
     """
     def __init__(self, root, items, extension='',
                  sep='/', word_tokenizer=tokenize.whitespace,
-                 sent_tokenizer=tokenize.line):
+                 sent_tokenizer=tokenize.line,
+                 para_block_reader=read_blankline_block):
         """
         Construct a new Tagged Corpus reader for a set of documents
         located at the given root directory.  Example usage:
@@ -56,27 +57,22 @@ class TaggedCorpusReader(CorpusReader):
         """
         if not os.path.isdir(root):
             raise ValueError('Root directory %r not found!' % root)
+        if isinstance(items, basestring):
+            items = find_corpus_items(root, items, extension)
         self._items = items
         self._root = root
         self._extension = extension
         self._sep = sep
         self._word_tokenizer = word_tokenizer
         self._sent_tokenizer = sent_tokenizer
+        self._para_block_reader = para_block_reader
 
-    @property
-    def root(self):
-        """The directory where this corpus is stored.."""
-        return self._root
+    root = property(lambda self: self._root, doc="""
+        The directory where this corpus is stored..""")
 
-    @property
-    def items(self):
-        """A list of the documents in this corpus"""
-        items = self._items
-        if isinstance(items, basestring):
-            items = find_corpus_items(self._root, items, self._extension)
-        self.__dict__['items'] = tuple(items)
-        return self.items
-            
+    items = property(lambda self: self._items, doc="""
+        A list of the documents in this corpus""")
+    
     def raw(self, items=None):
         """
         @return: the given document or documents as a single string.
@@ -93,7 +89,8 @@ class TaggedCorpusReader(CorpusReader):
         """
         return concat([TaggedCorpusView(filename, False, False, False,
                                         self._sep, self._word_tokenizer,
-                                        self._sent_tokenizer)
+                                        self._sent_tokenizer,
+                                        self._para_block_reader)
                        for filename in self._item_filenames(items)])
 
     def sents(self, items=None):
@@ -105,7 +102,8 @@ class TaggedCorpusReader(CorpusReader):
         """
         return concat([TaggedCorpusView(filename, False, True, False,
                                         self._sep, self._word_tokenizer,
-                                        self._sent_tokenizer)
+                                        self._sent_tokenizer,
+                                        self._para_block_reader)
                        for filename in self._item_filenames(items)])
 
     def paras(self, items=None):
@@ -117,7 +115,8 @@ class TaggedCorpusReader(CorpusReader):
         """
         return concat([TaggedCorpusView(filename, False, True, True,
                                         self._sep, self._word_tokenizer,
-                                        self._sent_tokenizer)
+                                        self._sent_tokenizer,
+                                        self._para_block_reader)
                        for filename in self._item_filenames(items)])
 
     def tagged_words(self, items=None):
@@ -129,7 +128,8 @@ class TaggedCorpusReader(CorpusReader):
         """
         return concat([TaggedCorpusView(filename, True, False, False,
                                         self._sep, self._word_tokenizer,
-                                        self._sent_tokenizer)
+                                        self._sent_tokenizer,
+                                        self._para_block_reader)
                        for filename in self._item_filenames(items)])
 
     def tagged_sents(self, items=None):
@@ -141,7 +141,8 @@ class TaggedCorpusReader(CorpusReader):
         """
         return concat([TaggedCorpusView(filename, True, True, False,
                                         self._sep, self._word_tokenizer,
-                                        self._sent_tokenizer)
+                                        self._sent_tokenizer,
+                                        self._para_block_reader)
                        for filename in self._item_filenames(items)])
 
     def tagged_paras(self, items=None):
@@ -153,7 +154,8 @@ class TaggedCorpusReader(CorpusReader):
         """
         return concat([TaggedCorpusView(filename, True, True, True,
                                         self._sep, self._word_tokenizer,
-                                        self._sent_tokenizer)
+                                        self._sent_tokenizer,
+                                        self._para_block_reader)
                        for filename in self._item_filenames(items)])
 
     def _item_filenames(self, items):
@@ -171,19 +173,20 @@ class TaggedCorpusView(StreamBackedCorpusView):
     L{TaggedCorpusReader} (not directly by nltk users).
     """
     def __init__(self, corpus_file, tagged, group_by_sent, group_by_para,
-                 sep, word_tokenizer, sent_tokenizer):
+                 sep, word_tokenizer, sent_tokenizer, para_block_reader):
         self._tagged = tagged
         self._group_by_sent = group_by_sent
         self._group_by_para = group_by_para
         self._sep = sep
         self._word_tokenizer = word_tokenizer
         self._sent_tokenizer = sent_tokenizer
+        self._para_block_reader = para_block_reader
         StreamBackedCorpusView.__init__(self, corpus_file)
         
     def read_block(self, stream):
         """Reads one paragraph at a time."""
         block = []
-        for para_str in read_blankline_block(stream):
+        for para_str in self._para_block_reader(stream):
             para = []
             for sent_str in self._sent_tokenizer(para_str):
                 if self._tagged:
@@ -199,28 +202,4 @@ class TaggedCorpusView(StreamBackedCorpusView):
             else:
                 block.extend(para)
         return block
-
-######################################################################
-#{ Demo
-######################################################################
-
-def demo():
-    from nltk.corpus import brown
-    import textwrap
-    def show(hdr, info):
-        print hdr, textwrap.fill(info, initial_indent=' '*len(hdr),
-                                 subsequent_indent=' '*4)[len(hdr):]
-    
-    d1 = brown.sents('a')
-    for sent in d1[3:5]:
-        show('Sentence from a:', ' '.join(sent))
-
-    d2 = brown.tagged_words('b')
-    show('Tagged words from b:', ' '.join('%s/%s' % w for w in d2[220:240]))
-                       
-    d3 = brown.words('c')
-    show('Untagged words from c:', ' '.join(d3[220:250]))
-
-if __name__ == '__main__':
-    demo()
 

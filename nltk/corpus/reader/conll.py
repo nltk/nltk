@@ -113,31 +113,3 @@ class ConllChunkCorpusView(StreamBackedCorpusView):
         else:
             return list(sent)
 
-######################################################################
-#{ Demo
-######################################################################
-def demo():
-    from nltk.corpus import conll2000, conll2002
-    print "CONLL Chunked data\n"
-
-    for (lang, corpus, item) in [('English', conll2000, 'train'),
-                                ('Dutch', conll2002, 'ned.train'),
-                                ('Spanish', conll2002, 'esp.train')]:
-        print "%s Sentences:" % lang
-        for sent in corpus.sents(item)[0:5]:
-            print '  %s...' % (' '.join(sent))[:60]
-        print
-
-        print "%s Tagged text:" % lang
-        for sent in corpus.tagged_sents(item)[0:5]:
-            print '  %s...' % str(sent)[:60]
-        print
-    
-        print "%s Chunked text:" % lang
-        for sent in corpus.chunked_sents(item)[0:5]:
-            print '  %s...' % sent.pprint(indent=2).rstrip()[:60]
-        print
-
-if __name__ == '__main__':
-    demo()
-
