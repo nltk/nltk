@@ -14,11 +14,12 @@ PDF := $(DOCTESTS:.doctest=.pdf)
 
 PAPER_SIZE = a4
 RST = ../../doc/rst.py
-RST2HTML = $(RST) --html
+RST2HTML = $(RST) --html --css ../../doc/nltkdoc.css
 RST2LATEX = $(RST) --latex --$(PAPER_SIZE)
 DOCTEST_FLAGS = --ellipsis --normalize_whitespace --udiff
 
-WEB = stevenbird@shell.sourceforge.net:/home/groups/n/nl/nltk/htdocs
+# Use, e.g., "make USER=stevebird ..."
+WEB = $(USER)@shell.sourceforge.net:/home/groups/n/nl/nltk/htdocs
 BETA = $(WEB)/beta
 RSYNC_OPTS = -arvz -e ssh --relative --cvs-exclude
 
