@@ -60,14 +60,16 @@ from tree import *
 from utilities import *
 from yamltags import *
 
-__all__ = ["chunk", "corpus", "draw", "parse",
-           "sem", "stem", "tag", "tokenize", "wordnet"]\
-          + compat.__all__\
-          + cfg.__all__\
-          + evaluate.__all__\
-          + featstruct.__all__\
-          + olac.__all__\
-          + probability.__all__\
-          + tree.__all__\
-          + utilities.__all__\
-          + yamltags.__all__
+import chunk, corpus, draw, parse, sem, stem, tag, tokenize, wordnet
+
+# __all__ = ["chunk", "corpus", "draw", "parse",
+#            "sem", "stem", "tag", "tokenize", "wordnet"]\
+#           + compat.__all__\
+#           + cfg.__all__\
+#           + evaluate.__all__\
+#           + featstruct.__all__\
+#           + olac.__all__\
+#           + probability.__all__\
+#           + tree.__all__\
+#           + utilities.__all__\
+#           + yamltags.__all__
