@@ -134,7 +134,7 @@ def punkt_word_tokenize(s):
     s = re.sub(r'(^|\s)(\.{2,})([^\.\s])', r'\1\2 \3', s)
     s = re.sub(r'([^\.\s])(\.{2,})($|\s)', r'\1 \2\3', s)
     
-    return iter(s.split())
+    return s.split()
 
 ######################################################################
 #{ Punkt Sentence Tokenizer
@@ -866,28 +866,6 @@ class PunktSentenceTokenizer(TokenizerI):
                 if verbose:
                     print ('  Sent Starter: [%6.4f] %r' % (ll, typ))
 
-def demo(): # sorta
-    from nltk.tokenize.punkt import PunktSentenceTokenizer
-    from nltk.corpus.reader.plaintext import PlaintextCorpusReader
-    import time, pickle
-    
-    tb = PlaintextCorpusReader('/Users/edloper/Corpora/treebank/raw', '.*')
-    ## Train on the whole treebank at once.
-    print 'loading tb...'
-    all_tb = '\n\n'.join(tb.raw(item) for item in tb.items)
-    print 'training...'
-    tokenizer = PunktSentenceTokenizer(all_tb, verbose=True)
-    print 'freezing...'
-    tokenizer.freeze()
-    print 'dumping...'
-    t0=time.time()
-    out = open('/tmp/punkt-english.pickle', 'wb')
-    pickle.dump(tokenizer, out, 2)
-    out.close()
-    
-            
-if __name__ == '__main__':
-    demo()
             
 
                
