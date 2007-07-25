@@ -47,5 +47,8 @@ except ImportError:
                 dict.__setitem__(self, s, self.default_constructor())
                 return dict.__getitem__(self,s)
 
+    # [XX] to make pickle happy in python 2.4:
+    import collections
+    collections.defaultdict = defaultdict
 
 __all__ = ['ElementTree', 'defaultdict']
