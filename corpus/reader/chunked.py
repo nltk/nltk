@@ -15,7 +15,8 @@ from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
 from nltk.tree import Tree
-from nltk import tokenize, chunk
+from nltk.tokenize import *
+from nltk import chunk
 import os.path
 
 class ChunkedCorpusReader(CorpusReader):
@@ -31,7 +32,7 @@ class ChunkedCorpusReader(CorpusReader):
     """
     def __init__(self, root, items, extension='', 
                  str2chunktree=chunk.tagstr2tree,
-                 sent_tokenizer=tokenize.line,
+                 sent_tokenizer=RegexpTokenizer('\n', gaps=True),
                  para_block_reader=read_blankline_block):
         """
         @param root: The root directory for this corpus.
@@ -187,7 +188,7 @@ class ChunkedCorpusView(StreamBackedCorpusView):
         block = []
         for para_str in self._para_block_reader(stream):
             para = []
-            for sent_str in self._sent_tokenizer(para_str):
+            for sent_str in self._sent_tokenizer.tokenize(para_str):
                 sent = self._str2chunktree(sent_str)
                 
                 # If requested, throw away the tags.

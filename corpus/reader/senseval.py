@@ -24,7 +24,7 @@ is tagged with a sense identifier, and supplied with context.
 
 from nltk.corpus.reader.util import *
 from api import *
-from nltk import tokenize
+from nltk.tokenize import *
 import os, re, xml.sax
 from xmldocs import XMLCorpusReader
 from nltk.etree import ElementTree
@@ -80,7 +80,7 @@ class SensevalCorpusView(StreamBackedCorpusView):
     def __init__(self, filename):
         StreamBackedCorpusView.__init__(self, filename)
 
-        self._word_tokenizer = tokenize.whitespace
+        self._word_tokenizer = WhitespaceTokenizer()
         self._lexelt_starts = [0] # list of streampos
         self._lexelts = [None] # list of lexelt names
     
@@ -134,7 +134,7 @@ class SensevalCorpusView(StreamBackedCorpusView):
             if child.tag == 'answer':
                 senses.append(child.attrib['senseid'])
             elif child.tag == 'context':
-                context += self._word_tokenizer(child.text)
+                context += self._word_tokenizer.tokenize(child.text)
                 for cword in child:
                     if cword.tag == 'compound': 
                         cword = cword[0] # is this ok to do?
@@ -153,7 +153,8 @@ class SensevalCorpusView(StreamBackedCorpusView):
                             context.append((cword[0].text,
                                             cword[0].attrib['pos']))
                             if cword[0].tail:
-                                context += self._word_tokenizer(cword[0].tail)
+                                context += self._word_tokenizer.tokenize(
+                                    cword[0].tail)
                         else:
                             assert False, 'expected CDATA or wf in <head>'
                     elif cword.tag == 'wf':
@@ -165,7 +166,7 @@ class SensevalCorpusView(StreamBackedCorpusView):
                         print 'ACK', cword.tag
                         assert False, 'expected CDATA or <wf> or <head>'
                     if cword.tail:
-                        context += self._word_tokenizer(cword.tail)
+                        context += self._word_tokenizer.tokenize(cword.tail)
             else:
                 assert False, 'unexpected tag %s' % child.tag
         return SensevalInstance(lexelt, position, context, senses)
