@@ -190,11 +190,14 @@ class TreeCanvas(QCanvas):
 
             c1 = node.children[0].gui
             c2 = node.children[-1].gui
-            x1 = c1.x()
-            x2 = c2.x() + c2.width()
+            x1 = c1.boundingRect().left()
+            x2 = c2.boundingRect().left() + c2.width()
             item.setX((x1+x2-item.width())/2.0)
         else:
-            item.setX(x + (self._width[node] - item.width()) / 2.0)
+            if item.boundingRect().left() == item.x():
+                item.setX(x + (self._width[node] - item.width()) / 2.0)
+            else:
+                item.setX(x + (self._width[node] + item.width()) / 2.0)
         item.setY(y)
 
     def signal(self, *args):
