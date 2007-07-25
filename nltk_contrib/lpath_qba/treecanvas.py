@@ -192,12 +192,12 @@ class TreeCanvas(QCanvas):
             c2 = node.children[-1].gui
             x1 = c1.boundingRect().left()
             x2 = c2.boundingRect().left() + c2.width()
-            if item.boundingRect().left() == item.x():
+            if abs(item.boundingRect().left()-item.x()) < 1.0:
                 item.setX( (x1 + x2 - item.width()) / 2.0 )
             else:
                 item.setX( (x1 + x2 + item.width()) / 2.0 )
         else:
-            if item.boundingRect().left() == item.x():
+            if abs(item.boundingRect().left()-item.x()) < 1.0:
                 item.setX(x + (self._width[node] - item.width()) / 2.0)
             else:
                 item.setX(x + (self._width[node] + item.width()) / 2.0)
