@@ -60,26 +60,8 @@ stored using L{Open Language Archives Community (OLAC)
 can be accessed using C{nltk.corpus.I{corpus}.olac()}.
 """
 
-from util import *
-#from reader import *
-
-from nltk.corpus.reader.plaintext import PlaintextCorpusReader
-from nltk.corpus.reader.util import find_corpus_items
-from nltk.corpus.reader.tagged import TaggedCorpusReader
-from nltk.corpus.reader.cmudict import CMUDictCorpusReader
-from nltk.corpus.reader.conll import ConllChunkCorpusReader
-from nltk.corpus.reader.wordlist import WordListCorpusReader
-from nltk.corpus.reader.gutenberg import GutenbergCorpusReader
-from nltk.corpus.reader.xmldocs import XMLCorpusReader
-from nltk.corpus.reader.ppattach import PPAttachmentCorpusReader
-from nltk.corpus.reader.senseval import SensevalCorpusReader
-from nltk.corpus.reader.ieer import IEERCorpusReader
-from nltk.corpus.reader.treebank import TreebankCorpusReader
-from nltk.corpus.reader.sinica_treebank import SinicaTreebankCorpusReader
-from nltk.corpus.reader.indian import IndianCorpusReader
-from nltk.corpus.reader.toolbox import ToolboxCorpusReader
-from nltk.corpus.reader.timit import TimitCorpusReader
-from nltk.corpus.reader.ycoe import YCOECorpusReader
+from nltk.corpus.reader import *
+from nltk.data import LazyCorpusLoader
 
 abc = LazyCorpusLoader(
     'abc', PlaintextCorpusReader, '(?!\.svn).*', '.txt')
@@ -101,6 +83,7 @@ ieer = LazyCorpusLoader(
     'ieer', IEERCorpusReader, '(?!README|\.svn).*')
 inaugural = LazyCorpusLoader(
     'inaugural', PlaintextCorpusReader, '(?!\.svn).*', '.txt')
+# [XX] This should probably just use TaggedCorpusReader:
 indian = LazyCorpusLoader(
     'indian', IndianCorpusReader, '(?!\.svn).*', '.pos')
 names = LazyCorpusLoader(

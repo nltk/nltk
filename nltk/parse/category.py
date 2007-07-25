@@ -99,8 +99,11 @@ class Category(cfg.Nonterminal, featstruct.SubstituteBindingsI):
         return not (self == other)
 
     def __hash__(self):
-        if self._hash is not None: return self._hash
-        return hash(self.__class__._str(self, {}, {}, True))
+        # [XX] This is *very evil* :)
+        #if self._hash is not None: return self._hash
+        #return hash(self.__class__._str(self, {}, {}, True))
+        # [XX] This is less evil, but not too efficient!
+        return -1
     
     def freeze(self):
         """
