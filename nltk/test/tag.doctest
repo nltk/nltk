@@ -77,72 +77,73 @@ Unit tests for the Unigram, Affix, Regexp and Lookup taggers
     >>> from nltk.corpus import brown 
 
 Unigram tagger
+    >>> naive_tagger = Default('NN')
 
     >>> uni_tagger = Unigram(backoff=naive_tagger)
-    >>> uni_tagger.train(brown.tagged('a'))
+    >>> uni_tagger.train(brown.tagged_sents('a'))
 
     >>> uni_tagger.size()
-    6363
+    4801
 
     >>> tagged_tokens = uni_tagger.tag(token_list)
     >>> list(tagged_tokens)
-    [('How', 'wrb'), ('very', 'ql'), ('suddenly', 'rb'), ('you', 'ppss'), ('all', 'abn'), ('quitted', 'NN'), ('Netherfield', 'NN'), ('last', 'ap'), ('November', 'np'), (',', ','), ('Mr', 'NN'), ('Darcy', 'NN'), ('!', '.')]
+    [('How', 'WRB'), ('very', 'QL'), ('suddenly', 'RB'), ('you', 'PPSS'), ('all', 'ABN'), ('quitted', 'NN'), ('Netherfield', 'NN'), ('last', 'AP'), ('November', 'NP'), (',', ','), ('Mr', 'NN'), ('Darcy', 'NN'), ('!', '.')]
 
-    >>> acc = accuracy(uni_tagger, brown.tagged('b'))
+    >>> acc = accuracy(uni_tagger, brown.tagged_sents('b'))
     >>> print 'Accuracy %4.1f%%' % (100.0 * acc)
-    Accuracy 77.4%
+    Accuracy 81.0%
 
 Affix tagger
 
     >>> affix_tagger = Affix(-2, 3, backoff=naive_tagger)
-    >>> affix_tagger.train(brown.tagged('a'))
+    >>> affix_tagger.train(brown.tagged_sents('a'))
 
     >>> affix_tagger.size()
-    380
+    348
 
     >>> tagged_tokens = affix_tagger.tag(token_list)
     >>> list(tagged_tokens)
-    [('How', 'rb'), ('very', 'nn'), ('suddenly', 'rb'), ('you', 'ppss'), ('all', 'md'), ('quitted', 'vbn'), ('Netherfield', 'md'), ('last', 'ap'), ('November', 'nn'), (',', 'NN'), ('Mr', 'NN'), ('Darcy', 'nn'), ('!', 'NN')]
+    [('How', 'RB'), ('very', 'JJ'), ('suddenly', 'RB'), ('you', 'PPSS'), ('all', 'MD'), ('quitted', 'VBN'), ('Netherfield', 'MD'), ('last', 'AP'), ('November', 'NP'), (',', 'NN'), ('Mr', 'NN'), ('Darcy', 'NN-TL'), ('!', 'NN')]
 
-    >>> acc = accuracy(affix_tagger, brown.tagged('b'))
+    >>> acc = accuracy(affix_tagger, brown.tagged_sents('b'))
     >>> print 'Accuracy %4.1f%%' % (100.0 * acc)
-    Accuracy 39.0%
+    Accuracy 34.0%
 
 Regexp tagger
 
     >>> patterns = [
-    ...	(r'^-?[0-9]+(.[0-9]+)?$', 'cd'),	# cardinal numbers
-    ...	(r'(The|the|A|a|An|an)$', 'at'),	# articles
-    ...	(r'.*able$', 'jj'),			# adjectives
-    ... (r'.*ness$', 'nn'),			# nouns formed from adjectives
-    ... (r'.*ly$', 'rb'),			# adverbs
-    ...	(r'.*s$', 'nns'),			# plural nouns
-    ...	(r'.*ing$', 'vbg'),			# gerunds
-    ...	(r'.*ed$', 'vbd'),			# past tense verbs
-    ... (r'.*', 'nn')				# nouns (default)
+    ...	(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),	# cardinal numbers
+    ...	(r'(The|the|A|a|An|an)$', 'AT'),	# articles
+    ...	(r'.*able$', 'JJ'),			# adjectives
+    ... (r'.*ness$', 'NN'),			# nouns formed from adjectives
+    ... (r'.*ly$', 'RB'),			# adverbs
+    ...	(r'.*s$', 'NNS'),			# plural nouns
+    ...	(r'.*ing$', 'VBG'),			# gerunds
+    ...	(r'.*ed$', 'VBD'),			# past tense verbs
+    ... (r'.*', 'NN')				# nouns (default)
     ... ]
 
     >>> regexp_tagger = Regexp(patterns)
 
     >>> tagged_tokens = regexp_tagger.tag(token_list)
     >>> list(tagged_tokens)
-    [('How', 'nn'), ('very', 'nn'), ('suddenly', 'rb'), ('you', 'nn'), ('all', 'nn'), ('quitted', 'vbd'), ('Netherfield', 'nn'), ('last', 'nn'), ('November', 'nn'), (',', 'nn'), ('Mr', 'nn'), ('Darcy', 'nn'), ('!', 'nn')]
+    [('How', 'NN'), ('very', 'NN'), ('suddenly', 'RB'), ('you', 'NN'), ('all', 'NN'), ('quitted', 'VBD'), ('Netherfield', 'NN'), ('last', 'NN'), ('November', 'NN'), (',', 'NN'), ('Mr', 'NN'), ('Darcy', 'NN'), ('!', 'NN')]
 
-    >>> acc = accuracy(regexp_tagger, brown.tagged('b'))
+    >>> acc = accuracy(regexp_tagger, brown.tagged_sents('b'))
     >>> print 'Accuracy %4.1f%%' % (100.0 * acc)
     Accuracy 28.5%
 
 Lookup tagger (possibly extend the dictionary later for more effective testing)
 
-    >>> dict = {'all': 'jj', 'he': 'pps', 'she': 'pps', 'the': 'at', 'very': 'rb', 'you': 'pps'}
+    >>> dict = {'all': 'JJ', 'he': 'PPS', 'she': 'PPS', 'the': 'AT', 'very': 'RB', 'you': 'PPS'}
 
     >>> lookup_tagger = Lookup(dict, backoff=naive_tagger)
 
     >>> tagged_tokens = lookup_tagger.tag(token_list)
     >>> list(tagged_tokens)
-    [('How', 'NN'), ('very', 'rb'), ('suddenly', 'NN'), ('you', 'pps'), ('all', 'jj'), ('quitted', 'NN'), ('Netherfield', 'NN'), ('last', 'NN'), ('November', 'NN'), (',', 'NN'), ('Mr', 'NN'), ('Darcy', 'NN'), ('!', 'NN')]
+    [('How', 'NN'), ('very', 'RB'), ('suddenly', 'NN'), ('you', 'PPS'), ('all', 'JJ'), ('quitted', 'NN'), ('Netherfield', 'NN'), ('last', 'NN'), ('November', 'NN'), (',', 'NN'), ('Mr', 'NN'), ('Darcy', 'NN'), ('!', 'NN')]
 
-    >>> acc = accuracy(lookup_tagger, brown.tagged('b'))
+    >>> acc = accuracy(lookup_tagger, brown.tagged_sents('b'))
     >>> print 'Accuracy %4.1f%%' % (100.0 * acc)
     Accuracy  6.1%
 
@@ -152,38 +153,38 @@ Unit tests for N-gram taggers.
 
 Create a default, unigram, bigram and trigram tagger.
 
-    >>> base_tagger = Default('nn')
+    >>> base_tagger = Default('NN')
     >>> uni_tagger = Unigram(cutoff=2, backoff=base_tagger)
     >>> bi_tagger = Bigram(cutoff=1, backoff=uni_tagger)
     >>> tri_tagger = Trigram(cutoff=0, backoff=bi_tagger)
 
 Train the taggers on the Brown corpus.
 
-    >>> uni_tagger.train(brown.tagged('a'))
-    >>> bi_tagger.train(brown.tagged('a'))
-    >>> tri_tagger.train(brown.tagged('a'))
+    >>> uni_tagger.train(brown.tagged_sents('a'))
+    >>> bi_tagger.train(brown.tagged_sents('a'))
+    >>> tri_tagger.train(brown.tagged_sents('a'))
 
 Attempting to train a tagger a second time should raise an error.
 
-#    >>> uni_tagger.train(brown.tagged('a'))
+#    >>> uni_tagger.train(brown.tagged_sents('a'))
 #    ...
 #    ValueError: Tagger is already trained
 
 Run the taggers on a different section of the Brown corpus. In each case report the accuracy of the tagger.
 
-    >>> acc = accuracy(base_tagger, brown.tagged('b'))
+    >>> acc = accuracy(base_tagger, brown.tagged_sents('b'))
     >>> print 'Accuracy %4.1f%%' % (100.0 * acc)
     Accuracy 12.5%
 
-    >>> acc = accuracy(uni_tagger, brown.tagged('b'))
+    >>> acc = accuracy(uni_tagger, brown.tagged_sents('b'))
     >>> print 'Accuracy %4.1f%%' % (100.0 * acc)
     Accuracy 79.0%
 
-    >>> acc = accuracy(bi_tagger, brown.tagged('b'))
+    >>> acc = accuracy(bi_tagger, brown.tagged_sents('b'))
     >>> print 'Accuracy %4.1f%%' % (100.0 * acc)
     Accuracy 80.1%
 
-    >>> acc = accuracy(tri_tagger, brown.tagged('b'))
+    >>> acc = accuracy(tri_tagger, brown.tagged_sents('b'))
     >>> print 'Accuracy %4.1f%%' % (100.0 * acc)
     Accuracy 80.2%
 
@@ -197,7 +198,7 @@ Unit tests for the Brill tagger
 Flatten the test data from a list of lists into a single list, and split it
 into training and evaluating sections.
 
-    >>> tagged_data = [t for s in list(brown.tagged('a')) for t in s]
+    >>> tagged_data = [t for s in list(brown.tagged_sents('a')) for t in s]
     >>> training_data = tagged_data[:20000]
     >>> gold_data = tagged_data[20000:]
 
@@ -219,16 +220,16 @@ Create and train the Brill tagger.
 
     >>> for rule in brill_tagger.rules():
     ...     print(str(rule))
-    nn -> vb if the tag of the preceding word is 'to'
-    to -> in if the tag of the following word is 'at'
-    nn -> vb if the tag of words i-2...i-1 is 'md'
-    nn -> np if the tag of the following word is 'np'
-    nn -> np if the tag of the preceding word is 'np', and the tag of the following word is ','
-    np -> np-tl if the tag of the following word is 'nn-tl'
-    vbd -> vbn if the tag of words i-2...i-1 is 'bedz'
-    to -> in if the tag of the following word is 'cd'
-    nn -> nn-tl if the tag of the following word is 'nn-tl'
-    np -> np-hl if the tag of words i+1...i+2 is '--'
+    NN -> VB if the tag of the preceding word is 'TO'
+    TO -> IN if the tag of the following word is 'AT'
+    NN -> VB if the tag of words i-2...i-1 is 'MD'
+    NN -> NP if the tag of the following word is 'NP'
+    NN -> NP if the tag of the preceding word is 'NP', and the tag of the following word is ','
+    NP -> NP-TL if the tag of the following word is 'NN-TL'
+    VBD -> VBN if the tag of words i-2...i-1 is 'BEDZ'
+    TO -> IN if the tag of the following word is 'CD'
+    NN -> NN-TL if the tag of the following word is 'NN-TL'
+    NP -> NP-HL if the tag of words i+1...i+2 is '--'
 
 
 --------------------------------------------------------------------------------
