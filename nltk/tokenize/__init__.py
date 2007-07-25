@@ -15,6 +15,7 @@ from simple import *
 from regexp import *
 from punkt import *
 from sexpr import *
+from nltk.utilities import deprecated
 
 __all__ = ['WhitespaceTokenizer', 'SpaceTokenizer', 'TabTokenizer',
            'LineTokenizer', 'RegexpTokenizer', 'BlanklineTokenizer',
@@ -25,11 +26,34 @@ __all__ = ['WhitespaceTokenizer', 'SpaceTokenizer', 'TabTokenizer',
            'PunktSentenceTokenizer',
            ]
 
-# backwards compatibility: Remove these once we've deprecated
-# tokenize.blankline and friends.
-blankline = BlanklineTokenizer().tokenize
-wordpunct = WordPunctTokenizer().tokenize
-whitespace = WhitespaceTokenizer().tokenize
-word = WordTokenizer().tokenize
-line = LineTokenizer().tokenize
+######################################################################
+#{ Deprecated functions for backwards compatibility
+######################################################################
+
+@deprecated("Use nltk.blankline_tokenize() or "
+            "nltk.BlanklineTokenizer instead.")
+def blankline(text):
+    return BlanklineTokenizer().tokenize(text)
+
+@deprecated("Use nltk.wordpunct_tokenize() or "
+            "nltk.WordpunctTokenizer instead.")
+def wordpunct(text):
+    return WordPunctTokenizer().tokenize(text)
+
+@deprecated("Use nltk.whitespace_tokenize() or "
+            "nltk.WhitespaceTokenizer instead.")
+def whitespace(text):
+    return WhitespaceTokenizer().tokenize(text)
+
+@deprecated("Use nltk.word_tokenize() or "
+            "nltk.WordTokenizer instead.")
+def word(text):
+    return WordTokenizer().tokenize(text)
+
+@deprecated("Use nltk.line_tokenize() or "
+            "nltk.LineTokenizer instead.")
+def line(text):
+    # note -- LineTokenizer doesn't strip out blank lines.
+    return [line for line in text.split('\n') if line]
+
 
