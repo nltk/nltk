@@ -9,7 +9,7 @@
 Tokenizer Interface
 """
 
-class TokenizerI:
+class TokenizerI(object):
     """
     A procesing interface for I{tokenizing} a string, or dividing it
     into a list of substrings.
