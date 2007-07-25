@@ -28,7 +28,7 @@ attribute of the corpus reader:
     >>> print nltk.corpus.treebank.items # doctest: +ELLIPSIS
     ('wsj_0001', 'wsj_0002', 'wsj_0003', 'wsj_0004', ...)
     >>> print nltk.corpus.inaugural.items # doctest: +ELLIPSIS
-    ['1789-Washington', '1793-Washington', '1797-Adams', ...]
+    ('1789-Washington', '1793-Washington', '1797-Adams', ...)
 
 Each corpus reader provides a variety of methods to read data from the
 corpus, depending on the format of the corpus.  For example, plaintext
@@ -606,10 +606,10 @@ included in item names.
 
     >>> corpus = PlaintextCorpusReader(root, ['a', 'b'], '.txt')
     >>> corpus.items
-    ['a', 'b']
+    ('a', 'b')
     >>> corpus = PlaintextCorpusReader(root, '.*', '.txt')
     >>> corpus.items
-    ['a', 'b']
+    ('a', 'b')
 
 The directory containing the corpus is corpus.root:
 
@@ -650,22 +650,22 @@ Test the plaintext corpora that come with nltk:
     ...     print '  ', `corpus.words()[:10]`[:60]
     ...     # doctest: +ELLIPSIS
     <PlaintextCorpusReader in '...abc'>
-       ['rural', 'science']
+       ('rural', 'science')
        ['PM', 'denies', 'knowledge', 'of', 'AWB', 'kickbacks', 'The
     <PlaintextCorpusReader in '...genesis'>
-       ['english-kjv', 'english-web', 'finnish', 'french', 'german'
+       ('english-kjv', 'english-web', 'finnish', 'french', 'german'
        ['In', 'the', 'beginning', 'God', 'created', 'the', 'heaven'
     <PlaintextCorpusReader in '...inaugural'>
-       ['1789-Washington', '1793-Washington', '1797-Adams', '1801-J
+       ('1789-Washington', '1793-Washington', '1797-Adams', '1801-J
        ['Fellow', '-', 'Citizens', 'of', 'the', 'Senate', 'and', 'o
     <PlaintextCorpusReader in '...state_union'>
-       ['1945-Truman', '1946-Truman', '1947-Truman', '1948-Truman',
+       ('1945-Truman', '1946-Truman', '1947-Truman', '1948-Truman',
        ['PRESIDENT', 'HARRY', 'S', '.', 'TRUMAN', "'", 'S', 'ADDRES
     <PlaintextCorpusReader in '...webtext'>
-       ['overheard', 'pirates', 'singles', 'wine']
+       ('overheard', 'pirates', 'singles', 'wine')
        ['White', 'guy', ':', 'So', ',', 'do', 'you', 'have', 'any',
     <PlaintextCorpusReader in '...udhr'>
-       ['Abkhaz-Cyrillic+Abkh', 'Abkhaz-UTF8', 'Achehnese-Latin1', 
+       ('Abkhaz-Cyrillic+Abkh', 'Abkhaz-UTF8', 'Achehnese-Latin1', 
        ['\xc0\xf3\xe0\xfe\xfb\xf2\xfa\xfb\xfe\xf1\xe0', '\xe8\xe7\x
 
 Tagged Corpus Reader
@@ -693,7 +693,7 @@ By default, they apply to all items in the corpus.
     >>> from nltk.corpus.reader.tagged import TaggedCorpusReader
     >>> corpus = TaggedCorpusReader(root, list('ab'))
     >>> corpus.items
-    ['a', 'b']
+    ('a', 'b')
     >>> corpus.root == root
     True
     >>> corpus.words()
@@ -726,7 +726,7 @@ The Brown Corpus uses the tagged corpus reader:
 
     >>> from nltk.corpus import brown
     >>> brown.items # doctest: +ELLIPSIS
-    ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', ..., 'r']
+    ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', ..., 'r')
     >>> brown.root # doctest: +ELLIPSIS
     '...brown'
     >>> brown.words()
