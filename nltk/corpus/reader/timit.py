@@ -122,9 +122,6 @@ from nltk.corpus.reader.api import *
 from nltk.tree import Tree
 import sys, os, re, tempfile, time
 
-__all__ = ["items", "raw", "phonetic", "speakers", "dictionary", "spkrinfo",
-           "audiodata", "play"]
-
 class TimitCorpusReader(CorpusReader):
     """
     Reader for the TIMIT corpus (or any other corpus with the same

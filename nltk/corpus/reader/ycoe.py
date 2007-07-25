@@ -75,13 +75,11 @@ class YCOEParseCorpusReader(BracketParseCorpusReader):
 
 class YCOETaggedCorpusReader(TaggedCorpusReader):
     def __init__(self, root, items, extension):
-        TaggedCorpusReader.__init__(self, root, items, extension, '_',
-                                    sent_tokenizer=self._sent_tokenizer)
-
-    def _sent_tokenizer(self, s):
-        s = re.sub(r'(?u)\S*_CODE|\S*_ID', '', s)
-        return tokenize.regexp(s, r'(?<=/\.)\s', gaps=True)
-
+        gaps_re = r'(?u)\(?<=/\.)\s+|\s*\S*_CODE\s*|\s*\S*_ID\s*'
+        sent_tokenizer = RegexpTokenizer(gaps_re, gaps=True)
+        TaggedCorpusReader.__init__(self, root, items, extension, sep='_',
+                                    sent_tokenizer=sent_tokenizer)
+        
 #: A list of all documents and their titles in ycoe.
 documents = {
     'coadrian.o34': 'Adrian and Ritheus',

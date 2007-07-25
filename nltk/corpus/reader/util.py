@@ -239,7 +239,7 @@ class StreamBackedCorpusView:
             # Read the next block.
             self._stream.seek(filepos)
             tokens = self.read_block(self._stream)
-            assert isinstance(tokens, list) # tokenizer should return list.
+            assert isinstance(tokens, list) # block reader should return list.
             num_toks = len(tokens)
             new_filepos = self._stream.tell()
 
@@ -433,7 +433,7 @@ def read_whitespace_block(stream):
 def read_wordpunct_block(stream):
     toks = []
     for i in range(20): # Read 20 lines at a time.
-        toks.extend(tokenize.wordpunct(stream.readline()))
+        toks.extend(wordpuct_tokenize(stream.readline()))
     return toks
 
 def read_blankline_block(stream):
@@ -451,7 +451,7 @@ def read_blankline_block(stream):
         else:
             s += line
 
-def read_sexpr_block(stream, block_size=10):
+def read_sexpr_block(stream, block_size=16384):
     start = stream.tell()
     block = ''
     while True:
