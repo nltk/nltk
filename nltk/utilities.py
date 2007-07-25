@@ -5,9 +5,7 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-import subprocess, os.path
-import locale
-import re
+import subprocess, os.path, locale, re, warnings, textwrap
 
 ##########################################################################
 # PRETTY PRINTING
@@ -751,8 +749,37 @@ def windowdiff(seg1, seg2, k, boundary="1"):
         wd += abs(seg1[i:i+k+1].count(boundary) - seg2[i:i+k+1].count(boundary))
     return wd
 
+######################################################################
+# Deprecation decorator
+######################################################################
+
+def deprecated(message):
+    """
+    A decorator used to mark functions as deprecated.  This will cause
+    a warning to be printed the when the function is used.  Usage:
+
+      >>> @deprecated('Use foo() instead')
+      >>> def bar(x):
+      ...     print x/10
+    """
+    def decorator(func):
+        def newFunc(*args, **kwargs):
+            msg = ("Function %s() has been deprecated.  %s"
+                   % (func.__name__, message))
+            msg = '\n' + textwrap.fill(msg, initial_indent='  ',
+                                       subsequent_indent='  ')
+            warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
+            return func(*args, **kwargs)
+            
+        newFunc.__name__ = func.__name__
+        newFunc.__doc__ = func.__doc__
+        newFunc.__dict__.update(func.__dict__)
+        return newFunc
+    return decorator
+
+
 __all__ = ['Counter', 'MinimalSet', 'OrderedDict', 'SortedDict', 'Trie',
            'breadth_first', 'edit_dist', 'filestring', 'guess_encoding',
            'invert_dict', 'pr', 'print_string', 're_show', 'config_java',
-           'java', 'clean_html', 'windowdiff',
+           'java', 'clean_html', 'windowdiff', 'deprecated', 
            'convert_regexp_to_nongrouping']
