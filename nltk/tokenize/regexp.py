@@ -88,13 +88,6 @@ class RegexpTokenizer(TokenizerI):
     def tokenize(self, text):
         # If our regexp matches gaps, use re.split:
         if self._gaps:
-            pos = 0
-            result = []
-            for m in self._regexp.finditer(text):
-                if m.start()>pos or not self._discard_empty:
-                    result.append(text[pos:m.start()])
-                pos = m.end()
-            return result
             if self._discard_empty:
                 return [tok for tok in self._regexp.split(text) if tok]
             else:
