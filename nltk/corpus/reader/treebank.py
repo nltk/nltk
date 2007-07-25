@@ -20,8 +20,9 @@ from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
 from nltk.corpus.reader.chunked import ChunkedCorpusReader
+from nltk.tokenize import *
 from nltk.tree import Tree
-from nltk import tokenize, chunk
+from nltk import chunk
 import os.path
 
 class TreebankCorpusReader(CorpusReader):
@@ -41,7 +42,7 @@ class TreebankCorpusReader(CorpusReader):
             os.path.join(root, 'combined'), '.*', '.mrg')
         self._pos_reader = ChunkedCorpusReader(
             os.path.join(root, 'tagged'), '.*', '.pos',
-            sent_tokenizer=tagged_treebank_sent_tokenizer,
+            sent_tokenizer=RegexpTokenizer(r'(?<=/\.)\s', gaps=True),
             para_block_reader=tagged_treebank_para_block_reader)
 
         # Make sure we have a consistent set of items:
@@ -89,9 +90,6 @@ class TreebankCorpusReader(CorpusReader):
         filenames = [os.path.join(self._root, 'raw', item) for item in items]
         return concat([re.sub(r'\A\s*\.START\s*', '', open(filename).read())
                        for filename in filenames])
-
-def tagged_treebank_sent_tokenizer(para):
-    return tokenize.regexp(para, r'(?<=/\.)\s', gaps=True)
 
 def tagged_treebank_para_block_reader(stream):
     # Read the next paragraph.

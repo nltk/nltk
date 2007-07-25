@@ -11,7 +11,7 @@ A reader for corpora that consist of plaintext documents.
 """
 
 import nltk.data
-from nltk import tokenize
+from nltk.tokenize import *
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
@@ -33,7 +33,9 @@ class PlaintextCorpusReader(CorpusReader):
        classes (e.g., to skip the preface sections of documents.)"""
     
     def __init__(self, root, items, extension='', 
-                 word_tokenizer=tokenize.wordpunct, sent_tokenizer=None,
+                 word_tokenizer=WordPunctTokenizer(),
+                 sent_tokenizer=nltk.data.LazyLoader(
+                     'tokenizers/punkt/english.pickle'),
                  para_block_reader=read_blankline_block, startpos=0):
         """
         Construct a new plaintext corpus reader for a set of documents
@@ -60,16 +62,9 @@ class PlaintextCorpusReader(CorpusReader):
         """
         if not os.path.isdir(root):
             raise ValueError('Root directory %r not found!' % root)
-
-        # [xx] somewhat of a hack for now..
-        if sent_tokenizer is None:
-            tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
-            # [xx] still expects a function for now!
-            sent_tokenizer = tokenizer.tokenize
-            
         if isinstance(items, basestring):
             items = find_corpus_items(root, items, extension)
-        self._items = items
+        self._items = tuple(items)
         self._root = root
         self._extension = extension
         self._word_tokenizer = word_tokenizer
@@ -132,7 +127,7 @@ class PlaintextCorpusReader(CorpusReader):
     def _read_word_block(self, stream):
         words = []
         for i in range(20): # Read 20 lines at a time.
-            words.extend(self._word_tokenizer(stream.readline()))
+            words.extend(self._word_tokenizer.tokenize(stream.readline()))
         return words
     
     def _read_sent_block(self, stream):
@@ -140,8 +135,8 @@ class PlaintextCorpusReader(CorpusReader):
         for para in self._para_block_reader(stream):
             # [xx] remove the list() once tokenizers are changed to
             # return lists, not iterators.
-            sents.extend([list(self._word_tokenizer(sent))
-                          for sent in self._sent_tokenizer(para)])
+            sents.extend([list(self._word_tokenizer.tokenize(sent))
+                          for sent in self._sent_tokenizer.tokenize(para)])
         return sents
     
     def _read_para_block(self, stream):
@@ -149,8 +144,8 @@ class PlaintextCorpusReader(CorpusReader):
         for para in self._para_block_reader(stream):
             # [xx] remove the list() once tokenizers are changed to
             # return lists, not iterators.
-            paras.append([list(self._word_tokenizer(sent))
-                          for sent in self._sent_tokenizer(para)])
+            paras.append([list(self._word_tokenizer.tokenize(sent))
+                          for sent in self._sent_tokenizer.tokenize(para)])
         return paras
             
             
