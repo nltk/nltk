@@ -100,8 +100,9 @@ class LPathDbI:
         
         @type  query: string
         @param query: SQL query to run.
+        @return: True is query is submitted successfully, False otherwise.
         """
-        pass
+        return True
     
     def fetchNextTree(self):
         """
@@ -164,6 +165,9 @@ class LPathDB(LPathDbI):
                 
     def submitQuery(self, query):
         self.currentSql, self.currentSql2 = lpath.translate2(query, self.tableName)
+        if self.currentSql is None:
+            return False
+        
         sql = re.sub(r"\s(%s[0-9]+).\*\s(.*)$" % self.tableName,
                      r" distinct \1.sid, \1.tid \2 order by \1.sid, \1.tid",
                      self.currentSql, 1)
@@ -177,6 +181,7 @@ class LPathDB(LPathDbI):
         self.prefetcher = Prefetcher(conn, sql, self.tableName,
                                      callback=self._prefetchCallback)
         self.prefetcher.start()
+        return True
 
     def fetchNextTree(self):
         if self.prefetcher:
@@ -184,6 +189,10 @@ class LPathDB(LPathDbI):
             if rawtab:
                 tab = at.TableModel(self.LPATH_TABLE_HEADER)
                 for row in rawtab:
+                    v = row[-1]
+                    if v is not None:
+                        row = list(row)
+                        row[-1] = v.decode('utf-8')
                     tab.insertRow(row=row)
                 tree = LPathTreeModel.importLPathTable(tab)
                 sid, tid = rawtab[0][0:2]
@@ -247,13 +256,15 @@ class LPathLocalDB(LPathDbI):
 
     def submitQuery(self, query):
         if not self.conn:
-            raise Exception("no database connection")
+            #raise Exception("no database connection")
+            return False
 
         self.currentSql, self.currentSql2 = lpath.translate2(query, self.tableName)
         sql = re.sub(r"\s(%s[0-9]+).\*\s(.*)$" % self.tableName,
                      r" distinct \1.sid, \1.tid \2 order by \1.sid, \1.tid",
                      self.currentSql, 1)
         self.cursor.execute(sql)
+        return True
 
     def fetchNextTree(self):    
         if self.cursor:
