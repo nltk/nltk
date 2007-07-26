@@ -3,18 +3,18 @@ import at_lite as at
 
 __all__ = ["translate", "translate_sub"]
 
-def translate_sub(t, selected):
+def translate_sub(t, selected, space):
     f = StringIO()
 
     scope = [None]
     while t:
         while scope[-1] and scope[-1] != t.lpScope:
-            f.write('}')
+            f.write('}'+space)
             scope.pop()
             
         if len(t.children) == 0:
             if t == selected: f.write('<font color="red">')
-            f.write('@label="%s"' % t.data['label'])
+            f.write('@label%s=%s"%s"' % (space,space,t.data['label']))
         else:
             ax = translate_axis(t)
             if selected is not None: ax = ax.replace('<','&lt;')
@@ -38,20 +38,20 @@ def translate_sub(t, selected):
             h = StringIO()
             if c.getNot():
                 h.write('not ')
-            h.write(translate_sub(c,selected))
+            h.write(translate_sub(c,selected,space))
             if c.lpScope == t and len(c.children)>0:
                 # terminal(=lexical) node doesn't need '{' and '}'
-                g.write('{')
+                g.write(space+'{')
                 g.write(h.getvalue())
-                g.write('}')
+                g.write('}'+space)
             else:
                 g.write(h.getvalue())
             g.write(' and ')
             
         if g.getvalue():
-            f.write('[')
+            f.write(space+'[')
             f.write(g.getvalue())
-            f.write(']')
+            f.write(']'+space)
 
         if t == selected: f.write('</font>')
 
@@ -65,13 +65,13 @@ def translate_sub(t, selected):
 
     return f.getvalue().replace(' and ]', ']')
 
-def translate(t,selected=None):
+def translate(t, selected=None, space=''):
     L = t.lpRoots()
     if L:
         if t not in L:
-            return translate_sub(L[0], selected)
+            return translate_sub(L[0], selected, space)
         else:
-            return translate_sub(t, selected)
+            return translate_sub(t, selected, space)
     
 def translate_axis(t):
     if t.lpParent is None:
