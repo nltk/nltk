@@ -311,7 +311,7 @@ class TreeCanvasView(QCanvasView):
                     self.unhighlight()
                     self.highlight(item.node)
                     
-                    s = translate(item.node.lpRoot, item.node)
+                    s = translate(item.node.lpRoot, item.node, ' ')
                     if s is not None:
                         self.emit(PYSIGNAL('highlightLPath'),(s,))
                 break
