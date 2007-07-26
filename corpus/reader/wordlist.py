@@ -25,11 +25,11 @@ class WordListCorpusReader(CorpusReader):
         self.items = tuple(items)
         self._extension = extension
 
-    def words(self, items):
+    def words(self, items=None):
         return concat([[w for w in open(filename).read().split('\n') if w]
                        for filename in self._item_filenames(items)])
 
-    def raw(self, items):
+    def raw(self, items=None):
         return concat([open(filename).read()
                        for filename in self._item_filenames(items)])
 
