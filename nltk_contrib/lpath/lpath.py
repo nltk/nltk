@@ -71,11 +71,16 @@ def tokenize(q):
             d = j+1
 
         # find next reserved word while scanning free string before it
-        m = p.match(q, d)
         d0 = d
-        while not m and d < N:
-            d += 1
+        while d < N:
             m = p.match(q, d)
+            if m:
+                if m.group(1) == '_':
+                    if d == d0:
+                        break
+                else:
+                    break
+            d += 1
         qname = q[d0:d]
 
         # if there is a free string, split it and add them to the tokens list
@@ -130,17 +135,41 @@ class AND(list):
             L.append(self.joiner)
         return "(" + " ".join(L[:-1]) + ")"
 
+    def __unicode__(self):
+        L = []
+        for x in self:
+            if isinstance(x, str):
+                L.append(unicode(x))
+            elif isinstance(x, unicode):
+                L.append(x)
+            elif isinstance(x, AND) or isinstance(x, OR) or isinstance(x, NOT):
+                L.append(unicode(x))
+            elif isinstance(x, flatten):
+                for e in x:
+                    L.append("%s%s%s" % tuple(e))
+            elif isinstance(x, list):
+                L.append("%s%s%s" % tuple(x))
+            elif isinstance(x, Trans):
+                L.append("exists (%s)" % x.getSql())
+            else:
+                L.append(unicode(x))
+            L.append(self.joiner)
+        return "(" + " ".join(L[:-1]) + ")"
+    
     def __add__(self, lst):
         self += lst
         return self
+
         
 class OR(AND):
     def __init__(self, *args):
         AND.__init__(self, *args)
         self.joiner = "or"
 
+
 class GRP(AND):
     pass
+
     
 class NOT:
     def __init__(self, lst):
@@ -149,8 +178,13 @@ class NOT:
     def __str__(self):
         return "not " + str(self.lst)
 
+    def __unicode__(self):
+        return "not " + unicode(self.lst)
+
+    
 class flatten(list):
     pass
+
 
 class Step:
     FIELDMAP = {
@@ -249,7 +283,7 @@ class Trans:
             s2 = self.steps[i+1]
             self._interpreteAxis(s, s2.axis, s2)
 
-        w = str(self.WHERE).strip()
+        w = unicode(self.WHERE).strip()
         if w: sql += "where %s" % w
 
         return sql
@@ -320,7 +354,7 @@ class Trans:
                         [step1.left, "<=", step2.left],
                         [step1.right, ">=", step2.right],
                         [step1.depth, "<", step2.depth],
-                        "not exists (select 1 from %s z where %s)" % (self.tname,str(zWHERE))
+                        "not exists (select 1 from %s z where %s)" % (self.tname,unicode(zWHERE))
                         ]
                 elif step2.conditional == '*':
                     self.WHERE += [
@@ -329,7 +363,7 @@ class Trans:
                         AND([step1.left, "<=", step2.left],
                             [step1.right, ">=", step2.right],
                             [step1.depth, "<", step2.depth],
-                            "not exists (select 1 from %s z where %s)" % (self.tname,str(zWHERE)))
+                            "not exists (select 1 from %s z where %s)" % (self.tname,unicode(zWHERE)))
                         ))
                         ]
                     
@@ -371,7 +405,7 @@ class Trans:
                         [step1.left, ">=", step2.left],
                         [step1.right, "<=", step2.right],
                         [step1.depth, ">", step2.depth],
-                        "not exists (select 1 from %s z where %s)" % (self.tname,str(zWHERE))
+                        "not exists (select 1 from %s z where %s)" % (self.tname,unicode(zWHERE))
                         ]
                 elif step2.conditional == '*':
                     self.WHERE += [
@@ -380,7 +414,7 @@ class Trans:
                         AND([step1.left, ">=", step2.left],
                             [step1.right, "<=", step2.right],
                             [step1.depth, ">", step2.depth],
-                            "not exists (select 1 from %s z where %s)" % (self.tname,str(zWHERE)))
+                            "not exists (select 1 from %s z where %s)" % (self.tname,unicode(zWHERE)))
                         ))
                         ]
                     
@@ -412,8 +446,8 @@ class Trans:
                     ["z.left", ">=", step1.right],
                     ["z.right", "<=", step2.left],
                     NOT(GRP(flatten(step2.getConstraints()))),
-                    "not exists (select 1 from %s c where %s)" % (self.tname,str(cWHERE)),
-                    "not exists (select 1 from %s w where %s)" % (self.tname,str(wWHERE))
+                    "not exists (select 1 from %s c where %s)" % (self.tname,unicode(cWHERE)),
+                    "not exists (select 1 from %s w where %s)" % (self.tname,unicode(wWHERE))
                     )
 
                 self.WHERE += [
@@ -433,7 +467,7 @@ class Trans:
                     self.WHERE += [
                         [step1.right, "<=", step2.left],
                         flatten(step2.getConstraints()),
-                        "not exists (select 1 from %s z where %s)" % (self.tname,str(zWHERE))
+                        "not exists (select 1 from %s z where %s)" % (self.tname,unicode(zWHERE))
                         ]
                 elif step2.conditional == '*':
                     self.WHERE += [
@@ -442,7 +476,7 @@ class Trans:
                         GRP(AND(
                         [step1.right, "<=", step2.left],
                         flatten(step2.getConstraints()),
-                        "not exists (select 1 from %s z where %s)" % (self.tname,str(zWHERE))
+                        "not exists (select 1 from %s z where %s)" % (self.tname,unicode(zWHERE))
                         ))))
                         ]
                         
@@ -474,8 +508,8 @@ class Trans:
                     ["z.left", ">=", step2.right],
                     ["z.right", "<=", step1.left],
                     NOT(GRP(flatten(step2.getConstraints()))),
-                    "not exists (select 1 from %s c where %s)" % (self.tname,str(cWHERE)),
-                    "not exists (select 1 from %s w where %s)" % (self.tname,str(wWHERE))
+                    "not exists (select 1 from %s c where %s)" % (self.tname,unicode(cWHERE)),
+                    "not exists (select 1 from %s w where %s)" % (self.tname,unicode(wWHERE))
                     )
 
                 self.WHERE += [
@@ -495,7 +529,7 @@ class Trans:
                     self.WHERE += [
                         [step1.left, ">=", step2.right],
                         flatten(step2.getConstraints()),
-                        "not exists (select 1 from %s z where %s)" % (self.tname,str(zWHERE))
+                        "not exists (select 1 from %s z where %s)" % (self.tname,unicode(zWHERE))
                         ]
                 elif step2.conditional == '*':
                     self.WHERE += [
@@ -504,7 +538,7 @@ class Trans:
                         GRP(AND(
                         [step1.left, ">=", step2.right],
                         flatten(step2.getConstraints()),
-                        "not exists (select 1 from %s z where %s)" % (self.tname,str(zWHERE))
+                        "not exists (select 1 from %s z where %s)" % (self.tname,unicode(zWHERE))
                         ))))
                         ]
                         
@@ -536,8 +570,8 @@ class Trans:
                     ["z.left", ">=", step1.right],
                     ["z.right", "<=", step2.left],
                     NOT(GRP(flatten(step2.getConstraints()))),
-                    "not exists (select 1 from %s c where %s)" % (self.tname,str(cWHERE)),
-                    "not exists (select 1 from %s w where %s)" % (self.tname,str(wWHERE))
+                    "not exists (select 1 from %s c where %s)" % (self.tname,unicode(cWHERE)),
+                    "not exists (select 1 from %s w where %s)" % (self.tname,unicode(wWHERE))
                     )
 
                 self.WHERE += [
@@ -559,7 +593,7 @@ class Trans:
                         [step1.right, "<=", step2.left],
                         [step1.pid, "=", step2.pid],
                         flatten(step2.getConstraints()),
-                        "not exists (select 1 from %s z where %s)" % (self.tname,str(zWHERE))
+                        "not exists (select 1 from %s z where %s)" % (self.tname,unicode(zWHERE))
                         ]
                 elif step2.conditional == '*':
                     self.WHERE += [
@@ -569,7 +603,7 @@ class Trans:
                         [step1.right, "<=", step2.left],
                         [step1.pid, "=", step2.pid],
                         flatten(step2.getConstraints()),
-                        "not exists (select 1 from %s z where %s)" % (self.tname,str(zWHERE))
+                        "not exists (select 1 from %s z where %s)" % (self.tname,unicode(zWHERE))
                         ))))
                         ]
                         
@@ -601,8 +635,8 @@ class Trans:
                     ["z.left", ">=", step2.right],
                     ["z.right", "<=", step1.left],
                     NOT(GRP(flatten(step2.getConstraints()))),
-                    "not exists (select 1 from %s c where %s)" % (self.tname,str(cWHERE)),
-                    "not exists (select 1 from %s w where %s)" % (self.tname,str(wWHERE))
+                    "not exists (select 1 from %s c where %s)" % (self.tname,unicode(cWHERE)),
+                    "not exists (select 1 from %s w where %s)" % (self.tname,unicode(wWHERE))
                     )
 
                 self.WHERE += [
@@ -624,7 +658,7 @@ class Trans:
                         [step1.left, ">=", step2.right],
                         [step1.pid, "=", step2.pid],
                         flatten(step2.getConstraints()),
-                        "not exists (select 1 from %s z where %s)" % (self.tname,str(zWHERE))
+                        "not exists (select 1 from %s z where %s)" % (self.tname,unicode(zWHERE))
                         ]
                 elif step2.conditional == '*':
                     self.WHERE += [
@@ -634,7 +668,7 @@ class Trans:
                         [step1.left, ">=", step2.right],
                         [step1.pid, "=", step2.pid],
                         flatten(step2.getConstraints()),
-                        "not exists (select 1 from %s z where %s)" % (self.tname,str(zWHERE))
+                        "not exists (select 1 from %s z where %s)" % (self.tname,unicode(zWHERE))
                         ))))
                         ]
                         
@@ -897,7 +931,7 @@ class TransFlat(Trans):
             s2 = self.steps[i+1]
             self._interpreteAxis(s, s2.axis, s2)
 
-        w = str(self.WHERE).strip()
+        w = unicode(self.WHERE).strip()
         if w: sql += "where %s" % w
         return sql
     
@@ -911,7 +945,7 @@ class TransFlat(Trans):
         for i,s in enumerate(tr.steps[:-1]):
             s2 = tr.steps[i+1]
             tr._interpreteAxis(s, s2.axis, s2)
-        self.WHERE.append(str(tr.WHERE).strip())
+        self.WHERE.append(unicode(tr.WHERE).strip())
     
 def translate2(q,tname='T'):
     global T2, T3, T4, T5, T6, GR
@@ -919,7 +953,7 @@ def translate2(q,tname='T'):
     T2 = time.time()
 
     # tokenization
-    l = tokenize(str(q))
+    l = tokenize(q)
     tokens = [a[1] for a in l]
     assert(tokens[0] == '//')
     T3 = time.time()
