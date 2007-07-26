@@ -7,6 +7,7 @@ try:
 except ImportError:
     CAP_PGSQL = False
 try:
+    os.environ['NLS_LANG'] = '.UTF8'
     import cx_Oracle
     CAP_ORACLE = True
 except ImportError:
