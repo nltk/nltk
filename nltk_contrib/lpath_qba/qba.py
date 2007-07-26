@@ -1,4 +1,5 @@
 import sys
+import os
 from qt import *
 from qtcanvas import *
 from treecanvas import *
@@ -11,13 +12,13 @@ from sqlviewdialog import *
 from overlay import *
 from translator import translate
 from parselpath import parse_lpath
-import os
+from nltk_contrib.lpath import tokenize
 
-class QBE(QMainWindow):
+class QBA(QMainWindow):
     def __init__(self, tree=None):
         QMainWindow.__init__(self)
 
-        self.setCaption("LPath QBE")
+        self.setCaption("LPath QBA")
         self.statusBar()   # create a status bar
         self.db = None
         self.queryTree = None  # tree on which LPath query was built
@@ -55,7 +56,6 @@ class QBE(QMainWindow):
         QLabel("LPath\nQuery:", hbox)
         self.entQuery = QTextView(hbox)
         self.entQuery.setFixedHeight(40)
-        self.entQuery.setWrapPolicy(QTextView.Anywhere)
         self.btnQuery = QPushButton("Submit Query", hbox)
         self.btnQuery.setFixedHeight(40)
         self.layout.addWidget(hbox, 1, 1)
@@ -98,14 +98,14 @@ class QBE(QMainWindow):
             self._queryJustSubmitted = True
             self.statusBar().message("Submitted the query. Please wait...")
             self.btnNextTree.setEnabled(False)
-            self.db.submitQuery(lpath)
-            self.queryTree = parse_lpath(lpath)
-
-            self.connect(self.db.emitter, PYSIGNAL("gotMoreTree"), self.gotMoreTree)
+            if self.db.submitQuery(lpath) == True:
+                self.queryTree = parse_lpath(lpath)
+            else:
+                self.statusBar().message("Query failed.")
 
     def _setLPath(self):
         t = self.treeview.canvas().getTreeModel()
-        lpath = translate(t)
+        lpath = translate(t,space=' ')
         if lpath is None:
             self.entQuery.setText('')
         else:
@@ -120,7 +120,7 @@ class QBE(QMainWindow):
             if not res: return
             
             sid, tid, sql, t, ldb, sql2 = res
-            self.setCaption("LPath QBE: Tree %s" % sid)
+            self.setCaption("LPath QBA: Tree %s" % sid)
             self.setTree(t)
             self.overlays = find_overlays(sql2, ldb, self.queryTree, t)
             self.overlayIdx = 0
@@ -206,7 +206,6 @@ class QBE(QMainWindow):
             self.db = d.getLPathDb()
             self.statusBar().message("Connecting to the database... ok", 150)
             self.db.connectToEvent(self.db.EVENT_MORE_TREE, self)
-            #self.connect(self.db.emitter, PYSIGNAL("gotMoreTree"), self.gotMoreTree)
             tables = self.db.listTables()
             if len(tables) > 1:
                 self.menu_Tools_SelectLPathTable()
@@ -257,11 +256,11 @@ class QBE(QMainWindow):
     
 if __name__ == "__main__":        
     app = QApplication(sys.argv)
-    w = QBE()
+    w = QBA()
     app.setMainWidget(w)
     if len(sys.argv) == 2:
         generator = LPathTreeModel.importTreebank(file(sys.argv[1]))
         w.setTree(generator.next())
     w.show()
-    w.setCaption('LPath QBE')   # this is only necessary on windows
+    w.setCaption('LPath QBA')   # this is only necessary on windows
     app.exec_loop()
