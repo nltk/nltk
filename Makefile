@@ -41,9 +41,9 @@ demotest:
 # DISTRIBUTIONS
 ########################################################################
 
-.PHONY: dist codedist docdist corporadist exampledist .dist.done
+.PHONY: dist codedist docdist datadist exampledist .dist.done
 
-dist: codedist docdist exampledist corporadist
+dist: codedist docdist exampledist datadist
 	touch .dist.done
 
 codedist: gztardist zipdist rpmdist wininstdist
@@ -63,8 +63,8 @@ docdist:
 exampledist:
 	find examples -print | egrep -v '.svn' | zip dist/nltk-examples-$(NLTK_VERSION).zip -@
 
-corporadist:
-	find corpora -print | egrep -v '.svn' | zip dist/nltk-corpora-$(NLTK_VERSION).zip -@
+datadist:
+	find data -print | egrep -v '.svn' | zip dist/nltk-data-$(NLTK_VERSION).zip -@
 
 nightlydist: codedist
 	REVISION = `svn info | grep Revision: | sed "s/Revision: //"`
@@ -114,7 +114,7 @@ iso:	.dist.done .python.done .numpy.done .pylab.done
 	cp dist/nltk-$(NLTK_VERSION).win32.exe     iso/win/
 	cp dist/nltk-$(NLTK_VERSION).tar.gz        iso/unix/
 	cp dist/nltk-$(NLTK_VERSION)-1.noarch.rpm  iso/unix/
-	cp dist/nltk-corpora-$(NLTK_VERSION).zip   iso
+	cp dist/nltk-data-$(NLTK_VERSION).zip   iso
 	cp dist/nltk-doc-$(NLTK_VERSION).zip       iso
 	cp *.txt *.html                                 iso
 	cp python/mac/*                                 iso/mac/
