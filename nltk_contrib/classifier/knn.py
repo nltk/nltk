@@ -32,7 +32,7 @@ class InstanceDistances:
         self.distances = {}
         
     def distance(self, value, instance):
-        if self.distances.has_key(value):
+        if value in self.distances:
             self.distances[value].append(instance)
         else: 
             self.distances[value] = [instance]

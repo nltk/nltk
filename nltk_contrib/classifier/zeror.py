@@ -27,7 +27,7 @@ class ZeroR(Classifier):
     
     def update_count(self, instance):
         klass_value = instance.klass_value
-        if self.__klassCount.has_key(klass_value):
+        if klass_value in self.__klassCount:
             self.__klassCount[klass_value] += 1
         else:
             self.__klassCount[klass_value] = 1

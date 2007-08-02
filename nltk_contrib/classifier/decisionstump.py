@@ -45,7 +45,7 @@ class DecisionStump:
     def klass(self, instance):
         attr_value = instance.value(self.attribute)
         if len(self.children) == 0: return self.majority_klass(attr_value)
-        if not self.children.has_key(attr_value):
+        if not attr_value in self.children:
             return self.majority_klass(attr_value)
         return self.children[attr_value].klass(instance)
     

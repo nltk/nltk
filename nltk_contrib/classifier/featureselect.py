@@ -201,12 +201,12 @@ class FeatureSelection:
         self.attributes.remove_attributes(attributes)
 
 def rank_options_invalid(options):
-    return len(options) != 2 or not OPTION_MAPPINGS.has_key(options[0]) or not options[1].isdigit()
+    return len(options) != 2 or not options[0] in OPTION_MAPPINGS or not options[1].isdigit()
 
 def wrapper_options_invalid(options):
     return (len(options) < 1 or len(options) > 3) \
            or \
-           (not cy.ALGORITHM_MAPPINGS.has_key(options[0]) \
+           (not options[0] in cy.ALGORITHM_MAPPINGS \
                 or \
                 ( (len(options) == 2 or len(options) == 3) \
                      and \

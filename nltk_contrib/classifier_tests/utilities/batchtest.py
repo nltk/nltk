@@ -54,17 +54,17 @@ def process(path, log_path):
     suffixes.extend(disc_suffixes)
     suffixes.extend(filter_suffixes)
     
-    for classification_alg in c.ALGORITHM_MAPPINGS.keys():
+    for algorithm in c.ALL_ALGORITHMS:
         wrapper_inputs, all = [''], suffixes[:]
         wrapper_inputs.extend(disc_suffixes)
-        if has_continuous and not c.ALGORITHM_MAPPINGS[classification_alg].can_handle_continuous_attributes():
+        if has_continuous and not c.ALGORITHM_MAPPINGS[algorithm].can_handle_continuous_attributes():
             del wrapper_inputs[0]
             all.remove('')
-        wrapper_suffixes = f.batch_wrapper_select(path, wrapper_inputs, classification_alg, 25, 0.1, log_path)
+        wrapper_suffixes = f.batch_wrapper_select(path, wrapper_inputs, algorithm, 25, 0.1, log_path)
         all.extend(wrapper_suffixes)
         
         for suffix in all:
-            params = ['-a', classification_alg, '-f', path + suffix, '-l', log_path, '-c', 5]
+            params = ['-a', algorithm, '-f', path + suffix, '-l', log_path, '-c', 5]
             print "Params " + str(params)
             c.Classify().run(params)    
             

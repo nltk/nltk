@@ -63,6 +63,7 @@ NAIVE_BAYES = 'NB'
 IB1 = 'IB1'
 
 ALGORITHM_MAPPINGS = {ZERO_R:zeror.ZeroR, ONE_R:oner.OneR, DECISION_TREE:decisiontree.DecisionTree, NAIVE_BAYES:naivebayes.NaiveBayes, IB1:knn.IB1}
+ALL_ALGORITHMS = ALGORITHM_MAPPINGS.keys()
 
 VERIFY='verify'
 ACCURACY='accuracy'

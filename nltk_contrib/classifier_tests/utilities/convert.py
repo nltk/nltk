@@ -104,10 +104,10 @@ def convert_log_to_tex_tables(path):
     datasets = {}
     for each in classifications:
         dataset = get_dataset_name(each.training)
-        if not datasets.has_key(dataset):
+        if not dataset in datasets:
             datasets[dataset] = {}
             
-        if not datasets[dataset].has_key(each.algorithm):
+        if not each.algorithm in datasets[dataset]:
             datasets[dataset][each.algorithm] = {classify.ACCURACY:{}, classify.F_SCORE:{}}
         pp = get_preprocessing(each.training)
         datasets[dataset][each.algorithm][classify.ACCURACY][pp] = float(each.accuracy)
@@ -134,7 +134,7 @@ def convert_log_to_tex_tables(path):
                 accuracies, fscores = [], []
 
                 for disc in cols:
-                    if (datasets[dataset][alg][classify.ACCURACY].has_key((disc, sel))):
+                    if (disc, sel) in datasets[dataset][alg][classify.ACCURACY]:
                         if float == type(datasets[dataset][alg][classify.ACCURACY][(disc, sel)]) or int == type(datasets[dataset][alg][classify.ACCURACY][(disc, sel)]):
                             acc = datasets[dataset][alg][classify.ACCURACY][(disc, sel)]
                             fsc = datasets[dataset][alg][classify.F_SCORE][(disc, sel)]
@@ -169,7 +169,7 @@ def convert_log_to_tex_tables(path):
             for column in cols:
                 stat_list = util.StatList()
                 for alg in CLASSIFIERS:
-                    if datasets[dataset][alg][classify.ACCURACY].has_key((column, row)):
+                    if (column, row) in datasets[dataset][alg][classify.ACCURACY]:
                         val = datasets[dataset][alg][classify.ACCURACY][(column, row)]
                         if float == type(val) or int == type(val):
                             stat_list.append(val)
@@ -192,7 +192,7 @@ def convert_log_to_tex_tables(path):
             for column in cols:
                 stat_list = util.StatList()
                 for dataset in datasets:
-                    if datasets[dataset][alg][classify.ACCURACY].has_key((column, row)):
+                    if (column, row) in datasets[dataset][alg][classify.ACCURACY]:
                         val = datasets[dataset][alg][classify.ACCURACY][(column, row)]
                         if float == type(val) or int == type(val):
                             if row.find(fs.FORWARD_SELECTION) != -1:
