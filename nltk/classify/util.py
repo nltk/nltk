@@ -212,21 +212,20 @@ def binary_names_demo_features(name):
         features['startswith(%s)' % letter] = (letter==name[0].lower())
         features['endswith(%s)' % letter] = (letter==name[-1].lower())
     return features
-    
 
 def names_demo(trainer, features=names_demo_features):
     from nltk.corpus import names
     import random
 
     # Construct a list of classified names, using the names corpus.
-    namelist = ([(name, 'male') for name in names.read('male')] + 
-                [(name, 'female') for name in names.read('female')])
+    namelist = ([(name, 'male') for name in names.words('male')] + 
+                [(name, 'female') for name in names.words('female')])
 
     # Randomly split the names into a test & train set.
     random.seed(123456)
     random.shuffle(namelist)
-    train = namelist[:1000]
-    test = namelist[1000:1500]
+    train = namelist[:5000]
+    test = namelist[5000:5500]
 
     # Train up a classifier.
     print 'Training classifier...'
@@ -253,6 +252,51 @@ def names_demo(trainer, features=names_demo_features):
             else:
                 fmt = '  %-15s  %6.4f  *%6.4f'
             print fmt % (name, pdist.prob('male'), pdist.prob('female'))
+    except NotImplementedError:
+        pass
+    
+    # Return the classifier
+    return classifier
+
+_inst_cache = {}
+def wsd_demo(trainer, word, features, n=1000):
+    from nltk.corpus import senseval
+    import random
+
+    # Get the instances.
+    print 'Reading data...'
+    global _inst_cache
+    if word not in _inst_cache:
+        _inst_cache[word] = [(i, i.senses[0]) for i in senseval.instances(word)]
+    instances = _inst_cache[word][:]
+    if n> len(instances): n = len(instances)
+    senses = list(set(l for (i,l) in instances))
+    print '  Senses: ' + ' '.join(senses)
+
+    # Randomly split the names into a test & train set.
+    print 'Splitting into test & train...'
+    random.seed(123456)
+    random.shuffle(instances)
+    train = instances[:int(.8*n)]
+    test = instances[int(.8*n):n]
+
+    # Train up a classifier.
+    print 'Training classifier...'
+    classifier = trainer( [(features(i), l) for (i,l) in train] )
+
+    # Run the classifier on the test data.
+    print 'Testing classifier...'
+    acc = classifier_accuracy(classifier, [(features(i),l) for (i,l) in test])
+    print 'Accuracy: %6.4f' % acc
+
+    # For classifiers that can find probabilities, show the log
+    # likelihood and some sample probability distributions.
+    try:
+        test_featuresets = [features(i) for (i,n) in test]
+        pdists = classifier.probdist(test_featuresets)
+        ll = [pdist.logprob(gold)
+              for ((name, gold), pdist) in zip(test, pdists)]
+        print 'Avg. log likelihood: %6.4f' % (sum(ll)/len(test))
     except NotImplementedError:
         pass
     
