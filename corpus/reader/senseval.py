@@ -32,7 +32,7 @@ from nltk.etree import ElementTree
 #: A list of all documents in this corpus.
 items = sorted(["hard", "interest", "line", "serve"])
 
-class SensevalInstance:
+class SensevalInstance(object):
     def __init__(self, word, position, context, senses):
         self.word = word
         self.senses = tuple(senses)
@@ -121,8 +121,7 @@ class SensevalCorpusView(StreamBackedCorpusView):
             # End of an instance?
             if line.lstrip().startswith('</instance'):
                 xml_block = '\n'.join(instance_lines)
-                xml_block = re.sub(r'&(\w+);', r'[\1]', xml_block)
-                #print xml_block
+                xml_block = _fixXML(xml_block)
                 inst = ElementTree.fromstring(xml_block)
                 return [self._parse_instance(inst, lexelt)]
 
@@ -171,3 +170,38 @@ class SensevalCorpusView(StreamBackedCorpusView):
                 assert False, 'unexpected tag %s' % child.tag
         return SensevalInstance(lexelt, position, context, senses)
     
+def _fixXML(text):
+    """
+    Fix the various issues with Senseval pseudo-XML.
+    """
+    # <~> or <^> => ~ or ^
+    text = re.sub(r'<([~\^])>', r'\1', text)
+    # fix lone &
+    text = re.sub(r'(\s+)\&(\s+)', r'\1&amp;\2', text)
+    # fix """
+    text = re.sub(r'"""', '\'"\'', text)
+    # fix <s snum=dd> => <s snum="dd"/>
+    text = re.sub(r'(<[^<]*snum=)([^">]+)>', r'\1"\2"/>', text)
+    # fix foreign word tag
+    text = re.sub(r'<\&frasl>\s*<p[^>]*>', 'FRASL', text)
+    # remove <&I .> 
+    text = re.sub(r'<\&I[^>]*>', '', text)
+    # fix <{word}>
+    text = re.sub(r'<{([^}]+)}>', r'\1', text)
+    # remove <@>, <p>, </p>
+    text = re.sub(r'<(@|/?p)>', r'', text)
+    # remove <&M .> and <&T .> and <&Ms .>
+    text = re.sub(r'<&\w+ \.>', r'', text)
+    # remove <!DOCTYPE... > lines
+    text = re.sub(r'<!DOCTYPE[^>]*>', r'', text)
+    # remove <[hi]> and <[/p]> etc
+    text = re.sub(r'<\[\/?[^>]+\]*>', r'', text)
+    # take the thing out of the brackets: <&hellip;>
+    text = re.sub(r'<(\&\w+;)>', r'\1', text)
+    # and remove the & for those patterns that aren't regular XML
+    text = re.sub(r'&(?!amp|gt|lt|apos|quot)', r'', text)
+    # fix 'abc <p="foo"/>' style tags - now <wf pos="foo">abc</wf>
+    text = re.sub(r'[ \t]*([^<>\s]+?)[ \t]*<p="([^"]*"?)"/>',
+                  r' <wf pos="\2">\1</wf>', text)
+    text = re.sub(r'\s*"\s*<p=\'"\'/>', " <wf pos='\"'>\"</wf>", text)
+    return text
