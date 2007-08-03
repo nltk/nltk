@@ -14,7 +14,7 @@ except ImportError:
 from lpathtree_qt import *
 
 
-__all__ = ["LPathDB", "LPathDbI", "LPathOracleDB"]
+__all__ = ["LPathDB", "LPathDbI", "LPathOracleDB", "LPathMySQLDB"]
 
 class Prefetcher(QThread):
     def __init__(self, conn, indexSql, tableName, maxQueue=25, callback=None):
@@ -231,6 +231,21 @@ class LPathOracleDB(LPathDB):
         cur = self.conn.cursor()
         cur.execute("select table_name from all_tables where owner=:1",
                     (self.user.upper(),))
+        L = [x[0] for x in cur.fetchall()]
+        cur.close()
+        return L
+        
+class LPathMySQLDB(LPathDB):
+    def __init__(self, conn, conn2=None):
+        """
+        @param conn: DB API 2 database connection object.
+        @param conn2: DB connection object used for prefetcher.
+        """
+        LPathDB.__init__(self, conn, conn2)
+
+    def listTables(self):
+        cur = self.conn.cursor()
+        cur.execute("show tables")
         L = [x[0] for x in cur.fetchall()]
         cur.close()
         return L
