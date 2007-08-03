@@ -526,8 +526,10 @@ def find_corpus_items(root, regexp, extension=''):
     return items
     
 def _path_from(parent, child):
+    if os.path.split(parent)[1] == '':
+        parent = os.path.split(parent)[0]
     path = []
-    while not os.path.samefile(parent, child):
+    while parent != child:
         child, dirname = os.path.split(child)
         path.insert(0, dirname)
         assert os.path.split(child)[0] != child
