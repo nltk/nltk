@@ -4,9 +4,8 @@ import os
 from optparse import OptionParser
 import platform
 import pwd
-from at.table import TableModel
-from at.tree import TreeModel
-#from pyPgSQL import PgSQL
+from at_lite.table import TableModel
+from at_lite.tree import TreeModel
 import re
 
 def tb2tbl(tree,a,b):
@@ -37,12 +36,21 @@ def connectdb(opts):
             dsn = "%s/%s@%s" % (user,opts.passwd,suffix)
             conn = cx_Oracle.connect(dsn)
             return conn
+	elif opts.servertype == 'mysql':
+	    import MySQLdb
+	    try:
+                conn = MySQLdb.connect(host=opts.host, port=opts.port, db=opts.db,
+                                       user=opts.user, passwd=opts.passwd)
+            except DatabaseError, e:
+                print e
+                sys.exit(1)
+            return conn
     except ImportError, e:
         print e
         sys.exit(1)
 
 def limit(servertype, sql, num):
-    if servertype == 'postgresql':
+    if servertype in ('postgresql', 'mysql'):
         sql += " limit %d" % num
     elif servertype == 'oracle':
         if 'where' in sql.lower():
@@ -163,8 +171,11 @@ elif opts.servertype == 'postgresql':
 elif opts.servertype == 'oracle':
     import cx_Oracle
     from cx_Oracle import DatabaseError
+elif opts.servertype == 'mysql':
+    import MySQLdb
+    DatabaseError = MySQLdb.DatabaseError
 else:
-    optpar.error("server type should be one of the followins: postgresql, oracle")
+    optpar.error("server type should be one of the followins: postgresql, oracle, mysql")
     
 # try to connect to database
 conn = connectdb(opts)
@@ -187,7 +198,7 @@ except DatabaseError, e:
         sys.exit(1)
 
 # set correct table name in the insertion SQL
-if opts.servertype == 'postgresql':
+if opts.servertype in ('postgresql', 'mysql'):
     SQL1 = "insert into TABLE values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 elif opts.servertype == 'oracle':
     SQL1 = "insert into TABLE values(:c1,:c2,:c3,:c4,:c5,:c6,:c7,:c8,:c9,:c10)"
