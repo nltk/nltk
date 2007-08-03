@@ -12,6 +12,11 @@ try:
     CAP_ORACLE = True
 except ImportError:
     CAP_ORACLE = False
+try:
+    import MySQLdb
+    CAP_MYSQL = True
+except ImportError:
+    CAP_MYSQL = False
 
 class ConnectionError(Exception):
     def __init__(self, msg):
@@ -69,7 +74,6 @@ class PgsqlPanel(QWidget, ConnectionPanelI):
                 msg = e.message
             raise ConnectionError(msg)
 
-
 class OraclePanel(QWidget, ConnectionPanelI):
     def __init__(self, parent=None, name=None):
         QWidget.__init__(self, parent, name)
@@ -115,6 +119,51 @@ class OraclePanel(QWidget, ConnectionPanelI):
             raise ConnectionError(msg)
         return LPathOracleDB(conn, conn2, user)
 
+class MySQLPanel(QWidget, ConnectionPanelI):
+    def __init__(self, parent=None, name=None):
+        QWidget.__init__(self, parent, name)
+        
+        user = os.path.basename(os.path.expanduser("~"))
+
+        layout = QGridLayout(self)
+        layout.addWidget(QLabel("Host: ",self),0,0)
+        layout.addWidget(QLabel("Port: ",self),1,0)
+        layout.addWidget(QLabel("Database: ",self),2,0)
+        layout.addWidget(QLabel("User: ",self),3,0)
+        layout.addWidget(QLabel("Password: ",self),4,0)
+        self.entHost = QLineEdit(self)        
+        self.entPort = QLineEdit("5432", self)        
+        self.entDatabase = QLineEdit("qldb", self)        
+        self.entUser = QLineEdit(user, self)        
+        self.entPassword = QLineEdit(self)
+        self.entPassword.setEchoMode(QLineEdit.Password)
+        layout.addWidget(self.entHost,0,1)
+        layout.addWidget(self.entPort,1,1)
+        layout.addWidget(self.entDatabase,2,1)
+        layout.addWidget(self.entUser,3,1)
+        layout.addWidget(self.entPassword,4,1)
+
+    def connect(self):
+        conninfo = {
+            "host":str(self.entHost.text()),
+            "port":int(self.entPort.text()),
+            "db":str(self.entDatabase.text()),
+            "user":str(self.entUser.text()),
+            "passwd":str(self.entPassword.text())
+            }
+        if conninfo['passwd'] is None:
+            del conninfo['passwd']
+        try:
+            conn = MySQLdb.connect(**conninfo)
+            return LPathMySQLDB(conn)
+        except MySQLdb.DatabaseError, e:
+            try:
+                enc = os.environ['LANG'].split('.')[-1]
+                msg = e.message.decode(enc)
+            except:
+                msg = e.message
+            raise ConnectionError(msg)
+
 class DatabaseConnectionDialog(QDialog):
     def __init__(self, parent=None, name=None,
                  modal=False, wflag=0):
@@ -124,7 +173,8 @@ class DatabaseConnectionDialog(QDialog):
         self.wstack = QWidgetStack(self)
         self.conpans = {"--":self.conpanNone,
                        "PostgreSQL":self.conpanPostgreSQL,
-                       "Oracle":self.conpanOracle}
+                       "Oracle":self.conpanOracle,
+		       "MySQL":self.conpanMySQL}
         self.conpan = None
         self.conpanNone()
 
@@ -135,6 +185,7 @@ class DatabaseConnectionDialog(QDialog):
         combo.insertItem("--")
         if CAP_PGSQL: combo.insertItem("PostgreSQL")
         if CAP_ORACLE: combo.insertItem("Oracle")
+	if CAP_MYSQL: combo.insertItem("MySQL")
 
         layout.addWidget(hbox)
         layout.addWidget(self.wstack)
@@ -170,6 +221,11 @@ class DatabaseConnectionDialog(QDialog):
         self.wstack.raiseWidget(self.conpan)
     def conpanOracle(self):
         self.conpan = OraclePanel(self)
+        self.wstack.removeWidget(self.wstack.visibleWidget())
+        self.wstack.addWidget(self.conpan)
+        self.wstack.raiseWidget(self.conpan)
+    def conpanMySQL(self):
+        self.conpan = MySQLPanel(self)
         self.wstack.removeWidget(self.wstack.visibleWidget())
         self.wstack.addWidget(self.conpan)
         self.wstack.raiseWidget(self.conpan)
