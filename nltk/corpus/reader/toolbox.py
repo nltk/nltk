@@ -55,6 +55,16 @@ class ToolboxCorpusReader(CorpusReader):
         return [os.path.join(self._root, '%s%s' % (item, self._extension))
                 for item in items]
 
+    #{ Deprecated since 0.8
+    from nltk.utilities import deprecated
+    @deprecated("Use .xml() instead.")
+    def dictionary(files=None):
+        raise ValueError("no longer supported -- use .xml() instead")
+    @deprecated("Use .xml() instead.")
+    def parse_corpus(files=None, key=None):
+        return self.xml(items, key)
+    #}
+    
 class StandardFormat(object):
     """
     Class for reading and processing standard format marker files and strings.

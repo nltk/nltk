@@ -65,6 +65,31 @@ class YCOECorpusReader(CorpusReader):
     def parsed_sents(self, items=None):
         return self._psd_reader.parsed_sents(items)
 
+    #{ Deprecated since 0.8
+    from nltk.utilities import deprecated
+    @deprecated("Use .raw() or .words() or .tagged_words() or "
+                ".parsed_sents() instead.")
+    def read(items=None, format='parsed'):
+        if format == 'parsed': return self.parsed_sents(items)
+        if format == 'raw': return self.raw(items)
+        if format == 'tokenized': return self.words(items)
+        if format == 'tagged': return self.tagged_words(items)
+        if format == 'chunked': raise ValueError('no longer supported')
+        raise ValueError('bad format %r' % format)
+    @deprecated("Use .parsed_sents() instead.")
+    def parsed(items=None):
+        return self.parsed_sents(items)
+    @deprecated("Use .words() instead.")
+    def tokenized(items=None):
+        return self.words(items)
+    @deprecated("Use .tagged_words() instead.")
+    def tagged(items=None):
+        return self.tagged_words(items)
+    @deprecated("Operation no longer supported.")
+    def chunked(items=None):
+        raise ValueError('format "chunked" no longer supported')
+    #}
+
 class YCOEParseCorpusReader(BracketParseCorpusReader):
     """Specialized version of the standard bracket parse corpus reader
     that strips out (CODE ...) and (ID ...) nodes."""

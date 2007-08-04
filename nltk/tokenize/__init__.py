@@ -27,7 +27,7 @@ __all__ = ['WhitespaceTokenizer', 'SpaceTokenizer', 'TabTokenizer',
            ]
 
 ######################################################################
-#{ Deprecated functions for backwards compatibility
+#{ Deprecated since 0.8
 ######################################################################
 
 @deprecated("Use nltk.blankline_tokenize() or "
@@ -56,4 +56,5 @@ def line(text):
     # note -- LineTokenizer doesn't strip out blank lines.
     return [line for line in text.split('\n') if line]
 
+#}
 

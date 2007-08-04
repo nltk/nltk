@@ -95,11 +95,26 @@ class CMUDictCorpusReader(CorpusReader):
         if isinstance(items, basestring): items = [items]
         return [os.path.join(self._root, '%s%s' % (item, self._extension))
                 for item in items]
-    
-def read_cmudict_block(stream):
-    line = stream.readline().split()
-    if line:
-        return [ (line[0], int(line[1]), tuple(line[2:])) ]
-    else:
-        return []
 
+
+    #{ Deprecated since 0.8
+    from nltk.utilities import deprecated
+    @deprecated("Use .entries() or .transcriptions() instead.")
+    def read(items='cmudict', format='listed'):
+        if format == 'listed': return self.entries(items)
+        if format == 'dictionary': return self.transcriptions(items)
+        raise ValueError('bad format %r' % format)
+    @deprecated("Use .transcriptions() instead.")
+    def dictionary(items='cmudict'): return self.transcriptions(items)
+    @deprecated("Use .entries() instead.")
+    def listed(items='cmudict'): return self.entries(items)
+    #}
+
+def read_cmudict_block(stream):
+    entries = []
+    while len(entries) < 100: # Read 100 at a time.
+        line = stream.readline()
+        if line == '': return entries # end of file.
+        pieces = line.split()
+        entries.append( (pieces[0], int(pieces[1]), tuple(pieces[2:])) )
+    return entries
