@@ -51,7 +51,11 @@ else: path += [
     '/usr/share/nltk',
     '/usr/share/nltk/data',
     '/usr/local/share/nltk',
-    '/usr/local/share/nltk/data']
+    '/usr/local/share/nltk/data',
+    '/usr/lib/nltk',
+    '/usr/lib/nltk/data',
+    '/usr/local/lib/nltk',
+    '/usr/local/lib/nltk/data']
 
 ######################################################################
 # Access Functions
