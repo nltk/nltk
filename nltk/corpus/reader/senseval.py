@@ -76,6 +76,18 @@ class SensevalCorpusReader(CorpusReader):
                 elts.append( (sense, context) )
         return elts
 
+    #{ Deprecated since 0.8
+    from nltk.utilities import deprecated
+    @deprecated("Use .instances() or .raw() instead.")
+    def read(items, format='listed'):
+        if format == 'listed': return self.instances(items)
+        if format == 'raw': return self.raw(items)
+        raise ValueError('bad format %r' % format)
+    @deprecated("Use .instances() instead.")
+    def listed(items):
+        return self.instances(items)
+    #}
+    
 class SensevalCorpusView(StreamBackedCorpusView):
     def __init__(self, filename):
         StreamBackedCorpusView.__init__(self, filename)

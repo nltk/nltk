@@ -148,5 +148,16 @@ class PlaintextCorpusReader(CorpusReader):
                           for sent in self._sent_tokenizer.tokenize(para)])
         return paras
             
+    #{ Deprecated since 0.8
+    from nltk.utilities import deprecated
+    @deprecated("Use .raw() or .words() instead.")
+    def read(items=None, format='tokenized'):
+        if format == 'raw': return self.raw(items)
+        if format == 'tokenized': return self.words(items)
+        raise ValueError('bad format %r' % format)
+    @deprecated("Use .words() instead.")
+    def tokenized(items=None):
+        return self.words(items)
+    #}
             
         

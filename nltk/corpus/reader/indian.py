@@ -66,6 +66,22 @@ class IndianCorpusReader(CorpusReader):
         return [os.path.join(self._root, '%s%s' % (item, self._extension))
                 for item in items]
 
+    #{ Deprecated since 0.8
+    from nltk.utilities import deprecated
+    @deprecated("Use .raw() or .words() or .tagged_words() instead.")
+    def read(items, format='tagged'):
+        if format == 'raw': return self.raw(items)
+        if format == 'tokenized': return self.words(items)
+        if format == 'tagged': return self.tagged_words(items)
+        raise ValueError('bad format %r' % format)
+    @deprecated("Use .words() instead.")
+    def tokenized(items):
+        return self.words(items)
+    @deprecated("Use .tagged_words() instead.")
+    def tagged(items):
+        return self.tagged_words(items)
+    #}
+    
 class IndianCorpusView(StreamBackedCorpusView):
     def __init__(self, corpus_file, tagged, group_by_sent):
         self._tagged = tagged

@@ -65,6 +65,27 @@ class ConllChunkCorpusReader(CorpusReader):
         return [os.path.join(self._root, '%s%s' % (item, self._extension))
                 for item in items]
     
+    #{ Deprecated since 0.8
+    from nltk.utilities import deprecated
+    @deprecated("Use .raw() or .words() or .tagged_words() or "
+                ".chunked_sents() instead.")
+    def read(items, format='chunked'):
+        if format == 'chunked': return self.chunked_sents(items)
+        if format == 'raw': return self.raw(items)
+        if format == 'tokenized': return self.words(items)
+        if format == 'tagged': return self.tagged_words(items)
+        raise ValueError('bad format %r' % format)
+    @deprecated("Use .chunked_sents() instead.")
+    def chunked(items):
+        return self.chunked_sents(items)
+    @deprecated("Use .words() instead.")
+    def tokenized(items):
+        return self.words(items)
+    @deprecated("Use .tagged_words() instead.")
+    def tagged(items):
+        return self.tagged_words(items)
+    #}
+    
 class ConllChunkCorpusView(StreamBackedCorpusView):
     """
     """
