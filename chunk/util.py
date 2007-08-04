@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 from api import *
-from nltk import tokenize, Tree
+from nltk import Tree
 from nltk.tag import tag2tuple
 import re, string
 
@@ -338,7 +338,8 @@ def conllstr2tree(s, chunk_types=('NP', 'PP', 'VP'), top_node="S"):
 
     stack = [Tree(top_node, [])]
 
-    for lineno, line in enumerate(tokenize.line(s)):
+    for lineno, line in enumerate(s.split('\n')):
+        if not line.strip(): continue
 
         # Decode the line.
         match = _LINE_RE.match(line)
