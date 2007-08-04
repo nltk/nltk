@@ -45,3 +45,11 @@ class XMLCorpusReader(CorpusReader):
         return [os.path.join(self._root, '%s%s' % (item, self._extension))
                 for item in items]
     
+    #{ Deprecated since 0.8
+    from nltk.utilities import deprecated
+    @deprecated("Use .raw() or .xml() instead.")
+    def read(items=None, format='xml'):
+        if format == 'raw': return self.raw(items)
+        if format == 'xml': return self.xml(items)
+        raise ValueError('bad format %r' % format)
+    #}

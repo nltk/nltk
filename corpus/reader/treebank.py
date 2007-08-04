@@ -91,6 +91,31 @@ class TreebankCorpusReader(CorpusReader):
         return concat([re.sub(r'\A\s*\.START\s*', '', open(filename).read())
                        for filename in filenames])
 
+    #{ Deprecated since 0.8
+    from nltk.utilities import deprecated
+    @deprecated("Use .raw() or .sents() or .tagged_sents() or "
+                ".parsed_sents() instead.")
+    def read(items=None, format='parsed'):
+        if format == 'parsed': return self.parsed_sents(items)
+        if format == 'raw': return self.raw(items)
+        if format == 'tokenized': return self.sents(items)
+        if format == 'tagged': return self.tagged_sents(items)
+        if format == 'parsed_no_pos': raise ValueError('no longer supported')
+        raise ValueError('bad format %r' % format)
+    @deprecated("Use .parsed_sents() instead.")
+    def parsed(items=None):
+        return self.parsed_sents(items)
+    @deprecated("Use .sents() instead.")
+    def tokenized(items=None):
+        return self.sents(items)
+    @deprecated("Use .tagged_sents() instead.")
+    def tagged(items=None):
+        return self.tagged_sents(items)
+    @deprecated("Operation no longer supported -- use .parsed_sents().")
+    def parsed_no_pos(items=None):
+        raise ValueError('format "parsed_no_pos" no longer supported')
+    #}
+    
 def tagged_treebank_para_block_reader(stream):
     # Read the next paragraph.
     para = ''
