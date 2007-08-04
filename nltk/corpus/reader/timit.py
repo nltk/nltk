@@ -342,7 +342,19 @@ class TimitCorpusReader(CorpusReader):
         # Method 3: complain. :)
         print >>sys.stderr, ("you must install pygame or ossaudiodev "
                              "for audio playback.")
-    
+
+    #{ Deprecated since 0.8
+    from nltk.utilities import deprecated
+    @deprecated("Use .sents() or .sent_times() instead.")
+    def tokenized(items=None, offset=True):
+        if offset: return self.sent_times(items)
+        else: return self.sents(items)
+    @deprecated("Use .phons() or .phon_times() instead.")
+    def phonetic(items=None, offset=True):
+        if offset: return self.phon_times(items)
+        else: return self.phons(items)
+    #}
+
 class SpeakerInfo:
     def __init__(self, id, sex, dr, use, recdate, birthdate,
                  ht, race, edu, comments=None):

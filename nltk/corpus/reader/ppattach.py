@@ -107,3 +107,11 @@ class PPAttachmentCorpusReader(CorpusReader):
         else:
             return []
 
+    #{ Deprecated since 0.8
+    from nltk.utilities import deprecated
+    @deprecated("Use .tuples() or .raw() or .attachments() instead.")
+    def read(items, format='tuple'):
+        if format == 'tuple': return self.tuples(items)
+        if format == 'raw': return self.raw(items)
+        raise ValueError('bad format %r' % format)
+    #}

@@ -164,6 +164,30 @@ class TaggedCorpusReader(CorpusReader):
         return [os.path.join(self._root, '%s%s' % (item, self._extension))
                 for item in items]
     
+    #{ Deprecated since 0.8
+    from nltk.utilities import deprecated
+    @deprecated("Use .raw() or .words() or .sents() or .paras() or "
+                ".tagged_words() or .tagged_sents() or .tagged_paras() "
+                "instead.")
+    def read(items=None, format='tagged', gs=True, gp=True):
+        if format == 'tagged': return self.tagged(items, gs, gp)
+        if format == 'tokenized': return self.tokenized(items, gs, gp)
+        raise ValueError('bad format %r' % format)
+    @deprecated("Use .words() or .sents() or .paras() instead.")
+    def tokenized(items=None, gs=True, gp=True):
+        if gs and gp: return self.paras()
+        elif gs and not gp: return self.sents()
+        elif not gs and not gp: return self.words()
+        else: return 'Operation no longer supported.'
+    @deprecated("Use .tagged_words() or .tagged_sents() or "
+                ".tagged_paras() instead.")
+    def tagged(items=None, gs=True, gp=True):
+        if gs and gp: return self.tagged_paras()
+        elif gs and not gp: return self.tagged_sents()
+        elif not gs and not gp: return self.tagged_words()
+        else: return 'Operation no longer supported.'
+    #}
+    
 class TaggedCorpusView(StreamBackedCorpusView):
     """
     A specialized corpus view for tagged documents.  It can be

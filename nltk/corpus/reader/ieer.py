@@ -115,3 +115,15 @@ class IEERCorpusReader(CorpusReader):
         # Return the document
         return ['\n'.join(out)]
 
+    #{ Deprecated since 0.8
+    from nltk.utilities import deprecated
+    @deprecated("Use .parsed_docs() or .raw() or .docs() instead.")
+    def read(items, format='parsed'):
+        if format == 'parsed': return self.parsed_docs(items)
+        if format == 'raw': return self.raw(items)
+        if format == 'docs': return self.docs(items)
+        raise ValueError('bad format %r' % format)
+    @deprecated("Use .parsed_docs() instead.")
+    def parsed(items):
+        return self.parsed_docs(items)
+    #}
