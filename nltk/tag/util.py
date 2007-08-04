@@ -7,7 +7,6 @@
 # For license information, see LICENSE.TXT
 
 import string
-from nltk import tokenize
 
 def tag2tuple(s, sep='/'):
     loc = s.rfind(sep)
@@ -20,13 +19,13 @@ def untag(tagged_sentence):
     return (w for (w, t) in tagged_sentence)
 
 def string2tags(s, sep='/'):
-    return [tag2tuple(t, sep) for t in tokenize.whitespace(s)]
+    return [tag2tuple(t, sep) for t in s.split()]
 
 def tags2string(t, sep='/'):
     return string.join(token + sep + str(tag) for (token, tag) in t)
 
 def string2words(s, sep='/'):
-    return [tag2tuple(t, sep)[0] for t in tokenize.whitespace(s)]
+    return [tag2tuple(t, sep)[0] for t in s.split()]
 
 
 from nltk import evaluate
