@@ -518,12 +518,14 @@ def find_corpus_items(root, regexp, extension=''):
         prefix = ''.join('%s/' % p for p in _path_from(root, dirname))
         items += [prefix+filename for filename in filenames
                   if re.match(regexp, prefix+filename)]
+        # Don't visit svn directories:
+        if '.svn' in subdirs: subdirs.remove('.svn')
         
     # Strip extension.
     if extension:
         items = [item[:-len(extension)] for item in items]
         
-    return items
+    return tuple(sorted(items))
     
 def _path_from(parent, child):
     if os.path.split(parent)[1] == '':
