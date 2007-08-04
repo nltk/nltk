@@ -763,16 +763,19 @@ def deprecated(message):
       ...     print x/10
     """
     def decorator(func):
+        msg = ("Function %s() has been deprecated.  %s"
+               % (func.__name__, message))
+        msg = '\n' + textwrap.fill(msg, initial_indent='  ',
+                                   subsequent_indent='  ')
         def newFunc(*args, **kwargs):
-            msg = ("Function %s() has been deprecated.  %s"
-                   % (func.__name__, message))
-            msg = '\n' + textwrap.fill(msg, initial_indent='  ',
-                                       subsequent_indent='  ')
             warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
             return func(*args, **kwargs)
             
         newFunc.__name__ = func.__name__
-        newFunc.__doc__ = func.__doc__
+        if func.__doc__:
+            newFunc.__doc__ = func.__doc__ + "\nmsg"
+        else:
+            newFunc.__doc__ = msg
         newFunc.__dict__.update(func.__dict__)
         return newFunc
     return decorator
