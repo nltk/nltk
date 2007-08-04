@@ -532,7 +532,7 @@ also available:
 
 We can use these times to play selected pieces of a speech sample:
 
-    >>> timit.play(item, 2190, 8804) # 'clasp'
+    >>> timit.play(item, 2190, 8804) # 'clasp'  # doctest: +SKIP
 
 The corpus reader can also be queried for information about the
 speaker and sentence identifier for a given speech sample:
