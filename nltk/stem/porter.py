@@ -579,10 +579,9 @@ def demo():
     orig = []
     stemmed = []
     for item in treebank.items[:3]:
-        for sent in treebank.tagged(item):
-            for (word, tag) in sent:
-                orig.append(word)
-                stemmed.append(stemmer.stem(word))
+        for (word, tag) in treebank.tagged_words(item):
+            orig.append(word)
+            stemmed.append(stemmer.stem(word))
 
     # Convert the results to a string, and word-wrap them.
     results = ' '.join(stemmed)
