@@ -250,8 +250,8 @@ class MinimalSet(object):
         Determine which contexts occurred with enough distinct targets.
 
         @param minimum: the minimum number of distinct target forms
-        @type minimum: C(int)
-        @rtype C(list)
+        @type minimum: C{int}
+        @rtype C{list}
         """
         return [c for c in self._contexts if len(self._seen[c]) >= minimum]
 
@@ -276,18 +276,24 @@ class MinimalSet(object):
 ## Regexp display (thanks to David Mertz)
 ######################################################################
 
-def re_show(regexp, string):
+def re_show(regexp, string, left="{", right="}"):
     """
     Search C{string} for substrings matching C{regexp} and wrap
     the matches with braces.  This is convenient for learning about
     regular expressions.
 
     @param regexp: The regular expression.
+    @type param: C{string}
     @param string: The string being matched.
+    @type string: C{string}
+    @param left: The left delimiter (printed before the matched substring), default "{"
+    @type left: C{string}
+    @param right: The right delimiter (printed after the matched substring), default "}"
+    @type right: C{string}
     @rtype: C{string}
-    @return: A string with braces surrounding the matched substrings.
+    @return: A string with markers surrounding the matched substrings.
     """
-    print re.compile(regexp, re.M).sub("{\g<0>}", string.rstrip())
+    print re.compile(regexp, re.M).sub(left + r"\g<0>" + right, string.rstrip())
 
 
 ######################################################################
