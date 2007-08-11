@@ -16,6 +16,7 @@ from util import *
 from nltk.tag import tag2tuple
 from nltk.tokenize import *
 import os
+from nltk.utilities import deprecated
 
 class TaggedCorpusReader(CorpusReader):
     """
@@ -165,7 +166,6 @@ class TaggedCorpusReader(CorpusReader):
                 for item in items]
     
     #{ Deprecated since 0.8
-    from nltk.utilities import deprecated
     @deprecated("Use .raw() or .words() or .sents() or .paras() or "
                 ".tagged_words() or .tagged_sents() or .tagged_paras() "
                 "instead.")

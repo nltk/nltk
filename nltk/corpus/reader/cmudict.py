@@ -48,6 +48,7 @@ ZH      seizure S IY ZH ER
 from util import *
 from api import *
 import os
+from nltk.utilities import deprecated
 
 class CMUDictCorpusReader(CorpusReader):
     def __init__(self, root, items, extension=''):
@@ -98,7 +99,6 @@ class CMUDictCorpusReader(CorpusReader):
 
 
     #{ Deprecated since 0.8
-    from nltk.utilities import deprecated
     @deprecated("Use .entries() or .transcriptions() instead.")
     def read(items='cmudict', format='listed'):
         if format == 'listed': return self.entries(items)

@@ -25,6 +25,7 @@ from util import *
 from api import *
 from nltk import chunk
 import os
+from nltk.utilities import deprecated
 
 #: A dictionary whose keys are the names of documents in this corpus;
 #: and whose values are descriptions of those documents' contents.
@@ -116,7 +117,6 @@ class IEERCorpusReader(CorpusReader):
         return ['\n'.join(out)]
 
     #{ Deprecated since 0.8
-    from nltk.utilities import deprecated
     @deprecated("Use .parsed_docs() or .raw() or .docs() instead.")
     def read(items, format='parsed'):
         if format == 'parsed': return self.parsed_docs(items)

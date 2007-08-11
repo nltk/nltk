@@ -20,6 +20,7 @@ from string import split
 from itertools import imap
 from StringIO import StringIO
 from nltk.etree.ElementTree import TreeBuilder, Element
+from nltk.utilities import deprecated
 
 class ToolboxCorpusReader(CorpusReader):
     def __init__(self, root, items, extension=''):
@@ -56,7 +57,6 @@ class ToolboxCorpusReader(CorpusReader):
                 for item in items]
 
     #{ Deprecated since 0.8
-    from nltk.utilities import deprecated
     @deprecated("Use .xml() instead.")
     def dictionary(files=None):
         raise ValueError("no longer supported -- use .xml() instead")

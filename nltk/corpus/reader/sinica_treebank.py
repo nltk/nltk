@@ -43,6 +43,7 @@ from api import *
 from nltk import tokenize, tree
 from nltk.tag import tag2tuple
 import os, re
+from nltk.utilities import deprecated
 
 #: A list of all documents in this corpus.
 items = ['parsed', 'tagged', 'tokenized', 'raw']
@@ -115,7 +116,6 @@ class SinicaTreebankCorpusReader(CorpusReader):
         return [tree.sinica_parse(sent)]
 
     #{ Deprecated since 0.8
-    from nltk.utilities import deprecated
     @deprecated("Use .raw() or .sents() or .tagged_sents() or "
                 ".parsed_sents() instead.")
     def read(items=None, format='parsed'):

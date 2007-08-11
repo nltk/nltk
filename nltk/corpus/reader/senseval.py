@@ -28,6 +28,7 @@ from nltk.tokenize import *
 import os, re, xml.sax
 from xmldocs import XMLCorpusReader
 from nltk.etree import ElementTree
+from nltk.utilities import deprecated
 
 #: A list of all documents in this corpus.
 items = sorted(["hard", "interest", "line", "serve"])
@@ -77,7 +78,6 @@ class SensevalCorpusReader(CorpusReader):
         return elts
 
     #{ Deprecated since 0.8
-    from nltk.utilities import deprecated
     @deprecated("Use .instances() or .raw() instead.")
     def read(items, format='listed'):
         if format == 'listed': return self.instances(items)
