@@ -6,6 +6,7 @@
 # For license information, see LICENSE.TXT
 
 import subprocess, os.path, locale, re, warnings, textwrap
+import pydoc, inspect, types
 
 ##########################################################################
 # PRETTY PRINTING
@@ -754,6 +755,30 @@ def windowdiff(seg1, seg2, k, boundary="1"):
     for i in range(len(seg1) - k):
         wd += abs(seg1[i:i+k+1].count(boundary) - seg2[i:i+k+1].count(boundary))
     return wd
+
+######################################################################
+# Short usage message
+######################################################################
+
+def usage(obj, selfname='self'):
+    str(obj) # In case it's lazy, this will load it.
+    
+    if not isinstance(obj, (types.TypeType, types.ClassType)):
+        obj = obj.__class__
+
+    print '%s supports the following operations:' % obj.__name__
+    for (name, method) in sorted(pydoc.allmethods(obj).items()):
+        if not name.startswith('_'):
+            args, varargs, varkw, defaults = inspect.getargspec(method)
+            if (args and args[0]=='self' and
+                (defaults is None or len(args)>len(defaults))):
+                args = args[1:]
+                name = '%s.%s' % (selfname, name)
+            argspec = inspect.formatargspec(
+                args, varargs, varkw, defaults)
+            print textwrap.fill('%s%s' % (name, argspec),
+                                initial_indent='  - ',
+                                subsequent_indent=' '*(len(name)+5))
 
 ######################################################################
 # Deprecation decorator & base class
