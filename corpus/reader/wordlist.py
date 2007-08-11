@@ -8,6 +8,7 @@
 
 from util import *
 from api import *
+from nltk.utilities import deprecated
 
 class WordListCorpusReader(CorpusReader):
     """
@@ -40,7 +41,6 @@ class WordListCorpusReader(CorpusReader):
                 for item in items]
         
     #{ Deprecated since 0.8
-    from nltk.utilities import deprecated
     @deprecated("Use .raw() or .words() instead.")
     def read(items=None, format='listed'):
         if format == 'raw': return self.raw(items)

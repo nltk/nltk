@@ -43,6 +43,7 @@ from api import *
 from nltk import tokenize
 from nltk.tag import string2tags, string2words
 import os
+from nltk.utilities import deprecated
 
 class PPAttachment:
     def __init__(self, sent, verb, noun1, prep, noun2, attachment):
@@ -108,7 +109,6 @@ class PPAttachmentCorpusReader(CorpusReader):
             return []
 
     #{ Deprecated since 0.8
-    from nltk.utilities import deprecated
     @deprecated("Use .tuples() or .raw() or .attachments() instead.")
     def read(items, format='tuple'):
         if format == 'tuple': return self.tuples(items)

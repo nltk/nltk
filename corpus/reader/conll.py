@@ -14,6 +14,7 @@ from util import *
 from api import *
 from nltk import chunk, tree
 import os
+from nltk.utilities import deprecated
 
 class ConllChunkCorpusReader(CorpusReader):
     def __init__(self, root, items, extension, chunk_types):
@@ -66,7 +67,6 @@ class ConllChunkCorpusReader(CorpusReader):
                 for item in items]
     
     #{ Deprecated since 0.8
-    from nltk.utilities import deprecated
     @deprecated("Use .raw() or .words() or .tagged_words() or "
                 ".chunked_sents() instead.")
     def read(items, format='chunked'):

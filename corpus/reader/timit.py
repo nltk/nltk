@@ -121,6 +121,7 @@ from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from nltk.tree import Tree
 import sys, os, re, tempfile, time
+from nltk.utilities import deprecated
 
 class TimitCorpusReader(CorpusReader):
     """
@@ -344,7 +345,6 @@ class TimitCorpusReader(CorpusReader):
                              "for audio playback.")
 
     #{ Deprecated since 0.8
-    from nltk.utilities import deprecated
     @deprecated("Use .sents() or .sent_times() instead.")
     def tokenized(items=None, offset=True):
         if offset: return self.sent_times(items)
