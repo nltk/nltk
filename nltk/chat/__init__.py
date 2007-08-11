@@ -22,3 +22,21 @@ from iesha import iesha_chat
 from rude import rude_chat
 from suntsu import suntsu_chat
 from zen import zen_chat
+
+def demo():
+    import sys
+    print 'Which chatbot would you like to talk to?'
+    print '  1: Eliza (psycho-babble)'
+    print '  2: Iesha (teen anime junky)'
+    print '  3: Rude'
+    print '  4: Suntsu (Chinese sayings)'
+    print '  5: Zen (gems of wisdom)'
+    print '\nPlease enter 1-5 ',
+    choice = sys.stdin.readline().strip()
+    print
+    if choice not in '12345':
+        print 'Bad chatbot number'
+        return
+
+    chatbot = [eliza_chat, iesha_chat, rude_chat, suntsu_chat, zen_chat][int(choice)-1]
+    chatbot()
