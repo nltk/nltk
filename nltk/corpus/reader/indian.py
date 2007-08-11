@@ -23,6 +23,7 @@ from nltk.corpus.reader.api import *
 from nltk import tokenize
 from nltk.tag import string2tags, string2words
 import os
+from nltk.utilities import deprecated
 
 class IndianCorpusReader(CorpusReader):
     """
@@ -67,7 +68,6 @@ class IndianCorpusReader(CorpusReader):
                 for item in items]
 
     #{ Deprecated since 0.8
-    from nltk.utilities import deprecated
     @deprecated("Use .raw() or .words() or .tagged_words() instead.")
     def read(items, format='tagged'):
         if format == 'raw': return self.raw(items)
