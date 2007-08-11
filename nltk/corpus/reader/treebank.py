@@ -24,6 +24,7 @@ from nltk.tokenize import *
 from nltk.tree import Tree
 from nltk import chunk
 import os.path
+from nltk.utilities import deprecated
 
 class TreebankCorpusReader(CorpusReader):
     """
@@ -92,7 +93,6 @@ class TreebankCorpusReader(CorpusReader):
                        for filename in filenames])
 
     #{ Deprecated since 0.8
-    from nltk.utilities import deprecated
     @deprecated("Use .raw() or .sents() or .tagged_sents() or "
                 ".parsed_sents() instead.")
     def read(items=None, format='parsed'):

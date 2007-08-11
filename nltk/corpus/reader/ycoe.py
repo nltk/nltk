@@ -27,6 +27,7 @@ from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
 from nltk.corpus.reader.tagged import TaggedCorpusReader
 from string import split
 import os, re
+from nltk.utilities import deprecated
 
 class YCOECorpusReader(CorpusReader):
     """
@@ -66,7 +67,6 @@ class YCOECorpusReader(CorpusReader):
         return self._psd_reader.parsed_sents(items)
 
     #{ Deprecated since 0.8
-    from nltk.utilities import deprecated
     @deprecated("Use .raw() or .words() or .tagged_words() or "
                 ".parsed_sents() instead.")
     def read(items=None, format='parsed'):

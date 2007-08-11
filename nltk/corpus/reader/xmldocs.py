@@ -14,6 +14,7 @@ Corpus reader for corpora whose documents are xml files.
 from api import CorpusReader
 from util import *
 from nltk.etree import ElementTree
+from nltk.utilities import deprecated
 
 class XMLCorpusReader(CorpusReader):
     """
@@ -46,7 +47,6 @@ class XMLCorpusReader(CorpusReader):
                 for item in items]
     
     #{ Deprecated since 0.8
-    from nltk.utilities import deprecated
     @deprecated("Use .raw() or .xml() instead.")
     def read(items=None, format='xml'):
         if format == 'raw': return self.raw(items)

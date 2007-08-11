@@ -14,6 +14,7 @@ import nltk.data
 from nltk.tokenize import *
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.utilities import deprecated
 
 class PlaintextCorpusReader(CorpusReader):
     """
@@ -149,7 +150,6 @@ class PlaintextCorpusReader(CorpusReader):
         return paras
             
     #{ Deprecated since 0.8
-    from nltk.utilities import deprecated
     @deprecated("Use .raw() or .words() instead.")
     def read(items=None, format='tokenized'):
         if format == 'raw': return self.raw(items)
