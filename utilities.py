@@ -864,4 +864,4 @@ __all__ = ['Counter', 'MinimalSet', 'OrderedDict', 'SortedDict', 'Trie',
            'breadth_first', 'edit_dist', 'filestring', 'guess_encoding',
            'invert_dict', 'pr', 'print_string', 're_show', 'config_java',
            'java', 'clean_html', 'windowdiff', 'deprecated', 'Deprecated',
-           'convert_regexp_to_nongrouping']
+           'convert_regexp_to_nongrouping', 'usage']
