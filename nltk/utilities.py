@@ -768,17 +768,19 @@ def usage(obj, selfname='self'):
 
     print '%s supports the following operations:' % obj.__name__
     for (name, method) in sorted(pydoc.allmethods(obj).items()):
-        if not name.startswith('_'):
-            args, varargs, varkw, defaults = inspect.getargspec(method)
-            if (args and args[0]=='self' and
-                (defaults is None or len(args)>len(defaults))):
-                args = args[1:]
-                name = '%s.%s' % (selfname, name)
-            argspec = inspect.formatargspec(
-                args, varargs, varkw, defaults)
-            print textwrap.fill('%s%s' % (name, argspec),
-                                initial_indent='  - ',
-                                subsequent_indent=' '*(len(name)+5))
+        if name.startswith('_'): continue
+        if getattr(method, '__deprecated__', False): continue
+            
+        args, varargs, varkw, defaults = inspect.getargspec(method)
+        if (args and args[0]=='self' and
+            (defaults is None or len(args)>len(defaults))):
+            args = args[1:]
+            name = '%s.%s' % (selfname, name)
+        argspec = inspect.formatargspec(
+            args, varargs, varkw, defaults)
+        print textwrap.fill('%s%s' % (name, argspec),
+                            initial_indent='  - ',
+                            subsequent_indent=' '*(len(name)+5))
 
 ######################################################################
 # Deprecation decorator & base class
@@ -820,9 +822,10 @@ def deprecated(message):
             return func(*args, **kwargs)
             
         # Copy the old function's name, docstring, & dict
+        newFunc.__dict__.update(func.__dict__)
         newFunc.__name__ = func.__name__
         newFunc.__doc__ = func.__doc__
-        newFunc.__dict__.update(func.__dict__)
+        newFunc.__deprecated__ = True
         # Add a @deprecated field to the docstring.
         _add_deprecated_field(newFunc, message)
         return newFunc
