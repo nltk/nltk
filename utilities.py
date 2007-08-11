@@ -756,8 +756,25 @@ def windowdiff(seg1, seg2, k, boundary="1"):
     return wd
 
 ######################################################################
-# Deprecation decorator
+# Deprecation decorator & base class
 ######################################################################
+
+def _add_deprecated_field(obj, message):
+    """Add a @deprecated field to a given object's docstring."""
+    indent = ''
+    # If we already have a docstring, then add a blank line to separate
+    # it from the new field, and check its indentation.
+    if obj.__doc__:
+        obj.__doc__ = obj.__doc__.rstrip()+'\n\n'
+        indents = re.findall(r'(?<=\n)[ ]+(?!\s)', obj.__doc__.expandtabs())
+        if indents: indent = min(indents)
+    # If we don't have a docstring, add an empty one.
+    else:
+        obj.__doc__ = ''
+
+    obj.__doc__ += textwrap.fill('@deprecated: %s' % message,
+                                 initial_indent=indent,
+                                 subsequent_indent=indent+'    ')
 
 def deprecated(message):
     """
@@ -777,18 +794,49 @@ def deprecated(message):
             warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
             return func(*args, **kwargs)
             
+        # Copy the old function's name, docstring, & dict
         newFunc.__name__ = func.__name__
-        if func.__doc__:
-            newFunc.__doc__ = func.__doc__ + "\nmsg"
-        else:
-            newFunc.__doc__ = msg
+        newFunc.__doc__ = func.__doc__
         newFunc.__dict__.update(func.__dict__)
+        # Add a @deprecated field to the docstring.
+        _add_deprecated_field(newFunc, message)
         return newFunc
     return decorator
 
+class Deprecated(object):
+    """
+    A base class used to mark deprecated classes.  A typical usage is to
+    alert users that the name of a class has changed:
+
+        >>> class OldClassName(Deprecated, NewClassName):
+        ...     "Use NewClassName instead."
+
+    The docstring of the deprecated class will be used in the
+    deprecation warning message.
+    """
+    def __new__(cls, *args, **kwargs):
+        import warnings, textwrap, re
+        # Figure out which class is the deprecated one.
+        dep_cls = None
+        for base in cls.__mro__:
+            if Deprecated in base.__bases__:
+                dep_cls = base
+        assert dep_cls, 'Unable to determine which base is deprecated.'
+
+        # Construct an appropriate warning.
+        doc = re.sub(r'\A\s*@deprecated:', '', dep_cls.__doc__ or '')
+        name = 'Class %s' % dep_cls.__name__
+        if cls != dep_cls:
+            name += ' (base class for %s)' % cls.__name__
+        msg = '%s has been deprecated.  %s' % (name, doc.strip())
+        msg = '\n' + textwrap.fill(msg.strip(), initial_indent='    ',
+                                   subsequent_indent='    ')
+        warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
+        # Do the actual work of __new__.
+        return object.__new__(cls, *args, **kwargs)
 
 __all__ = ['Counter', 'MinimalSet', 'OrderedDict', 'SortedDict', 'Trie',
            'breadth_first', 'edit_dist', 'filestring', 'guess_encoding',
            'invert_dict', 'pr', 'print_string', 're_show', 'config_java',
-           'java', 'clean_html', 'windowdiff', 'deprecated', 
+           'java', 'clean_html', 'windowdiff', 'deprecated', 'Deprecated',
            'convert_regexp_to_nongrouping']
