@@ -60,7 +60,7 @@ from tree import *
 from utilities import *
 from yamltags import *
 
-import chunk, corpus, draw, parse, sem, stem, tag, tokenize, wordnet
+import chat, chunk, corpus, draw, parse, sem, stem, tag, tokenize, wordnet
 
 # __all__ = ["chunk", "corpus", "draw", "parse",
 #            "sem", "stem", "tag", "tokenize", "wordnet"]\
