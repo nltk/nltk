@@ -1,0 +1,13 @@
+===============================
+Unit test cases for ``toolbox``
+===============================
+    >>> from nltk_contrib.toolbox.language import Language
+
+--------------------------
+``Language``
+--------------------------
+
+    >>> from nltk.corpus import find_corpus_file
+    >>> import os.path
+    >>> lang = Language(find_corpus_file('toolbox/MDF', 'English', '.lng'))
+    

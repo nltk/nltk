@@ -1,0 +1,335 @@
+ Grammars can be parsed from strings.
+
+    >>> from nltk.book import *
+    >>> from nltk import cfg
+    >>> g = """
+    ... % start DP
+    ... DP[agr=?a] -> D[agr=?a] N[agr=?a]
+    ... D[agr=[num='sg', pers=3]] -> 'this' | 'that'
+    ... D[agr=[num='pl', pers=3]] -> 'these' | 'those'
+    ... D[agr=[num='pl', pers=1]] -> 'we'
+    ... D[agr=[pers=2]] -> 'you'
+    ... N[agr=[num='sg', gend='m']] -> 'boy'
+    ... N[agr=[num='pl', gend='m']] -> 'boys'
+    ... N[agr=[num='sg', gend='f']] -> 'girl'
+    ... N[agr=[num='pl', gend='f']] -> 'girls'
+    ... N[agr=[num='sg']] -> 'student'
+    ... N[agr=[num='pl']] -> 'students'
+    ... """
+    >>> (grammar, lexicon) = cfg.parse_featcfg(g)
+    >>> tokens = 'these girls'.split()
+    >>> parser = parse.FeatureEarleyChartParse(grammar, lexicon)
+    >>> trees = parser.get_parse_list(tokens)
+    >>> for tree in trees: print tree
+    ([INIT]
+      (DP[agr=[num=pl, pers=3]]
+        (D[agr=[num=pl, pers=3]] these)
+        (N[agr=[gend=f, num=pl]] girls)))
+
+In general, when we are trying to develop even a very small grammar,
+it is convenient to put the rules in a file where they can be edited,
+tested and revised. Assuming we have saved feat0cfg_ as a file named
+``'feat0.cfg'``, the function ``GrammarFile.read_file()`` allows us to
+read the grammar into NLTK, ready for use in parsing.
+
+ 
+    >>> cp = parse.load_earley('feat0.cfg', trace=2)
+    >>> sent = 'Kim likes children'
+    >>> tokens = list(tokenize.whitespace(sent))
+    >>> tokens 
+    ['Kim', 'likes', 'children']
+    >>> trees = cp.parse(tokens)
+              |.K.l.c.|
+    Processing queue 0
+    Predictor |> . . .| S -> * NP[NUM=?n] VP[NUM=?n] {} 
+    Predictor |> . . .| NP[NUM=?n] -> * N[NUM=?n] {} 
+    Predictor |> . . .| NP[NUM=?n] -> * PropN[NUM=?n] {} 
+    Predictor |> . . .| NP[NUM=?n] -> * Det[NUM=?n] N[NUM=?n] {} 
+    Predictor |> . . .| NP[NUM=pl] -> * N[NUM=pl] {} 
+    Processing queue 1
+    Scanner   |[-] . .| PropN[NUM=sg] -> Kim * {} 
+    Completer |[-] . .| NP[NUM=sg] -> PropN[NUM=sg] * {'n': 'sg'} 
+    Completer |[-> . .| S -> NP[NUM=sg] * VP[NUM=sg] {'n': 'sg'} 
+    Predictor |. > . .| VP[NUM=?n, TENSE=?t] -> * IV[NUM=?n, TENSE=?t] {} 
+    Predictor |. > . .| VP[NUM=?n, TENSE=?t] -> * TV[NUM=?n, TENSE=?t] NP {} 
+    Processing queue 2
+    Scanner   |. [-] .| TV[NUM=sg, TENSE=pres] -> likes * {} 
+    Completer |. [-> .| VP[NUM=sg, TENSE=pres] -> TV[NUM=sg, TENSE=pres] * NP {'t': 'pres', 'n': 'sg'} 
+    Predictor |. . > .| NP[NUM=?n] -> * N[NUM=?n] {} 
+    Predictor |. . > .| NP[NUM=?n] -> * PropN[NUM=?n] {} 
+    Predictor |. . > .| NP[NUM=?n] -> * Det[NUM=?n] N[NUM=?n] {} 
+    Predictor |. . > .| NP[NUM=pl] -> * N[NUM=pl] {} 
+    Processing queue 3
+    Scanner   |. . [-]| N[NUM=pl] -> children * {} 
+    Completer |. . [-]| NP[NUM=pl] -> N[NUM=pl] * {'n': 'pl'} 
+    Completer |. [---]| VP[NUM=sg, TENSE=pres] -> TV[NUM=sg, TENSE=pres] NP * {'t': 'pres', 'n': 'sg'} 
+    Completer |[=====]| S -> NP[NUM=sg] VP[NUM=sg] * {'n': 'sg'} 
+    Completer |[=====]| [INIT] -> S * {} 
+    >>> for tree in trees: print tree
+    (S
+      (NP[NUM=sg] (PropN[NUM=sg] Kim))
+      (VP[NUM=sg, TENSE=pres]
+        (TV[NUM=sg, TENSE=pres] likes)
+        (NP[NUM=pl] (N[NUM=pl] children))))
+
+Feature structures in NLTK are ... Atomic feature values can be strings or
+integers.
+
+    >>> fs1 = nltk.FeatStruct(TENSE='past', NUM='sg')
+    >>> print fs1
+    [ NUM   = 'sg'   ]
+    [ TENSE = 'past' ]
+
+We can think of a feature structure as being like a Python dictionary,
+and access its values by indexing in the usual way.
+
+    >>> fs1 = nltk.FeatStruct(PER=3, NUM='pl', GND='fem')
+    >>> print fs1['GND']
+    fem
+
+We can also define feature structures which have complex values, as
+discussed earlier.
+
+    >>> fs2 = nltk.FeatStruct(POS='N', AGR=fs1)
+    >>> print fs2
+    [       [ GND = 'fem' ] ]
+    [ AGR = [ NUM = 'pl'  ] ]
+    [       [ PER = 3     ] ]
+    [                       ]
+    [ POS = 'N'             ]
+    >>> print fs2['AGR']
+    [ GND = 'fem' ]
+    [ NUM = 'pl'  ]
+    [ PER = 3     ]
+    >>> print fs2['AGR']['PER']
+    3
+
+Feature structures can also be constructed using the ``parse()``
+method of the ``nltk.FeatStruct" class. Note that in this case, atomic
+feature values do not need to be enclosed in quotes.
+    
+    >>> f1 = nltk.FeatStruct.parse("[NUMBER = sg]")
+    >>> f2 = nltk.FeatStruct.parse("[PERSON = 3]")
+    >>> print nltk.unify(f1, f2)
+    [ NUMBER = 'sg' ]
+    [ PERSON = 3    ]
+
+    >>> f1 = nltk.FeatStruct.parse("[A = [B = b, D = d]]")
+    >>> f2 = nltk.FeatStruct.parse("[A = [C = c, D = d]]")
+    >>> print nltk.unify(f1, f2)
+    [     [ B = 'b' ] ]
+    [ A = [ C = 'c' ] ]
+    [     [ D = 'd' ] ]
+
+
+Feature Structures as Graphs
+----------------------------
+
+Feature structures are not inherently tied to linguistic objects; they are
+general purpose structures for representing knowledge. For example, we
+could encode information about a person in a feature structure:
+
+    >>> person01 = nltk.FeatStruct.parse("[NAME=Lee, TELNO='01 27 86 42 96',AGE=33]")
+    >>> print person01
+    [ AGE   = 33               ]
+    [ NAME  = 'Lee'            ]
+    [ TELNO = '01 27 86 42 96' ]
+
+There are a number of notations for representing reentrancy in
+matrix-style representations of feature structures. In NLTK, we adopt
+the following convention: the first occurrence of a shared feature structure 
+is prefixed with an integer in parentheses, such as ``(1)``, and any
+subsequent reference to that structure uses the notation
+``->(1)``, as shown below.
+
+ 
+    >>> fs = nltk.FeatStruct.parse("""[NAME=Lee, ADDRESS=(1)[NUMBER=74, STREET='rue Pascal'], 
+    ...                               SPOUSE=[NAME=Kim, ADDRESS->(1)]]""")
+    >>> print fs
+    [ ADDRESS = (1) [ NUMBER = 74           ] ]
+    [               [ STREET = 'rue Pascal' ] ]
+    [                                         ]
+    [ NAME    = 'Lee'                         ]
+    [                                         ]
+    [ SPOUSE  = [ ADDRESS -> (1)  ]           ]
+    [           [ NAME    = 'Kim' ]           ]
+
+There can be any number of tags within a single feature structure.
+
+    >>> fs3 = nltk.FeatStruct.parse("[A=(1)[B=b], C=(2)[], D->(1), E->(2)]")
+    >>> print fs3
+    [ A = (1) [ B = 'b' ] ]
+    [                     ]
+    [ C = (2) []          ]
+    [                     ]
+    [ D -> (1)            ]
+    [ E -> (2)            ]
+    >>> fs1 = nltk.FeatStruct(NUMBER=74, STREET='rue Pascal')
+    >>> fs2 = nltk.FeatStruct(CITY='Paris')
+    >>> print nltk.unify(fs1, fs2)
+    [ CITY   = 'Paris'      ]
+    [ NUMBER = 74           ]
+    [ STREET = 'rue Pascal' ]
+
+Unification is symmetric:
+
+    >>> nltk.unify(fs1, fs2) == nltk.unify(fs2, fs1)
+    True
+
+Unification is commutative:
+
+    >>> fs3 = nltk.FeatStruct(TELNO='01 27 86 42 96')
+    >>> nltk.unify(nltk.unify(fs1, fs2), fs3) == nltk.unify(fs1, nltk.unify(fs2, fs3))
+    True
+
+Unification between `FS`:math:\ :subscript:`0` and `FS`:math:\
+:subscript:`1` will fail if the two feature structures share a path |pi|,
+but the value of |pi| in `FS`:math:\ :subscript:`0` is a distinct
+atom from the value of |pi| in `FS`:math:\ :subscript:`1`. In NLTK,
+this is implemented by setting the result of unification to be
+``None``.
+
+    >>> fs0 = nltk.FeatStruct(A='a')
+    >>> fs1 = nltk.FeatStruct(A='b')
+    >>> nltk.unify(fs0, fs1)
+    Traceback (most recent call last):
+    ...
+    UnificationFailure
+
+Now, if we look at how unification interacts with structure-sharing,
+things become really interesting.
+
+
+
+    >>> fs0 = nltk.FeatStruct.parse("""[NAME=Lee, 
+    ...                                ADDRESS=[NUMBER=74, 
+    ...                                         STREET='rue Pascal'], 
+    ...                                SPOUSE= [NAME=Kim,
+    ...                                         ADDRESS=[NUMBER=74, 
+    ...                                                  STREET='rue Pascal']]]""")
+    >>> print fs0
+    [ ADDRESS = [ NUMBER = 74           ]               ]
+    [           [ STREET = 'rue Pascal' ]               ]
+    [                                                   ]
+    [ NAME    = 'Lee'                                   ]
+    [                                                   ]
+    [           [ ADDRESS = [ NUMBER = 74           ] ] ]
+    [ SPOUSE  = [           [ STREET = 'rue Pascal' ] ] ]
+    [           [                                     ] ]
+    [           [ NAME    = 'Kim'                     ] ]
+
+
+    >>> fs1 = nltk.FeatStruct.parse("[SPOUSE=[ADDRESS=[CITY=Paris]]]")
+    >>> print nltk.unify(fs0, fs1)
+    [ ADDRESS = [ NUMBER = 74           ]               ]
+    [           [ STREET = 'rue Pascal' ]               ]
+    [                                                   ]
+    [ NAME    = 'Lee'                                   ]
+    [                                                   ]
+    [           [           [ CITY   = 'Paris'      ] ] ]
+    [           [ ADDRESS = [ NUMBER = 74           ] ] ]
+    [ SPOUSE  = [           [ STREET = 'rue Pascal' ] ] ]
+    [           [                                     ] ]
+    [           [ NAME    = 'Kim'                     ] ]
+
+    >>> fs2 = nltk.FeatStruct.parse("""[NAME=Lee, ADDRESS=(1)[NUMBER=74, STREET='rue Pascal'],
+    ...                                SPOUSE=[NAME=Kim, ADDRESS->(1)]]""")
+
+ 
+    >>> print fs2
+    [ ADDRESS = (1) [ NUMBER = 74           ] ]
+    [               [ STREET = 'rue Pascal' ] ]
+    [                                         ]
+    [ NAME    = 'Lee'                         ]
+    [                                         ]
+    [ SPOUSE  = [ ADDRESS -> (1)  ]           ]
+    [           [ NAME    = 'Kim' ]           ]
+
+
+    >>> print nltk.unify(fs2, fs1)
+    [               [ CITY   = 'Paris'      ] ]
+    [ ADDRESS = (1) [ NUMBER = 74           ] ]
+    [               [ STREET = 'rue Pascal' ] ]
+    [                                         ]
+    [ NAME    = 'Lee'                         ]
+    [                                         ]
+    [ SPOUSE  = [ ADDRESS -> (1)  ]           ]
+    [           [ NAME    = 'Kim' ]           ]
+
+
+    >>> fs1 = nltk.FeatStruct.parse("[ADDRESS1=[NUMBER=74, STREET='rue Pascal']]")
+    >>> fs2 = nltk.FeatStruct.parse("[ADDRESS1=?x, ADDRESS2=?x]")
+    >>> print fs2
+    [ ADDRESS1 = ?x ]
+    [ ADDRESS2 = ?x ]
+    >>> print nltk.unify(fs1, fs2)
+    [ ADDRESS1 = (1) [ NUMBER = 74           ] ]
+    [                [ STREET = 'rue Pascal' ] ]
+    [                                          ]
+    [ ADDRESS2 -> (1)                          ]
+
+ 
+
+
+    >>> sent = 'who do you claim that you like'
+    >>> tokens = list(tokenize.whitespace(sent))
+    >>> cp = parse.load_earley('feat1.cfg', trace=1)
+    >>> trees = cp.parse(tokens)
+              |.w.d.y.c.t.y.l.|
+    Scanner   |[-] . . . . . .| NP[+WH] -> who * {} 
+    Completer |[-> . . . . . .| S[-INV] -> NP * S/NP {} 
+    Completer |[-> . . . . . .| S[-INV]/?x -> NP * VP/?x {} 
+    Scanner   |. [-] . . . . .| V[+AUX, SUBCAT=3] -> do * {} 
+    Completer |. [-> . . . . .| S[+INV]/?x -> V[+AUX] * NP VP/?x {} 
+    Completer |. [-> . . . . .| VP/?x -> V[+AUX, SUBCAT=3] * VP/?x {} 
+    Scanner   |. . [-] . . . .| NP[-WH] -> you * {} 
+    Completer |. [---> . . . .| S[+INV]/?x -> V[+AUX] NP * VP/?x {} 
+    Scanner   |. . . [-] . . .| V[-AUX, SUBCAT=2] -> claim * {} 
+    Completer |. . . [-> . . .| VP/?x -> V[-AUX, SUBCAT=2] * S-BAR/?x {} 
+    Scanner   |. . . . [-] . .| Comp -> that * {} 
+    Completer |. . . . [-> . .| S-BAR/?x -> Comp * S[-INV]/?x {} 
+    Scanner   |. . . . . [-] .| NP[-WH] -> you * {} 
+    Completer |. . . . . [-> .| S[-INV] -> NP * S/NP {} 
+    Completer |. . . . . [-> .| S[-INV]/?x -> NP * VP/?x {} 
+    Scanner   |. . . . . . [-]| V[-AUX, SUBCAT=1] -> like * {} 
+    Completer |. . . . . . [->| VP/?x -> V[-AUX, SUBCAT=1] * NP/?x {} 
+    Completer |. . . . . . [-]| VP/NP -> V[-AUX, SUBCAT=1] NP/NP * {'x': {'pos': 'NP'}} 
+    Completer |. . . . . [---]| S[-INV]/NP -> NP VP/NP * {'x': {'pos': 'NP'}} 
+    Completer |. . . . [-----]| S-BAR/NP -> Comp S[-INV]/NP * {'x': {'pos': 'NP'}} 
+    Completer |. . . [-------]| VP/NP -> V[-AUX, SUBCAT=2] S-BAR/NP * {'x': {'pos': 'NP'}} 
+    Completer |. [-----------]| S[+INV]/NP -> V[+AUX] NP VP/NP * {'x': {'pos': 'NP'}} 
+    Completer |[=============]| S[-INV] -> NP S/NP * {} 
+    Completer |[=============]| [INIT] -> S * {} 
+    >>> for tree in trees: print tree
+    (S[-INV]
+      (NP[+WH] who)
+      (S[+INV]/NP
+        (V[+AUX, SUBCAT=3] do)
+        (NP[-WH] you)
+        (VP/NP
+          (V[-AUX, SUBCAT=2] claim)
+          (S-BAR/NP
+            (Comp that)
+            (S[-INV]/NP
+              (NP[-WH] you)
+              (VP/NP (V[-AUX, SUBCAT=1] like) (NP/NP )))))))
+
+
+Let's load a German grammar:
+
+    >>> cp = parse.load_earley('german0.cfg', trace=0)
+    >>> sent = 'die katze sieht den hund'
+    >>> tokens = list(tokenize.whitespace(sent))
+    >>> trees = cp.parse(tokens)
+    >>> for tree in trees: print tree
+    (S
+      (NP[AGR=[GND=fem, NUM=sg, PER=3], CASE=nom]
+        (Det[AGR=[GND=fem, NUM=sg, PER=3], CASE=nom] die)
+        (N[AGR=[GND=fem, NUM=sg, PER=3]] katze))
+      (VP[AGR=[NUM=sg, PER=3]]
+        (TV[AGR=[NUM=sg, PER=3], OBJCASE=acc] sieht)
+        (NP[AGR=[GND=masc, NUM=sg, PER=3], CASE=acc]
+          (Det[AGR=[GND=masc, NUM=sg, PER=3], CASE=acc] den)
+          (N[AGR=[GND=masc, NUM=sg, PER=3]] hund))))
+
+
