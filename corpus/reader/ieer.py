@@ -118,12 +118,12 @@ class IEERCorpusReader(CorpusReader):
 
     #{ Deprecated since 0.8
     @deprecated("Use .parsed_docs() or .raw() or .docs() instead.")
-    def read(items, format='parsed'):
+    def read(self, items, format='parsed'):
         if format == 'parsed': return self.parsed_docs(items)
         if format == 'raw': return self.raw(items)
         if format == 'docs': return self.docs(items)
         raise ValueError('bad format %r' % format)
     @deprecated("Use .parsed_docs() instead.")
-    def parsed(items):
+    def parsed(self, items):
         return self.parsed_docs(items)
     #}
