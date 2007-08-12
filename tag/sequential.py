@@ -34,7 +34,6 @@ from nltk.utilities import deprecated, Deprecated
 ######################################################################
 #{ Abstract Base Classes
 ######################################################################
-
 class SequentialBackoffTagger(TaggerI):
     """
     An abstract base class for taggers that tags words sequentially,
@@ -301,7 +300,7 @@ class BigramTagger(ContextTagger, yaml.YAMLObject):
             fewer than C{cutoff} times, then exclude it from the
             context-to-tag table for the new tagger.
         """
-        tagger = UnigramTagger({}, backoff)
+        tagger = BigramTagger({}, backoff)
         tagger._train(tagged_corpus, cutoff, verbose)
         return tagger
     
@@ -336,7 +335,7 @@ class TrigramTagger(ContextTagger, yaml.YAMLObject):
             fewer than C{cutoff} times, then exclude it from the
             context-to-tag table for the new tagger.
         """
-        tagger = UnigramTagger({}, backoff)
+        tagger = TrigramTagger({}, backoff)
         tagger._train(tagged_corpus, cutoff, verbose)
         return tagger
 
