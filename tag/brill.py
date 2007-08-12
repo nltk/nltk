@@ -11,7 +11,7 @@
 Brill's transformational rule-based tagger.
 """
 
-from api import *
+from nltk.tag.api import *
 
 import bisect        # for binary search through a subset of indices
 import random        # for shuffling WSJ files
@@ -1103,7 +1103,8 @@ def demo(num_sents=100, max_rules=200, min_score=3, error_output = "errors.out",
     from nltk import tag
     from nltk.tag import brill
 
-    NN_CD_tagger = tag.Regexp([(r'^-?[0-9]+(.[0-9]+)?$', 'CD'), (r'.*', 'NN')])
+    NN_CD_tagger = tag.RegexpTagger([(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),
+                                     (r'.*', 'NN')])
 
     # train is the proportion of data used in training; the rest is reserved
     # for testing.

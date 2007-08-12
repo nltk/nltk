@@ -18,13 +18,6 @@ consulted instead.  Any C{SequentialBackoffTagger} may serve as a
 backoff tagger for any other C{SequentialBackoffTagger}.
 """
 
-# [xx] debug
-if __name__ == '__main__':
-    import sys
-    for m in list(sys.modules):
-        if m.startswith('nltk'):
-            sys.modules.pop(m)
-
 import re, yaml
 from nltk import FreqDist, ConditionalFreqDist
 from nltk.tag.api import *

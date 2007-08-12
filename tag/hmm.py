@@ -77,7 +77,7 @@ _NINF = float('-1e300')
 _TEXT = 0  # index of text in a tuple
 _TAG = 1   # index of tag in a tuple
 
-class HiddenMarkovModel(object):
+class HiddenMarkovModel(TaggerI):
     """
     Hidden Markov model class, a generative model for labelling sequence data.
     These models define the joint probability of a sequence of symbols and
