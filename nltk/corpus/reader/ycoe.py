@@ -69,7 +69,7 @@ class YCOECorpusReader(CorpusReader):
     #{ Deprecated since 0.8
     @deprecated("Use .raw() or .words() or .tagged_words() or "
                 ".parsed_sents() instead.")
-    def read(items=None, format='parsed'):
+    def read(self, items=None, format='parsed'):
         if format == 'parsed': return self.parsed_sents(items)
         if format == 'raw': return self.raw(items)
         if format == 'tokenized': return self.words(items)
@@ -77,16 +77,16 @@ class YCOECorpusReader(CorpusReader):
         if format == 'chunked': raise ValueError('no longer supported')
         raise ValueError('bad format %r' % format)
     @deprecated("Use .parsed_sents() instead.")
-    def parsed(items=None):
+    def parsed(self, items=None):
         return self.parsed_sents(items)
     @deprecated("Use .words() instead.")
-    def tokenized(items=None):
+    def tokenized(self, items=None):
         return self.words(items)
     @deprecated("Use .tagged_words() instead.")
-    def tagged(items=None):
+    def tagged(self, items=None):
         return self.tagged_words(items)
     @deprecated("Operation no longer supported.")
-    def chunked(items=None):
+    def chunked(self, items=None):
         raise ValueError('format "chunked" no longer supported')
     #}
 

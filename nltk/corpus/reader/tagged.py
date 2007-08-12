@@ -169,19 +169,19 @@ class TaggedCorpusReader(CorpusReader):
     @deprecated("Use .raw() or .words() or .sents() or .paras() or "
                 ".tagged_words() or .tagged_sents() or .tagged_paras() "
                 "instead.")
-    def read(items=None, format='tagged', gs=True, gp=True):
+    def read(self, items=None, format='tagged', gs=True, gp=False):
         if format == 'tagged': return self.tagged(items, gs, gp)
         if format == 'tokenized': return self.tokenized(items, gs, gp)
         raise ValueError('bad format %r' % format)
     @deprecated("Use .words() or .sents() or .paras() instead.")
-    def tokenized(items=None, gs=True, gp=True):
+    def tokenized(self, items=None, gs=True, gp=False):
         if gs and gp: return self.paras()
         elif gs and not gp: return self.sents()
         elif not gs and not gp: return self.words()
         else: return 'Operation no longer supported.'
     @deprecated("Use .tagged_words() or .tagged_sents() or "
                 ".tagged_paras() instead.")
-    def tagged(items=None, gs=True, gp=True):
+    def tagged(self, items=None, gs=True, gp=False):
         if gs and gp: return self.tagged_paras()
         elif gs and not gp: return self.tagged_sents()
         elif not gs and not gp: return self.tagged_words()

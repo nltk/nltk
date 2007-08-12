@@ -48,7 +48,7 @@ class XMLCorpusReader(CorpusReader):
     
     #{ Deprecated since 0.8
     @deprecated("Use .raw() or .xml() instead.")
-    def read(items=None, format='xml'):
+    def read(self, items=None, format='xml'):
         if format == 'raw': return self.raw(items)
         if format == 'xml': return self.xml(items)
         raise ValueError('bad format %r' % format)

@@ -58,10 +58,10 @@ class ToolboxCorpusReader(CorpusReader):
 
     #{ Deprecated since 0.8
     @deprecated("Use .xml() instead.")
-    def dictionary(files=None):
+    def dictionary(self, files=None):
         raise ValueError("no longer supported -- use .xml() instead")
     @deprecated("Use .xml() instead.")
-    def parse_corpus(files=None, key=None):
+    def parse_corpus(self, files=None, key=None):
         return self.xml(items, key)
     #}
     

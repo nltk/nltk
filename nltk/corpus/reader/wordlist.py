@@ -42,12 +42,12 @@ class WordListCorpusReader(CorpusReader):
         
     #{ Deprecated since 0.8
     @deprecated("Use .raw() or .words() instead.")
-    def read(items=None, format='listed'):
+    def read(self, items=None, format='listed'):
         if format == 'raw': return self.raw(items)
         if format == 'listed': return self.words(items)
         raise ValueError('bad format %r' % format)
     @deprecated("Use .words() instead.")
-    def listed(items=None):
+    def listed(self, items=None):
         return self.words(items)
     #}
             
