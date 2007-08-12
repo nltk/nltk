@@ -43,7 +43,7 @@ class TreebankCorpusReader(CorpusReader):
             os.path.join(root, 'combined'), '.*', '.mrg')
         self._pos_reader = ChunkedCorpusReader(
             os.path.join(root, 'tagged'), '.*', '.pos',
-            sent_tokenizer=RegexpTokenizer(r'(?<=/\.)\s', gaps=True),
+            sent_tokenizer=RegexpTokenizer(r'(?<=/\.)\s*', gaps=True),
             para_block_reader=tagged_treebank_para_block_reader)
 
         # Make sure we have a consistent set of items:
