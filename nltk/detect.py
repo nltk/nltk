@@ -56,7 +56,7 @@ def demo():
 
     detector = detect.feature({'initial': lambda t:[t[0]], 'len': lambda t:[len(t)]})
 
-    for sent in brown.tokenized('a')[:10]:
+    for sent in brown.words('a')[:10]:
         print detector(sent)
 
 if __name__ == '__main__': demo()
