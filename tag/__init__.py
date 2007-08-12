@@ -37,27 +37,49 @@ class SequentialBackoff(SequentialBackoffTagger, Deprecated):
     the old nltk.tag.SequentialBackoff; see the api docs for info."""
 class Ngram(SequentialBackoffTagger, Deprecated):
     """Use nltk.NgramTagger instead.  Note: NgramTagger.train() is now
-    a static method."""
+    a factory method."""
     def __init__(self, n, cutoff=1, backoff=None):
-        self._n = n
         self._cutoff = cutoff
         self._backoff = backoff
-        self._tagger = None
+        self._n = n
     def train(self, tagged_corpus, verbose=False):
-        self._tagger = NgramTagger.train(tagged_corpus, verbose)
+        self._tagger = NgramTagger.train(tagged_corpus, n, self._backoff,
+                                         self._cutoff, verbose)
     def choose_tag(self, tokens, index, history):
         return self._tagger.choose_tag(tokens, index, history)
 class Unigram(Ngram, Deprecated):
     """Use nltk.UnigramTagger instead.  Note: UnigramTagger.train() is
-    now a static method."""
+    now a factory method."""
+    def __init__(self, cutoff=1, backoff=None):
+        Ngram.__init__(self, 1, cutoff, backoff)
 class Bigram(Ngram, Deprecated):
     """Use nltk.BigramTagger instead.  Note: BigramTagger.train() is
-    now a static method."""
+    now a factory method."""
+    def __init__(self, cutoff=1, backoff=None):
+        Ngram.__init__(self, 2, cutoff, backoff)
 class Trigram(Ngram, Deprecated):
     """Use nltk.TrigramTagger instead.  Note: TrigramTagger.train() is
-    now a static method."""
+    now a factory method."""
+    def __init__(self, cutoff=1, backoff=None):
+        Ngram.__init__(self, 3, cutoff, backoff)
+class Affix(SequentialBackoffTagger, Deprecated):
+    """Use nltk.AffixTagger instead.  Note: AffixTagger.train() is
+    now a factory method."""
+    def __init__(self, length, minlength, backoff=None):
+        self._len = length
+        self._minlen = minlength
+        self._cutoff = cutoff
+        self._backoff = backoff
+    def train(self, tagged_corpus):
+        self._tagger = AffixTagger.train(
+            tagged_corpus, self._minlen, self._len, self._backoff)
+    def choose_tag(self, tokens, index, history):
+        return self._tagger.choose_tag(tokens, index, history)
 class Lookup(UnigramTagger, Deprecated):
-    'Use UnigramTagger instead.'
+    """Use UnigramTagger instead.  Note: UnigramTagger.train() is now
+    a factory method."""
+class Regexp(RegexpTagger, Deprecated):
+    """Use RegexpTagger instead."""
 
     
     
