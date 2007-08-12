@@ -22,7 +22,7 @@ from nltk import yamltags
 ## The Brill Tagger
 ######################################################################
 
-class Brill(yaml.YAMLObject):
+class Brill(TaggerI, yaml.YAMLObject):
     """
     Brill's transformational rule-based tagger.  Brill taggers use an
     X{initial tagger} (such as L{tag.Default}) to assign an intial
@@ -41,7 +41,7 @@ class Brill(yaml.YAMLObject):
     def __init__(self, initial_tagger, rules):
         """
         @param initial_tagger: The initial tagger
-        @type initial_tagger: L{TagI}
+        @type initial_tagger: L{TaggerI}
         @param rules: An ordered list of transformation rules that
             should be used to correct the initial tagging.
         @type rules: C{list} of L{BrillRuleI}
@@ -53,7 +53,7 @@ class Brill(yaml.YAMLObject):
         return self._rules[:]
 
     def tag (self, tokens):
-        # Inherit documentation from TagI
+        # Inherit documentation from TaggerI
         
         # Run the initial tagger.
         tagged_tokens = list(self._initial_tagger.tag(tokens))

@@ -16,7 +16,7 @@ def tag2tuple(s, sep='/'):
         return (s, None)
 
 def untag(tagged_sentence):
-    return (w for (w, t) in tagged_sentence)
+    return [w for (w, t) in tagged_sentence]
 
 def string2tags(s, sep='/'):
     return [tag2tuple(t, sep) for t in s.split()]
@@ -35,7 +35,7 @@ def accuracy(tagger, gold):
     Strip the tags from the gold standard text, retag it using
     the tagger, then compute the accuracy score.
 
-    @type tagger: C{TagI}
+    @type tagger: C{TaggerI}
     @param tagger: The tagger being evaluated.
     @type gold: C{list} of C{Token}
     @param gold: The list of tagged tokens to score the tagger on.
