@@ -43,8 +43,8 @@ class Ngram(SequentialBackoffTagger, Deprecated):
         self._backoff = backoff
         self._n = n
     def train(self, tagged_corpus, verbose=False):
-        self._tagger = NgramTagger.train(tagged_corpus, n, self._backoff,
-                                         self._cutoff, verbose)
+        self._tagger = NgramTagger.train(
+            tagged_corpus, self._n, self._backoff, self._cutoff, verbose)
     def choose_tag(self, tokens, index, history):
         return self._tagger.choose_tag(tokens, index, history)
 class Unigram(Ngram, Deprecated):
