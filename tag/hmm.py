@@ -66,6 +66,7 @@ parameters or unsupervised learning using the Baum-Welch algorithm, a variant
 of EM.
 """
 
+from nltk.tag.api import *
 from nltk import FreqDist, ConditionalFreqDist, ConditionalProbDist, DictionaryProbDist, DictionaryConditionalProbDist, LidstoneProbDist, MutableProbDist, MLEProbDist
 
 from numpy import *
