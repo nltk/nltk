@@ -79,12 +79,12 @@ class SensevalCorpusReader(CorpusReader):
 
     #{ Deprecated since 0.8
     @deprecated("Use .instances() or .raw() instead.")
-    def read(items, format='listed'):
+    def read(self, items, format='listed'):
         if format == 'listed': return self.instances(items)
         if format == 'raw': return self.raw(items)
         raise ValueError('bad format %r' % format)
     @deprecated("Use .instances() instead.")
-    def listed(items):
+    def listed(self, items):
         return self.instances(items)
     #}
     

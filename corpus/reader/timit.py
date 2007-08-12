@@ -346,11 +346,11 @@ class TimitCorpusReader(CorpusReader):
 
     #{ Deprecated since 0.8
     @deprecated("Use .sents() or .sent_times() instead.")
-    def tokenized(items=None, offset=True):
+    def tokenized(self, items=None, offset=True):
         if offset: return self.sent_times(items)
         else: return self.sents(items)
     @deprecated("Use .phons() or .phon_times() instead.")
-    def phonetic(items=None, offset=True):
+    def phonetic(self, items=None, offset=True):
         if offset: return self.phon_times(items)
         else: return self.phons(items)
     #}
