@@ -22,7 +22,7 @@ from nltk import yamltags
 ## The Brill Tagger
 ######################################################################
 
-class Brill(TaggerI, yaml.YAMLObject):
+class BrillTagger(TaggerI, yaml.YAMLObject):
     """
     Brill's transformational rule-based tagger.  Brill taggers use an
     X{initial tagger} (such as L{tag.Default}) to assign an intial
@@ -649,7 +649,7 @@ class BrillTrainer(object):
         except KeyboardInterrupt: pass
 
         # Create and return a tagger from the rules we found.
-        return Brill(self._initial_tagger, rules)
+        return BrillTagger(self._initial_tagger, rules)
 
     #////////////////////////////////////////////////////////////
     # Finding the best rule
@@ -1026,7 +1026,7 @@ class FastBrillTrainer(object):
         rules_by_position = [{} for tok in train_tokens]
 
         # Create and return a tagger from the rules we found.
-        return Brill(self._initial_tagger, rules)
+        return BrillTagger(self._initial_tagger, rules)
 
 ######################################################################
 ## Testing

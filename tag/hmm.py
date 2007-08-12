@@ -77,7 +77,7 @@ _NINF = float('-1e300')
 _TEXT = 0  # index of text in a tuple
 _TAG = 1   # index of tag in a tuple
 
-class HiddenMarkovModel(TaggerI):
+class HiddenMarkovModelTagger(TaggerI):
     """
     Hidden Markov model class, a generative model for labelling sequence data.
     These models define the joint probability of a sequence of symbols and
@@ -579,7 +579,7 @@ class HiddenMarkovModel(TaggerI):
         return beta
 
     def __repr__(self):
-        return '<HiddenMarkovModel %d states and %d output symbols>' \
+        return '<HiddenMarkovModelTagger %d states and %d output symbols>' \
                 % (len(self._states), len(self._symbols))
 
 class HiddenMarkovModelTrainer(object):
@@ -615,7 +615,7 @@ class HiddenMarkovModelTrainer(object):
         techniques.
 
         @return: the trained model
-        @rtype: HiddenMarkovModel
+        @rtype: HiddenMarkovModelTagger
         @param labelled_sequences: the supervised training data, a set of
             labelled sequences of observations
         @type labelled_sequences: list
@@ -643,12 +643,12 @@ class HiddenMarkovModelTrainer(object):
         Lawrence Rabiner, IEEE, 1989.
 
         @return: the trained model
-        @rtype: HiddenMarkovModel
+        @rtype: HiddenMarkovModelTagger
         @param unlabeled_sequences: the training data, a set of
             sequences of observations
         @type unlabeled_sequences: list
         @param kwargs: may include the following parameters::
-            model - a HiddenMarkovModel instance used to begin the Baum-Welch
+            model - a HiddenMarkovModelTagger instance used to begin the Baum-Welch
                 algorithm
             max_iterations - the maximum number of EM iterations
             convergence_logprob - the maximum change in log probability to
@@ -670,7 +670,7 @@ class HiddenMarkovModelTrainer(object):
             output = DictionaryConditionalProbDist(
                             dict((state, UniformProbDist(self._symbols))
                                   for state in self._states))
-            model = HiddenMarkovModel(self._symbols, self._states, 
+            model = HiddenMarkovModelTagger(self._symbols, self._states, 
                             transitions, output, priors)
 
         # update model prob dists so that they can be modified
@@ -788,7 +788,7 @@ class HiddenMarkovModelTrainer(object):
         smoothed if desired.
 
         @return: the trained model
-        @rtype: HiddenMarkovModel
+        @rtype: HiddenMarkovModelTagger
         @param labelled_sequences: the training data, a set of
             labelled sequences of observations
         @type labelled_sequences: list
@@ -831,7 +831,7 @@ class HiddenMarkovModelTrainer(object):
         A = ConditionalProbDist(transitions, estimator, False, N)
         B = ConditionalProbDist(outputs, estimator, False, len(self._symbols))
                                
-        return HiddenMarkovModel(self._symbols, self._states, A, B, pi)
+        return HiddenMarkovModelTagger(self._symbols, self._states, A, B, pi)
 
 def _log_add(*values):
     """
@@ -876,7 +876,7 @@ def demo():
     pi = array([0.5, 0.2, 0.3], float64)
     pi = pd(pi, states)
 
-    model = HiddenMarkovModel(symbols=symbols, states=states,
+    model = HiddenMarkovModelTagger(symbols=symbols, states=states,
                               transitions=A, outputs=B, priors=pi)
 
     print 'Testing', model
@@ -1023,7 +1023,7 @@ def demo_bw():
     pi = array([0.5, 0.2, 0.3], float64)
     pi = pd(pi, states)
 
-    model = HiddenMarkovModel(symbols=symbols, states=states,
+    model = HiddenMarkovModelTagger(symbols=symbols, states=states,
                               transitions=A, outputs=B, priors=pi)
 
     # generate some random sequences
