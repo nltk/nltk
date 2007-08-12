@@ -151,12 +151,12 @@ class PlaintextCorpusReader(CorpusReader):
             
     #{ Deprecated since 0.8
     @deprecated("Use .raw() or .words() instead.")
-    def read(items=None, format='tokenized'):
+    def read(self, items=None, format='tokenized'):
         if format == 'raw': return self.raw(items)
         if format == 'tokenized': return self.words(items)
         raise ValueError('bad format %r' % format)
     @deprecated("Use .words() instead.")
-    def tokenized(items=None):
+    def tokenized(self, items=None):
         return self.words(items)
     #}
             

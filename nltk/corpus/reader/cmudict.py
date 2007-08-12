@@ -70,7 +70,7 @@ class CMUDictCorpusReader(CorpusReader):
         return concat([open(filename).read()
                        for filename in self._item_filenames(items)])
 
-    def words(item='cmudict'):
+    def words(self, item='cmudict'):
         """
         @return: a list of all words defined in the given cmudict lexicon.
         """
@@ -100,14 +100,14 @@ class CMUDictCorpusReader(CorpusReader):
 
     #{ Deprecated since 0.8
     @deprecated("Use .entries() or .transcriptions() instead.")
-    def read(items='cmudict', format='listed'):
+    def read(self, items='cmudict', format='listed'):
         if format == 'listed': return self.entries(items)
         if format == 'dictionary': return self.transcriptions(items)
         raise ValueError('bad format %r' % format)
     @deprecated("Use .transcriptions() instead.")
-    def dictionary(items='cmudict'): return self.transcriptions(items)
+    def dictionary(self, items='cmudict'): return self.transcriptions(items)
     @deprecated("Use .entries() instead.")
-    def listed(items='cmudict'): return self.entries(items)
+    def listed(self, items='cmudict'): return self.entries(items)
     #}
 
 def read_cmudict_block(stream):
