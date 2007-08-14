@@ -11,85 +11,81 @@
 Brill's transformational rule-based tagger.
 """
 
-from api import *
-
+from nltk.tag.api import *
+from nltk.tag.util import untag
 import bisect        # for binary search through a subset of indices
 import random        # for shuffling WSJ files
 import yaml          # to save and load taggers in files
-from nltk import yamltags
+import textwrap
+from nltk import yamltags # why?
+from nltk import defaultdict
 
 ######################################################################
 ## The Brill Tagger
 ######################################################################
 
-class Brill(yaml.YAMLObject):
+class BrillTagger(TaggerI, yaml.YAMLObject):
     """
     Brill's transformational rule-based tagger.  Brill taggers use an
-    X{initial tagger} (such as L{tag.Default}) to assign an intial
+    X{initial tagger} (such as L{tag.DefaultTagger}) to assign an intial
     tag sequence to a text; and then apply an ordered list of
     transformational rules to correct the tags of individual tokens.
-    These transformation rules are specified by the L{BrillRuleI}
+    These transformation rules are specified by the L{BrillRule}
     interface.
 
     Brill taggers can be created directly, from an initial tagger and
     a list of transformational rules; but more often, Brill taggers
     are created by learning rules from a training corpus, using either
-    L{BrillTrainer} or L{FastBrillTrainer}.
+    L{BrillTaggerTrainer} or L{FastBrillTaggerTrainer}.
     """
     
-    yaml_tag = '!tag.Brill'
+    yaml_tag = '!nltk.BrillTagger'
     def __init__(self, initial_tagger, rules):
         """
         @param initial_tagger: The initial tagger
-        @type initial_tagger: L{TagI}
+        @type initial_tagger: L{TaggerI}
         @param rules: An ordered list of transformation rules that
             should be used to correct the initial tagging.
-        @type rules: C{list} of L{BrillRuleI}
+        @type rules: C{list} of L{BrillRule}
         """
         self._initial_tagger = initial_tagger
-        self._rules = rules
+        self._rules = tuple(rules)
 
     def rules(self):
-        return self._rules[:]
+        return self._rules
 
     def tag (self, tokens):
-        # Inherit documentation from TagI
+        # Inherit documentation from TaggerI
         
         # Run the initial tagger.
-        tagged_tokens = list(self._initial_tagger.tag(tokens))
+        tagged_tokens = self._initial_tagger.tag(tokens)
 
         # Create a dictionary that maps each tag to a list of the
         # indices of tokens that have that tag.
-        tag_to_positions = {}
+        tag_to_positions = defaultdict(set)
         for i, (token, tag) in enumerate(tagged_tokens):
-            if tag not in tag_to_positions:
-                tag_to_positions[tag] = set([i])
-            else:
-                tag_to_positions[tag].add(i)
+            tag_to_positions[tag].add(i)
 
         # Apply each rule, in order.  Only try to apply rules at
         # positions that have the desired original tag.
         for rule in self._rules:
             # Find the positions where it might apply
-            positions = tag_to_positions.get(rule.original_tag(), [])
+            positions = tag_to_positions.get(rule.original_tag, [])
             # Apply the rule at those positions.
-            changed = rule.apply_at(tagged_tokens, positions)
+            changed = rule.apply(tagged_tokens, positions)
             # Update tag_to_positions with the positions of tags that
             # were modified.
             for i in changed:
-                tag_to_positions[rule.original_tag()].remove(i)
-                if rule.replacement_tag() not in tag_to_positions:
-                    tag_to_positions[rule.replacement_tag()] = set([i])
-                else:
-                    tag_to_positions[rule.replacement_tag()].add(i)
-        for t in tagged_tokens:
-            yield t
+                tag_to_positions[rule.original_tag].remove(i)
+                tag_to_positions[rule.replacement_tag].add(i)
+
+        return tagged_tokens
 
 ######################################################################
 ## Brill Rules
 ######################################################################
 
-class BrillRuleI(yaml.YAMLObject):
+class BrillRule(yaml.YAMLObject):
     """
     An interface for tag transformations on a tagged corpus, as
     performed by brill taggers.  Each transformation finds all tokens
@@ -101,40 +97,47 @@ class BrillRuleI(yaml.YAMLObject):
     tokens in the corpus.
 
     Brill rules must be comparable and hashable.
-    """    
-    def apply_to(self, tokens):
-        """
-        Apply this rule everywhere it applies in the corpus.  I.e.,
-        for each token in the corpus that is tagged with this rule's
-        original tag, and that satisfies this rule's condition, set
-        its tag to be this rule's replacement tag.
-
-        @param tokens: The tagged corpus
-        @type tokens: C{list} of C{tuple}
-        @return: The indices of tokens whose tags were changed by this
-            rule.
-        @rtype: C{list} of C{int}
-        """
-        return self.apply_at(tokens, range(len(tokens)))
-
-    def apply_at(self, tokens, positions):
+    """
+    def __init__(self, original_tag, replacement_tag):
+        assert self.__class__ != BrillRule, \
+               "BrillRule is an abstract base class"
+        
+        self.original_tag = original_tag
+        """The tag which this C{BrillRule} may cause to be replaced."""
+        
+        self.replacement_tag = replacement_tag
+        """The tag with which this C{BrillRule} may replace another tag."""
+        
+    def apply(self, tokens, positions=None):
         """
         Apply this rule at every position in C{positions} where it
-        applies to the corpus.  I.e., for each position M{p} in
-        C{positions}, if C{tokens[M{p}]} is tagged with this rule's
+        applies to the given sentence.  I.e., for each position M{p}
+        in C{positions}, if C{tokens[M{p}]} is tagged with this rule's
         original tag, and satisfies this rule's condition, then set
         its tag to be this rule's replacement tag.
 
-        @param tokens: The tagged corpus
+        @param tokens: The tagged sentence
         @type tokens: list of Token
         @type positions: C{list} of C{int}
         @param positions: The positions where the transformation is to
-            be tried.
+            be tried.  If not specified, try it at all positions.
         @return: The indices of tokens whose tags were changed by this
             rule.
         @rtype: C{int}
         """
-        assert False, "BrillRuleI is an abstract interface"
+        if positions is None:
+            positions = range(len(tokens))
+
+        # Determine the indices at which this rule applies.
+        change = [i for i in positions if self.applies(tokens, i)]
+
+        # Make the changes.  Note: this must be done in a separate
+        # step from finding applicable locations, since we don't want
+        # the rule to interact with itself.
+        for i in change:
+            tokens[i] = (tokens[i][0], self.replacement_tag)
+        
+        return change
 
     def applies(self, tokens, index):
         """
@@ -142,37 +145,23 @@ class BrillRuleI(yaml.YAMLObject):
             C{tokens[index]}, False otherwise
         @rtype: Boolean
 
-        @param tokens: A tagged corpus
+        @param tokens: A tagged sentence
         @type tokens: list of Token
         @param index: The index to check
         @type index: int
         """
-        assert False, "BrillRuleI is an abstract interface"
+        assert False, "Brill rules must define applies()"
         
-    def original_tag(self):
-        """
-        @return: The tag which this C{BrillRuleI} may cause to be
-        replaced.
-        @rtype: any
-        """
-        assert False, "BrillRuleI is an abstract interface"
-
-    def replacement_tag(self):
-        """
-        @return: the tag with which this C{BrillRuleI} may replace
-        another tag.
-        @rtype: any
-        """
-        assert False, "BrillRuleI is an abstract interface"
-
     # Rules must be comparable and hashable for the algorithm to work
     def __eq__(self):
+        assert False, "Brill rules must be comparable"
+    def __ne__(self):
         assert False, "Brill rules must be comparable"
     def __hash__(self):
         assert False, "Brill rules must be hashable"
     
 
-class ProximateTokensRule(BrillRuleI):
+class ProximateTokensRule(BrillRule):
     """
     An abstract base class for brill rules whose condition checks for
     the presence of tokens with given properties at given ranges of
@@ -201,7 +190,6 @@ class ProximateTokensRule(BrillRuleI):
 
     def __init__(self, original_tag, replacement_tag, *conditions):
         """
-
         Construct a new brill rule that changes a token's tag from
         C{original_tag} to C{replacement_tag} if all of the properties
         specified in C{conditions} hold.
@@ -215,9 +203,7 @@ class ProximateTokensRule(BrillRuleI):
         """
         assert self.__class__ != ProximateTokensRule, \
                "ProximateTokensRule is an abstract base class"
-
-        self._original = original_tag
-        self._replacement = replacement_tag
+        BrillRule.__init__(self, original_tag, replacement_tag)
         self._conditions = conditions
         for (s,e,v) in conditions:
             if s>e:
@@ -230,8 +216,8 @@ class ProximateTokensRule(BrillRuleI):
         node = dumper.represent_mapping(cls.yaml_tag, dict(
             description=str(data),
             conditions=list(list(x) for x in data._conditions),
-            original=data._original,
-            replacement=data._replacement))
+            original=data.original_tag,
+            replacement=data.replacement_tag))
         return node
     @classmethod
     def from_yaml(cls, loader, node):
@@ -239,7 +225,8 @@ class ProximateTokensRule(BrillRuleI):
         return cls(map['original'], map['replacement'],
         *(tuple(x) for x in map['conditions']))
 
-    def extract_property(token): # [staticmethod]
+    @staticmethod
+    def extract_property(token):
         """
         Returns some property characterizing this token, such as its
         base lexical item or its tag.
@@ -253,32 +240,13 @@ class ProximateTokensRule(BrillRuleI):
         @return: The property
         @rtype: any
         """
-        assert False, "ProximateTokensRule is an abstract interface"
-    extract_property = staticmethod(extract_property)
-
-    def apply_at(self, tokens, positions):
-        # Inherit docs from BrillRuleI
-
-        # Find all locations where the rule is applicable
-        change = []
-        for i in positions:
-            if self.applies(tokens, i):
-                change.append(i)
-
-        # Make the changes.  Note: this must be done in a separate
-        # step from finding applicable locations, since we don't want
-        # the rule to interact with itself.
-        for i in change:
-            (token, tag) = tokens[i]
-            tokens[i] = (token, self._replacement)
-        
-        return change
+        assert False, "ProximateTokenRules must define extract_property()"
 
     def applies(self, tokens, index):
-        # Inherit docs from BrillRuleI
+        # Inherit docs from BrillRule
         
         # Does the given token have this rule's "original tag"?
-        if tokens[index][1] != self._original:
+        if tokens[index][1] != self.original_tag:
             return False
         
         # Check to make sure that every condition holds.
@@ -298,35 +266,43 @@ class ProximateTokensRule(BrillRuleI):
         # Every condition checked out, so the rule is applicable.
         return True
 
-    def original_tag(self):
-        # Inherit docs from BrillRuleI
-        return self._original
-
-    def replacement_tag(self):
-        # Inherit docs from BrillRuleI
-        return self._replacement
-
     def __eq__(self, other):
-        return (other != None and 
-                other.__class__ == self.__class__ and 
-                self._original == other._original and 
-                self._replacement == other._replacement and 
-                self._conditions == other._conditions)
+        return (self is other or
+                (other is not None and
+                 other.__class__ == self.__class__ and 
+                 self.original_tag == other.original_tag and 
+                 self.replacement_tag == other.replacement_tag and 
+                 self._conditions == other._conditions))
+
+    def __ne__(self, other):
+        return not (self==other)
 
     def __hash__(self):
-        return hash( (self._original, self._replacement, self._conditions,
-                      self.__class__.__name__) )
-
+        # Cache our hash value (justified by profiling.)
+        try:
+            return self.__hash
+        except:
+            self.__hash = hash( (self.original_tag, self.replacement_tag,
+                                 self._conditions, self.__class__.__name__) )
+            return self.__hash
+    
     def __repr__(self):
-        conditions = ' and '.join(['%s in %d...%d' % (v,s,e)
-                                   for (s,e,v) in self._conditions])
-        return '<%s: %s->%s if %s>' % (self.__class__.__name__,
-                                       self._original, self._replacement,
-                                       conditions)
+        # Cache our repr (justified by profiling -- this is used as
+        # a sort key when deterministic=True.)
+        try:
+            return self.__repr
+        except:
+            conditions = ' and '.join(['%s in %d...%d' % (v,s,e)
+                                       for (s,e,v) in self._conditions])
+            self.__repr = ('<%s: %s->%s if %s>' %
+                           (self.__class__.__name__, self.original_tag,
+                            self.replacement_tag, conditions))
+            return self.__repr
+                    
 
     def __str__(self):
-        replacement = '%s -> %s' % (self._original,
-                                              self._replacement)
+        replacement = '%s -> %s' % (self.original_tag,
+                                    self.replacement_tag)
         if len(self._conditions) == 0:
             conditions = ''
         else:
@@ -371,10 +347,10 @@ class ProximateTagsRule(ProximateTokensRule):
     """
     PROPERTY_NAME = 'tag' # for printing.
     yaml_tag = '!ProximateTagsRule'
-    def extract_property(token): # [staticmethod]
+    @staticmethod
+    def extract_property(token):
         """@return: The given token's tag."""
         return token[1]
-    extract_property = staticmethod(extract_property)
 
 class ProximateWordsRule(ProximateTokensRule):
     """
@@ -384,10 +360,10 @@ class ProximateWordsRule(ProximateTokensRule):
     """
     PROPERTY_NAME = 'text' # for printing.
     yaml_tag = '!ProximateWordsRule'
-    def extract_property(token): # [staticmethod]
+    @staticmethod
+    def extract_property(token):
         """@return: The given token's text."""
         return token[0]
-    extract_property = staticmethod(extract_property)
 
 ######################################################################
 ## Brill Templates
@@ -396,7 +372,7 @@ class ProximateWordsRule(ProximateTokensRule):
 class BrillTemplateI(object):
     """
     An interface for generating lists of transformational rules that
-    apply at given corpus positions.  C{BrillTemplateI} is used by
+    apply at given sentence positions.  C{BrillTemplateI} is used by
     C{Brill} training algorithms to generate candidate rules.
     """
     def __init__(self):
@@ -420,15 +396,15 @@ class BrillTemplateI(object):
         @type i: C{int}
         @param correctTag: The correct tag for the C{i}th token.
         @type correctTag: (any)
-        @rtype: C{list} of L{BrillRuleI}
+        @rtype: C{list} of L{BrillRule}
         """
         raise AssertionError, "BrillTemplateI is an abstract interface"
     
     def get_neighborhood(self, token, index):
         """
         Returns the set of indices C{i} such that
-        C{applicable_rules(token, index, ...)} depends on the value of
-        the C{i}th subtoken of C{token}.
+        C{applicable_rules(token, i, ...)} depends on the value of
+        the C{index}th subtoken of C{token}.
 
         This method is used by the \"fast\" Brill tagger trainer.
 
@@ -443,7 +419,7 @@ class BrillTemplateI(object):
 class ProximateTokensTemplate(BrillTemplateI):
     """
     An brill templates that generates a list of
-    L{ProximateTokensRule}s that apply at a given corpus
+    L{ProximateTokensRule}s that apply at a given sentence
     position.  In particular, each C{ProximateTokensTemplate} is
     parameterized by a proximate token brill rule class and a list of
     boundaries, and generates all rules that:
@@ -507,20 +483,25 @@ class ProximateTokensTemplate(BrillTemplateI):
         between M{index+start} and M{index+end} (inclusive) is
         M{value}.
         """
-        conditions = set()
+        conditions = []
         s = max(0, index+start)
         e = min(index+end+1, len(tokens))
         for i in range(s, e):
             value = self._rule_class.extract_property(tokens[i])
-            conditions.add( (start, end, value) )
+            conditions.append( (start, end, value) )
         return conditions
 
     def get_neighborhood(self, tokens, index):
         # inherit docs from BrillTemplateI
+
+        # applicable_rules(tokens, index, ...) depends on index.
         neighborhood = set([index])
+        
+        # applicable_rules(tokens, i, ...) depends on index if
+        # i+start < index <= i+end.
         for (start, end) in self._boundaries:
-            s = max(0, index+start)
-            e = min(index+end+1, len(tokens))
+            s = max(0, index+(-end))
+            e = min(index+(-start)+1, len(tokens))
             for i in range(s, e):
                 neighborhood.add(i)
 
@@ -587,42 +568,54 @@ class SymmetricProximateTokensTemplate(BrillTemplateI):
 ## Brill Tagger Trainer
 ######################################################################
 
-class BrillTrainer(object):
+class BrillTaggerTrainer(object):
     """
     A trainer for brill taggers.
     """
-    def __init__(self, initial_tagger, templates, trace=0):
+    def __init__(self, initial_tagger, templates, trace=0,
+                 deterministic=None):
+        """
+        @param deterministic: If true, then choose between rules that
+            have the same score by picking the one whose __repr__
+            is lexicographically smaller.  If false, then just pick the
+            first rule we find with a given score -- this will depend
+            on the order in which keys are returned from dictionaries,
+            and so may not be the same from one run to the next.  If
+            not specified, treat as true iff trace > 0.
+        """
+        if deterministic is None: deterministic = (trace > 0)
         self._initial_tagger = initial_tagger
         self._templates = templates
         self._trace = trace
+        self._deterministic = deterministic
 
     #////////////////////////////////////////////////////////////
     # Training
     #////////////////////////////////////////////////////////////
 
-    def train(self, train_tokens, max_rules=200, min_score=2):
+    def train(self, train_sents, max_rules=200, min_score=2):
         """
         Trains the Brill tagger on the corpus C{train_token},
         producing at most C{max_rules} transformations, each of which
         reduces the net number of errors in the corpus by at least
         C{min_score}.
         
-        @type train_tokens: C{list} of L{tuple}
-        @param train_tokens: The corpus of tagged tokens
+        @type train_sents: C{list} of C{list} of L{tuple}
+        @param train_sents: The corpus of tagged tokens
         @type max_rules: C{int}
         @param max_rules: The maximum number of transformations to be created
         @type min_score: C{int}
         @param min_score: The minimum acceptable net error reduction
             that each transformation must produce in the corpus.
         """
-        if self._trace > 0: print ("Training Brill tagger on %d tokens..." %
-                                   len(train_tokens))
+        if self._trace > 0: print ("Training Brill tagger on %d "
+                                   "sentences..." % len(train_sents))
 
-        # Create a new copy of the training token, and run the initial
-        # tagger on this.  We will progressively update this test
-        # token to look more like the training token.
-
-        test_tokens = list(self._initial_tagger.tag(t[0] for t in train_tokens))
+        # Create a new copy of the training corpus, and run the
+        # initial tagger on it.  We will progressively update this
+        # test corpus to look more like the training corpus.
+        test_sents = [self._initial_tagger.tag(untag(sent))
+                      for sent in train_sents]
         
         if self._trace > 2: self._trace_header()
             
@@ -630,9 +623,8 @@ class BrillTrainer(object):
         rules = []
         try:
             while len(rules) < max_rules:
-                old_tags = [t[1] for t in test_tokens]
-                (rule, score, fixscore) = self._best_rule(test_tokens,
-                                                          train_tokens)
+                (rule, score, fixscore) = self._best_rule(test_sents,
+                                                          train_sents)
                 if rule is None or score < min_score:
                     if self._trace > 1:
                         print 'Insufficient improvement; stopping'
@@ -640,16 +632,20 @@ class BrillTrainer(object):
                 else:
                     # Add the rule to our list of rules.
                     rules.append(rule)
-                    # Use the rules to update the test token.
-                    k = rule.apply_to(test_tokens)
+                    # Use the rules to update the test corpus.  Keep
+                    # track of how many times the rule applied (k).
+                    k = 0
+                    for sent in test_sents:
+                        k += len(rule.apply(sent))
                     # Display trace output.
                     if self._trace > 1:
-                        self._trace_rule(rule, score, fixscore, len(k))
+                        self._trace_rule(rule, score, fixscore, k)
         # The user can also cancel training manually:
-        except KeyboardInterrupt: pass
+        except KeyboardInterrupt:
+            print "Training stopped manually -- %d rules found" % len(rules)
 
         # Create and return a tagger from the rules we found.
-        return Brill(self._initial_tagger, rules)
+        return BrillTagger(self._initial_tagger, rules)
 
     #////////////////////////////////////////////////////////////
     # Finding the best rule
@@ -657,21 +653,21 @@ class BrillTrainer(object):
 
     # Finds the rule that makes the biggest net improvement in the corpus.
     # Returns a (rule, score) pair.
-    def _best_rule(self, test_tokens, train_tokens):
-
+    def _best_rule(self, test_sents, train_sents):
         # Create a dictionary mapping from each tag to a list of the
-        # indices that have that tag in both test_tokens and
-        # train_tokens (i.e., where it is correctly tagged).
-        correct_indices = {}
-        for i in range(len(test_tokens)):
-            if test_tokens[i][1] == train_tokens[i][1]:
-                tag = test_tokens[i][1]
-                correct_indices.setdefault(tag, []).append(i)
+        # indices that have that tag in both test_sents and
+        # train_sents (i.e., where it is correctly tagged).
+        correct_indices = defaultdict(list)
+        for sentnum, sent in enumerate(test_sents):
+            for wordnum, tagged_word in enumerate(sent):
+                if tagged_word[1] == train_sents[sentnum][wordnum][1]:
+                    tag = tagged_word[1]
+                    correct_indices[tag].append( (sentnum, wordnum) )
 
         # Find all the rules that correct at least one token's tag,
         # and the number of tags that each rule corrects (in
         # descending order of number of tags corrected).
-        rules = self._find_rules(test_tokens, train_tokens)
+        rules = self._find_rules(test_sents, train_sents)
 
         # Keep track of the current best rule, and its score.
         best_rule, best_score, best_fixscore = None, 0, 0
@@ -683,35 +679,38 @@ class BrillTrainer(object):
             # The actual score must be <= fixscore; so if best_score
             # is bigger than fixscore, then we already have the best
             # rule.
-            if best_score >= fixscore:
+            if best_score > fixscore or (best_score == fixscore and
+                                         not self._deterministic):
                 return best_rule, best_score, best_fixscore
 
             # Calculate the actual score, by decrementing fixscore
             # once for each tag that the rule changes to an incorrect
             # value.
             score = fixscore
-            if rule.original_tag() in correct_indices:
-                for i in correct_indices[rule.original_tag()]:
-                    if rule.applies(test_tokens, i):
+            if rule.original_tag in correct_indices:
+                for (sentnum, wordnum) in correct_indices[rule.original_tag]:
+                    if rule.applies(test_sents[sentnum], wordnum):
                         score -= 1
                         # If the score goes below best_score, then we know
                         # that this isn't the best rule; so move on:
-                        if score <= best_score: break
-
-            #print '%5d %5d %s' % (fixscore, score, rule)
+                        if score < best_score or (score == best_score and
+                                                  not self._deterministic):
+                            break
 
             # If the actual score is better than the best score, then
             # update best_score and best_rule.
-            if score > best_score:
+            if score > best_score or (score == best_score and
+                                      self._deterministic and
+                                      repr(rule) < repr(best_rule)):
                 best_rule, best_score, best_fixscore = rule, score, fixscore
 
         # Return the best rule, and its score.
         return best_rule, best_score, best_fixscore
 
-    def _find_rules(self, test_tokens, train_tokens):
+    def _find_rules(self, test_sents, train_sents):
         """
         Find all rules that correct at least one token's tag in
-        C{test_tokens}.
+        C{test_sents}.
 
         @return: A list of tuples C{(rule, fixscore)}, where C{rule}
             is a brill rule and C{fixscore} is the number of tokens
@@ -721,37 +720,37 @@ class BrillTrainer(object):
         """
 
         # Create a list of all indices that are incorrectly tagged.
-        error_indices = [i for i in range(len(test_tokens))
-                         if (test_tokens[i][1] !=
-                             train_tokens[i][1])]
+        error_indices = []
+        for sentnum, sent in enumerate(test_sents):
+            for wordnum, tagged_word in enumerate(sent):
+                if tagged_word[1] != train_sents[sentnum][wordnum][1]:
+                    error_indices.append( (sentnum, wordnum) )
 
         # Create a dictionary mapping from rules to their positive-only
         # scores.
-        rule_score_dict = {}
-        for i in range(len(test_tokens)):
-            rules = self._find_rules_at(test_tokens, train_tokens, i)
-            for rule in rules:
-                rule_score_dict[rule] = rule_score_dict.get(rule,0) + 1
+        rule_score_dict = defaultdict(int)
+        for (sentnum, wordnum) in error_indices:
+            test_sent = test_sents[sentnum]
+            train_sent = train_sents[sentnum]
+            for rule in self._find_rules_at(test_sent, train_sent, wordnum):
+                rule_score_dict[rule] += 1
 
         # Convert the dictionary into a list of (rule, score) tuples,
         # sorted in descending order of score.
-        rule_score_items = rule_score_dict.items()
-        temp = [(-score, rule) for (rule, score) in rule_score_items]
-        temp.sort()
-        return [(rule, -negscore) for (negscore, rule) in temp]
-
-    def _find_rules_at(self, test_tokens, train_tokens, i):
+        return sorted(rule_score_dict.items(), 
+                      key=lambda (rule,score): -score)
+    
+    def _find_rules_at(self, test_sent, train_sent, i):
         """
         @rtype: C{Set}
         @return: the set of all rules (based on the templates) that
-        correct token C{i}'s tag in C{test_tokens}.
+        correct token C{i}'s tag in C{test_sent}.
         """
-        
         applicable_rules = set()
-        if test_tokens[i][1] != train_tokens[i][1]:
-            correct_tag = train_tokens[i][1]
+        if test_sent[i][1] != train_sent[i][1]:
+            correct_tag = train_sent[i][1]
             for template in self._templates:
-                new_rules = template.applicable_rules(test_tokens, i,
+                new_rules = template.applicable_rules(test_sent, i,
                                                       correct_tag)
                 applicable_rules.update(new_rules)
                 
@@ -776,275 +775,414 @@ class BrillTrainer(object):
         if self._trace > 2:
             print ('%4d%4d%4d%4d ' % (score, fixscore, fixscore-score,
                                       numchanges-fixscore*2+score)), '|',
-        print rule
+            print textwrap.fill(str(rule), initial_indent=' '*20,
+                                subsequent_indent=' '*18+'|   ').strip()
+        else:
+            print rule
 
 ######################################################################
 ## Fast Brill Tagger Trainer
 ######################################################################
 
-class FastBrillTrainer(object):
+class FastBrillTaggerTrainer(object):
     """
     A faster trainer for brill taggers.
     """
-    def __init__(self, initial_tagger, templates, trace=0):
+    def __init__(self, initial_tagger, templates, trace=0,
+                 deterministic=None):
+        if deterministic is None: deterministic = (trace > 0)
         self._initial_tagger = initial_tagger
         self._templates = templates
         self._trace = trace
+        self._deterministic = deterministic
+
+        self._tag_positions = None
+        """Mapping from tags to lists of positions that use that tag."""
+
+        self._rules_by_position = None
+        """Mapping from positions to the set of rules that are known
+           to occur at that position.  Position is (sentnum, wordnum).
+           Initially, this will only contain positions where each rule
+           applies in a helpful way; but when we examine a rule, we'll
+           extend this list to also include positions where each rule
+           applies in a harmful or neutral way."""
+
+        self._positions_by_rule = None
+        """Mapping from rule to position to effect, specifying the
+           effect that each rule has on the overall score, at each
+           position.  Position is (sentnum, wordnum); and effect is
+           -1, 0, or 1.  As with _rules_by_position, this mapping starts
+           out only containing rules with positive effects; but when
+           we examine a rule, we'll extend this mapping to include
+           the positions where the rule is harmful or neutral."""
+
+        self._rules_by_score = None
+        """Mapping from scores to the set of rules whose effect on the
+           overall score is upper bounded by that score.  Invariant:
+           rulesByScore[s] will contain r iff the sum of
+           _positions_by_rule[r] is s."""
+
+        self._rule_scores = None
+        """Mapping from rules to upper bounds on their effects on the
+           overall score.  This is the inverse mapping to _rules_by_score.
+           Invariant: ruleScores[r] = sum(_positions_by_rule[r])"""
+
+        self._first_unknown_position = None
+        """Mapping from rules to the first position where we're unsure
+           if the rule applies.  This records the next position we
+           need to check to see if the rule messed anything up."""
 
     #////////////////////////////////////////////////////////////
     # Training
     #////////////////////////////////////////////////////////////
 
-    def train(self, train_tokens, max_rules=200, min_score=2):
-
-        # If TESTING is true, extra computation is done to determine whether
-        # each "best" rule actually reduces net error by the score it received.
-        TESTING = False
-        
+    def train(self, train_sents, max_rules=200, min_score=2):
         # Basic idea: Keep track of the rules that apply at each position.
         # And keep track of the positions to which each rule applies.
 
-        # The set of somewhere-useful rules that apply at each position
-        rulesByPosition = []
-        for i in range(len(train_tokens)):
-            rulesByPosition.append(set())
+        if self._trace > 0: print ("Training Brill tagger on %d "
+                                   "sentences..." % len(train_sents))
 
-        # Mapping somewhere-useful rules to the positions where they apply.
-        # Then maps each position to the score change the rule generates there.
-        # (always -1, 0, or 1)
-        positionsByRule = {}
+        # Create a new copy of the training corpus, and run the
+        # initial tagger on it.  We will progressively update this
+        # test corpus to look more like the training corpus.
+        test_sents = [self._initial_tagger.tag(untag(sent))
+                      for sent in train_sents]
 
-        # Map scores to sets of rules known to achieve *at most* that score.
-        rulesByScore = {0:{}}
-        # Conversely, map somewhere-useful rules to their minimal scores.
-        ruleScores = {}
+        # Initialize our mappings.  This will find any errors made
+        # by the initial tagger, and use those to generate repair
+        # rules, which are added to the rule mappings.
+        if self._trace > 0: print "Finding initial useful rules..."
+        self._init_mappings(test_sents, train_sents)
+        if self._trace > 0: print ("    Found %d useful rules." %
+                                   len(self._rule_scores))
 
-        tagIndices = {}   # Lists of indices, mapped to by their tags
+        # Let the user know what we're up to.
+        if self._trace > 2: self._trace_header()
+        elif self._trace == 1: print "Selecting rules..."
 
-        # Maps rules to the first index in the corpus where it may not be known
-        # whether the rule applies.  (Rules can't be chosen for inclusion
-        # unless this value = len(corpus).  But most rules are bad, and
-        # we won't need to check the whole corpus to know that.)
-        # Some indices past this may actually have been checked; it just isn't
-        # guaranteed.
-        firstUnknownIndex = {}
-
-        # Make entries in the rule-mapping dictionaries.
-        # Should be called before _updateRuleApplies.
-        def _initRule (rule):
-            positionsByRule[rule] = {}
-            rulesByScore[0][rule] = None
-            ruleScores[rule] = 0
-            firstUnknownIndex[rule] = 0
-
-        # Takes a somewhere-useful rule which applies at index i;
-        # Updates all rule data to reflect that the rule so applies.
-        def _updateRuleApplies (rule, i):
-
-            # If the rule is already known to apply here, ignore.
-            # (This only happens if the position's tag hasn't changed.)
-            if i in positionsByRule[rule]:
-                return
-
-            if rule.replacement_tag() == train_tokens[i][1]:
-                positionsByRule[rule][i] = 1
-            elif rule.original_tag() == train_tokens[i][1]:
-                positionsByRule[rule][i] = -1
-            else: # was wrong, remains wrong
-                positionsByRule[rule][i] = 0
-
-            # Update rules in the other dictionaries
-            del rulesByScore[ruleScores[rule]][rule]
-            ruleScores[rule] += positionsByRule[rule][i]
-            if ruleScores[rule] not in rulesByScore:
-                rulesByScore[ruleScores[rule]] = {}
-            rulesByScore[ruleScores[rule]][rule] = None
-            rulesByPosition[i].add(rule)
-
-        # Takes a rule which no longer applies at index i;
-        # Updates all rule data to reflect that the rule doesn't apply.
-        def _updateRuleNotApplies (rule, i):
-            del rulesByScore[ruleScores[rule]][rule]
-            ruleScores[rule] -= positionsByRule[rule][i]
-            if ruleScores[rule] not in rulesByScore:
-                rulesByScore[ruleScores[rule]] = {}
-            rulesByScore[ruleScores[rule]][rule] = None
-
-            del positionsByRule[rule][i]
-            rulesByPosition[i].remove(rule)
-            # Optional addition: if the rule now applies nowhere, delete
-            # all its dictionary entries.
-
-        tagged_tokens = list(self._initial_tagger.tag(t[0] for t in train_tokens))
-
-        # First sort the corpus by tag, and also note where the errors are.
-        errorIndices = []  # only used in initialization
-        for i in range(len(tagged_tokens)):
-            tag = tagged_tokens[i][1]
-            if tag != train_tokens[i][1]:
-                errorIndices.append(i)
-            if tag not in tagIndices:
-                tagIndices[tag] = []
-            tagIndices[tag].append(i)
-
-        print "Finding useful rules..."
-        # Collect all rules that fix any errors, with their positive scores.
-        for i in errorIndices:
-            for template in self._templates:
-                # Find the templated rules that could fix the error.
-                for rule in template.applicable_rules(tagged_tokens, i,
-                                                    train_tokens[i][1]):
-                    if rule not in positionsByRule:
-                        _initRule(rule)
-                    _updateRuleApplies(rule, i)
-
-        print "Done initializing %i useful rules." %len(positionsByRule)
-
-        if TESTING:
-            after = -1 # bug-check only
-
-        # Each iteration through the loop tries a new maxScore.
-        maxScore = max(rulesByScore.keys())
+        # Repeatedly select the best rule, and add it to `rules`.
         rules = []
-        while len(rules) < max_rules and maxScore >= min_score:
+        while (len(rules) < max_rules):
+            # Find the best rule, and add it to our rule list.
+            rule = self._best_rule(train_sents, test_sents, min_score)
+            if rule:
+                rules.append(rule)
+            else:
+                break # No more good rules left!
 
-            # Find the next best rule.  This is done by repeatedly taking a rule with
-            # the highest score and stepping through the corpus to see where it
-            # applies.  When it makes an error (decreasing its score) it's bumped
-            # down, and we try a new rule with the highest score.
-            # When we find a rule which has the highest score AND which has been
-            # tested against the entire corpus, we can conclude that it's the next
-            # best rule.
+            # Report the rule that we found.
+            if self._trace > 1: self._trace_rule(rule)
 
-            bestRule = None
-            bestRules = rulesByScore[maxScore].keys()
-
-            for rule in bestRules:
-                # Find the first relevant index at or following the first
-                # unknown index.  (Only check indices with the right tag.)
-                ti = bisect.bisect_left(tagIndices[rule.original_tag()],
-                                        firstUnknownIndex[rule])
-                for nextIndex in tagIndices[rule.original_tag()][ti:]:
-                    if rule.applies(tagged_tokens, nextIndex):
-                        _updateRuleApplies(rule, nextIndex)
-                        if ruleScores[rule] < maxScore:
-                            firstUnknownIndex[rule] = nextIndex+1
-                            break  # the _update demoted the rule
-
-                # If we checked all remaining indices and found no more errors:
-                if ruleScores[rule] == maxScore:
-                    firstUnknownIndex[rule] = len(tagged_tokens) # i.e., we checked them all
-                    print "%i) %s (score: %i)" %(len(rules)+1, rule, maxScore)
-                    bestRule = rule
-                    break
-                
-            if bestRule == None: # all rules dropped below maxScore
-                del rulesByScore[maxScore]
-                maxScore = max(rulesByScore.keys())
-                continue  # with next-best rules
-
-            # bug-check only
-            if TESTING:
-                before = len(_errorPositions(tagged_tokens, train_tokens))
-                print "There are %i errors before applying this rule." %before
-                assert after == -1 or before == after, \
-                        "after=%i but before=%i" %(after,before)
-                        
-            print "Applying best rule at %i locations..." \
-                    %len(positionsByRule[bestRule].keys())
+            # Apply the new rule at the relevant sites
+            self._apply_rule(rule, test_sents)
             
-            # If we reach this point, we've found a new best rule.
-            # Apply the rule at the relevant sites.
-            # (apply_at is a little inefficient here, since we know the rule applies
-            #  and don't actually need to test it again.)
-            rules.append(bestRule)
-            bestRule.apply_at(tagged_tokens, positionsByRule[bestRule].keys())
+            # Update _tag_positions[rule.original_tag] and
+            # _tag_positions[rule.replacement_tag] for the affected
+            # positions (i.e., self._positions_by_rule[rule]).
+            self._update_tag_positions(rule)
+            
+            # Update rules that were affected by the change.
+            self._update_rules(rule, train_sents, test_sents)
 
-            # Update the tag index accordingly.
-            for i in positionsByRule[bestRule].keys(): # where it applied
-                # Update positions of tags
-                # First, find and delete the index for i from the old tag.
-                oldIndex = bisect.bisect_left(tagIndices[bestRule.original_tag()], i)
-                del tagIndices[bestRule.original_tag()][oldIndex]
-
-                # Then, insert i into the index list of the new tag.
-                if bestRule.replacement_tag() not in tagIndices:
-                    tagIndices[bestRule.replacement_tag()] = []
-                newIndex = bisect.bisect_left(tagIndices[bestRule.replacement_tag()], i)
-                tagIndices[bestRule.replacement_tag()].insert(newIndex, i)
-
-            # This part is tricky.
-            # We need to know which sites might now require new rules -- that
-            # is, which sites are close enough to the changed site so that
-            # a template might now generate different rules for it.
-            # Only the templates can know this.
-            #
-            # If a template now generates a different set of rules, we have
-            # to update our indices to reflect that.
-            print "Updating neighborhoods of changed sites.\n" 
-
-            # First, collect all the indices that might get new rules.
-            neighbors = set()
-            for i in positionsByRule[bestRule].keys(): # sites changed
-                for template in self._templates:
-                    neighbors.update(template.get_neighborhood(tagged_tokens, i))
-
-            # Then collect the new set of rules for each such index.
-            c = d = e = 0
-            for i in neighbors:
-                siteRules = set()
-                for template in self._templates:
-                    # Get a set of the rules that the template now generates
-                    siteRules.update(set(template.applicable_rules(
-                                        tagged_tokens, i, train_tokens[i][1])))
-
-                # Update rules no longer generated here by any template
-                for obsolete in rulesByPosition[i] - siteRules:
-                    c += 1
-                    _updateRuleNotApplies(obsolete, i)
-
-                # Update rules only now generated by this template
-                for newRule in siteRules - rulesByPosition[i]:
-                    d += 1
-                    if newRule not in positionsByRule:
-                        e += 1
-                        _initRule(newRule) # make a new rule w/score=0
-                    _updateRuleApplies(newRule, i) # increment score, etc.
-
-            if TESTING:
-                after = before - maxScore
-            print "%i obsolete rule applications, %i new ones, " %(c,d)+ \
-                    "using %i previously-unseen rules." %e        
-
-            maxScore = max(rulesByScore.keys()) # may have gone up
-
-        
-        if self._trace > 0: print ("Training Brill tagger on %d tokens..." %
-                                   len(train_tokens))
-        
-        # Maintain a list of the rules that apply at each position.
-        rules_by_position = [{} for tok in train_tokens]
-
+        # Discard our tag position mapping & rule mappings.
+        self._clean()
+            
         # Create and return a tagger from the rules we found.
-        return Brill(self._initial_tagger, rules)
+        return BrillTagger(self._initial_tagger, rules)
+
+    def _init_mappings(self, test_sents, train_sents):
+        """
+        Initialize the tag position mapping & the rule related
+        mappings.  For each error in test_sents, find new rules that
+        would correct them, and add them to the rule mappings.
+        """
+        self._tag_positions = defaultdict(list)
+        self._rules_by_position = defaultdict(set)
+        self._positions_by_rule = defaultdict(dict)
+        self._rules_by_score = defaultdict(set)
+        self._rule_scores = defaultdict(int)
+        self._first_unknown_position = defaultdict(int)
+
+        # Scan through the corpus, initializing the tag_positions
+        # mapping and all the rule-related mappings.
+        for sentnum, sent in enumerate(test_sents):
+            for wordnum, (word, tag) in enumerate(sent):
+                
+                # Initialize tag_positions
+                self._tag_positions[tag].append( (sentnum,wordnum) )
+
+                # If it's an error token, update the rule-related mappings.
+                correct_tag = train_sents[sentnum][wordnum][1]
+                if tag != correct_tag:
+                    for rule in self._find_rules(sent, wordnum, correct_tag):
+                        self._update_rule_applies(rule, sentnum, wordnum,
+                                                  train_sents)
+
+    def _clean(self):
+        self._tag_positions = None
+        self._rules_by_position = None
+        self._positions_by_rule = None
+        self._rules_by_score = None
+        self._rule_scores = None
+        self._first_unknown_position = None
+        
+    def _find_rules(self, sent, wordnum, new_tag):
+        """
+        Use the templates to find rules that apply at index C{wordnum}
+        in the sentence C{sent} and generate the tag C{new_tag}.
+        """
+        for template in self._templates:
+            for rule in template.applicable_rules(sent, wordnum, new_tag):
+                yield rule
+
+    def _update_rule_applies(self, rule, sentnum, wordnum, train_sents):
+        """
+        Update the rule data tables to reflect the fact that
+        C{rule} applies at the position C{(sentnum, wordnum)}.
+        """
+        pos = sentnum, wordnum
+        
+        # If the rule is already known to apply here, ignore.
+        # (This only happens if the position's tag hasn't changed.)
+        if pos in self._positions_by_rule[rule]:
+            return
+
+        # Update self._positions_by_rule.
+        correct_tag = train_sents[sentnum][wordnum][1]
+        if rule.replacement_tag == correct_tag:
+            self._positions_by_rule[rule][pos] = 1
+        elif rule.original_tag == correct_tag:
+            self._positions_by_rule[rule][pos] = -1
+        else: # was wrong, remains wrong
+            self._positions_by_rule[rule][pos] = 0
+
+        # Update _rules_by_position
+        self._rules_by_position[pos].add(rule)
+
+        # Update _rule_scores.
+        old_score = self._rule_scores[rule]
+        self._rule_scores[rule] += self._positions_by_rule[rule][pos]
+
+        # Update _rules_by_score.
+        self._rules_by_score[old_score].discard(rule)
+        self._rules_by_score[self._rule_scores[rule]].add(rule)
+
+    def _update_rule_not_applies(self, rule, sentnum, wordnum):
+        """
+        Update the rule data tables to reflect the fact that C{rule}
+        does not apply at the position C{(sentnum, wordnum)}.
+        """
+        pos = sentnum, wordnum
+        
+        # Update _rule_scores.
+        old_score = self._rule_scores[rule]
+        self._rule_scores[rule] -= self._positions_by_rule[rule][pos]
+        
+        # Update _rules_by_score.
+        self._rules_by_score[old_score].discard(rule)
+        self._rules_by_score[self._rule_scores[rule]].add(rule)
+        
+        # Update _positions_by_rule
+        del self._positions_by_rule[rule][pos]
+        self._rules_by_position[pos].remove(rule)
+        
+        # Optional addition: if the rule now applies nowhere, delete
+        # all its dictionary entries.
+
+    def _best_rule(self, train_sents, test_sents, min_score):
+        """
+        Find the next best rule.  This is done by repeatedly taking a
+        rule with the highest score and stepping through the corpus to
+        see where it applies.  When it makes an error (decreasing its
+        score) it's bumped down, and we try a new rule with the
+        highest score.  When we find a rule which has the highest
+        score AND which has been tested against the entire corpus, we
+        can conclude that it's the next best rule.
+        """
+        max_score = max(self._rules_by_score)
+
+        while max_score >= min_score:
+            best_rules = list(self._rules_by_score[max_score])
+            if self._deterministic:
+                best_rules.sort(key=repr)
+            for rule in best_rules:
+                positions = self._tag_positions[rule.original_tag]
+
+                unk = self._first_unknown_position.get(rule, (0,-1))
+                start = bisect.bisect_left(positions, unk)
+                
+                for i in range(start, len(positions)):
+                    sentnum, wordnum = positions[i]
+                    if rule.applies(test_sents[sentnum], wordnum):
+                        self._update_rule_applies(rule, sentnum, wordnum,
+                                                  train_sents)
+                        if self._rule_scores[rule] < max_score:
+                            self._first_unknown_position[rule] = (sentnum,
+                                                                  wordnum+1)
+                            break # The update demoted the rule.
+
+                if self._rule_scores[rule] == max_score:
+                    self._first_unknown_position[rule] = (len(train_sents)+1,0)
+                    return rule
+
+            # We demoted all the rules with score==max_score.
+            assert not self._rules_by_score[max_score]
+            del self._rules_by_score[max_score]
+            if len(self._rules_by_score) == 0: return None
+            max_score = max(self._rules_by_score)
+
+        # We reached the min-score threshold.
+        return None
+
+    def _apply_rule(self, rule, test_sents):
+        """
+        Update C{test_sents} by applying C{rule} everywhere where its
+        conditions are meet.
+        """
+        update_positions = set(self._positions_by_rule[rule])
+        old_tag = rule.original_tag
+        new_tag = rule.replacement_tag
+        
+        if self._trace > 3: self._trace_apply(len(update_positions))
+
+        # Update test_sents.
+        for (sentnum, wordnum) in update_positions:
+            text = test_sents[sentnum][wordnum][0]
+            test_sents[sentnum][wordnum] = (text, new_tag)
+
+    def _update_tag_positions(self, rule):
+        """
+        Update _tag_positions to reflect the changes to tags that are
+        made by C{rule}.
+        """
+        # Update the tag index.
+        for pos in self._positions_by_rule[rule]:
+            # Delete the old tag.
+            old_tag_positions = self._tag_positions[rule.original_tag]
+            old_index = bisect.bisect_left(old_tag_positions, pos)
+            del old_tag_positions[old_index]
+            # Insert the new tag.
+            new_tag_positions = self._tag_positions[rule.replacement_tag]
+            bisect.insort_left(new_tag_positions, pos)
+
+    def _update_rules(self, rule, train_sents, test_sents):
+        """
+        Check if we should add or remove any rules from consideration,
+        given the changes made by C{rule}.
+        """
+        # Collect a list of all positions that might be affected.
+        neighbors = set()
+        for sentnum, wordnum in self._positions_by_rule[rule]:
+            for template in self._templates:
+                n = template.get_neighborhood(test_sents[sentnum], wordnum)
+                neighbors.update([(sentnum, i) for i in n])
+
+        # Update the rules at each position.  
+        num_obsolete = num_new = num_unseen = 0
+        for sentnum, wordnum in neighbors:
+            test_sent = test_sents[sentnum]
+            correct_tag = train_sents[sentnum][wordnum][1]
+
+            # Check if the change causes any rule at this position to
+            # stop matching; if so, then update our rule mappings
+            # accordingly.
+            old_rules = set(self._rules_by_position[sentnum, wordnum])
+            for old_rule in old_rules:
+                if not old_rule.applies(test_sent, wordnum):
+                    num_obsolete += 1
+                    self._update_rule_not_applies(old_rule, sentnum, wordnum)
+
+            # Check if the change causes our templates to propose any
+            # new rules for this position.
+            site_rules = set()
+            for template in self._templates:
+                for new_rule in template.applicable_rules(test_sent, wordnum,
+                                                          correct_tag):
+                    if new_rule not in old_rules:
+                        num_new += 1
+                        if new_rule not in self._rule_scores:
+                            num_unseen += 1
+                        old_rules.add(new_rule)
+                        self._update_rule_applies(new_rule, sentnum,
+                                                  wordnum, train_sents)
+
+            # We may have caused other rules to match here, that are
+            # not proposed by our templates -- in particular, rules
+            # that are harmful or neutral.  We therefore need to
+            # update any rule whose first_unknown_position is past
+            # this rule.
+            for new_rule, pos in self._first_unknown_position.items():
+                if pos > (sentnum, wordnum):
+                    if new_rule not in old_rules:
+                        num_new += 1
+                        if new_rule.applies(test_sent, wordnum):
+                            self._update_rule_applies(new_rule, sentnum,
+                                                      wordnum, train_sents)
+            
+        if self._trace > 3:
+            self._trace_update_rules(num_obsolete, num_new, num_unseen)
+
+    #////////////////////////////////////////////////////////////
+    # Tracing
+    #////////////////////////////////////////////////////////////
+
+    def _trace_header(self):
+        print """
+           B      |     
+   S   F   r   O  |        Score = Fixed - Broken
+   c   i   o   t  |  R     Fixed = num tags changed incorrect -> correct
+   o   x   k   h  |  u     Broken = num tags changed correct -> incorrect
+   r   e   e   e  |  l     Other = num tags changed incorrect -> incorrect
+   e   d   n   r  |  e
+------------------+-------------------------------------------------------
+        """.rstrip()
+
+    def _trace_rule(self, rule):
+        assert self._rule_scores[rule] == \
+               sum(self._positions_by_rule[rule].values())
+        
+        changes = self._positions_by_rule[rule].values()
+        num_changed = len(changes)
+        num_fixed = len([c for c in changes if c==1])
+        num_broken = len([c for c in changes if c==-1])
+        num_other = len([c for c in changes if c==0])
+        score = self._rule_scores[rule]
+        
+        if self._trace > 2:
+            print '%4d%4d%4d%4d  |' % (score,num_fixed,num_broken,num_other),
+            print textwrap.fill(str(rule), initial_indent=' '*20,
+                                subsequent_indent=' '*18+'|   ').strip()
+        else:
+            print rule
+
+    def _trace_apply(self, num_updates):
+        prefix = ' '*18+'|'
+        print prefix
+        print prefix, 'Applying rule to %d positions.' % num_updates
+
+    def _trace_update_rules(self, num_obsolete, num_new, num_unseen):
+        prefix = ' '*18+'|'
+        print prefix, 'Updated rule tables:'
+        print prefix, ('  - %d rule applications removed' % num_obsolete)
+        print prefix, ('  - %d rule applications added (%d novel)' %
+                       (num_new, num_unseen))
+        print prefix
+
+        
 
 ######################################################################
 ## Testing
 ######################################################################
 
-def _errorPositions (train_tokens, tokens):
-    return [i for i in range(len(tokens)) 
-            if tokens[i][1] !=
-            train_tokens[i][1] ]
-
 # returns a list of errors in string format
-def errorList (train_tokens, tokens, radius=2):
+def error_list (train_sents, test_sents, radius=2):
     """
     Returns a list of human-readable strings indicating the errors in the
     given tagging of the corpus.
 
-    @param train_tokens: The correct tagging of the corpus
-    @type train_tokens: C{list} of C{tuple}
+    @param train_sents: The correct tagging of the corpus
+    @type train_sents: C{list} of C{tuple}
     @param tokens: The tagged corpus
     @type tokens: C{list} of C{tuple}
     @param radius: How many tokens on either side of a wrongly-tagged token
@@ -1052,32 +1190,28 @@ def errorList (train_tokens, tokens, radius=2):
         string will show the incorrect token plus two tokens on either side.
     @type radius: int
     """
-    errors = []
-    indices = _errorPositions(train_tokens, tokens)
-    tokenLen = len(tokens)
-    for i in indices:
-        ei = tokens[i][1].rjust(3) + " -> " \
-             + train_tokens[i][1].rjust(3) + ":  "
-        for j in range( max(i-radius, 0), min(i+radius+1, tokenLen) ):
-            if tokens[j][0] == tokens[j][1]:
-                s = tokens[j][0] # don't print punctuation tags
-            else:
-                s = tokens[j][0] + "/" + tokens[j][1]
-                
-            if j == i:
-                ei += "**"+s+"** "
-            else:
-                ei += s + " "
-        errors.append(ei)
+    hdr = (('%25s | %s | %s\n' + '-'*26+'+'+'-'*24+'+'+'-'*26) %
+           ('left context', 'word/test->gold'.center(22), 'right context'))
+    errors = [hdr]
+    for (train_sent, test_sent) in zip(train_sents, test_sents):
+        for wordnum, (word, train_pos) in enumerate(train_sent):
+            test_pos = test_sent[wordnum][1]
+            if train_pos != test_pos:
+                left = ' '.join('%s/%s' % w for w in train_sent[:wordnum])
+                right = ' '.join('%s/%s' % w for w in train_sent[wordnum+1:])
+                mid = '%s/%s->%s' % (word, test_pos, train_pos)
+                errors.append('%25s | %s | %s' %
+                              (left[-25:], mid.center(22), right[:25]))
 
     return errors
 
-#####################################################################################
+######################################################################
 # Demonstration
-#####################################################################################
+######################################################################
 
-def demo(num_sents=100, max_rules=200, min_score=3, error_output = "errors.out",
-         rule_output="rules.yaml", randomize=False, train=.8, trace=3):
+def demo(num_sents=100, max_rules=200, min_score=3,
+         error_output="errors.out", rule_output="rules.yaml",
+         randomize=False, train=.8, trace=3):
     """
     Brill Tagger Demonstration
 
@@ -1095,7 +1229,7 @@ def demo(num_sents=100, max_rules=200, min_score=3, error_output = "errors.out",
     @type randomize: L{boolean}
     @param train: the fraction of the the corpus to be used for training (1=all)
     @type train: L{float}
-    @param trace: the level of diagnostic tracing output to produce (0-3)
+    @param trace: the level of diagnostic tracing output to produce (0-4)
     @type trace: L{int}
     """
 
@@ -1103,76 +1237,74 @@ def demo(num_sents=100, max_rules=200, min_score=3, error_output = "errors.out",
     from nltk import tag
     from nltk.tag import brill
 
-    NN_CD_tagger = tag.Regexp([(r'^-?[0-9]+(.[0-9]+)?$', 'CD'), (r'.*', 'NN')])
+    nn_cd_tagger = tag.RegexpTagger([(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),
+                                     (r'.*', 'NN')])
 
     # train is the proportion of data used in training; the rest is reserved
     # for testing.
-
-    print "Loading tagged data..."
-    sents = []
-    for item in treebank.items:
-        sents.extend(treebank.tagged(item))
-
+    print "Loading tagged data... "
+    tagged_data = treebank.tagged_sents()
     if randomize:
         random.seed(len(sents))
         random.shuffle(sents)
-
-    tagged_data = [t for s in sents[:num_sents] for t in s]
-    cutoff = int(len(tagged_data)*train)
-
+    cutoff = int(num_sents*train)
     training_data = tagged_data[:cutoff]
-    gold_data = tagged_data[cutoff:]
-
-    testing_data = [t[0] for t in gold_data]
+    gold_data = tagged_data[cutoff:num_sents]
+    testing_data = [[t[0] for t in sent] for sent in gold_data]
+    print "Done lodaing."
 
     # Unigram tagger
+    print "Training unigram tagger:"
+    unigram_tagger = tag.UnigramTagger.train(training_data,
+                                             backoff=nn_cd_tagger)
+    if gold_data:
+        print "    [accuracy: %f]" % tag.accuracy(unigram_tagger, gold_data)
 
-    print "Training unigram tagger:",
-    u = tag.Unigram(backoff=NN_CD_tagger)
-
-    # NB training and testing are required to use a list-of-lists structure,
-    # so we wrap the flattened corpus data with the extra list structure.
-    u.train([training_data])
-    print("[accuracy: %f]" % tag.accuracy(u, [gold_data]))
+    # Bigram tagger
+    print "Training bigram tagger:"
+    bigram_tagger = tag.BigramTagger.train(training_data,
+                                           backoff=unigram_tagger)
+    if gold_data:
+        print "    [accuracy: %f]" % tag.accuracy(bigram_tagger, gold_data)
 
     # Brill tagger
-
     templates = [
-        brill.SymmetricProximateTokensTemplate(brill.ProximateTagsRule, (1,1)),
-        brill.SymmetricProximateTokensTemplate(brill.ProximateTagsRule, (2,2)),
-        brill.SymmetricProximateTokensTemplate(brill.ProximateTagsRule, (1,2)),
-        brill.SymmetricProximateTokensTemplate(brill.ProximateTagsRule, (1,3)),
-        brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (1,1)),
-        brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (2,2)),
-        brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (1,2)),
-        brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (1,3)),
-        brill.ProximateTokensTemplate(brill.ProximateTagsRule, (-1, -1), (1,1)),
-        brill.ProximateTokensTemplate(brill.ProximateWordsRule, (-1, -1), (1,1)),
-        ]
+      brill.SymmetricProximateTokensTemplate(brill.ProximateTagsRule, (1,1)),
+      brill.SymmetricProximateTokensTemplate(brill.ProximateTagsRule, (2,2)),
+      brill.SymmetricProximateTokensTemplate(brill.ProximateTagsRule, (1,2)),
+      brill.SymmetricProximateTokensTemplate(brill.ProximateTagsRule, (1,3)),
+      brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (1,1)),
+      brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (2,2)),
+      brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (1,2)),
+      brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (1,3)),
+      brill.ProximateTokensTemplate(brill.ProximateTagsRule, (-1, -1), (1,1)),
+      brill.ProximateTokensTemplate(brill.ProximateWordsRule, (-1, -1), (1,1)),
+      ]
+    trainer = brill.FastBrillTaggerTrainer(bigram_tagger, templates, trace)
+    #trainer = brill.BrillTaggerTrainer(u, templates, trace)
+    brill_tagger = trainer.train(training_data, max_rules, min_score)
 
-    #trainer = brill.FastBrillTrainer(u, templates, trace)
-    trainer = brill.BrillTrainer(u, templates, trace)
-    b = trainer.train(training_data, max_rules, min_score)
+    if gold_data:
+        print("\nBrill accuracy: %f" % tag.accuracy(brill_tagger, gold_data))
 
-    print
-    print("Brill accuracy: %f" % tag.accuracy(b, [gold_data]))
+    if trace <= 1:
+        print("\nRules: ")
+        for rule in brill_tagger.rules():
+            print(str(rule))
 
-    print("\nRules: ")
-    for rule in b.rules():
-        print(str(rule))
+    print_rules = file(rule_output, 'w')
+    yaml.dump(brill_tagger, print_rules)
+    print_rules.close()
 
-    printRules = file(rule_output, 'w')
-    yaml.dump(b, printRules)
-    printRules.close()
-    
-    testing_data = list(b.tag(testing_data))
-    el = errorList(gold_data, testing_data)
-    errorFile = file(error_output, 'w')
-
-    for e in el:
-        errorFile.write(e+"\n\n")
-    errorFile.close()
-    print "Done; rules and errors saved to %s and %s." % (rule_output, error_output)
+    testing_data = brill_tagger.batch_tag(testing_data)
+    error_file = file(error_output, 'w')
+    error_file.write('Errors for Brill Tagger %r\n\n' % rule_output)
+    for e in error_list(gold_data, testing_data):
+        error_file.write(e+'\n')
+    error_file.close()
+    print ("Done; rules and errors saved to %s and %s." %
+           (rule_output, error_output))
 
 if __name__ == '__main__':
     demo()
+    #demo(num_sents=1000000, train=1.0, max_rules=10000)
