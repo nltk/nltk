@@ -209,7 +209,6 @@ class ChunkedCorpusView(StreamBackedCorpusView):
             if self._group_by_para:
                 block.append(para)
             else:
-                block.extend(para)
                 
         # Return the block
         return block
