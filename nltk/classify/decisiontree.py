@@ -17,16 +17,13 @@ from nltk.classify.api import *
 from nltk.probability import *
 from nltk import defaultdict
 
-class DecisionTree(ClassifyI):
+class DecisionTreeClassifier(ClassifierI):
     def __init__(self, label, feature_name=None, decisions=None):
         self._label = label
         self._fname = feature_name
         self._decisions = decisions
 
     def classify(self, featureset):
-        if isinstance(featureset, list): # Handle batch mode.
-            return [self.classify(fs) for fs in featureset]
-        
         # Decision leaf:
         if self._fname is None:
             return self._label
@@ -71,7 +68,8 @@ class DecisionTree(ClassifyI):
                 feature_names.add(fname)
 
         # Start with a stump..
-        tree = DecisionTree.best_stump(feature_names, labeled_featuresets)
+        tree = DecisionTreeClassifier.best_stump(
+            feature_names, labeled_featuresets)
 
         tree.refine(labeled_featuresets, entropy_cutoff, depth_cutoff-1,
                     support_cutoff)
@@ -83,7 +81,7 @@ class DecisionTree(ClassifyI):
     def leaf(labeled_featuresets):
         label = FreqDist([label for (featureset,label)
                           in labeled_featuresets]).max()
-        return DecisionTree(label)
+        return DecisionTreeClassifier(label)
 
     @staticmethod
     def stump(feature_name, labeled_featuresets):
@@ -96,9 +94,9 @@ class DecisionTree(ClassifyI):
             feature_value = featureset[feature_name]
             freqs[feature_value].inc(label)
 
-        decisions = dict([(val, DecisionTree(freqs[val].max()))
+        decisions = dict([(val, DecisionTreeClassifier(freqs[val].max()))
                           for val in freqs])
-        return DecisionTree(label, feature_name, decisions)
+        return DecisionTreeClassifier(label, feature_name, decisions)
 
     def refine(self, labeled_featuresets, entropy_cutoff, depth_cutoff,
                support_cutoff):
@@ -113,15 +111,15 @@ class DecisionTree(ClassifyI):
             label_freqs = FreqDist([label for (featureset,label)
                                     in fval_featuresets])
             if entropy(MLEProbDist(label_freqs)) > entropy_cutoff:
-                self._decisions[fval] = DecisionTree.train(
+                self._decisions[fval] = DecisionTreeClassifier.train(
                     fval_featuresets, entropy_cutoff, depth_cutoff)
 
     @staticmethod
     def best_stump(feature_names, labeled_featuresets):
-        best_stump = DecisionTree.leaf(labeled_featuresets)
+        best_stump = DecisionTreeClassifier.leaf(labeled_featuresets)
         best_error = best_stump.error(labeled_featuresets)
         for fname in feature_names:
-            stump = DecisionTree.stump(fname, labeled_featuresets)
+            stump = DecisionTreeClassifier.stump(fname, labeled_featuresets)
             stump_error = stump.error(labeled_featuresets)
             if stump_error < best_error:
                 best_error = stump_error
@@ -136,7 +134,8 @@ class DecisionTree(ClassifyI):
 
 def demo():
     from nltk.classify.util import names_demo, binary_names_demo_features
-    classifier = names_demo(DecisionTree.train, binary_names_demo_features)
+    classifier = names_demo(DecisionTreeClassifier.train,
+                            binary_names_demo_features)
     print classifier.pp(depth=7)
 
 if __name__ == '__main__':
