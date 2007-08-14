@@ -27,10 +27,10 @@ class TaggerI(object):
         """
         raise NotImplementedError()
 
-    def tag_batch(self, tokens_lists):
+    def batch_tag(self, sentences):
         """
-        Apply L{self.tag()} to each element of C{tokens_lists}.  I.e.:
+        Apply L{self.tag()} to each element of C{sentences}.  I.e.:
 
-            >>> return [self.tag(tokens) for tokens in tokens_list]
+            >>> return [self.tag(tokens) for tokens in sentences]
         """
-        return [self.tag(tokens) for tokens in tokens_list]
+        return [self.tag(tokens) for tokens in sentences]
