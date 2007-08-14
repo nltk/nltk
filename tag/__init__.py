@@ -17,13 +17,34 @@ from util import *
 from sequential import *
 from brill import *
 
-# Import hmm module if numpy is installed
+__all__ = [
+    # Tagger interface
+    'TaggerI',
+    
+    # Should these be included:?
+    #'SequentialBackoffTagger', 'ContextTagger',
 
+    # Sequential backoff taggers.
+    'DefaultTagger', 'UnigramTagger', 'BigramTagger', 'TrigramTagger',
+    'NgramTagger', 'AffixTagger', 'RegexpTagger',
+
+    # Brill tagger -- trainer names?
+    'BrillTagger', 'BrillTaggerTrainer', 'FastBrillTaggerTrainer',
+
+    # Utilities.  Note: conversion functions x2y are intentionally
+    # left out; they should be accessed as nltk.tag.x2y().  Similarly
+    # for nltk.tag.accuracy.
+    'untag', 
+    ]
+
+# Import hmm module if numpy is installed
 try:
     import numpy
     from hmm import *
+    __all__ += ['HiddenMarkovModelTagger', 'HiddenMarkovModelTrainer',]
 except ImportError:
     pass
+
 
 ######################################################################
 #{ Deprecated
@@ -39,12 +60,12 @@ class Ngram(SequentialBackoffTagger, Deprecated):
     """Use nltk.NgramTagger instead.  Note: NgramTagger.train() is now
     a factory method."""
     def __init__(self, n, cutoff=1, backoff=None):
+        SequentialBackoffTagger.__init__(self, backoff)
         self._cutoff = cutoff
-        self._backoff = backoff
         self._n = n
     def train(self, tagged_corpus, verbose=False):
         self._tagger = NgramTagger.train(
-            tagged_corpus, self._n, self._backoff, self._cutoff, verbose)
+            tagged_corpus, self._n, self.backoff, self._cutoff, verbose)
     def choose_tag(self, tokens, index, history):
         return self._tagger.choose_tag(tokens, index, history)
 class Unigram(Ngram, Deprecated):
@@ -66,13 +87,13 @@ class Affix(SequentialBackoffTagger, Deprecated):
     """Use nltk.AffixTagger instead.  Note: AffixTagger.train() is
     now a factory method."""
     def __init__(self, length, minlength, backoff=None):
+        SequentialBackoffTagger.__init__(self, backoff)
         self._len = length
         self._minlen = minlength
         self._cutoff = cutoff
-        self._backoff = backoff
     def train(self, tagged_corpus):
         self._tagger = AffixTagger.train(
-            tagged_corpus, self._minlen, self._len, self._backoff)
+            tagged_corpus, self._minlen, self._len, self.backoff)
     def choose_tag(self, tokens, index, history):
         return self._tagger.choose_tag(tokens, index, history)
 class Lookup(UnigramTagger, Deprecated):
