@@ -43,7 +43,7 @@ class TreebankCorpusReader(CorpusReader):
             os.path.join(root, 'combined'), '.*', '.mrg')
         self._pos_reader = ChunkedCorpusReader(
             os.path.join(root, 'tagged'), '.*', '.pos',
-            sent_tokenizer=RegexpTokenizer(r'(?<=/\.)\s*', gaps=True),
+            sent_tokenizer=RegexpTokenizer(self._CHUNK_SENT_RE, gaps=True),
             para_block_reader=tagged_treebank_para_block_reader)
 
         # Make sure we have a consistent set of items:
@@ -56,6 +56,12 @@ class TreebankCorpusReader(CorpusReader):
                                  % item)
         self._items = self._mrg_reader.items
 
+    _CHUNK_SENT_RE = r'(?<=/\.)\s*(?![^\[]*\])'
+    """Regexp that matches sentence boundaries in chunked ('.pos')
+       files.  It searches for any token whose tag is '.', and then
+       places a sentence bounary at the space after that token,
+       *unless* the token is within a chunk."""
+    
     root = property(lambda self: self._root, doc="""
         The directory where this corpus is stored..""")
 
