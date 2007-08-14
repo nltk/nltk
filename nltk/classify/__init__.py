@@ -63,9 +63,44 @@ from api import *
 from util import *
 from naivebayes import *
 from decisiontree import *
+from maxent import *
+from weka import *
+from nltk.utilities import deprecated, Deprecated
+
+__all__ = [
+    # Classifier Interfaces
+    'ClassifierI', 'MultiClassifierI',
+    
+    # Classifiers
+    'NaiveBayesClassifier', 'DecisionTreeClassifier', 'WekaClassifier',
+    ConditionalExponentialClassifier, train_maxent_classifier,
+    
+    # Utility functions.  Note that accuracy() is intentionally
+    # omitted -- it should be accessed as nltk.classify.accuracy();
+    # similarly for log_likelihood() and attested_labels().
+    config_weka,
+    
+    # Demos -- not included.
+    ]
+    
+
 try:
     import numpy
     from maxent import *
 except ImportError:
     pass
+
+######################################################################
+#{ Deprecated
+######################################################################
+from nltk.utilities import Deprecated
+class ClassifyI(ClassifierI, Deprecated):
+    """Use nltk.ClassifierI instead."""
+
+@deprecated("Use nltk.classify.accuracy() instead.")
+def classifier_accuracy(classifier, gold):
+    return accuracy(classifier, gold)
+@deprecated("Use nltk.classify.log_likelihood() instead.")
+def classifier_log_likelihood(classifier, gold):
+    return log_likelihood(classifier, gold)
 

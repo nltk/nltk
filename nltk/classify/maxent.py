@@ -17,8 +17,11 @@ frequency with which a class and a feature vector value co-occur is
 equal to the actual frequency in the data.
 """
 
+from nltk.classify.util import log_likelihood as classifier_log_likelihood
+from nltk.classify.util import accuracy as classifier_accuracy
 from nltk.classify.api import *
-from nltk.classify.util import *
+from nltk.classify.util import SparseBinaryVectorEncoding, GISEncoding
+from nltk.classify.util import attested_labels
 from nltk.probability import *
 from nltk import defaultdict
 import numpy, time
@@ -27,7 +30,7 @@ import numpy, time
 #{ Classifier Model
 ######################################################################
 
-class ConditionalExponentialClassifier(ClassifyI):
+class ConditionalExponentialClassifier(ClassifierI):
     def __init__(self, labels, encoding, weights):
         """
         Construct a new conditional exponential classifier model.
@@ -73,15 +76,9 @@ class ConditionalExponentialClassifier(ClassifyI):
         return self._weights
 
     def classify(self, featureset):
-        if isinstance(featureset, list): # Handle batch mode.
-            return [self.classify(fs) for fs in featureset]
-        
         return self.probdist(featureset).max()
         
     def probdist(self, featureset):
-        if isinstance(featureset, list): # Handle batch mode.
-            return [self.probdist(fs) for fs in featureset]
-        
         feature_vector = self._encoding.encode(featureset)
             
         prob_dict = {}
@@ -103,18 +100,114 @@ class ConditionalExponentialClassifier(ClassifyI):
                 (len(self._labels), self._encoding.length()))
 
 ######################################################################
+#{ Classifier Trainer: Maxent
+######################################################################
+
+def train_maxent_classifier(train_toks, algorithm='iis', trace=3, 
+                            labels=None, iterations=20,
+                            accuracy_cutoff=None,
+                            delta_accuracy_cutoff=None,
+                            log_likelihood_cutoff=None,
+                            delta_log_likelihood_cutoff=None):
+    """
+    Train a new C{ConditionalExponentialClassifier}, using the given
+    training samples.  This C{ConditionalExponentialClassifier} will
+    encode the model that maximizes entropy from all the models that
+    are empirically consistent with C{train_toks}.
+
+    This function simply delegates to either of the following two
+    functions, which do the actual training:
+    
+      - L{train_maxent_classifier_with_gis()} (if C{algorithm} is 'gis')
+      - L{train_maxent_classifier_with_iis()} (if C{algorithm} is 'iis')
+    
+    @type train_toks: C{list} of C{tuples} of (C{dict}, C{str})
+    @param train_toks: Training data, represented as a list of pairs,
+    the first member of which is a feature dictionary, and the second
+    of which is a classification label.
+
+    @type algorithm: C{str}
+    @param algorithm: A case-insensitive string, specifying which
+        algorithm should be used to train the classifier; can be
+        C{'gis'} for Generalized Iterative Scaling; or C{'iis'} for
+        Improved Iterative Scaling.
+
+    @type trace: C{int}
+    @param trace: The level of diagnostic tracing output to produce.
+        Higher values produce more verbose output.
+        
+    @type labels: C{list} of C{str}
+    @param labels: The set of possible labels.  If none is given, then
+        the set of all labels attested in the training data will be
+        used instead.
+    
+    @type iterations: C{int}
+    @param iterations: The maximum number of times the training
+        algorithm should iterate.  (If the training algorithm converges
+        before this number of iterations, it will terminate.)
+
+    @type accuracy_cutoff: C{float}
+    @param accuracy_cutoff: The accuracy value that indicates
+        convergence.  If the accuracy becomes closer to one than the
+        specified value, then the training algorithm will terminate.
+        The default value is None, which indicates that no accuracy
+        cutoff should be used.
+
+    @type log_likelihood_cutoff: C{float}
+    @param log_likelihood_cutoff: specifies what log-likelihood
+        value should be taken to indicate convergence.  If the
+        log-likelihod becomes closer to zero than the specified value,
+        then the training algorithm will terminate.  The default value
+        is C{None}, which indicates that no log-likelihood cutoff
+        should be used.
+
+    @type delta_accuracy_cutoff: C{float}
+    @param delta_accuracy_cutoff: The change in accuracy should be
+        taken to indicate convergence.  If the accuracy changes by
+        less than this value in a single iteration, then the training
+        algorithm will terminate.  The default value is C{None}, which
+        indicates that no accuracy-change cutoff should be used.
+
+    @type delta_log_likelihood_cutoff: C{float}
+    @param delta_log_likelihood_cutoff: Specifies what change in
+        log-likelihood should be taken to indicate convergence.  If
+        the log-likelihood changes by less than this value in a single
+        iteration, then the training algorithm will terminate.  The
+        default value is C{None}, which indicates that no
+        log-likelihood-change cutoff should be used.
+    """
+    if algorithm.lower() == 'gis':
+        return train_maxent_classifier_with_gis(
+            train_toks, trace, labels, iterations, accuracy_cutoff,
+            delta_accuracy_cutoff, log_likelihood_cutoff,
+            delta_log_likelihood_cutoff)
+    elif algorithm.lower() == 'iis':
+        return train_maxent_classifier_with_iis(
+            train_toks, trace, labels, iterations, accuracy_cutoff,
+            delta_accuracy_cutoff, log_likelihood_cutoff,
+            delta_log_likelihood_cutoff)
+    else:
+        raise ValueError('Bad algorithm: %r' % algorithm)
+
+######################################################################
 #{ Classifier Trainer: Generalized Iterative Scaling
 ######################################################################
 
-def gis(train_toks, ll_cutoff=None, lldelta_cutoff=None,
-        acc_cutoff=None, accdelta_cutoff=None, debug=3,
-        iterations=10):
+def train_maxent_classifier_with_gis(
+    train_toks, trace=3, labels=None, iterations=20, acc_cutoff=None,
+    accdelta_cutoff=None, ll_cutoff=None, lldelta_cutoff=None):
     """
-    Train a maximum entropy classifier for the given training data,
-    using the generalized iterative scaling algorithm.
+    Train a new C{ConditionalExponentialClassifier}, using the given
+    training samples.  This C{ConditionalExponentialClassifier} will
+    encode the model that maximizes entropy from all the models that
+    are empirically consistent with C{train_toks}.
+
+    See L{train_maxent_classifier()} for parameter descriptions.
     """
-    # Find a list of all labels in the training data.
-    labels = attested_labels(train_toks)
+    # Fill in default args, & take abs values of ll cutoffs.
+    if not labels: labels = attested_labels(train_toks)
+    if ll_cutoff: ll_cutoff = abs(ll_cutoff)
+    if lldelta_cutoff: lldelta_cutoff = abs(lldelta_cutoff)
 
     # Construct an encoding from the training data.
     encoding = GISEncoding.train(train_toks)
@@ -152,15 +245,15 @@ def gis(train_toks, ll_cutoff=None, lldelta_cutoff=None,
     ll_old = None
     acc_old = None
         
-    if debug > 0: print '  ==> Training (%d iterations)' % iterations
-    if debug > 2:
+    if trace > 0: print '  ==> Training (%d iterations)' % iterations
+    if trace > 2:
         print
         print '      Iteration    Log Likelihood    Accuracy'
         print '      ---------------------------------------'
 
     # Train for a fixed number of iterations.!
     for iternum in range(iterations):
-        if debug > 2:
+        if trace > 2:
             ll = classifier_log_likelihood(classifier, train_toks)
             acc = classifier_accuracy(classifier, train_toks)
             print '     %9d    %14.5f    %9.3f' % (iternum+1, ll, acc)
@@ -194,7 +287,7 @@ def gis(train_toks, ll_cutoff=None, lldelta_cutoff=None,
                 if acc_old and (acc_old - acc) <= accdelta_cutoff: break
                 acc_old = acc
 
-    if debug > 2:
+    if trace > 2:
         ll = classifier_log_likelihood(classifier, train_toks)
         acc = classifier_accuracy(classifier, train_toks)
         print '         Final    %14.5f    %9.3f' % (ll, acc)
@@ -229,78 +322,21 @@ def calculate_estimated_fcount(classifier, train_toks, encoding, offsets):
 #{ Classifier Trainer: Improved Iterative Scaling
 ######################################################################
 
-def iis(train_toks, **kwargs):
+def train_maxent_classifier_with_iis(
+    train_toks, trace=3, labels=None, iterations=20, acc_cutoff=None,
+    accdelta_cutoff=None, ll_cutoff=None, lldelta_cutoff=None):
     """
     Train a new C{ConditionalExponentialClassifier}, using the given
-    training samples.  This C{ConditionalExponentialClassifier} should
+    training samples.  This C{ConditionalExponentialClassifier} will
     encode the model that maximizes entropy from all the models that
     are empirically consistent with C{train_toks}.
-    
-    @param train_toks: Training data, represented as a list of pairs, the first member of which
-    is a feature dictionary, and the second of which is a classification label.
-    @type train_toks: C{list} of C{tuples} of (C{dict}, C{str})
-    
-    @param kwargs: Keyword arguments.
-      - C{iterations}: The maximum number of times IIS should
-        iterate.  If IIS converges before this number of
-        iterations, it may terminate.  Default=C{20}.
-        (type=C{int})
-        
-      - C{debug}: The debugging level.  Higher values will cause
-        more verbose output.  Default=C{0}.  (type=C{int})
-        
-      - C{labels}: The set of possible labels.  If none is given,
-        then the set of all labels attested in the training data
-        will be used instead.  (type=C{list} of (immutable)).
-        
-      - C{accuracy_cutoff}: The accuracy value that indicates
-        convergence.  If the accuracy becomes closer to one
-        than the specified value, then IIS will terminate.  The
-        default value is None, which indicates that no accuracy
-        cutoff should be used. (type=C{float})
 
-      - C{delta_accuracy_cutoff}: The change in accuracy should be
-        taken to indicate convergence.  If the accuracy changes by
-        less than this value in a single iteration, then IIS will
-        terminate.  The default value is C{None}, which indicates
-        that no accuracy-change cutoff should be
-        used. (type=C{float})
-
-      - C{log_likelihood_cutoff}: specifies what log-likelihood
-        value should be taken to indicate convergence.  If the
-        log-likelihod becomes closer to zero than the specified
-        value, then IIS will terminate.  The default value is
-        C{None}, which indicates that no log-likelihood cutoff
-        should be used. (type=C{float})
-
-      - C{delta_log_likelihood_cutoff}: specifies what change in
-        log-likelihood should be taken to indicate convergence.
-        If the log-likelihood changes by less than this value in a
-        single iteration, then IIS will terminate.  The default
-        value is C{None}, which indicates that no
-        log-likelihood-change cutoff should be used.  (type=C{float})
+    See L{train_maxent_classifier()} for parameter descriptions.
     """
-    # Process the keyword arguments.
-    iterations = 10
-    debug = 3
-    labels = None
-    ll_cutoff = lldelta_cutoff = None
-    acc_cutoff = accdelta_cutoff = None
-    for (key, val) in kwargs.items():
-        if key in ('iterations', 'iter'): iterations = val
-        elif key == 'debug': debug = val
-        elif key == 'labels': labels = val
-        elif key == 'log_likelihood_cutoff':
-            ll_cutoff = abs(val)
-        elif key == 'delta_log_likelihood_cutoff':
-            lldelta_cutoff = abs(val)
-        elif key == 'accuracy_cutoff': 
-            acc_cutoff = abs(val)
-        elif key == 'delta_accuracy_cutoff':
-            accdelta_cutoff = abs(val)
-        else: raise TypeError('Unknown keyword arg %s' % key)
-    if labels is None:
-        labels = attested_labels(train_toks)
+    # Fill in default args, & take abs values of ll cutoffs.
+    if not labels: labels = attested_labels(train_toks)
+    if ll_cutoff: ll_cutoff = abs(ll_cutoff)
+    if lldelta_cutoff: lldelta_cutoff = abs(lldelta_cutoff)
         
     # Find a list of all labels in the training data.
     labels = attested_labels(train_toks)
@@ -340,15 +376,15 @@ def iis(train_toks, **kwargs):
     weights -= unattested
     classifier = ConditionalExponentialClassifier(labels, encoding, weights)
             
-    if debug > 0: print '  ==> Training (%d iterations)' % iterations
-    if debug > 2:
+    if trace > 0: print '  ==> Training (%d iterations)' % iterations
+    if trace > 2:
         print
         print '      Iteration    Log Likelihood    Accuracy'
         print '      ---------------------------------------'
 
     # Train for a fixed number of iterations.
     for iternum in range(iterations):
-        if debug > 2:
+        if trace > 2:
             ll = classifier_log_likelihood(classifier, train_toks)
             acc = classifier_accuracy(classifier, train_toks)
             print '     %9d    %14.5f    %9.3f' % (iternum+1, ll, acc)
@@ -379,7 +415,7 @@ def iis(train_toks, **kwargs):
                 if (acc_old - acc) < accdelta_cutoff: break
                 acc_old = acc
 
-    if debug > 2:
+    if trace > 2:
         ll = classifier_log_likelihood(classifier, train_toks)
         acc = classifier_accuracy(classifier, train_toks)
         print '         Final    %14.5f    %9.3f' % (ll, acc)
@@ -548,9 +584,9 @@ def calculate_deltas(train_toks, classifier, unattested, ffreq_empirical,
 def demo():
     from nltk.classify.util import names_demo
     print 'Generalized Iterative Scaling:'
-    classifier = names_demo(gis)
+    classifier = names_demo(train_maxent_classifier_with_gis)
     print 'Improved Iterative Scaling:'
-    classifier = names_demo(iis)
+    classifier = names_demo(train_maxent_classifier_with_iis)
 
 if __name__ == '__main__':
     demo()
