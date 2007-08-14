@@ -59,6 +59,8 @@ from probability import *
 from tree import *
 from utilities import *
 from yamltags import *
+from tokenize import *
+from tag import *
 
 import chat, chunk, corpus, draw, parse, sem, stem, tag, tokenize, wordnet
 
