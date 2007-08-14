@@ -17,6 +17,7 @@ given resource and adds it to a resource cache.
 
 import sys, os, os.path, pickle, textwrap, weakref
 from nltk.corpus.reader.api import CorpusReader
+from nltk import cfg
 
 ######################################################################
 # Search Path
@@ -103,6 +104,9 @@ def load(resource, format='auto', cache=True, verbose=False):
     resource formats are currently supported:
       - C{'pickle'}
       - C{'yaml'}
+      - C{'cfg'}
+      - C{'pcfg'}
+      - C{'fcfg'}
 
     If no format is specified, C{load()} will attempt to determine a
     format based on the resource name's file extension.  If that
@@ -137,12 +141,22 @@ def load(resource, format='auto', cache=True, verbose=False):
     if format == 'auto':
         if filename.endswith('.pickle'): format = 'pickle'
         if filename.endswith('.yaml'): format = 'yaml'
+        if filename.endswith('.cfg'): format = 'cfg'
+        if filename.endswith('.pcfg'): format = 'pcfg'
+        if filename.endswith('.fcfg'): format = 'fcfg'
         
     # Load the resource.
     if format == 'pickle':
         resource_val = pickle.load(open(filename, 'rb'))
     elif format == 'yaml':
         resource_val = yaml.load(open(filename, 'rb'))
+    elif format == 'cfg':
+        resource_val = cfg.parse_cfg(open(filename, 'r').read())
+    elif format == 'pcfg':
+        resource_val = cfg.parse_pcfg(open(filename, 'r').read())
+    elif format == 'fcfg':
+        # NB parse_fcfg returns a FeatGramLex -- a tuple (grammar, lexicon)
+        resource_val = cfg.parse_fcfg(open(filename, 'r').read())
     else:
         raise ValueError('Unknown format type!')
 
@@ -231,3 +245,4 @@ class LazyCorpusLoader(object):
         # This looks circular, but its not, since __load() changes our
         # __class__ to something new:
         return '%r' % self
+
