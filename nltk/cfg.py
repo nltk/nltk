@@ -633,8 +633,8 @@ def earley_lexicon(productions):
     for prod in productions:
         lexicon[prod.rhs()[0]].append(prod.lhs())
     return lexicon
-    
-def parse_featcfg(input):
+
+def parse_fcfg(input):
     """
     Return a tuple (list of grammatical productions,
     lexicon dict).
@@ -832,4 +832,4 @@ if __name__ == '__main__':
 __all__ = ['Grammar', 'ImmutableProbabilisticMixIn', 'Nonterminal', 'Production',
   'WeightedGrammar', 'WeightedProduction', 'cfg_demo', 'demo', 'induce_pcfg',
   'nonterminals', 'parse_cfg', 'parse_cfg_production', 'parse_pcfg',
-  'parse_featcfg', 'parse_pcfg_production', 'pcfg_demo', 'toy_pcfg1', 'toy_pcfg2']
+  'parse_fcfg', 'parse_pcfg_production', 'pcfg_demo', 'toy_pcfg1', 'toy_pcfg2']
