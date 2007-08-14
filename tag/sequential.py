@@ -184,7 +184,8 @@ class ContextTagger(SequentialBackoffTagger):
                 if context is None: continue
                 fd[context].inc(tag)
                 # If the backoff got it wrong, this context is useful:
-                if tag != self.backoff.tag_one(tokens, index, tags[:index]):
+                if (self.backoff is None or
+                    tag != self.backoff.tag_one(tokens, index, tags[:index])):
                     useful_contexts.add(context)
         
         # Build the context_to_tag table -- for each context, figure
