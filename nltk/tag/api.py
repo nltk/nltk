@@ -16,6 +16,9 @@ class TaggerI(object):
     A processing interface for assigning a tag to each token in a list.
     Tags are case sensitive strings that identify some property of each
     token, such as its part of speech or its sense.
+
+    Subclasses must define:
+      - either L{tag()} or L{batch_tag()} (or both)
     """
     def tag(self, tokens):
         """
@@ -25,7 +28,10 @@ class TaggerI(object):
 
         @rtype: C{list} of C{(token, tag)}
         """
-        raise NotImplementedError()
+        if self.batch_tag.im_func is not ClassifierI.batch_tag.im_func:
+            return self.batch_tag([tokens])[0]
+        else:
+            raise NotImplementedError()
 
     def batch_tag(self, sentences):
         """
