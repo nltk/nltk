@@ -43,21 +43,18 @@ def config_weka(classpath=None):
         raise LookupError('Unable to find weka.jar!  Use config_weka() '
                           'or set the WEKAHOME environment variable.')
 
-class WekaClassifier(ClassifyI):
+class WekaClassifier(ClassifierI):
     def __init__(self, formatter, model_filename):
         self._formatter = formatter
         self._model = model_filename
 
-    def probdist(self, featureset):
-        return self._classify(featureset, ['-p', '0', '-distribution'])
+    def batch_probdist(self, featuresets):
+        return self._batch_classify(featuresets, ['-p', '0', '-distribution'])
         
-    def classify(self, featureset):
-        return self._classify(featureset, ['-p', '0'])
+    def batch_classify(self, featuresets):
+        return self._batch_classify(featuresets, ['-p', '0'])
         
-    def _classify(self, featuresets, options):
-        if not isinstance(featuresets, list): # Handle non-batch mode.
-            return self._classify([featuresets], options)[0]
-
+    def _batch_classify(self, featuresets, options):
         # Make sure we can find java & weka.
         config_weka()
         
@@ -236,7 +233,7 @@ class ARFF_Formatter:
         else:
             return '%r' % fval
 
-if 1:
+if __name__ == '__main__':
     from nltk.classify.util import names_demo,binary_names_demo_features
     def make_classifier(featuresets):
         return WekaClassifier.train('/tmp/name.model', featuresets)

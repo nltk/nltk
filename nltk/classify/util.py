@@ -177,13 +177,13 @@ def attested_labels(tokens):
     """
     return tuple(set([label for (tok,label) in tokens]))
 
-def classifier_log_likelihood(classifier, gold):
-    results = classifier.probdist([fs for (fs,l) in gold])
+def log_likelihood(classifier, gold):
+    results = classifier.batch_probdist([fs for (fs,l) in gold])
     ll = [pdist.prob(l) for ((fs,l), pdist) in zip(gold, results)]
     return float(sum(ll))/len(ll)
 
-def classifier_accuracy(classifier, gold):
-    results = classifier.classify([fs for (fs,l) in gold])
+def accuracy(classifier, gold):
+    results = classifier.batch_classify([fs for (fs,l) in gold])
     correct = [l==r for ((fs,l), r) in zip(gold, results)]
     return float(sum(correct))/len(correct)
 
@@ -233,14 +233,14 @@ def names_demo(trainer, features=names_demo_features):
 
     # Run the classifier on the test data.
     print 'Testing classifier...'
-    acc = classifier_accuracy(classifier, [(features(n),g) for (n,g) in test])
+    acc = accuracy(classifier, [(features(n),g) for (n,g) in test])
     print 'Accuracy: %6.4f' % acc
 
     # For classifiers that can find probabilities, show the log
     # likelihood and some sample probability distributions.
     try:
         test_featuresets = [features(n) for (n,g) in test]
-        pdists = classifier.probdist(test_featuresets)
+        pdists = classifier.batch_probdist(test_featuresets)
         ll = [pdist.logprob(gold)
               for ((name, gold), pdist) in zip(test, pdists)]
         print 'Avg. log likelihood: %6.4f' % (sum(ll)/len(test))
@@ -286,14 +286,14 @@ def wsd_demo(trainer, word, features, n=1000):
 
     # Run the classifier on the test data.
     print 'Testing classifier...'
-    acc = classifier_accuracy(classifier, [(features(i),l) for (i,l) in test])
+    acc = accuracy(classifier, [(features(i),l) for (i,l) in test])
     print 'Accuracy: %6.4f' % acc
 
     # For classifiers that can find probabilities, show the log
     # likelihood and some sample probability distributions.
     try:
         test_featuresets = [features(i) for (i,n) in test]
-        pdists = classifier.probdist(test_featuresets)
+        pdists = classifier.batch_probdist(test_featuresets)
         ll = [pdist.logprob(gold)
               for ((name, gold), pdist) in zip(test, pdists)]
         print 'Avg. log likelihood: %6.4f' % (sum(ll)/len(test))

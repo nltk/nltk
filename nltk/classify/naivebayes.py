@@ -40,7 +40,7 @@ from nltk import defaultdict
 ##  Naive Bayes Classifier
 ##//////////////////////////////////////////////////////
 
-class NaiveBayesClassifier(ClassifyI):
+class NaiveBayesClassifier(ClassifierI):
     """
     A Naive Bayes classifier.  Naive Bayes classifiers are
     paramaterized by two probability distributions:
@@ -85,15 +85,9 @@ class NaiveBayesClassifier(ClassifyI):
         return self._labels
 
     def classify(self, featureset):
-        if isinstance(featureset, list): # Handle batch mode.
-            return [self.classify(fs) for fs in featureset]
-        
         return self.probdist(featureset).max()
         
     def probdist(self, featureset):
-        if isinstance(featureset, list): # Handle batch mode.
-            return [self.probdist(fs) for fs in featureset]
-                
         # Discard any feature names that we've never seen before.
         # Otherwise, we'll just assign a probability of 0 to
         # everything.
