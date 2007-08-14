@@ -294,19 +294,19 @@ def tagstr2tree(s, chunk_node="NP", top_node="S", sep='/'):
     """
 
     WORD_OR_BRACKET = re.compile(r'\[|\]|[^\[\]\s]+')
-    VALID = re.compile(r'^([^\[\]]+|\[[^\[\]]*\])*$')
 
-    if not VALID.match(s):
-        raise ValueError, 'Invalid token string (bad brackets)'
-        
     stack = [Tree(top_node, [])]
     for match in WORD_OR_BRACKET.finditer(s):
         text = match.group()
         if text[0] == '[':
+            if len(stack) != 1:
+                raise ValueError('Unexpected [ at char %d' % match.start())
             chunk = Tree(chunk_node, [])
             stack[-1].append(chunk)
             stack.append(chunk)
         elif text[0] == ']':
+            if len(stack) != 2:
+                raise ValueError('Unexpected ] at char %d' % match.start())
             stack.pop()
         else:
             if sep is None:
@@ -314,6 +314,8 @@ def tagstr2tree(s, chunk_node="NP", top_node="S", sep='/'):
             else:
                 stack[-1].append(tag2tuple(text, sep))
 
+    if len(stack) != 1:
+        raise ValueError('Expected ] at char %d' % len(s))
     return stack[0]
 
 ### CONLL
