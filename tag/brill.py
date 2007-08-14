@@ -403,8 +403,8 @@ class BrillTemplateI(object):
     def get_neighborhood(self, token, index):
         """
         Returns the set of indices C{i} such that
-        C{applicable_rules(token, index, ...)} depends on the value of
-        the C{i}th subtoken of C{token}.
+        C{applicable_rules(token, i, ...)} depends on the value of
+        the C{index}th subtoken of C{token}.
 
         This method is used by the \"fast\" Brill tagger trainer.
 
@@ -493,10 +493,15 @@ class ProximateTokensTemplate(BrillTemplateI):
 
     def get_neighborhood(self, tokens, index):
         # inherit docs from BrillTemplateI
+
+        # applicable_rules(tokens, index, ...) depends on index.
         neighborhood = set([index])
+        
+        # applicable_rules(tokens, i, ...) depends on index if
+        # i+start < index <= i+end.
         for (start, end) in self._boundaries:
-            s = max(0, index+start)
-            e = min(index+end+1, len(tokens))
+            s = max(0, index+(-end))
+            e = min(index+(-start)+1, len(tokens))
             for i in range(s, e):
                 neighborhood.add(i)
 
@@ -1070,8 +1075,6 @@ class FastBrillTaggerTrainer(object):
         neighbors = set()
         for sentnum, wordnum in self._positions_by_rule[rule]:
             for template in self._templates:
-                # [xx] we want all n such that wordnum is in n's
-                # neighborhood, not vice versa!
                 n = template.get_neighborhood(test_sents[sentnum], wordnum)
                 neighbors.update([(sentnum, i) for i in n])
 
