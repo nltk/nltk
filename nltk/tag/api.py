@@ -6,9 +6,12 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-import yaml
+"""
+Interface for tagging each token in a sentence with supplementary
+information, such as its part of speech.
+"""
 
-class TagI(yaml.YAMLObject):
+class TaggerI(object):
     """
     A processing interface for assigning a tag to each token in a list.
     Tags are case sensitive strings that identify some property of each
@@ -16,56 +19,18 @@ class TagI(yaml.YAMLObject):
     """
     def tag(self, tokens):
         """
-        Assign a tag to each token in C{tokens}, and yield a tagged token
-        of the form (token, tag)
+        Determine the most appropriate tag sequence for the given
+        token sequence, and return a corresponding list of tagged
+        tokens.  A tagged token is encoded as a tuple C{(token, tag)}.
+
+        @rtype: C{list} of C{(token, tag)}
         """
         raise NotImplementedError()
 
-class SequentialBackoff(TagI):
-    """
-    A tagger that tags words sequentially, left to right.
-    """
-    def tag(self, tokens, verbose=False):
-        for token in tokens:
-            if isinstance(token, list):
-                yield list(self.tag(token, verbose))
-            else:
-                tag = self.tag_one(token)
-                if tag == None and self._backoff:
-                    tag = self._backoff.tag_one(token)
-                if self._history:
-                    del self._history[0]
-                    self._history.append(tag)
-                yield (token, tag)
-
-    def tag_sents(self, sents, verbose=False):
-        for sent in sents:
-            yield list(self.tag(sent, verbose))
-
-    def _backoff_tag_one(self, token, history=None):
-        if self._backoff:
-            return self._backoff.tag_one(token, history)
-        else:
-            return None
-    
-class Default(SequentialBackoff):
-    """
-    A tagger that assigns the same tag to every token.
-    """
-    yaml_tag = '!tag.Default'
-    def __init__(self, tag):
+    def batch_tag(self, sentences):
         """
-        Construct a new default tagger.
+        Apply L{self.tag()} to each element of C{sentences}.  I.e.:
 
-        @type tag: C{string}
-        @param tag: The tag that should be assigned to every token.
+            >>> return [self.tag(tokens) for tokens in sentences]
         """
-        self._tag = tag
-        self._backoff = None # cannot have a backoff tagger!
-        self._history = None
-        
-    def tag_one(self, token, history=None):
-        return self._tag  # ignore token and history
-
-    def __repr__(self):
-        return '<DefaultTagger: tag=%s>' % self._tag
+        return [self.tag(tokens) for tokens in sentences]
