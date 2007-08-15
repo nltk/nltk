@@ -15,7 +15,144 @@ from nltk.etree import ElementTree
 #{ Corpus View
 ######################################################################
 
-class StreamBackedCorpusView:
+class AbstractCorpusView(object):
+    """
+    Abstract base class for corpus views.  See L{StreamBackedCorpusView}
+    for more information about corpus views.
+
+    Subclasses must define: L{__len__()}, L{__getitem__()}, and
+    L{iterate_from()}.
+    """
+    def __len__(self):
+        """
+        Return the number of tokens in the corpus file underlying this
+        corpus view.
+        """
+        raise NotImplementedError('should be implemented by subclass')
+    
+    def iterate_from(self, start):
+        """
+        Return an iterator that generates the tokens in the corpus
+        file underlying this corpus view, starting at the token number
+        C{start}.  If C{start>=len(self)}, then this iterator will
+        generate no tokens.
+        """
+        raise NotImplementedError('should be implemented by subclass')
+    
+    def __getitem__(self, i):
+        """
+        Return the C{i}th token in the corpus file underlying this
+        corpus view.  Negative indices and spans are both supported.
+        """
+        raise NotImplementedError('should be implemented by subclass')
+
+    def __iter__(self):
+        """Return an iterator that generates the tokens in the corpus
+        file underlying this corpus view."""
+        return self.iterate_from(0)
+
+    def count(self, value):
+        """Return the number of times this list contains C{value}."""
+        return sum(1 for elt in self if elt==value)
+    
+    def index(self, value, start=None, stop=None):
+        """Return the index of the first occurance of C{value} in this
+        list that is greater than or equal to C{start} and less than
+        C{stop}.  Negative start & stop values are treated like negative
+        slice bounds -- i.e., they count from the end of the list."""
+        start, stop = self._slice_bounds(slice(start, stop))
+        for i, elt in enumerate(islice(self, start, stop)):
+            if elt == value: return i+start
+        raise ValueError('index(x): x not in list')
+
+    def __contains__(self, value):
+        """Return true if this list contains C{value}."""
+        return bool(self.count(value))
+    
+    def __add__(self, other):
+        """Return a list concatenating self with other."""
+        return concat([self, other])
+    
+    def __radd__(self, other):
+        """Return a list concatenating other with self."""
+        return concat([other, self])
+    
+    def __mul__(self, count):
+        """Return a list concatenating self with itself C{count} times."""
+        return concat([self] * count)
+    
+    def __rmul__(self, count):
+        """Return a list concatenating self with itself C{count} times."""
+        return concat([self] * count)
+
+    _MAX_REPR_SIZE = 60
+    def __repr__(self):
+        """
+        @return: A string representation for this corpus view that is
+        similar to a list's representation; but if it would be more
+        than 60 characters long, it is truncated.
+        """
+        pieces = []
+        length = 5
+        for elt in self:
+            pieces.append(repr(elt))
+            length += len(pieces[-1]) + 2
+            if length > self._MAX_REPR_SIZE and len(pieces) > 2:
+                return '[%s, ...]' % ', '.join(pieces[:-1])
+        else:
+            return '[%s]' % ', '.join(pieces)
+
+    def __cmp__(self, other):
+        """
+        Return a number indicating how C{self} relates to other.
+
+          - If C{other} is not a corpus view or a C{list}, return -1.
+          - Otherwise, return C{cmp(list(self), list(other))}.
+
+        Note: corpus views do not compare equal to tuples containing
+        equal elements.  Otherwise, transitivity would be violated,
+        since tuples do not compare equal to lists.
+        """
+        if not isinstance(other, (AbstractCorpusView, list)): return -1
+        return cmp(list(self), list(other))
+
+    def __hash__(self):
+        """
+        @raise ValueError: Corpus view objects are unhashable.
+        """
+        raise ValueError('%s objects are unhashable' %
+                         self.__class__.__name__)
+
+    def _slice_bounds(self, slice_obj):
+        """
+        Given a slice, return the corresponding (start, stop) bounds,
+        taking into account None indices, negative indices, etc.  When
+        possible, avoid calculating len(self), since it can be slow
+        for corpus view objects.
+        """
+        start, stop = slice_obj.start, slice_obj.stop
+        
+        # Handle None indices.
+        if start is None: start = 0
+        if stop is None: stop = len(self)
+        
+        # Handle negative indices.
+        if start < 0: start = max(0, len(self)+start)
+        if stop < 0: stop = max(0, len(self)+stop)
+    
+        # Make sure stop doesn't go past the end of the list.
+        if stop > 0:
+            try: self[stop-1]
+            except IndexError: stop = len(self)
+        
+        # Make sure start isn't past stop.
+        start = min(start, stop)
+    
+        # That's all folks!
+        return start, stop
+
+    
+class StreamBackedCorpusView(AbstractCorpusView):
     """
     A 'view' of a corpus file, which acts like a sequence of tokens:
     it can be accessed by index, iterated over, etc.  However, the
@@ -153,10 +290,6 @@ class StreamBackedCorpusView:
         self._stream = None
 
     def __len__(self):
-        """
-        Return the number of tokens in the corpus file underlying this
-        corpus view.
-        """
         if self._len is None:
             # iterate_from() sets self._len when it reaches the end
             # of the file:
@@ -164,24 +297,14 @@ class StreamBackedCorpusView:
         return self._len
     
     def __getitem__(self, i):
-        """
-        Return the C{i}th token in the corpus file underlying this
-        corpus view.  Negative indices and spans are both supported.
-        """
         if isinstance(i, slice):
-            start, stop = i.start, i.stop
-            # Handle None indices
-            if start is None: start = 0
-            if stop is None: stop = len(self)
-            # Handle negative indices
-            if start < 0: start = max(0, len(self)+start)
-            if stop < 0: stop = max(0, len(self)+stop)
+            start, stop = self._slice_bounds(i)
             # Check if it's in the cache.
             offset = self._cache[0]
             if offset <= start and stop < self._cache[1]:
                 return self._cache[2][start-offset:stop-offset]
             # Construct & return the result.
-            return list(islice(self.iterate_from(start), stop-start))
+            return CorpusViewSlice(self, start, stop)
         else:
             # Handle negative indices
             if i < 0: i += len(self)
@@ -189,7 +312,6 @@ class StreamBackedCorpusView:
             # Check if it's in the cache.
             offset = self._cache[0]
             if offset <= i < self._cache[1]:
-                #print 'using cache', self._cache[:2]
                 return self._cache[2][i-offset]
             # Use iterate_from to extract it.
             try:
@@ -197,22 +319,9 @@ class StreamBackedCorpusView:
             except StopIteration:
                 raise IndexError('index out of range')
 
-    def __iter__(self):
-        """
-        Return an iterator that generates the tokens in the corpus
-        file underlying this corpus view.
-        """
-        return self.iterate_from(0)
-
     # If we wanted to be thread-safe, then this method would need to
     # do some locking.
     def iterate_from(self, start_tok):
-        """
-        Return an iterator that generates the tokens in the corpus
-        file underlying this corpus view, starting at the token number
-        C{start}.  If C{start>=len(self)}, then this iterator will
-        generate no tokens.
-        """
         # Decide where in the file we should start.  If `start` is in
         # our mapping, then we can jump streight to the correct block;
         # otherwise, start at the last block we've processed.
@@ -239,12 +348,13 @@ class StreamBackedCorpusView:
             # Read the next block.
             self._stream.seek(filepos)
             tokens = self.read_block(self._stream)
-            assert isinstance(tokens, list) # block reader should return list.
+            assert isinstance(tokens, (tuple, list)), \
+                   'block reader should return list or tuple.'
             num_toks = len(tokens)
             new_filepos = self._stream.tell()
 
             # Update our cache.
-            self._cache = (toknum, toknum+num_toks, tokens)
+            self._cache = (toknum, toknum+num_toks, list(tokens))
             
             # Update our mapping.
             assert toknum <= self._toknum[-1]
@@ -267,26 +377,40 @@ class StreamBackedCorpusView:
             toknum += num_toks
             filepos = new_filepos
 
-    _MAX_REPR_SIZE = 60
-    def __repr__(self):
-        """
-        @return: A string representation for this corpus view.  The
-        representation is similar to a list's representation; but if
-        it would be more than 60 characters long, it is truncated.
-        """
-        pieces = []
-        length = 5
-        for tok in self:
-            pieces.append(repr(tok))
-            length += len(pieces[-1]) + 2
-            if length > self._MAX_REPR_SIZE and len(pieces) > 2:
-                return '[%s, ...]' % ', '.join(pieces[:-1])
-        else:
-            return '[%s]' % ', '.join(pieces)
-        
+class CorpusViewSlice(AbstractCorpusView):
+    MIN_SIZE = 100
     
+    def __new__(cls, source, start, stop):
+        "We assume that negative bounds etc have been handled already."
+        # If the slice is small enough, just use a tuple.
+        if stop-start < cls.MIN_SIZE:
+            return list(islice(source.iterate_from(start), stop-start))
+        else:
+            return object.__new__(cls, source, start, stop)
+        
+    def __init__(self, source, start, stop):
+        self._source = source
+        self._start = start
+        self._stop = stop
 
-class ConcatenatedCorpusView:
+    def __len__(self):
+        return self._stop - self._start
+
+    def iterate_from(self, start):
+        return islice(self._source.iterate_from(start+self._start), len(self))
+
+    def __getitem__(self, i):
+        if isinstance(i, slice):
+            start, stop = self._slice_bounds(i)
+        else:
+            # Handle out-of-bound indices.
+            if i < 0: i += len(self)
+            if (i < 0) or (i >= len(self)):
+                raise IndexError('index out of range')
+            # Get the value.
+            return self._source[self._start + i]
+    
+class ConcatenatedCorpusView(AbstractCorpusView):
     """
     A 'view' of a corpus file that joins together one or more
     L{StreamBackedCorpusViews<StreamBackedCorpusView>}.  At most
@@ -315,15 +439,18 @@ class ConcatenatedCorpusView:
 
     def __getitem__(self, i):
         if isinstance(i, slice):
-            start, stop = i.start, i.stop
-            # Handle None indices
-            if start is None: start = 0
-            if stop is None: stop = len(self)
-            # Handle negative indices
-            if start < 0: start = max(0, len(self)+start)
-            if stop < 0: stop = max(0, len(self)+stop)
-            # Construct & return the result.
-            return list(islice(self.iterate_from(start), stop-start))
+            start, stop = self._slice_bounds(i)
+            # Check if it's within a single view -- then we might be
+            # able to use that view's cache.
+            piecenum = bisect.bisect_right(self._offsets, start)-1
+            if ((piecenum+1) < len(self._offsets) and
+                stop < self._offsets[piecenum+1]):
+                offset = self._offsets[piecenum]
+                return self._pieces[piecenum][start-offset:stop-offset]
+            
+            # Otherwise, just use a slice over self:
+            else:
+                return CorpusViewSlice(self, start, stop)
         else:
             # Handle negative indices
             if i < 0: i += len(self)
@@ -349,7 +476,7 @@ class ConcatenatedCorpusView:
             piece = self._pieces[piecenum]
 
             # If we've got another piece open, close it first.
-            if (self._open_piece != piece and 
+            if (self._open_piece is not piece and 
                 self._open_piece is not None):
                 self._open_piece.close()
                 self._open_piece = piece
@@ -366,23 +493,6 @@ class ConcatenatedCorpusView:
             piecenum += 1
             start_tok = self._offsets[piecenum]
         
-    _MAX_REPR_SIZE = 60
-    def __repr__(self):
-        """
-        @return: A string representation for this corpus view.  The
-        representation is similar to a list's representation; but if
-        it would be more than 60 characters long, it is truncated.
-        """
-        pieces = []
-        length = 5
-        for tok in self:
-            pieces.append(repr(tok))
-            length += len(pieces[-1]) + 2
-            if length > self._MAX_REPR_SIZE and len(pieces) > 2:
-                return '[%s, ...]' % ', '.join(pieces[:-1])
-        else:
-            return '[%s]' % ', '.join(pieces)
-
 def concat(docs):
     """
     Concatenate together the contents of multiple documents from a
@@ -397,14 +507,20 @@ def concat(docs):
     
     types = set([d.__class__ for d in docs])
 
+    # If they're all strings, use string concatenation.
     if types.issubset([str, unicode, basestring]):
         return reduce((lambda a,b:a+b), docs, '')
 
+    # If they're all corpus views, then use ConcatenatedCorpusView.
+    for typ in types:
+        if not issubclass(typ, AbstractCorpusView):
+            break
+    else:
+        return ConcatenatedCorpusView(docs)
+
+    # Otherwise, see what we can do:
     if len(types) == 1:
         typ = list(types)[0]
-
-        if issubclass(typ, StreamBackedCorpusView):
-            return ConcatenatedCorpusView(docs)
 
         if issubclass(typ, list):
             return reduce((lambda a,b:a+b), docs, [])
@@ -434,6 +550,14 @@ def read_wordpunct_block(stream):
     toks = []
     for i in range(20): # Read 20 lines at a time.
         toks.extend(wordpuct_tokenize(stream.readline()))
+    return toks
+
+def read_line_block(stream):
+    toks = []
+    for i in range(20):
+        line = stream.readline()
+        if not line: return toks
+        toks.append(line.replace('\n', ''))
     return toks
 
 def read_blankline_block(stream):
