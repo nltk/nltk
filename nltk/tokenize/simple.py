@@ -64,13 +64,41 @@ class TabTokenizer(TokenizerI):
 class LineTokenizer(TokenizerI):
     r"""
     A tokenizer that divides a string into substrings by treating any
-    single newline character as a separator.  If you are performing
-    the tokenization yourself (rather than building a tokenizer to
-    pass to some other piece of code), consider using the string
-    C{split()} method instead:
-
-        >>> words = s.split('\n')
+    single newline character as a separator.  Handling of blank lines
+    may be controlled using a constructor parameter.
     """
+    def __init__(self, blanklines='discard'):
+        """
+        @param blanklines: Indicates how blank lines should be
+        handled.  Valid values are:
+        
+          - C{'discard'}: strip blank lines out of the token list
+            before returning it.  A line is considered blank if
+            it contains only whitespace characters.
+          - C{'keep'}: leave all blank lines in the token list.
+          - C{'discard-eof'}: if the string ends with a newline,
+            then do not generate a corresponding token C{''} after
+            that newline.
+        """
+        valid_blanklines = ('discard', 'keep', 'discard-eof')
+        if blanklines not in valid_blanklines:
+            raise ValueError('Blank lines must be one of: %s' %
+                             ' '.join(valid_blanklines))
+            
+        self._blanklines = blanklines
+    
     def tokenize(self, s):
-        return s.split('\n')
+        lines = s.split('\n')
+        # If requested, strip off blank lines.
+        if self._blanklines == 'discard':
+            lines = [l for l in line if l.rstrip()]
+        elif self._blanklines == 'discard-eof':
+            if lines and not lines[-1].strip(): lines.pop()
+        return lines
 
+######################################################################
+#{ Tokenization Functions
+######################################################################
+
+def line_tokenize(text, blanklines='discard'):
+    return LineTokenizer(blanklines).tokenize(text)
