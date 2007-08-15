@@ -21,7 +21,7 @@ __all__ = ['WhitespaceTokenizer', 'SpaceTokenizer', 'TabTokenizer',
            'LineTokenizer', 'RegexpTokenizer', 'BlanklineTokenizer',
            'WordPunctTokenizer', 'WordTokenizer', 'blankline_tokenize',
            'wordpunct_tokenize', 'regexp_tokenize', 'word_tokenize',
-           'SExprTokenizer', 'sexpr_tokenize',
+           'SExprTokenizer', 'sexpr_tokenize', 'line_tokenize',
            'PunktWordTokenizer', 'punkt_word_tokenize',
            'PunktSentenceTokenizer',
            ]
@@ -40,8 +40,7 @@ def blankline(text):
 def wordpunct(text):
     return WordPunctTokenizer().tokenize(text)
 
-@deprecated("Use nltk.whitespace_tokenize() or "
-            "nltk.WhitespaceTokenizer instead.")
+@deprecated("Use str.split() or nltk.WhitespaceTokenizer instead.")
 def whitespace(text):
     return WhitespaceTokenizer().tokenize(text)
 
@@ -53,8 +52,7 @@ def word(text):
 @deprecated("Use nltk.line_tokenize() or "
             "nltk.LineTokenizer instead.")
 def line(text):
-    # note -- LineTokenizer doesn't strip out blank lines.
-    return [line for line in text.split('\n') if line]
+    return LineTokenizer().tokenize(text)
 
 #}
 
