@@ -402,6 +402,7 @@ class CorpusViewSlice(AbstractCorpusView):
     def __getitem__(self, i):
         if isinstance(i, slice):
             start, stop = self._slice_bounds(i)
+            return CorpusViewSlice(self, start, stop)
         else:
             # Handle out-of-bound indices.
             if i < 0: i += len(self)
