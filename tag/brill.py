@@ -863,27 +863,32 @@ class FastBrillTaggerTrainer(object):
 
         # Repeatedly select the best rule, and add it to `rules`.
         rules = []
-        while (len(rules) < max_rules):
-            # Find the best rule, and add it to our rule list.
-            rule = self._best_rule(train_sents, test_sents, min_score)
-            if rule:
-                rules.append(rule)
-            else:
-                break # No more good rules left!
-
-            # Report the rule that we found.
-            if self._trace > 1: self._trace_rule(rule)
-
-            # Apply the new rule at the relevant sites
-            self._apply_rule(rule, test_sents)
-            
-            # Update _tag_positions[rule.original_tag] and
-            # _tag_positions[rule.replacement_tag] for the affected
-            # positions (i.e., self._positions_by_rule[rule]).
-            self._update_tag_positions(rule)
-            
-            # Update rules that were affected by the change.
-            self._update_rules(rule, train_sents, test_sents)
+        try:
+            while (len(rules) < max_rules):
+                # Find the best rule, and add it to our rule list.
+                rule = self._best_rule(train_sents, test_sents, min_score)
+                if rule:
+                    rules.append(rule)
+                else:
+                    break # No more good rules left!
+    
+                # Report the rule that we found.
+                if self._trace > 1: self._trace_rule(rule)
+    
+                # Apply the new rule at the relevant sites
+                self._apply_rule(rule, test_sents)
+                
+                # Update _tag_positions[rule.original_tag] and
+                # _tag_positions[rule.replacement_tag] for the affected
+                # positions (i.e., self._positions_by_rule[rule]).
+                self._update_tag_positions(rule)
+                
+                # Update rules that were affected by the change.
+                self._update_rules(rule, train_sents, test_sents)
+                
+        # The user can cancel training manually:
+        except KeyboardInterrupt:
+            print "Training stopped manually -- %d rules found" % len(rules)
 
         # Discard our tag position mapping & rule mappings.
         self._clean()
