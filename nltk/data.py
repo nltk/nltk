@@ -15,7 +15,7 @@ for a given resource, and returns its filename; and L{load()} loads a
 given resource and adds it to a resource cache.
 """
 
-import sys, os, os.path, pickle, textwrap, weakref
+import sys, os, os.path, pickle, textwrap, weakref, yaml
 from nltk.corpus.reader.api import CorpusReader
 from nltk import cfg
 
