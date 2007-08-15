@@ -742,3 +742,156 @@ The Brown Corpus uses the tagged corpus reader:
     >>> brown.tagged_paras() # doctest: +ELLIPSIS
     [[[('The', 'AT'), ...]], [[('The', 'AT'), ...]], ...]
     
+Corpus View Regression Tests
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Select some corpus files to play with:
+
+    >>> import nltk.data
+    >>> # A very short file (160 chars):
+    >>> f1 = nltk.data.find('corpora/inaugural/README')
+    >>> # A relatively short file (791 chars):
+    >>> f2 = nltk.data.find('corpora/inaugural/1793-Washington.txt')
+    >>> # A longer file (32k chars):
+    >>> f3 = nltk.data.find('corpora/inaugural/1909-Taft.txt')
+    >>> filenames = [f1, f2, f3]
+
+Check that corpus views produce the correct sequence of values.
+
+    >>> from nltk.corpus.reader.util import *
+    >>> linetok = nltk.LineTokenizer(blanklines='discard-eof')
+    >>> for f in filenames:
+    ...     v = StreamBackedCorpusView(f, read_whitespace_block)
+    ...     assert list(v) == open(f).read().split()
+    ...     v = StreamBackedCorpusView(f, read_line_block)
+    ...     assert list(v) == linetok.tokenize(open(f).read())
+
+Check that the corpus views report the correct lengths:
+
+    >>> for f in filenames:
+    ...     v = StreamBackedCorpusView(f, read_whitespace_block)
+    ...     assert len(v) == len(open(f).read().split())
+    ...     v = StreamBackedCorpusView(f, read_line_block)
+    ...     assert len(v) == len(linetok.tokenize(open(f).read()))
+
+Concatenation
+-------------
+Check that concatenation works as intended.
+
+    >>> c1 = StreamBackedCorpusView(f1, read_whitespace_block)
+    >>> c2 = StreamBackedCorpusView(f2, read_whitespace_block)
+    >>> c3 = StreamBackedCorpusView(f3, read_whitespace_block)
+    >>> c123 = c1+c2+c3
+    >>> print c123
+    ['C-Span', 'Inaugural', 'Address', 'Corpus', 'US', ...]
+
+    >>> l1 = open(f1).read().split()
+    >>> l2 = open(f2).read().split()
+    >>> l3 = open(f3).read().split()
+    >>> l123 = l1+l2+l3
+
+    >>> list(c123) == l123
+    True
+
+Slicing
+-------
+First, do some tests with fairly small slices.  These will all
+generate tuple values.
+
+    >>> c1 = StreamBackedCorpusView(f1, read_whitespace_block)
+    >>> l1 = open(f1).read().split()
+    >>> print len(c1)
+    21
+    >>> len(c1) < CorpusViewSlice.MIN_SIZE
+    True
+
+Choose a list of indices, based on the length, that covers the
+important corner cases:
+
+    >>> indices = [-60, -30, -22, -21, -20, -1,
+    ...            0, 1, 10, 20, 21, 22, 30, 60]
+
+Test slicing with explicit start & stop value:
+
+    >>> for s in indices:
+    ...     for e in indices:
+    ...         assert list(c1[s:e]) == l1[s:e]
+
+Test slicing with stop=None:
+
+    >>> for s in indices:
+    ...     assert list(c1[s:]) == l1[s:]
+
+Test slicing with start=None:
+
+    >>> for e in indices:
+    ...     assert list(c1[:e]) == l1[:e]
+
+Test slicing with start=stop=None:
+
+    >>> list(c1[:]) == list(l1[:])
+    True
+
+Next, we'll do some tests with much longer slices.  These will
+generate CorpusViewSlice objects.
+
+    >>> c3 = StreamBackedCorpusView(f3, read_whitespace_block)
+    >>> l3 = open(f3).read().split()
+    >>> print len(c3)
+    5430
+    >>> len(c3) > CorpusViewSlice.MIN_SIZE*2
+    True
+
+Choose a list of indices, based on the length, that covers the
+important corner cases:
+
+    >>> indices = [-12000, -6000, -5431, -5430, -5429, -3000, -200, -1,
+    ...            0, 1, 200, 3000, 5000, 5429, 5430, 5431, 6000, 12000]
+
+Test slicing with explicit start & stop value:
+
+    >>> for s in indices:
+    ...     for e in indices:
+    ...         assert list(c3[s:e]) == l3[s:e]
+
+Test slicing with stop=None:
+
+    >>> for s in indices:
+    ...     assert list(c3[s:]) == l3[s:]
+
+Test slicing with start=None:
+
+    >>> for e in indices:
+    ...     assert list(c3[:e]) == l3[:e]
+
+Test slicing with start=stop=None:
+
+    >>> list(c3[:]) == list(l3[:])
+    True
+
+Multiple Iterators
+------------------
+If multiple iterators are created for the same corpus view, their
+iteration can be interleaved:
+
+    >>> c3 = StreamBackedCorpusView(f3, read_whitespace_block)
+    >>> iterators = [c3.iterate_from(n) for n in [0,15,30,45]]
+    >>> for i in range(15):
+    ...     for iterator in iterators:
+    ...         print '%-15s' % iterator.next(),
+    ...     print
+    My              a               duties          in             
+    fellow          heavy           of              a              
+    citizens:       weight          the             proper         
+    Anyone          of              office          sense          
+    who             responsibility. upon            of             
+    has             If              which           the            
+    taken           not,            he              obligation     
+    the             he              is              which          
+    oath            has             about           the            
+    I               no              to              oath           
+    have            conception      enter,          imposes.       
+    just            of              or              The            
+    taken           the             he              office         
+    must            powers          is              of             
+    feel            and             lacking         an             
+
