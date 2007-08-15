@@ -69,15 +69,15 @@ class ConllChunkCorpusReader(CorpusReader):
     #{ Deprecated since 0.8
     @deprecated("Use .raw() or .words() or .tagged_words() or "
                 ".chunked_sents() instead.")
-    def read(self, items, format='chunked'):
-        if format == 'chunked': return self.chunked_sents(items)
+    def read(self, items, format='chunked', chunk_types=None):
+        if format == 'chunked': return self.chunked_sents(items, chunk_types)
         if format == 'raw': return self.raw(items)
         if format == 'tokenized': return self.words(items)
         if format == 'tagged': return self.tagged_words(items)
         raise ValueError('bad format %r' % format)
     @deprecated("Use .chunked_sents() instead.")
-    def chunked(self, items):
-        return self.chunked_sents(items)
+    def chunked(self, items, chunk_types=None):
+        return self.chunked_sents(items, chunk_types)
     @deprecated("Use .words() instead.")
     def tokenized(self, items):
         return self.words(items)
