@@ -101,6 +101,14 @@ class PunktWordTokenizer(TokenizerI):
     def tokenize(self, text):
         return punkt_word_tokenize(text)
 
+def punkt_word_tokenize(s):
+    """
+    Tokenize a string using the rules from the Punkt word tokenizer.
+    """
+    for (regexp, repl) in _punkt_word_tokenize_regexps:
+        s = regexp.sub(repl, s)
+    return s.split()
+
 #: A list of (regexp, repl) pairs applied in sequence by
 #: L{punkt_word_tokenize}.  The resulting string is split on
 #: whitespace.
@@ -133,14 +141,6 @@ _punkt_word_tokenize_regexps = [
     (re.compile(r'(^|\s)(\.{2,})([^\.\s])'), r'\1\2 \3'),
     (re.compile(r'([^\.\s])(\.{2,})($|\s)'), r'\1 \2\3'),
     ]
-
-def punkt_word_tokenize(s):
-    """
-    Tokenize a string using the rules from the Punkt word tokenizer.
-    """
-    for (regexp, repl) in _punkt_word_tokenize_regexps:
-        s = regexp.sub(repl, s)
-    return s.split()
 
 ######################################################################
 #{ Punkt Sentence Tokenizer
