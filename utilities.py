@@ -833,6 +833,7 @@ def _mro(cls):
 ######################################################################
 # Deprecation decorator & base class
 ######################################################################
+# [xx] dedent msg first if it comes from  a docstring.
 
 def _add_deprecated_field(obj, message):
     """Add a @deprecated field to a given object's docstring."""
@@ -891,21 +892,27 @@ class Deprecated(object):
     deprecation warning message.
     """
     def __new__(cls, *args, **kwargs):
-        import warnings, textwrap, re
         # Figure out which class is the deprecated one.
         dep_cls = None
         for base in _mro(cls):
             if Deprecated in base.__bases__:
-                dep_cls = base
+                dep_cls = base; break
         assert dep_cls, 'Unable to determine which base is deprecated.'
 
         # Construct an appropriate warning.
-        doc = re.sub(r'\A\s*@deprecated:', '', dep_cls.__doc__ or '')
+        doc = dep_cls.__doc__ or ''.strip()
+        # If there's a @deprecated field, strip off the field marker.
+        doc = re.sub(r'\A\s*@deprecated:', r'', doc)
+        # Strip off any indentation.
+        doc = re.sub(r'(?m)^\s*', '', doc)
+        # Construct a 'name' string.
         name = 'Class %s' % dep_cls.__name__
         if cls != dep_cls:
             name += ' (base class for %s)' % cls.__name__
-        msg = '%s has been deprecated.  %s' % (name, doc.strip())
-        msg = '\n' + textwrap.fill(msg.strip(), initial_indent='    ',
+        # Put it all together.
+        msg = '%s has been deprecated.  %s' % (name, doc)
+        # Wrap it.
+        msg = '\n' + textwrap.fill(msg, initial_indent='    ',
                                    subsequent_indent='    ')
         warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
         # Do the actual work of __new__.
