@@ -41,7 +41,6 @@ Extraction, Proceedings of IJCNLP-04, pp560-565.
 from util import *
 from api import *
 from nltk import tokenize, tree
-from nltk.tag import tag2tuple
 import os, re
 from nltk.utilities import deprecated
 
