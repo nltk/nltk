@@ -101,39 +101,45 @@ class PunktWordTokenizer(TokenizerI):
     def tokenize(self, text):
         return punkt_word_tokenize(text)
 
+#: A list of (regexp, repl) pairs applied in sequence by
+#: L{punkt_word_tokenize}.  The resulting string is split on
+#: whitespace.
+_punkt_word_tokenize_regexps = [
+    # Separate punctuation (except period) from words:
+    (re.compile(r'(?=[\(\"\`{\[:;&\#\*@])(.)'), r'\1 '),
+    
+    (re.compile(r'(.)(?=[?!)\";}\]\*:@\'])'), r'\1 '),
+    (re.compile(r'(?=[\)}\]])(.)'), r'\1 '),
+    (re.compile(r'(.)(?=[({\[])'), r'\1 '),
+    (re.compile(r'((^|\s)\-)(?=[^\-])'), r'\1 '),
+
+    # Treat double-hyphen as one token:
+    (re.compile(r'([^-])(\-\-+)([^-])'), r'\1 \2 \3'),
+    (re.compile(r'(\s|^)(,)(?=(\S))'), r'\1\2 '),
+
+    # Only separate comma if space follows:
+    (re.compile(r'(.)(,)(\s|$)'), r'\1 \2\3'),
+
+    # Combine dots separated by whitespace to be a single token:
+    (re.compile(r'\.\s\.\s\.'), r'...'),
+
+    # [xx] why is this one commented out?
+    ## Separate "No.6"
+    #(re.compile(r'([A-Za-z]\.)(\d+)'), r'\1 \2'),
+    
+    # Separate words from ellipses
+    (re.compile(r'([^\.]|^)(\.{2,})(.?)'), r'\1 \2 \3'),
+
+    (re.compile(r'(^|\s)(\.{2,})([^\.\s])'), r'\1\2 \3'),
+    (re.compile(r'([^\.\s])(\.{2,})($|\s)'), r'\1 \2\3'),
+    ]
+
 def punkt_word_tokenize(s):
     """
     Tokenize a string using the rules from the Punkt word tokenizer.
     """
-
-    # Separate punctuation (except period) from words:
-    s = re.sub(r'(?=[\(\"\`{\[:;&\#\*@])(.)', r'\1 ', s)
-    
-    s = re.sub(r'(.)(?=[?!)\";}\]\*:@\'])', r'\1 ', s)
-    s = re.sub(r'(?=[\)}\]])(.)', r'\1 ', s)
-    s = re.sub(r'(.)(?=[({\[])', r'\1 ', s)
-    s = re.sub(r'((^|\s)\-)(?=[^\-])', r'\1 ', s)
-
-    # Treat double-hyphen as one token:
-    s = re.sub(r'([^-])(\-\-+)([^-])', r'\1 \2 \3', s)
-    s = re.sub(r'(\s|^)(,)(?=(\S))', r'\1\2 ', s)
-
-    # Only separate comma if space follows:
-    s = re.sub(r'(.)(,)(\s|$)', r'\1 \2\3', s)
-
-    # Combine dots separated by whitespace to be a single token:
-    s = re.sub(r'\.\s\.\s\.', r'...', s)
-
-    # [xx] why is this one commented out?
-    ## Separate "No.6"
-    #s = re.sub(r'([A-Za-z]\.)(\d+)', r'\1 \2', s)
-    
-    # Separate words from ellipses
-    s = re.sub(r'([^\.]|^)(\.{2,})(.?)', r'\1 \2 \3', s)     
-
-    s = re.sub(r'(^|\s)(\.{2,})([^\.\s])', r'\1\2 \3', s)
-    s = re.sub(r'([^\.\s])(\.{2,})($|\s)', r'\1 \2\3', s)
-    
+    for (regexp, repl) in _punkt_word_tokenize_regexps:
+        s = regexp.sub(repl, s)
     return s.split()
 
 ######################################################################
