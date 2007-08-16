@@ -425,6 +425,9 @@ class Trie:
     def __eq__(self, other):
         return self._root == other._root
 
+    def __ne__(self, other):
+        return not (self == other)
+
     def __setitem__(self, key, value):
         curr_node = self._root
         for char in key:
