@@ -783,6 +783,54 @@ def usage(obj, selfname='self'):
                             subsequent_indent=' '*(len(name)+5))
 
 ######################################################################
+# Check if a method has been overridden
+######################################################################
+
+def overridden(method):
+    """
+    @return: True if C{method} overrides some method with the same
+    name in a base class.  This is typically used when defining
+    abstract base classes or interfaces, to allow subclasses to define
+    either of two related methods:
+
+        >>> class EaterI:
+        ...     '''Subclass must define eat() or batch_eat().'''
+        ...     def eat(self, food):
+        ...         if overridden(self.batch_eat):
+        ...             return self.batch_eat([food])[0]
+        ...         else:
+        ...             raise NotImplementedError()
+        ...     def batch_eat(self, foods):
+        ...         return [self.eat(food) for food in foods]
+
+    @type method: instance method
+    """
+    # [xx] breaks on classic classes!
+    if isinstance(method, types.MethodType) and method.im_class is not None:
+        name = method.__name__
+        funcs = [cls.__dict__[name]
+                 for cls in _mro(method.im_class)
+                 if name in cls.__dict__]
+        return len(funcs) > 1
+    else:
+        raise TypeError('Expected an instance method.')
+
+def _mro(cls):
+    """
+    Return the I{method resolution order} for C{cls} -- i.e., a list
+    containing C{cls} and all its base classes, in the order in which
+    they would be checked by C{getattr}.  For new-style classes, this
+    is just cls.__mro__.  For classic classes, this can be obtained by
+    a depth-first left-to-right traversal of C{__bases__}.
+    """
+    if isinstance(cls, type):
+        return cls.__mro__
+    else:
+        mro = [cls]
+        for base in cls.__bases__: mro.extend(_mro(base))
+        return mro
+
+######################################################################
 # Deprecation decorator & base class
 ######################################################################
 
@@ -846,7 +894,7 @@ class Deprecated(object):
         import warnings, textwrap, re
         # Figure out which class is the deprecated one.
         dep_cls = None
-        for base in cls.__mro__:
+        for base in _mro(cls):
             if Deprecated in base.__bases__:
                 dep_cls = base
         assert dep_cls, 'Unable to determine which base is deprecated.'
