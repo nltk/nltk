@@ -1072,6 +1072,9 @@ class MutableProbDist(ProbDistI):
 ##//////////////////////////////////////////////////////
 
 def log_likelihood(test_pdist, actual_pdist):
+    if (not isinstance(test_pdist, ProbDistI) or
+        not isinstance(actual_pdist, ProbDistI)):
+        raise ValueError('expected a ProbDist.')
     # Is this right?
     return sum(actual_pdist.prob(s) * math.log(test_pdist.prob(s), 2)
                 for s in actual_pdist.keys())
