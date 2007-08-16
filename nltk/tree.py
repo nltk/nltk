@@ -474,6 +474,8 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
     def __eq__(self, other):
         if not isinstance(other, Tree): return False
         return Tree.__eq__(self, other) and self.prob()==other.prob()
+    def __ne__(self, other):
+        return not (self == other)
     def copy(self, deep=False):
         if not deep: return self.__class__(self.node, self, prob=self.prob())
         else: return self.__class__.convert(self)
@@ -506,6 +508,8 @@ class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
     def __eq__(self, other):
         if not isinstance(other, Tree): return False
         return Tree.__eq__(self, other) and self.prob()==other.prob()
+    def __ne__(self, other):
+        return not (self == other)
     def copy(self, deep=False):
         if not deep: return self.__class__(self.node, self, prob=self.prob())
         else: return self.__class__.convert(self)

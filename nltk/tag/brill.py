@@ -54,7 +54,7 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
     def rules(self):
         return self._rules
 
-    def tag (self, tokens):
+    def tag(self, tokens):
         # Inherit documentation from TaggerI
         
         # Run the initial tagger.

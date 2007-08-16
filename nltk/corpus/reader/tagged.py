@@ -13,7 +13,7 @@ words.
 
 from api import *
 from util import *
-from nltk.tag import tag2tuple
+from nltk.tag import str2tuple
 from nltk.tokenize import *
 import os
 from nltk.utilities import deprecated
@@ -24,7 +24,7 @@ class TaggedCorpusReader(CorpusReader):
     assumed to be split using blank lines.  Sentences and words can be
     tokenized using the default tokenizers, or by custom tokenizers
     specificed as parameters to the constructor.  Words are parsed
-    using L{nltk.tag.tag2tuple}.  By default, C{'/'} is used as the
+    using L{nltk.tag.str2tuple}.  By default, C{'/'} is used as the
     separator.  I.e., words should have the form::
 
        word1/tag1 word2/tag2 word3/tag3 ...
@@ -213,7 +213,7 @@ class TaggedCorpusView(StreamBackedCorpusView):
         for para_str in self._para_block_reader(stream):
             para = []
             for sent_str in self._sent_tokenizer.tokenize(para_str):
-                sent = [tag2tuple(w) for w in
+                sent = [str2tuple(s) for s in
                         self._word_tokenizer.tokenize(sent_str)]
                 if not self._tagged:
                     sent = [w for (w,t) in sent]

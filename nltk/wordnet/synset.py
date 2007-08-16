@@ -277,7 +277,10 @@ class Synset(object):
     
     def __eq__(self, other):
         return _compareInstances(self, other, ('pos', 'offset')) == 0
-    
+
+    def __ne__(self, other):
+        return not (self==other)
+
     def __getitem__(self, idx):
         try:
             return self.words[idx]       # integer key
