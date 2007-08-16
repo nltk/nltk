@@ -1,42 +1,41 @@
+# Natural Language Toolkit: Chunk parsing API
+#
+# Copyright (C) 2001-2007 University of Pennsylvania
+# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+#         Steven Bird <sb@csse.unimelb.edu.au> (minor additions)
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
+
 ##//////////////////////////////////////////////////////
 ##  Chunk Parser Interface
 ##//////////////////////////////////////////////////////
 
 import re, types
 from nltk import Tree
-from nltk.parse import ParseI
+from nltk.parse import ParserI
 
-class ChunkParseI(ParseI):
+class ChunkParserI(ParserI):
     """
     A processing interface for identifying non-overlapping groups in
     unrestricted text.  Typically, chunk parsers are used to find base
     syntactic constituants, such as base noun phrases.  Unlike
-    L{ParseI}, C{ChunkParseI} guarantees that the C{parse} method
+    L{ParserI}, C{ChunkParserI} guarantees that the C{parse} method
     will always generate a parse.
-    
     """
     def parse(self, tokens):
         """
         Find the best chunk structure for the given tokens
-        and return a tree
+        and return a tree.
         
         @param tokens: The list of (word, tag) tokens to be chunked.
         @type tokens: L{list} of L{tuple}
         """
-        assert 0, "ChunkParseI is an abstract interface"
-
-##//////////////////////////////////////////////////////
-##  Precompiled regular expressions
-##//////////////////////////////////////////////////////
-
-
-CHUNK_TAG_CHAR = r'[^\{\}<>]'
-CHUNK_TAG = r'(<%s+?>)' % CHUNK_TAG_CHAR
-
+        assert 0, "ChunkParserI is an abstract interface"
 
 ##//////////////////////////////////////////////////////
 ##  ChunkString
 ##//////////////////////////////////////////////////////
+## [xx] this really belongs in nltk.chunk.regexp instead.
 
 class ChunkString(object):
     """
@@ -75,6 +74,9 @@ class ChunkString(object):
     @cvar IN_CHINK_PATTERN: A zero-width regexp pattern string that
         will only match positions that are in chinks.
     """
+    CHUNK_TAG_CHAR = r'[^\{\}<>]'
+    CHUNK_TAG = r'(<%s+?>)' % CHUNK_TAG_CHAR
+    
     IN_CHUNK_PATTERN = r'(?=[^\{]*\})'
     IN_CHINK_PATTERN = r'(?=[^\}]*(\{|$))'
 
@@ -85,7 +87,7 @@ class ChunkString(object):
     _BRACKETS = re.compile('[^\{\}]+')
     _BALANCED_BRACKETS = re.compile(r'(\{\})*$')
     
-    def __init__(self, chunk_struct, debug_level=3):
+    def __init__(self, chunk_struct, debug_level=1):
         """
         Construct a new C{ChunkString} that encodes the chunking of
         the text C{tagged_tokens}.
@@ -118,7 +120,8 @@ class ChunkString(object):
         elif isinstance(tok, Tree):
             return tok.node
         else:
-            raise ValueError, 'chunk structures must contain tokens and trees'
+            raise ValueError('chunk structures must contain tagged '
+                             'tokens or trees')
                       
     def _verify(self, verify_tags):
         """
@@ -138,7 +141,8 @@ class ChunkString(object):
         """
         # Check overall form
         if not ChunkString._VALID.match(self._str):
-            raise ValueError('Transformation generated invalid chunkstring: %s' % self._str)
+            raise ValueError('Transformation generated invalid '
+                             'chunkstring: %s' % self._str)
 
         # Check that parens are balanced.  If the string is long, we
         # have to do this in pieces, to avoid a maximum recursion
@@ -147,14 +151,16 @@ class ChunkString(object):
         for i in range(1+len(brackets)/5000):
             substr = brackets[i*5000:i*5000+5000]
             if not ChunkString._BALANCED_BRACKETS.match(substr):
-                raise ValueError('Transformation generated invalid chunkstring: %s' % substr)
+                raise ValueError('Transformation generated invalid '
+                                 'chunkstring: %s' % substr)
 
         if verify_tags<=0: return
         
         tags1 = (re.split(r'[\{\}<>]+', self._str))[1:-1]
         tags2 = [self._tag(piece) for piece in self._pieces]
         if tags1 != tags2:
-            raise ValueError('Transformation generated invalid chunkstring: %s / %s' % (tags1,tags2))
+            raise ValueError('Transformation generated invalid '
+                             'chunkstring: %s / %s' % (tags1,tags2))
 
     def to_chunkstruct(self, chunk_node='CHUNK'):
         """
@@ -213,7 +219,6 @@ class ChunkString(object):
             invalid chunkstring.
         """
         # Do the actual substitution
-
         self._str = re.sub(regexp, repl, self._str)
 
         # The substitution might have generated "empty chunks"
@@ -249,5 +254,4 @@ class ChunkString(object):
         str = re.sub(r'([^\{])<', r'\1 <', str)
         if str[0] == '<': str = ' ' + str
         return str
-
 
