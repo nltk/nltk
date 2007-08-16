@@ -83,7 +83,7 @@ import re
 ## Import the nltk.stemmer module, which defines the stemmer interface
 from api import *
 
-class Porter(StemI):
+class PorterStemmer(StemmerI):
 
     ## --NLTK--
     ## Add a module docstring
@@ -546,12 +546,12 @@ class Porter(StemI):
     ## --NLTK--
     ## Add a string representation function
     def __repr__(self):
-        return '<Porter Stemmer>'
+        return '<PorterStemmer>'
 
 ## --NLTK--
 ## This test procedure isn't applicable.
 #if __name__ == '__main__':
-#    p = Porter()
+#    p = PorterStemmer()
 #    if len(sys.argv) > 1:
 #        for f in sys.argv[1:]:
 #            infile = open(f, 'r')
@@ -574,7 +574,7 @@ def demo():
     from nltk.corpus import treebank
     from nltk import stem
 
-    stemmer = stem.Porter()
+    stemmer = stem.PorterStemmer()
 
     orig = []
     stemmed = []
