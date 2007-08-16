@@ -13,7 +13,7 @@ Paice, Chris D. "Another Stemmer." ACM SIGIR Forum 24.3 (1990): 56-61.
 import re
 from api import *
 
-class Lancaster(StemI):
+class LancasterStemmer(StemmerI):
 
     # The rule list is static since it doesn't change between instances
     rule_tuple = (
@@ -168,7 +168,7 @@ class Lancaster(StemI):
         
         # If the user hasn't supplied any rules, setup the default rules
         if len(self.rule_dictionary) == 0:
-            self.parseRules(Lancaster.rule_tuple)
+            self.parseRules(LancasterStemmer.rule_tuple)
 
         return self.__doStemming(word, intact_word)
 
@@ -274,7 +274,7 @@ class Lancaster(StemI):
         return word
 
     def __repr__(self):
-        return '<Lancaster Stemmer>'
+        return '<LancasterStemmer>'
                 
 def demo():
     """A demonstration of the lancaster stemmer on a samples described in
@@ -282,7 +282,7 @@ def demo():
     """
     from nltk import stem
 
-    stemmer = stem.Lancaster()
+    stemmer = stem.LancasterStemmer()
 
     print "%-20s%-20s" % ("Original Word", "Stemmed Word")
     print "*" * 40

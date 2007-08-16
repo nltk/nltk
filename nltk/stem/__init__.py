@@ -16,7 +16,7 @@ irregular words (eg. common verbs in English), complicated
 morphological rules, and part-of-speech and sense ambiguities
 (eg. C{ceil-} is not the stem of C{ceiling}).
 
-C{StemI} defines a standard interface for stemmers.
+C{StemmerI} defines a standard interface for stemmers.
 """
 
 from api import *
@@ -25,3 +25,28 @@ from porter import *
 from lancaster import *
 from wordnet import *
 
+__all__ = [
+    # Stemmer interface
+    'StemmerI',
+
+    # Stemmers
+    'RegexpStemmer', 'PorterStemmer', 'LancasterStemmer',
+    'WordnetStemmer'
+    ]
+
+######################################################################
+#{ Deprecated
+######################################################################
+from nltk.utilities import Deprecated
+class StemI(StemmerI, Deprecated):
+    """Use nltk.StemmerI instead."""
+class Regexp(RegexpStemmer, Deprecated):
+    """Use nltk.RegexpStemmer instead."""
+class Porter(PorterStemmer, Deprecated):
+    """Use nltk.PorterStemmer instead."""
+class Lancaster(LancasterStemmer, Deprecated):
+    """Use nltk.LancasterStemmer instead."""
+class Wordnet(WordnetStemmer, Deprecated):
+    """Use nltk.WordnetStemmer instead."""
+    
+    
