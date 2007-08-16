@@ -10,7 +10,7 @@
 from api import *
 import re
 
-class Regexp(StemI):
+class RegexpStemmer(StemmerI):
     """
     A stemmer that uses regular expressions to identify morphological
     affixes.  Any substrings that matches the regular expressions will
@@ -39,13 +39,13 @@ class Regexp(StemI):
             return self._regexp.sub('', word)
 
     def __repr__(self):
-        return '<Regexp Stemmer: %r>' % self._regexp.pattern
+        return '<RegexpStemmer: %r>' % self._regexp.pattern
 
 def demo():
     from nltk import tokenize, stem
 
     # Create a simple regular expression based stemmer
-    stemmer = stem.Regexp('ing$|s$|e$', min=4)
+    stemmer = stem.RegexpStemmer('ing$|s$|e$', min=4)
     text = "John was eating icecream"
     tokens = tokenize.whitespace(text)
 
