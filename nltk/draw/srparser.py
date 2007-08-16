@@ -92,11 +92,11 @@ class ShiftReduceDemo(object):
     can shift tokens onto the stack, and can perform reductions on the
     top elements of the stack.  A "step" button simply steps through
     the parsing process, performing the operations that
-    C{parse.ShiftReduce} would use.
+    C{parse.ShiftReduceParser} would use.
     """
     def __init__(self, grammar, sent, trace=0):
         self._sent = sent
-        self._parser = parse.SteppingShiftReduce(grammar, trace)
+        self._parser = parse.SteppingShiftReduceParser(grammar, trace)
 
         # Set up the main window.
         self._top = Tk()

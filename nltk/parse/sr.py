@@ -14,21 +14,21 @@ import string
 ##//////////////////////////////////////////////////////
 ##  Shift/Reduce Parser
 ##//////////////////////////////////////////////////////
-class ShiftReduce(AbstractParse):
+class ShiftReduceParser(AbstractParser):
     """
     A simple bottom-up CFG parser that uses two operations, "shift"
     and "reduce", to find a single parse for a text.
 
-    C{ShiftReduce} maintains a stack, which records the
+    C{ShiftReduceParser} maintains a stack, which records the
     structure of a portion of the text.  This stack is a list of
     C{String}s and C{Tree}s that collectively cover a portion of
     the text.  For example, while parsing the sentence "the dog saw
-    the man" with a typical grammar, C{ShiftReduce} will produce
+    the man" with a typical grammar, C{ShiftReduceParser} will produce
     the following stack, which covers "the dog saw"::
 
        [(NP: (Det: 'the') (N: 'dog')), (V: 'saw')]
 
-    C{ShiftReduce} attempts to extend the stack to cover the
+    C{ShiftReduceParser} attempts to extend the stack to cover the
     entire text, and to combine the stack elements into a single tree,
     producing a complete parse for the sentence.
 
@@ -41,7 +41,7 @@ class ShiftReduce(AbstractParse):
         elements into a single C{Tree}.
 
     Often, more than one operation can be performed on a given stack.
-    In this case, C{ShiftReduce} uses the following heuristics
+    In this case, C{ShiftReduceParser} uses the following heuristics
     to decide which operation to perform:
 
       - Only shift if no reductions are available.
@@ -50,14 +50,14 @@ class ShiftReduce(AbstractParse):
 
     Note that these heuristics are not guaranteed to choose an
     operation that leads to a parse of the text.  Also, if multiple
-    parses exists, C{ShiftReduce} will return at most one of
+    parses exists, C{ShiftReduceParser} will return at most one of
     them.
 
     @see: C{nltk.cfg}
     """
     def __init__(self, grammar, trace=0):
         """
-        Create a new C{ShiftReduce}, that uses C{grammar} to
+        Create a new C{ShiftReduceParser}, that uses C{grammar} to
         parse texts.
 
         @type grammar: C{Grammar}
@@ -70,7 +70,7 @@ class ShiftReduce(AbstractParse):
         """
         self._grammar = grammar
         self._trace = trace
-        AbstractParse.__init__(self)
+        AbstractParser.__init__(self)
         self._check_grammar()
 
     def get_parse(self, tokens):
@@ -270,9 +270,9 @@ class ShiftReduce(AbstractParse):
 ##//////////////////////////////////////////////////////
 ##  Stepping Shift/Reduce Parser
 ##//////////////////////////////////////////////////////
-class SteppingShiftReduce(ShiftReduce):
+class SteppingShiftReduceParser(ShiftReduceParser):
     """
-    A C{ShiftReduce} that allows you to setp through the parsing
+    A C{ShiftReduceParser} that allows you to setp through the parsing
     process, performing a single operation at a time.  It also allows
     you to change the parser's grammar midway through parsing a text.
 
@@ -294,7 +294,7 @@ class SteppingShiftReduce(ShiftReduce):
         self._stack = None
         self._remaining_text = None
         self._history = []
-        AbstractParse.__init__(self)
+        AbstractParser.__init__(self)
 
     def get_parse_list(self, tokens):
         tokens = list(tokens)
@@ -451,7 +451,7 @@ def demo():
 
     sent = tokenize.whitespace('I saw a man in the park')
 
-    parser = parse.ShiftReduce(grammar, trace=2)
+    parser = parse.ShiftReduceParser(grammar, trace=2)
     for p in parser.get_parse_list(sent):
         print p
 

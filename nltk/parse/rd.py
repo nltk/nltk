@@ -14,13 +14,13 @@ import string
 ##//////////////////////////////////////////////////////
 ##  Recursive Descent Parser
 ##//////////////////////////////////////////////////////
-class RecursiveDescent(AbstractParse):
+class RecursiveDescentParser(AbstractParser):
     """
     A simple top-down CFG parser that parses texts by recursively
     expanding the fringe of a C{Tree}, and matching it against a
     text.
 
-    C{RecursiveDescent} uses a list of tree locations called a
+    C{RecursiveDescentParser} uses a list of tree locations called a
     X{frontier} to remember which subtrees have not yet been expanded
     and which leaves have not yet been matched against the text.  Each
     tree location consists of a list of child indices specifying the
@@ -51,7 +51,7 @@ class RecursiveDescent(AbstractParse):
     """
     def __init__(self, grammar, trace=0):
         """
-        Create a new C{RecursiveDescent}, that uses C{grammar}
+        Create a new C{RecursiveDescentParser}, that uses C{grammar}
         to parse texts.
 
         @type grammar: C{Grammar}
@@ -64,10 +64,10 @@ class RecursiveDescent(AbstractParse):
         """
         self._grammar = grammar
         self._trace = trace
-        AbstractParse.__init__(self)
+        AbstractParser.__init__(self)
 
     def get_parse_list(self, tokens):
-        # Inherit docs from ParseI
+        # Inherit docs from ParserI
         
         tokens = list(tokens)
         self._check_coverage(tokens)
@@ -327,9 +327,9 @@ class RecursiveDescent(AbstractParse):
 ##//////////////////////////////////////////////////////
 ##  Stepping Recursive Descent Parser
 ##//////////////////////////////////////////////////////
-class SteppingRecursiveDescent(RecursiveDescent):
+class SteppingRecursiveDescentParser(RecursiveDescentParser):
     """
-    A C{RecursiveDescent} that allows you to step through the
+    A C{RecursiveDescentParser} that allows you to step through the
     parsing process, performing a single operation at a time.
 
     The C{initialize} method is used to start parsing a text.
@@ -361,7 +361,7 @@ class SteppingRecursiveDescent(RecursiveDescent):
         self._tried_m = {}
         self._history = []
         self._parses = []
-        AbstractParse.__init__(self)
+        AbstractParser.__init__(self)
 
     # [XX] TEMPORARY HACK WARNING!  This should be replaced with
     # something nicer when we get the chance.
@@ -583,9 +583,9 @@ class SteppingRecursiveDescent(RecursiveDescent):
     def _parse(self, remaining_text, tree, frontier):
         """
         A stub version of C{_parse} that sets the parsers current
-        state to the given arguments.  In C{RecursiveDescent},
+        state to the given arguments.  In C{RecursiveDescentParser},
         the C{_parse} method is used to recursively continue parsing a
-        text.  C{SteppingRecursiveDescent} overrides it to
+        text.  C{SteppingRecursiveDescentParser} overrides it to
         capture these recursive calls.  It records the parser's old
         state in the history (to allow for backtracking), and updates
         the parser's new state using the given arguments.  Finally, it
@@ -654,7 +654,7 @@ def demo():
         print prod
     
     sent = tokenize.whitespace('I saw a man in the park')
-    parser = parse.RecursiveDescent(grammar, trace=2)
+    parser = parse.RecursiveDescentParser(grammar, trace=2)
     for p in parser.get_parse_list(sent):
         print p
 

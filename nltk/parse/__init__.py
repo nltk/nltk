@@ -30,9 +30,9 @@ which a text can be ambiguous:
 However, the parser module does I{not} distinguish these two types of
 ambiguity.
 
-The parser module defines C{ParseI}, a standard interface for parsing
+The parser module defines C{ParserI}, a standard interface for parsing
 texts; and two simple implementations of that interface,
-C{ShiftReduce} and C{RecursiveDescent}.  It also contains
+C{ShiftReduceParser} and C{RecursiveDescentParser}.  It also contains
 three sub-modules for specialized kinds of parsing:
 
   - C{nltk.parser.chart} defines chart parsing, which uses dynamic
@@ -51,3 +51,55 @@ from sr import *
 from util import *
 from viterbi import *
 
+__all__ = [
+    # Parser interface
+    'ParserI',
+
+    # Parsers
+    'RecursiveDescentParser', 'SteppingRecursiveDescentParser',
+    'ShiftReduceParser', 'SteppingShiftReduceParser',
+    'EarleyChartParser', 'ChartParser', 'SteppingChartParser',
+    'BottomUpChartParser', 'InsideChartParser', 'RandomChartParser',
+    'UnsortedChartParser', 'LongestChartParser', 'ViterbiParser',
+    'FeatureEarleyChartParser',
+
+    ]
+
+######################################################################
+#{ Deprecated
+######################################################################
+from nltk.utilities import Deprecated
+class ParseI(ParserI, Deprecated):
+    """Use nltk.ParserI instead."""
+class AbstractParse(AbstractParser, Deprecated):
+    """Use nltk.ParserI instead."""
+class RecursiveDescent(RecursiveDescentParser, Deprecated):
+    """Use nltk.RecursiveDescentParser instead."""
+class SteppingRecursiveDescent(SteppingRecursiveDescentParser, Deprecated):
+    """Use nltk.SteppingRecursiveDescentParser instead."""
+class ShiftReduce(ShiftReduceParser, Deprecated):
+    """Use nltk.ShiftReduceParser instead."""
+class SteppingShiftReduce(SteppingShiftReduceParser, Deprecated):
+    """Use nltk.SteppingShiftReduceParser instead."""
+class EarleyChartParse(EarleyChartParser, Deprecated):
+    """Use nltk.EarleyChartParser instead."""
+class FeatureEarleyChartParse(FeatureEarleyChartParser, Deprecated):
+    """Use nltk.FeatureEarleyChartParser instead."""
+class ChartParse(ChartParser, Deprecated):
+    """Use nltk.ChartParser instead."""
+class SteppingChartParse(SteppingChartParser, Deprecated):
+    """Use nltk.SteppingChartParser instead."""
+class BottomUpChartParse(BottomUpChartParser, Deprecated):
+    """Use nltk.BottomUpChartParser instead."""
+class InsideParse(InsideChartParser, Deprecated):
+    """Use nltk.InsideChartParser instead."""
+class RandomParse(RandomChartParser, Deprecated):
+    """Use nltk.RandomChartParser instead."""
+class UnsortedParse(UnsortedChartParser, Deprecated):
+    """Use nltk.UnsortedChartParser instead."""
+class LongestParse(LongestChartParser, Deprecated):
+    """Use nltk.LongestChartParser instead."""
+class ViterbiParse(ViterbiParser, Deprecated):
+    """Use nltk.ViterbiParser instead."""
+
+    

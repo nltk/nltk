@@ -9,9 +9,9 @@
 """
 Classes and interfaces for associating probabilities with tree
 structures that represent the internal organization of a text.  The
-probabilistic parser module defines C{BottomUpChartParse}.
+probabilistic parser module defines C{BottomUpChartParser}.
 
-C{BottomUpChartParse} is an abstract class that implements a
+C{BottomUpChartParser} is an abstract class that implements a
 bottom-up chart parser for C{PCFG}s.  It maintains a queue of edges,
 and adds them to the chart one at a time.  The ordering of this queue
 is based on the probabilities associated with the edges, allowing the
@@ -19,15 +19,15 @@ parser to expand more likely edges before less likely ones.  Each
 subclass implements a different queue ordering, producing different
 search strategies.  Currently the following subclasses are defined:
 
-  - C{InsideParse} searches edges in decreasing order of
+  - C{InsideChartParser} searches edges in decreasing order of
     their trees' inside probabilities.
-  - C{RandomParse} searches edges in random order.
-  - C{LongestParse} searches edges in decreasing order of their
+  - C{RandomChartParser} searches edges in random order.
+  - C{LongestChartParser} searches edges in decreasing order of their
     location's length.
 
-The C{BottomUpChartParse} constructor has an optional argument beam_size.
+The C{BottomUpChartParser} constructor has an optional argument beam_size.
 If non-zero, this controls the size of the beam (aka the edge queue).
-This option is most useful with InsideParse.
+This option is most useful with InsideChartParser.
 """
 
 ##//////////////////////////////////////////////////////
@@ -125,13 +125,13 @@ class SingleEdgeProbabilisticFundamentalRule(AbstractChartRule):
 
     def __str__(self): return 'Fundamental Rule'
     
-class BottomUpChartParse(AbstractParse):
+class BottomUpChartParser(AbstractParser):
     """
     An abstract bottom-up parser for C{PCFG}s that uses a C{Chart} to
-    record partial results.  C{BottomUpChartParse} maintains a
+    record partial results.  C{BottomUpChartParser} maintains a
     queue of edges that can be added to the chart.  This queue is
     initialized with edges for each token in the text that is being
-    parsed.  C{BottomUpChartParse} inserts these edges into the
+    parsed.  C{BottomUpChartParser} inserts these edges into the
     chart one at a time, starting with the most likely edges, and
     proceeding to less likely edges.  For each edge that is added to
     the chart, it may become possible to insert additional edges into
@@ -140,7 +140,7 @@ class BottomUpChartParse(AbstractParse):
     queue is empty.
 
     The sorting order for the queue is not specified by
-    C{BottomUpChartParse}.  Different sorting orders will result
+    C{BottomUpChartParser}.  Different sorting orders will result
     in different search strategies.  The sorting order for the queue
     is defined by the method C{sort_queue}; subclasses are required
     to provide a definition for this method.
@@ -153,7 +153,7 @@ class BottomUpChartParse(AbstractParse):
     """
     def __init__(self, grammar, beam_size=0, trace=0):
         """
-        Create a new C{BottomUpChartParse}, that uses C{grammar}
+        Create a new C{BottomUpChartParser}, that uses C{grammar}
         to parse texts.
 
         @type grammar: C{PCFG}
@@ -169,7 +169,7 @@ class BottomUpChartParse(AbstractParse):
         self._grammar = grammar
         self.beam_size = beam_size
         self._trace = trace
-        AbstractParse.__init__(self)
+        AbstractParser.__init__(self)
 
     def trace(self, trace=2):
         """
@@ -272,7 +272,7 @@ class BottomUpChartParse(AbstractParse):
         @type chart: C{Chart}
         @rtype: C{None}
         """
-        raise AssertionError, "BottomUpChartParse is an abstract class"
+        raise AssertionError, "BottomUpChartParser is an abstract class"
 
     def _prune(self, queue, chart):
         """ Discard items in the queue if the queue is longer than the beam."""
@@ -283,7 +283,7 @@ class BottomUpChartParse(AbstractParse):
                     print '  %-50s [DISCARDED]' % chart.pp_edge(edge,2)
             del queue[:split]
 
-class InsideParse(BottomUpChartParse):
+class InsideChartParser(BottomUpChartParser):
     """
     A bottom-up parser for C{PCFG}s that tries edges in descending
     order of the inside probabilities of their trees.  The X{inside
@@ -317,10 +317,10 @@ class InsideParse(BottomUpChartParse):
         queue.sort(lambda e1,e2:cmp(e1.prob(), e2.prob()))
 
 # Eventually, this will become some sort of inside-outside parser:
-# class InsideOutsideParse(BottomUpChartParse):
+# class InsideOutsideParser(BottomUpChartParser):
 #     def __init__(self, grammar, trace=0):
 #         # Inherit docs.
-#         BottomUpChartParse.__init__(self, grammar, trace)
+#         BottomUpChartParser.__init__(self, grammar, trace)
 #
 #         # Find the best path from S to each nonterminal
 #         bestp = {}
@@ -345,7 +345,7 @@ class InsideParse(BottomUpChartParse):
 #         queue.sort(self._cmp)
 
 import random
-class RandomParse(BottomUpChartParse):
+class RandomChartParser(BottomUpChartParser):
     """
     A bottom-up parser for C{PCFG}s that tries edges in random order.
     This sorting order results in a random search strategy.
@@ -355,14 +355,14 @@ class RandomParse(BottomUpChartParse):
         i = random.randint(0, len(queue)-1)
         (queue[-1], queue[i]) = (queue[i], queue[-1])
 
-class UnsortedParse(BottomUpChartParse):
+class UnsortedChartParser(BottomUpChartParser):
     """
     A bottom-up parser for C{PCFG}s that tries edges in whatever order.
     """
     # Inherit constructor
     def sort_queue(self, queue, chart): return
 
-class LongestParse(BottomUpChartParse):
+class LongestChartParser(BottomUpChartParser):
     """
     A bottom-up parser for C{PCFG}s that tries longer edges before
     shorter ones.  This sorting order results in a type of best-first
@@ -384,13 +384,13 @@ def demo():
     summary of the results are displayed.
     """
     import sys, time
-    from nltk import tokenize, cfg, pcfg
+    from nltk import tokenize, cfg
     from nltk.parse import pchart
 
     # Define two demos.  Each demo has a sentence and a grammar.
-    demos = [('I saw John with my telescope', pcfg.toy1),
+    demos = [('I saw John with my telescope', cfg.toy_pcfg1),
              ('the boy saw Jack with Bob under the table with a telescope',
-              pcfg.toy2)]
+              cfg.toy_pcfg2)]
 
     # Ask the user which demo they want to use.
     print
@@ -411,11 +411,11 @@ def demo():
 
     # Define a list of parsers.  We'll use all parsers.
     parsers = [
-        pchart.InsideParse(grammar),
-        pchart.RandomParse(grammar),
-        pchart.UnsortedParse(grammar),
-        pchart.LongestParse(grammar),
-        pchart.InsideParse(grammar, beam_size = len(tokens)+1)   # was BeamParse
+        pchart.InsideChartParser(grammar),
+        pchart.RandomChartParser(grammar),
+        pchart.UnsortedChartParser(grammar),
+        pchart.LongestChartParser(grammar),
+        pchart.InsideChartParser(grammar, beam_size = len(tokens)+1)   # was BeamParser
         ]
 
     # Run the parsers on the tokenized sentence.
@@ -424,7 +424,7 @@ def demo():
     num_parses = []
     all_parses = {}
     for parser in parsers:
-        print '\ns: %s\nparser: %s\ngrammar: %s' % (sent,parser,pcfg)
+        print '\ns: %s\nparser: %s\ngrammar: %s' % (sent,parser,grammar)
         parser.trace(3)
         t = time.time()
         parses = parser.get_parse_list(tokens)

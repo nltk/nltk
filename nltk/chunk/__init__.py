@@ -28,29 +28,29 @@ To convert a chunk structure back to a list of tokens, simply use the
 chunk structure's L{leaves<Tree.leaves>} method.
 
 The C{parser.chunk} module defines L{ChunkI}, a standard interface for
-chunking texts; and L{RegexpChunk}, a regular-expression based
+chunking texts; and L{RegexpChunkParser}, a regular-expression based
 implementation of that interface.  It uses the L{tree.chunk} and
 L{tree.conll_chunk} methods, which tokenize strings containing chunked
 and tagged texts.  It defines L{ChunkScore}, a utility class for
 scoring chunk parsers.
 
-RegexpChunk
-===========
+RegexpChunkParser
+=================
 
-C{parse.RegexpChunk} is an implementation of the chunk parser interface
+C{parse.RegexpChunkParser} is an implementation of the chunk parser interface
 that uses regular-expressions over tags to chunk a text.  Its
 C{parse} method first constructs a C{ChunkString}, which encodes a
 particular chunking of the input text.  Initially, nothing is
-chunked.  C{parse.RegexpChunk} then applies a sequence of
+chunked.  C{parse.RegexpChunkParser} then applies a sequence of
 C{RegexpChunkRule}s to the C{ChunkString}, each of which modifies
 the chunking that it encodes.  Finally, the C{ChunkString} is
 transformed back into a chunk structure, which is returned.
 
-C{RegexpChunk} can only be used to chunk a single kind of phrase.
-For example, you can use an C{RegexpChunk} to chunk the noun
+C{RegexpChunkParser} can only be used to chunk a single kind of phrase.
+For example, you can use an C{RegexpChunkParser} to chunk the noun
 phrases in a text, or the verb phrases in a text; but you can not
 use it to simultaneously chunk both noun phrases and verb phrases in
-the same text.  (This is a limitation of C{RegexpChunk}, not of
+the same text.  (This is a limitation of C{RegexpChunkParser}, not of
 chunk parsers in general.)
 
 RegexpChunkRules
@@ -107,10 +107,10 @@ a tag pattern to an equivalent regular expression pattern.
 Efficiency
 ----------
 
-Preliminary tests indicate that C{RegexpChunk} can chunk at a
+Preliminary tests indicate that C{RegexpChunkParser} can chunk at a
 rate of about 300 tokens/second, with a moderately complex rule set.
 
-There may be problems if C{RegexpChunk} is used with more than
+There may be problems if C{RegexpChunkParser} is used with more than
 5,000 tokens at a time.  In particular, evaluation of some regular
 expressions may cause the Python regular expression engine to
 exceed its maximum recursion depth.  We have attempted to minimize
@@ -157,3 +157,14 @@ zero-length assertions).
 from api import *
 from util import *
 from regexp import *
+
+######################################################################
+#{ Deprecated
+######################################################################
+from nltk.utilities import Deprecated
+class ChunkParseI(ChunkParserI, Deprecated):
+    """Use nltk.ChunkParserI instead."""
+class RegexpChunk(RegexpChunkParser, Deprecated):
+    """Use nltk.RegexpChunkParser instead."""
+class Regexp(RegexpParser, Deprecated):
+    """Use nltk.RegexpParser instead."""
