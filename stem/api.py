@@ -7,7 +7,7 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-class StemI(object):
+class StemmerI(object):
     """
     A processing interface for removing morphological affixes from
     words.  This process is known as X{stemming}.
