@@ -88,7 +88,7 @@ class RecursiveDescentDemo(object):
     """
     def __init__(self, grammar, sent, trace=0):
         self._sent = sent
-        self._parser = parse.SteppingRecursiveDescent(grammar, trace)
+        self._parser = parse.SteppingRecursiveDescentParser(grammar, trace)
 
         # Set up the main window.
         self._top = Tk()

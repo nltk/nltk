@@ -644,11 +644,11 @@ class ParserSubstitute(LogicParser):
         #return lookup
 
     #def earley_parser(self, trace=1):
-        #from featurechart import FeatureEarleyChartParse
+        #from featurechart import FeatureEarleyChartParser
         #if self.kimmo is None: lexicon = self.earley_lexicon()
         #else: lexicon = self.kimmo_lexicon()
         
-        #return FeatureEarleyChartParse(self.earley_grammar(),
+        #return FeatureEarleyChartParser(self.earley_grammar(),
                            #lexicon, trace=trace)
 
     #def apply_lines(self, lines):

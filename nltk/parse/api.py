@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 #
 
-class ParseI(object):
+class ParserI(object):
     """
     A processing class for deriving trees that represent possible
     structures for a sequence of tokens.  These tree structures are
@@ -75,9 +75,9 @@ class ParseI(object):
 ##//////////////////////////////////////////////////////
 ##  Abstract Base Class for Parsers
 ##//////////////////////////////////////////////////////
-class AbstractParse(ParseI):
+class AbstractParser(ParserI):
     """
-    An abstract base class for parsers.  C{AbstractParse} provides
+    An abstract base class for parsers.  C{AbstractParser} provides
     a default implementation for:
 
       - L{parse} (based on C{get_parse})
@@ -92,7 +92,7 @@ class AbstractParse(ParseI):
         Construct a new parser.
         """
         # Make sure we're not directly instantiated:
-        if self.__class__ == AbstractParse:
+        if self.__class__ == AbstractParser:
             raise AssertionError, "Abstract classes can't be instantiated"
 
 #    def parse(self, sentence):

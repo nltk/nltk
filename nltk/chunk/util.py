@@ -22,7 +22,7 @@ def accuracy(chunker, gold):
     Strip the chunk information from the gold standard and rechunk it using
     the chunker, then compute the accuracy score.
 
-    @type chunker: C{ChunkParseI}
+    @type chunker: C{ChunkParserI}
     @param tagger: The chunker being evaluated.
     @type gold: C{tree}
     @param gold: The chunk structures to score the chunker on.

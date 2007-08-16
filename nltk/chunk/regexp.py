@@ -6,9 +6,14 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from api import *
-from util import *
-from nltk.parse import AbstractParse
+from nltk.chunk.api import *
+from nltk.chunk.util import *
+from nltk.parse import AbstractParser
+import re
+
+##//////////////////////////////////////////////////////
+##  Chunking Rules
+##//////////////////////////////////////////////////////
 
 class RegexpChunkRule(object):
     """
@@ -440,13 +445,13 @@ class ExpandRightRule(RegexpChunkRule):
                 `self._right_tag_pattern`+'>')
 
 
-CHUNK_TAG_PATTERN = re.compile(r'^((%s|<%s>)*)$' %
-                                ('[^\{\}<>]+',
-                                 '[^\{\}<>]+'))
-
 ##//////////////////////////////////////////////////////
 ##  Tag Pattern Format Conversion
 ##//////////////////////////////////////////////////////
+
+CHUNK_TAG_PATTERN = re.compile(r'^((%s|<%s>)*)$' %
+                                ('[^\{\}<>]+',
+                                 '[^\{\}<>]+'))
 
 def tag_pattern2re_pattern(tag_pattern):
     """
@@ -503,7 +508,7 @@ def tag_pattern2re_pattern(tag_pattern):
         lst = list(str)
         lst.reverse()
         return ''.join(lst)
-    tc_rev = reverse_str(CHUNK_TAG_CHAR)
+    tc_rev = reverse_str(ChunkString.CHUNK_TAG_CHAR)
     reversed = reverse_str(tag_pattern)
     reversed = re.sub(r'\.(?!\\(\\\\)*($|[^\\]))', tc_rev, reversed)
     tag_pattern = reverse_str(reversed)
@@ -512,12 +517,12 @@ def tag_pattern2re_pattern(tag_pattern):
 
 
 ##//////////////////////////////////////////////////////
-##  RegexpChunk
+##  RegexpChunkParser
 ##//////////////////////////////////////////////////////
 
-class RegexpChunk(ChunkParseI, AbstractParse):
+class RegexpChunkParser(ChunkParserI, AbstractParser):
     """
-    A regular expression based chunk parser.  C{RegexpChunk} uses a
+    A regular expression based chunk parser.  C{RegexpChunkParser} uses a
     sequence of X{rules} to find chunks of a single type within a
     text.  The chunking of the text is encoded using a C{ChunkString},
     and each rule acts by modifying the chunking in the
@@ -526,7 +531,7 @@ class RegexpChunk(ChunkParseI, AbstractParse):
 
     The C{RegexpChunkRule} class and its subclasses (C{ChunkRule},
     C{ChinkRule}, C{UnChunkRule}, C{MergeRule}, and C{SplitRule})
-    define the rules that are used by C{RegexpChunk}.  Each rule
+    define the rules that are used by C{RegexpChunkParser}.  Each rule
     defines an C{apply} method, which modifies the chunking encoded
     by a given C{ChunkString}.
 
@@ -538,7 +543,7 @@ class RegexpChunk(ChunkParseI, AbstractParse):
     """
     def __init__(self, rules, chunk_node='NP', top_node='S', trace=0):
         """
-        Construct a new C{RegexpChunk}.
+        Construct a new C{RegexpChunkParser}.
         
         @type rules: C{list} of C{RegexpChunkRule}
         @param rules: The sequence of rules that should be used to
@@ -561,11 +566,11 @@ class RegexpChunk(ChunkParseI, AbstractParse):
         self._trace = trace
         self._chunk_node = chunk_node
         self._top_node = top_node
-        AbstractParse.__init__(self)
+        AbstractParser.__init__(self)
 
     def _trace_apply(self, chunkstr, verbose):
         """
-        Apply each of this C{RegexpChunk}'s rules to C{chunkstr}, in
+        Apply each of this C{RegexpChunkParser}'s rules to C{chunkstr}, in
         turn.  Generate trace output between each rule.  If C{verbose}
         is true, then generate verbose output.
 
@@ -588,7 +593,7 @@ class RegexpChunk(ChunkParseI, AbstractParse):
         
     def _notrace_apply(self, chunkstr):
         """
-        Apply each of this C{RegexpChunk}'s rules to C{chunkstr}, in
+        Apply each of this C{RegexpChunkParser}'s rules to C{chunkstr}, in
         turn.
 
         @param chunkstr: The chunk string to which each rule should be
@@ -617,7 +622,7 @@ class RegexpChunk(ChunkParseI, AbstractParse):
             tagged sentence.  A chunk is a non-overlapping linguistic
             group, such as a noun phrase.  The set of chunks
             identified in the chunk structure depends on the rules
-            used to define this C{RegexpChunk}.
+            used to define this C{RegexpChunkParser}.
         """
         if len(chunk_struct) == 0:
             print 'Warning: parsing empty text'
@@ -645,7 +650,7 @@ class RegexpChunk(ChunkParseI, AbstractParse):
 
     def rules(self):
         """
-        @return: the sequence of rules used by C{RegexpChunk}.
+        @return: the sequence of rules used by C{RegexpChunkParser}.
         @rtype: C{list} of C{RegexpChunkRule}
         """
         return self._rules
@@ -653,17 +658,17 @@ class RegexpChunk(ChunkParseI, AbstractParse):
     def __repr__(self):
         """
         @return: a concise string representation of this
-            C{RegexpChunk}.
+            C{RegexpChunkParser}.
         @rtype: C{string}
         """
-        return "<RegexpChunk with %d rules>" % len(self._rules)
+        return "<RegexpChunkParser with %d rules>" % len(self._rules)
 
     def __str__(self):
         """
-        @return: a verbose string representation of this C{RegexpChunk}.
+        @return: a verbose string representation of this C{RegexpChunkParser}.
         @rtype: C{string}
         """
-        s = "RegexpChunk with %d rules:\n" % len(self._rules)
+        s = "RegexpChunkParser with %d rules:\n" % len(self._rules)
         margin = 0
         for rule in self._rules:
             margin = max(margin, len(rule.descr()))
@@ -679,9 +684,9 @@ class RegexpChunk(ChunkParseI, AbstractParse):
 ##  Chunk Grammar
 ##//////////////////////////////////////////////////////
 
-class Regexp(ChunkParseI, AbstractParse):
+class RegexpParser(ChunkParserI, AbstractParser):
     """
-    A grammar based chunk parser.  C{chunk.Regexp} uses a set of
+    A grammar based chunk parser.  C{chunk.RegexpParser} uses a set of
     regular expression patterns to specify the behavior of the parser.
     The chunking of the text is encoded using a C{ChunkString}, and
     each rule acts by modifying the chunking in the C{ChunkString}.
@@ -754,7 +759,7 @@ class Regexp(ChunkParseI, AbstractParse):
             # New stage begins
             if ':' in line:
 	        if rules != []:
-                    parser = RegexpChunk(rules, chunk_node=lhs, trace=trace)
+                    parser = RegexpChunkParser(rules, chunk_node=lhs, trace=trace)
                     self._stages.append(parser)
                 lhs, line = line.split(":")
                 lhs = lhs.strip()
@@ -777,7 +782,7 @@ class Regexp(ChunkParseI, AbstractParse):
 	    else:
 	        raise ValueError, 'Illegal chunk pattern: %s' % line
         if rules != []:
-            parser = RegexpChunk(rules, chunk_node=lhs, top_node=top_node, trace=trace)
+            parser = RegexpChunkParser(rules, chunk_node=lhs, top_node=top_node, trace=trace)
             self._stages.append(parser)
 
     def parse(self, chunk_struct, trace=None):
@@ -805,18 +810,18 @@ class Regexp(ChunkParseI, AbstractParse):
 
     def __repr__(self):
         """
-        @return: a concise string representation of this C{chunk.Regexp}.
+        @return: a concise string representation of this C{chunk.RegexpParser}.
         @rtype: C{string}
         """
-        return "<chunk.Regexp with %d stages>" % len(self._stages)
+        return "<chunk.RegexpParser with %d stages>" % len(self._stages)
 
     def __str__(self):
         """
         @return: a verbose string representation of this
-            C{RegexpChunk}.
+            C{RegexpChunkParser}.
         @rtype: C{string}
         """
-        s = "chunk.Regexp with %d stages:\n" % len(self._stages)
+        s = "chunk.RegexpParser with %d stages:\n" % len(self._stages)
         margin = 0
         for parser in self._stages:
             s += parser.__str__() + "\n"
@@ -838,7 +843,7 @@ def demo_eval(chunkparser, text):
     most 10 missing chunks and 10 incorrect chunks are reported).
 
     @param chunkparser: The chunkparser to be tested
-    @type chunkparser: C{ChunkParseI}
+    @type chunkparser: C{ChunkParserI}
     @param text: The chunked tagged text that should be used for
         evaluation.
     @type text: C{string}
@@ -890,7 +895,7 @@ def demo_eval(chunkparser, text):
 
 def demo():
     """
-    A demonstration for the C{RegexpChunk} class.  A single text is
+    A demonstration for the C{RegexpChunkParser} class.  A single text is
     parsed with four different chunk parsers, using a variety of rules
     and strategies.
     """
@@ -915,7 +920,7 @@ def demo():
       {<DT>?<JJ>*<NN>}    # chunk determiners, adjectives and nouns
       {<NNP>+}            # chunk proper nouns
     """
-    cp = chunk.Regexp(grammar)
+    cp = chunk.RegexpParser(grammar)
     chunk.demo_eval(cp, text)
 
     grammar = r"""
@@ -924,14 +929,14 @@ def demo():
       }<[\.VI].*>+{       # unchunk any verbs, prepositions or periods
       <DT|JJ>{}<NN.*>     # merge det/adj with nouns
     """
-    cp = chunk.Regexp(grammar)
+    cp = chunk.RegexpParser(grammar)
     chunk.demo_eval(cp, text)
 
     grammar = r"""
     NP: {<DT>?<JJ>*<NN>}    # chunk determiners, adjectives and nouns
     VP: {<TO>?<VB.*>}       # VP = verb words
     """
-    cp = chunk.Regexp(grammar)
+    cp = chunk.RegexpParser(grammar)
     chunk.demo_eval(cp, text)
 
     grammar = r"""
@@ -941,7 +946,7 @@ def demo():
     PP: {<IN><NP>}          # PP = preposition + noun phrase
     VP: {<VB.*><NP|PP>*}    # VP = verb words + NPs and PPs
     """
-    cp = chunk.Regexp(grammar)
+    cp = chunk.RegexpParser(grammar)
     chunk.demo_eval(cp, text)
 
 # Evaluation
@@ -951,8 +956,9 @@ def demo():
     print
     print "Demonstration of empty grammar:"
     
-    cp = chunk.Regexp("")
-    print chunk.accuracy(cp, conll2000.chunked('test', chunk_types=('NP',)))
+    cp = chunk.RegexpParser("")
+    print chunk.accuracy(cp, conll2000.chunked_sents('test',
+                                                     chunk_types=('NP',)))
 
     print
     print "Demonstration of accuracy evaluation using CoNLL tags:"
@@ -963,8 +969,8 @@ def demo():
       }<[\.VI].*>+{       # unchunk any verbs, prepositions or periods
       <DT|JJ>{}<NN.*>     # merge det/adj with nouns
     """
-    cp = chunk.Regexp(grammar)
-    print chunk.accuracy(cp, conll2000.chunked('test')[:5])
+    cp = chunk.RegexpParser(grammar)
+    print chunk.accuracy(cp, conll2000.chunked_sents('test')[:5])
 
     print
     print "Demonstration of tagged token input"
@@ -976,8 +982,10 @@ def demo():
     PP: {<IN><NP>}          # PP = preposition + noun phrase
     VP: {<VB.*><NP|PP>*}    # VP = verb words + NPs and PPs
     """
-    cp = chunk.Regexp(grammar)
-    print cp.parse([("the","DT"), ("little","JJ"), ("cat", "NN"), ("sat", "VBD"), ("on", "IN"), ("the", "DT"), ("mat", "NN"), (".", ".")])
+    cp = chunk.RegexpParser(grammar)
+    print cp.parse([("the","DT"), ("little","JJ"), ("cat", "NN"),
+                    ("sat", "VBD"), ("on", "IN"), ("the", "DT"),
+                    ("mat", "NN"), (".", ".")])
 
 if __name__ == '__main__':
     demo()
