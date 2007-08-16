@@ -1,8 +1,7 @@
 # Natural Language Toolkit: Corpus Readers
 #
 # Copyright (C) 2001-2007 University of Pennsylvania
-# Author: Steven Bird <sb@ldc.upenn.edu>
-#         Edward Loper <edloper@gradient.cis.upenn.edu>
+# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
@@ -60,8 +59,8 @@ stored using L{Open Language Archives Community (OLAC)
 can be accessed using C{nltk.corpus.I{corpus}.olac()}.
 """
 
+from nltk.corpus.util import LazyCorpusLoader
 from nltk.corpus.reader import *
-from nltk.data import LazyCorpusLoader
 
 abc = LazyCorpusLoader(
     'abc', PlaintextCorpusReader, '(?!\.svn).*', '.txt')
