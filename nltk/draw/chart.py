@@ -1706,7 +1706,7 @@ class ChartDemo(object):
     def _init_parser(self, grammar, tokens):
         self._grammar = grammar
         self._tokens = tokens
-        self._cp = SteppingChartParse(self._grammar)
+        self._cp = SteppingChartParser(self._grammar)
         self._cp.initialize(self._tokens)
         self._chart = self._cp.chart()
 
@@ -2081,7 +2081,7 @@ class ChartDemo(object):
             
     def reset(self, *args):
         self._animating = 0
-        self._cp = SteppingChartParse(self._grammar)
+        self._cp = SteppingChartParser(self._grammar)
         self._cp.initialize(self._tokens)
         self._chart = self._cp.chart()
         self._cv.update(self._chart)

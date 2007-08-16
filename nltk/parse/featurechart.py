@@ -50,7 +50,7 @@ def load_earley(filename, trace=0, verbose=False):
 
     grammar, lexicon = apply_file(filename, verbose=verbose)
 
-    return FeatureEarleyChartParse(grammar, lexicon, trace=trace)
+    return FeatureEarleyChartParser(grammar, lexicon, trace=trace)
 
 class FeatureTreeEdge(TreeEdge):
     """
@@ -237,7 +237,7 @@ class FeatureTopDownExpandRule(TopDownExpandRule):
             if chart.insert(new_edge, ()):
                 yield new_edge
 
-class FeatureEarleyChartParse(EarleyChartParse):
+class FeatureEarleyChartParser(EarleyChartParser):
     """
     A chart parser implementing the Earley parsing algorithm, allowing
     nonterminals that have features (known as L{Categories<Category>}).
@@ -254,17 +254,17 @@ class FeatureEarleyChartParse(EarleyChartParse):
     - Apply CompleterRule to I{edge}
     - Return any complete parses in the chart
 
-    C{FeatureEarleyChartParse} uses a X{lexicon} to decide whether a leaf
+    C{FeatureEarleyChartParser} uses a X{lexicon} to decide whether a leaf
     has a given part of speech.  This lexicon is encoded as a
     dictionary that maps each word to a list of parts of speech that
-    word can have. Unlike in the L{EarleyChartParse}, this lexicon is
+    word can have. Unlike in the L{EarleyChartParser}, this lexicon is
     case-insensitive.
     """
     def __init__(self, grammar, lexicon, trace=0):
     # Build a case-insensitive lexicon.
     #ci_lexicon = dict((k.upper(), v) for k, v in lexicon.iteritems())
     # Call the super constructor.
-        EarleyChartParse.__init__(self, grammar, lexicon, trace)
+        EarleyChartParser.__init__(self, grammar, lexicon, trace)
 
     def get_parse_list(self, tokens):
         tokens = list(tokens)
@@ -372,7 +372,7 @@ def demo():
     from nltk import tokenize	
     tokens = list(tokenize.whitespace(sent))
     t = time.time()
-    cp = FeatureEarleyChartParse(earley_grammar, earley_lexicon, trace=1)
+    cp = FeatureEarleyChartParser(earley_grammar, earley_lexicon, trace=1)
     trees = cp.get_parse_list(tokens)
     print "Time: %s" % (time.time() - t)
     for tree in trees: print tree
