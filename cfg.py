@@ -477,6 +477,9 @@ class WeightedProduction(Production, ImmutableProbabilisticMixIn):
                 self._rhs == other._rhs and
                 self.prob() == other.prob())
 
+    def __ne__(self, other):
+        return not (self == other)
+
     def __hash__(self):
         return hash((self._lhs, self._rhs, self.prob()))
 
