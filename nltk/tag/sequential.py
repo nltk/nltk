@@ -422,7 +422,7 @@ class RegexpTagger(SequentialBackoffTagger, yaml.YAMLObject):
     A tagger that assigns tags to words based on regular expressions
     over word strings.
     """
-    yaml_tag = '!tag.Regexp'
+    yaml_tag = '!nltk.RegexpTagger'
     def __init__(self, regexps, backoff=None):
         """
         Construct a new regexp tagger.
