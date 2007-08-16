@@ -158,6 +158,14 @@ from api import *
 from util import *
 from regexp import *
 
+__all__ = [
+    # ChunkParser interface
+    'ChunkParserI',
+
+    # Parsers
+    'RegexpChunkParser', 'RegexpParser',
+    ]
+
 ######################################################################
 #{ Deprecated
 ######################################################################
