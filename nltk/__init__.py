@@ -12,7 +12,6 @@ Python modules, data sets and tutorials supporting research and
 development in natural language processing.
 
 @version: 0.9b1
-
 """
 
 ##//////////////////////////////////////////////////////
@@ -59,8 +58,15 @@ from probability import *
 from tree import *
 from utilities import *
 from yamltags import *
+
+import data
+
+# Processing packages -- these all define __all__ carefully.
 from tokenize import *
 from tag import *
+from parse import *
+from chunk import *
+from stem import *
 
 import chat, chunk, corpus, draw, parse, sem, stem, tag, tokenize, wordnet
 
