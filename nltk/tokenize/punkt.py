@@ -128,8 +128,8 @@ def punkt_word_tokenize(s):
     ## Separate "No.6"
     #s = re.sub(r'([A-Za-z]\.)(\d+)', r'\1 \2', s)
     
-    #Separate words from ellipses
-    s = re.sub(r'(.|^)(\.{2,})(.)?', r'\1 \2 \3', s)     
+    # Separate words from ellipses
+    s = re.sub(r'([^\.]|^)(\.{2,})(.?)', r'\1 \2 \3', s)     
 
     s = re.sub(r'(^|\s)(\.{2,})([^\.\s])', r'\1\2 \3', s)
     s = re.sub(r'([^\.\s])(\.{2,})($|\s)', r'\1 \2\3', s)
