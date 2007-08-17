@@ -147,7 +147,7 @@ def brown_information_content(output_filename, compounds_filename, \
     sys.stdout.write("Building initial frequency distributions")
 
     for item in brown.items:
-        for sentence in brown.tagged(item):
+        for sentence in brown.tagged_sents(item):
 
             if len(sentence) == 0:
                 continue
