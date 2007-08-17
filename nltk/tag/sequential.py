@@ -102,7 +102,7 @@ class SequentialBackoffTagger(TaggerI):
     #////////////////////////////////////////////////////////////
     #{ Deprecated
     
-    @deprecated
+    @deprecated('Use batch_tag instead.')
     def tag_sents(self, sents, verbose=False):
         self.tag_batch(sents, verbose)
 
