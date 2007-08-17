@@ -1,18 +1,23 @@
---------------------------------------------------------------------------------
-Unit tests for the utility stem functions.
---------------------------------------------------------------------------------
+==========
+ Stemmers
+==========
+
+Overview
+~~~~~~~~
+
+Stemmers remove morphological affixes from words, leaving only the
+word stem.
 
     >>> from nltk.stem import *
 
---------------------------------------------------------------------------------
 Unit tests for the Porter stemmer
---------------------------------------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     >>> from nltk.stem.porter import * 
 
 Create a new Porter stemmer.
 
-    >>> stemmer = Porter()
+    >>> stemmer = PorterStemmer()
 
 Test the cons() (consonant) method.
 
@@ -123,22 +128,27 @@ Test the setto() method (replaces the suffix of the buffered string).
 
 Test the stemmer on various pluralised words.
 
-    >>> plurals = ['caresses', 'flies', 'dies', 'mules', 'denied', 'died', 'agreed', 'owned', 'humbled', 'sized', 'meeting', 'stating', 'siezing', 'itemization', 'sensational', 'traditional', 'reference', 'colonizer', 'plotted']
+    >>> plurals = ['caresses', 'flies', 'dies', 'mules', 'denied',
+    ...            'died', 'agreed', 'owned', 'humbled', 'sized',
+    ...            'meeting', 'stating', 'siezing', 'itemization',
+    ...            'sensational', 'traditional', 'reference', 'colonizer',
+    ...            'plotted']
     >>> singles = []
 
     >>> for plural in plurals:
     ...     singles.append(stemmer.stem(plural))
 
-    >>> singles
-    ['caress', 'fli', 'die', 'mule', 'deni', 'die', 'agre', 'own', 'humbl', 'size', 'meet', 'state', 'siez', 'item', 'sensat', 'tradit', 'refer', 'colon', 'plot']
+    >>> singles # doctest: +NORMALIZE_WHITESPACE
+    ['caress', 'fli', 'die', 'mule', 'deni', 'die', 'agre', 'own',
+     'humbl', 'size', 'meet', 'state', 'siez', 'item', 'sensat',
+     'tradit', 'refer', 'colon', 'plot']
 
---------------------------------------------------------------------------------
 Unit tests for Regexp stemmer
---------------------------------------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     >>> patterns = "ed$|ing$|able$|s$"
 
-    >>> stemmer = Regexp(patterns, 4)
+    >>> stemmer = RegexpStemmer(patterns, 4)
 
     >>> stemmer.stem("red")
     'red'

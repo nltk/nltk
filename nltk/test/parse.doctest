@@ -1,12 +1,9 @@
---------------------------------------------------------------------------------
-Unit tests for the utility parse functions.
---------------------------------------------------------------------------------
+=========
+ Parsing
+=========
 
-    >>> from nltk import tokenize
-
---------------------------------------------------------------------------------
 Unit tests for the CFG (Context Free Grammar) class
---------------------------------------------------------------------------------
+---------------------------------------------------
 
     >>> from nltk import cfg
 
@@ -56,19 +53,17 @@ Unit tests for the CFG (Context Free Grammar) class
     ... P -> 'on'
     ... """)
 
---------------------------------------------------------------------------------
 Unit tests for the rd (Recursive Descent Parser) class
---------------------------------------------------------------------------------
-
+------------------------------------------------------
 
 Create and run a recursive descent parser over both a syntactically ambiguous
 and unambiguous sentence.
 
-    >>> from nltk.parse import RecursiveDescent
-    >>> rd = RecursiveDescent(grammar)
+    >>> from nltk.parse import RecursiveDescentParser
+    >>> rd = RecursiveDescentParser(grammar)
 
-    >>> sentence1 = list(tokenize.whitespace('the cat chased the dog'))
-    >>> sentence2 = list(tokenize.whitespace('the cat chased the dog on the rug'))
+    >>> sentence1 = 'the cat chased the dog'.split()
+    >>> sentence2 = 'the cat chased the dog on the rug'.split()
 
     >>> for t in rd.get_parse_list(sentence1):
     ...     print t
@@ -88,7 +83,6 @@ and unambiguous sentence.
         (NP (DT the) (N dog))
         (PP (P on) (NP (DT the) (N rug)))))
 
--------------------------------------------------
 Unit tests for the sr (Shift Reduce Parser) class
 -------------------------------------------------
 
@@ -96,11 +90,11 @@ Create and run a shift reduce parser over both a syntactically ambiguous
 and unambiguous sentence. Note that unlike the recursive descent parser, one
 and only one parse is ever returned.
 
-    >>> from nltk.parse import ShiftReduce
-    >>> sr = ShiftReduce(grammar)
+    >>> from nltk.parse import ShiftReduceParser
+    >>> sr = ShiftReduceParser(grammar)
 
-    >>> sentence1 = list(tokenize.whitespace('the cat chased the dog'))
-    >>> sentence2 = list(tokenize.whitespace('the cat chased the dog on the rug'))
+    >>> sentence1 = 'the cat chased the dog'.split()
+    >>> sentence2 = 'the cat chased the dog on the rug'.split()
 
     >>> for t in sr.get_parse_list(sentence1):
     ...     print t
@@ -114,11 +108,10 @@ grammar clearly the wrong operation is selected.
     >>> for t in sr.get_parse_list(sentence2):
     ...     print t
 
---------------------------------------------------------------------------------
 Unit tests for the Chart parser class
---------------------------------------------------------------------------------
+-------------------------------------
 
-    >>> from nltk.parse import ChartParse, EarleyChartParse, BU_STRATEGY, TD_STRATEGY, FeatureEarleyChartParse
+    >>> from nltk.parse import ChartParser, EarleyChartParser, BU_STRATEGY, TD_STRATEGY, FeatureEarleyChartParser
 
 Define a grammar.
 
@@ -135,12 +128,12 @@ Define a grammar.
 
 Some example sentences, one ambiguous and one unambiguous.
 
-    >>> sentence1 = list(tokenize.whitespace("Marc has a telescope"))
-    >>> sentence2 = list(tokenize.whitespace("Marc saw a man in the park"))
+    >>> sentence1 = "Marc has a telescope".split()
+    >>> sentence2 = "Marc saw a man in the park".split()
 
 Create a chart parser. First give it a bottom-up strategy.
 
-    >>> parser = ChartParse(grammar, BU_STRATEGY)
+    >>> parser = ChartParser(grammar, BU_STRATEGY)
 
     >>> for t in parser.get_parse_list(sentence1):
     ...     print t
@@ -161,7 +154,7 @@ Create a chart parser. First give it a bottom-up strategy.
 
 Redefine the chart parser to use a top-down strategy.
 
-    >>> parser = ChartParse(grammar, TD_STRATEGY)
+    >>> parser = ChartParser(grammar, TD_STRATEGY)
 
     >>> for t in parser.get_parse_list(sentence1):
     ...     print t
@@ -210,7 +203,7 @@ Create and test the Earley variant chart parser. This requires a lexicon.
     >>> for production in lexical_productions:
     ...     lexicon.setdefault(production.rhs()[0], []).append(production.lhs())
 
-    >>> parser = EarleyChartParse(grammar, lexicon)
+    >>> parser = EarleyChartParser(grammar, lexicon)
 
     >>> for t in parser.get_parse_list(sentence1):
     ...     print t
@@ -229,28 +222,27 @@ Create and test the Earley variant chart parser. This requires a lexicon.
         (VP (V saw) (NP (DT a) (N man)))
         (PP (P in) (NP (DT the) (N park)))))
 
-------------------
-GrammarFile class
-------------------
+.. GrammarFile is deprecated
+  .. GrammarFile class
+  .. ------------------
+  .. 
+  ..     >>> from nltk.parse import GrammarFile
+  ..     >>> g = GrammarFile('../parse/test.cfg')
+  ..     >>> print g.earley_grammar()
+  ..     Grammar with 3 productions (start state = S)
+  ..         S[sem=ApplicationExpression('?vp', '?subj')] -> NP[sem=?subj] VP[sem=?vp]
+  ..         VP[sem=ApplicationExpression('?v', '?obj')] -> V[sem=?v] NP[sem=?obj]
+  ..         VP[sem=?v] -> V[sem=?v]
+  ..     >>> earley_lexicon = g.earley_lexicon()
+  ..     >>> for word in earley_lexicon:
+  ..     ...     print word + ':', ','.join(`ent` for ent in earley_lexicon[word])
+  ..     I: NP[sem=VariableExpression('i')]
+  ..     sleeps: V[sem=LambdaExpression('x', '(sleeps x)'), tns='pres']
+  ..     like: V[sem=LambdaExpression('x', '\y.(like x y)'), tns='pres']
+  ..     Kim: NP[sem=VariableExpression('kim')]
 
-    >>> from nltk.parse import GrammarFile
-    >>> g = GrammarFile('../parse/test.cfg')
-    >>> print g.earley_grammar()
-    Grammar with 3 productions (start state = S)
-        S[sem=ApplicationExpression('?vp', '?subj')] -> NP[sem=?subj] VP[sem=?vp]
-        VP[sem=ApplicationExpression('?v', '?obj')] -> V[sem=?v] NP[sem=?obj]
-        VP[sem=?v] -> V[sem=?v]
-    >>> earley_lexicon = g.earley_lexicon()
-    >>> for word in earley_lexicon:
-    ...     print word + ':', ','.join(`ent` for ent in earley_lexicon[word])
-    I: NP[sem=VariableExpression('i')]
-    sleeps: V[sem=LambdaExpression('x', '(sleeps x)'), tns='pres']
-    like: V[sem=LambdaExpression('x', '\y.(like x y)'), tns='pres']
-    Kim: NP[sem=VariableExpression('kim')]
-
---------------------------------------------------------------------------------
 Unit tests for the Probabilistic CFG class
---------------------------------------------------------------------------------
+------------------------------------------
 
     >>> from nltk.corpus import treebank
     >>> from itertools import islice
@@ -286,7 +278,7 @@ Induce some productions using parsed Treebank data.
 
     >>> productions = []
     >>> for item in treebank.items[:2]:
-    ...     for t in treebank.parsed(item):
+    ...     for t in treebank.parsed_sents(item):
     ...         productions += t.productions()
 
     >>> grammar = cfg.induce_pcfg(S, productions)
@@ -296,11 +288,10 @@ Induce some productions using parsed Treebank data.
     >>> grammar.productions()[:5]
     [PP -> IN NP [1.0], NNP -> 'Nov.' [0.0714285714286], NNP -> 'Agnew' [0.0714285714286], JJ -> 'industrial' [0.142857142857], NP -> CD NNS [0.133333333333]]
 
---------------------------------------------------------------------------------
 Unit tests for the Probabilistic Chart Parse classes
---------------------------------------------------------------------------------
+----------------------------------------------------
 
-    >>> tokens = list(tokenize.whitespace("Jack saw Bob with my cookie"))
+    >>> tokens = "Jack saw Bob with my cookie".split()
     >>> grammar = cfg.toy_pcfg2
     >>> print grammar
     Grammar with 23 productions (start state = S)
@@ -333,7 +324,7 @@ resulting parses.
 
     >>> from nltk.parse import pchart
     
-    >>> parser = pchart.InsideParse(grammar)
+    >>> parser = pchart.InsideChartParser(grammar)
     >>> for t in parser.get_parse_list(tokens):
     ...     print t
     (S
@@ -349,7 +340,7 @@ resulting parses.
         (VP (V saw) (NP (Name Bob)))
         (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744042695e-07)
 
-    >>> parser = pchart.RandomParse(grammar)
+    >>> parser = pchart.RandomChartParser(grammar)
     >>> for t in parser.get_parse_list(tokens):
     ...     print t
     (S
@@ -365,7 +356,7 @@ resulting parses.
         (VP (V saw) (NP (Name Bob)))
         (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744042695e-07)
         
-    >>> parser = pchart.UnsortedParse(grammar)
+    >>> parser = pchart.UnsortedChartParser(grammar)
     >>> for t in parser.get_parse_list(tokens):
     ...     print t
     (S
@@ -381,7 +372,7 @@ resulting parses.
         (VP (V saw) (NP (Name Bob)))
         (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744042695e-07)
 
-    >>> parser = pchart.LongestParse(grammar)
+    >>> parser = pchart.LongestChartParser(grammar)
     >>> for t in parser.get_parse_list(tokens):
     ...     print t
     (S
@@ -397,21 +388,20 @@ resulting parses.
         (VP (V saw) (NP (Name Bob)))
         (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744042695e-07)
 
-    >>> parser = pchart.InsideParse(grammar, beam_size = len(tokens)+1)
+    >>> parser = pchart.InsideChartParser(grammar, beam_size = len(tokens)+1)
     >>> for t in parser.get_parse_list(tokens):
     ...     print t
 
-----------------------------------------
 Unit tests for the Viterbi Parse classes
 ----------------------------------------
 
-    >>> from nltk.parse import ViterbiParse
-    >>> tokens = list(tokenize.whitespace("Jack saw Bob with my cookie"))
+    >>> from nltk.parse import ViterbiParser
+    >>> tokens = "Jack saw Bob with my cookie".split()
     >>> grammar = cfg.toy_pcfg2
 
 Parse the tokenized sentence.
 
-    >>> parser = ViterbiParse(grammar)
+    >>> parser = ViterbiParser(grammar)
     >>> for t in parser.get_parse_list(tokens):
     ...     print t
     (S
@@ -422,20 +412,18 @@ Parse the tokenized sentence.
           (NP (Name Bob))
           (PP (P with) (NP (Det my) (N cookie)))))) (p=6.31606532355e-06)
 
---------------------------------------------------------------------------------
 Unit tests for the Category class
---------------------------------------------------------------------------------
+---------------------------------
 
     >>> from nltk.parse import Category, GrammarCategory
     >>> Category(pos='n', agr=Category(number='pl', gender='f'))
-    [agr=[gender='f', number='pl'], pos='n']
+    [agr=[gender=f, number=pl], pos=n]
 
     >>> GrammarCategory.parse('VP[+fin]/NP[+pl]')
     VP[+fin]/NP[+pl]
 
---------------------------------------------------------------------------------
 Unit tests for the Feature Chart Parser classes
---------------------------------------------------------------------------------
+-----------------------------------------------
 
     >>> S = GrammarCategory.parse('S')
     >>> VP = GrammarCategory.parse('VP')
@@ -477,8 +465,8 @@ Define some lexical productions.
     >>> for prod in lexical_productions:
     ...     earley_lexicon[prod.rhs()[0]].append(prod.lhs())
 
-    >>> tokens = list(tokenize.whitespace('I saw John with a dog with my cookie'))
-    >>> cp = FeatureEarleyChartParse(earley_grammar, earley_lexicon)
+    >>> tokens = 'I saw John with a dog with my cookie'.split()
+    >>> cp = FeatureEarleyChartParser(earley_grammar, earley_lexicon)
     >>> trees = cp.get_parse_list(tokens)
     >>> for t in trees:
     ...     print t
@@ -486,9 +474,29 @@ Define some lexical productions.
       (S
         (NP I)
         (VP
+          (V saw)
+          (NP
+            (NP John)
+            (PP
+              (P with)
+              (NP
+                (NP (Det a) (N[-pl] dog))
+                (PP (P with) (NP (Det my) (N[-pl] cookie)))))))))
+    ([INIT]
+      (S
+        (NP I)
+        (VP
+          (V saw)
+          (NP
+            (NP (NP John) (PP (P with) (NP (Det a) (N[-pl] dog))))
+            (PP (P with) (NP (Det my) (N[-pl] cookie)))))))
+    ([INIT]
+      (S
+        (NP I)
+        (VP
           (VP
-            (VP (V saw) (NP John))
-            (PP (P with) (NP (Det a) (N[-pl] dog))))
+            (V saw)
+            (NP (NP John) (PP (P with) (NP (Det a) (N[-pl] dog)))))
           (PP (P with) (NP (Det my) (N[-pl] cookie))))))
     ([INIT]
       (S
@@ -505,26 +513,6 @@ Define some lexical productions.
         (NP I)
         (VP
           (VP
-            (V saw)
-            (NP (NP John) (PP (P with) (NP (Det a) (N[-pl] dog)))))
+            (VP (V saw) (NP John))
+            (PP (P with) (NP (Det a) (N[-pl] dog))))
           (PP (P with) (NP (Det my) (N[-pl] cookie))))))
-    ([INIT]
-      (S
-        (NP I)
-        (VP
-          (V saw)
-          (NP
-            (NP (NP John) (PP (P with) (NP (Det a) (N[-pl] dog))))
-            (PP (P with) (NP (Det my) (N[-pl] cookie)))))))
-    ([INIT]
-      (S
-        (NP I)
-        (VP
-          (V saw)
-          (NP
-            (NP John)
-            (PP
-              (P with)
-              (NP
-                (NP (Det a) (N[-pl] dog))
-                (PP (P with) (NP (Det my) (N[-pl] cookie)))))))))
