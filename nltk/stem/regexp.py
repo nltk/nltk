@@ -47,7 +47,7 @@ def demo():
     # Create a simple regular expression based stemmer
     stemmer = stem.RegexpStemmer('ing$|s$|e$', min=4)
     text = "John was eating icecream"
-    tokens = tokenize.whitespace(text)
+    tokens = text.split()
 
     # Print the results.
     print stemmer

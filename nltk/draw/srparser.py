@@ -574,7 +574,7 @@ class ShiftReduceDemo(object):
         EntryDialog(self._top, sentence, instr, self.set_sentence, title)
 
     def set_sentence(self, sentence):
-        self._sent = list(tokenize.whitespace(sentence)) #[XX] use tagged?
+        self._sent = sent.split() #[XX] use tagged?
         self.reset()
 
     #########################################
@@ -799,7 +799,7 @@ def demo():
     grammar = cfg.Grammar(S, productions)
 
     # tokenize the sentence
-    sent = list(tokenize.whitespace('my dog saw a man in the park with a statue'))
+    sent = 'my dog saw a man in the park with a statue'.split()
 
     ShiftReduceDemo(grammar, sent).mainloop()
 

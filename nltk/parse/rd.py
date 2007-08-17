@@ -653,7 +653,7 @@ def demo():
     for prod in grammar.productions():
         print prod
     
-    sent = tokenize.whitespace('I saw a man in the park')
+    sent = 'I saw a man in the park'.split()
     parser = parse.RecursiveDescentParser(grammar, trace=2)
     for p in parser.get_parse_list(sent):
         print p

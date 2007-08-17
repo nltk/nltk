@@ -362,7 +362,7 @@ def demo():
         return
 
     # Tokenize the sentence.
-    tokens = list(tokenize.whitespace(sent))
+    tokens = sent.split()
 
     parser = ViterbiParser(grammar)
     all_parses = {}

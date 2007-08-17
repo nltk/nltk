@@ -1124,7 +1124,6 @@ def demo():
     """
 
     from nltk import chunk, Tree
-    from nltk.tag import string2tags
 
     text = """\
     [ the/DT little/JJ cat/NN ] sat/VBD on/IN [ the/DT mat/NN ] ./.
