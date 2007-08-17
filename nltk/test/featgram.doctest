@@ -18,7 +18,7 @@
     ... """
     >>> (grammar, lexicon) = cfg.parse_featcfg(g)
     >>> tokens = 'these girls'.split()
-    >>> parser = parse.FeatureEarleyChartParse(grammar, lexicon)
+    >>> parser = parse.FeatureEarleyChartParser(grammar, lexicon)
     >>> trees = parser.get_parse_list(tokens)
     >>> for tree in trees: print tree
     ([INIT]
@@ -35,7 +35,7 @@ read the grammar into NLTK, ready for use in parsing.
  
     >>> cp = parse.load_earley('feat0.cfg', trace=2)
     >>> sent = 'Kim likes children'
-    >>> tokens = list(tokenize.whitespace(sent))
+    >>> tokens = sent.split()
     >>> tokens 
     ['Kim', 'likes', 'children']
     >>> trees = cp.parse(tokens)
@@ -272,7 +272,7 @@ things become really interesting.
 
 
     >>> sent = 'who do you claim that you like'
-    >>> tokens = list(tokenize.whitespace(sent))
+    >>> tokens = sent.split()
     >>> cp = parse.load_earley('feat1.cfg', trace=1)
     >>> trees = cp.parse(tokens)
               |.w.d.y.c.t.y.l.|
@@ -319,7 +319,7 @@ Let's load a German grammar:
 
     >>> cp = parse.load_earley('german0.cfg', trace=0)
     >>> sent = 'die katze sieht den hund'
-    >>> tokens = list(tokenize.whitespace(sent))
+    >>> tokens = sent.split()
     >>> trees = cp.parse(tokens)
     >>> for tree in trees: print tree
     (S
