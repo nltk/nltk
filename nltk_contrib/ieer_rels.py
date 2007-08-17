@@ -35,7 +35,7 @@ long2short = dict(LOCATION ='LOC', ORGANIZATION = 'ORG', PERSON = 'PER')
 
 ieerdocs = []
 for item in ieer.items:
-    for iedict in ieer.parsed(item):
+    for iedict in ieer.parsed_docs(item):
         for key in ['headline', 'text']:
             try:
                 ieerdocs.append(iedict[key])
