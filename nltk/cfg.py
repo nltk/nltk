@@ -801,7 +801,7 @@ def pcfg_demo():
 
     productions = []
     for item in treebank.items[:2]:
-        for tree in treebank.parsed(item):
+        for tree in treebank.parsed_sents(item):
             # perform optional tree transformations, e.g.:
             tree.collapse_unary(collapsePOS = False)
             tree.chomsky_normal_form(horzMarkov = 2)
@@ -819,7 +819,7 @@ def pcfg_demo():
     parser.trace(3)
 
 #    sent = treebank.tokenized('wsj_0001')[0]   # doesn't work as tokens are different!
-    sent = treebank.parsed('wsj_0001')[0].leaves()
+    sent = treebank.parsed_sents('wsj_0001')[0].leaves()
     print sent
     for parse in parser.get_parse_list(sent):
         print parse

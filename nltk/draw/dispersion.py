@@ -43,4 +43,4 @@ if __name__ == '__main__':
     from nltk.corpus import gutenberg
     from nltk.draw import dispersion
     words = ['Elinor', 'Marianne', 'Edward', 'Willoughby']
-    dispersion.plot(gutenberg.tokenized('austen-sense'), words)
+    dispersion.plot(gutenberg.words('austen-sense'), words)
