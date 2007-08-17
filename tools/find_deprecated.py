@@ -136,8 +136,12 @@ def print_deprecated_uses(paths):
         elif path.endswith('.doctest') or path.endswith('.txt'):
             for example in DocTestParser().get_examples(open(path).read()):
                 ex = StringIO(example.source)
-                print_deprecated_uses_in(ex.readline, path, dep_files,
-                                         dep_names, example.lineno)
+                try:
+                    print_deprecated_uses_in(ex.readline, path, dep_files,
+                                             dep_names, example.lineno)
+                except tokenize.TokenError:
+                    print (term.RED + 'Caught TokenError -- '
+                           'malformatted doctest?' + term.NORMAL)
     return dep_names
 
 def print_deprecated_uses_in(readline, path, dep_files, dep_names,
