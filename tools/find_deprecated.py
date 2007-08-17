@@ -158,9 +158,9 @@ def print_deprecated_uses_in(readline, path, dep_files, dep_names,
         # Ignore all tokens except deprecated names.
         if not (tok in deprecated_classes or
                 (tok in deprecated_funcs and
-                 re.search('\b%s\s*\(' % esctok, line)) or
+                 re.search(r'\b%s\s*\(' % esctok, line)) or
                 (tok in deprecated_methods and
-                 re.search('(?!<\bself)[.]\s*%s\s*\(' % esctok, line))):
+                 re.search(r'(?!<\bself)[.]\s*%s\s*\(' % esctok, line))):
             continue
         # Hack: only complain about read if it's used after a corpus.
         if tok == 'read' and not CORPUS_READ_METHOD_RE.search(line):
