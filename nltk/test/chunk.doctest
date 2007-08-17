@@ -1,8 +1,10 @@
---------------------------------------------------------------------------------
-Unit tests for the Chunk classes
---------------------------------------------------------------------------------
+==========
+ Chunking
+==========
 
     >>> from nltk.chunk import *
+    >>> from nltk.chunk.util import *
+    >>> from nltk.chunk.regexp import *
     >>> from nltk import Tree
 
     >>> tagged_text = "[ The/DT cat/NN ] sat/VBD on/IN [ the/DT mat/NN ] [ the/DT dog/NN ] chewed/VBD ./."
@@ -28,7 +30,7 @@ Construct some new chunking rules.
 
 Create and score a series of chunk parsers, successively more complex.
 
-    >>> chunk_parser = RegexpChunk([chunk_rule], chunk_node='NP')
+    >>> chunk_parser = RegexpChunkParser([chunk_rule], chunk_node='NP')
     >>> chunked_text = chunk_parser.parse(unchunked_text)
     >>> print chunked_text
     (S
@@ -61,7 +63,8 @@ Create and score a series of chunk parsers, successively more complex.
     >>> chunkscore.incorrect()
     [(('The', 'DT'), ('cat', 'NN'), ('sat', 'VBD'), ('on', 'IN'), ('the', 'DT'), ('mat', 'NN'), ('the', 'DT'), ('dog', 'NN'), ('chewed', 'VBD'), ('.', '.'))]
 
-    >>> chunk_parser = RegexpChunk([chunk_rule, chink_rule], chunk_node='NP')
+    >>> chunk_parser = RegexpChunkParser([chunk_rule, chink_rule],
+    ...                                  chunk_node='NP')
     >>> chunked_text = chunk_parser.parse(unchunked_text)
     >>> print chunked_text
     (S
@@ -89,8 +92,8 @@ Create and score a series of chunk parsers, successively more complex.
     >>> chunkscore.incorrect()
     [(('the', 'DT'), ('mat', 'NN'), ('the', 'DT'), ('dog', 'NN'))]
 
-    >>> chunk_parser = RegexpChunk([chunk_rule, chink_rule, split_rule],
-    ...                            chunk_node='NP')
+    >>> chunk_parser = RegexpChunkParser([chunk_rule, chink_rule, split_rule],
+    ...                                  chunk_node='NP')
     >>> chunked_text = chunk_parser.parse(unchunked_text)
     >>> print chunked_text
     (S
