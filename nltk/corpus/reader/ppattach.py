@@ -41,7 +41,6 @@ of the author.
 from util import *
 from api import *
 from nltk import tokenize
-from nltk.tag import string2tags, string2words
 import os
 from nltk.utilities import deprecated
 

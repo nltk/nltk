@@ -646,7 +646,6 @@ def parse_fcfg(input):
     as a list of strings.
     """
     from nltk.parse.category import GrammarCategory
-    from nltk.parse.featurechart import FeatureEarleyChartParse
     grammatical_productions = []
     lexical_productions = []
     if isinstance(input, str):
@@ -816,7 +815,7 @@ def pcfg_demo():
 
     print "Parse sentence using induced grammar:"
 
-    parser = pchart.InsideParse(grammar)
+    parser = pchart.InsideChartParser(grammar)
     parser.trace(3)
 
 #    sent = treebank.tokenized('wsj_0001')[0]   # doesn't work as tokens are different!

@@ -21,9 +21,9 @@ Contents:
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from nltk import tokenize
-from nltk.tag import string2tags, string2words
 import os
 from nltk.utilities import deprecated
+import nltk.tag.util # for str2tuple
 
 class IndianCorpusReader(CorpusReader):
     """
@@ -91,7 +91,8 @@ class IndianCorpusView(StreamBackedCorpusView):
     def read_block(self, stream):
         line = stream.readline()
         if line.startswith('<'): return []
-        sent = string2tags(line, sep='_')
+        sent = [nltk.tag.util.str2tuple(word, sep='_')
+                for word in line.split()]
         if not self._tagged: sent = [w for (w,t) in sent]
         if self._group_by_sent:
             return [sent]

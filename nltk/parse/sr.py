@@ -449,7 +449,7 @@ def demo():
     V -> 'saw'
     """)
 
-    sent = tokenize.whitespace('I saw a man in the park')
+    sent = 'I saw a man in the park'.split()
 
     parser = parse.ShiftReduceParser(grammar, trace=2)
     for p in parser.get_parse_list(sent):

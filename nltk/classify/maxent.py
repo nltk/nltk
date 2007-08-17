@@ -17,8 +17,7 @@ frequency with which a class and a feature vector value co-occur is
 equal to the actual frequency in the data.
 """
 
-from nltk.classify.util import log_likelihood as classifier_log_likelihood
-from nltk.classify.util import accuracy as classifier_accuracy
+import nltk.classify.util # for accuracy & log_likelihood
 from nltk.classify.api import *
 from nltk.classify.util import SparseBinaryVectorEncoding, GISEncoding
 from nltk.classify.util import attested_labels
@@ -254,8 +253,8 @@ def train_maxent_classifier_with_gis(
     # Train for a fixed number of iterations.!
     for iternum in range(iterations):
         if trace > 2:
-            ll = classifier_log_likelihood(classifier, train_toks)
-            acc = classifier_accuracy(classifier, train_toks)
+            ll = nltk.classify.util.log_likelihood(classifier, train_toks)
+            acc = nltk.classify.util.accuracy(classifier, train_toks)
             print '     %9d    %14.5f    %9.3f' % (iternum+1, ll, acc)
         
         # Use the model to estimate the number of times each
@@ -273,7 +272,7 @@ def train_maxent_classifier_with_gis(
 
         # Check log-likelihood cutoffs.
         if ll_cutoff is not None or lldelta_cutoff is not None:
-            ll = classifier_log_likelihood(classifier, train_toks)
+            ll = nltk.classify.util.log_likelihood(classifier, train_toks)
             if ll_cutoff is not None and ll >= -abs(ll_cutoff): break
             if lldelta_cutoff is not None:
                 if ll_old and (ll - ll_old) <= lldelta_cutoff: break
@@ -281,15 +280,15 @@ def train_maxent_classifier_with_gis(
 
         # Check accuracy cutoffs.
         if acc_cutoff is not None or accdelta_cutoff is not None:
-            acc = classifier_accuracy(classifier, train_toks)
+            acc = nltk.classify.util.accuracy(classifier, train_toks)
             if acc_cutoff is not None and acc >= acc_cutoff: break
             if accdelta_cutoff is not None:
                 if acc_old and (acc_old - acc) <= accdelta_cutoff: break
                 acc_old = acc
 
     if trace > 2:
-        ll = classifier_log_likelihood(classifier, train_toks)
-        acc = classifier_accuracy(classifier, train_toks)
+        ll = nltk.classify.util.log_likelihood(classifier, train_toks)
+        acc = nltk.classify.util.accuracy(classifier, train_toks)
         print '         Final    %14.5f    %9.3f' % (ll, acc)
 
     # Return the classifier.
@@ -385,8 +384,8 @@ def train_maxent_classifier_with_iis(
     # Train for a fixed number of iterations.
     for iternum in range(iterations):
         if trace > 2:
-            ll = classifier_log_likelihood(classifier, train_toks)
-            acc = classifier_accuracy(classifier, train_toks)
+            ll = nltk.classify.util.log_likelihood(classifier, train_toks)
+            acc = nltk.classify.util.accuracy(classifier, train_toks)
             print '     %9d    %14.5f    %9.3f' % (iternum+1, ll, acc)
 
         # Calculate the deltas for this iteration, using Newton's method.
@@ -401,7 +400,7 @@ def train_maxent_classifier_with_iis(
                     
         # Check log-likelihood cutoffs.
         if ll_cutoff is not None or lldelta_cutoff is not None:
-            ll = classifier_log_likelihood(classifier, train_toks)
+            ll = nltk.classify.util.log_likelihood(classifier, train_toks)
             if ll_cutoff is not None and ll > -ll_cutoff: break
             if lldelta_cutoff is not None:
                 if (ll - ll_old) < lldelta_cutoff: break
@@ -409,15 +408,15 @@ def train_maxent_classifier_with_iis(
 
         # Check accuracy cutoffs.
         if acc_cutoff is not None or accdelta_cutoff is not None:
-            acc = classifier_accuracy(classifier, train_toks)
+            acc = nltk.classify.util.accuracy(classifier, train_toks)
             if acc_cutoff is not None and acc < acc_cutoff: break
             if accdelta_cutoff is not None:
                 if (acc_old - acc) < accdelta_cutoff: break
                 acc_old = acc
 
     if trace > 2:
-        ll = classifier_log_likelihood(classifier, train_toks)
-        acc = classifier_accuracy(classifier, train_toks)
+        ll = nltk.classify.util.log_likelihood(classifier, train_toks)
+        acc = nltk.classify.util.accuracy(classifier, train_toks)
         print '         Final    %14.5f    %9.3f' % (ll, acc)
                
     # Return the classifier.
