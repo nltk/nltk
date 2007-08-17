@@ -94,7 +94,7 @@ def tag2tuple(s, sep='/'):
 def string2tags(s, sep='/'):
     return [str2tuple(t, sep) for t in s.split()]
 
-@deprecated("Use '.join(nltk.tag.tuple2str(w, sep) for w in t) instead.")
+@deprecated("Use ' '.join(nltk.tag.tuple2str(w, sep) for w in t) instead.")
 def tags2string(t, sep='/'):
     return ' '.join(tuple2str(w, sep) for w in t)
 
