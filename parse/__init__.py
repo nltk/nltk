@@ -101,5 +101,10 @@ class LongestParse(LongestChartParser, Deprecated):
     """Use nltk.LongestChartParser instead."""
 class ViterbiParse(ViterbiParser, Deprecated):
     """Use nltk.ViterbiParser instead."""
-
+class GrammarFile(Deprecated):
+    """Use nltk.data.load() instead."""
+    # [xx] had directives: %start, %kimmo, %tagger_file?
+    def __init__(self, filename=None, verbose=False):
+        raise ValueError("GrammarFile is no longer supported -- "
+                         "use nltk.data.load() instead.")
     
