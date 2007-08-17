@@ -860,7 +860,7 @@ class RecursiveDescentDemo(object):
         EntryDialog(self._top, sentence, instr, self.set_sentence, title)
 
     def set_sentence(self, sentence):
-        self._sent = list(tokenize.whitespace(sentence)) #[XX] use tagged?
+        self._sent = sentence.split() #[XX] use tagged?
         self.reset()
 
 def demo():
@@ -883,7 +883,7 @@ def demo():
         P -> 'in' | 'under' | 'with'
     """)
 
-    sent = list(tokenize.whitespace('the dog saw a man in the park'))
+    sent = 'the dog saw a man in the park'.split()
 
     RecursiveDescentDemo(grammar, sent).mainloop()
 

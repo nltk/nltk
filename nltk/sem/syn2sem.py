@@ -27,7 +27,7 @@ def text_parse(inputs, grammar, trace=0):
     parses = {}
     cp = grammar.earley_parser(trace=trace)
     for sent in inputs:
-        tokens = list(tokenize.whitespace(sent))
+        tokens = sent.split()
         syntrees = cp.get_parse_list(tokens)
         parses[sent] = syntrees
     return parses

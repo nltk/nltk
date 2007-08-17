@@ -407,7 +407,7 @@ def demo():
         return
 
     # Tokenize the sentence.
-    tokens = list(tokenize.whitespace(sent))
+    tokens = sent.split()
 
     # Define a list of parsers.  We'll use all parsers.
     parsers = [

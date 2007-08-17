@@ -2109,7 +2109,7 @@ class ChartDemo(object):
         EntryDialog(self._root, sentence, instr, self.set_sentence, title)
 
     def set_sentence(self, sentence):
-        self._tokens = list(tokenize.whitespace(sentence))
+        self._tokens = list(sentence.split())
         self.reset()
 
     #////////////////////////////////////////////////////////////
@@ -2270,7 +2270,7 @@ def demo():
     
     sent = 'John ate the cake on the table with a fork'
     sent = 'John ate the cake on the table'
-    tokens = list(tokenize.whitespace(sent))
+    tokens = list(sent.split())
 
     print 'grammar= ('
     for rule in grammar.productions():

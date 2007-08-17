@@ -1597,8 +1597,7 @@ def demo():
     # Tokenize a sample sentence.
     sent = 'I saw John with a dog with my cookie'
     print "Sentence:\n", sent
-    from nltk import tokenize
-    tokens = list(tokenize.whitespace(sent))
+    tokens = sent.split()
 
     print tokens
 
