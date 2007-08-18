@@ -111,7 +111,6 @@ class MyDocTestParser(DocTestParser):
                     pysrc = example[example.find('\n'):]
                     pysrc = self.DOCTEST_OPTION_RE.sub('', pysrc)
                     pysrc = textwrap.dedent(pysrc)
-                    print 'PYSRC', `pysrc`
 
                     #for ex in self.PYLISTING_EX.findall(pysrc):
                     for ex in split_pysrc_into_statements(pysrc):
@@ -620,8 +619,9 @@ def split_pysrc_into_statements(s):
 
         # Add the line as a new statement or a continuation.
         if (parens == 0 and quote is None and indent == 0 and
-            not continuation and line.strip()):
-            statements.append(line)
+            (not continuation)):
+            if line.strip():
+                statements.append(line)
         else:
             statements[-1] += '\n'+line
 
