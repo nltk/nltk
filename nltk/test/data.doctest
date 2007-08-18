@@ -1,0 +1,104 @@
+=========================================
+ Loading Resources From the Data Package
+=========================================
+
+    >>> import nltk.data
+
+Overview
+~~~~~~~~
+The `nltk.data` module contains functions that can be used to load
+NLTK resource files, such as corpora, grammars, and saved processing
+objects.  Resources are loaded using the function `nltk.data.load()`:
+
+    >>> tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+    >>> tokenizer.tokenize('Hello.  This is a test.  It works!')
+    ['Hello.', 'This is a test.', 'It works!']
+
+By default, `nltk.data.load()` looks for resource files in the NLTK
+data package.  But it is also possible to load resources from HTTP and
+FTP URLs:
+
+    >>> cfg = nltk.data.load('http://nltk.org/examples/parse/toy.cfg')
+    >>> print cfg # doctest: +ELLIPSIS
+    Grammar with 14 productions (start state = S)
+        S -> NP VP
+        PP -> P NP
+        ...
+        P -> 'on'
+        P -> 'in'
+
+Resources can also be loaded from files, by using URLs with the
+"``file:``" protocol specifier:
+
+    >>> url = 'file:%s' % nltk.data.find('grammars/toy.cfg')
+    >>> url # doctest: +ELLIPSIS
+    'file:/.../grammars/toy.cfg'
+    >>> print nltk.data.load(url) # doctest: +ELLIPSIS
+    Grammar with 14 productions (start state = S)
+        S -> NP VP
+        PP -> P NP
+        ...
+        P -> 'on'
+        P -> 'in'
+
+Making Local Copies
+~~~~~~~~~~~~~~~~~~~
+..  This will not be visible in the html output: create a tempdir to
+    play in.
+    >>> import tempfile, os
+    >>> tempdir = tempfile.mkdtemp()
+    >>> old_dir = os.path.abspath('.')
+    >>> os.chdir(tempdir)
+    
+The function `nltk.data.retrieve()` copies a given resource to a local
+file.  This can be useful, for example, if you want to edit one of the
+sample grammars.
+
+    >>> nltk.data.retrieve('grammars/toy.cfg')
+    Retrieving 'grammars/toy.cfg', saving to 'toy.cfg'
+    
+    >>> # Simulate editing the grammar.
+    >>> s = open('toy.cfg').read().replace('NP', 'DP')
+    >>> out = open('toy2.cfg', 'w'); out.write(s); out.close()
+
+    >>> # Load the edited grammar, & display it.
+    >>> cfg = nltk.data.load('file:toy2.cfg')
+    >>> print cfg # doctest: +ELLIPSIS
+    Grammar with 14 productions (start state = S)
+        S -> DP VP
+        PP -> P DP
+        ...
+        P -> 'on'
+        P -> 'in'
+
+[XX] Should this be called `nltk.data.copy()` instead?
+
+..  This will not be visible in the html output: clean up the tempdir.
+    >>> os.chdir(old_dir)
+    >>> for f in os.listdir(tempdir):
+    ...     os.remove(os.path.join(tempdir, f))
+    >>> os.rmdir(tempdir)
+
+Finding Files in the NLTK Data Package
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The `nltk.data.find()` function searches the NLTK data package for a
+given file, and returns its filename.  This can then be used to read
+the string contents of the file.
+
+    >>> path = nltk.data.find('corpora/abc/rural.txt')
+    >>> path # doctest: +ELLIPSIS
+    '.../corpora/abc/rural.txt'
+    >>> open(path, 'rb').read(60)
+    'PM denies knowledge of AWB kickbacks\nThe Prime Minister has '
+
+Alternatively, the `nltk.data.load()` function can be used with the
+keyword argument ``format="raw"``:
+
+    >>> nltk.data.load('corpora/abc/rural.txt', format='raw')[:60]
+    'PM denies knowledge of AWB kickbacks\nThe Prime Minister has '
+
+Resource Caching
+~~~~~~~~~~~~~~~~
+Describe how caching works, and how to use `clear_cache()`.
+
+
