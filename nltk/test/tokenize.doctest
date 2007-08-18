@@ -42,9 +42,14 @@ divide the string using the string ``split()`` method.
      'Please', 'buy', 'me\ntwo', 'of', 'them.\n\nThanks.']
 
     >>> # same as s.split('\n'):
-    >>> LineTokenizer().tokenize(s) # doctest: +NORMALIZE_WHITESPACE
+    >>> LineTokenizer(blanklines='keep').tokenize(s) # doctest: +NORMALIZE_WHITESPACE
     ['Good muffins cost $3.88', 'in New York.  Please buy me',
      'two of them.', '', 'Thanks.']
+
+    >>> # same as [l for l in s.split('\n') if l.strip()]:
+    >>> LineTokenizer(blanklines='discard').tokenize(s) # doctest: +NORMALIZE_WHITESPACE
+    ['Good muffins cost $3.88', 'in New York.  Please buy me',
+     'two of them.', 'Thanks.']
 
     >>> # same as s.split('\t'):
     >>> TabTokenizer().tokenize('a\tb c\n\t d') # doctest: +NORMALIZE_WHITESPACE
