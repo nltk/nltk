@@ -19,6 +19,7 @@ Tagged tokens are often written using the form ``'fly/NN'``.  The
 `nltk.tag` module provides utility functions to convert between this
 string representation and the tuple representation:
 
+    >>> import nltk.tag
     >>> print nltk.tag.tuple2str(tagged_tok)
     fly/NN
     >>> print nltk.tag.str2tuple('the/DT')
