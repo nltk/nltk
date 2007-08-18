@@ -196,12 +196,12 @@ class TimitCorpusReader(CorpusReader):
 
         return self._speakerinfo[speaker]
 
-    def phons(self, items=None):
+    def phones(self, items=None):
         return [line.split()[-1]
                 for filename in self._item_filenames(items, '.phn')
                 for line in open(filename) if line.strip()]
 
-    def phon_times(self, items=None):
+    def phone_times(self, items=None):
         """
         offset is represented as a number of 16kHz samples!
         """
@@ -230,29 +230,29 @@ class TimitCorpusReader(CorpusReader):
                 for filename in self._item_filenames(items, '.txt')
                 for line in open(filename) if line.strip()]
 
-    def phon_trees(self, items=None):
+    def phone_trees(self, items=None):
         if items is None: items = self.items
         if isinstance(items, basestring): items = [items]
         
         trees = []
         for item in items:
             word_times = self.word_times(item)
-            phon_times = self.phon_times(item)
+            phone_times = self.phone_times(item)
             sent_times = self.sent_times(item)
     
             while sent_times:
                 (sent, sent_start, sent_end) = sent_times.pop(0)
                 trees.append(Tree('S', []))
-                while (word_times and phon_times and
-                       phon_times[0][2] <= word_times[0][1]):
-                    trees[-1].append(phon_times.pop(0)[0])
+                while (word_times and phone_times and
+                       phone_times[0][2] <= word_times[0][1]):
+                    trees[-1].append(phone_times.pop(0)[0])
                 while word_times and word_times[0][2] <= sent_end:
                     (word, word_start, word_end) = word_times.pop(0)
                     trees[-1].append(Tree(word, []))
-                    while phon_times and phon_times[0][2] <= word_end:
-                        trees[-1][-1].append(phon_times.pop(0)[0])
-                while phon_times and phon_times[0][2] <= sent_end:
-                    trees[-1].append(phon_times.pop(0)[0])
+                    while phone_times and phone_times[0][2] <= word_end:
+                        trees[-1][-1].append(phone_times.pop(0)[0])
+                while phone_times and phone_times[0][2] <= sent_end:
+                    trees[-1].append(phone_times.pop(0)[0])
         return trees
 
     def wav(self, item, start=0, end=None):
@@ -349,10 +349,10 @@ class TimitCorpusReader(CorpusReader):
     def tokenized(self, items=None, offset=True):
         if offset: return self.sent_times(items)
         else: return self.sents(items)
-    @deprecated("Use .phons() or .phon_times() instead.")
+    @deprecated("Use .phones() or .phone_times() instead.")
     def phonetic(self, items=None, offset=True):
-        if offset: return self.phon_times(items)
-        else: return self.phons(items)
+        if offset: return self.phone_times(items)
+        else: return self.phones(items)
     #}
 
 class SpeakerInfo:

@@ -61,6 +61,7 @@ can be accessed using C{nltk.corpus.I{corpus}.olac()}.
 
 from nltk.corpus.util import LazyCorpusLoader
 from nltk.corpus.reader import *
+import chat80
 
 abc = LazyCorpusLoader(
     'abc', PlaintextCorpusReader, '(?!\.svn).*', '.txt')
