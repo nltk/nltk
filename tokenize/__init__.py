@@ -36,7 +36,7 @@ def blankline(text):
     return BlanklineTokenizer().tokenize(text)
 
 @deprecated("Use nltk.wordpunct_tokenize() or "
-            "nltk.WordpunctTokenizer instead.")
+            "nltk.WordPunctTokenizer instead.")
 def wordpunct(text):
     return WordPunctTokenizer().tokenize(text)
 
