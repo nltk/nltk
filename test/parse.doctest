@@ -83,6 +83,15 @@ and unambiguous sentence.
         (NP (DT the) (N dog))
         (PP (P on) (NP (DT the) (N rug)))))
 
+
+(dolist (expr doctest-font-lock-keywords)
+  (add-to-list 'font-lock-keywords expr))
+
+  font-lock-keywords
+(add-to-list 'font-lock-keywords
+  (car doctest-font-lock-keywords))
+
+        
 Unit tests for the sr (Shift Reduce Parser) class
 -------------------------------------------------
 
