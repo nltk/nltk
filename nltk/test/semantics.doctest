@@ -54,7 +54,7 @@ doesn't work since cf not called on 'foo'
     >>> print  cf['foo']
     Traceback (most recent call last):
     ...
-    KeyError: 'foo'    
+    KeyError: 'foo'
     >>> print cf['d1']['foo']
     Traceback (most recent call last):
     ...
@@ -88,7 +88,7 @@ doesn't work since cf not called on 'foo'
     >>> cf.read(wrong)
     Traceback (most recent call last):
     ...
-    ValueError: Set contains sequences of different lengths    
+    ValueError: Set contains sequences of different lengths
 
     >>> val = Valuation({'Fido' : 'd1', 'dog' : {'d1' : True, 'd2' : True}})
     >>> val['dog'] == cf
@@ -163,7 +163,7 @@ Test the model checking with Blackburn & Bos testsuite
     >>> g2 = Assignment(dom2)
     >>> g21 = Assignment(dom2)
     >>> g21.add('d3', 'y')
-    {'y': 'd3'}  
+    {'y': 'd3'}
 
     >>> val3 = Valuation()
     >>> v3 = [('mia', 'd1'), ('jody', 'd2'), ('jules', 'd3'),
