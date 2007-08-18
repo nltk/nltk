@@ -1,3 +1,45 @@
+Version 0.9b1 2007-08-20
+
+Data:
+- new data package: corpora, grammars, tokenizers
+- deprecating GrammarFile...
+- new corpus reader implementation
+- timit player audio support
+
+NLTK:
+- New naming of packages and modules, and more functions imported into
+  top-level nltk namespace, e.g. nltk.chunk.Regexp -> nltk.RegexpParser,
+  nltk.tokenize.Line -> nltk.LineTokenizer, nltk.stem.Porter -> nltk.PorterStemmer,
+  nltk.parse.ShiftReduce -> nltk.ShiftReduceParser
+- processing class names changed from verbs to nouns, e.g.
+  StemI -> StemmerI, ParseI -> ParserI, ChunkParseI -> ChunkParserI, ClassifyI -> ClassifierI
+- all tokenizers are now available as subclasses of TokenizeI,
+  selected tokenizers are also available as functions, e.g. wordpunct_tokenize()
+- rewritten ngram tagger code, collapsed lookup tagger with unigram tagger
+- new system for deprecating code so that users are notified of name changes.
+- support for reading feature cfgs to parallel reading cfgs (parse_featcfg())
+- text classifier package...   weka support
+- more consistent tree printing
+- support for Mac installer (Joshua Ritterman)
+- move wordnet's morphy stemmer into the stemmer package
+
+NLTK Contrib:
+- nltk_contrib.timex -- temporal expression tagging
+- nltk_contrib. wordnet browser
+- nltk_contrib. lpath
+
+Book:
+- updates to book organization, chapter contents
+- corrections throughout suggested by readers (acknowledged in preface)
+- more consistent use of US spelling throughout
+- all examples work with "import nltk"
+- reordered chapters: 5->7->8->9->11->12->5
+  * language engineering in part 1 to broaden the appeal
+    of the earlier part of the book and to talk more about
+    evaluation and baselines at an earlier stage
+  * concentrate the partial and full parsing material in part 2,
+    and remove the specialized feature-grammar material into part 3
+
 Version 0.8 2007-07-01
 
 Code:
