@@ -11,6 +11,8 @@ Interface for tagging each token in a sentence with supplementary
 information, such as its part of speech.
 """
 
+from nltk.utilities import overridden
+
 class TaggerI(object):
     """
     A processing interface for assigning a tag to each token in a list.
@@ -28,7 +30,7 @@ class TaggerI(object):
 
         @rtype: C{list} of C{(token, tag)}
         """
-        if self.batch_tag.im_func is not ClassifierI.batch_tag.im_func:
+        if overridden(self.batch_tag):
             return self.batch_tag([tokens])[0]
         else:
             raise NotImplementedError()
