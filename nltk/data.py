@@ -185,6 +185,8 @@ def load(resource_url, format='auto', cache=True, verbose=False):
     if cache:
         resource_val = _resource_cache.get(resource_url)
         if resource_val is not None:
+            if verbose:
+                print '<<Using cached copy of %s>>' % (resource_url,)
             return resource_val
     
     # Let the user know what's going on.
