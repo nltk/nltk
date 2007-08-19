@@ -19,14 +19,7 @@ from nltk.featstruct import unify, substitute_bindings, UnificationFailure
 from category import Category, GrammarCategory
 from nltk import cfg
 from nltk import defaultdict
-from nltk.parse import filebroker
-
-def apply_file(filename, verbose=False):
-    lines = filebroker.load(filename, verbose=verbose)
-    if lines:
-        return cfg.parse_featcfg(lines)
-    else:
-        return None
+import nltk.data
 
 def load_earley(filename, trace=0, verbose=False):
     """
@@ -47,9 +40,7 @@ def load_earley(filename, trace=0, verbose=False):
     If C{verbose} is set to C{True}, then more diagnostic information about
     grammar-loading is displayed.
     """
-
-    grammar, lexicon = apply_file(filename, verbose=verbose)
-
+    grammar, lexicon = nltk.data.load(filename, verbose=verbose)
     return FeatureEarleyChartParser(grammar, lexicon, trace=trace)
 
 class FeatureTreeEdge(TreeEdge):
