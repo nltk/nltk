@@ -663,6 +663,7 @@ def parse_fcfg(input):
                     start = GrammarCategory.parse(args).freeze()
                 elif directive == 'include':
                     filename = args.strip('"')
+                    # [XX] This is almost certainly a bug: [XX]
                     self.apply_file(filename)
         else:
             try:
@@ -683,6 +684,11 @@ def parse_fcfg(input):
     grammar = Grammar(start, grammatical_productions)
     lexicon = earley_lexicon(lexical_productions)
     return (grammar, lexicon)
+
+from nltk.utilities import deprecated
+@deprecated("Use parse_fcfg")
+def parse_featcfg(input): 
+    return parse_fcfg(input)
 
 #################################################################
 # Demonstration
