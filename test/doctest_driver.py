@@ -673,7 +673,6 @@ def debug(names, optionflags, verbosity, pm=True):
                                  (sys.argv[0], name, e))
 
 def update(names, optionflags, verbosity):
-    parser = MyDocTestParser()
     runner = UpdateRunner(verbose=True)
     for name in names:
         try:
