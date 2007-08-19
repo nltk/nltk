@@ -29,7 +29,7 @@ classification}, in which:
 #{ Classification Interfaces
 ##//////////////////////////////////////////////////////
 
-class ClassifierI:
+class ClassifierI(object):
     """
     A processing interface for labeling tokens with a single category
     label (or X{class}).  Labels are typically C{string}s or
@@ -93,7 +93,7 @@ class ClassifierI:
         """
         return [self.probdist(fs) for fs in featuresets]
 
-class MultiClassifierI:
+class MultiClassifierI(object):
     """
     A processing interface for labeling tokens with zero or more
     category labels (or X{labels}).  Labels are typically C{string}s
@@ -158,7 +158,7 @@ class MultiClassifierI:
         return [self.probdist(fs) for fs in featuresets]
 
 # # [XX] IN PROGRESS:
-# class SequenceClassifierI:
+# class SequenceClassifierI(object):
 #     """
 #     A processing interface for labeling sequences of tokens with a
 #     single category label (or X{class}).  Labels are typically
