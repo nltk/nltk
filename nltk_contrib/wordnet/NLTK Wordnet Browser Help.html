@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content=
+"HTML Tidy for Windows (vers 14 February 2006), see www.w3.org">
+<title></title>
+<meta http-equiv="Content-Type" content=
+"text/html; charset=us-ascii">
+</head>
+<body>
+<h2>NLTK Wordnet Browser Help</h2>
+<h3>The User Interface</h3>
+The user interface is a so called <b>notebook</b> interface. This
+is familiar nowadays for almost everyone from Internet browsers,
+for example. It consists of one or more independent pages often
+(and here also) called <b>tabsheets</b>.
+<p>Every tabsheet contains its own search history which can be
+browsed back and forth at will. The result of a new word search
+will be shown on the currently active tabsheet if nothing else is
+wanted. It is also possible to open a new tabsheet for the search
+word given.</p>
+<p>The result of a search is a display of one or more
+<b>synsets</b> of every part of speech in which a form of the
+search word was found to belong to. A synset is a set of words
+having the same sense or meaning. Each word in a synset that is
+underlined is a hypertext link which can be clicked to trigger an
+automatic search for that word.</p>
+<p>Every synset has a hypertext link <b>S:</b> at the start of its
+display line. Clicking that symbol shows you the names of the
+relations that this synset is part of. Clicking the relation name
+opens up a display for that relation. Clicking it another time
+closes the display again. Clicking another relation name on a line
+that has an opened relation closes the open relation and opens the
+clicked relation.</p>
+<p>The position and size of the browser window can be adjusted and
+the selections are retained between sessions.</p>
+<h3>Menu Structure</h3>
+The browser has a menubar that you can use to invoke a set of
+different operations. Most of the menu selections also have a
+corresponding keyboard shortcut.
+<h4>The File Menu</h4>
+<p>Using the file menu you can <b>open</b> a previously saved NLTK
+Wordnet Browser page. Note that only pages saved with this browser
+can be read.</p>
+<p>And as indicated above you can <b>save</b> a search page. The
+resulting file is a normal HTML mode file which can be viewed,
+printed etc. as any other HTML file.</p>
+<p>You can also <b>print</b> a page and <b>preview</b> a page to be
+printed. The selected printing settings are remembered during the
+session.</p>
+<h4>The Tabsheets Menu</h4>
+<p>You can <b>open an empty tabsheet</b> and <b>close</b> the
+currently active tabsheet.</p>
+<p>When you enter a new search word in the search word field you
+can make the search result be shown in a <b>new tabsheet</b>.</p>
+<h4>Page History</h4>
+You can browse the page history of the currently active tabsheet
+either <b>forwards</b> or <b>backwards</b>. <b>Next Page</b>
+browses towards the newer pages and <b>Previous Page</b> towards
+the older pages.
+<h4>The View Menu</h4>
+<p>You can <b>increase</b>, <b>decrease</b> and <b>normalize</b>
+the font size. The font size chosen is retained between
+sessions.</p>
+<p>You can view the <b>HTML source</b> of a page if you are
+curious.</p>
+<h4>The Help Menu</h4>
+You can view this <b>help text</b> as you already know. The
+<b>about</b> selection tells you something about the program.
+<h4>The Keyboard Shortcuts</h4>
+<p>The following keyboard shortcuts can be used to quickly launch
+the desired operation.</p>
+<table border="1" cellpadding="1" cellspacing="1" summary="">
+<col align="center">
+<col align="center">
+<tr>
+<th>Keyboard Shortcut</th>
+<th>Operation</th>
+</tr>
+<tr>
+<td>Ctrl+O</td>
+<td>Open a file</td>
+</tr>
+<tr>
+<td>Ctrl+S</td>
+<td>Save current page as</td>
+</tr>
+<tr>
+<td>Ctrl+P</td>
+<td>Print current page</td>
+</tr>
+<tr>
+<td>Ctrl+T</td>
+<td>Open a new (empty) tabsheet</td>
+</tr>
+<tr>
+<td>Ctrl+W</td>
+<td>Close the current tabsheet</td>
+</tr>
+<tr>
+<td>Ctrl+LinkClick</td>
+<td>Open the link in a new unfocused tabsheet</td>
+</tr>
+<tr>
+<td>Ctrl+Shift+LinkClick</td>
+<td>Opent the link in a new focused tabsheet</td>
+</tr>
+<tr>
+<td>Alt+Enter (1)</td>
+<td>Show the word in search word field in a new tabsheet</td>
+</tr>
+<tr>
+<td>Ctrl+LeftArrow (2)</td>
+<td>Previous page in page history</td>
+</tr>
+<tr>
+<td>Ctlr+RightArrow (2)</td>
+<td>Next page in page history</td>
+</tr>
+<tr>
+<td>Ctrl++/Ctrl+Numpad+/Ctrl+UpArrow (3)</td>
+<td>Increase font size</td>
+</tr>
+<tr>
+<td>Ctrl+-/Ctrl+Numpad-/Ctrl+DownArrow (3)</td>
+<td>Decrease font size</td>
+</tr>
+<tr>
+<td>Ctrl+0 (4)</td>
+<td>Normal font size</td>
+</tr>
+<tr>
+<td>Ctrl+U</td>
+<td>Show HTML source</td>
+</tr>
+</table>
+<dl>
+<dt>(1)</dt>
+<dd>This works only when the search word field is active i.e. the
+caret is in it.</dd>
+<dt>(2)</dt>
+<dd>These are nonstandard combinations, the usual ones being
+Alt+LeftArrow and Alt+RightArrow. The choice was made because using
+Alt caused unwanted random character inserts into the search word
+field. The normal combinations will be added if this interference
+can be tamed.</dd>
+<dt>(3)</dt>
+<dd>There are so many of these combinations because the usual i.e.
+Ctrl++/Ctrl+- combinations did not work on the author's laptop and
+the Numpad combinations were cumbersome to use. Hopefully the first
+ones work on the computers of others.</dd>
+<dt>(4)</dt>
+<dd>This combination Ctrl+0 is "Ctrl+zero" not "Ctrl+ou".</dd>
+</dl>
+</body>
+</html>
