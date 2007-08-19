@@ -6,16 +6,32 @@
 # For license information, see LICENSE.TXT
 
 """
-Functions to find and load files in the NLTK data package.
+Functions to find and load NLTK X{resource files}, such as corpora,
+grammars, and saved processing objects.  Resource files are identified
+using URLs, such as"C{nltk:corpora/abc/rural.txt}" or
+"C{http://nltk.org/sample/toy.cfg}".  The following URL protocols are
+supported:
 
-The NLTK data package contains a variety of data files, including
-corpora, grammars, and saved processing objects.  This module provides
-two functions to find and load these data files: L{find()} searches
-for a given resource, and returns its filename; and L{load()} loads a
-given resource and adds it to a resource cache.
+  - "C{file:I{path}}": Specifies the file whose path is C{I{path}}.
+    Both relative and absolute paths may be used.
+    
+  - "C{http://I{host}/{path}": Specifies the file stored on the web
+    server C{I{host}} at path C{I{path}}.
+    
+  - "C{nltk:I{path}}": Specifies the file stored in the NLTK data
+    package at C{I{path}}.  NLTK will search for these files in the
+    directories specified by L{nltk.data.path}.
+
+If no protocol is specified, then the default protocol "C{nltk:}" will
+be used.
+ 
+This module provides to functions that can be used to access a
+resource file, given its URL: L{load()} loads a given resource, and
+adds it to a resource cache; and L{retrieve()} copies a given resource
+to a local file.
 """
 
-import sys, os, os.path, pickle, textwrap, weakref, yaml
+import sys, os, os.path, pickle, textwrap, weakref, yaml, re, urllib
 from nltk import cfg
 
 ######################################################################
@@ -65,16 +81,16 @@ _resource_cache = weakref.WeakValueDictionary()
 """A weakref dictionary used to cache resources so that they won't
    need to be loaded more than once."""
 
-def find(resource):
+def find(resource_name):
     """
     Find the given resource from the NLTK data package, and return a
     corresponding path name.  If the given resource is not found,
     raise a C{LookupError}, whose message gives a pointer to the
     installation instructions for the NLTK data package.
 
-    @type resource: C{str}
-    @param resource: The name of the resource to search for.  Resource
-        names are posix-style relative path names, such as
+    @type resource_name: C{str}
+    @param resource_name: The name of the resource to search for.
+        Resource names are posix-style relative path names, such as
         C{'corpora/brown'}.  In particular, directory names should
         always be separated by the C{'/'} character, which will be
         automatically converted to a platform-appropriate path
@@ -83,7 +99,7 @@ def find(resource):
     """
     # Check each directory in our path:
     for directory in path:
-        p = os.path.join(directory, os.path.join(*resource.split('/')))
+        p = os.path.join(directory, os.path.join(*resource_name.split('/')))
         if os.path.exists(p):
             return p
         
@@ -91,26 +107,68 @@ def find(resource):
     msg = textwrap.fill(
         'Resource %r not found.  For installation instructions, '
         'please see <http://nltk.org/index.php/Installation>.' %
-        (resource,), initial_indent='  ', subsequent_indent='  ', width=66)
+        (resource_name,), initial_indent='  ', subsequent_indent='  ',
+        width=66)
     msg += '\n  Searched in:' + ''.join('\n    - %r' % d for d in path)
     sep = '*'*70
     resource_not_found = '\n%s\n%s\n%s' % (sep, msg, sep)
     raise LookupError(resource_not_found)
 
-def load(resource, format='auto', cache=True, verbose=False):
+def retrieve(resource_url, filename=None, verbose=True):
     """
-    Load a given resource from the NLTK resource package.  The following
+    Copy the given resource to a local file.  If no filename is
+    specified, then use the URL's filename.  If there is already a
+    file named C{filename}, then raise a C{ValueError}.
+    
+    @type resource_url: C{str}
+    @param resource_url: A URL specifying where the resource should be
+        loaded from.  The default protocol is C{"nltk:"}, which searches
+        for the file in the the NLTK data package.
+    """
+    if filename is None:
+        if resource_url.startswith('file:'):
+            filename = os.path.split(filename)[-1]
+        else:
+            filename = re.sub(r'(^\w+:)?.*/', '', resource_url)
+    if os.path.exists(filename):
+        raise ValueError, "%r already exists!" % filename
+    
+    if verbose:
+        print 'Retrieving %r, saving to %r' % (resource_url, filename)
+        
+    # Open the input & output streams.
+    infile = _open(resource_url)
+    outfile = open(filename, 'wb')
+    
+    # Copy infile -> outfile, using 64k blocks.
+    while True:
+        s = infile.read(1024*64) # 64k blocks.
+        outfile.write(s)
+        if not s: break
+
+    # Close both files.
+    infile.close()
+    outfile.close()
+
+def load(resource_url, format='auto', cache=True, verbose=False):
+    """
+    Load a given resource from the NLTK data package.  The following
     resource formats are currently supported:
       - C{'pickle'}
       - C{'yaml'}
       - C{'cfg'}
       - C{'pcfg'}
       - C{'fcfg'}
+      - C{'raw'}
 
     If no format is specified, C{load()} will attempt to determine a
     format based on the resource name's file extension.  If that
     fails, C{load()} will raise a C{ValueError} exception.
 
+    @type resource_url: C{str}
+    @param resource_url: A URL specifying where the resource should be
+        loaded from.  The default protocol is C{"nltk:"}, which searches
+        for the file in the the NLTK data package.
     @type cache: C{bool}
     @param cache: If true, add this resource to a cache.  If C{load}
         finds a resource in its cache, then it will return it from the
@@ -125,43 +183,47 @@ def load(resource, format='auto', cache=True, verbose=False):
     """
     # If we've cached the resource, then just return it.
     if cache:
-        resource_val = _resource_cache.get(resource)
+        resource_val = _resource_cache.get(resource_url)
         if resource_val is not None:
             return resource_val
     
-    # This will raise an exception if we can't find the resource:
-    filename = find(resource)
-
     # Let the user know what's going on.
     if verbose:
-        print '<<Loading %s>>' % (resource,)
+        print '<<Loading %s>>' % (resource_url,)
 
     # Determine the format of the resource.
     if format == 'auto':
-        if filename.endswith('.pickle'): format = 'pickle'
-        if filename.endswith('.yaml'): format = 'yaml'
-        if filename.endswith('.cfg'): format = 'cfg'
-        if filename.endswith('.pcfg'): format = 'pcfg'
-        if filename.endswith('.fcfg'): format = 'fcfg'
+        if resource_url.endswith('.pickle'): format = 'pickle'
+        if resource_url.endswith('.yaml'): format = 'yaml'
+        if resource_url.endswith('.cfg'): format = 'cfg'
+        if resource_url.endswith('.pcfg'): format = 'pcfg'
+        if resource_url.endswith('.fcfg'): format = 'fcfg'
         
     # Load the resource.
     if format == 'pickle':
-        resource_val = pickle.load(open(filename, 'rb'))
+        resource_val = pickle.load(_open(resource_url))
     elif format == 'yaml':
-        resource_val = yaml.load(open(filename, 'rb'))
+        resource_val = yaml.load(_open(resource_url))
     elif format == 'cfg':
-        resource_val = cfg.parse_cfg(open(filename, 'r').read())
+        resource_val = cfg.parse_cfg(_open(resource_url).read())
     elif format == 'pcfg':
-        resource_val = cfg.parse_pcfg(open(filename, 'r').read())
+        resource_val = cfg.parse_pcfg(_open(resource_url).read())
     elif format == 'fcfg':
         # NB parse_fcfg returns a FeatGramLex -- a tuple (grammar, lexicon)
-        resource_val = cfg.parse_fcfg(open(filename, 'r').read())
+        resource_val = cfg.parse_fcfg(_open(resource_url).read())
+    elif format == 'raw':
+        resource_val = _open(resource_url).read()
     else:
         raise ValueError('Unknown format type!')
 
     # If requested, add it to the cache.
     if cache:
-        _resource_cache[resource] = resource_val
+        try:
+            _resource_cache[resource_url] = resource_val
+        except TypeError:
+            # We can't create weak references to some object types, like
+            # strings and tuples.  For now, just don't cache them.
+            pass
     
     return resource_val
 
@@ -171,6 +233,31 @@ def clear_cache():
     @see: L{load()}
     """
     _resource_cache.clear()
+
+def _open(resource_url, mode='rb'):
+    """
+    Helper function that returns an open file object for a resource,
+    given its resource URL.  If the given resource URL uses the 'ntlk'
+    protocol, or uses no protocol, then use L{nltk.data.find} to find
+    its path, and open it with the given mode; if the resource URL
+    uses the 'file' protocol, then open the file with the given mode;
+    otherwise, delegate to C{urllib.urlopen}.
+    
+    @type resource_url: C{str}
+    @param resource_url: A URL specifying where the resource should be
+        loaded from.  The default protocol is C{"nltk:"}, which searches
+        for the file in the the NLTK data package.
+    """
+    # Divide the resource name into "<protocol>:<path>".
+    protocol, path = re.match('(?:(\w+):)?(.*)', resource_url).groups()
+
+    if protocol is None or protocol.lower() == 'nltk':
+        return open(find(path), mode)
+    elif protocol.lower() == 'file':
+        # urllib might not use mode='rb', so handle this one ourselves:
+        return open(path, mode)
+    else:
+        return urllib.urlopen(resource_url)
 
 ######################################################################
 # Lazy Resource Loader
