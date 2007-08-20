@@ -39,11 +39,7 @@ class TrainingInstances(Instances):
         self.prior_probabilities = None
             
     def filter(self, attribute, attr_value):
-        new_instances = TrainingInstances([])
-        for instance in self.data:
-            if(instance.value(attribute) == attr_value):
-                new_instances.append(instance)
-        return new_instances
+        return TrainingInstances([instance for instance in self.data if instance.value(attribute) == attr_value])
     
     def value_ranges(self, attributes):
         """
@@ -78,16 +74,10 @@ class TrainingInstances(Instances):
         return values
         
     def __as_float(self, values):
-        floats = []
-        for value in values:
-            floats.append(float(value))
-        return floats
+        return [float(value) for value in values]
     
     def klass_values(self):
-        values = []
-        for instance in self.data:
-            values.append(instance.klass_value)
-        return values
+        return [instance.klass_value for instance in self.data]
     
     def supervised_breakpoints(self, attribute):
         self.sort_by(attribute)
@@ -95,10 +85,7 @@ class TrainingInstances(Instances):
         return SupervisedBreakpoints(self.klass_values(), attr_values)
        
     def attribute_values(self, attribute):
-        values = []
-        for instance in self.data:
-            values.append(instance.value(attribute))
-        return values
+        return [instance.value(attribute) for instance in self.data]
     
     def sort_by(self, attribute):
         self.data.sort(lambda x, y: cmp(x.value(attribute), y.value(attribute)))
@@ -120,8 +107,7 @@ class TrainingInstances(Instances):
         return datasets
     
     def stratified_bunches(self, fold):
-        stratified = []
-        for index in range(fold): stratified.append([])
+        stratified = [[] for each in range(fold)]
         self.data.sort(key=lambda instance: instance.klass_value)
         for index in range(len(self.data)): stratified[index % fold].append(self.data[index])
         return stratified
@@ -218,11 +204,7 @@ class SupervisedBreakpoints(UserList.UserList):
         Returns an array of indices where the class membership changes from one value to another
         the indicies will always lie between 0 and one less than number of instance, both inclusive.
         """
-        breakpoints= []
-        for index in range(len(self.klass_values) - 1):
-            if not self.klass_values[index] == self.klass_values[index + 1]:
-                breakpoints.append(index)
-        return breakpoints
+        return [index for index in range(len(self.klass_values) - 1) if not self.klass_values[index] == self.klass_values[index + 1]]
     
     def adjust_for_min_freq(self, min_size):
         prev = -1
@@ -287,10 +269,7 @@ def calc_prob_based_on_distrbn(mean, sd, value):
     return (1.0 / math.sqrt(2 * math.pi * sd)) * math.exp(-pow((value - mean), 2)/ (2 * pow(sd, 2)))
         
 def training_as_gold(instances):
-    gold = []
-    for instance in instances:
-        gold.append(instance.as_gold())
-    return gold
+    return [instance.as_gold() for instance in instances]
 
 ## Utility method
 #  needs to be pulled out into a common utility class

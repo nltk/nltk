@@ -31,10 +31,7 @@ class Instance:
         """
         Returns a list of attribute values corresponding to @param:attributes
         """
-        _values = []
-        for attribute in attributes:
-            _values.append(self.attrs[attribute.index])
-        return _values
+        return [self.attrs[attribute.index] for attribute in attributes]
 
     def discretise(self, discretised_attributes):
         """
@@ -45,9 +42,7 @@ class Instance:
             self.attrs[index] = discretised_attribute.mapping(float(self.attrs[index]))
     
     def remove_attributes(self, attributes):
-        to_be_removed = []
-        for attribute in attributes:
-            to_be_removed.append(attribute.index)
+        to_be_removed = [attribute.index for attribute in attributes]
         to_be_removed.sort()
         to_be_removed.reverse()
         for r in to_be_removed:
@@ -81,11 +76,7 @@ class Instance:
         return 'Attributes: ' + self.check_none(self.attrs)
     
     def attr_values_as_str(self):
-        strn = ''
-        for attr in self.attrs:
-            strn += str(attr)
-            strn += ','
-        return strn[:-1]
+        return ','.join([str(attr) for attr in self.attrs])
     
 class TrainingInstance(Instance):
     def __init__(self, attr_values, klass_value):

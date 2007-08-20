@@ -44,13 +44,13 @@ class Attribute:
         return False
     
     def __str__(self):
-        return self.name +':' + str(self.values) + ' index:' + str(self.index)
+        return self.name +':[' + self.values_as_str() + '] index:' + str(self.index)
     
     def values_as_str(self):
-        values_str = ''
-        for value in self.values:
-            values_str += value + ','
-        return values_str[:-1]
+        """
+        Used to write contents back to file store
+        """
+        return ','.join([str(value) for value in self.values])
     
     def empty_freq_dists(self):
         freq_dists = {}
@@ -80,21 +80,15 @@ class Attributes(UserList.UserList):
         return False
     
     def subset(self, indices):
-        subset = []
-        for index in indices:
-            subset.append(self.data[index])
-        return subset
+        return [self.data[index] for index in indices]
 
     def discretise(self, discretised_attributes):
         for disc_attr in discretised_attributes:
             self.data[disc_attr.index] = disc_attr
             
     def empty_decision_stumps(self, ignore_attributes, klass):
-        decision_stumps = []
         filtered = filter(lambda attribute: attribute not in ignore_attributes, self.data)
-        for attribute in filtered:
-            decision_stumps.append(ds.DecisionStump(attribute, klass))
-        return decision_stumps
+        return [ds.DecisionStump(attribute, klass) for attribute in filtered]
 
     def remove_attributes(self, attributes):
         for attribute in attributes:
@@ -106,10 +100,7 @@ class Attributes(UserList.UserList):
             self.data[i].index = i
             
     def continuous_attribute_indices(self):
-        indices = []
-        for atr in self.data:
-            if atr.is_continuous(): indices.append(atr.index)
-        return indices
+        return [atr.index for atr in self.data if atr.is_continuous()]
     
     def empty_freq_dists(self):
         freq_dists = {}
@@ -118,12 +109,7 @@ class Attributes(UserList.UserList):
         return freq_dists
         
     def __str__(self):
-        str = '['
-        for each in self:
-            str += each.__str__() + ', '
-        if len(str) > 1: str = str[:-1]
-        return str + ']'
-    
+        return '[' + ', '.join([each.__str__() for each in self]) + ']'
             
 def fact(n):
     if n==0 or n==1: return 1

@@ -139,6 +139,6 @@ def as_integers(name, com_str):
             try:
                 indices.append(int(element.strip()))
             except ValueError:
-                raise inv.InvalidDataError('Invalid Data. ' + name + ' should be integers.')
+                raise inv.InvalidDataError('Invalid Data. ' + name + ' should contain integers.')
     return indices
 

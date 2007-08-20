@@ -45,3 +45,11 @@ class AttributeTestCase(unittest.TestCase):
         for each in attr.values:
             self.assertEqual(0, freq_dists[each].N())
         
+    def test_values_as_str(self):
+        attr = a.Attribute('foo', ['a','b','c'], 0)
+        self.assertEqual('a,b,c', attr.values_as_str())
+        
+    def test_to_string(self):
+        attr = a.Attribute('foo', ['a','b','c'], 0)
+        self.assertEqual('foo:[a,b,c] index:0', str(attr))
+        

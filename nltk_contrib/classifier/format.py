@@ -53,31 +53,20 @@ class C45Format(FormatI):
         return a.Attributes(attributes)
     
     def get_training_instances(self, path):
-        lines = self.__get_lines(path, self.DATA)
-        instances = []
-        for line in lines:
-            values = self.__get_comma_sep_values(line)
-            if values is not None:
-                instances.append(ins.TrainingInstance(values[:-1], values[-1]))
-        return inss.TrainingInstances(instances)
+        all_values = self.__get_all_values(path, self.DATA)
+        return inss.TrainingInstances([ins.TrainingInstance(values[:-1], values[-1]) for values in all_values if values is not None])
     
     def get_test_instances(self, path):
-        instances = []
-        lines = self.__get_lines(path, self.TEST)
-        for line in lines:
-            values = self.__get_comma_sep_values(line)
-            if values is not None:
-                instances.append(ins.TestInstance(values))                
-        return inss.TestInstances(instances)
+        all_values = self.__get_all_values(path, self.TEST)
+        return inss.TestInstances([ins.TestInstance(values) for values in all_values if values is not None])
     
     def get_gold_instances(self, path):
-        instances = []
-        lines = self.__get_lines(path, self.GOLD)
-        for line in lines:
-            values = self.__get_comma_sep_values(line)
-            if values is not None:
-                instances.append(ins.GoldInstance(values[:-1], values[-1]))
-        return inss.GoldInstances(instances)
+        all_values = self.__get_all_values(path, self.GOLD)
+        return inss.GoldInstances([ins.GoldInstance(values[:-1], values[-1]) for values in all_values if values is not None])
+    
+    def __get_all_values(self, path, ext):
+        lines = self.__get_lines(path, ext)
+        return [self.__get_comma_sep_values(line) for line in lines]        
     
     def get_klass(self, path):
         lines = self.__get_lines(path, self.NAMES)
@@ -99,10 +88,7 @@ class C45Format(FormatI):
         
     def write_metadata_to_file(self, attributes, klass, path):
         new_file = self.create_file(path, self.NAMES)
-        klass_values = ''
-        for value in klass:
-            klass_values += str(value) + ','
-        lines = [klass_values[:-1] + '.']
+        lines = [','.join([str(value) for value in klass]) + '.']
         for attribute in attributes:
             lines.append(attribute.name + ':' + attribute.values_as_str() + '.')
         new_file.write(lines)
@@ -110,10 +96,7 @@ class C45Format(FormatI):
         
     def write_to_file(self, path, extension, instances, method):
         new_file = self.create_file(path, extension)
-        lines = []
-        for instance in instances:
-            lines.append(method(instance))
-        new_file.write(lines)
+        new_file.write([method(instance) for instance in instances])
         return path + cfile.DOT + extension
     
     def create_file(self, path, extension):

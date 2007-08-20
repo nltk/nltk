@@ -19,12 +19,8 @@ class Classifier:
         self.internal = internal
         self.convert_continuous_values_to_numbers(self.training)
         sorted_klass_freqs = self.training.class_freq_dist().sorted()
-        sorted_klass_values = []
-        for each in sorted_klass_freqs:
-            sorted_klass_values.append(each)
-        for each in klass:
-            if not sorted_klass_values.__contains__(each):
-                sorted_klass_values.append(each)
+        sorted_klass_values = [each for each in sorted_klass_freqs]
+        sorted_klass_values.extend([each for each in klass if not sorted_klass_values.__contains__(each)])
         self.klass = sorted_klass_values
         if not self.internal:
             self.validate_training()
@@ -58,10 +54,7 @@ class Classifier:
     can_handle_continuous_attributes = classmethod(can_handle_continuous_attributes)
 
 def split_ignore_space(comma_sep_string):
-    _file_names = []
-    for name in comma_sep_string.split(','):
-        _file_names.append(name.strip())
-    return _file_names
+    return [name.strip() for name in comma_sep_string.split(',')]
 
 def min_entropy_breakpoint(values):
     position, min_entropy = 0, None

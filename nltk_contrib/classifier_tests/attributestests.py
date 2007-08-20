@@ -105,12 +105,18 @@ class AttributesTestCase(unittest.TestCase):
         
     def test_empty_freq_dists(self):
         attr1 = a.Attribute("first", ['a','b','c'], 0)
-        attr2 = a.Attribute("second", ['d','e'], 0)
+        attr2 = a.Attribute("second", ['d','e'], 1)
         attrs = a.Attributes([attr1,attr2])
         freq_dists = attrs.empty_freq_dists()
         self.assertEqual(2, len(freq_dists))
         self.assertEqual(3, len(freq_dists[attr1]))
         self.assertEqual(2, len(freq_dists[attr2]))
+        
+    def test_to_string(self):
+        attr1 = a.Attribute("first", ['a','b','c'], 0)
+        attr2 = a.Attribute("second", ['d','e'], 1)
+        attrs = a.Attributes([attr1,attr2])
+        self.assertEqual('[first:[a,b,c] index:0, second:[d,e] index:1]', str(attrs))
         
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()

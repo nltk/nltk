@@ -10,25 +10,16 @@ class StatList(UserList.UserList):
         UserList.UserList.__init__(self, values)
         
     def mean(self):
-        sum = 0
         if len(self.data) == 0: return 0
-        for each in self.data:
-            sum += each
-        return float(sum) / len(self.data)
+        return float(sum([each for each in self.data])) / len(self.data)
     
     def variance(self):
         _mean = self.mean()
         if len(self.data) < 2: return 0
-        sum = 0
-        for each in self.data:
-            sum += pow((each - _mean), 2)
-        return float(sum) / (len(self.data) - 1)
+        return float(sum([pow((each - _mean), 2) for each in self.data])) / (len(self.data) - 1)
     
     def std_dev(self):
         return math.sqrt(self.variance())
 
 def int_array_to_string(int_array):
-    str_array = []
-    for each in int_array:
-        str_array.append(str(each))
-    return ','.join(str_array)
+    return ','.join([str(each) for each in int_array])
