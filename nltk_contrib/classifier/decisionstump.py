@@ -113,10 +113,7 @@ class DecisionStump:
         return _str
         
 def total_counts(dictionary_of_klass_freq):
-    total = 0
-    for count in dictionary_of_klass_freq.values():
-        total += count
-    return total    
+    return sum([count for count in dictionary_of_klass_freq.values()])
         
 def dictionary_of_values(klass):
     _values = {}

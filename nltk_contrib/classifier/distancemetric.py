@@ -15,11 +15,7 @@ def euclidean_distance(instance1, instance2, attributes):
     return math.sqrt(total)
         
 def hamiltonian_distance(instance1, instance2, attributes):
-    total = 0
-    for attribute in attributes:
-        d = distance(instance1.value(attribute), instance2.value(attribute), attribute.is_continuous())
-        total += d
-    return total
+    return sum([distance(instance1.value(attribute), instance2.value(attribute), attribute.is_continuous()) for attribute in attributes])
 
 def distance(value1, value2, is_continuous):
     if is_continuous:

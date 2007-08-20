@@ -55,34 +55,17 @@ class ConfusionMatrix:
         return self.matrix[index][index]
         
     def tn(self, index = 0):
-        sum = 0
-        for i in range(self.__num_class_vals):
-            if i == index: continue
-            for j in range(self.__num_class_vals):
-                if j == index: continue
-                sum += self.matrix[i][j]
-        return sum
+        return sum([self.matrix[i][j] for i in range(self.__num_class_vals) for j in range(self.__num_class_vals) if not (i == index or j == index)])
         
     def fp(self, index = 0):
-        sum = 0
-        for i in range(self.__num_class_vals):
-            if i == index: continue
-            sum += self.matrix[i][index]
-        return sum
+        return sum([self.matrix[i][index] for i in range(self.__num_class_vals) if not i == index])
             
     def fn(self, index = 0):
-        sum = 0
-        for i in range(self.__num_class_vals):
-            if i == index: continue
-            sum += self.matrix[index][i]
-        return sum
+        return sum([self.matrix[index][i] for i in range(self.__num_class_vals) if not i == index])
 
     def __str__(self):
         strn = '{'
         for i in range(self.__num_class_vals): 
-            values = []
-            for j in range(self.__num_class_vals): 
-                values.append(str(self.matrix[i][j]))
-            strn += ','.join(values) + '\n'
+            strn += ','.join([str(self.matrix[i][j]) for j in range(self.__num_class_vals)]) + '\n'
         strn += '}'
         return strn

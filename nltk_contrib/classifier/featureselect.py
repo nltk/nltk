@@ -221,13 +221,7 @@ def isfloat(stringval):
         float(stringval)
         return True
     except (ValueError, TypeError), e: return False 
-                        
-def as_sets_array(array):
-    sets = []
-    for element in array:
-        sets.append(set([element.index]))
-    return sets
-    
+                            
 def batch_filter_select(base_path, suffixes, number_of_attributes, log_path, has_continuous):
     filter_suffixes = []
     for each in suffixes:
