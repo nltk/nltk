@@ -111,11 +111,11 @@ class ParadigmQuery(object):
 
         # Make a grammar out of our productions
         grammar = cfg.Grammar(O, productions)
-        rd_parser = parse.RecursiveDescent(grammar)
+        rd_parser = parse.RecursiveDescentParser(grammar)
        
         # Tokens need to be redefined. 
         # It disappears after first use, and I don't know why.
-        tokens = tokenize.regexp(self.string, re_all)
+        tokens = tokenize.regexp_tokenize(self.string, re_all)
         toklist = list(tokens)
 
         # Store the parsing. 

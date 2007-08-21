@@ -16,7 +16,7 @@ in http://nltk.sourceforge.net/lite/doc/en/data.html
 
 from nltk.corpus import toolbox
 
-lexicon = toolbox.parse_corpus('rotokas.dic')
+lexicon = toolbox.xml('rotokas.dic')
 lexemes = []
 for lexeme in lexicon.findall('record/lx'):
     normalised_lexeme = lexeme.text.lower()

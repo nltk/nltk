@@ -16,7 +16,7 @@ in http://nltk.sourceforge.net/lite/doc/en/data.html
 
 from nltk.corpus import toolbox
 
-lexicon = toolbox.parse_corpus('rotokas.dic')
+lexicon = toolbox.xml('rotokas.dic')
 
 sum_size = num_entries = 0
 for entry in lexicon.findall('record'):

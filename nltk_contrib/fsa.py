@@ -477,7 +477,7 @@ def grammar(terminals):
 
     return cfg.WeightedGrammar(S, rules)
 
-_parser = pchart.InsideParse(grammar('abcde'))
+_parser = pchart.InsideParser(grammar('abcde'))
 
 # create NFA from regexp (Thompson's construction)
 # assumes unique start and final states

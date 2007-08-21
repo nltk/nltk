@@ -3,7 +3,6 @@
 
 from mx.DateTime import *
 import re, string, os, sys
-from nltk_lite import tokenize
   
 def tag(text):
 
@@ -234,19 +233,19 @@ def ground(tagged_text, base_date):
     
     # Weekday in the previous week.
     elif re.match(r'last ' + week_days, timex, re.IGNORECASE):
-      day = hashweekdays(list(tokenize.whitespace(timex))[1])
+      day = hashweekdays(timex.split()[1])
       timex_val = str(base_date + RelativeDateTime(weeks=-1, \
                     weekday=(day,0)))
                     
     # Weekday in the current week.
     elif re.match(r'this ' + week_days, timex, re.IGNORECASE):
-      day = hashweekdays(list(tokenize.whitespace(timex))[1])
+      day = hashweekdays(timex.split()[1])
       timex_val = str(base_date + RelativeDateTime(weeks=0, \
                     weekday=(day,0)))
                     
     # Weekday in the following week.
     elif re.match(r'next ' + week_days, timex, re.IGNORECASE):
-      day = hashweekdays(list(tokenize.whitespace(timex))[1])
+      day = hashweekdays(timex.split()[1])
       timex_val = str(base_date + RelativeDateTime(weeks=+1, \
                     weekday=(day,0)))
     
@@ -269,17 +268,17 @@ def ground(tagged_text, base_date):
 
     # Month in the previous year.
     elif re.match(r'last ' + months, timex, re.IGNORECASE):
-      month = hashmonths(list(tokenize.whitespace(timex))[1])
+      month = hashmonths(timex.split()[1])
       timex_val = str(base_date.year - 1) + '-' + str(month)
       
     # Month in the current year.
     elif re.match(r'this ' + months, timex, re.IGNORECASE):
-      month = hashmonths(list(tokenize.whitespace(timex))[1])
+      month = hashmonths(timex.split()[1])
       timex_val = str(base_date.year) + '-' + str(month)
       
     # Month in the following year.
     elif re.match(r'next ' + months, timex, re.IGNORECASE):
-      month = hashmonths(list(tokenize.whitespace(timex))[1])
+      month = hashmonths(timex.split()[1])
       timex_val = str(base_date.year + 1) + '-' + str(month)
     elif re.match(r'last month', timex, re.IGNORECASE):
     

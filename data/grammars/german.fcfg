@@ -1,4 +1,4 @@
-## Natural Language Toolkit: german.cfg
+## Natural Language Toolkit: german.fcfg
 ##
 ## Example of a feature-based grammar for German, illustrating
 ## CASE and AGR features (PER, GND, NUM) working as a bundle.

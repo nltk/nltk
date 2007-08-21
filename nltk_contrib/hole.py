@@ -1,8 +1,7 @@
 # Contributed by Peter Wang
 
-from nltk import tokenize, tree
+from nltk import tree, data
 from nltk.parse.featurechart import *
-from nltk.parse import GrammarFile, bracket_parse
 from nltk.draw.tree import draw_trees
 
 """
@@ -334,10 +333,10 @@ def main():
     if len(args) > 0:
         filename = args[0]
     else:
-        filename = 'hole.cfg'
+        filename = 'grammars/hole.fcfg'
 
     print 'Reading grammar file', filename
-    grammar = GrammarFile(filename)
+    grammar = data.load(filename)
     parser = grammar.earley_parser(trace=options.verbosity)
 
     # Prompt the user for a sentence.
@@ -345,7 +344,7 @@ def main():
     line = sys.stdin.readline()[:-1]
 
     # Parse the sentence.
-    tokens = list(tokenize.whitespace(line))
+    tokens = line.split()
     trees = parser.get_parse_list(tokens)
     print 'Got %d different parses' % len(trees)
 
@@ -359,7 +358,7 @@ def main():
         # Reparse the semantic representation from its bracketed string format.
         # I find this uniform structure easier to handle.  It also makes the
         # code mostly independent of the lambda calculus classes.
-        usr = bracket_parse(str(sem))
+        usr = tree.bracket_parse(str(sem))
 
         # Break the hole semantics representation down into its components
         # i.e. holes, labels, formula fragments and constraints.
@@ -405,4 +404,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

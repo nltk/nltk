@@ -53,7 +53,7 @@ class ToolboxData(toolbox.ToolboxData):
         from nltk import chunk
         from nltk.parse import Tree
 
-        cp = chunk.Regexp(grammar)
+        cp = chunk.RegexpParser(grammar)
         db = self.parse(**kwargs)
         tb_etree = Element('toolbox_data')
         header = db.find('header')
@@ -269,7 +269,7 @@ def demo_flat():
     from nltk.etree.ElementTree import ElementTree    
     import sys
 
-    tree = ElementTree(toolbox.parse_corpus('iu_mien_samp.db', key='lx', encoding='utf8'))
+    tree = ElementTree(toolbox.xml('iu_mien_samp.db', key='lx', encoding='utf8'))
     tree.write(sys.stdout)
     
 
