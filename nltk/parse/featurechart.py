@@ -21,7 +21,7 @@ from nltk import cfg
 from nltk import defaultdict
 import nltk.data
 
-def load_earley(filename, trace=0, verbose=False):
+def load_earley(filename, trace=0, cache=False, verbose=False):
     """
     Load a grammar from a file, and build an Earley feature parser based on
     that grammar.
@@ -40,7 +40,7 @@ def load_earley(filename, trace=0, verbose=False):
     If C{verbose} is set to C{True}, then more diagnostic information about
     grammar-loading is displayed.
     """
-    grammar, lexicon = nltk.data.load(filename, verbose=verbose)
+    grammar, lexicon = nltk.data.load(filename, cache=cache, verbose=verbose)
     return FeatureEarleyChartParser(grammar, lexicon, trace=trace)
 
 class FeatureTreeEdge(TreeEdge):
