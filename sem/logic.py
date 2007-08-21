@@ -46,17 +46,10 @@ class Variable(object):
         """
         self.name = name
 
-    def __eq__(self, other):
-        return self.equals(other)
+    def __cmp__(self, other):
+        if not isinstance(other, Variable): return -1
+        return cmp(self.name, other.name)
 
-    def __ne__(self, other):
-        return not self.equals(other)
-
-    def equals(self, other):
-        """A comparison function."""
-        if not isinstance(other, Variable): return False
-        return self.name == other.name
-        
     def __str__(self): return self.name
 
     def __repr__(self): return "Variable('%s')" % self.name
@@ -75,17 +68,10 @@ class Constant(object):
         """
         self.name = name
 
-    def __eq__(self, other):
-        return self.equals(other)
+    def __cmp__(self, other):
+        if not isinstance(other, Constant): return -1
+        return cmp(self.name, other.name)
 
-    def __ne__(self, other):
-        return not self.equals(other)
-
-    def equals(self, other):
-        """A comparison function."""
-        assert isinstance(other, Constant)
-        return self.name == other.name
-        
     def __str__(self): return self.name
 
     def __repr__(self): return "Constant('%s')" % self.name
@@ -187,7 +173,7 @@ class VariableExpression(Expression):
         """
         if isinstance(self, VariableExpression) and \
            isinstance(other, VariableExpression):
-            return self.variable.equals(other.variable)
+            return self.variable == other.variable
         else:
             return False
 
@@ -201,7 +187,7 @@ class VariableExpression(Expression):
         return set([self])
 
     def replace(self, variable, expression, replace_bound=False):
-        if self.variable.equals(variable):
+        if self.variable == variable:
             if isinstance(expression, Variable):
                 return VariableExpression(expression)
             else:
@@ -266,7 +252,7 @@ class ConstantExpression(Expression):
 
     def equals(self, other):
         if self.__class__ == other.__class__:
-            return self.constant.equals(other.constant)
+            return self.constant == other.constant
         else:
             return False
 
