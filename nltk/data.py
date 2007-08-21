@@ -229,6 +229,24 @@ def load(resource_url, format='auto', cache=True, verbose=False):
     
     return resource_val
 
+def show_cfg(resource_url, escape='##'):
+    """
+    Write out a grammar file, ignoring escaped and empty lines
+    @type resource_url: C{str}
+    @param resource_url: A URL specifying where the resource should be
+        loaded from.  The default protocol is C{"nltk:"}, which searches
+        for the file in the the NLTK data package.
+    @type escape: C{str}
+    @param escape: Prepended string that signals lines to be ignored
+    """
+    resource_val = load(resource_url, format='raw', cache=False)
+    lines = resource_val.splitlines()
+    for l in lines:
+        if l.startswith(escape): continue
+        if re.match('^$', l): continue
+        print l
+
+    
 def clear_cache():
     """
     Remove all objects from the resource cache.
