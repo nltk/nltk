@@ -9,7 +9,6 @@
 #
 # $Id$
 
-
 """
 Basic data classes for representing feature structures.  A X{feature
 structure} is a mapping from feature names to feature values, where:
@@ -50,6 +49,19 @@ L{unify() <FeatStruct.unify>} method.
 
 When unbound variables are unified with one another, they become
 X{aliased}.  This is encoded by binding one variable to the other.
+
+@todo: add a fail parameter to unify?  This would be a function that
+   would be called if unificaiton fails; it could either raise a
+   UnificationFailure error, or return a value.  How would this be
+   useful?  Well, one example is that it could be used to find a
+   "diff" between two feature structures -- i.e., a list of all
+   feature paths with different values.  Anyway, the old version had
+   it.  Ask steven why it was introduced?
+
+@todo: Figure out yaml support.  Do we need any?
+
+@todo: substitutebindingsi, etc.
+   
 """
 
 import re
@@ -76,10 +88,6 @@ class SubstituteBindingsI:
 class SubstituteBindingsMixin(object):
     pass
 
-def unify(*args, **kw):
-    raise ValueError('xx')
-def substitute_bindings(*args, **kw):
-    raise ValueError('xx')
 class UnificationFailure(Exception):
     'ack'
 
@@ -410,6 +418,7 @@ class FeatStruct(object):
     #{ Variables & Bindings
     ##////////////////////////////////////////////////////////////
 
+    # [xx] rename this to substitute_bindings?
     def apply_bindings(self, bindings):
         """
         @return: The feature structure that is obtained by replacing
@@ -1207,6 +1216,18 @@ class FeatStruct(object):
         # We don't know how to parse this value.
         raise ValueError('value', position)
 
+# unify can also be used as a stand-alone function:
+def unify(fstruct1, fstruct2, bindings=None, trace=False, rename_vars=True):
+    """
+    Unify C{self} with C{other}, and return the resulting feature
+    structure.  See L{FeatStruct.unify()} for descriptions of the
+    arguments.
+    """
+    if not (isinstance(fstruct1, FeatStruct) and
+            isinstance(fstruct2, FeatStruct)):
+        raise TypeError('Expected FeatStruct')
+    return fstruct1.unify(fstruct2, bindings, trace, rename_vars)
+
 ######################################################################
 # Playing around..
 ######################################################################
@@ -1228,6 +1249,15 @@ class RangeFeature(str):
         rng = max(val1[0], val2[0]), min(va1[1], val2[1])
         if rng[1] < rng[0]: raise UnificationFailure
         return rng
+
+######################################################################
+# Deprecated
+######################################################################
+from nltk.utilities import deprecated
+
+@deprecated("Use FeatStruct.apply_bindings() instead.")
+def substitute_bindings(fstruct, bindings):
+    return fstruct.apply_bindings(bindings)
 
 #//////////////////////////////////////////////////////////////////////
 # Demo..
@@ -1367,5 +1397,4 @@ def demo(trace=False):
 
 
 if __name__ == '__main__':
-    test(verbosity=0)
     demo()
