@@ -70,14 +70,14 @@ fails and returns ``None``.
 Regression Tests
 ~~~~~~~~~~~~~~~~
 
-Dictionary access methods
--------------------------
+Dictionary access methods (non-mutating)
+----------------------------------------
 
     >>> fs1 = FeatStruct(a=1, b=2, c=3)
     >>> fs2 = FeatStruct(x=fs1, y='x')
 
-Feature structures support all non-mutating dictionary methods
-(excluding the class method `dict.fromkeys()`):
+Feature structures support all dictionary methods (excluding the class
+method `dict.fromkeys()`).  Non-mutating methods:
 
     >>> sorted(fs2.keys())                               # keys()
     ['x', 'y']
@@ -116,6 +116,119 @@ Feature structures support all non-mutating dictionary methods
 
 Note: by default, `FeatStruct.copy()` does a deep copy.  Use
 `FeatStruct.copy(deep=False)` for a shallow copy.
+
+..
+    >>> del fs1, fs2 # clean-up.
+
+Dictionary access methods (mutating)
+------------------------------------
+    >>> fs1 = FeatStruct(a=1, b=2, c=3)
+    >>> fs2 = FeatStruct(x=fs1, y='x')
+
+Setting features (`__setitem__()`)
+
+    >>> fs1['c'] = 5
+    >>> fs1
+    [a=1, b=2, c=5]
+    >>> fs1['x'] = 12
+    >>> fs1
+    [a=1, b=2, c=5, x=12]
+    >>> fs2['x', 'a'] = 2
+    >>> fs2
+    [x=[a=2, b=2, c=5, x=12], y='x']
+    >>> fs1
+    [a=2, b=2, c=5, x=12]
+
+Deleting features (`__delitem__()`)
+
+    >>> del fs1['x']
+    >>> fs1
+    [a=2, b=2, c=5]
+    >>> del fs2['x', 'a']
+    >>> fs1
+    [b=2, c=5]
+
+`setdefault()`:
+
+    >>> fs1.setdefault('b', 99)
+    2
+    >>> fs1
+    [b=2, c=5]
+    >>> fs1.setdefault('x', 99)
+    99
+    >>> fs1
+    [b=2, c=5, x=99]
+
+`update()`:
+
+    >>> fs2.update({'a':'A', 'b':'B'}, c='C')
+    >>> fs2
+    [a='A', b='B', c='C', x=[b=2, c=5, x=99], y='x']
+
+`pop()`:
+
+    >>> fs2.pop('a')
+    'A'
+    >>> fs2
+    [b='B', c='C', x=[b=2, c=5, x=99], y='x']
+    >>> fs2.pop('a')
+    >>> fs2.pop('a', 'foo')
+    'foo'
+    >>> fs2
+    [b='B', c='C', x=[b=2, c=5, x=99], y='x']
+
+`clear()`:
+
+    >>> fs1.clear()
+    >>> fs1
+    []
+    >>> fs2
+    [b='B', c='C', x=[], y='x']
+
+`popitem()`:
+
+    >>> sorted([fs2.popitem() for i in range(len(fs2))])
+    [('b', 'B'), ('c', 'C'), ('x', []), ('y', 'x')]
+    >>> fs2
+    []
+
+Once a feature structure has been frozen, it may not be mutated.
+
+    >>> fs1 = FeatStruct('[x=1, y=2, z=[a=3]]')
+    >>> fs1.freeze()
+    >>> fs1.frozen()
+    True
+    >>> fs1['z'].frozen()
+    True
+
+    >>> fs1['x'] = 5
+    Traceback (most recent call last):
+      . . .
+    ValueError: Frozen FeatStructs may not be modified.
+    >>> del fs1['x']
+    Traceback (most recent call last):
+      . . .
+    ValueError: Frozen FeatStructs may not be modified.
+    >>> fs1.clear()
+    Traceback (most recent call last):
+      . . .
+    ValueError: Frozen FeatStructs may not be modified.
+    >>> fs1.pop('x')
+    Traceback (most recent call last):
+      . . .
+    ValueError: Frozen FeatStructs may not be modified.
+    >>> fs1.popitem()
+    Traceback (most recent call last):
+      . . .
+    ValueError: Frozen FeatStructs may not be modified.
+    >>> fs1.setdefault('x')
+    Traceback (most recent call last):
+      . . .
+    ValueError: Frozen FeatStructs may not be modified.
+    >>> fs1.update(z=22)
+    Traceback (most recent call last):
+      . . .
+    ValueError: Frozen FeatStructs may not be modified.
 
 ..
     >>> del fs1, fs2 # clean-up.
@@ -407,6 +520,9 @@ over multiple calls to unify.
     >>> bindings
     {Variable('x'): []}
 
+..
+    >>> del fs1, fs2, fs3, fs4, fs5 # clean-up
+
 Unification Bindings
 --------------------
 
@@ -432,6 +548,9 @@ Unification Bindings
     [a=5, b=1]
     >>> sorted(bindings.items())
     [(Variable('x'), 5), (Variable('x2'), 1)]
+
+..
+    >>> del fs1, fs2, fs3 # clean-up
 
 Remove Variables
 ----------------
@@ -483,6 +602,15 @@ is any difference in the reentrances.
     >>> compare(e, e)
     equal values, same reentrance
 
+Feature structures may not be hashed until they are frozen:
+
+    >>> hash(a)
+    Traceback (most recent call last):
+      . . .
+    TypeError: FeatStructs must be frozen before they can be hashed.
+    >>> a.freeze()
+    >>> v = hash(a)
+
 Feature structures define hash consistently.  The following example
 looks at the hash value for each (fs1,fs2) pair; if their hash values
 are not equal, then they must not be equal.  If their hash values are
@@ -491,6 +619,8 @@ indeed equal.  Note that c and d currently have the same hash value,
 even though they are not equal.  That is not a bug, strictly speaking,
 but it wouldn't be a bad thing if it changed.
 
+    >>> for fstruct in (a, b, c, d, e):
+    ...     fstruct.freeze()
     >>> for fs1_name in 'abcde':
     ...     for fs2_name in 'abcde':
     ...         fs1 = locals()[fs1_name]
@@ -511,6 +641,9 @@ but it wouldn't be a bad thing if it changed.
     d and c have the same hash value, and are not equal
     d and d have the same hash value, and are equal
     e and e have the same hash value, and are equal
+
+..
+    >>> del a, b, c, d, e, v # clean-up
 
 Tracing
 -------
@@ -552,6 +685,9 @@ Tracing
     >>> #fs1.unify(fs2, trace=True)
     >>> 
 
+..
+    >>> del fs1, fs2 # clean-up
+
 Squashed Bugs
 ~~~~~~~~~~~~~
 In svn rev 5167, unifying two feature structures that used the same
@@ -584,4 +720,7 @@ is present.)
     >>> fs2 = FeatStruct('[a=(1)[], b->(1), c=[x=2]]')
     >>> print fs1.unify(fs2)
     None
+
+..
+    >>> del fs1, fs2 # clean-up
 

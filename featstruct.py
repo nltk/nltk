@@ -130,12 +130,15 @@ class FeatStruct(object):
     accessed via multiple feature paths.  Feature structures may also
     be cyclic.
 
-    Feature structures are immutable and hashable; thus, they can be
-    used as dictionary keys.  Two feature structures are considered
-    equal if they assign the same values to all features, and have the
-    same reentrances.
+    Two feature structures are considered equal if they assign the
+    same values to all features, and have the same reentrances.
+
+    By default, feature structures are mutable.  They may be made
+    immutable with the L{freeze()} function.  Once they have been
+    frozen, they may be hashed, and thus used as dictionary keys.
 
     @ivar _features: A dictionary mapping from feature names to values.
+    @ivar _frozen: True if this feature structure is frozen.
     """
     def __init__(self, value=None, **features):
         """
@@ -149,6 +152,7 @@ class FeatStruct(object):
         C{value} is a list of tuples C{name,val}, then a feature is
         created for each tuple.
         """
+        self._frozen = False
         if value is None:
             self._features = features
         elif isinstance(value, basestring):
@@ -164,45 +168,36 @@ class FeatStruct(object):
     #////////////////////////////////////////////////////////////
     #{ Read-only mapping methods
     #////////////////////////////////////////////////////////////
-    # Features act like read-only mappings (dictionaries).  This
-    # section defines all the non-mutating methods from dict.
     
-    def __getitem__(self, fname_or_path):
+    def __getitem__(self, name_or_path):
         """If the feature with the given name or path exists, return
         its value; otherwise, raise C{KeyError}."""
-        try:
-            if isinstance(fname_or_path, basestring):
-                return self._features[fname_or_path]
-            elif not isinstance(fname_or_path, tuple):
-                raise TypeError('Expected str or tuple of str.  Got %r.' %
-                                fname_or_path)
-            elif len(fname_or_path) == 0:
-                return self
-            elif len(fname_or_path) == 1:
-                return self._features[fname_or_path[0]]
-            elif isinstance(self._features[fname_or_path[0]], FeatStruct):
-                return self._features[fname_or_path[0]][fname_or_path[1:]]
-            else:
-                raise KeyError(fname_or_path)
-        except KeyError:
-            raise KeyError(fname_or_path)
-
-    def get(self, fname_or_path, default=None):
+        if isinstance(name_or_path, basestring):
+            return self._features[name_or_path]
+        if name_or_path == ():
+            return self
+        else:
+            try:
+                parent, name = self._path_parent(name_or_path, '')
+                return parent._features[name]
+            except KeyError: raise KeyError(name_or_path)
+        
+    def get(self, name_or_path, default=None):
         """If the feature with the given name or path exists, return its
         value; otherwise, return C{default}."""
         try:
-            return self[fname_or_path]
+            return self[name_or_path]
         except KeyError:
             return default
-    def __contains__(self, fname_or_path):
+    def __contains__(self, name_or_path):
         """Return true if a feature with the given name or path exists."""
         try:
-            self[fname_or_path]; return True
+            self[name_or_path]; return True
         except KeyError:
             return False
-    def has_key(self, fname_or_path):
+    def has_key(self, name_or_path):
         """Return true if a feature with the given name or path exists."""
-        return fname_or_path in self
+        return name_or_path in self
     def keys(self):
         """Return a list of the feature names in this FeatStruct."""
         return self._features.keys()
@@ -229,6 +224,123 @@ class FeatStruct(object):
     def __len__(self):
         """Return the number of features defined by this FeatStruct."""
         return len(self._features)
+
+    #////////////////////////////////////////////////////////////
+    #{ Mutating mapping methods
+    #////////////////////////////////////////////////////////////
+
+    def __delitem__(self, name_or_path):
+        """If the feature with the given name or path exists, delete
+        its value; otherwise, raise C{KeyError}."""
+        if self._frozen: raise ValueError(self._FROZEN_ERROR)
+        if isinstance(name_or_path, basestring):
+            del self._features[name_or_path]
+        else:
+            try:
+                parent, name = self._path_parent(name_or_path, 'deleted')
+                del parent._features[name]
+            except KeyError: raise KeyError(name_or_path)
+            
+    def __setitem__(self, name_or_path, value):
+        """Set the value fo the feature with the given name or path
+        to C{value}.  If C{name_or_path} is an invalid path, raise
+        C{KeyError}."""
+        if self._frozen: raise ValueError(self._FROZEN_ERROR)
+        if isinstance(name_or_path, basestring):
+            self._features[name_or_path] = value
+        else:
+            try:
+                parent, name = self._path_parent(name_or_path, 'set')
+                parent._features[name] = value
+            except KeyError: raise KeyError(name_or_path)
+
+    def clear(self):
+        """Remove all features from this C{FeatStruct}."""
+        if self._frozen: raise ValueError(self._FROZEN_ERROR)
+        self._features.clear()
+
+    def pop(self, name_or_path, default=None):
+        """If the feature with the given name or path exists, delete
+        it and return its value; otherwise, return C{default}."""
+        if self._frozen: raise ValueError(self._FROZEN_ERROR)
+        if isinstance(name_or_path, basestring):
+            return self._features.pop(name_or_path, default)
+        else:
+            try:
+                parent, name = self._path_parent(name_or_path, 'popped')
+                return parent._features.pop(name, default)
+            except KeyError: 
+                return default
+
+    def popitem(self):
+        """Remove some feature from this C{FeatStruct}, and return
+        a tuple C{(name, value)} containing its name and value.  If
+        this C{FeatStruct} is empty, raise C{KeyError}."""
+        if self._frozen: raise ValueError(self._FROZEN_ERROR)
+        return self._features.popitem()
+
+    def setdefault(self, name_or_path, default=None):
+        """If the feature with the given name or path exists, return
+        its value.  Otherwise, set the feature's value to C{default}
+        and return C{default}.  If C{name_or_path} is an invalid path,
+        raise C{KeyError}."""
+        if self._frozen: raise ValueError(self._FROZEN_ERROR)
+        if isinstance(name_or_path, basestring):
+            return self._features.setdefault(name_or_path, default)
+        else:
+            try:
+                parent, name = self._path_parent(name_or_path, 'set')
+                parent._features.setdefault(name, default)
+            except KeyError: raise KeyError(name_or_path)
+            
+    def update(self, values=None, **features):
+        """
+        If C{values} is a mapping, then:
+            >>> for name in values:
+            ...     self[name] = values[name]
+
+        Otherwise, if C{values} is a list of tuples, then:
+            >>> for (name, value) in values:
+            ...     self[name] = value
+
+        Then:
+            >>> for name in features:
+            ...     self[name] = features[name]
+        """
+        if self._frozen: raise ValueError(self._FROZEN_ERROR)
+        if values is None:
+            self._features.update(**features)
+        else:
+            if hasattr(values, 'has_key'):
+                for key in values:
+                    if not isinstance(key, basestring):
+                        raise TypeError('Feature names must be strings')
+            elif hasattr(values, '__iter__'):
+                for (key, value) in values:
+                    if not isinstance(key, basestring):
+                        raise TypeError('Feature names must be strings')
+            self._features.update(values, **features)
+
+    def _path_parent(self, path, operation):
+        """
+        Helper function -- given a feature path,return a tuple
+        (parent, name) containing the parent and name of the specified
+        feature.  If path is (), then raise a TypeError.
+        """
+        if not isinstance(path, tuple):
+            raise TypeError('Expected str or tuple of str.  Got %r.' % path)
+        if len(path) == 0:
+            raise TypeError('The path () can not be %s' % operation)
+        val = self
+        for name in path[:-1]:
+            if not isinstance(name, str):
+                raise TypeError('Expected str or tuple of str.  Got %r.'%path)
+            if not isinstance(val.get(name), FeatStruct):
+                raise KeyError(path)
+            val = val[name]
+        if not isinstance(path[-1], str):
+            raise TypeError('Expected str or tuple of str.  Got %r.' % path)
+        return val, path[-1]
 
     ##////////////////////////////////////////////////////////////
     #{ Equality & Hashing
@@ -334,6 +446,13 @@ class FeatStruct(object):
         return True
     
     def __hash__(self):
+        """
+        If this feature structure is frozen, return its hash value;
+        otherwise, raise C{TypeError}.
+        """
+        if not self._frozen:
+            raise TypeError('FeatStructs must be frozen before they '
+                            'can be hashed.')
         try: return self.__hash
         except AttributeError:
             self.__hash = self._hash(set())
@@ -342,8 +461,8 @@ class FeatStruct(object):
     def _hash(self, visited):
         if id(self) in visited: return 1
         visited.add(id(self))
+
         hashval = 0
-        
         for (fname, fval) in sorted(self.items()):
             hashval += hash(fname)
             if isinstance(fval, FeatStruct):
@@ -353,6 +472,40 @@ class FeatStruct(object):
 
         # Convert to a 32 bit int.
         return int(hashval & 0xffffffff)
+
+    ##////////////////////////////////////////////////////////////
+    #{ Freezing
+    ##////////////////////////////////////////////////////////////
+    
+    #: Error message used by mutating methods when called on a frozen
+    #: feature structure.
+    _FROZEN_ERROR = "Frozen FeatStructs may not be modified."
+
+    def freeze(self):
+        """
+        Make this feature structure, and any feature structures it
+        contains, immutable.  Note: this method does not attempt to
+        'freeze' any feature values that are not C{FeatStruct}s; it
+        is recommended that you use only immutable feature values.
+        """
+        self._freeze(set())
+
+    def frozen(self):
+        """
+        @return: True if this feature structure is immutable.  Feature
+        structures can be made immutable with the L{freeze()} method.
+        Immutable feature structures may not be made mutable again,
+        but new mutale copies can be produced with the L{copy()} method.
+        """
+        return self._frozen
+
+    def _freeze(self, visited):
+        if id(self) in visited: return
+        visited.add(id(self))
+        self._frozen = True
+        for (fname, fval) in sorted(self.items()):
+            if isinstance(fval, FeatStruct):
+                fval._freeze(visited)
 
     ##////////////////////////////////////////////////////////////
     #{ Copying
