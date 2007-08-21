@@ -561,6 +561,25 @@ class FeatStruct(object):
         while Variable('%s%s' % (name, n)) in used_vars: n += 1
         return Variable('%s%s' % (name, n))
 
+    def remove_variables(self):
+        """
+        @rtype: L{FeatStruct}
+        @return: The feature structure that is obtained by deleting
+        all features whose values are L{Variable}s.
+        """
+        selfcopy = self.copy(deep=True)
+        self._remove_variables(set())
+        return selfcopy
+
+    def _remove_variables(self, visited):
+        if id(self) in visited: return
+        visited.add(id(self))
+        for (fname, fval) in self._features.items():
+            if isinstance(fval, Variable):
+                del self._features[fname]
+            elif isinstance(fval, FeatStruct):
+                fval._remove_variables(visited)
+
     ##////////////////////////////////////////////////////////////
     #{ Unification
     ##////////////////////////////////////////////////////////////
