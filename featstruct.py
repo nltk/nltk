@@ -26,38 +26,38 @@ overlapping) information about the same object can be combined by
 X{unification}.  When two inconsistent feature structures are unified,
 the unification fails and returns C{None}.
 
-Features are usually specified using X{feature paths}, or tuples of
-feature names that specify path through the nested feature structures
-to a value.
-
-Feature structures may contain reentrant feature values.  A
+Features can be specified using X{feature paths}, or tuples of feature
+names that specify path through the nested feature structures to a
+value.  Feature structures may contain reentrant feature values.  A
 X{reentrant feature value} is a single feature value that can be
 accessed via multiple feature paths.  Unification preserves the
 reentrance relations imposed by both of the unified feature
-structures.  After unification, any extensions to a reentrant feature
-value will be visible using any of its feature paths.
+structures.  In the feature structure resulting from unification, any
+modifications to a reentrant feature value will be visible using any
+of its feature paths.  Feature structures may also contain X{cyclic
+feature values}, i.e., values that recursively contain themself.
 
-Feature structure variables are encoded using the L{FeatureVariable}
-class.  Feature structure variables are essentially just names; they
-do not directly contain values.  Instead, the mapping from variables
-to values is encoded externally to the variable, as a set of
-X{bindings}.  These bindings are stored using a dictionary.  If one
-var is bound to another, then they are aliased.  the dict maps from
-variables (not var names) to values.
+Feature structure variables are encoded using the L{nltk.sem.Variable}
+class.  The variables' values are tracked using a X{bindings}
+dictionary, which maps variables to their values.  When two feature
+structures are unified, a fresh bindings dictionary is created to
+track their values; and before unification completes, all bound
+variables are replaced by their values.  Thus, the bindings
+dictionaries are usually strictly internal to the unification process.
+However, it is possible to track the bindings of variables if you
+choose to, by supplying your own initial bindings dictionary to the
+L{unify() <FeatStruct.unify>} method.
 
-@todo: more test cases
-@sort: FeatStruct, FeatureVariable, AliasedFeatureVariable,
-       FeatureBindings
-@group Feature Structures: FeatStruct
-@group Variables: FeatureVariable, AliasedFeatureVariable,
-                  FeatureBindings
-@group Unit Tests: FeatStructTestCase
+When unbound variables are unified with one another, they become
+X{aliased}.  This is encoded by binding one variable to the other.
 """
 
 import re
-from types import NoneType
+from nltk.sem.logic import Variable
 
-from nltk.sem.logic import Variable, unique_variable
+######################################################################
+# Pending
+######################################################################
 
 # [xx] deal with this later:
 class SubstituteBindingsI:
@@ -87,14 +87,18 @@ class UnificationFailure(Exception):
 # Feature Structure
 ######################################################################
 
+class UnificationFailureError(Exception):
+    """ An exception that is used by C{_destructively_unify} to
+    abort unification when a failure is encountered."""
+
 class FeatStruct(object):
     """
     A structured set of features.  These features are represented as a
     mapping from feature names to feature values, where each feature
     value is either a basic value (such as a string or an integer), or
-    a nested feature structure.
-
-    A feature structure's feature values can be accessed via indexing:
+    a nested feature structure.  A feature structure acts much like a
+    read-only dictionary.  In particular, feature values may be
+    accessed via indexing:
 
       >>> fstruct1 = FeatStruct(number='singular', person='3rd')
       >>> print fstruct1['number']
@@ -108,96 +112,109 @@ class FeatStruct(object):
     paths}, or a tuple of feature names that specifies the paths to
     the nested feature:
 
-      >>> fpath = ('subject','number')
-      >>> print fstruct2[fpath]
+      >>> print fstruct2['subject', 'number']
       'singular'
 
     Feature structures may contain reentrant feature values.  A
     X{reentrant feature value} is a single feature value that can be
-    accessed via multiple feature paths.
+    accessed via multiple feature paths.  Feature structures may also
+    be cyclic.
+
+    Feature structures are immutable and hashable; thus, they can be
+    used as dictionary keys.  Two feature structures are considered
+    equal if they assign the same values to all features, and have the
+    same reentrances.
 
     @ivar _features: A dictionary mapping from feature names to values.
-
-    @ivar _forward: A pointer to another feature structure that
-        replaced this feature structure.  This is used during the
-        unification process to preserve reentrance.  In particular, if
-        we're unifying feature structures A and B, where:
-
-          - x and y are feature paths.
-          - A contains a feature structure A[x]
-          - B contains a reentrant feature structure B[x] is B[y]
-
-        Then we need to ensure that in the unified structure C,
-        C[x] is C[y].  All forward pointers will be cleaned up
-        before unification is done -- hmm.. use a fwd mapping
-        instead?  that seems nicer!
     """
-    def __init__(self, **features):
-        self._features = features
+    def __init__(self, feature_dict=None, **features):
+        """
+        Create a new feature structure, with the specified features.
+        Feature values may be initialized from a dictionary mapping
+        from feature names to values (C{feature_dict}), or from
+        keyword arguments, or from both.
+        """
+        if feature_dict is None:
+            self._features = features
+        else:
+            for key in feature_dict:
+                if not isinstance(key, basestring):
+                    raise TypeError('Feature names must be strings')
+            self._features = dict(feature_dict, **features)
 
-    ##////////////////////////////////////////////////////////////
-    ## Mapping Methods (i.e, dict-like methods)
-    ##////////////////////////////////////////////////////////////
+    #////////////////////////////////////////////////////////////
+    #{ Read-only mapping methods
+    #////////////////////////////////////////////////////////////
+    # Features act like read-only mappings (dictionaries).  This
+    # section defines all the non-mutating methods from dict.
     
-    def __getitem__(self, index):
+    def __getitem__(self, fname_or_path):
+        """If the feature with the given name or path exists, return
+        its value; otherwise, raise C{KeyError}."""
         try:
-            if isinstance(index, basestring):
-                return self._features[index]
-            elif not isinstance(index, tuple):
+            if isinstance(fname_or_path, basestring):
+                return self._features[fname_or_path]
+            elif not isinstance(fname_or_path, tuple):
                 raise TypeError('Expected str or tuple of str.  Got %r.' %
-                                index)
-            elif len(index) == 0:
+                                fname_or_path)
+            elif len(fname_or_path) == 0:
                 return self
-            elif len(index) == 1:
-                return self._features[index[0]]
-            elif isinstance(self._features[index[0]], FeatStruct):
-                return self._features[index[0]][index[1:]]
+            elif len(fname_or_path) == 1:
+                return self._features[fname_or_path[0]]
+            elif isinstance(self._features[fname_or_path[0]], FeatStruct):
+                return self._features[fname_or_path[0]][fname_or_path[1:]]
             else:
-                raise KeyError(index)
+                raise KeyError(fname_or_path)
         except KeyError:
-            raise KeyError(index)
+            raise KeyError(fname_or_path)
 
-    def get(self, index, default=None):
+    def get(self, fname_or_path, default=None):
+        """If the feature with the given name or path exists, return its
+        value; otherwise, return C{default}."""
         try:
-            return self[index]
+            return self[fname_or_path]
         except KeyError:
             return default
-
-    def has_key(self, index):
-        return index in self
-
-    def __iter__(self):
-        return iter(self._features)
-
-    def __len__(self):
-        return len(self._features)
-
-    def __contains__(self, index):
-        # (feature paths are ok here)
+    def __contains__(self, fname_or_path):
+        """Return true if a feature with the given name or path exists."""
         try:
-            self[index]
-            return True
+            self[fname_or_path]; return True
         except KeyError:
             return False
-
+    def has_key(self, fname_or_path):
+        """Return true if a feature with the given name or path exists."""
+        return fname_or_path in self
     def keys(self):
+        """Return a list of the feature names in this FeatStruct."""
         return self._features.keys()
     def values(self):
+        """Return a list of the feature values in this FeatStruct."""
         return self._features.values()
     def items(self):
+        """Return a list of (name, value) pairs for all features in
+        this FeatStruct."""
         return self._features.items()
-
     def iterkeys(self):
+        """Return an iterator over the feature names in this FeatStruct."""
         return self._features.iterkeys()
     def itervalues(self):
+        """Return an iterator over the feature values in this FeatStruct."""
         return self._features.itervalues()
     def iteritems(self):
+        """Return an iterator over (name, value) pairs for all
+        features in this FeatStruct."""
         return self._features.iteritems()
+    def __iter__(self): # same as iterkeys
+        """Return an iterator over the feature names in this FeatStruct."""
+        return iter(self._features)
+    def __len__(self):
+        """Return the number of features defined by this FeatStruct."""
+        return len(self._features)
 
     ##////////////////////////////////////////////////////////////
-    ## Equality
+    #{ Equality & Hashing
     ##////////////////////////////////////////////////////////////
-    
+
     def equal_values(self, other, check_reentrance=False):
         """
         @return: True if C{self} and C{other} assign the same value to
@@ -206,37 +223,142 @@ class FeatStruct(object):
         that C{self[M{p}]} or C{other[M{p}]} is a base value (i.e.,
         not a nested feature structure).
 
-        @param check_reentrance: If true, then any difference in the
-            reentrance relations between C{self} and C{other} will
-            cause C{equal_values} to return false.
+        @param check_reentrance: If true, then also return false if
+            there is any difference between the reentrances of C{self}
+            and C{other}.
+            
+        @note: the L{== operator <__eq__>} is equivalent to
+            C{equal_values()} with C{check_reentrance=True}.
         """
-        if not isinstance(other, FeatStruct): return 0
-        if check_reentrance: return `self` == `other`
-        if len(self._features) != len(other._features): return 0
-        for (fname, selfval) in self._features.items():
-            otherval = other._features[fname]
-            if isinstance(selfval, FeatStruct):
-                if not selfval.equal_values(otherval): return 0
-            else:
-                if selfval != otherval: return 0
-        return 1
+        return self._equal(other, check_reentrance, set(), set(), set())
 
     def __eq__(self, other):
-        return self.equal_values(other)
+        """
+        Return true if C{self} and C{other} are both feature
+        structures, assign the same values to all features, and
+        contain the same reentrances.  I.e., return 
+        C{self.equal_values(other, check_reentrance=True)}.
+        
+        @see: L{equal_values()}
+        """
+        return self._equal(other, True, set(), set(), set())
+    
     def __ne__(self, other):
-        return not (self==other)
+        """
+        Return true unless C{self} and C{other} are both feature
+        structures, assign the same values to all features, and
+        contain the same reentrances.  I.e., return 
+        C{not self.equal_values(other, check_reentrance=True)}.
+        """
+        return not self.__eq__(other)
+    
+    def _equal(self, other, check_reentrance, visited_self,
+               visited_other, visited_pairs):
+        """
+        Helper function for L{equal_values} -- return true iff self
+        and other have equal values.
+        
+        @param visited_self: A set containing the ids of all C{self}
+            values we've already visited.
+        @param visited_other: A set containing the ids of all C{other}
+            values we've already visited.
+        @param visited_pairs: A set containing C{(selfid, otherid)}
+            pairs for all pairs of values we've already visited.
+        """
+        # If we're the same object, then we're equal.
+        if self is other: return True
+
+        # If other's not a feature struct, we're definitely not equal.
+        if not isinstance(other, FeatStruct): return False
+
+        # If we define different features, we're definitely not equal.
+        # (Perform len test first because it's faster -- we should
+        # do profiling to see if this actually helps)
+        if len(self._features) != len(other._features): return False
+        if set(self._features) != set(other._features): return False
+
+        # If we're checking reentrance, then any time we revisit a
+        # self or other structure, make sure that it was paired with
+        # the same feature structure that it is now.  Note: for each
+        # value of self, visited_pairs will contain at most one pair
+        # containing self.  Similary for other.
+        if check_reentrance:
+            if id(self) in visited_self or id(other) in visited_other:
+                return (id(self), id(other)) in visited_pairs
+
+        # If we're not checking reentrance, then we still need to deal
+        # with cycles.  If we encounter the same (self, other) pair a
+        # second time, then we won't learn anything more by examining
+        # their children a second time, so just return true.
+        else:
+            if (id(self), id(other)) in visited_pairs:
+                return True
+
+        # Keep track of which nodes we've visited.
+        visited_self.add(id(self))
+        visited_other.add(id(other))
+        visited_pairs.add( (id(self), id(other)) )
+        
+        # Now we have to check all values.  If any of them don't match,
+        # then return false.
+        for (fname, self_fval) in self._features.items():
+            other_fval = other._features[fname]
+            if isinstance(self_fval, FeatStruct):
+                if not self_fval._equal(other_fval, check_reentrance,
+                                        visited_self, visited_other,
+                                        visited_pairs):
+                    return False
+            else:
+                if self_fval != other_fval: return False
+                
+        # Everything matched up; return true.
+        return True
+    
     def __hash__(self):
-        raise TypeError('FeatStruct must be frozen to be hashed.')
+        try: return self.__hash
+        except AttributeError:
+            self.__hash = self._hash(set())
+            return self.__hash
+
+    def _hash(self, visited):
+        if id(self) in visited: return 1
+        visited.add(id(self))
+        hashval = 0
+        
+        for (fname, fval) in sorted(self.items()):
+            hashval += hash(fname)
+            if isinstance(fval, FeatStruct):
+                hashval += fval._hash(visited)
+            else:
+                hashval += hash(fval)
+
+        # Convert to a 32 bit int.
+        return int(hashval & 0xffffffff)
 
     ##////////////////////////////////////////////////////////////
-    ## Copying
+    #{ Copying
     ##////////////////////////////////////////////////////////////
 
-    def copy(self, deep=False):
+    def copy(self, deep=True):
+        """
+        Return a new copy of C{self}.  Note that feature structures
+        are immutable -- it will not bo possible to modify either the
+        new or the old copy.  However, this method can be useful in
+        order to avoid creating unwanted reentrances.  For example,
+        the following two feature structures differ in that C{fs2}
+        contains a reentrance between its C{'x'} feature and its
+        C{'y'} feature, while C{fs3} does not:
+
+            >>> fs2 = FeatStruct(x=fs1, y=fs1)
+            >>> fs3 = FeatStruct(x=fs1, y=fs1.copy())
+
+        @param deep: If true, create a deep copy; if false, create
+            a shallow copy.
+        """
         if deep:
             return self._deepcopy({})
         else:
-            return FeatStruct(**self._features)
+            return FeatStruct(self._features)
     
     def _deepcopy(self, memo):
         # Check the memoization dictionary.
@@ -259,8 +381,14 @@ class FeatStruct(object):
         return newcopy
 
     ##////////////////////////////////////////////////////////////
-    ## Unsorted
+    #{ Unsorted
     ##////////////////////////////////////////////////////////////
+
+    def cyclic(self):
+        """
+        @return: True if this feature structure contains itself.
+        """
+        return self._find_reentrances({})[id(self)]
 
     def reentrances(self):
         """
@@ -279,16 +407,25 @@ class FeatStruct(object):
         return other.equal_values(self.unify(other))
 
     ##////////////////////////////////////////////////////////////
-    ## Variables
+    #{ Variables & Bindings
     ##////////////////////////////////////////////////////////////
 
     def apply_bindings(self, bindings):
         """
         @return: The feature structure that is obtained by replacing
-        each variable bound by C{bindings} with its values.
+        each variable bound by C{bindings} with its binding.  Aliased
+        variables will be replaced by their representative variable (if
+        unbound) or the value of their representative variable (if bound).
 
-        This also has the effect of normalizing aliased variables.
+        In particular, replace each occurance of a variable I{C{v}}
+        that is a key in C{bindings} with C{bindings[I{v}]}.  If
+        C{bindings[I{v}]} is itself a variable, and is a key in
+        C{bindings}, then replace it with C{bindings[bindings[I{v}]]}.
+        Continue replacing the variable with its binding until either
+        an unbound variable or a non-variable value is found.
         
+        @type bindings: C{dict} with L{Variable} keys
+        @param bindings: A dictionary mapping from variables to values.  
         @rtype: L{FeatStruct}
         """
         selfcopy = self.copy(deep=True)
@@ -329,12 +466,14 @@ class FeatStruct(object):
                 fval._variables(vars, visited)
         return vars
 
-    def rename_variables(self, new_vars=None, used_vars=None):
+    def rename_variables(self, used_vars=None, new_vars=None):
         """
         @return: The feature structure that is obtained by replacing
-        all variables in this feature structure that is listed in
-        C{used_vars} with a new variable not listed in C{used_vars}.
-
+        any of this feature structure's variables that are in
+        C{used_vars} with new variables.  The names for these new
+        variables will be names that are not used by any variable in
+        C{used_vars} or in this feature structure.
+        
         @type used_vars: C{set}
         @param used_vars: The set of variables that should be renamed.
         If not specified, C{self.variables()} is used; i.e., all
@@ -347,28 +486,30 @@ class FeatStruct(object):
 
           - If C{new_vars} maps M{v} to M{v'}, then M{v} will be
             replaced by M{v'}.
-          - If C{new_vars} does not contain M{v}, then a new entry
-            will be added to C{new_vars}, mapping M{v} to the new
-            variable that is used to replace it.
+          - If C{new_vars} does not contain M{v}, but C{used_vars}
+            does contain M{v}, then a new entry will be added to
+            C{new_vars}, mapping M{v} to the new variable that is used
+            to replace it.
 
         To consistantly rename the variables in a set of feature
         structures, simply apply rename_variables to each one, using
         the same dictionary:
 
             >>> new_vars = {}  # Maps old vars to alpha-renamed vars
-            >>> new_fstruct1 = fstruct1.rename_variables(new_vars)
-            >>> new_fstruct2 = fstruct2.rename_variables(new_vars)
-            >>> new_fstruct3 = fstruct3.rename_variables(new_vars)
+            >>> new_fstruct1 = fstruct1.rename_variables(new_vars=new_vars)
+            >>> new_fstruct2 = fstruct2.rename_variables(new_vars=new_vars)
+            >>> new_fstruct3 = fstruct3.rename_variables(new_vars=new_vars)
 
         If new_vars is not specified, then an empty dictionary is used.
         """
-        if newv_vars is None: new_vars = {}
+        if new_vars is None: new_vars = {}
         if used_vars is None: new_vars = {}
         selfcopy = self.copy(deep=True)
-        selfcopy._rename_variables(new_vars, used_vars, set())
+        vars = self.variables()
+        selfcopy._rename_variables(vars, used_vars, new_vars, set())
         return selfcopy
         
-    def _rename_variables(self, new_vars, used_vars, visited):
+    def _rename_variables(self, vars, used_vars, new_vars, visited):
         if id(self) in visited: return
         visited.add(id(self))
         for (fname, fval) in self._features.items():
@@ -378,20 +519,22 @@ class FeatStruct(object):
                     self._features[fname] = new_vars[fval]
                 # If it's in used_vars, pick a new name for it.
                 elif fval in used_vars:
-                    new_vars[fval] = self._rename_variable(fval, used_vars)
+                    new_vars[fval] = self._rename_variable(fval, used_vars,
+                                                           vars)
                     self._features[fname] = new_vars[fval]
                     used_vars.add(new_vars[fval])
             elif isinstance(fval, FeatStruct):
-                fval._rename_variables(new_vars, used_vars, visited)
+                fval._rename_variables(vars, used_vars, new_vars, visited)
         return new_vars
 
-    def _rename_variable(self, var, used_vars):
+    def _rename_variable(self, var, used_vars, vars):
         name, n = re.sub('\d+$', '', var.name), 2
-        while '%s%s' % (name, n) in used_vars: n += 1
+        while (Variable('%s%s' % (name, n)) in used_vars or
+               Variable('%s%s' % (name, n)) in vars): n += 1
         return Variable('%s%s' % (name, n))
 
     ##////////////////////////////////////////////////////////////
-    ## Unification
+    #{ Unification
     ##////////////////////////////////////////////////////////////
 
     # The basic unification algorithm:
@@ -400,7 +543,7 @@ class FeatStruct(object):
     #   3. Apply forward pointers, to preserve reentrance.
     #   4. Replace bound variables with their values.
     def unify(self, other, bindings=None, trace=False,
-              rename_conflicting_vars=True):
+              rename_vars=True):
         """
         Unify C{self} with C{other}, and return the resulting feature
         structure.  This unified feature structure is the minimal
@@ -414,17 +557,50 @@ class FeatStruct(object):
         C{other} specify incompatible values for some feature), then
         unification fails, and C{unify} returns C{None}.
 
+        @type bindings: C{dict} with L{Variable} keys
         @param bindings: A set of variable bindings to be used and
-            updated during unification.  Bound variables are
-            treated as if they were replaced by their values.  Unbound
-            variables are bound if they are unified with values; or
-            aliased if they are unified with other unbound variables.
+            updated during unification.
+
+            Bound variables are replaced by their values.  Aliased
+            variables are replaced by their representative variable
+            (if unbound) or the value of their representative variable
+            (if bound).  I.e., if variable C{I{v}} is in C{bindings},
+            then C{I{v}} is replaced by C{bindings[I{v}].  This will
+            be repeated until the variable is replaced by an unbound
+            variable or a non-variable value.
+
+            Unbound variables are bound when they are unified with
+            values; and aliased when they are unified with variables.
+            I.e., if variable C{I{v}} is not in C{bindings}, and is
+            unified with a variable or value C{I{x}}, then
+            C{bindings[I{v}]} is set to C{I{x}}.
+        
             If C{bindings} is unspecified, then all variables are
-            assumed to be unbound.
+            assumed to be unbound.  I.e., C{bindings} defaults to an
+            empty C{dict}.
+
+        @type trace: C{bool}
+        @param trace: If true, generate trace output.
+
+        @type rename_vars: C{bool}
+        @param rename_vars: If true, then rename any variables in
+            C{other} that are also used in C{self}.  This prevents
+            aliasing in cases where C{self} and C{other} use the
+            same variable name.  E.g.:
+
+                >>> fs1 = FeatStruct.parse('[a=?x]')
+                >>> fs2 = FeatStruct.parse('[b=?x]')
+                >>> fs1.unify(fs2)
+                [a=?x, b=?x2]
+
+            If you intend for a variables in C{self} and C{other} with
+            the same name to be treated as a single variable, use
+            C{rename_vars=False}.
         """
         if trace: print '\nUnification trace:'
         
         # If bindings are unspecified, use an empty set of bindings.
+        user_bindings = (bindings is not None)
         if bindings is None: bindings = {}
 
         # Make copies of self & other (since the unification algorithm
@@ -434,9 +610,6 @@ class FeatStruct(object):
         selfcopy = self._deepcopy(memo)
         othercopy = other._deepcopy(memo)
 
-        if rename_conflicting_vars:
-            othercopy._rename_variables({}, selfcopy.variables(), set())
-
         # Preserve reentrance links from bound variables into either
         # self or other.
         for var, val in bindings.items():
@@ -444,26 +617,32 @@ class FeatStruct(object):
                 id(val) in memo):
                 bindings[var] = memo[id(val)]
 
+        if rename_vars:
+            othercopy._rename_variables(othercopy.variables(), 
+                                        selfcopy.variables(), {}, set())
+
         # Do the actual unification.  If it fails, return None.
         forward = {}
         try: selfcopy._destructively_unify(othercopy, bindings,
                                            forward, trace)
-        except FeatStruct._UnificationFailureError: return None
+        except UnificationFailureError: return None
 
         # Replace any feature structure that has a forward pointer
         # with the target of its forward pointer.
-        selfcopy._apply_forwards_to_bindings(forward, bindings)
         selfcopy = selfcopy._apply_forwards(forward, visited=set())
 
         # Replace bound vars with values.
         selfcopy._apply_bindings(bindings, visited=set())
+
+        # If the bindings are user-supplied, then replace feature
+        # structures that have forward pointers w/ their target; and
+        # resolve aliases in the bindings.
+        if user_bindings:
+            selfcopy._apply_forwards_to_bindings(forward, bindings)
+            selfcopy._resolve_aliases(bindings)
         
         # Return the result.
         return selfcopy
-
-    class _UnificationFailureError(Exception):
-        """ An exception that is used by C{_destructively_unify} to
-        abort unification when a failure is encountered."""
 
     def _destructively_unify(self, other, bindings, forward,
                              trace=False, path=()):
@@ -472,8 +651,21 @@ class FeatStruct(object):
         in-place.  If the unification succeeds, then C{self} will
         contain the unified value, the value of C{other} is undefined,
         and forward[id(other)] is set to self.  If the unification
-        fails, then a _UnificationFailureError is raised, and the
+        fails, then a UnificationFailureError is raised, and the
         values of C{self} and C{other} are undefined.
+
+        @param bindings: A dictionary mapping variables to values.
+        @param forward: A dictionary mapping feature structures ids
+            to replacement structures.  When two feature structures
+            are merged, a mapping from one to the other will be added
+            to the forward dictionary; and changes will be made only
+            to the target of the forward dictionary.
+            C{_destructively_unify} will always 'follow' any links
+            in the forward dictionary for self and other before
+            actually unifying them.
+        @param trace: If true, generate trace output
+        @param path: The feature path that led us to this unification
+            step.  Used for trace output.
         """
         # Look up the "canonical" copy of self and other.
         while id(self) in forward: self = forward[id(self)]
@@ -537,7 +729,7 @@ class FeatStruct(object):
                 # Case 4: unify 2 non-equal values (failure case)
                 elif selfval != otherval:
                     if trace: self._trace_unify_fail(path)
-                    raise FeatStruct._UnificationFailureError()
+                    raise UnificationFailureError()
 
                 # Case 5: unify 2 equal values
                 else: pass
@@ -551,7 +743,7 @@ class FeatStruct(object):
                 self._features[fname] = otherval
 
         if trace: self._trace_unify_succeed(path, bindings, forward)
-        
+
     def _apply_forwards_to_bindings(self, forward, bindings):
         """
         Replace any feature structure that has a forward pointer with
@@ -586,8 +778,17 @@ class FeatStruct(object):
 
         return self
 
+    def _resolve_aliases(self, bindings):
+        """
+        Replace any bound aliased vars with their binding; and replace
+        any unbound aliased vars with their representative var.
+        """
+        for (var, value) in bindings.items():
+            while isinstance(value, Variable) and value in bindings:
+                value = bindings[var] = bindings[value]
+
     ##////////////////////////////////////////////////////////////
-    ## Unification: trace helper functions
+    #{ Unification: trace helper functions
     ##////////////////////////////////////////////////////////////
 
     def _trace_unify_start(self, path, other):
@@ -635,7 +836,7 @@ class FeatStruct(object):
             return '%r' % val
 
     ##////////////////////////////////////////////////////////////
-    ## String Representations
+    #{ String Representations
     ##////////////////////////////////////////////////////////////
 
     def __repr__(self):
@@ -807,7 +1008,7 @@ class FeatStruct(object):
         return reentrances
 
     ##////////////////////////////////////////////////////////////
-    ## Parsing
+    #{ Parsing
     ##////////////////////////////////////////////////////////////
 
     @classmethod
@@ -997,6 +1198,28 @@ class FeatStruct(object):
 
         # We don't know how to parse this value.
         raise ValueError('value', position)
+
+######################################################################
+# Playing around..
+######################################################################
+
+class TypedFeature(str):
+    def __init__(self, default):
+        self.default = default
+
+    def unify(self, val1, val2):
+        """
+        If possible, return a single value..  If not, raise error.
+        this wouldn't be good to use on feature structure values!
+        """
+
+class RangeFeature(str):
+    def unify(self, val1, val2):
+        if val1 is None: return val2
+        if val2 is None: return val1
+        rng = max(val1[0], val2[0]), min(va1[1], val2[1])
+        if rng[1] < rng[0]: raise UnificationFailure
+        return rng
 
 #//////////////////////////////////////////////////////////////////////
 # TESTING...
