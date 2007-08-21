@@ -562,9 +562,9 @@ class Aggregator(object):
     common digrams of the form "must/md X/Y" in the Brown Corpus sections a
     and g::
     
-        concA = IndexConcordance(list(brown.tagged('a')))
+        concA = IndexConcordance(brown.tagged_sents('a'))
         rawA = concA.raw(middleRegexp="^must/md$", leftContextLength=0, rightContextLength=1)
-        concG = IndexConcordance(list(brown.tagged('g')))
+        concG = IndexConcordance(brown.tagged_sents('g'))
         rawG = concG.raw(middleRegexp="^must/md$", leftContextLength=0, rightContextLength=1)
         agg = Aggregator()
         agg.add(rawA, "Brown Corpus A")
@@ -849,7 +849,7 @@ def demo():
     Demonstrates how to use IndexConcordance and Aggregator.
     """
     print "Reading Brown Corpus into memory..."
-    corpus = list(brown.tagged('a'))
+    corpus = brown.tagged_sents('a')
     print "Generating index..."
     ic = IndexConcordance(corpus)
     print "Showing all occurences of 'plasma' in the Brown Corpus..."

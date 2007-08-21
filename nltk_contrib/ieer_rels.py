@@ -12,6 +12,7 @@ C{sub} and C{obj} are pairs of Named Entities, and C{filler} is the string of wo
 Subsequent processing can try to identify interesting relations expressed in 
 C{filler}.
 """
+
 from nltk import defaultdict
 from nltk import parse, tag, Tree
 from nltk.corpus import ieer, conll2002
@@ -35,18 +36,18 @@ long2short = dict(LOCATION ='LOC', ORGANIZATION = 'ORG', PERSON = 'PER')
 
 ieerdocs = []
 for item in ieer.items:
-    for iedict in ieer.parsed_docs(item):
-        for key in ['headline', 'text']:
-            try:
-                ieerdocs.append(iedict[key])
-            except ValueError:
-                pass
+    for doc in ieer.parsed_docs(item):
+        try:
+            ieerdocs.append(doc.headline)
+            ieerdocs.append(doc.text)
+        except ValueError:
+            pass
 
 CORPORA = {
     'ieer': ieerdocs,
     #'conll2002': (tree for tree in conll2002.ne_chunked()),
-    'conll2002-ned': (tree for tree in conll2002.read('ned.train', 'chunked')),
-    'conll2002-esp': (tree for tree in conll2002.read('esp.train', 'chunked'))
+    'conll2002-ned': (tree for tree in conll2002.chunked_sents('ned.train')),
+    'conll2002-esp': (tree for tree in conll2002.chunked_sents('esp.train'))
 }
     
 def _tuple2tag(item):
@@ -66,23 +67,25 @@ def mk_pairs(trees):
     Group a chunk structure into pairs of the form (list(str), L{Tree})
     
     In order to facilitate the construction of (L{Tree}, string, L{Tree}) triples, this
-    first identifies pairs whose first member is a list (posssibly empty) of terminal
+    first identifies pairs whose first member is a list (possibly empty) of terminal
     strings, and whose second member is a L{Tree} of the form (NE_label, terminals).
     
     @param trees: a sequence of chunk trees
     @return: a generator of pairs
     """
+
     pair = [[], None]
     for tree in trees:
-        for dtr in tree:
-            if not isinstance(dtr, Tree):
-                pair[0].append(dtr)
-            else:
-                # dtr is a Tree
-                pair[1] = dtr
-                #result.append(tuple(pair))
-                pair = [[], None]
-                yield pair
+        if tree:
+            for dtr in tree:
+                if not isinstance(dtr, Tree):
+                    pair[0].append(dtr)
+                else:
+                    # dtr is a Tree
+                    pair[1] = dtr
+                    #result.append(tuple(pair))
+                    pair = [[], None]
+                    yield pair
 
 
 def mk_rtuples(pairs, window=5):

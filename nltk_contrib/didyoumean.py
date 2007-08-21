@@ -1,9 +1,8 @@
 # Spelling corrector by Maxime Biais http://www.biais.org/blog/
 # http://snippets.dzone.com/posts/show/3395
 
-from nltk.stem.porter import Porter
+from nltk import PorterStemmer
 from nltk.corpus import brown
-from nltk import tokenize
  
 import sys
 from collections import defaultdict
@@ -18,7 +17,7 @@ class mydict(dict):
  
 class DidYouMean:
     def __init__(self):
-        self.stemmer = Porter()
+        self.stemmer = PorterStemmer()
  
     def specialhash(self, s):
         s = s.lower()
@@ -48,7 +47,7 @@ class DidYouMean:
     def learn(self, listofsentences=[], n=2000):
         self.learned = defaultdict(mydict)
         if listofsentences == []:
-            listofsentences = brown.tokenized()
+            listofsentences = brown.sents()
         for i, sent in enumerate(listofsentences):
             if i >= n: # Limit to the first nth sentences of the corpus
                 break

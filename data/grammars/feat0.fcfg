@@ -1,4 +1,4 @@
-## Natural Language Toolkit: feat0.cfg
+## Natural Language Toolkit: feat0.fcfg
 ##
 ## First example of a feature-based grammar for English, illustrating
 ## value-sharing of NUM and TENSE features.

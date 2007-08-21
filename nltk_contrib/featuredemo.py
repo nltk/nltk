@@ -1,6 +1,5 @@
 from nltk.parse import GrammarFile
 from nltk.parse.featurechart import *
-from nltk import tokenize
 
 """
 An interactive interface to the feature-based parser. Run "featuredemo.py -h" for
@@ -15,7 +14,7 @@ generated and any resulting parse trees.
 def text_parse(grammar, sent, trace=2, drawtrees=False, latex=False):
 	parser = grammar.earley_parser(trace=trace)
 	print parser._grammar
-	tokens = list(tokenize.whitespace(sent))
+	tokens = sent.split()
 	trees = parser.get_parse_list(tokens)
 	if drawtrees:
 		from treeview import TreeView
