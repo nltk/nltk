@@ -19,15 +19,6 @@ color support (and if epydoc is installed), then the offending
 identifier will be highlighted in red.
 """
 
-#: Any deprecated names listed here will be treated as if they're
-#: methods, even if they're really functions.  This is useful for
-#: preventing lots of false postives for things like
-#: "tokenize.word(...)" -- treating them as a method means they'll only
-#: get flagged if they're preceeded by a dot.
-TREAT_AS_METHOD = [
-    #'word', 'line', 'whitespace'
-    ]
-
 ######################################################################
 # Imports
 ######################################################################
@@ -36,6 +27,7 @@ import os, re, sys, tokenize, textwrap
 import nltk, nltk.corpus
 from doctest import DocTestParser
 from cStringIO import StringIO
+from nltk import defaultdict
 
 ######################################################################
 # Regexps
@@ -55,11 +47,13 @@ DEPRECATED_DEF_PAT = (
     r'^\s*@deprecated\s*\(\s*(%s)\s*\)\s*\n+' % STRINGS_PAT +
     r'\s*def\s*(\w+).*' + 
     r'|' +
-    r'^\s*class\s*(\w+)\(.*Deprecated.*\):\s*')
+    r'^\s*class\s+(\w+)\s*\(.*Deprecated.*\):\s*')
 DEPRECATED_DEF_RE = re.compile(DEPRECATED_DEF_PAT, re.MULTILINE)
 
 CORPUS_READ_METHOD_RE = re.compile(
     '(%s)\.read\(' % ('|'.join(re.escape(n) for n in dir(nltk.corpus))))
+
+CLASS_DEF_RE = re.compile('^\s*class\s+(\w+)\s*[:\(]')
 
 ######################################################################
 # Globals
@@ -67,9 +61,9 @@ CORPUS_READ_METHOD_RE = re.compile(
 # Yes, it's bad programming practice, but this is a little hack
 # script. :)  These get initialized by find_deprecated_defs.
 
-deprecated_funcs = {}
-deprecated_classes = {}
-deprecated_methods = {}
+deprecated_funcs = defaultdict(set)
+deprecated_classes = defaultdict(set)
+deprecated_methods = defaultdict(set)
 
 try:
     from epydoc.cli import TerminalController
@@ -92,6 +86,14 @@ def strip_quotes(s):
     s = s.strip()
     return s
 
+def find_class(s, index):
+    lines = s[:index].split('\n')
+    while lines:
+        m = CLASS_DEF_RE.match(lines[-1])
+        if m: return m.group(1)+'.'
+        lines.pop()
+    return '?.'
+
 def find_deprecated_defs(pkg_dir):
     """
     Return a list of all functions marked with the @deprecated
@@ -110,18 +112,18 @@ def find_deprecated_defs(pkg_dir):
                         msg = ' '.join(strip_quotes(s) for s in
                                        STRING_RE.findall(m.group(1)))
                         msg = ' '.join(msg.split())
-                        if (m.group()[0] in ' \t' or
-                            name in TREAT_AS_METHOD):
-                            deprecated_methods[name] = msg
+                        if m.group()[0] in ' \t':
+                            cls = find_class(s, m.start())
+                            deprecated_methods[name].add( (msg, cls, '()') )
                         else:
-                            deprecated_funcs[name] = msg
+                            deprecated_funcs[name].add( (msg, '', '()') )
                     else:
                         name = m.group(3)
                         m2 = STRING_RE.match(s, m.end())
                         if m2: msg = strip_quotes(m2.group())
                         else: msg = ''
                         msg = ' '.join(msg.split())
-                        deprecated_classes[name] = msg
+                        deprecated_classes[name].add( (msg, '', ''))
 
 def print_deprecated_uses(paths):
     dep_names = set()
@@ -205,12 +207,16 @@ def main():
     else:
         print "\n"+term.BOLD+"What you should use instead:"+term.NORMAL
         for name in sorted(dep_names):
-            msg = (deprecated_funcs.get(name, '') or
-                   deprecated_classes.get(name, '') or
-                   deprecated_methods.get(name, ''))
-            print textwrap.fill(term.RED+name+term.NORMAL+': '+msg,
-                                width=75, initial_indent=' '*2,
-                                subsequent_indent=' '*6)
+            msgs = deprecated_funcs[name].union(
+                deprecated_classes[name]).union(
+                deprecated_methods[name])
+            for msg, prefix, suffix in msgs:
+                print textwrap.fill(term.RED+prefix+name+suffix+
+                                    term.NORMAL+': '+msg,
+                                    width=75, initial_indent=' '*2,
+                                    subsequent_indent=' '*6)
+
+                
             
 if __name__ == '__main__':
     main()
