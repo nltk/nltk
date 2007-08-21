@@ -11,6 +11,8 @@ from itertools import islice
 from nltk import tokenize
 from nltk.etree import ElementTree
 
+COMMENT = re.compile(r'^#.*$', re.MULTILINE)
+
 ######################################################################
 #{ Corpus View
 ######################################################################
@@ -576,12 +578,14 @@ def read_blankline_block(stream):
         else:
             s += line
 
+
 def read_sexpr_block(stream, block_size=16384):
     start = stream.tell()
     block = ''
     while True:
         try:
             block += stream.read(block_size)
+            block = re.sub(COMMENT, '', block)
             tokens, offset = _parse_sexpr_block(block)
             # Skip whitespace
             offset = re.compile(r'\s*').search(block, offset).end()
@@ -614,7 +618,7 @@ def _parse_sexpr_block(block):
                 if tokens: return tokens, end
                 raise ValueError('Block too small')
 
-        # Case 2: parenthasized sexpr.
+        # Case 2: parenthesized sexpr.
         else:
             nesting = 0
             for m in re.compile(r'[()]').finditer(block, start):
