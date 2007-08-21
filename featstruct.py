@@ -466,19 +466,23 @@ class FeatStruct(object):
                 fval._variables(vars, visited)
         return vars
 
-    def rename_variables(self, used_vars=None, new_vars=None):
+    def rename_variables(self, vars=None, used_vars=(), new_vars=None):
         """
         @return: The feature structure that is obtained by replacing
-        any of this feature structure's variables that are in
-        C{used_vars} with new variables.  The names for these new
-        variables will be names that are not used by any variable in
-        C{used_vars} or in this feature structure.
-        
-        @type used_vars: C{set}
-        @param used_vars: The set of variables that should be renamed.
+        any of this feature structure's variables that are in C{vars}
+        with new variables.  The names for these new variables will be
+        names that are not used by any variable in C{vars}, or in
+        C{used_vars}, or in this feature structure.
+
+        @type vars: C{set}
+        @param vars: The set of variables that should be renamed.
         If not specified, C{self.variables()} is used; i.e., all
         variables will be given new names.
-
+        
+        @type used_vars: C{set}
+        @param used_vars: A set of variables whose names should not be
+        used by the new variables.
+        
         @type new_vars: C{dict} from L{Variable} to L{Variable}
         @param new_vars: A dictionary that is used to hold the mapping
         from old variables to new variables.  For each variable M{v}
@@ -486,7 +490,7 @@ class FeatStruct(object):
 
           - If C{new_vars} maps M{v} to M{v'}, then M{v} will be
             replaced by M{v'}.
-          - If C{new_vars} does not contain M{v}, but C{used_vars}
+          - If C{new_vars} does not contain M{v}, but C{vars}
             does contain M{v}, then a new entry will be added to
             C{new_vars}, mapping M{v} to the new variable that is used
             to replace it.
@@ -502,10 +506,16 @@ class FeatStruct(object):
 
         If new_vars is not specified, then an empty dictionary is used.
         """
+        # Default values:
         if new_vars is None: new_vars = {}
-        if used_vars is None: new_vars = {}
+        if vars is None: vars = self.variables()
+        else: vars = set(vars)
+
+        # Add our own variables to used_vars.
+        used_vars = self.variables().union(used_vars)
+
+        # Copy ourselves, and rename variables in the copy.
         selfcopy = self.copy(deep=True)
-        vars = self.variables()
         selfcopy._rename_variables(vars, used_vars, new_vars, set())
         return selfcopy
         
@@ -517,20 +527,18 @@ class FeatStruct(object):
                 # If it's in new_vars, then rebind it.
                 if fval in new_vars:
                     self._features[fname] = new_vars[fval]
-                # If it's in used_vars, pick a new name for it.
-                elif fval in used_vars:
-                    new_vars[fval] = self._rename_variable(fval, used_vars,
-                                                           vars)
+                # If it's in vars, pick a new name for it.
+                elif fval in vars:
+                    new_vars[fval] = self._rename_variable(fval, used_vars)
                     self._features[fname] = new_vars[fval]
                     used_vars.add(new_vars[fval])
             elif isinstance(fval, FeatStruct):
                 fval._rename_variables(vars, used_vars, new_vars, visited)
         return new_vars
 
-    def _rename_variable(self, var, used_vars, vars):
+    def _rename_variable(self, var, used_vars):
         name, n = re.sub('\d+$', '', var.name), 2
-        while (Variable('%s%s' % (name, n)) in used_vars or
-               Variable('%s%s' % (name, n)) in vars): n += 1
+        while Variable('%s%s' % (name, n)) in used_vars: n += 1
         return Variable('%s%s' % (name, n))
 
     ##////////////////////////////////////////////////////////////
@@ -618,8 +626,8 @@ class FeatStruct(object):
                 bindings[var] = memo[id(val)]
 
         if rename_vars:
-            othercopy._rename_variables(othercopy.variables(), 
-                                        selfcopy.variables(), {}, set())
+            othercopy._rename_variables(selfcopy.variables(),
+                                        othercopy.variables(), {}, set())
 
         # Do the actual unification.  If it fails, return None.
         forward = {}
