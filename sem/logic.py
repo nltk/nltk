@@ -23,7 +23,7 @@ The class of C{Expression} has various subclasses:
   
 """
 
-from nltk import Counter, featstruct
+from nltk.utilities import Counter
 
 _counter = Counter()
 
@@ -61,7 +61,7 @@ class Variable(object):
 
     def __repr__(self): return "Variable('%s')" % self.name
 
-    def __hash__(self): return hash(repr(self))
+    def __hash__(self): return hash(self.name)
 
 class Constant(object):
     """A nonlogical constant."""
@@ -578,18 +578,6 @@ class ApplicationExpression(Expression):
 
     def __hash__(self):
         return hash(str(self.normalize()))
-
-class ApplicationExpressionSubst(ApplicationExpression, featstruct.SubstituteBindingsMixin):
-    pass
-
-class LambdaExpressionSubst(LambdaExpression, featstruct.SubstituteBindingsMixin):
-    pass
-
-class SomeExpressionSubst(SomeExpression, featstruct.SubstituteBindingsMixin):
-    pass
-
-class AllExpressionSubst(AllExpression, featstruct.SubstituteBindingsMixin):
-    pass
 
 class LogicParser(object):
     """A lambda calculus expression parser."""
