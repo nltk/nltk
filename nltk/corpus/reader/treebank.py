@@ -28,8 +28,8 @@ from nltk.utilities import deprecated
 
 class TreebankCorpusReader(CorpusReader):
     """
-    Corpus reader for the treebank.  Combines thee underlying formats:
-    parsed, tagged+chunkied, and plaintext.  Each of these formats is
+    Corpus reader for the treebank.  Combines three underlying formats:
+    parsed, tagged+chunked, and plaintext.  Each of these formats is
     stored in a different subdirectory (combined/, tagged/, and raw/,
     respectively).
 
