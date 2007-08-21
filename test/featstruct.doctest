@@ -158,7 +158,7 @@ structure raise KeyError:
 
 Feature paths can go through reentrant structures:
 
-    >>> fs2 = FeatStruct.parse('(1)[a=[b=[c->(1), d=5], e=11]]')
+    >>> fs2 = FeatStruct('(1)[a=[b=[c->(1), d=5], e=11]]')
     >>> fs2['a', 'b', 'c', 'a', 'e']
     11
     >>> fs2['a', 'b', 'c', 'a', 'b', 'd']
@@ -196,52 +196,89 @@ Parsing
 -------
 Empty feature struct:
 
-    >>> FeatStruct.parse('[]')
+    >>> FeatStruct('[]')
     []
 
 Test features with integer values:
 
-    >>> FeatStruct.parse('[a=12, b=-33, c=0]')
+    >>> FeatStruct('[a=12, b=-33, c=0]')
     [a=12, b=-33, c=0]
 
 Test features with string values.  Either single or double quotes may
 be used.  Strings are evaluated just like python strings -- in
 particular, you can use escape sequences and 'u' and 'r' prefixes.
 
-    >>> FeatStruct.parse('[a="", b="hello", c="\'", d=\'\', e=\'"\']')
+    >>> FeatStruct('[a="", b="hello", c="\'", d=\'\', e=\'"\']')
     [a='', b='hello', c="'", d='', e='"']
-    >>> FeatStruct.parse(r'[a="\\", b="\"", c="\x6f\\y", d="12"]')
+    >>> FeatStruct(r'[a="\\", b="\"", c="\x6f\\y", d="12"]')
     [a='\\', b='"', c='o\\y', d='12']
-    >>> FeatStruct.parse(r'[a=u"\u1234", b=r"a\b\c"]')
+    >>> FeatStruct(r'[a=u"\u1234", b=r"a\b\c"]')
     [a=u'\u1234', b='a\\b\\c']
 
 Triple quoted strings are not currently supported:
 
-    >>> FeatStruct.parse('[x="""a"""]')
+    >>> FeatStruct('[x="""a"""]')
     Traceback (most recent call last):
       . . .
-    ValueError: Error parsing field structure
-    <BLANKLINE>
+    ValueError: Error parsing feature structure
         [x="""a"""]
              ^ Expected comma
-    <BLANKLINE>
 
-    >>> FeatStruct.parse('[a=[b=[c=12], d=155]]')
+    >>> FeatStruct('[a=[b=[c=12], d=155]]')
     [a=[b=[c=12], d=155]]
 
 Test parsing of reentrant feature structures.
 
-    >>> FeatStruct.parse('[a=(1)[], b->(1)]')
+    >>> FeatStruct('[a=(1)[], b->(1)]')
     [a=(1)[], b->(1)]
-    >>> FeatStruct.parse('[a=(1)[x=1, y=2], b->(1)]')
+    >>> FeatStruct('[a=(1)[x=1, y=2], b->(1)]')
     [a=(1)[x=1, y=2], b->(1)]
 
 Test parsing of cyclic feature structures.
 
-    >>> FeatStruct.parse('[a=(1)[b->(1)]]')
+    >>> FeatStruct('[a=(1)[b->(1)]]')
     [a=(1)[b->(1)]]
-    >>> FeatStruct.parse('(1)[a=[b=[c->(1)]]]')
+    >>> FeatStruct('(1)[a=[b=[c->(1)]]]')
     (1)[a=[b=[c->(1)]]]
+
+Parsing gives helpful messages if your string contains an error.
+
+    >>> FeatStruct('[a=, b=5]]')
+    Traceback (most recent call last):
+      . . .
+    ValueError: Error parsing feature structure
+        [a=, b=5]]
+           ^ Expected value
+    >>> FeatStruct('[a=12 22, b=33]')
+    Traceback (most recent call last):
+      . . .
+    ValueError: Error parsing feature structure
+        [a=12 22, b=33]
+             ^ Expected comma
+    >>> FeatStruct('[a=5] [b=6]')
+    Traceback (most recent call last):
+      . . .
+    ValueError: Error parsing feature structure
+        [a=5] [b=6]
+              ^ Expected end of string
+    >>> FeatStruct('foo')
+    Traceback (most recent call last):
+      . . .
+    ValueError: Error parsing feature structure
+        foo
+        ^ Expected open bracket or identifier
+    >>> FeatStruct('[x->(1)]')
+    Traceback (most recent call last):
+      . . .
+    ValueError: Error parsing feature structure
+        [x->(1)]
+               ^ Expected bound identifier
+    >>> FeatStruct('[x->y]')
+    Traceback (most recent call last):
+      . . .
+    ValueError: Error parsing feature structure
+        [x->y]
+            ^ Expected identifier
 
 
 Unification
@@ -259,8 +296,8 @@ Very simple unifications give the expected results:
 
 Merging nested structures:
 
-    >>> fs1 = FeatStruct.parse('[A=[B=b]]')
-    >>> fs2 = FeatStruct.parse('[A=[C=c]]')
+    >>> fs1 = FeatStruct('[A=[B=b]]')
+    >>> fs2 = FeatStruct('[A=[C=c]]')
     >>> fs1.unify(fs2)
     [A=[B='b', C='c']]
     >>> fs2.unify(fs1)
@@ -268,8 +305,8 @@ Merging nested structures:
     
 A basic case of reentrant unification
 
-    >>> fs4 = FeatStruct.parse('[A=(1)[B=b], E=[F->(1)]]')
-    >>> fs5 = FeatStruct.parse("[A=[C='c'], E=[F=[D='d']]]")
+    >>> fs4 = FeatStruct('[A=(1)[B=b], E=[F->(1)]]')
+    >>> fs5 = FeatStruct("[A=[C='c'], E=[F=[D='d']]]")
     >>> fs4.unify(fs5)
     [A=(1)[B='b', C='c', D='d'], E=[F->(1)]]
     >>> fs5.unify(fs4)
@@ -277,22 +314,22 @@ A basic case of reentrant unification
 
 More than 2 paths to a value
 
-    >>> fs1 = FeatStruct.parse("[a=[],b=[],c=[],d=[]]")
-    >>> fs2 = FeatStruct.parse('[a=(1)[], b->(1), c->(1), d->(1)]')
+    >>> fs1 = FeatStruct("[a=[],b=[],c=[],d=[]]")
+    >>> fs2 = FeatStruct('[a=(1)[], b->(1), c->(1), d->(1)]')
     >>> fs1.unify(fs2)
     [a=(1)[], b->(1), c->(1), d->(1)]
 
 fs1[a] gets unified with itself
 
-    >>> fs1 = FeatStruct.parse('[x=(1)[], y->(1)]')
-    >>> fs2 = FeatStruct.parse('[x=(1)[], y->(1)]')
+    >>> fs1 = FeatStruct('[x=(1)[], y->(1)]')
+    >>> fs2 = FeatStruct('[x=(1)[], y->(1)]')
     >>> fs1.unify(fs2)
     [x=(1)[], y->(1)]
 
 Bound variables should get forwarded appropriately
 
-    >>> fs1 = FeatStruct.parse('[A=(1)[X=x], B->(1), C=?cvar, D=?dvar]')
-    >>> fs2 = FeatStruct.parse('[A=(1)[Y=y], B=(2)[Z=z], C->(1), D->(2)]')
+    >>> fs1 = FeatStruct('[A=(1)[X=x], B->(1), C=?cvar, D=?dvar]')
+    >>> fs2 = FeatStruct('[A=(1)[Y=y], B=(2)[Z=z], C->(1), D->(2)]')
     >>> fs1.unify(fs2)
     [A=(1)[X='x', Y='y', Z='z'], B->(1), C->(1), D->(1)]
     >>> fs2.unify(fs1)
@@ -300,8 +337,8 @@ Bound variables should get forwarded appropriately
 
 Cyclic structure created by unification.
 
-    >>> fs1 = FeatStruct.parse('[F=(1)[], G->(1)]')
-    >>> fs2 = FeatStruct.parse('[F=[H=(2)[]], G->(2)]')
+    >>> fs1 = FeatStruct('[F=(1)[], G->(1)]')
+    >>> fs2 = FeatStruct('[F=[H=(2)[]], G->(2)]')
     >>> fs3 = fs1.unify(fs2)
     >>> fs3
     [F=(1)[H->(1)], G->(1)]
@@ -316,8 +353,8 @@ Cyclic structure created by unification.
 
 Cyclic structure created w/ variables.
 
-    >>> fs1 = FeatStruct.parse('[F=[H=?x]]')
-    >>> fs2 = FeatStruct.parse('[F=?x]')
+    >>> fs1 = FeatStruct('[F=[H=?x]]')
+    >>> fs2 = FeatStruct('[F=?x]')
     >>> fs3 = fs1.unify(fs2, rename_vars=False)
     >>> fs3
     [F=(1)[H->(1)]]
@@ -330,7 +367,7 @@ Cyclic structure created w/ variables.
 
 Unifying w/ a cyclic feature structure.
 
-    >>> fs4 = FeatStruct.parse('[F=[H=[H=[H=(1)[]]]], K->(1)]')
+    >>> fs4 = FeatStruct('[F=[H=[H=[H=(1)[]]]], K->(1)]')
     >>> fs3.unify(fs4)
     [F=(1)[H->(1)], K->(1)]
     >>> fs4.unify(fs3)
@@ -339,33 +376,33 @@ Unifying w/ a cyclic feature structure.
 Variable bindings should preserve reentrance.
 
     >>> bindings = {}
-    >>> fs1 = FeatStruct.parse("[a=?x]")
-    >>> fs2 = fs1.unify(FeatStruct.parse("[a=[]]"), bindings)
+    >>> fs1 = FeatStruct("[a=?x]")
+    >>> fs2 = fs1.unify(FeatStruct("[a=[]]"), bindings)
     >>> fs2['a'] is bindings[Variable('x')]
     True
-    >>> fs2.unify(FeatStruct.parse("[b=?x]"), bindings)
+    >>> fs2.unify(FeatStruct("[b=?x]"), bindings)
     [a=(1)[], b->(1)]
 
 Aliased variable tests
 
-    >>> fs1 = FeatStruct.parse("[a=?x, b=?x]")
-    >>> fs2 = FeatStruct.parse("[b=?y, c=?y]")
+    >>> fs1 = FeatStruct("[a=?x, b=?x]")
+    >>> fs2 = FeatStruct("[b=?y, c=?y]")
     >>> bindings = {}
     >>> fs3 = fs1.unify(fs2, bindings)
     >>> fs3
     [a=?x, b=?x, c=?x]
     >>> bindings
     {Variable('y'): Variable('x')}
-    >>> fs3.unify(FeatStruct.parse("[a=1]"))
+    >>> fs3.unify(FeatStruct("[a=1]"))
     [a=1, b=1, c=1]
 
 If we keep track of the bindings, then we can use the same variable
 over multiple calls to unify.
 
     >>> bindings = {}
-    >>> fs1 = FeatStruct.parse('[a=?x]')
-    >>> fs2 = fs1.unify(FeatStruct.parse('[a=[]]'), bindings)
-    >>> fs2.unify(FeatStruct.parse('[b=?x]'), bindings)
+    >>> fs1 = FeatStruct('[a=?x]')
+    >>> fs2 = fs1.unify(FeatStruct('[a=[]]'), bindings)
+    >>> fs2.unify(FeatStruct('[b=?x]'), bindings)
     [a=(1)[], b->(1)]
     >>> bindings
     {Variable('x'): []}
@@ -374,9 +411,9 @@ Unification Bindings
 --------------------
 
     >>> bindings = {}
-    >>> fs1 = FeatStruct.parse('[a=?x]')
-    >>> fs2 = FeatStruct.parse('[a=12]')
-    >>> fs3 = FeatStruct.parse('[b=?x]')
+    >>> fs1 = FeatStruct('[a=?x]')
+    >>> fs2 = FeatStruct('[a=12]')
+    >>> fs3 = FeatStruct('[b=?x]')
     >>> fs1.unify(fs2, bindings)
     [a=12]
     >>> bindings
@@ -389,8 +426,8 @@ Unification Bindings
     [a=12, b=12]
 
     >>> bindings = {}
-    >>> fs1 = FeatStruct.parse('[a=?x, b=1]')
-    >>> fs2 = FeatStruct.parse('[a=5, b=?x]')
+    >>> fs1 = FeatStruct('[a=?x, b=1]')
+    >>> fs2 = FeatStruct('[a=5, b=?x]')
     >>> fs1.unify(fs2, bindings)
     [a=5, b=1]
     >>> sorted(bindings.items())
@@ -404,11 +441,11 @@ the same value to every feature.  If the optional argument
 ``check_reentrances`` is supplied, then it also returns false if there
 is any difference in the reentrances.
 
-    >>> a = FeatStruct.parse('(1)[x->(1)]')
-    >>> b = FeatStruct.parse('(1)[x->(1)]')
-    >>> c = FeatStruct.parse('(1)[x=[x->(1)]]')
-    >>> d = FeatStruct.parse('[x=(1)[x->(1)]]')
-    >>> e = FeatStruct.parse('(1)[x=[x->(1), y=1], y=1]')
+    >>> a = FeatStruct('(1)[x->(1)]')
+    >>> b = FeatStruct('(1)[x->(1)]')
+    >>> c = FeatStruct('(1)[x=[x->(1)]]')
+    >>> d = FeatStruct('[x=(1)[x->(1)]]')
+    >>> e = FeatStruct('(1)[x=[x->(1), y=1], y=1]')
     >>> def compare(x,y):
     ...     assert x.equal_values(y, True) == y.equal_values(x, True)
     ...     assert x.equal_values(y, False) == y.equal_values(x, False)
@@ -471,8 +508,8 @@ but it wouldn't be a bad thing if it changed.
 Tracing
 -------
 
-    >>> fs1 = FeatStruct.parse('[a=[b=(1)[], c=?x], d->(1), e=[f=?x]]')
-    >>> fs2 = FeatStruct.parse('[a=(1)[c="C"], e=[g->(1)]]')
+    >>> fs1 = FeatStruct('[a=[b=(1)[], c=?x], d->(1), e=[f=?x]]')
+    >>> fs2 = FeatStruct('[a=(1)[c="C"], e=[g->(1)]]')
     >>> fs1.unify(fs2, trace=True)
     <BLANKLINE>
     Unification trace:
@@ -503,8 +540,8 @@ Tracing
           Bindings: {?x: 'C'}
     [a=(1)[b=(2)[], c='C'], d->(2), e=[f='C', g->(1)]]
     >>> 
-    >>> fs1 = FeatStruct.parse('[a=?x, b=?z, c=?z]')
-    >>> fs2 = FeatStruct.parse('[a=?y, b=?y, c=?q]')
+    >>> fs1 = FeatStruct('[a=?x, b=?z, c=?z]')
+    >>> fs2 = FeatStruct('[a=?y, b=?y, c=?q]')
     >>> #fs1.unify(fs2, trace=True)
     >>> 
 
@@ -513,19 +550,19 @@ Squashed Bugs
 In svn rev 5167, unifying two feature structures that used the same
 variable would cause those variables to become aliased in the output.
 
-    >>> fs1 = FeatStruct.parse('[a=?x]')
-    >>> fs2 = FeatStruct.parse('[b=?x]')
+    >>> fs1 = FeatStruct('[a=?x]')
+    >>> fs2 = FeatStruct('[b=?x]')
     >>> fs1.unify(fs2)
     [a=?x, b=?x2]
 
 There was a bug in svn revision 5172 that caused `rename_variables` to
 rename variables to names that are already used.
 
-    >>> FeatStruct.parse('[a=?x, b=?x2]').rename_variables(
+    >>> FeatStruct('[a=?x, b=?x2]').rename_variables(
     ...     vars=[Variable('x')])
     [a=?x3, b=?x2]
-    >>> fs1 = FeatStruct.parse('[a=?x]')
-    >>> fs2 = FeatStruct.parse('[a=?x, b=?x2]')
+    >>> fs1 = FeatStruct('[a=?x]')
+    >>> fs2 = FeatStruct('[a=?x, b=?x2]')
     >>> fs1.unify(fs2)
     [a=?x, b=?x2]
 
@@ -536,8 +573,8 @@ structures.  (nb: this test assumes that features are unified in
 alphabetical order -- if they are not, it might pass even if the bug
 is present.)
 
-    >>> fs1 = FeatStruct.parse('[a=[x=1], b=?x, c=?x]')
-    >>> fs2 = FeatStruct.parse('[a=(1)[], b->(1), c=[x=2]]')
+    >>> fs1 = FeatStruct('[a=[x=1], b=?x, c=?x]')
+    >>> fs2 = FeatStruct('[a=(1)[], b->(1), c=[x=2]]')
     >>> print fs1.unify(fs2)
     None
 

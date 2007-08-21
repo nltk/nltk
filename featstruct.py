@@ -61,6 +61,8 @@ X{aliased}.  This is encoded by binding one variable to the other.
 @todo: Figure out yaml support.  Do we need any?
 
 @todo: substitutebindingsi, etc.
+
+@todo: support for mutable feature structures?
    
 """
 
@@ -135,20 +137,29 @@ class FeatStruct(object):
 
     @ivar _features: A dictionary mapping from feature names to values.
     """
-    def __init__(self, feature_dict=None, **features):
+    def __init__(self, value=None, **features):
         """
         Create a new feature structure, with the specified features.
-        Feature values may be initialized from a dictionary mapping
-        from feature names to values (C{feature_dict}), or from
-        keyword arguments, or from both.
+
+        @param value: The initial value for this feature structure.
+        If C{value} is a C{FeatStruct}, then its features are copied
+        (shallow copy).  If C{value} is a C{dict}, then a feature is
+        created for each item, mapping its key to its value.  If
+        C{value} is a string, then it is parsed using L{parse()}.  If
+        C{value} is a list of tuples C{name,val}, then a feature is
+        created for each tuple.
         """
-        if feature_dict is None:
+        if value is None:
             self._features = features
+        elif isinstance(value, basestring):
+            self._features = {}
+            self._parse(value)
+            self._features.update(features)
         else:
-            for key in feature_dict:
+            for key in value:
                 if not isinstance(key, basestring):
                     raise TypeError('Feature names must be strings')
-            self._features = dict(feature_dict, **features)
+            self._features = dict(value, **features)
 
     #////////////////////////////////////////////////////////////
     #{ Read-only mapping methods
@@ -1046,21 +1057,32 @@ class FeatStruct(object):
             mentions must use arrows (C{'->'}) to reference the
             reentrance identifier.
         """
+        cls()._parse(s)
+
+    def _parse(self, s):
+        """
+        Helper function for L{parse()} which calls L{_parse2()},
+        catches exceptions, and generates nicer error messages.
+        It also checks to make sure that the entire string was
+        parsed.
+        """
+        s = s.strip()
         try:
-            value, position = cls._parse(s.strip(), 0, {})
+            value, position = self._parse2(s, 0, {})
+            if position != len(s):
+                raise ValueError('end of string', position)
         except ValueError, e:
-            estr = ('Error parsing field structure\n\n    ' +
+            estr = ('Error parsing feature structure\n    ' +
                     s + '\n    ' + ' '*e.args[1] + '^ ' +
-                    'Expected %s\n' % e.args[0])
+                    'Expected %s' % e.args[0])
             raise ValueError, estr
-        if position != len(s):
-            raise ValueError('Feature structure ended before string end')
         return value
 
     # Regular expressions for parsing.
     _PARSE_RE = {'name': re.compile(r'\s*([^\s\(\)"\'\-=\[\]]+)\s*'),
                  'fstruct': re.compile(r'\s*(?:\((\d+)\)\s*)?\['),
-                 'reentrance': re.compile(r'\s*->\s*\((\d+)\)\s*'),
+                 'reentrance': re.compile(r'\s*->\s*'),
+                 'target': re.compile(r'\s*\((\d+)\)\s*'),
                  'assign': re.compile(r'\s*=\s*'),
                  'bracket': re.compile(r'\s*]\s*'),
                  'comma': re.compile(r'\s*,\s*'),
@@ -1071,8 +1093,7 @@ class FeatStruct(object):
                  'stringstart': re.compile("[uU]?[rR]?(['\"])"),
                  'stringmarker': re.compile("['\"\\\\]")}
 
-    @classmethod
-    def _parse(cls, s, position=0, reentrances=None):
+    def _parse2(self, s, position, reentrances):
         """
         Helper function that parses a feature structure.
         @param s: The string to parse.
@@ -1083,12 +1104,7 @@ class FeatStruct(object):
             structure ends.
         """
         # A set of useful regular expressions (precompiled)
-        _PARSE_RE = cls._PARSE_RE
-
-        # Create a feature structure.  We do this before we've
-        # collected all the features, in case the feature structure is
-        # cyclic.
-        new_fstruct = cls()
+        _PARSE_RE = self._PARSE_RE
 
         # Get the reentrance identifier and the open bracket.
         match = _PARSE_RE['fstruct'].match(s, position)
@@ -1098,19 +1114,19 @@ class FeatStruct(object):
             identifier = match.group(1)
             if identifier in reentrances:
                 raise ValueError('new identifier', position.start(1))
-            reentrances[identifier] = new_fstruct
+            reentrances[identifier] = self
         position = match.end()
 
         # If it's immediately followed by a close bracket, then just
         # return an empty feature structure.
         match = _PARSE_RE['bracket'].match(s, position)
-        if match is not None: return new_fstruct, match.end()
+        if match is not None: return self, match.end()
 
         # Build a list of the features defined by the structure.
         # Each feature has one of the three following forms:
         #     name = value
         #     name -> (target)
-        features = new_fstruct._features
+        features = self._features
         while position < len(s):
             # Use these variables to hold info about the feature:
             name = id = target = val = None
@@ -1124,6 +1140,10 @@ class FeatStruct(object):
             # Check for a reentrance link ("-> (target)")
             match = _PARSE_RE['reentrance'].match(s, position)
             if match is not None:
+                position = match.end()
+                match = _PARSE_RE['target'].match(s, position)
+                if not match:
+                    raise ValueError('identifier', position)
                 target = match.group(1)
                 position = match.end()
                 if target not in reentrances:
@@ -1133,10 +1153,11 @@ class FeatStruct(object):
             # If it's not a reentrance link, it must be an assignment.
             else:
                 match = _PARSE_RE['assign'].match(s, position)
-                if match is None: raise ValueError('equals sign', position)
+                if match is None:
+                    raise ValueError('equals sign', position)
                 position = match.end()
 
-                val, position = cls._parseval(s, position, reentrances)
+                val, position = self._parseval(s, position, reentrances)
                 features[name] = val
                 if id is not None:
                     reentrances[id] = val
@@ -1144,7 +1165,7 @@ class FeatStruct(object):
             # Check for a close bracket
             match = _PARSE_RE['bracket'].match(s, position)
             if match is not None:
-                return new_fstruct, match.end()
+                return self, match.end()
 
             # Otherwise, there should be a comma
             match = _PARSE_RE['comma'].match(s, position)
@@ -1191,7 +1212,7 @@ class FeatStruct(object):
 
         # Nested feature structure
         if _PARSE_RE['fstruct'].match(s, position):
-            return cls._parse(s, position, reentrances)
+            return cls()._parse2(s, position, reentrances)
 
         # Variable
         match = _PARSE_RE['var'].match(s, position)
