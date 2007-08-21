@@ -23,6 +23,7 @@ from nltk.corpus.reader.senseval import *
 from nltk.corpus.reader.ieer import *
 from nltk.corpus.reader.treebank import *
 from nltk.corpus.reader.sinica_treebank import *
+from nltk.corpus.reader.bracket_parse import *
 from nltk.corpus.reader.indian import *
 from nltk.corpus.reader.toolbox import *
 from nltk.corpus.reader.timit import *
@@ -35,7 +36,7 @@ __all__ = [
     'GutenbergCorpusReader', 'XMLCorpusReader',
     'PPAttachmentCorpusReader', 'SensevalCorpusReader',
     'IEERCorpusReader', 'TreebankCorpusReader',
-    'SinicaTreebankCorpusReader', 'IndianCorpusReader',
-    'ToolboxCorpusReader', 'TimitCorpusReader',
-    'YCOECorpusReader',]
-
+    'SinicaTreebankCorpusReader', 'BracketParseCorpusReader',
+    'IndianCorpusReader', 'ToolboxCorpusReader',
+    'TimitCorpusReader', 'YCOECorpusReader',
+]

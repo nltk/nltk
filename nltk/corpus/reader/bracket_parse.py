@@ -18,7 +18,7 @@ trees.
 
 class BracketParseCorpusReader(CorpusReader):
     """
-    Reader for corpora that consist of parenthesis-deliniated parse
+    Reader for corpora that consist of parenthesis-delineated parse
     trees.
     """
     def __init__(self, root, items, extension=''):
@@ -56,6 +56,7 @@ class BracketParseCorpusReader(CorpusReader):
         # parse, then strip them off.
         if re.match(r'\s*\(\s*\(', t):
             t = t.strip()[1:-1]
+        # Replace any punctuation leaves of the form (!), (,), with (! !), (, ,)
+	t = re.sub(r"\((.)\)", r"(\1 \1)", t)
         return bracket_parse(t)
-
 

@@ -75,6 +75,8 @@ conll2000 = LazyCorpusLoader(
 conll2002 = LazyCorpusLoader(
     'conll2002', ConllChunkCorpusReader, '.*\.(test|train).*', '',
     ('LOC', 'PER', 'ORG', 'MISC'))
+floresta = LazyCorpusLoader(
+    'floresta', BracketParseCorpusReader, '(?!\.svn).*', '.ptb')
 genesis = LazyCorpusLoader(
     'genesis', PlaintextCorpusReader, '(?!\.svn).*', '.txt')
 gutenberg = LazyCorpusLoader(
