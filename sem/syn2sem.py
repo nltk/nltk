@@ -13,7 +13,7 @@ a first-order model.
 """
 
 import evaluate
-from nltk import tokenize, Tree
+from nltk.tree import Tree
 
 
 ##############################################################
