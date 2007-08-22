@@ -422,7 +422,7 @@ class ConcatenatedCorpusView(AbstractCorpusView):
     def __init__(self, corpus_views):
         self._pieces = corpus_views
         """A list of the corpus subviews that make up this
-        concatination."""
+        concatenation."""
         
         self._offsets = [0]
         """A list of offsets, indicating the index at which each

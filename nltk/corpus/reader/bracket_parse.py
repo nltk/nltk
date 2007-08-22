@@ -41,6 +41,25 @@ class BracketParseCorpusReader(CorpusReader):
         return concat([StreamBackedCorpusView(filename, self._read_block)
                        for filename in self._item_filenames(items)])
 
+    def tagged_sents(self, items=None):
+        return concat([StreamBackedCorpusView(filename,
+                                              lambda stream: [t.pos() for t in self._read_block(stream)])
+                       for filename in self._item_filenames(items)])
+
+    # slightly inefficient to build trees then discard them
+    def sents(self, items=None):
+        return concat([StreamBackedCorpusView(filename,
+                                              lambda stream: [t.leaves() for t in self._read_block(stream)])
+                       for filename in self._item_filenames(items)])
+
+    # this puts everything in memory, which is not what we want
+    def tagged_words(self, items=None):
+        return [word for word in self.tagged_sents(items)]
+
+    # this puts everything in memory, which is not what we want
+    def words(self, items=None):
+        return [word for word in self.sents(items)]
+
     def _item_filenames(self, items):
         if items is None: items = self.items
         if isinstance(items, basestring): items = [items]
