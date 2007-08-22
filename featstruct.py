@@ -88,10 +88,6 @@ class SubstituteBindingsMixin(object):
 # Feature Structure
 ######################################################################
 
-class UnificationFailure(Exception):
-    """ An exception that is used by C{_destructively_unify} to
-    abort unification when a failure is encountered."""
-
 class FeatStruct(object):
     """
     A structured set of features.  These features are represented as a
@@ -573,8 +569,9 @@ class FeatStruct(object):
     #{ Unification
     ##////////////////////////////////////////////////////////////
     
-    def unify(self, other, bindings=None, trace=False, rename_vars=True):
-        return unify(self, other, bindings, trace, rename_vars)
+    def unify(self, other, bindings=None, trace=False,
+              fail=None, rename_vars=True):
+        return unify(self, other, bindings, trace, fail, rename_vars)
 
     ##////////////////////////////////////////////////////////////
     #{ String Representations
@@ -899,13 +896,20 @@ def _rename_variable(fstruct, var, used_vars):
 # Unification
 ######################################################################
 
+class _UnificationFailure(object):
+    def __repr__(self): return 'nltk.featstruct.UnificationFailure'
+UnificationFailure = _UnificationFailure()
+"""A unique value used to indicate unification failure.  It can be
+   returned by L{Feature.unify_base_values()} or by custom C{fail()}
+   functions to indicate that unificaiton should fail."""
+
 # The basic unification algorithm:
 #   1. Make copies of self and other (preserving reentrance)
 #   2. Destructively unify self and other
 #   3. Apply forward pointers, to preserve reentrance.
 #   4. Replace bound variables with their values.
 def unify(fstruct1, fstruct2, bindings=None, trace=False,
-          rename_vars=True, fs_class='default'):
+          fail=None, rename_vars=True, fs_class='default'):
     """
     Unify C{fstruct1} with C{fstruct2}, and return the resulting feature
     structure.  This unified feature structure is the minimal
@@ -957,8 +961,6 @@ def unify(fstruct1, fstruct2, bindings=None, trace=False,
         the same name to be treated as a single variable, use
         C{rename_vars=False}.
     """
-    if trace: print '\nUnification trace:'
-
     if fs_class == 'default':
         if fstruct1.__class__ == fstruct2.__class__:
             fs_class = fstruct1.__class__
@@ -990,9 +992,10 @@ def unify(fstruct1, fstruct2, bindings=None, trace=False,
 
     # Do the actual unification.  If it fails, return None.
     forward = {}
+    if trace: _trace_unify_start((), fstruct1copy, fstruct2copy)
     try: _destructively_unify(fstruct1copy, fstruct2copy, bindings,
-                              forward, trace, fs_class, ())
-    except UnificationFailure: return None
+                              forward, trace, fail, fs_class, ())
+    except _UnificationFailureError: return None
 
     # Replace any feature structure that has a forward pointer
     # with the target of its forward pointer.
@@ -1002,18 +1005,24 @@ def unify(fstruct1, fstruct2, bindings=None, trace=False,
     # Replace bound vars with values.
     _resolve_aliases(bindings)
     _substitute_bindings(fstruct1copy, bindings, fs_class, set())
-        
+    
     # Return the result.
+    if trace: _trace_unify_succeed((), fstruct1copy)
+    if trace: _trace_bindings((), bindings)
     return fstruct1copy
 
+class _UnificationFailureError(Exception):
+    """An exception that is used by C{_destructively_unify} to abort
+    unification when a failure is encountered."""
+
 def _destructively_unify(fstruct1, fstruct2, bindings, forward,
-                         trace, fs_class, path):
+                         trace, fail, fs_class, path):
     """
     Attempt to unify C{fstruct1} and C{fstruct2} by modifying them
     in-place.  If the unification succeeds, then C{fstruct1} will
     contain the unified value, the value of C{fstruct2} is undefined,
     and forward[id(fstruct2)] is set to fstruct1.  If the unification
-    fails, then a UnificationFailure is raised, and the
+    fails, then a _UnificationFailureError is raised, and the
     values of C{fstruct1} and C{fstruct2} are undefined.
 
     @param bindings: A dictionary mapping variables to values.
@@ -1029,11 +1038,7 @@ def _destructively_unify(fstruct1, fstruct2, bindings, forward,
     @param path: The feature path that led us to this unification
         step.  Used for trace output.
     """
-    # Look up the "canonical" copy of fstruct1 and fstruct2.
-    while id(fstruct1) in forward: fstruct1 = forward[id(fstruct1)]
-    while id(fstruct2) in forward: fstruct2 = forward[id(fstruct2)]
-
-    if trace: _trace_unify_start(path, fstruct1, fstruct2)
+    #if trace: _trace_unify_start(path, fstruct1, fstruct2)
 
     # If fstruct1 is already identical to fstruct2, we're done.
     # Note: this, together with the forward pointers, ensures
@@ -1042,10 +1047,10 @@ def _destructively_unify(fstruct1, fstruct2, bindings, forward,
         if trace: _trace_unify_identity(path, fstruct1)
         return
 
-    # Set fstruct2's forward pointer to point to fstruct1; this makes us
-    # into the cannonical copy of fstruct2.  N.b. we need to do this
-    # before we recurse into any child structures, in case they're
-    # cyclic.
+    # Set fstruct2's forward pointer to point to fstruct1; this makes
+    # fstruct1 the cannonical copy for fstruct2.  Note that we need to
+    # do this before we recurse into any child structures, in case
+    # they're cyclic.
     forward[id(fstruct2)] = fstruct1
 
     # If any features specify default values, then fill them in.
@@ -1060,66 +1065,76 @@ def _destructively_unify(fstruct1, fstruct2, bindings, forward,
     # we do it to give deterministic behavior, e.g. for tracing.
     for (fname, fval2) in sorted(fstruct2.items()):
         if fstruct1.has_key(fname):
-            if trace: _trace_unify_feature(path, fname)
-            
             fval1 = fstruct1[fname]
+            fpath = path+(fname,)
+            if trace: _trace_unify_start(fpath, fval1, fval2)
+
+            # Look up the "canonical" copy of fval1 and fval2
+            while id(fval1) in forward: fval1 = forward[id(fval1)]
+            while id(fval2) in forward: fval2 = forward[id(fval2)]
 
             # If fval1 or fval2 is a bound variable, then
             # replace it by the variable's bound value.  This
             # includes aliased variables, which are encoded as
-            # variables bound to fstruct2 variables.
+            # variables bound to other variables.
             while isinstance(fval1, Variable) and fval1 in bindings:
                 fval1 = bindings[fval1]
             while isinstance(fval2, Variable) and fval2 in bindings:
                 fval2 = bindings[fval2]
-                
-            # Case 1: unify 2 feature structures (recursive case)
-            if (isinstance(fval1, fs_class) and
-                isinstance(fval2, fs_class)):
-                _destructively_unify(fval1, fval2, bindings, forward,
-                                     trace, fs_class, path+(fname,))
 
-            # Case 2: unify 2 unbound variables (create alias)
+            # Calculate the new value, and store it in result.  If result
+            result = None
+                
+            # Case 1: Two feature structures (recursive case)
+            if isinstance(fval1, fs_class) and isinstance(fval2, fs_class):
+                _destructively_unify(fval1, fval2, bindings, forward,
+                                     trace, fail, fs_class, fpath)
+                result = fval1
+
+            # Case 2: Two unbound variables (create alias)
             elif (isinstance(fval1, Variable) and
                   isinstance(fval2, Variable)):
-                bindings[fval2] = fval1
+                result = bindings[fval2] = fval1
             
-            # Case 3: unify a variable with a value
+            # Case 3: An unbound variable and a value (bind)
             elif isinstance(fval1, Variable):
-                fstruct1[fname] = bindings[fval1] = fval2
+                result = bindings[fval1] = fval2
             elif isinstance(fval2, Variable):
-                bindings[fval2] = fval1
+                result = bindings[fval2] = fval1
 
-            # Case 4: unify two base values (might fail).
-            else:
-                try:
-                    val = _unify_base_values(fname, fval1, fval2)
-                    fstruct1[fname] = val
-                except UnificationFailure:
-                    if trace: _trace_unify_fail(path, fval1, fval2)
-                    raise
-
-            if trace and not isinstance(fval1, fs_class):
-                _trace_unify_fval(path, fval1, fval2, fstruct1[fname],
-                                  forward, fs_class)
+            # Case 4: A feature structure & a base value (fail)
+            elif isinstance(fval1, fs_class) or isinstance(fval2, fs_class):
+                result = UnificationFailure
                 
-        # Case 5: copy from fstruct2
+            # Case 5: Two base values
+            else:
+                if isinstance(fname, Feature):
+                    result = fname.unify_base_values(fval1, fval2)
+                elif fval1 == fval2:
+                    result = fval1
+                else:
+                    result = UnificationFailure
+
+            # If we unification failed, call the failure function; it
+            # might decide to continue anyway.
+            if result is UnificationFailure:
+                if fail is not None: result = fail(fval1, fval2, fpath)
+                if trace: _trace_unify_fail(path, result)
+                if result is UnificationFailure:
+                    raise _UnificationFailureError
+
+            # Store the value.
+            if isinstance(result, fs_class):
+                result = _apply_forwards(result, forward, fs_class, set())
+            fstruct1[fname] = result
+            
+            if trace: _trace_unify_succeed(fpath, result)
+            if trace and isinstance(result, fs_class):
+                _trace_bindings(fpath, bindings)
+                
+        # Case 6: defined in fstruct2 but not fstruct1 (copy)
         else:
             fstruct1[fname] = fval2
-
-    if trace: _trace_unify_succeed(path, fstruct1, bindings, forward, fs_class)
-
-# If we want to add case-insensitive strcmp, etc, do it here:
-def _unify_base_values(fname, val1, val2):
-    """
-    Return true if 2 base values should be considered equal.
-    """
-    if isinstance(fname, Feature):
-        return fname.unify_base_values(val1, val2)
-    elif val1 == val2:
-        return val1
-    else:
-        raise UnificationFailure()
 
 def _apply_forwards_to_bindings(forward, bindings):
     """
@@ -1164,6 +1179,12 @@ def _resolve_aliases(bindings):
             value = bindings[var] = bindings[value]
                 
 def _trace_unify_start(path, fval1, fval2):
+    if path == ():
+        print '\nUnification trace:'
+    else:
+        fullname = '.'.join(str(n) for n in path)
+        print '  '+'|   '*(len(path)-1)+'|'
+        print '  '+'|   '*(len(path)-1)+'| Unify feature: %s' % fullname
     print '  '+'|   '*len(path)+' / '+_trace_valrepr(fval1)
     print '  '+'|   '*len(path)+'|\\ '+_trace_valrepr(fval2)
 def _trace_unify_identity(path, fval1):
@@ -1171,32 +1192,16 @@ def _trace_unify_identity(path, fval1):
     print '  '+'|   '*len(path)+'| (identical objects)'
     print '  '+'|   '*len(path)+'|'
     print '  '+'|   '*len(path)+'+-->'+`fval1`
-def _trace_unify_feature(path, fname):
-    fullname = '.'.join(str(n) for n in path+(fname,))
-    print '  '+'|   '*len(path)+'|'
-    print '  '+'|   '*len(path)+'| Unify feature: %s' % fullname
-def _trace_unify_fval(path, val1, val2, result, forward, fs_class):
-    # Resolve any forward pointers
-    if isinstance(val2, fs_class):
-        val2 = _apply_forwards(val2, forwards, fs_class, set())
-    if isinstance(result, fs_class):
-        result = _apply_forwards(result, forwards, fs_class, set())
-    # Print the unification.
-    print '  '+'|   '*len(path)+'|    / %s' % _trace_valrepr(val1)
-    print '  '+'|   '*len(path)+'|   |\\ %s' % _trace_valrepr(val2)
+def _trace_unify_fail(path, result):
+    if result is UnificationFailure: resume = ''
+    else: resume = ' (nonfatal)'
     print '  '+'|   '*len(path)+'|   |'
-    print '  '+'|   '*len(path)+'|   +-->%s' % _trace_valrepr(result)
-def _trace_unify_fail(path, val1, val2):
-    print '  '+'|   '*len(path)+'|    / %s' % _trace_valrepr(val1)
-    print '  '+'|   '*len(path)+'|   |\\ %s' % _trace_valrepr(val2)
-    print '  '+'|   '*len(path)+'|   |'
-    print '  '+'X   '*len(path)+'X   X <-- FAIL'
-def _trace_unify_succeed(path, fval1, bindings, forward, fs_class):
-    # Resolve any forwards pointers.
-    fval1 = _apply_forwards(fval1, forward, fs_class, set())
+    print '  '+'X   '*len(path)+'X   X <-- FAIL'+resume
+def _trace_unify_succeed(path, fval1):
     # Print the result.
     print '  '+'|   '*len(path)+'|'
     print '  '+'|   '*len(path)+'+-->'+`fval1`
+def _trace_bindings(path, bindings):
     # Print the bindings (if any).
     if len(bindings) > 0:
         binditems = sorted(bindings.items(), key=lambda v:v[0].name)
@@ -1209,6 +1214,15 @@ def _trace_valrepr(val):
         return '?%s' % val.name
     else:
         return '%r' % val
+
+
+def conflicts(fs1, fs2, trace=0):
+    conflict_list = []
+    def add_conflict(fval1, fval2, path):
+        conflict_list.append(path)
+        return fval1
+    unify(fs1, fs2, fail=add_conflict, trace=trace)
+    return conflict_list
 
 ######################################################################
 # Specialized Features
@@ -1260,12 +1274,12 @@ class Feature(object):
     def parse_value(self, s, position, reentrances, parser):
         return parser.parse_value(s, position, reentrances)
 
-    def unify_base_values(self, val1, val2):
+    def unify_base_values(self, fval1, fval2):
         """
         If possible, return a single value..  If not, raise error.
         """
-        if val1 == val2: return val1
-        else: raise UnificationFailure()
+        if fval1 == fval2: return fval1
+        else: return UnificationFailure
 
 class SlashFeature(Feature):
     def parse_value(self, s, position, reentrances, parser):
@@ -1278,11 +1292,11 @@ class RangeFeature(Feature):
         if not m: raise ValueError('range', position)
         return (int(m.group(1)), int(m.group(2))), m.end()
 
-    def unify_base_values(self, val1, val2):
-        if val1 is None: return val2
-        if val2 is None: return val1
-        rng = max(val1[0], val2[0]), min(val1[1], val2[1])
-        if rng[1] < rng[0]: raise UnificationFailure
+    def unify_base_values(self, fval1, fval2):
+        if fval1 is None: return fval2
+        if fval2 is None: return fval1
+        rng = max(fval1[0], fval2[0]), min(fval1[1], fval2[1])
+        if rng[1] < rng[0]: return UnificationFailure
         return rng
     
 SLASH = SlashFeature('slash', default=False, display='slash')
@@ -1422,6 +1436,10 @@ class FeatStructParser(object):
                 name = self._features.get(name[1:-1])
                 if name is None:
                     raise ValueError('known special feature', match.start(2))
+
+            # Check if this feature has a value already.
+            if name in fstruct:
+                raise ValueError('new name', match.start(2))
 
             # Boolean value ("+name" or "-name")
             if match.group(1) == '+': value = True

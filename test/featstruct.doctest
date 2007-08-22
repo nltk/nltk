@@ -787,7 +787,7 @@ Tracing
       |   +-->[f=?x, g=[b=[], c='C']]
       |       Bindings: {?x: 'C'}
       |
-      +-->[a=(1)[b=(2)[], c='C'], d->(2), e=[f=?x, g->(1)]]
+      +-->[a=(1)[b=(2)[], c='C'], d->(2), e=[f='C', g->(1)]]
           Bindings: {?x: 'C'}
     [a=(1)[b=(2)[], c='C'], d->(2), e=[f='C', g->(1)]]
     >>> 
@@ -821,6 +821,20 @@ dictionaries and `FeatStruct`s should be treated as feature structures:
 
     >>> unify(dict(x=1), FeatStruct(x=1), fs_class=(dict, FeatStruct))
     {'x': 1}
+
+Finding Conflicts
+-----------------
+
+    >>> from nltk.featstruct import conflicts
+    >>> fs1 = FeatStruct('[a=[b=(1)[c=2], d->(1), e=[f->(1)]]]')
+    >>> fs2 = FeatStruct('[a=[b=[c=[x=5]], d=[c=2], e=[f=[c=3]]]]')
+    >>> for path in conflicts(fs1, fs2):
+    ...     print '%-8s: %r vs %r' % ('.'.join(path), fs1[path], fs2[path])
+    a.b.c   : 2 vs [x=5]
+    a.e.f.c : 2 vs 3
+
+..
+    >>> del fs1, fs2 # clean-up
 
 Squashed Bugs
 ~~~~~~~~~~~~~
