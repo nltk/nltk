@@ -1,0 +1,70 @@
+Portuguese Treebank
+
+Projecto Floresta Sinta(c)tica -- http://www.linguateca.pt/Floresta/
+Version 7.4  Distributed with permission.
+
+Penn Treebank format, available from http://linguateca.di.uminho.pt/FS/fs.html
+
+Key to tags (http://visl.sdu.dk/visl/pt/portsymbol.html)
+
+<ACC          direct object
+<ACC-PASS     passive use of pronoun 'se'
+<ADVS, <ADVO  adverbial argument
+<ADVL         adjunct adverbial
+<DAT          dative (indirect) object
+<FOC          focus marker (or right focus bracket)
+<OC           object complement
+<PASS         agent of passive
+<PIV          prepositional object
+<PRED         free (subject) predicative, right of main verb
+<SC           subject complement
+<SUBJ         subject
+>A            adverbial pre-adject (intensifier before adjective, adverb, pronoun or participle)
+>N            prenominal modifier
+>P            modifier of prepositional phrase (intensifier, operator or focus adverb)
+>S            modifier of clause (intensifier, operator or focus adverb)
+A<            adverbial post-adject (modifier or argument of adjective, adverb or participle)
+A<ADV         adverbial argument of attributive participle
+A<ADVL        adverbial adjunct of attributive participle
+A<PASS        agent of passive after attributive participle
+A<PIV         prepositional object of attributive participle
+A<SC          subject complement of attributive participle
+ACC>          accusative (direct) object
+ACC>-PASS     passive use of pronoun 'se'
+ACC>>         double-fronted accusative (direct) object before matrix verb
+ADVS>, ADVO>  adverbial argument
+ADVL          top node adverbial
+ADVL>         adjunct adverbial
+ADVL>A        adjunct adverbial before attributive participle
+ADVL>AS<      adjunct adverbial in averbal clause
+APP           identifying apposition
+AS<           clause body of averbal clause
+CO            co-ordinator
+COM           comparator (heading averbal clause)
+DAT>          dative (intransitive) object
+FAUX          finite auxiliary
+FMV           finite main verb
+FOC>          focus marker (or left focus bracket)
+IAUX          non-finite auxiliary
+IMV           non-finite main verb
+KOMP<         argument of comparative hook
+N<            postnominal modifier or argument
+N<PRED        postnominal (in-group) predicative (or non-identifying apposition)
+NPHR          top node noun phrase
+NUM<          second part of numeral chain
+OC>           object complement
+P<            argument of preposition
+PIV>          prepositional object
+PRD           predicator (heading averbal clause)
+PRED>         free (subject) predicative, left of main verb
+PREF          prefix (category being phased out)
+PRT-AUX<      auxiliary particle
+S<            statement predicative (sentence apposition)
+SC>           subject complement
+SUB           subordinator
+SUBJ>         subject
+SUBJ>>        double-fronted subject, with interfering matrix og quoting verb
+TOP           topic constituent
+VOK           vocative constituent
+
+
