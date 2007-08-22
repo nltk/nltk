@@ -139,8 +139,8 @@ class Tree(list):
     
     def leaves(self):
         """
-        @return: a list containing this tree's leaves.  The
-            order of leaves in the tuple reflects the order of the
+        @return: a list containing this tree's leaves.
+            The order reflects the order of the
             leaves in the tree's hierarchical structure.
         @rtype: C{list}
         """
@@ -224,6 +224,21 @@ class Tree(list):
             if isinstance(child, Tree):
                 prods += child.productions()
         return prods
+
+    def pos(self):
+        """
+        @return: a list of tuples containing leaves and pre-terminals (part-of-speech tags).
+            The order reflects the order of the
+            leaves in the tree's hierarchical structure.
+        @rtype: C{list} of C{tuples}
+        """
+        pos = []
+        for child in self:
+            if isinstance(child, Tree):
+                pos.extend(child.pos())
+            else:
+                pos.append((child, self.node))
+        return pos
 
     #////////////////////////////////////////////////////////////
     # Transforms
