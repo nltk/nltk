@@ -636,9 +636,9 @@ Unification Bindings
     [a=12]
     >>> bindings
     {Variable('x'): 12}
-    >>> fs3.apply_bindings(bindings)
+    >>> fs3.substitute_bindings(bindings)
     [b=12]
-    >>> fs3 # apply_bindings didn't mutate fs3.
+    >>> fs3 # substitute_bindings didn't mutate fs3.
     [b=?x]
     >>> fs2.unify(fs3, bindings)
     [a=12, b=12]
@@ -667,9 +667,9 @@ Remove Variables
 ----------------
 
     >>> FeatStruct('[a=?x, b=12, c=[d=?y]]').remove_variables()
-    [a=?x, b=12, c=[d=?y]]
+    [b=12, c=[]]
     >>> FeatStruct('(1)[a=[b=?x,c->(1)]]').remove_variables()
-    (1)[a=[b=?x, c->(1)]]
+    (1)[a=[c->(1)]]
 
 Equality & Hashing
 ------------------
@@ -798,6 +798,29 @@ Tracing
 
 ..
     >>> del fs1, fs2 # clean-up
+
+Unification on Dictionaries
+---------------------------
+
+It's possible to do unification on dictionaries:
+
+    >>> from pprint import pprint # sorts dict repr alphabetically
+    >>> from nltk.featstruct import unify
+    >>> pprint(unify(dict(x=1, y=dict(z=2)), dict(x=1, q=5)))
+    {'q': 5, 'x': 1, 'y': {'z': 2}}
+
+Mixing dicts and FeatStructs is generally a bad idea:
+
+    >>> unify(dict(x=1), FeatStruct(x=1))
+    Traceback (most recent call last):
+      . . .
+    ValueError: fstruct1 and fstruct2 should belong to the same class.
+
+But you can do it if you really want, by explicitly stating that both
+dictionaries and `FeatStruct`s should be treated as feature structures:
+
+    >>> unify(dict(x=1), FeatStruct(x=1), fs_class=(dict, FeatStruct))
+    {'x': 1}
 
 Squashed Bugs
 ~~~~~~~~~~~~~
