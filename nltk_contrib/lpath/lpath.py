@@ -863,7 +863,7 @@ class Trans:
         self.step.WHERE = [
             ['type','=',"'att'"],
             ['name','=',"'@%s'" % t[1][0]],
-            ['value',t[2][0],"'%s'" % t[3][0]],
+            ['value', " %s " % t[2][0],"'%s'" % t[3][0]],
             ]
 
     def _R_R_OR_R(self, t):
