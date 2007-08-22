@@ -9,6 +9,7 @@
 #                   Peter Wang
 #                   Ewan Klein <ewan@inf.ed.ac.uk>
 #                   Rob Speer  <rspeer@mit.edu>
+#                   Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 #
@@ -25,14 +26,9 @@ The class of C{Expression} has various subclasses:
 
 from nltk.utilities import Counter
 
-_counter = Counter()
-
-def unique_variable(counter=None):
-    if counter is None: counter = _counter
-    unique = counter.get()
-    return VariableExpression(Variable('x'+str(unique)))
-
-class Error(Exception): pass
+######################################################################
+# Variables & Bindings
+######################################################################
 
 class Variable(object):
     """A variable, either free or bound."""
@@ -56,6 +52,36 @@ class Variable(object):
 
     def __hash__(self): return hash(self.name)
 
+    def substitute_bindings(self, bindings):
+        return bindings.get(self, self)
+        
+class SubstituteBindingsI(object):
+    """
+    An interface for classes that can perform substitutions for
+    variables.
+    """
+    def substitute_bindings(self, bindings):
+        """
+        @return: The object that is obtained by replacing
+        each variable bound by C{bindings} with its values.
+        Aliases are already resolved.
+        @rtype: (any)
+        """
+        raise NotImplementedError()
+            
+######################################################################
+# ...
+######################################################################
+
+_counter = Counter()
+
+def unique_variable(counter=None):
+    if counter is None: counter = _counter
+    unique = counter.get()
+    return VariableExpression(Variable('x'+str(unique)))
+
+class Error(Exception): pass # used by the parser.
+
 class Constant(object):
     """A nonlogical constant."""
     
@@ -78,21 +104,18 @@ class Constant(object):
 
     def __hash__(self): return hash(repr(self))
 
-class Expression(object):
+class Expression(SubstituteBindingsI):
     """The abstract class of a lambda calculus expression."""
     def __init__(self):
         if self.__class__ is Expression:
             raise NotImplementedError
 
     def __eq__(self, other):
-        return self.equals(other)
-
-    def __ne__(self, other):
-        return not self.equals(other)
-
-    def equals(self, other):
         """Are the two expressions equal, modulo alpha conversion?"""
         return NotImplementedError
+
+    def __ne__(self, other):
+        return not (self == other)
 
     def variables(self):
         """Set of all variables."""
@@ -155,9 +178,17 @@ class Expression(object):
         counter = 0
         for var in vars:
             counter += 1
-            result = result.replace(var, Variable(str(counter)), replace_bound=True)
+            result = result.replace(var, Variable(str(counter)),
+                                    replace_bound=True)
         self._normalized = result
         return result
+    
+    def substitute_bindings(self, bindings):
+        expr = self
+        for var in expr.free():
+            if var in bindings:
+                expr = expr.replace(var, bindings[var])
+        return expr.simplify()
 
 class VariableExpression(Expression):
     """A variable expression which consists solely of a variable."""
@@ -166,7 +197,8 @@ class VariableExpression(Expression):
         assert isinstance(variable, Variable)
         self.variable = variable
 
-    def equals(self, other):
+    # nb: __ne__ defined by Expression
+    def __eq__(self, other):
         """
         Allow equality between instances of C{VariableExpression} and
         C{IndVariableExpression}.
@@ -250,7 +282,8 @@ class ConstantExpression(Expression):
         assert isinstance(constant, Constant)
         self.constant = constant
 
-    def equals(self, other):
+    # nb: __ne__ defined by Expression
+    def __eq__(self, other):
         if self.__class__ == other.__class__:
             return self.constant == other.constant
         else:
@@ -298,7 +331,8 @@ class Operator(ConstantExpression):
         self.constant = operator
         self.operator = operator
 
-    def equals(self, other):
+    # nb: __ne__ defined by Expression
+    def __eq__(self, other):
         if self.__class__ == other.__class__:
             return self.constant == other.constant
         else:
@@ -329,7 +363,8 @@ class VariableBinderExpression(Expression):
         self.binder = (self.prefix, self.variable.name)
         self.body = str(self.term)
 
-    def equals(self, other):
+    # nb: __ne__ defined by Expression
+    def __eq__(self, other):
         r"""
         Defines equality modulo alphabetic variance.
 
@@ -460,10 +495,11 @@ class ApplicationExpression(Expression):
         self.first = first
         self.second = second
 
-    def equals(self, other):
+    # nb: __ne__ defined by Expression
+    def __eq__(self, other):
         if self.__class__ == other.__class__:
-            return self.first.equals(other.first) and \
-                   self.second.equals(other.second)
+            return (self.first == other.first and
+                    self.second == other.second)
         else:
             return False
 
@@ -598,6 +634,7 @@ class LogicParser(object):
         self.process()
 
     def parse(self, data):
+        # [xx] um.. similar to other nltk parsers how?
         """
         Provides a method similar to other NLTK parsers.
 
@@ -775,7 +812,7 @@ def demo():
         ll = LogicParser(str(l)).next()
         print 'l is:', l
         print 'll is:', ll
-        assert l.equals(ll)
+        assert l == ll
         print "Serialize and reparse: %s -> %s" % (l, ll)
         print "Variables:", ll.variables()
         print "Normalize: %s" % ll.normalize()
