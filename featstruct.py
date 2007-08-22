@@ -63,11 +63,19 @@ X{aliased}.  This is encoded by binding one variable to the other.
 @todo: substitutebindingsi, etc.
 
 @todo: support for mutable feature structures?
-   
+
+@todo: define __div__ for feature structures?
+
+relative to category, we don't define...
+  - .symbol (we're not a Nonterminal)
+  - .head()
+  - .feature_names(), .has_features() -- eh
+  - .to_yaml() and .from_yaml()
+  - parsing of cfgs..
 """
 
 import re
-from nltk.sem.logic import Variable
+from nltk.sem.logic import Variable, Expression, LogicParser
 
 ######################################################################
 # Pending
@@ -90,14 +98,11 @@ class SubstituteBindingsI:
 class SubstituteBindingsMixin(object):
     pass
 
-class UnificationFailure(Exception):
-    'ack'
-
 ######################################################################
 # Feature Structure
 ######################################################################
 
-class UnificationFailureError(Exception):
+class UnificationFailure(Exception):
     """ An exception that is used by C{_destructively_unify} to
     abort unification when a failure is encountered."""
 
@@ -157,11 +162,11 @@ class FeatStruct(object):
             self._features = features
         elif isinstance(value, basestring):
             self._features = {}
-            self._parse(value)
+            FeatStructParser().parse(value, self)
             self._features.update(features)
         else:
             for key in value:
-                if not isinstance(key, basestring):
+                if not isinstance(key, (basestring, Feature)):
                     raise TypeError('Feature names must be strings')
             self._features = dict(value, **features)
 
@@ -172,7 +177,7 @@ class FeatStruct(object):
     def __getitem__(self, name_or_path):
         """If the feature with the given name or path exists, return
         its value; otherwise, raise C{KeyError}."""
-        if isinstance(name_or_path, basestring):
+        if isinstance(name_or_path, (basestring, Feature)):
             return self._features[name_or_path]
         if name_or_path == ():
             return self
@@ -233,7 +238,7 @@ class FeatStruct(object):
         """If the feature with the given name or path exists, delete
         its value; otherwise, raise C{KeyError}."""
         if self._frozen: raise ValueError(self._FROZEN_ERROR)
-        if isinstance(name_or_path, basestring):
+        if isinstance(name_or_path, (basestring, Feature)):
             del self._features[name_or_path]
         else:
             try:
@@ -246,7 +251,7 @@ class FeatStruct(object):
         to C{value}.  If C{name_or_path} is an invalid path, raise
         C{KeyError}."""
         if self._frozen: raise ValueError(self._FROZEN_ERROR)
-        if isinstance(name_or_path, basestring):
+        if isinstance(name_or_path, (basestring, Feature)):
             self._features[name_or_path] = value
         else:
             try:
@@ -263,7 +268,7 @@ class FeatStruct(object):
         """If the feature with the given name or path exists, delete
         it and return its value; otherwise, return C{default}."""
         if self._frozen: raise ValueError(self._FROZEN_ERROR)
-        if isinstance(name_or_path, basestring):
+        if isinstance(name_or_path, (basestring, Feature)):
             return self._features.pop(name_or_path, default)
         else:
             try:
@@ -285,7 +290,7 @@ class FeatStruct(object):
         and return C{default}.  If C{name_or_path} is an invalid path,
         raise C{KeyError}."""
         if self._frozen: raise ValueError(self._FROZEN_ERROR)
-        if isinstance(name_or_path, basestring):
+        if isinstance(name_or_path, (basestring, Feature)):
             return self._features.setdefault(name_or_path, default)
         else:
             try:
@@ -313,11 +318,11 @@ class FeatStruct(object):
         else:
             if hasattr(values, 'has_key'):
                 for key in values:
-                    if not isinstance(key, basestring):
+                    if not isinstance(key, (basestring, Feature)):
                         raise TypeError('Feature names must be strings')
             elif hasattr(values, '__iter__'):
                 for (key, value) in values:
-                    if not isinstance(key, basestring):
+                    if not isinstance(key, (basestring, Feature)):
                         raise TypeError('Feature names must be strings')
             self._features.update(values, **features)
 
@@ -583,7 +588,7 @@ class FeatStruct(object):
     ##////////////////////////////////////////////////////////////
 
     # [xx] rename this to substitute_bindings?
-    def apply_bindings(self, bindings):
+    def apply_bindings(self, bindings, bind_expressions=True):
         """
         @return: The feature structure that is obtained by replacing
         each variable bound by C{bindings} with its binding.  Aliased
@@ -598,14 +603,18 @@ class FeatStruct(object):
         an unbound variable or a non-variable value is found.
         
         @type bindings: C{dict} with L{Variable} keys
-        @param bindings: A dictionary mapping from variables to values.  
+        @param bindings: A dictionary mapping from variables to values.
+        @type bind_expressions: C{bool}
+        @param bind_expressions: If true, then replace free
+            variables in L{Expression} feature values with their
+            bindings.
         @rtype: L{FeatStruct}
         """
         selfcopy = self.copy(deep=True)
-        selfcopy._apply_bindings(bindings, set())
+        selfcopy._apply_bindings(bindings, bind_expressions, set())
         return selfcopy
 
-    def _apply_bindings(self, bindings, visited):
+    def _apply_bindings(self, bindings, bind_expr, visited):
         # Visit each node only once:
         if id(self) in visited: return
         visited.add(id(self))
@@ -617,9 +626,15 @@ class FeatStruct(object):
                 while isinstance(fval, Variable) and fval in bindings:
                     fval = bindings[fval]
                 self._features[fname] = fval
+            # If it's an expression, bind its vars.
+            if isinstance(fval, Expression) and bind_expr:
+                for var in fval.free():
+                    if var in bindings:
+                        fval = fval.replace(var, bindings[var])
+                self._features[fname] = fval.simplify()
             # If it's a feature structure, recurse.
             if isinstance(fval, FeatStruct):
-                fval._apply_bindings(bindings, visited)
+                fval._apply_bindings(bindings, bind_expr, visited)
 
     def variables(self):
         """
@@ -743,7 +758,7 @@ class FeatStruct(object):
     #   3. Apply forward pointers, to preserve reentrance.
     #   4. Replace bound variables with their values.
     def unify(self, other, bindings=None, trace=False,
-              rename_vars=True):
+              rename_vars=True, bind_expressions=True):
         """
         Unify C{self} with C{other}, and return the resulting feature
         structure.  This unified feature structure is the minimal
@@ -788,14 +803,16 @@ class FeatStruct(object):
             aliasing in cases where C{self} and C{other} use the
             same variable name.  E.g.:
 
-                >>> fs1 = FeatStruct.parse('[a=?x]')
-                >>> fs2 = FeatStruct.parse('[b=?x]')
-                >>> fs1.unify(fs2)
+                >>> FeatStruct('[a=?x]').unify(FeatStruct('[b=?x]'))
                 [a=?x, b=?x2]
 
             If you intend for a variables in C{self} and C{other} with
             the same name to be treated as a single variable, use
             C{rename_vars=False}.
+        @type bind_expressions: C{bool}
+        @param bind_expressions: If true, then replace free
+            variables in L{Expression} feature values with their
+            bindings.
         """
         if trace: print '\nUnification trace:'
         
@@ -825,14 +842,14 @@ class FeatStruct(object):
         forward = {}
         try: selfcopy._destructively_unify(othercopy, bindings,
                                            forward, trace)
-        except UnificationFailureError: return None
+        except UnificationFailure: return None
 
         # Replace any feature structure that has a forward pointer
         # with the target of its forward pointer.
         selfcopy = selfcopy._apply_forwards(forward, visited=set())
 
         # Replace bound vars with values.
-        selfcopy._apply_bindings(bindings, visited=set())
+        selfcopy._apply_bindings(bindings, bind_expressions, visited=set())
 
         # If the bindings are user-supplied, then replace feature
         # structures that have forward pointers w/ their target; and
@@ -851,7 +868,7 @@ class FeatStruct(object):
         in-place.  If the unification succeeds, then C{self} will
         contain the unified value, the value of C{other} is undefined,
         and forward[id(other)] is set to self.  If the unification
-        fails, then a UnificationFailureError is raised, and the
+        fails, then a UnificationFailure is raised, and the
         values of C{self} and C{other} are undefined.
 
         @param bindings: A dictionary mapping variables to values.
@@ -929,7 +946,7 @@ class FeatStruct(object):
                 # Case 4: unify 2 non-equal values (failure case)
                 elif selfval != otherval:
                     if trace: self._trace_unify_fail(path)
-                    raise UnificationFailureError()
+                    raise UnificationFailure()
 
                 # Case 5: unify 2 equal values
                 else: pass
@@ -1066,6 +1083,8 @@ class FeatStruct(object):
             it.
         """
         segments = []
+        prefix = ''
+        suffix = ''
 
         # If this is the first time we've seen a reentrant structure,
         # then assign it a unique identifier.
@@ -1074,26 +1093,37 @@ class FeatStruct(object):
             reentrance_ids[id(self)] = `len(reentrance_ids)+1`
 
         items = self._features.items()
-        items.sort() # sorting note: keys are unique strings, so we'll
-                     # never fall through to comparing values.
-        for (fname, fval) in items:
-            if isinstance(fval, Variable):
+        # sorting note: keys are unique strings, so we'll never fall
+        # through to comparing values.
+        for (fname, fval) in sorted(items):
+            display = getattr(fname, 'display', None)
+            if reentrance_ids.has_key(id(fval)):
+                segments.append('%s->(%s)' %
+                                (fname, reentrance_ids[id(fval)]))
+            elif (display == 'prefix' and not prefix and
+                  isinstance(fval, (Variable, basestring))):
+                if isinstance(fval, Variable):
+                    prefix = '?%s' % fval.name
+                elif isinstance(fval, basestring):
+                    prefix = '%s' % fval
+            elif display == 'slash' and not suffix:
+                if isinstance(fval, Variable):
+                    suffix = '/?%s' % fval.name
+                else:
+                    suffix = '/%r' % fval
+            elif isinstance(fval, Variable):
                 segments.append('%s=?%s' % (fname, fval.name))
+            elif isinstance(fval, Expression):
+                segments.append('%s=<%s>' % (fname, fval))
             elif not isinstance(fval, FeatStruct):
                 segments.append('%s=%r' % (fname, fval))
-            elif reentrance_ids.has_key(id(fval)):
-                segments.append('%s->(%s)' % (fname,
-                                              reentrance_ids[id(fval)]))
             else:
                 fval_repr = fval._repr(reentrances, reentrance_ids)
                 segments.append('%s=%s' % (fname, fval_repr))
-
         # If it's reentrant, then add on an identifier tag.
         if reentrances[id(self)]:
-            return '(%s)[%s]' % (reentrance_ids[id(self)],
-                                ', '.join(segments))
-        else:
-            return '[%s]' % (', '.join(segments))
+            prefix = '(%s)%s' % (reentrance_ids[id(self)], prefix)
+        return '%s[%s]%s' % (prefix, ', '.join(segments), suffix)
 
     def _str(self, reentrances, reentrance_ids):
         """
@@ -1122,15 +1152,20 @@ class FeatStruct(object):
                 return ['[]']
         
         # What's the longest feature name?  Use this to align names.
-        maxfnamelen = max(len(k) for k in self.keys())
+        maxfnamelen = max(len(str(k)) for k in self.keys())
 
         lines = []
         items = self._features.items()
-        items.sort() # sorting note: keys are unique strings, so we'll
-                     # never fall through to comparing values.
-        for (fname, fval) in items:
+        # sorting note: keys are unique strings, so we'll never fall
+        # through to comparing values.
+        for (fname, fval) in sorted(items):
+            fname = str(fname)
             if isinstance(fval, Variable):
-                lines.append('%s=?%s' % (fname, fval.name))
+                lines.append('%s = ?%s' % (fname.ljust(maxfnamelen),
+                                           fval.name))
+                
+            elif isinstance(fval, Expression):
+                lines.append('%s = <%s>' % (fname.ljust(maxfnamelen), fval))
                 
             elif not isinstance(fval, FeatStruct):
                 # It's not a nested feature structure -- just print it.
@@ -1207,208 +1242,6 @@ class FeatStruct(object):
 
         return reentrances
 
-    ##////////////////////////////////////////////////////////////
-    #{ Parsing
-    ##////////////////////////////////////////////////////////////
-
-    @classmethod
-    def parse(cls, s):
-        """
-        Convert a string representation of a feature structure (as
-        displayed by repr) into a C{FeatStruct}.  This parse
-        imposes the following restrictions on the string
-        representation:
-          - Feature names cannot contain any of the following:
-            whitespace, parenthases, quote marks, equals signs,
-            dashes, and square brackets.
-          - Only the following basic feature value are supported:
-            strings, integers, variables, C{None}, and unquoted
-            alphanumeric strings.
-          - For reentrant values, the first mention must specify
-            a reentrance identifier and a value; and any subsequent
-            mentions must use arrows (C{'->'}) to reference the
-            reentrance identifier.
-        """
-        cls()._parse(s)
-
-    def _parse(self, s):
-        """
-        Helper function for L{parse()} which calls L{_parse2()},
-        catches exceptions, and generates nicer error messages.
-        It also checks to make sure that the entire string was
-        parsed.
-        """
-        s = s.strip()
-        try:
-            value, position = self._parse2(s, 0, {})
-            if position != len(s):
-                raise ValueError('end of string', position)
-        except ValueError, e:
-            estr = ('Error parsing feature structure\n    ' +
-                    s + '\n    ' + ' '*e.args[1] + '^ ' +
-                    'Expected %s' % e.args[0])
-            raise ValueError, estr
-        return value
-
-    # Regular expressions for parsing.
-    _PARSE_RE = {'name': re.compile(r'\s*([^\s\(\)"\'\-=\[\]]+)\s*'),
-                 'fstruct': re.compile(r'\s*(?:\((\d+)\)\s*)?\['),
-                 'reentrance': re.compile(r'\s*->\s*'),
-                 'target': re.compile(r'\s*\((\d+)\)\s*'),
-                 'assign': re.compile(r'\s*=\s*'),
-                 'bracket': re.compile(r'\s*]\s*'),
-                 'comma': re.compile(r'\s*,\s*'),
-                 'none': re.compile(r'None(?=\s|\]|,)'),
-                 'int': re.compile(r'-?\d+(?=\s|\]|,)'),
-                 'var': re.compile(r'\?[a-zA-Z_][a-zA-Z0-9_]*'),
-                 'symbol': re.compile(r'\w+'),
-                 'stringstart': re.compile("[uU]?[rR]?(['\"])"),
-                 'stringmarker': re.compile("['\"\\\\]")}
-
-    def _parse2(self, s, position, reentrances):
-        """
-        Helper function that parses a feature structure.
-        @param s: The string to parse.
-        @param position: The position in the string to start parsing.
-        @param reentrances: A dictionary from reentrance ids to values.
-        @return: A tuple (val, pos) of the feature structure created
-            by parsing and the position where the parsed feature
-            structure ends.
-        """
-        # A set of useful regular expressions (precompiled)
-        _PARSE_RE = self._PARSE_RE
-
-        # Get the reentrance identifier and the open bracket.
-        match = _PARSE_RE['fstruct'].match(s, position)
-        if not match:
-            raise ValueError('open bracket or identifier', position)
-        if match.group(1):
-            identifier = match.group(1)
-            if identifier in reentrances:
-                raise ValueError('new identifier', position.start(1))
-            reentrances[identifier] = self
-        position = match.end()
-
-        # If it's immediately followed by a close bracket, then just
-        # return an empty feature structure.
-        match = _PARSE_RE['bracket'].match(s, position)
-        if match is not None: return self, match.end()
-
-        # Build a list of the features defined by the structure.
-        # Each feature has one of the three following forms:
-        #     name = value
-        #     name -> (target)
-        features = self._features
-        while position < len(s):
-            # Use these variables to hold info about the feature:
-            name = id = target = val = None
-            
-            # Find the next feature's name.
-            match = _PARSE_RE['name'].match(s, position)
-            if match is None: raise ValueError('feature name', position)
-            name = match.group(1)
-            position = match.end()
-
-            # Check for a reentrance link ("-> (target)")
-            match = _PARSE_RE['reentrance'].match(s, position)
-            if match is not None:
-                position = match.end()
-                match = _PARSE_RE['target'].match(s, position)
-                if not match:
-                    raise ValueError('identifier', position)
-                target = match.group(1)
-                position = match.end()
-                if target not in reentrances:
-                    raise ValueError('bound identifier', position)
-                features[name] = reentrances[target]
-
-            # If it's not a reentrance link, it must be an assignment.
-            else:
-                match = _PARSE_RE['assign'].match(s, position)
-                if match is None:
-                    raise ValueError('equals sign', position)
-                position = match.end()
-
-                val, position = self._parseval(s, position, reentrances)
-                features[name] = val
-                if id is not None:
-                    reentrances[id] = val
-
-            # Check for a close bracket
-            match = _PARSE_RE['bracket'].match(s, position)
-            if match is not None:
-                return self, match.end()
-
-            # Otherwise, there should be a comma
-            match = _PARSE_RE['comma'].match(s, position)
-            if match is None: raise ValueError('comma', position)
-            position = match.end()
-
-        # We never saw a close bracket.
-        raise ValueError('close bracket', position)
-
-    @classmethod
-    def _parseval(cls, s, position, reentrances):
-        """
-        Helper function that parses a feature value.  Currently
-        supports: None, integers, variables, strings, nested feature
-        structures.
-        @param s: The string to parse.
-        @param position: The position in the string to start parsing.
-        @param reentrances: A dictionary from reentrance ids to values.
-        @return: A tuple (val, pos) of the value created by parsing
-            and the position where the parsed value ends.
-        """
-        # A set of useful regular expressions (precompiled)
-        _PARSE_RE = cls._PARSE_RE
-
-        # End of string (error)
-        if position == len(s): raise ValueError('value', position)
-        
-        # String value
-        match = _PARSE_RE['stringstart'].match(s, position)
-        if match is not None:
-            start = position
-            quotemark = match.group(1)
-            position = match.end()
-            while 1:
-                match = _PARSE_RE['stringmarker'].search(s, position)
-                if not match: raise ValueError('close quote', position)
-                position = match.end()
-                if match.group() == '\\': position += 1
-                elif match.group() == quotemark:
-                    try:
-                        return eval(s[start:position]), position
-                    except ValueError, e:
-                        raise ValueError('valid string (%s)' % e, start)
-
-        # Nested feature structure
-        if _PARSE_RE['fstruct'].match(s, position):
-            return cls()._parse2(s, position, reentrances)
-
-        # Variable
-        match = _PARSE_RE['var'].match(s, position)
-        if match is not None:
-            return Variable(match.group()[1:]), match.end()
-
-        # None
-        match = _PARSE_RE['none'].match(s, position)
-        if match is not None:
-            return None, match.end()
-
-        # Integer value
-        match = _PARSE_RE['int'].match(s, position)
-        if match is not None:
-            return int(match.group()), match.end()
-
-        # Alphanumeric symbol (must be checked after integer)
-        match = _PARSE_RE['symbol'].match(s, position)
-        if match is not None:
-            return match.group(), match.end()
-
-        # We don't know how to parse this value.
-        raise ValueError('value', position)
-
 # unify can also be used as a stand-alone function:
 def unify(fstruct1, fstruct2, bindings=None, trace=False, rename_vars=True):
     """
@@ -1422,26 +1255,370 @@ def unify(fstruct1, fstruct2, bindings=None, trace=False, rename_vars=True):
     return fstruct1.unify(fstruct2, bindings, trace, rename_vars)
 
 ######################################################################
+# Specialized Features
+######################################################################
+
+class Feature(object):
+    """
+    A feature identifier that's specialized to put additional
+    constraints, default values, etc.
+    """
+    def __init__(self, name, default=None, display=None):
+        self._name = name
+        
+        self._default = default
+        """Default value for this feature.  Use None for unbound."""
+
+        self._display = display
+        """Custom display location: can be prefix, or slash."""
+
+        if self._display == 'prefix':
+            self._sortkey = (-1, self._name)
+        elif self._display == 'slash':
+            self._sortkey = (1, self._name)
+        else:
+            self._sortkey = (0, self._name)
+
+    name = property(lambda self: self._name)
+    default = property(lambda self: self._default)
+    display = property(lambda self: self._display)
+
+    def __repr__(self):
+        return '*%s*' % self.name
+
+    def check(self, val):
+        """
+        Called when a value is assigned to this feature.  Raise a
+        C{ValueError} if it's a bad value.
+        """
+
+    def unify_base_values(self, val1, val2):
+        """
+        If possible, return a single value..  If not, raise error.
+        """
+        raise UnificationFailure()
+
+    def __cmp__(self, other):
+        if not isinstance(other, Feature): return -1
+        if self._name == other._name: return 0
+        return cmp(self._sortkey, other._sortkey)
+
+    def __hash__(self):
+        return hash(self._name)
+
+SLASH = Feature('slash', default=False, display='slash')
+TYPE = Feature('type', display='prefix')
+    
+######################################################################
+# Feature Structure Parser
+######################################################################
+
+class FeatStructParser(object):
+    def __init__(self, features=(SLASH, TYPE), cls=FeatStruct):
+        self._features = dict((f.name,f) for f in features)
+        self._class = cls
+        self._prefix_feature = None
+        self._slash_feature = None
+        for feature in features:
+            if feature.display == 'slash':
+                if self._slash_feature:
+                    raise ValueError('Multiple features w/ display=slash')
+                self._slash_feature = feature
+            if feature.display == 'prefix':
+                if self._prefix_feature:
+                    raise ValueError('Multiple features w/ display=prefix')
+                self._prefix_feature = feature
+
+    def parse(self, s, fstruct=None):
+        """
+        Convert a string representation of a feature structure (as
+        displayed by repr) into a C{FeatStruct}.  This parse
+        imposes the following restrictions on the string
+        representation:
+          - Feature names cannot contain any of the following:
+            whitespace, parenthases, quote marks, equals signs,
+            dashes, commas, and square brackets.  Feature names may
+            not begin with plus signs or minus signs.
+          - Only the following basic feature value are supported:
+            strings, integers, variables, C{None}, and unquoted
+            alphanumeric strings.
+          - For reentrant values, the first mention must specify
+            a reentrance identifier and a value; and any subsequent
+            mentions must use arrows (C{'->'}) to reference the
+            reentrance identifier.
+        """
+        s = s.strip()
+        value, position = self.partial_parse(s, 0, {}, fstruct)
+        if position != len(s):
+            self._error(s, 'end of string', position)
+        return value
+
+    _START_FSTRUCT_RE = re.compile(r'\s*(?:\((\d+)\)\s*)?(\??\w+\s*)?(\[)')
+    _END_FSTRUCT_RE = re.compile(r'\s*]\s*(/)?')
+    _FEATURE_NAME_RE = re.compile(r'\s*([+-]?)([^\s\(\)"\'\-=\[\],]+)\s*')
+    _REENTRANCE_RE = re.compile(r'\s*->\s*')
+    _TARGET_RE = re.compile(r'\s*\((\d+)\)\s*')
+    _ASSIGN_RE = re.compile(r'\s*=\s*')
+    _COMMA_RE = re.compile(r'\s*,\s*')
+
+    def partial_parse(self, s, position, reentrances, fstruct=None):
+        """
+        Helper function that parses a feature structure.
+        @param s: The string to parse.
+        @param position: The position in the string to start parsing.
+        @param reentrances: A dictionary from reentrance ids to values.
+        @return: A tuple (val, pos) of the feature structure created
+            by parsing and the position where the parsed feature
+            structure ends.
+        """
+        try:
+            return self._partial_parse(s, position, reentrances, fstruct)
+        except ValueError, e:
+            self._error(s, *e.args)
+        
+    def _partial_parse(self, s, position, reentrances, fstruct=None):
+        # Create the new feature structure
+        if fstruct is None:
+            fstruct = self._class()
+        else:
+            fstruct.clear()
+
+        # Read up to the open bracket.
+        match = self._START_FSTRUCT_RE.match(s, position)
+        if not match:
+            raise ValueError('open bracket or identifier', position)
+        position = match.end()
+
+        # If there as an identifier, record it.
+        if match.group(1):
+            identifier = match.group(1)
+            if identifier in reentrances:
+                raise ValueError('new identifier', match.start(1))
+            reentrances[identifier] = fstruct
+
+        # If there was a prefix feature, record it.
+        if match.group(2):
+            if self._prefix_feature is None:
+                raise ValueError('open bracket or identifier', match.start(2))
+            prefixval = match.group(2).strip()
+            if prefixval.startswith('?'):
+                prefixval = Variable(prefixval[1:])
+            fstruct[self._prefix_feature] = prefixval
+
+        # If it's immediately followed by a close bracket, then just
+        # return the feature structure.  (check for slash feature 1st)
+        match = self._END_FSTRUCT_RE.match(s, position)
+        if match is not None:
+            position = match.end()
+            if match.group(1) and self._slash_feature is not None:
+                val, position = self._parse_value(s, position, reentrances)
+                fstruct[self._slash_feature] = val
+            return fstruct, position
+
+        # Build a list of the features defined by the structure.
+        # Each feature has one of the three following forms:
+        #     name = value
+        #     name -> (target)
+        #     +name
+        #     -name
+        while position < len(s):
+            # Use these variables to hold info about the feature:
+            name = target = value = None
+
+            # Get the feature name's name
+            match = self._FEATURE_NAME_RE.match(s, position)
+            if match is None: raise ValueError('feature name', position)
+            name = match.group(2)
+            position = match.end()
+
+            # Check if it's a special feature.
+            if name[0] == '*' and name[-1] == '*':
+                name = self._features.get(name[1:-1])
+                if name is None:
+                    raise ValueError('known special feature', match.start(2))
+
+            # Boolean value ("+name" or "-name")
+            if match.group(1) == '+': value = True
+            if match.group(1) == '-': value = False
+
+            # Reentrance link ("-> (target)")
+            if value is None:
+                match = self._REENTRANCE_RE.match(s, position)
+                if match is not None:
+                    position = match.end()
+                    match = self._TARGET_RE.match(s, position)
+                    if not match:
+                        raise ValueError('identifier', position)
+                    target = match.group(1)
+                    position = match.end()
+                    if target not in reentrances:
+                        raise ValueError('bound identifier', position)
+                    value = reentrances[target]
+
+            # Assignment ("= value").
+            if value is None:
+                match = self._ASSIGN_RE.match(s, position)
+                if match:
+                    position = match.end()
+                    value, position = self._parse_value(s, position,
+                                                        reentrances)
+
+                # None of the above: error.
+                else:
+                    raise ValueError('equals sign', position)
+
+            # Store the value.
+            fstruct[name] = value
+            
+            # Check for a close bracket
+            match = self._END_FSTRUCT_RE.match(s, position)
+            if match is not None:
+                position = match.end()
+                if match.group(1) and self._slash_feature is not None:
+                    slashval, position = self._parse_value(s, position,
+                                                           reentrances)
+                    fstruct[self._slash_feature] = slashval
+                return fstruct, position
+
+            # Otherwise, there should be a comma
+            match = self._COMMA_RE.match(s, position)
+            if match is None: raise ValueError('comma', position)
+            position = match.end()
+
+        # We never saw a close bracket.
+        raise ValueError('close bracket', position)
+
+    def _parse_value(self, s, position, reentrances):
+        for (handler, regexp) in self.VALUE_HANDLERS:
+            match = regexp.match(s, position)
+            if match:
+                handler_func = getattr(self, handler)
+                return handler_func(s, position, reentrances, match)
+        raise ValueError('value', position)
+
+    def _error(self, s, expected, position):
+        estr = ('Error parsing feature structure\n    ' +
+                s + '\n    ' + ' '*position + '^ ' +
+                'Expected %s' % expected)
+        raise ValueError, estr
+
+    #////////////////////////////////////////////////////////////
+    #{ Value Parsers
+    #////////////////////////////////////////////////////////////
+
+    #: A table indicating how feature values should be parsed.  Each
+    #: entry in the table is a pair (handler, regexp).  The first entry
+    #: with a matching regexp will have its handler called.  Handlers
+    #: should have the following signature:
+    #:
+    #:    def handler(s, position, reentrances, match): ...
+    #:
+    #: and should return a tuple (value, position), where position is
+    #: the string position where the value ended.  (n.b.: order is
+    #: important here!)
+    VALUE_HANDLERS = [
+        ('parse_fstruct', _START_FSTRUCT_RE),
+        ('parse_str', re.compile("[uU]?[rR]?(['\"])")),
+        ('parse_int', re.compile(r'-?\d+(?=\s|\]|,)')),
+        ('parse_var', re.compile(r'\?[a-zA-Z_][a-zA-Z0-9_]*')),
+        ('parse_sym', re.compile(r'\w+')),
+        ('parse_logic', re.compile(r'<([^>]*)>')),
+        ]
+
+    def parse_fstruct(self, s, position, reentrances, match):
+        return self._partial_parse(s, position, reentrances)
+
+    def parse_int(self, s, position, reentrances, match):
+        return int(match.group()), match.end()
+
+    def parse_var(self, s, position, reentrances, match):
+        return Variable(match.group()[1:]), match.end()
+
+    def parse_sym(self, s, position, reentrances, match):
+        val, end = match.group(), match.end()
+        if val == 'None': return None, end
+        if val == 'True': return True, end
+        if val == 'False': return False, end
+        return val, end
+
+    def parse_logic(self, s, poisition, reentrances, match):
+        parser = LogicParser()
+        try:
+            expr = parser.parse(match.group(1))
+            if parser.buffer: raise ValueError()
+            return expr, match.end()
+        except ValueError:
+            raise ValueError('logic expression', match.start(1))
+
+    _STRING_MARKER_RE = re.compile(r'[\"\'\\]')
+    def parse_str(self, s, position, reentrances, match):
+        start = position
+        quotemark = match.group(1)
+        position = match.end()
+        while True:
+            match = self._STRING_MARKER_RE.search(s, position)
+            if not match: raise ValueError('close quote', position)
+            position = match.end()
+            if match.group() == '\\': position += 1
+            elif match.group() == quotemark:
+                try:
+                    return eval(s[start:position]), position
+                except ValueError, e:
+                    raise ValueError('valid string (%s)' % e, start)
+
+parse_fstruct = FeatStructParser().parse
+
+######################################################################
 # Playing around..
 ######################################################################
 
-class TypedFeature(str):
-    def __init__(self, default):
-        self.default = default
+# class Feature(object):
+#     def __init__(self, name, default=None, display=None):
+#         self.name = name
+        
+#         self.default = default
+#         """Default value for this feature.  Use None for unbound."""
 
-    def unify(self, val1, val2):
-        """
-        If possible, return a single value..  If not, raise error.
-        this wouldn't be good to use on feature structure values!
-        """
+#         self.display = display
+#         """Custom display location: can be prefix, or slash."""
 
-class RangeFeature(str):
-    def unify(self, val1, val2):
-        if val1 is None: return val2
-        if val2 is None: return val1
-        rng = max(val1[0], val2[0]), min(va1[1], val2[1])
-        if rng[1] < rng[0]: raise UnificationFailure
-        return rng
+#     def __repr__(self):
+#         return '<%s>' % self.name
+
+#     def check(self, val):
+#         """
+#         Called when a value is assigned to this feature.  Raise a
+#         C{ValueError} if it's a bad value.
+#         """
+
+#     def unify_base_values(self, val1, val2):
+#         """
+#         If possible, return a single value..  If not, raise error.
+#         """
+#         raise UnificationFailure()
+
+# #SLASH_FEATURE = TypedFeature(default=False)
+# #TYPE_FEATURE = TypedFeature(default=None)
+
+# # Other custom features..
+# #   [<type>=foo]
+# #   [(type)=foo]
+# #   [__type__ = foo]
+# #   [__slash__ = True]
+
+# # FeatStructParser(custom_features=xyz)
+
+# class RangeFeature(Feature):
+#     def check(self, val):
+#         if not (isinstance(val, tuple) and len(val)==2 and
+#                 isinstance(val[0], int) and isinstance(val[1], int)):
+#             raise ValueError('Bad range value %s' % val)
+#     def unify_base_values(self, val1, val2):
+#         if val1 is None: return val2
+#         if val2 is None: return val1
+#         rng = max(val1[0], val2[0]), min(va1[1], val2[1])
+#         if rng[1] < rng[0]: raise UnificationFailure
+#         return rng
 
 ######################################################################
 # Deprecated
@@ -1590,4 +1767,4 @@ def demo(trace=False):
 
 
 if __name__ == '__main__':
-    demo()
+    pass #demo()

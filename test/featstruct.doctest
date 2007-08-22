@@ -36,9 +36,9 @@ feature fs3['subj']['number'].
     >>> fs3 = FeatStruct(agr=FeatStruct(number=Variable('n')),
     ...                  subj=FeatStruct(number=Variable('n')))
     >>> print fs3
-    [ agr  = [ number=?n ] ]
-    [                      ]
-    [ subj = [ number=?n ] ]
+    [ agr  = [ number = ?n ] ]
+    [                        ]
+    [ subj = [ number = ?n ] ]
 
 Feature structures are typically used to represent partial information
 about objects.  A feature name that is not mapped to a value stands
@@ -354,6 +354,46 @@ Test parsing of cyclic feature structures.
     >>> FeatStruct('(1)[a=[b=[c->(1)]]]')
     (1)[a=[b=[c->(1)]]]
 
+Strings of the form "+name" and "-name" may be used to specify boolean
+values.
+
+    >>> FeatStruct('[-bar, +baz, +foo]')
+    [bar=False, baz=True, foo=True]
+
+None, True, and False are recognized as values:
+
+    >>> FeatStruct('[bar=True, baz=False, foo=None]')
+    [bar=True, baz=False, foo=None]
+
+Special features:
+
+    >>> FeatStruct('NP[]/VP[]')
+    NP[]/VP[]
+    >>> FeatStruct('?x[]/?x[]')
+    ?x[]/?x[]
+    >>> print FeatStruct('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]')
+    [ *type*  = 'VP'              ]
+    [                             ]
+    [           [ *type* = 'NP' ] ]
+    [ *slash* = [ agr    = ?x   ] ]
+    [           [ pl     = True ] ]
+    [                             ]
+    [ agr     = ?x                ]
+    [ fin     = True              ]
+    [ tense   = 'past'            ]
+
+    >>> FeatStruct('[*slash*=a, x=b, *type*="NP"]')
+    NP[x='b']/'a'
+
+    >>> FeatStruct('NP[sem=<bob>]/NP')
+    NP[sem=<bob>]/'NP'
+    >>> FeatStruct('S[sem=<(walk bob)>]')
+    S[sem=<(walk bob)>]
+    >>> print FeatStruct('NP[sem=<bob>]/NP')
+    [ *type*  = 'NP'  ]
+    [ *slash* = 'NP'  ]
+    [ sem     = <bob> ]
+
 Parsing gives helpful messages if your string contains an error.
 
     >>> FeatStruct('[a=, b=5]]')
@@ -551,6 +591,15 @@ Unification Bindings
 
 ..
     >>> del fs1, fs2, fs3 # clean-up
+
+Expressions
+-----------
+    >>> from nltk.sem.logic import LogicParser, Constant, ConstantExpression
+    >>> e=LogicParser('\\x y.(x y z)').next()
+    >>> fs1 = FeatStruct(x=e, y=Variable('z'))
+    >>> fs2 = FeatStruct(y=ConstantExpression(Constant('John')))
+    >>> fs1.unify(fs2)
+    [x=<\x y.(x y John)>, y=<John>]
 
 Remove Variables
 ----------------
