@@ -22,13 +22,14 @@ TEST = 'test'
 GOLD = 'gold'
 DATA_FORMAT = 'data_format'
 LOG_FILE = 'log_file'
+OPTIONS = 'options'
 
 C45_FORMAT = 'C45' 
 
 DATA_FORMAT_MAPPINGS = {C45_FORMAT: format.C45_FORMAT}
 
 class CommandLineInterface(OptionParser):
-    def __init__(self, alg_choices, alg_default, a_help, f_help, t_help, T_help, g_help):
+    def __init__(self, alg_choices, alg_default, a_help, f_help, t_help, T_help, g_help, o_help):
         OptionParser.__init__(self)
         self.add_option("-a", "--algorithm", dest=ALGORITHM, type="choice", \
                         choices=alg_choices, default=alg_default, help= a_help)
@@ -40,6 +41,7 @@ class CommandLineInterface(OptionParser):
         self.add_option("-D", "--data-format", dest=DATA_FORMAT, type="choice", choices=DATA_FORMAT_MAPPINGS.keys(), \
                 default=C45_FORMAT, help=D_help)
         self.add_option("-l", "--log-file", dest=LOG_FILE, type="string", help=l_help)
+        self.add_option("-o", "--options", dest=OPTIONS, type="string", help=o_help)
         
     def get_value(self, name):
         return self.values.ensure_value(name, None)
@@ -59,6 +61,7 @@ class CommandLineInterface(OptionParser):
         self.training_path = self.get_value(TRAINING)
         self.test_path = self.get_value(TEST)
         self.gold_path = self.get_value(GOLD)
+        self.options = self.get_value(OPTIONS)
         self.data_format = DATA_FORMAT_MAPPINGS[self.get_value(DATA_FORMAT)]
         log_file = self.get_value(LOG_FILE)
         self.log = None
@@ -116,7 +119,9 @@ class CommandLineInterface(OptionParser):
     def log_common_params(self, name):
         if self.log is not None: 
             print >>self.log, 'Operation: ' + name
-            print >>self.log, '\nAlgorithm: ' + str(self.algorithm) + '\nTraining: ' + str(self.training_path) + '\nTest: ' + str(self.test_path) + '\nGold: ' + str(self.gold_path)
+            print >>self.log, '\nAlgorithm: ' + str(self.algorithm) + '\nTraining: ' + str(self.training_path) + \
+                    '\nTest: ' + str(self.test_path) + '\nGold: ' + str(self.gold_path) + '\nOptions: ' + str(self.options)
+            
             
     def log_created_files(self, files_names, message):
         if self.log is None:

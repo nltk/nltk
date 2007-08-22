@@ -55,6 +55,10 @@ w_help = "Writes resulting gold file with a modified base name  " \
          
 c_help = "Classify by using a cross validation dataset with the " \
          "specified fold.                                       "
+         
+o_help = "Classifier options                                    " \
+         " Decision Tree: IG - Max Information Gain             " \
+         "                GR - Max Gain Ratio                   "
 
 ZERO_R = '0R'
 ONE_R = '1R'
@@ -76,7 +80,7 @@ CROSS_VALIDATION='cross_validation'
 
 class Classify(cl.CommandLineInterface):    
     def __init__(self):
-        cl.CommandLineInterface.__init__(self, ALGORITHM_MAPPINGS.keys(), ONE_R, a_help, f_help, t_help, T_help, g_help)
+        cl.CommandLineInterface.__init__(self, ALGORITHM_MAPPINGS.keys(), ONE_R, a_help, f_help, t_help, T_help, g_help, o_help)
         self.add_option("-v", "--verify", dest=VERIFY, action="store_true", default=False, help=v_help)
         self.add_option("-A", "--accuracy", dest=ACCURACY, action="store_false", default=True, help=A_help)
         self.add_option("-e", "--error", dest=ERROR, action="store_true", default=False, help=e_help)
@@ -111,11 +115,16 @@ class Classify(cl.CommandLineInterface):
 
     #ugh!! ugly!!!.. need to find a better way.. there are way too many params here! till then.. this stays
     def get_classification_strategy(self, classifier, test, gold, training, cross_validation_fold, attributes, klass):
+        if self.algorithm == DECISION_TREE: 
+            classifier_options = DecisionTreeOptions(self.options)
+        else:
+            classifier_options = NoOptions()
+        
         if cross_validation_fold is not None:
-            return CrossValidationStrategy(self.algorithm, attributes, klass, training, cross_validation_fold, self.training_path)
+            return CrossValidationStrategy(self.algorithm, attributes, klass, training, cross_validation_fold, self.training_path, classifier_options)
         if test is not None:
-            return TestStrategy(classifier, test, self.test_path)
-        return VerifyStrategy(classifier, gold, self.gold_path)
+            return TestStrategy(classifier, test, self.test_path, classifier_options)
+        return VerifyStrategy(classifier, gold, self.gold_path, classifier_options)
 
 def get_file_strategy(files, training, test, gold, verify):
     if files is not None:
@@ -123,7 +132,7 @@ def get_file_strategy(files, training, test, gold, verify):
     return ExplicitNamesStrategy(training, test, gold)    
 
 class CrossValidationStrategy:
-    def __init__(self, algorithm, attributes, klass, training, fold, training_path):
+    def __init__(self, algorithm, attributes, klass, training, fold, training_path, classifier_options):
         self.algorithm = algorithm
         self.training = training
         self.fold = fold
@@ -132,11 +141,13 @@ class CrossValidationStrategy:
         self.klass = klass
         self.attributes = attributes
         self.training_path = training_path
+        self.classifier_options = classifier_options
 
     def classify(self):
         datasets = self.training.cross_validation_datasets(self.fold)
         for each in datasets:
             classifier = ALGORITHM_MAPPINGS[self.algorithm](each[0], self.attributes, self.klass)
+            self.classifier_options.set_options(classifier)
             self.confusion_matrices.append(classifier.verify(each[1]))
             self.gold_instances.append(classifier.gold_instances)
         
@@ -163,12 +174,14 @@ class CrossValidationStrategy:
         
 
 class TestStrategy:
-    def __init__(self, classifier, test, test_path):
+    def __init__(self, classifier, test, test_path, classifier_options):
         self.classifier = classifier
         self.test = test
         self.test_path = test_path
+        self.classifier_options = classifier_options
         
     def classify(self):
+        self.classifier_options.set_options(self.classifier)
         self.classifier.test(self.test)
         
     def print_results(self, log, accuracy, error, fscore, precision, recall):
@@ -184,13 +197,15 @@ class TestStrategy:
         print >>log, 'Test classification written to ' + self.test_path + suffix + ' file.'
         
 class VerifyStrategy:
-    def __init__(self, classifier, gold, gold_path):
+    def __init__(self, classifier, gold, gold_path, classifier_options):
         self.classifier = classifier
         self.gold = gold
         self.gold_path = gold_path
         self.confusion_matrix = None
+        self.classifier_options = classifier_options
         
     def classify(self):
+        self.classifier_options.set_options(self.classifier)
         self.confusion_matrix = self.classifier.verify(self.gold)
         
     def print_results(self, log, accuracy, error, fscore, precision, recall):
@@ -231,5 +246,26 @@ class ExplicitNamesStrategy:
     def values(self):
         return [self.training, self.test, self.gold]
                 
+class DecisionTreeOptions:
+    VALID = {'IG': 'maximum_information_gain', 'GR': 'maximum_gain_ratio'}
+    
+    def __init__(self, options):
+        self.options = options
+        
+    def valid(self):
+        if self.options not in self.VALID:
+            return False
+        return True
+        
+    def set_options(self, classifier):
+        if self.valid():
+            classifier.set_options(self.VALID[self.options])
+        
+class NoOptions:
+        
+    def set_options(self, classifier):
+        #do Nothing
+        pass
+
 if __name__ == "__main__":
     Classify().run(sys.argv[1:])

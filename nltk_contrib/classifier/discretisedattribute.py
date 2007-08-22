@@ -27,10 +27,7 @@ class DiscretisedAttribute(attribute.Attribute):
         return self.values[range_index]
     
     def __ranges_as_string(self):
-        str_ranges = []
-        for _range in self.ranges:
-            str_ranges.append(str(_range))
-        return str(str_ranges)
+        return str([str(_range) for _range in self.ranges])
     
     def __str__(self):
         return attribute.Attribute.__str__(self) + self.__ranges_as_string()

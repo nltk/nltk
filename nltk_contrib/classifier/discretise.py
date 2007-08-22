@@ -24,7 +24,7 @@ f_help = "Base name of attribute, klass, training, test and gold" \
 
 t_help = "Base name of training file for discretisation.       "
 
-T_help = "Base name of test file to be discterised.            "
+T_help = "Base name of test file to be discretised.            "
 
 g_help = "Base name of gold file to be discretised.            "
 
@@ -51,14 +51,12 @@ ALGORITHM_MAPPINGS = {UNSUPERVISED_EQUAL_WIDTH : 'unsupervised_equal_width', \
 
 class Discretise(cl.CommandLineInterface):    
     def __init__(self):
-        cl.CommandLineInterface.__init__(self, ALGORITHM_MAPPINGS.keys(), UNSUPERVISED_EQUAL_WIDTH, a_help, f_help, t_help, T_help, g_help)
+        cl.CommandLineInterface.__init__(self, ALGORITHM_MAPPINGS.keys(), UNSUPERVISED_EQUAL_WIDTH, a_help, f_help, t_help, T_help, g_help, o_help)
         self.add_option("-A", "--attributes", dest="attributes", type="string", help=A_help)
-        self.add_option("-o", "--options", dest="options", type="string", help=o_help)
         
     def execute(self):
         cl.CommandLineInterface.execute(self)
         self.attributes_indices = self.get_value('attributes')
-        self.options = self.get_value('options')
         self.validate_basic_arguments_are_present()
         self.validate_files_arg_is_exclusive()
         
@@ -74,8 +72,6 @@ class Discretise(cl.CommandLineInterface):
             ignore_missing = True
         training, attributes, klass, test, gold = self.get_instances(self.training_path, self.test_path, self.gold_path, ignore_missing)
         self.log_common_params('Discretisation')    
-        if self.log is not None: print >>self.log, 'Options: ' + str(self.options)
-
         disc = Discretiser(training, attributes, klass, test, gold, cl.as_integers('Attribute indices', self.attributes_indices), cl.as_integers('Options', self.options))
         getattr(disc, ALGORITHM_MAPPINGS[self.algorithm])()
         files_written = self.write_to_file(self.get_suffix(), training, attributes, klass, test, gold, False)
