@@ -158,17 +158,12 @@ class FeatStruct(object):
         created for each tuple.
         """
         self._frozen = False
-        if value is None:
-            self._features = features
-        elif isinstance(value, basestring):
-            self._features = {}
+        self._features = {}
+        if isinstance(value, basestring):
             FeatStructParser().parse(value, self)
-            self._features.update(features)
+            self.update(features)
         else:
-            for key in value:
-                if not isinstance(key, (basestring, Feature)):
-                    raise TypeError('Feature names must be strings')
-            self._features = dict(value, **features)
+            self.update(value, **features)
 
     #////////////////////////////////////////////////////////////
     #{ Read-only mapping methods
@@ -256,7 +251,7 @@ class FeatStruct(object):
         else:
             try:
                 parent, name = self._path_parent(name_or_path, 'set')
-                parent._features[name] = value
+                parent[name] = value
             except KeyError: raise KeyError(name_or_path)
 
     def clear(self):
@@ -295,7 +290,7 @@ class FeatStruct(object):
         else:
             try:
                 parent, name = self._path_parent(name_or_path, 'set')
-                parent._features.setdefault(name, default)
+                parent.setdefault(name, default)
             except KeyError: raise KeyError(name_or_path)
             
     def update(self, values=None, **features):
@@ -314,17 +309,22 @@ class FeatStruct(object):
         """
         if self._frozen: raise ValueError(self._FROZEN_ERROR)
         if values is None:
-            self._features.update(**features)
+            items = ()
+        elif hasattr(values, 'has_key'):
+            items = values.items()
+        elif hasattr(values, '__iter__'):
+            items = values
         else:
-            if hasattr(values, 'has_key'):
-                for key in values:
-                    if not isinstance(key, (basestring, Feature)):
-                        raise TypeError('Feature names must be strings')
-            elif hasattr(values, '__iter__'):
-                for (key, value) in values:
-                    if not isinstance(key, (basestring, Feature)):
-                        raise TypeError('Feature names must be strings')
-            self._features.update(values, **features)
+            raise ValueError('Expected mapping or list of tuples')
+        
+        for key, val in items:
+            if not isinstance(key, (basestring, Feature)):
+                raise TypeError('Feature names must be strings')
+            self[key] = val
+        for key, val in features.items():
+            if not isinstance(key, (basestring, Feature)):
+                raise TypeError('Feature names must be strings')
+            self[key] = val
 
     def _path_parent(self, path, operation):
         """
@@ -903,6 +903,14 @@ class FeatStruct(object):
         # cyclic.
         forward[id(other)] = self
 
+        # If any features specify default values, then fill them in.
+        for fname in self:
+            if getattr(fname, 'default', None) is not None:
+                other._features.setdefault(fname, fname.default)
+        for fname in other:
+            if getattr(fname, 'default', None) is not None:
+                self._features.setdefault(fname, fname.default)
+
         # Note: sorting other's features isn't actually necessary; but
         # we do it to give deterministic behavior, e.g. for tracing.
         for (fname, otherval) in sorted(other._features.items()):
@@ -937,29 +945,37 @@ class FeatStruct(object):
                 elif isinstance(otherval, Variable):
                     bindings[otherval] = selfval
 
-#                 # Case 4A: unify two strings, case-insensitively.
-#                 elif ci_str_cmp and \
-#                     isinstance(selfval, str) and isinstance(otherval, str)\
-#                     and selfval.upper() == otherval.upper():
-#                     pass
-                    
-                # Case 4: unify 2 non-equal values (failure case)
-                elif selfval != otherval:
-                    if trace: self._trace_unify_fail(path)
-                    raise UnificationFailure()
-
-                # Case 5: unify 2 equal values
-                else: pass
+                # Case 4: unify two base values (might fail).
+                else:
+                    try:
+                        val = self._unify_base_values(fname, selfval, otherval)
+                        self._features[fname] = val
+                    except UnificationFailure:
+                        if trace: self._trace_unify_fail(path, selfval,
+                                                         otherval)
+                        raise
 
                 if trace and not isinstance(selfval, FeatStruct):
                     self._trace_unify_fval(path, selfval, otherval,
                                            self._features[fname], forward)
                     
-            # Case 6: copy from other
+            # Case 5: copy from other
             else:
                 self._features[fname] = otherval
 
         if trace: self._trace_unify_succeed(path, bindings, forward)
+
+    # If we want to add case-insensitive strcmp, etc, do it here:
+    def _unify_base_values(self, fname, val1, val2):
+        """
+        Return true if 2 base values should be considered equal.
+        """
+        if isinstance(fname, Feature):
+            return fname.unify_base_values(val1, val2)
+        elif val1 == val2:
+            return val1
+        else:
+            raise UnificationFailure()
 
     def _apply_forwards_to_bindings(self, forward, bindings):
         """
@@ -1009,15 +1025,15 @@ class FeatStruct(object):
     ##////////////////////////////////////////////////////////////
 
     def _trace_unify_start(self, path, other):
-        print '  '+'|   '*len(path)+' /'+self._trace_valrepr(self)
-        print '  '+'|   '*len(path)+'|\\'+self._trace_valrepr(other)
+        print '  '+'|   '*len(path)+' / '+self._trace_valrepr(self)
+        print '  '+'|   '*len(path)+'|\\ '+self._trace_valrepr(other)
     def _trace_unify_identity(self, path):
         print '  '+'|   '*len(path)+'|'
         print '  '+'|   '*len(path)+'| (identical objects)'
         print '  '+'|   '*len(path)+'|'
         print '  '+'|   '*len(path)+'+-->'+`self`
     def _trace_unify_feature(self, path, fname):
-        fullname = '.'.join(path+(fname,))
+        fullname = '.'.join(str(n) for n in path+(fname,))
         print '  '+'|   '*len(path)+'|'
         print '  '+'|   '*len(path)+'| Unify feature: %s' % fullname
     def _trace_unify_fval(self, path, val1, val2, result, forward):
@@ -1027,12 +1043,15 @@ class FeatStruct(object):
         if isinstance(result, FeatStruct):
             result = result._apply_forwards(forwards, set())
         # Print the unification.
-        print '  '+'|   '*len(path)+'|    /%s' % self._trace_valrepr(val1)
-        print '  '+'|   '*len(path)+'|   |\\%s' % self._trace_valrepr(val2)
+        print '  '+'|   '*len(path)+'|    / %s' % self._trace_valrepr(val1)
+        print '  '+'|   '*len(path)+'|   |\\ %s' % self._trace_valrepr(val2)
         print '  '+'|   '*len(path)+'|   |'
         print '  '+'|   '*len(path)+'|   +-->%s' % self._trace_valrepr(result)
-    def _trace_unify_fail(self, path):
-        print '  '+'|   '*len(path)+'X <-- FAIL'
+    def _trace_unify_fail(self, path, val1, val2):
+        print '  '+'|   '*len(path)+'|    / %s' % self._trace_valrepr(val1)
+        print '  '+'|   '*len(path)+'|   |\\ %s' % self._trace_valrepr(val2)
+        print '  '+'|   '*len(path)+'|   |'
+        print '  '+'X   '*len(path)+'X   X <-- FAIL'
     def _trace_unify_succeed(self, path, bindings, forward):
         # Resolve any forwards pointers.
         self = self._apply_forwards(forward, set())
@@ -1264,9 +1283,12 @@ class Feature(object):
     constraints, default values, etc.
     """
     def __init__(self, name, default=None, display=None):
-        self._name = name
+        assert display in (None, 'prefix', 'slash')
         
-        self._default = default
+        self._name = name # [xx] rename to .identifier?
+        """The name of this feature."""
+        
+        self._default = default # [xx] not implemented yet.
         """Default value for this feature.  Use None for unbound."""
 
         self._display = display
@@ -1286,18 +1308,6 @@ class Feature(object):
     def __repr__(self):
         return '*%s*' % self.name
 
-    def check(self, val):
-        """
-        Called when a value is assigned to this feature.  Raise a
-        C{ValueError} if it's a bad value.
-        """
-
-    def unify_base_values(self, val1, val2):
-        """
-        If possible, return a single value..  If not, raise error.
-        """
-        raise UnificationFailure()
-
     def __cmp__(self, other):
         if not isinstance(other, Feature): return -1
         if self._name == other._name: return 0
@@ -1306,7 +1316,39 @@ class Feature(object):
     def __hash__(self):
         return hash(self._name)
 
-SLASH = Feature('slash', default=False, display='slash')
+    #////////////////////////////////////////////////////////////
+    # These can be overridden by subclasses:
+    #////////////////////////////////////////////////////////////
+    
+    def parse_value(self, s, position, reentrances, parser):
+        return parser.parse_value(s, position, reentrances)
+
+    def unify_base_values(self, val1, val2):
+        """
+        If possible, return a single value..  If not, raise error.
+        """
+        if val1 == val2: return val1
+        else: raise UnificationFailure()
+
+class SlashFeature(Feature):
+    def parse_value(self, s, position, reentrances, parser):
+        return parser.partial_parse(s, position, reentrances)
+
+class RangeFeature(Feature):
+    RANGE_RE = re.compile('(-?\d+):(-?\d+)')
+    def parse_value(self, s, position, reentrances, parser):
+        m = self.RANGE_RE.match(s, position)
+        if not m: raise ValueError('range', position)
+        return (int(m.group(1)), int(m.group(2))), m.end()
+
+    def unify_base_values(self, val1, val2):
+        if val1 is None: return val2
+        if val2 is None: return val1
+        rng = max(val1[0], val2[0]), min(val1[1], val2[1])
+        if rng[1] < rng[0]: raise UnificationFailure
+        return rng
+    
+SLASH = SlashFeature('slash', default=False, display='slash')
 TYPE = Feature('type', display='prefix')
     
 ######################################################################
@@ -1354,12 +1396,14 @@ class FeatStructParser(object):
         return value
 
     _START_FSTRUCT_RE = re.compile(r'\s*(?:\((\d+)\)\s*)?(\??\w+\s*)?(\[)')
-    _END_FSTRUCT_RE = re.compile(r'\s*]\s*(/)?')
+    _END_FSTRUCT_RE = re.compile(r'\s*]\s*')
+    _SLASH_RE = re.compile(r'\s*/')
     _FEATURE_NAME_RE = re.compile(r'\s*([+-]?)([^\s\(\)"\'\-=\[\],]+)\s*')
     _REENTRANCE_RE = re.compile(r'\s*->\s*')
     _TARGET_RE = re.compile(r'\s*\((\d+)\)\s*')
     _ASSIGN_RE = re.compile(r'\s*=\s*')
     _COMMA_RE = re.compile(r'\s*,\s*')
+    _BARE_PREFIX_RE = re.compile(r'\s*(?:\((\d+)\)\s*)?(\??\w+\s*)()')
 
     def partial_parse(self, s, position, reentrances, fstruct=None):
         """
@@ -1374,8 +1418,9 @@ class FeatStructParser(object):
         try:
             return self._partial_parse(s, position, reentrances, fstruct)
         except ValueError, e:
+            if len(e.args) != 2: raise
             self._error(s, *e.args)
-        
+
     def _partial_parse(self, s, position, reentrances, fstruct=None):
         # Create the new feature structure
         if fstruct is None:
@@ -1383,10 +1428,12 @@ class FeatStructParser(object):
         else:
             fstruct.clear()
 
-        # Read up to the open bracket.
+        # Read up to the open bracket.  
         match = self._START_FSTRUCT_RE.match(s, position)
         if not match:
-            raise ValueError('open bracket or identifier', position)
+            match = self._BARE_PREFIX_RE.match(s, position)
+            if not match:
+                raise ValueError('open bracket or identifier', position)
         position = match.end()
 
         # If there as an identifier, record it.
@@ -1405,15 +1452,10 @@ class FeatStructParser(object):
                 prefixval = Variable(prefixval[1:])
             fstruct[self._prefix_feature] = prefixval
 
-        # If it's immediately followed by a close bracket, then just
-        # return the feature structure.  (check for slash feature 1st)
-        match = self._END_FSTRUCT_RE.match(s, position)
-        if match is not None:
-            position = match.end()
-            if match.group(1) and self._slash_feature is not None:
-                val, position = self._parse_value(s, position, reentrances)
-                fstruct[self._slash_feature] = val
-            return fstruct, position
+        # If group 3 is emtpy, then we just have a bare prefix, so
+        # we're done.
+        if not match.group(3):
+            return self._parse_slash(s, match.end(), reentrances, fstruct)
 
         # Build a list of the features defined by the structure.
         # Each feature has one of the three following forms:
@@ -1422,9 +1464,14 @@ class FeatStructParser(object):
         #     +name
         #     -name
         while position < len(s):
-            # Use these variables to hold info about the feature:
+            # Use these variables to hold info about each feature:
             name = target = value = None
 
+            # Check for the close bracket.
+            match = self._END_FSTRUCT_RE.match(s, position)
+            if match is not None:
+                return self._parse_slash(s, match.end(), reentrances, fstruct)
+            
             # Get the feature name's name
             match = self._FEATURE_NAME_RE.match(s, position)
             if match is None: raise ValueError('feature name', position)
@@ -1460,9 +1507,8 @@ class FeatStructParser(object):
                 match = self._ASSIGN_RE.match(s, position)
                 if match:
                     position = match.end()
-                    value, position = self._parse_value(s, position,
-                                                        reentrances)
-
+                    value, position = (
+                        self._parse_value(name, s, position, reentrances))
                 # None of the above: error.
                 else:
                     raise ValueError('equals sign', position)
@@ -1470,15 +1516,9 @@ class FeatStructParser(object):
             # Store the value.
             fstruct[name] = value
             
-            # Check for a close bracket
-            match = self._END_FSTRUCT_RE.match(s, position)
-            if match is not None:
-                position = match.end()
-                if match.group(1) and self._slash_feature is not None:
-                    slashval, position = self._parse_value(s, position,
-                                                           reentrances)
-                    fstruct[self._slash_feature] = slashval
-                return fstruct, position
+            # If there's a close bracket, handle it at the top of the loop.
+            if self._END_FSTRUCT_RE.match(s, position):
+                continue
 
             # Otherwise, there should be a comma
             match = self._COMMA_RE.match(s, position)
@@ -1488,7 +1528,21 @@ class FeatStructParser(object):
         # We never saw a close bracket.
         raise ValueError('close bracket', position)
 
-    def _parse_value(self, s, position, reentrances):
+    def _parse_slash(self, s, pos, reentrances, fstruct):
+        match = self._SLASH_RE.match(s, pos)
+        if match:
+            name = self._slash_feature
+            v, pos = self._parse_value(name, s, match.end(), reentrances)
+            fstruct[name] = v
+        return fstruct, pos
+    
+    def _parse_value(self, name, s, position, reentrances):
+        if isinstance(name, Feature):
+            return name.parse_value(s, position, reentrances, self)
+        else:
+            return self.parse_value(s, position, reentrances)
+
+    def parse_value(self, s, position, reentrances):
         for (handler, regexp) in self.VALUE_HANDLERS:
             match = regexp.match(s, position)
             if match:
@@ -1517,31 +1571,33 @@ class FeatStructParser(object):
     #: the string position where the value ended.  (n.b.: order is
     #: important here!)
     VALUE_HANDLERS = [
-        ('parse_fstruct', _START_FSTRUCT_RE),
-        ('parse_str', re.compile("[uU]?[rR]?(['\"])")),
-        ('parse_int', re.compile(r'-?\d+(?=\s|\]|,)')),
-        ('parse_var', re.compile(r'\?[a-zA-Z_][a-zA-Z0-9_]*')),
-        ('parse_sym', re.compile(r'\w+')),
-        ('parse_logic', re.compile(r'<([^>]*)>')),
+        ('parse_fstruct_value', _START_FSTRUCT_RE),
+        ('parse_str_value', re.compile("[uU]?[rR]?(['\"])")),
+        ('parse_int_value', re.compile(r'-?\d+(?=\s|\]|,)')),
+        ('parse_var_value', re.compile(r'\?[a-zA-Z_][a-zA-Z0-9_]*')),
+        ('parse_sym_value', re.compile(r'\w+')),
+        ('parse_app_value', re.compile(r'<(app)\((\?[a-z][a-z]*)\s*,'
+                                       r'\s*(\?[a-z][a-z]*)\)>')),
+        ('parse_logic_value', re.compile(r'<([^>]*)>')),
         ]
 
-    def parse_fstruct(self, s, position, reentrances, match):
+    def parse_fstruct_value(self, s, position, reentrances, match):
         return self._partial_parse(s, position, reentrances)
 
-    def parse_int(self, s, position, reentrances, match):
+    def parse_int_value(self, s, position, reentrances, match):
         return int(match.group()), match.end()
 
-    def parse_var(self, s, position, reentrances, match):
+    def parse_var_value(self, s, position, reentrances, match):
         return Variable(match.group()[1:]), match.end()
 
-    def parse_sym(self, s, position, reentrances, match):
+    def parse_sym_value(self, s, position, reentrances, match):
         val, end = match.group(), match.end()
         if val == 'None': return None, end
         if val == 'True': return True, end
         if val == 'False': return False, end
         return val, end
 
-    def parse_logic(self, s, poisition, reentrances, match):
+    def parse_logic_value(self, s, position, reentrances, match):
         parser = LogicParser()
         try:
             expr = parser.parse(match.group(1))
@@ -1550,8 +1606,12 @@ class FeatStructParser(object):
         except ValueError:
             raise ValueError('logic expression', match.start(1))
 
+    def parse_app_value(self, s, position, reentrances, match):
+        """Mainly included for backwards compat."""
+        return LogicParser().parse('(%s %s)' % match.group(2,3)), match.end()
+
     _STRING_MARKER_RE = re.compile(r'[\"\'\\]')
-    def parse_str(self, s, position, reentrances, match):
+    def parse_str_value(self, s, position, reentrances, match):
         start = position
         quotemark = match.group(1)
         position = match.end()

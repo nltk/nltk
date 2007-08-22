@@ -367,9 +367,9 @@ None, True, and False are recognized as values:
 
 Special features:
 
-    >>> FeatStruct('NP[]/VP[]')
+    >>> FeatStruct('NP/VP')
     NP[]/VP[]
-    >>> FeatStruct('?x[]/?x[]')
+    >>> FeatStruct('?x/?x')
     ?x[]/?x[]
     >>> print FeatStruct('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]')
     [ *type*  = 'VP'              ]
@@ -382,17 +382,73 @@ Special features:
     [ fin     = True              ]
     [ tense   = 'past'            ]
 
+Here the slash feature gets coerced:
     >>> FeatStruct('[*slash*=a, x=b, *type*="NP"]')
-    NP[x='b']/'a'
+    NP[x='b']/a[]
 
     >>> FeatStruct('NP[sem=<bob>]/NP')
-    NP[sem=<bob>]/'NP'
+    NP[sem=<bob>]/NP[]
     >>> FeatStruct('S[sem=<(walk bob)>]')
     S[sem=<(walk bob)>]
     >>> print FeatStruct('NP[sem=<bob>]/NP')
-    [ *type*  = 'NP'  ]
-    [ *slash* = 'NP'  ]
-    [ sem     = <bob> ]
+    [ *type*  = 'NP'              ]
+    [                             ]
+    [ *slash* = [ *type* = 'NP' ] ]
+    [                             ]
+    [ sem     = <bob>             ]
+
+Playing with ranges:
+
+    >>> from nltk.featstruct import RangeFeature, FeatStructParser
+    >>> width = RangeFeature('width')
+    >>> parser = FeatStructParser([width])
+    >>> fs1 = parser.parse('[*width*=-5:12]')
+    >>> fs2 = parser.parse('[*width*=2:123]')
+    >>> fs3 = parser.parse('[*width*=-7:-2]')
+    >>> fs1.unify(fs2)
+    [*width*=(2, 12)]
+    >>> fs1.unify(fs3)
+    [*width*=(-5, -2)]
+    >>> print fs2.unify(fs3) # no overlap in width.
+    None
+
+The slash feature has a default value of 'False':
+
+    >>> print FeatStruct('NP[]/VP').unify(FeatStruct('NP[]'), trace=1)
+    <BLANKLINE>
+    Unification trace:
+       / NP[]/VP[]
+      |\ NP[]
+      |
+      | Unify feature: *type*
+      |    / 'NP'
+      |   |\ 'NP'
+      |   |
+      |   +-->'NP'
+      |
+      | Unify feature: *slash*
+      |    / VP[]
+      |   |\ False
+      |   |
+      X   X <-- FAIL
+    None
+
+The demo structures from category.py.  They all parse, but they don't
+do quite the right thing, -- ?x vs x.
+
+    >>> FeatStruct(pos='n', agr=FeatStruct(number='pl', gender='f'))
+    [agr=[gender='f', number='pl'], pos='n']
+    >>> FeatStruct(r'NP[sem=<bob>]/NP')
+    NP[sem=<bob>]/NP[]
+    >>> FeatStruct(r'S[sem=<app(?x, ?y)>]')
+    S[sem=<(?x ?y)>]
+    >>> FeatStruct('?x/?x')
+    ?x[]/?x[]
+    >>> FeatStruct('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]')
+    VP[agr=?x, fin=True, tense='past']/NP[agr=?x, pl=True]
+    >>> FeatStruct('S[sem = <app(?subj, ?vp)>]')
+    S[sem=<(?subj ?vp)>]
+
 
 Parsing gives helpful messages if your string contains an error.
 
@@ -414,11 +470,11 @@ Parsing gives helpful messages if your string contains an error.
     ValueError: Error parsing feature structure
         [a=5] [b=6]
               ^ Expected end of string
-    >>> FeatStruct('foo')
+    >>> FeatStruct(' *++*')
     Traceback (most recent call last):
       . . .
     ValueError: Error parsing feature structure
-        foo
+        *++*
         ^ Expected open bracket or identifier
     >>> FeatStruct('[x->(1)]')
     Traceback (most recent call last):
@@ -432,6 +488,12 @@ Parsing gives helpful messages if your string contains an error.
     ValueError: Error parsing feature structure
         [x->y]
             ^ Expected identifier
+    >>> FeatStruct('')
+    Traceback (most recent call last):
+      . . .
+    ValueError: Error parsing feature structure
+    <BLANKLINE>
+        ^ Expected open bracket or identifier
 
 
 Unification
@@ -702,16 +764,16 @@ Tracing
     >>> fs1.unify(fs2, trace=True)
     <BLANKLINE>
     Unification trace:
-       /[a=[b=(1)[], c=?x], d->(1), e=[f=?x]]
-      |\[a=(1)[c='C'], e=[g->(1)]]
+       / [a=[b=(1)[], c=?x], d->(1), e=[f=?x]]
+      |\ [a=(1)[c='C'], e=[g->(1)]]
       |
       | Unify feature: a
-      |    /[b=[], c=?x]
-      |   |\[c='C']
+      |    / [b=[], c=?x]
+      |   |\ [c='C']
       |   |
       |   | Unify feature: a.c
-      |   |    /?x
-      |   |   |\'C'
+      |   |    / ?x
+      |   |   |\ 'C'
       |   |   |
       |   |   +-->'C'
       |   |
@@ -719,8 +781,8 @@ Tracing
       |       Bindings: {?x: 'C'}
       |
       | Unify feature: e
-      |    /[f=?x]
-      |   |\[g=[c='C']]
+      |    / [f=?x]
+      |   |\ [g=[c='C']]
       |   |
       |   +-->[f=?x, g=[b=[], c='C']]
       |       Bindings: {?x: 'C'}
