@@ -60,9 +60,7 @@ def convert(path):
     """
     converted = []
     f = open(path, 'r')
-    for l in f:
-        elements = l.split()
-        converted.append(','.join(elements))
+    converted = [','.join(l.split()) for l in f]
     f.close()
     ind = path.rfind('.')
     if ind == -1: ind = len(path)
@@ -228,11 +226,7 @@ def convert_log_to_tex_tables(path):
     print >>texf, mean_datasets
 
 def get_stat_lists(cols):
-    stat_map = {}
-    for each in cols:
-        stat_map[each] = util.StatList()
-    return stat_map
-        
+    return dict([(each, util.StatList()) for each in cols])        
 
 def get_fs_display_name(name):
     if name.find('_') == -1:
@@ -278,10 +272,7 @@ def get_preprocessing(name):
     return (discn, fsn)
 
 def combine_methods(base, options):
-    combined = []
-    for each in options:
-        combined.append(base + '_' + each)
-    return combined
+    return [base + '_' + each for each in options]
 
 def get_pp(name, pp_method):
     parts = name.split(get_dataset_name(name))[-1].split('-')

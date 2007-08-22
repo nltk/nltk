@@ -53,10 +53,7 @@ class Attribute:
         return ','.join([str(value) for value in self.values])
     
     def empty_freq_dists(self):
-        freq_dists = {}
-        for value in self.values:
-            freq_dists[value] = prob.FreqDist()
-        return freq_dists
+        return dict([(value, prob.FreqDist()) for value in self.values])
     
     def __hash__(self):
         return hash(self.name) + hash(self.index)        
@@ -103,10 +100,7 @@ class Attributes(UserList.UserList):
         return [atr.index for atr in self.data if atr.is_continuous()]
     
     def empty_freq_dists(self):
-        freq_dists = {}
-        for attribute in self.data:
-            freq_dists[attribute] = attribute.empty_freq_dists()
-        return freq_dists
+        return dict([(attribute, attribute.empty_freq_dists()) for attribute in self.data])
         
     def __str__(self):
         return '[' + ', '.join([each.__str__() for each in self]) + ']'

@@ -58,20 +58,17 @@ MIN_FOLD=2
 
 class FeatureSelect(cl.CommandLineInterface):
     def __init__(self):
-        cl.CommandLineInterface.__init__(self, ALGORITHM_MAPPINGS.keys(), RANK, a_help, f_help, t_help, T_help, g_help)        
-        self.add_option("-o", "--options", dest="options", type="string", help=o_help)
+        cl.CommandLineInterface.__init__(self, ALGORITHM_MAPPINGS.keys(), RANK, a_help, f_help, t_help, T_help, g_help, o_help)        
         
     def execute(self):
         cl.CommandLineInterface.execute(self)
         self.validate_basic_arguments_are_present()
         self.validate_files_arg_is_exclusive()
-        if self.get_value('options') is None:
+        if self.options is None:
             self.required_arguments_not_present_error()
-        self.options = split_ignore_space(self.get_value('options'))
-        if self.algorithm == RANK and rank_options_invalid(self.options):
-            self.error("Invalid options for Rank based Feature selection.")
-        if (self.algorithm == FORWARD_SELECTION or self.algorithm == BACKWARD_ELIMINATION) and wrapper_options_invalid(self.options):
-            self.error("Invalid options for Wrapper based Feature selection. Options Found: " + str(self.options))
+        self.split_options = split_ignore_space(self.options)
+        if OPTIONS_TEST[self.algorithm](self.split_options):
+            self.error("Invalid options for Feature selection.")
         self.select_features_and_write_to_file()
 
     def select_features_and_write_to_file(self):
@@ -82,9 +79,7 @@ class FeatureSelect(cl.CommandLineInterface):
             ignore_missing = True
         training, attributes, klass, test, gold = self.get_instances(self.training_path, self.test_path, self.gold_path, ignore_missing)
         self.log_common_params('FeatureSelection')
-        if self.log is not None: print >>self.log, 'Options: ' + str(self.options)
-
-        feature_sel = FeatureSelection(training, attributes, klass, test, gold, self.options)
+        feature_sel = FeatureSelection(training, attributes, klass, test, gold, self.split_options)
         getattr(feature_sel, ALGORITHM_MAPPINGS[self.algorithm])()
         
         files_written = self.write_to_file(self.get_suffix(), training, attributes, klass, test, gold, False)
@@ -93,7 +88,7 @@ class FeatureSelect(cl.CommandLineInterface):
     def get_suffix(self):
         if self.options is None: return '-' + self.algorithm
         suf = '-f_' + self.algorithm
-        for option in self.options:
+        for option in self.split_options:
             suf += '_' + option.replace('.','-')
         return suf
 
@@ -215,6 +210,8 @@ def wrapper_options_invalid(options):
                 or \
                 len(options) == 3 and not isfloat(options[2])
            )
+
+OPTIONS_TEST = {RANK : rank_options_invalid, FORWARD_SELECTION : wrapper_options_invalid, BACKWARD_ELIMINATION : wrapper_options_invalid}
 
 def isfloat(stringval):
     try:

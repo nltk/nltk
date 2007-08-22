@@ -21,10 +21,9 @@ class DecisionStump:
         each key is an attribute value
         and each value is a dictionary of class frequencies for that attribute value
         """
-        self.counts, self.children = {}, {} #it has children only in decision trees
+        self.children = {} #it has children only in decision trees
         self.root = dictionary_of_values(klass)
-        for value in attribute.values:
-            self.counts[value] = dictionary_of_values(klass)
+        self.counts = dict([(value, dictionary_of_values(klass)) for value in attribute.values])
             
     def update_count(self, instance):
         attr_value = instance.value(self.attribute)
@@ -116,7 +115,4 @@ def total_counts(dictionary_of_klass_freq):
     return sum([count for count in dictionary_of_klass_freq.values()])
         
 def dictionary_of_values(klass):
-    _values = {}
-    for value in klass:
-        _values[value] = 0
-    return _values
+    return dict([(value, 0) for value in klass])
