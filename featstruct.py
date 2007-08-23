@@ -76,6 +76,7 @@ relative to category, we don't define...
 import re, copy
 from nltk.sem.logic import Variable, Expression, SubstituteBindingsI
 from nltk.sem.logic import LogicParser
+import nltk.utilities
 
 ######################################################################
 # Pending
@@ -1358,16 +1359,18 @@ class FeatStructParser(object):
     _COMMA_RE = re.compile(r'\s*,\s*')
     _BARE_PREFIX_RE = re.compile(r'\s*(?:\((\d+)\)\s*)?(\??\w+\s*)()')
 
-    def partial_parse(self, s, position, reentrances, fstruct=None):
+    def partial_parse(self, s, position=0, reentrances=None, fstruct=None):
         """
         Helper function that parses a feature structure.
         @param s: The string to parse.
         @param position: The position in the string to start parsing.
         @param reentrances: A dictionary from reentrance ids to values.
+            Defaults to an empty dictionary.
         @return: A tuple (val, pos) of the feature structure created
             by parsing and the position where the parsed feature
             structure ends.
         """
+        if reentrances is None: reentrances = {}
         try:
             return self._partial_parse(s, position, reentrances, fstruct)
         except ValueError, e:
@@ -1548,7 +1551,10 @@ class FeatStructParser(object):
         ]
 
     def parse_fstruct_value(self, s, position, reentrances, match):
-        return self._partial_parse(s, position, reentrances)
+        return self.partial_parse(s, position, reentrances)
+
+    def parse_str_value(self, s, position, reentrances, match):
+        return nltk.utilities.parse_str(s, position)
 
     def parse_int_value(self, s, position, reentrances, match):
         return int(match.group()), match.end()
@@ -1556,12 +1562,14 @@ class FeatStructParser(object):
     def parse_var_value(self, s, position, reentrances, match):
         return Variable(match.group()[1:]), match.end()
 
+    _SYM_CONSTS = {'None':None, 'True':True, 'False':False}
     def parse_sym_value(self, s, position, reentrances, match):
         val, end = match.group(), match.end()
-        if val == 'None': return None, end
-        if val == 'True': return True, end
-        if val == 'False': return False, end
-        return val, end
+        return self._SYM_CONSTS.get(val, val), end
+
+    def parse_app_value(self, s, position, reentrances, match):
+        """Mainly included for backwards compat."""
+        return LogicParser().parse('(%s %s)' % match.group(2,3)), match.end()
 
     def parse_logic_value(self, s, position, reentrances, match):
         parser = LogicParser()
@@ -1571,26 +1579,6 @@ class FeatStructParser(object):
             return expr, match.end()
         except ValueError:
             raise ValueError('logic expression', match.start(1))
-
-    def parse_app_value(self, s, position, reentrances, match):
-        """Mainly included for backwards compat."""
-        return LogicParser().parse('(%s %s)' % match.group(2,3)), match.end()
-
-    _STRING_MARKER_RE = re.compile(r'[\"\'\\]')
-    def parse_str_value(self, s, position, reentrances, match):
-        start = position
-        quotemark = match.group(1)
-        position = match.end()
-        while True:
-            match = self._STRING_MARKER_RE.search(s, position)
-            if not match: raise ValueError('close quote', position)
-            position = match.end()
-            if match.group() == '\\': position += 1
-            elif match.group() == quotemark:
-                try:
-                    return eval(s[start:position]), position
-                except ValueError, e:
-                    raise ValueError('valid string (%s)' % e, start)
 
 ######################################################################
 #{ Demo
