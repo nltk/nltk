@@ -142,7 +142,6 @@ def demo():
     toolbox.demo()
     treebank.demo()
     udhr.demo()
-    web.demo()
     webtext.demo()
     words.demo()
 #    ycoe.demo()
