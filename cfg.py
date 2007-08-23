@@ -67,6 +67,7 @@ X{expanding} M{lhs} to M{rhs} in M{tree}.
 """
 
 import re
+from nltk.featstruct import FeatStruct, FeatStructParser
 
 #################################################################
 # Nonterminal
@@ -148,8 +149,10 @@ class Nonterminal(object):
             symbol is C{M{s}} is C{<M{s}>}.
         @rtype: C{string}
         """
-        # [XX] not a good repr!  Token uses this now!!
-        return '<%s>' % (self._symbol,)
+        if isinstance(self._symbol, basestring):
+            return '<%s>' % (self._symbol,)
+        else:
+            return '<%r>' % (self._symbol,)
 
     def __str__(self):
         """
@@ -158,7 +161,10 @@ class Nonterminal(object):
             symbol is C{M{s}} is C{M{s}}.
         @rtype: C{string}
         """
-        return '%s' % (self._symbol,)
+        if isinstance(self._symbol, basestring):
+            return '%s' % (self._symbol,)
+        else:
+            return '%r' % (self._symbol,)
 
     def __div__(self, rhs):
         """
@@ -251,10 +257,10 @@ class Production(object):
             C{Production}.
         @rtype: C{string}
         """
-        str = '%s ->' % (self._lhs.symbol(),)
+        str = '%s ->' % (self._lhs,)
         for elt in self._rhs:
             if isinstance(elt, Nonterminal):
-                str += ' %s' % (elt.symbol(),)
+                str += ' %s' % (elt,)
             else:
                 str += ' %r' % (elt,)
         return str
@@ -396,6 +402,7 @@ _PARSE_CFG_RE = re.compile(r'''^\s*                # leading whitespace
                              re.VERBOSE)
 _SPLIT_CFG_RE = re.compile(r'''(\w+(?:/\w+)?|[-=]+>|"[^"]+"|'[^']+'|\|)''')
 
+
 def parse_cfg_production(s):
     """
     Returns a list of productions
@@ -420,7 +427,8 @@ def parse_cfg_production(s):
             rhsides[-1].append(Nonterminal(piece)) # Nonterminal
             found_non_terminal = True
         if found_terminal and found_non_terminal:
-            raise ValueError, 'Bad right-hand-side: do not mix terminals and non-terminals'
+            raise ValueError('Bad right-hand-side: do not mix '
+                             'terminals and non-terminals')
     return [Production(lhside, rhside) for rhside in rhsides]
 
 def parse_cfg(s):
@@ -596,7 +604,8 @@ def parse_pcfg_production(s):
             found_terminal = found_non_terminal = False
         elif piece[0] in ('"', "'"):
             if found_terminal:
-                raise ValueError, 'Bad right-hand-side: do not use a sequence of terminals'
+                raise ValueError('Bad right-hand-side: do not use '
+                                 'a sequence of terminals')
             rhsides[-1].append(piece[1:-1])        # Terminal
             found_terminal = True
         elif piece[0] in "[":
@@ -605,7 +614,8 @@ def parse_pcfg_production(s):
             rhsides[-1].append(Nonterminal(piece)) # Nonterminal
             found_non_terminal = True
         if found_terminal and found_non_terminal:
-            raise ValueError, 'Bad right-hand-side: do not mix terminals and non-terminals'
+            raise ValueError('Bad right-hand-side: do not mix '
+                             'terminals and non-terminals')
     return [WeightedProduction(lhside, rhside, prob=probability)
             for (rhside, probability) in zip(rhsides, probabilities)]
 
@@ -637,6 +647,47 @@ def earley_lexicon(productions):
         lexicon[prod.rhs()[0]].append(prod.lhs())
     return lexicon
 
+def parse_fcfg_production(line):
+    parser = FeatStructParser()
+    pos = 0
+    
+    # Parse the left-hand side.
+    fstruct, pos = parser.partial_parse(line, pos)
+    fstruct.freeze()
+    lhs = Nonterminal(fstruct)
+
+    # Skip over the arrow.
+    m = re.compile('\s*->\s*').match(line, pos)
+    if not m: raise ValueError('Expected an arrow')
+    pos = m.end()
+
+    # Parse the right hand side.
+    rhsides = [[]]
+    while pos < len(line):
+        # String -- add nonterminal.
+        if line[pos] in "\'\"":
+            m = re.compile('("[^"]*"|'+"'[^']+')\s*").match(line, pos)
+            if not m: raise ValueError('Unterminated string')
+            if rhsides[-1] != []: raise ValueError('Bad right-hand-side')
+            rhsides[-1].append(m.group(1)[1:-1])
+            pos = m.end()
+
+        # Vertical bar -- start new rhside.
+        elif line[pos] == '|':
+            if len(rhsides[-1])==1 and isinstance(rhsides[-1], basestring):
+                raise ValueError('Bad right-hand-side')
+            rhsides.append([])
+            pos = re.compile('\\|\s*').match(line,pos).end()
+
+        # Anything else -- feature structure nonterminal.
+        else:
+            fstruct, pos = parser.partial_parse(line, pos)
+            fstruct.freeze()
+            rhsides[-1].append(Nonterminal(fstruct))
+            
+    if rhsides[-1] == []: raise ValueError('Bad right-hand-side')
+    return [Production(lhs, rhs) for rhs in rhsides]
+
 def parse_fcfg(input):
     """
     Return a tuple (list of grammatical productions,
@@ -645,41 +696,41 @@ def parse_fcfg(input):
     @param input: a grammar, either in the form of a string or else 
     as a list of strings.
     """
-    from nltk.parse.category import GrammarCategory
-    grammatical_productions = []
-    lexical_productions = []
     if isinstance(input, str):
         lines = input.split('\n')
     else:
         lines = input
+
+    productions = []
     for linenum, line in enumerate(lines):
         line = line.strip()
         if line.startswith('#') or line=='': continue
         if line[0] == '%':
-                parts = line[1:].split()
-                directive = parts[0]
-                args = " ".join(parts[1:])
-                if directive == 'start':
-                    start = GrammarCategory.parse(args).freeze()
-                elif directive == 'include':
-                    filename = args.strip('"')
-                    # [XX] This is almost certainly a bug: [XX]
-                    self.apply_file(filename)
+            parts = line[1:].split()
+            directive, args = line[1:].split(None, 1)
+            if directive == 'start':
+                start = FeatStruct(args)
+                start.freeze()
+#             elif directive == 'include':
+#                 filename = args.strip('"')
+#                 # [XX] This is almost certainly a bug: [XX]
+#                 self.apply_file(filename)
         else:
             try:
                 # expand out the disjunctions on the RHS
-                expanded = GrammarCategory.parse_rules(line)
-                for prod in expanded:
-                    if len(prod.rhs()) == 1 and isinstance(prod.rhs()[0], str):
-                        lexical_productions.append(prod)
-                    else:
-                        grammatical_productions.append(prod)
-            except ValueError:
-                raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
-    if len(grammatical_productions + lexical_productions) == 0:
+                productions += parse_fcfg_production(line)
+            except ValueError, e:
+                raise ValueError('Unable to parse line %s: %s\n%s' %
+                                 (linenum+1, line, e))
+
+    if not productions:
         raise ValueError, 'No productions found!'
+    grammatical_productions = [prod for prod in productions if not
+            (len(prod.rhs()) == 1 and isinstance(prod.rhs()[0], str))]
+    lexical_productions = [prod for prod in productions if
+            (len(prod.rhs()) == 1 and isinstance(prod.rhs()[0], str))]
     if not start:
-        start = GrammarCategory(pos='Start')
+        start = productions[0].lhs()
     
     grammar = Grammar(start, grammatical_productions)
     lexicon = earley_lexicon(lexical_productions)
