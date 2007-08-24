@@ -50,27 +50,7 @@ L{unify() <FeatStruct.unify>} method.
 When unbound variables are unified with one another, they become
 X{aliased}.  This is encoded by binding one variable to the other.
 
-@todo: add a fail parameter to unify?  This would be a function that
-   would be called if unificaiton fails; it could either raise a
-   UnificationFailure error, or return a value.  How would this be
-   useful?  Well, one example is that it could be used to find a
-   "diff" between two feature structures -- i.e., a list of all
-   feature paths with different values.  Anyway, the old version had
-   it.  Ask steven why it was introduced?
-
-@todo: Figure out yaml support.  Do we need any?
-
-@todo: support for mutable feature structures?
-
 @todo: define __div__ for feature structures?
-
-relative to category, we don't define...
-  - .symbol (we're not a Nonterminal)
-  - .head()
-  - .feature_names(), .has_features() -- eh
-  - .to_yaml() and .from_yaml()
-  - parsing of cfgs..
-
 """
 
 import re, copy
