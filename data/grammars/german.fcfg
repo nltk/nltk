@@ -43,7 +43,6 @@ Det[CASE=acc, AGR=[PER=3,NUM=pl]] -> 'die'
 
 # Nouns
 N[AGR=[GND=masc,PER=3,NUM=sg]] -> 'hund'
-N[AGR=[GND=masc,PER=3,NUM=pl]] -> 'hunde'
 N[CASE=nom, AGR=[GND=masc,PER=3,NUM=pl]] -> 'hunde'
 N[CASE=dat, AGR=[GND=masc,PER=3,NUM=pl]] -> 'hunden'
 N[CASE=acc, AGR=[GND=masc,PER=3,NUM=pl]] -> 'hunde'
