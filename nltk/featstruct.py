@@ -1489,36 +1489,65 @@ class FeatureValueSet(SubstituteBindingsSequence, frozenset):
 class FeatureValueUnion(SubstituteBindingsSequence, frozenset):
     """
     A base feature value that represents the union of two or more
-    L{FeatureValueSet}s or L{Variables}.
+    L{FeatureValueSet}s or L{Variable}s.
     """
     def __new__(cls, values):
         # If values contains FeatureValueUnions, then collapse them.
-        values = cls._flatten(values, FeatureValueUnion)
+        values = _flatten(values, FeatureValueUnion)
         
         # If the resulting list contains no variables, then 
         # use a simple FeatureValueSet instead.
         if sum(isinstance(v, Variable) for v in values) == 0:
-            values = cls._flatten(values, FeatureValueSet)
+            values = _flatten(values, FeatureValueSet)
             return FeatureValueSet(values)
         
         # If we contain a single variable, return that variable.
         if len(values) == 1:
             return list(values)[0]
         
-        # Otherwise, build teh FeatureValueUnion.
-        return FeatureValueSet.__new__(cls, values)
+        # Otherwise, build the FeatureValueUnion.
+        return frozenset.__new__(cls, values)
 
-    @staticmethod
-    def _flatten(lst, cls):
-        result = []
-        for elt in lst:
-            if isinstance(elt, cls): result.extend(elt)
-            else: result.append(elt)
-        return result
-        
     def __repr__(self):
-        if len(self) == 0: return '{/}' # distinguish from dict.
+        # n.b.: len(self) is guaranteed to be 2 or more.
         return '{%s}' % '+'.join('%s' % (b,) for b in self)
+
+class FeatureValueConcat(SubstituteBindingsSequence, tuple):
+    """
+    A base feature value that represents the concatenation of two or
+    more L{FeatureValueTuple}s or L{Variable}s.
+    """
+    def __new__(cls, values):
+        # If values contains FeatureValueConcats, then collapse them.
+        values = _flatten(values, FeatureValueConcat)
+        
+        # If the resulting list contains no variables, then 
+        # use a simple FeatureValueTuple instead.
+        if sum(isinstance(v, Variable) for v in values) == 0:
+            values = _flatten(values, FeatureValueTuple)
+            return FeatureValueTuple(values)
+        
+        # If we contain a single variable, return that variable.
+        if len(values) == 1:
+            return list(values)[0]
+        
+        # Otherwise, build the FeatureValueConcat.
+        return tuple.__new__(cls, values)
+
+    def __repr__(self):
+        # n.b.: len(self) is guaranteed to be 2 or more.
+        return '(%s)' % '+'.join('%s' % (b,) for b in self)
+
+def _flatten(lst, cls):
+    """
+    Helper function -- return a copy of list, with all elements of
+    type C{cls} spliced in rather than appended in.
+    """
+    result = []
+    for elt in lst:
+        if isinstance(elt, cls): result.extend(elt)
+        else: result.append(elt)
+    return result
 
 ######################################################################
 # Specialized Features
@@ -1883,47 +1912,42 @@ class FeatStructParser(object):
             raise ValueError('logic expression', match.start(1))
 
     def parse_tuple_value(self, s, position, reentrances, match):
+        return self._parse_seq_value(s, position, reentrances, match, ')', 
+                                     FeatureValueTuple, FeatureValueConcat)
+
+    def parse_set_value(self, s, position, reentrances, match):
+        return self._parse_seq_value(s, position, reentrances, match, '}',
+                                     FeatureValueSet, FeatureValueUnion)
+    
+    def _parse_seq_value(self, s, position, reentrances, match,
+                         close_paren, seq_class, plus_class):
+        """
+        Helper function used by parse_tuple_value and parse_set_value.
+        """
+        cp = re.escape(close_paren)
         position = match.end()
+        # Special syntax fo empty tuples:
+        m = re.compile(r'\s*/?\s*%s' % cp).match(s, position)
+        if m: return seq_class(), m.end()
+        # Read values:
         values = []
         seen_plus = False
         while True:
             # Close paren: return value.
-            m = re.compile(r'\s*\)').match(s, position)
-            if m: return FeatureValueTuple(values), m.end()
+            m = re.compile(r'\s*%s' % cp).match(s, position)
+            if m:
+                if seen_plus: return plus_class(values), m.end()
+                else: return seq_class(values), m.end()
             
             # Read the next value.
             val, position = self.parse_value(s, position, reentrances)
             values.append(val)
 
             # Comma or looking at close paren
-            m = re.compile(r'\s*(,|(?=\)))').match(s, position)
-            if not m: raise ValueError("',' or ')'", position)
-            position = m.end()
-
-    def parse_set_value(self, s, position, reentrances, match):
-        position = match.end()
-
-        # Empty sets have special syntax: {/}.  but accept {} too.
-        m = re.compile(r'\s*/?\s*}').match(s, position)
-        if m: return FeatureValueSet(), m.end()
-        
-        values = []
-        seen_plus = False
-        while True:
-            # Read the next value.
-            val, position = self.parse_value(s, position, reentrances)
-            values.append(val)
-
-            # Comma or close bracket.
-            m = re.compile('\s*([+,}])').match(s, position)
-            if not m: raise ValueError("',' or '+' or '}'", position)
-            position = m.end()
+            m = re.compile(r'\s*(,|\+|(?=%s))' % cp).match(s, position)
             if m.group(1) == '+': seen_plus = True
-            elif m.group(1) == '}':
-                if seen_plus:
-                    return FeatureValueUnion(values), position
-                else:
-                    return FeatureValueSet(values), position
+            if not m: raise ValueError("',' or '+' or '%s'" % cp, position)
+            position = m.end()
 
 ######################################################################
 #{ Demo
