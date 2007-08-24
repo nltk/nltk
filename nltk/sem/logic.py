@@ -9,6 +9,7 @@
 #                   Peter Wang
 #                   Ewan Klein <ewan@inf.ed.ac.uk>
 #                   Rob Speer  <rspeer@mit.edu>
+#                   Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 #
@@ -23,16 +24,11 @@ The class of C{Expression} has various subclasses:
   
 """
 
-from nltk import Counter, featstruct
+from nltk.utilities import Counter
 
-_counter = Counter()
-
-def unique_variable(counter=None):
-    if counter is None: counter = _counter
-    unique = counter.get()
-    return VariableExpression(Variable('x'+str(unique)))
-
-class Error(Exception): pass
+######################################################################
+# Variables & Bindings
+######################################################################
 
 class Variable(object):
     """A variable, either free or bound."""
@@ -46,22 +42,51 @@ class Variable(object):
         """
         self.name = name
 
-    def __eq__(self, other):
-        return self.equals(other)
+    def __cmp__(self, other):
+        if not isinstance(other, Variable): return -1
+        return cmp(self.name, other.name)
 
-    def __ne__(self, other):
-        return not self.equals(other)
-
-    def equals(self, other):
-        """A comparison function."""
-        if not isinstance(other, Variable): return False
-        return self.name == other.name
-        
     def __str__(self): return self.name
 
     def __repr__(self): return "Variable('%s')" % self.name
 
-    def __hash__(self): return hash(repr(self))
+    def __hash__(self): return hash(self.name)
+
+    def substitute_bindings(self, bindings):
+        return bindings.get(self, self)
+        
+class SubstituteBindingsI(object):
+    """
+    An interface for classes that can perform substitutions for
+    variables.
+    """
+    def substitute_bindings(self, bindings):
+        """
+        @return: The object that is obtained by replacing
+        each variable bound by C{bindings} with its values.
+        Aliases are already resolved. (maybe?)
+        @rtype: (any)
+        """
+        raise NotImplementedError()
+
+    def varaibles(self):
+        """
+        @return: A list of all variables in this object.
+        """
+        raise NotImplementedError()
+            
+######################################################################
+# ...
+######################################################################
+
+_counter = Counter()
+
+def unique_variable(counter=None):
+    if counter is None: counter = _counter
+    unique = counter.get()
+    return VariableExpression(Variable('x'+str(unique)))
+
+class Error(Exception): pass # used by the parser.
 
 class Constant(object):
     """A nonlogical constant."""
@@ -75,38 +100,28 @@ class Constant(object):
         """
         self.name = name
 
-    def __eq__(self, other):
-        return self.equals(other)
+    def __cmp__(self, other):
+        if not isinstance(other, Constant): return -1
+        return cmp(self.name, other.name)
 
-    def __ne__(self, other):
-        return not self.equals(other)
-
-    def equals(self, other):
-        """A comparison function."""
-        assert isinstance(other, Constant)
-        return self.name == other.name
-        
     def __str__(self): return self.name
 
     def __repr__(self): return "Constant('%s')" % self.name
 
     def __hash__(self): return hash(repr(self))
 
-class Expression(object):
+class Expression(SubstituteBindingsI):
     """The abstract class of a lambda calculus expression."""
     def __init__(self):
         if self.__class__ is Expression:
             raise NotImplementedError
 
     def __eq__(self, other):
-        return self.equals(other)
-
-    def __ne__(self, other):
-        return not self.equals(other)
-
-    def equals(self, other):
         """Are the two expressions equal, modulo alpha conversion?"""
         return NotImplementedError
+
+    def __ne__(self, other):
+        return not (self == other)
 
     def variables(self):
         """Set of all variables."""
@@ -131,7 +146,7 @@ class Expression(object):
         Replace a variable v with a new, uniquely-named variable.
         """
         return self.replace(variable, unique_variable(counter),
-        replace_bound)
+                            replace_bound)
 
     def simplify(self):
         """Evaluate the form by repeatedly applying applications."""
@@ -169,9 +184,28 @@ class Expression(object):
         counter = 0
         for var in vars:
             counter += 1
-            result = result.replace(var, Variable(str(counter)), replace_bound=True)
+            result = result.replace(var, Variable(str(counter)),
+                                    replace_bound=True)
         self._normalized = result
         return result
+    
+    def substitute_bindings(self, bindings):
+        expr = self
+        for var in expr.free():
+            if var in bindings:
+                val = bindings[var]
+                if isinstance(val, Variable):
+                    val = VariableExpression(val)
+                if isinstance(val, Constant):
+                    val = ConstantExpression(const)
+                if not isinstance(val, Expression):
+                    raise ValueError('Can not substitute a non-expresion '
+                                     'value into an expression: %r' % val)
+                # Substitute bindings in the target value.
+                val = val.substitute_bindings(bindings)
+                # Replace var w/ the target value.
+                expr = expr.replace(var, val)
+        return expr.simplify()
 
 class VariableExpression(Expression):
     """A variable expression which consists solely of a variable."""
@@ -180,14 +214,15 @@ class VariableExpression(Expression):
         assert isinstance(variable, Variable)
         self.variable = variable
 
-    def equals(self, other):
+    # nb: __ne__ defined by Expression
+    def __eq__(self, other):
         """
         Allow equality between instances of C{VariableExpression} and
         C{IndVariableExpression}.
         """
         if isinstance(self, VariableExpression) and \
            isinstance(other, VariableExpression):
-            return self.variable.equals(other.variable)
+            return self.variable == other.variable
         else:
             return False
 
@@ -201,7 +236,7 @@ class VariableExpression(Expression):
         return set([self])
 
     def replace(self, variable, expression, replace_bound=False):
-        if self.variable.equals(variable):
+        if self.variable == variable:
             if isinstance(expression, Variable):
                 return VariableExpression(expression)
             else:
@@ -264,9 +299,10 @@ class ConstantExpression(Expression):
         assert isinstance(constant, Constant)
         self.constant = constant
 
-    def equals(self, other):
+    # nb: __ne__ defined by Expression
+    def __eq__(self, other):
         if self.__class__ == other.__class__:
-            return self.constant.equals(other.constant)
+            return self.constant == other.constant
         else:
             return False
 
@@ -312,7 +348,8 @@ class Operator(ConstantExpression):
         self.constant = operator
         self.operator = operator
 
-    def equals(self, other):
+    # nb: __ne__ defined by Expression
+    def __eq__(self, other):
         if self.__class__ == other.__class__:
             return self.constant == other.constant
         else:
@@ -343,7 +380,8 @@ class VariableBinderExpression(Expression):
         self.binder = (self.prefix, self.variable.name)
         self.body = str(self.term)
 
-    def equals(self, other):
+    # nb: __ne__ defined by Expression
+    def __eq__(self, other):
         r"""
         Defines equality modulo alphabetic variance.
 
@@ -474,10 +512,11 @@ class ApplicationExpression(Expression):
         self.first = first
         self.second = second
 
-    def equals(self, other):
+    # nb: __ne__ defined by Expression
+    def __eq__(self, other):
         if self.__class__ == other.__class__:
-            return self.first.equals(other.first) and \
-                   self.second.equals(other.second)
+            return (self.first == other.first and
+                    self.second == other.second)
         else:
             return False
 
@@ -579,18 +618,6 @@ class ApplicationExpression(Expression):
     def __hash__(self):
         return hash(str(self.normalize()))
 
-class ApplicationExpressionSubst(ApplicationExpression, featstruct.SubstituteBindingsMixin):
-    pass
-
-class LambdaExpressionSubst(LambdaExpression, featstruct.SubstituteBindingsMixin):
-    pass
-
-class SomeExpressionSubst(SomeExpression, featstruct.SubstituteBindingsMixin):
-    pass
-
-class AllExpressionSubst(AllExpression, featstruct.SubstituteBindingsMixin):
-    pass
-
 class LogicParser(object):
     """A lambda calculus expression parser."""
 
@@ -624,6 +651,7 @@ class LogicParser(object):
         self.process()
 
     def parse(self, data):
+        # [xx] um.. similar to other nltk parsers how?
         """
         Provides a method similar to other NLTK parsers.
 
@@ -801,7 +829,7 @@ def demo():
         ll = LogicParser(str(l)).next()
         print 'l is:', l
         print 'll is:', ll
-        assert l.equals(ll)
+        assert l == ll
         print "Serialize and reparse: %s -> %s" % (l, ll)
         print "Variables:", ll.variables()
         print "Normalize: %s" % ll.normalize()

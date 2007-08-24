@@ -13,7 +13,8 @@ syntax trees and morphological trees.
 """
 
 import re, string
-from nltk import tokenize, cfg, ProbabilisticMixIn
+import nltk.cfg
+from nltk.probability import ProbabilisticMixIn
 
 ######################################################################
 ## Trees
@@ -219,7 +220,7 @@ class Tree(list):
         if not isinstance(self.node, str):
             raise TypeError, 'Productions can only be generated from trees having node labels that are strings'
 
-        prods = [cfg.Production(cfg.Nonterminal(self.node), _child_names(self))]
+        prods = [nltk.cfg.Production(nltk.cfg.Nonterminal(self.node), _child_names(self))]
         for child in self:
             if isinstance(child, Tree):
                 prods += child.productions()
@@ -366,7 +367,7 @@ class Tree(list):
 
     def __repr__(self):
         childstr = ", ".join(repr(c) for c in self)
-        return 'Tree(%s, [%s])' % (repr(self.node), childstr)
+        return 'Tree(%r, [%s])' % (self.node, childstr)
 
     def __str__(self):
         return self.pprint()
@@ -392,7 +393,10 @@ class Tree(list):
             return s
 
         # If it doesn't fit on one line, then write it on multi-lines.
-        s = '%s%s%s' % (parens[0], self.node, nodesep)
+        if isinstance(self.node, basestring): 
+            s = '%s%s%s' % (parens[0], self.node, nodesep)
+        else:
+            s = '%s%r%s' % (parens[0], self.node, nodesep)
         for child in self:
             if isinstance(child, Tree):
                 s += '\n'+' '*(indent+2)+child.pprint(margin, indent+2,
@@ -402,7 +406,7 @@ class Tree(list):
             elif isinstance(child, str) and not quotes:
                 s += '\n'+' '*(indent+2)+ '%s' % child
             else:
-                s += '\n'+' '*(indent+2)+ '%s' % child.__repr__()
+                s += '\n'+' '*(indent+2)+ '%r' % child
         return s+parens[1]
 
     def pprint_latex_qtree(self):
@@ -435,9 +439,13 @@ class Tree(list):
             elif isinstance(child, str) and not quotes:
                 childstrs.append('%s' % child)
             else:
-                childstrs.append('%s' % child.__repr__())
-        return '%s%s%s %s%s' % (parens[0], self.node, nodesep, 
-                                string.join(childstrs), parens[1])
+                childstrs.append('%r' % child)
+        if isinstance(self.node, basestring):
+            return '%s%s%s %s%s' % (parens[0], self.node, nodesep, 
+                                    string.join(childstrs), parens[1])
+        else:
+            return '%s%r%s %s%s' % (parens[0], self.node, nodesep, 
+                                    string.join(childstrs), parens[1])
 
 class ImmutableTree(Tree):
     def __setitem__(self):
@@ -544,7 +552,7 @@ def _child_names(tree):
     names = []
     for child in tree:
         if isinstance(child, Tree):
-            names.append(cfg.Nonterminal(child.node))
+            names.append(nltk.cfg.Nonterminal(child.node))
         else:
             names.append(child)
     return names

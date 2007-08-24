@@ -42,7 +42,6 @@ three sub-modules for specialized kinds of parsing:
 """
 
 from api import *
-from category import *
 from chart import *
 from featurechart import *
 from pchart import *

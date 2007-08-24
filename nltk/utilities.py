@@ -764,6 +764,80 @@ def windowdiff(seg1, seg2, k, boundary="1"):
     return wd
 
 ######################################################################
+# Parsing
+######################################################################
+
+class ParseError(ValueError):
+    """
+    Exception raised by parse_* functions when they fail.
+    @param position: The index in the input string where an error occured.
+    @param expected: What was expected when an error occured.
+    """
+    def __init__(self, expected, position):
+        ValueError.__init__(self, expected, position)
+        self.expected = expected
+        self.position = position
+    def __str__(self):
+        return 'Expected %s at %s' % (self.expected, self.position)
+
+_STRING_START_RE = re.compile(r"[uU]?[rR]?(\"\"\"|\'\'\'|\"|\')")
+def parse_str(s, start_position):
+    """
+    If a Python string literal begins at the specified position in the
+    given string, then return a tuple C{(val, end_position)}
+    containing the value of the string literal and the position where
+    it ends.  Otherwise, raise a L{ParseError}.
+    """
+    # Read the open quote, and any modifiers.
+    m = _STRING_START_RE.match(s, start_position)
+    if not m: raise ParseError('open quote', start_position)
+    quotemark = m.group(1)
+
+    # Find the close quote.
+    _STRING_END_RE = re.compile(r'\\|%s' % quotemark)
+    position = m.end()
+    while True:
+        match = _STRING_END_RE.search(s, position)
+        if not match: raise ParseError('close quote', position)
+        if match.group(0) == '\\': position = match.end()+1
+        else: break
+
+    # Parse it, using eval.  Strings with invalid escape sequences
+    # might raise ValueEerror.
+    try:
+        return eval(s[start_position:match.end()]), match.end()
+    except ValueError, e:
+        raise ParseError('valid string (%s)' % e, start)
+
+_PARSE_INT_RE = re.compile(r'-?\d+')
+def parse_int(s, start_position):
+    """
+    If an integer begins at the specified position in the given
+    string, then return a tuple C{(val, end_position)} containing the
+    value of the integer and the position where it ends.  Otherwise,
+    raise a L{ParseError}.
+    """
+    m = _PARSE_INT_RE.match(s, start_position)
+    if not m: raise ParseError('integer', start_position)
+    return int(m.group()), m.end()
+
+_PARSE_NUMBER_VALUE = re.compile(r'-?(\d*)([.]?\d*)?')
+def parse_number(s, start_position):
+    """
+    If an integer or float begins at the specified position in the
+    given string, then return a tuple C{(val, end_position)}
+    containing the value of the number and the position where it ends.
+    Otherwise, raise a L{ParseError}.
+    """
+    m = _PARSE_NUMBER_VALUE.match(s, start_position)
+    if not m or not (m.group(1) or m.group(2)):
+        raise ParseError('number', start_position)
+    if m.group(2): return float(m.group()), m.end()
+    else: return int(m.group()), m.end()
+    
+
+
+######################################################################
 # Short usage message
 ######################################################################
 
