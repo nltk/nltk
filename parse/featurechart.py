@@ -149,16 +149,9 @@ class FeatureFundamentalRule(FundamentalRule):
                        bindings, rename_vars=False)
         if result is None: return
 
-        # Use variables instead of values wherever possible.  This
-        # will give us a "canonical" representation, ensuring that we
-        # don't accidentally insert two equivalant edges.
-        result = result.retract_bindings(bindings)
-
         # Construct the new edge.
-        rhs = list(left_edge.rhs())
-        rhs[left_edge.dot()] = result
         new_edge = FeatureTreeEdge(span=(left_edge.start(), right_edge.end()),
-                                   lhs=left_edge.lhs(), rhs=rhs,
+                                   lhs=left_edge.lhs(), rhs=left_edge.rhs(),
                                    dot=left_edge.dot()+1, bindings=bindings)
         
         # Add it to the chart, with appropriate child pointers.
@@ -283,12 +276,10 @@ class FeatureEarleyChartParser(EarleyChartParser):
                     for e in completer.apply_iter(chart, grammar, edge):
                         if self._trace > 0:
                             print 'Completer', chart.pp_edge(e,w)
-            for edge in chart.select(end=end):
                 if edge.is_incomplete():
                     for e in predictor.apply_iter(chart, grammar, edge):
                         if self._trace > 1:
                             print 'Predictor', chart.pp_edge(e,w)
-            for edge in chart.select(end=end):
                 if edge.is_incomplete():
                     for e in scanner.apply_iter(chart, grammar, edge):
                         if self._trace > 0:
