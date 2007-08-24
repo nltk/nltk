@@ -67,6 +67,7 @@ X{expanding} M{lhs} to M{rhs} in M{tree}.
 """
 
 import re
+import nltk.featstruct
 from nltk.featstruct import FeatStruct, FeatStructParser
 
 #################################################################
@@ -647,14 +648,20 @@ def earley_lexicon(productions):
         lexicon[prod.rhs()[0]].append(prod.lhs())
     return lexicon
 
-def parse_fcfg_production(line):
-    parser = FeatStructParser()
+class FeatStructNonterminal(FeatStruct, Nonterminal):
+    """A feature structure that's also a nonterminal.  It acts as its
+    own symbol, and automatically freezes itself when hashed."""
+    def __hash__(self):
+        self.freeze()
+        return FeatStruct.__hash__(self)
+    def symbol(self):
+        return self
+
+def parse_fcfg_production(line, fstruct_parser):
     pos = 0
     
     # Parse the left-hand side.
-    fstruct, pos = parser.partial_parse(line, pos)
-    fstruct.freeze()
-    lhs = Nonterminal(fstruct)
+    lhs, pos = fstruct_parser.partial_parse(line, pos)
 
     # Skip over the arrow.
     m = re.compile('\s*->\s*').match(line, pos)
@@ -681,14 +688,12 @@ def parse_fcfg_production(line):
 
         # Anything else -- feature structure nonterminal.
         else:
-            fstruct, pos = parser.partial_parse(line, pos)
-            fstruct.freeze()
-            rhsides[-1].append(Nonterminal(fstruct))
+            fstruct, pos = fstruct_parser.partial_parse(line, pos)
+            rhsides[-1].append(fstruct)
             
-    if rhsides[-1] == []: raise ValueError('Bad right-hand-side')
     return [Production(lhs, rhs) for rhs in rhsides]
 
-def parse_fcfg(input):
+def parse_fcfg(input, features=None):
     """
     Return a tuple (list of grammatical productions,
     lexicon dict).
@@ -696,11 +701,15 @@ def parse_fcfg(input):
     @param input: a grammar, either in the form of a string or else 
     as a list of strings.
     """
+    if features is None:
+        features = (nltk.featstruct.SLASH, nltk.featstruct.TYPE)
+    fstruct_parser = FeatStructParser(features, FeatStructNonterminal)
     if isinstance(input, str):
         lines = input.split('\n')
     else:
         lines = input
 
+    start = None
     productions = []
     for linenum, line in enumerate(lines):
         line = line.strip()
@@ -709,8 +718,7 @@ def parse_fcfg(input):
             parts = line[1:].split()
             directive, args = line[1:].split(None, 1)
             if directive == 'start':
-                start = FeatStruct(args)
-                start.freeze()
+                start = fstruct_parser.parse(args)
 #             elif directive == 'include':
 #                 filename = args.strip('"')
 #                 # [XX] This is almost certainly a bug: [XX]
@@ -718,7 +726,7 @@ def parse_fcfg(input):
         else:
             try:
                 # expand out the disjunctions on the RHS
-                productions += parse_fcfg_production(line)
+                productions += parse_fcfg_production(line, fstruct_parser)
             except ValueError, e:
                 raise ValueError('Unable to parse line %s: %s\n%s' %
                                  (linenum+1, line, e))
@@ -737,7 +745,7 @@ def parse_fcfg(input):
     return (grammar, lexicon)
 
 from nltk.utilities import deprecated
-@deprecated("Use parse_fcfg")
+@deprecated("Use nltk.cfg.parse_fcfg() instead.")
 def parse_featcfg(input): 
     return parse_fcfg(input)
 
