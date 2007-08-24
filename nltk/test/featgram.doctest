@@ -396,7 +396,7 @@ A simple intransitive sentence:
               |.j.b.|
     Scanner   |[-] .| [0:1] 'john'
     Scanner   |[-] .| [0:1] NP[sem=[bo={(bo @x \P.(P John))}, core=<@x>]] -> 'john' *
-    Completer |[-> .| [0:1] S[sem=[bo={b1+b2}, core=<(vp subj)>]] -> NP[sem=[bo=?b1, core=?subj]] * VP[sem=[bo=?b2, core=?vp]] {?b1: {(bo x101 \P.(P John))}, ?subj: VariableExpression('x101')}
+    Completer |[-> .| [0:1] S[sem=[bo={?b1+?b2}, core=<(?vp ?subj)>]] -> NP[sem=[bo=?b1, core=?subj]] * VP[sem=[bo=?b2, core=?vp]] {?b1: {(bo x101 \P.(P John))}, ?subj: VariableExpression('x101')}
     Scanner   |. [-]| [1:2] 'barks'
     Scanner   |. [-]| [1:2] IV[sem=[bo={/}, core=<\x.(bark x)>]] -> 'barks' *
     Completer |. [-]| [1:2] VP[sem=[bo={/}, core=<\x.(bark x)>]] -> IV[sem=[bo={/}, core=<\x.(bark x)>]] *
@@ -414,21 +414,21 @@ A transitive sentence:
               |.j.f.a.d.|
     Scanner   |[-] . . .| [0:1] 'john'
     Scanner   |[-] . . .| [0:1] NP[sem=[bo={(bo @x \P.(P John))}, core=<@x>]] -> 'john' *
-    Completer |[-> . . .| [0:1] S[sem=[bo={b1+b2}, core=<(vp subj)>]] -> NP[sem=[bo=?b1, core=?subj]] * VP[sem=[bo=?b2, core=?vp]] {?b1: {(bo x102 \P.(P John))}, ?subj: VariableExpression('x102')}
+    Completer |[-> . . .| [0:1] S[sem=[bo={?b1+?b2}, core=<(?vp ?subj)>]] -> NP[sem=[bo=?b1, core=?subj]] * VP[sem=[bo=?b2, core=?vp]] {?b1: {(bo x102 \P.(P John))}, ?subj: VariableExpression('x102')}
     Scanner   |. [-] . .| [1:2] 'feeds'
     Scanner   |. [-] . .| [1:2] TV[sem=[bo={/}, core=<\x y.(feed x y)>]] -> 'feeds' *
-    Completer |. [-> . .| [1:2] VP[sem=[bo={b1+b2}, core=<(v obj)>]] -> TV[sem=[bo=?b1, core=?v]] * NP[sem=[bo=?b2, core=?obj]] {?b1: {/}, ?v: LambdaExpression('x', '\y.(feed x y)')}
+    Completer |. [-> . .| [1:2] VP[sem=[bo={?b1+?b2}, core=<(?v ?obj)>]] -> TV[sem=[bo=?b1, core=?v]] * NP[sem=[bo=?b2, core=?obj]] {?b1: {/}, ?v: LambdaExpression('x', '\y.(feed x y)')}
     Scanner   |. . [-] .| [2:3] 'a'
     Scanner   |. . [-] .| [2:3] Det[sem=[bo={/}, core=<\Q P.some x.(and (Q x) (P x))>]] -> 'a' *
-    Completer |. . [-> .| [2:3] NP[sem=[bo={{(bo @x (det n))}+b2+b1}, core=<@x>]] -> Det[sem=[bo=?b1, core=?det]] * N[sem=[bo=?b2, core=?n]] {?b1: {/}, ?det: LambdaExpression('Q', '\P.some x.(and (Q x) (P x))')}
+    Completer |. . [-> .| [2:3] NP[sem=[bo={?b1+?b2+{(bo @x (?det ?n))}}, core=<@x>]] -> Det[sem=[bo=?b1, core=?det]] * N[sem=[bo=?b2, core=?n]] {?b1: {/}, ?det: LambdaExpression('Q', '\P.some x.(and (Q x) (P x))')}
     Scanner   |. . . [-]| [3:4] 'dog'
     Scanner   |. . . [-]| [3:4] N[sem=[bo={/}, core=<dog>]] -> 'dog' *
     Completer |. . [---]| [2:4] NP[sem=[bo={(bo @x \P.some x.(and (dog x) (P x)))}, core=<@x>]] -> Det[sem=[bo={/}, core=<\Q P.some x.(and (Q x) (P x))>]] N[sem=[bo={/}, core=<dog>]] *
     Completer |. [-----]| [1:4] VP[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x)))}, core=<\y.(feed x103 y)>]] -> TV[sem=[bo={/}, core=<\x y.(feed x y)>]] NP[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x)))}, core=<x103>]] *
-    Completer |[=======]| [0:4] S[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x))), (bo x102 \P.(P John))}, core=<(feed x103 x102)>]] -> NP[sem=[bo={(bo x102 \P.(P John))}, core=<x102>]] VP[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x)))}, core=<\y.(feed x103 y)>]] *
+    Completer |[=======]| [0:4] S[sem=[bo={(bo x102 \P.(P John)), (bo x103 \P.some x.(and (dog x) (P x)))}, core=<(feed x103 x102)>]] -> NP[sem=[bo={(bo x102 \P.(P John))}, core=<x102>]] VP[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x)))}, core=<\y.(feed x103 y)>]] *
     Completer |[=======]| [0:4] INIT[] -> S[] *
     >>> for tree in trees: print tree
-    (S[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x))), (bo x102 \P.(P John))}, core=<(feed x103 x102)>]]
+    (S[sem=[bo={(bo x102 \P.(P John)), (bo x103 \P.some x.(and (dog x) (P x)))}, core=<(feed x103 x102)>]]
       (NP[sem=[bo={(bo x102 \P.(P John))}, core=<x102>]] john)
       (VP[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x)))}, core=<\y.(feed x103 y)>]]
         (TV[sem=[bo={/}, core=<\x y.(feed x y)>]] feeds)
@@ -444,7 +444,7 @@ Reuse the same lexical item twice:
 
     >>> trees = cp.get_parse_list('john feeds john'.split())
     >>> for tree in trees: print tree
-    (S[sem=[bo={(bo x105 \P.(P John)), (bo x104 \P.(P John))}, core=<(feed x105 x104)>]]
+    (S[sem=[bo={(bo x104 \P.(P John)), (bo x105 \P.(P John))}, core=<(feed x105 x104)>]]
       (NP[sem=[bo={(bo x104 \P.(P John))}, core=<x104>]] john)
       (VP[sem=[bo={(bo x105 \P.(P John))}, core=<\y.(feed x105 y)>]]
         (TV[sem=[bo={/}, core=<\x y.(feed x y)>]] feeds)
