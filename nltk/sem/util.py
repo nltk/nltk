@@ -14,7 +14,7 @@ a first-order model.
 
 import evaluate
 import re
-from nltk import tokenize, Tree
+from nltk.tree import Tree
 
 
 ##############################################################
