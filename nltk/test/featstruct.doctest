@@ -1,385 +1,918 @@
-.. STALE
+==================================
+ Feature Structures & Unification
+==================================
 
--------------------------------------
-Unit tests for the FeatStruct classes
--------------------------------------
+    >>> import sys
+    >>> sys.path.insert(
+    ...     0, '/home/edloper/newdata/projects/nltk/new_featstruct')
+    >>> from nltk.featstruct import FeatStruct
+    >>> from nltk.sem import Variable
 
-    >>> from nltk.featstruct import *
+Overview
+~~~~~~~~
+A feature structure is a mapping from feature names to feature values,
+where feature values can be simple values (like strings or ints),
+nested feature structures, or variables:
 
-Variable objects are used during unification.
-
-    >>> x = Variable(name="importantFeature")
-    >>> x.name()
-    'importantFeature'
-
-    >>> print x.value()
-    None
-
-    >>> y = x.copy()
-    >>> y.name()
-    'importantFeature'
-
-    >>> print y.value()
-    None
-
-    >>> x == y
-    True
-
-    >>> x is y
-    False
-
-    >>> x.name() == y.name()
-    True
-
-    >>> unify(3, None)
-    3
-
-    >>> unify(None, 'fish')
-    'fish'
-
-A base value unifies with itself, but not much else.
-
-    >>> unify(True, True)
-    True
-
-    >>> unify([1], [1])
-    [1]
-
-    >>> unify('a', 'b')
-    Traceback (most recent call last):
-    ...
-    UnificationFailure
-
-    >>> f1 = dict(A=dict(B='b'))
-    >>> f2 = dict(A=dict(C='c'))
-    >>> unify(f1, f2) == dict(A=dict(B='b', C='c'))
-    True
-
-    >>> unify({}, dict(foo='bar'))
-    {'foo': 'bar'}
-
-    >>> unify({}, True)
-    Traceback (most recent call last):
-    ...
-    UnificationFailure
-
-
-    >>> f1 = yaml.load("number: singular")
-    >>> f2 = yaml.load("person: 3")
-    >>> print unify(f1, f2)
-    {'person': 3, 'number': 'singular'}
-        
-    >>> f1 = FeatStruct(number = 'singular')
-    >>> f2 = FeatStruct(person = 3)
-    >>> print unify(f1, f2)
+    >>> fs1 = FeatStruct(number='singular', person=3)
+    >>> print fs1
     [ number = 'singular' ]
     [ person = 3          ]
 
-    >>> bindings = {}
-    >>> print unify(Variable('x'), 5, bindings)
+Feature structure may be nested:
+
+    >>> fs2 = FeatStruct(type='NP', agr=fs1)
+    >>> print fs2
+    [ agr  = [ number = 'singular' ] ]
+    [        [ person = 3          ] ]
+    [                                ]
+    [ type = 'NP'                    ]
+
+Variables are used to indicate that two features should be assigned
+the same value.  For example, the following feature structure requires
+that the feature fs3['agr']['number'] be bound to the same value as the
+feature fs3['subj']['number'].
+
+    >>> fs3 = FeatStruct(agr=FeatStruct(number=Variable('n')),
+    ...                  subj=FeatStruct(number=Variable('n')))
+    >>> print fs3
+    [ agr  = [ number = ?n ] ]
+    [                        ]
+    [ subj = [ number = ?n ] ]
+
+Feature structures are typically used to represent partial information
+about objects.  A feature name that is not mapped to a value stands
+for a feature whose value is unknown (*not* a feature without a
+value).  Two feature structures that represent (potentially
+overlapping) information about the same object can be combined by
+*unification*.
+
+    >>> print fs2.unify(fs3)
+    [ agr  = [ number = 'singular' ] ]
+    [        [ person = 3          ] ]
+    [                                ]
+    [ subj = [ number = 'singular' ] ]
+    [                                ]
+    [ type = 'NP'                    ]
+
+When two inconsistent feature structures are unified, the unification
+fails and returns ``None``.
+
+    >>> fs4 = FeatStruct(agr=FeatStruct(person=1))
+    >>> print fs4.unify(fs2)
+    None
+    >>> print fs2.unify(fs4)
+    None
+
+..
+    >>> del fs1, fs2, fs3, fs4 # clean-up
+
+Regression Tests
+~~~~~~~~~~~~~~~~
+
+Dictionary access methods (non-mutating)
+----------------------------------------
+
+    >>> fs1 = FeatStruct(a=1, b=2, c=3)
+    >>> fs2 = FeatStruct(x=fs1, y='x')
+
+Feature structures support all dictionary methods (excluding the class
+method `dict.fromkeys()`).  Non-mutating methods:
+
+    >>> sorted(fs2.keys())                               # keys()
+    ['x', 'y']
+    >>> sorted(fs2.values())                             # values()
+    [[a=1, b=2, c=3], 'x']
+    >>> sorted(fs2.items())                              # items()
+    [('x', [a=1, b=2, c=3]), ('y', 'x')]
+    >>> sorted(fs2.iterkeys())                           # iterkeys()
+    ['x', 'y']
+    >>> sorted(fs2.itervalues())                         # itervalues()
+    [[a=1, b=2, c=3], 'x']
+    >>> sorted(fs2.iteritems())                          # iteritems()
+    [('x', [a=1, b=2, c=3]), ('y', 'x')]
+    >>> sorted(fs2)                                      # __iter__()
+    ['x', 'y']
+    >>> 'a' in fs2, 'x' in fs2                           # __contains__()
+    (False, True)
+    >>> fs2.has_key('a'), fs2.has_key('x')               # has_key()
+    (False, True)
+    >>> fs2['x'], fs2['y']                               # __getitem__()
+    ([a=1, b=2, c=3], 'x')
+    >>> fs2['a']                                         # __getitem__()
+    Traceback (most recent call last):
+      . . .
+    KeyError: 'a'
+    >>> fs2.get('x'), fs2.get('y'), fs2.get('a')         # get()
+    ([a=1, b=2, c=3], 'x', None)
+    >>> fs2.get('x', 'hello'), fs2.get('a', 'hello')     # get()
+    ([a=1, b=2, c=3], 'hello')
+    >>> len(fs1), len(fs2)                               # __len__
+    (3, 2)
+    >>> fs2.copy()                                       # copy()
+    [x=[a=1, b=2, c=3], y='x']
+    >>> fs2.copy() is fs2                                # copy()
+    False
+
+Note: by default, `FeatStruct.copy()` does a deep copy.  Use
+`FeatStruct.copy(deep=False)` for a shallow copy.
+
+..
+    >>> del fs1, fs2 # clean-up.
+
+Dictionary access methods (mutating)
+------------------------------------
+    >>> fs1 = FeatStruct(a=1, b=2, c=3)
+    >>> fs2 = FeatStruct(x=fs1, y='x')
+
+Setting features (`__setitem__()`)
+
+    >>> fs1['c'] = 5
+    >>> fs1
+    [a=1, b=2, c=5]
+    >>> fs1['x'] = 12
+    >>> fs1
+    [a=1, b=2, c=5, x=12]
+    >>> fs2['x', 'a'] = 2
+    >>> fs2
+    [x=[a=2, b=2, c=5, x=12], y='x']
+    >>> fs1
+    [a=2, b=2, c=5, x=12]
+
+Deleting features (`__delitem__()`)
+
+    >>> del fs1['x']
+    >>> fs1
+    [a=2, b=2, c=5]
+    >>> del fs2['x', 'a']
+    >>> fs1
+    [b=2, c=5]
+
+`setdefault()`:
+
+    >>> fs1.setdefault('b', 99)
+    2
+    >>> fs1
+    [b=2, c=5]
+    >>> fs1.setdefault('x', 99)
+    99
+    >>> fs1
+    [b=2, c=5, x=99]
+
+`update()`:
+
+    >>> fs2.update({'a':'A', 'b':'B'}, c='C')
+    >>> fs2
+    [a='A', b='B', c='C', x=[b=2, c=5, x=99], y='x']
+
+`pop()`:
+
+    >>> fs2.pop('a')
+    'A'
+    >>> fs2
+    [b='B', c='C', x=[b=2, c=5, x=99], y='x']
+    >>> fs2.pop('a')
+    >>> fs2.pop('a', 'foo')
+    'foo'
+    >>> fs2
+    [b='B', c='C', x=[b=2, c=5, x=99], y='x']
+
+`clear()`:
+
+    >>> fs1.clear()
+    >>> fs1
+    []
+    >>> fs2
+    [b='B', c='C', x=[], y='x']
+
+`popitem()`:
+
+    >>> sorted([fs2.popitem() for i in range(len(fs2))])
+    [('b', 'B'), ('c', 'C'), ('x', []), ('y', 'x')]
+    >>> fs2
+    []
+
+Once a feature structure has been frozen, it may not be mutated.
+
+    >>> fs1 = FeatStruct('[x=1, y=2, z=[a=3]]')
+    >>> fs1.freeze()
+    >>> fs1.frozen()
+    True
+    >>> fs1['z'].frozen()
+    True
+
+    >>> fs1['x'] = 5
+    Traceback (most recent call last):
+      . . .
+    ValueError: Frozen FeatStructs may not be modified.
+    >>> del fs1['x']
+    Traceback (most recent call last):
+      . . .
+    ValueError: Frozen FeatStructs may not be modified.
+    >>> fs1.clear()
+    Traceback (most recent call last):
+      . . .
+    ValueError: Frozen FeatStructs may not be modified.
+    >>> fs1.pop('x')
+    Traceback (most recent call last):
+      . . .
+    ValueError: Frozen FeatStructs may not be modified.
+    >>> fs1.popitem()
+    Traceback (most recent call last):
+      . . .
+    ValueError: Frozen FeatStructs may not be modified.
+    >>> fs1.setdefault('x')
+    Traceback (most recent call last):
+      . . .
+    ValueError: Frozen FeatStructs may not be modified.
+    >>> fs1.update(z=22)
+    Traceback (most recent call last):
+      . . .
+    ValueError: Frozen FeatStructs may not be modified.
+
+..
+    >>> del fs1, fs2 # clean-up.
+
+Feature Paths
+-------------
+Make sure that __getitem__ with feature paths works as intended:
+
+    >>> fs1 = FeatStruct(a=1, b=2,
+    ...                 c=FeatStruct(
+    ...                     d=FeatStruct(e=12),
+    ...                     f=FeatStruct(g=55, h='hello')))
+    >>> fs1[()]
+    [a=1, b=2, c=[d=[e=12], f=[g=55, h='hello']]]
+    >>> fs1['a'], fs1[('a',)]
+    (1, 1)
+    >>> fs1['c','d','e']
+    12
+    >>> fs1['c','f','g']
+    55
+
+Feature paths that select unknown features raise KeyError:
+
+    >>> fs1['c', 'f', 'e']
+    Traceback (most recent call last):
+      . . .
+    KeyError: ('c', 'f', 'e')
+    >>> fs1['q', 'p']
+    Traceback (most recent call last):
+      . . .
+    KeyError: ('q', 'p')
+
+Feature paths that try to go 'through' a feature that's not a feature
+structure raise KeyError:
+
+    >>> fs1['a', 'b']
+    Traceback (most recent call last):
+      . . .
+    KeyError: ('a', 'b')
+
+Feature paths can go through reentrant structures:
+
+    >>> fs2 = FeatStruct('(1)[a=[b=[c->(1), d=5], e=11]]')
+    >>> fs2['a', 'b', 'c', 'a', 'e']
+    11
+    >>> fs2['a', 'b', 'c', 'a', 'b', 'd']
     5
+    >>> fs2[tuple('abcabcabcabcabcabcabcabcabcabca')]
+    (1)[b=[c=[a->(1)], d=5], e=11]
 
-    >>> print bindings
-    {'x': 5}
+Indexing requires strings or tuples; other types raise a TypeError:
 
-    >>> print unify({'a': Variable('x')}, {}, bindings)
-    {'a': 5}
+    >>> fs2[12]
+    Traceback (most recent call last):
+      . . .
+    TypeError: Expected str or tuple of str.  Got 12.
+    >>> fs2[list('abc')]
+    Traceback (most recent call last):
+      . . .
+    TypeError: Expected str or tuple of str.  Got ['a', 'b', 'c'].
 
-    >>> f1 = FeatStruct(yaml.load('''
-    ... a: 1
-    ... b: 1
-    ... c: ?x
-    ... d: ?x
-    ... '''))
-    >>> f2 = FeatStruct(yaml.load('''
-    ... a: ?x
-    ... b: ?x
-    ... c: 2
-    ... d: 2
-    ... '''))
-    >>> bindings1 = {}
-    >>> bindings2 = {}
-    >>> print unify(f1, f2, bindings1, bindings2)
-    [ a = 1 ]
-    [ b = 1 ]
-    [ c = 2 ]
-    [ d = 2 ]
-    >>> print bindings1
-    {'x': 2}
+Feature paths can also be used with `get()`, `has_key()`, and
+`__contains__()`.
 
-    >>> print bindings2
-    {'x': 1}
+    >>> fpath1 = tuple('abcabc')
+    >>> fpath2 = tuple('abcabz')
+    >>> fs2.get(fpath1), fs2.get(fpath2)
+    ((1)[a=[b=[c->(1), d=5], e=11]], None)
+    >>> fpath1 in fs2, fpath2 in fs2
+    (True, False)
+    >>> fs2.has_key(fpath1), fs2.has_key(fpath2)
+    (True, False)
 
-    >>> f1 = FeatStruct(yaml.load('''
-    ... A: &1                # &1 defines a reference in YAML...
-    ...   B: b
-    ... E:
-    ...   F: *1              # and *1 uses the previously defined reference.
-    ... '''))
-    >>> f1['E']['F']['B']
-    'b'
-    >>> f1['A'] is f1['E']['F']
-    True
+..
+    >>> del fs1, fs2 # clean-up
+
+Parsing
+-------
+Empty feature struct:
+
+    >>> FeatStruct('[]')
+    []
+
+Test features with integer values:
+
+    >>> FeatStruct('[a=12, b=-33, c=0]')
+    [a=12, b=-33, c=0]
+
+Test features with string values.  Either single or double quotes may
+be used.  Strings are evaluated just like python strings -- in
+particular, you can use escape sequences and 'u' and 'r' prefixes, and
+triple-quoted strings.
+
+    >>> FeatStruct('[a="", b="hello", c="\'", d=\'\', e=\'"\']')
+    [a='', b='hello', c="'", d='', e='"']
+    >>> FeatStruct(r'[a="\\", b="\"", c="\x6f\\y", d="12"]')
+    [a='\\', b='"', c='o\\y', d='12']
+    >>> FeatStruct(r'[a=u"\u1234", b=r"a\b\c"]')
+    [a=u'\u1234', b='a\\b\\c']
+    >>> FeatStruct('[x="""a"""]')
+    [x='a']
+
+Test parsing of reentrant feature structures.
+
+    >>> FeatStruct('[a=(1)[], b->(1)]')
+    [a=(1)[], b->(1)]
+    >>> FeatStruct('[a=(1)[x=1, y=2], b->(1)]')
+    [a=(1)[x=1, y=2], b->(1)]
+
+Test parsing of cyclic feature structures.
+
+    >>> FeatStruct('[a=(1)[b->(1)]]')
+    [a=(1)[b->(1)]]
+    >>> FeatStruct('(1)[a=[b=[c->(1)]]]')
+    (1)[a=[b=[c->(1)]]]
+
+Strings of the form "+name" and "-name" may be used to specify boolean
+values.
+
+    >>> FeatStruct('[-bar, +baz, +foo]')
+    [-bar, +baz, +foo]
+
+None, True, and False are recognized as values:
+
+    >>> FeatStruct('[bar=True, baz=False, foo=None]')
+    [+bar, -baz, foo=None]
+
+Special features:
+
+    >>> FeatStruct('NP/VP')
+    NP[]/VP[]
+    >>> FeatStruct('?x/?x')
+    ?x[]/?x[]
+    >>> print FeatStruct('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]')
+    [ *type*  = 'VP'              ]
+    [                             ]
+    [           [ *type* = 'NP' ] ]
+    [ *slash* = [ agr    = ?x   ] ]
+    [           [ pl     = True ] ]
+    [                             ]
+    [ agr     = ?x                ]
+    [ fin     = True              ]
+    [ tense   = 'past'            ]
+
+Here the slash feature gets coerced:
+    >>> FeatStruct('[*slash*=a, x=b, *type*="NP"]')
+    NP[x='b']/a[]
+
+    >>> FeatStruct('NP[sem=<bob>]/NP')
+    NP[sem=<bob>]/NP[]
+    >>> FeatStruct('S[sem=<(walk bob)>]')
+    S[sem=<(walk bob)>]
+    >>> print FeatStruct('NP[sem=<bob>]/NP')
+    [ *type*  = 'NP'              ]
+    [                             ]
+    [ *slash* = [ *type* = 'NP' ] ]
+    [                             ]
+    [ sem     = <bob>             ]
+
+Playing with ranges:
+
+    >>> from nltk.featstruct import RangeFeature, FeatStructParser
+    >>> width = RangeFeature('width')
+    >>> parser = FeatStructParser([width])
+    >>> fs1 = parser.parse('[*width*=-5:12]')
+    >>> fs2 = parser.parse('[*width*=2:123]')
+    >>> fs3 = parser.parse('[*width*=-7:-2]')
+    >>> fs1.unify(fs2)
+    [*width*=(2, 12)]
+    >>> fs1.unify(fs3)
+    [*width*=(-5, -2)]
+    >>> print fs2.unify(fs3) # no overlap in width.
+    None
+
+The slash feature has a default value of 'False':
+
+    >>> print FeatStruct('NP[]/VP').unify(FeatStruct('NP[]'), trace=1)
+    <BLANKLINE>
+    Unification trace:
+       / NP[]/VP[]
+      |\ NP[]
+      |
+      | Unify feature: *type*
+      |    / 'NP'
+      |   |\ 'NP'
+      |   |
+      |   +-->'NP'
+      |
+      | Unify feature: *slash*
+      |    / VP[]
+      |   |\ False
+      |   |
+      X   X <-- FAIL
+    None
+
+The demo structures from category.py.  They all parse, but they don't
+do quite the right thing, -- ?x vs x.
+
+    >>> FeatStruct(pos='n', agr=FeatStruct(number='pl', gender='f'))
+    [agr=[gender='f', number='pl'], pos='n']
+    >>> FeatStruct(r'NP[sem=<bob>]/NP')
+    NP[sem=<bob>]/NP[]
+    >>> FeatStruct(r'S[sem=<app(?x, ?y)>]')
+    S[sem=<(?x ?y)>]
+    >>> FeatStruct('?x/?x')
+    ?x[]/?x[]
+    >>> FeatStruct('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]')
+    VP[agr=?x, +fin, tense='past']/NP[agr=?x, +pl]
+    >>> FeatStruct('S[sem = <app(?subj, ?vp)>]')
+    S[sem=<(?subj ?vp)>]
     
-    >>> f2 = FeatStruct(yaml.load('''
-    ... A:
-    ...   C: c
-    ... E:
-    ...   F:
-    ...     D: d
-    ... '''))
-    >>> f3 = unify(f1, f2)
-    >>> print f3
-    [ A = {'C': 'c', 'B': 'b', 'D': 'd'}        ]
-    [ E = {'F': {'C': 'c', 'B': 'b', 'D': 'd'}} ]
+    >>> FeatStruct('S')
+    S[]
 
-    >>> f3['A'] is f3['E']['F']    # Showing that the reentrance still holds.
-    True
+The parser also includes support for reading sets and tuples.
 
-    >>> f1 = FeatStruct(yaml.load('''
-    ... F: &1 {}
-    ... G: *1
-    ... '''))
-    >>> f2 = FeatStruct(yaml.load('''
-    ... F:
-    ...   H: &2 {}
-    ... G: *2
-    ... '''))
-    >>> f3 = unify(f1, f2)
-    >>> print f3
-    [ F = {'H': {...}} ]
-    [ G = {'H': {...}} ]
-    >>> print f3['F'] is f3['G']
-    True
-    >>> print f3['F'] is f3['G']['H']
-    True
-    >>> print f3['F'] is f3['G']['H']['H']
-    True
+    >>> FeatStruct('[x={1,2,2,2}, y={/}]')
+    [x={1, 2}, y={/}]
+    >>> FeatStruct('[x=(1,2,2,2), y=()]')
+    [x=(1, 2, 2, 2), y=()]
+    >>> print FeatStruct('[x=(1,[z=(1,2,?x)],?z,{/})]')
+    [ x = (1, [ z = (1, 2, x) ], z, {/}) ]
 
-    >>> f1 = yaml.load('''
-    ... F:
-    ...   H: ?x
-    ... ''')
-    >>> f2 = yaml.load('''
-    ... F: ?x
-    ... ''')
-    >>> f3 = unify(f1, f2, {})
-    >>> print f3
-    {'F': {'H': {...}}}
-    >>> print f3['F'] is f3['F']['H']
-    True
-    >>> print f3['F'] is f3['F']['H']['H']
-    True
+Note that we can't put a featstruct inside a tuple, because doing so
+would hash it, and it's not frozen yet:
 
-    >>> f1 = yaml.load('''
-    ... a: 1
-    ... b: 1
-    ... c: ?x
-    ... d: ?x
-    ... ''')
-    >>> f2 = yaml.load('''
-    ... a: ?x
-    ... b: ?x
-    ... c: 2
-    ... d: 2
-    ... ''')
-    >>> bindings1 = {}
-    >>> bindings2 = {}
-    >>> # We could avoid defining two empty dictionaries by simply using the
-    >>> # defaults, with unify(f1, f2) -- but we want to be able to examine
-    >>> # the bindings afterward.
-    >>> print unify(f1, f2, bindings1, bindings2)
-    {'a': 1, 'c': 2, 'b': 1, 'd': 2}
-    >>> print bindings1
-    {'x': 2}
-    >>> print bindings2
-    {'x': 1}
+    >>> print FeatStruct('[x={[]}]')
+    Traceback (most recent call last):
+      . . .
+    TypeError: FeatStructs must be frozen before they can be hashed.
 
-    >>> f1 = FeatStruct(yaml.load('''
-    ... a: ?x
-    ... b: ?x
-    ... '''))
-    >>> f2 = FeatStruct(yaml.load('''
-    ... b: ?y
-    ... c: ?y
-    ... '''))
-    >>> bindings = {}
-    >>> print unify(f1, f2, bindings)
-    [ a = ?y ]
-    [ b = ?y ]
-    [ c = ?y ]
-    >>> print bindings
-    {'x': ?y}
+There's a special syntax for taking the union of sets: "{...+...}".
+The elements should only be variables or sets.
 
-Reusing the same variable bindings ensures that appropriate bindings are
-made after the fact:
+    >>> FeatStruct('[x={?a+?b+{1,2,3}}]')
+    [x={a+b+{1, 2, 3}}]
+    
+Parsing gives helpful messages if your string contains an error.
 
-    >>> bindings = {}
-    >>> f1 = FeatStruct(a = Variable('x'))
-    >>> f2 = unify(f1, FeatStruct(a = {}), bindings)
-    >>> f3 = unify(f2, FeatStruct(b = Variable('x')), bindings)
-    >>> print f3
-    [ a = {} ]
-    [ b = {} ]
-    >>> print bindings
-    {'x': {}}
+    >>> FeatStruct('[a=, b=5]]')
+    Traceback (most recent call last):
+      . . .
+    ValueError: Error parsing feature structure
+        [a=, b=5]]
+           ^ Expected value
+    >>> FeatStruct('[a=12 22, b=33]')
+    Traceback (most recent call last):
+      . . .
+    ValueError: Error parsing feature structure
+        [a=12 22, b=33]
+             ^ Expected comma
+    >>> FeatStruct('[a=5] [b=6]')
+    Traceback (most recent call last):
+      . . .
+    ValueError: Error parsing feature structure
+        [a=5] [b=6]
+              ^ Expected end of string
+    >>> FeatStruct(' *++*')
+    Traceback (most recent call last):
+      . . .
+    ValueError: Error parsing feature structure
+        *++*
+        ^ Expected open bracket or identifier
+    >>> FeatStruct('[x->(1)]')
+    Traceback (most recent call last):
+      . . .
+    ValueError: Error parsing feature structure
+        [x->(1)]
+            ^ Expected bound identifier
+    >>> FeatStruct('[x->y]')
+    Traceback (most recent call last):
+      . . .
+    ValueError: Error parsing feature structure
+        [x->y]
+            ^ Expected identifier
+    >>> FeatStruct('')
+    Traceback (most recent call last):
+      . . .
+    ValueError: Error parsing feature structure
+    <BLANKLINE>
+        ^ Expected open bracket or identifier
 
-Copying from self to other.
 
-    >>> f4 = FeatStruct(number='singular')
-    >>> f5 = f4.unify(FeatStruct())
-    >>> repr(f5)
-    "[number='singular']"
+Unification
+-----------
+Very simple unifications give the expected results:
 
-Copying from other to self
+    >>> FeatStruct().unify(FeatStruct())
+    []
+    >>> FeatStruct(number='singular').unify(FeatStruct())
+    [number='singular']
+    >>> FeatStruct().unify(FeatStruct(number='singular'))
+    [number='singular']
+    >>> FeatStruct(number='singular').unify(FeatStruct(person=3))
+    [number='singular', person=3]
 
-    >>> f6 = FeatStruct()
-    >>> f7 = f6.unify(FeatStruct(number='singular'))
-    >>> repr(f7)
-    "[number='singular']"
+Merging nested structures:
 
-Cross copying
-
-    >>> f8 = FeatStruct(number='singular')
-    >>> f9 = f8.unify(FeatStruct(person=3))
-    >>> repr(f9)
-    "[number='singular', person=3]"
-
-Merging a nested structure
-
-    >>> fs1 = FeatStruct.parse('[A=[B=b]]')
-    >>> fs2 = FeatStruct.parse('[A=[C=c]]')
-    >>> fs3 = fs1.unify(fs2)
-    >>> repr(fs3)
-    "[A=[B='b', C='c']]"
+    >>> fs1 = FeatStruct('[A=[B=b]]')
+    >>> fs2 = FeatStruct('[A=[C=c]]')
+    >>> fs1.unify(fs2)
+    [A=[B='b', C='c']]
+    >>> fs2.unify(fs1)
+    [A=[B='b', C='c']]
     
 A basic case of reentrant unification
 
-    >>> fs4 = FeatStruct.parse('[A=(1)[B=b], E=[F->(1)]]')
-    >>> fs5 = FeatStruct.parse("[A=[C='c'], E=[F=[D='d']]]")
-    >>> fs6 = fs4.unify(fs5)
-    >>> repr(fs6)
-    "[A=(1)[B='b', C='c', D='d'], E=[F->(1)]]"
-
-Try unifying both ways
-
-    >>> fs6 = fs5.unify(fs4)
-    >>> repr(fs6)
-    "[A=(1)[B='b', C='c', D='d'], E=[F->(1)]]"
+    >>> fs4 = FeatStruct('[A=(1)[B=b], E=[F->(1)]]')
+    >>> fs5 = FeatStruct("[A=[C='c'], E=[F=[D='d']]]")
+    >>> fs4.unify(fs5)
+    [A=(1)[B='b', C='c', D='d'], E=[F->(1)]]
+    >>> fs5.unify(fs4)
+    [A=(1)[B='b', C='c', D='d'], E=[F->(1)]]
 
 More than 2 paths to a value
 
-    >>> ft1 = FeatStruct.parse("[a=[],b=[],c=[],d=[]]")
-    >>> ft2 = FeatStruct.parse('[a=(1)[], b->(1), c->(1), d->(1)]')
-    >>> ft3 = ft1.unify(ft2)
-    >>> repr(ft3)
-    '[a=(1)[], b->(1), c->(1), d->(1)]'
+    >>> fs1 = FeatStruct("[a=[],b=[],c=[],d=[]]")
+    >>> fs2 = FeatStruct('[a=(1)[], b->(1), c->(1), d->(1)]')
+    >>> fs1.unify(fs2)
+    [a=(1)[], b->(1), c->(1), d->(1)]
 
 fs1[a] gets unified with itself
 
-    >>> fr1 = FeatStruct.parse('[x=(1)[], y->(1)]')
-    >>> fr2 = FeatStruct.parse('[x=(1)[], y->(1)]')
-    >>> fr3 = fr1.unify(fr2)
-    >>> repr(fr3)
-    '[x=(1)[], y->(1)]'
+    >>> fs1 = FeatStruct('[x=(1)[], y->(1)]')
+    >>> fs2 = FeatStruct('[x=(1)[], y->(1)]')
+    >>> fs1.unify(fs2)
+    [x=(1)[], y->(1)]
 
 Bound variables should get forwarded appropriately
 
-    >>> fs1 = FeatStruct.parse('[A=(1)[X=x], B->(1), C=?cvar, D=?dvar]')
-    >>> fs2y = FeatStruct(Y='y')
-    >>> fs2z = FeatStruct(Z='z')
-    >>> fs2 = FeatStruct.parse('[A=(1)[Y=y], B=(2)[Z=z], C->(1), D->(2)]')
+    >>> fs1 = FeatStruct('[A=(1)[X=x], B->(1), C=?cvar, D=?dvar]')
+    >>> fs2 = FeatStruct('[A=(1)[Y=y], B=(2)[Z=z], C->(1), D->(2)]')
+    >>> fs1.unify(fs2)
+    [A=(1)[X='x', Y='y', Z='z'], B->(1), C->(1), D->(1)]
+    >>> fs2.unify(fs1)
+    [A=(1)[X='x', Y='y', Z='z'], B->(1), C->(1), D->(1)]
+
+Cyclic structure created by unification.
+
+    >>> fs1 = FeatStruct('[F=(1)[], G->(1)]')
+    >>> fs2 = FeatStruct('[F=[H=(2)[]], G->(2)]')
     >>> fs3 = fs1.unify(fs2)
-    >>> repr(fs3)
-    "[A=(1)[X='x', Y='y', Z='z'], B->(1), C->(1), D->(1)]"
-    >>> print fs3
-
-Create a cyclic structure via unification.
-
-    >>> fc1 = FeatStruct.parse('[F=(1)[], G->(1)]')
-    >>> fc2 = FeatStruct.parse('[F=[H=(2)[]], G->(2)]')
-    >>> fc3 = fc1.unify(fc2)
-
-Check that we got the value right.
-
-    >>> repr(fc3)
-    '[F=(1)[H->(1)], G->(1)]'
-
-Check that we got the cyclicity right.
-
-    >>> fc3['F'] is fc3['G']
+    >>> fs3
+    [F=(1)[H->(1)], G->(1)]
+    >>> fs3['F'] is fs3['G']
+    True
+    >>> fs3['F'] is fs3['G']['H']
+    True
+    >>> fs3['F'] is fs3['G']['H']['H']
+    True
+    >>> fs3['F'] is fs3['F']['H']['H']['H']['H']['H']['H']['H']['H']
     True
 
-    >>> fc3['F'] is fc3['G']['H']
+Cyclic structure created w/ variables.
+
+    >>> fs1 = FeatStruct('[F=[H=?x]]')
+    >>> fs2 = FeatStruct('[F=?x]')
+    >>> fs3 = fs1.unify(fs2, rename_vars=False)
+    >>> fs3
+    [F=(1)[H->(1)]]
+    >>> fs3['F'] is fs3['F']['H']
+    True
+    >>> fs3['F'] is fs3['F']['H']['H']
+    True
+    >>> fs3['F'] is fs3['F']['H']['H']['H']['H']['H']['H']['H']['H']
     True
 
-    >>> fc3['F'] is fc3['G']['H']['H']
-    True
+Unifying w/ a cyclic feature structure.
 
-    >>> fc4 = fc3['G']
-    >>> for i in range(10): fc4 = fc4['H']
-    >>> fc3['F'] is fc4
-    True
-
-Create a cyclic structure with variables.
-
-    >>> x = Variable('x')
-    >>> fv1 = FeatStruct(F=FeatStruct(H=x))
-    >>> fv2 = FeatStruct(F=x)
-    >>> fv3 = fv1.unify(fv2)
-
-Check that we got the value right.
-
-    >>> repr(fv3)
-    '[F=(1)[H->(1)]]'
-    
-Check that we got the cyclicity right.
-
-    >>> fv3['F'] is fv3['F']['H']
-    True
-
-    >>> fv3['F'] is fv3['F']['H']['H']
-    True
-
-    >>> fv3['F'] is fv3['F']['H']['H']['H']['H']['H']['H']['H']['H']
-    True
-
-Cyclic structure as LHS
-
-    >>> fs4 = FeatStruct.parse('[F=[H=[H=[H=(1)[]]]], K->(1)]')
-    >>> fs5 = fv3.unify(fs4)
-    >>> repr(fs5)
-    '[F=(1)[H->(1)], K->(1)]'
-
-Cyclic structure as RHS
-
-    >>> fs6 = fs4.unify(fs3)
-    >>> repr(fs6)
-    '[F=(1)[H->(1)], K->(1)]'
+    >>> fs4 = FeatStruct('[F=[H=[H=[H=(1)[]]]], K->(1)]')
+    >>> fs3.unify(fs4)
+    [F=(1)[H->(1)], K->(1)]
+    >>> fs4.unify(fs3)
+    [F=(1)[H->(1)], K->(1)]
 
 Variable bindings should preserve reentrance.
 
-    >>> bindings = FeatureBindings()
-    >>> fs1 = FeatStruct.parse("[a=?x]")
-    >>> fs2 = fs1.unify(FeatStruct.parse("[a=[]]"), bindings)
-    >>> fs3 = fs2.unify(FeatStruct.parse("[b=?x]"), bindings)
-    >>> repr(fs3)
-    '[a=(1)[], b->(1)]'
+    >>> bindings = {}
+    >>> fs1 = FeatStruct("[a=?x]")
+    >>> fs2 = fs1.unify(FeatStruct("[a=[]]"), bindings)
+    >>> fs2['a'] is bindings[Variable('x')]
+    True
+    >>> fs2.unify(FeatStruct("[b=?x]"), bindings)
+    [a=(1)[], b->(1)]
 
 Aliased variable tests
 
-    >>> fs1 = FeatStruct.parse("[a=?x, b=?x]")
-    >>> fs2 = fs1.unify(FeatStruct.parse("[b=?y, c=?y]"))
-    >>> repr(fs2)
-    '[a=?x, b=?<x=y>, c=?y]'
+    >>> fs1 = FeatStruct("[a=?x, b=?x]")
+    >>> fs2 = FeatStruct("[b=?y, c=?y]")
+    >>> bindings = {}
+    >>> fs3 = fs1.unify(fs2, bindings)
+    >>> fs3
+    [a=?x, b=?x, c=?x]
+    >>> bindings
+    {Variable('y'): Variable('x')}
+    >>> fs3.unify(FeatStruct("[a=1]"))
+    [a=1, b=1, c=1]
 
-    >>> fs3 = fs2.unify(FeatStruct.parse("[a=1]"))
-    >>> repr(fs3)
-    '[a=1, b=1, c=1]'
+If we keep track of the bindings, then we can use the same variable
+over multiple calls to unify.
 
-    >>> fs1 = FeatStruct.parse("[a=1]")
-    >>> fs2 = FeatStruct.parse("[a=?x, b=?x]")
-    >>> fs3 = fs2.unify(fs1)
-    >>> repr(fs3)
-    '[a=1, b=1]'
+    >>> bindings = {}
+    >>> fs1 = FeatStruct('[a=?x]')
+    >>> fs2 = fs1.unify(FeatStruct('[a=[]]'), bindings)
+    >>> fs2.unify(FeatStruct('[b=?x]'), bindings)
+    [a=(1)[], b->(1)]
+    >>> bindings
+    {Variable('x'): []}
+
+..
+    >>> del fs1, fs2, fs3, fs4, fs5 # clean-up
+
+Unification Bindings
+--------------------
+
+    >>> bindings = {}
+    >>> fs1 = FeatStruct('[a=?x]')
+    >>> fs2 = FeatStruct('[a=12]')
+    >>> fs3 = FeatStruct('[b=?x]')
+    >>> fs1.unify(fs2, bindings)
+    [a=12]
+    >>> bindings
+    {Variable('x'): 12}
+    >>> fs3.substitute_bindings(bindings)
+    [b=12]
+    >>> fs3 # substitute_bindings didn't mutate fs3.
+    [b=?x]
+    >>> fs2.unify(fs3, bindings)
+    [a=12, b=12]
+
+    >>> bindings = {}
+    >>> fs1 = FeatStruct('[a=?x, b=1]')
+    >>> fs2 = FeatStruct('[a=5, b=?x]')
+    >>> fs1.unify(fs2, bindings)
+    [a=5, b=1]
+    >>> sorted(bindings.items())
+    [(Variable('x'), 5), (Variable('x2'), 1)]
+
+..
+    >>> del fs1, fs2, fs3 # clean-up
+
+Expressions
+-----------
+    >>> from nltk.sem.logic import LogicParser, Constant, ConstantExpression
+    >>> e=LogicParser('\\x y.(x y z)').next()
+    >>> fs1 = FeatStruct(x=e, y=Variable('z'))
+    >>> fs2 = FeatStruct(y=ConstantExpression(Constant('John')))
+    >>> fs1.unify(fs2)
+    [x=<\x y.(x y John)>, y=<John>]
+
+Remove Variables
+----------------
+
+    >>> FeatStruct('[a=?x, b=12, c=[d=?y]]').remove_variables()
+    [b=12, c=[]]
+    >>> FeatStruct('(1)[a=[b=?x,c->(1)]]').remove_variables()
+    (1)[a=[c->(1)]]
+
+Equality & Hashing
+------------------
+The `equal_values` method checks whether two feature structures assign
+the same value to every feature.  If the optional argument
+``check_reentrances`` is supplied, then it also returns false if there
+is any difference in the reentrances.
+
+    >>> a = FeatStruct('(1)[x->(1)]')
+    >>> b = FeatStruct('(1)[x->(1)]')
+    >>> c = FeatStruct('(1)[x=[x->(1)]]')
+    >>> d = FeatStruct('[x=(1)[x->(1)]]')
+    >>> e = FeatStruct('(1)[x=[x->(1), y=1], y=1]')
+    >>> def compare(x,y):
+    ...     assert x.equal_values(y, True) == y.equal_values(x, True)
+    ...     assert x.equal_values(y, False) == y.equal_values(x, False)
+    ...     if x.equal_values(y, True):
+    ...         assert x.equal_values(y, False)
+    ...         print 'equal values, same reentrance'
+    ...     elif x.equal_values(y, False):
+    ...         print 'equal values, different reentrance'
+    ...     else:
+    ...         print 'different values'
+
+    >>> compare(a, a)
+    equal values, same reentrance
+    >>> compare(a, b)
+    equal values, same reentrance
+    >>> compare(a, c)
+    equal values, different reentrance
+    >>> compare(a, d)
+    equal values, different reentrance
+    >>> compare(c, d)
+    equal values, different reentrance
+    >>> compare(a, e)
+    different values
+    >>> compare(c, e)
+    different values
+    >>> compare(d, e)
+    different values
+    >>> compare(e, e)
+    equal values, same reentrance
+
+Feature structures may not be hashed until they are frozen:
+
+    >>> hash(a)
+    Traceback (most recent call last):
+      . . .
+    TypeError: FeatStructs must be frozen before they can be hashed.
+    >>> a.freeze()
+    >>> v = hash(a)
+
+Feature structures define hash consistently.  The following example
+looks at the hash value for each (fs1,fs2) pair; if their hash values
+are not equal, then they must not be equal.  If their hash values are
+equal, then display a message, and indicate whether their values are
+indeed equal.  Note that c and d currently have the same hash value,
+even though they are not equal.  That is not a bug, strictly speaking,
+but it wouldn't be a bad thing if it changed.
+
+    >>> for fstruct in (a, b, c, d, e):
+    ...     fstruct.freeze()
+    >>> for fs1_name in 'abcde':
+    ...     for fs2_name in 'abcde':
+    ...         fs1 = locals()[fs1_name]
+    ...         fs2 = locals()[fs2_name]
+    ...         if hash(fs1) != hash(fs2):
+    ...             assert fs1 != fs2
+    ...         else:
+    ...             print ('%s and %s have the same hash value,' %
+    ...                    (fs1_name, fs2_name)),
+    ...             if fs1 == fs2: print 'and are equal'
+    ...             else: print 'and are not equal'
+    a and a have the same hash value, and are equal
+    a and b have the same hash value, and are equal
+    b and a have the same hash value, and are equal
+    b and b have the same hash value, and are equal
+    c and c have the same hash value, and are equal
+    c and d have the same hash value, and are not equal
+    d and c have the same hash value, and are not equal
+    d and d have the same hash value, and are equal
+    e and e have the same hash value, and are equal
+
+..
+    >>> del a, b, c, d, e, v # clean-up
+
+Tracing
+-------
+
+    >>> fs1 = FeatStruct('[a=[b=(1)[], c=?x], d->(1), e=[f=?x]]')
+    >>> fs2 = FeatStruct('[a=(1)[c="C"], e=[g->(1)]]')
+    >>> fs1.unify(fs2, trace=True)
+    <BLANKLINE>
+    Unification trace:
+       / [a=[b=(1)[], c=?x], d->(1), e=[f=?x]]
+      |\ [a=(1)[c='C'], e=[g->(1)]]
+      |
+      | Unify feature: a
+      |    / [b=[], c=?x]
+      |   |\ [c='C']
+      |   |
+      |   | Unify feature: a.c
+      |   |    / ?x
+      |   |   |\ 'C'
+      |   |   |
+      |   |   +-->'C'
+      |   |
+      |   +-->[b=[], c='C']
+      |       Bindings: {?x: 'C'}
+      |
+      | Unify feature: e
+      |    / [f=?x]
+      |   |\ [g=[c='C']]
+      |   |
+      |   +-->[f=?x, g=[b=[], c='C']]
+      |       Bindings: {?x: 'C'}
+      |
+      +-->[a=(1)[b=(2)[], c='C'], d->(2), e=[f='C', g->(1)]]
+          Bindings: {?x: 'C'}
+    [a=(1)[b=(2)[], c='C'], d->(2), e=[f='C', g->(1)]]
+    >>> 
+    >>> fs1 = FeatStruct('[a=?x, b=?z, c=?z]')
+    >>> fs2 = FeatStruct('[a=?y, b=?y, c=?q]')
+    >>> #fs1.unify(fs2, trace=True)
+    >>> 
+
+..
+    >>> del fs1, fs2 # clean-up
+
+Unification on Dicts & Lists
+----------------------------
+It's possible to do unification on dictionaries:
+
+    >>> from pprint import pprint # sorts dict repr alphabetically
+    >>> from nltk.featstruct import unify
+    >>> pprint(unify(dict(x=1, y=dict(z=2)), dict(x=1, q=5)))
+    {'q': 5, 'x': 1, 'y': {'z': 2}}
+
+It's possible to do unification on lists as well:
+
+    >>> unify([1, 2, 3], [1, Variable('x'), 3])
+    [1, 2, 3]
+
+Mixing dicts and lists is fine:
+
+    >>> pprint(unify([dict(x=1, y=dict(z=2)),3], [dict(x=1, q=5),3]))
+    [{'q': 5, 'x': 1, 'y': {'z': 2}}, 3]
+
+Mixing dicts and FeatStructs is discouraged:
+
+    >>> unify(dict(x=1), FeatStruct(x=1))
+    Traceback (most recent call last):
+      . . .
+    ValueError: fstruct1 and fstruct2 should belong to the same class.
+
+But you can do it if you really want, by explicitly stating that both
+dictionaries and FeatStructs should be treated as feature structures:
+
+    >>> unify(dict(x=1), FeatStruct(x=1), fs_class=(dict, FeatStruct))
+    {'x': 1}
+
+Finding Conflicts
+-----------------
+
+    >>> from nltk.featstruct import conflicts
+    >>> fs1 = FeatStruct('[a=[b=(1)[c=2], d->(1), e=[f->(1)]]]')
+    >>> fs2 = FeatStruct('[a=[b=[c=[x=5]], d=[c=2], e=[f=[c=3]]]]')
+    >>> for path in conflicts(fs1, fs2):
+    ...     print '%-8s: %r vs %r' % ('.'.join(path), fs1[path], fs2[path])
+    a.b.c   : 2 vs [x=5]
+    a.e.f.c : 2 vs 3
+
+..
+    >>> del fs1, fs2 # clean-up
+
+Retracting Bindings
+-------------------
+
+    >>> from nltk.featstruct import retract_bindings
+    >>> bindings = {}
+    >>> fs1 = FeatStruct('[a=?x, b=[c=?y]]')
+    >>> fs2 = FeatStruct('[a=(1)[c=[d=1]], b->(1)]')
+    >>> fs3 = fs1.unify(fs2, bindings)
+    >>> print fs3
+    [ a = (1) [ c = [ d = 1 ] ] ]
+    [                           ]
+    [ b -> (1)                  ]
+    >>> print bindings
+    {Variable('y'): [d=1], Variable('x'): [c=[d=1]]}
+    >>> retract_bindings(fs3, bindings)
+    [a=?x, b=?x]
+    >>> print bindings
+    {Variable('y'): [d=1], Variable('x'): [c=?y]}
+
+Squashed Bugs
+~~~~~~~~~~~~~
+In svn rev 5167, unifying two feature structures that used the same
+variable would cause those variables to become aliased in the output.
+
+    >>> fs1 = FeatStruct('[a=?x]')
+    >>> fs2 = FeatStruct('[b=?x]')
+    >>> fs1.unify(fs2)
+    [a=?x, b=?x2]
+
+There was a bug in svn revision 5172 that caused `rename_variables` to
+rename variables to names that are already used.
+
+    >>> FeatStruct('[a=?x, b=?x2]').rename_variables(
+    ...     vars=[Variable('x')])
+    [a=?x3, b=?x2]
+    >>> fs1 = FeatStruct('[a=?x]')
+    >>> fs2 = FeatStruct('[a=?x, b=?x2]')
+    >>> fs1.unify(fs2)
+    [a=?x, b=?x2]
+
+There was a bug in svn rev 5167 that caused us to get the following
+example wrong.  Basically the problem was that we only followed
+'forward' pointers for other, not self, when unifying two feature
+structures.  (nb: this test assumes that features are unified in
+alphabetical order -- if they are not, it might pass even if the bug
+is present.)
+
+    >>> fs1 = FeatStruct('[a=[x=1], b=?x, c=?x]')
+    >>> fs2 = FeatStruct('[a=(1)[], b->(1), c=[x=2]]')
+    >>> print fs1.unify(fs2)
+    None
+
+..
+    >>> del fs1, fs2 # clean-up
 
