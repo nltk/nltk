@@ -525,3 +525,17 @@ Define some lexical productions.
             (VP (V saw) (NP John))
             (PP (P with) (NP (Det a) (N[-pl] dog))))
           (PP (P with) (NP (Det my) (N[-pl] cookie))))))
+
+
+
+
+Tests for loading grammar files
+-------------------------------
+
+    >>> from nltk import data
+    >>> simple_cfg = data.load('grammars/toy.cfg')
+    >>> rdp = RecursiveDescentParser(simple_cfg)
+    >>> prob_cfg = data.load('grammars/toy1.pcfg')
+    >>> vp = ViterbiParser(prob_cfg)
+    >>> (feat_cfg, feat_lexicon) = data.load('grammars/feat0.fcfg')
+    >>> fcp = FeatureEarleyChartParser(feat_cfg, feat_lexicon)
