@@ -27,12 +27,9 @@ for multiple copies).
     >>> sorted_data
     [7, 12, 20, 20, 28, 53, 56, 57, 67, 91, 92, 720]
 
-Note that mergesort DOES NOT WORK at the current time, and we expect it to
-return the list to remain unsorted.
-
     >>> sorted_data = deepcopy(test_data)
     >>> merge(sorted_data)
-    24
+    30
 
     >>> sorted_data
     [7, 12, 20, 20, 28, 53, 56, 57, 67, 91, 92, 720]

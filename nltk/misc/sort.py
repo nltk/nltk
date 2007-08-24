@@ -95,7 +95,8 @@ def merge(a):
         c = a[midpoint:]
         count_b = merge(b)
         count_c = merge(c)
-        a, count_a = _merge_lists(b, c)
+        result, count_a = _merge_lists(b, c)
+        a[:] = result # copy the result back into a.
         count = count_a + count_b + count_c
     return count
 
