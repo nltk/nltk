@@ -69,8 +69,9 @@ class StandardFormat(object):
     """
     Class for reading and processing standard format marker files and strings.
     """
-    def __init__(self, filename):
-        self.open(filename)
+    def __init__(self, filename=None):
+        if filename is not None:
+            self.open(filename)
 
     def open(self, sfm_file):
         """Open a standard format marker file for sequential reading. 
