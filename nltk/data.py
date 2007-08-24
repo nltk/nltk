@@ -32,7 +32,7 @@ to a local file.
 """
 
 import sys, os, os.path, pickle, textwrap, weakref, yaml, re, urllib
-from nltk import cfg
+from nltk import cfg, sem
 
 ######################################################################
 # Search Path
@@ -216,7 +216,7 @@ def load(resource_url, format='auto', cache=True, verbose=False):
         # NB parse_fcfg returns a FeatGramLex -- a tuple (grammar, lexicon)
         resource_val = cfg.parse_fcfg(_open(resource_url).read())
     elif format == 'val':
-        resource_val = sem.parse_val(_open(resource_url).read())
+        resource_val = sem.parse_valuation(_open(resource_url).read())
     elif format == 'raw':
         resource_val = _open(resource_url).read()
     else:

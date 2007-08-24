@@ -1,3 +1,7 @@
+Unit tests for parsing logical expressions
+------------------------------------------
+
+    >>>
     >>> from nltk.sem import *
     >>> v = Valuation()
     >>> m = Model(set([]), v)
@@ -41,15 +45,18 @@ Just an application expression
     P
     >>> 
 
-Tests for characteristic functions and valuations.
+Unit tests for characteristic functions and valuations
+------------------------------------------------------
+
+Define a characteristic function.
 
     >>> cf = CharFun({'d1' : {'d1': True, 'd2': True}, 'd2' : {'d1': True}})
     >>> cf['d1'] == {'d1': True, 'd2': True}
     True
     >>> print cf['d1']['d2']
     True
-    
-doesn't work since cf not called on 'foo'
+
+``cf`` not defined on 'foo'.
 
     >>> print  cf['foo']
     Traceback (most recent call last):
@@ -59,6 +66,9 @@ doesn't work since cf not called on 'foo'
     Traceback (most recent call last):
     ...
     KeyError: 'foo'
+
+Flattening characteristic functions to sets and reading sets into
+characteristic functions.
 
     >>> flatten(cf) == set(['d1', 'd2'])
     True
@@ -161,13 +171,8 @@ Parse a valuation from a string.
               'd1': {'b1': True},
               'g1': {'b1': True}}}
 
-
-Load a valuation from a file.
-
-    >>> val = nltk.data.load('grammars/valuation1.val')
-    >>> val.domain
-
-Tests for function argument application in a Model
+Unit tests for function argument application in a Model
+-------------------------------------------------------
 
     >>> val = Valuation()
     >>> v = [('adam', 'b1'), ('betty', 'g1'), ('fido', 'd1'),\
@@ -188,7 +193,8 @@ Tests for function argument application in a Model
     Undefined: {'b1': True, 'b2': True} can't be applied as a function to 'foo'
 
 
-Test the model checking with Blackburn & Bos testsuite
+Tests based on the Blackburn & Bos testsuite
+--------------------------------------------
 
     >>> val1 = Valuation()
     >>> v1 = [('jules', 'd1'), ('vincent', 'd2'), ('pumpkin', 'd3'),
@@ -260,3 +266,27 @@ Test the model checking with Blackburn & Bos testsuite
     ...     g.purge()
     * * * * * * * * * * * * * * * * * * * * * *
 
+
+Tests for mapping from syntax to semantics
+------------------------------------------
+
+Load a valuation from a file.
+
+    >>> from nltk.parse import FeatureEarleyChartParser
+    >>> import nltk.data
+    >>> grammar, lexicon = nltk.data.load('grammars/sem2.fcfg')
+    >>> cp = FeatureEarleyChartParser(grammar, lexicon)
+    >>> val = nltk.data.load('grammars/valuation1.val')
+    >>> dom = val.domain
+    >>> m = Model(dom, val)
+    >>> g = Assignment(dom)
+
+    >>> sent = 'every boy chases a girl in Noosa'
+    >>> result = nltk.sem.text_evaluate([sent], cp, m, g)
+    >>> for (syntree, semrep, value) in result[sent]:
+    ... 	print "'%s' is %s in Model m\n" % (semrep.infixify(), value)
+    ... 
+    'all x.((boy x) implies (some z15.((girl z15) and (chase z15 x)) and (in noosa x)))' is True in Model m
+    <BLANKLINE>
+    'all x.((boy x) implies some z82.(((girl z82) and (in noosa z82)) and (chase z82 x)))' is False in Model m
+    <BLANKLINE>
