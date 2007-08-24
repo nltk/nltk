@@ -288,12 +288,16 @@ class TreeEdge(EdgeI):
     # String representation
     def __str__(self):
         str = '[%s:%s] ' % (self._span[0], self._span[1])
-        str += '%-2s ->' % (self._lhs.symbol(),)
+        if isinstance(self._lhs.symbol(), basestring):
+            str += '%-2s ->' % (self._lhs,)
+        else:
+            str += '%-2r ->' % (self._lhs,)
             
         for i in range(len(self._rhs)):
             if i == self._dot: str += ' *'
-            if isinstance(self._rhs[i], cfg.Nonterminal):
-                str += ' %s' % (self._rhs[i].symbol(),)
+            if (isinstance(self._rhs[i], cfg.Nonterminal) and
+                isinstance(self._rhs[i].symbol(), basestring)):
+                str += ' %s' % (self._rhs[i],)
             else:
                 str += ' %r' % (self._rhs[i],)
         if len(self._rhs) == self._dot: str += ' *'
@@ -711,7 +715,7 @@ class Chart(object):
             str += '['+('-'*width)*(end-start-1) + '-'*(width-1)+'>'
         
         str += (' '*(width-1)+'.')*(self._num_leaves-end)
-        return str + '| %s ' % edge
+        return str + '| %s' % edge
 
     def pp_leaves(self, width=None):
         """
