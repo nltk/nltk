@@ -319,7 +319,8 @@ Test features with integer values:
 
 Test features with string values.  Either single or double quotes may
 be used.  Strings are evaluated just like python strings -- in
-particular, you can use escape sequences and 'u' and 'r' prefixes.
+particular, you can use escape sequences and 'u' and 'r' prefixes, and
+triple-quoted strings.
 
     >>> FeatStruct('[a="", b="hello", c="\'", d=\'\', e=\'"\']')
     [a='', b='hello', c="'", d='', e='"']
@@ -327,18 +328,8 @@ particular, you can use escape sequences and 'u' and 'r' prefixes.
     [a='\\', b='"', c='o\\y', d='12']
     >>> FeatStruct(r'[a=u"\u1234", b=r"a\b\c"]')
     [a=u'\u1234', b='a\\b\\c']
-
-Triple quoted strings are not currently supported:
-
     >>> FeatStruct('[x="""a"""]')
-    Traceback (most recent call last):
-      . . .
-    ValueError: Error parsing feature structure
-        [x="""a"""]
-             ^ Expected comma
-
-    >>> FeatStruct('[a=[b=[c=12], d=155]]')
-    [a=[b=[c=12], d=155]]
+    [x='a']
 
 Test parsing of reentrant feature structures.
 
@@ -358,12 +349,12 @@ Strings of the form "+name" and "-name" may be used to specify boolean
 values.
 
     >>> FeatStruct('[-bar, +baz, +foo]')
-    [bar=False, baz=True, foo=True]
+    [-bar, +baz, +foo]
 
 None, True, and False are recognized as values:
 
     >>> FeatStruct('[bar=True, baz=False, foo=None]')
-    [bar=True, baz=False, foo=None]
+    [+bar, -baz, foo=None]
 
 Special features:
 
@@ -445,11 +436,36 @@ do quite the right thing, -- ?x vs x.
     >>> FeatStruct('?x/?x')
     ?x[]/?x[]
     >>> FeatStruct('VP[+fin, agr=?x, tense=past]/NP[+pl, agr=?x]')
-    VP[agr=?x, fin=True, tense='past']/NP[agr=?x, pl=True]
+    VP[agr=?x, +fin, tense='past']/NP[agr=?x, +pl]
     >>> FeatStruct('S[sem = <app(?subj, ?vp)>]')
     S[sem=<(?subj ?vp)>]
+    
+    >>> FeatStruct('S')
+    S[]
 
+The parser also includes support for reading sets and tuples.
 
+    >>> FeatStruct('[x={1,2,2,2}, y={/}]')
+    [x={1, 2}, y={/}]
+    >>> FeatStruct('[x=(1,2,2,2), y=()]')
+    [x=(1, 2, 2, 2), y=()]
+    >>> print FeatStruct('[x=(1,[z=(1,2,?x)],?z,{/})]')
+    [ x = (1, [ z = (1, 2, x) ], z, {/}) ]
+
+Note that we can't put a featstruct inside a tuple, because doing so
+would hash it, and it's not frozen yet:
+
+    >>> print FeatStruct('[x={[]}]')
+    Traceback (most recent call last):
+      . . .
+    TypeError: FeatStructs must be frozen before they can be hashed.
+
+There's a special syntax for taking the union of sets: "{...+...}".
+The elements should only be variables or sets.
+
+    >>> FeatStruct('[x={?a+?b+{1,2,3}}]')
+    [x={a+b+{1, 2, 3}}]
+    
 Parsing gives helpful messages if your string contains an error.
 
     >>> FeatStruct('[a=, b=5]]')
@@ -481,7 +497,7 @@ Parsing gives helpful messages if your string contains an error.
       . . .
     ValueError: Error parsing feature structure
         [x->(1)]
-               ^ Expected bound identifier
+            ^ Expected bound identifier
     >>> FeatStruct('[x->y]')
     Traceback (most recent call last):
       . . .
@@ -799,9 +815,8 @@ Tracing
 ..
     >>> del fs1, fs2 # clean-up
 
-Unification on Dictionaries
----------------------------
-
+Unification on Dicts & Lists
+----------------------------
 It's possible to do unification on dictionaries:
 
     >>> from pprint import pprint # sorts dict repr alphabetically
@@ -809,7 +824,17 @@ It's possible to do unification on dictionaries:
     >>> pprint(unify(dict(x=1, y=dict(z=2)), dict(x=1, q=5)))
     {'q': 5, 'x': 1, 'y': {'z': 2}}
 
-Mixing dicts and FeatStructs is generally a bad idea:
+It's possible to do unification on lists as well:
+
+    >>> unify([1, 2, 3], [1, Variable('x'), 3])
+    [1, 2, 3]
+
+Mixing dicts and lists is fine:
+
+    >>> pprint(unify([dict(x=1, y=dict(z=2)),3], [dict(x=1, q=5),3]))
+    [{'q': 5, 'x': 1, 'y': {'z': 2}}, 3]
+
+Mixing dicts and FeatStructs is discouraged:
 
     >>> unify(dict(x=1), FeatStruct(x=1))
     Traceback (most recent call last):
@@ -817,7 +842,7 @@ Mixing dicts and FeatStructs is generally a bad idea:
     ValueError: fstruct1 and fstruct2 should belong to the same class.
 
 But you can do it if you really want, by explicitly stating that both
-dictionaries and `FeatStruct`s should be treated as feature structures:
+dictionaries and FeatStructs should be treated as feature structures:
 
     >>> unify(dict(x=1), FeatStruct(x=1), fs_class=(dict, FeatStruct))
     {'x': 1}
@@ -835,6 +860,25 @@ Finding Conflicts
 
 ..
     >>> del fs1, fs2 # clean-up
+
+Retracting Bindings
+-------------------
+
+    >>> from nltk.featstruct import retract_bindings
+    >>> bindings = {}
+    >>> fs1 = FeatStruct('[a=?x, b=[c=?y]]')
+    >>> fs2 = FeatStruct('[a=(1)[c=[d=1]], b->(1)]')
+    >>> fs3 = fs1.unify(fs2, bindings)
+    >>> print fs3
+    [ a = (1) [ c = [ d = 1 ] ] ]
+    [                           ]
+    [ b -> (1)                  ]
+    >>> print bindings
+    {Variable('y'): [d=1], Variable('x'): [c=[d=1]]}
+    >>> retract_bindings(fs3, bindings)
+    [a=?x, b=?x]
+    >>> print bindings
+    {Variable('y'): [d=1], Variable('x'): [c=?y]}
 
 Squashed Bugs
 ~~~~~~~~~~~~~
