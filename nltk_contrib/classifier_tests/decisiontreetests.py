@@ -32,16 +32,20 @@ class DecisionTreeTestCase(unittest.TestCase):
         
     def test_maximum_information_gain_stump_is_selected(self):
         path = datasetsDir(self) + 'test_phones' + SEP + 'phoney'
-        tree = decisiontree.DecisionTree(format.C45_FORMAT.get_training_instances(path), format.C45_FORMAT.get_attributes(path), format.C45_FORMAT.get_klass(path))
-        tree.train()
-        max_ig_stump = tree.maximum_information_gain()
-        self.assertEqual('size', max_ig_stump.attribute.name)
+        training = format.C45_FORMAT.get_training_instances(path)
+        tree = decisiontree.DecisionTree(training, format.C45_FORMAT.get_attributes(path), format.C45_FORMAT.get_klass(path))
+        decision_stumps = tree.possible_decision_stumps([], training)
+
+        max_ig_stump = tree.maximum_information_gain(decision_stumps)
+        self.assertEqual('band', max_ig_stump.attribute.name)
         
     def test_maximum_gain_raito_stump_is_selected(self):
         path = datasetsDir(self) + 'test_phones' + SEP + 'phoney'
-        tree = decisiontree.DecisionTree(format.C45_FORMAT.get_training_instances(path), format.C45_FORMAT.get_attributes(path), format.C45_FORMAT.get_klass(path))
-        tree.train()
-        max_gr_stump = tree.maximum_gain_ratio()
+        training = format.C45_FORMAT.get_training_instances(path)
+        tree = decisiontree.DecisionTree(training, format.C45_FORMAT.get_attributes(path), format.C45_FORMAT.get_klass(path))
+        decision_stumps = tree.possible_decision_stumps([], training)
+        
+        max_gr_stump = tree.maximum_gain_ratio(decision_stumps)
         self.assertEqual('pda', max_gr_stump.attribute.name)
         
 

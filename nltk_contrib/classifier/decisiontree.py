@@ -18,7 +18,8 @@ class DecisionTree(oner.OneR):
         self.root = self.build_tree(self.training, [])
         
     def build_tree(self, instances, used_attributes):
-        decision_stump = self.best_decision_stump(instances, used_attributes, 'maximum_information_gain')
+        if self.options is None: self.options = 'maximum_information_gain'#default value
+        decision_stump = self.best_decision_stump(instances, used_attributes, self.options)
         if len(self.attributes) - len(used_attributes) == 1: return decision_stump
         used_attributes.append(decision_stump.attribute)
         for attr_value in decision_stump.attribute.values:
@@ -34,15 +35,15 @@ class DecisionTree(oner.OneR):
             klass = self.root.klass(instance)
             instance.set_klass(klass)
         
-    def maximum_information_gain(self):
-        return self.higher_value_preferred(lambda decision_stump: decision_stump.information_gain())
+    def maximum_information_gain(self, decision_stumps):
+        return self.higher_value_preferred(decision_stumps, lambda decision_stump: decision_stump.information_gain())
     
-    def maximum_gain_ratio(self):
-        return self.higher_value_preferred(lambda decision_stump: decision_stump.gain_ratio())
+    def maximum_gain_ratio(self, decision_stumps):
+        return self.higher_value_preferred(decision_stumps, lambda decision_stump: decision_stump.gain_ratio())
     
-    def higher_value_preferred(self, method):
+    def higher_value_preferred(self, decision_stumps, method):
         highest, max_stump = -1, None
-        for decision_stump in self.decision_stumps:
+        for decision_stump in decision_stumps:
             new = method(decision_stump)
             if new > highest: highest, max_stump = new, decision_stump
         return max_stump

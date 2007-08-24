@@ -24,18 +24,23 @@ class OneR(Classifier):
             instance.set_klass(klass)
 
     def best_decision_stump(self, instances, ignore_attributes = [], algorithm = 'minimum_error'):
-        self.decision_stumps = self.attributes.empty_decision_stumps(ignore_attributes, self.klass);
-        for stump in self.decision_stumps:
-            for instance in instances:
-                stump.update_count(instance)
+        decision_stumps = self.possible_decision_stumps(ignore_attributes, instances)
         try:
-            return getattr(self, algorithm)()
+            return getattr(self, algorithm)(decision_stumps)
         except AttributeError:
             raise inv.InvalidDataError('Invalid algorithm to find the best decision stump. ' + str(algorithm) + ' is not defined.')
+    
+    def possible_decision_stumps(self, ignore_attributes, instances):
+        decision_stumps = self.attributes.empty_decision_stumps(ignore_attributes, self.klass);
+        for stump in decision_stumps:
+            for instance in instances:
+                stump.update_count(instance)
+        return decision_stumps
+
         
-    def minimum_error(self):
+    def minimum_error(self, decision_stumps):
         error, min_error_stump = 1, None
-        for decision_stump in self.decision_stumps:
+        for decision_stump in decision_stumps:
             new_error = decision_stump.error()
             if new_error < error: 
                 error = new_error
