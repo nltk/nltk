@@ -28,13 +28,13 @@
 ##   IV -> intransitive verbs...
 ##   Det -> determiners...
 
-S[sem=[core=<(vp subj)>, bo={?b1+?b2}]] -> NP[sem=[core=?subj, bo=?b1]] VP[sem=[core=?vp, bo=?b2]]
+S[sem=[core=<(?vp ?subj)>, bo={?b1+?b2}]] -> NP[sem=[core=?subj, bo=?b1]] VP[sem=[core=?vp, bo=?b2]]
 
-VP[sem=[core=<(v obj)>, bo={?b1+?b2}]] -> TV[sem=[core=?v, bo=?b1]] NP[sem=[core=?obj, bo=?b2]]
+VP[sem=[core=<(?v ?obj)>, bo={?b1+?b2}]] -> TV[sem=[core=?v, bo=?b1]] NP[sem=[core=?obj, bo=?b2]]
 
 VP[sem=?s] -> IV[sem=?s]
 
-NP[sem=[core=<@x>, bo={{<(bo @x (det n))>}+?b1+?b2}]] -> Det[sem=[core=?det, bo=?b1]] N[sem=[core=?n, bo=?b2]]
+NP[sem=[core=<@x>, bo={{<(bo @x (?det ?n))>}+?b1+?b2}]] -> Det[sem=[core=?det, bo=?b1]] N[sem=[core=?n, bo=?b2]]
 
 # Lexical items:
 Det[sem=[core=<\Q P.some x.((Q x) and (P x))>, bo={/}]] -> 'a'
