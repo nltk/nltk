@@ -9,9 +9,9 @@ from nltk_contrib.classifier import instances as ins, Classifier, distancemetric
 from nltk import probability as prob
 
 class IB1(Classifier):
-    def __init__(self, training, attributes, klass, internal = False):
-        Classifier.__init__(self, training, attributes, klass, internal)
-        
+    def __init__(self, training, attributes, klass):
+        Classifier.__init__(self, training, attributes, klass)
+                
     def classify(self, instances):
         for each_test in instances:
             id = InstanceDistances()
@@ -20,9 +20,12 @@ class IB1(Classifier):
                 id.distance(dist, each_training)
             each_test.set_klass(id.klass(majority_klass_vote))
     
+    @classmethod
     def can_handle_continuous_attributes(self):
         return True
-    can_handle_continuous_attributes = classmethod(can_handle_continuous_attributes)
+    
+    def is_trained(self):
+        return True
 
 class InstanceDistances:
     """

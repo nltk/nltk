@@ -6,11 +6,7 @@
 #
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
+from nltk_contrib.classifier.exceptions import SimpleError
 
-class SystemError:
-    def __init__(self, message):
-        self.message = message
-        
-    def __str__(self):
-        return self.message
-    
+class SystemError(SimpleError):
+    pass

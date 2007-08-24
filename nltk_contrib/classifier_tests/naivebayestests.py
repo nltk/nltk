@@ -16,6 +16,7 @@ class NaiveBayesTestCase(unittest.TestCase):
         test = format.C45_FORMAT.get_test_instances(path)
         klass = format.C45_FORMAT.get_klass(path)
         nb = naivebayes.NaiveBayes(training, attributes, klass)
+        nb.train()
         nb.test(test)
         self.assertEqual('no', test[0].classified_klass)
         

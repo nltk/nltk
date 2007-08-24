@@ -113,10 +113,8 @@ class FeatureSelection:
         decision_stumps.sort(lambda x, y: cmp(getattr(x, method)(), getattr(y, method)()))
         
         if number > len(decision_stumps): number = len(decision_stumps)
-        to_remove, attributes_to_remove = decision_stumps[:number * -1], []
-        for stump in to_remove:
-            attributes_to_remove.append(stump.attribute)
-        return attributes_to_remove
+        to_remove = decision_stumps[:number * -1]
+        return [stump.attribute for stump in to_remove]
     
     def forward_selection(self):
         if wrapper_options_invalid(self.options):
@@ -185,7 +183,10 @@ class FeatureSelection:
         total_accuracy = 0;
         for index in range(fold):
             training, gold = datasets[index]
-            cm = cy.ALGORITHM_MAPPINGS[self.options[0]](training, attributes, self.klass, True).verify(gold)
+            classifier = cy.ALGORITHM_MAPPINGS[self.options[0]](training, attributes, self.klass)
+            classifier.do_not_validate = True
+            classifier.train()
+            cm = classifier.verify(gold)
             total_accuracy += cm.accuracy()
         return total_accuracy / len(datasets)
     

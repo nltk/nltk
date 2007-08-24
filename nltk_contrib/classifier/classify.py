@@ -107,6 +107,7 @@ class Classify(cl.CommandLineInterface):
         
         training, attributes, klass, test, gold = self.get_instances(self.training_path, self.test_path, self.gold_path, cross_validation_fold is not None)
         classifier = ALGORITHM_MAPPINGS[self.algorithm](training, attributes, klass)
+        classifier.train()
         classification_strategy = self.get_classification_strategy(classifier, test, gold, training, cross_validation_fold, attributes, klass)
         self.log_common_params('Classification')
         classification_strategy.classify()
@@ -148,6 +149,7 @@ class CrossValidationStrategy:
         for each in datasets:
             classifier = ALGORITHM_MAPPINGS[self.algorithm](each[0], self.attributes, self.klass)
             self.classifier_options.set_options(classifier)
+            classifier.train()
             self.confusion_matrices.append(classifier.verify(each[1]))
             self.gold_instances.append(classifier.gold_instances)
         
