@@ -1,10 +1,6 @@
 ==================================
  Feature Structures & Unification
 ==================================
-
-    >>> import sys
-    >>> sys.path.insert(
-    ...     0, '/home/edloper/newdata/projects/nltk/new_featstruct')
     >>> from nltk.featstruct import FeatStruct
     >>> from nltk.sem import Variable
 
@@ -465,6 +461,12 @@ The elements should only be variables or sets.
 
     >>> FeatStruct('[x={?a+?b+{1,2,3}}]')
     [x={a+b+{1, 2, 3}}]
+    
+There's a special syntax for taking the concatenation of tuples:
+"(...+...)".  The elements should only be variables or tuples.
+
+    >>> FeatStruct('[x=(?a+?b+(1,2,3))]')
+    [x=(a+b+(1, 2, 3))]
     
 Parsing gives helpful messages if your string contains an error.
 
