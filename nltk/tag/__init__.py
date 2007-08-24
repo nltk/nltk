@@ -42,6 +42,7 @@ try:
     import numpy
     from hmm import *
     __all__ += ['HiddenMarkovModelTagger', 'HiddenMarkovModelTrainer',]
+    # [xx] deprecated HiddenMarkovModel etc objects?
 except ImportError:
     pass
 
