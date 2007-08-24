@@ -1,4 +1,6 @@
-Unit test cases for L{tree.Tree}.
+===============================
+ Unit tests for nltk.tree.Tree
+===============================
 
     >>> from nltk.tree import *
 
@@ -9,8 +11,8 @@ Unit test cases for L{tree.Tree}.
     ...                             Tree('NP', ['him'])])])
     (S (NP I) (VP (V saw) (NP him)))
 
-One exception to \"any iterable\": in order to avoid confusion,
-strings are I{not} accepted as children lists:
+One exception to "any iterable": in order to avoid confusion,
+strings are *not* accepted as children lists:
 
     >>> print Tree('NP', 'Bob')
     Traceback (most recent call last):
@@ -31,7 +33,7 @@ Some trees to run tests on:
     >>> print tree
     (s (dp (d the) (np dog)) (vp (v chased) (dp (d the) (np cat))))
 
-The node value is stored using the C{node} attribute:
+The node value is stored using the `node` attribute:
 
     >>> dp1.node, dp2.node, vp.node, tree.node
     ('dp', 'dp', 'vp', 's')
@@ -56,9 +58,9 @@ Children can be modified directly, as well:
     >>> print tree
     (s (np (d the) (np cat)) (vp (v chased) (np (d the) (np dog))))
 
-The C{Tree} class adds a new method of indexing, using tuples rather
-than ints.  C{t[a,b,c]} is equivalant to C{t[a][b][c]}.  The sequence
-C{(a,b,c)} is called a \"tree path\".
+The `Tree` class adds a new method of indexing, using tuples rather
+than ints.  ``t[a,b,c]`` is equivalant to ``t[a][b][c]``.  The sequence
+``(a,b,c)`` is called a "tree path".
 
     >>> print tree[1,1][0]
     (d the)
@@ -79,12 +81,12 @@ The length of a tree is the number of children it has.
     >>> len(Tree('x', []))
     0
 
-The C{leaves} method returns a list of a tree's leaves:
+The `leaves` method returns a list of a tree's leaves:
 
     >>> print tree.leaves()
     ['the', 'dog', 'chased', 'the', 'cat']
 
-The C{height} method returns the height of the tree.  A tree with no
+The `height` method returns the height of the tree.  A tree with no
 children is considered to have a height of 1; a tree with only
 children is considered to have a height of 2; and any other tree's
 height is one plus the maximum of its children's heights:
@@ -96,7 +98,7 @@ height is one plus the maximum of its children's heights:
     >>> print tree[0].height()
     3
 
-The C{treepositions} method returns a list of the tree positions of
+The `treepositions` method returns a list of the tree positions of
 subtrees and leaves in a tree.  By default, it gives the position of
 every tree, subtree, and leaf, in prefix order:
 
@@ -122,7 +124,7 @@ supported:
     >>> print tree.treepositions('leaves')
     [(0, 0, 0), (0, 1, 0), (1, 0, 0), (1, 1, 0, 0), (1, 1, 1, 0)]
 
-C{treepositions} can be useful for modifying a tree.  For example, we
+`treepositions` can be useful for modifying a tree.  For example, we
 could upper-case all leaves with:
 
     >>> for pos in tree.treepositions('leaves'):
@@ -130,7 +132,7 @@ could upper-case all leaves with:
     >>> print tree
     (s (np (d THE) (np DOG)) (vp (v CHASED) (np (d THE) (np CAT))))
 
-In addition to C{str} and C{repr}, several methods exist to convert a
+In addition to `str` and `repr`, several methods exist to convert a
 tree object to one of several standard tree encodings:
 
     >>> print tree.pprint_latex_qtree()
@@ -139,7 +141,7 @@ tree object to one of several standard tree encodings:
             [.vp [.v CHASED ] [.np [.d THE ] [.np CAT ] ] ] ]
 
 Trees can be parsed from treebank strings with the static
-C{Tree.parse} method:
+`Tree.parse` method:
 
     >>> tree2 = bracket_parse('(S (NP I) (VP (V enjoyed) (NP my cookie)))')
     >>> print tree2
