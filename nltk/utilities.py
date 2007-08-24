@@ -728,6 +728,10 @@ def clean_html(html):
     cleaner.feed(html)
     return cleaner.clean_text()
 
+def clean_url(url):
+   from urllib import urlopen
+   html = urlopen(url).read()
+   return clean_html(html)
 
 ##########################################################################
 # Windowdiff
@@ -924,5 +928,6 @@ class Deprecated(object):
 __all__ = ['Counter', 'MinimalSet', 'OrderedDict', 'SortedDict', 'Trie',
            'breadth_first', 'edit_dist', 'filestring', 'guess_encoding',
            'invert_dict', 'pr', 'print_string', 're_show', 'config_java',
-           'java', 'clean_html', 'windowdiff', 'deprecated', 'Deprecated',
+           'java', 'clean_html', 'clean_url', 'windowdiff',
+           'deprecated', 'Deprecated',
            'convert_regexp_to_nongrouping', 'usage']
