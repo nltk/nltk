@@ -447,6 +447,8 @@ class Tree(list):
             return '%s%r%s %s%s' % (parens[0], self.node, nodesep, 
                                     string.join(childstrs), parens[1])
 
+# [xx] this really should do some work to make sure self.node isn't
+# modified.
 class ImmutableTree(Tree):
     def __setitem__(self):
         raise ValueError, 'ImmutableTrees may not be modified'
