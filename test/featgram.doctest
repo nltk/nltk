@@ -340,4 +340,90 @@ Let's load a German grammar:
           (Det[AGR=[GND='masc', NUM='sg', PER=3], CASE='acc'] den)
           (N[AGR=[GND='masc', NUM='sg', PER=3]] hund))))
 
+Grammar with Binding Operators
+------------------------------
+The 'bindop.fcfg' grammar is a semantic grammar that uses lambda
+calculus.  Each element has a core semantics, which is a single lambda
+calculus expression; and a set of binding operators, which bind
+variables.
 
+In order to make the binding operators work right, they need to
+instantiate their bound variable every time they are added to the
+chart.  To do this, we use a special subclass of `Chart`, called
+`InstantiateVarsChart`.
+
+    >>> from nltk.parse.featurechart import InstantiateVarsChart
+    >>> cp = parse.load_earley('grammars/bindop.fcfg', trace=1,
+    ...                        chart_class=InstantiateVarsChart)
+
+A simple intransitive sentence:
+
+    >>> trees = cp.get_parse_list('john barks'.split())
+              |.j.b.|
+    Scanner   |[-] .| [0:1] 'john'
+    Scanner   |[-] .| NP[sem=[bo={(bo @x \P.(P John))}, core=<@x>]] -> 'john' *
+    Completer |[-> .| S[sem=[bo={b1+b2}, core=<(vp subj)>]] -> NP[sem=[bo=?b1, core=?subj]] * VP[sem=[bo=?b2, core=?vp]] {?b1: {(bo x101 \P.(P John))}, ?subj: VariableExpression('x101')}
+    Scanner   |. [-]| [1:2] 'barks'
+    Scanner   |. [-]| IV[sem=[bo={/}, core=<\x.(bark x)>]] -> 'barks' *
+    Completer |. [-]| VP[sem=[bo={/}, core=<\x.(bark x)>]] -> IV[sem=[bo={/}, core=<\x.(bark x)>]] *
+    Completer |[===]| S[sem=[bo={(bo x101 \P.(P John))}, core=<(bark x101)>]] -> NP[sem=[bo={(bo x101 \P.(P John))}, core=<x101>]] VP[sem=[bo={/}, core=<\x.(bark x)>]] *
+    Completer |[===]| INIT[] -> S[] *
+    >>> for tree in trees: print tree
+    (S[sem=[bo={(bo x101 \P.(P John))}, core=<(bark x101)>]]
+      (NP[sem=[bo={(bo x101 \P.(P John))}, core=<x101>]] john)
+      (VP[sem=[bo={/}, core=<\x.(bark x)>]]
+        (IV[sem=[bo={/}, core=<\x.(bark x)>]] barks)))
+
+A transitive sentence:
+
+    >>> trees = cp.get_parse_list('john feeds a dog'.split())
+              |.j.f.a.d.|
+    Scanner   |[-] . . .| [0:1] 'john'
+    Scanner   |[-] . . .| NP[sem=[bo={(bo @x \P.(P John))}, core=<@x>]] -> 'john' *
+    Completer |[-> . . .| S[sem=[bo={b1+b2}, core=<(vp subj)>]] -> NP[sem=[bo=?b1, core=?subj]] * VP[sem=[bo=?b2, core=?vp]] {?b1: {(bo x102 \P.(P John))}, ?subj: VariableExpression('x102')}
+    Scanner   |. [-] . .| [1:2] 'feeds'
+    Scanner   |. [-] . .| TV[sem=[bo={/}, core=<\x y.(feed x y)>]] -> 'feeds' *
+    Completer |. [-> . .| VP[sem=[bo={b1+b2}, core=<(v obj)>]] -> TV[sem=[bo=?b1, core=?v]] * NP[sem=[bo=?b2, core=?obj]] {?b1: {/}, ?v: LambdaExpression('x', '\y.(feed x y)')}
+    Scanner   |. . [-] .| [2:3] 'a'
+    Scanner   |. . [-] .| Det[sem=[bo={/}, core=<\Q P.some x.(and (Q x) (P x))>]] -> 'a' *
+    Completer |. . [-> .| NP[sem=[bo={{(bo @x (det n))}+b2+b1}, core=<@x>]] -> Det[sem=[bo=?b1, core=?det]] * N[sem=[bo=?b2, core=?n]] {?b1: {/}, ?det: LambdaExpression('Q', '\P.some x.(and (Q x) (P x))')}
+    Scanner   |. . . [-]| [3:4] 'dog'
+    Scanner   |. . . [-]| N[sem=[bo={/}, core=<dog>]] -> 'dog' *
+    Completer |. . [---]| NP[sem=[bo={(bo @x \P.some x.(and (dog x) (P x)))}, core=<@x>]] -> Det[sem=[bo={/}, core=<\Q P.some x.(and (Q x) (P x))>]] N[sem=[bo={/}, core=<dog>]] *
+    Completer |. [-----]| VP[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x)))}, core=<\y.(feed x103 y)>]] -> TV[sem=[bo={/}, core=<\x y.(feed x y)>]] NP[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x)))}, core=<x103>]] *
+    Completer |[=======]| S[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x))), (bo x102 \P.(P John))}, core=<(feed x103 x102)>]] -> NP[sem=[bo={(bo x102 \P.(P John))}, core=<x102>]] VP[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x)))}, core=<\y.(feed x103 y)>]] *
+    Completer |[=======]| INIT[] -> S[] *
+    >>> for tree in trees: print tree
+    (S[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x))), (bo x102 \P.(P John))}, core=<(feed x103 x102)>]]
+      (NP[sem=[bo={(bo x102 \P.(P John))}, core=<x102>]] john)
+      (VP[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x)))}, core=<\y.(feed x103 y)>]]
+        (TV[sem=[bo={/}, core=<\x y.(feed x y)>]] feeds)
+        (NP[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x)))}, core=<x103>]]
+          (Det[sem=[bo={/}, core=<\Q P.some x.(and (Q x) (P x))>]] a)
+          (N[sem=[bo={/}, core=<dog>]] dog))))
+
+Turn down the verbosity:
+    >>> cp = parse.load_earley('grammars/bindop.fcfg', trace=0,
+    ...                        chart_class=InstantiateVarsChart)
+
+Reuse the same lexical item twice:
+
+    >>> trees = cp.get_parse_list('john feeds john'.split())
+    >>> for tree in trees: print tree
+    (S[sem=[bo={(bo x105 \P.(P John)), (bo x104 \P.(P John))}, core=<(feed x105 x104)>]]
+      (NP[sem=[bo={(bo x104 \P.(P John))}, core=<x104>]] john)
+      (VP[sem=[bo={(bo x105 \P.(P John))}, core=<\y.(feed x105 y)>]]
+        (TV[sem=[bo={/}, core=<\x y.(feed x y)>]] feeds)
+        (NP[sem=[bo={(bo x105 \P.(P John))}, core=<x105>]] john)))
+
+    >>> trees = cp.get_parse_list('a dog feeds a dog'.split())
+    >>> for tree in trees: print tree
+    (S[sem=[bo={(bo x106 \P.some x.(and (dog x) (P x))), (bo x107 \P.some x.(and (dog x) (P x)))}, core=<(feed x107 x106)>]]
+      (NP[sem=[bo={(bo x106 \P.some x.(and (dog x) (P x)))}, core=<x106>]]
+        (Det[sem=[bo={/}, core=<\Q P.some x.(and (Q x) (P x))>]] a)
+        (N[sem=[bo={/}, core=<dog>]] dog))
+      (VP[sem=[bo={(bo x107 \P.some x.(and (dog x) (P x)))}, core=<\y.(feed x107 y)>]]
+        (TV[sem=[bo={/}, core=<\x y.(feed x y)>]] feeds)
+        (NP[sem=[bo={(bo x107 \P.some x.(and (dog x) (P x)))}, core=<x107>]]
+          (Det[sem=[bo={/}, core=<\Q P.some x.(and (Q x) (P x))>]] a)
+          (N[sem=[bo={/}, core=<dog>]] dog))))
