@@ -117,6 +117,56 @@ doesn't work since cf not called on 'foo'
     >>> love1.tuples() == love2.tuples()
     True
 
+Parse a valuation from a string.
+
+    >>> v = """
+    ... john => b1
+    ... mary => g1
+    ... suzie => g2
+    ... fido => d1
+    ... tess => d2
+    ... noosa => n
+    ... girl => {g1, g2}
+    ... boy => {b1, b2}
+    ... dog => {d1, d2}
+    ... bark => {d1, d2}
+    ... walk => {b1, g2, d1}
+    ... chase => {(b1, g1), (b2, g1), (g1, d1), (g2, d2)}
+    ... see => {(b1, g1), (b2, d2), (g1, b1),(d2, b1), (g2, n)}
+    ... in => {(b1, n), (b2, n), (d2, n)}
+    ... with => {(b1, g1), (g1, b1), (d1, b1), (b1, d1)}
+    ... """
+    >>> val = parse_valuation(v)
+    >>> print val
+    {'bark': {'d2': True, 'd1': True},
+     'boy': {'b1': True, 'b2': True},
+     'chase': {'d1': {'g1': True},
+               'd2': {'g2': True},
+               'g1': {'b1': True, 'b2': True}},
+     'dog': {'d2': True, 'd1': True},
+     'fido': 'd1',
+     'girl': {'g2': True, 'g1': True},
+     'in': {'n': {'d2': True, 'b1': True, 'b2': True}},
+     'john': 'b1',
+     'mary': 'g1',
+     'noosa': 'n',
+     'see': {'b1': {'d2': True, 'g1': True},
+             'd2': {'b2': True},
+             'g1': {'b1': True},
+             'n': {'g2': True}},
+     'suzie': 'g2',
+     'tess': 'd2',
+     'walk': {'d1': True, 'b1': True, 'g2': True},
+     'with': {'b1': {'g1': True, 'd1': True},
+              'd1': {'b1': True},
+              'g1': {'b1': True}}}
+
+
+Load a valuation from a file.
+
+    >>> val = nltk.data.load('grammars/valuation1.val')
+    >>> val.domain
+
 Tests for function argument application in a Model
 
     >>> val = Valuation()

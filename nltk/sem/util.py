@@ -13,6 +13,7 @@ a first-order model.
 """
 
 import evaluate
+import re
 from nltk import tokenize, Tree
 
 
@@ -106,6 +107,51 @@ Use 'python syn2sem.py -h' to find out the various options.
 Note that this demo currently processes the whole input file
 before delivering any results, consequently there may be a significant initial delay.
 """
+
+
+_VAL_SPLIT_RE = re.compile(r'\s*=+>\s*')
+_ELEMENT_SPLIT_RE = re.compile(r'\s*,\s*')
+_TUPLES_RE = re.compile(r"""\s*         
+                                              (\([^)]+\))  # tuple-expression
+                                              \s*""", re.VERBOSE)
+
+def parse_valuation_line(s):
+    """
+    Parse a line in a valuation file.
+    """
+    pieces = _VAL_SPLIT_RE.split(s)
+    symbol = pieces[0]
+    value = pieces[1]
+    # check whether the value is meant to be a set
+    if value.startswith('{'):
+        value = value[1:-1]
+        tuple_strings = _TUPLES_RE.findall(value)
+        # are the set elements tuples?
+        if tuple_strings:
+            set_elements = []
+            for ts in tuple_strings:
+                ts = ts[1:-1]
+                element = tuple(_ELEMENT_SPLIT_RE.split(ts))
+                set_elements.append(element)
+        else:
+            set_elements = _ELEMENT_SPLIT_RE.split(value)
+        value = set(set_elements)
+    return symbol, value
+    
+def parse_valuation(s):
+    """
+    Convert a valuation file into a valuation.
+    """
+    statements = []
+    for linenum, line in enumerate(s.splitlines()):
+        line = line.strip()
+        if line.startswith('#') or line=='': continue
+        try: statements.append(parse_valuation_line(line))
+        except ValueError:
+            raise ValueError, 'Unable to parse line %s: %s' % (linenum, line)
+    val = evaluate.Valuation()
+    val.read(statements)
+    return val
 
 
 def demo_model0():
@@ -234,5 +280,5 @@ Parse and evaluate some sentences.
                 print '%d:  %s' % (n, semrep)
                 n += 1
                 
-if __name__ == "__main__":
-    demo()
+#if __name__ == "__main__":
+    #demo()
