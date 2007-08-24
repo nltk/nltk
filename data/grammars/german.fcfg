@@ -32,7 +32,7 @@ Det[CASE=dat, AGR=[GND=masc,PER=3,NUM=sg]] -> 'dem'
 Det[CASE=acc, AGR=[GND=masc,PER=3,NUM=sg]] -> 'den'
 
 # fem
-Det[CASE=nom, CASE=nom, AGR=[GND=fem,PER=3,NUM=sg]] -> 'die' 
+Det[CASE=nom, AGR=[GND=fem,PER=3,NUM=sg]] -> 'die' 
 Det[CASE=dat, AGR=[GND=fem,PER=3,NUM=sg]] -> 'der'
 Det[CASE=acc, AGR=[GND=fem,PER=3,NUM=sg]] -> 'die' 
 
