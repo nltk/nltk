@@ -12,7 +12,7 @@ set-theoretic models.
 
 """
 
-from syn2sem import *
+from util import *
 from evaluate import *
 from logic import *
 
