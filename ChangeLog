@@ -5,6 +5,7 @@ Data:
 - deprecating GrammarFile...
 - new corpus reader implementation
 - timit player audio support
+- Floresta Portuguese Treebank
 
 NLTK:
 - New naming of packages and modules, and more functions imported into
@@ -18,7 +19,7 @@ NLTK:
 - rewritten ngram tagger code, collapsed lookup tagger with unigram tagger
 - new system for deprecating code so that users are notified of name changes.
 - support for reading feature cfgs to parallel reading cfgs (parse_featcfg())
-- text classifier package...   weka support
+- text classifier package, maxent (GIS, IIS), naive Bayes, decision trees, weka support
 - more consistent tree printing
 - support for Mac installer (Joshua Ritterman)
 - move wordnet's morphy stemmer into the stemmer package
