@@ -15,7 +15,7 @@ a first-order model.
 import evaluate
 import re
 from nltk.tree import Tree
-
+import nltk.cfg
 
 ##############################################################
 ## Utility functions for connecting parse output to semantics
@@ -33,28 +33,11 @@ def text_parse(inputs, parser, trace=0):
         parses[sent] = syntrees
     return parses
 
-def root_node(syntree, start='S'):
-    """
-    Find the root node in a syntactic tree.
-    """
-    # check that we have a tree
-    assert isinstance(syntree, Tree)
-    # in the featurechart parser, the root node is '[INIT]'
-    # so go down to the first child if necessary
-    if syntree.node.head() == start:
-        return syntree.node
-    elif syntree[0].node.head() == start:
-        return syntree[0].node
-    else:
-        raise ValueError("Tree not rooted in %s node" % start)
-
 def semrep(node, beta_reduce=True):
     """
     Find the semantic representation at a given tree node.
     """
-    # check that we have a GrammarCategory
-    from nltk.parse import GrammarCategory
-    assert isinstance(node, GrammarCategory)
+    assert isinstance(node, nltk.cfg.FeatStructNonterminal)
     try:
         semrep = node['sem']
         if beta_reduce:
@@ -68,8 +51,7 @@ def root_semrep(syntree, beta_reduce=True, start='S'):
     """
     Find the semantic representation at the root of a tree.
     """
-    node = root_node(syntree, start=start)
-    return semrep(node, beta_reduce=beta_reduce)
+    return semrep(syntree.node, beta_reduce=beta_reduce)
 
 def text_interpret(inputs, parser, beta_reduce=True, start='S', syntrace=0):
     """
@@ -81,7 +63,8 @@ def text_interpret(inputs, parser, beta_reduce=True, start='S', syntrace=0):
     for sent in inputs:
         syntrees = parses[sent]
         syn_sem = \
-           [(syn, root_semrep(syn, beta_reduce=beta_reduce, start=start)) for syn in syntrees]
+           [(syn, root_semrep(syn, beta_reduce=beta_reduce, start=start))
+            for syn in syntrees]
         semreps[sent] = syn_sem
     return semreps
 
