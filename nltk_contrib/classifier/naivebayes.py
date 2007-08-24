@@ -10,8 +10,12 @@ from nltk_contrib.classifier import instances as ins, decisionstump as ds, Class
 from nltk_contrib.classifier.exceptions import invaliddataerror as inv
 
 class NaiveBayes(Classifier):
-    def __init__(self, training, attributes, klass, internal = False):
-        Classifier.__init__(self, training, attributes, klass, internal)
+    def __init__(self, training, attributes, klass):
+        Classifier.__init__(self, training, attributes, klass)
+        self.post_probs, self.class_freq_dist = None, None
+        
+    def train(self):
+        Classifier.train(self)
         self.post_probs = self.training.posterior_probablities(self.attributes, self.klass)
         self.class_freq_dist = self.training.class_freq_dist()
         for klass_value in self.klass:
@@ -36,8 +40,10 @@ class NaiveBayes(Classifier):
         keys.sort()#find the one with max conditional prob
         return estimates_using_prob[keys[-1]]
     
+    @classmethod
     def can_handle_continuous_attributes(self):
         return True
-    can_handle_continuous_attributes = classmethod(can_handle_continuous_attributes)
         
-        
+    def is_trained(self):
+        return self.post_probs is not None and self.class_freq_dist is not None    
+    

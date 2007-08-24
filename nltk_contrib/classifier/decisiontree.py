@@ -9,8 +9,12 @@
 from nltk_contrib.classifier import oner
 
 class DecisionTree(oner.OneR):
-    def __init__(self, training, attributes, klass, internal=False):
-        oner.OneR.__init__(self, training, attributes, klass, internal)
+    def __init__(self, training, attributes, klass):
+        oner.OneR.__init__(self, training, attributes, klass)
+        self.root = None
+        
+    def train(self):
+        oner.OneR.train(self)
         self.root = self.build_tree(self.training, [])
         
     def build_tree(self, instances, used_attributes):
@@ -42,4 +46,7 @@ class DecisionTree(oner.OneR):
             new = method(decision_stump)
             if new > highest: highest, max_stump = new, decision_stump
         return max_stump
+    
+    def is_trained(self):
+        return self.root is not None
         

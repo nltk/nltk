@@ -4,25 +4,23 @@
 #
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
-from nltk_contrib.classifier.exceptions import invaliddataerror as inv
+from nltk_contrib.classifier.exceptions import invaliddataerror as inv, illegalstateerror as ise
 from nltk import probability as prob
 import math
 
 class Classifier:
-    def __init__(self, training, attributes, klass, internal):
-        """
-        The internal parameter is to used only internally while operating on datasets while selecting features.
-        When classifiers are invoked from command line this parameter is set to the default value of False.
-        """
+    def __init__(self, training, attributes, klass):
         self.attributes = attributes
         self.training = training
-        self.internal = internal
         self.convert_continuous_values_to_numbers(self.training)
         sorted_klass_freqs = self.training.class_freq_dist().sorted()
         sorted_klass_values = [each for each in sorted_klass_freqs]
         sorted_klass_values.extend([each for each in klass if not sorted_klass_values.__contains__(each)])
         self.klass = sorted_klass_values
-        if not self.internal:
+        self.do_not_validate = False
+            
+    def train(self):
+        if not self.do_not_validate:
             self.validate_training()
         
     def convert_continuous_values_to_numbers(self, instances):
@@ -36,22 +34,30 @@ class Classifier:
             raise inv.InvalidDataError('One or more attributes are continuous.')
     
     def test(self, test_instances):
+        self.validate()
         self.convert_continuous_values_to_numbers(test_instances)
         self.test_instances = test_instances
         self.classify(self.test_instances)
             
     def verify(self, gold_instances):
+        self.validate()
         self.convert_continuous_values_to_numbers(gold_instances)
         self.gold_instances = gold_instances
         self.classify(self.gold_instances)
         return self.gold_instances.confusion_matrix(self.klass)
     
+    def validate(self):
+        if not self.is_trained(): raise ise.IllegalStateError("Classifier not trained")
+    
     def classify(self, instances):
         AssertionError('Classify called on abstract class')
+        
+    def is_trained(self):
+        AssertionError('is_trained called on abstract class')
     
+    @classmethod
     def can_handle_continuous_attributes(klass):
         return False
-    can_handle_continuous_attributes = classmethod(can_handle_continuous_attributes)
 
 def split_ignore_space(comma_sep_string):
     return [name.strip() for name in comma_sep_string.split(',')]

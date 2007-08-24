@@ -15,6 +15,7 @@ class OneRTestCase(unittest.TestCase):
         path = self.WEATHER = datasetsDir(self) + 'minigolf' + SEP + 'weather'
         c45 = format.C45_FORMAT
         self.classifier = oner.OneR(c45.get_training_instances(path), c45.get_attributes(path), c45.get_klass(path))
+        self.classifier.train()
                 
     def test_best_decision_stump_returns_minimum_error_stump_by_default(self):
         minError = self.classifier.best_decision_stump(self.classifier.training)
@@ -48,6 +49,7 @@ class OneRTestCase(unittest.TestCase):
             path = datasetsDir(self) + 'numerical' + SEP + 'weather'
             c45 = format.C45_FORMAT
             classifier = oner.OneR(c45.get_training_instances(path), c45.get_attributes(path), c45.get_klass(path))
+            classifier.train()
             self.fail('should have thrown error')
         except inv.InvalidDataError:
             pass

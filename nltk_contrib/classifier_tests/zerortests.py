@@ -19,6 +19,7 @@ class ZeroRTestCase(unittest.TestCase):
         try:
             path = datasetsDir(self) + 'test_faulty' + SEP + 'invalid_attributes'
             classifier = z.ZeroR(format.C45_FORMAT.get_training_instances(path), format.C45_FORMAT.get_attributes(path), format.C45_FORMAT.get_klass(path))
+            classifier.train()
             self.fail('should throw invalid data error')
         except inv.InvalidDataError:
             pass
@@ -31,7 +32,7 @@ class ZeroRTestCase(unittest.TestCase):
     def test_majority_class_is_set_on_test_instances(self):
         path = datasetsDir(self) + 'test_phones' + SEP + 'phoney'
         zeror = z.ZeroR(format.C45_FORMAT.get_training_instances(path), format.C45_FORMAT.get_attributes(path), format.C45_FORMAT.get_klass(path))
-
+        zeror.train()
         zeror.test(format.C45_FORMAT.get_test_instances(path))
         i = 0
         for i in range(4):
@@ -42,6 +43,7 @@ class ZeroRTestCase(unittest.TestCase):
         path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
         klasses = format.C45_FORMAT.get_klass(path)
         zeror = z.ZeroR(format.C45_FORMAT.get_training_instances(path), format.C45_FORMAT.get_attributes(path), klasses)
+        zeror.train()
         confusion_matrix = zeror.verify(format.C45_FORMAT.get_gold_instances(path))
         
         self.assertEqual(0.75, confusion_matrix.accuracy())
@@ -56,6 +58,7 @@ class ZeroRTestCase(unittest.TestCase):
     def test_can_classify_data_having_continuous_attributes(self):
         path = datasetsDir(self) + 'numerical' + SEP + 'weather'
         zeror = z.ZeroR(format.C45_FORMAT.get_training_instances(path), format.C45_FORMAT.get_attributes(path), format.C45_FORMAT.get_klass(path))
+        zeror.train()
         zeror.verify(format.C45_FORMAT.get_gold_instances(path))
         
         

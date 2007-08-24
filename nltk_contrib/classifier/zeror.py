@@ -9,14 +9,16 @@
 from nltk_contrib.classifier import instances as ins, Classifier
 
 class ZeroR(Classifier):
-    def __init__(self, training, attributes, klass, internal = False):
-        Classifier.__init__(self, training, attributes, klass, internal)
+    def __init__(self, training, attributes, klass):
+        Classifier.__init__(self, training, attributes, klass)
         self.__majority_class = None
         self.__klassCount = {}
         
+    def train(self):
+        Classifier.train(self)
+        self.__majority_class = self.majority_class()
+        
     def classify(self, instances):
-        if self.__majority_class == None: 
-            self.__majority_class = self.majority_class()
         for instance in instances:
             instance.set_klass(self.__majority_class)
         
@@ -41,7 +43,10 @@ class ZeroR(Classifier):
                 klass_value = key
         return klass_value
     
+    @classmethod
     def can_handle_continuous_attributes(self):
         return True
-    can_handle_continuous_attributes = classmethod(can_handle_continuous_attributes)
+    
+    def is_trained(self):
+        return self.__majority_class is not None
     

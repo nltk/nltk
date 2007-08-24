@@ -10,13 +10,15 @@ from nltk_contrib.classifier import instances as ins, decisionstump as ds, Class
 from nltk_contrib.classifier.exceptions import invaliddataerror as inv
 
 class OneR(Classifier):
-    def __init__(self, training, attributes, klass, internal = False):
-        Classifier.__init__(self, training, attributes, klass, internal)
+    def __init__(self, training, attributes, klass):
+        Classifier.__init__(self, training, attributes, klass)
         self.__best_decision_stump = None
         
+    def train(self):
+        Classifier.train(self)
+        self.__best_decision_stump = self.best_decision_stump(self.training)
+        
     def classify(self, instances):
-        if self.__best_decision_stump == None:
-            self.__best_decision_stump = self.best_decision_stump(self.training)
         for instance in instances:
             klass = self.__best_decision_stump.klass(instance)
             instance.set_klass(klass)
@@ -39,3 +41,6 @@ class OneR(Classifier):
                 error = new_error
                 min_error_stump = decision_stump
         return min_error_stump
+    
+    def is_trained(self):
+        return self.__best_decision_stump is not None
