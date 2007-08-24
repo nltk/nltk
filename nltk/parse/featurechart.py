@@ -101,7 +101,7 @@ class FeatureTreeEdge(TreeEdge):
         if self.is_complete():
             return TreeEdge.__str__(self)
         else:
-            bindings = '{%s}' % ', '.join('?%s: %r' % item for item in
+            bindings = '{%s}' % ', '.join('%s: %r' % item for item in
                                            sorted(self._bindings.items()))
             return '%s %s' % (TreeEdge.__str__(self), bindings)
 
