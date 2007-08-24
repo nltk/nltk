@@ -35,6 +35,35 @@ tested and revised. Let's assume that we have saved feat0cfg_ as a file named
 inspect it as follows:
 
     >>> nltk.data.show_cfg('grammars/feat0.fcfg')
+    % start S
+    # ############################
+    # Grammar Rules
+    # ############################
+    # S expansion rules
+    S -> NP[NUM=?n] VP[NUM=?n]
+    # NP expansion rules
+    NP[NUM=?n] -> N[NUM=?n] 
+    NP[NUM=?n] -> PropN[NUM=?n] 
+    NP[NUM=?n] -> Det[NUM=?n] N[NUM=?n]
+    NP[NUM=pl] -> N[NUM=pl] 
+    # VP expansion rules
+    VP[TENSE=?t, NUM=?n] -> IV[TENSE=?t, NUM=?n]
+    VP[TENSE=?t, NUM=?n] -> TV[TENSE=?t, NUM=?n] NP
+    # ############################
+    # Lexical Rules
+    # ############################
+    Det[NUM=sg] -> 'this' | 'every'
+    Det[NUM=pl] -> 'these' | 'all'
+    Det -> 'the' | 'some'
+    PropN[NUM=sg]-> 'Kim' | 'Jody'
+    N[NUM=sg] -> 'dog' | 'girl' | 'car' | 'child'
+    N[NUM=pl] -> 'dogs' | 'girls' | 'cars' | 'children' 
+    IV[TENSE=pres,  NUM=sg] -> 'disappears' | 'walks'
+    TV[TENSE=pres, NUM=sg] -> 'sees' | 'likes'
+    IV[TENSE=pres,  NUM=pl] -> 'disappear' | 'walk'
+    TV[TENSE=pres, NUM=pl] -> 'see' | 'like'
+    IV[TENSE=past, NUM=?n] -> 'disappeared' | 'walked'
+    TV[TENSE=past, NUM=?n] -> 'saw' | 'liked'
 
 Assuming we have saved feat0cfg_ as a file named
 ``'feat0.fcfg'``, the function ``parse.load_earley`` allows us to
@@ -49,33 +78,33 @@ read the grammar into NLTK, ready for use in parsing.
     >>> trees = cp.get_parse_list(tokens)
               |.K.l.c.|
     Processing queue 0
-    Predictor |> . . .| S[] -> * NP[NUM=?n] VP[NUM=?n] {}
-    Predictor |> . . .| NP[NUM=?n] -> * N[NUM=?n] {}
-    Predictor |> . . .| NP[NUM=?n] -> * PropN[NUM=?n] {}
-    Predictor |> . . .| NP[NUM=?n] -> * Det[NUM=?n] N[NUM=?n] {}
-    Predictor |> . . .| NP[NUM='pl'] -> * N[NUM='pl'] {}
+    Predictor |> . . .| [0:0] S[] -> * NP[NUM=?n] VP[NUM=?n] {}
+    Predictor |> . . .| [0:0] NP[NUM=?n] -> * N[NUM=?n] {}
+    Predictor |> . . .| [0:0] NP[NUM=?n] -> * PropN[NUM=?n] {}
+    Predictor |> . . .| [0:0] NP[NUM=?n] -> * Det[NUM=?n] N[NUM=?n] {}
+    Predictor |> . . .| [0:0] NP[NUM='pl'] -> * N[NUM='pl'] {}
     Scanner   |[-] . .| [0:1] 'Kim'
-    Scanner   |[-] . .| PropN[NUM='sg'] -> 'Kim' *
+    Scanner   |[-] . .| [0:1] PropN[NUM='sg'] -> 'Kim' *
     Processing queue 1
-    Completer |[-] . .| NP[NUM='sg'] -> PropN[NUM='sg'] *
-    Completer |[-> . .| S[] -> NP[NUM=?n] * VP[NUM=?n] {?n: 'sg'}
-    Predictor |. > . .| VP[NUM=?n, TENSE=?t] -> * IV[NUM=?n, TENSE=?t] {}
-    Predictor |. > . .| VP[NUM=?n, TENSE=?t] -> * TV[NUM=?n, TENSE=?t] NP[] {}
+    Completer |[-] . .| [0:1] NP[NUM='sg'] -> PropN[NUM='sg'] *
+    Completer |[-> . .| [0:1] S[] -> NP[NUM=?n] * VP[NUM=?n] {?n: 'sg'}
+    Predictor |. > . .| [1:1] VP[NUM=?n, TENSE=?t] -> * IV[NUM=?n, TENSE=?t] {}
+    Predictor |. > . .| [1:1] VP[NUM=?n, TENSE=?t] -> * TV[NUM=?n, TENSE=?t] NP[] {}
     Scanner   |. [-] .| [1:2] 'likes'
-    Scanner   |. [-] .| TV[NUM='sg', TENSE='pres'] -> 'likes' *
+    Scanner   |. [-] .| [1:2] TV[NUM='sg', TENSE='pres'] -> 'likes' *
     Processing queue 2
-    Completer |. [-> .| VP[NUM=?n, TENSE=?t] -> TV[NUM=?n, TENSE=?t] * NP[] {?n: 'sg', ?t: 'pres'}
-    Predictor |. . > .| NP[NUM=?n] -> * N[NUM=?n] {}
-    Predictor |. . > .| NP[NUM=?n] -> * PropN[NUM=?n] {}
-    Predictor |. . > .| NP[NUM=?n] -> * Det[NUM=?n] N[NUM=?n] {}
-    Predictor |. . > .| NP[NUM='pl'] -> * N[NUM='pl'] {}
+    Completer |. [-> .| [1:2] VP[NUM=?n, TENSE=?t] -> TV[NUM=?n, TENSE=?t] * NP[] {?n: 'sg', ?t: 'pres'}
+    Predictor |. . > .| [2:2] NP[NUM=?n] -> * N[NUM=?n] {}
+    Predictor |. . > .| [2:2] NP[NUM=?n] -> * PropN[NUM=?n] {}
+    Predictor |. . > .| [2:2] NP[NUM=?n] -> * Det[NUM=?n] N[NUM=?n] {}
+    Predictor |. . > .| [2:2] NP[NUM='pl'] -> * N[NUM='pl'] {}
     Scanner   |. . [-]| [2:3] 'children'
-    Scanner   |. . [-]| N[NUM='pl'] -> 'children' *
+    Scanner   |. . [-]| [2:3] N[NUM='pl'] -> 'children' *
     Processing queue 3
-    Completer |. . [-]| NP[NUM='pl'] -> N[NUM='pl'] *
-    Completer |. [---]| VP[NUM='sg', TENSE='pres'] -> TV[NUM='sg', TENSE='pres'] NP[] *
-    Completer |[=====]| S[] -> NP[NUM='sg'] VP[NUM='sg'] *
-    Completer |[=====]| INIT[] -> S[] *
+    Completer |. . [-]| [2:3] NP[NUM='pl'] -> N[NUM='pl'] *
+    Completer |. [---]| [1:3] VP[NUM='sg', TENSE='pres'] -> TV[NUM='sg', TENSE='pres'] NP[] *
+    Completer |[=====]| [0:3] S[] -> NP[NUM='sg'] VP[NUM='sg'] *
+    Completer |[=====]| [0:3] INIT[] -> S[] *
     >>> for tree in trees: print tree
     (S[]
       (NP[NUM='sg'] (PropN[NUM='sg'] Kim))
@@ -286,33 +315,33 @@ things become really interesting.
     >>> trees = cp.get_parse_list(tokens)
               |.w.d.y.c.t.y.l.|
     Scanner   |[-] . . . . . .| [0:1] 'who'
-    Scanner   |[-] . . . . . .| NP[+WH] -> 'who' *
-    Completer |[-> . . . . . .| S[-INV] -> NP[] * S[]/NP[] {}
+    Scanner   |[-] . . . . . .| [0:1] NP[+WH] -> 'who' *
+    Completer |[-> . . . . . .| [0:1] S[-INV] -> NP[] * S[]/NP[] {}
     Scanner   |. [-] . . . . .| [1:2] 'do'
-    Scanner   |. [-] . . . . .| V[+AUX, SUBCAT=3] -> 'do' *
-    Completer |. [-> . . . . .| S[+INV]/?x[] -> V[+AUX] * NP[] VP[]/?x[] {}
+    Scanner   |. [-] . . . . .| [1:2] V[+AUX, SUBCAT=3] -> 'do' *
+    Completer |. [-> . . . . .| [1:2] S[+INV]/?x[] -> V[+AUX] * NP[] VP[]/?x[] {}
     Scanner   |. . [-] . . . .| [2:3] 'you'
-    Scanner   |. . [-] . . . .| NP[-WH] -> 'you' *
-    Completer |. [---> . . . .| S[+INV]/?x[] -> V[+AUX] NP[] * VP[]/?x[] {}
+    Scanner   |. . [-] . . . .| [2:3] NP[-WH] -> 'you' *
+    Completer |. [---> . . . .| [1:3] S[+INV]/?x[] -> V[+AUX] NP[] * VP[]/?x[] {}
     Scanner   |. . . [-] . . .| [3:4] 'claim'
-    Scanner   |. . . [-] . . .| V[-AUX, SUBCAT=2] -> 'claim' *
-    Completer |. . . [-> . . .| VP[]/?x[] -> V[-AUX, SUBCAT=2] * S-BAR[]/?x[] {}
+    Scanner   |. . . [-] . . .| [3:4] V[-AUX, SUBCAT=2] -> 'claim' *
+    Completer |. . . [-> . . .| [3:4] VP[]/?x[] -> V[-AUX, SUBCAT=2] * S-BAR[]/?x[] {}
     Scanner   |. . . . [-] . .| [4:5] 'that'
-    Scanner   |. . . . [-] . .| Comp[] -> 'that' *
-    Completer |. . . . [-> . .| S-BAR[]/?x[] -> Comp[] * S[-INV]/?x[] {}
+    Scanner   |. . . . [-] . .| [4:5] Comp[] -> 'that' *
+    Completer |. . . . [-> . .| [4:5] S-BAR[]/?x[] -> Comp[] * S[-INV]/?x[] {}
     Scanner   |. . . . . [-] .| [5:6] 'you'
-    Scanner   |. . . . . [-] .| NP[-WH] -> 'you' *
-    Completer |. . . . . [-> .| S[-INV]/?x[] -> NP[] * VP[]/?x[] {}
+    Scanner   |. . . . . [-] .| [5:6] NP[-WH] -> 'you' *
+    Completer |. . . . . [-> .| [5:6] S[-INV]/?x[] -> NP[] * VP[]/?x[] {}
     Scanner   |. . . . . . [-]| [6:7] 'like'
-    Scanner   |. . . . . . [-]| V[-AUX, SUBCAT=1] -> 'like' *
-    Completer |. . . . . . [->| VP[]/?x[] -> V[-AUX, SUBCAT=1] * NP[]/?x[] {}
-    Completer |. . . . . . [-]| VP[]/NP[] -> V[-AUX, SUBCAT=1] NP[]/NP[] *
-    Completer |. . . . . [---]| S[-INV]/NP[] -> NP[] VP[]/NP[] *
-    Completer |. . . . [-----]| S-BAR[]/NP[] -> Comp[] S[-INV]/NP[] *
-    Completer |. . . [-------]| VP[]/NP[] -> V[-AUX, SUBCAT=2] S-BAR[]/NP[] *
-    Completer |. [-----------]| S[+INV]/NP[] -> V[+AUX] NP[] VP[]/NP[] *
-    Completer |[=============]| S[-INV] -> NP[] S[]/NP[] *
-    Completer |[=============]| INIT[] -> S[] *
+    Scanner   |. . . . . . [-]| [6:7] V[-AUX, SUBCAT=1] -> 'like' *
+    Completer |. . . . . . [->| [6:7] VP[]/?x[] -> V[-AUX, SUBCAT=1] * NP[]/?x[] {}
+    Completer |. . . . . . [-]| [6:7] VP[]/NP[] -> V[-AUX, SUBCAT=1] NP[]/NP[] *
+    Completer |. . . . . [---]| [5:7] S[-INV]/NP[] -> NP[] VP[]/NP[] *
+    Completer |. . . . [-----]| [4:7] S-BAR[]/NP[] -> Comp[] S[-INV]/NP[] *
+    Completer |. . . [-------]| [3:7] VP[]/NP[] -> V[-AUX, SUBCAT=2] S-BAR[]/NP[] *
+    Completer |. [-----------]| [1:7] S[+INV]/NP[] -> V[+AUX] NP[] VP[]/NP[] *
+    Completer |[=============]| [0:7] S[-INV] -> NP[] S[]/NP[] *
+    Completer |[=============]| [0:7] INIT[] -> S[] *
     >>> for tree in trees: print tree
     (S[-INV]
       (NP[+WH] who)
@@ -366,13 +395,13 @@ A simple intransitive sentence:
     >>> trees = cp.get_parse_list('john barks'.split())
               |.j.b.|
     Scanner   |[-] .| [0:1] 'john'
-    Scanner   |[-] .| NP[sem=[bo={(bo @x \P.(P John))}, core=<@x>]] -> 'john' *
-    Completer |[-> .| S[sem=[bo={b1+b2}, core=<(vp subj)>]] -> NP[sem=[bo=?b1, core=?subj]] * VP[sem=[bo=?b2, core=?vp]] {?b1: {(bo x101 \P.(P John))}, ?subj: VariableExpression('x101')}
+    Scanner   |[-] .| [0:1] NP[sem=[bo={(bo @x \P.(P John))}, core=<@x>]] -> 'john' *
+    Completer |[-> .| [0:1] S[sem=[bo={b1+b2}, core=<(vp subj)>]] -> NP[sem=[bo=?b1, core=?subj]] * VP[sem=[bo=?b2, core=?vp]] {?b1: {(bo x101 \P.(P John))}, ?subj: VariableExpression('x101')}
     Scanner   |. [-]| [1:2] 'barks'
-    Scanner   |. [-]| IV[sem=[bo={/}, core=<\x.(bark x)>]] -> 'barks' *
-    Completer |. [-]| VP[sem=[bo={/}, core=<\x.(bark x)>]] -> IV[sem=[bo={/}, core=<\x.(bark x)>]] *
-    Completer |[===]| S[sem=[bo={(bo x101 \P.(P John))}, core=<(bark x101)>]] -> NP[sem=[bo={(bo x101 \P.(P John))}, core=<x101>]] VP[sem=[bo={/}, core=<\x.(bark x)>]] *
-    Completer |[===]| INIT[] -> S[] *
+    Scanner   |. [-]| [1:2] IV[sem=[bo={/}, core=<\x.(bark x)>]] -> 'barks' *
+    Completer |. [-]| [1:2] VP[sem=[bo={/}, core=<\x.(bark x)>]] -> IV[sem=[bo={/}, core=<\x.(bark x)>]] *
+    Completer |[===]| [0:2] S[sem=[bo={(bo x101 \P.(P John))}, core=<(bark x101)>]] -> NP[sem=[bo={(bo x101 \P.(P John))}, core=<x101>]] VP[sem=[bo={/}, core=<\x.(bark x)>]] *
+    Completer |[===]| [0:2] INIT[] -> S[] *
     >>> for tree in trees: print tree
     (S[sem=[bo={(bo x101 \P.(P John))}, core=<(bark x101)>]]
       (NP[sem=[bo={(bo x101 \P.(P John))}, core=<x101>]] john)
@@ -384,20 +413,20 @@ A transitive sentence:
     >>> trees = cp.get_parse_list('john feeds a dog'.split())
               |.j.f.a.d.|
     Scanner   |[-] . . .| [0:1] 'john'
-    Scanner   |[-] . . .| NP[sem=[bo={(bo @x \P.(P John))}, core=<@x>]] -> 'john' *
-    Completer |[-> . . .| S[sem=[bo={b1+b2}, core=<(vp subj)>]] -> NP[sem=[bo=?b1, core=?subj]] * VP[sem=[bo=?b2, core=?vp]] {?b1: {(bo x102 \P.(P John))}, ?subj: VariableExpression('x102')}
+    Scanner   |[-] . . .| [0:1] NP[sem=[bo={(bo @x \P.(P John))}, core=<@x>]] -> 'john' *
+    Completer |[-> . . .| [0:1] S[sem=[bo={b1+b2}, core=<(vp subj)>]] -> NP[sem=[bo=?b1, core=?subj]] * VP[sem=[bo=?b2, core=?vp]] {?b1: {(bo x102 \P.(P John))}, ?subj: VariableExpression('x102')}
     Scanner   |. [-] . .| [1:2] 'feeds'
-    Scanner   |. [-] . .| TV[sem=[bo={/}, core=<\x y.(feed x y)>]] -> 'feeds' *
-    Completer |. [-> . .| VP[sem=[bo={b1+b2}, core=<(v obj)>]] -> TV[sem=[bo=?b1, core=?v]] * NP[sem=[bo=?b2, core=?obj]] {?b1: {/}, ?v: LambdaExpression('x', '\y.(feed x y)')}
+    Scanner   |. [-] . .| [1:2] TV[sem=[bo={/}, core=<\x y.(feed x y)>]] -> 'feeds' *
+    Completer |. [-> . .| [1:2] VP[sem=[bo={b1+b2}, core=<(v obj)>]] -> TV[sem=[bo=?b1, core=?v]] * NP[sem=[bo=?b2, core=?obj]] {?b1: {/}, ?v: LambdaExpression('x', '\y.(feed x y)')}
     Scanner   |. . [-] .| [2:3] 'a'
-    Scanner   |. . [-] .| Det[sem=[bo={/}, core=<\Q P.some x.(and (Q x) (P x))>]] -> 'a' *
-    Completer |. . [-> .| NP[sem=[bo={{(bo @x (det n))}+b2+b1}, core=<@x>]] -> Det[sem=[bo=?b1, core=?det]] * N[sem=[bo=?b2, core=?n]] {?b1: {/}, ?det: LambdaExpression('Q', '\P.some x.(and (Q x) (P x))')}
+    Scanner   |. . [-] .| [2:3] Det[sem=[bo={/}, core=<\Q P.some x.(and (Q x) (P x))>]] -> 'a' *
+    Completer |. . [-> .| [2:3] NP[sem=[bo={{(bo @x (det n))}+b2+b1}, core=<@x>]] -> Det[sem=[bo=?b1, core=?det]] * N[sem=[bo=?b2, core=?n]] {?b1: {/}, ?det: LambdaExpression('Q', '\P.some x.(and (Q x) (P x))')}
     Scanner   |. . . [-]| [3:4] 'dog'
-    Scanner   |. . . [-]| N[sem=[bo={/}, core=<dog>]] -> 'dog' *
-    Completer |. . [---]| NP[sem=[bo={(bo @x \P.some x.(and (dog x) (P x)))}, core=<@x>]] -> Det[sem=[bo={/}, core=<\Q P.some x.(and (Q x) (P x))>]] N[sem=[bo={/}, core=<dog>]] *
-    Completer |. [-----]| VP[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x)))}, core=<\y.(feed x103 y)>]] -> TV[sem=[bo={/}, core=<\x y.(feed x y)>]] NP[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x)))}, core=<x103>]] *
-    Completer |[=======]| S[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x))), (bo x102 \P.(P John))}, core=<(feed x103 x102)>]] -> NP[sem=[bo={(bo x102 \P.(P John))}, core=<x102>]] VP[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x)))}, core=<\y.(feed x103 y)>]] *
-    Completer |[=======]| INIT[] -> S[] *
+    Scanner   |. . . [-]| [3:4] N[sem=[bo={/}, core=<dog>]] -> 'dog' *
+    Completer |. . [---]| [2:4] NP[sem=[bo={(bo @x \P.some x.(and (dog x) (P x)))}, core=<@x>]] -> Det[sem=[bo={/}, core=<\Q P.some x.(and (Q x) (P x))>]] N[sem=[bo={/}, core=<dog>]] *
+    Completer |. [-----]| [1:4] VP[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x)))}, core=<\y.(feed x103 y)>]] -> TV[sem=[bo={/}, core=<\x y.(feed x y)>]] NP[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x)))}, core=<x103>]] *
+    Completer |[=======]| [0:4] S[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x))), (bo x102 \P.(P John))}, core=<(feed x103 x102)>]] -> NP[sem=[bo={(bo x102 \P.(P John))}, core=<x102>]] VP[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x)))}, core=<\y.(feed x103 y)>]] *
+    Completer |[=======]| [0:4] INIT[] -> S[] *
     >>> for tree in trees: print tree
     (S[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x))), (bo x102 \P.(P John))}, core=<(feed x103 x102)>]]
       (NP[sem=[bo={(bo x102 \P.(P John))}, core=<x102>]] john)
