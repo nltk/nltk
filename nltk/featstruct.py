@@ -637,17 +637,14 @@ class FeatStruct(SubstituteBindingsI):
                                 (fname, reentrance_ids[id(fval)]))
             elif (display == 'prefix' and not prefix and
                   isinstance(fval, (Variable, basestring))):
-                if isinstance(fval, Variable):
-                    prefix = '?%s' % fval.name
-                elif isinstance(fval, basestring):
                     prefix = '%s' % fval
             elif display == 'slash' and not suffix:
                 if isinstance(fval, Variable):
-                    suffix = '/?%s' % fval.name
+                    suffix = '?%s' % fval.name
                 else:
                     suffix = '/%r' % fval
             elif isinstance(fval, Variable):
-                segments.append('%s=?%s' % (fname, fval.name))
+                segments.append('%s=%s' % (fname, fval.name))
             elif fval is True:
                 segments.append('+%s' % fname)
             elif fval is False:
@@ -700,8 +697,8 @@ class FeatStruct(SubstituteBindingsI):
         for (fname, fval) in sorted(items):
             fname = str(fname)
             if isinstance(fval, Variable):
-                lines.append('%s = ?%s' % (fname.ljust(maxfnamelen),
-                                           fval.name))
+                lines.append('%s = %s' % (fname.ljust(maxfnamelen),
+                                          fval.name))
                 
             elif isinstance(fval, Expression):
                 lines.append('%s = <%s>' % (fname.ljust(maxfnamelen), fval))
@@ -1014,6 +1011,7 @@ def _rename_variables(fstruct, vars, used_vars, new_vars, fs_class, visited):
 
 def _rename_variable(var, used_vars):
     name, n = re.sub('\d+$', '', var.name), 2
+    if not name: name = '?'
     while Variable('%s%s' % (name, n)) in used_vars: n += 1
     return Variable('%s%s' % (name, n))
 
@@ -1403,12 +1401,12 @@ def _trace_bindings(path, bindings):
     if len(bindings) > 0:
         binditems = sorted(bindings.items(), key=lambda v:v[0].name)
         bindstr = '{%s}' % ', '.join(
-            '?%s: %s' % (var.name, _trace_valrepr(val))
+            '%s: %s' % (var, _trace_valrepr(val))
             for (var, val) in binditems)
         print '  '+'|   '*len(path)+'    Bindings: '+bindstr
 def _trace_valrepr(val):
     if isinstance(val, Variable):
-        return '?%s' % val.name
+        return '%s' % val
     else:
         return '%r' % val
 
@@ -1714,7 +1712,7 @@ class FeatStructParser(object):
                 raise ValueError('open bracket or identifier', match.start(2))
             prefixval = match.group(2).strip()
             if prefixval.startswith('?'):
-                prefixval = Variable(prefixval[1:])
+                prefixval = Variable(prefixval)
             fstruct[self._prefix_feature] = prefixval
 
         # If group 3 is emtpy, then we just have a bare prefix, so
@@ -1870,8 +1868,9 @@ class FeatStructParser(object):
     def parse_int_value(self, s, position, reentrances, match):
         return int(match.group()), match.end()
 
+    # Note: the '?' is included in the variable name.
     def parse_var_value(self, s, position, reentrances, match):
-        return Variable(match.group()[1:]), match.end()
+        return Variable(match.group()), match.end()
 
     _SYM_CONSTS = {'None':None, 'True':True, 'False':False}
     def parse_sym_value(self, s, position, reentrances, match):
