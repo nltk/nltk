@@ -21,15 +21,15 @@ from nltk import tokenize, Tree
 ## Utility functions for connecting parse output to semantics
 ##############################################################
 
-def text_parse(inputs, grammar, trace=0):
+def text_parse(inputs, parser, trace=0):
     """
     Convert input sentences into syntactic trees.
     """
     parses = {}
-    cp = grammar.earley_parser(trace=trace)
+    #cp = grammar.earley_parser(trace=trace)
     for sent in inputs:
         tokens = sent.split()
-        syntrees = cp.get_parse_list(tokens)
+        syntrees = parser.get_parse_list(tokens)
         parses[sent] = syntrees
     return parses
 
@@ -71,12 +71,12 @@ def root_semrep(syntree, beta_reduce=True, start='S'):
     node = root_node(syntree, start=start)
     return semrep(node, beta_reduce=beta_reduce)
 
-def text_interpret(inputs, grammar, beta_reduce=True, start='S', syntrace=0):
+def text_interpret(inputs, parser, beta_reduce=True, start='S', syntrace=0):
     """
     Add the semantic representation to each syntactic parse tree
     of each input sentence.
     """
-    parses = text_parse(inputs, grammar, trace=syntrace)
+    parses = text_parse(inputs, parser, trace=syntrace)
     semreps = {}
     for sent in inputs:
         syntrees = parses[sent]
@@ -85,14 +85,14 @@ def text_interpret(inputs, grammar, beta_reduce=True, start='S', syntrace=0):
         semreps[sent] = syn_sem
     return semreps
 
-def text_evaluate(inputs, grammar, model, assignment, semtrace=0):
+def text_evaluate(inputs, parser, model, assignment, semtrace=0):
     """
     Add the truth-in-a-model value to each semantic representation
     for each syntactic parse of each input sentences.
     """
     g = assignment
     m = model
-    semreps = text_interpret(inputs, grammar)
+    semreps = text_interpret(inputs, parser)
     evaluations = {}
     for sent in inputs:
         syn_sem_val = \
