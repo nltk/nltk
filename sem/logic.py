@@ -64,8 +64,14 @@ class SubstituteBindingsI(object):
         """
         @return: The object that is obtained by replacing
         each variable bound by C{bindings} with its values.
-        Aliases are already resolved.
+        Aliases are already resolved. (maybe?)
         @rtype: (any)
+        """
+        raise NotImplementedError()
+
+    def varaibles(self):
+        """
+        @return: A list of all variables in this object.
         """
         raise NotImplementedError()
             
@@ -140,7 +146,7 @@ class Expression(SubstituteBindingsI):
         Replace a variable v with a new, uniquely-named variable.
         """
         return self.replace(variable, unique_variable(counter),
-        replace_bound)
+                            replace_bound)
 
     def simplify(self):
         """Evaluate the form by repeatedly applying applications."""
@@ -187,7 +193,18 @@ class Expression(SubstituteBindingsI):
         expr = self
         for var in expr.free():
             if var in bindings:
-                expr = expr.replace(var, bindings[var])
+                val = bindings[var]
+                if isinstance(val, Variable):
+                    val = VariableExpression(val)
+                if isinstance(val, Constant):
+                    val = ConstantExpression(const)
+                if not isinstance(val, Expression):
+                    raise ValueError('Can not substitute a non-expresion '
+                                     'value into an expression: %r' % val)
+                # Substitute bindings in the target value.
+                val = val.substitute_bindings(bindings)
+                # Replace var w/ the target value.
+                expr = expr.replace(var, val)
         return expr.simplify()
 
 class VariableExpression(Expression):
