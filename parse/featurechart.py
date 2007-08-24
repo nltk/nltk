@@ -16,11 +16,12 @@ import yaml
 from nltk.parse.api import *
 from nltk.parse.chart import *
 from nltk.featstruct import FeatStruct, unify, FeatStructParser
-from nltk.sem.logic import SubstituteBindingsI
+from nltk.sem.logic import SubstituteBindingsI, unique_variable
 from nltk import cfg
 from nltk.cfg import FeatStructNonterminal
 from nltk import defaultdict
 import nltk.data
+from nltk.utilities import Counter
 
 def load_earley(filename, trace=0, verbose=False, chart_class=Chart):
     """
@@ -291,6 +292,55 @@ class FeatureEarleyChartParser(EarleyChartParser):
             if unify(edge.lhs(), grammar.start(), rename_vars=False):
                 trees += chart.trees(edge, complete=True)
         return trees
+
+#////////////////////////////////////////////////////////////
+# Instantiate Variable Chart
+#////////////////////////////////////////////////////////////
+
+class InstantiateVarsChart(Chart):
+    """
+    A specialized chart that 'instantiates' variables whose names
+    start with '@', by replacing them with unique new variables.
+    In particular, whenever a complete edge is added to the chart, any
+    variables in the edge's C{lhs} whose names start with '@' will be
+    replaced by unique new L{IndVariable}s.
+    """
+    def __init__(self, tokens):
+        Chart.__init__(self, tokens)
+        self._instantiated = set()
+        
+    def insert(self, edge, child_pointer_list):
+        if edge in self._instantiated: return False
+        edge = self.instantiate_edge(edge)
+        return Chart.insert(self, edge, child_pointer_list)
+    
+    def instantiate_edge(self, edge):
+        # If the edge is a leaf, or is not complete, or is
+        # already in the chart, then just return it as-is.
+        if not isinstance(edge, FeatureTreeEdge): return edge
+        if not edge.is_complete(): return edge
+        if edge in self._edge_to_cpls: return edge
+        
+        # Get a list of variables that need to be instantiated.
+        # If there are none, then return the edge as-is.
+        inst_vars = self.inst_vars(edge)
+        if not inst_vars: return edge
+        
+        # Instantiate the edge!
+        self._instantiated.add(edge)
+        lhs = edge.lhs().substitute_bindings(inst_vars)
+        return FeatureTreeEdge(edge.span(), lhs, edge.rhs(),
+                               edge.dot(), edge.bindings())
+    
+    counter = Counter(100)
+    def inst_vars(self, edge):
+        return dict((var, unique_variable(self.counter).variable)
+                    for var in edge.lhs().variables()
+                    if var.name.startswith('@'))
+
+#////////////////////////////////////////////////////////////
+# Demo
+#////////////////////////////////////////////////////////////
 
 # TODO: update to use grammar parser
 def demo():
