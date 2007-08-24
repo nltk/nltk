@@ -422,7 +422,7 @@ Parse the tokenized sentence.
           (PP (P with) (NP (Det my) (N cookie)))))) (p=6.31606532355e-06)
 
 Unit tests for the FeatStructNonterminal class
----------------------------------
+----------------------------------------------
 
     >>> from nltk.parse import FeatStructNonterminal
     >>> FeatStructNonterminal(
