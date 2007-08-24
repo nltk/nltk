@@ -421,32 +421,33 @@ Parse the tokenized sentence.
           (NP (Name Bob))
           (PP (P with) (NP (Det my) (N cookie)))))) (p=6.31606532355e-06)
 
-Unit tests for the Category class
+Unit tests for the FeatStructNonterminal class
 ---------------------------------
 
-    >>> from nltk.parse import Category, GrammarCategory
-    >>> Category(pos='n', agr=Category(number='pl', gender='f'))
-    [agr=[gender=f, number=pl], pos=n]
+    >>> from nltk.parse import FeatStructNonterminal
+    >>> FeatStructNonterminal(
+    ...     pos='n', agr=FeatStructNonterminal(number='pl', gender='f'))
+    [agr=[gender='f', number='pl'], pos='n']
 
-    >>> GrammarCategory.parse('VP[+fin]/NP[+pl]')
+    >>> FeatStructNonterminal('VP[+fin]/NP[+pl]')
     VP[+fin]/NP[+pl]
 
 Unit tests for the Feature Chart Parser classes
 -----------------------------------------------
 
-    >>> S = GrammarCategory.parse('S')
-    >>> VP = GrammarCategory.parse('VP')
-    >>> NP = GrammarCategory.parse('NP')
-    >>> PP = GrammarCategory.parse('PP')
-    >>> V = GrammarCategory.parse('V')
-    >>> N = GrammarCategory.parse('N')
-    >>> P = GrammarCategory.parse('P')
-    >>> Name = GrammarCategory.parse('Name')
-    >>> Det = GrammarCategory.parse('Det')
-    >>> DetSg = GrammarCategory.parse('Det[-pl]')
-    >>> DetPl = GrammarCategory.parse('Det[+pl]')
-    >>> NSg = GrammarCategory.parse('N[-pl]')
-    >>> NPl = GrammarCategory.parse('N[+pl]')
+    >>> S = FeatStructNonterminal('S')
+    >>> VP = FeatStructNonterminal('VP')
+    >>> NP = FeatStructNonterminal('NP')
+    >>> PP = FeatStructNonterminal('PP')
+    >>> V = FeatStructNonterminal('V')
+    >>> N = FeatStructNonterminal('N')
+    >>> P = FeatStructNonterminal('P')
+    >>> Name = FeatStructNonterminal('Name')
+    >>> Det = FeatStructNonterminal('Det')
+    >>> DetSg = FeatStructNonterminal('Det[-pl]')
+    >>> DetPl = FeatStructNonterminal('Det[+pl]')
+    >>> NSg = FeatStructNonterminal('N[-pl]')
+    >>> NPl = FeatStructNonterminal('N[+pl]')
 
 Define some grammatical productions.
 
@@ -479,55 +480,51 @@ Define some lexical productions.
     >>> trees = cp.get_parse_list(tokens)
     >>> for t in trees:
     ...     print t
-    ([INIT]
-      (S
-        (NP I)
-        (VP
-          (V saw)
-          (NP
-            (NP John)
-            (PP
-              (P with)
-              (NP
-                (NP (Det a) (N[-pl] dog))
-                (PP (P with) (NP (Det my) (N[-pl] cookie)))))))))
-    ([INIT]
-      (S
-        (NP I)
-        (VP
-          (V saw)
-          (NP
-            (NP (NP John) (PP (P with) (NP (Det a) (N[-pl] dog))))
-            (PP (P with) (NP (Det my) (N[-pl] cookie)))))))
-    ([INIT]
-      (S
-        (NP I)
-        (VP
-          (VP
-            (V saw)
-            (NP (NP John) (PP (P with) (NP (Det a) (N[-pl] dog)))))
-          (PP (P with) (NP (Det my) (N[-pl] cookie))))))
-    ([INIT]
-      (S
-        (NP I)
-        (VP
-          (VP (V saw) (NP John))
-          (PP
-            (P with)
-            (NP
-              (NP (Det a) (N[-pl] dog))
-              (PP (P with) (NP (Det my) (N[-pl] cookie))))))))
-    ([INIT]
-      (S
-        (NP I)
-        (VP
-          (VP
-            (VP (V saw) (NP John))
-            (PP (P with) (NP (Det a) (N[-pl] dog))))
-          (PP (P with) (NP (Det my) (N[-pl] cookie))))))
-
-
-
+    (S[]
+      (NP[] I)
+      (VP[]
+        (VP[]
+          (VP[] (V[] saw) (NP[] John))
+          (PP[] (P[] with) (NP[] (Det[] a) (N[-pl] dog))))
+        (PP[] (P[] with) (NP[] (Det[] my) (N[-pl] cookie)))))
+    (S[]
+      (NP[] I)
+      (VP[]
+        (VP[]
+          (V[] saw)
+          (NP[]
+            (NP[] John)
+            (PP[] (P[] with) (NP[] (Det[] a) (N[-pl] dog)))))
+        (PP[] (P[] with) (NP[] (Det[] my) (N[-pl] cookie)))))
+    (S[]
+      (NP[] I)
+      (VP[]
+        (VP[] (V[] saw) (NP[] John))
+        (PP[]
+          (P[] with)
+          (NP[]
+            (NP[] (Det[] a) (N[-pl] dog))
+            (PP[] (P[] with) (NP[] (Det[] my) (N[-pl] cookie)))))))
+    (S[]
+      (NP[] I)
+      (VP[]
+        (V[] saw)
+        (NP[]
+          (NP[]
+            (NP[] John)
+            (PP[] (P[] with) (NP[] (Det[] a) (N[-pl] dog))))
+          (PP[] (P[] with) (NP[] (Det[] my) (N[-pl] cookie))))))
+    (S[]
+      (NP[] I)
+      (VP[]
+        (V[] saw)
+        (NP[]
+          (NP[] John)
+          (PP[]
+            (P[] with)
+            (NP[]
+              (NP[] (Det[] a) (N[-pl] dog))
+              (PP[] (P[] with) (NP[] (Det[] my) (N[-pl] cookie))))))))
 
 Tests for loading grammar files
 -------------------------------
