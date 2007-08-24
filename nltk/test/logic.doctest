@@ -1,3 +1,6 @@
+=========================
+ Logic & Lambda Calculus
+=========================
    >>> from nltk.sem import *
 
 Test for equality under alpha-conversion. 
