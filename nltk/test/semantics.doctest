@@ -286,7 +286,7 @@ Load a valuation from a file.
     >>> for (syntree, semrep, value) in result[sent]:
     ... 	print "'%s' is %s in Model m\n" % (semrep.infixify(), value)
     ... 
-    'all x.((boy x) implies (some z15.((girl z15) and (chase z15 x)) and (in noosa x)))' is True in Model m
+    'all x.((boy x) implies (some z214.((girl z214) and (chase z214 x)) and (in noosa x)))' is True in Model m
     <BLANKLINE>
-    'all x.((boy x) implies some z82.(((girl z82) and (in noosa z82)) and (chase z82 x)))' is False in Model m
+    'all x.((boy x) implies some z307.(((girl z307) and (in noosa z307)) and (chase z307 x)))' is False in Model m
     <BLANKLINE>
