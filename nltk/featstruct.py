@@ -1462,7 +1462,10 @@ class FeatureValueSet(SubstituteBindingsSequence, frozenset):
     """
     def __repr__(self): # [xx] really use %s here?
         if len(self) == 0: return '{/}' # distinguish from dict.
-        return '{%s}' % ', '.join('%s' % (b,) for b in self)
+        # n.b., we sort the string reprs of our elements, to ensure
+        # that our own repr is deterministic.
+        return '{%s}' % ', '.join(sorted('%s' % (b,) for b in self))
+    __str__ = __repr__
 
 class FeatureValueUnion(SubstituteBindingsSequence, frozenset):
     """
@@ -1487,8 +1490,10 @@ class FeatureValueUnion(SubstituteBindingsSequence, frozenset):
         return frozenset.__new__(cls, values)
 
     def __repr__(self):
-        # n.b.: len(self) is guaranteed to be 2 or more.
-        return '{%s}' % '+'.join('%s' % (b,) for b in self)
+        # n.b., we sort the string reprs of our elements, to ensure
+        # that our own repr is deterministic.  also, note that len(self)
+        # is guaranteed to be 2 or more.
+        return '{%s}' % '+'.join(sorted('%s' % (b,) for b in self))
 
 class FeatureValueConcat(SubstituteBindingsSequence, tuple):
     """
