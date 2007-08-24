@@ -29,8 +29,8 @@ the same value.  For example, the following feature structure requires
 that the feature fs3['agr']['number'] be bound to the same value as the
 feature fs3['subj']['number'].
 
-    >>> fs3 = FeatStruct(agr=FeatStruct(number=Variable('n')),
-    ...                  subj=FeatStruct(number=Variable('n')))
+    >>> fs3 = FeatStruct(agr=FeatStruct(number=Variable('?n')),
+    ...                  subj=FeatStruct(number=Variable('?n')))
     >>> print fs3
     [ agr  = [ number = ?n ] ]
     [                        ]
@@ -446,7 +446,7 @@ The parser also includes support for reading sets and tuples.
     >>> FeatStruct('[x=(1,2,2,2), y=()]')
     [x=(1, 2, 2, 2), y=()]
     >>> print FeatStruct('[x=(1,[z=(1,2,?x)],?z,{/})]')
-    [ x = (1, [ z = (1, 2, x) ], z, {/}) ]
+    [ x = (1, [ z = (1, 2, ?x) ], ?z, {/}) ]
 
 Note that we can't put a featstruct inside a tuple, because doing so
 would hash it, and it's not frozen yet:
@@ -460,13 +460,13 @@ There's a special syntax for taking the union of sets: "{...+...}".
 The elements should only be variables or sets.
 
     >>> FeatStruct('[x={?a+?b+{1,2,3}}]')
-    [x={a+b+{1, 2, 3}}]
+    [x={{1, 2, 3}+?b+?a}]
     
 There's a special syntax for taking the concatenation of tuples:
 "(...+...)".  The elements should only be variables or tuples.
 
     >>> FeatStruct('[x=(?a+?b+(1,2,3))]')
-    [x=(a+b+(1, 2, 3))]
+    [x=(?a+?b+(1, 2, 3))]
     
 Parsing gives helpful messages if your string contains an error.
 
@@ -611,7 +611,7 @@ Variable bindings should preserve reentrance.
     >>> bindings = {}
     >>> fs1 = FeatStruct("[a=?x]")
     >>> fs2 = fs1.unify(FeatStruct("[a=[]]"), bindings)
-    >>> fs2['a'] is bindings[Variable('x')]
+    >>> fs2['a'] is bindings[Variable('?x')]
     True
     >>> fs2.unify(FeatStruct("[b=?x]"), bindings)
     [a=(1)[], b->(1)]
@@ -625,7 +625,7 @@ Aliased variable tests
     >>> fs3
     [a=?x, b=?x, c=?x]
     >>> bindings
-    {Variable('y'): Variable('x')}
+    {Variable('?y'): Variable('?x')}
     >>> fs3.unify(FeatStruct("[a=1]"))
     [a=1, b=1, c=1]
 
@@ -638,7 +638,7 @@ over multiple calls to unify.
     >>> fs2.unify(FeatStruct('[b=?x]'), bindings)
     [a=(1)[], b->(1)]
     >>> bindings
-    {Variable('x'): []}
+    {Variable('?x'): []}
 
 ..
     >>> del fs1, fs2, fs3, fs4, fs5 # clean-up
@@ -653,7 +653,7 @@ Unification Bindings
     >>> fs1.unify(fs2, bindings)
     [a=12]
     >>> bindings
-    {Variable('x'): 12}
+    {Variable('?x'): 12}
     >>> fs3.substitute_bindings(bindings)
     [b=12]
     >>> fs3 # substitute_bindings didn't mutate fs3.
@@ -667,7 +667,7 @@ Unification Bindings
     >>> fs1.unify(fs2, bindings)
     [a=5, b=1]
     >>> sorted(bindings.items())
-    [(Variable('x'), 5), (Variable('x2'), 1)]
+    [(Variable('?x'), 5), (Variable('?x2'), 1)]
 
 ..
     >>> del fs1, fs2, fs3 # clean-up
@@ -883,11 +883,11 @@ Retracting Bindings
     [                           ]
     [ b -> (1)                  ]
     >>> print bindings
-    {Variable('y'): [d=1], Variable('x'): [c=[d=1]]}
+    {Variable('?y'): [d=1], Variable('?x'): [c=[d=1]]}
     >>> retract_bindings(fs3, bindings)
     [a=?x, b=?x]
     >>> print bindings
-    {Variable('y'): [d=1], Variable('x'): [c=?y]}
+    {Variable('?y'): [d=1], Variable('?x'): [c=?y]}
 
 Squashed Bugs
 ~~~~~~~~~~~~~
@@ -903,7 +903,7 @@ There was a bug in svn revision 5172 that caused `rename_variables` to
 rename variables to names that are already used.
 
     >>> FeatStruct('[a=?x, b=?x2]').rename_variables(
-    ...     vars=[Variable('x')])
+    ...     vars=[Variable('?x')])
     [a=?x3, b=?x2]
     >>> fs1 = FeatStruct('[a=?x]')
     >>> fs2 = FeatStruct('[a=?x, b=?x2]')
