@@ -159,6 +159,7 @@ def load(resource_url, format='auto', cache=True, verbose=False):
       - C{'cfg'}
       - C{'pcfg'}
       - C{'fcfg'}
+      - C{'val'}
       - C{'raw'}
 
     If no format is specified, C{load()} will attempt to determine a
@@ -200,6 +201,7 @@ def load(resource_url, format='auto', cache=True, verbose=False):
         if resource_url.endswith('.cfg'): format = 'cfg'
         if resource_url.endswith('.pcfg'): format = 'pcfg'
         if resource_url.endswith('.fcfg'): format = 'fcfg'
+        if resource_url.endswith('.val'): format = 'val'
         
     # Load the resource.
     if format == 'pickle':
@@ -213,6 +215,8 @@ def load(resource_url, format='auto', cache=True, verbose=False):
     elif format == 'fcfg':
         # NB parse_fcfg returns a FeatGramLex -- a tuple (grammar, lexicon)
         resource_val = cfg.parse_fcfg(_open(resource_url).read())
+    elif format == 'val':
+        resource_val = sem.parse_val(_open(resource_url).read())
     elif format == 'raw':
         resource_val = _open(resource_url).read()
     else:
