@@ -12,7 +12,7 @@
 """
 
 from nltk.etree.ElementTree import Element, SubElement, TreeBuilder
-from nltk.corpus import toolbox
+from nltk.corpus.reader import toolbox
 import re
 
 class ToolboxData(toolbox.ToolboxData):

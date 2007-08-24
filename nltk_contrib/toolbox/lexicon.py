@@ -11,8 +11,8 @@ contents of a Toolbox lexicon without reference to its metadata.
 """
 
 import os, re, sys
-from nltk.corpus import find_corpus_file
-from nltk.corpus.toolbox import StandardFormat
+import nltk.data
+from nltk.corpus.reader.toolbox import StandardFormat
 from utilities import Field, SequentialDictionary
 
 
@@ -385,7 +385,7 @@ class Entry:
       del self._fields[fieldMarker]
 
 def demo() :
-    path = find_corpus_file("toolbox", "rotokas.dic")
+    path = nltk.data.find("corpora/toolbox/rotokas.dic")
     l = Lexicon(path)
     l.parse(key_fields=['lx','ps','sn'], unique_entry=False)
     h = l.get_header()
