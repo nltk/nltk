@@ -151,7 +151,35 @@ class ClassifyTestCase(unittest.TestCase):
         self.assertEqual(values[0], 'train')
         self.assertEqual(values[1], None)
         self.assertEqual(values[2], 'gold')
+
+    def test_valid_decision_tree_options(self):
+        dto = c.DecisionTreeOptions('IG')
+        dummy_classifier = ClassifierStub()
+        self.assertTrue(dummy_classifier.options is None)
+        dto.set_options(dummy_classifier)
+        self.assertEqual('maximum_information_gain', dummy_classifier.options)
+
+        dto = c.DecisionTreeOptions('GR')
+        dummy_classifier = ClassifierStub()
+        self.assertTrue(dummy_classifier.options is None)
+        dto.set_options(dummy_classifier)
+        self.assertEqual('maximum_gain_ratio', dummy_classifier.options)
         
+    def test_invalid_decision_tree_option_results_in_no_setting(self):
+        dto = c.DecisionTreeOptions('foo')
+        dummy_classifier = ClassifierStub()
+        self.assertTrue(dummy_classifier.options is None)
+        dto.set_options(dummy_classifier)
+        self.assertTrue(dummy_classifier.options is None)
+        
+
+        
+class ClassifierStub:
+    def __init__(self):
+        self.options = None
+    
+    def set_options(self, options):
+        self.options = options
         
 class StubClassify(c.Classify):
     def __init__(self, strategy):
@@ -181,5 +209,9 @@ class DoNothingStrategy:
     
     def write(self, log, should_write, data_format, suffix):
         #do nothing
+        pass
+    
+    def train(self):
+        #do Nothing
         pass
         

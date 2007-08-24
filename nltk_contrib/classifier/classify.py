@@ -107,8 +107,8 @@ class Classify(cl.CommandLineInterface):
         
         training, attributes, klass, test, gold = self.get_instances(self.training_path, self.test_path, self.gold_path, cross_validation_fold is not None)
         classifier = ALGORITHM_MAPPINGS[self.algorithm](training, attributes, klass)
-        classifier.train()
         classification_strategy = self.get_classification_strategy(classifier, test, gold, training, cross_validation_fold, attributes, klass)
+        classification_strategy.train()
         self.log_common_params('Classification')
         classification_strategy.classify()
         classification_strategy.print_results(self.log, self.get_value(ACCURACY), self.get_value(ERROR), self.get_value(F_SCORE), self.get_value(PRECISION), self.get_value(RECALL))
@@ -173,17 +173,19 @@ class CrossValidationStrategy:
                 new_path = self.training_path + str(index + 1) + suffix
                 data_format.write_gold_to_file(self.gold_instances[index], new_path)
                 print >>log, 'Gold classification written to ' + new_path + ' file.'
-        
+    
+    def train(self):
+        #do Nothing
+        pass
 
 class TestStrategy:
     def __init__(self, classifier, test, test_path, classifier_options):
         self.classifier = classifier
         self.test = test
         self.test_path = test_path
-        self.classifier_options = classifier_options
+        classifier_options.set_options(self.classifier)
         
     def classify(self):
-        self.classifier_options.set_options(self.classifier)
         self.classifier.test(self.test)
         
     def print_results(self, log, accuracy, error, fscore, precision, recall):
@@ -198,16 +200,18 @@ class TestStrategy:
         data_format.write_test_to_file(self.test, self.test_path + suffix)
         print >>log, 'Test classification written to ' + self.test_path + suffix + ' file.'
         
+    def train(self):
+        self.classifier.train()
+        
 class VerifyStrategy:
     def __init__(self, classifier, gold, gold_path, classifier_options):
         self.classifier = classifier
         self.gold = gold
         self.gold_path = gold_path
         self.confusion_matrix = None
-        self.classifier_options = classifier_options
+        classifier_options.set_options(self.classifier)
         
     def classify(self):
-        self.classifier_options.set_options(self.classifier)
         self.confusion_matrix = self.classifier.verify(self.gold)
         
     def print_results(self, log, accuracy, error, fscore, precision, recall):
@@ -225,6 +229,9 @@ class VerifyStrategy:
         if should_write:
             data_format.write_gold_to_file(self.gold, self.gold_path + suffix)
             print >>log, 'Gold classification written to ' + self.gold_path + suffix + ' file.'
+            
+    def train(self):
+        self.classifier.train()
     
 class CommonBaseNameStrategy:
     def __init__(self, files, verify):

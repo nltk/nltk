@@ -18,6 +18,7 @@ class Classifier:
         sorted_klass_values.extend([each for each in klass if not sorted_klass_values.__contains__(each)])
         self.klass = sorted_klass_values
         self.do_not_validate = False
+        self.options = None
             
     def train(self):
         if not self.do_not_validate:
@@ -58,6 +59,9 @@ class Classifier:
     @classmethod
     def can_handle_continuous_attributes(klass):
         return False
+    
+    def set_options(self, options):
+        self.options = options
 
 def split_ignore_space(comma_sep_string):
     return [name.strip() for name in comma_sep_string.split(',')]

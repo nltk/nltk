@@ -14,6 +14,10 @@ echo 'Decision Tree with separate training and test'
 python ../classifier/classify.py -a DT -t datasets/minigolf/weather -T datasets/minigolf/weather
 echo 'Decision Tree with separate training and gold'
 python ../classifier/classify.py -a DT -t datasets/minigolf/weather -g datasets/minigolf/weather
+echo 'Decision Tree with gain ratio option'
+python ../classifier/classify.py -a DT -t datasets/minigolf/weather -g datasets/minigolf/weather -o GR
+echo 'Decision Tree with informaition gain option-default'
+python ../classifier/classify.py -a DT -t datasets/minigolf/weather -g datasets/minigolf/weather -o IG
 echo 'Unsupervised Equal Width'
 python ../classifier/discretise.py -a UEW -f datasets/numerical/person -A 1,4,5,6,7 -o 2,3,2,3,4
 echo 'Unsupervised Equal Frequency'

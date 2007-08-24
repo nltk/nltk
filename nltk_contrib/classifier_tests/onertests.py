@@ -59,5 +59,5 @@ class OneRStub(oner.OneR):
     def __init__(self, instances, attributes, klass):
         oner.OneR.__init__(self, instances, attributes, klass)
         
-    def dummy_algorithm(self):
+    def dummy_algorithm(self, decision_stumps):
         return "dummy Best Decision stump"
