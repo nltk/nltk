@@ -15,21 +15,22 @@ a first-order model.
 import evaluate
 import re
 from nltk.tree import Tree
-import nltk.cfg
+import nltk.cfg, nltk.parse, nltk.data
+
 
 ##############################################################
 ## Utility functions for connecting parse output to semantics
 ##############################################################
 
-def text_parse(inputs, parser, trace=0):
+def text_parse(inputs, grammar, trace=0):
     """
     Convert input sentences into syntactic trees.
     """
     parses = {}
-    #cp = grammar.earley_parser(trace=trace)
+    cp = nltk.parse.FeatureEarleyChartParser(grammar, trace=trace)
     for sent in inputs:
         tokens = sent.split()
-        syntrees = parser.get_parse_list(tokens)
+        syntrees = cp.get_parse_list(tokens)
         parses[sent] = syntrees
     return parses
 
@@ -53,12 +54,12 @@ def root_semrep(syntree, beta_reduce=True, start='S'):
     """
     return semrep(syntree.node, beta_reduce=beta_reduce)
 
-def text_interpret(inputs, parser, beta_reduce=True, start='S', syntrace=0):
+def text_interpret(inputs, grammar, beta_reduce=True, start='S', syntrace=0):
     """
     Add the semantic representation to each syntactic parse tree
     of each input sentence.
     """
-    parses = text_parse(inputs, parser, trace=syntrace)
+    parses = text_parse(inputs, grammar, trace=syntrace)
     semreps = {}
     for sent in inputs:
         syntrees = parses[sent]
@@ -68,14 +69,14 @@ def text_interpret(inputs, parser, beta_reduce=True, start='S', syntrace=0):
         semreps[sent] = syn_sem
     return semreps
 
-def text_evaluate(inputs, parser, model, assignment, semtrace=0):
+def text_evaluate(inputs, grammar, model, assignment, semtrace=0):
     """
     Add the truth-in-a-model value to each semantic representation
     for each syntactic parse of each input sentences.
     """
     g = assignment
     m = model
-    semreps = text_interpret(inputs, parser)
+    semreps = text_interpret(inputs, grammar)
     evaluations = {}
     for sent in inputs:
         syn_sem_val = \
@@ -176,7 +177,6 @@ def read_sents(file):
 
 def demo():
     import sys
-    from nltk.parse.category import GrammarFile
     from optparse import OptionParser
     description = \
     """
@@ -219,7 +219,7 @@ Parse and evaluate some sentences.
     'John walks with a girl in Noosa',
     'who walks']
     
-    gramfile = 'sem2.cfg'
+    gramfile = 'grammars/sem2.fcfg'
         
     if options.sentences:
         sentsfile = options.sentences
@@ -231,7 +231,7 @@ Parse and evaluate some sentences.
     if sents is None:
         sents = read_sents(sentsfile)
 
-    gram = GrammarFile(gramfile)
+    gram = nltk.data.load(gramfile)
     
     # Set model and assignment
     model = m0
@@ -263,5 +263,5 @@ Parse and evaluate some sentences.
                 print '%d:  %s' % (n, semrep)
                 n += 1
                 
-#if __name__ == "__main__":
-    #demo()
+if __name__ == "__main__":
+    demo()

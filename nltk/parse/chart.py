@@ -1271,17 +1271,17 @@ class EarleyChartParser(AbstractParser):
     _completer_class = CompleterRule
     _scanner_class = ScannerRule
 
-    def __init__(self, grammar, lexicon, trace=0, chart_class=Chart):
+    def __init__(self, grammar, trace=0, chart_class=Chart):
         """
         Create a new Earley chart parser, that uses C{grammar} to
         parse texts.
         
         @type grammar: C{cfg.Grammar}
         @param grammar: The grammar used to parse texts.
-        @type lexicon: C{dict} from C{string} to (C{list} of C{string})
-        @param lexicon: A lexicon of words that records the parts of
-            speech that each word can have.  Each key is a word, and
-            the corresponding value is a list of parts of speech.
+        #@type lexicon: C{dict} from C{string} to (C{list} of C{string})
+        #@param lexicon: A lexicon of words that records the parts of
+            #speech that each word can have.  Each key is a word, and
+            #the corresponding value is a list of parts of speech.
         @type trace: C{int}
         @param trace: The level of tracing that should be used when
             parsing a text.  C{0} will generate no tracing output;
@@ -1291,7 +1291,7 @@ class EarleyChartParser(AbstractParser):
             the charts used by this parser.
         """
         self._grammar = grammar
-        self._lexicon = lexicon
+        self._lexicon = grammar.lexicon()
         self._trace = trace
         self._chart_class = chart_class
         AbstractParser.__init__(self)
