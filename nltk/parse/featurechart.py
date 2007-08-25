@@ -238,60 +238,22 @@ class FeatureEarleyChartParser(EarleyChartParser):
     nonterminals that have features (known as L{FeatStructNonterminal}s).
     See L{EarleyChartParser} for more details.
     """
-    # [xx] almost identical to earleychartparser -- refactor!
-    def __init__(self, grammar, lexicon, trace=0, chart_class=Chart):
-        EarleyChartParser.__init__(self, grammar, lexicon, trace)
-        self._chart_class = chart_class
-        self._trace = trace
-
     _predictor_class = FeaturePredictorRule
     _completer_class = FeatureCompleterRule
     _scanner_class = FeatureScannerRule
+    _trace_chart_width = 10 # Edges are big, so compress the chart.
 
-    def get_parse_list(self, tokens):
-        tokens = list(tokens)
-        self._check_coverage(tokens)
-
-        chart = self._chart_class(tokens)
-        grammar = self._grammar
-
-        w = 2 # Width, for printing trace edges.
-        if self._trace > 0: print ' '*9, chart.pp_leaves(w)
-
-        # Initialize the chart with a special "starter" edge.
-        root = FeatStructNonterminal('INIT')
-        edge = FeatureTreeEdge((0,0), root, (grammar.start(),), 0)
-        chart.insert(edge, ())
-
-        # Create the 3 rules:
-        predictor = self._predictor_class()
-        completer = self._completer_class()
-        scanner = self._scanner_class(self._lexicon)
-
-        for end in range(chart.num_leaves()+1):
-            if self._trace > 1: print 'Processing queue %d' % end
-
-            # This is tricky: chart.select returns an iterator, and
-            # when we add new edges, that might extend the set...!
-            for edge in chart.select(end=end):
-                if edge.is_complete():
-                    for e in completer.apply_iter(chart, grammar, edge):
-                        if self._trace > 0:
-                            print 'Completer', chart.pp_edge(e,w)
-                if edge.is_incomplete():
-                    for e in predictor.apply_iter(chart, grammar, edge):
-                        if self._trace > 1:
-                            print 'Predictor', chart.pp_edge(e,w)
-                if edge.is_incomplete():
-                    for e in scanner.apply_iter(chart, grammar, edge):
-                        if self._trace > 0:
-                            print 'Scanner  ', chart.pp_edge(e,w)
-
+    def _starter_edge(self, start):
+        root = FeatStructNonterminal('[*type*="[INIT]"]')
+        return FeatureTreeEdge((0,0), root, (start,), 0)
+        
+    def _parses(self, chart, start, tree_class):
         # Output a list of complete parses.
         trees = []
         for edge in chart.select(span=(0, chart.num_leaves())):
-            if unify(edge.lhs(), grammar.start(), rename_vars=False):
-                trees += chart.trees(edge, complete=True)
+            if unify(edge.lhs(), start, rename_vars=False):
+                trees += chart.trees(edge, complete=True,
+                                     tree_class=tree_class)
         return trees
 
 #////////////////////////////////////////////////////////////

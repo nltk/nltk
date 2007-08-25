@@ -104,7 +104,7 @@ read the grammar into NLTK, ready for use in parsing.
     Completer |. . [-]| [2:3] NP[NUM='pl'] -> N[NUM='pl'] *
     Completer |. [---]| [1:3] VP[NUM='sg', TENSE='pres'] -> TV[NUM='sg', TENSE='pres'] NP[] *
     Completer |[=====]| [0:3] S[] -> NP[NUM='sg'] VP[NUM='sg'] *
-    Completer |[=====]| [0:3] INIT[] -> S[] *
+    Completer |[=====]| [0:3] [INIT][] -> S[] *
     >>> for tree in trees: print tree
     (S[]
       (NP[NUM='sg'] (PropN[NUM='sg'] Kim))
@@ -341,7 +341,7 @@ things become really interesting.
     Completer |. . . [-------]| [3:7] VP[]/NP[] -> V[-AUX, SUBCAT=2] S-BAR[]/NP[] *
     Completer |. [-----------]| [1:7] S[+INV]/NP[] -> V[+AUX] NP[] VP[]/NP[] *
     Completer |[=============]| [0:7] S[-INV] -> NP[] S[]/NP[] *
-    Completer |[=============]| [0:7] INIT[] -> S[] *
+    Completer |[=============]| [0:7] [INIT][] -> S[] *
     >>> for tree in trees: print tree
     (S[-INV]
       (NP[+WH] who)
@@ -393,15 +393,15 @@ chart.  To do this, we use a special subclass of `Chart`, called
 A simple intransitive sentence:
 
     >>> trees = cp.get_parse_list('john barks'.split())
-              |.j.b.|
-    Scanner   |[-] .| [0:1] 'john'
-    Scanner   |[-] .| [0:1] NP[sem=[bo={(bo @x \P.(P John))}, core=<@x>]] -> 'john' *
-    Completer |[-> .| [0:1] S[sem=[bo={?b1+?b2}, core=<(?vp ?subj)>]] -> NP[sem=[bo=?b1, core=?subj]] * VP[sem=[bo=?b2, core=?vp]] {?b1: {(bo x101 \P.(P John))}, ?subj: VariableExpression('x101')}
-    Scanner   |. [-]| [1:2] 'barks'
-    Scanner   |. [-]| [1:2] IV[sem=[bo={/}, core=<\x.(bark x)>]] -> 'barks' *
-    Completer |. [-]| [1:2] VP[sem=[bo={/}, core=<\x.(bark x)>]] -> IV[sem=[bo={/}, core=<\x.(bark x)>]] *
-    Completer |[===]| [0:2] S[sem=[bo={(bo x101 \P.(P John))}, core=<(bark x101)>]] -> NP[sem=[bo={(bo x101 \P.(P John))}, core=<x101>]] VP[sem=[bo={/}, core=<\x.(bark x)>]] *
-    Completer |[===]| [0:2] INIT[] -> S[] *
+              |.jo.ba.|
+    Scanner   |[--]  .| [0:1] 'john'
+    Scanner   |[--]  .| [0:1] NP[sem=[bo={(bo @x \P.(P John))}, core=<@x>]] -> 'john' *
+    Completer |[-->  .| [0:1] S[sem=[bo={?b1+?b2}, core=<(?vp ?subj)>]] -> NP[sem=[bo=?b1, core=?subj]] * VP[sem=[bo=?b2, core=?vp]] {?b1: {(bo x101 \P.(P John))}, ?subj: VariableExpression('x101')}
+    Scanner   |.  [--]| [1:2] 'barks'
+    Scanner   |.  [--]| [1:2] IV[sem=[bo={/}, core=<\x.(bark x)>]] -> 'barks' *
+    Completer |.  [--]| [1:2] VP[sem=[bo={/}, core=<\x.(bark x)>]] -> IV[sem=[bo={/}, core=<\x.(bark x)>]] *
+    Completer |[=====]| [0:2] S[sem=[bo={(bo x101 \P.(P John))}, core=<(bark x101)>]] -> NP[sem=[bo={(bo x101 \P.(P John))}, core=<x101>]] VP[sem=[bo={/}, core=<\x.(bark x)>]] *
+    Completer |[=====]| [0:2] [INIT][] -> S[] *
     >>> for tree in trees: print tree
     (S[sem=[bo={(bo x101 \P.(P John))}, core=<(bark x101)>]]
       (NP[sem=[bo={(bo x101 \P.(P John))}, core=<x101>]] john)
@@ -426,7 +426,7 @@ A transitive sentence:
     Completer |. . [---]| [2:4] NP[sem=[bo={(bo @x \P.some x.(and (dog x) (P x)))}, core=<@x>]] -> Det[sem=[bo={/}, core=<\Q P.some x.(and (Q x) (P x))>]] N[sem=[bo={/}, core=<dog>]] *
     Completer |. [-----]| [1:4] VP[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x)))}, core=<\y.(feed x103 y)>]] -> TV[sem=[bo={/}, core=<\x y.(feed x y)>]] NP[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x)))}, core=<x103>]] *
     Completer |[=======]| [0:4] S[sem=[bo={(bo x102 \P.(P John)), (bo x103 \P.some x.(and (dog x) (P x)))}, core=<(feed x103 x102)>]] -> NP[sem=[bo={(bo x102 \P.(P John))}, core=<x102>]] VP[sem=[bo={(bo x103 \P.some x.(and (dog x) (P x)))}, core=<\y.(feed x103 y)>]] *
-    Completer |[=======]| [0:4] INIT[] -> S[] *
+    Completer |[=======]| [0:4] [INIT][] -> S[] *
     >>> for tree in trees: print tree
     (S[sem=[bo={(bo x102 \P.(P John)), (bo x103 \P.some x.(and (dog x) (P x)))}, core=<(feed x103 x102)>]]
       (NP[sem=[bo={(bo x102 \P.(P John))}, core=<x102>]] john)
