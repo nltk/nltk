@@ -14,8 +14,7 @@ a first-order model.
 
 import evaluate
 import re
-from nltk.tree import Tree
-import nltk.cfg, nltk.parse, nltk.data
+import nltk
 
 
 ##############################################################
