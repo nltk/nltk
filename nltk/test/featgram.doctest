@@ -1,6 +1,8 @@
 =========================
  Feature Grammar Parsing
 =========================
+.. include:: ../../doc/definitions.txt
+
 Grammars can be parsed from strings.
 
     >>> import nltk
@@ -33,6 +35,8 @@ it is convenient to put the rules in a file where they can be edited,
 tested and revised. Let's assume that we have saved feat0cfg_ as a file named
 ``'feat0.fcfg'`` and placed it in the NLTK ``data`` directory. We can
 inspect it as follows:
+
+.. _feat0cfg: http://nltk.svn.sourceforge.net/svnroot/nltk/trunk/nltk/data/grammars/feat0.fcfg
 
     >>> nltk.data.show_cfg('grammars/feat0.fcfg')
     % start S
@@ -145,7 +149,7 @@ discussed earlier.
     3
 
 Feature structures can also be constructed using the ``parse()``
-method of the ``nltk.FeatStruct" class. Note that in this case, atomic
+method of the ``nltk.FeatStruct`` class. Note that in this case, atomic
 feature values do not need to be enclosed in quotes.
     
     >>> f1 = nltk.FeatStruct("[NUMBER = sg]")
@@ -376,10 +380,12 @@ Let's load a German grammar:
 
 Grammar with Binding Operators
 ------------------------------
-The 'bindop.fcfg' grammar is a semantic grammar that uses lambda
+The `bindop.fcfg`_ grammar is a semantic grammar that uses lambda
 calculus.  Each element has a core semantics, which is a single lambda
 calculus expression; and a set of binding operators, which bind
 variables.
+
+.. _bindop.fcfg: http://nltk.svn.sourceforge.net/svnroot/nltk/trunk/nltk/data/grammars/bindop.fcfg
 
 In order to make the binding operators work right, they need to
 instantiate their bound variable every time they are added to the
@@ -437,6 +443,7 @@ A transitive sentence:
           (N[sem=[bo={/}, core=<dog>]] dog))))
 
 Turn down the verbosity:
+
     >>> cp = parse.load_earley('grammars/bindop.fcfg', trace=0,
     ...                        chart_class=InstantiateVarsChart)
 
