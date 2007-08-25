@@ -268,11 +268,10 @@ corpus, based on one or more "rule templates."
       11  19   8   3  | VBD -> VBN if the tag of words i-3...i-1 is 'IN'
     >>> print 'Accuracy: %4.1f%%' % (
     ...     100.0 * nltk.tag.accuracy(brill_tagger, brown_test))
-    Accuracy: 80.5%
+    Accuracy: 79.2%
 
 HMM Tagger
 ----------
-
 The HMM tagger uses a hidden markov model to find the most likely tag
 sequence for each sentence.  (Note: this requires numpy.)
 
@@ -313,21 +312,45 @@ Demo code lifted more or less directly from the HMM class.
     >>> print '%.3f' % (model.probability(sequence))
     0.051
 
+
+Check the test sequence by hand -- calculate the joint probability for
+each possible state sequence, and verify that they're equal to what
+the model gives; then verify that their total is equal to what the
+model gives for the probability of the sequence w/ no states specified.
+
+    >>> seqs = [zip(test, [a,b,c]) for a in states
+    ...         for b in states for c in states]
+    >>> total = 0
+    >>> for seq in seqs:
+    ...     # Calculate the probability by hand:
+    ...     expect = pi.prob(seq[0][1])
+    ...     for (o,s) in seq:
+    ...         expect *= B[s].prob(o)
+    ...     for i in range(1, len(seq)):
+    ...         expect *= A[seq[i-1][1]].prob(seq[i][1])
+    ...     # Check that it matches the model:
+    ...     assert abs(expect-model.probability(seq)) < 1e-10
+    ...     total += model.probability(seq)
+    >>> assert abs(total-model.probability(sequence)) < 1e-10
+
+Find the most likely set of tags for the test sequence.
+
     >>> model.tag(sequence)
     [('up', 'bull'), ('down', 'bear'), ('up', 'bull')]
 
+Find some entropy values.  These are all in base 2 (i.e., bits).
+
     >>> print '%.3f' % (model.entropy(sequence))
-    2.357
+    3.401
 
     >>> print '%.3f' % (model._exhaustive_entropy(sequence))
-    2.357
+    3.401
 
     >>> model.point_entropy(sequence)
-    array([ 0.68893883,  1.07097261,  0.67317762])
+    array([ 0.99392864,  1.54508687,  0.97119001])
 
     >>> model._exhaustive_point_entropy(sequence)
-    array([ 0.68893883,  1.07097261,  0.67317762])
-
+    array([ 0.99392864,  1.54508687,  0.97119001])
 
 
 Regression Tests
