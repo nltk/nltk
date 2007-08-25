@@ -576,17 +576,35 @@ def read_blankline_block(stream):
         else:
             s += line
 
-
 def read_sexpr_block(stream, block_size=16384, comment_char=None):
+    """
+    Read a sequence of s-expressions from the stream, and leave the
+    stream's file position at the end the last complete s-expression
+    read.  This function will always return at least one s-expression,
+    unless there are no more s-expressions in the file.
+    
+    @param block_size: The default block size for reading.  If an
+        s-expression is longer than one block, then more than one
+        block will be read.
+    @param comment_char: A character that marks comments.  Any lines
+        that begin with this character will be stripped out.
+        (If spaces or tabs preceed the comment character, then the
+        line will not be stripped.)
+    """
     start = stream.tell()
     block = stream.read(block_size)
     if comment_char:
-        COMMENT = re.compile('^' + comment_char + '.*$', re.MULTILINE)
+        COMMENT = re.compile('(?m)^%s.*$' % re.escape(comment_char))
     while True:
         try:
+            # If we're stripping comments, then make sure our block ends
+            # on a line boundary; and then replace any comments with
+            # space characters.  (We can't just strip them out -- that
+            # would make our offset wrong.)
             if comment_char:
-                block += stream.readline()           # ensure block ends on line boundary
-                block = re.sub(COMMENT, '', block)
+                block += stream.readline()
+                block = re.sub(COMMENT, _sub_space, block)
+            # Read the block.
             tokens, offset = _parse_sexpr_block(block)
             # Skip whitespace
             offset = re.compile(r'\s*').search(block, offset).end()
@@ -599,6 +617,11 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
                 block += stream.read(block_size)
                 continue
             else: raise
+
+def _sub_space(m):
+    """Helper function: given a regexp match, return a string of
+    spaces that's the same length as the matched string."""
+    return ' '*(m.end()-m.start())
 
 def _parse_sexpr_block(block):
     tokens = []
@@ -613,6 +636,9 @@ def _parse_sexpr_block(block):
 
         # Case 1: sexpr is not parenthesized.
         if m.group() != '(':
+            # [xx] if the file ends with a non-parenthasized sexpr
+            # that's not followed by a space, then this will loop
+            # forever.
             m2 = re.compile(r'[\s()]').search(block, start)
             if m2:
                 end = m2.start()
