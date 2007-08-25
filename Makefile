@@ -129,7 +129,7 @@ iso:	.dist.done .python.done .numpy.done .pylab.done
 
 .PHONY: rsync
 
-WEB = stevenbird@shell.sourceforge.net:/home/groups/n/nl/nltk/htdocs
+WEB = $(USER)@shell.sourceforge.net:/home/groups/n/nl/nltk/htdocs
 RSYNC_OPTS = -lrtvz -e ssh --relative --cvs-exclude
 
 rsync:	clean_up
