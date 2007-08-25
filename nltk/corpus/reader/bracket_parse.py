@@ -21,17 +21,20 @@ class BracketParseCorpusReader(CorpusReader):
     Reader for corpora that consist of parenthesis-delineated parse
     trees.
     """
-    def __init__(self, root, items, extension=''):
+    def __init__(self, root, items, extension='', comment_char=None):
         """
         @param root: The root directory for this corpus.
         @param items: A list of items in this corpus.
         @param extension: File extension for items in this corpus.
+        @param comment: The character which can appear at the start of a line to
+          indicate that the rest of the line is a comment.
         """
         if isinstance(items, basestring):
             items = find_corpus_items(root, items, extension)
         self._root = root
         self.items = tuple(items)
         self._extension = extension
+        self._comment_char = comment_char
 
     def raw(self, items=None):
         return concat([open(filename).read()
@@ -42,23 +45,21 @@ class BracketParseCorpusReader(CorpusReader):
                        for filename in self._item_filenames(items)])
 
     def tagged_sents(self, items=None):
-        return concat([StreamBackedCorpusView(filename,
-                                              lambda stream: [t.pos() for t in self._read_block(stream)])
+        return concat([StreamBackedCorpusView(filename, self._read_tagged_sent_block)
                        for filename in self._item_filenames(items)])
 
     # slightly inefficient to build trees then discard them
     def sents(self, items=None):
-        return concat([StreamBackedCorpusView(filename,
-                                              lambda stream: [t.leaves() for t in self._read_block(stream)])
+        return concat([StreamBackedCorpusView(filename, self._read_sent_block)
                        for filename in self._item_filenames(items)])
 
-    # this puts everything in memory, which is not what we want
     def tagged_words(self, items=None):
-        return [word for word in self.tagged_sents(items)]
+        return concat([StreamBackedCorpusView(filename, self._read_tagged_word_block)
+                       for filename in self._item_filenames(items)])
 
-    # this puts everything in memory, which is not what we want
     def words(self, items=None):
-        return [word for word in self.sents(items)]
+        return concat([StreamBackedCorpusView(filename, self._read_word_block)
+                       for filename in self._item_filenames(items)])
 
     def _item_filenames(self, items):
         if items is None: items = self.items
@@ -66,8 +67,20 @@ class BracketParseCorpusReader(CorpusReader):
         return [os.path.join(self._root, '%s%s' % (item, self._extension))
                 for item in items]
         
+    def _read_word_block(self, stream):
+        return sum(self._read_sent_block(stream), [])
+
+    def _read_tagged_word_block(self, stream):
+        return sum(self._read_tagged_sent_block(stream), [])
+
+    def _read_sent_block(self, stream):
+        return [t.leaves() for t in self._read_block(stream)]
+    
+    def _read_tagged_sent_block(self, stream):
+        return [t.pos() for t in self._read_block(stream)]
+
     def _read_block(self, stream):
-        trees = [self._parse(t) for t in read_sexpr_block(stream)]
+        trees = [self._parse(t) for t in read_sexpr_block(stream, self._comment_char)]
         return [tree for tree in trees if tree is not None]
     
     def _parse(self, t):
@@ -76,6 +89,6 @@ class BracketParseCorpusReader(CorpusReader):
         if re.match(r'\s*\(\s*\(', t):
             t = t.strip()[1:-1]
         # Replace any punctuation leaves of the form (!), (,), with (! !), (, ,)
-	t = re.sub(r"\((.)\)", r"(\1 \1)", t)
+        t = re.sub(r"\((.)\)", r"(\1 \1)", t)
         return bracket_parse(t)
 
