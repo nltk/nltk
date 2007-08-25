@@ -11,8 +11,6 @@ from itertools import islice
 from nltk import tokenize
 from nltk.etree import ElementTree
 
-COMMENT = re.compile(r'^#.*$', re.MULTILINE)
-
 ######################################################################
 #{ Corpus View
 ######################################################################
@@ -579,13 +577,17 @@ def read_blankline_block(stream):
             s += line
 
 
-def read_sexpr_block(stream, block_size=16384):
+def read_sexpr_block(stream, block_size=16384, comment_char=None):
     start = stream.tell()
     block = ''
+    if comment_char:
+        COMMENT = re.compile('^' + comment_char + '.*$', re.MULTILINE)
     while True:
         try:
             block += stream.read(block_size)
-            block = re.sub(COMMENT, '', block)
+            if comment_char:
+                block += stream.readline()           # ensure block ends on line boundary
+                block = re.sub(COMMENT, '', block)
             tokens, offset = _parse_sexpr_block(block)
             # Skip whitespace
             offset = re.compile(r'\s*').search(block, offset).end()
