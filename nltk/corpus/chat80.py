@@ -1,7 +1,6 @@
 # Natural Language Toolkit: Chat-80 KB Reader
 # See http://www.w3.org/TR/swbp-skos-core-guide/
 #
-# Copyright (C) 2001-2007 University of Pennsylvania
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>,
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
@@ -187,6 +186,7 @@ sea = {'rel_name': 'sea',
 
 items = ['borders', 'contains', 'city', 'country', 'circle_of_lat',
          'circle_of_long', 'continent', 'region', 'ocean', 'sea']
+items = tuple(sorted(items))
 
 item_metadata = {
     'borders': borders,
@@ -194,6 +194,7 @@ item_metadata = {
     'city': city,
     'country': country,
     'circle_of_lat': circle_of_lat,
+    'circle_of_long': circle_of_long,
     'continent': continent,
     'region': region,
     'ocean': ocean,
@@ -232,9 +233,12 @@ class Concept(object):
         self.extension = extension
 
     def __str__(self):
-        
-        return "Label = '%s'\nArity = %s\nExtension = %s" % \
-               (self.prefLabel, self.arity, sorted(self.extension))
+        _extension = ''
+        for element in sorted(self.extension):
+             _extension += element + ','
+        _extension = _extension[:-1]
+        return "Label = '%s'\nArity = %s\nExtension = {%s}" % \
+               (self.prefLabel, self.arity, _extension)
 
     def __repr__(self):
         return "Concept('%s')" % self.prefLabel
@@ -697,4 +701,5 @@ Valuation object for use in the NLTK semantics package.
 
 if __name__ == '__main__':
     main()
+
 
