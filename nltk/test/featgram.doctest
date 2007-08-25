@@ -21,9 +21,9 @@ Grammars can be parsed from strings.
     ... N[agr=[num='sg']] -> 'student'
     ... N[agr=[num='pl']] -> 'students'
     ... """
-    >>> (grammar, lexicon) = cfg.parse_fcfg(g)
+    >>> grammar = cfg.parse_fcfg(g)
     >>> tokens = 'these girls'.split()
-    >>> parser = parse.FeatureEarleyChartParser(grammar, lexicon)
+    >>> parser = parse.FeatureEarleyChartParser(grammar)
     >>> trees = parser.get_parse_list(tokens)
     >>> for tree in trees: print tree
     (DP[agr=[gend='f', num='pl', pers=3]]

@@ -213,7 +213,6 @@ def load(resource_url, format='auto', cache=True, verbose=False):
     elif format == 'pcfg':
         resource_val = cfg.parse_pcfg(_open(resource_url).read())
     elif format == 'fcfg':
-        # NB parse_fcfg returns a FeatGramLex -- a tuple (grammar, lexicon)
         resource_val = cfg.parse_fcfg(_open(resource_url).read())
     elif format == 'val':
         resource_val = sem.parse_valuation(_open(resource_url).read())

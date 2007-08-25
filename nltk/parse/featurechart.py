@@ -43,8 +43,8 @@ def load_earley(filename, trace=0, cache=False, verbose=False,
     If C{verbose} is set to C{True}, then more diagnostic information about
     grammar-loading is displayed.
     """
-    grammar, lexicon = nltk.data.load(filename, cache=cache, verbose=verbose)
-    return FeatureEarleyChartParser(grammar, lexicon, trace=trace,
+    grammar = nltk.data.load(filename, cache=cache, verbose=verbose)
+    return FeatureEarleyChartParser(grammar, trace=trace,
                                     chart_class=chart_class)
 
 class FeatureTreeEdge(TreeEdge):
@@ -341,18 +341,20 @@ def demo():
         cfg.Production(P, ('with',)), cfg.Production(P, ('under',)),
     ]
 
-    earley_grammar = cfg.Grammar(S, grammatical_productions)
+
     earley_lexicon = defaultdict(list)
     for prod in lexical_productions:
         earley_lexicon[prod.rhs()[0]].append(prod.lhs())
-    print "Lexicon:"
-    print earley_lexicon
-
+    #print "Lexicon:"
+    #print earley_lexicon
+    earley_grammar = cfg.Grammar(S, grammatical_productions, earley_lexicon)
+    print earley_grammar
+    
     sent = 'I saw John with a dog with my cookie'
     print "Sentence:\n", sent
     tokens = sent.split()
     t = time.time()
-    cp = FeatureEarleyChartParser(earley_grammar, earley_lexicon, trace=1)
+    cp = FeatureEarleyChartParser(earley_grammar, trace=1)
     trees = cp.get_parse_list(tokens)
     print "Time: %s" % (time.time() - t)
     for tree in trees: print tree
@@ -366,7 +368,8 @@ def run_profile():
     p.strip_dirs().sort_stats('cum', 'time').print_stats(60)
 
 if __name__ == '__main__':
-    #demo()
+    demo()
+    print
     cp = load_earley('grammars/feat0.fcfg', trace=2)
     sent = 'Kim likes children'
     tokens = sent.split()
