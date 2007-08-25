@@ -296,7 +296,7 @@ class ProbDistI(object):
 
     def logprob(self, sample):
         """
-        @return: the natural logarithm of the probability for a given
+        @return: the base 2 logarithm of the probability for a given
             sample.  Log probabilities range from negitive infinity to
             zero.
         @rtype: float
