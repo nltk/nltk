@@ -307,7 +307,7 @@ class Grammar(object):
     If you need efficient key-based access to productions, you
     can use a subclass to implement it.
     """
-    def __init__(self, start, productions):
+    def __init__(self, start, productions, lexicon=None):
         """
         Create a new context-free grammar, from the given start state
         and set of C{Production}s.
@@ -319,6 +319,7 @@ class Grammar(object):
         """
         self._start = start
         self._productions = productions
+        self._lexicon = lexicon
         self._lhs_index = {}
         self._rhs_index = {}
         for prod in self._productions:
@@ -361,6 +362,10 @@ class Grammar(object):
                         if prod in self._rhs_index[rhs]]
             else:
                 return []
+            
+    def lexicon(self):
+        return self._lexicon
+        
 
     def covers(self, tokens):
         """
@@ -383,6 +388,10 @@ class Grammar(object):
         str += ' (start state = %s)' % self._start
         for production in self._productions:
             str += '\n    %s' % production
+        if self._lexicon:
+            str += '\n\n    Lexical Entries\n    ==============='
+            for word in sorted(self._lexicon):
+                str += '\n    %-15s: %s' % (word, self._lexicon[word])
         return str
 
 #################################################################
@@ -739,10 +748,9 @@ def parse_fcfg(input, features=None):
             (len(prod.rhs()) == 1 and isinstance(prod.rhs()[0], str))]
     if not start:
         start = productions[0].lhs()
-    
-    grammar = Grammar(start, grammatical_productions)
     lexicon = earley_lexicon(lexical_productions)
-    return (grammar, lexicon)
+    grammar = Grammar(start, grammatical_productions, lexicon)
+    return grammar
 
 from nltk.utilities import deprecated
 @deprecated("Use nltk.cfg.parse_fcfg() instead.")
@@ -889,9 +897,16 @@ def pcfg_demo():
     for parse in parser.get_parse_list(sent):
         print parse
 
+def fcfg_demo():
+    import nltk.data
+    g = nltk.data.load('grammars/feat0.fcfg')
+    print g
+    print 
+    
 def demo():
     cfg_demo()
     pcfg_demo()
+    fcfg_demo()
 
 if __name__ == '__main__':
     demo()
