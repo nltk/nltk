@@ -41,14 +41,13 @@ class BracketParseCorpusReader(CorpusReader):
                        for filename in self._item_filenames(items)])
 
     def parsed_sents(self, items=None):
-        return concat([StreamBackedCorpusView(filename, self._read_block)
+        return concat([StreamBackedCorpusView(filename, self._read_parsed_sent_block)
                        for filename in self._item_filenames(items)])
 
     def tagged_sents(self, items=None):
         return concat([StreamBackedCorpusView(filename, self._read_tagged_sent_block)
                        for filename in self._item_filenames(items)])
 
-    # slightly inefficient to build trees then discard them
     def sents(self, items=None):
         return concat([StreamBackedCorpusView(filename, self._read_sent_block)
                        for filename in self._item_filenames(items)])
@@ -67,6 +66,8 @@ class BracketParseCorpusReader(CorpusReader):
         return [os.path.join(self._root, '%s%s' % (item, self._extension))
                 for item in items]
         
+# block readers
+
     def _read_word_block(self, stream):
         return sum(self._read_sent_block(stream), [])
 
@@ -74,21 +75,32 @@ class BracketParseCorpusReader(CorpusReader):
         return sum(self._read_tagged_sent_block(stream), [])
 
     def _read_sent_block(self, stream):
-        return [t.leaves() for t in self._read_block(stream)]
+        return [self._word(t) for t in read_sexpr_block(stream, comment_char=self._comment_char)]
     
     def _read_tagged_sent_block(self, stream):
-        return [t.pos() for t in self._read_block(stream)]
+        return [self._tag(t) for t in read_sexpr_block(stream, comment_char=self._comment_char)]
 
-    def _read_block(self, stream):
-        trees = [self._parse(t) for t in read_sexpr_block(stream, self._comment_char)]
+    def _read_parsed_sent_block(self, stream):
+        trees = [self._parse(t) for t in read_sexpr_block(stream, comment_char=self._comment_char)]
         return [tree for tree in trees if tree is not None]
     
-    def _parse(self, t):
+# low-level string processing
+    
+    def _normalize(self, t):
         # If there's an empty set of brackets surrounding the actual
         # parse, then strip them off.
         if re.match(r'\s*\(\s*\(', t):
             t = t.strip()[1:-1]
         # Replace any punctuation leaves of the form (!), (,), with (! !), (, ,)
         t = re.sub(r"\((.)\)", r"(\1 \1)", t)
-        return bracket_parse(t)
+        return t
+
+    def _parse(self, t):
+        return bracket_parse(self._normalize(t))
+
+    def _tag(self, t):
+        return [(w,t) for (t,w) in re.findall(r'\((\S+?) (\S+?)\)', self._normalize(t))]
+
+    def _word(self, t):
+        return re.findall(r'\(\S+? (\S+?)\)', self._normalize(t))
 

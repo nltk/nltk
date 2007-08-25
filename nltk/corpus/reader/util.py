@@ -579,12 +579,11 @@ def read_blankline_block(stream):
 
 def read_sexpr_block(stream, block_size=16384, comment_char=None):
     start = stream.tell()
-    block = ''
+    block = stream.read(block_size)
     if comment_char:
         COMMENT = re.compile('^' + comment_char + '.*$', re.MULTILINE)
     while True:
         try:
-            block += stream.read(block_size)
             if comment_char:
                 block += stream.readline()           # ensure block ends on line boundary
                 block = re.sub(COMMENT, '', block)
@@ -597,6 +596,7 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
             return tokens
         except ValueError, e:
             if e.args[0] == 'Block too small':
+                block += stream.read(block_size)
                 continue
             else: raise
 
