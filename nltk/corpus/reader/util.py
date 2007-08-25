@@ -582,6 +582,10 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
     stream's file position at the end the last complete s-expression
     read.  This function will always return at least one s-expression,
     unless there are no more s-expressions in the file.
+
+    If the file ends in in the middle of an s-expression, then that
+    incomplete s-expression is returned when the end of the file is
+    reached.
     
     @param block_size: The default block size for reading.  If an
         s-expression is longer than one block, then more than one
@@ -614,8 +618,13 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
             return tokens
         except ValueError, e:
             if e.args[0] == 'Block too small':
-                block += stream.read(block_size)
-                continue
+                next_block = stream.read(block_size)
+                if next_block:
+                    block += next_block
+                    continue
+                else:
+                    # The file ended mid-sexpr -- return what we got.
+                    return block.strip()
             else: raise
 
 def _sub_space(m):
@@ -636,9 +645,6 @@ def _parse_sexpr_block(block):
 
         # Case 1: sexpr is not parenthesized.
         if m.group() != '(':
-            # [xx] if the file ends with a non-parenthasized sexpr
-            # that's not followed by a space, then this will loop
-            # forever.
             m2 = re.compile(r'[\s()]').search(block, start)
             if m2:
                 end = m2.start()
