@@ -585,7 +585,7 @@ def config_java(bin=None, options=None):
     """
     global _java_bin, _java_options
     if bin is not None:
-        if not os.path.exists(_java_bin):
+        if not os.path.exists(bin):
             raise ValueError('Could not find java binary at %r' % bin)
         _java_bin = bin
     if options is not None:
