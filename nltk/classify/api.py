@@ -24,6 +24,7 @@ classification}, in which:
     - The number of categories is finite.
     - Each text belongs to zero or more categories.
 """
+from nltk.utilities import deprecated
 
 ##//////////////////////////////////////////////////////
 #{ Classification Interfaces
@@ -41,7 +42,7 @@ class ClassifierI(object):
       - either L{classify()} or L{batch_classify()} (or both)
       
     Subclasses may define:
-      - either L{probdist()} or L{batch_probdist()} (or both)
+      - either L{prob_classify()} or L{batch_prob_classify()} (or both)
     """
     def labels(self):
         """
@@ -61,7 +62,7 @@ class ClassifierI(object):
         else:
             raise NotImplementedError()
 
-    def probdist(self, featureset):
+    def prob_classify(self, featureset):
         """
         @return: a probability distribution over labels for the given
             featureset.
@@ -69,7 +70,7 @@ class ClassifierI(object):
         """
         if (self.batch_probdist.im_func is not
             ClassifierI.batch_probdist.im_func):
-            return self.batch_probdist([featureset])[0]
+            return self.batch_prob_classify([featureset])[0]
         else:
             raise NotImplementedError()
 
@@ -83,16 +84,25 @@ class ClassifierI(object):
         """
         return [self.classify(fs) for fs in featuresets]
 
-    def batch_probdist(self, featuresets):
+    def batch_prob_classify(self, featuresets):
         """
-        Apply L{self.probdist()} to each element of C{featuresets}.  I.e.:
+        Apply L{self.prob_classify()} to each element of C{featuresets}.  I.e.:
 
-            >>> return [self.probdist(fs) for fs in featuresets]
+            >>> return [self.prob_classify(fs) for fs in featuresets]
 
         @rtype: C{list} of L{ProbDist <nltk.probability.ProbDist>}
         """
-        return [self.probdist(fs) for fs in featuresets]
+        return [self.prob_classify(fs) for fs in featuresets]
 
+    #{ Deprecated
+    @deprecated("Use .batch_prob_classify() instead.")
+    def batch_prob_classify(self, featuresets):
+        return self.batch_prob_classify(featuresets)
+    @deprecated("Use .prob_classify() instead.")
+    def prob_classify(self, featureset):
+        return self.prob_classify(featureset)
+    #}
+    
 class MultiClassifierI(object):
     """
     A processing interface for labeling tokens with zero or more
@@ -105,7 +115,7 @@ class MultiClassifierI(object):
       - either L{classify()} or L{batch_classify()} (or both)
       
     Subclasses may define:
-      - either L{probdist()} or L{batch_probdist()} (or both)
+      - either L{prob_classify()} or L{batch_prob_classify()} (or both)
     """
     def labels(self):
         """
@@ -125,7 +135,7 @@ class MultiClassifierI(object):
         else:
             raise NotImplementedError()
 
-    def probdist(self, featureset):
+    def prob_classify(self, featureset):
         """
         @return: a probability distribution over sets of labels for the
             given featureset.
@@ -133,7 +143,7 @@ class MultiClassifierI(object):
         """
         if (self.batch_probdist.im_func is not
             ClassifierI.batch_probdist.im_func):
-            return self.batch_probdist([featureset])[0]
+            return self.batch_prob_classify([featureset])[0]
         else:
             raise NotImplementedError()
 
@@ -147,16 +157,25 @@ class MultiClassifierI(object):
         """
         return [self.classify(fs) for fs in featuresets]
 
-    def batch_probdist(self, featuresets):
+    def batch_prob_classify(self, featuresets):
         """
-        Apply L{self.probdist()} to each element of C{featuresets}.  I.e.:
+        Apply L{self.prob_classify()} to each element of C{featuresets}.  I.e.:
 
-            >>> return [self.probdist(fs) for fs in featuresets]
+            >>> return [self.prob_classify(fs) for fs in featuresets]
             
         @rtype: C{list} of L{ProbDist <nltk.probability.ProbDist>}
         """
-        return [self.probdist(fs) for fs in featuresets]
+        return [self.prob_classify(fs) for fs in featuresets]
 
+    #{ Deprecated
+    @deprecated("Use .batch_prob_classify() instead.")
+    def batch_prob_classify(self, featuresets):
+        return self.batch_prob_classify(featuresets)
+    @deprecated("Use .prob_classify() instead.")
+    def prob_classify(self, featureset):
+        return self.prob_classify(featureset)
+    #}
+    
 # # [XX] IN PROGRESS:
 # class SequenceClassifierI(object):
 #     """
@@ -173,7 +192,7 @@ class MultiClassifierI(object):
 #         """
 #         raise NotImplementedError()
 
-#     def probdist(self, featureset):
+#     def prob_classify(self, featureset):
 #         """
 #         Return a probability distribution over labels for the given
 #         featureset.

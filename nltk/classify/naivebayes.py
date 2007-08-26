@@ -85,9 +85,9 @@ class NaiveBayesClassifier(ClassifierI):
         return self._labels
 
     def classify(self, featureset):
-        return self.probdist(featureset).max()
+        return self.prob_classify(featureset).max()
         
-    def probdist(self, featureset):
+    def prob_classify(self, featureset):
         # Discard any feature names that we've never seen before.
         # Otherwise, we'll just assign a probability of 0 to
         # everything.
