@@ -23,6 +23,13 @@ class DecisionTreeClassifier(ClassifierI):
         self._fname = feature_name
         self._decisions = decisions
 
+    def labels(self):
+        labels = [self._label]
+        if self._decisions is not None:
+            for dt in self._decisions.values():
+                labels.extend(dt.labels())
+        return list(set(labels))
+
     def classify(self, featureset):
         # Decision leaf:
         if self._fname is None:
