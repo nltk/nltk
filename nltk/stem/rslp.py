@@ -132,7 +132,7 @@ def demo():
     # white-space tokenizer friendly text; text taken from the first paragraph
     # of Erico Verissimo's "Música ao Longe"
     text = u"""
-Clarissas risca com giz no quadro-negro a paisagem que os alunos devem copiar .
+Clarissa risca com giz no quadro-negro a paisagem que os alunos devem copiar .
 Uma casinha de porta e janela , em cima duma coxilha . Um coqueiro do lado
 ( onde o nosso amor nasceu - pensa ela no momento mesmo em que risca o troco
 longo e fino ) . Depois , uma estradinha que corre , ondulando como uma cobra
