@@ -1,0 +1,8 @@
+# Step 6: Vowel Removal 
+"bil"	2	"vel"	*
+"gue"	2	"g"	"gangue","jegue"
+"á"	3	""	*
+"ê"	3	""	"bebê"
+"a"	3	""	"ásia"
+"e"	3	""	*
+"o"	3	""	"ão"
