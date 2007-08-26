@@ -25,7 +25,7 @@ identifier will be highlighted in red.
 
 import os, re, sys, tokenize, textwrap
 import nltk, nltk.corpus
-from doctest import DocTestParser
+from doctest import DocTestParser, register_optionflag
 from cStringIO import StringIO
 from nltk import defaultdict
 
@@ -76,6 +76,9 @@ term = TerminalController()
 ######################################################################
 # Code
 ######################################################################
+
+# If we're using py24, then ignore the +SKIP directive.
+if sys.version_info[:2] < (2,5): register_optionflag('SKIP')
 
 def strip_quotes(s):
     s = s.strip()
@@ -155,7 +158,7 @@ def print_deprecated_uses_in(readline, path, dep_files, dep_names,
         # the @deprecated decorator.
         if line is not context[-1]:
             context.append(line)
-            if len(context) > 5: del context[0]
+            if len(context) > 10: del context[0]
         esctok = re.escape(tok)
         # Ignore all tokens except deprecated names.
         if not (tok in deprecated_classes or
