@@ -624,7 +624,7 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
                     continue
                 else:
                     # The file ended mid-sexpr -- return what we got.
-                    return block.strip()
+                    return [block.strip()]
             else: raise
 
 def _sub_space(m):
@@ -645,7 +645,7 @@ def _parse_sexpr_block(block):
 
         # Case 1: sexpr is not parenthesized.
         if m.group() != '(':
-            m2 = re.compile(r'[\s()]').search(block, start)
+            m2 = re.compile(r'[\s(]').search(block, start)
             if m2:
                 end = m2.start()
             else:
