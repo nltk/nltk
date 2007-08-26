@@ -94,10 +94,10 @@ class ClassifierI(object):
 
     #{ Deprecated
     @deprecated("Use .batch_prob_classify() instead.")
-    def batch_prob_classify(self, featuresets):
+    def batch_probdist(self, featuresets):
         return self.batch_prob_classify(featuresets)
     @deprecated("Use .prob_classify() instead.")
-    def prob_classify(self, featureset):
+    def probdist(self, featureset):
         return self.prob_classify(featureset)
     #}
     
@@ -165,10 +165,10 @@ class MultiClassifierI(object):
 
     #{ Deprecated
     @deprecated("Use .batch_prob_classify() instead.")
-    def batch_prob_classify(self, featuresets):
+    def batch_probdist(self, featuresets):
         return self.batch_prob_classify(featuresets)
     @deprecated("Use .prob_classify() instead.")
-    def prob_classify(self, featureset):
+    def probdist(self, featureset):
         return self.prob_classify(featureset)
     #}
     
