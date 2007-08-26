@@ -495,7 +495,7 @@ file, a phonetic transcription, and a tokenized word list.
      'dr1-fvmh0/sx206', 'dr1-fvmh0/sx26', 'dr1-fvmh0/sx296', ...)
 
     >>> item = timit.items[5]
-    >>> print timit.phons(item) # doctest: +NORMALIZE_WHITESPACE
+    >>> print timit.phones(item) # doctest: +NORMALIZE_WHITESPACE
     ['h#', 'k', 'l', 'ae', 's', 'pcl', 'p', 'dh', 'ax',
      's', 'kcl', 'k', 'r', 'ux', 'ix', 'nx', 'y', 'ax',
      'l', 'eh', 'f', 'tcl', 't', 'hh', 'ae', 'n', 'dcl',
@@ -507,7 +507,7 @@ file, a phonetic transcription, and a tokenized word list.
 The corpus reader can combine the word segmentation information with
 the phonemes to produce a single tree structure:
 
-    >>> for tree in timit.phon_trees(item):
+    >>> for tree in timit.phone_trees(item):
     ...     print tree
     (S
       h#
@@ -523,7 +523,7 @@ the phonemes to produce a single tree structure:
 The start time and stop time of each phoneme, word, and sentence are
 also available:
 
-    >>> print timit.phon_times(item) # doctest: +ELLIPSIS
+    >>> print timit.phone_times(item) # doctest: +ELLIPSIS
     [('h#', 0, 2190), ('k', 2190, 3430), ('l', 3430, 4326), ...]
     >>> print timit.word_times(item) # doctest: +ELLIPSIS
     [('clasp', 2190, 8804), ('the', 8804, 9734), ...]
@@ -894,4 +894,51 @@ iteration can be interleaved:
     taken           the             he              office         
     must            powers          is              of             
     feel            and             lacking         an             
+
+Squashed Bugs
+~~~~~~~~~~~~~
+
+svn 5276 fixed a bug in the comment-stripping behavior of
+parse_sexpr_block.
+
+    >>> from cStringIO import StringIO
+    >>> from nltk.corpus.reader.util import read_sexpr_block
+    >>> f = StringIO("""
+    ... (a b c)
+    ... # This line is a comment.
+    ... (d e f\ng h)""")
+    >>> print read_sexpr_block(f, block_size=38, comment_char='#')
+    ['(a b c)']
+    >>> print read_sexpr_block(f, block_size=38, comment_char='#')
+    ['(d e f\ng h)']
+
+svn 5277 fixed a bug in parse_sexpr_block, which would cause it to
+enter an infinite loop if a file ended mid-sexpr, or ended with a
+token that was not followed by whitespace.  A related bug caused
+an infinite loop if the corpus ended in an unmatched close paren --
+this was fixed in svn 5279
+
+    >>> f = StringIO("""
+    ... This file ends mid-sexpr
+    ... (hello (world""")
+    >>> for i in range(3): print read_sexpr_block(f)
+    ['This', 'file', 'ends', 'mid-sexpr']
+    ['(hello (world']
+    []
+
+    >>> f = StringIO("""This file has no trailing whitespace.""")
+    >>> for i in range(3): print read_sexpr_block(f)
+    ['This', 'file', 'has', 'no', 'trailing']
+    ['whitespace.']
+    []
+
+    >>> # Bug fixed in 5279:
+    >>> f = StringIO("""a b c)""")
+    >>> for i in range(3): print read_sexpr_block(f)
+    ['a', 'b']
+    ['c)']
+    []
+
+
+
 
