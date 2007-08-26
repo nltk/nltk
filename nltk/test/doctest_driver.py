@@ -126,7 +126,7 @@ class MyDocTestParser(DocTestParser):
                 else:
                     output.append(example)
 
-                lineno_offset += piece.count('\n')
+            lineno_offset += piece.count('\n')
 
         # For debugging:
         #for ex in output:
