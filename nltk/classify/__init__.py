@@ -73,12 +73,12 @@ __all__ = [
     
     # Classifiers
     'NaiveBayesClassifier', 'DecisionTreeClassifier', 'WekaClassifier',
-    ConditionalExponentialClassifier, train_maxent_classifier,
+    'ConditionalExponentialClassifier', 'train_maxent_classifier',
     
     # Utility functions.  Note that accuracy() is intentionally
     # omitted -- it should be accessed as nltk.classify.accuracy();
     # similarly for log_likelihood() and attested_labels().
-    config_weka,
+    'config_weka',
     
     # Demos -- not included.
     ]
