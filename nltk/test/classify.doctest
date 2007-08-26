@@ -1,0 +1,177 @@
+=============
+ Classifiers
+=============
+
+Classifiers label tokens with category labels (or *class labels*).
+Typically, labels are represented with strings (such as ``"health"``
+or ``"sports"``.  In NLTK, classifiers are defined using classes that
+implement the `ClassifyI` interface:
+
+    >>> import nltk
+    >>> nltk.usage(nltk.ClassifierI)
+    ClassifierI supports the following operations:
+      - self.batch_classify(featuresets)
+      - self.batch_prob_classify(featuresets)
+      - self.classify(featureset)
+      - self.labels()
+      - self.prob_classify(featureset)
+
+Currently, NLTK defines four classifier classes:
+
+- `NaiveBayesClassifier`
+- `DecisionTreeClassifier`
+- `ConditionalExponentialClassifier`
+- `WekaClassifier`
+
+Classifiers are typically created by training them on a training
+corpus.
+
+
+Regression Tests
+~~~~~~~~~~~~~~~~
+We define a very simple training corpus with 3 binary features: ['a',
+'b', 'c'], and are two labels: ['x', 'y'].  We us a simple reason so
+that the correct answers can be calcualted analytically (although we
+haven't done this yet for all tests.
+
+    >>> train = [
+    ...     (dict(a=1,b=1,c=1), 'y'),
+    ...     (dict(a=1,b=1,c=1), 'x'),
+    ...     (dict(a=1,b=1,c=0), 'y'),
+    ...     (dict(a=0,b=1,c=1), 'x'),
+    ...     (dict(a=0,b=1,c=1), 'y'),
+    ...     (dict(a=0,b=0,c=1), 'y'),
+    ...     (dict(a=0,b=1,c=0), 'x'),
+    ...     (dict(a=0,b=0,c=0), 'x'),
+    ...     (dict(a=0,b=1,c=1), 'y'),
+    ...     ]
+    >>> test = [
+    ...     (dict(a=1,b=0,c=1)), # unseen
+    ...     (dict(a=1,b=0,c=0)), # unseen
+    ...     (dict(a=0,b=1,c=1)), # seen 3 times, labels=y,y,x
+    ...     (dict(a=0,b=1,c=0)), # seen 1 time, label=x
+    ...     ]
+
+Test the naive bayes classifier:
+
+    >>> classifier = nltk.NaiveBayesClassifier.train(train)
+    >>> sorted(classifier.labels())
+    ['x', 'y']
+    >>> classifier.batch_classify(test)
+    ['y', 'x', 'y', 'x']
+    >>> for pdist in classifier.batch_prob_classify(test):
+    ...     print '%.4f %.4f' % (pdist.prob('x'), pdist.prob('y'))
+    0.3104 0.6896
+    0.5746 0.4254
+    0.3685 0.6315
+    0.6365 0.3635
+    >>> classifier.show_most_informative_features()
+    <BLANKLINE>
+    Most Informative Features
+                           c = 0        x:y = 2.0 : 1.0
+                           c = 1        y:x = 1.5 : 1.0
+                           a = 1        y:x = 1.4 : 1.0
+                           a = 0        x:y = 1.2 : 1.0
+                           b = 0        x:y = 1.2 : 1.0
+                           b = 1        y:x = 1.1 : 1.0
+
+Test the decision tree classifier:
+
+    >>> classifier = nltk.DecisionTreeClassifier.train(
+    ...     train, entropy_cutoff=0,
+    ...                                                support_cutoff=0)
+    best stump for    9 toks uses                    c err=0.4444
+    best stump for    3 toks uses                    a err=0.3333
+    best stump for    6 toks uses                 None err=0.3333
+    >>> sorted(classifier.labels())
+    ['x', 'y']
+    >>> print classifier
+    c=0? .................................................. x
+      a=0? ................................................ x
+      a=1? ................................................ y
+    c=1? .................................................. y
+    <BLANKLINE>
+    >>> classifier.batch_classify(test)
+    ['y', 'y', 'y', 'x']
+    >>> for pdist in classifier.batch_prob_classify(test):
+    ...     print '%.4f %.4f' % (pdist.prob('x'), pdist.prob('y'))
+    Traceback (most recent call last):
+      . . .
+    NotImplementedError
+
+Test the maxent classifier:
+
+    >>> classifier = nltk.train_maxent_classifier(train, algorithm='iis')
+      ==> Training (20 iterations)
+    <BLANKLINE>
+          Iteration    Log Likelihood    Accuracy
+          ---------------------------------------
+                 1           0.50000        0.556
+                 2           0.52270        0.778
+                 3           0.53450        0.778
+                 4           0.54299        0.667
+                 5           0.54919        0.667
+                 6           0.55380        0.667
+                 7           0.55729        0.667
+                 8           0.55997        0.667
+                 9           0.56206        0.667
+                10           0.56371        0.667
+                11           0.56503        0.667
+                12           0.56610        0.667
+                13           0.56697        0.667
+                14           0.56768        0.667
+                15           0.56828        0.667
+                16           0.56878        0.667
+                17           0.56920        0.667
+                18           0.56956        0.667
+                19           0.56986        0.667
+                20           0.57013        0.667
+             Final           0.57035        0.667
+    >>> sorted(classifier.labels())
+    ['x', 'y']
+    >>> classifier.batch_classify(test)
+    ['y', 'y', 'y', 'x']
+    >>> for pdist in classifier.batch_prob_classify(test):
+    ...     print '%.4f %.4f' % (pdist.prob('x'), pdist.prob('y'))
+    0.1733 0.8267
+    0.4765 0.5235
+    0.4083 0.5917
+    0.7498 0.2502
+
+    >>> classifier = nltk.train_maxent_classifier(train, algorithm='gis')
+      ==> Training (20 iterations)
+    <BLANKLINE>
+          Iteration    Log Likelihood    Accuracy
+          ---------------------------------------
+                 1           0.50000        0.556
+                 2           0.52270        0.778
+                 3           0.53450        0.778
+                 4           0.54299        0.667
+                 5           0.54919        0.667
+                 6           0.55380        0.667
+                 7           0.55729        0.667
+                 8           0.55997        0.667
+                 9           0.56206        0.667
+                10           0.56371        0.667
+                11           0.56503        0.667
+                12           0.56610        0.667
+                13           0.56697        0.667
+                14           0.56768        0.667
+                15           0.56828        0.667
+                16           0.56878        0.667
+                17           0.56920        0.667
+                18           0.56956        0.667
+                19           0.56986        0.667
+                20           0.57013        0.667
+             Final           0.57035        0.667
+    >>> sorted(classifier.labels())
+    ['x', 'y']
+    >>> classifier.batch_classify(test)
+    ['y', 'y', 'y', 'x']
+    >>> for pdist in classifier.batch_prob_classify(test):
+    ...     print '%.4f %.4f' % (pdist.prob('x'), pdist.prob('y'))
+    0.1733 0.8267
+    0.4765 0.5235
+    0.4083 0.5917
+    0.7498 0.2502
+
