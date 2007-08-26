@@ -14,6 +14,9 @@ class TokenizerI(object):
     """
     A procesing interface for I{tokenizing} a string, or dividing it
     into a list of substrings.
+    
+    Subclasses must define:
+      - either L{tokenize()} or L{batch_tokenize()} (or both)
     """
     def tokenize(self, s):
         """
@@ -32,6 +35,6 @@ class TokenizerI(object):
 
             >>> return [self.tokenize(s) for s in strings]
 
-        @rtype: C{list} of I{label}
+        @rtype: C{list} of C{list} of C{str}
         """
         return [self.tokenize(s) for s in strings]
