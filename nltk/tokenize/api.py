@@ -8,6 +8,7 @@
 """
 Tokenizer Interface
 """
+from nltk.utilities import overridden
 
 class TokenizerI(object):
     """
@@ -20,4 +21,17 @@ class TokenizerI(object):
         
         @return: C{list} of C{str}
         """
-        raise NotImplementedError()
+        if overridden(self.batch_tokenize):
+            return self.batch_tokenize([s])[0]
+        else:
+            raise NotImplementedError()
+
+    def batch_tokenize(self, strings):
+        """
+        Apply L{self.tokenize()} to each element of C{strings}.  I.e.:
+
+            >>> return [self.tokenize(s) for s in strings]
+
+        @rtype: C{list} of I{label}
+        """
+        return [self.tokenize(s) for s in strings]
