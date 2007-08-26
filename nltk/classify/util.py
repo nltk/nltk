@@ -178,7 +178,7 @@ def attested_labels(tokens):
     return tuple(set([label for (tok,label) in tokens]))
 
 def log_likelihood(classifier, gold):
-    results = classifier.batch_probdist([fs for (fs,l) in gold])
+    results = classifier.batch_prob_classify([fs for (fs,l) in gold])
     ll = [pdist.prob(l) for ((fs,l), pdist) in zip(gold, results)]
     return float(sum(ll))/len(ll)
 
@@ -240,7 +240,7 @@ def names_demo(trainer, features=names_demo_features):
     # likelihood and some sample probability distributions.
     try:
         test_featuresets = [features(n) for (n,g) in test]
-        pdists = classifier.batch_probdist(test_featuresets)
+        pdists = classifier.batch_prob_classify(test_featuresets)
         ll = [pdist.logprob(gold)
               for ((name, gold), pdist) in zip(test, pdists)]
         print 'Avg. log likelihood: %6.4f' % (sum(ll)/len(test))
@@ -293,7 +293,7 @@ def wsd_demo(trainer, word, features, n=1000):
     # likelihood and some sample probability distributions.
     try:
         test_featuresets = [features(i) for (i,n) in test]
-        pdists = classifier.batch_probdist(test_featuresets)
+        pdists = classifier.batch_prob_classify(test_featuresets)
         ll = [pdist.logprob(gold)
               for ((name, gold), pdist) in zip(test, pdists)]
         print 'Avg. log likelihood: %6.4f' % (sum(ll)/len(test))

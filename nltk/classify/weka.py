@@ -48,7 +48,7 @@ class WekaClassifier(ClassifierI):
         self._formatter = formatter
         self._model = model_filename
 
-    def batch_probdist(self, featuresets):
+    def batch_prob_classify(self, featuresets):
         return self._batch_classify(featuresets, ['-p', '0', '-distribution'])
         
     def batch_classify(self, featuresets):
