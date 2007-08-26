@@ -14,7 +14,7 @@ import string
 ##//////////////////////////////////////////////////////
 ##  Recursive Descent Parser
 ##//////////////////////////////////////////////////////
-class RecursiveDescentParser(AbstractParser):
+class RecursiveDescentParser(ParserI):
     """
     A simple top-down CFG parser that parses texts by recursively
     expanding the fringe of a C{Tree}, and matching it against a
@@ -64,13 +64,15 @@ class RecursiveDescentParser(AbstractParser):
         """
         self._grammar = grammar
         self._trace = trace
-        AbstractParser.__init__(self)
 
-    def get_parse_list(self, tokens):
+    def grammar(self):
+        return self._grammar
+
+    def nbest_parse(self, tokens, n=None):
         # Inherit docs from ParserI
         
         tokens = list(tokens)
-        self._check_coverage(tokens)
+        self._grammar.check_coverage(tokens)
         
         # Start a recursive descent parse, with an initial tree
         # containing just the start symbol.
@@ -82,7 +84,7 @@ class RecursiveDescentParser(AbstractParser):
         parses = self._parse(tokens, initial_tree, frontier)
 
         # Return the parses.
-        return parses
+        return parses[:n]
 
     def _parse(self, remaining_text, tree, frontier):
         """
@@ -361,7 +363,6 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         self._tried_m = {}
         self._history = []
         self._parses = []
-        AbstractParser.__init__(self)
 
     # [XX] TEMPORARY HACK WARNING!  This should be replaced with
     # something nicer when we get the chance.
@@ -371,12 +372,12 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
 #            c[pos] = c[pos].freeze()
         return ImmutableTree.convert(c)
     
-    def get_parse_list(self, tokens):
+    def nbest_parse(self, tokens, n=None):
         tokens = list(tokens)
         self.initialize(tokens)
         while self.step() is not None: pass
 
-        return self.parses()
+        return self.parses()[:n]
         
     def initialize(self, tokens):
         """
@@ -615,9 +616,6 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         """
         return self._parses
 
-
-# copied from nltk.parser
-
     def set_grammar(self, grammar):
         """
         Change the grammar used to parse texts.
@@ -655,7 +653,7 @@ def demo():
     
     sent = 'I saw a man in the park'.split()
     parser = parse.RecursiveDescentParser(grammar, trace=2)
-    for p in parser.get_parse_list(sent):
+    for p in parser.nbest_parse(sent):
         print p
 
 if __name__ == '__main__':

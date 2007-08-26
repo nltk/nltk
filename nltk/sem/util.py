@@ -29,7 +29,7 @@ def text_parse(inputs, grammar, trace=0):
     cp = nltk.parse.FeatureEarleyChartParser(grammar, trace=trace)
     for sent in inputs:
         tokens = sent.split()
-        syntrees = cp.get_parse_list(tokens)
+        syntrees = cp.nbest_parse(tokens)
         parses[sent] = syntrees
     return parses
 

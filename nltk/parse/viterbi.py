@@ -13,7 +13,7 @@ from api import *
 ##  Viterbi PCFG Parser
 ##//////////////////////////////////////////////////////
 
-class ViterbiParser(AbstractParser):
+class ViterbiParser(ParserI):
     """
     A bottom-up C{PCFG} parser that uses dynamic programming to find
     the single most likely parse for a text.  The C{ViterbiParser} parser
@@ -85,7 +85,9 @@ class ViterbiParser(AbstractParser):
         """
         self._grammar = grammar
         self._trace = trace
-        AbstractParser.__init__(self)
+
+    def grammar(self):
+        return self._grammar
 
     def trace(self, trace=2):
         """
@@ -100,11 +102,11 @@ class ViterbiParser(AbstractParser):
         """
         self._trace = trace
 
-    def get_parse_list(self, tokens):
+    def nbest_parse(self, tokens, n=None):
         # Inherit docs from ParserI
         
         tokens = list(tokens)
-        self._check_coverage(tokens)
+        self._grammar.check_coverage(tokens)
 
         # The most likely constituent table.  This table specifies the
         # most likely constituent for a given span and type.
@@ -143,7 +145,7 @@ class ViterbiParser(AbstractParser):
 
         # Sort the trees, and return the requested number of them.
         trees.sort(lambda t1,t2: cmp(t2.prob(), t1.prob()))
-        return trees
+        return trees[:n]
 
     def _add_constituents_spanning(self, span, constituents, tokens):
         """
@@ -370,7 +372,7 @@ def demo():
     print '\nsent: %s\nparser: %s\ngrammar: %s' % (sent,parser,grammar)
     parser.trace(3)
     t = time.time()
-    parses = parser.get_parse_list(tokens)
+    parses = parser.nbest_parse(tokens)
     time = time.time()-t
     if parses:
         average = reduce(lambda a,b:a+b.prob(), parses, 0)/len(parses)

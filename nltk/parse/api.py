@@ -7,6 +7,9 @@
 # For license information, see LICENSE.TXT
 #
 
+import itertools
+from nltk.utilities import deprecated, Deprecated, overridden
+
 class ParserI(object):
     """
     A processing class for deriving trees that represent possible
@@ -16,108 +19,153 @@ class ParserI(object):
     kinds of tree structure, such as morphological trees and discourse
     structures.
     
+    Subclasses must define:
+      - at least one of: L{parse()}, L{nbest_parse()}, L{iter_parse()},
+        L{batch_parse()}, L{batch_nbest_parse()}, L{batch_iter_parse()}.
+
+    Subclasses may define:
+      - L{grammar()}
+      - either L{prob_classify()} or L{batch_prob_classify()} (or both)
     """
-    def parse(self, sent):
+    def grammar(self):
         """
-        Derive a parse tree that represents the structure of the given
-        sentences words, and return a Tree.  If no parse is found,
-        then output C{None}.  If multiple parses are found, then
-        output the best parse.
-
-        The parsed trees derive a structure for the subtokens, but do
-        not modify them.  In particular, the leaves of the subtree
-        should be equal to the list of subtokens.
-
-        @param sent: The sentence to be parsed
-        @type sent: L{list} of L{string}
+        @return: The grammar used by this parser.
         """
         raise NotImplementedError()
-
-    def get_parse(self, sent):
+    
+    def parse(self, sent):
         """
         @return: A parse tree that represents the structure of the
-        sentence.  If no parse is found, then return C{None}.
-
-        @rtype: L{Tree}
+        given sentence, or C{None} if no parse tree is found.  If
+        multiple parses are found, then return the best parse.
+        
         @param sent: The sentence to be parsed
         @type sent: L{list} of L{string}
+        @rtype: L{Tree}
         """
+        if overridden(self.batch_parse):
+            return self.batch_parse([sent])[0]
+        else:
+            trees = self.nbest_parse(sent, 1)
+            if trees: return trees[0]
+            else: return None
 
-    def get_parse_list(self, sent):
+    def nbest_parse(self, sent, n=None):
         """
-        @return: A list of the parse trees for the sentence.  When possible,
-        this list should be sorted from most likely to least likely.
+        @return: A list of parse trees that represent possible
+        structures for the given sentence.  When possible, this list is
+        sorted from most likely to least likely.  If C{n} is
+        specified, then the returned list will contain at most C{n}
+        parse trees.
+        
+        @param sent: The sentence to be parsed
+        @type sent: L{list} of L{string}
+        @param n: The maximum number of trees to return.
+        @type n: C{int}
+        @rtype: C{list} of L{Tree}
+        """
+        if overridden(self.batch_nbest_parse):
+            return self.batch_nbest_parse([sent],n)[0]
+        elif overridden(self.parse) or overriden(self.batch_parse):
+            tree = self.parse(sent)
+            if tree: return [tree]
+            else: return []
+        else:
+            return list(itertools.islice(self.iter_parse(sent), n))
+
+    def iter_parse(self, sent):
+        """
+        @return: An iterator that generates parse trees that represent
+        possible structures for the given sentence.  When possible,
+        this list is sorted from most likely to least likely.
+        
+        @param sent: The sentence to be parsed
+        @type sent: L{list} of L{string}
+        @rtype: C{iterator} of L{Tree}
+        """
+        if overridden(self.batch_iter_parse):
+            return self.batch_iter_parse([sent])[0]
+        elif overridden(self.parse) or overriden(self.batch_parse):
+            tree = self.parse(sent)
+            if tree: return iter([tree])
+            else: return iter([])
+        elif overridden(self.nbest_parse) or overridden(self.batch_nbest_parse):
+            return iter(self.nbest_parse(sent))
+        else:
+            raise NotImplementedError()
+
+    def prob_parse(self, sent):
+        """
+        @return: A probability distribution over the possible parse
+        trees for the given sentence.  If there are no possible parse
+        trees for the given sentence, return a probability distribution
+        that assigns a probability of 1.0 to C{None}.
+        
+        @param sent: The sentence to be parsed
+        @type sent: L{list} of L{string}
+        @rtype: L{ProbDist} of L{Tree}
+        """
+        if overridden(self.batch_prob_parse):
+            return self.batch_prob_parse([sent])[0]
+        else:
+            raise NotImplementedError
+
+    def batch_parse(self, sents):
+        """
+        Apply L{self.parse()} to each element of C{sents}.  I.e.:
+
+            >>> return [self.parse(sent) for sent in sents]
 
         @rtype: C{list} of L{Tree}
-        @param sent: The sentence to be parsed
-        @type sent: L{list} of L{string}
         """
+        return [self.parse(sent) for sent in sents]
 
-    def get_parse_probs(self, sent):
+    def batch_nbest_parse(self, sents, n=None):
         """
-        @return: A probability distribution over the parse trees for the sentence.
+        Apply L{self.nbest_parse()} to each element of C{sents}.  I.e.:
 
-        @rtype: L{ProbDistI}
-        @param sent: The sentence to be parsed
-        @type sent: L{list} of L{string}
+            >>> return [self.nbest_parse(sent, n) for sent in sents]
+
+        @rtype: C{list} of C{list} of L{Tree}
         """
+        return [self.nbest_parse(sent,n ) for sent in sents]
 
+    def batch_iter_parse(self, sents):
+        """
+        Apply L{self.iter_parse()} to each element of C{sents}.  I.e.:
+
+            >>> return [self.iter_parse(sent) for sent in sents]
+
+        @rtype: C{list} of C{iterator} of L{Tree}
+        """
+        return [self.iter_parse(sent) for sent in sents]
+
+    def batch_prob_parse(self, sents):
+        """
+        Apply L{self.prob_parse()} to each element of C{sents}.  I.e.:
+
+            >>> return [self.prob_parse(sent) for sent in sents]
+
+        @rtype: C{list} of L{ProbDist} of L{Tree}
+        """
+        return [self.prob_parse(sent) for sent in sents]
+
+
+    #////////////////////////////////////////////////////////////
+    #{ Deprecated
+    @deprecated("Use parse() instead.")
+    def get_parse(self, sent):
+        return self.parse(sent)
+    @deprecated("Use nbest_parse() instead.")
+    def get_parse_list(self, sent):
+        return self.nbest_parse(sent)
+    @deprecated("Use prob_parse() instead.")
+    def get_parse_prob(self, sent):
+        return self.prob_parse(sent)
+    @deprecated("Use prob_parse() instead.")
     def get_parse_dict(self, sent):
-        """
-        @return: A dictionary mapping from the parse trees for the
-        sentence to numeric scores.
-
-        @rtype: C{dict}
-        @param sent: The sentence to be parsed
-        @type sent: L{list} of L{string}
-        """
-
-##//////////////////////////////////////////////////////
-##  Abstract Base Class for Parsers
-##//////////////////////////////////////////////////////
-class AbstractParser(ParserI):
-    """
-    An abstract base class for parsers.  C{AbstractParser} provides
-    a default implementation for:
-
-      - L{parse} (based on C{get_parse})
-      - L{get_parse_list} (based on C{get_parse})
-      - L{get_parse} (based on C{get_parse_list})
-
-    Note that subclasses must override either C{get_parse} or
-    C{get_parse_list} (or both), to avoid infinite recursion.
-    """
-    def __init__(self):
-        """
-        Construct a new parser.
-        """
-        # Make sure we're not directly instantiated:
-        if self.__class__ == AbstractParser:
-            raise AssertionError, "Abstract classes can't be instantiated"
-
-#    def parse(self, sentence):
-#         return self.get_parse_list(sentence.split())
-
-    def parse(self, tokens):
-        return self.get_parse(list(tokens))
-
-    def grammar(self):
-        return self._grammar
-
-    def get_parse(self, tokens):
-        trees = self.get_parse_list(list(tokens))
-        if len(trees) == 0: return None
-        else: return trees[0]
-    
-    def get_parse_list(self, tokens):
-        tree = self.get_parse(tokens)
-        if tree is None: return []
-        else: return [tree]
-
-    def _check_coverage(self, tokens):
-        if not self._grammar.covers(tokens):
-            raise ValueError, "Grammar does not cover some of the input words"
-
+        return self.prob_parse(sent)
+    @deprecated("No longer supported.")
     def batch_test(self, filename):
         f = open(filename)
         for line in f:
@@ -127,6 +175,20 @@ class AbstractParser(ParserI):
                 print line
                 continue
             print "Sentence:", line
-            parses = self.parse(line)
+            parses = self.nbest_parse(line)
             print "%d parses." % len(parses)
             for tree in parses: print tree
+    #}
+    #////////////////////////////////////////////////////////////
+
+######################################################################
+#{ Deprecated
+class ParseI(ParserI, Deprecated):
+    "Use ParserI instead."
+class AbstractParser(Deprecated, ParserI):
+    """Use ParserI instead."""
+    @deprecated("Use nltk.cfg.Grammar.check_coverage() instead.")
+    def _check_coverage(self, tokens):
+        self._grammar.check_coverage(tokens)
+#}
+######################################################################

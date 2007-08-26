@@ -22,10 +22,11 @@ class ChunkParserI(ParserI):
     """
     def parse(self, tokens):
         """
-        Find the best chunk structure for the given tokens
+        @return: the best chunk structure for the given tokens
         and return a tree.
         
         @param tokens: The list of (word, tag) tokens to be chunked.
-        @type tokens: L{list} of L{tuple}
+        @type tokens: C{list} of L{tuple}
+        @rtype: L{Tree}
         """
         assert 0, "ChunkParserI is an abstract interface"

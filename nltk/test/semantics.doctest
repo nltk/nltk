@@ -274,15 +274,14 @@ Load a valuation from a file.
 
     >>> from nltk.parse import FeatureEarleyChartParser
     >>> import nltk.data
-    >>> grammar, lexicon = nltk.data.load('grammars/sem2.fcfg')
-    >>> cp = FeatureEarleyChartParser(grammar, lexicon)
+    >>> grammar = nltk.data.load('grammars/sem2.fcfg')
     >>> val = nltk.data.load('grammars/valuation1.val')
     >>> dom = val.domain
     >>> m = Model(dom, val)
     >>> g = Assignment(dom)
 
     >>> sent = 'every boy chases a girl in Noosa'
-    >>> result = nltk.sem.text_evaluate([sent], cp, m, g)
+    >>> result = nltk.sem.text_evaluate([sent], grammar, m, g)
     >>> for (syntree, semrep, value) in result[sent]:
     ... 	print "'%s' is %s in Model m\n" % (semrep.infixify(), value)
     ... 
