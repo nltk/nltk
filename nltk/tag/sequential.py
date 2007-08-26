@@ -121,8 +121,7 @@ class ContextTagger(SequentialBackoffTagger):
     def __init__(self, context_to_tag, backoff=None):
         """
         @param context_to_tag: A dictionary mapping contexts to tags.
-        @param backoff: The backoff tagger that should be used for
-            this 
+        @param backoff: The backoff tagger that should be used for this tagger.
         """
         SequentialBackoffTagger.__init__(self, backoff)
         self._context_to_tag = context_to_tag
@@ -187,7 +186,7 @@ class ContextTagger(SequentialBackoffTagger):
                 if (self.backoff is None or
                     tag != self.backoff.tag_one(tokens, index, tags[:index])):
                     useful_contexts.add(context)
-        
+
         # Build the context_to_tag table -- for each context, figure
         # out what the most likely tag is.  Only include contexts that
         # we've seen at least `cutoff` times.
@@ -197,7 +196,7 @@ class ContextTagger(SequentialBackoffTagger):
             if hits > cutoff:
                 self._context_to_tag[context] = best_tag
                 hit_count += hits
-            
+
         # Display some stats, if requested.
         if verbose:
             size = len(self._context_to_tag)
@@ -230,108 +229,6 @@ class DefaultTagger(SequentialBackoffTagger, yaml.YAMLObject):
     def __repr__(self):
         return '<DefaultTagger: tag=%s>' % self._tag
     
-class UnigramTagger(ContextTagger, yaml.YAMLObject):
-    """
-    A tagger that chooses a token's tag based on its word string.  In
-    particular, the word string is looked up in a table, and the
-    corresponding tag is returned.  Unigram taggers are typically
-    constructed by training them on a tagged corpus; see L{train()}.
-    """
-    yaml_tag = '!nltk.UnigramTagger'
-
-    def context(self, tokens, index, history):
-        return tokens[index]
-
-    @staticmethod
-    def train(tagged_corpus, backoff=None, cutoff=1, verbose=False):
-        """
-        Train a new C{UnigramTagger} using the given training data.
-        In particular, construct a new tagger whose table maps from
-        each word attested in the training corpus C{tagged_corpus} to
-        the most frequent tag for that word.  But exclude any words
-        that are already tagged perfectly by the backoff tagger.
-        
-        @param tagged_corpus: A tagged corpus.  Each item should be
-            a C{list} of C{(word, tag)} tuples.
-        @param backoff: A backoff tagger, to be used by the new
-            tagger if it encounters an unknown word.
-        @param cutoff: If the most likely tag for a word occurs
-            fewer than C{cutoff} times, then exclude it from the
-            context-to-tag table for the new tagger.
-        """
-        tagger = UnigramTagger({}, backoff)
-        tagger._train(tagged_corpus, cutoff, verbose)
-        return tagger
-    
-class BigramTagger(ContextTagger, yaml.YAMLObject):
-    """
-    A tagger that chooses a token's tag based its word string and on
-    the preceeding word's tag.  In particular, a tuple consisting of
-    the previous tag and the word is looked up in a table, and the
-    corresponding tag is returned.  Bigram taggers are typically
-    constructed by training them on a tagged corpus; see L{train()}.
-    """
-    yaml_tag = '!nltk.BigramTagger'
-
-    def context(self, tokens, index, history):
-        tag_context = tuple(history[max(0,index-1):index])
-        return (tag_context, tokens[index])
-
-    @staticmethod
-    def train(tagged_corpus, backoff=None, cutoff=1, verbose=False):
-        """
-        Train a new C{BigramTagger} using the given training data.  In
-        particular, construct a new tagger whose table maps from each
-        context C{((tag[i-1],), word[i])} to the most frequent tag for
-        that context.  But exclude any contexts that are already
-        tagged perfectly by the backoff tagger.
-        
-        @param tagged_corpus: A tagged corpus.  Each item should be
-            a C{list} of C{(word, tag)} tuples.
-        @param backoff: A backoff tagger, to be used by the new
-            tagger if it encounters an unknown context.
-        @param cutoff: If the most likely tag for a context occurs
-            fewer than C{cutoff} times, then exclude it from the
-            context-to-tag table for the new tagger.
-        """
-        tagger = BigramTagger({}, backoff)
-        tagger._train(tagged_corpus, cutoff, verbose)
-        return tagger
-    
-class TrigramTagger(ContextTagger, yaml.YAMLObject):
-    """
-    A tagger that chooses a token's tag based its word string and on
-    the preceeding two words' tags.  In particular, a tuple consisting
-    of the previous two tags and the word is looked up in a table, and
-    the corresponding tag is returned.  Bigram taggers are typically
-    constructed by training them on a tagged corpus; see L{train()}.
-    """
-    yaml_tag = '!nltk.TrigramTagger'
-
-    def context(self, tokens, index, history):
-        tag_context = tuple(history[max(0,index-2):index])
-        return (tag_context, tokens[index])
-
-    @staticmethod
-    def train(tagged_corpus, backoff=None, cutoff=1, verbose=False):
-        """
-        Train a new C{TrigramTagger} using the given training data.
-        In particular, construct a new tagger whose table maps from
-        each context C{((tag[i-2], tag[i-1]), word[i])} to the most
-        frequent tag for that context.  But exclude any contexts that
-        are already tagged perfectly by the backoff tagger.
-        
-        @param tagged_corpus: A tagged corpus.  Each item should be
-            a C{list} of C{(word, tag)} tuples.
-        @param backoff: A backoff tagger, to be used by the new
-            tagger if it encounters an unknown context.
-        @param cutoff: If the most likely tag for a context occurs
-            fewer than C{cutoff} times, then exclude it from the
-            context-to-tag table for the new tagger.
-        """
-        tagger = TrigramTagger({}, backoff)
-        tagger._train(tagged_corpus, cutoff, verbose)
-        return tagger
 
 class NgramTagger(ContextTagger, yaml.YAMLObject):
     """
@@ -339,28 +236,19 @@ class NgramTagger(ContextTagger, yaml.YAMLObject):
     on the preceeding I{n} word's tags.  In particular, a tuple
     C{(tags[i-n:i-1], words[i])} is looked up in a table, and the
     corresponding tag is returned.  N-gram taggers are typically
-    constructed by training them on a tagged corpys; see L{train()}.
+    trained them on a tagged corpus.
     """
     yaml_tag = '!nltk.NgramTagger'
     
-    def __init__(self, model, n, backoff=None):
-        ContextTagger.__init__(self, model, backoff)
-        self._n = n
-            
-    def context(self, tokens, index, history):
-        tag_context = tuple(history[max(0,index-self._n+1):index])
-        return (tag_context, tokens[index])
-
-    @staticmethod
-    def train(tagged_corpus, n, backoff=None, cutoff=1, verbose=False):
+    def __init__(self, n, train=None, model={}, backoff=None, cutoff=1, verbose=False):
         """
-        Train a new C{NGramTagger} using the given training data.  In
-        particular, construct a new tagger whose table maps from each
+        Train a new C{NgramTagger} using the given training data or the supplied model.
+        In particular, construct a new tagger whose table maps from each
         context C{(tag[i-n:i-1], word[i])} to the most frequent tag
         for that context.  But exclude any contexts that are already
         tagged perfectly by the backoff tagger.
         
-        @param tagged_corpus: A tagged corpus.  Each item should be
+        @param train: A tagged corpus.  Each item should be
             a C{list} of C{(word, tag)} tuples.
         @param backoff: A backoff tagger, to be used by the new
             tagger if it encounters an unknown context.
@@ -368,9 +256,60 @@ class NgramTagger(ContextTagger, yaml.YAMLObject):
             fewer than C{cutoff} times, then exclude it from the
             context-to-tag table for the new tagger.
         """
-        tagger = NgramTagger({}, n, backoff)
-        tagger._train(tagged_corpus, cutoff, verbose)
-        return tagger
+        self._n = n
+
+        if train and model:
+            raise ValueError, 'Must not specify both training data and a trained model'
+        ContextTagger.__init__(self, model, backoff)
+        if train:
+            self._train(train, cutoff, verbose)
+            
+    def context(self, tokens, index, history):
+        tag_context = tuple(history[max(0,index-self._n+1):index])
+        return (tag_context, tokens[index])
+
+
+class UnigramTagger(NgramTagger):
+    """
+    A tagger that chooses a token's tag based its word string.
+    Unigram taggers are typically trained on a tagged corpus.
+    """
+    yaml_tag = '!nltk.UnigramTagger'
+
+    def __init__(self, train=None, model={}, backoff=None, cutoff=1, verbose=False):
+        NgramTagger.__init__(self, 1, train, model, backoff, cutoff, verbose)
+
+    def context(self, tokens, index, history):
+        return tokens[index]
+
+
+class BigramTagger(NgramTagger):
+    """
+    A tagger that chooses a token's tag based its word string and on
+    the preceeding words' tag.  In particular, a tuple consisting
+    of the previous tag and the word is looked up in a table, and
+    the corresponding tag is returned.  Bigram taggers are typically
+    trained on a tagged corpus.
+    """
+    yaml_tag = '!nltk.BigramTagger'
+
+    def __init__(self, train=None, model={}, backoff=None, cutoff=1, verbose=False):
+        NgramTagger.__init__(self, 2, train, model, backoff, cutoff, verbose)
+
+
+class TrigramTagger(NgramTagger):
+    """
+    A tagger that chooses a token's tag based its word string and on
+    the preceeding two words' tags.  In particular, a tuple consisting
+    of the previous two tags and the word is looked up in a table, and
+    the corresponding tag is returned.  Trigram taggers are typically
+    trained them on a tagged corpus.
+    """
+    yaml_tag = '!nltk.TrigramTagger'
+
+    def __init__(self, train=None, model={}, backoff=None, cutoff=1, verbose=False):
+        NgramTagger.__init__(self, 3, train, model, backoff, cutoff, verbose)
+
 
 class AffixTagger(ContextTagger, yaml.YAMLObject):
     """
@@ -384,8 +323,8 @@ class AffixTagger(ContextTagger, yaml.YAMLObject):
     """
     yaml_tag = '!nltk.AffixTagger'
 
-    def __init__(self, model, affix_length=-3,
-                 min_stem_length=2, backoff=None):
+    def __init__(self, train=None, model={}, affix_length=-3,
+                 min_stem_length=2, backoff=None, cutoff=1, verbose=False):
         """
         Construct a new affix tagger.
         
@@ -397,7 +336,12 @@ class AffixTagger(ContextTagger, yaml.YAMLObject):
             tag of C{None} by this tagger.
             
         """
+        if train and model:
+            raise ValueError, 'Must not specify both training data and a trained model'
         ContextTagger.__init__(self, model, backoff)
+        if train:
+            self._train(train, cutoff, verbose)
+
         self._affix_length = affix_length
         self._min_word_length = min_stem_length + abs(affix_length)
 
@@ -410,12 +354,6 @@ class AffixTagger(ContextTagger, yaml.YAMLObject):
         else:
             return token[self._affix_length:]
 
-    @staticmethod
-    def train(tagged_corpus, affix_length, min_stem_length,
-              backoff=None, cutoff=1, verbose=False):
-        tagger = AffixTagger({}, affix_length, min_stem_length, backoff)
-        tagger._train(tagged_corpus, cutoff, verbose)
-        return tagger
 
 class RegexpTagger(SequentialBackoffTagger, yaml.YAMLObject):
     """

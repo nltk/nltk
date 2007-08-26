@@ -53,7 +53,7 @@ corpus:
 
     >>> # Load the brown corpus.
     >>> from nltk.corpus import brown
-    >>> tagger = nltk.UnigramTagger.train(brown.tagged_sents()[:500])
+    >>> tagger = nltk.UnigramTagger(brown.tagged_sents()[:500])
     >>> tagger.tag(brown.sents()[501]) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [('Mitchell', 'NP'), ('decried', None), ('the', 'AT'), ('high', 'JJ'),
      ('rate', None), ('of', 'IN'), ('unemployment', None), ...]
@@ -130,7 +130,7 @@ As mentioned above, the `UnigramTagger` class finds the most likely
 tag for each word in a training corpus, and then uses that information
 to assign tags to new tokens.
 
-    >>> unigram_tagger = nltk.UnigramTagger.train(brown_train)
+    >>> unigram_tagger = nltk.UnigramTagger(brown_train)
     >>> unigram_tagger.tag(test_sent) # doctest: +NORMALIZE_WHITESPACE
     [('Assembly', 'NN-TL'), ('session', 'NN'), ('brought', 'VBN'),
      ('much', 'AP'), ('good', None)]
@@ -148,8 +148,7 @@ avoid this problem by providing the unigram tagger with a *backoff
 tagger*, which will be used whenever the unigram tagger is unable to
 choose a tag:
 
-    >>> unigram_tagger_2 = nltk.UnigramTagger.train(
-    ...     brown_train, backoff=regexp_tagger)
+    >>> unigram_tagger_2 = nltk.UnigramTagger(brown_train, backoff=regexp_tagger)
     >>> print 'Accuracy: %4.1f%%' % (
     ...     100.0 * nltk.tag.accuracy(unigram_tagger_2, brown_test))
     Accuracy: 77.2%
@@ -176,8 +175,7 @@ training, it can look up the preceding tag directly.  When run on new
 data, it works through the sentence from left to right, and uses the
 tag that it just generated for the preceding word.
 
-    >>> bigram_tagger = nltk.BigramTagger.train(
-    ...     brown_train, backoff=unigram_tagger_2)
+    >>> bigram_tagger = nltk.BigramTagger(brown_train, backoff=unigram_tagger_2)
     >>> print bigram_tagger.size()
     92
     >>> print 'Accuracy: %4.1f%%' % (
@@ -194,8 +192,7 @@ is a large amount of training data available; otherwise, the sequences
 that they consider do not occur often enough to gather reliable
 statistics.
 
-    >>> trigram_tagger = nltk.TrigramTagger.train(
-    ...     brown_train, backoff=bigram_tagger)
+    >>> trigram_tagger = nltk.TrigramTagger(brown_train, backoff=bigram_tagger)
     >>> print trigram_tagger.size()
     43
     >>> print 'Accuracy: %4.1f%%' % (
@@ -213,7 +210,7 @@ the minimum size for "word stems" -- for any word that is longer than
 ``min_stem_length+abs(affix_length)``, the backoff tagger will be
 used.
 
-    >>> affix_tagger = nltk.AffixTagger.train(
+    >>> affix_tagger = nltk.AffixTagger(
     ...     brown_train, affix_length=-3, min_stem_length=2,
     ...     backoff=default_tagger)
     >>> print 'Accuracy: %4.1f%%' % (
