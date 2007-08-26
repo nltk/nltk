@@ -14,7 +14,7 @@ import string
 ##//////////////////////////////////////////////////////
 ##  Shift/Reduce Parser
 ##//////////////////////////////////////////////////////
-class ShiftReduceParser(AbstractParser):
+class ShiftReduceParser(ParserI):
     """
     A simple bottom-up CFG parser that uses two operations, "shift"
     and "reduce", to find a single parse for a text.
@@ -70,13 +70,14 @@ class ShiftReduceParser(AbstractParser):
         """
         self._grammar = grammar
         self._trace = trace
-        AbstractParser.__init__(self)
         self._check_grammar()
 
-    def get_parse(self, tokens):
+    def grammar(self):
+        return self._grammar
 
+    def parse(self, tokens):
         tokens = list(tokens)        
-        self._check_coverage(tokens)
+        self._grammar.check_coverage(tokens)
 
         # initialize the stack.
         stack = []
@@ -294,14 +295,13 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         self._stack = None
         self._remaining_text = None
         self._history = []
-        AbstractParser.__init__(self)
 
-    def get_parse_list(self, tokens):
+    def nbest_parse(self, tokens, n=None):
         tokens = list(tokens)
         self.initialize(tokens)
         while self.step(): pass
 
-        return self.parses()
+        return self.parses()[:n]
 
     def stack(self):
         """
@@ -452,7 +452,7 @@ def demo():
     sent = 'I saw a man in the park'.split()
 
     parser = parse.ShiftReduceParser(grammar, trace=2)
-    for p in parser.get_parse_list(sent):
+    for p in parser.nbest_parse(sent):
         print p
 
 if __name__ == '__main__': demo()

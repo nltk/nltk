@@ -65,11 +65,11 @@ and unambiguous sentence.
     >>> sentence1 = 'the cat chased the dog'.split()
     >>> sentence2 = 'the cat chased the dog on the rug'.split()
 
-    >>> for t in rd.get_parse_list(sentence1):
+    >>> for t in rd.nbest_parse(sentence1):
     ...     print t
     (S (NP (DT the) (N cat)) (VP (V chased) (NP (DT the) (N dog))))
 
-    >>> for t in rd.get_parse_list(sentence2):
+    >>> for t in rd.nbest_parse(sentence2):
     ...     print t
     (S
       (NP (DT the) (N cat))
@@ -105,7 +105,7 @@ and only one parse is ever returned.
     >>> sentence1 = 'the cat chased the dog'.split()
     >>> sentence2 = 'the cat chased the dog on the rug'.split()
 
-    >>> for t in sr.get_parse_list(sentence1):
+    >>> for t in sr.nbest_parse(sentence1):
     ...     print t
     (S (NP (DT the) (N cat)) (VP (V chased) (NP (DT the) (N dog))))
 
@@ -114,7 +114,7 @@ The shift reduce parser uses heuristics to decide what to do when there are
 multiple possible shift or reduce operations available - for the supplied
 grammar clearly the wrong operation is selected.
 
-    >>> for t in sr.get_parse_list(sentence2):
+    >>> for t in sr.nbest_parse(sentence2):
     ...     print t
 
 Unit tests for the Chart parser class
@@ -144,11 +144,11 @@ Create a chart parser. First give it a bottom-up strategy.
 
     >>> parser = ChartParser(grammar, BU_STRATEGY)
 
-    >>> for t in parser.get_parse_list(sentence1):
+    >>> for t in parser.nbest_parse(sentence1):
     ...     print t
     (S (NP (N Marc)) (VP (V has) (NP (DT a) (N telescope))))
 
-    >>> for t in parser.get_parse_list(sentence2):
+    >>> for t in parser.nbest_parse(sentence2):
     ...     print t
     (S
       (NP (N Marc))
@@ -165,11 +165,11 @@ Redefine the chart parser to use a top-down strategy.
 
     >>> parser = ChartParser(grammar, TD_STRATEGY)
 
-    >>> for t in parser.get_parse_list(sentence1):
+    >>> for t in parser.nbest_parse(sentence1):
     ...     print t
     (S (NP (N Marc)) (VP (V has) (NP (DT a) (N telescope))))
 
-    >>> for t in parser.get_parse_list(sentence2):
+    >>> for t in parser.nbest_parse(sentence2):
     ...     print t
     (S
       (NP (N Marc))
@@ -194,31 +194,22 @@ Create and test the Earley variant chart parser. This requires a lexicon.
     ... cfg.Production(VP, [VP, PP])
     ... ]
 
-    >>> grammar = cfg.Grammar(S, syntactic_productions)
+    >>> lexicon = {
+    ...     'a': [DT], 'the': [DT],
+    ...     'man': [N], 'Marc': [N], 'park': [N], 'telescope': [N],
+    ...     'has': [V], 'saw': [V],
+    ...     'in': [P]
+    ...     }
 
-    >>> lexical_productions = [
-    ... cfg.Production(DT, ['a']),
-    ... cfg.Production(DT, ['the']),
-    ... cfg.Production(N, ['man']),
-    ... cfg.Production(N, ['Marc']),
-    ... cfg.Production(N, ['park']),
-    ... cfg.Production(N, ['telescope']),
-    ... cfg.Production(V, ['has']),
-    ... cfg.Production(V, ['saw']),
-    ... cfg.Production(P, ['in'])
-    ... ]
+    >>> grammar = cfg.Grammar(S, syntactic_productions, lexicon)
 
-    >>> lexicon = {}
-    >>> for production in lexical_productions:
-    ...     lexicon.setdefault(production.rhs()[0], []).append(production.lhs())
+    >>> parser = EarleyChartParser(grammar)
 
-    >>> parser = EarleyChartParser(grammar, lexicon)
-
-    >>> for t in parser.get_parse_list(sentence1):
+    >>> for t in parser.nbest_parse(sentence1):
     ...     print t
     (S (NP (N Marc)) (VP (V has) (NP (DT a) (N telescope))))
 
-    >>> for t in parser.get_parse_list(sentence2):
+    >>> for t in parser.nbest_parse(sentence2):
     ...     print t
     (S
       (NP (N Marc))
@@ -334,7 +325,7 @@ resulting parses.
     >>> from nltk.parse import pchart
     
     >>> parser = pchart.InsideChartParser(grammar)
-    >>> for t in parser.get_parse_list(tokens):
+    >>> for t in parser.nbest_parse(tokens):
     ...     print t
     (S
       (NP (Name Jack))
@@ -350,7 +341,7 @@ resulting parses.
         (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744042695e-07)
 
     >>> parser = pchart.RandomChartParser(grammar)
-    >>> for t in parser.get_parse_list(tokens):
+    >>> for t in parser.nbest_parse(tokens):
     ...     print t
     (S
       (NP (Name Jack))
@@ -366,7 +357,7 @@ resulting parses.
         (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744042695e-07)
         
     >>> parser = pchart.UnsortedChartParser(grammar)
-    >>> for t in parser.get_parse_list(tokens):
+    >>> for t in parser.nbest_parse(tokens):
     ...     print t
     (S
       (NP (Name Jack))
@@ -382,7 +373,7 @@ resulting parses.
         (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744042695e-07)
 
     >>> parser = pchart.LongestChartParser(grammar)
-    >>> for t in parser.get_parse_list(tokens):
+    >>> for t in parser.nbest_parse(tokens):
     ...     print t
     (S
       (NP (Name Jack))
@@ -398,7 +389,7 @@ resulting parses.
         (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744042695e-07)
 
     >>> parser = pchart.InsideChartParser(grammar, beam_size = len(tokens)+1)
-    >>> for t in parser.get_parse_list(tokens):
+    >>> for t in parser.nbest_parse(tokens):
     ...     print t
 
 Unit tests for the Viterbi Parse classes
@@ -411,7 +402,7 @@ Unit tests for the Viterbi Parse classes
 Parse the tokenized sentence.
 
     >>> parser = ViterbiParser(grammar)
-    >>> for t in parser.get_parse_list(tokens):
+    >>> for t in parser.nbest_parse(tokens):
     ...     print t
     (S
       (NP (Name Jack))
@@ -460,24 +451,20 @@ Define some grammatical productions.
 
 Define some lexical productions.
 
-    >>> lexical_productions = [
-    ...     cfg.Production(NP, ('John',)), cfg.Production(NP, ('I',)),
-    ...     cfg.Production(Det, ('the',)), cfg.Production(Det, ('my',)),
-    ...     cfg.Production(Det, ('a',)),
-    ...     cfg.Production(NSg, ('dog',)),   cfg.Production(NSg, ('cookie',)),
-    ...     cfg.Production(V, ('ate',)),  cfg.Production(V, ('saw',)),
-    ...     cfg.Production(P, ('with',)), cfg.Production(P, ('under',))]
+    >>> lexicon = {
+    ...     'John': [NP], 'I': [NP],
+    ...     'the': [Det], 'my': [Det], 'a': [Det], 
+    ...     'dog': [NSg], 'cookie': [NSg],
+    ...     'ate': [V], 'saw': [V], 
+    ...     'with': [P], 'under': [P]
+    ...     }
     
-    >>> earley_grammar = cfg.Grammar(S, grammatical_productions)
+    >>> earley_grammar = cfg.Grammar(S, grammatical_productions, lexicon)
     >>> from nltk.compat import defaultdict
-    >>> earley_lexicon = defaultdict(list)
-
-    >>> for prod in lexical_productions:
-    ...     earley_lexicon[prod.rhs()[0]].append(prod.lhs())
 
     >>> tokens = 'I saw John with a dog with my cookie'.split()
-    >>> cp = FeatureEarleyChartParser(earley_grammar, earley_lexicon)
-    >>> trees = cp.get_parse_list(tokens)
+    >>> cp = FeatureEarleyChartParser(earley_grammar)
+    >>> trees = cp.nbest_parse(tokens)
     >>> for t in trees:
     ...     print t
     (S[]
@@ -534,5 +521,5 @@ Tests for loading grammar files
     >>> rdp = RecursiveDescentParser(simple_cfg)
     >>> prob_cfg = data.load('grammars/toy1.pcfg')
     >>> vp = ViterbiParser(prob_cfg)
-    >>> (feat_cfg, feat_lexicon) = data.load('grammars/feat0.fcfg')
-    >>> fcp = FeatureEarleyChartParser(feat_cfg, feat_lexicon)
+    >>> feat_cfg = data.load('grammars/feat0.fcfg')
+    >>> fcp = FeatureEarleyChartParser(feat_cfg)

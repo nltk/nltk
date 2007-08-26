@@ -367,6 +367,20 @@ class Grammar(object):
         return self._lexicon
         
 
+    def check_coverage(self, tokens):
+        """
+        Check whether the grammar rules cover the given list of tokens.
+        If not, then raise an exception.
+        """
+        missing = [tok for tok in tokens
+                   if len(self.productions(rhs=tok))==0]
+        if missing:
+            missing = ', '.join('%r' % (w,) for w in missing)
+            raise ValueError("Grammar does not cover some of the "
+                             "input words: %r." +missing)
+
+    # [xx] does this still get used anywhere, or does check_coverage
+    # replace it?
     def covers(self, tokens):
         """
         Check whether the grammar rules cover the given list of tokens.
@@ -894,7 +908,7 @@ def pcfg_demo():
 #    sent = treebank.tokenized('wsj_0001')[0]   # doesn't work as tokens are different!
     sent = treebank.parsed_sents('wsj_0001')[0].leaves()
     print sent
-    for parse in parser.get_parse_list(sent):
+    for parse in parser.nbest_parse(sent):
         print parse
 
 def fcfg_demo():

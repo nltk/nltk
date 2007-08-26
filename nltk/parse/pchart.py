@@ -125,7 +125,7 @@ class SingleEdgeProbabilisticFundamentalRule(AbstractChartRule):
 
     def __str__(self): return 'Fundamental Rule'
     
-class BottomUpChartParser(AbstractParser):
+class BottomUpChartParser(ParserI):
     """
     An abstract bottom-up parser for C{PCFG}s that uses a C{Chart} to
     record partial results.  C{BottomUpChartParser} maintains a
@@ -169,7 +169,9 @@ class BottomUpChartParser(AbstractParser):
         self._grammar = grammar
         self.beam_size = beam_size
         self._trace = trace
-        AbstractParser.__init__(self)
+
+    def grammar(self):
+        return self._grammar
 
     def trace(self, trace=2):
         """
@@ -184,8 +186,8 @@ class BottomUpChartParser(AbstractParser):
         """
         self._trace = trace
         
-    def get_parse_list(self, tokens):
-        self._check_coverage(tokens)        
+    def nbest_parse(self, tokens, n=None):
+        self._grammar.check_coverage(tokens)
         chart = Chart(list(tokens))
         grammar = self._grammar
 
@@ -233,7 +235,7 @@ class BottomUpChartParser(AbstractParser):
         # Sort by probability
         parses.sort(lambda a,b: cmp(b.prob(), a.prob()))
         
-        return parses
+        return parses[:n]
 
     def _setprob(self, tree, prod_probs):
         if tree.prob() is not None: return
@@ -427,7 +429,7 @@ def demo():
         print '\ns: %s\nparser: %s\ngrammar: %s' % (sent,parser,grammar)
         parser.trace(3)
         t = time.time()
-        parses = parser.get_parse_list(tokens)
+        parses = parser.nbest_parse(tokens)
         times.append(time.time()-t)
         if parses: p = reduce(lambda a,b:a+b.prob(), parses, 0)/len(parses)
         else: p = 0

@@ -24,7 +24,7 @@ Grammars can be parsed from strings.
     >>> grammar = cfg.parse_fcfg(g)
     >>> tokens = 'these girls'.split()
     >>> parser = parse.FeatureEarleyChartParser(grammar)
-    >>> trees = parser.get_parse_list(tokens)
+    >>> trees = parser.nbest_parse(tokens)
     >>> for tree in trees: print tree
     (DP[agr=[gend='f', num='pl', pers=3]]
       (D[agr=[num='pl', pers=3]] these)
@@ -79,7 +79,7 @@ read the grammar into NLTK, ready for use in parsing.
     >>> tokens = sent.split()
     >>> tokens
     ['Kim', 'likes', 'children']
-    >>> trees = cp.get_parse_list(tokens)
+    >>> trees = cp.nbest_parse(tokens)
               |.K.l.c.|
     Processing queue 0
     Predictor |> . . .| [0:0] S[] -> * NP[NUM=?n] VP[NUM=?n] {}
@@ -316,7 +316,7 @@ things become really interesting.
     >>> sent = 'who do you claim that you like'
     >>> tokens = sent.split()
     >>> cp = parse.load_earley('grammars/feat1.fcfg', trace=1)
-    >>> trees = cp.get_parse_list(tokens)
+    >>> trees = cp.nbest_parse(tokens)
               |.w.d.y.c.t.y.l.|
     Scanner   |[-] . . . . . .| [0:1] 'who'
     Scanner   |[-] . . . . . .| [0:1] NP[+WH] -> 'who' *
@@ -366,7 +366,7 @@ Let's load a German grammar:
     >>> cp = parse.load_earley('grammars/german.fcfg', trace=0)
     >>> sent = 'die katze sieht den hund'
     >>> tokens = sent.split()
-    >>> trees = cp.get_parse_list(tokens)
+    >>> trees = cp.nbest_parse(tokens)
     >>> for tree in trees: print tree
     (S[]
       (NP[AGR=[GND='fem', NUM='sg', PER=3], CASE='nom']
@@ -398,7 +398,7 @@ chart.  To do this, we use a special subclass of `Chart`, called
 
 A simple intransitive sentence:
 
-    >>> trees = cp.get_parse_list('john barks'.split())
+    >>> trees = cp.nbest_parse('john barks'.split())
               |.jo.ba.|
     Scanner   |[--]  .| [0:1] 'john'
     Scanner   |[--]  .| [0:1] NP[sem=[bo={(bo @x \P.(P John))}, core=<@x>]] -> 'john' *
@@ -416,7 +416,7 @@ A simple intransitive sentence:
 
 A transitive sentence:
 
-    >>> trees = cp.get_parse_list('john feeds a dog'.split())
+    >>> trees = cp.nbest_parse('john feeds a dog'.split())
               |.j.f.a.d.|
     Scanner   |[-] . . .| [0:1] 'john'
     Scanner   |[-] . . .| [0:1] NP[sem=[bo={(bo @x \P.(P John))}, core=<@x>]] -> 'john' *
@@ -449,7 +449,7 @@ Turn down the verbosity:
 
 Reuse the same lexical item twice:
 
-    >>> trees = cp.get_parse_list('john feeds john'.split())
+    >>> trees = cp.nbest_parse('john feeds john'.split())
     >>> for tree in trees: print tree
     (S[sem=[bo={(bo x104 \P.(P John)), (bo x105 \P.(P John))}, core=<(feed x105 x104)>]]
       (NP[sem=[bo={(bo x104 \P.(P John))}, core=<x104>]] john)
@@ -457,7 +457,7 @@ Reuse the same lexical item twice:
         (TV[sem=[bo={/}, core=<\x y.(feed x y)>]] feeds)
         (NP[sem=[bo={(bo x105 \P.(P John))}, core=<x105>]] john)))
 
-    >>> trees = cp.get_parse_list('a dog feeds a dog'.split())
+    >>> trees = cp.nbest_parse('a dog feeds a dog'.split())
     >>> for tree in trees: print tree
     (S[sem=[bo={(bo x106 \P.some x.(and (dog x) (P x))), (bo x107 \P.some x.(and (dog x) (P x)))}, core=<(feed x107 x106)>]]
       (NP[sem=[bo={(bo x106 \P.some x.(and (dog x) (P x)))}, core=<x106>]]

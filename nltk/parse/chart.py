@@ -1240,7 +1240,7 @@ class PredictorRule(TopDownExpandRule): pass
 ##  Simple Earley Chart Parser
 ########################################################################
 
-class EarleyChartParser(AbstractParser):
+class EarleyChartParser(ParserI):
     """
     A chart parser implementing the Earley parsing algorithm:
 
@@ -1290,11 +1290,17 @@ class EarleyChartParser(AbstractParser):
         @param chart_class: The class that should be used to create
             the charts used by this parser.
         """
+        if isinstance(trace, dict):
+            raise ValueError("Earley parser no longer takes a lexicon "
+                             "as a separate parameter; assign the "
+                             "lexicon when creating the grammar instead.")
         self._grammar = grammar
         self._lexicon = grammar.lexicon()
         self._trace = trace
         self._chart_class = chart_class
-        AbstractParser.__init__(self)
+
+    def grammar(self):
+        return self._grammar
 
     def lexicon(self):
         """@return: The lexicon used by this parser."""
@@ -1304,9 +1310,9 @@ class EarleyChartParser(AbstractParser):
     #: The remainder of each line will be used to display edges.
     _trace_chart_width = 40
 
-    def get_parse_list(self, tokens, tree_class=Tree):
+    def nbest_parse(self, tokens, n=None, tree_class=Tree):
         tokens = list(tokens)
-        self._check_coverage(tokens)
+        self._check_lexicon_coverage(tokens)
         
         chart = self._chart_class(tokens)
         grammar = self._grammar
@@ -1340,7 +1346,7 @@ class EarleyChartParser(AbstractParser):
                             print 'Scanner  ', chart.pp_edge(e,w)
 
         # Output a list of complete parses.
-        return self._parses(chart, grammar.start(), tree_class)
+        return self._parses(chart, grammar.start(), tree_class)[:n]
 
     # This is a separate method because FeatureEarleyChartParser needs
     # to replace it:
@@ -1355,7 +1361,9 @@ class EarleyChartParser(AbstractParser):
         """Return a list of parses in the given chart."""
         return chart.parses(start_sym, tree_class=tree_class)
     
-    def _check_coverage(self, tokens):
+    def _check_lexicon_coverage(self, tokens):
+        try: 'x' in self._lexicon
+        except: raise ValueError('ow %r' % self._lexicon)
         missing = [tok for tok in tokens if tok not in self._lexicon]
         if missing:
             missing = ', '.join('%r' % (w,) for w in missing)
@@ -1371,7 +1379,7 @@ TD_STRATEGY = [CachedTopDownInitRule(), CachedTopDownExpandRule(),
 BU_STRATEGY = [BottomUpInitRule(), BottomUpPredictRule(),
                SingleEdgeFundamentalRule()]
 
-class ChartParser(AbstractParser):
+class ChartParser(ParserI):
     """
     A generic chart parser.  A X{strategy}, or list of
     L{ChartRules<ChartRuleI>}, is used to decide what edges to add to
@@ -1402,11 +1410,13 @@ class ChartParser(AbstractParser):
         self._grammar = grammar
         self._strategy = strategy
         self._trace = trace
-        AbstractParser.__init__(self)
 
-    def get_parse_list(self, tokens, tree_class=Tree):
+    def grammar(self):
+        return self._grammar
+
+    def nbest_parse(self, tokens, n=None, tree_class=Tree):
         tokens = list(tokens)
-        self._check_coverage(tokens)
+        self._grammar.check_coverage(tokens)
         chart = Chart(list(tokens))
         grammar = self._grammar
 
@@ -1429,7 +1439,7 @@ class ChartParser(AbstractParser):
                 edges_added += edges_added_by_rule
         
         # Return a list of complete parses.
-        return chart.parses(grammar.start(), tree_class=tree_class)
+        return chart.parses(grammar.start(), tree_class=tree_class)[:n]
 
 ########################################################################
 ##  Stepping Chart Parser
@@ -1573,19 +1583,19 @@ class SteppingChartParser(ChartParser):
     # Standard parser methods
     #////////////////////////////////////////////////////////////
 
-    def get_parse_list(self, token, tree_class=Tree):
+    def nbest_parse(self, tokens, n=None, tree_class=Tree):
         tokens = list(tokens)
-        self._check_coverage(tokens)
+        self._grammar.check_coverage(tokens)
         
         # Initialize ourselves.
-        self.initialize(token)
+        self.initialize(tokens)
 
         # Step until no more edges are generated.
         for e in self.step():
             if e is None: break
             
         # Return a list of complete parses.
-        return self.parses(tree_class=tree_class)
+        return self.parses(tree_class=tree_class)[:n]
 
 ########################################################################
 ##  Demo Code
@@ -1656,7 +1666,7 @@ def demo():
     if choice in ('1', '5'):
         cp = ChartParser(grammar, TD_STRATEGY, trace=2)
         t = time.time()
-        parses = cp.get_parse_list(tokens)
+        parses = cp.nbest_parse(tokens)
         times['top down'] = time.time()-t
         assert len(parses)==5, 'Not all parses found'
         for tree in parses: print tree
@@ -1665,7 +1675,7 @@ def demo():
     if choice in ('2', '5'):
         cp = ChartParser(grammar, BU_STRATEGY, trace=2)
         t = time.time()
-        parses = cp.get_parse_list(tokens)
+        parses = cp.nbest_parse(tokens)
         times['bottom up'] = time.time()-t
         assert len(parses)==5, 'Not all parses found'
         for tree in parses: print tree
@@ -1674,7 +1684,7 @@ def demo():
     if choice in ('3', '5'):
         cp = EarleyChartParser(earley_grammar, earley_lexicon, trace=1)
         t = time.time()
-        parses = cp.get_parse_list(tokens)
+        parses = cp.nbest_parse(tokens)
         times['Earley parser'] = time.time()-t
         assert len(parses)==5, 'Not all parses found'
         for tree in parses: print tree
