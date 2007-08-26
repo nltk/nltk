@@ -67,6 +67,7 @@ from tag import *
 from parse import *
 from chunk import *
 from stem import *
+from classify import *
 
 import chat, chunk, corpus, draw, parse, sem, stem, tag, tokenize, wordnet
 
