@@ -355,7 +355,7 @@ def demo():
     tokens = sent.split()
     t = time.time()
     cp = FeatureEarleyChartParser(earley_grammar, trace=1)
-    trees = cp.get_parse_list(tokens)
+    trees = cp.nbest_parse(tokens)
     print "Time: %s" % (time.time() - t)
     for tree in trees: print tree
 
@@ -373,6 +373,6 @@ if __name__ == '__main__':
     cp = load_earley('grammars/feat0.fcfg', trace=2)
     sent = 'Kim likes children'
     tokens = sent.split()
-    trees = cp.get_parse_list(tokens)
+    trees = cp.nbest_parse(tokens)
     print trees
 
