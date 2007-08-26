@@ -1,0 +1,12 @@
+# Step 0: Plural Reduction
+"ns"	1	"m"	*
+"ões"	3	"ão"	*
+"ães"	1	"ão"	"mãe"
+"ais"	1	"al"	"cais","mais"
+"éis"	2	"el"	*
+"eis"	2	"el"	*
+"óis"	2	"ol"	*
+"is"	2	"il"	"lápis","cais","mais","crúcis","biquínis","pois","depois","dois","leis"
+"les"	3	"l"	*
+"res"	3	"r"	"árvores"
+"s"	2	""	"aliás","pires","lápis","cais","mais","mas","menos","férias","fezes","pêsames","crúcis","gás","atrás","moisés","através","convés","ês","país","após","ambas","ambos","messias","depois"
