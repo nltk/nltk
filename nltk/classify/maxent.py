@@ -75,9 +75,9 @@ class ConditionalExponentialClassifier(ClassifierI):
         return self._weights
 
     def classify(self, featureset):
-        return self.probdist(featureset).max()
+        return self.prob_classify(featureset).max()
         
-    def probdist(self, featureset):
+    def prob_classify(self, featureset):
         feature_vector = self._encoding.encode(featureset)
             
         prob_dict = {}
@@ -308,7 +308,7 @@ def calculate_estimated_fcount(classifier, train_toks, encoding, offsets):
     fcount = numpy.zeros(encoding.length()*len(offsets), 'd')
 
     for tok, label in train_toks:
-        pdist = classifier.probdist(tok)
+        pdist = classifier.prob_classify(tok)
         for label, offset in offsets.items():
             prob = pdist.prob(label)
             for (index, val) in encoding.encode(tok):
@@ -536,7 +536,7 @@ def calculate_deltas(train_toks, classifier, unattested, ffreq_empirical,
     A = numpy.zeros((len(nfmap), encoding.length()*len(offsets)), 'd')
 
     for tok, label in train_toks:
-        dist = classifier.probdist(tok)
+        dist = classifier.prob_classify(tok)
 
         # Find the number of active features.
         feature_vector = encoding.encode(tok)
