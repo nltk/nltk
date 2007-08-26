@@ -56,8 +56,7 @@ class ClassifierI(object):
         @return: the most appropriate label for the given featureset.
         @rtype: label
         """
-        if (self.batch_classify.im_func is not
-            ClassifierI.batch_classify.im_func):
+        if overridden(self.batch_classify):
             return self.batch_classify([featureset])[0]
         else:
             raise NotImplementedError()
@@ -68,8 +67,7 @@ class ClassifierI(object):
             featureset.
         @rtype: L{ProbDist <nltk.probability.ProbDist>}
         """
-        if (self.batch_probdist.im_func is not
-            ClassifierI.batch_probdist.im_func):
+        if overridden(self.batch_prob_classify):
             return self.batch_prob_classify([featureset])[0]
         else:
             raise NotImplementedError()
@@ -129,8 +127,7 @@ class MultiClassifierI(object):
         @return: the most appropriate set of labels for the given featureset.
         @rtype: C{set} of I{label}
         """
-        if (self.batch_classify.im_func is not
-            ClassifierI.batch_classify.im_func):
+        if overridden(self.batch_classify):
             return self.batch_classify([featureset])[0]
         else:
             raise NotImplementedError()
@@ -141,8 +138,7 @@ class MultiClassifierI(object):
             given featureset.
         @rtype: L{ProbDist <nltk.probability.ProbDist>}
         """
-        if (self.batch_probdist.im_func is not
-            ClassifierI.batch_probdist.im_func):
+        if overridden(self.batch_prob_classify):
             return self.batch_prob_classify([featureset])[0]
         else:
             raise NotImplementedError()
