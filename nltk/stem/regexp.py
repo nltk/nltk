@@ -13,7 +13,7 @@ import re
 class RegexpStemmer(StemmerI):
     """
     A stemmer that uses regular expressions to identify morphological
-    affixes.  Any substrings that matches the regular expressions will
+    affixes.  Any substrings that match the regular expressions will
     be removed.
     """
     def __init__(self, regexp, min=0):

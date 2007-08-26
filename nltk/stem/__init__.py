@@ -24,6 +24,7 @@ from regexp import *
 from porter import *
 from lancaster import *
 from wordnet import *
+from rslp import *
 
 __all__ = [
     # Stemmer interface
@@ -31,7 +32,7 @@ __all__ = [
 
     # Stemmers
     'RegexpStemmer', 'PorterStemmer', 'LancasterStemmer',
-    'WordnetStemmer'
+    'WordnetStemmer', 'RSLPStemmer'
     ]
 
 ######################################################################
