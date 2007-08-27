@@ -576,6 +576,38 @@ def read_blankline_block(stream):
         else:
             s += line
 
+def read_regexp_block(stream, start_re, end_re=None):
+    """
+    Read a sequence of tokens from a stream, where tokens begin with
+    lines that match C{start_re}.  If C{end_re} is specified, then
+    tokens end with lines that match C{end_re}; otherwise, tokens end
+    whenever the next line matching C{start_re} is found.
+    """
+    # Scan until we find a line matching the start regexp.
+    while True:
+        line = stream.readline()
+        if not line: return [] # end of file.
+        if re.match(start_re, line): break
+
+    # Scan until we find another line matching the regexp, or EOF.
+    lines = [line]
+    while True:
+        oldpos = stream.tell()
+        line = stream.readline()
+        # End of file:
+        if not line:
+            return [''.join(lines)]
+        # End of token:
+        if end_re is not None and re.match(end_re, line):
+            return [''.join(lines)]
+        # Start of new token: backup to just before it starts, and
+        # return the token we've already collected.
+        if re.match(start_re, line):
+            stream.seek(oldpos)
+            return [''.join(lines)]
+        # Anything else is part of the token.
+        lines.append(line)
+
 def read_sexpr_block(stream, block_size=16384, comment_char=None):
     """
     Read a sequence of s-expressions from the stream, and leave the

@@ -8,8 +8,8 @@
 
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
-from nltk.tree import bracket_parse
-import os.path
+from nltk.tree import bracket_parse, Tree
+import os.path, sys
 
 """
 Corpus reader for corpora that consist of parenthesis-delineated parse
@@ -21,13 +21,18 @@ class BracketParseCorpusReader(CorpusReader):
     Reader for corpora that consist of parenthesis-delineated parse
     trees.
     """
-    def __init__(self, root, items, extension='', comment_char=None):
+    def __init__(self, root, items, extension='', comment_char=None,
+                 detect_blocks='sexpr'):
         """
         @param root: The root directory for this corpus.
         @param items: A list of items in this corpus.
         @param extension: File extension for items in this corpus.
         @param comment: The character which can appear at the start of a line to
           indicate that the rest of the line is a comment.
+        @param detect_blocks: The method that is used to find blocks
+          in the corpus; can be 'unindented_parens' (every unindented
+          parenthasis starts a new parse) or 'sexpr' (brackets are
+          matched).
         """
         if isinstance(items, basestring):
             items = find_corpus_items(root, items, extension)
@@ -35,6 +40,7 @@ class BracketParseCorpusReader(CorpusReader):
         self.items = tuple(items)
         self._extension = extension
         self._comment_char = comment_char
+        self._detect_blocks = detect_blocks
 
     def raw(self, items=None):
         return concat([open(filename).read()
@@ -75,14 +81,27 @@ class BracketParseCorpusReader(CorpusReader):
         return sum(self._read_tagged_sent_block(stream), [])
 
     def _read_sent_block(self, stream):
-        return [self._word(t) for t in read_sexpr_block(stream, comment_char=self._comment_char)]
+        return [self._word(t) for t in self._read_block(stream)]
     
     def _read_tagged_sent_block(self, stream):
-        return [self._tag(t) for t in read_sexpr_block(stream, comment_char=self._comment_char)]
+        return [self._tag(t) for t in self._read_block(stream)]
 
     def _read_parsed_sent_block(self, stream):
-        trees = [self._parse(t) for t in read_sexpr_block(stream, comment_char=self._comment_char)]
+        trees = [self._parse(t) for t in self._read_block(stream)]
         return [tree for tree in trees if tree is not None]
+
+    def _read_block(self, stream):
+        if self._detect_blocks == 'sexpr':
+            return read_sexpr_block(stream, comment_char=self._comment_char)
+        elif self._detect_blocks == 'unindented_paren':
+            # Tokens start with unindented left parens.
+            toks = read_regexp_block(stream, start_re=r'^\(')
+            # Strip any comments out of the tokens.
+            toks = [re.sub('(?m)^%s.*'%re.escape(self._comment_char), '', tok)
+                    for tok in toks]
+            return toks
+        else:
+            assert 0, 'bad block type'
     
 # low-level string processing
     
@@ -96,7 +115,23 @@ class BracketParseCorpusReader(CorpusReader):
         return t
 
     def _parse(self, t):
-        return bracket_parse(self._normalize(t))
+        try:
+            return bracket_parse(self._normalize(t))
+        except ValueError, e:
+            sys.stderr.write("Bad tree detected; trying to recover...\n")
+            # Try to recover, if we can:
+            if e.args == ('mismatched parens',):
+                for n in range(1, 5):
+                    try:
+                        v = bracket_parse(self._normalize(t+')'*n))
+                        sys.stderr.write("  Recovered by adding %d close "
+                                         "paren(s)\n" % n)
+                        return v
+                    except ValueError: pass
+            # Try something else:
+            sys.stderr.write("  Recovered by returning a flat parse.\n")
+            #sys.stderr.write(' '.join(t.split())+'\n')
+            return Tree('S', self._tag(t))
 
     def _tag(self, t):
         return [(w,t) for (t,w) in re.findall(r'\((\S+?) (\S+?)\)', self._normalize(t))]
