@@ -43,7 +43,7 @@ items = sorted(titles)
 
 class IEERDocument:
     def __init__(self, text, docno=None, doctype=None,
-                 date_time=None, headline=None):
+                 date_time=None, headline=''):
         self.text = text
         self.docno = docno
         self.doctype = doctype
@@ -94,23 +94,28 @@ class IEERCorpusReader(CorpusReader):
                 for item in items]
     
     def _read_parsed_block(self,stream):
-        return [self._parse(doc) for doc in self._read_block(stream)]
-
+        # TODO: figure out while empty documents are being returned
+        return [self._parse(doc) for doc in self._read_block(stream) if self._parse(doc).docno is not None]
+  
     def _parse(self, doc):
         val = chunk.ieerstr2tree(doc, top_node="DOCUMENT")
         if isinstance(val, dict):
             return IEERDocument(**val)
         else:
             return IEERDocument(val)
-    
+     
     def _read_block(self, stream):
         out = []
         # Skip any preamble.
-        for line in stream:
+        while True:
+            line = stream.readline()
+            if not line: break
             if line.strip() == '<DOC>': break
-        # Read the document
         out.append(line)
-        for line in stream:
+        # Read the document
+        while True:
+            line = stream.readline()
+            if not line: break
             out.append(line)
             if line.strip() == '</DOC>': break
         # Return the document
@@ -127,3 +132,4 @@ class IEERCorpusReader(CorpusReader):
     def parsed(self, items):
         return self.parsed_docs(items)
     #}
+
