@@ -63,9 +63,9 @@ Note that words that the tagger has not seen before, such as
 
 In the examples below, we'll look at developing automatic
 part-of-speech taggers based on the Brown Corpus.  Here are the
-training & test set's we'll use:
+training & test sets we'll use:
 
-    >>> brown_train = brown.tagged_sents('a')[:500]
+    >>> brown_train = brown.tagged_sents('a')[100:]
     >>> brown_test = brown.tagged_sents('b')[:100]
     >>> test_sent = nltk.tag.untag(brown_test[0])
 

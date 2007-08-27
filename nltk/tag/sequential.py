@@ -259,7 +259,12 @@ class NgramTagger(ContextTagger, yaml.YAMLObject):
         self._n = n
 
         if train and model:
-            raise ValueError, 'Must not specify both training data and a trained model'
+            msg = ''
+            if train:
+                msg += " TRAIN: " + `train`[:40]
+            if model:
+                msg += " MODEL: " + `model`[:40]
+            raise ValueError, 'Must not specify both training data and a trained model' + msg
         ContextTagger.__init__(self, model, backoff)
         if train:
             self._train(train, cutoff, verbose)
@@ -277,6 +282,13 @@ class UnigramTagger(NgramTagger):
     yaml_tag = '!nltk.UnigramTagger'
 
     def __init__(self, train=None, model={}, backoff=None, cutoff=1, verbose=False):
+        if train and model:
+            msg = ''
+            if train:
+                msg += " TRAIN: " + `train`[:40]
+            if model:
+                msg += " MODEL: " + `model`[:40]
+            raise ValueError, 'Must not specify both training data and a trained model' + msg
         NgramTagger.__init__(self, 1, train, model, backoff, cutoff, verbose)
 
     def context(self, tokens, index, history):
@@ -339,11 +351,12 @@ class AffixTagger(ContextTagger, yaml.YAMLObject):
         if train and model:
             raise ValueError, 'Must not specify both training data and a trained model'
         ContextTagger.__init__(self, model, backoff)
-        if train:
-            self._train(train, cutoff, verbose)
 
         self._affix_length = affix_length
         self._min_word_length = min_stem_length + abs(affix_length)
+
+        if train:
+            self._train(train, cutoff, verbose)
 
     def context(self, tokens, index, history):
         token = tokens[index]
