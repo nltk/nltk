@@ -70,23 +70,19 @@ class Ngram(SequentialBackoffTagger, Deprecated):
     def choose_tag(self, tokens, index, history):
         return self._tagger.choose_tag(tokens, index, history)
 class Unigram(Ngram, Deprecated):
-    """Use nltk.UnigramTagger instead.  Note: UnigramTagger.train() is
-    now a factory method."""
+    """Use nltk.UnigramTagger instead."""
     def __init__(self, cutoff=1, backoff=None):
         Ngram.__init__(self, 1, cutoff, backoff)
 class Bigram(Ngram, Deprecated):
-    """Use nltk.BigramTagger instead.  Note: BigramTagger.train() is
-    now a factory method."""
+    """Use nltk.BigramTagger instead."""
     def __init__(self, cutoff=1, backoff=None):
         Ngram.__init__(self, 2, cutoff, backoff)
 class Trigram(Ngram, Deprecated):
-    """Use nltk.TrigramTagger instead.  Note: TrigramTagger.train() is
-    now a factory method."""
+    """Use nltk.TrigramTagger instead."""
     def __init__(self, cutoff=1, backoff=None):
         Ngram.__init__(self, 3, cutoff, backoff)
 class Affix(SequentialBackoffTagger, Deprecated):
-    """Use nltk.AffixTagger instead.  Note: AffixTagger.train() is
-    now a factory method."""
+    """Use nltk.AffixTagger instead."""
     def __init__(self, length, minlength, backoff=None):
         SequentialBackoffTagger.__init__(self, backoff)
         self._len = length
@@ -98,8 +94,7 @@ class Affix(SequentialBackoffTagger, Deprecated):
     def choose_tag(self, tokens, index, history):
         return self._tagger.choose_tag(tokens, index, history)
 class Lookup(UnigramTagger, Deprecated):
-    """Use UnigramTagger instead.  Note: UnigramTagger.train() is now
-    a factory method."""
+    """Use UnigramTagger instead."""
 class Regexp(RegexpTagger, Deprecated):
     """Use RegexpTagger instead."""
 
