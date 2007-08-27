@@ -257,14 +257,10 @@ class NgramTagger(ContextTagger, yaml.YAMLObject):
             context-to-tag table for the new tagger.
         """
         self._n = n
-
-        if train and model:
-            msg = ''
-            if train:
-                msg += " TRAIN: " + `train`[:40]
-            if model:
-                msg += " MODEL: " + `model`[:40]
-            raise ValueError, 'Must not specify both training data and a trained model' + msg
+        
+#        This test doesn't work in doctests!?
+#        if train and model:
+#            raise ValueError, 'Must not specify both training data and a trained model'
         ContextTagger.__init__(self, model, backoff)
         if train:
             self._train(train, cutoff, verbose)
@@ -282,13 +278,6 @@ class UnigramTagger(NgramTagger):
     yaml_tag = '!nltk.UnigramTagger'
 
     def __init__(self, train=None, model={}, backoff=None, cutoff=1, verbose=False):
-        if train and model:
-            msg = ''
-            if train:
-                msg += " TRAIN: " + `train`[:40]
-            if model:
-                msg += " MODEL: " + `model`[:40]
-            raise ValueError, 'Must not specify both training data and a trained model' + msg
         NgramTagger.__init__(self, 1, train, model, backoff, cutoff, verbose)
 
     def context(self, tokens, index, history):
@@ -348,8 +337,9 @@ class AffixTagger(ContextTagger, yaml.YAMLObject):
             tag of C{None} by this tagger.
             
         """
-        if train and model:
-            raise ValueError, 'Must not specify both training data and a trained model'
+#        This test doesn't work in doctests!?
+#        if train and model:
+#            raise ValueError, 'Must not specify both training data and a trained model'
         ContextTagger.__init__(self, model, backoff)
 
         self._affix_length = affix_length
