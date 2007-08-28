@@ -1,7 +1,6 @@
 from qt import *
 from at_lite import TableModel, TableEdit
-#from pylpath import lpath
-from nltk_contrib import lpath
+import lpath
 
 class NodeFeatureDialog(QDialog):
     def __init__(self, node, parent):

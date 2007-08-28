@@ -1,4 +1,4 @@
-from nltk_contrib.lpath import tokenize
+from lpath import tokenize
 from lpathtree import LPathTreeModel
 from translator import translate
 

@@ -12,7 +12,7 @@ from sqlviewdialog import *
 from overlay import *
 from translator import translate
 from parselpath import parse_lpath
-from nltk_contrib.lpath import tokenize
+from lpath import tokenize
 
 class QBA(QMainWindow):
     def __init__(self, tree=None):
