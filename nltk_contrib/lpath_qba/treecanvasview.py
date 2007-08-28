@@ -4,7 +4,7 @@ from treecanvasnode import *
 from nodefeaturedialog import *
 from translator import translate
 from axis import *
-from nltk_contrib import lpath
+import lpath
 import math
 
 class FilterExpressionPopup(QLabel):

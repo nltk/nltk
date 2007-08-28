@@ -4,7 +4,7 @@ import sys
 import time
 from qt import *
 from threading import Thread, Lock
-from nltk_contrib import lpath
+import lpath
 import at_lite as at
 #from pyPgSQL import PgSQL
 try:
