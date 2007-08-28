@@ -1,12 +1,5 @@
 Version 0.9b1 2007-08-28
 
-Data:
-- new data package: corpora, grammars, tokenizers
-- deprecating GrammarFile...
-- new corpus reader implementation
-- timit player audio support
-- Floresta Portuguese Treebank
-
 NLTK:
 - New naming of packages and modules, and more functions imported into
   top-level nltk namespace, e.g. nltk.chunk.Regexp -> nltk.RegexpParser,
@@ -24,12 +17,18 @@ NLTK:
 - more consistent tree printing
 - support for Mac installer (Joshua Ritterman)
 - make wordnet's morphy stemmer accessible via the stemmer package
-- add Portuguese stemmer (contributed by Tiago Tresoldi)
+- add RSLP Portuguese stemmer (originally developed by Viviane Moreira Orengo, reimplemented by Tiago Tresoldi)
+
+Data:
+- new data package: corpora, grammars, tokenizers
+- new corpus reader implementation
+- Floresta Portuguese Treebank version 7.4
+- TIMIT player audio support
 
 NLTK Contrib:
-- nltk_contrib.timex -- temporal expression tagging
-- nltk_contrib. wordnet browser
-- nltk_contrib. lpath
+- timex -- temporal expression tagging
+- wordnet browser (contributed by Jussi Salmela)
+- lpath interpreter (contributed by Haejoong Lee)
 
 Book:
 - updates to book organization, chapter contents
