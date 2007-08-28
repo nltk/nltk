@@ -123,7 +123,7 @@ class QBA(QMainWindow):
             self.setCaption("LPath QBA: Tree %s" % sid)
             self.setTree(t)
             self.overlays = find_overlays(sql2, ldb, self.queryTree, t)
-            self.overlayIdx = 0
+            self.overlayIdx = len(self.overlays)-1
             self.displayNextOverlay()
 
             n = self.db.getNumTreesInMem()
@@ -252,6 +252,8 @@ class QBA(QMainWindow):
             self.overlays[self.overlayIdx].clear()
             self.overlayIdx = (self.overlayIdx + 1) % len(self.overlays)
             self.overlays[self.overlayIdx].display()
+            self.btnNextMatch.setText("Next match (%d/%d)" % \
+                                      (self.overlayIdx+1, len(self.overlays)))
             self._setLPath()
     
 if __name__ == "__main__":        
