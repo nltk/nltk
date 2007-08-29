@@ -829,11 +829,13 @@ class Trans:
         if tag[0] == '^':
             tag = tag[1:]
             if len(self.steps) > 1:
-                self._alignLeft(self.steps[-2], self.step)
+                if self.scope:
+                    self._alignLeft(self.scope, self.step)
         if tag[-1] == '$':
             tag = tag[:-1]
             if len(self.steps) > 1:
-                self._alignRight(self.steps[-2], self.step)
+                if self.scope:
+                    self._alignRight(self.scope, self.step)
         self.step.WHERE = [
                 ['type','=',"'syn'"],
                 ['name','=',"'%s'" % tag],
