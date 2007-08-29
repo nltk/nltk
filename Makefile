@@ -144,7 +144,7 @@ rsync:	clean_up
 .PHONY: clean clean_up
 
 clean:	clean_up
-	rm -rf build iso dist
+	rm -rf build iso dist MANIFEST
 	$(MAKE) -C doc clean
 
 clean_up: clean_code
