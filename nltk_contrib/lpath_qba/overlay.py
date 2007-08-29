@@ -43,6 +43,14 @@ class Overlay:
                 b1 = self._L[j][1]
                 b0.lpSetChild(b1)
                 b1.setAxisType(a1.getAxisType())
+                alignment = a1.lpAlignment()
+                if alignment == a1.AlignLeft:
+                    b1.lpAlignLeft()
+                elif alignment == a1.AlignRight:
+                    b1.lpAlignRight()
+                elif alignment == a1.AlignBoth:
+                    b1.lpAlignLeft()
+                    b1.lpAlignRight()
             for a1 in a0.lpChildren[1:]:
                 if 'lexical' in a1.data and a1.data['lexical']==True:
                     # terminal node == lexical node
@@ -55,6 +63,14 @@ class Overlay:
                     b1 = self._L[j][1]
                 b0.lpAttachBranch(b1)
                 b1.setAxisType(a1.getAxisType())
+                alignment = a1.lpAlignment()
+                if alignment == a1.AlignLeft:
+                    b1.lpAlignLeft()
+                elif alignment == a1.AlignRight:
+                    b1.lpAlignRight()
+                elif alignment == a1.AlignBoth:
+                    b1.lpAlignLeft()
+                    b1.lpAlignRight()
             self.markNegation(a0,b0)
     
     def clear(self):

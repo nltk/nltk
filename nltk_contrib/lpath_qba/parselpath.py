@@ -86,6 +86,8 @@ def parse_lpath(q):
                     
                 node.setAxisType(AXISMAP[b])   # reset axis type
                 if tokens[i-1][1] == 'not': node.setNot(True)
+                if node.data['label'][0] == '^': node.lpAlignLeft()
+                if node.data['label'][-1] == '$': node.lpAlignRight()
 
                 p = node
                 ret[-1] = p
