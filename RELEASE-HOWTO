@@ -52,14 +52,15 @@ The build requires docutils, pdflatex, python imaging library, epydoc
   5. make iso (fast; see dist/ for the iso image)
   6. list distributions and compare size with previous distribution
 
--rw-r--r-- 1 sb sb   1316756 2007-07-02 05:11 nltk-0.8-1.noarch.rpm
--rw-r--r-- 1 sb sb 164724736 2007-07-02 05:13 nltk-0.8.iso
--rw-r--r-- 1 sb sb    584601 2007-07-02 05:11 nltk-0.8.tar.gz
--rw-r--r-- 1 sb sb    752830 2007-07-02 05:11 nltk-0.8.win32.exe
--rw-r--r-- 1 sb sb    700067 2007-07-02 05:11 nltk-0.8.zip
--rw-r--r-- 1 sb sb  44534531 2007-07-02 05:12 nltk-corpora-0.8.zip
--rw-r--r-- 1 sb sb  38753840 2007-07-02 05:12 nltk-doc-0.8.zip
--rw-r--r-- 1 sb sb     82490 2007-07-02 05:12 nltk-examples-0.8.zip
+-rw-r--r-- 1 sb sb   1425136 2007-08-29 12:14 nltk-0.9b1-1.noarch.rpm
+-rw-r--r-- 1 sb sb 167860224 2007-08-29 12:35 nltk-0.9b1.iso
+-rw-r--r-- 1 sb sb    632183 2007-08-29 12:14 nltk-0.9b1.tar.gz
+-rw-r--r-- 1 sb sb    803444 2007-08-29 12:14 nltk-0.9b1.win32.exe
+-rw-r--r-- 1 sb sb    751655 2007-08-29 12:14 nltk-0.9b1.zip
+-rw-r--r-- 1 sb sb  46940365 2007-08-29 12:16 nltk-data-0.9b1.zip
+-rw-r--r-- 1 sb sb  39222423 2007-08-29 12:15 nltk-doc-0.9b1.zip
+-rw-r--r-- 1 sb sb     86001 2007-08-29 12:15 nltk-examples-0.9b1.zip
+
 
   (test the distributions?)
 
