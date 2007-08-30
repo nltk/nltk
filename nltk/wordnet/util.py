@@ -405,16 +405,17 @@ def getIndex(form, pos=NOUN):
     index file corresponding to _pos_.  getWord() is called on each
     transformed string until a match is found or all the different
     strings have been tried. It returns a Word or None."""
-    def trySubstitutions(trySubstitutions, form, substitutions, lookup=1, dictionary=dictionaryFor(pos)):
-        if lookup and dictionary.has_key(form):
+
+    from dictionary import dictionaryFor
+    
+    def trySubstitutions(form, substitutions, lookup=True, dictionary=dictionaryFor(pos)):
+        if lookup and form in dictionary:
             return dictionary[form]
         elif substitutions:
             (old, new) = substitutions[0]
             substitute = string.replace(form, old, new) and substitute != form
-            if substitute and dictionary.has_key(substitute):
+            if substitute and substitute in dictionary:
                 return dictionary[substitute]
-            return              trySubstitutions(trySubstitutions, form, substitutions[1:], lookup=0) or \
-                (substitute and trySubstitutions(trySubstitutions, substitute, substitutions[1:]))
-    return trySubstitutions(returnMatch, form, GET_INDEX_SUBSTITUTIONS)
-
-
+            return              trySubstitutions(form, substitutions[1:], lookup=False) or \
+                (substitute and trySubstitutions(substitute, substitutions[1:]))
+    return trySubstitutions(form, GET_INDEX_SUBSTITUTIONS)
