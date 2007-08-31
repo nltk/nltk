@@ -14,11 +14,6 @@ GR = ""
 # The following is the LPath+ grammar.
 # Some rules of original grammar, which appear in LPath papers
 # until 2006, are commented out using a single pound sign (#).
-# The commented rules are usually followed by modified rules.
-# Empty comment lines are followed by newly added rules.
-# Therefore, the original grammar can be obtained by removing
-# each noncomment line preceded by a comment line, and then by
-# removind pound signs (#).
 grammar_text = """
 #P -> AP | AP '{' P '}'
 P -> S | P S | P LCB P RCB
@@ -834,11 +829,13 @@ class Trans:
         if tag[0] == '^':
             tag = tag[1:]
             if len(self.steps) > 1:
-                self._alignLeft(self.steps[-2], self.step)
+                if self.scope:
+                    self._alignLeft(self.scope, self.step)
         if tag[-1] == '$':
             tag = tag[:-1]
             if len(self.steps) > 1:
-                self._alignRight(self.steps[-2], self.step)
+                if self.scope:
+                    self._alignRight(self.scope, self.step)
         self.step.WHERE = [
                 ['type','=',"'syn'"],
                 ['name','=',"'%s'" % tag],
@@ -964,11 +961,11 @@ def translate2(q,tname='T'):
         if typ == 's':
             GR += "Qname -> '" + t + "'\n"
     grammar = cfg.parse_cfg(GR)
-    parser = parse.ChartParse(grammar, parse.TD_STRATEGY)
+    parser = parse.ChartParser(grammar, parse.TD_STRATEGY)
     T4 = time.time()
 
     # chart-parse the query
-    trees = parser.get_parse_list(tokens)
+    trees = parser.nbest_parse(tokens)
     if not trees:
         T5 = T6 = time.time()
         return None, None

@@ -1,5 +1,6 @@
 import sys
 import os
+import codecs
 
 from optparse import OptionParser
 import platform
@@ -12,6 +13,7 @@ def tb2tbl(tree,a,b):
     #conn.begin()
     #cursor.execute("begin")
     for r in tree.exportLPathTable(TableModel,a,b):
+        print r
         cursor.execute(SQL1, tuple(r))
     #cursor.execute("commit")
     conn.commit()
@@ -20,14 +22,14 @@ def connectdb(opts):
     try:
         if opts.servertype == 'postgresql':
             try:
-                conn = PgSQL.connect(host=opts.host, port=opts.port, database=opts.db,
-                                     user=opts.user, password=opts.passwd)
+                conn = PgSQL.connect(
+                    host=opts.host, port=opts.port, database=opts.db,
+                    user=opts.user, password=opts.passwd)
             except PgSQL.libpq.DatabaseError, e:
                 print e
                 sys.exit(1)
             return conn
         elif opts.servertype == 'oracle':
-            import cx_Oracle
             if '@' in opts.user:
                 user,suffix = opts.user.split('@')
             else:
@@ -169,6 +171,7 @@ elif opts.servertype == 'postgresql':
     from pyPgSQL import PgSQL
     DatabaseError = PgSQL.libpq.DatabaseError
 elif opts.servertype == 'oracle':
+    os.environ['NLS_LANG'] = '.UTF8'
     import cx_Oracle
     from cx_Oracle import DatabaseError
 elif opts.servertype == 'mysql':
@@ -224,8 +227,9 @@ def do(tree):
     sid += 1
 
 count = opts.numtree
+reader = codecs.getreader('utf-8')
 if tbdir == '-':
-    for tree in TreeModel.importTreebank(sys.stdin):
+    for tree in TreeModel.importTreebank(reader(sys.stdin)):
         print tree
         do(tree)
         count -= 1
@@ -236,7 +240,7 @@ else:
             print f,
             if filter.match(f):
                 p = os.path.join(root,f)
-                for tree in TreeModel.importTreebank(file(p)):
+                for tree in TreeModel.importTreebank(reader(file(p))):
                     do(tree)
                     count -= 1
                     if count == 0: sys.exit(0)  # done
