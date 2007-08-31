@@ -8,7 +8,7 @@ r	int,
 d	int,
 type	varchar(32),
 name	varchar(32),
-value	varchar(64)
+value	varchar(128)
 );
 
 create index TABLE_all_idx on LPATH_TABLE (name,type,sid,tid,id,pid,l,r,d,value);
