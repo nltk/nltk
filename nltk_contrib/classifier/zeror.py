@@ -20,7 +20,7 @@ class ZeroR(Classifier):
         
     def classify(self, instances):
         for instance in instances:
-            instance.set_klass(self.__majority_class)
+            instance.classified_klass = self.__majority_class
         
     def majority_class(self):
         for instance in self.training:

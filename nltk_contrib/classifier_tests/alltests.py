@@ -12,9 +12,7 @@ def allTestsSuite():
     testfilenames = []
     for dn,d,f in os.walk('.'):
         if dn is not '.': continue
-        for filename in f:
-            if re.search('tests\.py$', filename) is not None:
-                testfilenames.append(filename)    
+        testfilenames = [filename for filename in f if re.search('tests\.py$', filename) is not None]
     modulenames = map(lambda f: re.sub('\.py$', '', f), testfilenames)         
     modules = map(__import__, modulenames)                 
     load = unittest.defaultTestLoader.loadTestsFromModule  

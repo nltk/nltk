@@ -23,22 +23,30 @@ class NaiveBayes(Classifier):
             
     def classify(self, instances):
         for instance in instances:
-            est_klass_value = self.estimate_klass(instance)
-            instance.set_klass(est_klass_value)
+            instance.classified_klass = self.estimate_klass(instance)
 
     def estimate_klass(self, instance):
         estimates_using_prob = {}
         for klass_value in self.klass:
-            class_cond_prob = 1.0
-            for attribute in self.attributes:
-                attr_value = instance.value(attribute)
-                post_prob = self.post_probs.value(attribute, attr_value, klass_value)
-                class_cond_prob *= post_prob
-            prior_prob = self.class_freq_dist.freq(klass_value)
-            estimates_using_prob[class_cond_prob * prior_prob] = klass_value
+            class_conditional_probability = self.class_conditional_probability(instance, klass_value)
+            prior_probability = self.prior_probability(klass_value)
+            estimates_using_prob[class_conditional_probability * prior_probability] = klass_value
         keys = estimates_using_prob.keys()
         keys.sort()#find the one with max conditional prob
         return estimates_using_prob[keys[-1]]
+    
+    def prior_probability(self, klass_value):
+        return self.class_freq_dist.freq(klass_value)
+    
+    def posterior_probability(self, attribute, attribute_value, klass_value):
+        return self.post_probs.value(attribute, attribute_value, klass_value)
+    
+    def class_conditional_probability(self, instance, klass_value):
+        class_cond_prob = 1.0
+        for attribute in self.attributes:
+            attr_value = instance.value(attribute)
+            class_cond_prob *= self.posterior_probability(attribute, attr_value, klass_value)
+        return class_cond_prob
     
     @classmethod
     def can_handle_continuous_attributes(self):

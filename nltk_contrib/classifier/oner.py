@@ -20,8 +20,7 @@ class OneR(Classifier):
         
     def classify(self, instances):
         for instance in instances:
-            klass = self.__best_decision_stump.klass(instance)
-            instance.set_klass(klass)
+            instance.classified_klass = self.__best_decision_stump.klass(instance)
 
     def best_decision_stump(self, instances, ignore_attributes = [], algorithm = 'minimum_error'):
         decision_stumps = self.possible_decision_stumps(ignore_attributes, instances)

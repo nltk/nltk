@@ -18,8 +18,7 @@ class DecisionTree(oner.OneR):
         self.root = self.build_tree(self.training, [])
         
     def build_tree(self, instances, used_attributes):
-        if self.options is None: self.options = 'maximum_information_gain'#default value
-        decision_stump = self.best_decision_stump(instances, used_attributes, self.options)
+        decision_stump = self.best_decision_stump(instances, used_attributes, self.options or 'maximum_information_gain') #Max Info Gain is the default, self.options can never be False
         if len(self.attributes) - len(used_attributes) == 1: return decision_stump
         used_attributes.append(decision_stump.attribute)
         for attr_value in decision_stump.attribute.values:
@@ -32,8 +31,7 @@ class DecisionTree(oner.OneR):
     
     def classify(self, instances):
         for instance in instances:
-            klass = self.root.klass(instance)
-            instance.set_klass(klass)
+            instance.classified_klass = self.root.klass(instance)
         
     def maximum_information_gain(self, decision_stumps):
         return self.higher_value_preferred(decision_stumps, lambda decision_stump: decision_stump.information_gain())
