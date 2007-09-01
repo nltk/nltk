@@ -33,6 +33,9 @@ class Instances(UserList.UserList):
         for instance in self.data:
             instance.convert_to_float(indices)
             
+    def __str__(self):
+        return '[' + ', '.join([str(instance) for instance in self.data]) + ']'
+            
 class TrainingInstances(Instances):
     def __init__(self, instances):
         Instances.__init__(self, instances)

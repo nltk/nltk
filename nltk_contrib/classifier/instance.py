@@ -17,7 +17,10 @@ class Instance:
         self.klass_value, self.attrs, self.classified_klass = None, None, None
         
     def is_valid(self, klass, attributes):
-        return AssertionError()
+        """
+        Verifies if the instance contains valid attribute and class values
+        """
+        return attributes.has_values(self.attrs)
     
     def value(self, attribute):
         """
@@ -42,6 +45,10 @@ class Instance:
             self.attrs[index] = discretised_attribute.mapping(float(self.attrs[index]))
     
     def remove_attributes(self, attributes):
+        """
+        Used when selecting features and @param:attributes are removed from instances
+        @param:attributes is an array of attributes
+        """
         to_be_removed = [attribute.index for attribute in attributes]
         to_be_removed.sort()
         to_be_removed.reverse()
@@ -49,6 +56,10 @@ class Instance:
             self.attrs.__delitem__(r)
             
     def convert_to_float(self, indices):
+        """
+        Converts attribute values at @param:indices to floats from numeric data represented as strings
+        Will throw a value error if an attempt is made to convert anything other than numeric data
+        """
         for index in indices:
             self.attrs[index] = float(self.attrs[index])
     
@@ -58,39 +69,62 @@ class Instance:
         if self.klass_value == other.klass_value and self.attrs == other.attrs and self.classified_klass == other.classified_klass: return True
         return False
     
-    def __str__(self):
-        return self.str_attrs() + self.str_class() + self.str_klassified_klass()
-
     def str_klassified_klass(self):
-        return ' Classified as: ' + self.check_none(self.classified_klass)
+        """
+        Returns the classified class as a string, will return <whitespace> if instance is not classified
+        """
+        return self.__check_none(self.classified_klass)
 
-    def check_none(self, var):
+    def __check_none(self, var):
         if var is None: 
             return ' '
         return var.__str__()
 
     def str_class(self):
-        return ' Class: ' + self.check_none(self.klass_value)
+        """
+        Returns the class as a string, will return <whitespace> in the case of a test instance
+        """
+        return self.__check_none(self.klass_value)
 
     def str_attrs(self):
-        return 'Attributes: ' + self.check_none(self.attrs)
+        """
+        Returns the a comma separated string of attribute values
+        """
+        return ','.join([self.__check_none(each) for each in self.attrs])
     
-    def attr_values_as_str(self):
-        return ','.join([str(attr) for attr in self.attrs])
+    def __str__(self):
+        return '[' + ';'.join(self.as_str()) + ']'
     
+    def as_str(self):
+        """
+        Helper method for __str__(self)
+        """
+        return [self.str_attrs()]
+        
 class TrainingInstance(Instance):
     def __init__(self, attr_values, klass_value):
         Instance.__init__(self)
         self.klass_value, self.attrs = klass_value, attr_values
         
     def is_valid(self, klass, attributes):
-        return klass.__contains__(self.klass_value) and attributes.has_values(self.attrs)
+        """
+        Verifies if the instance contains valid attribute and class values
+        """
+        return Instance.is_valid(self, klass, attributes) and klass.__contains__(self.klass_value)
     
     def as_gold(self):
+        """
+        Converts the training instance into a Gold instance(used in cross validation)
+        """
         return GoldInstance(copy.copy(self.attrs), self.klass_value)
-    
-    def __str__(self):
-        return self.str_attrs() + self.str_class()
+        
+    def as_str(self):
+        """
+        Helper method for __str__(self)
+        """
+        _attrs = Instance.as_str(self)
+        _attrs.append(self.str_class())
+        return _attrs
     
 class TestInstance(Instance):
     def __init__(self, attr_values):
@@ -100,21 +134,30 @@ class TestInstance(Instance):
     def set_klass(self, klass):
         self.classified_klass = klass
         
-    def is_valid(self, klass, attributes):
-        return attributes.has_values(self.attrs)
-        
-    def __str__(self):
-        return self.str_attrs() + self.str_klassified_klass()
-        
+    def as_str(self):
+        """
+        Helper method for __str__(self)
+        """
+        _attrs = Instance.as_str(self)
+        _attrs.append(self.str_klassified_klass())
+        return _attrs
+                
 class GoldInstance(TrainingInstance, TestInstance):
     def __init__(self, attr_values, klass_value):
         TrainingInstance.__init__(self, attr_values, klass_value)
         
     def is_valid(self, klass, attributes):
+        """
+        Verifies if the instance contains valid attribute and class values
+        """
         return TrainingInstance.is_valid(self, klass, attributes)
     
-    def classificationType(self):
-        if self.classified_klass == None: raise system.SystemError('Cannot find classification type for instance that has not been classified')
-        
-    def __str__(self):
-        return Instance.__str__(self)
+    def as_str(self):
+        """
+        Helper method for __str__(self)
+        """
+        _attrs = Instance.as_str(self)
+        _attrs.append(self.str_class())
+        _attrs.append(self.str_klassified_klass())
+        return _attrs
+    

@@ -65,17 +65,17 @@ class InstanceTestCase(unittest.TestCase):
         
     def test_string_representation(self):
         instance = ins.TrainingInstance(['bar','two'],'a')
-        self.assertEqual("Attributes: ['bar', 'two'] Class: a", instance.__str__());
+        self.assertEqual("[bar,two;a]", instance.__str__());
         
         instance = ins.TestInstance(['bar','two'])
-        self.assertEqual("Attributes: ['bar', 'two'] Classified as:  ", instance.__str__());
+        self.assertEqual("[bar,two; ]", instance.__str__());
         instance.set_klass('b')
-        self.assertEqual("Attributes: ['bar', 'two'] Classified as: b", instance.__str__());
+        self.assertEqual("[bar,two;b]", instance.__str__());
                 
         instance = ins.GoldInstance(['bar','two'],'a')
-        self.assertEqual("Attributes: ['bar', 'two'] Class: a Classified as:  ", instance.__str__());
+        self.assertEqual("[bar,two;a; ]", instance.__str__());
         instance.set_klass('b')
-        self.assertEqual("Attributes: ['bar', 'two'] Class: a Classified as: b", instance.__str__());
+        self.assertEqual("[bar,two;a;b]", instance.__str__());
         
     def test_get_attribute_value_from_instance_using_attribute(self):
         instance = ins.TrainingInstance(['bar','two'],'a')

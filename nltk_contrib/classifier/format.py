@@ -74,17 +74,17 @@ class C45Format(FormatI):
         return values
     
     def write_training_to_file(self, instances, path):
-        return self.write_to_file(path, self.DATA, instances, lambda instance: instance.attr_values_as_str() + ',' + str(instance.klass_value))
+        return self.write_to_file(path, self.DATA, instances, lambda instance: instance.str_attrs() + ',' + str(instance.klass_value))
         
     def write_test_to_file(self, instances, path, including_classification=True):
         if not including_classification:
-            return self.write_to_file(path, self.TEST, instances, lambda instance: instance.attr_values_as_str())
-        return self.write_to_file(path, self.TEST, instances, lambda instance: instance.attr_values_as_str() + ',' + str(instance.classified_klass))
+            return self.write_to_file(path, self.TEST, instances, lambda instance: instance.str_attrs())
+        return self.write_to_file(path, self.TEST, instances, lambda instance: instance.str_attrs() + ',' + str(instance.classified_klass))
 
     def write_gold_to_file(self, instances, path, including_classification=True):
         if not including_classification:
-            return self.write_to_file(path, self.GOLD, instances, lambda instance: instance.attr_values_as_str() + ',' + str(instance.klass_value))
-        return self.write_to_file(path, self.GOLD, instances, lambda instance: instance.attr_values_as_str() + ',' + str(instance.klass_value) + ',' + str(instance.classified_klass))
+            return self.write_to_file(path, self.GOLD, instances, lambda instance: instance.str_attrs() + ',' + str(instance.klass_value))
+        return self.write_to_file(path, self.GOLD, instances, lambda instance: instance.str_attrs() + ',' + str(instance.klass_value) + ',' + str(instance.classified_klass))
         
     def write_metadata_to_file(self, attributes, klass, path):
         new_file = self.create_file(path, self.NAMES)

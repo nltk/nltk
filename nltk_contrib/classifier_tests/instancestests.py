@@ -344,6 +344,11 @@ class InstancesTestCase(unittest.TestCase):
         self.assertAlmostEqual(5.0, attr_values[sb[1]])
         self.assertAlmostEqual(5.1, attr_values[sb[2]])
         
+    def test_to_string(self):
+        instances = ins.TrainingInstances([instance.TrainingInstance(['foo', 'bar'], 'a'), instance.TrainingInstance(['foo', 'foobar'], 'b')])
+        self.assertEqual('[[foo,bar;a], [foo,foobar;b]]', str(instances))
+
+        
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()
     runner.run(unittest.TestSuite(unittest.makeSuite(InstancesTestCase)))

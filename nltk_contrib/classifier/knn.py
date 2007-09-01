@@ -18,7 +18,7 @@ class IB1(Classifier):
             for each_training in self.training:
                 dist = dm.euclidean_distance(each_test, each_training, self.attributes)
                 id.distance(dist, each_training)
-            each_test.set_klass(id.klass(majority_klass_vote))
+            each_test.classified_klass = id.klass(majority_klass_vote)
     
     @classmethod
     def can_handle_continuous_attributes(self):
