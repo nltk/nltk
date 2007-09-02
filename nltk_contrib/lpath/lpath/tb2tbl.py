@@ -5,8 +5,8 @@ import codecs
 from optparse import OptionParser
 import platform
 import pwd
-from at_lite.table import TableModel
-from at_lite.tree import TreeModel
+from nltk_contrib.lpath.at_lite.table import TableModel
+from nltk_contrib.lpath.at_lite.tree import TreeModel
 import re
 
 def tb2tbl(tree,a,b):

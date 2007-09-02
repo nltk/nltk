@@ -22,7 +22,7 @@ class TreeIo:
         return s[1:]
 
     def importNltkLiteTree(cls, t):
-        from nltk_lite.parse.tree import Tree as NltkTree
+        from nltk.tree import Tree as NltkTree
 
         L = [t]
         T = [cls()]

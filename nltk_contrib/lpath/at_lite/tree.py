@@ -145,7 +145,7 @@ class TreeModel(TreeIo):
         return ni < mi
     
 if __name__ == "__main__":
-    from nltk_lite.parse import bracket_parse
+    from nltk.tree import bracket_parse
     s = "(S (NP (N I)) (VP (VP (V saw) (NP (DT the) (N man))) (PP (P with) (NP (DT a) (N telescope)))))"
     t = bracket_parse(s)
     root = TreeModel.importNltkLiteTree(t)
