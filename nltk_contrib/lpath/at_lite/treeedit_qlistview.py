@@ -159,7 +159,7 @@ class TreeEdit(QListView,AccelKeyHandler):
 
     
 if __name__ == "__main__":
-    from at.tree_qt import TreeModel
+    from tree_qt import TreeModel
     import qt
 
     class Demo(qt.QVBox):
@@ -182,7 +182,7 @@ if __name__ == "__main__":
             self.resize(400,450)
 
         def load(self):
-            from nltk_lite.parse import bracket_parse
+            from nltk import bracket_parse
             s = "(S (NP (N I)) (VP1 (VP2 (V saw) (NP (ART the) (N man))) (PP (P with) (NP (ART a) (N telescope)))))"
             t = bracket_parse(s)
             self.root = TreeModel.importNltkLiteTree(t)
