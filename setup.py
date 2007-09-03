@@ -39,6 +39,8 @@ setup(
                 'nltk_contrib', 'nltk_contrib.toolbox', 'nltk_contrib.fst',
                 'nltk_contrib.classifier', 'nltk_contrib.classifier.exceptions',
                 'nltk_contrib.classifier_tests', 'nltk_contrib.dependency',
-                'nltk_contrib.drt', 'nltk_contrib.gluesemantics'
+                'nltk_contrib.drt', 'nltk_contrib.gluesemantics',
+                'nltk_contrib.lpath', 'nltk_contrib.lpath_qba', 'nltk_contrib.lpath_qba.at_lite',
+                'nltk_contrib.wordnet'
                 ],
     )
