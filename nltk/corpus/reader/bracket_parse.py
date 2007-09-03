@@ -81,10 +81,12 @@ class BracketParseCorpusReader(CorpusReader):
         return sum(self._read_tagged_sent_block(stream), [])
 
     def _read_sent_block(self, stream):
-        return [self._word(t) for t in self._read_block(stream)]
+        sents = [self._word(t) for t in self._read_block(stream)]
+        return [sent for sent in sents if sent]
     
     def _read_tagged_sent_block(self, stream):
-        return [self._tag(t) for t in self._read_block(stream)]
+        tagged_sents = [self._tag(t) for t in self._read_block(stream)]
+        return [tagged_sent for tagged_sent in tagged_sents if tagged_sent]
 
     def _read_parsed_sent_block(self, stream):
         trees = [self._parse(t) for t in self._read_block(stream)]
