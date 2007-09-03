@@ -1,0 +1,155 @@
+==================================
+Examples for Portuguese Processing
+==================================
+
+    >>> import nltk
+
+(NB. This material presumes familiarity with the NLTK book,
+``http://nltk.org/index.php/Book``).
+
+Accessing the Floresta Portuguese Treebank
+------------------------------------------
+
+The NLTK data distribution includes the
+"Floresta Sinta(c)tica Corpus" version 7.4, available from
+``http://www.linguateca.pt/Floresta/``.
+
+Like the Penn Treebank sample,
+we can access this corpus as a sequence of words or tagged words as follows:
+
+    >>> from nltk.corpus import floresta
+    >>> floresta.words()
+    ['Um', 'revivalismo', 'refrescante', 'O', '7_e_Meio', ...]
+    >>> floresta.tagged_words()
+    [('Um', '>N+art'), ('revivalismo', 'H+n'), ...]
+
+The tags consist of some syntactic information, followed by a plus sign,
+followed by a conventional part-of-speech tag.  Let's strip off the material before
+the plus sign:
+
+    >>> def simplify_tag(t):
+    ...     if "+" in t:
+    ...         return t[t.index("+")+1:]
+    ...     else:
+    ...         return t
+    >>> twords = nltk.corpus.floresta.tagged_words()
+    >>> twords = [(w.lower(),simplify_tag(t)) for (w,t) in twords]
+    >>> twords[:10] # doctest: +NORMALIZE_WHITESPACE
+    [('um', 'art'), ('revivalismo', 'n'), ('refrescante', 'adj'), ('o', 'art'), ('7_e_meio', 'prop'),
+    ('\xe9', 'v-fin'), ('um', 'art'), ('ex-libris', 'n'), ('de', 'prp'), ('a', 'art')]
+    
+Pretty printing the tagged words:
+
+    >>> print ' '.join(word + '/' + tag for (word, tag) in twords[:10])
+    um/art revivalismo/n refrescante/adj o/art 7_e_meio/prop ?/v-fin um/art ex-libris/n de/prp a/art
+
+Count the word tokens and types, and determine the most common word:
+
+    >>> words = floresta.words()
+    >>> len(words)
+    211870
+    >>> fd = nltk.FreqDist(words)
+    >>> len(fd)
+    29425
+    >>> fd.max()
+    'de'
+
+List the 20 most frequent tags, in order of decreasing frequency:
+
+    >>> tags = [simplify_tag(tag) for (word,tag) in floresta.tagged_words()]
+    >>> fd = nltk.FreqDist(tags)
+    >>> fd.sorted()[:20] # doctest: +NORMALIZE_WHITESPACE
+    ['n', 'prp', 'art', 'v-fin', ',', 'prop', 'adj', 'adv', '.', 'conj-c', 'v-inf',
+    'pron-det', 'v-pcp', 'num', 'pron-indp', 'pron-pers', '\xab', '\xbb', 'conj-s', '}']
+
+We can also access the corpus grouped by sentence:
+
+    >>> floresta.sents() # doctest: +NORMALIZE_WHITESPACE
+    [['Um', 'revivalismo', 'refrescante'], ['O', '7_e_Meio', '\xe9', 'um', 'ex-libris',
+    'de', 'a', 'noite', 'algarvia', '.'], ...]
+    >>> floresta.tagged_sents() # doctest: +NORMALIZE_WHITESPACE
+    [[('Um', '>N+art'), ('revivalismo', 'H+n'), ('refrescante', 'N<+adj')],
+    [('O', '>N+art'), ('7_e_Meio', 'H+prop'), ('\xe9', 'P+v-fin'), ('um', '>N+art'),
+    ('ex-libris', 'H+n'), ('de', 'H+prp'), ('a', '>N+art'), ('noite', 'H+n'),
+    ('algarvia', 'N<+adj'), ('.', '.')], ...]
+    >>> floresta.parsed_sents() # doctest: +NORMALIZE_WHITESPACE
+    [Tree('UTT+np', [Tree('>N+art', ['Um']), Tree('H+n', ['revivalismo']),
+    Tree('N<+adj', ['refrescante'])]), Tree('STA+fcl', [Tree('SUBJ+np',
+    [Tree('>N+art', ['O']), Tree('H+prop', ['7_e_Meio'])]), Tree('P+v-fin', ['\xe9']),
+    Tree('SC+np', [Tree('>N+art', ['um']), Tree('H+n', ['ex-libris']),
+    Tree('N<+pp', [Tree('H+prp', ['de']), Tree('P<+np', [Tree('>N+art', ['a']),
+    Tree('H+n', ['noite']), Tree('N<+adj', ['algarvia'])])])]), Tree('.', ['.'])]), ...]
+
+To view a parse tree, use the ``draw()`` method, e.g.:
+
+    >>> psents = floresta.parsed_sents()
+    >>> psents[5].draw() # doctest: +SKIP
+
+
+Simple Concordancing
+--------------------
+
+Here's a function that takes a word and a specified amount of context (measured
+in characters), and generates a concordance for that word.
+
+    >>> def concordance(word, context=30):
+    ...     for sent in floresta.sents():
+    ...         if word in sent:
+    ...             pos = sent.index(word)
+    ...             left = ' '.join(sent[:pos])
+    ...             right = ' '.join(sent[pos+1:])
+    ...             print '%*s %s %-*s' %\
+    ...                 (context, left[-context:], word, context, right[:context])
+
+    >>> concordance("dar") # doctest: +SKIP
+    anduru , foi o suficiente para dar a volta a o resultado .       
+                 1. O P?BLICO veio dar a a imprensa di?ria portuguesa
+      A fartura de pensamento pode dar maus resultados e n?s n?o quer
+                          Come?a a dar resultados a pol?tica de a Uni
+    ial come?ar a incorporar- lo e dar forma a um ' site ' que tem se
+    r com Constantino para ele lhe dar tamb?m os pap?is assinados .  
+    va a brincar , pois n?o lhe ia dar procura??o nenhuma enquanto n?
+    ?rica como o ant?doto capaz de dar sentido a o seu enorme poder .
+    . . .
+    >>> concordance("vender") # doctest: +SKIP
+    er recebido uma encomenda para vender 4000 blindados a o Iraque .   
+    m?rico_Amorim caso conseguisse vender o lote de ac??es de o empres?r
+    mpre ter jovens simp?ticos a ? vender ? chega ! }                   
+           Disse que o governo vai vender ? desde autom?vel at? particip
+    ndiciou ontem duas pessoas por vender carro com ?gio .              
+            A inten??o de Fleury ? vender as a??es para equilibrar as fi
+
+Part-of-Speech Tagging
+----------------------
+
+Let's begin by getting the tagged sentence data, and simplifying the tags
+as described earlier.
+
+    >>> from nltk.corpus import floresta
+    >>> tsents = floresta.tagged_sents()
+    >>> tsents = [[(w.lower(),simplify_tag(t)) for (w,t) in sent] for sent in tsents if sent]
+    >>> train = tsents[100:]
+    >>> test = tsents[:100]
+
+We already know that ``n`` is the most common tag, so we can set up a
+default tagger that tags every word as a noun, and see how well it does:
+
+    >>> tagger0 = nltk.DefaultTagger('n')
+    >>> nltk.tag.accuracy(tagger0, test)
+    0.17690941385435169
+
+Evidently, about one in every six words is a noun.  Let's improve on this by
+training up a unigram tagger:
+
+    >>> tagger1 = nltk.UnigramTagger(train, backoff=tagger0)
+    >>> nltk.tag.accuracy(tagger1, test)
+    0.85115452930728241
+
+Next a bigram tagger:
+
+    >>> tagger2 = nltk.BigramTagger(train, backoff=tagger1)
+    >>> nltk.tag.accuracy(tagger2, test)
+    0.86856127886323264
+
+
+
