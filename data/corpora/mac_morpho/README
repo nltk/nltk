@@ -1,0 +1,12 @@
+MAC-MORPHO: Brazilian Portuguese news text with part-of-speech tags
+
+1,167,183 words of journalistic texts extracted from ten sections of
+the daily newspaper Folha de Sau Paulo, 1994.  (Version for training taggers.)
+
+http://www.nilc.icmc.usp.br/lacioweb/
+
+Distributed with permission of
+Núcleo Interinstitucional de Lingüística Computacional (NILC),
+Universidade de São Paulo (USP) in São Carlos,
+Universidade Federal de São Carlos (UFSCar),
+Universidade Estadual Paulista (UNESP) of Araraquara.
