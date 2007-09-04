@@ -1,0 +1,258 @@
+==========================================
+Examplos para o processamento do português
+==========================================
+
+    >>> import nltk
+
+(NB. Este material parte do pressuposto de que o leitor esteja
+familiarizado com o livro do NLTK, disponível em
+``http://nltk.org/index.php/Book``).
+
+Utilizando o Floresta Portuguese Treebank
+-----------------------------------------
+
+A distribuição de dados do NLTK inclui o
+"Floresta Sinta(c)tica Corpus" na versão 7.4, disponível em
+``http://www.linguateca.pt/Floresta/``.
+
+Como para a amostra do Penn Treebank, é possível
+utilizar o conteúdo deste corpus como uma seqüência de palavras com
+informações de tags, da seguinte maneira:
+
+    >>> from nltk.corpus import floresta
+    >>> floresta.words()
+    ['Um', 'revivalismo', 'refrescante', 'O', '7_e_Meio', ...]
+    >>> floresta.tagged_words()
+    [('Um', '>N+art'), ('revivalismo', 'H+n'), ...]
+
+As tags são constituídas por certas informações sintáticas, seguidas por 
+um sinal
+de mais, seguido por tag costumeira de parte do discurso 
+(part-of-speech). Vamos
+remover o conteúdo que antecede o sinal de mais:
+
+    >>> def simplify_tag(t):
+    ...     if "+" in t:
+    ...         return t[t.index("+")+1:]
+    ...     else:
+    ...         return t
+    >>> twords = nltk.corpus.floresta.tagged_words()
+    >>> twords = [(w.lower(),simplify_tag(t)) for (w,t) in twords]
+    >>> twords[:10] # doctest: +NORMALIZE_WHITESPACE
+    [('um', 'art'), ('revivalismo', 'n'), ('refrescante', 'adj'), ('o', 
+'art'), ('7_e_meio', 'prop'),
+    ('\xe9', 'v-fin'), ('um', 'art'), ('ex-libris', 'n'), ('de', 'prp'), 
+('a', 'art')]
+   
+E exibir de maneira mais apropriada as palavras com informações de tags:
+
+    >>> print ' '.join(word + '/' + tag for (word, tag) in twords[:10])
+    um/art revivalismo/n refrescante/adj o/art 7_e_meio/prop ?/v-fin 
+um/art ex-libris/n de/prp a/art
+
+Em seguida, vamos contar o número de tokens de palavras e tipos, além de
+determinar qual a palavra mais comum:
+
+    >>> words = floresta.words()
+    >>> len(words)
+    211870
+    >>> fd = nltk.FreqDist(words)
+    >>> len(fd)
+    29425
+    >>> fd.max()
+    'de'
+
+Podemos também listar as 20 tags mais freqüentes, em ordem decrescente de
+freqüência:
+
+    >>> tags = [simplify_tag(tag) for (word,tag) in floresta.tagged_words()]
+    >>> fd = nltk.FreqDist(tags)
+    >>> fd.sorted()[:20] # doctest: +NORMALIZE_WHITESPACE
+    ['n', 'prp', 'art', 'v-fin', ',', 'prop', 'adj', 'adv', '.', 
+'conj-c', 'v-inf',
+    'pron-det', 'v-pcp', 'num', 'pron-indp', 'pron-pers', '\xab', 
+'\xbb', 'conj-s', '}']
+
+Também podemos ler o corpus agrupado por enunciados:
+
+    >>> floresta.sents() # doctest: +NORMALIZE_WHITESPACE
+    [['Um', 'revivalismo', 'refrescante'], ['O', '7_e_Meio', '\xe9', 
+'um', 'ex-libris',
+    'de', 'a', 'noite', 'algarvia', '.'], ...]
+    >>> floresta.tagged_sents() # doctest: +NORMALIZE_WHITESPACE
+    [[('Um', '>N+art'), ('revivalismo', 'H+n'), ('refrescante', 'N<+adj')],
+    [('O', '>N+art'), ('7_e_Meio', 'H+prop'), ('\xe9', 'P+v-fin'), 
+('um', '>N+art'),
+    ('ex-libris', 'H+n'), ('de', 'H+prp'), ('a', '>N+art'), ('noite', 
+'H+n'),
+    ('algarvia', 'N<+adj'), ('.', '.')], ...]
+    >>> floresta.parsed_sents() # doctest: +NORMALIZE_WHITESPACE
+    [Tree('UTT+np', [Tree('>N+art', ['Um']), Tree('H+n', ['revivalismo']),
+    Tree('N<+adj', ['refrescante'])]), Tree('STA+fcl', [Tree('SUBJ+np',
+    [Tree('>N+art', ['O']), Tree('H+prop', ['7_e_Meio'])]), 
+Tree('P+v-fin', ['\xe9']),
+    Tree('SC+np', [Tree('>N+art', ['um']), Tree('H+n', ['ex-libris']),
+    Tree('N<+pp', [Tree('H+prp', ['de']), Tree('P<+np', [Tree('>N+art', 
+['a']),
+    Tree('H+n', ['noite']), Tree('N<+adj', ['algarvia'])])])]), 
+Tree('.', ['.'])]), ...]
+
+Para ver uma árvore de análise sintática, podemos utilizar o método
+``draw()``, como no exemplo:
+
+    >>> psents = floresta.parsed_sents()
+    >>> psents[5].draw() # doctest: +SKIP
+
+
+Concordância simples
+--------------------
+
+A seguir, apresentamos uma função que recebe uma palavra e uma 
+quantidade determinada
+de contexto (medido em caracteres) e gera uma concordância para a mesma.
+
+    >>> def concordance(word, context=30):
+    ...     for sent in floresta.sents():
+    ...         if word in sent:
+    ...             pos = sent.index(word)
+    ...             left = ' '.join(sent[:pos])
+    ...             right = ' '.join(sent[pos+1:])
+    ...             print '%*s %s %-*s' %\
+    ...                 (context, left[-context:], word, context, 
+right[:context])
+
+    >>> concordance("dar") # doctest: +SKIP
+    anduru , foi o suficiente para dar a volta a o resultado .      
+                 1. O P?BLICO veio dar a a imprensa di?ria portuguesa
+      A fartura de pensamento pode dar maus resultados e n?s n?o quer
+                          Come?a a dar resultados a pol?tica de a Uni
+    ial come?ar a incorporar- lo e dar forma a um ' site ' que tem se
+    r com Constantino para ele lhe dar tamb?m os pap?is assinados . 
+    va a brincar , pois n?o lhe ia dar procura??o nenhuma enquanto n?
+    ?rica como o ant?doto capaz de dar sentido a o seu enorme poder .
+    . . .
+    >>> concordance("vender") # doctest: +SKIP
+    er recebido uma encomenda para vender 4000 blindados a o Iraque .  
+    m?rico_Amorim caso conseguisse vender o lote de ac??es de o empres?r
+    mpre ter jovens simp?ticos a ? vender ? chega ! }                  
+           Disse que o governo vai vender ? desde autom?vel at? particip
+    ndiciou ontem duas pessoas por vender carro com ?gio .             
+            A inten??o de Fleury ? vender as a??es para equilibrar as fi
+
+Tagging de partes do discurso
+-----------------------------
+
+Vamos começar obtendo os dados dos enunciados marcados com tags e 
+simplificando
+estas últimas como descrito anteriormente.
+
+    >>> from nltk.corpus import floresta
+    >>> tsents = floresta.tagged_sents()
+    >>> tsents = [[(w.lower(),simplify_tag(t)) for (w,t) in sent] for 
+sent in tsents if sent]
+    >>> train = tsents[100:]
+    >>> test = tsents[:100]
+
+Já sabemos que ``n`` é a tag mais comum; desta forma, podemos criar um 
+tagger por default
+que marque toda palavra como substantivo e, em seguida, avaliar seu 
+desempenho:
+
+    >>> tagger0 = nltk.DefaultTagger('n')
+    >>> nltk.tag.accuracy(tagger0, test)
+    0.17690941385435169
+
+Como pode-se deduzir facilmente, uma em cada seis palavras é um 
+substantivo. Vamos
+aperfeiçoar estes resultados treinando um tagger unigrama:
+
+    >>> tagger1 = nltk.UnigramTagger(train, backoff=tagger0)
+    >>> nltk.tag.accuracy(tagger1, test)
+    0.85115452930728241
+
+E, em seguida, um tagger bigrama:
+
+    >>> tagger2 = nltk.BigramTagger(train, backoff=tagger1)
+    >>> nltk.tag.accuracy(tagger2, test)
+    0.86856127886323264
+
+
+Sentence Segmentation
+---------------------
+
+Punkt is a language-neutral sentence segmentation tool.  It needs to be trained
+on plain text.
+
+::
+
+    O 7 e Meio Ž um ex-libris da noite algarvia.
+    ƒ uma das mais antigas discotecas do Algarve, situada em Albufeira, que continua a manter os traos decorativos e as clientelas de sempre.
+    ƒ um pouco a vers‹o de uma espŽcie de Çoutro ladoÈ da noite, a meio caminho entre os devaneios de uma fauna perifŽrica, seja de Lisboa, Londres, Dublin ou Faro e Portim‹o, e a postura circunspecta dos fiŽis da casa, que dela esperam a mœsica ÇgeracionistaÈ dos 60 ou dos 70.
+    N‹o deixa de ser, nos tempos que correm, um certo Çvery typicalÈ algarvio, cabea de cartaz para os que querem fugir a algumas movimenta›es nocturnas j‡ a caminho da ritualiza‹o de massas, do gŽnero Çvamos todos ao Calypso e encontramo-nos na LocomiaÈ.
+    E assim, aos 2,5 milh›es que o MinistŽrio do Planeamento e Administra‹o do Territ—rio j‡ gasta no pagamento do pessoal afecto a estes organismos, vm juntar-se os montantes das obras propriamente ditas, que os munic’pios, j‡ com projectos na m‹o, vm reivindicar junto do Executivo, como salienta aquele membro do Governo.
+    E o dinheiro Çn‹o falta s— ˆs c‰marasÈ, lembra o secret‡rio de Estado, que considera que a solu‹o para as autarquias Ž Çespecializarem-se em fundos comunit‡riosÈ.
+    Mas como, se muitas n‹o disp›em, nos seus quadros, dos tŽcnicos necess‡rios?
+    ÇEncomendem-nos a projectistas de foraÈ porque, se as obras vierem a ser financiadas, eles atŽ saem de graa, j‡ que, nesse caso, Ços fundos comunit‡rios pagam os projectos, o mesmo n‹o acontecendo quando eles s‹o feitos pelos GATÈ, dado serem organismos do Estado.
+    Essa poder‡ vir a ser uma hip—tese, atŽ porque, no terreno, a capacidade dos GAT est‡ cada vez mais enfraquecida.
+    Alguns atŽ j‡ desapareceram, como o de Castro Verde, e outros tm vindo a perder quadros.
+
+The source text (from the Floresta Portuguese Treebank) contains one sentence per line.
+We read the text, split it into its lines, and then join these lines together using
+spaces.  Now the information about sentence breaks has been discarded.  We split this
+material into training and testing data:
+
+    >>> text = open('floresta.txt').read()
+    >>> lines = text.split('\n')
+    >>> train = ' '.join(lines[10:])
+    >>> test = ' '.join(lines[:10])
+
+Now we train the sentence segmenter (or sentence tokenizer) and use it on our test sentences:
+
+    >>> stok = nltk.PunktSentenceTokenizer(train)
+    >>> print stok.tokenize(test) # doctest: +NORMALIZE_WHITESPACE
+    ['O 7 e Meio \xe9 um ex-libris da noite algarvia.',
+    '\xc9 uma das mais antigas discotecas do Algarve, situada em Albufeira,
+    que continua a manter os tra\xe7os decorativos e as clientelas de sempre.',
+    '\xc9 um pouco a vers\xe3o de uma esp\xe9cie de \xaboutro lado\xbb da noite,
+    a meio caminho entre os devaneios de uma fauna perif\xe9rica, seja de Lisboa,
+    Londres, Dublin ou Faro e Portim\xe3o, e a postura circunspecta dos fi\xe9is da casa,
+    que dela esperam a m\xfasica \xabgeracionista\xbb dos 60 ou dos 70.',
+    'N\xe3o deixa de ser, nos tempos que correm, um certo \xabvery typical\xbb algarvio,
+    cabe\xe7a de cartaz para os que querem fugir a algumas movimenta\xe7\xf5es nocturnas
+    j\xe1 a caminho da ritualiza\xe7\xe3o de massas, do g\xe9nero \xabvamos todos ao
+    Calypso e encontramo-nos na Locomia\xbb.',
+    'E assim, aos 2,5 milh\xf5es que o Minist\xe9rio do Planeamento e Administra\xe7\xe3o
+    do Territ\xf3rio j\xe1 gasta no pagamento do pessoal afecto a estes organismos,
+    v\xeam juntar-se os montantes das obras propriamente ditas, que os munic\xedpios,
+    j\xe1 com projectos na m\xe3o, v\xeam reivindicar junto do Executivo, como salienta
+    aquele membro do Governo.',
+    'E o dinheiro \xabn\xe3o falta s\xf3 \xe0s c\xe2maras\xbb, lembra o secret\xe1rio de Estado,
+    que considera que a solu\xe7\xe3o para as autarquias \xe9 \xabespecializarem-se em
+    fundos comunit\xe1rios\xbb.',
+    'Mas como, se muitas n\xe3o disp\xf5em, nos seus quadros, dos t\xe9cnicos necess\xe1rios?',
+    '\xabEncomendem-nos a projectistas de fora\xbb porque, se as obras vierem a ser financiadas,
+    eles at\xe9 saem de gra\xe7a, j\xe1 que, nesse caso, \xabos fundos comunit\xe1rios pagam
+    os projectos, o mesmo n\xe3o acontecendo quando eles s\xe3o feitos pelos GAT\xbb,
+    dado serem organismos do Estado.',
+    'Essa poder\xe1 vir a ser uma hip\xf3tese, at\xe9 porque, no terreno, a capacidade dos GAT
+    est\xe1 cada vez mais enfraquecida.',
+    'Alguns at\xe9 j\xe1 desapareceram, como o de Castro Verde, e outros t\xeam vindo a perder quadros.']
+
+
+Stemming
+--------
+
+NLTK includes the RSLP Portuguese stemmer.  Here we use it to stem some Portuguese text:
+
+    >>> stemmer = nltk.stem.RSLPStemmer() 
+    >>> text = u"""
+    ... Clarissa risca com giz no quadro-negro a paisagem que os alunos devem copiar .
+    ... Uma casinha de porta e janela , em cima duma coxilha . Um coqueiro do lado
+    ... ( onde o nosso amor nasceu - pensa ela no momento mesmo em que risca o troco
+    ... longo e fino ) . Depois , uma estradinha que corre , ondulando como uma cobra
+    ... , e se perde longe no horizonte . Nuvens de fiz do cŽu preto , um sol redondo
+    ... e gordo , chispando raios , ‡rvores , uma lagoa com marrecos nadando ...
+    ... """
+    >>> for token in text.split():
+    ...     print "%16s - %16s" % (token, stemmer.stem(token))
+        
