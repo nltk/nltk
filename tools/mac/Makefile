@@ -27,7 +27,7 @@ clean:
 corpus-root:
 	rm -rf ./Corpus_installer/root
 	mkdir -p ./Corpus_installer/root/usr/share/nltk/
-	cp -R ../../corpora ./Corpus_installer/root/usr/share/nltk/
+	cp -R ../../data/corpora ./Corpus_installer/root/usr/share/nltk/
 	chmod -R g+r ./Corpus_installer/root/usr/share/nltk
 
 lib-root: $(NLTK_ZIP)
