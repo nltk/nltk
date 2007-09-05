@@ -158,20 +158,6 @@ Sentence Segmentation
 
 Punkt is a language-neutral sentence segmentation tool.  It needs to be trained
 on plain text.
-
-::
-
-    O 7 e Meio Ž um ex-libris da noite algarvia.
-    ƒ uma das mais antigas discotecas do Algarve, situada em Albufeira, que continua a manter os traos decorativos e as clientelas de sempre.
-    ƒ um pouco a vers‹o de uma espŽcie de Çoutro ladoÈ da noite, a meio caminho entre os devaneios de uma fauna perifŽrica, seja de Lisboa, Londres, Dublin ou Faro e Portim‹o, e a postura circunspecta dos fiŽis da casa, que dela esperam a mœsica ÇgeracionistaÈ dos 60 ou dos 70.
-    N‹o deixa de ser, nos tempos que correm, um certo Çvery typicalÈ algarvio, cabea de cartaz para os que querem fugir a algumas movimenta›es nocturnas j‡ a caminho da ritualiza‹o de massas, do gŽnero Çvamos todos ao Calypso e encontramo-nos na LocomiaÈ.
-    E assim, aos 2,5 milh›es que o MinistŽrio do Planeamento e Administra‹o do Territ—rio j‡ gasta no pagamento do pessoal afecto a estes organismos, vm juntar-se os montantes das obras propriamente ditas, que os munic’pios, j‡ com projectos na m‹o, vm reivindicar junto do Executivo, como salienta aquele membro do Governo.
-    E o dinheiro Çn‹o falta s— ˆs c‰marasÈ, lembra o secret‡rio de Estado, que considera que a solu‹o para as autarquias Ž Çespecializarem-se em fundos comunit‡riosÈ.
-    Mas como, se muitas n‹o disp›em, nos seus quadros, dos tŽcnicos necess‡rios?
-    ÇEncomendem-nos a projectistas de foraÈ porque, se as obras vierem a ser financiadas, eles atŽ saem de graa, j‡ que, nesse caso, Ços fundos comunit‡rios pagam os projectos, o mesmo n‹o acontecendo quando eles s‹o feitos pelos GATÈ, dado serem organismos do Estado.
-    Essa poder‡ vir a ser uma hip—tese, atŽ porque, no terreno, a capacidade dos GAT est‡ cada vez mais enfraquecida.
-    Alguns atŽ j‡ desapareceram, como o de Castro Verde, e outros tm vindo a perder quadros.
-
 The source text (from the Floresta Portuguese Treebank) contains one sentence per line.
 We read the text, split it into its lines, and then join these lines together using
 spaces.  Now the information about sentence breaks has been discarded.  We split this
@@ -215,7 +201,8 @@ Now we train the sentence segmenter (or sentence tokenizer) and use it on our te
     'Alguns at\xe9 j\xe1 desapareceram, como o de Castro Verde, e outros t\xeam vindo a perder quadros.']
 
 Versions of NLTK more recent than 0.9b1 include a trained model for Portuguese sentence
-segmentation, which can be loaded as follows:
+segmentation, which can be loaded as follows.  It is faster to load a trained model than
+to retrain it.
 
     >>> stok = nltk.data.load('tokenizers/punkt/portuguese.pickle')
 
@@ -225,15 +212,61 @@ Stemming
 NLTK includes the RSLP Portuguese stemmer.  Here we use it to stem some Portuguese text:
 
     >>> stemmer = nltk.stem.RSLPStemmer() 
-    >>> text = u"""
-    ... Clarissa risca com giz no quadro-negro a paisagem que os alunos devem copiar .
-    ... Uma casinha de porta e janela , em cima duma coxilha . Um coqueiro do lado
-    ... ( onde o nosso amor nasceu - pensa ela no momento mesmo em que risca o troco
-    ... longo e fino ) . Depois , uma estradinha que corre , ondulando como uma cobra
-    ... , e se perde longe no horizonte . Nuvens de fiz do cŽu preto , um sol redondo
-    ... e gordo , chispando raios , ‡rvores , uma lagoa com marrecos nadando ...
-    ... """
-    >>> for token in text.split():
-    ...     print "%16s - %16s" % (token, stemmer.stem(token))
-        
+    >>> stemmer.stem("copiar")
+    >>> stemmer.stem("paisagem")
+    
+
+Stopwords
+---------
+
+NLTK includes Portuguese stopwords:
+
+    >>> stopwords = nltk.corpus.stopwords.words('portuguese')
+    >>> stopwords[:10]
+    ['a', 'ao', 'aos', 'aquela', 'aquelas', 'aquele', 'aqueles', 'aquilo', 'as', 'at\xe9']
+
+Now we can use these to filter text.  Let's find the most frequent words (other than stopwords)
+and print them in descending order of frequency:
+
+    >>> fd = nltk.FreqDist(w.lower() for w in floresta.words() if w not in stopwords)
+    >>> for word in fd.sorted()[:20]:
+    ...     print word, fd[word]
+    , 13444
+    . 7725
+    ? 2369
+    ? 2310
+    ? 1137
+    o 1086
+    } 1047
+    { 1044
+    a 897
+    ; 633
+    em 516
+    ser 466
+    sobre 349
+    os 313
+    anos 301
+    ontem 292
+    ainda 279
+    segundo 256
+    ter 249
+    dois 231
+    
+
+Character Encodings
+-------------------
+
+Python understands the common character encoding used for Portuguese, ISO 8859-1 (ISO Latin 1).
+
+    >>> text = open('floresta.txt').read()
+    >>> text[:60]
+    'O 7 e Meio \xe9 um ex-libris da noite algarvia.\n\xc9 uma das mais '
+    >>> print text[:60]
+    O 7 e Meio ? um ex-libris da noite algarvia.
+    ? uma das mais 
+    >>> text[:60].decode('latin-1')
+    u'O 7 e Meio \xe9 um ex-libris da noite algarvia.\n\xc9 uma das mais '
+    >>> text[:60].decode('latin-1').encode('utf-16')
+    '\xff\xfeO\x00 \x007\x00 \x00e\x00 \x00M\x00e\x00i\x00o\x00 \x00\xe9\x00 \x00u\x00m\x00 \x00e\x00x\x00-\x00l\x00i\x00b\x00r\x00i\x00s\x00 \x00d\x00a\x00 \x00n\x00o\x00i\x00t\x00e\x00 \x00a\x00l\x00g\x00a\x00r\x00v\x00i\x00a\x00.\x00\n\x00\xc9\x00 \x00u\x00m\x00a\x00 \x00d\x00a\x00s\x00 \x00m\x00a\x00i\x00s\x00 \x00'
+
 
