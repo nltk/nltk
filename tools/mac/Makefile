@@ -9,7 +9,7 @@
 PYTHON = python
 NLTK_VERSION = $(shell python -c 'import nltk; print nltk.__version__')
 NLTK_ZIP = ../../dist/nltk-$(NLTK_VERSION).zip
-PM = /Developer/Tools/packagemaker
+PM = /Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker
 
 .PHONY: pkg corpus-root lib-root clean
 
@@ -33,6 +33,7 @@ corpus-root:
 lib-root: $(NLTK_ZIP)
 	rm -rf ./NLTKLibrary_installer/root
 	mkdir -p ./NLTKLibrary_installer/root/tmp
+	mkdir -p ./NLTKLibrary_installer/root/tmp/nltk-installer
 	unzip $(NLTK_ZIP) -d ./NLTKLibrary_installer/root/tmp
 	mv ./NLTKLibrary_installer/root/tmp/nltk-$(NLTK_VERSION)/ \
 	   ./NLTKLibrary_installer/root/tmp/nltk-installer/
