@@ -7,8 +7,7 @@
 # For license information, see LICENSE.TXT
 
 """
-A reader for corpora whose documents contain part-of-speech-tagged
-words.
+A reader for corpora whose documents contain part-of-speech-tagged words.
 """       
 
 from api import *
@@ -227,3 +226,12 @@ class TaggedCorpusView(StreamBackedCorpusView):
                 block.extend(para)
         return block
 
+# there must be a better way...
+class MacMorphoCorpusReader(TaggedCorpusReader):
+    def __init__(self, root, items, extension):
+        TaggedCorpusReader(self, root, items, extension, sep='_',
+                           word_tokenizer=RegexpTokenizer('\n', gaps=True),
+                           sent_tokenizer=None,
+                           para_block_reader=None)
+
+    
