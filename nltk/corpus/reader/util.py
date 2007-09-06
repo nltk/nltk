@@ -602,7 +602,7 @@ def read_regexp_block(stream, start_re, end_re=None):
             return [''.join(lines)]
         # Start of new token: backup to just before it starts, and
         # return the token we've already collected.
-        if re.match(start_re, line):
+        if end_re is None and re.match(start_re, line):
             stream.seek(oldpos)
             return [''.join(lines)]
         # Anything else is part of the token.
