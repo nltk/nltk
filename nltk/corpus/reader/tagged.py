@@ -212,7 +212,7 @@ class TaggedCorpusView(StreamBackedCorpusView):
         for para_str in self._para_block_reader(stream):
             para = []
             for sent_str in self._sent_tokenizer.tokenize(para_str):
-                sent = [str2tuple(s) for s in
+                sent = [str2tuple(s, self._sep) for s in
                         self._word_tokenizer.tokenize(sent_str)]
                 if not self._tagged:
                     sent = [w for (w,t) in sent]
@@ -229,9 +229,11 @@ class TaggedCorpusView(StreamBackedCorpusView):
 # there must be a better way...
 class MacMorphoCorpusReader(TaggedCorpusReader):
     def __init__(self, root, items, extension):
-        TaggedCorpusReader(self, root, items, extension, sep='_',
-                           word_tokenizer=RegexpTokenizer('\n', gaps=True),
-                           sent_tokenizer=None,
-                           para_block_reader=None)
+        TaggedCorpusReader.__init__(
+            self, root, items, extension, sep='_',
+            word_tokenizer=LineTokenizer(),
+            sent_tokenizer=RegexpTokenizer('.*\n'),
+            para_block_reader=self._read_block)
 
-    
+    def _read_block(self, stream):
+        return read_regexp_block(stream, r'.*', r'.*_\.')
