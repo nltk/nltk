@@ -226,8 +226,15 @@ class TaggedCorpusView(StreamBackedCorpusView):
                 block.extend(para)
         return block
 
-# there must be a better way...
 class MacMorphoCorpusReader(TaggedCorpusReader):
+    """
+    A corpus reader for the MAC_MORPHO corpus.  Each line contains a
+    single tagged word, using '_' as a separator.  Sentence boundaries
+    are based on the end-sentence tag ('_.').  Paragraph information
+    is not included in the corpus, so each paragraph returned by
+    L{self.paras()} and L{self.tagged_paras()} contains a single
+    sentence.
+    """
     def __init__(self, root, items, extension):
         TaggedCorpusReader.__init__(
             self, root, items, extension, sep='_',
