@@ -89,6 +89,8 @@ inaugural = LazyCorpusLoader(
 # [XX] This should probably just use TaggedCorpusReader:
 indian = LazyCorpusLoader(
     'indian', IndianCorpusReader, '(?!\.svn).*', '.pos')
+mac_morpho = LazyCorpusLoader(
+    'mac_morpho', MacMorphoCorpusReader, '(?!\.svn).*', '.txt')
 names = LazyCorpusLoader(
     'names', WordListCorpusReader, '(?!\.svn).*', '.txt')
 ppattach = LazyCorpusLoader(
