@@ -61,9 +61,16 @@ def tokenize(q):
             for j in range(d+1,N):
                 if q[j]=='"' and m!='\\':
                     break
-                m = q[j]
             tokens.append(('s',q[d+1:j]))
             d = j+1
+        elif q[d] == '@':
+            # If we have an attribute, scan ahead until we reach the end of the attribute name.
+            for j in range(d + 1, N):
+                if not q[j].isalnum():
+                    break
+            tokens.append(('r', '@'))
+            tokens.append(('s', q[d + 1: j]))
+            d = j
 
         # find next reserved word while scanning free string before it
         d0 = d
