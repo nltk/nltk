@@ -115,16 +115,14 @@ class TreeIo:
             else:
                 r = {}
 
-            # process NP-SBJ-1
+            # Make sure all the node's application-specific attributes are recorded.
             r['attributes'] = []
-            label = n.data['label']
-            if label and label[0] != '-':
-                a = label.split('-')
-                r['name'] = a[0]
-                for b in a[1:]:
-                    r['attributes'].append(('@func',b))
-            else:
-                r['name'] = label
+            if n.data != None:
+                for attr, value in n.data.iteritems():
+                    if attr == 'label':
+                        r['name'] = value
+                    else:
+                        r['attributes'].append(('@' + attr, value))
 
             r['left'] = left
             if n.children:
@@ -146,7 +144,11 @@ class TreeIo:
                     r['pid'] = nodeid
                     TAB.append(r)
                 else:
+                    # Attributes from lexical nodes get pushed up one level.
+                    # @label is a special case.
                     C[-1]['attributes'].append(('@label',r['name']))
+                    for attr in r['attributes']:
+                        C[-1]['attributes'].append(attr)
                 left += 1
                 L = L[1:]
             r['sid'] = sid
