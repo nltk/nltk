@@ -14,6 +14,7 @@
 from nltk.etree.ElementTree import Element, SubElement, TreeBuilder
 from nltk.corpus.reader import toolbox
 import re
+from datetime import date
 
 class ToolboxData(toolbox.ToolboxData):
     def __init__(self):
@@ -264,6 +265,52 @@ def _to_sfm_string(node, l, **kwargs):
         for n in node:
             _to_sfm_string(n, l, **kwargs)
     return
+
+_months = None
+_month_abbr = (
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
+
+def _init_months():
+    months = dict()
+    for i, m in enumerate(_month_abbr):
+        months[m] = i + 1
+    return months
+
+def to_date(s, four_digit_year=True):
+    """return a date object corresponding to the Toolbox date in s.
+    
+    @param s: Toolbox date
+    @type s: string
+    @param four_digit_year: Do Toolbox dates use four digits for the year? 
+        Defaults to True.
+    @type four_digit_year: boolean
+    @return: date
+    @rtype: datetime.date
+    """
+    global _months
+    if _months is None:
+        _months = _init_months()
+    fields = s.split('/')
+    if len(fields) != 3:
+        raise ValueError, 'Invalid Toolbox Date "%s"' % s
+    day = int(fields[0])
+    month = _months[fields[1]]
+    year = int(fields[2])
+    return date(year, month, day)
+
+def from_date(d, four_digit_year=True):
+    """return a Toolbox date string corresponding to the date in d.
+    
+    @param d: date
+    @type d: datetime.date
+    @param four_digit_year: Do Toolbox dates use four digits for the year? 
+        Defaults to True.
+    @type four_digit_year: boolean
+    @return: Toolbox date
+    @rtype: string
+    """
+    return '%04d/%s/%02d' % (date.day, _month_abbr[date.month-1], date.year)
 
 def demo_flat():
     from nltk.etree.ElementTree import ElementTree    
