@@ -6,7 +6,7 @@
 # This software is distributed under GPL, for license information see LICENSE.TXT
 from nltk_contrib.classifier_tests import *
 from nltk_contrib.classifier import discretise
-from nltk_contrib.classifier import numrange as nr, instances as ins, format
+from nltk_contrib.classifier import numrange as nr, instances as ins
 from nltk_contrib.classifier.exceptions import invaliddataerror as inv
 
 
@@ -14,15 +14,15 @@ class DiscretiseTestCase(unittest.TestCase):
     def test_decodes_algorithm_training_other_files_attributes_options(self):
         disc = discretise.Discretise()
         disc.parse(['-a', 'UEW', '-t', 'path', '-T', 'path1,path2', '-A', '3,4,5', '-o', '3,2,4'])
-        algorithm = disc.values.ensure_value('algorithm', None)
-        training = disc.values.ensure_value('training', None)
-        test = disc.values.ensure_value('test', None)
+        _algorithm = disc.values.ensure_value('algorithm', None)
+        _training = disc.values.ensure_value('training', None)
+        _test = disc.values.ensure_value('test', None)
         attributes = disc.values.ensure_value('attributes', None)
         options = disc.values.ensure_value('options', None)
         
-        self.assertEqual('UEW', algorithm)
-        self.assertEqual('path', training)
-        self.assertEqual('path1,path2', test)
+        self.assertEqual('UEW', _algorithm)
+        self.assertEqual('path', _training)
+        self.assertEqual('path1,path2', _test)
         self.assertEqual('3,4,5', attributes)
         self.assertEqual('3,2,4', options)
         
@@ -47,8 +47,8 @@ class DiscretiseTestCase(unittest.TestCase):
 
     def test_instances_attributes_and_options_are_extracted_from_strings(self):
         path = datasetsDir(self) + 'numerical' + SEP + 'person'
-        training, attributes, klass, test, gold = self.get_instances(path, True, False)
-        disc = discretise.Discretiser(training, attributes, klass, test, gold, [0,1,4,5,6,7], [2,3,2,3,4,2])
+        _training, attributes, klass, _test, _gold = self.get_instances(path, True, False)
+        disc = discretise.Discretiser(_training, attributes, klass, _test, _gold, [0,1,4,5,6,7], [2,3,2,3,4,2])
         self.assertEqual(6, len(disc.training))
         self.assertEqual(2, len(disc.test))
         self.assertEqual([0, 1, 4, 5, 6, 7], disc.attribute_indices)
@@ -56,8 +56,8 @@ class DiscretiseTestCase(unittest.TestCase):
         
     def test_unsupervised_equal_width_discretisation(self):
         path = datasetsDir(self) + 'numerical' + SEP + 'person'
-        training, attributes, klass, test, gold = self.get_instances(path, True, False)
-        disc = discretise.Discretiser(training, attributes, klass, test, gold, [1,4,5,6,7], [3,2,3,4,2])
+        _training, attributes, klass, _test, _gold = self.get_instances(path, True, False)
+        disc = discretise.Discretiser(_training, attributes, klass, _test, _gold, [1,4,5,6,7], [3,2,3,4,2])
         self.assertTrue(disc.attributes[0].is_continuous())
         self.assertTrue(disc.attributes[1].is_continuous())
         self.assertTrue(disc.attributes[4].is_continuous())
@@ -78,8 +78,8 @@ class DiscretiseTestCase(unittest.TestCase):
         
     def test_returns_array_of_discretised_attributes(self):
         path = datasetsDir(self) + 'numerical' + SEP + 'person'
-        training, attributes, klass, test, gold = self.get_instances(path, True, False)
-        disc = discretise.Discretiser(training, attributes, klass, test, gold, [4,6], [2,4])
+        _training, attributes, klass, _test, _gold = self.get_instances(path, True, False)
+        disc = discretise.Discretiser(_training, attributes, klass, _test, _gold, [4,6], [2,4])
         disc_attrs = disc.discretised_attributes([nr.Range(0, 2), nr.Range(0, 120000)])
         self.assertEqual(2, len(disc_attrs))
         self.assertEqual(4, disc_attrs[0].index)
@@ -89,8 +89,8 @@ class DiscretiseTestCase(unittest.TestCase):
     def test_option_cannot_be_zero(self):
         path = datasetsDir(self) + 'numerical' + SEP + 'person'
         try:
-            training, attributes, klass, test, gold = self.get_instances(path, True, False)
-            disc = discretise.Discretiser(training, attributes, klass, test, gold, [4,6], [2,0])
+            _training, attributes, klass, _test, _gold = self.get_instances(path, True, False)
+            disc = discretise.Discretiser(_training, attributes, klass, _test, _gold, [4,6], [2,0])
             self.fail('should raise error as an option is zero')
         except inv.InvalidDataError:
             pass
@@ -120,8 +120,8 @@ class DiscretiseTestCase(unittest.TestCase):
 
     def test_unsupervised_equal_frequency(self):
         path = datasetsDir(self) + 'numerical' + SEP + 'weather'
-        training, attributes, klass, test, gold = self.get_instances(path)
-        disc = discretise.Discretiser(training, attributes, klass, test, gold, [1], [3])
+        _training, attributes, klass, _test, _gold = self.get_instances(path)
+        disc = discretise.Discretiser(_training, attributes, klass, _test, _gold, [1], [3])
         self.assertTrue(disc.attributes[1].is_continuous())
         self.assertEqual(27.5, disc.training[0].value(disc.attributes[1]))
         self.assertEqual(32, disc.training[2].value(disc.attributes[1]))
@@ -140,8 +140,8 @@ class DiscretiseTestCase(unittest.TestCase):
         
     def test_naive_supervised_discretisation(self):
         path = datasetsDir(self) + 'numerical' + SEP + 'person'
-        training, attributes, klass, test, gold = self.get_instances(path, True, False)
-        disc = discretise.Discretiser(training, attributes, klass, test, gold, [1])
+        _training, attributes, klass, _test, _gold = self.get_instances(path, True, False)
+        disc = discretise.Discretiser(_training, attributes, klass, _test, _gold, [1])
         self.assertEqual(1, len(disc.attributes[1].values))
         
         disc.naive_supervised()
@@ -150,20 +150,19 @@ class DiscretiseTestCase(unittest.TestCase):
         
     def test_stores_subset(self):
         path = datasetsDir(self) + 'numerical' + SEP + 'person'
-        training, attributes, klass, test, gold = self.get_instances(path, True, False)
-        disc = discretise.Discretiser(training, attributes, klass, test, gold, [4,6], [2,2])
+        _training, attributes, klass, _test, _gold = self.get_instances(path, True, False)
+        disc = discretise.Discretiser(_training, attributes, klass, _test, _gold, [4,6], [2,2])
         self.assertEqual(2, len(disc.subset))
         self.assertEqual(4, disc.subset[0].index)
         self.assertEqual(6, disc.subset[1].index)
         
     def get_instances(self, path, get_test = True, get_gold = True):
-        test = gold = None
-        training = format.C45_FORMAT.get_training_instances(path)
-        attributes = format.C45_FORMAT.get_attributes(path)
-        klass = format.C45_FORMAT.get_klass(path)
-        if get_test: test = format.C45_FORMAT.get_test_instances(path)
-        if get_gold: gold = format.C45_FORMAT.get_gold_instances(path)
-        return [training, attributes, klass, test, gold]
+        _test = _gold = None
+        _training = training(path)
+        attributes, klass = metadata(path)
+        if get_test: _test = test(path)
+        if get_gold: _gold = gold(path)
+        return [_training, attributes, klass, _test, _gold]
 
         
 class DiscretiseStub(discretise.Discretise):

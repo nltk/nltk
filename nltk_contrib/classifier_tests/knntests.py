@@ -5,7 +5,7 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_contrib.classifier import knn, instance as ins, format, instances as inss
+from nltk_contrib.classifier import knn, instance as ins, instances as inss
 from nltk_contrib.classifier_tests import *
 import unittest
 
@@ -50,11 +50,10 @@ class KNNTestCase(unittest.TestCase):
         
     def test_ib1(self):
         path = datasetsDir(self) + 'minigolf' + SEP + 'weather'
-        training = format.C45_FORMAT.get_training_instances(path)
-        attributes = format.C45_FORMAT.get_attributes(path)
-        klass = format.C45_FORMAT.get_klass(path)
+        _training = training(path)
+        _attributes, _klass = metadata(path)
         
-        classifier = knn.IB1(training, attributes, klass)
+        classifier = knn.IB1(_training, _attributes, _klass)
         test_instance = ins.TestInstance(['sunny','hot','high','false'])
         classifier.test(inss.TestInstances([test_instance]))
         self.assertEqual('no', test_instance.classified_klass)

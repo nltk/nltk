@@ -5,17 +5,16 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_contrib.classifier import decisionstump as ds, instances as ins, instance, format
+from nltk_contrib.classifier import decisionstump as ds, instances as ins, instance
 from nltk_contrib.classifier_tests import *
 import math
 
 class DecisionStumpTestCase(unittest.TestCase):
     def setUp(self):
-        self.attributes = format.C45_FORMAT.get_attributes(datasetsDir(self) + 'minigolf' + SEP + 'weather')
+        self.attributes, self.klass = metadata(datasetsDir(self) + 'minigolf' + SEP + 'weather')
         self.outlook_attr = self.attributes[0]
-        self.klass = format.C45_FORMAT.get_klass(datasetsDir(self) + 'minigolf' + SEP + 'weather')
         self.outlook_stump = ds.DecisionStump(self.outlook_attr, self.klass)
-        self.instances = format.C45_FORMAT.get_training_instances(datasetsDir(self) + 'minigolf' + SEP + 'weather')
+        self.instances = training(datasetsDir(self) + 'minigolf' + SEP + 'weather')
     
     def test_creates_count_map(self): 
         self.assertEqual(3, len(self.outlook_stump.counts))
@@ -109,7 +108,7 @@ class DecisionStumpTestCase(unittest.TestCase):
         self.assertAlmostEqual(expected, self.outlook_stump.entropy('rainy'))
         
     def test_dictionary_of_all_values_with_count_0(self):
-        phoney = format.C45_FORMAT.get_klass(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
+        phoney = klass(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
         values = ds.dictionary_of_values(phoney);
         self.assertEqual(3, len(values))
         for i in ['a', 'b', 'c']:

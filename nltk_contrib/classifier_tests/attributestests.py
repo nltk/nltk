@@ -5,12 +5,12 @@
 # URL: <http://nltk.sf.net>
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
-from nltk_contrib.classifier import attribute as a, discretisedattribute as da, numrange as nr, format
+from nltk_contrib.classifier import attribute as a, discretisedattribute as da, numrange as nr
 from nltk_contrib.classifier_tests import *
 
 class AttributesTestCase(unittest.TestCase):
     def setUp(self):
-        self.attrs = format.C45_FORMAT.get_attributes(datasetsDir(self) + 'test_phones' + SEP + 'phoney')    
+        self.attrs = attributes(datasetsDir(self) + 'test_phones' + SEP + 'phoney')    
     
     def test_counts_correct_number_of_attributes(self):
         self.assertEqual(5, len(self.attrs), 'there should be 5 attributes')
@@ -40,18 +40,18 @@ class AttributesTestCase(unittest.TestCase):
             self.assertEqual(i, self.attrs[i].index)
 
     def test_has_continuous_attibutes_returns_true_if_even_1_attr_is_cont(self):
-        has_cont = format.C45_FORMAT.get_attributes(datasetsDir(self) + 'numerical' + SEP + 'weather')
+        has_cont = attributes(datasetsDir(self) + 'numerical' + SEP + 'weather')
         self.assertTrue(has_cont.has_continuous())
         
-        all_disc = format.C45_FORMAT.get_attributes(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
+        all_disc = attributes(datasetsDir(self) + 'test_phones' + SEP + 'phoney')
         self.assertFalse(all_disc.has_continuous())
         
     def test_does_not_check_continuous_attribute_for_validity(self):
-        has_cont = format.C45_FORMAT.get_attributes(datasetsDir(self) + 'numerical' + SEP + 'weather')
+        has_cont = attributes(datasetsDir(self) + 'numerical' + SEP + 'weather')
         self.assertTrue(has_cont.has_values(['sunny','21','normal','true']))
         
     def test_return_subset_as_requested_by_index_array(self):
-        attrs = format.C45_FORMAT.get_attributes(datasetsDir(self) + 'numerical' + SEP + 'person')
+        attrs = attributes(datasetsDir(self) + 'numerical' + SEP + 'person')
         subset = attrs.subset([2, 4, 5])
         self.assertEqual(3, len(subset))
         self.assertEqual(2, subset[0].index)
@@ -59,7 +59,7 @@ class AttributesTestCase(unittest.TestCase):
         self.assertEqual(5, subset[2].index)
 
     def test_discretise_replaces_cont_attrs_in_args_with_disc_ones(self):
-        attrs = format.C45_FORMAT.get_attributes(datasetsDir(self) + 'numerical' + SEP + 'person')
+        attrs = attributes(datasetsDir(self) + 'numerical' + SEP + 'person')
         self.assertTrue(attrs[0].is_continuous())
         self.assertTrue(attrs[4].is_continuous())
         self.assertTrue(attrs[6].is_continuous())
@@ -79,8 +79,7 @@ class AttributesTestCase(unittest.TestCase):
 
     def test_empty_decision_stumps(self):
         path = datasetsDir(self) + 'numerical' + SEP + 'person'
-        attrs = format.C45_FORMAT.get_attributes(path)
-        klass = format.C45_FORMAT.get_klass(path)
+        attrs, klass = metadata(path)
 
         decision_stumps = attrs.empty_decision_stumps([], klass)
         self.assertEqual(8, len(decision_stumps))
@@ -90,7 +89,7 @@ class AttributesTestCase(unittest.TestCase):
         
     def test_remove_attributes(self):
         path = datasetsDir(self) + 'numerical' + SEP + 'person'
-        attrs = format.C45_FORMAT.get_attributes(path)
+        attrs = attributes(path)
         
         self.assertEqual(8, len(attrs))
         attr1 = attrs[1]
@@ -100,7 +99,7 @@ class AttributesTestCase(unittest.TestCase):
 
     def test_continuous_indices(self):
         path = datasetsDir(self) + 'numerical' + SEP + 'person'
-        attrs = format.C45_FORMAT.get_attributes(path)
+        attrs = attributes(path)
         self.assertEqual([0, 1, 4, 5, 6, 7], attrs.continuous_attribute_indices())
         
     def test_empty_freq_dists(self):

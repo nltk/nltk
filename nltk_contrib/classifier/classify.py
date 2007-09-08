@@ -171,7 +171,7 @@ class CrossValidationStrategy:
         if should_write:
             for index in range(len(self.gold_instances)):
                 new_path = self.training_path + str(index + 1) + suffix
-                data_format.write_gold_to_file(self.gold_instances[index], new_path)
+                data_format.write_gold(self.gold_instances[index], new_path)
                 print >>log, 'Gold classification written to ' + new_path + ' file.'
     
     def train(self):
@@ -197,7 +197,7 @@ class TestStrategy:
         """
         Will always write in the case of test files
         """
-        data_format.write_test_to_file(self.test, self.test_path + suffix)
+        data_format.write_test(self.test, self.test_path + suffix)
         print >>log, 'Test classification written to ' + self.test_path + suffix + ' file.'
         
     def train(self):
@@ -227,7 +227,7 @@ class VerifyStrategy:
             
     def write(self, log, should_write, data_format, suffix):
         if should_write:
-            data_format.write_gold_to_file(self.gold, self.gold_path + suffix)
+            data_format.write_gold(self.gold, self.gold_path + suffix)
             print >>log, 'Gold classification written to ' + self.gold_path + suffix + ' file.'
             
     def train(self):

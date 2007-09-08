@@ -104,21 +104,21 @@ class InstanceTestCase(unittest.TestCase):
         self.assertEqual('e', instance.value(disc_annual_salary))
 
     def test_values_of_atrributes(self):
-        training = ins.TrainingInstance(['3','34','self-employed','married','2','3','120000','2'],'yes')
+        _training = ins.TrainingInstance(['3','34','self-employed','married','2','3','120000','2'],'yes')
         dependents = attribute.Attribute('dependents', ['continuous'], 4)
         annual_salary = attribute.Attribute('annualsalary', ['continuous'], 6)
-        self.assertEqual(['2','120000'], training.values([dependents, annual_salary]))
+        self.assertEqual(['2','120000'], _training.values([dependents, annual_salary]))
         
     def test_remove_attrbutes(self):
-        training = ins.TrainingInstance(['3','34','self-employed','married','2','3','120000','2'],'yes')
+        _training = ins.TrainingInstance(['3','34','self-employed','married','2','3','120000','2'],'yes')
         id = attribute.Attribute('id', ['continuous'], 0)
         annual_salary = attribute.Attribute('annualsalary', ['continuous'], 6)
-        training.remove_attributes([id, annual_salary])
-        self.assertEqual(6, len(training.attrs))
-        self.assertEqual('34', training.attrs[0])
+        _training.remove_attributes([id, annual_salary])
+        self.assertEqual(6, len(_training.attrs))
+        self.assertEqual('34', _training.attrs[0])
     
     def test_get_training_as_gold(self):
-        training = ins.TrainingInstance(['3','34','self-employed','married','2','3','120000','2'],'yes')
-        gold = training.as_gold()
-        self.assertEqual(gold.attrs, training.attrs)
-        self.assertEqual(gold.klass_value, training.klass_value)
+        _training = ins.TrainingInstance(['3','34','self-employed','married','2','3','120000','2'],'yes')
+        gold = _training.as_gold()
+        self.assertEqual(gold.attrs, _training.attrs)
+        self.assertEqual(gold.klass_value, _training.klass_value)

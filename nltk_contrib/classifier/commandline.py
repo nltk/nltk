@@ -24,9 +24,9 @@ DATA_FORMAT = 'data_format'
 LOG_FILE = 'log_file'
 OPTIONS = 'options'
 
-C45_FORMAT = 'C45' 
+C45_FORMAT = 'c45' 
 
-DATA_FORMAT_MAPPINGS = {C45_FORMAT: format.C45_FORMAT}
+DATA_FORMAT_MAPPINGS = {C45_FORMAT: format.c45}
 
 class CommandLineInterface(OptionParser):
     def __init__(self, alg_choices, alg_default, a_help, f_help, t_help, T_help, g_help, o_help):
@@ -88,12 +88,11 @@ class CommandLineInterface(OptionParser):
 
     def get_instances(self, training_path, test_path, gold_path, ignore_missing = False):
         test = gold = None
-        training = self.data_format.get_training_instances(training_path)
-        attributes = self.data_format.get_attributes(training_path)
-        klass = self.data_format.get_klass(training_path)
-        test = self.__get_instance(self.data_format.get_test_instances, test_path, ignore_missing)
-        gold = self.__get_instance(self.data_format.get_gold_instances, gold_path, ignore_missing)
-        return [training, attributes, klass, test, gold]
+        training = self.data_format.training(training_path)
+        attributes, klass = self.data_format.metadata(training_path)
+        test = self.__get_instance(self.data_format.test, test_path, ignore_missing)
+        gold = self.__get_instance(self.data_format.gold, gold_path, ignore_missing)
+        return (training, attributes, klass, test, gold)
     
     def __get_instance(self, method, path, ignore_if_missing):
         if path is not None:
@@ -110,10 +109,10 @@ class CommandLineInterface(OptionParser):
         
     def write_to_file(self, suffix, training, attributes, klass, test, gold, include_classification = True):
         files_written = []
-        files_written.append(self.data_format.write_training_to_file(training, self.training_path + suffix))
-        if test is not None: files_written.append(self.data_format.write_test_to_file(test, self.test_path + suffix, include_classification))
-        if gold is not None: files_written.append(self.data_format.write_gold_to_file(gold, self.gold_path + suffix, include_classification))
-        files_written.append(self.data_format.write_metadata_to_file(attributes, klass, self.training_path + suffix))
+        files_written.append(self.data_format.write_training(training, self.training_path + suffix))
+        if test is not None: files_written.append(self.data_format.write_test(test, self.test_path + suffix, include_classification))
+        if gold is not None: files_written.append(self.data_format.write_gold(gold, self.gold_path + suffix, include_classification))
+        files_written.append(self.data_format.write_metadata(attributes, klass, self.training_path + suffix))
         return files_written
     
     def log_common_params(self, name):
