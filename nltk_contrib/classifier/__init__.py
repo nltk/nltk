@@ -8,6 +8,12 @@ from nltk_contrib.classifier.exceptions import invaliddataerror as inv, illegals
 from nltk import probability as prob
 import math
 
+def check_if_trained(func):
+    def checked(self, *args):
+        if not self.is_trained(): raise ise.IllegalStateError("Classifier not trained")
+        return func(self, *args)
+    return checked
+
 class Classifier:
     def __init__(self, training, attributes, klass):
         self.attributes = attributes
@@ -34,21 +40,19 @@ class Classifier:
         if not self.can_handle_continuous_attributes() and self.attributes.has_continuous(): 
             raise inv.InvalidDataError('One or more attributes are continuous.')
     
+    @check_if_trained
     def test(self, test_instances):
-        self.validate()
         self.convert_continuous_values_to_numbers(test_instances)
         self.test_instances = test_instances
         self.classify(self.test_instances)
-            
+    
+    @check_if_trained        
     def verify(self, gold_instances):
-        self.validate()
         self.convert_continuous_values_to_numbers(gold_instances)
         self.gold_instances = gold_instances
         self.classify(self.gold_instances)
         return self.gold_instances.confusion_matrix(self.klass)
     
-    def validate(self):
-        if not self.is_trained(): raise ise.IllegalStateError("Classifier not trained")
     
     def classify(self, instances):
         AssertionError('Classify called on abstract class')

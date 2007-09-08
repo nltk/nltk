@@ -6,6 +6,7 @@
 # This software is distributed under GPL, for license information see LICENSE.TXT
 
 import unittest, os, re
+from nltk_contrib.classifier import format
 
 SEP = os.path.sep
 
@@ -19,3 +20,22 @@ def datasetsDir(self):
         currentDir = os.path.dirname(currentDir)
     return os.path.join(currentDir, 'datasets') + SEP
     
+def training(path):
+    return format.c45.training(path)    
+    
+def test(path):
+    return format.c45.test(path)
+    
+def gold(path):
+    return format.c45.gold(path)
+    
+def metadata(path):
+    return format.c45.metadata(path)
+
+def attributes(path):
+    attrs, klass = format.c45.metadata(path)
+    return attrs
+
+def klass(path):
+    attrs, klass = format.c45.metadata(path)
+    return klass
