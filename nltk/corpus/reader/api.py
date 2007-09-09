@@ -24,3 +24,4 @@ class CorpusReader(object):
             return '<%s in %r>' % (self.__class__.__name__, self._root)
         else:
             return '<%s>' % (self.__class__.__name__)
+

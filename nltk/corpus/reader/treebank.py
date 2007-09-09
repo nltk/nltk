@@ -26,9 +26,9 @@ from nltk import chunk
 import os.path
 from nltk.utilities import deprecated
 
-class TreebankCorpusReader(CorpusReader):
+class TreebankCorpusReader(SyntaxCorpusReader):
     """
-    Corpus reader for the treebank.  Combines three underlying formats:
+    Corpus reader for the Penn Treebank.  Combines three underlying formats:
     parsed, tagged+chunked, and plaintext.  Each of these formats is
     stored in a different subdirectory (combined/, tagged/, and raw/,
     respectively).

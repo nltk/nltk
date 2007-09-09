@@ -50,9 +50,9 @@ items = ['parsed', 'tagged', 'tokenized', 'raw']
 IDENTIFIER = re.compile(r'^#\S+\s')
 APPENDIX = re.compile(r'(?<=\))#.*$')
 TAGWORD = re.compile(r':([^:()|]+):([^:()|]+)')
+WORD = re.compile(r':[^:()|]+:([^:()|]+)')
 
-
-class SinicaTreebankCorpusReader(CorpusReader):
+class SinicaTreebankCorpusReader(SyntaxCorpusReader):
     """
     Reader for corpora that consist of treebank-style trees.  For
     reading the Treebank corpus itself, you may wish to use
@@ -71,48 +71,20 @@ class SinicaTreebankCorpusReader(CorpusReader):
         self.items = tuple(items)
         self._extension = extension
 
-    def raw(self, items=None):
-        return concat([open(filename).read()
-                       for filename in self._item_filenames(items)])
-
-    def parsed_sents(self, items=None):
-        return concat([StreamBackedCorpusView(filename,
-                                              self._read_parsed_block)
-                       for filename in self._item_filenames(items)])
-
-    def tagged_sents(self, items=None):
-        return concat([StreamBackedCorpusView(filename,
-                                              self._read_tagged_block)
-                       for filename in self._item_filenames(items)])
-
-    def sents(self, items=None):
-        return concat([StreamBackedCorpusView(filename,
-                                              self._read_sent_block)
-                       for filename in self._item_filenames(items)])
-
-    def _item_filenames(self, items):
-        if items is None: items = self.items
-        if isinstance(items, basestring): items = [items]
-        return [os.path.join(self._root, '%s%s' % (item, self._extension))
-                for item in items]
-        
-    def _read_sent_block(self, stream):
+    def _read_block(self, stream):
         sent = stream.readline()
-        sent = re.sub(IDENTIFIER, '', sent)
-        tagged_tokens = re.findall(TAGWORD, sent)
-        return [[token for (tag, token) in tagged_tokens]]
+        sent = IDENTIFIER.sub('', sent)
+        sent = APPENDIX.sub('', sent)
+        return [sent]
 
-    def _read_tagged_block(self, stream):
-        sent = stream.readline()
-        sent = re.sub(IDENTIFIER, '', sent)
-        tagged_tokens = re.findall(TAGWORD, sent)
-        return [[(token, tag) for (tag, token) in tagged_tokens]]
-    
-    def _read_parsed_block(self, stream):
-        sent = stream.readline()
-        sent = re.sub(IDENTIFIER, '', sent)
-        sent = re.sub(APPENDIX, '', sent)
-        return [tree.sinica_parse(sent)]
+    def _parse(self, sent):
+        return tree.sinica_parse(sent)
+
+    def _tag(self, sent):
+        return [(w,t) for (t,w) in TAGWORD.findall(sent)]
+
+    def _word(self, sent):
+        return WORD.findall(sent)
 
     #{ Deprecated since 0.8
     @deprecated("Use .raw() or .sents() or .tagged_sents() or "

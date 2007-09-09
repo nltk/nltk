@@ -12,11 +12,14 @@ from nltk.tree import bracket_parse, Tree
 import os.path, sys
 
 """
-Corpus reader for corpora that consist of parenthesis-delineated parse
-trees.
+Corpus reader for corpora that consist of parenthesis-delineated parse trees.
 """
 
-class BracketParseCorpusReader(CorpusReader):
+TAGWORD = re.compile(r'\((\S+?) (\S+?)\)')
+WORD = re.compile(r'\(\S+? (\S+?)\)')
+EMPTY_BRACKETS = re.compile(r'\s*\(\s*\(')
+
+class BracketParseCorpusReader(SyntaxCorpusReader):
     """
     Reader for corpora that consist of parenthesis-delineated parse
     trees.
@@ -42,56 +45,6 @@ class BracketParseCorpusReader(CorpusReader):
         self._comment_char = comment_char
         self._detect_blocks = detect_blocks
 
-    def raw(self, items=None):
-        return concat([open(filename).read()
-                       for filename in self._item_filenames(items)])
-
-    def parsed_sents(self, items=None):
-        return concat([StreamBackedCorpusView(filename, self._read_parsed_sent_block)
-                       for filename in self._item_filenames(items)])
-
-    def tagged_sents(self, items=None):
-        return concat([StreamBackedCorpusView(filename, self._read_tagged_sent_block)
-                       for filename in self._item_filenames(items)])
-
-    def sents(self, items=None):
-        return concat([StreamBackedCorpusView(filename, self._read_sent_block)
-                       for filename in self._item_filenames(items)])
-
-    def tagged_words(self, items=None):
-        return concat([StreamBackedCorpusView(filename, self._read_tagged_word_block)
-                       for filename in self._item_filenames(items)])
-
-    def words(self, items=None):
-        return concat([StreamBackedCorpusView(filename, self._read_word_block)
-                       for filename in self._item_filenames(items)])
-
-    def _item_filenames(self, items):
-        if items is None: items = self.items
-        if isinstance(items, basestring): items = [items]
-        return [os.path.join(self._root, '%s%s' % (item, self._extension))
-                for item in items]
-        
-# block readers
-
-    def _read_word_block(self, stream):
-        return sum(self._read_sent_block(stream), [])
-
-    def _read_tagged_word_block(self, stream):
-        return sum(self._read_tagged_sent_block(stream), [])
-
-    def _read_sent_block(self, stream):
-        sents = [self._word(t) for t in self._read_block(stream)]
-        return [sent for sent in sents if sent]
-    
-    def _read_tagged_sent_block(self, stream):
-        tagged_sents = [self._tag(t) for t in self._read_block(stream)]
-        return [tagged_sent for tagged_sent in tagged_sents if tagged_sent]
-
-    def _read_parsed_sent_block(self, stream):
-        trees = [self._parse(t) for t in self._read_block(stream)]
-        return [tree for tree in trees if tree is not None]
-
     def _read_block(self, stream):
         if self._detect_blocks == 'sexpr':
             return read_sexpr_block(stream, comment_char=self._comment_char)
@@ -110,7 +63,7 @@ class BracketParseCorpusReader(CorpusReader):
     def _normalize(self, t):
         # If there's an empty set of brackets surrounding the actual
         # parse, then strip them off.
-        if re.match(r'\s*\(\s*\(', t):
+        if EMPTY_BRACKETS.match(t):
             t = t.strip()[1:-1]
         # Replace any punctuation leaves of the form (!), (,), with (! !), (, ,)
         t = re.sub(r"\((.)\)", r"(\1 \1)", t)
@@ -136,8 +89,7 @@ class BracketParseCorpusReader(CorpusReader):
             return Tree('S', self._tag(t))
 
     def _tag(self, t):
-        return [(w,t) for (t,w) in re.findall(r'\((\S+?) (\S+?)\)', self._normalize(t))]
+        return [(w,t) for (t,w) in TAGWORD.findall(self._normalize(t))]
 
     def _word(self, t):
-        return re.findall(r'\(\S+? (\S+?)\)', self._normalize(t))
-
+        return WORD.findall(self._normalize(t))
