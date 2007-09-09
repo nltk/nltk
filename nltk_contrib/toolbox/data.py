@@ -253,10 +253,12 @@ _is_value = re.compile(r"\S")
 
 def _to_sfm_string(node, l, **kwargs):
     # write SFM to file
-    tag = node.tag
-    text = node.text
     if len(node) == 0:
-        if re.search(_is_value, text):
+        tag = node.tag
+        text = node.text
+        if text is None:
+            l.append('\\%s\n' % tag)
+        elif re.search(_is_value, text):
             l.append('\\%s %s\n' % (tag, text))
         else:
             l.append('\\%s%s\n' % (tag, text))
@@ -293,9 +295,12 @@ def to_date(s, four_digit_year=True):
         _months = _init_months()
     fields = s.split('/')
     if len(fields) != 3:
-        raise ValueError, 'Invalid Toolbox Date "%s"' % s
+        raise ValueError, 'Invalid Toolbox date "%s"' % s
     day = int(fields[0])
-    month = _months[fields[1]]
+    try:
+        month = _months[fields[1]]
+    except KeyError:
+        raise ValueError, 'Invalid Toolbox date "%s"' % s
     year = int(fields[2])
     return date(year, month, day)
 
