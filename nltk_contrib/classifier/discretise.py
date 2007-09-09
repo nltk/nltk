@@ -28,7 +28,8 @@ T_help = "Base name of test file to be discretised.            "
 
 g_help = "Base name of gold file to be discretised.            "
 
-A_help = "Comma separated list of attribute indices.           "
+A_help = "Comma separated list of attribute indices           " \
+       + "Index numbering starts from 0 and not 1.                         "
 
 o_help = "Algorithm specific options                           " \
        + "UEW: Comma separated list of number of parts in which" \
@@ -86,11 +87,14 @@ class Discretise(cl.CommandLineInterface):
 
 class Discretiser:
     def __init__(self, training, attributes, klass, test, gold, attribute_indices, options = None):
+        """
+        Initializes the discretiser object
+        self.subset contains the attributes which have to be discretised
+        """
         self.training, self.attributes, self.klass, self.test, self.gold = training, attributes, klass, test, gold
         self.attribute_indices, self.options = attribute_indices, options
         self.__validate_attribute_indices()
         self.__validate_options()
-
         self.subset = self.attributes.subset(self.attribute_indices)
 
     def __validate_options(self):
