@@ -8,6 +8,7 @@
 
 import os, sys, bisect, re
 from itertools import islice
+from api import CorpusReader
 from nltk import tokenize
 from nltk.etree import ElementTree
 
@@ -700,6 +701,63 @@ def _parse_sexpr_block(block):
         tokens.append(block[start:end])
 
     return tokens, end
+
+######################################################################
+#{ Treebank readers
+######################################################################
+
+class SyntaxCorpusReader(CorpusReader):
+
+    def raw(self, items=None):
+        return concat([open(filename).read()
+                       for filename in self._item_filenames(items)])
+
+    def parsed_sents(self, items=None):
+        return concat([StreamBackedCorpusView(filename, self._read_parsed_sent_block)
+                       for filename in self._item_filenames(items)])
+
+    def tagged_sents(self, items=None):
+        return concat([StreamBackedCorpusView(filename, self._read_tagged_sent_block)
+                       for filename in self._item_filenames(items)])
+
+    def sents(self, items=None):
+        return concat([StreamBackedCorpusView(filename, self._read_sent_block)
+                       for filename in self._item_filenames(items)])
+
+    def tagged_words(self, items=None):
+        return concat([StreamBackedCorpusView(filename, self._read_tagged_word_block)
+                       for filename in self._item_filenames(items)])
+
+    def words(self, items=None):
+        return concat([StreamBackedCorpusView(filename, self._read_word_block)
+                       for filename in self._item_filenames(items)])
+
+    def _item_filenames(self, items):
+        if items is None: items = self.items
+        if isinstance(items, basestring): items = [items]
+        return [os.path.join(self._root, '%s%s' % (item, self._extension))
+                for item in items]
+        
+# block readers
+
+    def _read_word_block(self, stream):
+        return sum(self._read_sent_block(stream), [])
+
+    def _read_tagged_word_block(self, stream):
+        return sum(self._read_tagged_sent_block(stream), [])
+
+    def _read_sent_block(self, stream):
+        sents = [self._word(t) for t in self._read_block(stream)]
+        return [sent for sent in sents if sent]
+    
+    def _read_tagged_sent_block(self, stream):
+        tagged_sents = [self._tag(t) for t in self._read_block(stream)]
+        return [tagged_sent for tagged_sent in tagged_sents if tagged_sent]
+
+    def _read_parsed_sent_block(self, stream):
+        trees = [self._parse(t) for t in self._read_block(stream)]
+        return [tree for tree in trees if tree is not None]
+
 
 ######################################################################
 #{ Finding Corpus Items
