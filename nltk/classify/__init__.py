@@ -63,7 +63,6 @@ from api import *
 from util import *
 from naivebayes import *
 from decisiontree import *
-from maxent import *
 from weka import *
 from nltk.utilities import deprecated, Deprecated
 
