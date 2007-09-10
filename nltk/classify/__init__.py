@@ -73,7 +73,6 @@ __all__ = [
     
     # Classifiers
     'NaiveBayesClassifier', 'DecisionTreeClassifier', 'WekaClassifier',
-    'ConditionalExponentialClassifier', 'train_maxent_classifier',
     
     # Utility functions.  Note that accuracy() is intentionally
     # omitted -- it should be accessed as nltk.classify.accuracy();
@@ -87,6 +86,7 @@ __all__ = [
 try:
     import numpy
     from maxent import *
+    __all__ += ['ConditionalExponentialClassifier', 'train_maxent_classifier',]
 except ImportError:
     pass
 
