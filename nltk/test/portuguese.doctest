@@ -7,6 +7,40 @@ Examples for Portuguese Processing
 (NB. This material presumes familiarity with the NLTK book,
 ``http://nltk.org/index.php/Book``).
 
+Accessing the MacMorpho Tagged Corpus
+-------------------------------------
+
+NLTK includes the MAC-MORPHO Brazilian Portuguese POS-tagged news text,
+with over a million words of
+journalistic texts extracted from ten sections of
+the daily newspaper *Folha de Sau Paulo*, 1994.
+
+We can access this corpus as a sequence of words or tagged words as follows:
+
+    >>> nltk.corpus.mac_morpho.words()
+    ['Jersei', 'atinge', 'm\xe9dia', 'de', 'Cr$', '1,4', ...]
+    >>> nltk.corpus.mac_morpho.sents()
+    [['Jersei', 'atinge', 'm\xe9dia', 'de', 'Cr$', '1,4', 'milh\xe3o',
+    'em', 'a', 'venda', 'de', 'a', 'Pinhal', 'em', 'S\xe3o', 'Paulo'],
+    ['Programe', 'sua', 'viagem', 'a', 'a', 'Exposi\xe7\xe3o', 'Nacional',
+    'do', 'Zebu', ',', 'que', 'come\xe7a', 'dia', '25'], ...]
+    >>> nltk.corpus.mac_morpho.tagged_words()
+    [('Jersei', 'N'), ('atinge', 'V'), ('m\xe9dia', 'N'), ...]
+    
+We can also access it in sentence chunks.
+
+    >>> nltk.corpus.mac_morpho.tagged_sents()
+    [[('Jersei', 'N'), ('atinge', 'V'), ('m\xe9dia', 'N'), ('de', 'PREP'),
+    ('Cr$', 'CUR'), ('1,4', 'NUM'), ('milh\xe3o', 'N'), ('em', 'PREP|+'),
+    ('a', 'ART'), ('venda', 'N'), ('de', 'PREP|+'), ('a', 'ART'),
+    ('Pinhal', 'NPROP'), ('em', 'PREP'), ('S\xe3o', 'NPROP'), ('Paulo', 'NPROP')],
+    [('Programe', 'V'), ('sua', 'PROADJ'), ('viagem', 'N'), ('a', 'PREP|+'),
+    ('a', 'ART'), ('Exposi\xe7\xe3o', 'NPROP'), ('Nacional', 'NPROP'),
+    ('do', 'NPROP'), ('Zebu', 'NPROP'), (',', ','), ('que', 'PRO-KS-REL'),
+    ('come\xe7a', 'V'), ('dia', 'N'), ('25', 'N|AP')], ...]
+    
+This data can be used to train taggers (examples below for the Floresta treebank).
+
 Accessing the Floresta Portuguese Treebank
 ------------------------------------------
 
@@ -14,8 +48,7 @@ The NLTK data distribution includes the
 "Floresta Sinta(c)tica Corpus" version 7.4, available from
 ``http://www.linguateca.pt/Floresta/``.
 
-Like the Penn Treebank sample,
-we can access this corpus as a sequence of words or tagged words as follows:
+We can access this corpus as a sequence of words or tagged words as follows:
 
     >>> from nltk.corpus import floresta
     >>> floresta.words()

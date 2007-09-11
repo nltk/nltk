@@ -1,3 +1,25 @@
+Version 0.9b2 2007-09-11
+
+NLTK:
+- minor bugfixes
+- remove numpy dependency
+- refactored syntax corpus readers
+- added MacMorpho corpus reader
+
+Data:
+- MacMorpho POS-tagged Brazilian Portuguese news text
+- trained model for Portuguese sentence segmenter
+
+Book:
+- misc cleanups
+
+Doc:
+- updated to presentation slides to use 0.9 API
+- initial work on guide for processing Portuguese
+
+Contrib:
+- TnT tagger, contributed by Sam Huston
+
 Version 0.9b1 2007-08-28
 
 NLTK:
@@ -25,7 +47,7 @@ Data:
 - Floresta Portuguese Treebank version 7.4
 - TIMIT player audio support
 
-NLTK Contrib:
+Contrib:
 - timex -- temporal expression tagging
 - wordnet browser (contributed by Jussi Salmela)
 - lpath interpreter (contributed by Haejoong Lee)
