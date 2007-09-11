@@ -29,8 +29,7 @@ class NaiveBayes(Classifier):
         estimates_using_prob = {}
         for klass_value in self.klass:
             class_conditional_probability = self.class_conditional_probability(instance, klass_value)
-            prior_probability = self.prior_probability(klass_value)
-            estimates_using_prob[class_conditional_probability * prior_probability] = klass_value
+            estimates_using_prob[class_conditional_probability] = klass_value
         keys = estimates_using_prob.keys()
         keys.sort()#find the one with max conditional prob
         return estimates_using_prob[keys[-1]]
@@ -46,6 +45,7 @@ class NaiveBayes(Classifier):
         for attribute in self.attributes:
             attr_value = instance.value(attribute)
             class_cond_prob *= self.posterior_probability(attribute, attr_value, klass_value)
+        class_cond_prob *= self.prior_probability(klass_value)
         return class_cond_prob
     
     @classmethod

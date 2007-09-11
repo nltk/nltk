@@ -56,10 +56,10 @@ class NaiveBayesTestCase(unittest.TestCase):
         
         nb.train()
         #test[0] = overcast,mild,high,true
-        expected_no = ((0 + 1.0)/(2 + 2)) * ((1.0 + 1.0)/ (2 + 2)) * ((3.0 + 1.0) / (5 + 2)) * ((2.0 + 1.0)/ (3 + 2))
+        expected_no = ((0 + 1.0)/(2 + 2)) * ((1.0 + 1.0)/(2 + 2)) * ((3.0 + 1.0)/(5 + 2)) * ((2.0 + 1.0)/(3 + 2)) * ((4.0 + 1.0)/(9 + 2))
         self.assertAlmostEqual(expected_no, nb.class_conditional_probability(_test[0], 'no'), 6)
         
-        expected_yes = ((2.0 + 1.0)/(2 + 2)) * ((1.0 + 1.0)/ (2 + 2)) * ((2.0 + 1.0) / (5 + 2)) * ((1.0 + 1.0)/ (3 + 2))
+        expected_yes = ((2.0 + 1.0)/(2 + 2)) * ((1.0 + 1.0)/(2 + 2)) * ((2.0 + 1.0)/(5 + 2)) * ((1.0 + 1.0)/(3 + 2)) * ((5.0 + 1.0)/(9 + 2))
         self.assertAlmostEqual(expected_yes, nb.class_conditional_probability(_test[0], 'yes'), 6)
                 
     def test_expected_class(self):
