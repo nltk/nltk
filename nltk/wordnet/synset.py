@@ -54,7 +54,7 @@ class Word(object):
         """
         >>> from nltk.wordnet import *
         >>> N['dog'].isTagged()
-        1
+        True
 
         @return: True/false (1/0) if one of this L{Word}'s senses is tagged.
         """
@@ -250,10 +250,10 @@ class Synset(object):
         """
         >>> from nltk.wordnet import *
         >>> N['dog'][0].isTagged()
-        1
+        True
 
         >>> N['dog'][1].isTagged()
-        0
+        False
 
         @return: True/false (1/0) if one of this L{Word}'s senses is tagged.
         """
@@ -600,9 +600,9 @@ def _equalsIgnoreCase(a, b):
     Return true iff a and b have the same lowercase representation.
     
     >>> _equalsIgnoreCase('dog', 'Dog')
-    1
+    True
     >>> _equalsIgnoreCase('dOg', 'DOG')
-    1
+    True
     """
     return a == b or a.lower() == b.lower()
 

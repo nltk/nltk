@@ -196,7 +196,8 @@ def binarySearchFile(file, key, cache={}, cacheDepth=-1):
             file.seek(max(0, middle - 1))
             if middle > 0:
                 file.readline()
-            offset, line = file.tell(), file.readline()
+            offset = file.tell()
+            line = file.readline()
             if currentDepth < cacheDepth:
                 cache[middle] = (offset, line)
 
