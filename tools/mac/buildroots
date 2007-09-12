@@ -1,10 +1,10 @@
 #!/bin/bash
-#make the corpora root
-mkdir ./Corpus_installer/root/usr
-mkdir ./Corpus_installer/root/usr/share
-mkdir ./Corpus_installer/root/usr/share/nltk
-cp -R ../../data/corpora ./Corpus_installer/root/usr/share/nltk
-chmod -R g+r ./Corpus_installer/root/usr/share/nltk
+#make the data root
+mkdir ./Data_installer/root/usr
+mkdir ./Data_installer/root/usr/share
+mkdir ./Data_installer/root/usr/share/nltk
+cp -R ../../data ./Data_installer/root/usr/share/nltk
+chmod -R g+r ./Data_installer/root/usr/share/nltk
 
 #Make Lib root
 mkdir ./NLTKLibrary_installer/root/tmp
