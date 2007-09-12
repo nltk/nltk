@@ -15,7 +15,7 @@ PM = /Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMa
 
 pkg: data-root lib-root
 	$(PM) -build -proj ./Data_installer/nltk_data.pmproj \
-		-p ./pkgs/nltk_corpora.pkg
+		-p ./pkgs/nltk_data.pkg
 	$(PM) -build -proj ./NLTKLibrary_installer/NLTKLibrary.pmproj \
 		-p ./pkgs/NLTKLibrary.pkg
 	$(PM) -build -proj ./NLTK.pmproj -p ../../dist/nltk-$(NLTK_VERSION).mpkg
