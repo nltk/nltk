@@ -11,24 +11,24 @@ NLTK_VERSION = $(shell python -c 'import nltk; print nltk.__version__')
 NLTK_ZIP = ../../dist/nltk-$(NLTK_VERSION).zip
 PM = /Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker
 
-.PHONY: pkg corpus-root lib-root clean
+.PHONY: pkg data-root lib-root clean
 
-pkg: corpus-root lib-root
-	$(PM) -build -proj ./Corpus_installer/nltk_corpora.pmproj \
+pkg: data-root lib-root
+	$(PM) -build -proj ./Data_installer/nltk_data.pmproj \
 		-p ./pkgs/nltk_corpora.pkg
 	$(PM) -build -proj ./NLTKLibrary_installer/NLTKLibrary.pmproj \
 		-p ./pkgs/NLTKLibrary.pkg
 	$(PM) -build -proj ./NLTK.pmproj -p ../../dist/nltk-$(NLTK_VERSION).mpkg
 
 clean:
-	rm -rf ./Corpus_installer/root
+	rm -rf ./Data_installer/root
 	rm -rf ./NLTKLibrary_installer/root
 
-corpus-root:
-	rm -rf ./Corpus_installer/root
-	mkdir -p ./Corpus_installer/root/usr/share/nltk/
-	cp -R ../../data/corpora ./Corpus_installer/root/usr/share/nltk/
-	chmod -R g+r ./Corpus_installer/root/usr/share/nltk
+data-root:
+	rm -rf ./Data_installer/root
+	mkdir -p ./Data_installer/root/usr/share/nltk/
+	cp -R ../../data ./Data_installer/root/usr/share/nltk/
+	chmod -R g+r ./Data_installer/root/usr/share/nltk
 
 lib-root: $(NLTK_ZIP)
 	rm -rf ./NLTKLibrary_installer/root
