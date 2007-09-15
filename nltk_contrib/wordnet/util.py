@@ -4,6 +4,7 @@
 # Author: Oliver Steele <steele@osteele.com>
 #         Steven Bird <sb@csse.unimelb.edu.au>
 #         David Ormiston Smith <daosmith@csse.unimelb.edu.au>>
+#         Jussi Salmela <jtsalmela@users.sourceforge.net>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
