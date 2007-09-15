@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+<a href=""></a><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -10,31 +10,34 @@
 </head>
 <body>
 <h2>NLTK Wordnet Browser Help</h2>
+<p>The NLTK Wordnet Browser is a tool to use in browsing the Wordnet database. It tries to behave like the Wordnet project's web browser but the difference is that the NLTK Wordnet Browser uses a local Wordnet database. The NLTK Wordnet Browser has only a part of normal browser functionality and it is <b>not</b> an Internet browser.</p>
+<p>For background information on Wordnet, see the Wordnet project home page: <b>http://wordnet.princeton.edu/</b>. For more information on the NLTK project, see the project home: <b>http://nltk.sourceforge.net/</b>. To get an idea of what the Wordnet version used by this browser includes choose <b>Show Database Info</b> from the <b>View</b> submenu.</p>
 <h3>The User Interface</h3>
-The user interface is a so called <b>notebook</b> interface. This
+<p>The user interface is a so called <b>notebook</b> interface. This
 is familiar nowadays for almost everyone from Internet browsers,
 for example. It consists of one or more independent pages often
-(and here also) called <b>tabsheets</b>.
+(and here also) called <b>tabsheets</b>.</p>
 <p>Every tabsheet contains its own search history which can be
 browsed back and forth at will. The result of a new word search
 will be shown on the currently active tabsheet if nothing else is
 wanted. It is also possible to open a new tabsheet for the search
 word given.</p>
+<p>The position and size of the browser window as well as font size can be adjusted and the selections are retained between sessions.</p>
+<h3>Word search</h3>
+<p>The word to be searched is typed into the <b>Word(s):</b> field and the search started with Enter or by clicking the <b>Search the word(s)</b> button. There is no uppercase/lowercase distinction: the search word is transformed to lowercase before the search.</p>
+<p>In addition, the word does not have to be in base form. The browser tries to find the possible base form(s) by making certain morphological substitutions. Typing <b>fLIeS</b> as an obscure example gives one <a href="?fLIeS">this</a>. Click the previous link to see what this kind of search looks like and then come back to this page by clicking the <b>Previous Page</b> button.</p>
 <p>The result of a search is a display of one or more
-<b>synsets</b> of every part of speech in which a form of the
-search word was found to belong to. A synset is a set of words
+<b>synsets</b> for every part of speech in which a form of the
+search word was found to occur. A synset is a set of words
 having the same sense or meaning. Each word in a synset that is
-underlined is a hypertext link which can be clicked to trigger an
+underlined is a hyperlink which can be clicked to trigger an
 automatic search for that word.</p>
-<p>Every synset has a hypertext link <b>S:</b> at the start of its
-display line. Clicking that symbol shows you the names of the
-relations that this synset is part of. Clicking the relation name
-opens up a display for that relation. Clicking it another time
-closes the display again. Clicking another relation name on a line
-that has an opened relation closes the open relation and opens the
-clicked relation.</p>
-<p>The position and size of the browser window can be adjusted and
-the selections are retained between sessions.</p>
+<p>Every synset has a hyperlink <b>S:</b> at the start of its
+display line. Clicking that symbol shows you the name of every
+<b>relation</b> that this synset is part of. Every relation name is a hyperlink that opens up a display for that relation. Clicking it another time closes the display again. Clicking another relation name on a line that has an opened relation closes the open relation and opens the clicked relation.</p>
+<p>It is also possible to give two or more words or collocations to be searched at the same time separating them with a comma like this <a href="?cheer up,clear up">cheer up,clear up</a>, for example. Click the previous link to see what this kind of search looks like and then come back to this page by clicking the <b>Previous Page</b> button. As you could see the search result includes the synsets found in the same order than the forms were given in the search field.</p>
+<p>
+There are also word level (lexical) relations recorded in the Wordnet database. Opening this kind of relation displays lines with a hyperlink <b>W:</b> at their beginning. Clicking this link shows more info on the word in question.</p>
 <h3>Menu Structure</h3>
 The browser has a menubar that you can use to invoke a set of
 different operations. Most of the menu selections also have a
@@ -63,6 +66,7 @@ the older pages.
 <p>You can <b>increase</b>, <b>decrease</b> and <b>normalize</b>
 the font size. The font size chosen is retained between
 sessions.</p>
+<p>You can choose <b>Show Database Info</b> to see the word, synset and relation counts by POS as well as one example word (as a hyperlink) for every relation&POS pair occuring.</p>
 <p>You can view the <b>HTML source</b> of a page if you are
 curious.</p>
 <h4>The Help Menu</h4>
@@ -111,8 +115,16 @@ the desired operation.</p>
 <td>Show the word in search word field in a new tabsheet</td>
 </tr>
 <tr>
+<td>Alt+LeftArrow</td>
+<td>Previous page in page history</td>
+</tr>
+<tr>
 <td>Ctrl+LeftArrow (2)</td>
 <td>Previous page in page history</td>
+</tr>
+<tr>
+<td>Alt+RightArrow</td>
+<td>Next page in page history</td>
 </tr>
 <tr>
 <td>Ctlr+RightArrow (2)</td>
@@ -141,10 +153,7 @@ the desired operation.</p>
 caret is in it.</dd>
 <dt>(2)</dt>
 <dd>These are nonstandard combinations, the usual ones being
-Alt+LeftArrow and Alt+RightArrow. The choice was made because using
-Alt caused unwanted random character inserts into the search word
-field. The normal combinations will be added if this interference
-can be tamed.</dd>
+Alt+LeftArrow and Alt+RightArrow. These are still functional because there used to be difficulties with the standard ones earlier in the life of this program. Use these if the standard combinations do not work properly for you.</dd>
 <dt>(3)</dt>
 <dd>There are so many of these combinations because the usual i.e.
 Ctrl++/Ctrl+- combinations did not work on the author's laptop and

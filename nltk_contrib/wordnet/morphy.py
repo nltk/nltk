@@ -70,10 +70,11 @@ def morphy(form, pos=NOUN):
                          substitutions):      # remaining substitutions
         if dictionary.has_key(form):
             yield form
-        for old,new in substitutions:
+        for n,(old,new) in enumerate(substitutions):
             if form.endswith(old):
                 new_form = form[:-len(old)] + new
-                for f in trySubstitutions(new_form, substitutions):
+                for f in trySubstitutions(new_form, substitutions[:n] +
+                                                    substitutions[n+1:]):
                     yield f
             
     exceptions = binarySearchFile(excfile, form)
