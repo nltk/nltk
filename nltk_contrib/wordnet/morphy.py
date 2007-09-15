@@ -20,7 +20,7 @@
 from collections import defaultdict
 from dictionary import dictionaryFor
 import nltk.data 
-from util import *
+from nltk.wordnet.util import *
 
 __all__ = 'demo', 'morphy'
 

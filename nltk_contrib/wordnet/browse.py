@@ -13,7 +13,7 @@ experience see the NLTK Wordnet Graphical Browser.
 
 """
 
-from util import *
+from nltk.wordnet.util import *
 from dictionary import *
 from textwrap import TextWrapper
 from random import randint
