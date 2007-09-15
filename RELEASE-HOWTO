@@ -27,7 +27,7 @@ C. NLTK VERSION NUMBERS
 
 D. THIRD-PARTY SOFTWARE VERSIONS
 
-  1. Check for new versions of Python, Numeric, Matplotlib
+  1. Check for new versions of Python, Numpy, Matplotlib
   2. Modify top level Makefile and commit
   3. Modify wiki installation instructions with these new versions, including new NLTK version
      (do install instructions in cloned wiki page Installation-N.N)
@@ -52,14 +52,15 @@ The build requires docutils, pdflatex, python imaging library, epydoc
   5. make iso (fast; see dist/ for the iso image)
   6. list distributions and compare size with previous distribution
 
--rw-r--r-- 1 sb sb   1425136 2007-08-29 12:14 nltk-0.9b1-1.noarch.rpm
--rw-r--r-- 1 sb sb 167860224 2007-08-29 12:35 nltk-0.9b1.iso
--rw-r--r-- 1 sb sb    632183 2007-08-29 12:14 nltk-0.9b1.tar.gz
--rw-r--r-- 1 sb sb    803444 2007-08-29 12:14 nltk-0.9b1.win32.exe
--rw-r--r-- 1 sb sb    751655 2007-08-29 12:14 nltk-0.9b1.zip
--rw-r--r-- 1 sb sb  46940365 2007-08-29 12:16 nltk-data-0.9b1.zip
--rw-r--r-- 1 sb sb  39222423 2007-08-29 12:15 nltk-doc-0.9b1.zip
--rw-r--r-- 1 sb sb     86001 2007-08-29 12:15 nltk-examples-0.9b1.zip
+-rw-r--r-- 1 root root  1540841 2007-09-12 18:07 nltk-0.9b2-1.noarch.rpm
+-rw-r--r-- 1 root root   677322 2007-09-12 18:07 nltk-0.9b2.tar.gz
+-rw-r--r-- 1 root root   855901 2007-09-12 18:07 nltk-0.9b2.win32.exe
+-rw-r--r-- 1 root root   804259 2007-09-12 18:07 nltk-0.9b2.zip
+-rw-r--r-- 1 root root 50624218 2007-09-12 18:08 nltk-data-0.9b2.zip
+-rw-r--r-- 1 root root 39283122 2007-09-12 18:07 nltk-doc-0.9b2.zip
+-rw-r--r-- 1 root root    86001 2007-09-12 18:07 nltk-examples-0.9b2.zip
+
+?? -rw-r--r-- 1 sb sb 167860224 2007-08-29 12:35 nltk-0.9b1.iso
 
 
   (test the distributions?)

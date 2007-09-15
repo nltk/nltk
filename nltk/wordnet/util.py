@@ -4,6 +4,7 @@
 # Author: Oliver Steele <steele@osteele.com>
 #         Steven Bird <sb@csse.unimelb.edu.au>
 #         David Ormiston Smith <daosmith@csse.unimelb.edu.au>>
+#         Jussi Salmela <jtsalmela@users.sourceforge.net>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
@@ -31,10 +32,10 @@ PERTAINYM = 'pertainym'
 FRAMES = 'frames'
 CLASSIF_CATEGORY = 'domain category'
 CLASSIF_USAGE = 'domain usage'
-CLASSIF_REGIONAL = 'domain regional'
+CLASSIF_REGIONAL = 'domain region'
 CLASS_CATEGORY = 'class category'
 CLASS_USAGE = 'class usage'
-CLASS_REGIONAL = 'class regional'
+CLASS_REGIONAL = 'class region'
 # New in wn 2.1:
 INSTANCE_HYPERNYM = 'hypernym (instance)'
 INSTANCE_HYPONYM = 'hyponym (instance)'
@@ -182,7 +183,7 @@ def binarySearchFile(file, key, cache={}, cacheDepth=-1):
     
     key = key + ' '
     keylen = len(key)
-    start, end = 0, os.stat(file.name)[ST_SIZE]
+    start, end = 0, os.stat(file.name)[ST_SIZE] - 1
     currentDepth = 0
     
     while start < end:
@@ -193,14 +194,21 @@ def binarySearchFile(file, key, cache={}, cacheDepth=-1):
             offset, line = cache[middle]
 
         else:
-            file.seek(max(0, middle - 1))
-            if middle > 0:
-                file.readline()
-            offset = file.tell()
-            line = file.readline()
+            line = ""
+            while True:
+                file.seek(max(0, middle - 1))
+                if middle > 0:
+                    file.readline()
+                offset = file.tell()
+                line = file.readline()
+                if line != "": break
+                # at EOF; try to find start of the last line
+                middle = (start + middle)/2
+                if middle == end -1:
+                    return None
             if currentDepth < cacheDepth:
                 cache[middle] = (offset, line)
-
+                
         if offset > end:
             assert end != middle - 1, "infinite loop"
             end = middle - 1
@@ -420,3 +428,11 @@ def getIndex(form, pos=NOUN):
             return              trySubstitutions(form, substitutions[1:], lookup=False) or \
                 (substitute and trySubstitutions(substitute, substitutions[1:]))
     return trySubstitutions(form, GET_INDEX_SUBSTITUTIONS)
+
+if __name__ == "__main__":
+    indexFile = IndexFile("noun", "noun")
+    path = nltk.data.find('corpora/wordnet/data.noun')
+    dataFile = open(path, FILE_OPEN_MODE)
+    loaded = True
+    print 'OK'
+

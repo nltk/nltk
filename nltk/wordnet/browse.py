@@ -1,10 +1,14 @@
-# Natural Language Toolkit: Wordnet Interface: Wordnet Browser
+# Natural Language Toolkit: Wordnet Interface: Wordnet Text Mode Browser
 #
 # Copyright (C) 2001-2007 University of Pennsylvania
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
-#         Jussi Salmela <jussi.salmela@pp3.inet.fi>
+#         Jussi Salmela <jtsalmela@users.sourceforge.net> (modifications)
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
+
+"""Natural Language Toolkit: Wordnet Interface: Wordnet Text Mode Browser
+See also the NLTK Wordnet Graphical Browser in nltk_contrib.wordnet
+"""
 
 from util import *
 from dictionary import *
@@ -28,14 +32,22 @@ def print_all(synsets):
         print show(synsets, index),
     print
 
-def browse_help():
-    print 'Lookup a word by typing it and finishing with Enter.'
-    print 'Words have numbered senses, pick a sense by typing a number.'
-    print 'Commands:'
-    print 'd=down, u=up, g=gloss, s=synonyms, a=all-senses, v=verbose, r=random, q=quit'
-    print 'N=nouns, V=verbs, J=adjectives, R=adverbs'
+def print_help():
+    print "="*60
+    print "Lookup a word by typing it and finishing with Enter."
+    print "Reserved words -- letters and numbers used as browser commands --"
+    print "can be searched by preceeding them with an asterisk *."
+    print
+    print "Words have numbered senses, pick a sense by typing a number."
+    print
+    print "Commands are a letter followed by Enter:"
+    print "    d=down, u=up, g=gloss, s=synonyms, a=all-senses"
+    print "    v=verbose, r=random, q=quit"
+    print
+    print "Choose POS with: N=nouns, V=verbs, J=adjectives, R=adverbs"
+    print "="*60
 
-def _new_word(word):
+def new_word(word):
     D = None
     for pos,sec in ((N,"N"), (V,"V"), (ADJ,"J"), (ADV,"R")):
         if word in pos:
@@ -46,12 +58,12 @@ def _new_word(word):
     else:
         print "Word '%s' not found! Choosing a random word." % word
         D = N
-        synsets = _random_synset(D)
+        synsets = random_synset(D)
         print "N",
         print_all(N[synsets[0][0]])
     return D, synsets
 
-def _random_synset(D):
+def random_synset(D):
     return D[randint(0,len(D)-1)]
 
 
@@ -66,7 +78,7 @@ def browse(word=" ", index=0):
     @param index: the sense number of this word to use (optional)
     """
     print "Wordnet browser (type 'h' for help)"
-    D, synsets = _new_word(word)
+    D, synsets = new_word(word)
 
     while True:
         if index >= len(synsets):
@@ -74,15 +86,18 @@ def browse(word=" ", index=0):
         input = ''
         while input == '':
             if synsets:
-                input = raw_input(synsets[index][0] + "_" + `index` + "/" +
-                                  `len(synsets)` + "> ")
+                prompt = "%s_%d/%d>" % (synsets[index][0], index, len(synsets))
+                input = raw_input(prompt)
             else:
                 input = raw_input("> ")  # safety net
 
         # word lookup
         if len(input) > 1 and not input.isdigit():
-            word = input.lower()
-            D, synsets = _new_word(word)
+            if input[0] == "*":
+                word = input[1:]
+            else:
+                word = input.lower()
+            D, synsets = new_word(word)
             index = 0
 
         # sense selection
@@ -116,7 +131,7 @@ def browse(word=" ", index=0):
 
         # navigation
         elif input == "r":
-            synsets = _random_synset(D)
+            synsets = random_synset(D)
         elif input == "u":
             try:
                 hypernyms = synsets[index][HYPERNYM]
@@ -138,7 +153,7 @@ def browse(word=" ", index=0):
 
         # miscellany
         elif input == "h" or input == "?":
-            browse_help()
+            print_help()
         elif input == "q":
             print "Goodbye"
             break
@@ -147,5 +162,12 @@ def browse(word=" ", index=0):
             print "Unrecognised command: %s" % input
             print "Type 'h' for help"
 
-if __name__ == '__main__':
+def demo():
+    print_help()
+    print
     browse()
+
+if __name__ == '__main__':
+    demo()
+
+__all__ = ["demo"]
