@@ -101,12 +101,16 @@ def wup_similarity(synset1, synset2, verbose=False):
     if subsumer == None:
         return -1
 
-    # Get the longest path from the LCS to the root.
-    depth = subsumer.max_depth()
+    # Get the longest path from the LCS to the root,
+    # including two corrections:
+    # - add one because the calculations include both the start and end nodes
+    # - add one to non-nouns since they have an imaginary root node
+    depth = subsumer.max_depth() + 1
+    if subsumer.pos != NOUN:
+        depth += 1
 
     # Get the shortest path from the LCS to each of the synsets it is subsuming.
     # Add this to the LCS path length to get the path length from each synset to the root.
-
     len1 = synset1.shortest_path_distance(subsumer) + depth
     len2 = synset2.shortest_path_distance(subsumer) + depth
     return (2.0 * depth) / (len1 + len2)
