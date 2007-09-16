@@ -649,8 +649,8 @@ def demo():
     print "Closures and Trees:"
     print
     
-    print wordnet.ADJ['red'][0].closure(wordnet.SIMILAR, depth=1)
-    print wordnet.ADJ['red'][0].closure(wordnet.SIMILAR, depth=2)
+    print list(wordnet.ADJ['red'][0].closure(wordnet.SIMILAR, depth=1))
+    print list(wordnet.ADJ['red'][0].closure(wordnet.SIMILAR, depth=2))
     pprint(dog[0].tree(wordnet.HYPERNYM))
     
     # Adjectives that are transitively SIMILAR to any of the senses of 'red'
