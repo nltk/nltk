@@ -1260,15 +1260,15 @@ def demo(num_sents=100, max_rules=200, min_score=3,
 
     # Unigram tagger
     print "Training unigram tagger:"
-    unigram_tagger = tag.UnigramTagger.train(training_data,
-                                             backoff=nn_cd_tagger)
+    unigram_tagger = tag.UnigramTagger(training_data,
+                                       backoff=nn_cd_tagger)
     if gold_data:
         print "    [accuracy: %f]" % tag.accuracy(unigram_tagger, gold_data)
 
     # Bigram tagger
     print "Training bigram tagger:"
-    bigram_tagger = tag.BigramTagger.train(training_data,
-                                           backoff=unigram_tagger)
+    bigram_tagger = tag.BigramTagger(training_data,
+                                     backoff=unigram_tagger)
     if gold_data:
         print "    [accuracy: %f]" % tag.accuracy(bigram_tagger, gold_data)
 
