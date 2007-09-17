@@ -14,7 +14,7 @@ import  sys
 from time import sleep
 from threading import Timer
 import itertools as it
-import  sys
+import sys
 from collections import defaultdict
 from pprint import pprint
 import pickle
@@ -149,23 +149,24 @@ def dbname_to_dispname(dbname):
     return '???'
 
 html_header = '''
-        <!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01//EN'
-        'http://www.w3.org/TR/html4/strict.dtd'>
-        <html>
-        <head>
-        <meta name='generator' content=
-        'HTML Tidy for Windows (vers 14 February 2006), see www.w3.org'>
-        <meta http-equiv='Content-Type' content=
-        'text/html; charset=us-ascii'>
-        </head>
-        <body bgcolor='#F5F5F5' text='#000000'>
-        '''
-
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01//EN'
+'http://www.w3.org/TR/html4/strict.dtd'>
+<html>
+<head>
+<meta name='generator' content=
+'HTML Tidy for Windows (vers 14 February 2006), see www.w3.org'>
+<meta http-equiv='Content-Type' content=
+'text/html; charset=us-ascii'>
+</head>
+<body bgcolor='#F5F5F5' text='#000000'>
+'''
+#html_header = ''
 
 html_trailer = '''
-        </body>
-        </html>
-        '''
+</body>
+</html>
+'''
+#html_trailer = ''
 
 explanation  = '''
 <h3>Search Help</h3>
@@ -343,8 +344,8 @@ def hypernym_ul_structure(word, tree):
     if len(tree) > 1:
         tree = tree[1:]
         for t in tree: htm += hypernym_ul_structure(word, t)
-        htm += '\n</ul>\n'
-    return htm
+        #htm += '\n</ul>\n'
+    return htm  + '\n</ul>\n'
 
 def word_ul_structure(word, synset, rel_name, synset_keys):
     synset_key,prev_synset_key = synset_keys.split(',')
@@ -407,7 +408,8 @@ def relation_section(rel_name, word, synset_keys):
             return '<ul>\n' + hyponym_ul_structure(word, tree[1:]) + '\n</ul>'
     elif rel_name == 'inherited hypernym':
         tree = synset.tree(HYPERNYM)
-        return hypernym_ul_structure(word, tree[1:][0]) + '\n</ul>'
+        print tree
+        return hypernym_ul_structure(word, tree[1:][0]) # + '\n</ul>'
     elif rel_name == 'sister term':
         s = ''
         for x in synset[HYPERNYM]:
@@ -536,10 +538,11 @@ class MyHtmlWindow(html.HtmlWindow):
         html.HtmlWindow.__init__(self, parent, id,
                                     style=wx.NO_FULL_REPAINT_ON_RESIZE)
         self.parent = parent
-        if 'gtk2' in wx.PlatformInfo:
-            self.SetStandardFonts()
+        #if 'gtk2' in wx.PlatformInfo:
+        #self.SetStandardFonts()
         self.font_size = self.normal_font_size = \
                          options_dict['font_size']
+        #print 'self.font_size:', self.font_size
         self.incr_decr_font_size(0) # Keep it as it is
 
     def OnLinkClicked(self, linkinfo):
@@ -566,9 +569,12 @@ class MyHtmlWindow(html.HtmlWindow):
         elif link_type == '*': # Relation links
             # A relation link looks like this:
             # word#synset_keys#relation_name#uniq_cntr
+            #print 'link:', link
             word,synset_keys,rel_name,u_c = link.split('#')
+            #print 'word,synset_keys,rel_name,u_c:',word,synset_keys,rel_name,u_c
             page = self.GetParser().GetSource()
             ind = page.find(link) + len(link) + 2
+            #print page[ind:]
             # If the link text is in bold, the user wants to
             # close the section beneath the link
             if page[ind:ind+3] == '<b>':
@@ -581,7 +587,9 @@ class MyHtmlWindow(html.HtmlWindow):
                 # and if it is, then remove boldness & close the section below
                 end = page.find('\n', ind)
                 start = page.rfind('\n', 0, ind)
+                #print 'page[start:end]:', page[start:end]
                 start = page.find('<b>', start, end)
+                #print 'start:', start
                 if start != -1:
                     page = ul_section_removed(page, ind)
                     end = page.find('</b>', start, end)
@@ -592,12 +600,14 @@ class MyHtmlWindow(html.HtmlWindow):
                 if rel_name in implemented_rel_names:
                     ind = page.find(link) + len(link) + 2
                     ind_2 = ind + len(rel_name) + 7
+                    #print 'page[:ind]:', page[:ind]
                     page = page[:ind] + b(page[ind:ind_2]) + \
                            page[ind_2:]
                     # find the start of the next line
                     ind = page.find('\n', ind) + 1
                     section = \
                         relation_section(rel_name, word, synset_keys)
+                    #print 'page[:ind]:', page[:ind]
                     page = page[:ind] + section + page[ind:]
                     self.parent.parent.show_page_and_word(page)
                 else:
@@ -608,10 +618,13 @@ class MyHtmlWindow(html.HtmlWindow):
             # A synset link looks like this:
             # Sword#synset_key,prev_synset_key#link_counter
             l_t = link_type + ':'
+            #print 'l_t, link:', l_t, link
             word,syns_keys,link_counter = link.split('#')
+            #print 'word,syns_keys,link_counter:',word,syns_keys,link_counter
             #syns_key,prev_syns_key = syns_keys.split(',')
             page = self.GetParser().GetSource()
             ind = page.find(link) + len(link) + 2
+            #print page[ind:]
             # If the link text is in bold, the user wants to
             # close the section beneath the link
             if page[ind:ind+3] == '<b>':
@@ -680,7 +693,8 @@ class MyHtmlWindow(html.HtmlWindow):
             self.font_size  = self.normal_font_size
         options_dict['font_size'] = self.font_size
         # Font size behavior is very odd. This is a hack
-        self.SetFonts('times new roman', 'courier new', [self.font_size]*7)
+        #self.SetFonts('times new roman', 'courier new', [self.font_size]*7)
+        self.SetStandardFonts(size=self.font_size)
         self.SetPage(page_to_restore)
 
     def show_body(self, body):
@@ -1298,7 +1312,7 @@ class MyHtmlFrame(wx.Frame):
         dlg.Destroy()
 
     def save_file(self):
-        dlg = wx.FileDialog(self, wildcard = '*.htm*',
+        dlg = wx.FileDialog(self, wildcard='*.html',
                             style=wx.SAVE|wx.CHANGE_DIR|wx.OVERWRITE_PROMPT)
         if dlg.ShowModal():
             path = dlg.GetPath()
