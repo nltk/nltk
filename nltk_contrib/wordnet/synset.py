@@ -182,7 +182,6 @@ class Synset(object):
             #now only used for senseVerbFrames
             def extractVerbFrames(index, vfTuples):
                 return tuple(map(lambda t:int(t[1]), filter(lambda t,i=index:int(t[2],16) in (0, i), vfTuples)))
-
             senseVerbFrames = []
             for index in range(1, len(self.words) + 1):
                 senseVerbFrames.append(extractVerbFrames(index, vfTuples))
@@ -248,7 +247,7 @@ class Synset(object):
 
     def relations(self, rel_name=None, word_match=False):
         """
-        Return a dict of relations or a list of word( pair)s for this synset.
+        Return a dict of relations or a list of word match pairs for this synset.
 
         The dictionary keys are the names for the relations found.
         The dictionary items are lists of:
@@ -259,10 +258,11 @@ class Synset(object):
         If rel_name is specified, a list for only that relation type is
         returned.
 
-        If word_match is true word pair tuples of form (source,target) are
-        returned. The source words are the words found for the relation in
-        question and the target words are their matches in some other synset.
-
+        If word_match is true a list of 2-tuples (source,target) of matching
+        word information is returned . Here source and target are tuples
+        of form (synset,word_index), where 'word_index' is the 0-based index of
+        the word in synset 'synset'
+        
         @return: A relation dict or a list of word( pair)s for this L{Synset}.
         """
 
@@ -272,18 +272,21 @@ class Synset(object):
             relations = defaultdict(list)
             for (type, offset, pos, indices) in self._pointerTuples:
                 rel = _RELATION_TABLE[type]
-                source_ind = int(indices[0:2], 16)
-                target_ind = int(indices[2:], 16)
+                source_ind = int(indices[0:2], 16) - 1
+                target_ind = int(indices[2:], 16) - 1
                 pos = normalizePOS(pos)
                 offset = int(offset)
                 synset = getSynset(pos, offset)
-                if target_ind:
+                if target_ind >= 0:
                     if word_match:
-                        #print self.words, source_ind-1, synset, target_ind - 1
-                        relations[rel].append( \
-                           (self.words[source_ind-1],synset[target_ind - 1]))
+                        source_tuple = (self,source_ind)
+                        target_tuple = (synset,target_ind)
+                        relations[rel].append((source_tuple,target_tuple))
+                        #relations[rel].append( \
+                        #   (self.words[source_ind],synset[target_ind]))
                     else:
-                        relations[rel].append(synset[target_ind - 1])
+                        relations[rel].append(synset[target_ind])
+                        #relations[rel].append(synset[target_ind - 1])
                 else:
                     relations[rel].append(synset)
             self._relations = dict(relations)
@@ -774,7 +777,7 @@ def demo():
     print syns, syns[0]
     print syns[0][HYPONYM]
     pprint(syns[0].tree(HYPONYM, depth=1),indent=4)
-
+    
     # Adjectives that are transitively SIMILAR to any of the senses of 'red'
     #flatten1(map(lambda sense:closure(sense, SIMILAR), ADJ['red']))    # too verbose
 
