@@ -14,21 +14,21 @@ PM = /Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMa
 .PHONY: pkg data-root lib-root clean
 
 pkg: data-root lib-root
-	$(PM) -build -proj ./Data_installer/nltk_data.pmproj \
-		-p ./pkgs/nltk_data.pkg
+	$(PM) -build -proj ./Corpus_installer/nltk_corpora.pmproj \
+		-p ./pkgs/nltk_corpora.pkg
 	$(PM) -build -proj ./NLTKLibrary_installer/NLTKLibrary.pmproj \
 		-p ./pkgs/NLTKLibrary.pkg
 	$(PM) -build -proj ./NLTK.pmproj -p ../../dist/nltk-$(NLTK_VERSION).mpkg
 
 clean:
-	rm -rf ./Data_installer/root
+	rm -rf ./Corpus_installer/root
 	rm -rf ./NLTKLibrary_installer/root
 
 data-root:
-	rm -rf ./Data_installer/root
-	mkdir -p ./Data_installer/root/usr/share/nltk/
-	cp -R ../../data ./Data_installer/root/usr/share/nltk/
-	chmod -R g+r ./Data_installer/root/usr/share/nltk
+	rm -rf ./Corpus_installer/root
+	mkdir -p ./Corpus_installer/root/usr/share/nltk/
+	cp -R ../../data ./Corpus_installer/root/usr/share/nltk/
+	chmod -R g+r ./Corpus_installer/root/usr/share/nltk
 
 lib-root: $(NLTK_ZIP)
 	rm -rf ./NLTKLibrary_installer/root
