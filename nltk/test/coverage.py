@@ -586,7 +586,7 @@ class coverage:
             filename = filename[0:-1]
         elif ext != '.py':
             raise CoverageException, "File '%s' not Python source." % filename
-        source = open(filename, 'r')
+        source = open(filename, 'rU')
         lines, excluded_lines, line_map = self.find_executable_statements(
             source.read(), exclude=self.exclude_re
             )
@@ -875,7 +875,7 @@ class coverage:
                     raise
                 
     def annotate_file(self, filename, statements, excluded, missing, directory=None):
-        source = open(filename, 'r')
+        source = open(filename, 'rU')
         if directory:
             dest_file = os.path.join(directory,
                                      os.path.basename(filename)
@@ -1076,6 +1076,8 @@ if __name__ == '__main__':
 # new with statement is counted as executable.
 #
 # 2007-07-29 NMB Better packaging.
+#
+# 2007-09-13 EDL Open Python files with 'rU' mode.
 
 # C. COPYRIGHT AND LICENCE
 #
