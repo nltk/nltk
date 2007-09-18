@@ -30,25 +30,47 @@ from doctest import *
 from doctest import DocTestCase
 from optparse import OptionParser, OptionGroup, Option
 from StringIO import StringIO
+import coverage
 
 __version__ = '0.1'
 
 ###########################################################################
-# Utility Functions
+# Monkey-Patch to fix Doctest
 ###########################################################################
-# These are copied from doctest; I don't import them because they're
-# private.  See the versions in doctest for docstrings, etc.
 
+# The original version of this class has a bug that interferes with
+# code coverage functions.  See: http://tinyurl.com/2htvfx
 class _OutputRedirectingPdb(pdb.Pdb):
     def __init__(self, out):
         self.__out = out
+        self.__debugger_used = False
         pdb.Pdb.__init__(self)
+        
+    def set_trace(self): 
+        self.__debugger_used = True 
+        pdb.Pdb.set_trace(self) 
+    
+    def set_continue(self): 
+        # Calling set_continue unconditionally would break unit test coverage 
+        # reporting, as Bdb.set_continue calls sys.settrace(None). 
+        if self.__debugger_used: 
+            pdb.Pdb.set_continue(self) 
 
     def trace_dispatch(self, *args):
         save_stdout = sys.stdout
         sys.stdout = self.__out
         pdb.Pdb.trace_dispatch(self, *args)
         sys.stdout = save_stdout
+
+# Do the actual monkey-patching.
+import doctest
+doctest._OutputRedirectingPdb = _OutputRedirectingPdb
+        
+###########################################################################
+# Utility Functions
+###########################################################################
+# These are copied from doctest; I don't import them because they're
+# private.  See the versions in doctest for docstrings & comments.
 
 def _exception_traceback(exc_info):
     excout = StringIO()
@@ -761,6 +783,11 @@ NDIFF_OPT    = Option("--ndiff",
                action="store_const", dest="ndiff", const=1, default=0,
                help="Display test failures using ndiffs.")
 
+COVERAGE_OPT = Option("--coverage",
+               action="store", dest="coverage", metavar='FILENAME',
+               help="Generate coverage information, and write it to the "
+                     "given file.")
+
 # Output Comparison options
 ELLIPSIS_OPT = Option("--ellipsis",
                action="store_const", dest="ellipsis", const=1, default=0,
@@ -783,7 +810,8 @@ def main():
 
     reporting_group = OptionGroup(optparser, 'Reporting')
     reporting_group.add_options([VERBOSE_OPT, QUIET_OPT,
-                                 UDIFF_OPT, CDIFF_OPT, NDIFF_OPT])
+                                 UDIFF_OPT, CDIFF_OPT, NDIFF_OPT,
+                                 COVERAGE_OPT])
     optparser.add_option_group(reporting_group)
 
     compare_group = OptionGroup(optparser, 'Output Comparison')
@@ -799,6 +827,11 @@ def main():
                    optionvals.ellipsis * ELLIPSIS |
                    optionvals.normws * NORMALIZE_WHITESPACE)
 
+    # Check coverage, if requested
+    if optionvals.coverage:
+        coverage.use_cache(True, cache_file=optionvals.coverage)
+        coverage.start()
+
     # Perform the requested action.
     if optionvals.action == 'check':
         run(names, optionflags, optionvals.verbosity)
@@ -808,5 +841,9 @@ def main():
         debug(names, optionflags, optionvals.verbosity)
     else:
         optparser.error('INTERNAL ERROR: Bad action %s' % optionvals.action)
+
+    # Check coverage, if requested
+    if optionvals.coverage:
+        coverage.stop()
 
 if __name__ == '__main__': main()
