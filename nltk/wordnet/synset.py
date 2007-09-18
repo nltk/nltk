@@ -462,7 +462,7 @@ class Synset(object):
 
         else: return -1
 
-    def tree(self, rel, depth=-1):
+    def tree(self, rel, depth=-1, cut_mark=None):
         """
         >>> dog = N['dog'][0]
         >>> from pprint import pprint
@@ -480,10 +480,13 @@ class Synset(object):
                   [{noun: object, physical object},
                    [{noun: physical entity}, [{noun: entity}]]]]]]]]]]]]]
         """
-        if depth == 0:
-            return [self]
-        else:
-            return [self] + map(lambda s, rel=rel:s.tree(rel, depth=1), self[rel])
+
+        tree = [self]        
+        if depth != 0:
+            tree += [x.tree(rel, depth-1, cut_mark) for x in self[rel]]
+        elif cut_mark:
+            tree += [cut_mark]
+        return tree
 
     # interface to similarity methods
      
@@ -501,7 +504,7 @@ class Synset(object):
 
     def jcn_similarity(self, other, datafile="", verbose=False):
         return jcn_similarity(self, other, datafile, verbose)
-        
+        bd
     def lin_similarity(self, other, datafile="", verbose=False):
         return lin_similarity(self, other, datafile, verbose)
 
@@ -648,11 +651,22 @@ def demo():
     print
     print "Closures and Trees:"
     print
-    
-    print list(wordnet.ADJ['red'][0].closure(wordnet.SIMILAR, depth=1))
-    print list(wordnet.ADJ['red'][0].closure(wordnet.SIMILAR, depth=2))
+
+
+    pprint(wordnet.ADJ['red'][0].closure(wordnet.SIMILAR, depth=1))
+    pprint(wordnet.ADJ['red'][0].closure(wordnet.SIMILAR, depth=2))
     pprint(dog[0].tree(wordnet.HYPERNYM))
+    pprint(dog[0].tree(wordnet.HYPERNYM, depth=2, cut_mark = '...'))
     
+    entity = wordnet.N["entity"]
+    print entity, entity[0]
+    print entity[0][wordnet.HYPONYM]
+    pprint(entity[0].tree(wordnet.HYPONYM, depth=1), indent=4)
+    abstract_entity = wordnet.N["abstract entity"]
+    print abstract_entity, abstract_entity[0]
+    print abstract_entity[0][wordnet.HYPONYM]
+    pprint(abstract_entity[0].tree(wordnet.HYPONYM, depth=1), indent=4)
+        
     # Adjectives that are transitively SIMILAR to any of the senses of 'red'
     #flatten1(map(lambda sense:closure(sense, SIMILAR), ADJ['red']))    # too verbose
 
