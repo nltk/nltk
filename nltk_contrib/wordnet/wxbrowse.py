@@ -105,35 +105,35 @@ implemented_rel_names = \
 # contains parts separated by slashes, the parts are displayed as separate
 # links.
 rel_order = \
-    [(HYPONYM,'direct hyponym/full hyponym'), 
-     (HYPONYM,'direct troponym/full troponym'), 
-     (CLASS_REGIONAL,'domain term region'), 
-     (PART_HOLONYM,PART_MERONYM), 
-     (ATTRIBUTE,ATTRIBUTE), 
-     (SUBSTANCE_HOLONYM,SUBSTANCE_MERONYM), 
-     (SUBSTANCE_MERONYM,SUBSTANCE_HOLONYM), 
-     (MEMBER_MERONYM,MEMBER_HOLONYM), 
-     (MEMBER_HOLONYM,MEMBER_MERONYM), 
-     (VERB_GROUP,VERB_GROUP), 
-     (CLASSIF_CATEGORY, CLASSIF_CATEGORY), 
-     (INSTANCE_HYPONYM, 'has instance'), 
-     (CLASS_CATEGORY,'domain term category'), 
-     (CLASS_USAGE,'domain term usage'), 
-     (HYPERNYM,'direct hypernym/inherited hypernym/sister term'), 
-     (CLASSIF_REGIONAL, CLASSIF_REGIONAL), 
-     (CLASSIF_USAGE,'domain usage'), 
-     (PART_MERONYM,PART_HOLONYM), 
-     (INSTANCE_HYPERNYM, 'instance'), 
-     (CAUSE,CAUSE), 
+    [(HYPONYM,'direct hyponym/full hyponym'),
+     (HYPONYM,'direct troponym/full troponym'),
+     (CLASS_REGIONAL,'domain term region'),
+     (PART_HOLONYM,PART_MERONYM),
+     (ATTRIBUTE,ATTRIBUTE),
+     (SUBSTANCE_HOLONYM,SUBSTANCE_MERONYM),
+     (SUBSTANCE_MERONYM,SUBSTANCE_HOLONYM),
+     (MEMBER_MERONYM,MEMBER_HOLONYM),
+     (MEMBER_HOLONYM,MEMBER_MERONYM),
+     (VERB_GROUP,VERB_GROUP),
+     (CLASSIF_CATEGORY, CLASSIF_CATEGORY),
+     (INSTANCE_HYPONYM, 'has instance'),
+     (CLASS_CATEGORY,'domain term category'),
+     (CLASS_USAGE,'domain term usage'),
+     (HYPERNYM,'direct hypernym/inherited hypernym/sister term'),
+     (CLASSIF_REGIONAL, CLASSIF_REGIONAL),
+     (CLASSIF_USAGE,'domain usage'),
+     (PART_MERONYM,PART_HOLONYM),
+     (INSTANCE_HYPERNYM, 'instance'),
+     (CAUSE,CAUSE),
      (ALSO_SEE,'see also'),
      (ALSO_SEE,'phrasal verb'),
      (SIMILAR,'similar to'),
-     (ENTAILMENT,ENTAILMENT), 
+     (ENTAILMENT,ENTAILMENT),
      (PARTICIPLE_OF, 'participle'),
-     (ANTONYM, 'antonym'), 
+     (ANTONYM, 'antonym'),
      (FRAMES,'derivationally related form'),
-     #sentence frame 
-     (PERTAINYM,PERTAINYM) 
+     #sentence frame
+     (PERTAINYM,PERTAINYM)
      ]
 
 def dispname_to_dbname(dispname):
@@ -190,20 +190,26 @@ synsets.</li>
 
 # HTML oriented functions
 
-def b(txt): return '<b>%s</b>' % txt
+def bold(txt): return '<b>%s</b>' % txt
 
-def c(txt): return '<center>%s</center>' % txt
+def center(txt): return '<center>%s</center>' % txt
 
-def h(n,txt): return '<h%d>%s</h%d>' % (n,txt,n)
+def hlev(n,txt): return '<h%d>%s</h%d>' % (n,txt,n)
 
-def i(txt): return '<i>%s</i>' % txt
+def italic(txt): return '<i>%s</i>' % txt
 
 def li(txt): return '<li>%s</li>' % txt
 
 def pg(body): return html_header + body + html_trailer
 
+def ul(txt): return '<ul>' + txt + '</ul>'
+
 # abbc = asterisks, breaks, bold, center
-def abbc(txt): return c(b('<br>'*10 + '*'*10 + ' ' + txt + ' ' + '*'*10))
+def abbc(txt):
+    return center(bold('<br>'*10 + '*'*10 + ' ' + txt + ' ' + '*'*10))
+
+full_hyponym_cont_text = \
+    ul(li(italic('(has full hyponym continuation)'))) + '\n'
 
 # This counter function is used to guarantee unique counter values
 uniq_cntr = it.count().next
@@ -212,7 +218,7 @@ def get_synset(synset_key):
     pos = pos_match((None,synset_key[0],None))[2]
     offset = int(synset_key[1:])
     return getSynset(pos, offset)
-    
+
 def collect_one(word, s_or_w, prev_synset_key):
     u_c = uniq_cntr()
     if isinstance(s_or_w, tuple): # It's a word
@@ -245,7 +251,7 @@ def collect_one(word, s_or_w, prev_synset_key):
         for w in synset:
             w = w.replace('_', ' ')
             if w.lower() == word:
-                s+= b(w) + ', '
+                s+= bold(w) + ', '
             else:
                 s += '<a href="?' + w + '">' + w + '</a>, '
     s = s[:-2] + ' ('
@@ -290,7 +296,7 @@ def synset_relations(word, link_type, synset_keys):
     sk,prev_sk = synset_keys.split(',')
     synset = get_synset(sk.split(':')[0])
     rel_keys = synset.relations().keys()
-    
+
     html = ''
     if link_type == 'W':
         rel_names = [(ANTONYM, 'antonym'),
@@ -328,11 +334,15 @@ def synset_relations(word, link_type, synset_keys):
     return html
 
 def hyponym_ul_structure(word, tree):
+    #print 'tree:', tree
     if tree == []: return ''
+    if tree == ['...']: return full_hyponym_cont_text
     head = tree[0]
     tail = tree[1:]
+    #print 'head, tail:', head, tail
     htm = collect_one(word, head[0], '') + '\n'
-    if len(head) > 1:
+    if isinstance(head, list) and len(head) > 1:
+        #print 'head[1:]:', head[1:]
         htm += '<ul>'
         htm += hyponym_ul_structure(word, head[1:])
         htm += '\n</ul>'
@@ -356,6 +366,7 @@ def word_ul_structure(word, synset, rel_name, synset_keys):
         rel_form = ' [Related to: '
     s = ''
     rel = synset.relations(rel_name=rel_name, word_match=True)
+    #print 'rel:', rel
     if rel:
         hlp = [((s1.pos,s1.offset,i1),(s0.pos,s0.offset,i0))
                   for ((s0,i0),(s1,i1)) in rel]
@@ -369,12 +380,26 @@ def word_ul_structure(word, synset, rel_name, synset_keys):
                       if s0.pos == syns.pos and s0.offset == syns.offset
                       and i0 == ind]
         hlp = it.groupby(hlp,key=lambda x:x[0])
+        '''
         for h in hlp:
             forms = []
             for h2 in h[1]:
                 forms.append(h2[1])
             forms.sort()
+            print 'h[0], forms:', h[0], forms
             s += collect_one(word, (rel_form,(s1,h[0],forms)), synset_key)
+        '''
+        hlp_2 = []
+        for h in hlp:
+            forms = []
+            for h2 in h[1]:
+                forms.append(h2[1])
+            forms.sort()
+            #print 'h[0], forms:', h[0], forms
+            hlp_2 = [(h[0],forms)] + hlp_2
+        for h,f in hlp_2:
+            #print 'h, f:', h, f
+            s += collect_one(word, (rel_form,(s1,h,f)), synset_key)
     elif rel_name == ANTONYM:
         similar = synset.relations(rel_name=SIMILAR)
         for simi in similar:
@@ -399,16 +424,19 @@ def relation_section(rel_name, word, synset_keys):
             elif depth == 3: depth = 2
             #else: depth += 1
         else: depth = -1
-        pruned,tree = synset.tree_2(HYPONYM, depth)
+        tree = synset.tree(HYPONYM, depth, cut_mark='...')
+        #print tree
+        '''
         if pruned:
             msg = '(The following list is pruned; max. depth = %d)' % depth
-            return '<ul>\n' + li(b(i(msg))) + \
+            return '<ul>\n' + li(bold(italic(msg))) + \
                               hyponym_ul_structure(word, tree[1:]) + '\n</ul>'
         else:
-            return '<ul>\n' + hyponym_ul_structure(word, tree[1:]) + '\n</ul>'
+        '''
+        return ul('\n' + hyponym_ul_structure(word, tree[1:]) + '\n')
     elif rel_name == 'inherited hypernym':
         tree = synset.tree(HYPERNYM)
-        print tree
+        #print tree
         return hypernym_ul_structure(word, tree[1:][0]) # + '\n</ul>'
     elif rel_name == 'sister term':
         s = ''
@@ -418,21 +446,21 @@ def relation_section(rel_name, word, synset_keys):
             for y in x[HYPONYM]:
                 s += collect_one(word, y, '')
             s += '\n</ul>'
-        return '<ul>' + s + '\n</ul>'
+        return ul(s + '\n')
     elif rel_name == 'sentence frame':
-        verb_frame_strings = [(VERB_FRAME_STRINGS[i] % ('<b>' + word + '</b>')) \
+        verb_frame_strings = [(VERB_FRAME_STRINGS[i] % bold(word)) \
                                 for i in synset.verbFrames]
         s = '\n'.join(['<li>' + vfs + '</li>' for vfs
                                           in verb_frame_strings])
-        return '<ul>' + s + '\n</ul>'
+        return ul(s + '\n')
     elif rel_name == 'Overview':
         ind = int(synset_key.split(':')[1])
         w,b = w_b(synset.words[ind], True)
         if not w: return ''
-        return '<ul>' + b + '\n</ul>'
+        return ul(b + '\n')
     elif rel_name == 'synset':
         s = collect_one(word, synset, '')
-        return '<ul>' + s + '\n</ul>'
+        return ul(s + '\n')
     elif rel_name == 'domain term region':
         rel = dispname_to_dbname(rel_name)
         s = ''
@@ -442,7 +470,7 @@ def relation_section(rel_name, word, synset_keys):
                 word_collection.append(x)
             else:
                 s += collect_one(word, x, '')
-        
+
         for wrd in word_collection:
             w = pos_match((None,None,synset.pos))[0][wrd]
             oppo = None
@@ -459,18 +487,18 @@ def relation_section(rel_name, word, synset_keys):
             if oppo:
                 s += collect_one(word, \
                                 (' [Related to: ',(synset,oppo,[form])), synset_key)
-        return '<ul>' + s + '\n</ul>'
+        return ul(s + '\n')
     else:
         rel = dispname_to_dbname(rel_name)
         if rel == ANTONYM or \
                 isinstance(synset.relations()[rel][0], basestring): # word level
             s = word_ul_structure(word, synset, rel_name, synset_keys)
-            return '<ul>' + s + '\n</ul>'
+            return ul(s + '\n')
         else:
             s = ''
             for x in synset[rel]:
                 s += collect_one(word, x, '')
-            return '<ul>' + s + '\n</ul>'
+            return ul(s + '\n')
 
 def w_b(word, overview):
     pos_forms = defaultdict(list)
@@ -495,7 +523,7 @@ def w_b(word, overview):
          (ADJ,'adj','Adjective'), (ADV,'adv','Adverb')):
         if pos_str in pos_forms:
             if not overview:
-                body += h(3, name) + '\n'
+                body += hlev(3, name) + '\n'
             for w in pos_forms[pos_str]:
                 # Not all words of exc files are in the database, so:
                 try:
@@ -565,7 +593,7 @@ class MyHtmlWindow(html.HtmlWindow):
                 self.parent.SetPageText(self.parent.current_page, word)
                 self.parent.parent.show_page_and_word(pg(body), word)
             else:
-                self.parent.parent.show_msg('The word was not found!')
+                self.show_msg('The word was not found!')
         elif link_type == '*': # Relation links
             # A relation link looks like this:
             # word#synset_keys#relation_name#uniq_cntr
@@ -601,7 +629,7 @@ class MyHtmlWindow(html.HtmlWindow):
                     ind = page.find(link) + len(link) + 2
                     ind_2 = ind + len(rel_name) + 7
                     #print 'page[:ind]:', page[:ind]
-                    page = page[:ind] + b(page[ind:ind_2]) + \
+                    page = page[:ind] + bold(page[ind:ind_2]) + \
                            page[ind_2:]
                     # find the start of the next line
                     ind = page.find('\n', ind) + 1
@@ -634,14 +662,20 @@ class MyHtmlWindow(html.HtmlWindow):
                 self.parent.parent.show_page_and_word(page)
             else: # The user wants to see the relation names
                 # Make this link text bold on page
-                #page = page[:ind] + '<b>S:</b>' + page[ind + 2:]
-                page = page[:ind] + '<b>' + l_t + '</b>' + page[ind + 2:]
+                #page = page[:ind] + bold('S:') + page[ind + 2:]
+                page = page[:ind] + bold(l_t) + page[ind + 2:]
                 # Insert the relation names
                 ind = page.find('\n', ind) + 1
+                # First remove the full_hyponym_cont_text if found here
+                #print page[:ind+5] + '>>>>><<<<<' + page[ind+5:]
+                if page[ind+5:].startswith(full_hyponym_cont_text):
+                    page = page[0:ind+5] + \
+                            page[ind+5+len(full_hyponym_cont_text):]
+                #print page[:ind+5] + '>>>>><<<<<' + page[ind+5:]
                 s_r = synset_relations(word, link_type, syns_keys)
                 s_r = s_r.split('\n')[:-1]
-                s_r = ['<li>' + sr + '</li>' for sr in s_r]
-                s_r = '<ul>\n' + '\n'.join(s_r) + '\n</ul>\n'
+                s_r = [li(sr) for sr in s_r]
+                s_r = ul('\n' + '\n'.join(s_r) + '\n') + '\n'
                 page = page[:ind] + s_r + page[ind:]
                 self.parent.parent.show_page_and_word(page)
         '''
@@ -1092,7 +1126,7 @@ class MyHtmlFrame(wx.Frame):
             self.panel.nb.SetPageText(current_page, word)
         else:
             self.panel.nb.h_w.show_msg('The word was not found!')
-            
+
     def  on_prev_page(self, event):
         self.panel.on_prev_page(event)
 
@@ -1116,7 +1150,7 @@ class MyHtmlFrame(wx.Frame):
 
     def  on_help_help(self, event):
         self.read_file('NLTK Wordnet Browser Help.html')
-        
+
     def  on_help_about(self, event):
         wx.MessageBox(help_about)
 
@@ -1126,20 +1160,27 @@ class MyHtmlFrame(wx.Frame):
         self.panel.nb.SetPageText(current_page,word)
         html = html_header + \
         '''
-        <h1>Database information is being gathered!</h1>
+        <h2>Database information is being gathered!</h2>
         <p>Producing this summary information may,
         depending on your computer, take a minute or two.</p>
         <p>Please be patient! If this operation seems to last too long,
-        it might be a good idea to save the resulting page on disk for later
-        viewing.</p>
+        it might be a good idea to save the resulting page on disk for possible
+        later viewings.</p>
         '''
         self.panel.show_page_and_word(html + html_trailer, word)
         wx.Yield()
         all_pos = ['noun', 'verb', 'adj', 'adv']
-        data_path = os.environ['NLTK_DATA'] + '\\data\\corpora\\wordnet\\'
-        display_names = [('forms','Word forms'), ('simple','  - simple words'),
-                       ('collo','  - collocations'), ('syns','Synsets'),
-                       ('rels','Relations')]
+        data_path = os.environ['NLTK_DATA'] + '\\corpora\\wordnet\\'
+        display_names = [('forms','Word forms'), ('simple','--- simple words'),
+            ('collo','--- collocations'), ('syns','Synsets'),
+            ('w_s_pairs','Word-Sense Pairs'),
+            ('monos','Monosemous Words and Senses'),
+            ('poly_words','Polysemous Words'),
+            ('poly_senses','Polysemous Senses'),
+            ('apimw','Average Polysemy Including Monosemous Words'),
+            ('apemw','Average Polysemy Excluding Monosemous Words'),
+            ('rels','Relations')]
+                         
         col_heads = ['Noun', 'Verb', 'Adjective', 'Adverb', 'Total']
         #counts = [[0] * len(col_heads)] * len(display_names)
         counts = [[0 for i in range(len(col_heads))] for j in range(len(display_names))]
@@ -1147,7 +1188,7 @@ class MyHtmlFrame(wx.Frame):
         rel_words = {}
         unique_beginners = defaultdict(list)
 
-        for n_pos,pos in enumerate(all_pos):
+        for n_pos,pos in enumerate(all_pos): #all_pos): ['adj', 'adv']):
             html += '<br><br>Starting the summary for POS: %s' % col_heads[n_pos]
             self.panel.show_page_and_word(html + html_trailer, word)
             wx.Yield()
@@ -1156,12 +1197,24 @@ class MyHtmlFrame(wx.Frame):
             for ind in open(data_path + 'index.' + pos):
                 if ind.startswith('  '):
                     continue
-                w = ind.split()[0]
+                ind_parts = ind.split()
+                syn_count = int(ind_parts[2])
+                d['w_s_pairs'] += syn_count
+                if syn_count == 1:
+                    d['monos'] += 1
+                else:
+                    d['poly_words'] += 1
+                    d['poly_senses'] += syn_count
+                w = ind_parts[0]
                 d['forms'] += 1
                 if w.find('_') != -1:
                     d['simple'] += 1
                 else:
                     d['collo'] += 1
+            d['apimw'] = 1.0 * (d['monos'] + d['poly_senses']) / \
+                               (d['monos'] + d['poly_words'])
+            d['apemw'] = 1.0 * d['poly_senses'] / d['poly_words']
+
             # Synsets and relations
             for syns in open(data_path + 'data.' + pos):
                 if syns.startswith('  '):
@@ -1177,16 +1230,26 @@ class MyHtmlFrame(wx.Frame):
                     rel_words[(sr,n_pos)] = synset.words[0]
 
             # Prepare counts for displaying
+            nd = {}
             for n,(x,y) in enumerate(display_names):
+                nd[x] = n
                 if x in d:
                     counts[n][n_pos] = d[x]
                     counts[n][4] += d[x]
+                if x == 'apimw' or x == 'apemw':
+                    m_c = counts[nd['monos']][4]
+                    m_ps = counts[nd['poly_senses']][4]
+                    m_pw = counts[nd['poly_words']][4]
+                    if x == 'apimw':
+                        counts[n][4] = 1.0 * (m_c + m_ps) / (m_c + m_pw)
+                    else:
+                        counts[n][4] = 1.0 * m_ps /  m_pw
 
         # Format the counts
         html += '<br><br>Starting the construction of result tables'
         self.panel.show_page_and_word(html + html_trailer, word)
         wx.Yield()
-        html = html_header + '<h1>Word, synset and relation counts by POS</h1>'
+        html = html_header + hlev(2, 'Word, synset and relation counts by POS')
         html += '''
         <table border="1" cellpadding="1" cellspacing="1"
         summary="">
@@ -1197,8 +1260,17 @@ class MyHtmlFrame(wx.Frame):
         <th align="center">Total</th></tr>
         '''
         for n,(x,y) in enumerate(display_names):
+            if x == 'rels':
+                html += '<tr><th align="left"> </th>'
+                html += ''.join('<td align="right"> </td>' for c in counts[n]) \
+                        + '</tr>'
             html += '<tr><th align="left">' + '%s' % y + '</th>'
-            html += ''.join('<td align="right">' + '%6d ' % c + '</td>' for c in counts[n]) + '</tr>'
+            if  x == 'apimw' or x == 'apemw':
+                html += ''.join('<td align="right">' + '%6.2f ' % c + '</td>' \
+                                                for c in counts[n]) + '</tr>'
+            else:
+                html += ''.join('<td align="right">' + '%6d ' % c + '</td>' \
+                                                for c in counts[n]) + '</tr>'
 
         # Format the relation counts
         r_counts = [0 for i in range(len(col_heads))]
@@ -1210,22 +1282,24 @@ class MyHtmlFrame(wx.Frame):
                 dn = rk[0] + '(???)'
             else:
                 dn = dn[0]
-            html += '<tr><th align="left">' + '%s' % ('  - ' + dn) + '</th>'
+            html += '<tr><th align="left">' + '%s' % ('--- ' + dn) + '</th>'
             for y in rk[1]:
             	r_counts[y[1]] = rel_counts[y]
             r_counts[len(col_heads) - 1] = sum(r_counts)
-            html += ''.join('<td align="right">' + '%6d ' % rc + '</td>' for rc in r_counts) + '</tr>'
+            html += ''.join('<td align="right">' + '%6d ' % rc + '</td>'
+                             for rc in r_counts) + '</tr>'
         html += '</table>'
 
-        html += '<br><br><h1>Example words, 1 per POS</h1>'
+        html += '<br><br>' + hlev(2, 'Example words for relations, 1 per POS')
 
-        # Format the example words forrelations
+        # Format the example words for relations
         html += '''
         <table border="1" cellpadding="1" cellspacing="1"
         summary="">
         <caption></caption>
-        <col align="left"><col align="center"><col align="center"><col align="center"><col align="center">
-        <tr><th></th><th>Noun</th><th>Verb</th><th>Adjective</th><th>Adverb</th></tr>
+        <col align="center"><col align="center"><col align="center">
+        <col align="center"><col align="center">
+        <tr><th>Relation</th><th>Noun</th><th>Verb</th><th>Adjective</th><th>Adverb</th></tr>
         '''
 
         for rk in groupby(sorted(rel_counts.keys()),key=lambda x:x[0]):
@@ -1234,7 +1308,8 @@ class MyHtmlFrame(wx.Frame):
                 dn = rk[0] + '(???)'
             else:
                 dn = dn[0]
-            html += '<tr><th>' + '%s' % (dn) + '</th>'
+            #html += '<tr><th align="center">' + '%s' % (dn) + '</th>'
+            html += '<tr><th align="center">' + dn + '</th>'
             rel_word_examples = [''] * 4
             for y in rk[1]:
             	rel_word_examples[y[1]] = rel_words[y]
@@ -1243,7 +1318,7 @@ class MyHtmlFrame(wx.Frame):
             hlp = hlp.replace('<a href="?"></a>','-')
             html += hlp + '</tr>'
         html += '</table>' + html_trailer
-        
+
         '''
         display
         for ch in col_heads:
@@ -1283,13 +1358,13 @@ class MyHtmlFrame(wx.Frame):
             if path == 'NLTK Wordnet Browser Help.html':
                 word = '* Help *'
             else:
-                txt = '<title>' + frame_title + ' display for the word: '
+                txt = '<title>' + frame_title + ' display of: '
                 ind_0 = page.find(txt)
                 if ind_0 == -1:
                     err_mess = 'This file is not in NLTK Browser format!'
                     self.panel.nb.h_w.show_msg(err_mess)
                     return
-                ind_1 = page.find('word: ') + len('word: ')
+                ind_1 = page.find('of: ') + len('of: ')
                 ind_2 = page.find('</title>')
                 word = page[ind_1:ind_2]
                 page = page[:ind_0] + page[ind_2+len('</title>'):]
@@ -1324,7 +1399,7 @@ class MyHtmlFrame(wx.Frame):
                 if not path.endswith('.htm') and not path.endswith('.html'):
                     path += '.html'
                 f = open(path, 'w')
-                txt = '<title>' + frame_title + ' display for the word: ' + \
+                txt = '<title>' + frame_title + ' display of: ' + \
                       self.panel.nb.h_w.current_word  + '</title></head>'
                 source = source.replace('</head>', txt)
                 f.write(source)

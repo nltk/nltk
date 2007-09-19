@@ -212,8 +212,7 @@ class Synset(object):
         verbFrameStrings = [vf % form for vf in verbFrames]
         return verbFrameStrings
 
-    '''
-    def relations(self):
+    def relations_0(self):
         """
         Return a dictionary of synsets
 
@@ -243,27 +242,24 @@ class Synset(object):
             self._relations = dict(relations)
 
         return self._relations
-    '''
 
     def relations(self, rel_name=None, word_match=False):
         """
         Return a dict of relations or a list of word match pairs for this synset.
 
         The dictionary keys are the names for the relations found.
-        The dictionary items are lists of:
-           - synsets for synset-level relations
-           - words for word-level relations
-           - word pair tuples for matched word-level relations
+        The dictionary items are lists of either synsets or words
+        depending on the relation.
 
-        If rel_name is specified, a list for only that relation type is
-        returned.
+        If rel_name is specified, a list of eiher synsets or words for only
+        that relation type is returned.
 
-        If word_match is true a list of 2-tuples (source,target) of matching
+        If word_match is true a list of pairs (source,target) of matching
         word information is returned . Here source and target are tuples
         of form (synset,word_index), where 'word_index' is the 0-based index of
         the word in synset 'synset'
         
-        @return: A relation dict or a list of word( pair)s for this L{Synset}.
+        @return: A relation dict or a list of word match pairs for this L{Synset}.
         """
 
         # Load the pointers from the Wordnet files if necessary.
@@ -528,7 +524,7 @@ class Synset(object):
 
         else: return -1
 
-    def tree(self, rel, depth=-1):
+    def tree(self, rel, depth=-1, cut_mark=None):
         """
         >>> dog = N['dog'][0]
         >>> from pprint import pprint
@@ -546,14 +542,13 @@ class Synset(object):
                   [{noun: object, physical object},
                    [{noun: physical entity}, [{noun: entity}]]]]]]]]]]]]]
         """
-        if depth == 0:
-            return [self]
-        else:
-            #The following original loops forever with a call:
-            #            pprint(syns[0].tree(HYPONYM, depth=1),indent=4)
-            #return [self] + map(lambda s, rel=rel:s.tree(rel, depth=1), self[rel])
-            depth -= 1
-            return [self] + [x.tree(rel, depth) for x in self[rel]]
+
+        tree = [self]
+        if depth != 0:
+            tree += [x.tree(rel, depth-1, cut_mark) for x in self[rel]]
+        elif cut_mark and self[rel] != []:
+            tree += [cut_mark]
+        return tree
 
     def tree_2(self, rel, depth=-1):
         """
@@ -586,13 +581,9 @@ class Synset(object):
                 [{noun: physical_entity}, [{noun: entity}]]]]]]]]])
         """
         if depth == 0:
-            if self[rel] != []:
-                return (True,[self])
-            else:
-                return (False,[self])
+            return (self[rel] != [],[self])
         else:
-            depth -= 1
-            tree_list = [x.tree_2(rel, depth) for x in self[rel]]
+            tree_list = [x.tree_2(rel, depth - 1) for x in self[rel]]
             cut_done = any(x for x,y in tree_list)
             tree_list = [y for x,y in tree_list]
             return (cut_done,[self] + tree_list)
@@ -762,12 +753,27 @@ def demo():
     
     pprint([x for x in ADJ['red'][0].closure(SIMILAR, depth=1)])
     pprint([x for x in ADJ['red'][0].closure(SIMILAR, depth=2)])
+    pprint(ADJ['red'][0].closure(SIMILAR, depth=1))
+    pprint(ADJ['red'][0].closure(SIMILAR, depth=2))
     pprint(dog[0].tree(HYPERNYM))
     pprint(dog[0].tree_2(HYPERNYM))
     pprint(dog[0].tree(HYPERNYM, depth=2))
     pprint(dog[0].tree_2(HYPERNYM, depth=2))
     pprint(dog[0].tree(HYPERNYM, depth=0))
     pprint(dog[0].tree_2(HYPERNYM, depth=0))
+
+
+    pprint(dog[0].tree(HYPERNYM))
+    pprint(dog[0].tree(HYPERNYM, depth=2, cut_mark = '...'))
+
+    entity = N["entity"]
+    print entity, entity[0]
+    print entity[0][HYPONYM]
+    pprint(entity[0].tree(HYPONYM, depth=1), indent=4)
+    abstract_entity = N["abstract entity"]
+    print abstract_entity, abstract_entity[0]
+    print abstract_entity[0][HYPONYM]
+    pprint(abstract_entity[0].tree(HYPONYM, depth=1), indent=4)
 
     syns = N["entity"]
     print syns, syns[0]

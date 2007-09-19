@@ -1,3 +1,23 @@
+2007-09-19
+Jussi Salmela
+
+
+This directory contains Wordnet oriented stuff. It only contains the files to use
+INSTEAD OF the original files and files needed IN ADDITION to the original files.
+
+
+wxbrowse.py
+
+- bug fixes
+- more statistics on the 'Database Info' page
+
+synset.py
+
+- docstring fixes
+- the enhancement to tree function (cut_mark parameter) included
+
+
+
 2007-09-14
 Jussi Salmela
 
