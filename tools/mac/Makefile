@@ -7,8 +7,7 @@
 # For license information, see LICENSE.TXT
 
 PYTHON = python
-#NLTK_VERSION = $(shell python -c 'import nltk; print nltk.__version__')
-NLTK_VERSION = "0.9b2"
+NLTK_VERSION = $(shell python -c 'import nltk; print nltk.__version__')
 NLTK_ZIP = ../../dist/nltk-$(NLTK_VERSION).zip
 PM = /Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker
 
