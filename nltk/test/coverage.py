@@ -95,16 +95,40 @@ except:
 # In the bottleneck of this application it's appropriate to abbreviate
 # names to increase speed.
 
+class DefInfo:
+    FUNC = 'func'
+    CLASS = 'class'
+    def __init__(self, node, defstart, codestart, end, coverage=None):
+        self.typ = self.type_for(node)
+        self.name = node.name
+        self.defstart = defstart
+        self.codestart = codestart
+        self.end = end
+        self.coverage = coverage
+
+    def __repr__(self):
+        return ('DefInfo(%s, %s, %s, %s, %s, %s)' %
+                (self.typ, self.name, self.defstart, self.codestart,
+                 self.end, self.coverage))
+    
+    @staticmethod
+    def type_for(node):
+        if isinstance(node, compiler.ast.Function):
+            return DefInfo.FUNC
+        else:
+            return DefInfo.CLASS
+
 class StatementFindingAstVisitor(compiler.visitor.ASTVisitor):
     """ A visitor for a parsed Abstract Syntax Tree which finds executable
         statements.
     """
-    def __init__(self, statements, excluded, suite_spots):
+    def __init__(self, statements, excluded, suite_spots, definfo):
         compiler.visitor.ASTVisitor.__init__(self)
         self.statements = statements
         self.excluded = excluded
         self.suite_spots = suite_spots
         self.excluding_suite = 0
+        self.definfo = definfo
         
     def doRecursive(self, node):
         for n in node.getChildNodes():
@@ -118,7 +142,19 @@ class StatementFindingAstVisitor(compiler.visitor.ASTVisitor):
             self.recordAndDispatch(node.code)
         else:
             self.doSuite(node, node.code)
-            
+
+        defstart = self.getFirstLine(node)
+        codestart = self.getFirstLine(node.code)
+        end = self.getLastLine(node.code)
+        self.definfo.append(DefInfo(node, defstart, codestart, end))
+        # When we exit a block, build up dotted names.
+        for i in range(len(self.definfo)-2, -1, -1):
+            if self.definfo[i].defstart < defstart: break
+            self.definfo[i].name = '%s.%s' % (node.name, self.definfo[i].name)
+        # When we exit a func block, hide any contained objects.
+        if len(self.definfo)>1 and self.definfo[-1].typ == DefInfo.FUNC:
+            del self.definfo[i+1:-1]
+
     visitFunction = visitClass = doCode
 
     def getFirstLine(self, node):
@@ -575,6 +611,9 @@ class coverage:
     # statements that cross lines.
     
     def analyze_morf(self, morf):
+        return self.analyze_morf(morf)[:-1]
+    
+    def analyze_morf2(self, morf):
         if self.analysis_cache.has_key(morf):
             return self.analysis_cache[morf]
         filename = self.morf_filename(morf)
@@ -587,11 +626,11 @@ class coverage:
         elif ext != '.py':
             raise CoverageException, "File '%s' not Python source." % filename
         source = open(filename, 'rU')
-        lines, excluded_lines, line_map = self.find_executable_statements(
-            source.read(), exclude=self.exclude_re
-            )
+        lines, excluded_lines, line_map, definfo = \
+               self.find_executable_statements2(source.read(),
+                                                exclude=self.exclude_re)
         source.close()
-        result = filename, lines, excluded_lines, line_map
+        result = filename, lines, excluded_lines, line_map, definfo
         self.analysis_cache[morf] = result
         return result
 
@@ -680,6 +719,9 @@ class coverage:
                 self.get_suite_spots(tree[i], spots)
 
     def find_executable_statements(self, text, exclude=None):
+        return self.find_executable_statements2(text, exclude)[:-1]
+    
+    def find_executable_statements2(self, text, exclude=None):
         # Find lines which match an exclusion pattern.
         excluded = {}
         suite_spots = {}
@@ -696,19 +738,23 @@ class coverage:
         tree = parser.suite(text+'\n\n').totuple(1)
         self.get_suite_spots(tree, suite_spots)
         #print "Suite spots:", suite_spots
+
+        # Mapping from name of func/class -> (start, end).
+        definfo = []
         
         # Use the compiler module to parse the text and find the executable
         # statements.  We add newlines to be impervious to final partial lines.
         statements = {}
         ast = compiler.parse(text+'\n\n')
-        visitor = StatementFindingAstVisitor(statements, excluded, suite_spots)
+        visitor = StatementFindingAstVisitor(statements, excluded,
+                                             suite_spots, definfo)
         compiler.walk(ast, visitor, walker=visitor)
 
         lines = statements.keys()
         lines.sort()
         excluded_lines = excluded.keys()
         excluded_lines.sort()
-        return lines, excluded_lines, suite_spots
+        return lines, excluded_lines, suite_spots, definfo
 
     # format_lines(statements, lines).  Format a list of line numbers
     # for printing by coalescing groups of lines as long as the lines
@@ -750,7 +796,12 @@ class coverage:
         return f, s, m, mf
 
     def analysis2(self, morf):
-        filename, statements, excluded, line_map = self.analyze_morf(morf)
+        f, s, e, m, mf, _ = self.analysis3(morf)
+        return f, s, e, m, mf
+    
+    def analysis3(self, morf):
+        filename, statements, excluded, line_map, definfo = \
+                  self.analyze_morf2(morf)
         self.canonicalize_filenames()
         if not self.cexecuted.has_key(filename):
             self.cexecuted[filename] = {}
@@ -762,8 +813,26 @@ class coverage:
                     break
             else:
                 missing.append(line)
+        self.find_def_coverage(morf, statements, missing, definfo)
         return (filename, statements, excluded, missing,
-                self.format_lines(statements, missing))
+                self.format_lines(statements, missing), definfo)
+
+    def find_def_coverage(self, morf, statements, missing, definfo):
+        """Return mapping from function name to coverage.
+        """
+        def_coverage = {}
+        root = self.morf_name(morf)
+        statements = set(statements)
+        missing = set(missing)
+        for info in definfo:
+            if info.codestart is None:
+                info.coverage = 1
+            else:
+                lines = set(range(info.codestart, info.end+1))
+                stmt = len(lines.intersection(statements))
+                miss = len(lines.intersection(missing))
+                if miss == 0: info.cover = 1
+                else: info.coverage = (1.0 - float(miss)/float(stmt))
 
     def relative_filename(self, filename):
         """ Convert filename to relative filename from self.relative_dir.
@@ -952,6 +1021,9 @@ def analysis(*args, **kw):
 def analysis2(*args, **kw): 
     return the_coverage.analysis2(*args, **kw)
 
+def analysis3(*args, **kw): 
+    return the_coverage.analysis3(*args, **kw)
+
 def report(*args, **kw): 
     return the_coverage.report(*args, **kw)
 
@@ -1078,6 +1150,9 @@ if __name__ == '__main__':
 # 2007-07-29 NMB Better packaging.
 #
 # 2007-09-13 EDL Open Python files with 'rU' mode.
+#
+# 2007-09-20 EDL Added DefInfo, which gives fine-grained info about
+# coverage (and location) of functions & classes.
 
 # C. COPYRIGHT AND LICENCE
 #
