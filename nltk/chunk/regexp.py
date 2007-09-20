@@ -61,7 +61,7 @@ class ChunkString(object):
     # These are used by _verify
     _CHUNK = r'(\{%s+?\})+?' % CHUNK_TAG
     _CHINK = r'(%s+?)+?' % CHUNK_TAG
-    _VALID = re.compile(r'(\{?%s\}?)*?' % CHUNK_TAG)
+    _VALID = re.compile(r'^(\{?%s\}?)*?$' % CHUNK_TAG)
     _BRACKETS = re.compile('[^\{\}]+')
     _BALANCED_BRACKETS = re.compile(r'(\{\})*$')
     
@@ -101,9 +101,9 @@ class ChunkString(object):
             raise ValueError('chunk structures must contain tagged '
                              'tokens or trees')
                       
-    def _verify(self, verify_tags):
+    def _verify(self, s, verify_tags):
         """
-        Check to make sure that C{_str} still corresponds to some chunked
+        Check to make sure that C{s} still corresponds to some chunked
         version of C{_pieces}.
 
         @type verify_tags: C{boolean}
@@ -118,27 +118,27 @@ class ChunkString(object):
             representation is invalid or not consistent with _pieces.
         """
         # Check overall form
-        if not ChunkString._VALID.match(self._str):
+        if not ChunkString._VALID.match(s):
             raise ValueError('Transformation generated invalid '
-                             'chunkstring: %s' % self._str)
+                             'chunkstring:\n  %s' % s)
 
         # Check that parens are balanced.  If the string is long, we
         # have to do this in pieces, to avoid a maximum recursion
         # depth limit for regular expressions.
-        brackets = ChunkString._BRACKETS.sub('', self._str)
+        brackets = ChunkString._BRACKETS.sub('', s)
         for i in range(1+len(brackets)/5000):
             substr = brackets[i*5000:i*5000+5000]
             if not ChunkString._BALANCED_BRACKETS.match(substr):
                 raise ValueError('Transformation generated invalid '
-                                 'chunkstring: %s' % substr)
+                                 'chunkstring:\n  %s' % s)
 
         if verify_tags<=0: return
         
-        tags1 = (re.split(r'[\{\}<>]+', self._str))[1:-1]
+        tags1 = (re.split(r'[\{\}<>]+', s))[1:-1]
         tags2 = [self._tag(piece) for piece in self._pieces]
         if tags1 != tags2:
             raise ValueError('Transformation generated invalid '
-                             'chunkstring: %s / %s' % (tags1,tags2))
+                             'chunkstring: tag changed')
 
     def to_chunkstruct(self, chunk_node='CHUNK'):
         """
@@ -147,7 +147,7 @@ class ChunkString(object):
         @raise ValueError: If a transformation has generated an
             invalid chunkstring.
         """
-        if self._debug > 0: self._verify(1)
+        if self._debug > 0: self._verify(self._str, 1)
             
         # Use this alternating list to create the chunkstruct.
         pieces = []
@@ -197,15 +197,18 @@ class ChunkString(object):
             invalid chunkstring.
         """
         # Do the actual substitution
-        self._str = re.sub(regexp, repl, self._str)
+        s = re.sub(regexp, repl, self._str)
 
         # The substitution might have generated "empty chunks"
         # (substrings of the form "{}").  Remove them, so they don't
         # interfere with other transformations.
-        self._str = re.sub('\{\}', '', self._str)
+        s = re.sub('\{\}', '', s)
 
         # Make sure that the transformation was legal.
-        if self._debug > 1: self._verify(self._debug-2)
+        if self._debug > 1: self._verify(s, self._debug-2)
+
+        # Commit the transformation.
+        self._str = s
 
     def __repr__(self):
         """
@@ -281,13 +284,11 @@ class RegexpChunkRule(object):
         @param descr: A short description of the purpose and/or effect
             of this rule.
         """
-        if type(regexp).__name__ == 'SRE_Pattern': regexp = regexp.pattern
+        if isinstance(regexp, basestring):
+            regexp = re.compile(regexp)
         self._repl = repl
         self._descr = descr
-        if type(regexp) in types.StringTypes:
-            self._regexp = re.compile(regexp)
-        else:
-            self._regexp = regexp
+        self._regexp = regexp
 
     def apply(self, chunkstr):
         # Keep docstring generic so we can inherit it.
@@ -671,6 +672,8 @@ class ExpandRightRule(RegexpChunkRule):
 ##  Tag Pattern Format Conversion
 ##//////////////////////////////////////////////////////
 
+# this should probably be made more strict than it is -- e.g., it
+# currently accepts 'foo'.
 CHUNK_TAG_PATTERN = re.compile(r'^((%s|<%s>)*)$' %
                                 ('[^\{\}<>]+',
                                  '[^\{\}<>]+'))
@@ -718,7 +721,7 @@ def tag_pattern2re_pattern(tag_pattern):
 
     # Check the regular expression
     if not CHUNK_TAG_PATTERN.match(tag_pattern):
-        raise ValueError('Bad tag pattern: %s' % tag_pattern)
+        raise ValueError('Bad tag pattern: %r' % tag_pattern)
 
     # Replace "." with CHUNK_TAG_CHAR.
     # We have to do this after, since it adds {}[]<>s, which would
@@ -961,7 +964,6 @@ class RegexpParser(ChunkParserI):
             C{1} will generate normal tracing output; and C{2} or
             higher will generate verbose tracing output.
         """
-        from nltk import chunk
         self._trace = trace
         self._stages = []
         self._grammar = grammar
