@@ -1,15 +1,36 @@
-2007-09-19
 Jussi Salmela
+    This directory contains Wordnet oriented stuff.
+    It contains my wxbrowse.py and those original wordnet files that
+    I've changed either to correct bugs or to enhance functionality.
+    At least some, maybe all, of the changes have been incorporated
+    into the official ....\nlt\wordnet branch
 
 
-This directory contains Wordnet oriented stuff. It only contains the files to use
-INSTEAD OF the original files and files needed IN ADDITION to the original files.
+
+==========================================================
+2007-09-20
+
+
+wxbrowse.py
+
+- bug fixes
+
+
+synset.py
+
+- clening
+
+
+
+==========================================================
+2007-09-19
 
 
 wxbrowse.py
 
 - bug fixes
 - more statistics on the 'Database Info' page
+
 
 synset.py
 
@@ -18,12 +39,8 @@ synset.py
 
 
 
+==========================================================
 2007-09-14
-Jussi Salmela
-
-
-This directory contains Wordnet oriented stuff. It only contains the files to use
-INSTEAD OF the original files and files needed IN ADDITION to the original files.
 
 
 wxbrowse.py
@@ -64,12 +81,8 @@ Features:
 
 
 
+==========================================================
 2007-08-19
-Jussi Salmela
-
-
-This directory contains Wordnet oriented stuff. It only contains the files to use
-INSTEAD OF the original files and files needed IN ADDITION to the original files.
 
 
 1. browse.py

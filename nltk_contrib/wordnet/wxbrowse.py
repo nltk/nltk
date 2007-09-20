@@ -433,7 +433,10 @@ def relation_section(rel_name, word, synset_keys):
                               hyponym_ul_structure(word, tree[1:]) + '\n</ul>'
         else:
         '''
-        return ul('\n' + hyponym_ul_structure(word, tree[1:]) + '\n')
+        html = '\n' + hyponym_ul_structure(word, tree[1:]) + '\n'
+        for x in synset[INSTANCE_HYPONYM]:
+            html += collect_one(word, x, '')
+        return ul(html + '\n')
     elif rel_name == 'inherited hypernym':
         tree = synset.tree(HYPERNYM)
         #print tree
@@ -498,6 +501,9 @@ def relation_section(rel_name, word, synset_keys):
             s = ''
             for x in synset[rel]:
                 s += collect_one(word, x, '')
+            if rel == HYPONYM:
+                for x in synset[INSTANCE_HYPONYM]:
+                    s += collect_one(word, x, '')
             return ul(s + '\n')
 
 def w_b(word, overview):
