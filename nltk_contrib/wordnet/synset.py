@@ -182,6 +182,7 @@ class Synset(object):
             #now only used for senseVerbFrames
             def extractVerbFrames(index, vfTuples):
                 return tuple(map(lambda t:int(t[1]), filter(lambda t,i=index:int(t[2],16) in (0, i), vfTuples)))
+
             senseVerbFrames = []
             for index in range(1, len(self.words) + 1):
                 senseVerbFrames.append(extractVerbFrames(index, vfTuples))
@@ -293,19 +294,7 @@ class Synset(object):
             return self._relations
 
     def relation(self, rel):
-        """
-        if rel == HYPERNYM:
-            print ">>========================"
-            print self
-            print rel
-            print self.relations
-            print self.relations()
-            print self.relations().get
-            print self.relations().get(rel, [])
-            print "<<========================"
-        """
         return self.relations().get(rel, [])
-
     
     ### BROKEN:
     def isTagged(self):
@@ -550,44 +539,6 @@ class Synset(object):
             tree += [cut_mark]
         return tree
 
-    def tree_2(self, rel, depth=-1):
-        """
-        This version returns a 2-item tuple. The first item is True, if the
-        resulting tree was cut because of the depth constraint and False
-        otherwise. The second item is the result tree.
-        >>> dog = N['dog'][0]
-        >>> from pprint import pprint
-        >>> pprint(dog.tree_2(HYPERNYM))
-        (False,
-         [{noun: dog, domestic_dog, Canis_familiaris},
-          [{noun: canine, canid},
-           [{noun: carnivore},
-            [{noun: placental, placental_mammal, eutherian, eutherian_mammal},
-             [{noun: mammal, mammalian},
-              [{noun: vertebrate, craniate},
-               [{noun: chordate},
-                [{noun: animal, animate_being, beast, brute, creature, fauna},
-                 [{noun: organism, being},
-                  [{noun: living_thing, animate_thing},
-                   [{noun: whole, unit},
-                    [{noun: object, physical_object},
-                     [{noun: physical_entity}, [{noun: entity}]]]]]]]]]]]]],
-          [{noun: domestic_animal, domesticated_animal},
-           [{noun: animal, animate_being, beast, brute, creature, fauna},
-            [{noun: organism, being},
-             [{noun: living_thing, animate_thing},
-              [{noun: whole, unit},
-               [{noun: object, physical_object},
-                [{noun: physical_entity}, [{noun: entity}]]]]]]]]])
-        """
-        if depth == 0:
-            return (self[rel] != [],[self])
-        else:
-            tree_list = [x.tree_2(rel, depth - 1) for x in self[rel]]
-            cut_done = any(x for x,y in tree_list)
-            tree_list = [y for x,y in tree_list]
-            return (cut_done,[self] + tree_list)
-
     # interface to similarity methods
      
     def path_similarity(self, other, verbose=False):
@@ -703,22 +654,23 @@ def _equalsIgnoreCase(a, b):
     Return true iff a and b have the same lowercase representation.
     
     >>> _equalsIgnoreCase('dog', 'Dog')
-    1
+    True
     >>> _equalsIgnoreCase('dOg', 'DOG')
-    1
+    True
     """
     return a == b or a.lower() == b.lower()
 
 
+
 def demo():
-    #from nltk import wordnet
+    from nltk import wordnet
     from pprint import pprint
     
-    dog = N['dog']
-    cat = N['cat']
+    dog = wordnet.N['dog']
+    cat = wordnet.N['cat']
 
-    print "N['dog']"
-    print 'dog' in N
+    print "wordnet.N['dog']"
+    print 'dog' in wordnet.N
     print dog
     print dog.pos, dog.form
     print dog.taggedSenseCount
@@ -729,15 +681,15 @@ def demo():
     # N['dog'] < V['dog']
 
     print "Verb Frames:",
-    print V['think'][0].verbFrameStrings
+    print wordnet.V['think'][0].verbFrameStrings
 
     print "Relations:"
     print dog[0].relations()
-    print dog[0][HYPERNYM]
+    print dog[0][wordnet.HYPERNYM]
 
     print "Glosses:"
     print dog[0].gloss
-    print dog[0].relation(HYPERNYM)[0].gloss
+    print dog[0].relation(wordnet.HYPERNYM)[0].gloss
 
     print
     print "Paths and Distances:"
@@ -751,54 +703,33 @@ def demo():
     print "Closures and Trees:"
     print
     
-    pprint([x for x in ADJ['red'][0].closure(SIMILAR, depth=1)])
-    pprint([x for x in ADJ['red'][0].closure(SIMILAR, depth=2)])
-    pprint(ADJ['red'][0].closure(SIMILAR, depth=1))
-    pprint(ADJ['red'][0].closure(SIMILAR, depth=2))
-    pprint(dog[0].tree(HYPERNYM))
-    pprint(dog[0].tree_2(HYPERNYM))
-    pprint(dog[0].tree(HYPERNYM, depth=2))
-    pprint(dog[0].tree_2(HYPERNYM, depth=2))
-    pprint(dog[0].tree(HYPERNYM, depth=0))
-    pprint(dog[0].tree_2(HYPERNYM, depth=0))
 
+    pprint(wordnet.ADJ['red'][0].closure(wordnet.SIMILAR, depth=1))
+    pprint(wordnet.ADJ['red'][0].closure(wordnet.SIMILAR, depth=2))
+    pprint(dog[0].tree(wordnet.HYPERNYM))
+    pprint(dog[0].tree(wordnet.HYPERNYM, depth=2, cut_mark = '...'))
 
-    pprint(dog[0].tree(HYPERNYM))
-    pprint(dog[0].tree(HYPERNYM, depth=2, cut_mark = '...'))
-
-    entity = N["entity"]
+    entity = wordnet.N["entity"]
     print entity, entity[0]
-    print entity[0][HYPONYM]
-    pprint(entity[0].tree(HYPONYM, depth=1), indent=4)
-    abstract_entity = N["abstract entity"]
+    print entity[0][wordnet.HYPONYM]
+    pprint(entity[0].tree(wordnet.HYPONYM, depth=1), indent=4)
+    abstract_entity = wordnet.N["abstract entity"]
     print abstract_entity, abstract_entity[0]
-    print abstract_entity[0][HYPONYM]
-    pprint(abstract_entity[0].tree(HYPONYM, depth=1), indent=4)
-
-    syns = N["entity"]
-    print syns, syns[0]
-    print syns[0][HYPONYM]
-    pprint(syns[0].tree(HYPONYM, depth=1),indent=4)
-    syns = N["abstract entity"]
-    print syns, syns[0]
-    print syns[0][HYPONYM]
-    pprint(syns[0].tree(HYPONYM, depth=1),indent=4)
+    print abstract_entity[0][wordnet.HYPONYM]
+    pprint(abstract_entity[0].tree(wordnet.HYPONYM, depth=1), indent=4)
     
     # Adjectives that are transitively SIMILAR to any of the senses of 'red'
     #flatten1(map(lambda sense:closure(sense, SIMILAR), ADJ['red']))    # too verbose
 
-    print
     print "All the words in the hyponym synsets of dog[0]"
-    print
-    print [word for synset in dog[0][HYPONYM] for word in synset]
+    print [word for synset in dog[0][wordnet.HYPONYM] for word in synset]
 
-    print
     print "Hyponyms of the first (and only) sense of 'animal' that are homophonous with verbs:"
-    print [word for synset in N['animal'][0].closure(HYPONYM) for word in synset if word in V]
+    print [word for synset in wordnet.N['animal'][0].closure(wordnet.HYPONYM) for word in synset if word in V]
 
     # BROKEN
     print "Senses of 'raise'(v.) and 'lower'(v.) that are antonyms:"
-    print filter(lambda p:p[0] in p[1][ANTONYM], [(r,l) for r in V['raise'] for l in V['lower']])
+    print filter(lambda p:p[0] in p[1][wordnet.ANTONYM], [(r,l) for r in wordnet.V['raise'] for l in wordnet.V['lower']])
 
     print
     print "Similarity: dog~cat"
@@ -821,12 +752,4 @@ def demo():
 
 if __name__ == '__main__':
     demo()
-    
-
-
-
-
-
-
-
 

@@ -1,24 +1,19 @@
 # Natural Language Toolkit: Wordnet Interface: Wordnet Text Mode Browser
 #
 # Copyright (C) 2001-2007 University of Pennsylvania
-# Author: Steven Bird <sb@csse.unimelb.edu.au> (original code)
-# Author: Jussi Salmela <jtsalmela@users.sourceforge.net> (modifications)
+# Author: Steven Bird <sb@csse.unimelb.edu.au>
+#         Jussi Salmela <jtsalmela@users.sourceforge.net> (modifications)
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
 """Natural Language Toolkit: Wordnet Interface: Wordnet Text Mode Browser
-
-This code is proof of concept only. For a more frendlier browsing
-experience see the NLTK Wordnet Graphical Browser.
-
+See also the NLTK Wordnet Graphical Browser in nltk_contrib.wordnet
 """
 
-from nltk.wordnet.util import *
+from util import *
 from dictionary import *
 from textwrap import TextWrapper
 from random import randint
-
-__all__ = "demo"
 
 tw = TextWrapper(subsequent_indent="    ")
 
@@ -40,8 +35,8 @@ def print_all(synsets):
 def print_help():
     print "="*60
     print "Lookup a word by typing it and finishing with Enter."
-    print "'Strange words' e.g. letters and numbers used as browser"
-    print "commands can be searched by preceeding them with an asterisk *."
+    print "Reserved words -- letters and numbers used as browser commands --"
+    print "can be searched by preceeding them with an asterisk *."
     print
     print "Words have numbered senses, pick a sense by typing a number."
     print
@@ -65,21 +60,31 @@ def new_word(word):
         D = N
         synsets = random_synset(D)
         print "N",
-        print_all(synsets)
+        print_all(N[synsets[0][0]])
     return D, synsets
 
 def random_synset(D):
     return D[randint(0,len(D)-1)]
 
-def browse(word="green", index=0):
+
+def browse(word=" ", index=0):
+    """
+    Browse WordNet interactively, starting from the specified word, and
+    navigating the WordNet hierarchy to synonyms, hypernyms, hyponyms, and so on.
+
+    @type word: C{string}
+    @param word: the word to look up in WordNet
+    @type index: C{int}
+    @param index: the sense number of this word to use (optional)
+    """
     print "Wordnet browser (type 'h' for help)"
     D, synsets = new_word(word)
 
     while True:
         if index >= len(synsets):
             index = 0
-        input = ""
-        while input == "":
+        input = ''
+        while input == '':
             if synsets:
                 prompt = "%s_%d/%d>" % (synsets[index][0], index, len(synsets))
                 input = raw_input(prompt)
@@ -88,15 +93,17 @@ def browse(word="green", index=0):
 
         # word lookup
         if len(input) > 1 and not input.isdigit():
-            if input[0] == "*": word = input[1:]
-            else:               word = input.lower()
+            if input[0] == "*":
+                word = input[1:]
+            else:
+                word = input.lower()
             D, synsets = new_word(word)
             index = 0
 
         # sense selection
         elif input.isdigit():
             if int(input) < len(synsets):
-                index = int(input)# - 1
+                index = int(input)
                 print_gloss(synsets, index)
             else:
                 print "There are %d synsets" % len(synsets)
@@ -109,7 +116,7 @@ def browse(word="green", index=0):
         elif input == "v":
             print_all_glosses(synsets)
         elif input == "s":
-            print "Synonyms:", " ".join(word for word in synsets[index])
+            print "Synonyms:", ' '.join(word for word in synsets[index])
 
         # choose part-of-speech
         elif input in "NVJR":
@@ -145,7 +152,7 @@ def browse(word="green", index=0):
                 print "Cannot go down"
 
         # miscellany
-        elif input == "h":
+        elif input == "h" or input == "?":
             print_help()
         elif input == "q":
             print "Goodbye"
@@ -156,16 +163,11 @@ def browse(word="green", index=0):
             print "Type 'h' for help"
 
 def demo():
-    print
-    print "="*60
-    print
-    print "What follows is the help text and below that is"
-    print "an example output using the word 'green'"
-    print "(Remember: 'h' for help!)"
-    print
     print_help()
     print
     browse()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     demo()
+
+__all__ = ["demo"]

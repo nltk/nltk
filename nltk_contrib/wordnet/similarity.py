@@ -7,10 +7,8 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-import math
-
 from util import *
-from dictionary import *
+import math
 
 # Similarity metrics
 
@@ -98,28 +96,23 @@ def wup_similarity(synset1, synset2, verbose=False):
     """
 
     subsumer = _lcs_by_depth(synset1, synset2, verbose)
-    if verbose: print subsumer
-    
+
     # If no LCS was found return -1
     if subsumer == None:
         return -1
 
-    # Get the longest path from the LCS to the root.
-    if verbose: print subsumer.pos, NOUN
-    if subsumer.pos == NOUN:
-        depth = subsumer.max_depth() + 1
-    else:
-        depth = subsumer.max_depth() + 2
-    if verbose:
-        print 'depth, subsumer.max_depth():', depth, subsumer.max_depth()
+    # Get the longest path from the LCS to the root,
+    # including two corrections:
+    # - add one because the calculations include both the start and end nodes
+    # - add one to non-nouns since they have an imaginary root node
+    depth = subsumer.max_depth() + 1
+    if subsumer.pos != NOUN:
+        depth += 1
 
     # Get the shortest path from the LCS to each of the synsets it is subsuming.
     # Add this to the LCS path length to get the path length from each synset to the root.
-
     len1 = synset1.shortest_path_distance(subsumer) + depth
-    if verbose: print len1
     len2 = synset2.shortest_path_distance(subsumer) + depth
-    if verbose: print len2
     return (2.0 * depth) / (len1 + len2)
 
 def res_similarity(synset1, synset2, datafile="", verbose=False):
@@ -348,14 +341,4 @@ def _lcs_by_content(synset1, synset2, freqs, verbose=False):
     
     return (subsumer, subsumer_ic)
 
-def demo():
-    print '%20.17f' % N['poodle'][0].wup_similarity(N['dalmatian'][1])
-    # 0.9285714285714286
-    print '%20.17f' % N['dog'][0].wup_similarity(N['cat'][0])
-    # 0.84615384615384615
-    print '%20.17f' % V['run'][0].wup_similarity(V['walk'][0])
-    # 0.40000000000000002
-    print '%20.17f' % V['run'][0].wup_similarity(V['think'][0])
-    # -1
-if __name__ == '__main__':
-    demo()
+
