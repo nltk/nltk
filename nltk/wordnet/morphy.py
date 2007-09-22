@@ -3,30 +3,39 @@
 # Copyright (C) 2001-2007 University of Pennsylvania
 # Author: Oliver Steele <steele@osteele.com>
 #         Steven Bird <sb@csse.unimelb.edu.au>
-#         David Ormiston Smith <daosmith@csse.unimelb.edu.au>>
+#         David Ormiston Smith <daosmith@csse.unimelb.edu.au>
+#         Jussi Salmela <jtsalmela@users.sourceforge.net>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
 from dictionary import dictionaryFor
 import nltk.data
 from util import *
+from nltk import defaultdict
+from itertools import islice
 
 MORPHOLOGICAL_SUBSTITUTIONS = {
     NOUN:
-      [('s', ''),        ('ses', 's'),     ('ves', 'f'),     ('xes', 'x'),   ('zes', 'z'),
-       ('ches', 'ch'),   ('shes', 'sh'),   ('men', 'man'),   ('ies', 'y')],
+      [('s', ''),      ('ses', 's'),   ('ves', 'f'),
+       ('xes', 'x'),   ('zes', 'z'),   ('ches', 'ch'),
+       ('shes', 'sh'), ('men', 'man'), ('ies', 'y')],
     VERB:
-      [('s', ''),        ('ies', 'y'),     ('es', 'e'),      ('es', ''),
-       ('ed', 'e'),      ('ed', ''),       ('ing', 'e'),     ('ing', '')],
+      [('s', ''),      ('ies', 'y'),   ('es', 'e'),    ('es', ''),
+       ('ed', 'e'),    ('ed', ''),     ('ing', 'e'),   ('ing', '')],
     ADJECTIVE:
-      [('er', ''),       ('est', ''),      ('er', 'e'),      ('est', 'e')],
+      [('er', ''),     ('est', ''),    ('er', 'e'),    ('est', 'e')],
     ADVERB:
       []}
 
-def morphy(form, pos=NOUN, collect=0):
-    """Recursively uninflect _form_, and return the first form found
-    in the dictionary.  If _collect_ is true, a sequence of all forms
-    is returned, instead of just the first one.
+def morphy(form, pos=NOUN):
+    '''Identify the base forms for a given word-form with a given POS.
+    First it checks if the word is found in the exception list for this POS.
+    If so, it identifies all the exception's base forms.
+    Next it recurses with the word-form and a list of
+    suffix substitutions for that POS.
+    For every (old,new) pair of strings in the substitution list, if
+    the form ends with old, a new form is created by replacing old with
+    new and doing a recursive call.
     
     >>> morphy('dogs')
     'dog'
@@ -37,52 +46,78 @@ def morphy(form, pos=NOUN, collect=0):
     >>> morphy('abaci')
     'abacus'
     >>> morphy('hardrock', ADVERB)
-    """
+    '''
+    
+    first = list(islice(_morphy(form, pos), 1))
+    if len(first) == 1:
+        return first[0]
+    else:
+        return None
+
+def _morphy(form, pos=NOUN):
     pos = normalizePOS(pos)
     section = {NOUN: NOUN, VERB: VERB, ADJECTIVE: ADJECTIVE, ADVERB: ADVERB}[pos]
     excfile = open(nltk.data.find('corpora/wordnet/%s.exc' % section))
     substitutions = MORPHOLOGICAL_SUBSTITUTIONS[pos]
-    def trySubstitutions(trySubstitutions,    # workaround for lack of nested closures in Python < 2.1
-                         form,                # reduced form
-                         substitutions,       # remaining substitutions
-                         lookup=1,
-                         dictionary=dictionaryFor(pos),
-                         excfile=excfile,
-                         collect=collect,
-                         collection=[]):
-        import string
-        exceptions = binarySearchFile(excfile, form)
-        if exceptions:
-            form = exceptions[string.find(exceptions, ' ')+1:-1]
-        if lookup and dictionary.has_key(form):
-            if collect:
-                collection.append(form)
-            else:
-                return form
-        elif substitutions:
-            old, new = substitutions[0]
-            substitutions = substitutions[1:]
-            substitute = None
+    dictionary=dictionaryFor(pos)
+    collection=[]
+    def trySubstitutions(form,                # reduced form
+                         substitutions):      # remaining substitutions
+        if dictionary.has_key(form):
+            yield form
+        for n,(old,new) in enumerate(substitutions):
             if form.endswith(old):
-                substitute = form[:-len(old)] + new
-                #if dictionary.has_key(substitute):
-                #   return substitute
-            form =              trySubstitutions(trySubstitutions, form, substitutions) or \
-                (substitute and trySubstitutions(trySubstitutions, substitute, substitutions))
-            return (collect and collection) or form
-        elif collect:
-            return collection
-    return trySubstitutions(trySubstitutions, form, substitutions)
+                new_form = form[:-len(old)] + new
+                for f in trySubstitutions(new_form, substitutions[:n] +
+                                                    substitutions[n+1:]):
+                    yield f
+            
+    exceptions = binarySearchFile(excfile, form)
+    if exceptions:
+        forms = exceptions[exceptions.find(' ')+1:-1].split()
+        for f in forms:
+            yield f
+    if pos == NOUN and form.endswith('ful'):
+        suffix = 'ful'
+        form = form[:-3]
+    else:
+        suffix = ''
+    for f in trySubstitutions(form, substitutions):
+        yield f + suffix
+
+# Demo
+
+def p(word):
+    word = word.lower()
+    print '\n===================='
+    print 'Word is', word
+    print '===================='
+    pos_forms = defaultdict(set)
+    #          ['noun', 'verb', 'adj', 'adv']
+    for pos in [NOUN, VERB, ADJECTIVE, ADVERB]:
+        for form in _morphy(word, pos=pos):
+            pos_forms[pos].add(form)
+    for pos in [NOUN, VERB, ADJECTIVE, ADVERB]:
+        if pos in pos_forms:
+            print '%s: ' % pos.capitalize(),
+            for f in pos_forms[pos]:
+                print f,
+            print
+    print '===================='
+
+def demo():
+    for word in ['dogs', 'churches', 'aardwolves', 'abaci', 'hardrock']:
+        p(word)
+    while True:
+        word = raw_input('Enter a word: ')
+        if word == '': break
+        p(word)
 
 if __name__ == '__main__':
-    from nltk.wordnet import morphy
-    print 'dogs ->', morphy('dogs')
-    print 'churches ->', morphy('churches')
-    print 'aardwolves ->', morphy('aardwolves')
-    print 'abaci ->', morphy('abaci')
-    print 'hardrock ->', morphy('hardrock')
-    
-    
+    demo()
+
+__all__ = ['demo', 'morphy']
+
     
     
 
