@@ -31,15 +31,23 @@ setup(
     
     #############################################
     ## Package List
-    packages = ['nltk', 'nltk.test', 'nltk.classify', 'nltk.corpus', 'nltk.corpus.reader',
+    packages = ['nltk', 'nltk.test', 'nltk.classify', 'nltk.corpus',
+                'nltk.corpus.reader',
                 'nltk.tokenize', 'nltk.stem', 'nltk.tag',
                 'nltk.parse', 'nltk.chunk', 'nltk.chat', 'nltk.draw',
                 'nltk.misc', 'nltk.model', 'nltk.cluster',
                 'nltk.sem', 'nltk.wordnet', 'nltk.etree', 'yaml',
-                'nltk_contrib', 'nltk_contrib.toolbox', 'nltk_contrib.fst',
-                'nltk_contrib.classifier', 'nltk_contrib.classifier.exceptions',
-                'nltk_contrib.classifier_tests', 'nltk_contrib.dependency',
-                'nltk_contrib.drt', 'nltk_contrib.gluesemantics',
-                'nltk_contrib.lpath', 'nltk_contrib.wordnet'
+                'nltk_contrib',
+                'nltk_contrib.bioreader',
+                'nltk_contrib.classifier',
+                'nltk_contrib.classifier.exceptions',
+                'nltk_contrib.classifier_tests',
+                'nltk_contrib.dependency',
+                'nltk_contrib.drt',
+                'nltk_contrib.fst',
+                'nltk_contrib.gluesemantics',
+                'nltk_contrib.lpath',
+                'nltk_contrib.toolbox',
+                'nltk_contrib.wordnet'
                 ],
     )
