@@ -1,6 +1,6 @@
 #!/usr/bin/python
 """
-Classes to read and process MedLine xml record files, for use in processing modules.
+Classes to read and process MedLine XML record files, for use in processing modules.
 
 They can handle the XML format used by PubMed and MedLine services, for example as returned by eutils online services
 
@@ -12,10 +12,10 @@ Somewhat long loading times can be shortened later by serializing objects using 
 
    USAGE:
    >>> from BioReader import *
-   >>> datos = DataContainer('AllAbstracts.xml','pubmed')
-   >>> datos.howmany# =  str(datos.diccRecords.keys())
-   >>> datos.keys#datos.diccRecords.keys()
-   >>> record = datos.Read('7024555')
+   >>> data = DataContainer('AllAbstracts.xml','pubmed')
+   >>> data.howmany # len(data.dictRecords.keys())
+   >>> data.keys    # data.dictRecords.keys()
+   >>> record = data.Read('7024555')
    >>> record.title
 
            u'The birA gene of Escherichia coli encodes a biotin holoenzyme synthetase.'
@@ -49,47 +49,49 @@ __url__ = 'http://www.cnio.es'
 __license__ = 'GNU'
 
 from xml.dom.minidom import parseString
-global re,string
-import string,re,os
+import string
+import re
+import os
 
-class Reader:
+class BioReader:
     """
-    Class Reader for BioMedical files
+    Class BioReader for BioMedical files
     """
-    def __init__(self,string,path=None):
+    def __init__(self, string, path=None):
         """
-        Initialize class with xml string  and returns record data and body of text objects.
+        Initialize class with XML string  and returns record data and body of text objects.
         
-               >>> single_record = Reader(record)
+            >>> single_record = BioReader(record)
 
-               >>> single_record.title
-               u'The birA gene of Escherichia coli encodes a biotin holoenzyme synthetase.'
+            >>> single_record.title
+            u'The birA gene of Escherichia coli encodes a biotin holoenzyme synthetase.'
+         
+            >>> single_record.pmid
+            u'7024555'
             
-               >>> single_record.pmid
-               u'7024555'
-               single_record +
-               
-                  - B{.title}
-                  - B{.pmid}
-                  - B{.Abs} I{(abstracts)}
-                  - B{.year}
-                  - B{.journal}
-                  - B{.auth} I{(list of authors)}
-                  - B{.m} I{(list of MeSH keywords, descriptors and qualifiers)}
-                  - B{.MD} I{(MesH Descriptors)}
-                  - B{.MQ} I{(MesH Qualifiers, if any)}
-                  - B{.MDMay} I{(list of Mayor MesH Descriptors, if any)}
-                  - B{.MQMay} I{(list of Mayor MesH Qualifiers, if any)}
-                  - B{.paper} I{(full text flat file if exists in user-defined repository [see notes below])}
+        single_record +
+           - B{.title}
+           - B{.pmid}
+           - B{.Abs} I{(abstracts)}
+           - B{.year}
+           - B{.journal}
+           - B{.auth} I{(list of authors)}
+           - B{.m} I{(list of MeSH keywords, descriptors and qualifiers)}
+           - B{.MD} I{(MesH Descriptors)}
+           - B{.MQ} I{(MesH Qualifiers, if any)}
+           - B{.MDMay} I{(list of Mayor MesH Descriptors, if any)}
+           - B{.MQMay} I{(list of Mayor MesH Qualifiers, if any)}
+           - B{.paper} I{(full text flat file if exists in user-defined repository [see notes below])}
                   
-        If we use a repository with full text papers (with pmid+<pmidnumber>+txt fomat, we can use the following, after specifying it in the Data Container we instanciated:
+        If we use a repository with full text papers (with pmid+<pmidnumber>+txt format), 
+        we can use the following, after specifying it in the Data Container we instantiated:
         
-             >>> datos.Repository("/repositorio/Regulontxt/")
+             >>> data.Repository("/repositorio/Regulontxt/")
 
-             >>> record = datos.diccRecords['9209026']
+             >>> record = data.dictRecords['9209026']
 
-             >>> single_record = Reader(record,datos.repository)# or directly inputing path, if it was  not done\\
-                  through the DataContainer class: single_record = Reader(record,'/path/to/repository/')
+             >>> single_record = BioReader(record,data.repository)# or directly inputing path, if it was  not done\\
+                  through the DataContainer class: single_record = BioReader(record,'/path/to/repository/')
 
              >>> single_record.paper
 
@@ -120,7 +122,7 @@ class Reader:
         self.title = self.document.getElementsByTagName("ArticleTitle")[0].firstChild.data
         try:
             self.authorsList = self.document.getElementsByTagName("AuthorList")[0].getElementsByTagName("Author")
-            self.Lista = [self.Authorize(y.childNodes) for y in self.authorsList]
+            self.Lista = [self.authorize(y.childNodes) for y in self.authorsList]
             s = ""
             for x in self.Lista:
                 s = s + x + "\n"
@@ -156,12 +158,13 @@ class Reader:
             self.MQMay = None
             #self.p = None
         #from DataContainer import repository
-        #self.authors = string.join( self.Lista )#[self.Authorize(x)+"\n" for x in self.Lista]
+        #self.authors = string.join( self.Lista )#[self.authorize(x)+"\n" for x in self.Lista]
     def __repr__(self):
         return "<BioReader record instance: pmid: "+self.pmid+" title: "+self.title+" abstract: "+self.Abs+">"
-    def Authorize(self,nodo):
+    
+    def authorize(self, node):
         s = ""
-        for z in nodo:
+        for z in node:
             f = z.toxml()
             f = re.sub(self.tags,"",f)
             f  = re.sub("\n","",f)
@@ -170,9 +173,9 @@ class Reader:
             s = s + f+" "
         return s
 
-    def Meshes(self,nodo):
+    def Meshes(self, node):
         s = ""
-        for z in nodo:
+        for z in node:
             f = z.toxml()
             f = re.sub(self.tags,"",f)
             f  = re.sub("\n","",f)
@@ -181,13 +184,13 @@ class Reader:
             s = s + f+" "
         return s
 
-    def MeshKeys(self,nodo):
+    def MeshKeys(self,node):
         """
         Create sets of MesH Keywords, separating qualifiers and descriptors, as well as //
         MajorTopics for each one. returns Lists.
         """
-        listDescriptors = nodo.getElementsByTagName("DescriptorName")
-        listQualifiers =  nodo.getElementsByTagName("QualifierName")
+        listDescriptors = node.getElementsByTagName("DescriptorName")
+        listQualifiers =  node.getElementsByTagName("QualifierName")
         MD = [x.firstChild.data for x in listDescriptors]
         MQ = [x.firstChild.data for x in listQualifiers]
         MQMay = [q.firstChild.data for q in listQualifiers if (q.getAttribute("MajorTopicYN") == "Y")]
@@ -219,19 +222,21 @@ class Reader:
         
 class DataContainer:
     """
-       Data container for pubmed and medline xml files.
-       The instance creates a diccionary object (diccRecords) of pmids referenced to string of record, which Reader class can parse. The method {Read} creates a queriable object for each record a pmid is provided for:
+    Data container for Pubmed and Medline XML files.
+    The instance creates a dictionary object (dictRecords) of PMIDs, 
+    referenced to string of record, which BioReader class can parse. 
+    The method C{Read} creates a queryable object for each record  assoicated with a PMID:
 
-       >>> from BioReader import *
-       >>> datos = DataContainer('AllAbs.xml','pubmed')
-       >>> datos.diccRecords.keys()[23]
-       >>> u'7024555'
-       >>> datos.howmany
-       >>> 14350
+        >>> from BioReader import *
+        >>> data = DataContainer('AllAbs.xml','pubmed')
+        >>> data.dictRecords.keys()[23]
+        >>> u'7024555'
+        >>> data.howmany
+        >>> 14350
 
-           1) Method One
+    1) Method One
 
-       >>> record = datos.Read('7024555')
+       >>> record = data.Read('7024555')
        >>> record.title
 
            u'The birA gene of Escherichia coli encodes a biotin holoenzyme synthetase.'
@@ -248,27 +253,28 @@ class DataContainer:
                   - B{.MDMay} I{(list of Mayor MesH Descriptors, if any)}
                   - B{.MQMay} I{(list of Mayor MesH Qualifiers, if any)}
                   - B{.paper} I{(full text flat file if exists in user-defined repository [see notes below])}
-    If we use a repository with full text papers (with pmid+<pmidnumber>+txt format (extension optional), we can use the following, after specifying it in the Data Container we instanciated:
+    If we use a repository with full text papers 
+    (with pmid+<pmidnumber>+txt format (extension optional), 
+    we can use the following, after specifying it in the DataContainer we instantiated:
         
-    >>> datos.Repository("/repositorio/Regulontxt/")
+    >>> data.Repository("/repositorio/Regulontxt/")
     >>> record.paper
 
         'Aerobic Regulation of the sucABCD Genes of Escherichia coli, Which Encode \xef\xbf\xbd-Ketoglutarate Dehydrogenase andSuccinyl Coenzyme A Synthetase: Roles of ArcA,Fnr, and the Upstream sdhCDAB Promoter\n.....       
 
-        2) Method two
+    2) Method two
         
-    >>> record = datos.diccRecords['7024555']
-    >>> single_record = Reader(record)
+    >>> record = data.dictRecords['7024555']
+    >>> single_record = BioReader(record)
     >>> single_record.title
     >>> u'The birA gene of Escherichia coli encodes a biotin holoenzyme synthetase.'   etc ...
 
-    (See L{Reader})
+    (See L{BioReader})
     """
     def __init__(self,file,format="medline"):
         """
         Initializes class and returns record data and body of text objects
         """
-        global time
         import time
         tinicial = time.time()
         self.file = file
@@ -282,10 +288,10 @@ class DataContainer:
         self.RecordsList = re.findall(self.rerecord,whole)
         whole = ""
         self.RecordsList =  ["<PubmedArticle>"+x.rstrip()+"</PubmedArticle>" for x in self.RecordsList]
-        self.diccRecords = self.CreateDicc()
+        self.dictRecords = self.Createdict()
         self.RecordsList = []
-        self.howmany = len(self.diccRecords.keys())
-        self.keys = self.diccRecords.keys()
+        self.howmany = len(self.dictRecords.keys())
+        self.keys = self.dictRecords.keys()
         tfinal = time.time()
         self.repository = None
         print "finished loading at ",time.ctime(tfinal)
@@ -295,27 +301,27 @@ class DataContainer:
 
     def Repository(self,repository):
         """
-        Establish path to a full text repository, in case you want to use that variable in the Reader 
+        Establish path to a full text repository, in case you want to use that variable in the BioReader 
         """
         self.repository = repository
         return self.repository
-    def CreateDicc(self):
+    def Createdict(self):
         """
         Creates a dictionary with pmid number indexing record xml string
         """
         i = 0
-        diccRecords = {}
+        dictRecords = {}
         for p in self.RecordsList:
-            r = Reader(p)
-            diccRecords[r.pmid] = self.RecordsList[i]
+            r = BioReader(p)
+            dictRecords[r.pmid] = self.RecordsList[i]
             i += 1
-        return diccRecords
+        return dictRecords
 
     def Read(self,pmid):
         if self.repository:
-            self.record = Reader(self.diccRecords[pmid],self.repository)
+            self.record = BioReader(self.dictRecords[pmid],self.repository)
         else:
-            self.record = Reader(self.diccRecords[pmid])
+            self.record = BioReader(self.dictRecords[pmid])
         return self.record
 
     def Search(self,cadena,where=None):
@@ -335,13 +341,13 @@ class DataContainer:
 
         With defined field search is very slow but much more accurate. See for comparison:
         
-        >>> buscados = datos.Search("Richard")
+        >>> buscados = data.Search("Richard")
         
             Searched in 0.110424995422  seconds, or 0.00184041659037  minutes
 
             Found a total of  75  hits for your query, in all fields
 
-            >>> buscados = datos.Search("Richard","auth")
+            >>> buscados = data.Search("Richard","auth")
 
                 Searched in 66.342936039  seconds, or 1.10571560065  minutes
 
@@ -350,7 +356,7 @@ class DataContainer:
         tinicial = time.time()
         resultlist = []
         if where:
-            for cadapmid in self.diccRecords.keys():
+            for cadapmid in self.dictRecords.keys():
                 d = self.Read(cadapmid)
                 if where == 'title':
                     tosearch = d.title
@@ -389,8 +395,8 @@ class DataContainer:
                 return None
         else:
             tosearch = ''
-            for cadapmid in self.diccRecords.keys():
-                tosearch = self.diccRecords[cadapmid]
+            for cadapmid in self.dictRecords.keys():
+                tosearch = self.dictRecords[cadapmid]
                 hit = re.search(cadena,tosearch)
                 if hit:
                     resultlist.append(cadapmid)
@@ -409,8 +415,8 @@ class DataContainer:
                 
 
 class CreateXML:
+    
     """
-
     Class to generate PubMed XMLs from a list of ids (one per line), to use with BioRea.
     downloads in 100 batch.
     Usage:
@@ -426,17 +432,19 @@ class CreateXML:
 
     """
     def __init__(self):
-        global urllib,time,string,random
+        #global urllib,time,string,random
         import urllib,time,string,random
  
     def getXml(self,s):
         pedir = urllib.urlopen("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id="+s+"&retmode=xml")
         stringxml = pedir.read()
         self.salida.write(stringxml[:-20]+"\n")
+        
     def getXmlString(self,s):
         pedir = urllib.urlopen("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id="+s+"&retmode=xml")
         stringxml = pedir.read()
         return stringxml[:-20]+"\n"
+    
     def listastring(self,list):
         suso = string.join(list,",")
         return suso
@@ -446,7 +454,6 @@ class CreateXML:
         self.inputfile = inputfile
         self.salida = open(self.outputfile,"w")
         self.listaR = open(self.inputfile).readlines()
-        #self.listaR = [x.rstrip() for x in self.listaR]
         self.listafin = [x.rstrip() for x in self.listaR]
         self.listacorr = []
         while self.listafin != []:
@@ -461,7 +468,7 @@ class CreateXML:
             if len(self.listafin) <= 0:
                 break
             else:
-                time.sleep(120)
+                #time.sleep(120)
                 nueva = self.listastring(cientos)
                 self.getXml(nueva)
             for c in cientos:
