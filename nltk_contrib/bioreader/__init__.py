@@ -7,3 +7,9 @@
 # For license information, see LICENSE.TXT
 #
 
+from bioreader import *
+
+__all__ = [
+    'Reader',
+    'DataContainer',
+    'CreateXML']
