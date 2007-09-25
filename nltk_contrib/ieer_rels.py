@@ -19,7 +19,7 @@ from nltk.corpus import ieer, conll2002
 
 from string import join
 import re
-from itertools import islice, ifilter
+from itertools import ifilter
 
 # Dictionary that associates corpora with NE classes
 NE_CLASSES = {'ieer': ['LOCATION', 'ORGANIZATION', 'PERSON', 'DURATION', 
@@ -34,18 +34,6 @@ short2long = dict(LOC = 'LOCATION', ORG = 'ORGANIZATION', PER = 'PERSON')
 long2short = dict(LOCATION ='LOC', ORGANIZATION = 'ORG', PERSON = 'PER')
 
 
-
-def read_corpus(corpus):
-    if corpus == 'ieer':
-        return [ieer.parsed_docs(item) for item in ieer.items]
-    elif corpus == 'conll2002-ned':
-        return conll2002.chunked_sents('ned.train')
-    elif corpus == 'conll2002-esp':
-        return conll2002.chunked_sents('ned.train')
-    else: 
-        raise ValueError, "corpus not recognized: '%s'" % corpus
-    
-    
 def _tuple2tag(item):
     if isinstance(item, tuple): 
         (token, tag) = item
@@ -66,12 +54,11 @@ def mk_pairs(tree):
     first identifies pairs whose first member is a list (possibly empty) of terminal
     strings, and whose second member is a L{Tree} of the form (NE_label, terminals).
     
-    @param trees: a sequence of chunk trees
-    @return: a generator of pairs
+    @param tree: a chunk tree
+    @return: a list of pairs (list(C{str}), L{Tree})
     """
 
     pairs = []
-
     pair = [[], None]
     
     for dtr in tree:
@@ -80,10 +67,8 @@ def mk_pairs(tree):
         else:
             # dtr is a Tree
             pair[1] = dtr
- 
             pairs.append(pair)
             pair = [[], None]
-            
     return pairs
 
 
@@ -96,7 +81,7 @@ def mk_rtuples(pairs, window=5, trace=0):
     @param window: a threshold for the number of items to include in the left and right context
     @type window: C{int}
     @return: 'relation' dictionaries whose keys are 'lcon', 'subjclass', 'subjtext', 'filler', objclass', objtext', and 'rcon'
-    @rtype: generator of C{defaultdict}
+    @rtype: list of C{defaultdict}
     """
     result = []
     while len(pairs) > 2:
@@ -138,6 +123,8 @@ def relextract(subjclass, objclass, doc, corpus='ieer', pattern=None, window=10)
     @type subjclass: C{string}
     @param objclass: the class of the object Named Entity.
     @type objclass: C{string}
+    @param doc: input document
+    @type doc: L{ieer} document or a list of chunk trees
     @param corpus: name of the corpus to take as input; possible values are 'ieer', 'conll2002-ned' and 'conll2002-esp'
     @type corpus: C{string}
     @param pattern: a regular expression for filtering the fillers of
@@ -237,8 +224,8 @@ def in_demo(trace=0):
                 print doc.docno
                 print "=" * 15
             for rel in relextract('ORG', 'LOC', doc, pattern = IN):
+                count += 1
                 print show_raw_rtuple(rel)
-
 
 
 
@@ -246,7 +233,7 @@ def in_demo(trace=0):
 # Example of has_role(PER, LOC)
 ############################################
     
-def roles_demo():
+def roles_demo(trace=0):
     roles = """
     (.*(                   # assorted roles
     analyst|
@@ -277,9 +264,17 @@ def roles_demo():
 
     print "has_role(PER, ORG):"
     print "=" * 30
-    for rel in relextract('PER', 'ORG', 'ieer', pattern = ROLES):
-        print show_raw_rtuple(rel, rcon=True)
-    print
+    
+    for item in ieer.items:
+        for doc in ieer.parsed_docs(item):
+            lcon = rcon = False
+            if trace:
+                print doc.docno
+                print "=" * 15
+                lcon = rcon = True
+            for rel in relextract('PER', 'ORG', doc, pattern = ROLES):
+                print show_raw_rtuple(rel, lcon=lcon, rcon=rcon)
+
     
     ##############################################
     ### Show what's in the IEER Headlines
@@ -288,11 +283,16 @@ def roles_demo():
     #print "NER in Headlines"
     #print "=" * 30
  
-    #for d in ieer.dictionary():
-        #tree = d['headline']
-        #for r in ne_fillers(tree):
-            #print show_tuple(r[:-1])
-    #print
+    #for item in ieer.items:
+           #for doc in ieer.parsed_docs(item):
+               #tree = doc.headline
+               #if isinstance(tree, Tree):
+                   #print doc.docno, tree.pprint()
+               #
+                   #print join(tree.leaves())
+               #else: 
+                    #print tree
+
         
     #############################################
     ## Dutch CONLL2002: take_on_role(PER, ORG
@@ -337,17 +337,17 @@ def roles_demo():
     
 
 if __name__ == '__main__':
-    in_demo(trace=1)
+    in_demo(trace=0)
+    roles_demo(trace=0)
+
+#IN = re.compile(r'.*\bin\b(?!\b.+ing\b)')
+
+#rels = [rel for item in ieer.items
+        #for doc in ieer.parsed_docs(item)
+        #for rel in relextract('ORG', 'LOC', doc, pattern = IN)]
+
+#for r in rels[9:17]: print show_raw_rtuple(r)     
+
+
+
     
-old = """
-    [ORG: Cooper-Hewitt Museum] in [LOC: New York]
-    [ORG: Canadian Museum of Civilization] in [LOC: Hull]
-    [ORG: Kramerbooks and Afterwords] , an independent store in [LOC: Washington]
-    [ORG: Waterford Foundation] in historic [LOC: Waterford]
-    [ORG: U.S. District Court] in [LOC: Manhattan]
-    [ORG: House Transportation Committee] , secured the most money in the [LOC: New York]
-    [ORG: Angels] in [LOC: Anaheim]
-    [ORG: Bayona] , which is in the heart of the [LOC: French Quarter]
-    [ORG: CBS Studio Center] in [LOC: Studio City]
-    [ORG: Smithsonian Institution] in [LOC: Washington]
-"""        
