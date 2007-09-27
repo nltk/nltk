@@ -1,0 +1,55 @@
+======================
+Information Extraction
+======================
+
+A demonstration of two relations extracted by simple regexps:
+
+ * in(ORG, LOC), and
+ * has_role(PERS, ORG)
+
+
+    >>> from nltk.corpus import ieer
+    >>> import re
+    >>> from nltk_contrib import ieer_rels
+    >>> IN = re.compile(r'.*\bin\b(?!\b.+ing\b)')
+    >>> for item in ieer.items:
+    ...     for doc in ieer.parsed_docs(item):
+    ...         for rel in ieer_rels.relextract('ORG', 'LOC', doc, pattern = IN):
+    ...             print ieer_rels.show_raw_rtuple(rel)
+    [ORG: Christian Democrats] , the leading political forces in [LOC: Italy]
+    [ORG: U.N.] failures in [LOC: Africa]
+    [ORG: U.N.] peacekeeping operation in [LOC: Somalia]
+    [ORG: U.N.] partners on a more effective role in [LOC: Africa]
+    [ORG: Kelab Golf Darul Ridzuan] in [LOC: Perak]
+    [ORG: U.N.] peacekeeping operation in [LOC: Somalia]
+    [ORG: WHYY] in [LOC: Philadelphia]
+    [ORG: Freedom Forum] in [LOC: Arlington]
+    [ORG: Idealab] , a self-described business incubator based in [LOC: Los Angeles]
+    [ORG: Open Text] , based in [LOC: Waterloo]
+    [ORG: Omnicom] in [LOC: New York]
+    [ORG: DDB Needham] in [LOC: New York]
+    [ORG: Kaplan Thaler Group] in [LOC: New York]
+    [ORG: BBDO South] in [LOC: Atlanta]
+    [ORG: Georgia-Pacific] in [LOC: Atlanta]
+    [ORG: Merrill] , for example, set up an office in [LOC: Tokyo]
+    [ORG: Merrill Lynch] flag in [LOC: Japan]
+    [ORG: Mutual Stores Grocery] chain in [LOC: Oakland]
+    [ORG: Kramerbooks and Afterwords] , an independent store in [LOC: Washington]
+    [ORG: House Transportation Committee] , secured the most money in the [LOC: New York]
+    [ORG: Angels] in [LOC: Anaheim]
+    [ORG: Bayona] , which is in the heart of the [LOC: French Quarter]
+
+
+
+    >>> for doc in ieer.parsed_docs('NYT_19980315'):
+    ...     for rel in ieer_rels.relextract('ORG', 'LOC', doc, pattern = IN):
+    ...         print ieer_rels.show_raw_rtuple(rel)
+    [ORG: WHYY] in [LOC: Philadelphia]
+    [ORG: Freedom Forum] in [LOC: Arlington]
+    [ORG: Idealab] , a self-described business incubator based in [LOC: Los Angeles]
+    [ORG: Open Text] , based in [LOC: Waterloo]
+    [ORG: Omnicom] in [LOC: New York]
+    [ORG: DDB Needham] in [LOC: New York]
+    [ORG: Kaplan Thaler Group] in [LOC: New York]
+    [ORG: BBDO South] in [LOC: Atlanta]
+    [ORG: Georgia-Pacific] in [LOC: Atlanta]
