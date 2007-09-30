@@ -3,19 +3,10 @@
 # Copyright (C) 2001-2007 University of Pennsylvania
 # Author: Oliver Steele <steele@osteele.com>
 #         Steven Bird <sb@csse.unimelb.edu.au>
-#         David Ormiston Smith <daosmith@csse.unimelb.edu.au>>
+#         David Ormiston Smith <daosmith@csse.unimelb.edu.au>
 #         Jussi Salmela <jtsalmela@users.sourceforge.net>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
-
-# This is the morphological component. Parts of it originate from the original
-# NLTK morphy.py. Most of the code, however, is based on my own notion of
-# how the Wordnet project's Morphy might operate. My notion was formed by
-# the '5 papers' document's description of Morphy and on the query results
-# webwn gives.
-# 
-# The solution was coded keeping in mind the facts that it is now 2007 and
-# the official Python version has for quite some time now been 2.5
 
 from collections import defaultdict
 from dictionary import dictionaryFor
