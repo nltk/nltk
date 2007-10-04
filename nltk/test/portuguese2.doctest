@@ -1,3 +1,6 @@
+.. meta::
+   :http-equiv=Content-Type: text/html; charset=ISO-8859-1
+       
 ==========================================
 Examplos para o processamento do português
 ==========================================
@@ -39,16 +42,13 @@ remover o conteúdo que antecede o sinal de mais:
     >>> twords = nltk.corpus.floresta.tagged_words()
     >>> twords = [(w.lower(),simplify_tag(t)) for (w,t) in twords]
     >>> twords[:10] # doctest: +NORMALIZE_WHITESPACE
-    [('um', 'art'), ('revivalismo', 'n'), ('refrescante', 'adj'), ('o', 
-'art'), ('7_e_meio', 'prop'),
-    ('\xe9', 'v-fin'), ('um', 'art'), ('ex-libris', 'n'), ('de', 'prp'), 
-('a', 'art')]
+    [('um', 'art'), ('revivalismo', 'n'), ('refrescante', 'adj'), ('o', 'art'), ('7_e_meio', 'prop'),
+    ('\xe9', 'v-fin'), ('um', 'art'), ('ex-libris', 'n'), ('de', 'prp'), ('a', 'art')]
    
 E exibir de maneira mais apropriada as palavras com informações de tags:
 
     >>> print ' '.join(word + '/' + tag for (word, tag) in twords[:10])
-    um/art revivalismo/n refrescante/adj o/art 7_e_meio/prop ?/v-fin 
-um/art ex-libris/n de/prp a/art
+    um/art revivalismo/n refrescante/adj o/art 7_e_meio/prop ?/v-fin um/art ex-libris/n de/prp a/art
 
 Em seguida, vamos contar o número de tokens de palavras e tipos, além de
 determinar qual a palavra mais comum:
@@ -68,34 +68,26 @@ freqüência:
     >>> tags = [simplify_tag(tag) for (word,tag) in floresta.tagged_words()]
     >>> fd = nltk.FreqDist(tags)
     >>> fd.sorted()[:20] # doctest: +NORMALIZE_WHITESPACE
-    ['n', 'prp', 'art', 'v-fin', ',', 'prop', 'adj', 'adv', '.', 
-'conj-c', 'v-inf',
-    'pron-det', 'v-pcp', 'num', 'pron-indp', 'pron-pers', '\xab', 
-'\xbb', 'conj-s', '}']
+    ['n', 'prp', 'art', 'v-fin', ',', 'prop', 'adj', 'adv', '.', 'conj-c', 'v-inf',
+    'pron-det', 'v-pcp', 'num', 'pron-indp', 'pron-pers', '\xab', '\xbb', 'conj-s', '}']
 
 Também podemos ler o corpus agrupado por enunciados:
 
     >>> floresta.sents() # doctest: +NORMALIZE_WHITESPACE
-    [['Um', 'revivalismo', 'refrescante'], ['O', '7_e_Meio', '\xe9', 
-'um', 'ex-libris',
+    [['Um', 'revivalismo', 'refrescante'], ['O', '7_e_Meio', '\xe9', 'um', 'ex-libris',
     'de', 'a', 'noite', 'algarvia', '.'], ...]
     >>> floresta.tagged_sents() # doctest: +NORMALIZE_WHITESPACE
     [[('Um', '>N+art'), ('revivalismo', 'H+n'), ('refrescante', 'N<+adj')],
-    [('O', '>N+art'), ('7_e_Meio', 'H+prop'), ('\xe9', 'P+v-fin'), 
-('um', '>N+art'),
-    ('ex-libris', 'H+n'), ('de', 'H+prp'), ('a', '>N+art'), ('noite', 
-'H+n'),
+    [('O', '>N+art'), ('7_e_Meio', 'H+prop'), ('\xe9', 'P+v-fin'), ('um', '>N+art'),
+    ('ex-libris', 'H+n'), ('de', 'H+prp'), ('a', '>N+art'), ('noite', 'H+n'),
     ('algarvia', 'N<+adj'), ('.', '.')], ...]
     >>> floresta.parsed_sents() # doctest: +NORMALIZE_WHITESPACE
     [Tree('UTT+np', [Tree('>N+art', ['Um']), Tree('H+n', ['revivalismo']),
     Tree('N<+adj', ['refrescante'])]), Tree('STA+fcl', [Tree('SUBJ+np',
-    [Tree('>N+art', ['O']), Tree('H+prop', ['7_e_Meio'])]), 
-Tree('P+v-fin', ['\xe9']),
+    [Tree('>N+art', ['O']), Tree('H+prop', ['7_e_Meio'])]), Tree('P+v-fin', ['\xe9']),
     Tree('SC+np', [Tree('>N+art', ['um']), Tree('H+n', ['ex-libris']),
-    Tree('N<+pp', [Tree('H+prp', ['de']), Tree('P<+np', [Tree('>N+art', 
-['a']),
-    Tree('H+n', ['noite']), Tree('N<+adj', ['algarvia'])])])]), 
-Tree('.', ['.'])]), ...]
+    Tree('N<+pp', [Tree('H+prp', ['de']), Tree('P<+np', [Tree('>N+art', ['a']),
+    Tree('H+n', ['noite']), Tree('N<+adj', ['algarvia'])])])]), Tree('.', ['.'])]), ...]
 
 Para ver uma árvore de análise sintática, podemos utilizar o método
 ``draw()``, como no exemplo:
@@ -118,8 +110,7 @@ de contexto (medido em caracteres) e gera uma concordância para a mesma.
     ...             left = ' '.join(sent[:pos])
     ...             right = ' '.join(sent[pos+1:])
     ...             print '%*s %s %-*s' %\
-    ...                 (context, left[-context:], word, context, 
-right[:context])
+    ...                 (context, left[-context:], word, context, right[:context])
 
     >>> concordance("dar") # doctest: +SKIP
     anduru , foi o suficiente para dar a volta a o resultado .      
@@ -148,8 +139,7 @@ estas últimas como descrito anteriormente.
 
     >>> from nltk.corpus import floresta
     >>> tsents = floresta.tagged_sents()
-    >>> tsents = [[(w.lower(),simplify_tag(t)) for (w,t) in sent] for 
-sent in tsents if sent]
+    >>> tsents = [[(w.lower(),simplify_tag(t)) for (w,t) in sent] for sent in tsents if sent]
     >>> train = tsents[100:]
     >>> test = tsents[:100]
 
