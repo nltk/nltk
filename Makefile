@@ -88,14 +88,16 @@ python:
 	wget -N -P python/win  $(PYFTP)/python-2.5.1.msi
 	wget -N -P python/unix $(PYFTP)/Python-2.5.1.tgz
 	touch .python.done
+	
+	
 
 numpy:
 	mkdir -p python/{mac,win,unix}
-	wget -N -P python/mac  $(PYMAC)/numpy-1.0.2-py2.5-macosx10.4-2007-04-04.dmg
-	wget -N -P python/win  $(NUMPY)/numpy-1.0.3.win32-py2.5.exe?download
-	wget -N -P python/unix $(NUMPY)/numpy-1.0.3-2.tar.gz?download
-	mv python/win/numpy-1.0.3.win32-py2.5.exe?download python/win/numpy-1.0.3.win32-py2.5.exe
-	mv python/unix/numpy-1.0.3-2.tar.gz?download python/unix/numpy-1.0.3-2.tar.gz
+	wget -N -P python/mac  $(PYMAC)/numpy-1.0.3.1-py2.5-macosx10.4-2007-08-27.dmg
+	wget -N -P python/win  $(NUMPY)/numpy-1.0.3.1.win32-py2.5.exe?download
+	wget -N -P python/unix $(NUMPY)/numpy-1.0.3.1.tar.gz?download
+	mv python/win/numpy-1.0.3.1.win32-py2.5.exe?download python/win/numpy-1.0.3.1.win32-py2.5.exe
+	mv python/unix/numpy-1.0.3.1.tar.gz?download python/unix/numpy-1.0.3.1.tar.gz
 	touch .numpy.done
 
 pylab:

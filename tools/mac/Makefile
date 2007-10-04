@@ -1,6 +1,6 @@
 # Natural Language Toolkit: OS X Distribution Makefile
 #
-# Copyright (C) 2001-2006 University of Pennsylvania
+# Copyright (C) 2001-2007 University of Pennsylvania
 # Author: Joshua Ritterman <validus@gmail.com>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sf.net>
@@ -35,7 +35,7 @@ lib-root: $(NLTK_ZIP)
 	mkdir -p ./NLTKLibrary_installer/root/tmp
 	mkdir -p ./NLTKLibrary_installer/root/tmp/nltk-installer
 	unzip $(NLTK_ZIP) -d ./NLTKLibrary_installer/root/tmp
-	mv ./NLTKLibrary_installer/root/tmp/nltk-$(NLTK_VERSION)/ \
+	mv ./NLTKLibrary_installer/root/tmp/nltk-$(NLTK_VERSION)/* \
 	   ./NLTKLibrary_installer/root/tmp/nltk-installer/
 
 # This target should in theory have additional dependencies, to make
