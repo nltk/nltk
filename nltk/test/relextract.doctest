@@ -155,22 +155,22 @@ signature <ORG, LOC>.
     ...     for doc in ieer.parsed_docs(item):
     ...         for rel in relextract.relextract('ORG', 'LOC', doc, pattern = IN):
     ...             print relextract.show_raw_rtuple(rel)  # doctest: +ELLIPSIS
-    [ORG: Christian Democrats] , the leading political forces in [LOC: Italy]
-    [ORG: AP] ) _ Lebanese guerrillas attacked Israeli forces in southern [LOC: Lebanon]
-    [ORG: Security Council] adopted Resolution 425. Huge yellow banners hung across intersections in [LOC: Beirut]
-    [ORG: U.N.] failures in [LOC: Africa]
-    [ORG: U.N.] peacekeeping operation in [LOC: Somalia]
-    [ORG: U.N.] partners on a more effective role in [LOC: Africa]
-    [ORG: AP] ) _ A bomb exploded in a mosque in central [LOC: San`a]
-    [ORG: Krasnoye Sormovo] shipyard in the Soviet city of [LOC: Gorky]
-    [ORG: Kelab Golf Darul Ridzuan] in [LOC: Perak]
-    [ORG: U.N.] peacekeeping operation in [LOC: Somalia]
-    [ORG: WHYY] in [LOC: Philadelphia]
-    [ORG: McGlashan &AMP; Sarrail] firm in [LOC: San Mateo]
-    [ORG: Freedom Forum] in [LOC: Arlington]
-    [ORG: Brookings Institution] , the research group in [LOC: Washington]
-    [ORG: Idealab] , a self-described business incubator based in [LOC: Los Angeles]
-    [ORG: Open Text] , based in [LOC: Waterloo]
+    [ORG: 'Christian Democrats'] ', the leading political forces in' [LOC: 'Italy']
+    [ORG: 'AP'] ') _ Lebanese guerrillas attacked Israeli forces in southern' [LOC: 'Lebanon']
+    [ORG: 'Security Council'] 'adopted Resolution 425. Huge yellow banners hung across intersections in' [LOC: 'Beirut']
+    [ORG: 'U.N.'] 'failures in' [LOC: 'Africa']
+    [ORG: 'U.N.'] 'peacekeeping operation in' [LOC: 'Somalia']
+    [ORG: 'U.N.'] 'partners on a more effective role in' [LOC: 'Africa']
+    [ORG: 'AP'] ') _ A bomb exploded in a mosque in central' [LOC: 'San`a']
+    [ORG: 'Krasnoye Sormovo'] 'shipyard in the Soviet city of' [LOC: 'Gorky']
+    [ORG: 'Kelab Golf Darul Ridzuan'] 'in' [LOC: 'Perak']
+    [ORG: 'U.N.'] 'peacekeeping operation in' [LOC: 'Somalia']
+    [ORG: 'WHYY'] 'in' [LOC: 'Philadelphia']
+    [ORG: 'McGlashan &AMP; Sarrail'] 'firm in' [LOC: 'San Mateo']
+    [ORG: 'Freedom Forum'] 'in' [LOC: 'Arlington']
+    [ORG: 'Brookings Institution'] ', the research group in' [LOC: 'Washington']
+    [ORG: 'Idealab'] ', a self-described business incubator based in' [LOC: 'Los Angeles']
+    [ORG: 'Open Text'] ', based in' [LOC: 'Waterloo']
     ...
 
 The next example illustrates a case where the patter is a disjunction
@@ -207,12 +207,12 @@ of roles that a PERSON can occupy in an ORGANIZATION.
     ...     for doc in ieer.parsed_docs(item):
     ...         for rel in relextract.relextract('PER', 'ORG', doc, pattern=ROLES):
     ...             print relextract.show_raw_rtuple(rel) # doctest: +ELLIPSIS
-    [PER: Kivutha Kibwana] , of the [ORG: National Convention Assembly]
-    [PER: Boban Boskovic] , chief executive of the [ORG: Plastika]
-    [PER: Annan] , the first sub-Saharan African to head the [ORG: United Nations]
-    [PER: Kiriyenko] became a foreman at the [ORG: Krasnoye Sormovo]
-    [PER: Annan] , the first sub-Saharan African to head the [ORG: United Nations]
-    [PER: Mike Godwin] , chief counsel for the [ORG: Electronic Frontier Foundation]
+    [PER: 'Kivutha Kibwana'] ', of the' [ORG: 'National Convention Assembly']
+    [PER: 'Boban Boskovic'] ', chief executive of the' [ORG: 'Plastika']
+    [PER: 'Annan'] ', the first sub-Saharan African to head the' [ORG: 'United Nations']
+    [PER: 'Kiriyenko'] 'became a foreman at the' [ORG: 'Krasnoye Sormovo']
+    [PER: 'Annan'] ', the first sub-Saharan African to head the' [ORG: 'United Nations']
+    [PER: 'Mike Godwin'] ', chief counsel for the' [ORG: 'Electronic Frontier Foundation']
     ...
 
 In the case of the CoNLL2002 data, we can include POS tags in the
@@ -231,3 +231,13 @@ presented as something that looks more like a clause in a logical language.
     ...         for rel in relextract.relextract('ORG', 'LOC', doc, corpus='conll2002', pattern = DE)]
     >>> for r in rels[:10]:
     ...     print relextract.show_clause(r, relsym='DE')
+    DE('Tribunal_Supremo', 'Victoria')
+    DE('Museo_de_Arte', 'Alcorc\xc3\xb3n')
+    DE('Museo_de_Bellas_Artes', 'A_Coru\xc3\xb1a')
+    DE('Siria', 'L\xc3\xadbano')
+    DE('Uni\xc3\xb3n_Europea', 'Pek\xc3\xadn')
+    DE('Ej\xc3\xa9rcito', 'Rogberi')
+    DE('Juzgado_de_Instrucci\xc3\xb3n_N\xc3\xbamero_1', 'San_Sebasti\xc3\xa1n')
+    DE('PSOE', 'Villanueva_de_la_Serena')
+    DE('Ej\xc3\xa9rcito', 'L\xc3\xadbano')
+    DE('Juzgado_de_lo_Penal_n\xc3\xbamero_2', 'Ceuta')
