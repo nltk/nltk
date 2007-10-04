@@ -1,3 +1,22 @@
+Version 0.9 2007-10-05
+
+NLTK:
+- promoted ieer_rels.py to the sem package
+- improvements to WordNet package (Jussi Salmela)
+- more regression tests
+- support for checking coverage of tests
+- streamlined mac installation
+
+Book:
+- polishing of early chapters
+- introductions to parts 1, 2
+
+Data:
+- Spanish, Catalan, Dutch?
+
+Contrib:
+- Carlos Rodriguez' BioReader 
+
 Version 0.9b2 2007-09-11
 
 NLTK:
