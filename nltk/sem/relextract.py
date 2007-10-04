@@ -12,12 +12,15 @@ Relations are stored internally as dictionaries ('reldicts').
 
 The two serialization outputs are I{rtuple} and I{clause}. 
    - An I{rtuple} is a tuple of the form C{(subj, filler, obj)}, 
-     where C{subj} and C{obj} are pairs of Named Entities, and C{filler} is the string of words   
-     occuring between C{sub} and C{obj} (with no intervening NEs).
+     where C{subj} and C{obj} are pairs of Named Entity mentions, and C{filler} is the string of words   
+     occurring between C{sub} and C{obj} (with no intervening NEs). Strings are printed via ``repr()`` to
+     circumvent locale variations in rendering utf-8 encoded strings.
    - A I{clause} is an atom of the form C{relsym(subjsym, objsym)}, 
      where the relation, subject and object have been canonicalized to single strings.
 
 """
+
+# todo: get a more general solution to canonicalized symbols for clauses -- maybe use xmlcharrefs?
 
 from nltk import defaultdict
 from nltk import parse, Tree
@@ -197,13 +200,13 @@ def show_raw_rtuple(reldict, lcon=False, rcon=False):
     @type reldict: C{defaultdict}
     """
     items = [_shorten(reldict['subjclass']), reldict['subjtext'], reldict['filler'], _shorten(reldict['objclass']), reldict['objtext']]
-    format = '[%s: %s] %s [%s: %s]'
+    format = '[%s: %r] %r [%s: %r]'
     if lcon:
         items = [reldict['lcon']] + items
-        format = '...%s)' + format
+        format = '...%r)' + format
     if rcon:
         items.append(reldict['rcon'])
-        format = format + '(%s...'
+        format = format + '(%r...'
     printargs = tuple(items)
     return format % printargs
 
@@ -216,7 +219,7 @@ def show_clause(reldict, relsym):
     @type relsym: C{str}
     """
     items = (relsym, reldict['subjsym'], reldict['objsym'])
-    return "%s(%s, %s)" % items
+    return "%s(%r, %r)" % items
 
 
 #######################################################
@@ -367,9 +370,9 @@ def conllesp():
     
 
 if __name__ == '__main__':
-    in_demo(trace=0)
-    roles_demo(trace=0)
-    conllned()
+#     in_demo(trace=0)
+#     roles_demo(trace=0)
+#     conllned()
     conllesp()
 
 #IN = re.compile(r'.*\bin\b(?!\b.+ing\b)')
