@@ -5,35 +5,37 @@ Building an NLTK distribution
 @@@ PREPARE
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-A. ERROR CHECKING
+A. THIRD-PARTY SOFTWARE VERSIONS
 
-  1. make doctest (run the tests in nltk.test)
-  2. make demotest (run the demonstration code included in many modules)
-  3. API docs (cd doc; make api)  (check latest version of epydoc is installed)
-  4. Tutorial examples (cd doc/en; make errs)
-  5. Check trackers: http://sourceforge.net/tracker/?group_id=30982
-  6. Make dist, install .exe version on Windows, and test demos
+  1. Check for new versions of Python, Numpy, Matplotlib
+  2. Modify top level Makefile and commit
+  3. Modify wiki installation instructions with these new versions
+  4. Save wiki installation page and FAQ in HTML format to /nltk
+    5. Commit these changes
 
-B. CHANGELOG
-
-  1. Update the ChangeLog ("svn log")
-  2. Commit changes
-
-C. NLTK VERSION NUMBERS
+B. NLTK VERSION
 
   1. Modify nltk/__init__.py with the version number (2 places)
   2. Edit doc/definitions.txt with new version number
   3. Commit these changes
+  4. Clone wiki install page for new version N.N, and call it Installation-N.N
+       and save in HTML format to /nltk
 
-D. THIRD-PARTY SOFTWARE VERSIONS
+C. ERROR CHECKING
 
-  1. Check for new versions of Python, Numpy, Matplotlib
-  2. Modify top level Makefile and commit
-  3. Modify wiki installation instructions with these new versions, including new NLTK version
-     (do install instructions in cloned wiki page Installation-N.N)
-  4. Save wiki installation page and FAQ in HTML format to /nltk
-  5. Commit these changes
+  1. install the new version, since its the installed code that is checked
+  2. make doctest (run the tests in nltk.test)
+  3. make demotest (run the demonstration code included in many modules)
+  4. API docs (cd doc; make api)  (check latest version of epydoc is installed)
+  5. Tutorial examples (cd doc/en; make errs)
+  6. Check trackers: http://sourceforge.net/tracker/?group_id=30982
+  7. Make dist, install .exe version on Windows, and test demos
 
+D. CHANGELOG
+
+  1. Update the ChangeLog ("svn log")
+  2. Commit changes
+  
 E. LINK CHECKING
   1. do a preliminary build of web content and check links
 
@@ -83,15 +85,18 @@ B. WEBSITE
 
   1. make rsync
   2. add release notice to wiki
-  3. post to one or more of the mailing lists
-       nltk-announce@lists.sourceforge.net,
-       CORPORA@uib.no, linguist@linguistlist.org,
-       PythonSIL@lists.sil.org
-       mailing lists for any local courses using NLTK
+  3. move wiki install page from Installation-N.N to Installation   
   4. post a news item on the sourceforge site
        http://sourceforge.net/news/?group_id=30982
   5. register with Python Cheeseshop
        python setup.py register
+  6. post announcement to NLTK the mailing lists:
+       nltk-devel@lists.sourceforge.net     (for beta-releases)
+       nltk-announce@lists.sourceforge.net  (for non-beta-releases)
+  7. post announcement to external mailing lists, for major N.N releases only
+       CORPORA@uib.no, linguist@linguistlist.org,
+       PythonSIL@lists.sil.org
+       mailing lists for any local courses using NLTK
 
 C. INSTALLATION
 
