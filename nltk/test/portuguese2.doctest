@@ -1,6 +1,3 @@
-.. meta::
-   :http-equiv=Content-Type: text/html; charset=ISO-8859-1
-       
 ==========================================
 Examplos para o processamento do português
 ==========================================
@@ -10,6 +7,41 @@ Examplos para o processamento do português
 (NB. Este material parte do pressuposto de que o leitor esteja
 familiarizado com o livro do NLTK, disponível em
 ``http://nltk.org/index.php/Book``).
+
+Accessing the MacMorpho Tagged Corpus
+-------------------------------------
+
+NLTK includes the MAC-MORPHO Brazilian Portuguese POS-tagged news text,
+with over a million words of
+journalistic texts extracted from ten sections of
+the daily newspaper *Folha de Sau Paulo*, 1994.
+
+We can access this corpus as a sequence of words or tagged words as follows:
+
+    >>> nltk.corpus.mac_morpho.words()
+    ['Jersei', 'atinge', 'm\xe9dia', 'de', 'Cr$', '1,4', ...]
+    >>> nltk.corpus.mac_morpho.sents()
+    [['Jersei', 'atinge', 'm\xe9dia', 'de', 'Cr$', '1,4', 'milh\xe3o',
+    'em', 'a', 'venda', 'de', 'a', 'Pinhal', 'em', 'S\xe3o', 'Paulo'],
+    ['Programe', 'sua', 'viagem', 'a', 'a', 'Exposi\xe7\xe3o', 'Nacional',
+    'do', 'Zebu', ',', 'que', 'come\xe7a', 'dia', '25'], ...]
+    >>> nltk.corpus.mac_morpho.tagged_words()
+    [('Jersei', 'N'), ('atinge', 'V'), ('m\xe9dia', 'N'), ...]
+    
+We can also access it in sentence chunks.
+
+    >>> nltk.corpus.mac_morpho.tagged_sents()
+    [[('Jersei', 'N'), ('atinge', 'V'), ('m\xe9dia', 'N'), ('de', 'PREP'),
+    ('Cr$', 'CUR'), ('1,4', 'NUM'), ('milh\xe3o', 'N'), ('em', 'PREP|+'),
+    ('a', 'ART'), ('venda', 'N'), ('de', 'PREP|+'), ('a', 'ART'),
+    ('Pinhal', 'NPROP'), ('em', 'PREP'), ('S\xe3o', 'NPROP'), ('Paulo', 'NPROP')],
+    [('Programe', 'V'), ('sua', 'PROADJ'), ('viagem', 'N'), ('a', 'PREP|+'),
+    ('a', 'ART'), ('Exposi\xe7\xe3o', 'NPROP'), ('Nacional', 'NPROP'),
+    ('do', 'NPROP'), ('Zebu', 'NPROP'), (',', ','), ('que', 'PRO-KS-REL'),
+    ('come\xe7a', 'V'), ('dia', 'N'), ('25', 'N|AP')], ...]
+    
+This data can be used to train taggers (examples below for the Floresta treebank).
+
 
 Utilizando o Floresta Portuguese Treebank
 -----------------------------------------
@@ -165,4 +197,121 @@ E, em seguida, um tagger bigrama:
     >>> tagger2 = nltk.BigramTagger(train, backoff=tagger1)
     >>> nltk.tag.accuracy(tagger2, test)
     0.86856127886323264
+
+
+Sentence Segmentation
+---------------------
+
+Punkt is a language-neutral sentence segmentation tool.  It needs to be trained
+on plain text.
+The source text (from the Floresta Portuguese Treebank) contains one sentence per line.
+We read the text, split it into its lines, and then join these lines together using
+spaces.  Now the information about sentence breaks has been discarded.  We split this
+material into training and testing data:
+
+    >>> text = open('floresta.txt').read()
+    >>> lines = text.split('\n')
+    >>> train = ' '.join(lines[10:])
+    >>> test = ' '.join(lines[:10])
+
+Now we train the sentence segmenter (or sentence tokenizer) and use it on our test sentences:
+
+    >>> stok = nltk.PunktSentenceTokenizer(train)
+    >>> print stok.tokenize(test) # doctest: +NORMALIZE_WHITESPACE
+    ['O 7 e Meio \xe9 um ex-libris da noite algarvia.',
+    '\xc9 uma das mais antigas discotecas do Algarve, situada em Albufeira,
+    que continua a manter os tra\xe7os decorativos e as clientelas de sempre.',
+    '\xc9 um pouco a vers\xe3o de uma esp\xe9cie de \xaboutro lado\xbb da noite,
+    a meio caminho entre os devaneios de uma fauna perif\xe9rica, seja de Lisboa,
+    Londres, Dublin ou Faro e Portim\xe3o, e a postura circunspecta dos fi\xe9is da casa,
+    que dela esperam a m\xfasica \xabgeracionista\xbb dos 60 ou dos 70.',
+    'N\xe3o deixa de ser, nos tempos que correm, um certo \xabvery typical\xbb algarvio,
+    cabe\xe7a de cartaz para os que querem fugir a algumas movimenta\xe7\xf5es nocturnas
+    j\xe1 a caminho da ritualiza\xe7\xe3o de massas, do g\xe9nero \xabvamos todos ao
+    Calypso e encontramo-nos na Locomia\xbb.',
+    'E assim, aos 2,5 milh\xf5es que o Minist\xe9rio do Planeamento e Administra\xe7\xe3o
+    do Territ\xf3rio j\xe1 gasta no pagamento do pessoal afecto a estes organismos,
+    v\xeam juntar-se os montantes das obras propriamente ditas, que os munic\xedpios,
+    j\xe1 com projectos na m\xe3o, v\xeam reivindicar junto do Executivo, como salienta
+    aquele membro do Governo.',
+    'E o dinheiro \xabn\xe3o falta s\xf3 \xe0s c\xe2maras\xbb, lembra o secret\xe1rio de Estado,
+    que considera que a solu\xe7\xe3o para as autarquias \xe9 \xabespecializarem-se em
+    fundos comunit\xe1rios\xbb.',
+    'Mas como, se muitas n\xe3o disp\xf5em, nos seus quadros, dos t\xe9cnicos necess\xe1rios?',
+    '\xabEncomendem-nos a projectistas de fora\xbb porque, se as obras vierem a ser financiadas,
+    eles at\xe9 saem de gra\xe7a, j\xe1 que, nesse caso, \xabos fundos comunit\xe1rios pagam
+    os projectos, o mesmo n\xe3o acontecendo quando eles s\xe3o feitos pelos GAT\xbb,
+    dado serem organismos do Estado.',
+    'Essa poder\xe1 vir a ser uma hip\xf3tese, at\xe9 porque, no terreno, a capacidade dos GAT
+    est\xe1 cada vez mais enfraquecida.',
+    'Alguns at\xe9 j\xe1 desapareceram, como o de Castro Verde, e outros t\xeam vindo a perder quadros.']
+
+Versions of NLTK more recent than 0.9b1 include a trained model for Portuguese sentence
+segmentation, which can be loaded as follows.  It is faster to load a trained model than
+to retrain it.
+
+    >>> stok = nltk.data.load('tokenizers/punkt/portuguese.pickle')
+
+Stemming
+--------
+
+NLTK includes the RSLP Portuguese stemmer.  Here we use it to stem some Portuguese text:
+
+    >>> stemmer = nltk.stem.RSLPStemmer() 
+    >>> stemmer.stem("copiar")
+    >>> stemmer.stem("paisagem")
+    
+
+Stopwords
+---------
+
+NLTK includes Portuguese stopwords:
+
+    >>> stopwords = nltk.corpus.stopwords.words('portuguese')
+    >>> stopwords[:10]
+    ['a', 'ao', 'aos', 'aquela', 'aquelas', 'aquele', 'aqueles', 'aquilo', 'as', 'at\xe9']
+
+Now we can use these to filter text.  Let's find the most frequent words (other than stopwords)
+and print them in descending order of frequency:
+
+    >>> fd = nltk.FreqDist(w.lower() for w in floresta.words() if w not in stopwords)
+    >>> for word in fd.sorted()[:20]:
+    ...     print word, fd[word]
+    , 13444
+    . 7725
+    ? 2369
+    ? 2310
+    ? 1137
+    o 1086
+    } 1047
+    { 1044
+    a 897
+    ; 633
+    em 516
+    ser 466
+    sobre 349
+    os 313
+    anos 301
+    ontem 292
+    ainda 279
+    segundo 256
+    ter 249
+    dois 231
+    
+
+Character Encodings
+-------------------
+
+Python understands the common character encoding used for Portuguese, ISO 8859-1 (ISO Latin 1).
+
+    >>> text = open('floresta.txt').read()
+    >>> text[:60]
+    'O 7 e Meio \xe9 um ex-libris da noite algarvia.\n\xc9 uma das mais '
+    >>> print text[:60]
+    O 7 e Meio ? um ex-libris da noite algarvia.
+    ? uma das mais 
+    >>> text[:60].decode('latin-1')
+    u'O 7 e Meio \xe9 um ex-libris da noite algarvia.\n\xc9 uma das mais '
+    >>> text[:60].decode('latin-1').encode('utf-16')
+    '\xff\xfeO\x00 \x007\x00 \x00e\x00 \x00M\x00e\x00i\x00o\x00 \x00\xe9\x00 \x00u\x00m\x00 \x00e\x00x\x00-\x00l\x00i\x00b\x00r\x00i\x00s\x00 \x00d\x00a\x00 \x00n\x00o\x00i\x00t\x00e\x00 \x00a\x00l\x00g\x00a\x00r\x00v\x00i\x00a\x00.\x00\n\x00\xc9\x00 \x00u\x00m\x00a\x00 \x00d\x00a\x00s\x00 \x00m\x00a\x00i\x00s\x00 \x00'
 
