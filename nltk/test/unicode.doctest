@@ -1,0 +1,110 @@
+.. |nacute| unicode:: U+0144 
+.. |oacute| unicode:: U+00f3
+.. |sacute| unicode:: U+015b
+.. |Sacute| unicode:: U+015a
+.. |aogonek| unicode:: U+0105
+.. |lstroke| unicode:: U+0142
+
+==========================
+ Working with Unicode Data
+==========================
+
+Let's assume that we have a small text file, and that we know how it
+is encoded. For example, ``polish-lat2.txt``, as the name suggests, is
+a snippet of Polish text (from the Polish Wikipedia; see
+http://pl.wikipedia.org/wiki/Biblioteka_Pruska), encoded as Latin-2,
+also known as ISO-8859-2. The function ``nltk.data.find()`` locates the
+file for us.
+
+    >>> import nltk.data
+    >>> path = nltk.data.find('corpora/polish-lat2.txt')
+
+We import the ``codecs`` module, and use it
+to open the file as Unicode. Note that ``codecs`` requires the
+``encoding`` parameter to be specified with an appropriate value, in
+this case ``'latin2'``.
+
+    >>> import codecs
+    >>> f = codecs.open(path, encoding='latin2')
+
+In order to view the file on the terminal, we need to **encode** it, using
+a suitable encoding. The encoding ``'unicode_escape'`` shows us the
+Unicode code points for all characters outside the ASCII range of 0-127.
+
+    >>> lines = f.readlines()
+    >>> for l in lines:
+    ...     l = l[:-1]
+    ...     uni = l.encode('unicode_escape')
+    ...     print uni
+    Pruska Biblioteka Pa\u0144stwowa. Jej dawne zbiory znane pod nazw\u0105
+    "Berlinka" to skarb kultury i sztuki niemieckiej. Przewiezione przez
+    Niemc\xf3w pod koniec II wojny \u015bwiatowej na Dolny \u015al\u0105sk, zosta\u0142y
+    odnalezione po 1945 r. na terytorium Polski. Trafi\u0142y do Biblioteki
+    Jagiello\u0144skiej w Krakowie, obejmuj\u0105 ponad 500 tys. zabytkowych
+    archiwali\xf3w, m.in. manuskrypty Goethego, Mozarta, Beethovena, Bacha.
+
+Unicode code points are integers, usually expressed as 4
+hexadecimal digits preceded by the ``\u`` escape string, such as
+``\u0144`` seen in the first line above. This Unicode character is represented
+as the glyph |nacute|. However,
+Unicode literals can also use the ``\x`` escape sequence followed by 2
+hexadecimal digits; for example, in the third line of the preceding
+example, we can see ``\xf3``, which corresponds to the glyph |oacute|.
+
+We can also specify a Unicode string literal by preceding an ordinary
+string literal with a ``u``, as in ``u'hello'``. Arbitrary Unicode
+characters are defined using the ``\u``\ *XXXX* escape sequence inside a
+Unicode string literal. The hexadecimal 4 digit notation for the integer
+ordinal of the letter ``'a'`` is 0061, so we can define the following:
+
+    >>> a = u'\u0061'
+    >>> a
+    u'a'
+    >>> print a
+    a
+
+The Python ``print`` statement is assuming a default encoding of the
+Unicode character, namely ASCII. However, |nacute| is outside the
+ASCII range, so cannot be printed unless we specify an encoding. In
+the following example, we have specified that ``print`` should use the
+string's ``__repr__`` attribute.
+        
+    >>> nacute = u'\u0144'
+    >>> nacute
+    u'\u0144'
+    >>> nacute_utf = nacute.encode('utf8')
+    >>> print repr(nacute_utf)
+    '\xc5\x84'
+
+However, if your operating system is set up to render UTF-8 encoded
+characters, you ought to be able to give the Python command ``print
+nacute_utf`` and see |nacute| on your screen.
+
+The module ``unicodedata`` lets us inspect the properties of Unicode
+characters. In the following example, we select all characters in the
+third line of our Polish text outside the ASCII range and print their
+UTF-8 escaped value, followed by their code point integer using the
+standard Unicode convention (i.e., prefixing the hex digits with
+``U+``), followed by their Unicode name.
+
+    >>> import unicodedata
+    >>> line = lines[2]
+    >>> for c in line:
+    ...     if ord(c) > 127:
+    ...         print '%r U+%04x %s' % (c.encode('utf8'), ord(c), unicodedata.name(c))
+    '\xc3\xb3' U+00f3 LATIN SMALL LETTER O WITH ACUTE
+    '\xc5\x9b' U+015b LATIN SMALL LETTER S WITH ACUTE
+    '\xc5\x9a' U+015a LATIN CAPITAL LETTER S WITH ACUTE
+    '\xc4\x85' U+0105 LATIN SMALL LETTER A WITH OGONEK
+    '\xc5\x82' U+0142 LATIN SMALL LETTER L WITH STROKE
+
+If you replace th ``%r`` (which yields the ``repr()`` value) by
+``%s`` in the format string of the code sample above, and if your system supports UTF-8,
+you should see an output like the following:
+ 
+| |oacute| U+00f3 LATIN SMALL LETTER O WITH ACUTE
+| |sacute| U+015b LATIN SMALL LETTER S WITH ACUTE
+| |Sacute| U+015a LATIN CAPITAL LETTER S WITH ACUTE
+| |aogonek| U+0105 LATIN SMALL LETTER A WITH OGONEK
+| |lstroke| U+0142 LATIN SMALL LETTER L WITH STROKE
+
