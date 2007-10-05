@@ -1,0 +1,131 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (di0mp0 Uns un)
+        (Z 20 20))
+      (grup.nom.mp
+        (ncmp000 homes home)))
+    (grup.verb
+      (vmip3p0 integren integrar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 lògia lògia)
+        (S.NF.P
+          (participi
+            (aq0fsp creada creat))
+          (sadv-CCT
+            (grup.adv
+              (rg ahir ahir)))
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.fs
+                (di0fs0 una un))
+              (grup.nom.fs
+                (ncfs000 cerimònia cerimònia)
+                (S.NF.P.co
+                  (S.NF.P
+                    (participi
+                      (aq0fsp celebrada celebrat))
+                    (sp-CCL
+                      (prep
+                        (spcms al al))
+                      (sn
+                        (grup.nom.ms
+                          (np00000 Parador_de_la_Suda Parador_de_la_Suda)))))
+                  (coord
+                    (cc i i))
+                  (S.NF.P
+                    (participi
+                      (aq0fsp presidida presidit))
+                    (sp-CAG
+                      (prep
+                        (spcms pel pel))
+                      (sn
+                        (grup.nom.ms
+                          (np00000 Gran_Mestre_de_Catalunya Gran_Mestre_de_Catalunya)
+                          (sn
+                            (Fc , ,)
+                            (grup.nom.ms
+                              (np00000 Manel_Mir Manel_Mir))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 César_Chicote César_Chicote)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vsn0000 ser ser)
+      (vmp00sm nomenat nomenar))
+    (sn-CPRED.SUJ
+      (grup.nom.ms
+        (ncms000 mestre mestre)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 lògia lògia)
+              (S.F.R.co
+                (Fc , ,)
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (S.F.R
+                  (grup.verb
+                    (vmif3s0 tindrà tenir))
+                  (sn-CD.Q
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 seu seu)))
+                  (sp-CCL
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (grup.nom
+                        (np00000 Tortosa Tortosa)))))
+                (coord
+                  (cc i i))
+                (S.F.R
+                  (grup.verb
+                    (vmif3s0 evitarà evitar))
+                  (S.F.C-CD
+                    (conj.subord
+                      (cs que que))
+                    (sn-SUJ
+                      (espec.mp
+                        (da0mp0 els el))
+                      (grup.nom.mp
+                        (ncmp000 maçons maçó)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (espec.fp
+                              (da0fp0 les el))
+                            (grup.nom.fp
+                              (ncfp000 comarques comarca)
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sn
+                                  (espec.ms
+                                    (da0cs0 l' el))
+                                  (grup.nom.ms
+                                    (np00000 Ebre Ebre)))))))))
+                    (morf.pron
+                      (p0300000 s' ell))
+                    (grup.verb
+                      (vasp3p0 hagin haver)
+                      (sps00 de de)
+                      (infinitiu
+                        (vmn0000 desplaçar desplaçar)))))))))))
+    (Fp . .)))

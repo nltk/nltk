@@ -1,0 +1,1241 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (dn0mp0 Dos dos))
+      (grup.nom.mp
+        (ncmp000 arqueòlegs arqueòleg)
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 nord-americans nord-americà)))))
+    (grup.verb
+      (vmip3p0 acaben acabar)
+      (sps00 de de)
+      (infinitiu
+        (vmn0000 muntar muntar)))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 gran gran)))
+        (ncms000 enrenou enrenou)))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 nova nou)))
+          (ncfs000 teoria teoria))))
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 Segons segons))
+      (sn
+        (espec.fp
+          (dp3fp0 les_seves el_seu))
+        (grup.nom.fp
+          (ncfp000 investigacions investigació)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (s.a.mp
+          (grup.a.mp
+            (ao0mp0 primers primer)))
+        (ncmp000 pobladors poblador)
+        (sp
+          (prep
+            (sps00 d' de))
+          (snl
+            (grup.nom
+              (np0000l Amèrica Amèrica))))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 arribar arribar))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (sn
+        (grup.nom.fs
+          (nccs000 mar mar))))
+    (sp-CCL
+      (prep
+        (sps00 des_de des_de))
+      (snl
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (np0000l península_Ibèrica península_Ibèrica))))
+    (sn-CCT
+      (vmip3s0 fa fer)
+      (Z 18.000 18000)
+      (ncmp000 anys any))
+    (sadv-CCT
+      (Fc , ,)
+      (sn.j
+        (espec.fp
+          (rg gairebé gairebé)
+          (Z 5.000 5000))
+        (grup.nom.mp
+          (ncmp000 anys any)))
+      (sadv
+        (grup.adv
+          (rg abans abans)
+          (sp
+            (prep
+              (spcms del del))
+            (S.F.C
+              (conj.subord-SUJ
+                (cs que que))
+              (morfema.verbal-PASS
+                (p0000000 es es))
+              (grup.verb
+                (vmii3s0 creia creure)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (s.a.mp
+          (grup.a.mp
+            (ao0mp0 primers primer)))
+        (ncmp000 pobladors poblador)))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 arribar arribar))
+    (sp-CCL
+      (prep
+        (sps00 des_de des_de))
+      (snl
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (np0000l península_Ibèrica península_Ibèrica))))
+    (sp-AO
+      (Fc , ,)
+      (prep
+        (sps00 segons segons))
+      (sn
+        (espec.mp
+          (dn0mp0 dos dos))
+        (grup.nom.mp
+          (ncmp000 experts expert))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (s.a.mp
+          (grup.a.mp
+            (ao0mp0 primers primer)))
+        (ncmp000 pobladors poblador)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 continent continent)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 americà americà))))))))
+    (grup.verb
+      (vmic3p0 podrien poder)
+      (infinitiu
+        (van0000 haver haver)
+        (vsp00sm estat ser)))
+    (sn-ATR
+      (grup.nom.mp
+        (nccp000 habitants habitant)
+        (sp
+          (prep
+            (sps00 de de))
+          (snl
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000l península_Ibèrica península_Ibèrica))))
+        (S.F.R.co
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (S.F.R
+            (sn-CCT
+              (vmip3s0 fa fer)
+              (Z 18.000 18000)
+              (ncmp000 anys any))
+            (grup.verb
+              (vaip3p0 van anar)
+              (vmn0000 travessar travessar))
+            (snl-CD
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (np0000l Atlàntic Atlàntic))))
+          (coord
+            (cc i i))
+          (S.F.R
+            (grup.verb
+              (vaip3p0 van anar)
+              (vmn0000 arribar arribar))
+            (sp-CREG
+              (prep
+                (sps00 a a))
+              (snl
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 costa costa)
+                  (snl
+                    (grup.nom
+                      (np0000l Est Est)))
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (S.F.C
+                      (conj.subord
+                        (cs que que))
+                      (sn.e-SUJ *0*)
+                      (sadv-CCT
+                        (grup.adv
+                          (rg avui avui)))
+                      (grup.verb
+                        (vsip3p0 són ser))
+                      (snl-ATR
+                        (espec.mp
+                          (da0mp0 els el))
+                        (grup.nom.mp
+                          (np0000l EUA EUA))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.fs
+        (pd0fs000 Aquesta aquest)))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sn-ATR
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 provocativa provocatiu)))
+        (ncfs000 teoria teoria)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (dn0mp0 dos dos))
+            (grup.nom.mp
+              (ncmp000 arqueòlegs arqueòleg)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0mp0 nord-americans nord-americà))))))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 en en))
+      (sn
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 clara clar)))
+          (ncfs000 contradicció contradicció)
+          (sp
+            (prep
+              (sps00 amb amb))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (S.NF.P
+                  (sadv-CC
+                    (grup.adv
+                      (rg generalment generalment)))
+                  (participi
+                    (aq0fsp acceptada acceptat)))
+                (S.F.C
+                  (conj.subord
+                    (cs que que))
+                  (snl-SUJ
+                    (grup.nom
+                      (np0000l Amèrica Amèrica)))
+                  (grup.verb
+                    (vaip3s0 va anar)
+                    (vsn0000 ser ser)
+                    (vmp00sf poblada poblar))
+                  (sn-CCT
+                    (vmip3s0 fa fer)
+                    (Z 13.500 13500)
+                    (ncmp000 anys any))
+                  (sp-CAG
+                    (prep
+                      (sps00 per per))
+                    (sn
+                      (grup.nom.mp
+                        (nccp000 nòmades nòmada)
+                        (s.a.mp
+                          (grup.a.mp
+                            (aq0cp0 procedents procedent)
+                            (sp
+                              (prep
+                                (sps00 d' de))
+                              (snl
+                                (grup.nom
+                                  (np0000l Àsia Àsia))))))
+                        (S.F.R
+                          (relatiu-SUJ
+                            (pr0cn000 que que))
+                          (grup.verb
+                            (vaip3p0 van anar)
+                            (vmn0000 entrar entrar))
+                          (sn-CCL
+                            (grup.nom
+                              (pp3cn000 -hi hi)))
+                          (sp-CC
+                            (prep
+                              (sps00 per per))
+                            (snl
+                              (grup.nom
+                                (np0000l Alaska Alaska)))))))))))))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (grup.nom.fs
+        (ncfs000 Excavació excavació)))
+    (sp
+      (prep
+        (spcmp als al))
+      (snl
+        (grup.nom.mp
+          (np0000l EUA EUA))))
+    (sp
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 jaciment jaciment)
+          (sp
+            (prep
+              (sps00 de de))
+            (sna
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 cultura cultura)
+                (snl
+                  (grup.nom
+                    (np0000l Clovis Clovis)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (snp
+        (grup.nom.ms
+          (np0000p Dennis_Stanford Dennis_Stanford)
+          (snp
+            (Fc , ,)
+            (grup.nom.ms
+              (ncms000 comissari comissari)
+              (sp
+                (prep
+                  (sps00 d' de))
+                (sna
+                  (grup.nom
+                    (np0000a Antropologia Antropologia))))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sno
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 prestigiosa prestigiós)))
+                    (np0000o Smithsonian_Institution_de_Washington Smithsonian_Institution_de_Washington)))))
+            (Fc , ,))))
+      (coord
+        (cc i i))
+      (snp
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 arqueòleg arqueòleg)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 independent independent)))
+          (snp
+            (grup.nom.ms
+              (np0000p Bruce_Bradley Bruce_Bradley))))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 revolucionar revolucionar))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fs
+          (dp3fs0 la_seva el_seu))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 nova nou)))
+          (ncfs000 teoria teoria))))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 congrés congrés)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.mp
+              (ncmp000 arqueòlegs arqueòleg))))
+        (S.NF.P
+          (participi
+            (aq0msp celebrat celebrat))
+          (sn-CCT
+            (espec.ms
+              (dd0ms0 aquest aquest))
+            (grup.nom.ms
+              (nccs000 cap cap)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 setmana setmana))))))
+          (sp-CCL
+            (prep
+              (sps00 a a))
+            (snl
+              (snl
+                (grup.nom
+                  (np0000l Santa_Fe Santa_Fe)))
+              (snl.x
+                (grup.nom.co
+                  (Fpa -Fpa- -Fpa-)
+                  (grup.nom
+                    (np0000l Nou_Mèxic Nou_Mèxic))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000l EUA EUA))
+                  (Fpt -Fpt- -Fpt-))))))))
+    (Fp . .)))
+(
+  (S
+    (S.NF.A-CC
+      (gerundi
+        (vmg0000 Basant basar))
+      (morf.pron
+        (p0300000 -se ell))
+      (sp-CREG
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 comparació comparació)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn.co
+                (sn.co
+                  (sn
+                    (grup.nom.fp
+                      (ncfp000 puntes punta)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.fs
+                            (ncfs000 llança llança))))))
+                  (coord
+                    (cc i i))
+                  (sn
+                    (espec.fp
+                      (di0fp0 unes un)
+                      (di0cp0 altres altre))
+                    (grup.nom.fp
+                      (ncfp000 restes resta))))
+                (S.NF.P.j
+                  (participi
+                    (aq0fpp trobades trobat))
+                  (sp.co-CCL
+                    (sp
+                      (prep
+                        (sps00 a a))
+                      (snl
+                        (espec.fs
+                          (da0cs0 l' el))
+                        (grup.nom.fs
+                          (np0000l Amèrica_del_Nord Amèrica_del_Nord))))
+                    (coord
+                      (cc i i))
+                    (sp
+                      (prep
+                        (sps00 a a))
+                      (snl
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (np0000l península_Ibèrica península_Ibèrica)))))))))))
+      (Fc , ,))
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom.ms
+          (np0000p Stanford Stanford))
+        (coord
+          (cc i i))
+        (grup.nom.ms
+          (np0000p Bradley Bradley))))
+    (grup.verb
+      (vmip3p0 afirmen afirmar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-ATR
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (s.a.mp
+            (grup.a.mp
+              (ao0mp0 primers primer)))
+          (ncmp000 pobladors poblador)
+          (sp
+            (prep
+              (sps00 d' de))
+            (snl
+              (grup.nom
+                (np0000l Amèrica Amèrica))))))
+      (grup.verb
+        (vaip3p0 van anar)
+        (vmn0000 poder poder)
+        (infinitiu
+          (vsn0000 ser ser)))
+      (sn-SUJ
+        (grup.nom.mp
+          (ncmp000 solutrians solutrià)
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (sn-CCT
+              (vmip3s0 fa fer)
+              (rg més més)
+              (sps00 de de)
+              (Z 18.000 18000)
+              (ncmp000 anys any))
+            (grup.verb
+              (vmii3p0 vivien viure))
+            (sp-CCL
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (sadv-CCT
+                      (grup.adv
+                        (rg avui avui)))
+                    (grup.verb
+                      (vsip3s0 és ser))
+                    (sn.co-ATR
+                      (snl
+                        (grup.nom
+                          (np0000l Espanya Espanya)))
+                      (Fc , ,)
+                      (snl
+                        (grup.nom
+                          (np0000l Portugal Portugal)))
+                      (coord
+                        (cc i i))
+                      (snl
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (ncms000 sud sud)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (snl
+                              (grup.nom
+                                (np0000l França França)))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (neg-MOD
+        (rn No no))
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vmip3s0 sap saber))
+      (S.F.C-SUJ
+        (sadv-CC
+          (grup.adv
+            (pt000000 com com)))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vaip3p0 van anar)
+          (vmn0000 travessar travessar))
+        (snl-CD
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (np0000l Atlàntic Atlàntic))))
+      (Fc , ,))
+    (coord
+      (cc però però))
+    (S
+      (sp-AO
+        (prep
+          (sps00 segons segons))
+        (sn
+          (espec.ms
+            (dp3ms0 el_seu el_seu))
+          (grup.nom.ms
+            (ncms000 coneixement coneixement)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fp
+                  (ncfp000 cultures cultura)
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0fp0 natives natiu)))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snl
+                      (espec.ms
+                        (da0cs0 l' el))
+                      (grup.nom.ms
+                        (np0000l Àrtic Àrtic)))))))))
+        (Fc , ,))
+      (snp-SUJ
+        (grup.nom.ms
+          (np0000p Stanford Stanford)))
+      (grup.verb
+        (vmip3s0 especula especular))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (snp-SUJ
+          (espec.mp
+            (da0mp0 els el))
+          (grup.nom.mp
+            (ncmp000 solutrians solutrià)))
+        (grup.verb
+          (vaip3p0 van anar)
+          (vmn0000 poder poder)
+          (infinitiu
+            (vmn0000 fer fer)))
+        (sn-CD
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 travessia travessia)))
+        (sp-CC
+          (prep
+            (sps00 en en))
+          (sn
+            (grup.nom.mp
+              (ncmp000 rais rai)
+              (S.NF.P
+                (participi
+                  (aq0mpp fabricats fabricat))
+                (sp-CC
+                  (prep
+                    (sps00 amb amb))
+                  (sn
+                    (grup.nom.fp
+                      (ncfp000 pells pell)
+                      (sp
+                        (prep
+                          (sps00 d' de))
+                        (sn
+                          (grup.nom.mp
+                            (nccp000 animals animal)))))))))))
+        (S.F.A-CC
+          (conj.subord
+            (cs perquè perquè))
+          (sp-CC
+            (Fc , ,)
+            (prep
+              (sps00 amb amb))
+            (sn.co
+              (sn
+                (grup.nom.ms
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 bon bo)))
+                  (ncmn000 temps temps)))
+              (coord
+                (cc i i))
+              (sn
+                (espec.ms
+                  (di0ms0 un un))
+                (grup.nom.ms
+                  (ncms000 corrent corrent)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 fort fort))))))
+            (Fc , ,))
+          (sn-SUJ
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 travessia travessia)))
+          (grup.verb
+            (vaic3s0 hauria haver)
+            (vmp00sm pogut poder)
+            (infinitiu
+              (vmn0000 fer fer)))
+          (morfema.verbal-PASS
+            (p0000000 -se es))
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (sn
+              (sadv.j
+                (grup.adv
+                  (rg a_penes a_penes)))
+              (sn
+                (espec.ms
+                  (di0ms0 un un))
+                (grup.nom.ms
+                  (ncms000 mes mes))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 arqueòleg arqueòleg)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 recordar recordar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (ncmp000 illencs illenc)
+          (sp
+            (prep
+              (spcms del del))
+            (snl
+              (grup.nom.ms
+                (ncms000 sud sud)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (snl
+                    (grup.nom.ms
+                      (np0000l Pacífic Pacífic)))))))))
+      (sn-CCT
+        (vmip3s0 fa fer)
+        (rg més més)
+        (sps00 de de)
+        (Z 20.000 20000)
+        (ncmp000 anys any))
+      (conj.subord
+        (cs que que))
+      (grup.verb
+        (vmip3p0 naveguen navegar))
+      (sp.co-CC
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (grup.nom.ms
+              (nccs000 mar mar)
+              (S.NF.P
+                (participi
+                  (aq0msp obert obert))))))
+        (coord
+          (cc i i))
+        (sp
+          (prep
+            (sps00 amb amb))
+          (sn
+            (grup.nom.mp
+              (ncmp000 mitjans mitjà)
+              (s.a.mp
+                (espec
+                  (rg molt molt))
+                (grup.a.mp
+                  (aq0mp0 precaris precari))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv.co-CCT
+      (sadv
+        (grup.adv
+          (rg Després després)
+          (sp
+            (prep
+              (sps00 d' de))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 arribar arribar))
+              (sp-CCL
+                (prep
+                  (sps00 a a))
+                (snl
+                  (grup.nom
+                    (np0000l Amèrica Amèrica))))))))
+      (coord
+        (cc i i))
+      (sp
+        (prep
+          (sps00 durant durant))
+        (sn
+          (espec.mp
+            (Z 6.000 6000))
+          (grup.nom.mp
+            (ncmp000 anys any))))
+      (Fc , ,))
+    (snp-SUJ
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 solutrians solutrià)))
+    (morf.pron
+      (p0300000 s' ell))
+    (grup.verb
+      (vaic3p0 haurien haver)
+      (vmp00sm estès estendre))
+    (sp-CC
+      (prep
+        (spcmp cap_als cap_al))
+      (sn.co
+        (snl
+          (grup.nom.mp
+            (ncmp000 deserts desert)
+            (s.a.mp
+              (grup.a.mp
+                (aq0mp0 nord-americans nord-americà)))))
+        (Fc , ,)
+        (snl
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 tundra tundra)
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 canadenca canadenc)))))
+        (coord
+          (cc i i))
+        (snl
+          (grup.nom
+            (np00000 Sud-amèrica Sud-amèrica)))))
+    (S.NF.A-CC
+      (Fc , ,)
+      (gerundi
+        (vmg0000 portant portar))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 cultura cultura)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 caça caça)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 teoria teoria)
+        (S.NF.P
+          (sadv-CCT
+            (grup.adv
+              (rg avui avui)))
+          (participi
+            (aq0fsp acceptada acceptat)))))
+    (grup.verb
+      (vsip3s0 és ser))
+    (S.F.C-ATR
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (grup.nom.mp
+          (ncmp000 grups grup)
+          (s.a.mp
+            (grup.a.mp
+              (aq0cp0 nòmades nòmada)))))
+      (grup.verb
+        (vaip3p0 van anar)
+        (vmn0000 travessar travessar))
+      (sp-CC
+        (prep
+          (sps00 des_de des_de))
+        (snl
+          (grup.nom
+            (np0000l Sibèria Sibèria))))
+      (sp-CC
+        (prep
+          (sps00 fins fins))
+        (sp
+          (prep
+            (sps00 a a))
+          (snl
+            (grup.nom
+              (np0000l Alaska Alaska)))))
+      (sp-CC
+        (prep
+          (sps00 per per))
+        (snl
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (ncms000 estret estret)
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Bering Bering)))))))
+      (S.NF.A-CC
+        (Fc , ,)
+        (gerundi
+          (vmg0000 aprofitant aprofitar))
+        (S.F.C-CD
+          (conj.subord
+            (cs que que))
+          (sn-SUJ
+            (espec.fs
+              (da0cs0 l' el))
+            (grup.nom.fs
+              (s.a.fs
+                (grup.a.fs
+                  (ao0fs0 última últim)))
+              (ncfs000 glaciació glaciació)))
+          (grup.verb
+            (vaip3s0 va anar)
+            (vmn0000 unir unir))
+          (sn-CD
+            (espec.fp
+              (di0fp0 totes tot)
+              (dn0fp0 dues dos))
+            (grup.nom.fp
+              (ncfp000 costes costa)))
+          (sp-CC
+            (prep
+              (sps00 amb amb))
+            (sn
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (ncms000 pont pont)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 gel gel))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCL
+      (prep
+        (sps00 Des_d' des_de))
+      (sadv
+        (grup.adv
+          (rg allà allà))))
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 poblar poblar))
+    (snl-ATR
+      (grup.nom
+        (np0000l Amèrica Amèrica)))
+    (S.NF.A-CC
+      (gerundi
+        (vmg0000 donant_peu donar_peu))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs
+            (ncfs000 cultura cultura)
+            (S.NF.P
+              (participi
+                (aq0fsp coneguda conegut))
+              (sp-CPRED
+                (prep
+                  (sps00 com_a com_a))
+                (sna
+                  (grup.nom
+                    (np0000l Clovis Clovis)))))))))
+    (Fp . .)))
+(
+  (S
+    (coord-ET
+      (cc Però però))
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom.ms
+          (np0000p Stanford Stanford))
+        (coord
+          (cc i i))
+        (grup.nom.ms
+          (np0000p Bradley Bradley))))
+    (grup.verb
+      (vmip3p0 sostenen sostenir))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn.co-SUJ
+        (sna
+          (grup.nom
+            (np0000l Clovis Clovis)))
+        (coord
+          (cc i i))
+        (sna
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (np0000a Solutrià Solutrià))))
+      (grup.verb
+        (vsip3p0 són ser))
+      (sa-ATR
+        (espec
+          (rg gairebé gairebé))
+        (grup.a
+          (aq0fp0 idèntiques idèntic))))
+    (Fp . .)))
+(
+  (S
+    (Fe " ")
+    (sn-SUJ
+      (espec.fp
+        (dp3fp0 Les_seves el_seu))
+      (grup.nom.fp
+        (ncfp000 puntes punta)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 llança llança))))))
+    (grup.verb
+      (vsip3p0 són ser))
+    (sa-ATR
+      (grup.a
+        (aq0cp0 impossibles impossible)
+        (sp
+          (prep
+            (sps00 de de))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 distingir distingir))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (neg-MOD
+        (rn No no))
+      (morf.pron
+        (pp3cn000 hi hi))
+      (grup.verb
+        (vaip3s0 ha haver))
+      (sn-CD.Q
+        (grup.nom.ms.1n
+          (pi0cs000 res res)))
+      (sp-CCL
+        (prep
+          (sps00 a a))
+        (sna
+          (grup.nom
+            (np0000l Clovis Clovis))))
+      (S.F.R.1c
+        (relatiu-SUJ
+          (pr0cn000 que que))
+        (neg-MOD
+          (rn no no))
+        (grup.verb
+          (vssp3s0 sigui ser))
+        (sp-CREG
+          (prep
+            (spcms al al))
+          (sna
+            (grup.nom.ms
+              (np0000a Solutrià Solutrià)))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmip3s0 diu dir))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Stanford Stanford)))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 teoria teoria)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (di0mp0 tots tot)
+                (dn0mp0 dos dos))
+              (grup.nom.mp
+                (ncmp000 arqueòlegs arqueòleg))))))
+      (grup.verb
+        (vmif3s0 tardarà tardar))
+      (sn-CD.Q
+        (grup.nom.mp
+          (ncmp000 anys any)))
+      (sp-CC
+        (prep
+          (sps00 a a))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 avaluar avaluar))
+          (morfema.verbal-PASS
+            (p0000000 -se es))))
+      (Fc , ,))
+    (coord
+      (cc però però))
+    (S
+      (sn.e-SUJ *0*)
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vsip3p0 són ser))
+      (sn-ATR
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 únics únic)))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3p0 consideren considerar))
+            (S.NF.P-CPRED.CD
+              (participi
+                (aq0fsp superada superat)))
+            (sn-CD
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 creença creença)
+                (S.F.C
+                  (conj.subord
+                    (cs que que))
+                  (sn-SUJ
+                    (espec.mp
+                      (da0mp0 els el))
+                    (grup.nom.mp
+                      (ncmp000 pobladors poblador)
+                      (sp
+                        (prep
+                          (sps00 d' de))
+                        (snl
+                          (grup.nom
+                            (np0000l Amèrica Amèrica))))))
+                  (grup.verb
+                    (vaip3p0 van anar)
+                    (vmn0000 arribar arribar))
+                  (sn-CCT
+                    (vmip3s0 fa fer)
+                    (Z 13.500 13500)
+                    (ncmp000 anys any))
+                  (sp-CC
+                    (prep
+                      (sps00 per per))
+                    (snl
+                      (grup.nom
+                        (np0000l Alaska Alaska)))))))
+            (S.F.A-CC
+              (Fc , ,)
+              (conj.subord
+                (cs ja_que ja_que))
+              (morfema.verbal-PASS
+                (p0000000 s' es))
+              (grup.verb
+                (vaip3p0 han haver)
+                (vmp00sm detectat detectar))
+              (sn-SUJ
+                (grup.nom.fp
+                  (ncfp000 restes resta)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.mp
+                        (rg fins_a fins_a)
+                        (Z 16.000 16000))
+                      (grup.nom.mp
+                        (ncmp000 anys any)
+                        (sp
+                          (prep
+                            (sps00 d' de))
+                          (sn
+                            (grup.nom.fs
+                              (ncfs000 antiguitat antiguitat)))))))))
+              (sp-CCL
+                (prep
+                  (sps00 a a))
+                (sn.x
+                  (grup.nom.co
+                    (grup.nom
+                      (np0000l Xile Xile))
+                    (Fc , ,)
+                    (grup.nom
+                      (np0000l Pennsilvània Pennsilvània))
+                    (Fc , ,)
+                    (grup.nom
+                      (np0000l Virgínia Virgínia))
+                    (coord
+                      (cc i i))
+                    (grup.nom
+                      (np0000l Carolina_del_Sud Carolina_del_Sud))))))))))
+    (Fp . .)))

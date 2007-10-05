@@ -1,0 +1,84 @@
+
+(
+  (S
+    (S.F.A-CCT
+      (conj.subord
+        (cs Ara_que ara_que))
+      (morfema.verbal-PASS
+        (p0000000 s' es))
+      (grup.verb
+        (vaip3s0 ha haver)
+        (vmp00sm descobert descobrir))
+      (sn-SUJ
+        (espec.fs
+          (dp1fsp la_nostra el_nostre))
+        (grup.nom.fs
+          (ncfs000 proximitat proximitat)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 genètica genètic)))
+          (sp
+            (prep
+              (sps00 amb amb))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 pollastre pollastre))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (rg més més)
+        (sps00 d' de))
+      (grup.nom.ms
+        (pi0ms000 un un)))
+    (grup.verb
+      (vmif3s0 dirà dir))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sadv-CCT
+        (grup.adv
+          (rg ja ja)))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vsip3s0 és ser))
+      (sa-ATR
+        (grup.a
+          (aq0ms0 necessari necessari)))
+      (S.NF.C-SUJ
+        (infinitiu
+          (vmn0000 investigar investigar))
+        (sadv-CC
+          (grup.adv
+            (rg més més)))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs.1n
+        (ncfs000 resposta resposta)
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (di0cs0 qualsevol qualsevol))
+            (grup.nom.fs
+              (ncfs000 pregunta pregunta))))))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sa-ATR
+      (grup.a
+        (aq0fs0 clara clar)))
+    (sn.1c
+      (Fd : :)
+      (faa ¡ ¡)
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 gallina gallina)))
+    (Fat ! !)))

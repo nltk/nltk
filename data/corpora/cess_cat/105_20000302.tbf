@@ -1,0 +1,367 @@
+
+(
+  (S.co
+    (sadv.j-CCT
+      (grup.adv
+        (rg Després després)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 pas pas)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.mp
+                    (dn0mp0 dos dos))
+                  (grup.nom.mp
+                    (ncmp000 fronts front)
+                    (S.NF.P
+                      (participi
+                        (aq0mpp ennuvolats ennuvolat)))
+                    (S.F.R
+                      (relatiu-SUJ
+                        (pr0cn000 que que))
+                      (grup.verb
+                        (vaip3p0 han haver)
+                        (vmp00sm deixat deixar))
+                      (sn-CD
+                        (grup.nom.fp
+                          (ncfp000 precipitacions precipitació)
+                          (s.a.fp
+                            (espec
+                              (rg poc poc))
+                            (grup.a.fp
+                              (aq0cp0 importants important)))
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom.fs
+                                (ncfs000 neu neu))))))
+                      (sadv-CCL
+                        (grup.adv
+                          (rg per_sobre per_sobre)
+                          (sp
+                            (prep
+                              (spcmp dels del))
+                            (snn
+                              (espec.mp
+                                (Z 1.300 1300))
+                              (grup.nom.mp
+                                (ncmp000 metres metre))))))))))))))
+      (Fc , ,))
+    (S.co
+      (S
+        (sn-SUJ
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (ncms000 anticicló anticicló)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 oceànic oceànic)))))
+        (morf.pron
+          (p0300000 s' ell))
+        (grup.verb
+          (vmif3s0 establirà establir))
+        (sp-CCL
+          (prep
+            (spcms al al))
+          (snl
+            (grup.nom.ms
+              (np0000l Pirineu Pirineu)))))
+      (coord
+        (cc i i))
+      (S
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmif3s0 desviarà desviar))
+        (sp-CCL
+          (prep
+            (spcms cap_al cap_al))
+          (sn
+            (grup.nom.ms
+              (ncms000 nord nord))))
+        (sn-CD
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 trajectòria trajectòria)
+            (sp
+              (prep
+                (spcmp dels del))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 núvols núvol)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn.x
+                      (grup.nom.co
+                        (grup.nom.fs
+                          (ncfs000 pluja pluja))
+                        (coord
+                          (cc i i))
+                        (grup.nom.fs
+                          (ncfs000 neu neu))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCL.r
+      (prep
+        (spcms Al al))
+      (snl
+        (grup.nom.ms
+          (np0000l Pirineu Pirineu))))
+    (sn-CCL.r
+      (grup.nom
+        (pp3cn000 hi hi)))
+    (grup.verb
+      (vmif3s0 predominarà predominar))
+    (sp-CCT
+      (prep
+        (sps00 durant durant))
+      (sn
+        (espec.fs
+          (di0fs0 tota tot)
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 setmana setmana))))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 cel cel)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 clar clar)))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 amb amb))
+      (sn
+        (grup.nom.ms
+          (ncms000 vent vent)
+          (s.a.ms.co
+            (participi
+              (aq0msp moderat moderat))
+            (coord
+              (cc i i))
+            (grup.a.ms
+              (aq0ms0 fort fort)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn.x
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.co
+                (grup.nom.ms
+                  (ncms000 oest oest))
+                (coord
+                  (cc i i))
+                (grup.nom.ms
+                  (ncms000 nord-oest nord-oest))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fp
+          (da0fp0 Les el))
+        (grup.nom.fp
+          (ncfp000 temperatures temperatura)
+          (s.a.fp
+            (grup.a.fp
+              (aq0fp0 nocturnes nocturn)))))
+      (morf.pron
+        (p0300000 es ell))
+      (grup.verb
+        (vmif3p0 mouran moure))
+      (sp-CC
+        (prep
+          (sps00 entre entre))
+        (snn
+          (espec.mp.co
+            (espec.mp
+              (da0mp0 els el)
+              (Z 2 2))
+            (coord
+              (cc i i))
+            (espec.mp
+              (da0mp0 els el)
+              (Z 6 6)))
+          (grup.nom.mp
+            (ncmp000 graus grau)
+            (sp
+              (prep
+                (sps00 sota sota))
+              (sn
+                (grup.nom.ms
+                  (ncms000 zero zero)))))))
+      (sp-CCL
+        (prep
+          (sps00 a a))
+        (snn
+          (espec.mp
+            (Z 1.500 1500))
+          (grup.nom.mp
+            (ncmp000 metres metre)))
+        (Fc , ,)))
+    (coord
+      (cc i i))
+    (S*
+      (sn-SUJ
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (s.a.fp
+            (grup.a.fp
+              (aq0fp0 diürnes diürn)))))
+      (Fc , ,)
+      (sp-CC
+        (prep
+          (sps00 entre entre))
+        (snn
+          (espec.mp.co
+            (espec.mp
+              (da0mp0 els el)
+              (Z 5 5))
+            (coord
+              (cc i i))
+            (espec.mp
+              (da0mp0 els el)
+              (Z 10 10)))
+          (grup.nom.mp
+            (ncmp000 graus grau)
+            (s.a.mp
+              (grup.a.mp
+                (aq0mp0 positius positiu)))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCL
+      (prep
+        (spcmp Als al))
+      (snl
+        (grup.nom.mp
+          (np0000l Alps Alps)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 vent vent)
+        (s.a.ms.x
+          (grup.a.ms.co
+            (grup.a.ms
+              (aq0ms0 càlid càlid))
+            (coord
+              (cc i i))
+            (grup.a.ms
+              (aq0ms0 humit humit))))))
+    (grup.verb
+      (vmif3s0 produirà produir))
+    (sn-CD
+      (sn
+        (espec.ms
+          (rg més més))
+        (grup.nom.ms
+          (ncms000 desglaç desglaç)))
+      (S.F.AComp*.j
+        (conj.subord
+          (cs que que))
+        (sn
+          (grup.nom.fp
+            (ncfp000 nevades nevada)
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fp
+                  (da0fp0 les el))
+                (grup.nom.fp
+                  (ncfp000 cotes cota)
+                  (s.a.fp.x
+                    (grup.a.fp.co
+                      (grup.a.fp
+                        (aq0fp0 baixes baix))
+                      (coord
+                        (cc i i))
+                      (grup.a.fp
+                        (aq0fp0 mitjanes mitjà)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 forta fort)))
+          (ncfs000 radiació radiació)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 solar solar)))
+          (S.F.R
+            (relatiu-CD.Q
+              (pr0cn000 que que))
+            (morf.pron
+              (pp3cn000 hi hi))
+            (grup.verb
+              (vaif3s0 haurà haver))
+            (sp-CCT
+              (prep
+                (spcms al al))
+              (sn
+                (grup.nom.ms
+                  (ncms000 migdia migdia)))))))
+      (coord
+        (cc i i))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 temperatura temperatura)
+          (s.a.fs
+            (espec
+              (rg més més))
+            (grup.a.fs
+              (aq0fs0 alta alt)))
+          (sp
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 cara cara)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cn0 sud sud)))))))))
+    (grup.verb
+      (vmif3p0 faran fer))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (morf.pron
+        (p0300000 s' ell))
+      (grup.verb
+        (vmsp3s0 humidifiqui humidificar))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 mantell mantell)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 neu neu)))))))
+    (Fp . .)))

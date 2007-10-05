@@ -1,0 +1,389 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 propera proper)))
+        (np00000 Assemblea Assemblea)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 nacional nacional)))
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom
+              (np00000 Iniciativa-Verds Iniciativa-Verds))))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmif3s0 tindrà_lloc tenir_lloc))
+          (sn.x-CCT
+            (grup.nom.co
+              (grup.nom.ms
+                (W divendres [divendres:??/??/??:??.??]))
+              (Fc , ,)
+              (grup.nom.ms
+                (W dissabte [dissabte:??/??/??:??.??]))
+              (coord
+                (cc i i))
+              (grup.nom.ms
+                (W diumenge [diumenge:??/??/??:??.??]))))
+          (sp-CREG
+            (prep
+              (sps00 a a))
+            (sn
+              (grup.nom
+                (np00000 Barcelona Barcelona))))
+          (Fc , ,))))
+    (grup.verb
+      (vmif3s0 comptarà comptar))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 entre entre))
+      (sn.x
+        (espec.mp
+          (da0mp0 els el)
+          (Z 814 814))
+        (grup.nom.co
+          (grup.nom.mp
+            (ncmp000 delegats delegat))
+          (coord
+            (cc i i))
+          (grup.nom.fp
+            (ncfp000 delegades delegada))))
+      (Fc , ,))
+    (sp-CREG
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 representació representació)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 gironina gironí)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (Z 40 40))
+              (grup.nom.mp
+                (ncmp000 membres membre)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (dd0fs0 Aquesta aquest))
+      (grup.nom.fs
+        (ncfs000 delegació delegació)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 gironina gironí)))))
+    (grup.verb
+      (vmif3s0 participarà participar))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn.x
+        (grup.nom.co
+          (grup.nom.fs
+            (ncfs000 veu veu))
+          (coord
+            (cc i i))
+          (grup.nom.ms
+            (ncms000 vot vot)))))
+    (sp.co-CREG
+      (sp
+        (prep
+          (sps00 en en))
+        (sn.co
+          (sn.co
+            (sn
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (ncfp000 discussions discussió)))
+            (coord
+              (cc i i))
+            (sn
+              (espec.mp
+                (da0mp0 els el))
+              (grup.nom.mp
+                (ncmp000 debats debat))))
+          (sp.j
+            (prep
+              (sps00 sobre sobre))
+            (sn.co
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 ponència ponència)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 política polític)))))
+              (coord
+                (cc i i))
+              (sn
+                (espec.ms
+                  (di0ms0 un un))
+                (grup.nom.ms
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 nou nou)))
+                  (ncms000 model model)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 organitzatiu organitzatiu)))))))))
+      (coord
+        (cc i i))
+      (sp
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 renovació renovació)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0cs0 l' el))
+                (grup.nom.fs
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 actual actual)))
+                  (ncfs000 direcció direcció)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (da0cs0 l' el))
+                      (grup.nom.fs
+                        (ncfs000 esquerra esquerra)
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0fs0 verda verd)))))))))))))
+    (S.F.A-AO
+      (Fc , ,)
+      (conj.subord
+        (cs segons segons))
+      (grup.verb
+        (vaip3p0 han haver)
+        (vmp00sm informat informar))
+      (sn-SUJ
+        (grup.nom.fp
+          (ncfp000 fonts font)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 partit partit))))))
+      (sp-CCL
+        (prep
+          (sps00 a a))
+        (sn
+          (grup.nom
+            (np00000 Girona Girona)))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Amb amb))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 mesa mesa)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 presidencial presidencial)))
+          (S.NF.P
+            (participi
+              (aq0fsp formada format))
+            (sp-CAG
+              (prep
+                (sps00 per per))
+              (sn
+                (espec.fp
+                  (Z 15 15))
+                (grup.nom.fp
+                  (ncfp000 persones persona)))))))
+      (Fc , ,))
+    (sn.x-SUJ
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.co
+        (grup.nom.mp
+          (ncmp000 delegats delegat))
+        (coord
+          (cc i i))
+        (grup.nom.fp
+          (ncfp000 delegades delegada))))
+    (grup.verb
+      (vaif3p0 hauran haver)
+      (sps00 de de)
+      (infinitiu
+        (vmn0000 debatre debatre)))
+    (sn-CD
+      (espec.fp
+        (da0fp0 les el))
+      (grup.nom.fp
+        (ncfp000 esmenes esmena)
+        (S.NF.P
+          (participi
+            (aq0fpp presentades presentat)))
+        (sn.co
+          (Fd : :)
+          (sn
+            (grup.nom.p
+              (Z 270 270)
+              (sp
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 ponència ponència)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 política polític))))))))
+          (Fc , ,)
+          (sn
+            (grup.nom.p
+              (Z 113 113)
+              (sp
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (sp
+                      (prep
+                        (sps00 d' de))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 organització organització)))))))))
+          (coord
+            (cc i i))
+          (sn
+            (grup.nom.p
+              (Z 4 4)
+              (sp
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 reglament reglament))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (di0fs0 Una un))
+      (grup.nom.fs
+        (ncfs000 vintena vintena)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn.x
+            (grup.nom.co
+              (grup.nom.co
+                (grup.nom.mp
+                  (ncmp000 convidats convidat))
+                (coord
+                  (cc i i))
+                (grup.nom.fp
+                  (ncfp000 convidades convidada)))
+              (sp.j
+                (Fc , ,)
+                (sadv.j
+                  (grup.adv
+                    (rg també també)))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fp
+                      (da0fp0 les el))
+                    (grup.nom.fp
+                      (ncfp000 comarques comarca)
+                      (s.a.fp
+                        (grup.a.fp
+                          (aq0fp0 gironines gironí))))))
+                (Fc , ,)))))))
+    (grup.verb
+      (vmif3p0 participaran participar))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 sense sense))
+      (sn
+        (grup.nom.ms
+          (ncms000 dret dret)
+          (sp
+            (prep
+              (sps00 a a))
+            (sn
+              (grup.nom.ms
+                (ncms000 vot vot))))))
+      (Fc , ,))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn.co
+        (sn
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (ncfp000 discussions discussió)))
+        (coord
+          (cc i i))
+        (sn
+          (espec.mp
+            (da0mp0 els el))
+          (grup.nom.mp
+            (ncmp000 debats debat)))))
+    (sp-CCL
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 si si)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 delegació delegació)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 gironina gironí)))))))))
+    (Fp . .)))

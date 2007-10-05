@@ -1,0 +1,75 @@
+
+(
+  (S*
+    (sp
+      (prep
+        (sps00 Por por))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 sencilla sencillo)))
+          (ncfs000 razón razón)
+          (sp
+            (prep
+              (sps00 de de))
+            (S.F.C
+              (conj.subord
+                (cs que que))
+              (grup.verb
+                (vsip3s0 es ser))
+              (sa-ATR
+                (espec
+                  (rg casi casi))
+                (grup.a
+                  (aq0ms0 seguro seguro)))
+              (S.F.C-SUJ
+                (conj.subord
+                  (cs que que))
+                (neg-MOD
+                  (rn no no))
+                (grup.verb
+                  (vmif3s0 bastará bastar))
+                (sn-SUJ
+                  (espec.fs
+                    (dp3cs0 su su))
+                  (grup.nom.fs
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0cs0 noble noble)))
+                    (ncfs000 intención intención)))
+                (S.F.A-CC
+                  (conj.subord
+                    (cs para_que para_que))
+                  (sn.e-SUJ *0*)
+                  (sn-CI
+                    (grup.nom.s
+                      (pp3csd00 le él)))
+                  (grup.verb
+                    (vmsp3p0 permitan permitir))
+                  (S.NF.C-CD
+                    (infinitiu
+                      (vmn0000 cumplir cumplir))
+                    (sn-CD
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 precepto precepto)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0ms0 cristiano cristiano)))
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (S.NF.C
+                            (infinitiu
+                              (vmn0000 ayudar ayudar))
+                            (sp-CD
+                              (prep
+                                (spcms al al))
+                              (sn
+                                (grup.nom.ms
+                                  (ncms000 prójimo prójimo))))))))))))))))
+    (Fp . .)))

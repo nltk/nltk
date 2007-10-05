@@ -1,0 +1,211 @@
+
+(
+  (S
+    (sno-SUJ
+      (grup.nom
+        (np0000o Bellpuig Bellpuig)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm celebrat celebrar))
+    (sadv-CC
+      (grup.adv
+        (rg avui avui)))
+    (sp-CC
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 migdia migdia))))
+    (sna-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 tradicional tradicional)))
+        (ncms000 dinar dinar)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 popular popular)))
+        (sp
+          (prep
+            (sps00 de de))
+          (snp
+            (grup.nom
+              (np0000p Sant_Isidre Sant_Isidre))))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vaip3s0 ha haver)
+            (vmp00sm reunit reunir))
+          (sn-CD
+            (espec.mp
+              (di0mp0 uns un)
+              (Z 600 600))
+            (grup.nom.mp
+              (ncmp000 comensals comensal)))
+          (sp-CC
+            (prep
+              (spcms al al))
+            (sn
+              (grup.nom.ms
+                (ncms000 poliesportiu poliesportiu)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 municipal municipal)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 dinar dinar)))
+    (grup.verb
+      (vmip3s0 està estar))
+    (S.NF.P-ATR
+      (participi
+        (aq0msp organitzat organitzat))
+      (sp
+        (prep
+          (sps00 per per))
+        (sn.co
+          (sno
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (np0000o Ajuntament_de_Bellpuig Ajuntament_de_Bellpuig)))
+          (coord
+            (cc i i))
+          (sno
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000o Cooperativa_del_Camp_de_Bellpuig_i_Comarca Cooperativa_del_Camp_de_Bellpuig_i_Comarca))))))
+    (Fp . .)))
+(
+  (S
+    (sna-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np0000a Dinar_Popular Dinar_Popular)
+        (sp
+          (prep
+            (sps00 de de))
+          (snp
+            (grup.nom
+              (np0000p Sant_Isidre Sant_Isidre))))))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sn-ATR
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 trobada trobada)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 caire caire)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 social social))))))
+        (S.F.R.co
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (morfema.verbal-PASS
+              (p0000000 s' es))
+            (grup.verb
+              (vmip3s0 organitza organitzar))
+            (sadv-CC
+              (grup.adv
+                (rg anualment anualment)))
+            (sp-CC
+              (prep
+                (sps00 en_motiu_de en_motiu_de))
+              (sna
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np0000a Festivitat_de_Sant_Isidre Festivitat_de_Sant_Isidre)))))
+          (coord
+            (cc i i))
+          (S.F.R
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (relatiu
+                (da0fs0 la el)
+                (pr0cs000 qual qual)))
+            (morfema.verbal-PASS
+              (p0000000 es es))
+            (grup.verb
+              (vmip3s0 serveix servir))
+            (sna-SUJ
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 tradicional tradicional)))
+                (Fz ' ')
+                (np0000a Cassola_de_Tros Cassola_de_Tros)
+                (Fz ' ')))
+            (sp-CC
+              (prep
+                (sps00 entre entre))
+              (sn
+                (espec.mp
+                  (rg més més))
+                (grup.nom.mp
+                  (ncmp000 comensals comensal)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fp
+                        (di0fp0 totes tot)
+                        (da0fp0 les el))
+                      (grup.nom.fp
+                        (ncfp000 edats edat)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 àpat àpat)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vsp00sm estat ser)
+      (vmp00sm amenitzat amenitzar))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 sessió sessió)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 ball ball))))
+          (sp
+            (prep
+              (spcms a_càrrec_del a_càrrec_del))
+            (snp
+              (grup.nom.ms
+                (ncms000 músic músic)
+                (snp
+                  (grup.nom.ms
+                    (np0000p Josep_Maria_Güell Josep_Maria_Güell)))))))))
+    (Fp . .)))

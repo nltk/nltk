@@ -1,0 +1,64 @@
+
+(
+  (S
+    (sn.e-SUJ *0*)
+    (sn-CI.r
+      (grup.nom.s
+        (pp3csd00 Li ell)))
+    (grup.verb
+      (vmip3s0 pot poder)
+      (infinitiu
+        (van0000 haver haver)
+        (vmp00sm donat donar)))
+    (sp-CI.r
+      (prep
+        (spcms al al))
+      (sn
+        (espec.ms
+          (dp3ms0 seu seu))
+        (grup.nom.ms
+          (ncms000 germà germà))))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 ultimàtum ultimàtum)))
+    (S.F.A-CC
+      (conj.subord
+        (cs perquè perquè))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmsp3s0 triï triar))
+      (sn.co-CD
+        (coord
+          (sps00 entre entre))
+        (sn
+          (espec.ms
+            (dp3ms0 el_seu el_seu))
+          (grup.nom.ms
+            (ncms000 paper paper)
+            (sp
+              (prep
+                (sps00 com_a com_a))
+              (sn
+                (grup.nom.ms
+                  (ncms000 membre membre)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 família família)
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0cs0 reial reial)))))))))))
+        (coord
+          (cc i i))
+        (sn
+          (espec.mp
+            (dp3mp0 els_seus el_seu))
+          (grup.nom.mp
+            (ncmp000 negocis negoci)))))
+    (Fp . .)))

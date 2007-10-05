@@ -1,0 +1,142 @@
+
+(
+  (S.co
+    (S
+      (sadv-ET
+        (grup.adv
+          (rg Además además))
+        (Fc , ,))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3s0 resaltó resaltar))
+      (sn-CD
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 resoluciones resolución)
+          (sp
+            (prep
+              (sps00 sobre sobre))
+            (sn
+              (grup.nom.fs
+                (ncfs000 limitación limitación)
+                (sp.co
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.mp
+                        (ncmp000 mandatos mandato)
+                        (s.a.mp
+                          (grup.a.mp
+                            (aq0mp0 públicos público))))))
+                  (coord
+                    (cc y y))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fp
+                        (ncfp000 incompatibilidades incompatibilidad)))))))))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3s0 consideró considerar))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (Fe " ")
+        (sn-SUJ
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 nueva nuevo)))
+            (ncfs000 forma forma)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 vida vida)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 interna interno)))
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 partido partido)))))))))
+        (grup.verb
+          (vmip3s0 posibilita posibilitar))
+        (sn-CD
+          (espec.fs
+            (di0fs0 una uno))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 mayor mayor)))
+            (ncfs000 cohesión cohesión)
+            (sp
+              (prep
+                (sps00 con con))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 ciudadano ciudadano))))))
+        (Fe " ")))
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 Por_lo_que_respecta_a por_lo_que_respecta_a))
+      (snl
+        (grup.nom
+          (np0000l Cantabria Cantabria))))
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 secretario secretario)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 general general)))
+        (sp
+          (prep
+            (spcms del del))
+          (sno
+            (grup.nom.ms
+              (np0000o PSC-PSOE PSC-PSOE))))))
+    (grup.verb
+      (vmis3s0 dijo decir))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fs
+          (dp3cs0 su su))
+        (grup.nom.fs
+          (ncfs000 intención intención)))
+      (grup.verb
+        (vsip3s0 es ser))
+      (S.NF.C-ATR
+        (infinitiu
+          (vmn0000 consolidar consolidar))
+        (sna-CD
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (S.NF.P
+              (participi
+                (aq0msp denominado denominado)))
+            (ncms000 acuerdo acuerdo)
+            (s.a.ms
+              (grup.a.ms
+                (np0000p Blanco-Duque Blanco-Duque)))))))
+    (Fp . .)))

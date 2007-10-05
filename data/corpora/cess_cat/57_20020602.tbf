@@ -1,0 +1,232 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 film film)
+        (S.NF.P.co
+          (Fc , ,)
+          (S.NF.P.co
+            (S.NF.P
+              (participi
+                (aq0msp dirigit dirigit))
+              (sp-CAG
+                (prep
+                  (sps00 per per))
+                (sn
+                  (grup.nom.ms
+                    (np00000 Gavin_Taylor Gavin_Taylor)))))
+            (coord
+              (cc i i))
+            (S.NF.P
+              (participi
+                (aq0msp presentat presentat))
+              (sp-CAG
+                (prep
+                  (sps00 per per))
+                (sn
+                  (grup.nom.ms
+                    (np00000 Michael_Douglas Michael_Douglas))))))
+          (sp.j-CC
+            (prep
+              (sps00 en en))
+            (sn
+              (grup.nom.ms
+                (ncms000 homenatge homenatge)
+                (sp
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (espec.fs
+                      (da0cs0 l' el))
+                    (grup.nom.fs
+                      (nccs000 exbeatle exbeatle)
+                      (sn
+                        (grup.nom.ms
+                          (np00000 John_Lennon John_Lennon)))))))))
+          (Fc , ,))))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vmif3s0 estrenarà estrenar))
+    (sn-CCT
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (W 16_de_juny [??:16/6/??:??.??])
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 vinent vinent)))))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (Z 5a 5)))
+          (np00000 Fira_del_Disc_de_Reus Fira_del_Disc_de_Reus))))
+    (Fp . .)))
+(
+  (S
+    (sn-CCL
+      (grup.nom
+        (pp3cn000 Hi hi)))
+    (grup.verb
+      (vmip3p0 participen participar))
+    (sn-SUJ
+      (grup.nom.mp
+        (S.NF.P
+          (participi
+            (aq0mpp destacats destacat)))
+        (nccp000 cantants cantant)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3p0 interpreten interpretar))
+          (sn-CD
+            (grup.nom.fp
+              (ncfp000 obres obra)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (S.NF.P
+                      (participi
+                        (aq0msp desaparegut desaparegut)))
+                    (ncms000 músic músic)))))))
+        (sn.co
+          (Fd : :)
+          (sn
+            (sn
+              (grup.nom.ms
+                (np00000 Elton_John Elton_John)))
+            (sn.j
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (np00000 Imagine Imagine)
+                (Fpt -Fpt- -Fpt-))))
+          (Fc , ,)
+          (sn
+            (sn
+              (grup.nom.ms
+                (np00000 Michael_Jackson Michael_Jackson)))
+            (sn.j
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (np00000 Come_together Come_together)
+                (Fpt -Fpt- -Fpt-))))
+          (Fc , ,)
+          (sn
+            (sn
+              (grup.nom
+                (np00000 U2 U2)))
+            (sn.j
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (np00000 Help Help)
+                (Fpt -Fpt- -Fpt-))))
+          (coord
+            (cc i i))
+          (sn
+            (sn
+              (grup.nom.ms
+                (np00000 David_Bowie David_Bowie)))
+            (sn.j
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (np00000 Fame Fame)
+                (Fpt -Fpt- -Fpt-)))))))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 viuda viuda)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (nccs000 cantant cantant))))))
+      (coord
+        (cc i i))
+      (sn
+        (espec.ms
+          (dp3ms0 el_seu el_seu))
+        (grup.nom.ms
+          (ncms000 fill fill)
+          (sn
+            (grup.nom.ms
+              (np00000 Sean Sean))))))
+    (grup.verb
+      (vmip3p0 tanquen tancar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 pel·lícula pel·lícula)))
+    (S.NF.A-CC
+      (gerundi
+        (vmg0000 cantant cantar))
+      (sn-CD
+        (grup.nom
+          (np00000 Dear_clearance Dear_clearance))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 tradicional tradicional)))
+          (ncfs000 subhasta subhasta))))
+    (morf.pron
+      (pp3cn000 hi hi))
+    (grup.verb
+      (vaif3s0 haurà haver))
+    (sn-CD.Q
+      (sp.j
+        (Fc , ,)
+        (prep
+          (sps00 entre entre))
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.p
+              (pi0cp000 altres altre))))
+        (Fc , ,))
+      (sn
+        (grup.nom.mp
+          (ncmp000 models model)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (np00000 Jean-Paul_Gaultier Jean-Paul_Gaultier))))
+          (sp
+            (prep
+              (sps00 per per))
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (grup.nom.fs
+                  (np00000 Madonna Madonna))))))))
+    (Fp . .)))

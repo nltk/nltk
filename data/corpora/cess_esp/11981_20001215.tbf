@@ -1,0 +1,440 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Los el)
+        (dn0cp0 veintiséis veintiséis))
+      (grup.nom.mp
+        (nccp000 deportistas deportista)
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 andaluces andaluz)))
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmis3p0 participaron participar))
+          (sp-CREG
+            (prep
+              (sps00 en en))
+            (sna
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (np0000a Juegos_Parolímpicos Juegos_Parolímpicos)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snl
+                    (grup.nom
+                      (np0000l Sydney Sydney))))
+                (S.NF.P
+                  (Fc , ,)
+                  (participi
+                    (aq0mpp disputados disputado))
+                  (snd-CCT
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (S.NF.P
+                        (participi
+                          (aq0msp pasado pasado)))
+                      (W octubre [??:??/10/??:??.??])))
+                  (Fc , ,))))))))
+    (grup.verb
+      (vaip3p0 han haber)
+      (vsp00sm sido ser)
+      (vmp00pm homenajeados homenajear))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 acto acto)
+          (S.NF.P.co
+            (S.NF.P
+              (participi
+                (aq0msp organizado organizado))
+              (sp-CAG
+                (prep
+                  (sps00 por por))
+                (sno
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np0000o Fundación_Andalucía_Olímpica Fundación_Andalucía_Olímpica)))))
+            (coord
+              (cc y y))
+            (S.NF.P
+              (participi
+                (aq0msp celebrado celebrado))
+              (sp-CCL
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.ms
+                    (di0ms0 un uno))
+                  (grup.nom.ms
+                    (ncms000 hotel hotel)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snl
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 localidad localidad)
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0fs0 sevillana sevillano)))
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (snl
+                              (grup.nom
+                                (np0000l San_Juan_de_Aznalfarache San_Juan_de_Aznalfarache)))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (dd0mp0 Estos este))
+      (grup.nom.mp
+        (nccp000 deportistas deportista)
+        (S.F.R
+          (Fc , ,)
+          (sp-CC
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (pr0cp000 cuales cual))))
+          (sn-SUJ
+            (grup.nom.mp
+              (pn0cp000 diez diez)))
+          (grup.verb
+            (vaip3p0 han haber)
+            (vsp00sm sido ser)
+            (vmp00pm becados becar))
+          (sp-CAG
+            (prep
+              (sps00 por por))
+            (sno
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000o Fundación_Andalucía_Olímpica Fundación_Andalucía_Olímpica))))
+          (Fc , ,))))
+    (grup.verb
+      (vmis3p0 consiguieron conseguir))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (snl
+        (grup.nom
+          (np0000l Sydney Sydney))))
+    (sn.co-CD
+      (sn.co
+        (sn
+          (espec.fs
+            (di0fs0 una uno))
+          (grup.nom.fs
+            (ncfs000 medalla medalla)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 oro oro))))))
+        (Fc , ,)
+        (sn
+          (grup.nom.fp
+            (pn0cp000 seis seis)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 plata plata))))))
+        (coord
+          (cc y y))
+        (sn
+          (grup.nom.fp
+            (pn0cp000 cuatro cuatro)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 bronce bronce))))))
+        (Fc , ,))
+      (coord
+        (sps00 además_de además_de))
+      (sn
+        (espec.mp
+          (Z 24 24))
+        (grup.nom.mp
+          (ncmp000 diplomas diploma)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (nccp000 finalistas finalista)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (di0mp0 Todos todo)
+        (da0mp0 los el))
+      (grup.nom.mp
+        (ncmp000 homenajeados homenajeado)))
+    (grup.verb
+      (vmis3p0 recibieron recibir))
+    (sn.co-CD
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 aplauso aplauso)))
+      (coord
+        (cc y y))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 reconocimiento reconocimiento)
+          (sp.co
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fp
+                  (da0fp0 las el))
+                (grup.nom.fp
+                  (ncfp000 autoridades autoridad)
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0cp0 asistentes asistente))))))
+            (coord
+              (cc y y))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.mp
+                  (da0mp0 los el)
+                  (dn0mp0 trescientos trescientos))
+                (grup.nom.mp
+                  (ncmp000 invitados invitado)
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vmis3p0 presenciaron presenciar))
+                    (sn-CD
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 acto acto)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom.co
+          (grup.nom.ms
+            (np0000p Alvaro_Valera Alvaro_Valera))
+          (coord
+            (cc y y))
+          (grup.nom.ms
+            (np0000p Manuel_Robles Manuel_Robles)))
+        (sn.x.j
+          (Fc , ,)
+          (grup.nom.co
+            (grup.nom.co
+              (grup.nom.ms
+                (ncms000 campeón campeón)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq00000 parolímpico parolímpico))))
+              (coord
+                (cc y y))
+              (grup.nom.fs
+                (ncfs000 medalla medalla)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 bronce bronce))))))
+            (sadv.j
+              (Fc , ,)
+              (grup.adv
+                (rg respectivamente respectivamente))
+              (Fc , ,))
+            (sp.j
+              (prep
+                (sps00 en en))
+              (sn
+                (grup.nom.ms
+                  (ncmn000 tenis tenis)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 mesa mesa))))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmis3p0 protagonizaron protagonizar))
+    (sn-CD
+      (grup.nom.ms
+        (pi0ms000 uno uno)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (ncmp000 momentos momento)
+              (s.a.mp
+                (espec
+                  (rg más más))
+                (grup.a.mp
+                  (aq0cp0 brillantes brillante)))
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 acto acto)))))))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (spcms al al))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 llevar_a_cabo llevar_a_cabo))
+        (sp-CCL
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 escenario escenario))))
+        (sn-CD
+          (espec.fs
+            (di0fs0 una uno))
+          (grup.nom.fs
+            (ncfs000 exhibición exhibición)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.ms
+                  (dp3cs0 su su))
+                (grup.nom.ms
+                  (ncms000 deporte deporte))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 homenaje homenaje))))
+    (grup.verb
+      (vmis3p0 estuvieron estar))
+    (sa-ATR
+      (grup.a
+        (aq0cp0 presentes presente)))
+    (snp-SUJ.d
+      (Fc , ,)
+      (coord
+        (spcms además_del además_del))
+      (grup.nom.ms
+        (ncms000 presidente presidente)
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000o Fundación_Andalucía_Olímpica Fundación_Andalucía_Olímpica))))
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (np0000p Alejandro_Rojas_Marcos Alejandro_Rojas_Marcos))
+          (Fc , ,))))
+    (sn.co-SUJ.d
+      (sn.co
+        (snp
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 consejero consejero)
+            (sp
+              (prep
+                (sps00 de de))
+              (sno
+                (grup.nom.co
+                  (np0000o Turismo_y_Deporte Turismo_y_Deporte))))
+            (sp
+              (prep
+                (sps00 de de))
+              (sno
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np0000o Junta_de_Andalucía Junta_de_Andalucía))))
+            (snp
+              (Fc , ,)
+              (grup.nom.ms
+                (np0000p José_Hurtado José_Hurtado))
+              (Fc , ,))))
+        (coord
+          (cc y y))
+        (snp
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 secretario secretario)
+            (s.a.ms
+              (grup.a.ms
+                (aq0cs0 general general)))
+            (sp
+              (prep
+                (spcms del del))
+              (sno
+                (grup.nom.ms
+                  (np0000o Comité_Parolímpico_Español Comité_Parolímpico_Español))))
+            (snp
+              (Fc , ,)
+              (grup.nom.ms
+                (np0000p Miguel_Sagarra Miguel_Sagarra))
+              (Fc , ,)))))
+      (sp.j
+        (prep
+          (sps00 entre entre))
+        (sn
+          (espec.fp
+            (di0fp0 otras otro))
+          (grup.nom.fp
+            (ncfp000 autoridades autoridad)))))
+    (Fp . .)))

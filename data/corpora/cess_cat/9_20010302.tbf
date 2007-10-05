@@ -1,0 +1,174 @@
+
+(
+  (S
+    (sn-SUJ
+      (grup.nom
+        (np00000 Centros_Comerciales_Carrefour Centros_Comerciales_Carrefour)
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (ncms000 fruit fruit)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 fusió fusió)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn.x
+                      (grup.nom.co
+                        (grup.nom
+                          (np00000 Pryca Pryca))
+                        (coord
+                          (cc i i))
+                        (grup.nom
+                          (np00000 Continente Continente)))))))))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 mantenir mantenir))
+    (sn-CCT
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (ncms000 any any)
+        (S.NF.P
+          (participi
+            (aq0msp passat passat)))))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el)
+        (di0ms0 mateix mateix))
+      (grup.nom.ms
+        (ncms000 nivell nivell)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 facturació facturació))))
+        (sn
+          (Fc , ,)
+          (espec.mp
+            (Z 1,2 1.2))
+          (grup.nom.mp
+            (ncmp000 bilions bilió)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fp
+                  (Zm pessetes pesseta))))))
+        (S.F.R*
+          (Fc , ,)
+          (relatiu
+            (pr0cn000 que que))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (W 1999 [??:??/??/1999:??.??]))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 grup grup)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 obtenir obtenir))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 benefici benefici)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 net net)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (Z 54.158 54158))
+            (grup.nom.mp
+              (ncmp000 milions milió)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fp
+                    (Zm pessetes pesseta)))))))
+        (sn
+          (Fc , ,)
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (Zp 63,3% 63.3/100)
+            (sadv
+              (grup.adv
+                (rg més més)))))))
+    (sp.co-CC
+      (sp
+        (prep
+          (sps00 per per))
+        (sn.co
+          (sn
+            (espec.fs
+              (da0cs0 l' el))
+            (grup.nom.fs
+              (ncfs000 optimització optimització)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fp
+                    (ncfp000 despeses despesa)
+                    (s.a.fp
+                      (grup.a.fp
+                        (aq0fp0 logístiques logístic))))))))
+          (coord
+            (cc i i))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 control control)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 costos cost))))))))
+      (coord
+        (cc i i))
+      (sp
+        (sadv.j
+          (grup.adv
+            (rg també també)))
+        (sp
+          (prep
+            (sps00 per per))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 venda venda)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fp
+                    (da0fp0 les el))
+                  (grup.nom.fp
+                    (ncfp000 galeries galeria)
+                    (sn
+                      (grup.nom
+                        (np00000 Klepierre Klepierre)))))))))))
+    (Fp . .)))

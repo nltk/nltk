@@ -1,0 +1,380 @@
+
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 president president)
+        (sp
+          (prep
+            (spcms del del))
+          (sno
+            (grup.nom.ms
+              (np0000o Comitè_de_Govern Comitè_de_Govern))))
+        (sp
+          (prep
+            (sps00 d' de))
+          (sno
+            (grup.nom
+              (np0000o Unió Unió))))
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (np0000p Josep_Antoni_Duran_i_Lleida Josep_Antoni_Duran_i_Lleida))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vsp00sm estat ser)
+      (vmp00sm nomenat nomenar))
+    (snp-CPRED.SUJ
+      (grup.nom.ms
+        (ncms000 president president)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.ms
+              (ncms000 honor honor))))
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000o Cambra_Oficial_de_Comerç_de_Xile_a_Espanya Cambra_Oficial_de_Comerç_de_Xile_a_Espanya))))))
+    (sp-CC
+      (Fz ' ')
+      (prep
+        (spcms pel pel))
+      (sn
+        (espec.ms
+          (dp3ms0 seu seu))
+        (grup.nom.ms
+          (S.NF.P
+            (participi
+              (aq0msp reconegut reconegut)))
+          (ncms000 interès interès)
+          (sp
+            (prep
+              (sps00 a a))
+            (S.NF.C.co
+              (S.NF.C.co
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 fomentar fomentar)))
+                (coord
+                  (cc i i))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 enfortir enfortir))))
+              (sn.j-CD
+                (espec.fp
+                  (da0fp0 les el))
+                (grup.nom.fp
+                  (ncfp000 relacions relació)
+                  (s.a.fp.x
+                    (grup.a.fp.co
+                      (grup.a.fp
+                        (aq0cp0 comercials comercial))
+                      (coord
+                        (cc i i))
+                      (grup.a.fp
+                        (aq0cp0 culturals cultural))))
+                  (sp
+                    (prep
+                      (sps00 entre entre))
+                    (sn.x
+                      (grup.nom.co
+                        (grup.nom
+                          (np0000o Xile Xile))
+                        (coord
+                          (cc i i))
+                        (grup.nom
+                          (np0000o Espanya Espanya)))))))))))
+      (Fz ' '))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 nomenament nomenament)
+        (sp
+          (prep
+            (sps00 de de))
+          (snp
+            (grup.nom.ms
+              (np0000p Duran Duran))))))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmip3s0 produeix produir))
+    (sadv-CC
+      (sn.j
+        (grup.nom.mp
+          (ncmp000 dies dia)))
+      (sadv
+        (grup.adv
+          (rg abans abans)
+          (S.F.C
+            (conj.subord
+              (cs que que))
+            (grup.verb
+              (vmsp3s0 comenci començar))
+            (sn-SUJ
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 visita visita)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 oficial oficial)))
+                (sp
+                  (prep
+                    (spcms del del))
+                  (snp
+                    (grup.nom.ms
+                      (ncms000 president president)
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0ms0 xilè xilè)))
+                      (snp
+                        (Fc , ,)
+                        (grup.nom.ms
+                          (np0000p Ricardo_Lagos Ricardo_Lagos))
+                        (Fc , ,)))))
+                (sp
+                  (prep
+                    (sps00 a a))
+                  (sno
+                    (espec.ms
+                      (da0cs0 l' el))
+                    (grup.nom.ms
+                      (np0000o Estat Estat)
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0ms0 espanyol espanyol))))))
+                (S.F.R
+                  (Fc , ,)
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (sn-CD
+                    (grup.nom.ms
+                      (pp3msa00 el ell)))
+                  (grup.verb
+                    (vmif3s0 portarà portar))
+                  (sp-CC
+                    (prep
+                      (sps00 a a))
+                    (sn.x
+                      (grup.nom.co
+                        (grup.nom
+                          (np0000l Barcelona Barcelona))
+                        (coord
+                          (cc i i))
+                        (grup.nom
+                          (np0000l Madrid Madrid)))))
+                  (sn-CC
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 setmana setmana)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0cs0 vinent vinent))))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Duran Duran)))
+    (sadv-CC
+      (grup.adv
+        (rg ja ja)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 rebre rebre))
+    (snd-CC
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (W maig [??:??/05/??:??.??])
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (ncms000 any any)
+              (S.NF.P
+                (participi
+                  (aq0msp passat passat))))))))
+    (sna-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 medalla medalla)
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000o Orden_Bernardo_O'Higgins Orden_Bernardo_O'Higgins))))
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 grau grau)
+              (sp
+                (prep
+                  (sps00 de de))
+                (snp
+                  (grup.nom
+                    (np0000p Gran_Oficial Gran_Oficial)))))))))
+    (sp-CC
+      (prep
+        (sps00 de de))
+      (sn
+        (grup.nom.fp
+          (ncfp000 mans mà)
+          (sp
+            (prep
+              (sps00 de de))
+            (snp
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (sadv
+                  (grup.adv
+                    (rg aleshores aleshores)))
+                (ncms000 president president)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sno
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (np0000o República República)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0fs0 xilena xilè))))))
+                (snp
+                  (Fc , ,)
+                  (grup.nom.ms
+                    (np0000p Eduardo_Frei Eduardo_Frei)))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (np0000o Cambra_Oficial_de_Comerç_de_Xile_a_España Cambra_Oficial_de_Comerç_de_Xile_a_España)
+        (S.NF.P
+          (Fc , ,)
+          (participi
+            (aq0fsp fundada fundat))
+          (snd-CC
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (W 1930 [??:??/??/1930:??.??])))
+          (Fc , ,))))
+    (grup.verb
+      (vmip3s0 compta comptar))
+    (sadv-CC
+      (grup.adv
+        (rg actualment actualment)))
+    (sp-CC
+      (prep
+        (sps00 entre entre))
+      (sn
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (ncmp000 socis soci))))
+    (sp-CREG
+      (prep
+        (sps00 amb amb))
+      (sn
+        (grup.nom.fp
+          (ncfp000 empreses empresa)
+          (s.a.fp
+            (s.a.fp
+              (espec
+                (rg tan tan))
+              (grup.a.fp
+                (aq0cp0 importants important)))
+            (S.F.AComp*.j
+              (conj.subord
+                (cs com com))
+              (sn.x
+                (grup.nom.co
+                  (grup.nom
+                    (np0000o Aguas_de_Barcelona Aguas_de_Barcelona))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000o Antonio_Puig_S.A. Antonio_Puig_S.A.))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000o Banco_Popular_Español Banco_Popular_Español))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000o Banco_Santander_Central_Hispano Banco_Santander_Central_Hispano))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000o Comsa Comsa))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000o Endesa Endesa))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000o Fábrica_Nacional_de_Moneda_y_Timbre Fábrica_Nacional_de_Moneda_y_Timbre))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000o Grupo_Zeta Grupo_Zeta))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000o Iberdrola Iberdrola))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000o Iberia Iberia))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000o IZAR_Construcciones_Navales_S.A. IZAR_Construcciones_Navales_S.A.))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000o LanChile LanChile))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000o Miguel_Torres_S.A. Miguel_Torres_S.A.))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000o Obraseon_Huarte_S.A._Puerto_de_Barcelona Obraseon_Huarte_S.A._Puerto_de_Barcelona))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000o Puerto_de_Tarragona Puerto_de_Tarragona))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000o Price_Waterhouse_Coopers Price_Waterhouse_Coopers))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000o Renfe Renfe))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000o Sacir Sacir))
+                  (coord
+                    (cc o o))
+                  (grup.nom
+                    (np0000o Telefónica Telefónica)))))))))
+    (Fp . .)))

@@ -1,0 +1,1307 @@
+
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np0000o Gobierno Gobierno)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 argentino argentino)))))
+    (grup.verb
+      (vmis3s0 anunció anunciar))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmif3s0 revisará revisar))
+      (sn-CD
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (ncmp000 permisos permiso)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 pesca pesca))))
+          (S.NF.P
+            (participi
+              (aq0mpp otorgados otorgado))
+            (sp-CC
+              (Fe " ")
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.ms
+                  (di0ms0 un uno))
+                (grup.nom.ms
+                  (ncms000 modo modo)
+                  (s.a.ms
+                    (espec
+                      (rg poco poco))
+                    (grup.a.ms
+                      (aq0ms0 claro claro)))))
+              (Fe " "))
+            (sp-CCT
+              (prep
+                (sps00 durante durante))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 presidencia presidencia)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snp
+                      (grup.nom.ms
+                        (np0000p Carlos_Menem Carlos_Menem)
+                        (S.F.R
+                          (Fc , ,)
+                          (relatiu-SUJ
+                            (pr0cs000 quien quien))
+                          (grup.verb
+                            (vmis3s0 firmó firmar))
+                          (sn-CD
+                            (espec.ms
+                              (di0ms0 un uno))
+                            (grup.nom.ms
+                              (ncms000 acuerdo acuerdo)
+                              (sp
+                                (prep
+                                  (sps00 con con))
+                                (sno
+                                  (espec.fs
+                                    (da0fs0 la el))
+                                  (grup.nom.fs
+                                    (np0000o Unión_Europea Unión_Europea))))
+                              (S.F.R
+                                (sp-CAG
+                                  (prep
+                                    (sps00 por por))
+                                  (relatiu
+                                    (da0ms0 el el)
+                                    (pr0cn000 que que)))
+                                (morfema.verbal-PASS
+                                  (p0000000 se se))
+                                (grup.verb
+                                  (vmis3p0 incorporaron incorporar))
+                                (sp-CREG
+                                  (prep
+                                    (sps00 a a))
+                                  (sn
+                                    (espec.fs
+                                      (da0fs0 la el))
+                                    (grup.nom.fs
+                                      (ncfs000 flota flota)
+                                      (s.a.fs
+                                        (grup.a.fs
+                                          (aq0fs0 argentina argentino))))))
+                                (sn-SUJ
+                                  (grup.nom.mp
+                                    (ncmp000 barcos barco)
+                                    (sp
+                                      (prep
+                                        (sps00 de de))
+                                      (sn
+                                        (grup.nom.fp
+                                          (ncfp000 empresas empresa)
+                                          (s.a.fp
+                                            (grup.a.fp
+                                              (aq0fp0 mixtas mixto)))
+                                          (sp
+                                            (Fc , ,)
+                                            (prep
+                                              (sps00 en en))
+                                            (sn
+                                              (espec.fs
+                                                (dp3cs0 su su))
+                                              (grup.nom.fs
+                                                (ncfs000 mayoría mayoría)
+                                                (sp
+                                                  (prep
+                                                    (sps00 de de))
+                                                  (sn
+                                                    (grup.nom.ms
+                                                      (ncms000 capital capital)
+                                                      (s.a.ms
+                                                        (grup.a.ms
+                                                          (aq0ms0 español español))))))))))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 decisión decisión)))
+      (grup.verb
+        (vsis3s0 fue ser)
+        (vmp00sf tomada tomar))
+      (sp-CAG
+        (prep
+          (sps00 por por))
+        (sno
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (np0000o Ministerio_de_Economía Ministerio_de_Economía))))
+      (sp-CCT
+        (prep
+          (sps00 tras tras))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 llegar llegar))
+          (sp-CC
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 conclusión conclusión)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (S.F.C
+                    (conj.subord
+                      (cs que que))
+                    (sn-SUJ
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 incremento incremento)
+                        (sp
+                          (prep
+                            (sps00 en en))
+                          (sn
+                            (espec.ms
+                              (da0ms0 el el))
+                            (grup.nom.ms
+                              (ncms000 volumen volumen)
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sn
+                                  (grup.nom.fs
+                                    (ncfs000 captura captura)
+                                    (sp
+                                      (prep
+                                        (sps00 de de))
+                                      (sn
+                                        (espec.fs
+                                          (da0fs0 la el))
+                                        (grup.nom.fs
+                                          (ncfs000 merluza merluza))))))))))
+                        (sp
+                          (Fc , ,)
+                          (Fe " ")
+                          (prep
+                            (sps00 a_partir_de a_partir_de))
+                          (sn
+                            (espec.ms
+                              (di0ms0 un uno))
+                            (grup.nom.ms
+                              (s.a.ms
+                                (grup.a.ms
+                                  (aq0cs0 posible posible)))
+                              (ncms000 exceso exceso)
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sn
+                                  (grup.nom.fp
+                                    (ncfp000 licencias licencia)
+                                    (sp
+                                      (prep
+                                        (sps00 para para))
+                                      (sn
+                                        (espec.fs
+                                          (da0fs0 la el))
+                                        (grup.nom.fs
+                                          (ncfs000 pesca pesca)))))))))
+                          (Fe " ")
+                          (Fc , ,))))
+                    (grup.verb
+                      (vmip3s0 está estar)
+                      (gerundi
+                        (vmg0000 poniendo poner)))
+                    (sp-CC
+                      (prep
+                        (sps00 en en))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 riesgo riesgo))))
+                    (sn-CD
+                      (espec.ms
+                        (dd0ms0 ese ese))
+                      (grup.nom.ms
+                        (ncms000 recurso recurso)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0cs0 natural natural))))))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 informó informar))
+    (snp
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 secretario secretario)
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (grup.nom.ms
+              (np0000o Programación_Macroeconómica_y_Regional Programación_Macroeconómica_y_Regional))))
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (np0000p Miguel_Bein Miguel_Bein)))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 funcionario funcionario)))
+      (grup.verb
+        (vmis3s0 sostuvo sostener))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 disminución disminución)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncms000 número número)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fp
+                        (ncfp000 capturas captura)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (grup.nom.fs
+                              (ncfs000 merluza merluza))))))))))))
+        (Fe " ")
+        (grup.verb
+          (vmip3s0 tiene tener)
+          (cs que que)
+          (infinitiu
+            (vmn0000 ver ver)))
+        (sp-CREG
+          (prep
+            (sps00 con con))
+          (sn
+            (grup.nom.fp
+              (ncfp000 situaciones situación)
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (morfema.verbal-PASS
+                  (p0000000 se se))
+                (grup.verb
+                  (vaip3p0 han haber)
+                  (vmp00sm dado dar))
+                (sp-CCT
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.mp
+                      (da0mp0 los el))
+                    (grup.nom.mp
+                      (s.a.mp
+                        (grup.a.mp
+                          (ao0mp0 últimos último)))
+                      (ncmp000 años año))))
+                (sp-CCL
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.ms
+                      (dd0ms0 este este))
+                    (grup.nom.ms
+                      (ncms000 país país)
+                      (S.F.R
+                        (Fc , ,)
+                        (sp-CCL
+                          (prep
+                            (sps00 en en))
+                          (relatiu
+                            (pr000000 donde donde)))
+                        (sn-SUJ
+                          (espec.mp
+                            (da0mp0 los el))
+                          (grup.nom.mp
+                            (ncmp000 permisos permiso)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (grup.nom.fs
+                                  (ncfs000 pesca pesca))))))
+                        (morfema.verbal-PASS
+                          (p0000000 se se))
+                        (grup.verb
+                          (vmis3p0 dieron dar))
+                        (sp-CC
+                          (sadv.j
+                            (Fc , ,)
+                            (grup.adv
+                              (rg como_mínimo como_mínimo))
+                            (Fc , ,))
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (espec.ms
+                                (di0ms0 un uno))
+                              (grup.nom.ms
+                                (ncms000 modo modo)
+                                (s.a.ms
+                                  (espec
+                                    (rg poco poco))
+                                  (grup.a.ms
+                                    (aq0ms0 claro claro)))))))))))))))
+        (Fe " ")))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3s0 aseguró asegurar))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.fs
+            (dd0fs0 esta este))
+          (grup.nom.fs
+            (ncfs000 situación situación)))
+        (grup.verb
+          (vsif3s0 será ser)
+          (vmp00sf investigada investigar))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (Fe " ")
+      (grup.verb
+        (vaip3s0 Hay haber))
+      (sn-CD.Q
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 preocupación preocupación)
+          (s.a.fs
+            (espec
+              (rg muy mucho))
+            (grup.a.fs
+              (aq0cs0 grande grande)))))
+      (S.F.A-CC
+        (conj.subord
+          (cs porque porque))
+        (sp
+          (prep
+            (sps00 con con))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 autorización autorización)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.mp
+                    (s.a.mp
+                      (grup.a.mp
+                        (aq0mp0 nuevos nuevo)))
+                    (ncmp000 cupos cupo)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 pesca pesca)))))))))
+          (Fc , ,))
+        (sn-SUJ
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 sensación sensación)))
+        (grup.verb
+          (vsip3s0 es ser))
+        (S.F.C-ATR
+          (conj.subord
+            (cs que que))
+          (sn-SUJ
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 recurso recurso)))
+          (grup.verb
+            (vmip3s0 está estar))
+          (S.NF.P-ATR
+            (sadv-CC
+              (grup.adv
+                (rg casi casi)))
+            (participi
+              (aq0msp colapsado colapsado))
+            (sadv-CCT
+              (grup.adv
+                (rg después después)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 años año)
+                      (S.F.R
+                        (sp-CCT
+                          (prep
+                            (sps00 en en))
+                          (relatiu
+                            (da0mp0 los el)
+                            (pr0cn000 que que)))
+                        (morfema.verbal-PASS
+                          (p0000000 se se))
+                        (grup.verb
+                          (vaip3s0 ha haber)
+                          (vmp00sm pescado pescar))
+                        (snn-SUJ
+                          (espec.ms
+                            (rg más más)
+                            (sps00 de de)
+                            (dn0ms0 medio medio))
+                          (grup.nom.ms
+                            (ncms000 millón millón)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (grup.nom.fp
+                                  (ncfp000 toneladas tonelada)
+                                  (sp
+                                    (prep
+                                      (sps00 de de))
+                                    (sn
+                                      (grup.nom.fs
+                                        (ncfs000 merluza merluza)))))))))
+                        (sp-CC
+                          (prep
+                            (spcms al al))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 año año)))))))))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 indicó indicar))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Bein Bein)))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sp-AO
+        (prep
+          (sps00 Según según))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (ao0ms0 último último)))
+            (ncms000 informe informe)
+            (sp
+              (prep
+                (spcms del del))
+              (sno
+                (grup.nom.ms
+                  (np0000o Instituto_Nacional_de_Investigación_y_Desarrollo_Pesquero Instituto_Nacional_de_Investigación_y_Desarrollo_Pesquero)
+                  (sno
+                    (grup.nom.ms
+                      (Fpa -Fpa- -Fpa-)
+                      (np0000o INIDEP INIDEP)
+                      (Fpt -Fpt- -Fpt-))))))))
+        (Fc , ,))
+      (sn.co-CCT
+        (coord
+          (sps00 entre entre))
+        (snd
+          (grup.nom.ms
+            (W 1998 [??:??/??/1998:??.??])))
+        (coord
+          (cc y y))
+        (snd
+          (grup.nom.ms
+            (W 1999 [??:??/??/1999:??.??]))))
+      (Fe " ")
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vmis3s0 produjo producir))
+      (sn-SUJ
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 disminución disminución)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 significativa significativo)))
+          (sp
+            (prep
+              (spcms del del))
+            (snn
+              (grup.nom.ms
+                (Zp 16_por_ciento 16_%))))
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 biomasa biomasa)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 total total)))
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 recurso recurso)
+                      (s.a.ms
+                        (grup.a.ms
+                          (sn
+                            (grup.nom.fs
+                              (ncfs000 merluza merluza)
+                              (s.a.fs
+                                (grup.a.fs
+                                  (aq0cs0 común común)))))))))))))))
+      (Fc , ,))
+    (coord
+      (cc mientras_que mientras_que))
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 número número)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 total total)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 ejemplares ejemplar))))))
+      (grup.verb
+        (vmis3s0 mermó mermar))
+      (snn-CD.Q
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.mp
+          (Zp 33_por_ciento 33_%)))
+      (Fe " "))
+    (Fp . .)))
+(
+  (S
+    (S.F.C.co-CD
+      (Fe " ")
+      (S.F.C
+        (sn-SUJ
+          (espec.fs
+            (da0fs0 La el))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 significativa significativo)))
+            (ncfs000 disminución disminución)
+            (sp
+              (prep
+                (sps00 de de))
+              (snn
+                (espec.ms
+                  (di0ms0 un uno))
+                (grup.nom.ms
+                  (Zp 67_por_ciento 67_%))))
+            (sp
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 número número)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.mp
+                        (da0mp0 los el))
+                      (grup.nom.mp
+                        (ncmp000 ejemplares ejemplar)
+                        (s.a.mp
+                          (grup.a.mp
+                            (aq0cp0 menores menor)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (snn
+                                (espec.mp
+                                  (Z 30 30))
+                                (grup.nom.mp
+                                  (ncmp000 centímetros centímetro))))))))))))
+            (sp
+              (prep
+                (sps00 en en))
+              (snd
+                (grup.nom.ms
+                  (W 1999 [??:??/??/1999:??.??]))))
+            (sp
+              (prep
+                (sps00 respecto_de respecto_de))
+              (snd
+                (grup.nom.ms
+                  (W 1998 [??:??/??/1998:??.??]))))))
+        (grup.verb
+          (vmip3s0 anuncia anunciar))
+        (sn-CD
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (aq0cs0 menor menor)))
+            (ncms000 ingreso ingreso)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 ejemplares ejemplar))))
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 pesquería pesquería)))))))
+      (coord
+        (cc y y))
+      (S.F.C*
+        (sadv
+          (Fc , ,)
+          (grup.adv
+            (rg por_consiguiente por_consiguiente))
+          (Fc , ,))
+        (sn
+          (espec.fs
+            (di0fs0 una uno))
+          (grup.nom.fs
+            (ncfs000 caída caída)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (ncmp000 ejemplares ejemplar)
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0mp0 adultos adulto))))))))
+        (sp
+          (prep
+            (sps00 durante durante))
+          (snd
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (W 2000 [??:??/??/2000:??.??])))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 alertó alertar))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 estudio estudio)))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 escasez escasez)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 merluza merluza))))))
+    (grup.verb
+      (vmis3s0 comenzó comenzar)
+      (sps00 a a)
+      (infinitiu
+        (vmn0000 preocupar preocupar)))
+    (sp-CD
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 autoridades autoridad)
+          (s.a.fp
+            (grup.a.fp
+              (aq0fp0 argentinas argentino))))))
+    (sadv-CCT
+      (grup.adv
+        (rg después después)
+        (sp
+          (prep
+            (sps00 de de))
+          (S.F.C
+            (conj.subord
+              (cs que que))
+            (sp-CCT
+              (prep
+                (sps00 en en))
+              (snd
+                (grup.nom.ms
+                  (W 1997 [??:??/??/1997:??.??]))))
+            (morfema.verbal-PASS
+              (p0000000 se se))
+            (grup.verb
+              (vmsi3s0 registrara registrar))
+            (sn-SUJ
+              (espec.fs
+                (di0fs0 una uno))
+              (grup.nom.fs
+                (ncfs000 captura captura)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snn
+                    (espec.fp
+                      (Z 584.048 584048))
+                    (grup.nom.fp
+                      (ncfp000 toneladas tonelada)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.fs
+                            (dd0fs0 esa ese))
+                          (grup.nom.fs
+                            (ncfs000 especie especie)))))))
+                (S.F.R
+                  (Fc , ,)
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmis3s0 descendió descender))
+                  (sp-CC
+                    (prep
+                      (sps00 a a))
+                    (snn
+                      (grup.nom.fp
+                        (Z 458.433 458433))))
+                  (sp-CCT
+                    (prep
+                      (sps00 en en))
+                    (snd
+                      (grup.nom.ms
+                        (W 1998 [??:??/??/1998:??.??])))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.AConc
+      (conj.subord
+        (cs Aunque aunque))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 cupo cupo)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 pesca pesca)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 merluza merluza)))))))))
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vmis3s0 limitó limitar))
+      (sp-CCQ
+        (prep
+          (sps00 a a))
+        (snn
+          (espec.fp
+            (Z 238.000 238000))
+          (grup.nom.fp
+            (ncfp000 toneladas tonelada))))
+      (snd-CCT
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (W año [??:??/??/??:??.??])
+          (S.NF.P
+            (participi
+              (aq0msp pasado pasado)))))
+      (Fc , ,))
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (np0000o Parlamento Parlamento)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 argentino argentino)))))
+    (grup.verb
+      (vmis3s0 debió deber)
+      (infinitiu
+        (vmn0000 sancionar sancionar)))
+    (sp-CCT
+      (prep
+        (sps00 en en))
+      (snd
+        (grup.nom.ms
+          (W junio [??:??/06/??:??.??])
+          (S.NF.P
+            (participi
+              (aq0msp pasado pasado))))))
+    (sna-CD
+      (espec.fs
+        (di0fs0 una uno))
+      (grup.nom.fs
+        (np0000a Ley_de_Emergencia_Pesquera Ley_de_Emergencia_Pesquera)
+        (sp
+          (prep
+            (sps00 para para))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 frenar frenar))
+            (sn-CD
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 sobreexplotación sobreexplotación)))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (sps00 En en))
+      (snd
+        (grup.nom.ms
+          (W septiembre_de_1999 [??:??/9/1999:??.??])))
+      (Fc , ,))
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 organización organización)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 ecologista ecologista)))
+        (sn
+          (grup.nom.fs
+            (np0000o Greenpeace Greenpeace)))))
+    (grup.verb
+      (vmis3s0 denunció denunciar))
+    (S.F.C.co-CD
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 cupo cupo)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 pesca pesca))))
+            (sp
+              (prep
+                (sps00 para para))
+              (sn
+                (espec.ms
+                  (dd0ms0 ese ese))
+                (grup.nom.ms
+                  (ncms000 año año))))))
+        (sadv-CCT
+          (grup.adv
+            (rg ya ya)))
+        (grup.verb
+          (vaii3s0 había haber)
+          (vsp00sm sido ser)
+          (vmp00sm alcanzado alcanzar)))
+      (coord
+        (cc y y))
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (ncfp000 empresas empresa)
+            (s.a.fp
+              (grup.a.fp
+                (aq0fp0 pesqueras pesquero)))))
+        (grup.verb
+          (vmii3p0 estaban estar)
+          (gerundi
+            (vmg0000 depredando depredar)))
+        (sn-CD
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 merluza merluza)))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (sps00 Tras tras))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 prórroga prórroga)
+          (sp
+            (prep
+              (sps00 de de))
+            (sna
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000a Ley_de_Emergencia_Pesquera Ley_de_Emergencia_Pesquera))))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (morfema.verbal-PASS
+              (p0000000 se se))
+            (grup.verb
+              (vmis3s0 decretó decretar))
+            (snd-CCT
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (S.NF.P
+                  (participi
+                    (aq0msp pasado pasado)))
+                (W viernes [viernes:??/??/??:??.??]))))))
+      (Fc , ,))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vmis3s0 estipuló estipular))
+    (sn-SUJ
+      (espec.fs
+        (di0fs0 una uno))
+      (grup.nom.fs
+        (ncfs000 captura captura)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 máxima máximo)))
+        (S.NF.P
+          (participi
+            (aq0fsp permitida permitido)))
+        (sp
+          (prep
+            (sps00 de de))
+          (snn
+            (espec.fp
+              (Z 24.000 24000))
+            (grup.nom.fp
+              (ncfp000 toneladas tonelada)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 merluza merluza)
+                    (sn
+                      (Fc , ,)
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0cs0 principal principal)))
+                        (ncms000 recurso recurso)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0ms0 pesquero pesquero)))
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (snl
+                            (grup.nom
+                              (np0000l Argentina Argentina)))))
+                      (Fc , ,))))))))))
+    (sp-CCT
+      (prep
+        (sps00 para para))
+      (sn
+        (espec.mp
+          (da0mp0 los el)
+          (aq0mp0 próximos próximo)
+          (dn0cp0 tres tres))
+        (grup.nom.mp
+          (ncmp000 meses mes))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sadv-ET
+        (grup.adv
+          (rg Asimismo asimismo))
+        (Fc , ,))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 decreto decreto)))
+      (grup.verb
+        (vmip3s0 prohíbe prohibir))
+      (sp-CI
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (ncmp000 barcos barco)
+            (s.a.mp
+              (grup.a.mp
+                (aq0mp0 congeladores congelador))))))
+      (S.NF.C-CD
+        (infinitiu
+          (vmn0000 explotar explotar))
+        (sn-CD
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 especie especie)))
+        (sp-CC
+          (prep
+            (sps00 en en))
+          (sn
+            (grup.nom.fs
+              (ncfs000 forma forma)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 comercial comercial))))))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3s0 permite permitir))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 captura captura)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 incidental incidental)))
+          (sp
+            (prep
+              (sps00 de de))
+            (snn
+              (espec.fp
+                (Z 7.500 7500))
+              (grup.nom.fp
+                (ncfp000 toneladas tonelada))))))
+      (sp-CCT
+        (prep
+          (sps00 durante durante))
+        (sn
+          (espec.mp
+            (da0mp0 los el)
+            (aq0mp0 próximos próximo)
+            (dn0cp0 tres tres))
+          (grup.nom.mp
+            (ncmp000 meses mes)))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 pesca pesca)))
+      (grup.verb
+        (vmip3s0 da dar))
+      (sn-CD
+        (grup.nom.ms
+          (ncms000 empleo empleo)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 directo directo)))))
+      (sp-CCL
+        (prep
+          (sps00 en en))
+        (snl
+          (grup.nom
+            (np0000l Argentina Argentina))))
+      (sp-CI
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fp
+            (di0fp0 unas uno)
+            (Z 20.000 20000))
+          (grup.nom.fp
+            (ncfp000 personas persona)))))
+    (coord
+      (cc y y))
+    (S*
+      (sn-CD
+        (grup.nom.ms
+          (ncms000 empleo empleo)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 indirecto indirecto)))))
+      (sp-CI
+        (prep
+          (sps00 a a))
+        (snn
+          (espec.fp
+            (di0fp0 otras otro))
+          (grup.nom.fp
+            (Z 150.000 150000)
+            (S.F.R
+              (Fc , ,)
+              (sn-SUJ
+                (grup.nom.fp
+                  (pi0fp000 muchas mucho)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fp
+                        (da0fp0 las el))
+                      (grup.nom.fp
+                        (pr0cp000 cuales cual))))))
+              (grup.verb
+                (vmip3p0 trabajan trabajar))
+              (sp-CCL
+                (prep
+                  (sps00 en en))
+                (sn
+                  (grup.nom.fp
+                    (ncfp000 empresas empresa)
+                    (s.a.fp
+                      (grup.a.fp
+                        (aq0fp0 pesqueras pesquero)))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.mp
+                          (ncfp000 capitales capital)
+                          (s.a.mp
+                            (grup.a.mp
+                              (aq0mp0 hispano-argentinos hispano-argentinos))))))
+                    (S.NF.P
+                      (participi
+                        (aq0fpp creadas creado))
+                      (sp-CC
+                        (prep
+                          (spcms a_partir_del a_partir_del))
+                        (sn
+                          (grup.nom.ms
+                            (ncms000 acuerdo acuerdo)
+                            (S.NF.P.co
+                              (S.NF.P
+                                (participi
+                                  (aq0msp suscrito suscrito))
+                                (sp-CAG
+                                  (prep
+                                    (sps00 por por))
+                                  (sn.co
+                                    (sno
+                                      (grup.nom
+                                        (np0000o Argentina Argentina)))
+                                    (coord
+                                      (cc y y))
+                                    (sno
+                                      (espec.fs
+                                        (da0fs0 la el))
+                                      (grup.nom.fs
+                                        (np0000o Unión_Europea Unión_Europea)
+                                        (sno
+                                          (grup.nom.fs
+                                            (Fpa -Fpa- -Fpa-)
+                                            (np0000o UE UE)
+                                            (Fpt -Fpt- -Fpt-)))))))
+                                (sp-CCT
+                                  (prep
+                                    (sps00 en en))
+                                  (snd
+                                    (grup.nom.ms
+                                      (W 1992 [??:??/??/1992:??.??])))))
+                              (coord
+                                (cc y y))
+                              (S.F.R
+                                (relatiu-SUJ
+                                  (pr0cn000 que que))
+                                (grup.verb
+                                  (vmis3s0 caducó caducar))
+                                (sp-CCT
+                                  (prep
+                                    (sps00 en en))
+                                  (snd
+                                    (grup.nom.ms
+                                      (W mayo_de_1999 [??:??/5/1999:??.??]))))))))))))))))))
+    (Fp . .)))

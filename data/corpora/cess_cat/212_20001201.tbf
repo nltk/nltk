@@ -1,0 +1,92 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 programa programa)
+        (sn
+          (grup.nom
+            (np00000 3xl.net 3xl.net)))
+        (S*
+          (Fpa -Fpa- -Fpa-)
+          (sn-CCL
+            (grup.nom
+              (np00000 Canal_33 Canal_33)))
+          (Fc , ,)
+          (sn-CCT
+            (grup.nom.fp
+              (W 12.50_hores [??:??/??/??:12.50])))
+          (Fpt -Fpt- -Fpt-))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm organitzat organitzar))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 gran gran)))
+        (ncms000 premi premi)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 automobilístic automobilístic)))
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (morfema.verbal-PASS
+            (p0000000 se se))
+          (grup.verb
+            (vmip3s0 celebra celebrar))
+          (sadv-CCT
+            (grup.adv
+              (rg avui avui)))
+          (sp-CCL
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (np00000 Indoor_Karting_Barcelona Indoor_Karting_Barcelona)
+                (sp
+                  (Fc , ,)
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom
+                      (np00000 Sant_Feliu_de_Llobregat Sant_Feliu_de_Llobregat))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (di0ms0 Un un)
+        (ncms000 centenar centenar)
+        (sps00 de de))
+      (grup.nom.mp
+        (ncmp000 teleespectadors teleespectador)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.ms
+              (dd0ms0 aquest aquest))
+            (grup.nom.ms
+              (ncms000 espai espai)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 juvenil juvenil))))))))
+    (grup.verb
+      (vmip3p0 participen participar))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (ncfp000 eliminatòries eliminatòria))))
+    (Fp . .)))

@@ -1,0 +1,162 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 alcalde alcalde)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (np00000 Girona Girona))))
+        (sn
+          (Fc , ,)
+          (sn
+            (grup.nom.ms
+              (np00000 Joaquim_Nadal Joaquim_Nadal)))
+          (sn.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np00000 PSC PSC)
+              (Fpt -Fpt- -Fpt-)))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 confirmar confirmar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3s0 ha haver)
+        (vmp00sm proposat proposar))
+      (sp-CI
+        (prep
+          (spcmp als al))
+        (sn
+          (grup.nom.mp
+            (ncmp000 grups grup)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0cs0 l' el))
+                (grup.nom.fs
+                  (ncfs000 oposició oposició)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 municipal municipal)))))))))
+      (sn-CD
+        (espec.fp
+          (dn0fp0 dues dos))
+        (grup.nom.fs.1n
+          (ncfp000 persones persona)))
+      (sp-CPRED.CD
+        (prep
+          (sps00 com_a com_a))
+        (sn
+          (grup.nom.mp
+            (s.a.mp
+              (grup.a.mp
+                (aq0cp0 possibles possible)))
+            (ncmp000 candidats candidat)
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (grup.nom
+                  (np00000 Defensor_del_Ciutadà Defensor_del_Ciutadà)))))))
+      (sn.co.1c
+        (Fd : :)
+        (sn
+          (espec.fs
+            (da0cs0 l' el))
+          (grup.nom.fs
+            (ncfs000 advocada advocada)
+            (sn
+              (grup.nom.fs
+                (np00000 Maria_Teresa_Seseras Maria_Teresa_Seseras)))))
+        (coord
+          (cc i i))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (nccs000 militant militant)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 històric històric)))
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (np00000 PSUC PSUC))))
+            (sn
+              (grup.nom.ms
+                (np00000 Francesc_Pararols Francesc_Pararols)))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.A-CC
+      (conj.subord
+        (cs Perquè perquè))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmsi3s0 sortís sortir))
+      (S.NF.P-CPRED.CD
+        (participi
+          (aq0msp elegit elegit)))
+      (sn-CD
+        (grup.nom.ms
+          (pi0ms000 un un)
+          (sp
+            (prep
+              (spcmp dels del))
+            (sn
+              (grup.nom.mp
+                (pn0mp000 dos dos)))))))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vaic3s0 hauria haver)
+      (sps00 d' de)
+      (infinitiu
+        (vmn0000 aconseguir aconseguir)))
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 l' el))
+      (grup.nom.fs
+        (ncfs000 aprovació aprovació)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (da0fp0 les el)
+              (dn0fp0 dues dos))
+            (grup.nom.fp
+              (s.a.fp
+                (grup.a.fp
+                  (ao0fp0 terceres tercer)))
+              (ncfp000 parts part)
+              (sp
+                (prep
+                  (spcmp dels del))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 membres membre)
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 ple ple))))))))))))
+    (Fp . .)))

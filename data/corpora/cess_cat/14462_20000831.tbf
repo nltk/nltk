@@ -1,0 +1,327 @@
+
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (np0000o Ajuntament_de_Riner Ajuntament_de_Riner)))
+    (morf.pron
+      (p0300000 s' ell))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm sumat sumar))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (espec.fs
+        (da0fs0 la el))
+      (sn
+        (grup.nom.fs
+          (ncfs000 tractorada tractorada)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 popular popular)))
+          (S.F.R
+            (relatiu-CD
+              (pr0cn000 que que))
+            (sn-CC
+              (espec.ms
+                (di0cs0 cada cada))
+              (grup.nom.ms
+                (ncms000 any any)))
+            (grup.verb
+              (vmip3p0 convoquen convocar))
+            (sn.co-SUJ
+              (sno
+                (espec.ms
+                  (da0cs0 l' el))
+                (grup.nom.ms
+                  (np0000o Ajuntament_de_Solsona Ajuntament_de_Solsona)))
+              (Fc , ,)
+              (sno
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (np0000o Consell_Comarcal_del_Solsonès Consell_Comarcal_del_Solsonès)))
+              (coord
+                (cc i i))
+              (sno
+                (espec.fs
+                  (da0cs0 l' el))
+                (grup.nom.fs
+                  (ncfs000 associació associació)
+                  (sno
+                    (grup.nom
+                      (np0000o Amics_del_Tractor_d'_Època Amics_del_Tractor_d'_Època)))
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (snl
+                      (grup.nom.ms
+                        (np0000l Solsonès Solsonès)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (dd0ms0 Aquest aquest))
+      (grup.nom.ms
+        (ncms000 consistori consistori)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm decidit decidir))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 oferir oferir))
+      (sn-CD
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 esmorzar esmorzar)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 popular popular)))))
+      (sp-CI
+        (prep
+          (spcmp als al))
+        (sn
+          (grup.nom.mp
+            (nccp000 participants participant)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncms000 municipi municipi))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (nc00000 tractorada tractorada)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 popular popular)))))
+      (morfema.verbal-PASS
+        (p0000000 es es))
+      (grup.verb
+        (vmif3s0 farà fer))
+      (snd-CCT
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (W dia_11_de_setembre [??:11/09/??:??.??]))))
+    (coord
+      (cc i i))
+    (S
+      (morfema.verbal-PASS
+        (p0000000 es es))
+      (grup.verb
+        (vmip3s0 calcula calcular))
+      (S.F.C-SUJ
+        (conj.subord
+          (cs que que))
+        (sn-CREG
+          (grup.nom
+            (pp3cn000 hi hi)))
+        (grup.verb
+          (vmif3p0 participaran participar))
+        (sn-SUJ
+          (espec.mp
+            (di0mp0 uns un)
+            (Z 200 200))
+          (grup.nom.mp
+            (ncmp000 pagesos pagès)
+            (S.F.R
+              (Fc , ,)
+              (sp.1c
+                (prep
+                  (spcmp dels del))
+                (relatiu
+                  (pr0cp000 quals qual)))
+              (sn-SUJ
+                (espec.fs
+                  (di0fs0 una un))
+                (grup.nom.fs.1n
+                  (ncfs000 quarantena quarantena)))
+              (grup.verb
+                (vsif3p0 seran ser))
+              (sp-ATR
+                (prep
+                  (spcms del del))
+                (snl
+                  (grup.nom.ms
+                    (ncms000 municipi municipi)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snl
+                        (grup.nom
+                          (np0000l Riner Riner))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Per per))
+      (sn
+        (espec.ms
+          (dd0ms0 aquest aquest))
+        (grup.nom.ms
+          (ncms000 motiu motiu)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 consistori consistori)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm decidit decidir))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 oferir oferir))
+      (sn-CD
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 esmorzar esmorzar)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 popular popular)))))
+      (sp-CI
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.mp
+            (di0mp0 tots tot)
+            (da0mp0 els el))
+          (grup.nom.mp
+            (nccp000 tractoristes tractorista)
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Riner Riner)))))))
+      (S.NF.A-CC
+        (Fc , ,)
+        (gerundi
+          (vmg0000 sumant sumar))
+        (morf.pron
+          (p0300000 -se ell))
+        (sp-CC
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.fs
+              (dd0fs0 aquesta aquest))
+            (grup.nom.fs
+              (ncfs000 manera manera))))
+        (sp-CREG
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 convocatòria convocatòria))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CCT
+      (grup.adv
+        (rg Posteriorment posteriorment))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 pagesos pagès)))
+    (grup.verb
+      (vmif3p0 aniran anar))
+    (sp-CREG
+      (prep
+        (sps00 cap_a cap_a))
+      (snl
+        (grup.nom
+          (np0000l Solsona Solsona))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 participar participar))
+        (sp-CREG
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 concentració concentració))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (np00000 tractorada tractorada)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 popular popular)))))
+      (morfema.verbal-PASS
+        (p0000000 s' es))
+      (grup.verb
+        (vmip3s0 organitza organitzar))
+      (sp-CCT
+        (prep
+          (sps00 des_de des_de))
+        (snd
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (W any_1994 [??:??/??/1994:??.??])))))
+    (coord
+      (cc i i))
+    (S
+      (sn-CD
+        (grup.nom.fs
+          (pp3fsa00 la ell)))
+      (grup.verb
+        (vmip3p0 convoquen convocar))
+      (sn.co-SUJ
+        (sno
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (np0000o Ajuntament_de_Solsona Ajuntament_de_Solsona)))
+        (Fc , ,)
+        (sno
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (np0000o Consell_Comarcal_del_Solsonès Consell_Comarcal_del_Solsonès)))
+        (coord
+          (cc i i))
+        (sno
+          (espec.fs
+            (da0cs0 l' el))
+          (grup.nom.fs
+            (ncfs000 associació associació)
+            (sno
+              (grup.nom
+                (np0000o Amics_del_Transport_d'_Època Amics_del_Transport_d'_Època)))
+            (sp
+              (prep
+                (spcms del del))
+              (snl
+                (grup.nom.ms
+                  (np0000l Solsonès Solsonès))))))))
+    (Fp . .)))

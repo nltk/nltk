@@ -1,0 +1,97 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 precio precio)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 interno interno)))
+        (S.F.R
+          (relatiu-CD
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 paga pagar))
+          (sno-SUJ
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (np0000o Fondo_Nacional_del_Café Fondo_Nacional_del_Café)
+              (sno
+                (grup.nom.ms
+                  (Fpa -Fpa- -Fpa-)
+                  (np0000o FNC FNC)
+                  (Fpt -Fpt- -Fpt-)))
+              (sn
+                (Fc , ,)
+                (espec.ms
+                  (di0ms0 un uno))
+                (grup.nom.ms
+                  (ncms000 ente ente)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq00000 para-fiscal para-fiscal)))
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vmip3s0 garantiza garantizar))
+                    (sn-CD
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 compra compra)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (ncfs000 cosecha cosecha))))))
+                    (sp-CI
+                      (prep
+                        (sps00 a a))
+                      (sn
+                        (espec.mp
+                          (da0mp0 los el))
+                        (grup.nom.mp
+                          (ncmp000 cultivadores cultivador))))))
+                (Fc , ,)))))))
+    (grup.verb
+      (vmip3s0 está estar))
+    (S.NF.P-ATR
+      (participi
+        (aq0msp ligado ligado))
+      (sadv-CC
+        (grup.adv
+          (rg diariamente diariamente)))
+      (sp.co-CREG
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 cotización cotización)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 internacional internacional))))))
+        (coord
+          (cc y y))
+        (sp
+          (prep
+            (spcms al al))
+          (sn
+            (grup.nom.ms
+              (ncms000 tipo tipo)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 cambio cambio)))))))))
+    (Fp . .)))

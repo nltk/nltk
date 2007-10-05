@@ -1,0 +1,53 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 loteria loteria)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (np00000 Nen Nen))))
+        (sn
+          (Fc , ,)
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (ao0fs0 segona segon)))
+            (s.a.fs
+              (espec
+                (rg més més))
+              (grup.a.fs
+                (aq0cs0 important important)))
+            (sadv
+              (grup.adv
+                (rg després després)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom
+                            (np00000 Nadal Nadal))))))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmip3s0 reparteix repartir))
+    (sn-CD
+      (grup.nom.mp
+        (ncmp000 premis premi)
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 milionaris milionari)))))
+    (Fp . .)))

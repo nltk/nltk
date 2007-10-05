@@ -1,0 +1,832 @@
+
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Milberg Milberg)))
+    (grup.verb
+      (vmis3s0 explicó explicar))
+    (S.F.C.co-CD
+      (conj.subord
+        (cs que que))
+      (S.F.C
+        (sn-SUJ
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 solución solución)
+            (S.NF.P
+              (participi
+                (aq0fsp encontrada encontrado))
+              (sp-CC
+                (prep
+                  (sps00 con con))
+                (sno
+                  (grup.nom
+                    (np0000o Alchemy Alchemy)))))))
+        (grup.verb
+          (vsip3s0 es ser))
+        (sa-ATR
+          (grup.a
+            (aq0fs0 buena buen)
+            (sp
+              (prep
+                (sps00 para para))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 plantilla plantilla)))))))
+      (coord
+        (cc y y))
+      (S.F.C.co
+        (S.F.C
+          (sn.e-SUJ *0*)
+          (neg-MOD
+            (rn no no))
+          (grup.verb
+            (vsif3s0 será ser))
+          (sp-ATR
+            (prep
+              (sps00 con con))
+            (sn
+              (grup.nom.mp
+                (ncmp000 efectos efecto)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0mp0 retroactivos retroactivo)
+                    (sp
+                      (prep
+                        (spcms al al))
+                      (snd
+                        (grup.nom.ms
+                          (W 1_de_enero_del_2000 [??:1/1/2000:??.??])))))))))
+          (S.F.A-CC
+            (Fc , ,)
+            (conj.subord
+              (cs como como))
+            (morfema.verbal-IMPERS
+              (p0000000 se se))
+            (grup.verb
+              (vaii3s0 había haber)
+              (vmp00sm apuntado apuntar))
+            (Fc , ,)))
+        (coord
+          (cc sino_que sino_que))
+        (S.F.C
+          (sn.e-SUJ *0*)
+          (morfema.verbal-PASS
+            (p0000000 se se))
+          (grup.verb
+            (vmif3s0 cerrará cerrar))
+          (sadv-CC
+            (grup.adv
+              (rg definitivamente definitivamente)))
+          (sp-CCT
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.fp
+                (da0fp0 las el))
+              (grup.nom.fp
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0fp0 próximas próximo)))
+                (ncfp000 semanas semana)))))))
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 Según según))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 presidente presidente)))
+      (Fc , ,))
+    (sadv-CCT
+      (grup.adv
+        (rg hasta hasta)
+        (sn
+          (vmip3s0 hace hacer)
+          (pi0mp000 unos uno)
+          (ncmp000 días día))))
+    (neg-MOD
+      (rn no no))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vaii3s0 había haber)
+      (vmp00sm perfilado perfilar))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 posibilidad posibilidad)
+        (sp
+          (prep
+            (sps00 de de))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 vender vender))
+            (sno-CD
+              (grup.nom
+                (np0000o Rover Rover)))
+            (sp-CI
+              (prep
+                (spcms al al))
+              (sn
+                (grup.nom.ms
+                  (ncms000 grupo grupo)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 inversor inversor)))
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 británico británico)))
+                  (S.F.R
+                    (Fc , ,)
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (morf.pron
+                      (p0300000 se él))
+                    (grup.verb
+                      (vmif3s0 encargará encargar))
+                    (sp-CREG
+                      (prep
+                        (sps00 de de))
+                      (sn.x
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.co
+                          (grup.nom.fs
+                            (ncfs000 producción producción))
+                          (coord
+                            (cc y y))
+                          (grup.nom.fs
+                            (ncfs000 distribución distribución)))))
+                    (Fc , ,)))))))))
+    (S.F.AConc-AO
+      (conj.subord
+        (cs aunque aunque))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3s0 admitió admitir))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sadv-CCT
+          (grup.adv
+            (rg ya ya)))
+        (grup.verb
+          (vais3s0 hubo haber))
+        (sn-CD.Q
+          (grup.nom.mp
+            (ncmp000 tanteos tanteo)
+            (sp
+              (prep
+                (sps00 para para))
+              (sn
+                (espec.fs
+                  (dd0fs0 esta este))
+                (grup.nom.fs
+                  (ncfs000 operación operación))))))
+        (sp-CCT
+          (prep
+            (sps00 en en))
+          (sn
+            (grup.nom.ms
+              (W octubre [??:??/10/??:??.??])
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 año año)
+                    (S.NF.P
+                      (participi
+                        (aq0msp pasado pasado)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.fp
+        (ncfp000 Fuentes fuente)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 sector sector))))))
+    (grup.verb
+      (vaip3p0 han haber)
+      (vmp00sm expresado expresar))
+    (sn-CD
+      (espec.fs
+        (dp3cs0 su su))
+      (grup.nom.fs
+        (ncfs000 extrañeza extrañeza)
+        (sp
+          (prep
+            (sps00 sobre sobre))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 viabilidad viabilidad)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 futura futuro)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sno
+                  (grup.nom
+                    (np0000o Rover Rover))))
+              (sp
+                (prep
+                  (sps00 en_manos_de en_manos_de))
+                (sn
+                  (espec.fs
+                    (di0fs0 una uno))
+                  (grup.nom.fs
+                    (ncfs000 entidad entidad)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 financiera financiero)))
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 ajena ajeno)
+                        (sp
+                          (prep
+                            (spcms al al))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 sector sector)
+                              (sp
+                                (prep
+                                  (spcms del del))
+                                (sn
+                                  (grup.nom.ms
+                                    (ncms000 automóvil automóvil)))))))))
+                    (S.F.R
+                      (Fc , ,)
+                      (relatiu-SUJ
+                        (pr0cn000 que que))
+                      (sp-CCT
+                        (prep
+                          (sps00 hasta hasta))
+                        (sadv
+                          (grup.adv
+                            (rg ahora ahora))))
+                      (morf.pron
+                        (p0300000 se él))
+                      (grup.verb
+                        (vaip3s0 ha haber)
+                        (vmp00sm dedicado dedicar))
+                      (sp-CREG
+                        (prep
+                          (sps00 a a))
+                        (S.NF.C
+                          (infinitiu
+                            (vmn0000 asesorar asesorar))
+                          (sn.x-CD
+                            (grup.nom.co
+                              (grup.nom.co
+                                (grup.nom.fp
+                                  (ncfp000 fusiones fusión))
+                                (coord
+                                  (cc y y))
+                                (grup.nom.fp
+                                  (ncfp000 adquisiciones adquisición)))
+                              (sp.j
+                                (Fc , ,)
+                                (prep
+                                  (sps00 entre entre))
+                                (sn
+                                  (espec.fp
+                                    (di0fp0 otras otro))
+                                  (grup.nom.fp
+                                    (ncfp000 actividades actividad)))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-ET
+      (prep
+        (sps00 Por por))
+      (sn
+        (espec.fs
+          (di0fs0 otra otro))
+        (grup.nom.fs
+          (ncfs000 parte parte)))
+      (Fc , ,))
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmis3s0 explicó explicar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 venta venta)
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (grup.nom
+                (np0000o Land_Rover Land_Rover))))
+          (sp
+            (prep
+              (sps00 a a))
+            (sno
+              (grup.nom
+                (np0000o Ford Ford))))))
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vmip3s0 debe deber))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (S.F.C
+          (conj.subord
+            (cs que que))
+          (sna-SUJ
+            (espec.ms
+              (dp3cs0 su su)
+              (di0ms0 propio propio))
+            (grup.nom.ms
+              (ncms000 todoterreno todoterreno)
+              (sna
+                (Fc , ,)
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (np0000a X5 X5))
+                (Fc , ,))))
+          (grup.verb
+            (vmip3s0 coincide coincidir))
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.mp
+                (di0mp0 algunos alguno))
+              (grup.nom.mp
+                (ncmp000 elementos elemento))))
+          (sp
+            (prep
+              (sps00 con con))
+            (sna
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (np0000a Range_Rover Range_Rover)
+                (sn
+                  (Fc , ,)
+                  (espec.ms
+                    (di0ms0 otro otro))
+                  (grup.nom.ms
+                    (ncms000 todoterreno todoterreno)
+                    (S.F.R
+                      (relatiu-SUJ
+                        (pr0cn000 que que))
+                      (sadv-MOD
+                        (grup.adv
+                          (rg tampoco tampoco)))
+                      (grup.verb
+                        (vmis3s0 generó generar))
+                      (sn-CD
+                        (grup.nom.mp
+                          (ncmp000 beneficios beneficio)))
+                      (sp-CCT
+                        (prep
+                          (sps00 en en))
+                        (snd
+                          (grup.nom.ms
+                            (W 1999 [??:??/??/1999:??.??])))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg Además además))
+      (Fc , ,))
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmis3s0 confirmó confirmar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sno-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 marca marca)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 lujo lujo))))
+          (sno
+            (grup.nom.fs
+              (np0000o Rolls_Royce Rolls_Royce)))
+          (S.NF.P
+            (Fc , ,)
+            (participi
+              (aq0fsp adherida adherido))
+            (sadv-CC
+              (grup.adv
+                (rg igualmente igualmente)))
+            (sp
+              (prep
+                (sps00 a a))
+              (sno
+                (grup.nom
+                  (np0000o BMW BMW))))
+            (Fc , ,))))
+      (grup.verb
+        (vmif3s0 permanecerá permanecer))
+      (sp-CCL
+        (prep
+          (sps00 en en))
+        (snl
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (np0000l Reino_Unido Reino_Unido))))
+      (sp-CC
+        (Fc , ,)
+        (prep
+          (sps00 por por))
+        (sn.co
+          (sn
+            (espec.fs
+              (dp3cs0 su su))
+            (grup.nom.fs
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 añeja añejo)))
+              (ncfs000 tradición tradición)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 británica británico)))))
+          (coord
+            (cc y y))
+          (sn
+            (espec.fp
+              (dp3cp0 sus su))
+            (grup.nom.fp
+              (ncfp000 dimensiones dimensión)
+              (s.a.fp
+                (Fc , ,)
+                (s.a.fp
+                  (espec
+                    (rg mucho mucho))
+                  (grup.a.fp
+                    (aq0cp0 menores menor)))
+                (S.F.AComp*.j
+                  (conj.subord
+                    (cs que que))
+                  (sno
+                    (grup.nom
+                      (np0000o Rover Rover))))
+                (Fc , ,))))))
+      (S.F.AConc
+        (conj.subord
+          (cs aunque aunque))
+        (sn.e-SUJ *0*)
+        (neg-MOD
+          (rn no no))
+        (grup.verb
+          (vmis3s0 precisó precisar))
+        (S.F.C-CC
+          (sadv-CCL
+            (pt000000 dónde dónde))
+          (morfema.verbal-PASS
+            (p0000000 se se))
+          (grup.verb
+            (vmif3s0 instalará instalar))
+          (sn-SUJ
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 nueva nuevo)))
+              (ncfs000 planta planta)
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (sn-CD
+                  (grup.nom.fs
+                    (pp3fsa00 la él)))
+                (grup.verb
+                  (vmif3s0 fabricará fabricar))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Milberg Milberg)))
+    (grup.verb
+      (vmis3s0 anunció anunciar))
+    (S.F.C.co-CD
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sna-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 viejo viejo)))
+            (np0000a Mini Mini)))
+        (sp-CCT
+          (Fc , ,)
+          (prep
+            (sps00 hasta hasta))
+          (S.F.C
+            (conj.subord
+              (cs que que))
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vmsp3s0 deje dejar)
+              (sps00 de de)
+              (infinitiu
+                (vmn0000 producirse producir))))
+          (Fc , ,))
+        (morfema.verbal-PASS
+          (p0000000 se se))
+        (grup.verb
+          (vmif3s0 venderá vender))
+        (sp-CC
+          (prep
+            (sps00 bajo bajo))
+          (sno
+            (grup.nom
+              (np0000o Alchemy Alchemy)))))
+      (coord
+        (cc y y))
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 nuevo nuevo)))
+            (ncms000 modelo modelo)
+            (S.F.R.co
+              (Fc , ,)
+              (S.F.R
+                (sn-SUJ
+                  (espec.ms
+                    (pr0ms000 cuyo cuyo))
+                  (grup.nom.ms
+                    (ncms000 lanzamiento lanzamiento)))
+                (morfema.verbal-PASS
+                  (p0000000 se se))
+                (grup.verb
+                  (vmip3s0 prevé prever))
+                (sp-CCT
+                  (prep
+                    (sps00 para para))
+                  (snd
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (W 2001 [??:??/??/2001:??.??])))))
+              (coord
+                (cc y y))
+              (S.F.R
+                (morfema.verbal-PASS
+                  (p0000000 se se))
+                (grup.verb
+                  (vmif3s0 comercializará comercializar))
+                (sp-CC
+                  (prep
+                    (sps00 bajo bajo))
+                  (sno
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 marca marca)
+                      (sna
+                        (grup.nom.ms
+                          (np0000a Mini Mini)))))))))
+          (Fc , ,))
+        (morfema.verbal-PASS
+          (p0000000 se se))
+        (grup.verb
+          (vmif3s0 producirá producir))
+        (sp-CC
+          (prep
+            (sps00 bajo bajo))
+          (sno
+            (grup.nom
+              (np0000o BMW BMW))))
+        (sp-CCL
+          (prep
+            (sps00 en en))
+          (snl
+            (grup.nom
+              (np0000l Oxford Oxford)
+              (S.F.R
+                (Fc , ,)
+                (relatiu-CCL
+                  (pr000000 donde donde))
+                (morfema.verbal-PASS
+                  (p0000000 se se))
+                (grup.verb
+                  (vmif3s0 fabricará fabricar))
+                (sn-SUJ
+                  (sadv.j
+                    (grup.adv
+                      (rg también también)))
+                  (sna
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (ncms000 modelo modelo)
+                      (s.a.ms
+                        (grup.a.ms
+                          (Z 75 75)))
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sno
+                          (grup.nom
+                            (np0000o Rover Rover)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmis3s0 Puntualizó puntualizar))
+    (sadv-MOD
+      (grup.adv
+        (rg también también)))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.ms
+          (dd0ms0 este este))
+        (grup.nom.ms
+          (ncms000 modelo modelo)))
+      (grup.verb
+        (vmif3s0 ocupará ocupar))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 posición posición)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 estratégica estratégico)))
+          (sadv
+            (grup.adv
+              (rg dentro dentro)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sno
+                  (grup.nom
+                    (np0000o BMW BMW)
+                    (sn
+                      (Fc , ,)
+                      (espec.fs
+                        (di0fs0 una uno))
+                      (grup.nom.fs
+                        (ncfs000 marca marca)
+                        (S.F.R
+                          (relatiu-SUJ
+                            (pr0cn000 que que))
+                          (sadv-CCT
+                            (grup.adv
+                              (rg ahora ahora)))
+                          (morf.pron
+                            (p0300000 se él))
+                          (grup.verb
+                            (vmip3s0 queda quedar))
+                          (sp-CC
+                            (prep
+                              (sps00 sin sin))
+                            (sn
+                              (grup.nom.mp
+                                (ncmp000 vehículos vehículo)
+                                (s.a.mp
+                                  (grup.a.mp
+                                    (aq0mp0 compactos compacto))))))
+                          (sp-CC
+                            (prep
+                              (sps00 hasta hasta))
+                            (sn
+                              (espec.fs
+                                (da0fs0 la el))
+                              (grup.nom.fs
+                                (ncfs000 producción producción)
+                                (sp
+                                  (prep
+                                    (sps00 de de))
+                                  (sna
+                                    (espec.fs
+                                      (da0fs0 la el))
+                                    (grup.nom.fs
+                                      (S.NF.P
+                                        (participi
+                                          (aq0fsp anunciada anunciado)))
+                                      (ncfs000 serie serie)
+                                      (s.a.fs
+                                        (grup.a.fs
+                                          (Z 2 2))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Milberg Milberg)))
+    (grup.verb
+      (vmis3s0 aseguró asegurar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (Fe " ")
+      (sno-SUJ
+        (grup.nom
+          (np0000o BMW BMW)))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vmip3s0 está estar))
+      (sp-ATR
+        (prep
+          (sps00 en en))
+        (sn
+          (grup.nom.fs
+            (ncfs000 venta venta))))
+      (Fe " "))
+    (sp-CC
+      (prep
+        (spcms al al))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 responder responder))
+        (sp-CREG
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fp
+              (da0fp0 las el))
+            (grup.nom.fp
+              (ncfp000 preguntas pregunta)
+              (sp
+                (prep
+                  (sps00 sobre sobre))
+                (sn
+                  (espec.fs
+                    (di0fs0 una uno))
+                  (grup.nom.fs
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0cs0 posible posible)))
+                    (ncfs000 adquisición adquisición)
+                    (sp
+                      (prep
+                        (sps00 por por))
+                      (sn
+                        (espec.mp
+                          (di0mp0 otros otro))
+                        (grup.nom.mp
+                          (ncmp000 grupos grupo)
+                          (s.a.mp
+                            (grup.a.mp
+                              (aq0mp0 automovilísticos automovilístico))))))
+                    (S.F.A
+                      (Fc , ,)
+                      (conj.subord
+                        (cs como como))
+                      (grup.verb
+                        (vmii3p0 indicaban indicar))
+                      (sn-SUJ
+                        (espec.mp
+                          (da0mp0 los el))
+                        (grup.nom.mp
+                          (ncmp000 rumores rumor)
+                          (sp
+                            (prep
+                              (sps00 en en))
+                            (sn
+                              (espec.ms
+                                (da0ms0 el el))
+                              (grup.nom.ms
+                                (ncms000 sector sector)))))))))))))))
+    (Fp . .)))

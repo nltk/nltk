@@ -1,0 +1,361 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 príncep príncep)
+        (sn
+          (grup.nom.ms
+            (np00000 Felip_de_Borbó Felip_de_Borbó)))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vaip3s0 va anar)
+            (vmn0000 arribar arribar))
+          (sn-CCT
+            (grup.nom.ms
+              (W dilluns [dilluns:??/??/??:??.??])))
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (sn
+              (grup.nom.fs
+                (ncfs000 visita visita)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 oficial oficial))))))
+          (sp-CCL
+            (prep
+              (spcms al al))
+            (sn
+              (grup.nom.ms
+                (np00000 Salvador Salvador))))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 assistir assistir))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 acte acte)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 oficial oficial)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 presa_de_possessió presa_de_possessió)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 president president)
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0ms0 electe electe)))
+                      (sn
+                        (grup.nom.ms
+                          (np00000 Francisco_Flores Francisco_Flores)))
+                      (S.F.R
+                        (Fc , ,)
+                        (sp-CC
+                          (prep
+                            (sps00 amb amb))
+                          (relatiu
+                            (pr0cn000 qui qui)))
+                        (sadv-CCT
+                          (grup.adv
+                            (rg posteriorment posteriorment)))
+                        (sn.e-SUJ *0*)
+                        (grup.verb
+                          (vaip3s0 va anar)
+                          (vmn0000 tenir tenir))
+                        (sn-CD.Q
+                          (espec.fs
+                            (di0fs0 una un))
+                          (grup.nom.fs
+                            (ncfs000 reunió reunió)
+                            (S.NF.P
+                              (participi
+                                (aq0fsp seguida seguit))
+                              (sp-CAG
+                                (prep
+                                  (sps00 d' de))
+                                (sn
+                                  (espec.ms
+                                    (di0ms0 un un))
+                                  (grup.nom.ms
+                                    (ncms000 dinar dinar)
+                                    (sp
+                                      (prep
+                                        (sps00 a a))
+                                      (sn
+                                        (espec.fs
+                                          (da0fs0 la el))
+                                        (grup.nom.fs
+                                          (ncfs000 casa casa)
+                                          (s.a.fs
+                                            (grup.a.fs
+                                              (aq0cs0 presidencial presidencial))))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 visita visita)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (np00000 Príncep Príncep)
+              (S.F.R
+                (Fc , ,)
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (sp-CCT
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.mp
+                      (da0mp0 els el))
+                    (grup.nom.mp
+                      (s.a.mp
+                        (grup.a.mp
+                          (ao0mp0 últims últim)))
+                      (ncmn000 temps temps))))
+                (grup.verb
+                  (vaip3s0 ha haver)
+                  (vmp00sm assumit assumir))
+                (sn-CD
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 representació representació)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (np00000 Corona Corona)
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0fs0 espanyola espanyol))))))))
+                (sp-CC
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.mp
+                      (di0mp0 diversos divers))
+                    (grup.nom.mp
+                      (ncmp000 actes acte)
+                      (s.a.fp
+                        (grup.a.fp
+                          (aq0cp0 oficials oficial))))))
+                (sp-CCL
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 països país)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom
+                            (np00000 Llatinoamèrica Llatinoamèrica))))
+                      (sp
+                        (Fc , ,)
+                        (prep
+                          (cs com com))
+                        (sn.x
+                          (grup.nom.co
+                            (grup.nom
+                              (np00000 Guatemala Guatemala))
+                            (Fc , ,)
+                            (grup.nom
+                              (np00000 Nicaragua Nicaragua))
+                            (coord
+                              (cc i i))
+                            (grup.nom
+                              (np00000 Equador Equador))))))))
+                (Fc , ,)))))))
+    (grup.verb
+      (vmip3s0 té tenir))
+    (sn-CD.Q
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 valor valor)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 simbòlic simbòlic)))
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 suport suport)
+              (sp
+                (prep
+                  (sps00 d' de))
+                (sn
+                  (grup.nom
+                    (np00000 Espanya Espanya))))
+              (sp
+                (prep
+                  (spcmp als al))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 processos procés)
+                    (s.a.mp
+                      (grup.a.mp
+                        (aq0mp0 democràtics democràtic)))))))))))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (sn
+        (grup.nom.mp
+          (ncmp000 països país)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vaip3p0 han haver)
+              (vmp00sm viscut viure))
+            (sn-CD
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 dramatisme dramatisme)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn.co
+                    (sn
+                      (espec.fp
+                        (da0fp0 les el))
+                      (grup.nom.fp
+                        (ncfp000 guerres guerra)
+                        (s.a.fp
+                          (grup.a.fp
+                            (aq0cp0 civils civil)))))
+                    (Fc , ,)
+                    (sn
+                      (espec.fp
+                        (da0fp0 les el))
+                      (grup.nom.fp
+                        (ncfp000 guerrilles guerrilla)))
+                    (coord
+                      (cc i i))
+                    (sn
+                      (espec.fp
+                        (da0fp0 les el))
+                      (grup.nom.fp
+                        (ncfp000 dictadures dictadura)
+                        (s.a.fp
+                          (grup.a.fp
+                            (aq0cp0 militars militar)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (S.NF.P
+          (participi
+            (aq0fsp ajustada ajustat)))
+        (ncfs000 agenda agenda)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 príncep príncep)
+              (sn
+                (grup.nom.ms
+                  (np00000 Felip Felip)))
+              (S.F.R
+                (Fc , ,)
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (sadv-CCT
+                  (grup.adv
+                    (rg ahir ahir)))
+                (sp-CCT
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 nit nit))))
+                (grup.verb
+                  (vaip3s0 va anar)
+                  (vmn0000 finalitzar finalitzar))
+                (sn-CD
+                  (espec.fs
+                    (dp3fs0 la_seva el_seu))
+                  (grup.nom.fs
+                    (ncfs000 visita visita)
+                    (sp
+                      (prep
+                        (spcms al al))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 país país)
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0ms0 centreamericà centreamericà))))))))
+                (Fc , ,)))))))
+    (sn-CI
+      (grup.nom.s
+        (pp3csd00 li ell)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 permetre permetre))
+    (sadv-MOD
+      (grup.adv
+        (rg també també)))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 tenir tenir))
+      (sadv-CCT
+        (grup.adv
+          (rg ahir ahir)))
+      (sn-CD.Q
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 trobada trobada)))
+      (sp-CC
+        (prep
+          (sps00 amb amb))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 colònia colònia)
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 espanyola espanyol)))))))
+    (Fp . .)))

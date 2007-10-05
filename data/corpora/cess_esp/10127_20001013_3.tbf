@@ -1,0 +1,604 @@
+
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 reunión reunión)
+          (sp
+            (prep
+              (sps00 de de))
+            (sadv
+              (grup.adv
+                (rg hoy hoy))))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 comisión comisión))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (dp3cp0 sus su))
+      (grup.nom.mp
+        (ncmp000 miembros miembro)))
+    (grup.verb
+      (vmis3p0 examinaron examinar))
+    (sn-CD
+      (espec.fs
+        (di0fs0 toda todo)
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 documentación documentación)
+        (s.a.fs.x
+          (grup.a.fs.co
+            (grup.a.fs
+              (aq0cs0 material material))
+            (Fc , ,)
+            (grup.a.fs
+              (aq0fs0 técnica técnico))
+            (coord
+              (cc y y))
+            (grup.a.fs
+              (aq0fs0 gráfica gráfico))))
+        (S.NF.P
+          (participi
+            (aq0fsp recogida recogido))
+          (sn-CCT
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (s.a.mp
+                (grup.a.mp
+                  (ao0mp0 últimos último)))
+              (ncmp000 días día)))
+          (sp-CAG
+            (prep
+              (sps00 por por))
+            (sna
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 buque buque)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 científico científico)))
+                (sna
+                  (grup.nom.ms
+                    (Fe " ")
+                    (np0000a Akademik_Mstislav_Keldish Akademik_Mstislav_Keldish)
+                    (Fe " "))))))
+          (sp-CCL
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 lugar lugar)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 accidente accidente))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Tras tras))
+      (sn
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 inmersiones inmersión)
+          (sp
+            (prep
+              (spcms del del))
+            (sna
+              (grup.nom.ms
+                (ncms000 batiscafo batiscafo)
+                (sn
+                  (grup.nom
+                    (Fe " ")
+                    (ncms000 Mir mir)
+                    (Fe " "))))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.mp
+        (nccp000 responsables responsable)
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000o Armada Armada))))))
+    (grup.verb
+      (vmis3p0 dijeron decir))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 rescate rescate)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (ncmp000 cadáveres cadáver)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.mp
+                      (da0mp0 los el))
+                    (grup.nom.mp
+                      (nccp000 tripulantes tripulante)))))))))
+      (grup.verb
+        (vsif3s0 será ser))
+      (S.NF.P-ATR
+        (Fe " ")
+        (sadv-CC
+          (grup.adv
+            (rg muy mucho)))
+        (participi
+          (aq0msp complicado complicado))
+        (Fe " ")))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (grup.nom
+        (np0000o Moscú Moscú)))
+    (grup.verb
+      (vaip3s0 ha haber)
+      (vmp00sm firmado firmar))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un uno))
+      (grup.nom.ms
+        (ncms000 contrato contrato)))
+    (sp-CC
+      (prep
+        (sps00 con con))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (nccs000 filial filial)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 noruega noruego)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 empresa empresa)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 norteamericana norteamericano)))
+                (sno
+                  (grup.nom.fs
+                    (np0000o Halliburton Halliburton)))))))))
+    (sp-CC
+      (prep
+        (sps00 para para))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 intentar intentar))
+        (sn-CD
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 rescate rescate)))))
+    (S.F.AConc-AO
+      (Fc , ,)
+      (conj.subord
+        (cs aunque aunque))
+      (sn-SUJ
+        (grup.nom.mp
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 altos alto)))
+          (ncmp000 mandos mando)
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000o Armada Armada))))))
+      (grup.verb
+        (vmip3p0 creen creer))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sadv-ET
+          (grup.adv
+            (rg en_todo_caso en_todo_caso)))
+        (sadv-CC
+          (grup.adv
+            (rg sólo sólo)))
+        (grup.verb
+          (vmif3s0 podrá poder)
+          (infinitiu
+            (vmn0000 recuperarse recuperar)))
+        (sn-SUJ
+          (sn.co
+            (coord
+              (sps00 entre entre))
+            (snn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (Z 20 20)))
+            (coord
+              (cc y y))
+            (snn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (Zp 30_por_ciento 30_%))))
+          (sp.j
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (ncmp000 cuerpos cuerpo)))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (snp-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (nccs000 comandante comandante)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000o Armada Armada)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 rusa ruso))))))
+          (snp
+            (Fc , ,)
+            (grup.nom.ms
+              (ncms000 almirante almirante)
+              (snp
+                (grup.nom.ms
+                  (np0000p Vladímir_Kuroyédov Vladímir_Kuroyédov))))
+            (Fc , ,))))
+      (morf.pron
+        (p0300000 se él))
+      (grup.verb
+        (vmis3s0 mostró mostrar))
+      (sa-CPRED.SUJ
+        (grup.a
+          (aq0ms0 contrario contrario)
+          (sp
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 operación operación)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 rescate rescate)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.mp
+                            (da0mp0 los el))
+                          (grup.nom.mp
+                            (ncmp000 cadáveres cadáver)))))))))))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3s0 abogó abogar))
+      (sadv-MOD
+        (grup.adv
+          (rg más_bien más_bien)))
+      (sp-CREG
+        (prep
+          (sps00 por por))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 intento intento)
+            (sp
+              (prep
+                (sps00 de de))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 izar izar))
+                (sna-CD
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (Fe " ")
+                    (np0000a Kursk Kursk)
+                    (Fe " ")
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 entero entero)))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (Fe " ")
+      (S.F.A-CC
+        (conj.subord
+          (cs Puesto_que puesto_que))
+        (sn.co-SUJ
+          (snp
+            (grup.nom.ms
+              (np0000p Dios Dios)))
+          (Fc , ,)
+          (sna
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (np0000a Destino Destino)))
+          (coord
+            (cc y y))
+          (sna
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000a Naturaleza Naturaleza))))
+        (grup.verb
+          (vaip3p0 han haber)
+          (vmp00sm decidido decidir))
+        (sn-CD
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 suerte suerte)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.mp
+                  (dd0mp0 esos ese))
+                (grup.nom.mp
+                  (ncmp000 marinos marino)))))))
+      (Fc , ,)
+      (Fia ¿ ¿)
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vsif3s0 será ser))
+      (sn-SUJ
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 blasfemia blasfemia)))
+      (S.NF.C-CD
+        (infinitiu
+          (vmn0000 llevar llevar))
+        (sadv-CC
+          (grup.adv
+            (rg adelante adelante)))
+        (sn-CD
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 operación operación)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 rescate rescate)))))))
+      (Fit ? ?)
+      (Fe " ")
+      (Fc , ,))
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmis3s0 manifestó manifestar))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Kuroyédov Kuroyédov)))
+    (grup.verb
+      (vmis3s0 anunció anunciar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fp
+          (rg al_menos al_menos)
+          (Z 78 78))
+        (grup.nom.mp
+          (ncmp000 familiares familiar)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (nccp000 tripulantes tripulante)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sna
+                    (grup.nom.ms
+                      (Fe " ")
+                      (np0000a Kursk Kursk)
+                      (Fe " ")))))))))
+      (grup.verb
+        (vaip3p0 han haber)
+        (vmp00sm firmado firmar))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 petición petición)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 oficial oficial)))
+          (sp
+            (prep
+              (sps00 para para))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 subir subir))
+              (sn.co-CD
+                (sn
+                  (espec.mp
+                    (da0mp0 los el))
+                  (grup.nom.mp
+                    (ncmp000 cuerpos cuerpo)))
+                (coord
+                  (sps00 junto_con junto_con))
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 submarino submarino))))
+              (sp-CCT
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.ms
+                    (dp3cs0 su su))
+                  (grup.nom.ms
+                    (ncms000 momento momento))))))))
+      (S.F.A-CC
+        (conj.subord
+          (cs porque porque))
+        (sadv-CCT
+          (grup.adv
+            (rg ahora ahora)))
+        (grup.verb
+          (vaip3s0 hay haber))
+        (sn-CD.Q
+          (Fe " ")
+          (espec.fp
+            (rg muy mucho)
+            (di0fp0 pocas poco))
+          (grup.nom.fp
+            (ncfp000 posibilidades posibilidad)
+            (Fe " ")
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 éxito éxito))))))))
+    (Fp . .)))
+(
+  (S
+    (sna-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 plataforma plataforma)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 semisumergible semisumergible)))
+        (sna
+          (Fe " ")
+          (grup.nom.fs
+            (np0000a Regalia Regalia))
+          (Fe " "))
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (grup.nom
+              (np0000o Halliburton Halliburton))))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 navega navegar))
+          (sp-CCT
+            (prep
+              (sps00 desde desde))
+            (snd
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (W pasado_día_9 [??:9/??/??:??.??]))))
+          (sp-CCL
+            (prep
+              (spcms en_dirección_al en_dirección_al))
+            (sn
+              (grup.nom.ms
+                (ncms000 lugar lugar)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 naufragio naufragio)))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmip3s0 tiene tener))
+    (S.NF.P-CPRED.SUJ
+      (participi
+        (aq0msp previsto previsto))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 iniciar iniciar))
+        (sn-CD
+          (espec.mp
+            (dp3cp0 sus su))
+          (grup.nom.mp
+            (ncmp000 trabajos trabajo)))
+        (sn.co-CCT
+          (snn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (Z 19 19)))
+          (coord
+            (cc o o))
+          (snd
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (W 20_de_octubre [??:20/10/??:??.??]))))))
+    (Fp . .)))

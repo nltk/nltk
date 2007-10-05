@@ -1,0 +1,647 @@
+
+(
+  (S
+    (sp
+      (prep
+        (sps00 De de))
+      (sn
+        (espec.fp
+          (da0fp0 les el)
+          (Z 4.204 4204))
+        (grup.nom.fp
+          (ncfp000 persones persona)
+          (S.NF.P
+            (participi
+              (aq0fpp disminuïdes disminuït)))
+          (S.F.R
+            (relatiu
+              (pr0cn000 que que))
+            (morf.pron
+              (pp3cn000 hi hi))
+            (grup.verb
+              (vaip3s0 ha haver))
+            (sp
+              (prep
+                (sps00 a a))
+              (snl
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 comarca comarca)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (snl
+                      (grup.nom.ms
+                        (np0000l Bages Bages)))))))
+            (sp
+              (prep
+                (sps00 en en))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 disposició disposició)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (S.NF.C
+                      (infinitiu
+                        (vmn0000 treballar treballar))))))))))
+      (Fc , ,))
+    (snn
+      (grup.nom.p
+        (Z 1.050 1050)))
+    (grup.verb
+      (vmip3p0 estan estar))
+    (S.NF.P
+      (participi
+        (aq0fpp aturades aturat)))
+    (Fp . .)))
+(
+  (S
+    (sp.co
+      (sp
+        (prep
+          (sps00 Des_de des_de))
+        (sno
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (np0000o Ajuntament_de_Manresa Ajuntament_de_Manresa))))
+      (coord
+        (cc i i))
+      (sp
+        (prep
+          (spcms a_través_del a_través_del))
+        (sna
+          (grup.nom.ms
+            (ncms000 projecte projecte)
+            (sna
+              (grup.nom
+                (np0000a Inserim Inserim)))))))
+    (morfema.verbal
+      (p0000000 s' es))
+    (grup.verb
+      (vmip3s0 intenta intentar))
+    (S.NF.C
+      (infinitiu
+        (vmn0000 facilitar facilitar))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 accés accés)
+          (sp
+            (prep
+              (spcms al al))
+            (sn
+              (grup.nom.ms
+                (ncms000 món món)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 laboral laboral))))))
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.fp
+                (dd0fp0 aquestes aquest))
+              (grup.nom.fp
+                (ncfp000 persones persona)))))))
+    (Fp . .)))
+(
+  (S
+    (sna
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 projecte projecte)
+        (sna
+          (grup.nom
+            (np0000a Inserim Inserim)))))
+    (morf.pron
+      (p0300000 es ell))
+    (grup.verb
+      (vmip3s0 desenvolupa desenvolupar))
+    (sp
+      (prep
+        (sps00 a a))
+      (snl
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (ncfp000 comarques comarca)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn.co
+              (snl
+                (espec.ms
+                  (da0cs0 l' el))
+                (grup.nom.ms
+                  (np0000l Alt_Penedès Alt_Penedès)))
+              (Fc , ,)
+              (snl
+                (espec.ms
+                  (da0cs0 l' el))
+                (grup.nom.ms
+                  (np0000l Anoia Anoia)))
+              (Fc , ,)
+              (snl
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (np0000l Bages Bages)))
+              (coord
+                (cc i i))
+              (snl
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (np0000l Garraf Garraf))))))))
+    (Fp . .)))
+(
+  (S
+    (sn
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 empreses empresa)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (rg més més)
+              (sps00 de de)
+              (Z 50 50))
+            (grup.nom.mp
+              (ncmp000 treballadors treballador))))))
+    (grup.verb
+      (vmip3p0 tenen tenir))
+    (sn
+      (espec.fs
+        (da0cs0 l' el))
+      (grup.nom.fs
+        (ncfs000 obligació obligació)
+        (sp
+          (prep
+            (sps00 de de))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 tenir tenir))
+            (sp
+              (prep
+                (sps00 en en))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 plantilla plantilla))))
+            (snn
+              (espec.mp
+                (di0ms0 un un)
+                (ncms000 mínim mínim)
+                (sps00 d' de)
+                (di0ms0 un un)
+                (Zp 2_per_cent 2_%)
+                (sps00 d' de))
+              (grup.nom.mp
+                (ncmp000 empleats empleat)
+                (sp
+                  (prep
+                    (sps00 amb amb))
+                  (sn
+                    (espec.fs
+                      (di0fs0 una un))
+                    (grup.nom.fs
+                      (ncfs000 disminució disminució)
+                      (s.a.fs.x
+                        (grup.a.fs.co
+                          (grup.a.fs
+                            (aq0fs0 física físic))
+                          (coord
+                            (cc o o))
+                          (grup.a.fs
+                            (aq0cs0 mental mental))))
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0cs0 lleu lleu))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp
+      (prep
+        (sps00 Per per))
+      (sn
+        (grup.nom.ms
+          (pd0ns000 això això)))
+      (Fc , ,))
+    (sp
+      (prep
+        (spcms des_del des_del))
+      (sno
+        (grup.nom.ms
+          (np0000o Centre_d'_Iniciatives_per_a_l'_Ocupació_de_Manresa Centre_d'_Iniciatives_per_a_l'_Ocupació_de_Manresa)))
+      (Fc , ,))
+    (morfema.verbal
+      (p0000000 s' es))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm mantingut mantenir))
+    (sn
+      (grup.nom.fp
+        (ncfp000 entrevistes entrevista)))
+    (sp
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (nccp000 responsables responsable)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom.fp
+                (ncfp000 empreses empresa))))
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.fp
+                (dd0fp0 aquestes aquest))
+              (grup.nom.fp
+                (ncfp000 dimensions dimensió)))))))
+    (sp
+      (prep
+        (sps00 per per))
+      (S.NF.C.co
+        (S.NF.C.co
+          (S.NF.C
+            (infinitiu
+              (vmn0000 informar informar))
+            (sn
+              (grup.nom.mp
+                (pp3cp000 -los ell))))
+          (coord
+            (cc i i))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 assessorar assessorar))
+            (sn
+              (grup.nom.mp
+                (pp3cp000 -los ell)))))
+        (sp.co.j
+          (sp
+            (prep
+              (sps00 sobre sobre))
+            (sn
+              (espec.fs
+                (dd0fs0 aquesta aquest))
+              (grup.nom.fs
+                (ncfs000 qüestió qüestió))))
+          (coord
+            (cc i i))
+          (sp
+            (prep
+              (sps00 sobre sobre))
+            (sn
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (ncfp000 subvencions subvenció)
+                (S.F.R
+                  (relatiu
+                    (pr0cn000 que que))
+                  (sn.e *0*)
+                  (grup.verb
+                    (vmip3p0 poden poder)
+                    (infinitiu
+                      (vmn0000 obtenir obtenir)))
+                  (S.F.ACond
+                    (conj.subord
+                      (cs si si))
+                    (sn.e *0*)
+                    (grup.verb
+                      (vmip3p0 contracten contractar))
+                    (sn
+                      (grup.nom.fp
+                        (ncfp000 persones persona)
+                        (sp
+                          (prep
+                            (sps00 amb amb))
+                          (sn
+                            (grup.nom.fp
+                              (ncfp000 disminucions disminució))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp
+      (prep
+        (spcms Al al))
+      (sn
+        (espec.ms
+          (di0ms0 mateix mateix))
+        (grup.nom.ms
+          (ncmn000 temps temps)))
+      (Fc , ,))
+    (sn
+      (espec.ms
+        (dd0ms0 aquest aquest))
+      (grup.nom.ms
+        (ncms000 organisme organisme)
+        (S.F.R
+          (Fc , ,)
+          (relatiu
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 depèn dependre))
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (np0000o Ajuntament_de_Manresa Ajuntament_de_Manresa))))
+          (Fc , ,))))
+    (grup.verb
+      (vmip3s0 disposa disposar))
+    (sp
+      (prep
+        (sps00 d' de))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 banc banc)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (ncfp000 dades dada))))
+          (sp.co
+            (sp
+              (prep
+                (spcmp dels del))
+              (sn
+                (grup.nom.mp
+                  (nccp000 demandants demandant)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 feina feina)))))))
+            (coord
+              (cc i i))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fp
+                  (da0fp0 les el))
+                (grup.nom.fp
+                  (ncfp000 persones persona)
+                  (S.NF.P
+                    (participi
+                      (aq0fpp disminuïdes disminuït)))
+                  (S.F.R
+                    (relatiu
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vmip3p0 busquen buscar))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 feina feina))))))))
+          (S.F.R
+            (relatiu
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3s0 permet permetre))
+            (S.NF.C.co
+              (S.NF.C.co
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 canalitzar canalitzar)))
+                (coord
+                  (cc i i))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 precisar precisar))))
+              (sn.j
+                (espec.mp
+                  (da0mp0 els el))
+                (grup.nom.mp
+                  (ncmp000 perfils perfil)
+                  (s.a.mp
+                    (espec
+                      (rg més més))
+                    (grup.a.mp
+                      (aq0mp0 necessaris necessari)))))
+              (sp.j
+                (prep
+                  (sps00 en en))
+                (espec.ms
+                  (di0cs0 cada cada))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 cas cas)))))
+            (sp
+              (prep
+                (sps00 per per))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 ocupar ocupar))
+                (sn
+                  (espec.mp
+                    (da0mp0 els el))
+                  (grup.nom.mp
+                    (ncmp000 llocs lloc)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 treball treball))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 cas cas)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (ncfp000 persones persona)
+                (sp
+                  (prep
+                    (sps00 amb amb))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 disminució disminució)))))))))
+      (Fc , ,))
+    (sn
+      (espec.fp
+        (da0fp0 les el))
+      (grup.nom.fp
+        (ncfp000 taxes taxa)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 desocupació desocupació))))))
+    (grup.verb
+      (vmip3p0 estan estar))
+    (sadv
+      (sadv.j
+        (grup.adv
+          (rg molt molt)))
+      (sadv
+        (grup.adv
+          (rg per_sobre per_sobre)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 població població)
+                (sadv
+                  (grup.adv
+                    (rg en_general en_general)))))))))
+    (S.F.AConc
+      (Fc , ,)
+      (conj.subord
+        (cs tot_i_que tot_i_que))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 majoria majoria)))
+      (grup.verb
+        (vmip3p0 poden poder)
+        (infinitiu
+          (vmn0000 adaptar adaptar)))
+      (morf.pron
+        (p0300000 -se ell))
+      (sadv
+        (grup.adv
+          (rg perfectament perfectament)))
+      (sp
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.ms
+            (di0ms0 un un))
+          (grup.nom.ms
+            (ncms000 lloc lloc)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 treball treball)))))))
+      (S.F.ACond
+        (conj.subord
+          (cs si si))
+        (morfema.verbal
+          (p0000000 es es))
+        (grup.verb
+          (vmip3s0 troba trobar))
+        (sn
+          (espec.fs
+            (da0cs0 l' el))
+          (grup.nom.fs
+            (ncfs000 oferta oferta)
+            (S.NF.P
+              (participi
+                (aq0fsp adequada adequat))
+              (sp
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.fp
+                    (dp3fp0 les_seves el_seu))
+                  (grup.nom.fp
+                    (ncfp000 capacitats capacitat)))))))))
+    (Fp . .)))
+(
+  (S
+    (sp
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 projecte projecte))))
+    (sn
+      (grup.nom
+        (pp3cn000 hi hi)))
+    (grup.verb
+      (vmip3p0 participen participar))
+    (sn.co
+      (sn
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (ncmp000 ajuntaments ajuntament)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn.x
+              (grup.nom.co
+                (grup.nom
+                  (np0000l Vilanova_i_la_Geltrú Vilanova_i_la_Geltrú))
+                (Fc , ,)
+                (grup.nom
+                  (np0000l Vilafranca_del_Penedès Vilafranca_del_Penedès))
+                (Fc , ,)
+                (grup.nom
+                  (np0000l Manresa Manresa)))))))
+      (Fc , ,)
+      (sno
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np0000o Consell_Comarcal_de_l'_Anoia Consell_Comarcal_de_l'_Anoia)))
+      (Fc , ,)
+      (sno
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np0000o Departament_de_Treball_de_la_Generalitat Departament_de_Treball_de_la_Generalitat)))
+      (Fc , ,)
+      (sno
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (np0000o Federació_Ecom Federació_Ecom)))
+      (coord
+        (cc i i))
+      (sn
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (ncmp000 sindicats sindicat)
+          (sn.x
+            (grup.nom.co
+              (grup.nom
+                (np0000o CCOO CCOO))
+              (coord
+                (cc i i))
+              (grup.nom
+                (np0000o UGT UGT)))))))
+    (Fp . .)))

@@ -1,0 +1,769 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (di0ms0 Un uno))
+      (grup.nom.ms
+        (ncms000 error error)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 mecanográfico mecanográfico)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 administración administración)
+              (sp
+                (prep
+                  (spcms del del))
+                (sno
+                  (grup.nom.ms
+                    (np0000o Werder_Bremen Werder_Bremen)))))))))
+    (grup.verb
+      (vmip3s0 puede poder)
+      (infinitiu
+        (vmn0000 costar costar)))
+    (sa-CPRED.SUJ
+      (grup.a
+        (aq0ms0 caro caro)))
+    (sp-CI
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 club club)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 alemán alemán)))
+          (S.F.R
+            (Fc , ,)
+            (sp-CI
+              (prep
+                (spcms al al))
+              (sn
+                (relatiu
+                  (pr0cn000 que que))))
+            (sno-SUJ
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (np0000o NK_Zagreb NK_Zagreb)))
+            (grup.verb
+              (vmip3s0 pide pedir))
+            (snn-CD
+              (espec.mp
+                (Z 3,8 3.8))
+              (grup.nom.mp
+                (ncmp000 millones millón)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snn
+                    (grup.nom.mp
+                      (Zm marcos marco))))
+                (sadv
+                  (grup.adv
+                    (rg más más)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.ms
+                          (da0ns0 lo el))
+                        (grup.nom.ms
+                          (S.F.R
+                            (relatiu-SUJ
+                              (pr0cn000 que que))
+                            (grup.verb
+                              (vsis3s0 fue ser)
+                              (vmp00sm acordado acordar))
+                            (sp-CC
+                              (prep
+                                (sps00 entre entre))
+                              (sn
+                                (espec.mp
+                                  (da0mp0 los el))
+                                (grup.nom.mp
+                                  (ncmp000 clubes club))))
+                            (sp-CC
+                              (prep
+                                (sps00 por por))
+                              (sn
+                                (espec.ms
+                                  (da0ms0 el el))
+                                (grup.nom.ms
+                                  (ncms000 traspaso traspaso)
+                                  (sp
+                                    (prep
+                                      (sps00 de de))
+                                    (snp
+                                      (grup.nom.ms
+                                        (np0000p Ivica_Banovic Ivica_Banovic)))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np0000o NK_Zagreb NK_Zagreb)))
+    (grup.verb
+      (vmis3s0 vendió vender))
+    (sp-CI
+      (prep
+        (spcms al al))
+      (sno
+        (grup.nom.ms
+          (np0000o Werder_Bremen Werder_Bremen))))
+    (sp-CD
+      (prep
+        (spcms al al))
+      (snp
+        (grup.nom.ms
+          (ncms000 delantero delantero)
+          (snp
+            (grup.nom.ms
+              (np0000p Ivica_Banovic Ivica_Banovic))))))
+    (sp-CC
+      (prep
+        (sps00 por por))
+      (snn
+        (espec.mp
+          (Z 3,7 3.7))
+        (grup.nom.mp
+          (ncmp000 millones millón)
+          (sp
+            (sp
+              (sps00 de de))
+            (snn
+              (grup.nom.mp
+                (Zm marcos marco))))
+          (S.F.R
+            (Fc , ,)
+            (relatiu-CD
+              (pr0cn000 que que))
+            (sn-SUJ
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (ncmp000 alemanes alemán)))
+            (sadv-CCT
+              (grup.adv
+                (rg ya ya)))
+            (grup.verb
+              (vmis3p0 abonaron abonar))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 problema problema)))
+      (grup.verb
+        (vmip3s0 está estar))
+      (sp-CREG
+        (prep
+          (sps00 en en))
+        (S.F.C
+          (conj.subord
+            (cs que que))
+          (sno-SUJ
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 directiva directiva)
+              (sp
+                (prep
+                  (spcms del del))
+                (sno
+                  (grup.nom.ms
+                    (np0000o Werder Werder))))))
+          (grup.verb
+            (vmis3s0 redactó redactar))
+          (sn-CD
+            (espec.ms
+              (di0ms0 un uno))
+            (grup.nom.ms
+              (ncms000 contrato contrato)
+              (S.F.R
+                (sp-CREG
+                  (prep
+                    (sps00 en en))
+                  (relatiu
+                    (da0ms0 el el)
+                    (pr0cn000 que que)))
+                (sn-SUJ
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 importe importe)
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 traspaso traspaso))))))
+                (grup.verb
+                  (vmip3s0 está estar))
+                (S.NF.P-CPRED.SUJ
+                  (grup.adv
+                    (aq0msp escrito escrito))
+                  (sadv-CC
+                    (grup.adv
+                      (rg correctamente correctamente)))
+                  (sp-CC
+                    (prep
+                      (sps00 en en))
+                    (sn
+                      (grup.nom.mp
+                        (ncmp000 números número)
+                        (snn
+                          (Fpa -Fpa- -Fpa-)
+                          (espec.mp
+                            (Z 3,700.000 3.700000))
+                          (grup.nom.mp
+                            (Zm DM dm))
+                          (Fpt -Fpt- -Fpt-)))))))))))
+      (Fc , ,))
+    (coord
+      (cc pero pero))
+    (S*
+      (sadv
+        (grup.adv
+          (rg erróneamente erróneamente)))
+      (sp
+        (prep
+          (sps00 en en))
+        (sn
+          (grup.nom.fp
+            (ncfp000 letras letra))))
+      (S.F.R
+        (Fc , ,)
+        (relatiu-CCL
+          (pr000000 donde donde))
+        (sp-CC
+          (prep
+            (sps00 en_lugar_de en_lugar_de))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 figurar figurar))
+            (snn
+              (espec.mp
+                (da0mp0 los el)
+                (Z 3,7 3.7))
+              (grup.nom.mp
+                (ncmp000 millones millón)
+                (S.NF.P
+                  (participi
+                    (aq0mpp acordados acordado))))))
+          (Fc , ,))
+        (grup.verb
+          (vmip3s0 aparece aparecer))
+        (sn-CD
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 cantidad cantidad)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn.co
+                (sn.co
+                  (snn
+                    (espec.mp
+                      (Z siete 7))
+                    (grup.nom.mp
+                      (ncmp000 millones millón)))
+                  (coord
+                    (cc y y))
+                  (sn
+                    (grup.nom.ms
+                      (pn0ms000 medio medio))))
+                (sp.j
+                  (prep
+                    (sps00 de de))
+                  (snn
+                    (grup.nom.mp
+                      (Zm marcos marco)
+                      (s.a.mp
+                        (grup.a.mp
+                          (aq0mp0 alemanes alemán))))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.AConc-AO
+      (conj.subord
+        (cs Aunque aunque))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 intermediario intermediario)
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 traspaso traspaso))))
+          (snp
+            (Fc , ,)
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (nccs000 croata croata)
+              (snp
+                (grup.nom.ms
+                  (np0000p Josip_Kuze Josip_Kuze))))
+            (Fc , ,))))
+      (grup.verb
+        (vmip3s0 afirma afirmar))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sno-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (np0000o NK_Zagreb NK_Zagreb)))
+        (neg-MOD
+          (rn no no))
+        (grup.verb
+          (vmip3s0 tiene tener))
+        (sn-CD.Q
+          (espec.ms
+            (di0ms0 ningún ninguno))
+          (grup.nom.ms
+            (ncms000 derecho derecho)
+            (sp
+              (prep
+                (sps00 de de))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 reclamar reclamar))
+                (sn-CD
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 diferencia diferencia)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snn
+                        (espec.mp
+                          (Z 3,8 3.8))
+                        (grup.nom.mp
+                          (ncmp000 millones millón))))))))))
+        (sp-CC
+          (Fg - -)
+          (prep
+            (spcms al al))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 tratarse tratar))
+            (sp-CREG
+              (sadv.j
+                (grup.adv
+                  (rg únicamente únicamente)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.ms
+                    (di0ms0 un uno))
+                  (grup.nom.ms
+                    (ncms000 desliz desliz)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 mecanográfico mecanográfico)))
+                    (sp
+                      (prep
+                        (sps00 por por))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 parte parte)
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0fs0 alemana alemán)))))))))))
+          (Fg - -))))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 directiva directiva)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 club club)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 croata croata))))))))
+    (grup.verb
+      (vaip3s0 ha haber)
+      (vmp00sm solicitado solicitar))
+    (sadv-CC
+      (grup.adv
+        (rg formalmente formalmente)))
+    (sp-CI
+      (prep
+        (spcms al al))
+      (sno
+        (grup.nom.ms
+          (np0000o Werder_Bremen Werder_Bremen))))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 abonar abonar))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 cantidad cantidad)
+          (S.NF.P
+            (participi
+              (aq0fsp indicada indicado))
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (sn
+                (grup.nom.fp
+                  (ncfp000 letras letra))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C.co-CD
+      (Fe " ")
+      (S.F.C
+        (sn.co-SUJ
+          (sn
+            (espec.fs
+              (da0fs0 La el))
+            (grup.nom.fs
+              (ncfs000 secretaria secretaria)))
+          (coord
+            (cc o o))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 mecanógrafa mecanógrafa))))
+        (grup.verb
+          (vmis3s0 cometió cometer))
+        (sn-CD
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (ncms000 error error))))
+      (coord
+        (cc y y))
+      (S.F.C
+        (sn-SUJ
+          (grup.nom.ms
+            (pi0cs000 nadie nadie)))
+        (morf.pron
+          (p0300000 se él))
+        (grup.verb
+          (vmis3s0 dio_cuenta dar_cuenta)))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 afirmó afirmar))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Kuze Kuze)
+        (snp
+          (Fg - -)
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (aq0cn0 ex ex)))
+            (ncms000 entrenador entrenador)
+            (sp
+              (prep
+                (spcms del del))
+              (sn.co
+                (sno
+                  (grup.nom.ms
+                    (np0000o Dinamo_Zagreb Dinamo_Zagreb)))
+                (coord
+                  (cc y y))
+                (sno
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (np0000o Gamba_Osaka Gamba_Osaka)))))))
+        (S.F.R
+          (Fg - -)
+          (relatiu-SUJ
+            (pr0cs000 quien quien))
+          (sadv-ET
+            (Fc , ,)
+            (grup.adv
+              (rg además además))
+            (Fc , ,))
+          (grup.verb
+            (vmip3s0 asegura asegurar))
+          (S.F.C-CD
+            (conj.subord
+              (cs que que))
+            (sp-CCL
+              (prep
+                (sps00 en en))
+              (snl
+                (grup.nom
+                  (np0000l Bremen Bremen))))
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vmip3p0 están estar))
+            (sa-ATR
+              (grup.a
+                (aq0mp0 furiosos furioso)
+                (sp
+                  (prep
+                    (sps00 con con))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 postura postura)
+                      (sp
+                        (prep
+                          (spcms del del))
+                        (sno
+                          (grup.nom.ms
+                            (np0000l Zagreb Zagreb)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C.co-CD
+      (Fe " ")
+      (S.F.C
+        (sn.e-SUJ *0*)
+        (neg-MOD
+          (rn No no))
+        (grup.verb
+          (vmip1p0 podemos poder)
+          (infinitiu
+            (vmn0000 decir decir)))
+        (sp-CI
+          (prep
+            (sps00 a a))
+          (sna
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000a Hacienda Hacienda))))
+        (S.F.C-CD
+          (conj.subord
+            (cs que que))
+          (sn-SUJ
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (ncmp000 alemanes alemán)))
+          (grup.verb
+            (vmis3p0 pusieron poner))
+          (sn-CD
+            (espec.ms
+              (di0ms0 un uno))
+            (grup.nom.ms
+              (ncms000 importe importe)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 mayor mayor)))))
+          (sp-CC
+            (prep
+              (sps00 por por))
+            (sn
+              (grup.nom.ms
+                (ncms000 error error))))))
+      (Fc , ,)
+      (S.F.C
+        (S.F.ACond*
+          (conj.subord
+            (cs si si))
+          (neg
+            (rn no no)))
+        (sn.e-SUJ *0*)
+        (sn-CD
+          (grup.nom.p
+            (pp1cp000 nos yo)))
+        (grup.verb
+          (vmif3s0 pedirá pedir))
+        (S.F.C-CD
+          (conj.subord
+            (cs que que))
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vmsp1p0 paguemos pagar))
+          (sn-CD
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 impuesto impuesto)
+              (sp
+                (prep
+                  (sps00 sobre sobre))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 cantidad cantidad)
+                    (S.NF.P
+                      (participi
+                        (aq0fsp expresada expresado))
+                      (sp-CC
+                        (prep
+                          (sps00 en en))
+                        (sn
+                          (grup.nom.fp
+                            (ncfp000 palabras palabra))))))))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 explicó explicar))
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 presidente presidente)
+        (sp
+          (prep
+            (spcms del del))
+          (sno
+            (grup.nom.ms
+              (np0000l Zagreb Zagreb))))
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (np0000p Miroslav_Marcinkovic Miroslav_Marcinkovic)))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sno-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (np0000o Werder_Bremen Werder_Bremen)))
+      (grup.verb
+        (vmip3s0 amenaza amenazar))
+      (sp-CC
+        (prep
+          (sps00 con con))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 pedir pedir))
+          (sn-CD
+            (espec.ms
+              (di0ms0 un uno))
+            (grup.nom.ms
+              (ncms000 arbitraje arbitraje)))
+          (sp-CI
+            (prep
+              (sps00 a a))
+            (sno
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000o UEFA UEFA))))))
+      (S.F.ACond-AO
+        (conj.subord
+          (cs si si))
+        (sno-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (np0000l Zagreb Zagreb)))
+        (neg-MOD
+          (rn no no))
+        (grup.verb
+          (vmip3s0 reconoce reconocer))
+        (sn-CD
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 acuerdo acuerdo)
+            (s.a.ms
+              (grup.a.ms
+                (aq0cs0 inicial inicial))))))
+      (Fc , ,))
+    (coord
+      (cc pero pero))
+    (S
+      (sno-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np0000l Zagreb Zagreb)))
+      (grup.verb
+        (vmip3s0 considera considerar))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.ms
+            (dd0cs0 tal tal))
+          (grup.nom.ms
+            (ncms000 arbitraje arbitraje)))
+        (grup.verb
+          (vsic3s0 sería ser)
+          (vmp00sm resuelto resolver))
+        (sp-CC
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.ms
+              (dp3cs0 su su))
+            (grup.nom.ms
+              (ncms000 favor favor))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (Fe " ")
+      (sn-SUJ
+        (grup.nom.mp
+          (pp1mp000 Nosotros yo)))
+      (sadv-MOD
+        (grup.adv
+          (rg también también)))
+      (grup.verb
+        (vmip1p0 estamos estar))
+      (sp-ATR
+        (prep
+          (spcms a_favor_del a_favor_del))
+        (sn
+          (grup.nom.ms
+            (ncms000 arbitraje arbitraje))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmip3p0 afirman afirmar))
+    (sn.e-SUJ *0*)
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 sede sede)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 club club)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 croata croata)))))))))
+    (Fp . .)))

@@ -1,0 +1,213 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 popular popular)))
+        (nccs000 cantant cantant)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 rock rock))))
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (np00000 Josep_Maria_Sanz Josep_Maria_Sanz))
+          (Fc , ,))
+        (sn
+          (grup.nom.ms
+            (Fz ' ')
+            (np00000 Loquillo Loquillo)
+            (Fz ' '))))
+      (Fc , ,))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm assistit assistir))
+    (sadv-CCT
+      (grup.adv
+        (rg avui avui)))
+    (sp-CREG
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 judici judici)
+          (sp
+            (prep
+              (sps00 contra contra))
+            (sn
+              (espec.mp
+                (da0mp0 els el))
+              (grup.nom.mp
+                (nc00000 exmembres exmembre)
+                (sp
+                  (prep
+                    (spcmp dels del))
+                  (sn
+                    (sn
+                      (grup.nom.mp
+                        (Fz ' ')
+                        (np00000 Centurions Centurions)
+                        (Fz ' ')))
+                    (sn.j
+                      (Fc , ,)
+                      (sadv.j
+                        (grup.adv
+                          (rg ara ara)))
+                      (sn
+                        (grup.nom
+                          (Fz ' ')
+                          (np00000 Àngels_de_l'_Infern Àngels_de_l'_Infern)
+                          (Fz ' ')))
+                      (Fc , ,))))))))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 solidaritzar solidaritzar))
+        (morf.pron
+          (p0300000 -se ell))
+        (sp-CC
+          (prep
+            (sps00 amb amb))
+          (sn
+            (grup.nom.mp
+              (pp3mp000 ells ell))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (Fz ' ')
+        (np00000 Loquillo Loquillo)
+        (Fz ' ')))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm explicat explicar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sp-CD.r
+        (prep
+          (sps00 a a))
+        (sn
+          (grup.nom.ms
+            (pp3ms000 ell ell)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 mateix mateix))))))
+      (sn.e-SUJ *0*)
+      (sn-CD.r
+        (grup.nom
+          (pp3csa00 l' ell)))
+      (grup.verb
+        (vaic3p0 haurien haver)
+        (vmp00sm pogut poder)
+        (infinitiu
+          (vmn0000 detenir detenir)))
+      (sp-CC
+        (prep
+          (sps00 juntament_amb juntament_amb))
+        (sn
+          (grup.nom.ms
+            (np00000 Carles_Segarra Carles_Segarra)
+            (sn
+              (Fc , ,)
+              (grup.nom.ms
+                (nccs000 cantant cantant)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom
+                      (Fz ' ')
+                      (np00000 Los_Rebeldes Los_Rebeldes)
+                      (Fz ' ')))))
+              (Fc , ,)))))
+      (S.F.A-CC
+        (conj.subord
+          (cs perquè perquè))
+        (sn-CCT
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 dia dia)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 intervenció intervenció)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 policial policial))))))))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vaii3p0 havien haver)
+          (sps00 d' de)
+          (infinitiu
+            (vmn0000 anar anar)))
+        (sp-CREG
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 seu seu)
+              (sp
+                (prep
+                  (spcmp dels del))
+                (sn
+                  (grup.nom.mp
+                    (Fz ' ')
+                    (np00000 Centurions Centurions)
+                    (Fz ' ')))))))
+        (sp-CC
+          (prep
+            (sps00 a a))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 organitzar organitzar))
+            (sn-CD
+              (espec.fs
+                (di0fs0 una un))
+              (grup.nom.fs
+                (ncfs000 agenda agenda)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 concerts concert))))))
+            (sp-CCL
+              (prep
+                (sps00 a a))
+              (sn
+                (grup.nom
+                  (np00000 Tarragona Tarragona))))))))
+    (Fp . .)))
+(
+  (S
+    (Fpa -Fpa- -Fpa-)
+    (grup.verb
+      (vmif3s0 Seguirà seguir))
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom.fs
+          (ncfs000 ampliació ampliació))
+        (coord
+          (cc i i))
+        (grup.nom.fp
+          (ncfp000 fotografies fotografia))))
+    (Fp . .)
+    (Fpt -Fpt- -Fpt-)))

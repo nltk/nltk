@@ -1,0 +1,116 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 volum volum)))
+    (grup.verb
+      (vmip3s0 conté contenir))
+    (sn-CD
+      (grup.nom.fp
+        (ncfp000 narracions narració)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.mp
+              (Z 11 11))
+            (grup.nom.mp
+              (ncmp000 escriptors escriptor)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0mp0 vallencs vallenc))))))
+        (S.NF.P
+          (participi
+            (aq0fpp relacionades relacionat))
+          (sp-CREG
+            (prep
+              (sps00 amb amb))
+            (sn
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (ncfp000 festes festa)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0cp0 decennals decennal)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (ncfs000 obra obra)))
+    (sadv-MOD
+      (grup.adv
+        (rg també també)))
+    (grup.verb
+      (vmip3s0 serveix servir))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 commemorar commemorar))
+        (sn-CD
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (ao0ms0 cinquè cinquè)))
+            (ncms000 aniversari aniversari)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom
+                  (np00000 Cossetània_Edicions Cossetània_Edicions)
+                  (S.F.R
+                    (Fc , ,)
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (sn-CD
+                      (grup.nom.s
+                        (pp3csa00 l' ell)))
+                    (grup.verb
+                      (vaip3s0 ha haver)
+                      (vmp00sm publicat publicar))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 llibre llibre)))
+      (grup.verb
+        (vmip3s0 consta constar))
+      (sp-CREG
+        (prep
+          (sps00 de de))
+        (sn
+          (espec.fp
+            (Z 128 128))
+          (grup.nom.fp
+            (ncfp000 pàgines pàgina)))))
+    (coord
+      (cc i i))
+    (S
+      (morfema.verbal-IMPERS
+        (p0000000 es es))
+      (grup.verb
+        (vmip3s0 ven vendre))
+      (sp-CC
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fp
+            (Z 1.500 1500))
+          (grup.nom.fp
+            (Zm pessetes pesseta)))))
+    (Fp . .)))

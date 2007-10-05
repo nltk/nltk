@@ -1,0 +1,116 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 magistrat magistrat)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 ordenar ordenar))
+    (sn-CD
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (ncms000 empresonament empresonament)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (nccs000 exmilitar exmilitar)
+              (sn
+                (Fc , ,)
+                (grup.nom.ms
+                  (ncms000 repressor repressor)
+                  (sp
+                    (prep
+                      (sps00 durant durant))
+                    (sn
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 dictadura dictadura)
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0cs0 militar militar)))
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0fs0 argentina argentí)))))
+                      (sn.j
+                        (grup.nom
+                          (Fpt -Fpt- -Fpt-)
+                          (W 1976-1983 [??:??/??/1976-1983:??.??])
+                          (Fpa -Fpa- -Fpa-)))))))
+              (S.F.R
+                (Fc , ,)
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vmii3s0 estava estar))
+                (sp-ATR
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 llibertat llibertat)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0cs0 provisional provisional))))))
+                (sp-CCL
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (grup.nom
+                      (np00000 Espanya Espanya))))
+                (Fc , ,)))))))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 argument argument)
+          (S.F.C
+            (conj.subord
+              (cs que que))
+            (neg-MOD
+              (rn no no))
+            (morf.pron
+              (pp3cn000 hi hi))
+            (grup.verb
+              (vaip3s0 ha haver))
+            (sn-CD.Q
+              (espec.fs
+                (di0cs0 cap cap)
+                (di0fs0 altra altre))
+              (grup.nom.fs
+                (ncfs000 possibilitat possibilitat)
+                (sp
+                  (Fe " ")
+                  (prep
+                    (sps00 de de))
+                  (S.NF.C
+                    (infinitiu
+                      (vmn0000 garantir garantir))
+                    (sn-CD
+                      (espec.fs
+                        (dp3fs0 la_seva el_seu))
+                      (grup.nom.fs
+                        (ncfs000 subjecció subjecció)
+                        (sp
+                          (prep
+                            (spcms al al))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 procés procés)
+                              (s.a.ms
+                                (grup.a.ms
+                                  (aq0cs0 penal penal)))))))))
+                  (Fe " "))))))))
+    (Fp . .)))

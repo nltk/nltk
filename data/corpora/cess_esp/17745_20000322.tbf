@@ -1,0 +1,399 @@
+
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 grupo grupo)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 editorial editorial)))
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 alemán alemán)))
+        (sno
+          (grup.nom
+            (np0000o Axel_Springer Axel_Springer)))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 en en))
+      (sn
+        (grup.nom.fs
+          (ncfs000 asociación asociación)
+          (sp
+            (prep
+              (sps00 con con))
+            (sna
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 diario diario)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 deportivo deportivo)))
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 portugués portugués)))
+                (sna
+                  (grup.nom
+                    (Fe " ")
+                    (np0000a A_Bola A_Bola)
+                    (Fe " "))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmif3s0 pondrá poner))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (grup.nom.fs
+          (ncfs000 circulación circulación))))
+    (sadv-CCT
+      (grup.adv
+        (rg mañana mañana)
+        (snd
+          (Fc , ,)
+          (grup.nom.ms
+            (W jueves [jueves:??/??/??:??.??]))
+          (Fc , ,))))
+    (sna-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 revista revista)
+        (sna
+          (grup.nom
+            (Fe " ")
+            (np0000a AutoFoco AutoFoco)
+            (Fe " ")))
+        (S.NF.P
+          (Fc , ,)
+          (participi
+            (aq0fsp dedicada dedicado))
+          (sp-CREG
+            (prep
+              (spcms al al))
+            (sn
+              (grup.nom.ms
+                (ncms000 sector sector)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 automóvil automóvil))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (ao0ms0 primer primero)))
+        (ncms000 número número)))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vmif3s0 distribuirá distribuir))
+    (sadv-CC
+      (grup.adv
+        (rg gratuitamente gratuitamente)))
+    (sp-CC
+      (prep
+        (sps00 junto_con junto_con))
+      (sna
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 diario diario)
+          (sna
+            (grup.nom
+              (Fe " ")
+              (np0000a A_Bola A_Bola)
+              (Fe " ")))
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3s0 tiene tener))
+            (sn-CD.Q
+              (espec.fs
+                (di0fs0 una uno))
+              (grup.nom.fs
+                (ncfs000 tirada tirada)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.mp
+                      (Z 150.000 150000))
+                    (grup.nom.mp
+                      (ncmp000 ejemplares ejemplar))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 Según según))
+      (snp
+        (grup.nom.ms
+          (np0000p Sergio_Veiga Sergio_Veiga)
+          (snp
+            (Fc , ,)
+            (grup.nom.ms
+              (ncms000 editor editor)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 nueva nuevo)))
+                    (ncfs000 revista revista)))))
+            (Fc , ,)))))
+    (Fe " ")
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 gran gran)))
+        (ncfs000 preocupación preocupación)))
+    (grup.verb
+      (vsip3s0 es ser))
+    (S.NF.C-ATR
+      (infinitiu
+        (vmn0000 explotar explotar))
+      (sn-CD
+        (espec.mp
+          (di0mp0 todos todo)
+          (da0mp0 los el))
+        (grup.nom.mp
+          (ncmp000 asuntos asunto)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3p0 tienen tener)
+              (cs que que)
+              (infinitiu
+                (vmn0000 ver ver)))
+            (sp-CC
+              (prep
+                (sps00 con con))
+              (sn
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (ncmp000 problemas problema)
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0mp0 diarios diario)))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.mp
+                        (da0mp0 los el))
+                      (grup.nom.mp
+                        (ncmp000 conductores conductor)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (grup.nom.mp
+                              (ncmp000 automóviles automóvil)))))))
+                  (sp
+                    (prep
+                      (cs como como))
+                    (sn.co
+                      (Fe " ")
+                      (sn
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (ncms000 mantenimiento mantenimiento)))
+                      (coord
+                        (cc y y))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 limpieza limpieza)))
+                      (coord
+                        (cc o o))
+                      (sn
+                        (grup.nom.fp
+                          (ncfp000 cuestiones cuestión)
+                          (sp
+                            (prep
+                              (spcms del del))
+                            (sn
+                              (grup.nom.ms
+                                (ncms000 tráfico tráfico))))))
+                      (Fe " "))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 revista revista)))
+      (grup.verb
+        (vmif3s0 abordará abordar))
+      (sn-CD
+        (grup.nom.fp
+          (ncfp000 temas tema)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3p0 van ir))
+            (Fe " ")
+            (sp-CC
+              (prep
+                (sps00 desde desde))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 prevención prevención)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.mp
+                        (da0mp0 los el))
+                      (grup.nom.mp
+                        (ncmp000 problemas problema)
+                        (s.a.mp
+                          (grup.a.mp
+                            (aq0mp0 mecánicos mecánico)))))))))
+            (sp-CREG
+              (prep
+                (sps00 hasta hasta))
+              (sn.co
+                (sn
+                  (espec.mp
+                    (da0mp0 los el))
+                  (grup.nom.mp
+                    (ncmp000 efectos efecto)
+                    (sp
+                      (prep
+                        (sps00 sobre sobre))
+                      (sn
+                        (espec.mp
+                          (da0mp0 los el))
+                        (grup.nom.mp
+                          (ncmp000 conductores conductor)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (espec.mp
+                                (di0mp0 algunos alguno))
+                              (grup.nom.mp
+                                (ncmp000 medicamentos medicamento))))))))
+                  (Fc , ,))
+                (coord
+                  (cc o o))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 seguridad seguridad)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.mp
+                          (da0mp0 los el))
+                        (grup.nom.mp
+                          (s.a.mp
+                            (grup.a.mp
+                              (aq0cp0 menores menor))))))
+                    (S.F.A
+                      (conj.subord
+                        (cs cuando cuando))
+                      (sn.e-SUJ *0*)
+                      (grup.verb
+                        (vmip3p0 viajan viajar))
+                      (sp-CC
+                        (prep
+                          (sps00 en en))
+                        (sn
+                          (espec.mp
+                            (da0mp0 los el))
+                          (grup.nom.mp
+                            (ncmp000 automóviles automóvil))))))))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 dijo decir))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Veiga Veiga)))
+    (Fp . .)))
+(
+  (S
+    (sp-CCL
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 portada portada)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (s.a.ms
+                  (grup.a.ms
+                    (ao0ms0 primer primero)))
+                (ncms000 número número)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (Fe " ")
+                      (ncms000 AutoFoco autofoco)
+                      (Fe " "))))))))))
+    (grup.verb
+      (vmip3s0 aparece aparecer))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un uno))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 nuevo nuevo)))
+        (ncms000 modelo modelo)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 deportivo deportivo)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sna
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 marca marca)
+              (sna
+                (grup.nom
+                  (np0000a Alfa_Romeo Alfa_Romeo))))))))
+    (Fp . .)))

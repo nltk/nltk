@@ -1,0 +1,139 @@
+
+(
+  (S
+    (sn
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 informe informe)
+        (sp
+          (prep
+            (sps00 sobre sobre))
+          (sn
+            (grup.nom.ms
+              (ncms000 terrorisme terrorisme)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 internacional internacional))))))
+        (S.NF.P
+          (participi
+            (aq0msp elaborat elaborat))
+          (sp-CAG
+            (prep
+              (spcms pel pel))
+            (sn
+              (grup.nom.ms
+                (np00000 Departament_d'_Estat Departament_d'_Estat)
+                (sp
+                  (prep
+                    (spcmp dels del))
+                  (sn
+                    (grup.nom.mp
+                      (np00000 EUA EUA)))))))
+          (sp-CC
+            (prep
+              (sps00 per per))
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.ms
+                  (da0cs0 l' el))
+                (grup.nom.ms
+                  (W any_2000 [??:??/??/2000:??.??]))))))))
+    (grup.verb
+      (vmip3s0 destaca destacar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (Fe " ")
+            (aq0fs0 indiscriminada indiscriminat)
+            (Fe " ")))
+        (ncfs000 represa represa)
+        (sp
+          (prep
+            (spcmp dels del))
+          (sn
+            (grup.nom.mp
+              (ncmp000 atemptats atemptat)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0cp0 terroristes terrorista)))
+              (sp
+                (prep
+                  (sps00 d' de))
+                (sn
+                  (grup.nom
+                    (np00000 ETA ETA)))))))
+        (sadv
+          (grup.adv
+            (rg després després)
+            (sp
+              (prep
+                (sps00 d' de))
+              (S.NF.C
+                (infinitiu
+                  (van0000 haver haver)
+                  (vmp00sm abandonat abandonar))
+                (sn-CD
+                  (espec.ms
+                    (da0cs0 l' el))
+                  (grup.nom.ms
+                    (ncms000 alto_el_foc alto_el_foc)))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg Així_mateix així_mateix)))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 document document)))
+    (grup.verb
+      (vmip3s0 qualifica qualificar))
+    (sp-CPRED.CD
+      (prep
+        (sps00 de de))
+      (s.a.fs
+        (grup.a.fs
+          (Fe " ")
+          (aq0cs0 diligent diligent)
+          (Fe " "))))
+    (sn-CD
+      (espec.fs
+        (da0cs0 l' el))
+      (grup.nom.fs
+        (ncfs000 actuació actuació)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (ncfp000 autoritats autoritat)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 espanyoles espanyol))))))
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 persecució persecució)
+              (sp
+                (prep
+                  (spcmp dels del))
+                (sn
+                  (grup.nom.mp
+                    (s.a.mp
+                      (grup.a.mp
+                        (aq0mp0 violents violent)))))))))))
+    (Fp . .)))

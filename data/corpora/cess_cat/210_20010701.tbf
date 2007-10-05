@@ -1,0 +1,245 @@
+
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Julio_Iglesias Julio_Iglesias)))
+    (morf.pron
+      (p0300000 s' ell))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm llicenciat llicenciar))
+    (sadv-CC
+      (grup.adv
+        (rg recentment recentment)))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 carrera carrera)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (np00000 Dret Dret)))))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (np00000 Universitat_Complutense_de_Madrid Universitat_Complutense_de_Madrid))))
+    (S.F.A-AO
+      (Fc , ,)
+      (conj.subord
+        (cs segons segons))
+      (grup.verb
+        (vaip3p0 van anar)
+        (vmn0000 informar informar))
+      (sn-SUJ
+        (grup.nom.fp
+          (ncfp000 fonts font)
+          (s.a.fp
+            (grup.a.fp
+              (aq0fp0 universitàries universitari))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (sn
+          (espec.ms
+            (da0ms0 El el))
+          (grup.nom.ms
+            (nccs000 cantant cantant)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 espanyol espanyol)))))
+        (sp.j
+          (Fpa -Fpa- -Fpa-)
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 foto foto)))
+          (Fpt -Fpt- -Fpt-))
+        (S.F.R.j
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (sadv-CCT
+            (grup.adv
+              (rg ahir ahir)))
+          (sp-CCT
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 nit nit))))
+          (grup.verb
+            (vaip3s0 va anar)
+            (vmn0000 fer fer))
+          (sn-CD
+            (espec.ms
+              (di0ms0 un un))
+            (grup.nom.ms
+              (ncms000 concert concert)))
+          (sp-CCL
+            (prep
+              (sps00 a a))
+            (sn
+              (sn
+                (grup.nom
+                  (np00000 Casablanca Casablanca)))
+              (sn.j
+                (grup.nom
+                  (Fpa -Fpa- -Fpa-)
+                  (np00000 Marroc Marroc)
+                  (Fpt -Fpt- -Fpt-)))))
+          (Fc , ,)))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 cursar cursar))
+      (sn-CD
+        (grup.nom.mp
+          (ncmp000 estudis estudi)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (np00000 Dret Dret))))))
+      (sp-CCL
+        (prep
+          (sps00 a a))
+        (sn
+          (grup.nom
+            (np00000 Madrid Madrid)))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmii3s0 tenia tenir))
+      (sa-CPRED.CD
+        (grup.a
+          (aq0cs0 pendent pendent)))
+      (sn-CD.Q
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (ncfs000 aprovació aprovació)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.fs
+                (di0fs0 una un))
+              (grup.nom.fs
+                (ncfs000 assignatura assignatura)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (s.a.ms
+                        (grup.a.ms
+                          (ao0ms0 cinquè cinquè)))
+                      (ncms000 curs curs))))
+                (sn
+                  (Fc , ,)
+                  (sadv.j
+                    (grup.adv
+                      (rg concretament concretament)))
+                  (sn
+                    (grup.nom
+                      (np00000 Dret_Internacional_Privat Dret_Internacional_Privat))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (dd0fs0 Aquesta aquest))
+      (grup.nom.fs
+        (ncfs000 assignatura assignatura)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 pendent pendent)))
+        (S.F.R
+          (relatiu-CD
+            (pr0cn000 que que))
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vmii3s0 arrossegava arrossegar))
+          (sp-CCT
+            (prep
+              (sps00 des des))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (dp3fs0 la_seva el_seu))
+                (grup.nom.fs
+                  (ncfs000 joventut joventut))))))))
+    (sadv-CCT
+      (grup.adv
+        (rg ara ara)))
+    (sn-CI
+      (grup.nom.s
+        (pp3csd00 li ell)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vsp00sm estat ser)
+      (vmp00sf aprovada aprovar))
+    (sp-CAG
+      (prep
+        (sps00 per per))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (np00000 Tribunal_de_Compensació Tribunal_de_Compensació)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np00000 Universitat Universitat))))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3s0 té tenir))
+            (sp-CPRED.CD
+              (prep
+                (cs com_a com_a))
+              (sn
+                (grup.nom.ms
+                  (ncms000 objectiu objectiu))))
+            (sn-CD.Q
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 resolució resolució)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 casos cas)
+                      (s.a.mp
+                        (grup.a.mp
+                          (aq0mp0 extraordinaris extraordinari))))))))))))
+    (Fp . .)))

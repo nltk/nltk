@@ -1,0 +1,696 @@
+
+(
+  (S
+    (sno-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (np0000o Associació_Bíblica_de_Catalunya Associació_Bíblica_de_Catalunya)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm convocat convocar))
+    (sna-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (ao0fs0 vint-i-setena vint-i-setè)))
+        (ncfs000 edició edició)
+        (sp
+          (prep
+            (spcmp dels del))
+          (sna
+            (grup.nom.mp
+              (Fz ' ')
+              (np0000a Cursos_Bíblics_d'_Estiu Cursos_Bíblics_d'_Estiu)
+              (Fz ' '))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 cursos curs)))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vmif3p0 impartiran impartir))
+    (sp-CC
+      (prep
+        (sps00 durant durant))
+      (snd
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (W mes_de_juliol [??:??/6/??:??.??]))))
+    (sp.co-CC
+      (sp
+        (prep
+          (spcms al al))
+        (snl
+          (grup.nom.ms
+            (np0000l Seminari Seminari)
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Vic Vic)))))))
+      (coord
+        (cc i i))
+      (sp
+        (prep
+          (spcms al al))
+        (snl
+          (grup.nom.ms
+            (np0000l Seminari Seminari)
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Tarragona Tarragona))))))))
+    (Fp . .)))
+(
+  (S
+    (sna-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (Fz ' ')
+        (np0000a Cursos_Bíblics_d'_Estiu Cursos_Bíblics_d'_Estiu)
+        (Fz ' ')
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (espec.fs
+              (da0cs0 l' el))
+            (grup.nom.fs
+              (np0000o Associació_Bíblica_de_Catalunya Associació_Bíblica_de_Catalunya))))))
+    (morf.pron
+      (p0300000 s' ell))
+    (grup.verb
+      (vmip3p0 adrecen adreçar))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn.x
+        (grup.nom.co
+          (grup.nom.co
+            (grup.nom.mp
+              (ncmp000 cristians cristià))
+            (coord
+              (cc i i))
+            (grup.nom.fp
+              (ncfp000 cristianes cristiana)))
+          (S.F.R.j
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmsp3p0 vulguin voler)
+              (infinitiu
+                (vmn0000 aconseguir aconseguir)))
+            (Fz ' ')
+            (sn.co-CD
+              (sn
+                (espec.fs
+                  (dn0fs0 una un))
+                (grup.nom.fs
+                  (ncfs000 formació formació)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 bíblica bíblic)))
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 sòlida sòlid)))))
+              (coord
+                (cc i i))
+              (sn
+                (espec.ms
+                  (di0ms0 un un))
+                (grup.nom.ms
+                  (ncms000 compromís compromís)
+                  (s.a.ms.x
+                    (grup.a.ms.co
+                      (grup.a.ms
+                        (aq0ms0 ferm ferm))
+                      (coord
+                        (cc i i))
+                      (grup.a.ms
+                        (aq0ms0 engrescador engrescador)))))))
+            (sp-CC
+              (prep
+                (sps00 per per))
+              (sp
+                (prep
+                  (sps00 a a))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 comunicar comunicar))
+                  (sp-CI
+                    (prep
+                      (spcmp als al))
+                    (sn
+                      (grup.nom.mp
+                        (pi0cp000 altres altre))))
+                  (sn.co-CD
+                    (sn.co
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 bellesa bellesa)))
+                      (Fc , ,)
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 profunditat profunditat)))
+                      (coord
+                        (cc i i))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 força força)
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0fs0 transformadora transformador))))))
+                    (sp.j
+                      (prep
+                        (sps00 de de))
+                      (sna
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (np0000a Paraula_de_Déu Paraula_de_Déu))))))))
+            (Fz ' ')))))
+    (Fp . .)))
+(
+  (S
+    (sn-CC
+      (espec.ms
+        (dd0ms0 Aquest aquest))
+      (grup.nom.ms
+        (ncms000 any any))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 cursos curs)))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmif3p0 faran fer))
+    (sp.co-CC
+      (sp
+        (prep
+          (spcms al al))
+        (snl
+          (grup.nom.ms
+            (np0000l Seminari Seminari)
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Tarragona Tarragona)))))))
+      (coord
+        (cc i i))
+      (sp
+        (prep
+          (spcms al al))
+        (snl
+          (grup.nom
+            (np0000l Seminari Seminari)
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Vic Vic))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 A a))
+      (snl
+        (grup.nom
+          (np0000l Tarragona Tarragona))))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vmif3p0 oferiran oferir))
+    (sn-SUJ
+      (espec.mp
+        (dn0cp0 tres tres))
+      (grup.nom.mp
+        (ncmp000 cursos curs)))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (ao0ms0 primer primer)))
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (morfema.verbal-PASS
+              (p0000000 s' es))
+            (grup.verb
+              (vmif3s0 impartirà impartir))
+            (snd.x-CC
+              (grup.nom.co
+                (coord
+                  (spcms del del))
+                (grup.nom.ms
+                  (W 3 [??:3/??/??:??.??]))
+                (coord
+                  (spcms al al))
+                (grup.nom.ms
+                  (W 8_de_juliol [??:8/7/??:??.??]))))))))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmif3s0 tractarà tractar))
+    (sn.co-SUJ
+      (sna
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (np0000a Evangeli_segons_Joan Evangeli_segons_Joan)
+          (sp
+            (prep
+              (spcms del del))
+            (sna
+              (grup.nom.ms
+                (np0000a Nou_Testament Nou_Testament))))))
+      (coord
+        (cc i i))
+      (sna
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (np0000a Profetes Profetes)
+          (sp
+            (prep
+              (sps00 de de))
+            (sna
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (np0000a Antic_Testament Antic_Testament)))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (ao0ms0 segon segon)))
+          (ncms000 curs curs)))
+      (morfema.verbal-PASS
+        (p0000000 s' es))
+      (grup.verb
+        (vmif3s0 impartirà impartir))
+      (snd.x-CC
+        (grup.nom.co
+          (coord
+            (spcms del del))
+          (grup.nom.ms
+            (W 10 [??:10/??/??:??.??]))
+          (coord
+            (spcms al al))
+          (grup.nom.ms
+            (W 15_de_juliol [??:15/7/??:??.??])))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (morf.pron
+        (p0300000 se ell))
+      (grup.verb
+        (vmif3s0 centrarà centrar))
+      (sp.co-CREG
+        (sp
+          (prep
+            (sps00 en en))
+          (sna
+            (espec.mp
+              (da0mp0 els el))
+            (grup.nom.mp
+              (np0000a Profetes Profetes)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sna
+                  (espec.ms
+                    (da0cs0 l' el))
+                  (grup.nom.ms
+                    (np0000a Antic_Testament Antic_Testament)))))))
+        (coord
+          (cc i i))
+        (sp
+          (prep
+            (sps00 en en))
+          (sna
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (np0000a Apocalipsi Apocalipsi)
+              (sp
+                (prep
+                  (spcms del del))
+                (sna
+                  (grup.nom.ms
+                    (np0000a Nou_Testament Nou_Testament)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (ao0ms0 tercer tercer)))
+        (sp
+          (prep
+            (spcmp dels del))
+          (sn
+            (grup.nom.mp
+              (ncmp000 cursos curs))))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vsif3s0 serà ser))
+          (sp-ATR
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 formació formació)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 permanent permanent))))))
+          (Fc , ,))))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmif3s0 farà fer))
+    (sn.co-CC
+      (coord
+        (sps00 entre entre))
+      (snd
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (W 10 [??:10/??/??:??.??])))
+      (coord
+        (cc i i))
+      (snd
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (W 14_de_juliol [??:14/7/??:??.??]))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 temari temari)))
+    (grup.verb
+      (vmip3s0 inclou incloure))
+    (sn.x-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.co
+        (grup.nom.fs
+          (ncfs000 pregària pregària)
+          (sp
+            (prep
+              (sps00 en en))
+            (sna
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (np0000a Nou_Testament Nou_Testament)))))
+        (coord
+          (cc i i))
+        (grup.nom.mp
+          (ncmp000 tallers taller)
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 bíblics bíblic))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 inscripcions inscripció)
+        (sp
+          (prep
+            (sps00 per per))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 participar participar))
+            (sn-CC
+              (grup.nom
+                (pp3cn000 -hi hi)))))))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vaip3p0 han haver)
+      (sps00 de de)
+      (infinitiu
+        (vmn0000 fer fer)))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (snl
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (np0000l Arquebisbat Arquebisbat)
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (grup.nom
+                (np0000l Tarragona Tarragona)))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 A a))
+      (snl
+        (grup.nom
+          (np0000l Vic Vic))))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vmif3p0 impartiran impartir))
+    (sn-SUJ
+      (espec.mp
+        (dn0mp0 dos dos))
+      (grup.nom.mp
+        (ncmp000 cursos curs)))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (ao0ms0 primer primer)))
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (morfema.verbal-PASS
+              (p0000000 es es))
+            (grup.verb
+              (vmif3s0 durà_a_terme dur_a_terme))
+            (sn.co-CC
+              (coord
+                (sps00 entre entre))
+              (snd
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (W 10 [??:10/??/??:??.??])))
+              (coord
+                (cc i i))
+              (snd
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (W 15_de_juliol [??:15/7/??:??.??]))))
+            (Fc , ,)))))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmif3p0 tractaran tractar))
+    (sn.co-SUJ
+      (sn.co
+        (sna
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (np0000a Antic_Testament Antic_Testament)))
+        (coord
+          (cc i i))
+        (sna
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (np0000a Carta_als_Hebreus Carta_als_Hebreus))))
+      (coord
+        (cc i i))
+      (sn
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (ncfp000 cartes carta)
+          (s.a.fp
+            (grup.a.fp
+              (aq0fp0 apostòliques apostòlic)))
+          (sp
+            (prep
+              (spcms del del))
+            (sna
+              (grup.nom.ms
+                (np0000a Nou_Testament Nou_Testament)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (ao0ms0 segon segon)))
+        (sp
+          (prep
+            (spcmp dels del))
+          (sn
+            (grup.nom.mp
+              (ncmp000 cursos curs))))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (morfema.verbal-PASS
+            (p0000000 es es))
+          (grup.verb
+            (vmif3s0 farà fer))
+          (sn.co-CC
+            (coord
+              (sps00 entre entre))
+            (snd
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (W 17 [??:17/??/??:??.??])))
+            (coord
+              (cc i i))
+            (snd
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (W 22_de_juliol [??:22/07/??:??.??]))))
+          (Fc , ,))))
+    (grup.verb
+      (vmif3s0 tractarà tractar))
+    (sn.co-CD
+      (sna
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (np0000a Cartes_de_Pau Cartes_de_Pau)
+          (sp
+            (prep
+              (spcms del del))
+            (sna
+              (grup.nom.ms
+                (np0000a Nou_Testament Nou_Testament))))))
+      (coord
+        (cc i i))
+      (sna
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (np0000a Llibres_Sapiencials Llibres_Sapiencials)
+          (sp
+            (prep
+              (sps00 de de))
+            (sna
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (np0000a Antic_Testament Antic_Testament)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 inscripcions inscripció)))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vaip3p0 han haver)
+      (sps00 de de)
+      (infinitiu
+        (vmn0000 fer fer)))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (snl
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (np0000l Oficines Oficines)
+          (sp
+            (prep
+              (spcms del del))
+            (sno
+              (grup.nom.ms
+                (np0000o Bisbat Bisbat)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snl
+                    (grup.nom
+                      (np0000l Vic Vic))))))))))
+    (Fp . .)))

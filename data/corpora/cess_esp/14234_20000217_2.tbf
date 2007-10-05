@@ -1,0 +1,83 @@
+
+(
+  (S
+    (sn.e-SUJ *0*)
+    (sadv-MOD
+      (grup.adv
+        (rg También también)))
+    (grup.verb 
+      (vmif3p0 estarán estar))
+    (S.NF.P-ATR
+      (participi
+        (aq0fpp obligadas obligado))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 emitir emitir))
+          (sn-CD
+            (grup.nom.mp
+              (ncmp000 folletos folleto)
+              (S.NF.P
+                (participi
+                  (aq0msp simplificados simplificado)))
+              (sp
+                (prep
+                  (sps00 sobre sobre))
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 fondo fondo)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 inversión inversión)))))))))
+          (sp-CC
+            (Fe " ")
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.ms
+                (di0ms0 un uno))
+              (grup.nom.ms
+                (ncms000 idioma idioma)
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb 
+                    (vssp3s0 sea ser))
+                  (sa-ATR
+                    (grup.a
+                      (aq0cs0 fácil fácil)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (S.NF.C
+                          (infinitiu
+                            (vmn0000 entender entender))))
+                      (sp
+                        (prep
+                          (sps00 para para))
+                        (sn
+                          (espec.mp
+                            (da0mp0 los el))
+                          (grup.nom.mp
+                            (ncmp000 inversores inversor)
+                            (sp
+                              (prep
+                                (spcms del del))
+                              (sn
+                                (grup.nom.ms
+                                  (ncms000 país país)
+                                  (sp
+                                    (prep
+                                      (sps00 de de))
+                                    (sn
+                                      (grup.nom.fs
+                                        (ncfs000 acogida acogida)))))))))))))))
+            (Fe " ")))))
+(Fp . .)))

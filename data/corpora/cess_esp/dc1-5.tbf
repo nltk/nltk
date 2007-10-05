@@ -1,0 +1,587 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 combinación combinación)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.mp
+              (ncmp000 adultos adulto))))
+        (s.a.fs
+          (espec
+            (rg más más))
+          (grup.a.fs
+            (aq0cs0 frecuente frecuente)))))
+    (grup.verb
+      (vsip3s0 es ser))
+    (sn-ATR
+      (espec.ms
+        (di0ms0 un uno))
+      (grup.nom.ms
+        (ncms000 trío trío)
+        (S.NF.P
+          (participi
+            (aq0msp constituido constituido))
+          (sp-CAG
+            (prep
+              (sps00 por por))
+            (sn.co
+              (sn
+                (espec.fs
+                  (dn0fs0 una uno))
+                (grup.nom.fs
+                  (ncfs000 hembra hembra)))
+              (coord
+                (cc y y))
+              (sn
+                (espec.mp
+                  (dn0cp0 dos dos))
+                (grup.nom.mp
+                  (ncmp000 machos macho)
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (sn-CD
+                      (grup.nom.fs
+                        (pp3fsa00 la él)))
+                    (grup.verb
+                      (vmip3p0 comparten compartir))
+                    (sadv-CC
+                      (espec
+                        (rg casi casi))
+                      (grup.adv
+                        (rg por_igual por_igual)))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.A.co-CC
+      (conj.subord
+        (cs Puesto_que puesto_que))
+      (S.F.A
+        (sn-SUJ
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 hembra hembra)))
+        (grup.verb
+          (vmip3s0 está estar))
+        (sa-ATR
+          (grup.a
+            (aq0fs0 receptiva receptivo)))
+        (sadv-CC
+          (grup.adv
+            (rg constantemente constantemente))))
+      (coord
+        (cc y y))
+      (S.F.A
+        (sn.e-SUJ *0*)
+        (neg-MOD
+          (rn no no))
+        (grup.verb
+          (vmip3s0 muestra mostrar))
+        (sn-CD
+          (grup.nom.fp
+            (ncfp000 señales señal)
+            (s.a.fp
+              (grup.a.fp
+                (aq0cp0 visibles visible)))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 cansancio cansancio)))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (dp3cp0 sus su))
+      (grup.nom.mp
+        (ncmp000 compañeros compañero)))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmip3p0 acoplan acoplar))
+    (sp-CC
+      (prep
+        (sps00 con con))
+      (sn
+        (grup.nom.fs
+          (pp3fs000 ella él))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (di0cs0 cualquier cualquiera))
+        (grup.nom.ms
+          (ncms000 momento momento))))
+    (S.F.A-CC
+      (Fc , ,)
+      (sadv-MOD
+        (grup.adv
+          (rg incluso incluso)))
+      (conj.subord
+        (cs cuando cuando))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3s0 está estar))
+      (S.NF.P.co-ATR
+        (S.NF.P
+          (participi
+            (aq0fsp preñada preñado)))
+        (coord
+          (cc o o))
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (grup.nom.ms
+              (ncms000 período período)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 lactancia lactancia)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 vida vida)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 sexual sexual)))
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 tití tití))))))
+    (sp-CC
+      (prep
+        (sps00 en_comparación_con en_comparación_con))
+      (sn
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 normas norma)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 mayoría mayoría)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.mp
+                      (da0mp0 los el)
+                      (di0cp0 demás demás))
+                    (grup.nom.mp
+                      (ncmp000 mamíferos mamífero)
+                      (sp
+                        (Fc , ,)
+                        (prep
+                          (sps00 excepto excepto))
+                        (sn
+                          (espec.mp
+                            (da0mp0 los el))
+                          (grup.nom.mp
+                            (ncmp000 humanos humano)))
+                        (Fc , ,)))))))))))
+    (grup.verb
+      (vsip3s0 es ser))
+    (sa-ATR
+      (grup.a
+        (aq0cs0 sorprendente sorprendente)))
+    (Fp . .)))
+(
+  (S*
+    (S.F.C
+      (conj.subord
+        (cs Porque porque))
+      (S.NF.C-SUJ
+        (infinitiu
+          (vmn0000 copular copular))
+        (S.F.A-CC
+          (conj.subord
+            (cs cuando cuando))
+          (sn-SUJ
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 hembra hembra)))
+          (neg-MOD
+            (rn no no))
+          (grup.verb
+            (vsip3s0 es ser))
+          (sa-ATR
+            (grup.a
+              (aq0cs0 fértil fértil)))))
+      (grup.verb
+        (vmip3s0 resulta resultar))
+      (sn-CD
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 enorme enorme)))
+          (ncms000 derroche derroche)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn.x
+              (grup.nom.co
+                (grup.nom.ms
+                  (ncms000 tiempo tiempo))
+                (coord
+                  (cc y y))
+                (grup.nom.fs
+                  (ncfs000 energía energía)))))))
+      (sp-CI
+        (prep
+          (sps00 para para))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 animal animal)))))
+    (Fp . .)))
+(
+  (S
+    (grup.verb
+      (vaip3s0 Hay haber))
+    (sn-CD.Q
+      (espec.fp
+        (dn0cp0 dos dos))
+      (grup.nom.fp
+        (ncfp000 razones razón)
+        (s.a.fp
+          (grup.a.fp
+            (aq0cp0 fundamentales fundamental)))
+        (S.F.R
+          (sp-CC
+            (prep
+              (sps00 por por))
+            (sn
+              (espec.fp
+                (da0fp0 las el))
+              (relatiu
+                (pr0cn000 que que))))
+          (sn-SUJ
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (ncmp000 titíes tití)))
+          (grup.verb
+            (vsip3p0 son ser))
+          (sn-ATR
+            (espec.ms
+              (da0ns0 lo el))
+            (grup.nom.mp
+              (sadv
+                (grup.adv
+                  (rg suficientemente suficientemente)))
+              (s.a.mp
+                (grup.a.mp
+                  (aq0mp0 perversos perverso)))
+              (sp
+                (prep
+                  (cs como como))
+                (sp
+                  (prep
+                    (sps00 para para))
+                  (S.NF.C
+                    (infinitiu
+                      (vmn0000 elegir elegir))
+                    (sn-CD
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 poliandria poliandria)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.fs
+        (pi0fs000 Una uno)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fp
+              (pp3fp000 ellas él))))))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmip3s0 deriva derivar))
+    (sp-CREG
+      (prep
+        (sps00 de de))
+      (sn
+        (espec.ms
+          (dp3cs0 su su))
+        (grup.nom.ms
+          (ncms000 tamaño tamaño))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (S.NF.C
+        (infinitiu
+          (vsn0000 Ser ser))
+        (sn-ATR
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 mono mono)
+            (s.a.ms
+              (espec
+                (rg más más))
+              (grup.a.ms
+                (aq0ms0 pequeño pequeño))))))
+      (sn-CD
+        (grup.nom.p
+          (pp3cpa00 les él)))
+      (grup.verb
+        (vmip3s0 hace hacer))
+      (sa-CPRED.CD
+        (grup.a
+          (aq0cp0 vulnerables vulnerable)
+          (sp
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.ms
+                (di0ms0 todo todo)
+                (di0ms0 un uno))
+              (grup.nom.ms
+                (ncms000 ejército ejército)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 depredadores depredador)))))))))
+      (Fc , ,))
+    (coord
+      (cc y y))
+    (S
+      (sp-CC
+        (prep
+          (sps00 por por))
+        (sn
+          (grup.nom.ms
+            (pd0ns000 eso ese))))
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (ncmp000 titíes tití)
+          (s.a.mp
+            (grup.a.mp
+              (aq0cp0 salvajes salvaje)))))
+      (grup.verb
+        (vmip3p0 parecen parecer))
+      (S.NF.C-ATR
+        (infinitiu
+          (vmn0000 estar estar))
+        (sa.co-ATR
+          (S.NF.P
+            (participi
+              (aq0mpp asustados asustado)))
+          (coord
+            (cc y y))
+          (sa
+            (grup.a
+              (aq0cp0 vigilantes vigilante))))
+        (sadv-CC
+          (grup.adv
+            (rg constantemente constantemente)))))
+    (Fp . .)))
+(
+  (S
+    (S.F.A-CC
+      (conj.subord
+        (cs Cuando cuando))
+      (sn-SUJ
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 grupo grupo)))
+      (grup.verb
+        (vmip3s0 está estar)
+        (gerundi
+          (vmg0000 comiendo comer)))
+      (Fc , ,))
+    (sn-SUJ
+      (grup.nom.ms
+        (pi0ms000 uno uno)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.mp
+              (pp3mp000 ellos él))))))
+    (grup.verb
+      (vmip3s0 permanece permanecer))
+    (sp-CC
+      (prep
+        (sps00 de de))
+      (sn
+        (grup.nom.fs
+          (nccs000 centinela centinela))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Para para))
+      (sn
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 tití tití)))
+      (Fc , ,))
+    (S.NF.C-SUJ
+      (infinitiu
+        (vmn0000 intentar intentar))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 paternidad paternidad)))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 solitario solitario)))))
+    (grup.verb
+      (vsic3s0 sería ser))
+    (sn-ATR
+      (espec.ms
+        (rg poco_menos_que poco_menos_que))
+      (sn
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 suicidio suicidio))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (sadv.j
+        (grup.adv
+          (rg Incluso incluso)))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 atención atención)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (dn0cp0 dos dos))
+              (grup.nom.mp
+                (ncmp000 padres padre)))))))
+    (neg-MOD
+      (rn no no))
+    (grup.verb
+      (vmip3s0 basta bastar))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (cs debido_a debido_a))
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (grup.nom.ms
+            (pi0ms000 uno uno)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.mp
+                  (pp3mp000 ellos él))))))
+        (grup.verb
+          (vmic3s0 estaría estar))
+        (S.NF.P-ATR
+          (participi
+            (aq0msp forzado forzado))
+          (sp.co-CREG
+            (sp.co
+              (sp
+                (prep
+                  (sps00 a a))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 comer comer))))
+              (coord
+                (cc y y))
+              (sp
+                (prep
+                  (sps00 a a))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 llevar llevar))
+                  (sn-CD
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (ncms000 cachorro cachorro))))))
+            (sp
+              (prep
+                (spcms al al))
+              (sn
+                (espec.ms
+                  (di0ms0 mismo mismo))
+                (grup.nom.ms
+                  (ncms000 tiempo tiempo))))))
+        (sn-AO
+          (Fc , ,)
+          (espec.ms
+            (da0ns0 lo el))
+          (grup.nom.ms
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (neg-MOD
+                (rn no no))
+              (grup.verb
+                (vsip3s0 es ser))
+              (sn-SUJ
+                (espec.fs
+                  (di0fs0 una uno))
+                (grup.nom.fs
+                  (ncfs000 tarea tarea)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 fácil fácil)))))
+              (S.NF.PA-CC
+                (grup.verb
+                  (vmp00sf dada dar))
+                (sn-SUJ
+                  (espec.fs
+                    (dp3cs0 su su))
+                  (grup.nom.fs
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 pequeña pequeño)))
+                    (ncfs000 envergadura envergadura)))))))))
+    (Fp . .)))

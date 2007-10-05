@@ -1,0 +1,671 @@
+
+(
+  (S
+    (S.F.C-CD
+      (sno-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 compañía compañía)
+          (sno
+            (grup.nom
+              (np0000o Monómeros_Colombo-Venezolanos Monómeros_Colombo-Venezolanos)))))
+      (grup.verb
+        (vsis3s0 fue ser)
+        (vmp00sf multada multar))
+      (sp-CC
+        (prep
+          (sps00 con con))
+        (snn
+          (espec.mp
+            (Z 1.365 1365))
+          (grup.nom.mp
+            (ncmp000 millones millón)
+            (sp
+              (prep
+                (sps00 de de))
+              (snn
+                (grup.nom.mp
+                  (Zm pesos peso))))
+            (snn
+              (Fpa -Fpa- -Fpa-)
+              (espec.mp
+                (Z 651 651))
+              (grup.nom.mp
+                (ncmp000 millones millón)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snn
+                    (grup.nom.mp
+                      (Zm dólares dólar)))))
+              (Fpt -Fpt- -Fpt-)))))
+      (sp-CC
+        (prep
+          (sps00 por por))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 verter verter))
+          (sn-CD
+            (grup.nom.fp
+              (ncfp000 aguas agua)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0cp0 residuales residual)))))
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (snl
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 principal principal)))
+                (ncfs000 arteria arteria)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 fluvial fluvial)))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snl
+                    (grup.nom
+                      (np0000l Colombia Colombia))))
+                (snl
+                  (Fc , ,)
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 río río)
+                    (snp
+                      (grup.nom.fs
+                        (np0000p Magdalena Magdalena))))
+                  (Fc , ,))))))))
+    (grup.verb
+      (vmis3p0 anunciaron anunciar))
+    (sadv-CC
+      (grup.adv
+        (rg hoy hoy)))
+    (snp-SUJ
+      (espec.fp
+        (da0fp0 las el))
+      (grup.nom.fp
+        (ncfp000 autoridades autoridad)
+        (s.a.fp
+          (grup.a.fp
+            (aq0cp0 gubernamentales gubernamental)))
+        (sp
+          (prep
+            (sps00 de de))
+          (snl
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 ciudad ciudad)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 norteña norteño)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (snl
+                  (grup.nom
+                    (np0000l Barranquilla Barranquilla)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 sanción sanción)))
+    (grup.verb
+      (vsis3s0 fue ser)
+      (vmp00sf impuesta imponer))
+    (sp.co
+      (sp-CAG
+        (prep
+          (sps00 por por))
+        (sno
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (np0000o Departamento_Administrativo_del_Medio_Ambiente Departamento_Administrativo_del_Medio_Ambiente)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (dd0fs0 esta este))
+                (grup.nom.fs
+                  (ncfs000 capital capital)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 norte norte)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0ms0 colombiano colombiano))))))))))))
+      (coord
+        (cc y y))
+      (sp-CC
+        (prep
+          (sps00 tras tras))
+        (sn
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (ncms000 proceso proceso)
+            (sp
+              (prep
+                (sps00 de de))
+              (snn
+                (espec.mp
+                  (dn0cp0 siete siete))
+                (grup.nom.mp
+                  (ncmp000 años año))))
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vmii3s0 obligaba obligar))
+              (sp-CD
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 empresa empresa))))
+              (sp-CREG
+                (prep
+                  (sps00 a a))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 cumplir cumplir))
+                  (sp-CREG
+                    (prep
+                      (sps00 con con))
+                    (sn
+                      (grup.nom.fp
+                        (ncfp000 medidas medida)
+                        (sp
+                          (prep
+                            (sps00 sobre sobre))
+                          (sn
+                            (grup.nom.fs
+                              (ncfs000 descontaminación descontaminación))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 compañía compañía)
+        (S.NF.P
+          (participi
+            (aq0fsp creada creado))
+          (sp-CAG
+            (prep
+              (sps00 por por))
+            (sn
+              (grup.nom.mp
+                (ncmp000 empresarios empresario)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn.x
+                    (grup.nom.co
+                      (grup.nom
+                        (np0000l Venezuela Venezuela))
+                      (coord
+                        (cc y y))
+                      (grup.nom
+                        (np0000l Colombia Colombia)))))))))))
+    (grup.verb
+      (vmis3s0 incumplió incumplir))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 construcción construcción)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (di0fs0 una uno))
+              (grup.nom.fs
+                (ncfs000 planta planta)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 tratamiento tratamiento)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.fp
+                            (da0fp0 las el))
+                          (grup.nom.fp
+                            (ncfp000 aguas agua)
+                            (s.a.fp
+                              (grup.a.fp
+                                (aq0cp0 residuales residual)))
+                            (S.F.R
+                              (relatiu-SUJ
+                                (pr0cn000 que que))
+                              (grup.verb
+                                (vmip3p0 resultan resultar))
+                              (sp-CC
+                                (prep
+                                  (sps00 de de))
+                                (sn
+                                  (espec.mp
+                                    (dp3cp0 sus su))
+                                  (grup.nom.mp
+                                    (ncmp000 procesos proceso)
+                                    (s.a.mp
+                                      (grup.a.mp
+                                        (aq0cp0 industriales industrial)))
+                                    (sp
+                                      (prep
+                                        (sps00 de de))
+                                      (sn
+                                        (grup.nom.fs
+                                          (ncfs000 fabricación fabricación)
+                                          (sp
+                                            (prep
+                                              (sps00 de de))
+                                            (sn
+                                              (grup.nom.fp
+                                                (ncfp000 materias materia)
+                                                (s.a.fp
+                                                  (grup.a.fp
+                                                    (aq0fp0 primas primo)))
+                                                (S.F.R
+                                                  (relatiu-SUJ
+                                                    (pr0cn000 que que))
+                                                  (morf.pron
+                                                    (p0300000 se él))
+                                                  (grup.verb
+                                                    (vmip3p0 derivan derivar))
+                                                  (sp-CREG
+                                                    (prep
+                                                      (spcms del del))
+                                                    (sn
+                                                      (grup.nom.ms
+                                                        (ncms000 petróleo petróleo)))))))))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 En en))
+      (snd
+        (grup.nom
+          (W 1992 [??:??/??/1992:??.??])))
+      (Fc , ,))
+    (snp-SUJ
+      (espec.fp
+        (da0fp0 las el))
+      (grup.nom.fp
+        (ncfp000 autoridades autoridad)
+        (s.a.fp
+          (grup.a.fp
+            (aq0cp0 ambientales ambiental)))
+        (sp
+          (prep
+            (sps00 de de))
+          (snl
+            (grup.nom
+              (np0000l Colombia Colombia))))))
+    (grup.verb
+      (vmis3p0 iniciaron iniciar))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un uno))
+      (grup.nom.ms
+        (ncms000 proceso proceso)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 administrativo administrativo)))
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 tendente tendente)
+            (sp
+              (prep
+                (sps00 a a))
+              (S.F.C
+                (conj.subord
+                  (cs que que))
+                (sno-SUJ
+                  (grup.nom
+                    (np0000o Monómeros_Colombo-Venezolanos Monómeros_Colombo-Venezolanos)))
+                (neg-MOD
+                  (rn no no))
+                (grup.verb
+                  (vmsi1s0 vertiera verter))
+                (sn-CD
+                  (espec.fp
+                    (dd0fp0 estas este))
+                  (grup.nom.fp
+                    (ncfp000 aguas agua)))
+                (sp-CC
+                  (prep
+                    (spcms al al))
+                  (snl
+                    (grup.nom.ms
+                      (ncms000 río río)
+                      (snp
+                        (grup.nom.fs
+                          (np0000p Magdalena Magdalena)))
+                      (S.F.R.co
+                        (Fc , ,)
+                        (S.F.R
+                          (relatiu-SUJ
+                            (pr0cn000 que que))
+                          (grup.verb
+                            (vmip3s0 nace nacer))
+                          (sp-CC
+                            (prep
+                              (sps00 en en))
+                            (sn
+                              (grup.nom.fp
+                                (ncfp000 cordilleras cordillera)
+                                (sp
+                                  (prep
+                                    (spcms del del))
+                                  (sn
+                                    (grup.nom.ms
+                                      (ncms000 sur sur))))))))
+                        (coord
+                          (cc y y))
+                        (S.F.R
+                          (relatiu-SUJ
+                            (pr0cn000 que que))
+                          (sp-CC
+                            (Fc , ,)
+                            (prep
+                              (sps00 tras tras))
+                            (S.NF.C
+                              (infinitiu
+                                (vmn0000 recorrer recorrer))
+                              (sn-CD
+                                (grup.nom.fs
+                                  (s.a.fs
+                                    (grup.a.fs
+                                      (aq0fs0 buena buen)))
+                                  (ncfs000 parte parte)
+                                  (sp
+                                    (prep
+                                      (spcms del del))
+                                    (sn
+                                      (grup.nom.ms
+                                        (ncms000 país país)))))))
+                            (Fc , ,))
+                          (grup.verb
+                            (vmip3s0 desemboca desembocar))
+                          (sp-CC
+                            (prep
+                              (sps00 en en))
+                            (snl
+                              (espec.ms
+                                (da0ms0 el el))
+                              (grup.nom.ms
+                                (nccs000 mar mar)
+                                (snl
+                                  (grup.nom
+                                    (np0000l Caribe Caribe))))))
+                          (sadv-CC
+                            (Fc , ,)
+                            (grup.adv
+                              (rg cerca cerca)
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (snl
+                                  (grup.nom
+                                    (np0000l Barranquilla Barranquilla)))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 director director)
+        (sp
+          (prep
+            (spcms del del))
+          (sno
+            (grup.nom.ms
+              (np0000o Departamento_del_Medio_Ambiente Departamento_del_Medio_Ambiente)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (dd0fs0 esta este))
+                  (grup.nom.fs
+                    (ncfs000 ciudad ciudad)))))))
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (np0000p Manuel_Herrera Manuel_Herrera))
+          (Fc , ,))))
+    (grup.verb
+      (vmis3s0 dijo decir))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (nccp000 periodistas periodista))))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 obligaciones obligación)
+          (sp
+            (prep
+              (sps00 en_favor_de en_favor_de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 ecología ecología))))
+          (sp
+            (prep
+              (sps00 por por))
+            (sn
+              (grup.nom.fs
+                (ncfs000 parte parte)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 empresa empresa)))))))))
+      (grup.verb
+        (vsis3p0 fueron ser)
+        (vmp00pf confirmadas confirmar))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (snd
+          (grup.nom
+            (W 1995 [??:??/??/1995:??.??])))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (sn-CC
+        (sn
+          (espec.mp
+            (dn0cp0 Cuatro cuatro))
+          (grup.nom.mp
+            (ncmp000 años año)))
+        (sadv
+          (grup.adv
+            (rg después después)))
+        (Fc , ,))
+      (sn-SUJ
+        (grup.nom.fp
+          (S.NF.P
+            (participi
+              (aq0fpp dichas dicho)))
+          (ncfp000 obligaciones obligación)))
+      (grup.verb
+        (vmii3p0 estaban estar))
+      (sp-ATR
+        (prep
+          (sps00 por por))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 cumplir cumplir))))
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 agregó agregar))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Herrera Herrera)
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cs000 quien quien))
+          (grup.verb
+            (vmis3s0 observó observar))
+          (S.F.C-CD
+            (conj.subord
+              (cs que que))
+            (sn-SUJ
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 compañía compañía)))
+            (grup.verb
+              (vmis3s0 recibió recibir))
+            (sn-CD
+              (espec.fs
+                (di0fs0 una uno))
+              (grup.nom.fs
+                (ncfs000 multa multa)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snn
+                    (espec.mp
+                      (Z 1.872 1872))
+                    (grup.nom.mp
+                      (ncmp000 millones millón)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (snn
+                          (grup.nom.mp
+                            (Zm pesos peso))))
+                      (snn
+                        (Fpa -Fpa- -Fpa-)
+                        (espec.mp
+                          (Z 892,7 892.7))
+                        (grup.nom.mp
+                          (ncmp000 millones millón)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (snn
+                              (grup.nom.mp
+                                (Zm dólares dólar)))))
+                        (Fpt -Fpt- -Fpt-)))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (S.F.C-CD
+        (sn-SUJ
+          (espec.fs
+            (da0fs0 La el))
+          (grup.nom.fs
+            (ncfs000 compañía compañía)))
+        (grup.verb
+          (vmis3s0 hizo hacer))
+        (sn-CD
+          (grup.nom.ms
+            (ncms000 uso uso)))
+        (sp-CREG
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 recurso recurso)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 apelación apelación))))))))
+      (S.F.R.co
+        (Fc , ,)
+        (sp-CC
+          (prep
+            (sps00 tras tras))
+          (sn
+            (espec.ms
+              (da0ns0 lo el))
+            (relatiu
+              (pr0cs000 cual cual))))
+        (S.F.R.co
+          (S.F.R
+            (sn-SUJ
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 multa multa)))
+            (grup.verb
+              (vsis3s0 fue ser)
+              (vmp00sf confirmada confirmar)))
+          (coord
+            (cc y y))
+          (S.F.R*
+            (grup.verb
+              (vmp00sf reducida reducir))
+            (sp
+              (prep
+                (sps00 a a))
+              (snn
+                (espec.mp
+                  (Z 1.365 1365))
+                (grup.nom.mp
+                  (ncmp000 millones millón)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snn
+                      (grup.nom.mp
+                        (Zm pesos peso)))))))))
+        (Fc , ,)))
+    (grup.verb
+      (vmis3s0 explicó explicar))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 funcionario funcionario)))
+    (Fp . .)))

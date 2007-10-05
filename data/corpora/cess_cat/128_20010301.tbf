@@ -1,0 +1,147 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (di0fs0 Una un))
+      (grup.nom.fs
+        (ncfs000 parada parada)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 mercat mercat))))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (np00000 Tarragona Tarragona))))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 albergar albergar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 presentació presentació)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0cs0 l' el))
+            (grup.nom.fs
+              (ncfs000 obra obra)
+              (S.NF.P
+                (Fc , ,)
+                (participi
+                  (aq0fsp editada editat))
+                (sp-CAG
+                  (prep
+                    (sps00 per per))
+                  (sn
+                    (grup.nom.ms
+                      (np00000 Alfred_Arola Alfred_Arola))))
+                (Fc , ,))
+              (sn
+                (grup.nom
+                  (np00000 Las_claves_del_pasado_._La_llave_del_futuro Las_claves_del_pasado_._La_llave_del_futuro)))
+              (sp
+                (Fc , ,)
+                (prep
+                  (sps00 d' de))
+                (sn.x
+                  (grup.nom.co
+                    (grup.nom.co
+                      (grup.nom.ms
+                        (np00000 Eudald_Carbonell Eudald_Carbonell))
+                      (coord
+                        (cc i i))
+                      (grup.nom.fs
+                        (np00000 Marina_Mosquera Marina_Mosquera)))
+                    (sn.j
+                      (Fc , ,)
+                      (grup.nom.mp
+                        (ncmp000 arqueòlegs arqueòleg)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (np00000 URV URV))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (morfema.verbal-PASS
+        (p0000000 Es es))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 triar triar))
+      (sn-SUJ
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 peixateria peixateria)))
+      (S.F.A.co-CC
+        (sp
+          (prep
+            (sps00 per per))
+          (sn
+            (grup.nom.ms
+              (Fe " ")
+              (ncms000 afany afany)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 antielitista antielitista)))
+              (Fe " "))))
+        (coord
+          (cc i i))
+        (S.F.A
+          (conj.subord
+            (cs perquè perquè))
+          (Fe " ")
+          (sn-SUJ
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 lectura lectura)))
+          (grup.verb
+            (vsip3s0 és ser))
+          (sn-ATR
+            (espec.ms
+              (di0ms0 un un))
+            (grup.nom.ms
+              (ncms000 acte acte)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (s.a.fs
+                      (grup.a.fs
+                        (ao0fs0 primera primer)))
+                    (ncfs000 necessitat necessitat))))
+              (sp
+                (Fc , ,)
+                (prep
+                  (cs com com))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 menjar menjar))))))
+          (Fe " ")))
+      (Fc , ,))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 dir dir))
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Carbonell Carbonell)))
+    (Fp . .)))

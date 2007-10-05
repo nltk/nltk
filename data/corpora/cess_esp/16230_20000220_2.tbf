@@ -1,0 +1,138 @@
+
+(
+  (S
+    (S.F.C-CD
+      (Fe " ")
+      (sn.e-SUJ *0*)
+      (neg-MOD
+        (rn No no))
+      (grup.verb
+        (vmip1s0 necesito necesitar))
+      (sn-CD
+        (espec.fs
+          (dd0fs0 esa ese))
+        (grup.nom.fs
+          (ncfs000 pelea pelea)))
+      (S.F.A.co-CC
+        (conj.subord
+          (cs porque porque))
+        (S.F.A
+          (sn-CD.r
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (s.a.fs
+                (grup.a.fs
+                  (ao0fs0 primera primero)))))
+          (sn-CD.r
+            (grup.nom.fs
+              (pp3fsa00 la él)))
+          (grup.verb
+            (vmis1s0 gané ganar))
+          (sn.e-SUJ *0*))
+        (coord
+          (cc y y))
+        (S.F.A
+          (sn.e-SUJ *0*)
+          (morf.pron
+            (p010s000 me yo))
+          (grup.verb
+            (vmip1s0 siento sentir))
+          (sadv-CPRED.SUJ
+            (espec
+              (rg muy mucho))
+            (grup.adv
+              (rg bien bien)))
+          (sadv-CC
+            (grup.adv
+              (rg dentro dentro)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.mp
+                    (da0mp0 los el))
+                  (grup.nom.mp
+                    (nc00000 supergallos supergallos))))))
+          (sp-CCT
+            (prep
+              (spcms al al))
+            (S.NF.C
+              (neg-MOD
+                (rn no no))
+              (infinitiu
+                (vmn0000 tener tener))
+              (sn-CD.Q
+                (grup.nom.mp
+                  (ncmp000 problemas problema)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 peso peso))))))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 explicó explicar))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Barrera Barrera)))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (Fe " ")
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 Los el))
+        (grup.nom.mp
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3p0 tienen tener)
+              (cs que que)
+              (infinitiu
+                (vmn0000 cambiar cambiar)))
+            (sp-CREG
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 campeón campeón)))))))
+      (grup.verb
+        (vsip3s0 es ser))
+      (sno-ATR
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 cadena cadena)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 televisión televisión))))
+          (sno
+            (grup.nom
+              (np0000o HBO HBO)))))
+      (S.F.A-CC
+        (conj.subord
+          (cs porque porque))
+        (snp-SUJ
+          (grup.nom.ms
+            (np0000p Morales Morales)))
+        (neg-MOD
+          (rn no no))
+        (sn-CI
+          (grup.nom.p
+            (pp3cpd00 les él)))
+        (grup.verb
+          (vmip3s0 sirve servir)))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 agregó agregar))
+    (sn.e-SUJ *0*)
+    (Fp . .)))

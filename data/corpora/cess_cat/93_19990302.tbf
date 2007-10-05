@@ -1,0 +1,161 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 dissenyador dissenyador)
+        (sn
+          (grup.nom.ms
+            (np00000 Giorgo_Armani Giorgo_Armani)))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 sorprendre sorprendre))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 públic públic)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vaip3s0 va anar)
+            (vmn0000 acudir acudir))
+          (sp-CREG
+            (prep
+              (sps00 a a))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 veure veure))
+              (sn-CD
+                (espec.fs
+                  (dp3fs0 la_seva el_seu))
+                (grup.nom.fs
+                  (ncfs000 desfilada desfilada)))
+              (sp-CCL
+                (Fc , ,)
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 marc marc)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (np00000 Setmana_de_la_Moda Setmana_de_la_Moda)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom
+                                (np00000 Milà Milà)))))))))
+                (Fc , ,)))))))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 col·lecció col·lecció)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3s0 dóna donar))
+            (sn-CD
+              (grup.nom.fs
+                (ncfs000 cabuda cabuda)))
+            (sp-CC
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fs
+                  (di0fs0 una un))
+                (grup.nom.fs
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 àmplia ampli)))
+                  (nccs000 paleta paleta)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.mp
+                        (ncmp000 colors color)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCL
+      (prep
+        (spcmp Dels del))
+      (sn.x
+        (espec.mp
+          (dp3mp0 seus seu))
+        (grup.nom.co
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 clàssics clàssic)))
+          (grup.nom.mp
+            (ncmp000 negres negre))
+          (coord
+            (cc i i))
+          (grup.nom.mp
+            (ncmp000 beixos beix))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 dissenyador dissenyador)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 passar passar))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom.mp
+          (ncmp000 tons to)
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 primaris primari)))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vaip3p0 van anar)
+              (vmn0000 tenyir tenyir))
+            (sn-CD
+              (grup.nom.fp
+                (ncfp000 creacions creació)
+                (S.NF.P.co
+                  (S.NF.P
+                    (participi
+                      (aq0fpp atrevides atrevit)))
+                  (Fc , ,)
+                  (S.NF.P
+                    (participi
+                      (aq0fpp allunyades allunyat))
+                    (sp-CC
+                      (prep
+                        (spcms del del))
+                      (sn
+                        (espec.ms
+                          (dp3ms0 seu seu))
+                        (grup.nom.ms
+                          (ncms000 estil estil)
+                          (s.a.ms
+                            (aq0cs0 habitual habitual)))))))))))))
+    (Fp . .)))

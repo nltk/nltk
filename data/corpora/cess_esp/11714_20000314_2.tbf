@@ -1,0 +1,60 @@
+
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Alberto_Fernández Alberto_Fernández)))
+    (grup.verb
+      (vaip3s0 ha haber)
+      (vmp00sm subrayado subrayar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sp-CCT
+        (Fc , ,)
+        (prep
+          (sps00 tras tras))
+        (snd
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (W 12_de_marzo [??:12/3/??:??.??])))
+        (Fc , ,))
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vaip3s0 ha haber)
+        (vmp00sm demostrado demostrar))
+      (S.F.C-SUJ
+        (conj.subord
+          (cs que que))
+        (Fe " ")
+        (sno-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (np0000o PP PP)))
+        (grup.verb
+          (vmip3s0 ocupa ocupar))
+        (sn-CD
+          (espec.fs
+            (di0fs0 una uno))
+          (grup.nom.fs
+            (ncfs000 posición posición)
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 central central)))
+            (sp
+              (prep
+                (spcms al al))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 alza alza)
+                  (sp
+                    (prep
+                      (sps00 en en))
+                    (snl
+                      (grup.nom
+                        (np0000l Cataluña Cataluña)))))))))
+        (Fe " ")))
+    (Fp . .)))

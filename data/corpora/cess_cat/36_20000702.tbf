@@ -1,0 +1,284 @@
+
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Vittorio_Gassman Vittorio_Gassman)
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (pi0ms000 un un)
+            (sp
+              (prep
+                (spcmp dels del))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 mites mite)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (da0cs0 l' el))
+                      (grup.nom.fs
+                        (ncfs000 escena escena)
+                        (s.a.fs.x
+                          (grup.a.fs.co
+                            (grup.a.fs
+                              (aq0cs0 teatral teatral))
+                            (coord
+                              (cc i i))
+                            (grup.a.fs
+                              (aq0fs0 cinematogràfica cinematogràfic))))
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0fs0 europea europeu))))))))))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 morir morir))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom.fs
+          (ncfs000 casa casa))
+        (espec.fs
+          (dp3fs0 seva seu))))
+    (sp-CCL
+      (Fc , ,)
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom
+          (np00000 Roma Roma))))
+    (sp-CC
+      (prep
+        (sps00 d' de))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 atac atac)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 cardíac cardíac))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 actor actor)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 italià italià)))
+        (sp
+          (Fc , ,)
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (Z 77 77))
+            (grup.nom.mp
+              (ncmp000 anys any)))
+          (Fc , ,))))
+    (grup.verb
+      (vaii3s0 havia haver)
+      (vmp00sm participat participar))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fp
+          (di0ms0 un un)
+          (ncms000 centenar centenar)
+          (sps00 de de))
+        (grup.nom.fp
+          (ncfp000 pel·lícules pel·lícula))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Amb amb))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 mort mort)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (nccs000 protagonista protagonista)
+                (sp
+                  (prep
+                    (sps00 d' de))
+                  (sn.x
+                    (grup.nom.co
+                      (grup.nom
+                        (np00000 Arròs_amarg Arròs_amarg))
+                      (coord
+                        (cc i i))
+                      (grup.nom
+                        (np00000 Rufufú Rufufú)))))))))))
+    (grup.verb
+      (vmip3s0 desapareix desaparèixer))
+    (sn-SUJ
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 símbol símbol)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 cine cine)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 italià italià))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Gassman Gassman)
+        (S.NF.P
+          (Fc , ,)
+          (participi
+            (aq0msp conegut conegut))
+          (sp-CPRED
+            (prep
+              (cs com com))
+            (sn
+              (grup.nom
+                (nc00000 il_mattatore il_mattatore))))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 escriure escriure))
+    (sn-CCT
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (W 1981 [??:??/??/1981:??.??])))
+    (sn-CD
+      (espec.fs
+        (dp3fs0 la_seva el_seu))
+      (grup.nom.fs
+        (ncfs000 autobiografia autobiografia)))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.mp
+        (ncmp000 Milers miler)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.mp
+              (ncmp000 italians italià))))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 desfilar desfilar))
+    (sp-CCL
+      (prep
+        (sps00 davant davant))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (np00000 Ajuntament_de_Roma Ajuntament_de_Roma))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 donar donar))
+        (sn-CD
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (ao0ms0 últim últim)))
+            (ncms000 adéu adéu)))
+        (sp-CI
+          (prep
+            (sps00 a a))
+          (sn
+            (grup.nom.ms
+              (np00000 Gassman Gassman))))))
+    (Fp . .)))
+(
+  (S
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0cs0 L' el))
+        (grup.nom.ms
+          (ncms000 actor actor)))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vsn0000 ser ser)
+        (vmp00sm incinerat incinerar))
+      (sn-CC
+        (Fc , ,)
+        (grup.nom.s
+          (pd0cs000 tal tal)
+          (S.F.R
+            (relatiu-ATR
+              (pr000000 com com))
+            (grup.verb
+              (vsii3s0 era ser))
+            (sn-SUJ
+              (espec.ms
+                (dp3ms0 el_seu el_seu))
+              (grup.nom.ms
+                (ncms000 desig desig)))))
+        (Fc , ,)))
+    (coord
+      (cc i i))
+    (S*
+      (sn
+        (espec.fp
+          (dp3fp0 les_seves el_seu))
+        (grup.nom.fp
+          (ncfp000 cendres cendra)))
+      (participi
+        (aq0fpp entregades entregat))
+      (sp
+        (prep
+          (sps00 a a))
+        (sn
+          (grup.nom.fs
+            (np00000 Diletta_D'_Andrea Diletta_D'_Andrea)
+            (sn
+              (Fc , ,)
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 dona dona)
+                (S.F.R
+                  (sp-CC
+                    (prep
+                      (sps00 amb amb))
+                    (relatiu
+                      (pr0cn000 qui qui)))
+                  (sn.e-SUJ *0*)
+                  (grup.verb
+                    (vaip3s0 va anar)
+                    (vmn0000 compartir compartir))
+                  (sn-CD
+                    (espec.mp
+                      (da0mp0 els el)
+                      (ao0mp0 últims últim)
+                      (Z 30 30))
+                    (grup.nom.mp
+                      (ncmp000 anys any))))))))))
+    (Fp . .)))

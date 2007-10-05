@@ -1,0 +1,161 @@
+
+(
+  (S*
+    (sn
+      (grup.nom.fs
+        (pi0fs000 Una un)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (ncfp000 xerrades xerrada))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (nccp000 participants participant)))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 assistir assistir))
+    (sp-CCT
+      (prep
+        (sps00 durant durant))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 jornada jornada))))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.mp
+          (di0mp0 diversos divers))
+        (grup.nom.mp
+          (ncmp000 debats debat)
+          (S.F.R
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (relatiu
+                (pr0cn000 què què)))
+            (morfema.verbal-IMPERS
+              (p0000000 es es))
+            (grup.verb
+              (vaip3s0 va anar)
+              (vmn0000 parlar parlar))
+            (sp.co-CREG
+              (sp.co
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 present present))))
+                (coord
+                  (cc i i))
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 futur futur)))))
+              (sp.j
+                (prep
+                  (sps00 d' de))
+                (sn
+                  (espec.ms
+                    (dd0ms0 aquest aquest))
+                  (grup.nom.ms
+                    (ncms000 barri barri)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom
+                          (np00000 Badalona Badalona))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 associacions associació)
+        (s.a.fp
+          (grup.a.fp
+            (aq0cp0 veïnals veïnal)))))
+    (morf.pron
+      (p0300000 es ell))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 interrogar interrogar))
+    (sp-CC
+      (prep
+        (sps00 sobre sobre))
+      (S.F.C.co
+        (S.F.C
+          (sadv-CC
+            (grup.adv
+              (pt000000 com com)))
+          (grup.verb
+            (vmip3s0 arriba arribar))
+          (sn-CD
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 informació informació)))
+          (sp-CI
+            (prep
+              (spcmp als al))
+            (sn
+              (grup.nom.mp
+                (ncmp000 veïns veí)))))
+        (Fc , ,)
+        (S.F.C
+          (conj.subord
+            (cs si si))
+          (sn.e-SUJ *0*)
+          (sn-CI
+            (grup.nom.p
+              (pp3cp000 els ell)))
+          (grup.verb
+            (vmip3s0 arriba arribar))
+          (Fc , ,))
+        (coord
+          (cc i i))
+        (S.F.C
+          (sp-CC
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (dt0fs0 quina quin))
+              (grup.nom.fs
+                (ncfs000 manera manera))))
+          (morfema.verbal-PASS
+            (p0000000 es es))
+          (grup.verb
+            (vmip3p0 poden poder)
+            (infinitiu
+              (vmn0000 traslladar traslladar)))
+          (sn-SUJ
+            (espec.fp
+              (dp3fp0 les_seves el_seu))
+            (grup.nom.fp
+              (ncfp000 inquietuds inquietud)))
+          (sp-CREG
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (ncfp000 administracions administració)))))))
+    (Fp . .)))

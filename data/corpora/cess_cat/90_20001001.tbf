@@ -1,0 +1,1591 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 teòleg teòleg)
+        (sn
+          (grup.nom.ms
+            (np00000 Leonardo_Boff Leonardo_Boff)))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm respost respondre))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (grup.nom.fs
+          (ncfs000 contundència contundència))))
+    (sn-CD
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (ncms000 escrit escrit)
+        (S.NF.P
+          (participi
+            (aq0msp firmat firmat))
+          (sp-CAG
+            (prep
+              (sps00 per per))
+            (sn
+              (grup.nom.ms
+                (np00000 Joseph_Ratzinger Joseph_Ratzinger)))))
+        (S.F.R
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (relatiu
+              (pr0cn000 què què)))
+          (morfema.verbal-PASS
+            (p0000000 es es))
+          (grup.verb
+            (vmii3s0 negava negar))
+          (sn-SUJ
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 salvació salvació)
+              (sadv
+                (grup.adv
+                  (rg fora fora)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (da0cs0 l' el))
+                      (grup.nom.fs
+                        (np00000 Església Església)
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0fs0 catòlica catòlic)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 teòleg teòleg)))
+    (grup.verb
+      (vmip3s0 qualifica qualificar))
+    (sp-CPRED.CD
+      (prep
+        (sps00 de de))
+      (s.a.ms
+        (grup.a.ms
+          (Fe " ")
+          (aq0ms0 mesquí mesquí)
+          (Fe " "))))
+    (sn-CD
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (ao0ms0 últim últim)))
+        (ncms000 text text)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (np00000 Ratzinger Ratzinger))))
+        (sp
+          (prep
+            (sps00 sobre sobre))
+          (sn
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (ncms000 ecumenisme ecumenisme))))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (espec.ms
+        (di0ms0 Un un))
+      (grup.nom.ms
+        (ncms000 escrit escrit)
+        (Fe " ")
+        (sp.co
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn.x
+              (grup.nom.co
+                (grup.nom.mp
+                  (ncmp000 escribes escriba))
+                (coord
+                  (cc i i))
+                (grup.nom.mp
+                  (ncmp000 fariseus fariseu)))))
+          (coord
+            (cc i i))
+          (sp
+            (neg.j
+              (rn no no))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 deixebles deixeble)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.ms
+                        (np00000 Jesús Jesús)))))))))
+        (sn
+          (Fc , ,)
+          (espec.ms
+            (di0ms0 un un))
+          (grup.nom.ms
+            (ncms000 text text)
+            (S.NF.P
+              (participi
+                (aq0msp mancat mancat))
+              (sp-CREG
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fp
+                    (ncfp000 virtuts virtut)
+                    (s.a.fp.x
+                      (grup.a.fp.co
+                        (grup.a.fp
+                          (aq0fp0 humanes humà))
+                        (coord
+                          (cc i i))
+                        (grup.a.fp
+                          (aq0fp0 divines diví))))))))))
+        (Fe " ")))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg Així així)))
+    (grup.verb
+      (vmip3s0 qualifica qualificar))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.co
+        (grup.nom.co
+          (grup.nom.ms
+            (ncms000 teòleg teòleg))
+          (coord
+            (cc i i))
+          (grup.nom.ms
+            (ncms000 escriptor escriptor)))
+        (s.a.ms.j
+          (grup.a.ms
+            (aq0ms0 brasiler brasiler)))
+        (sn.j
+          (grup.nom.ms
+            (np00000 Leonardo_Boff Leonardo_Boff)))
+        (sp
+          (Fc , ,)
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (Z 61 61))
+            (grup.nom.mp
+              (ncmp000 anys any)))
+          (Fc , ,))))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 contingut contingut)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (S.NF.P
+                (participi
+                  (aq0fsp controvertida controvertit)))
+              (ncfs000 declaració declaració)
+              (sp
+                (prep
+                  (sps00 sobre sobre))
+                (sn
+                  (espec.ms
+                    (da0cs0 l' el))
+                  (grup.nom.ms
+                    (ncms000 ecumenisme ecumenisme)
+                    (sn
+                      (grup.nom
+                        (np00000 Dominus_Iesus Dominus_Iesus))))))
+              (S.NF.P
+                (Fc , ,)
+                (participi
+                  (aq0fsp elaborada elaborat))
+                (sp-CAG
+                  (prep
+                    (sps00 per per))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (np00000 Congregació_per_a_la_Doctrina_de_la_Fe Congregació_per_a_la_Doctrina_de_la_Fe)
+                      (S.F.R
+                        (relatiu-CD
+                          (pr0cn000 que que))
+                        (grup.verb
+                          (vmip3s0 dirigeix dirigir))
+                        (sn-SUJ
+                          (espec.ms
+                            (da0ms0 el el))
+                          (grup.nom.ms
+                            (ncms000 cardenal cardenal)
+                            (sn
+                              (grup.nom.ms
+                                (np00000 Joseph_Ratzinger Joseph_Ratzinger)))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (grup.nom.ms
+          (np00000 Boff Boff)))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vsn0000 ser ser)
+        (vmp00sm condemnat condemnar))
+      (sp-CAG
+        (prep
+          (spcms pel pel))
+        (sn
+          (grup.nom.ms
+            (np00000 Vaticà Vaticà))))
+      (sn-CCT
+        (Fc , ,)
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (W any_1985 [??:??/??/1985:??.??]))
+        (Fc , ,))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.ms
+            (di0ms0 un un))
+          (grup.nom.ms
+            (ncms000 any any)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 silenci silenci))))))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 tornar tornar)
+        (sps00 a a)
+        (infinitiu
+          (vsn0000 ser ser)
+          (vmp00sm amonestat amonestar)))
+      (sadv-CCT
+        (grup.adv
+          (rg posteriorment posteriorment)))
+      (sp-CC
+        (prep
+          (spcms pel pel))
+        (sn
+          (grup.nom.ms
+            (ncms000 contingut contingut)
+            (sp
+              (prep
+                (spcmp dels del))
+              (sn
+                (espec.mp
+                  (dp3mp0 seus seu))
+                (grup.nom.mp
+                  (ncmp000 escrits escrit))))))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (grup.nom.ms
+        (np00000 Leonardo_Boff Leonardo_Boff)))
+    (Fc , ,)
+    (sp
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 visita visita))))
+    (sp
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom
+          (np00000 Madrid Madrid))))
+    (sn
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (W 1997 [??:??/??/1997:??.??])))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 cardenal cardenal)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 alemany alemany)))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 donar_a_conèixer donar_a_conèixer))
+    (sp-CCT
+      (Fc , ,)
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom.mp
+          (ncmp000 començaments començament)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (W setembre [??:??/09/??:??.??]))))))
+      (Fc , ,))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 declaració declaració)
+        (S.F.R
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (relatiu
+              (pr0cn000 què què)))
+          (morfema.verbal-PASS
+            (p0000000 s' es))
+          (grup.verb
+            (vmip3s0 assegura assegurar))
+          (S.F.C-SUJ
+            (conj.subord
+              (cs que que))
+            (sn-SUJ
+              (Fe " ")
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 únic únic)))
+                (ncms000 camí camí)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 salvació salvació)))))
+              (Fe " "))
+            (grup.verb
+              (vsip3s0 és ser))
+            (sn-ATR
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (S.F.R
+                  (relatiu-CD
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmip3s0 proposa proposar))
+                  (sn-SUJ
+                    (espec.fs
+                      (da0cs0 l' el))
+                    (grup.nom.fs
+                      (np00000 Església Església)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0fs0 catòlica catòlic))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 text text)
+        (S.F.R
+          (Fc , ,)
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (relatiu
+              (pr0cn000 què què)))
+          (morfema.verbal-PASS
+            (p0000000 es es))
+          (grup.verb
+            (vmip3s0 menysprea menysprear))
+          (sn-SUJ
+            (espec.fp
+              (da0fs0 la el)
+              (ncfs000 resta resta)
+              (sps00 de de)
+              (da0fp0 les el))
+            (grup.nom.fp
+              (ncfp000 creences creença)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 religioses religiós)))))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vsp00sm estat ser)
+      (vmp00sm interpretat interpretar))
+    (sp-CPRED.SUJ
+      (prep
+        (cs com com))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 pas pas)
+          (sadv
+            (grup.adv
+              (rg enrere enrere)))
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 camí camí)
+                (S.F.R
+                  (relatiu-CD
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vaip3s0 ha haver)
+                    (vmp00sm emprès emprendre))
+                  (sn-CCT
+                    (espec.mp
+                      (dd0mp0 aquests aquest))
+                    (grup.nom.mp
+                      (s.a.mp
+                        (grup.a.mp
+                          (ao0mp0 últims últim)))
+                      (ncmp000 anys any)))
+                  (sn-SUJ
+                    (espec.ms
+                      (da0ms0 el el)
+                      (di0ms0 mateix mateix))
+                    (grup.nom.ms
+                      (np00000 Joan_Pau_II Joan_Pau_II))))
+                (sp
+                  (prep
+                    (sps00 a_favor_de a_favor_de))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 unió unió)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.fp
+                            (da0fp0 les el)
+                            (di0fp0 diverses divers))
+                          (grup.nom.fp
+                            (ncfp000 esglésies església)
+                            (s.a.fp
+                              (grup.a.fp
+                                (aq0fp0 cristianes cristià)))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Boff Boff)
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (pi0ms000 un un)
+            (sp
+              (prep
+                (spcmp dels del))
+              (sn
+                (grup.nom.mp
+                  (nccp000 representants representant)
+                  (s.a.mp
+                    (espec
+                      (rg més més))
+                    (grup.a.mp
+                      (aq0mp0 actius actiu))))))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np00000 Teologia_de_l'_Alliberament Teologia_de_l'_Alliberament)))))
+          (Fc , ,))))
+    (grup.verb
+      (vmip3s0 reconeix reconèixer))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 document document)
+          (s.a.ms
+            (Fc , ,)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 inèdit inèdit)))
+            (sp.j
+              (prep
+                (sps00 a a))
+              (sn
+                (grup.nom
+                  (np00000 Espanya Espanya))))
+            (Fc , ,)))))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (ncfp000 idees idea)
+          (S.NF.P
+            (participi
+              (aq0fpp expressades expressat))
+            (sp-CAG
+              (prep
+                (spcms pel pel))
+              (sn
+                (grup.nom.ms
+                  (ncms000 cardenal cardenal)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 alemany alemany)))))))))
+      (Fe " ")
+      (grup.verb
+        (vmip3p0 tenen tenir))
+      (sn-CD.Q
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 mèrit mèrit)
+          (sp
+            (prep
+              (sps00 d' de))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 esvair esvair))
+              (sn-CD
+                (espec.fp
+                  (di0fp0 totes tot)
+                  (da0fp0 les el))
+                (grup.nom.fp
+                  (nc00000 il·lusions il·lusió)
+                  (Fe " ")
+                  (sp
+                    (prep
+                      (sps00 sobre sobre))
+                    (sn
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 futur futur)
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 diàleg diàleg)))))))))
+              (sp-CC
+                (prep
+                  (sps00 entre entre))
+                (sn
+                  (espec.fp
+                    (da0fp0 les el)
+                    (di0cp0 diferents diferent))
+                  (grup.nom.fp
+                    (ncfp000 confessions confessió)))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (Fe " ")
+      (sn.e-SUJ *0*)
+      (neg-MOD
+        (rn No no))
+      (grup.verb
+        (vmip1p0 podem poder)
+        (infinitiu
+          (vmn0000 comptar comptar)))
+      (sp-CREG
+        (prep
+          (sps00 amb amb))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 jerarquia jerarquia)
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 vaticana vaticà))))))
+      (sp-CC
+        (prep
+          (sps00 per per))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 buscar buscar))
+          (sn-CD
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 pau pau)
+              (s.a.fs.x
+                (grup.a.fs.co
+                  (grup.a.fs
+                    (aq0cs0 espiritual espiritual))
+                  (coord
+                    (cc i i))
+                  (grup.a.fs
+                    (aq0fs0 religiosa religiós))))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 humanitat humanitat))))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmip3s0 diu dir))
+    (sn.e-SUJ *0*)
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 teòleg teòleg)))
+      (grup.verb
+        (vmip3s0 qualifica qualificar))
+      (sn-CD
+        (grup.nom.ms
+          (np00000 Ratzinger Ratzinger)))
+      (sp-CPRED.CD
+        (prep
+          (sps00 d' de))
+        (sn
+          (grup.nom.ms
+            (Fe " ")
+            (ncms000 exterminador exterminador)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncms000 futur futur)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.ms
+                        (da0cs0 l' el))
+                      (grup.nom.ms
+                        (ncms000 ecumenisme ecumenisme)))))))
+            (Fe " ")))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3s0 compara comparar))
+      (sn-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (Fe " ")
+          (ncms000 totalitarisme totalitarisme)
+          (Fe " ")
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0cs0 l' el))
+              (grup.nom.fs
+                (np00000 Església Església)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 romana romà))))))))
+      (sp-CREG
+        (prep
+          (sps00 amb amb))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (sp
+              (prep
+                (spcmp dels del))
+              (sn
+                (grup.nom.mp
+                  (s.a.mp
+                    (grup.a.mp
+                      (ao0mp0 primers primer)))
+                  (ncmp000 missioners missioner)
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vaip3p0 van anar)
+                      (vmn0000 arribar arribar))
+                    (sp-CCL
+                      (prep
+                        (sps00 a a))
+                      (sn.co
+                        (sn
+                          (grup.nom
+                            (np00000 Mèxic Mèxic)))
+                        (Fc , ,)
+                        (sn
+                          (espec.ms
+                            (da0ms0 el el))
+                          (grup.nom.ms
+                            (np00000 Carib Carib)))
+                        (coord
+                          (cc o o))
+                        (sn
+                          (grup.nom
+                            (np00000 Perú Perú)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (Fe " ")
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs.1n
+        (ncfs000 estratègia estratègia)))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sadv-CCT
+      (grup.adv
+        (rg sempre sempre)))
+    (sn-ATR
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (pi0fs000 mateixa mateix)))
+    (Fe " ")
+    (INC
+      (S
+        (Fc , ,)
+        (grup.verb
+          (vmip3s0 afirma afirmar))
+        (sn-SUJ
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (nc00000 exfranciscà exfranciscà)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 brasiler brasiler)))))))
+    (S.NF.C.co.1c
+      (Fd : :)
+      (Fe " ")
+      (S.NF.C
+        (infinitiu
+          (vmn0000 Convertir convertir))
+        (sn-CD
+          (espec.mp
+            (da0mp0 els el))
+          (grup.nom.mp
+            (pi0cp000 altres altre))))
+      (coord
+        (cc o o))
+      (S.NF.C.co
+        (S.NF.C
+          (infinitiu
+            (vmn0000 sotmetre sotmetre))
+          (sn-CD
+            (grup.nom.p
+              (pp3cp000 'ls ell))))
+        (Fc , ,)
+        (S.NF.C
+          (infinitiu
+            (vmn0000 desmoralitzar desmoralitzar))
+          (sn-CD
+            (grup.nom.p
+              (pp3cp000 -los ell))))
+        (coord
+          (cc o o))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 destruir destruir))
+          (sn-CD
+            (grup.nom.p
+              (pp3cp000 -los ell)))))
+      (Fe " "))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Leonardo_Boff Leonardo_Boff)))
+    (grup.verb
+      (vmip3s0 esmenta esmentar))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 sèrie sèrie)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.mp
+              (Fe " ")
+              (ncmp000 errors error)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0mp0 teològics teològic)))
+              (Fe " ")
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (sp-AO
+                  (Fc , ,)
+                  (prep
+                    (spcms al al))
+                  (sn
+                    (espec.ms
+                      (dp3ms0 seu seu))
+                    (grup.nom.ms
+                      (ncms000 judici judici)))
+                  (Fc , ,))
+                (grup.verb
+                  (vmip3p0 invaliden invalidar))
+                (sn-CD
+                  (espec.ms
+                    (dd0ms0 aquest aquest))
+                  (grup.nom.ms
+                    (s.a.ms
+                      (grup.a.ms
+                        (Fe " ")
+                        (aq0ms0 mesquí mesquí)
+                        (Fe " ")))
+                    (ncms000 document document)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 vaticà vaticà)))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (sn-ATR
+        (espec.mp
+          (da0mp0 Els el))
+        (grup.nom.mp
+          (s.a.mp
+            (espec
+              (rg més més))
+            (grup.a.mp
+              (aq0cp0 importants important)))))
+      (grup.verb
+        (vsip3p0 són ser))
+      (S.F.C.co-SUJ
+        (conj.subord
+          (cs que que))
+        (Fe " ")
+        (S.F.C
+          (sn.e-SUJ *0*)
+          (neg-MOD
+            (rn no no))
+          (grup.verb
+            (vmip3s0 anuncia anunciar))
+          (sn-CD
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 centralitat centralitat)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.ms
+                    (da0cs0 l' el))
+                  (grup.nom.ms
+                    (ncms000 amor amor)))))))
+        (coord
+          (cc ni ni))
+        (S.F.C
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vmip3s0 predica predicar))
+          (sn-CD
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 importància importància)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 decisiva decisiu)))
+              (sp
+                (prep
+                  (spcmp dels del))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 pobres pobre)))))))
+        (Fe " "))
+      (Fc , ,))
+    (grup.verb
+      (vmip3s0 recorda recordar))
+    (sn.e-SUJ *0*)
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (sadv-ET
+        (grup.adv
+          (rg En_canvi en_canvi))
+        (Fc , ,))
+      (Fe " ")
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3s0 ofereix oferir))
+      (sn-CD
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 indigest indigest)))
+          (ncms000 menú menú)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (ncfp000 cites cita)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0fp0 arrencades arrencat))))))))
+      (sp-CC
+        (prep
+          (sps00 per per))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 justificar justificar))
+          (sn.co-CD
+            (sn.co
+              (sn
+                (espec.fp
+                  (da0fp0 les el))
+                (grup.nom.fp
+                  (ncfp000 discriminacions discriminació)))
+              (coord
+                (cc i i))
+              (sn
+                (espec.fp
+                  (da0fp0 les el))
+                (grup.nom.fp
+                  (ncfp000 desigualtats desigualtat))))
+            (S.NF.P.j
+              (participi
+                (aq0fpp produïdes produït))
+              (sp-CC
+                (prep
+                  (sps00 contra contra))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 voluntat voluntat)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 manifesta manifest)))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.ms
+                          (np00000 Jesús Jesús)))))))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmip3s0 afirma afirmar))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 teòleg teòleg)))
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 Segons segons))
+      (sn
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (ncfs000 opinió opinió)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (np00000 Leonardo_Boff Leonardo_Boff))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 document document)
+        (sn
+          (grup.nom
+            (np00000 Dominus_Iesus Dominus_Iesus)))))
+    (grup.verb
+      (vmip3s0 està estar))
+    (S.NF.P-ATR
+      (Fe " ")
+      (S.NF.P
+        (sadv-CC
+          (grup.adv
+            (rg més més)))
+        (participi
+          (aq0msp dirigit dirigit))
+        (sp-CREG
+          (prep
+            (sps00 a a))
+          (S.NF.C.co
+            (S.NF.C
+              (infinitiu
+                (vmn0000 jutjar jutjar)))
+            (Fc , ,)
+            (S.NF.C
+              (infinitiu
+                (vmn0000 condemnar condemnar)))
+            (coord
+              (cc i i))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 excloure excloure))))))
+      (S.F.AComp*.j
+        (Fc , ,)
+        (conj.subord
+          (cs que que))
+        (sp
+          (prep
+            (sps00 a a))
+          (S.NF.C.co
+            (S.NF.C.co
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 valorar valorar)))
+              (Fc , ,)
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 comprendre comprendre)))
+              (coord
+                (cc i i))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 incloure incloure))))
+            (S.F.C.j-CD
+              (conj.subord
+                (cs com com))
+              (sn.e-SUJ *0*)
+              (morfema.verbal-PASS
+                (p0000000 se se))
+              (grup.verb
+                (vmip3s0 simbolitza simbolitzar))
+              (sp-CC
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (s.a.fs
+                      (grup.a.fs
+                        (ao0fs0 primera primer)))
+                    (ncfs000 aliança aliança)
+                    (S.F.R
+                      (relatiu-CD
+                        (pr0cn000 que que))
+                      (sn-SUJ
+                        (grup.nom
+                          (np00000 Déu Déu)))
+                      (grup.verb
+                        (vaip3s0 va anar)
+                        (vmn0000 establir establir))
+                      (sp-CC
+                        (prep
+                          (sps00 amb amb))
+                        (sn.co
+                          (sn
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (ncfs000 vida vida)))
+                          (coord
+                            (cc i i))
+                          (sn
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (ncfs000 humanitat humanitat)))))
+                      (sp-CC
+                        (Fc , ,)
+                        (prep
+                          (sps00 en en))
+                        (sn
+                          (espec.ms
+                            (da0cs0 l' el))
+                          (grup.nom.ms
+                            (ncmn000 arc_iris arc_iris))))))))))))
+      (Fe " "))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (grup.nom.ms
+          (np00000 Joseph_Ratzinger Joseph_Ratzinger)))
+      (sp-AO
+        (Fc , ,)
+        (prep
+          (sps00 segons segons))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 text text)
+            (S.NF.P
+              (participi
+                (aq0msp redactat redactat))
+              (sp-CAG
+                (prep
+                  (spcms pel pel))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 teòleg teòleg)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 brasiler brasiler)))))))))
+        (Fc , ,))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vmip3s0 vol voler))
+      (Fe " ")
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 multiplicitat multiplicitat)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 colors color))))))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 unitat unitat)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (espec.ms
+                  (di0ms0 mateix mateix))
+                (grup.nom.ms
+                  (ncmn000 arc_iris arc_iris)))))))
+      (Fc , ,))
+    (coord
+      (cc sinó sinó))
+    (S*
+      (sadv
+        (grup.adv
+          (rg només només)))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 predomini predomini)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 imperatiu imperatiu)))
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 color color)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 negre negre)))
+                (sn
+                  (Fc , ,)
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0fs0 trista trist)))
+                          (ncfs000 jerarquia jerarquia)
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0fs0 vaticana vaticà)))))))))))))
+      (Fe " "))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Per per))
+      (sn
+        (grup.nom.ms
+          (np00000 Boff Boff)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 l' el))
+      (grup.nom.fs
+        (ncfs000 actitud actitud)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (np00000 Roma Roma))))))
+    (grup.verb
+      (vmif3s0 farà fer))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 referència referència)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (ncms000 ecumenisme ecumenisme)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 cristià cristià))))))))
+      (morfema.verbal
+        (p0000000 es es))
+      (grup.verb
+        (vmsp3s0 traslladi traslladar))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (sn
+          (grup.nom
+            (np00000 Ginebra Ginebra)
+            (sn
+              (Fc , ,)
+              (grup.nom.fs
+                (ncfs000 seu seu)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (np00000 Consell_Mundial_de_les_Esglésies Consell_Mundial_de_les_Esglésies))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (Fe " ")
+      (sadv-CCL
+        (grup.adv
+          (rg Allà allà)))
+      (morfema.verbal-PASS
+        (p0000000 es es))
+      (grup.verb
+        (vmip3s0 perpetua perpetuar))
+      (sn-SUJ
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (ncfs000 herència herència)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (np00000 Jesús Jesús))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmip3s0 afirma afirmar))
+    (sn.e-SUJ *0*)
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (sn-SUJ
+        (espec.fs
+          (da0cs0 L' el))
+        (grup.nom.fs
+          (ncfs000 arrogància arrogància)
+          (S.F.R
+            (sp-CC
+              (prep
+                (sps00 amb amb))
+              (relatiu
+                (pr0cn000 què què)))
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vmip3s0 tracta tractar))
+            (sn-CD
+              (espec.fp
+                (da0fs0 la el)
+                (ncfs000 resta resta)
+                (sps00 d' de))
+              (grup.nom.fp
+                (ncfp000 esglésies església))))))
+      (grup.verb
+        (vmip3s0 converteix convertir))
+      (sn-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 cristianisme cristianisme)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 jeràrquic jeràrquic)))
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 romà romà)))))
+      (sp-CREG
+        (prep
+          (sps00 en en))
+        (sn
+          (Fe " ")
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 bastió bastió)
+            (s.a.ms
+              (espec
+                (rg més més))
+              (grup.a.ms
+                (aq0cs0 gran gran)))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn.x
+                (grup.nom.co
+                  (grup.nom.ms
+                    (ncms000 reaccionarisme reaccionarisme))
+                  (Fc , ,)
+                  (grup.nom.ms
+                    (ncms000 masculinisme masculinisme))
+                  (Fc , ,)
+                  (grup.nom.ms
+                    (ncms000 masclisme masclisme))
+                  (coord
+                    (cc i i))
+                  (grup.nom.ms
+                    (ncms000 totalitarisme totalitarisme)))))
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 ideològic ideològic)))
+            (s.a.ms
+              (espec
+                (rg avui avui))
+              (grup.a.ms
+                (aq0cs0 existent existent))))
+          (Fe " ")))
+      (Fc , ,))
+    (grup.verb
+      (vmip3s0 afegeix afegir))
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (ncms000 autor autor)))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (sp-ET
+        (prep
+          (sps00 No_obstant no_obstant))
+        (Fc , ,))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 teòleg teòleg)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 brasiler brasiler)))))
+      (grup.verb
+        (vmip3s0 entreveu entreveure))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una un)
+          (di0fs0 certa cert))
+        (grup.nom.fs
+          (ncfs000 esperança esperança)))
+      (S.F.A-CC
+        (conj.subord
+          (cs perquè perquè))
+        (sadv-CC
+          (grup.adv
+            (rg dins dins)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 jerarquia jerarquia)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 catòlica catòlic))))))))
+        (sadv-CCT
+          (grup.adv
+            (rg encara encara)))
+        (Fe " ")
+        (morf.pron
+          (pp3cn000 hi hi))
+        (grup.verb
+          (vaip3s0 ha haver))
+        (sn.x-CD.Q
+          (grup.nom.co
+            (grup.nom.co
+              (grup.nom.mp
+                (ncmp000 cardenals cardenal))
+              (Fc , ,)
+              (grup.nom.mp
+                (ncmp000 arquebisbes arquebisbe))
+              (Fc , ,)
+              (grup.nom.mp
+                (ncmp000 bisbes bisbe))
+              (coord
+                (cc i i))
+              (grup.nom.mp
+                (ncmp000 preveres prevere)))
+            (S.F.R.j
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vmip3p0 segueixen seguir))
+              (sn-CD
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 camí camí)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 evangèlic evangèlic)))
+                  (sp.co
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.ms
+                          (da0cs0 l' el))
+                        (grup.nom.ms
+                          (ncms000 aprenentatge aprenentatge)
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0ms0 mutu mutu))))))
+                    (Fc , ,)
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 diàleg diàleg)
+                          (S.NF.P
+                            (participi
+                              (aq0msp obert obert))))))
+                    (coord
+                      (cc i i))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 recerca recerca)
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0fs0 sincera sincer)))
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (espec.fs
+                                (da0fs0 la el))
+                              (grup.nom.fs
+                                (ncfs000 pau pau)
+                                (s.a.fs
+                                  (grup.a.fs
+                                    (aq0fs0 religiosa religiós))))))))))))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmip3s0 assenyala assenyalar))
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Leonardo_Boff Leonardo_Boff)))
+    (Fp . .)))

@@ -1,0 +1,793 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Las el))
+      (grup.nom.fp
+        (ncfp000 empresas empresa)
+        (s.a.fp
+          (grup.a.fp
+            (aq0fp0 rumanas rumano)))))
+    (grup.verb
+      (vmif3p0 podrán poder)
+      (infinitiu
+        (vmn0000 exportar exportar)))
+    (sp-CCT
+      (prep
+        (sps00 a_partir_de a_partir_de))
+      (sadv
+        (grup.adv
+          (rg hoy hoy)
+          (snd
+            (grup.nom.ms
+              (W lunes [lunes:??/??/??:??.??]))))))
+    (sn-CD
+      (grup.nom.mp
+        (ncmp000 productos producto)
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 petroleros petrolero)))))
+    (sp.co-CCL
+      (sp
+        (prep
+          (sps00 a a))
+        (snl
+          (grup.nom
+            (np0000l Montenegro Montenegro))))
+      (coord
+        (cc y y))
+      (sp
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fp
+            (di0fp0 algunas alguno))
+          (grup.nom.fp
+            (ncfp000 ciudades ciudad)
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Serbia Serbia))))))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 tras tras))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 levantar levantar))
+        (sadv-CC
+          (grup.adv
+            (rg parcialmente parcialmente)))
+        (sno-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 gobierno gobierno)
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Rumanía Rumanía))))))
+        (sn-CD
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 embargo embargo)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 petrolero petrolero)))
+            (S.NF.P
+              (participi
+                (aq0msp impuesto impuesto))
+              (sp-CI
+                (prep
+                  (sps00 a a))
+                (snl
+                  (grup.nom
+                    (np0000l Yugoslavia Yugoslavia)))))))))
+    (S.NF.A-CC
+      (Fc , ,)
+      (gerundi
+        (vmg0000 asumiendo asumir))
+      (sadv-CC
+        (grup.adv
+          (rg así así)))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 decisión decisión)
+          (S.NF.P
+            (participi
+              (aq0fsp tomada tomado))
+            (sp-CCT
+              (prep
+                (sps00 en en))
+              (snd
+                (grup.nom.ms
+                  (W febrero [??:??/02/??:??.??]))))
+            (sp-CAG
+              (prep
+                (sps00 por por))
+              (sno
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np0000o Unión_Europea Unión_Europea)
+                  (sno
+                    (grup.nom.fs
+                      (Fpa -Fpa- -Fpa-)
+                      (np0000o UE UE)
+                      (Fpt -Fpt- -Fpt-))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (Fe " ")
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 Los el))
+        (grup.nom.mp
+          (nccp000 agentes agente)
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 económicos económico)))
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 rumanos rumano)))))
+      (grup.verb
+        (vmip3p0 están estar))
+      (S.NF.P-ATR
+        (participi
+          (aq0mpp autorizados autorizado))
+        (sp-CREG
+          (prep
+            (sps00 a a))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 exportar exportar))
+            (sn-CD
+              (grup.nom.mp
+                (ncmp000 productos producto)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0mp0 petroleros petrolero)))))
+            (sp.co-CCL
+              (sp
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.fp
+                    (dn0cp0 siete siete))
+                  (grup.nom.fp
+                    (ncfp000 ciudades ciudad)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snl
+                        (grup.nom
+                          (np0000l Serbia Serbia)))))))
+              (Fc , ,)
+              (sp
+                (prep
+                  (sps00 a a))
+                (snl
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 provincia provincia)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snl
+                        (grup.nom
+                          (np0000l Kosovo Kosovo)))))))
+              (coord
+                (cc y y))
+              (sp
+                (prep
+                  (sps00 a a))
+                (snl
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np0000l República_de_Montenegro República_de_Montenegro))))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 declaró declarar))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 ministro ministro)
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (grup.nom
+              (np0000o Transportes Transportes))))
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (np0000p Traian_Basescu Traian_Basescu)))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 decisión decisión)
+        (sp
+          (prep
+            (spcms del del))
+          (sno
+            (grup.nom.ms
+              (np0000o Gobierno Gobierno))))))
+    (grup.verb
+      (vmip3s0 permite permitir))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 exportación exportación)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 petróleo petróleo))))
+        (sp
+          (prep
+            (sps00 con con))
+          (sn
+            (grup.nom.mp
+              (ncmp000 fines fin)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0mp0 humanitarios humanitario))))))
+        (sp.co
+          (sp
+            (prep
+              (sps00 para para))
+            (sn
+              (espec.fp
+                (da0fp0 las el))
+              (grup.nom.fp
+                (ncfp000 fuerzas fuerza)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 mantenimiento mantenimiento)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (ncfs000 paz paz)))))))))
+            (Fc , ,))
+          (coord
+            (cc así_como así_como))
+          (sp
+            (prep
+              (sps00 para para))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 cubrir cubrir))
+              (sn-CD
+                (espec.fp
+                  (da0fp0 las el))
+                (grup.nom.fp
+                  (ncfp000 necesidades necesidad)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 combustible combustible))))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fp
+                        (da0fp0 las el))
+                      (grup.nom.fp
+                        (ncfp000 representaciones representación)
+                        (s.a.fp
+                          (grup.a.fp
+                            (aq0fp0 diplomáticas diplomático)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 De_acuerdo_con de_acuerdo_con))
+      (sn
+        (espec.fs
+          (dd0fs0 esta este))
+        (grup.nom.fs
+          (ncfs000 decisión decisión)))
+      (Fc , ,))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vmif3p0 aplicarán aplicar))
+    (sn-SUJ
+      (grup.nom.fp
+        (ncfp000 sanciones sanción)
+        (s.a.fp.x
+          (grup.a.fp.co
+            (grup.a.fp
+              (aq0fp0 administrativas administrativo))
+            (coord
+              (cc o o))
+            (grup.a.fp
+              (sadv
+                (grup.adv
+                  (rg incluso incluso)))
+              (aq0cp0 penales penal))))
+        (sp
+          (prep
+            (sps00 para para))
+          (sn
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (ncmp000 transportes transporte)
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (neg-MOD
+                  (rn no no))
+                (grup.verb
+                  (vmsp3p0 tengan tener))
+                (sn-CD.Q
+                  (espec.mp
+                    (da0mp0 los el))
+                  (grup.nom.mp
+                    (ncmp000 destinos destino)))
+                (S.NF.P-CPRED.CD
+                  (participi
+                    (aq0mpp autorizados autorizado)))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np0000o Gobierno Gobierno)))
+    (grup.verb
+      (vmis3s0 anuló anular))
+    (sadv-MOD
+      (grup.adv
+        (rg también también)))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una uno))
+      (grup.nom.fs
+        (ncfs000 orden orden)
+        (S.NF.P
+          (participi
+            (aq0fsp adoptada adoptado))
+          (sp-CCT
+            (prep
+              (sps00 en en))
+            (snd
+              (grup.nom.ms
+                (W septiembre_de_l999 [??:??/9/1999:??.??])))))
+        (S.F.R
+          (sp-CC
+            (prep
+              (sps00 por por))
+            (relatiu
+              (da0fs0 la el)
+              (pr0cn000 que que)))
+          (morfema.verbal-PASS
+            (p0000000 se se))
+          (grup.verb
+            (vmii3s0 prohibía prohibir))
+          (sn-SUJ
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 acceso acceso)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.mp
+                    (da0mp0 los el))
+                  (grup.nom.mp
+                    (ncmp000 barcos barco)
+                    (s.a.mp
+                      (grup.a.mp
+                        (aq0mp0 serbios serbio))))))
+              (sp.co
+                (sp
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (espec.mp
+                      (da0mp0 los el))
+                    (grup.nom.mp
+                      (ncmp000 puertos puerto)
+                      (s.a.mp
+                        (grup.a.mp
+                          (aq0mp0 rumanos rumano))))))
+                (coord
+                  (cc y y))
+                (sp
+                  (prep
+                    (spcms al al))
+                  (snl
+                    (grup.nom.ms
+                      (ncms000 canal canal)
+                      (snl
+                        (grup.nom
+                          (np0000l Danubio-Mar_Negro Danubio-Mar_Negro))))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 secretario secretario)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 general general)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000o Asociación_Nacional_de_Exportadores_e_Importadores Asociación_Nacional_de_Exportadores_e_Importadores))))
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (np0000p Mihai_Ionescu Mihai_Ionescu))
+          (Fc , ,))))
+    (grup.verb
+      (vmip3s0 declara declarar))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sna
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 rotativo rotativo)
+          (sna
+            (grup.nom.ms
+              (Fe " ")
+              (np0000a Ziarul_Financiar Ziarul_Financiar)
+              (Fe " "))))))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 firmas firma)
+          (s.a.fp
+            (grup.a.fp
+              (aq0fp0 rumanas rumano)))))
+      (grup.verb
+        (vmip3p0 aprecian apreciar))
+      (sadv-CC
+        (grup.adv
+          (rg positivamente positivamente)))
+      (sn-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 levantamiento levantamiento)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 embargo embargo))))))
+      (S.F.AConc-AO
+        (Fc , ,)
+        (conj.subord
+          (cs aunque aunque))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmsi3s0 viniera venir))
+        (sadv-CCT
+          (grup.adv
+            (rg tarde tarde)))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (Fe " ")
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 embargo embargo)
+          (S.F.R
+            (Fc , ,)
+            (relatiu-CD
+              (pr0cn000 que que))
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vaip1p0 hemos haber)
+              (vmp00sm tardado tardar)
+              (sps00 en en)
+              (infinitiu
+                (vmn0000 levantar levantar)))
+            (sadv-CCT
+              (grup.adv
+                (sn
+                  (espec.ms
+                    (di0ms0 un uno))
+                  (grup.nom.ms
+                    (ncms000 año año)))
+                (rg después después)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 fin fin)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (ncfs000 guerra guerra)
+                            (sp
+                              (prep
+                                (sps00 en en))
+                              (snl
+                                (grup.nom
+                                  (np0000l Yugoslavia Yugoslavia))))))))))))
+            (Fc , ,))))
+      (sn-CI
+        (grup.nom.p
+          (pp1cp000 nos yo)))
+      (grup.verb
+        (vmis3s0 produjo producir))
+      (sn-CD
+        (grup.nom.fp
+          (ncfp000 pérdidas pérdida)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (sadv.j
+                (grup.adv
+                  (rg aproximadamente aproximadamente)))
+              (snn
+                (espec.mp
+                  (dn0cp0 mil mil))
+                (grup.nom.mp
+                  (ncmp000 millones millón)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snn
+                      (grup.nom.mp
+                        (Zm lei lei))))))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 precisó precisar))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Ionescu Ionescu)
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cs000 quien quien))
+          (grup.verb
+            (vmis3s0 mencionó mencionar))
+          (S.F.C-CD
+            (conj.subord
+              (cs que que))
+            (sp-CC
+              (prep
+                (sps00 a_causa_de a_causa_de))
+              (sn
+                (espec.fp
+                  (da0fp0 las el))
+                (grup.nom.fp
+                  (ncfp000 sanciones sanción)
+                  (S.NF.P
+                    (participi
+                      (aq0fpp impuestas impuesto))
+                    (sp-CI
+                      (prep
+                        (sps00 a a))
+                      (snl
+                        (grup.nom
+                          (np0000l Yugoslavia Yugoslavia)))))))
+              (Fc , ,))
+            (sno-SUJ
+              (grup.nom
+                (np0000o Rumanía Rumanía)))
+            (neg-MOD
+              (rn no no))
+            (grup.verb
+              (vmis3s0 pudo poder)
+              (infinitiu
+                (vmn0000 procesar procesar)))
+            (snn-CD.Q
+              (espec.mp
+                (Z 3,5 3.5))
+              (grup.nom.mp
+                (ncmp000 millones millón)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fp
+                      (ncfp000 toneladas tonelada)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.ms
+                            (ncms000 crudo crudo))))
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (snl
+                          (grup.nom
+                            (np0000l Serbia Serbia)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (sadv.j
+        (grup.adv
+          (rg Tan_solo tan_solo)))
+      (sn.co
+        (sn
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (ncmp000 operadores operador)
+            (s.a.mp
+              (grup.a.mp
+                (aq0mp0 portuarios portuario)))))
+        (coord
+          (cc y y))
+        (sn
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (ncfp000 compañías compañía)
+            (s.a.fp
+              (grup.a.fp
+                (aq0cp0 navales naval)))
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Rumanía Rumanía))))
+            (S.F.R
+              (Fc , ,)
+              (Fg - -)
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vmip3p0 cuentan contar))
+              (sp-CREG
+                (prep
+                  (sps00 con con))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (s.a.fs
+                      (espec
+                        (rg más más))
+                      (grup.a.fs
+                        (aq0cs0 importante importante)))
+                    (ncfs000 flota flota)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0cs0 fluvial fluvial)))
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (snl
+                        (grup.nom.ms
+                          (np0000l Danubio Danubio)))))))
+              (Fg - -)
+              (Fc , ,))))))
+    (grup.verb
+      (vmis3p0 perdieron perder))
+    (sp-CCT
+      (prep
+        (sps00 durante durante))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 embargo embargo)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 total total)))
+          (sp
+            (prep
+              (sps00 contra contra))
+            (sno
+              (grup.nom
+                (np0000o Yugoslavia Yugoslavia)))))))
+    (snn-CD.Q
+      (espec.mp
+        (rg más más)
+        (sps00 de de)
+        (Z 250 250))
+      (grup.nom.mp
+        (ncmp000 millones millón)
+        (sp
+          (prep
+            (sps00 de de))
+          (snn
+            (grup.nom.mp
+              (Zm dólares dólar))))))
+    (S.F.A-CC
+      (Fc , ,)
+      (conj.subord
+        (cs al_tiempo_que al_tiempo_que))
+      (snn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (Zp 80_por_ciento 80_%)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (ncmp000 trabajadores trabajador)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.ms
+                      (dd0ms0 este este))
+                    (grup.nom.ms
+                      (ncms000 sector sector)))))))))
+      (grup.verb
+        (vmis3p0 estuvieron estar))
+      (sp-ATR
+        (prep
+          (sps00 en en))
+        (sn
+          (grup.nom.ms
+            (ncms000 paro paro)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 técnico técnico)))))))
+    (Fp . .)))

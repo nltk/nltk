@@ -1,0 +1,208 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 figura figura)
+        (sp
+          (prep
+            (spcms del del))
+          (sn.x
+            (grup.nom.co
+              (grup.nom.co
+                (grup.nom.ms
+                  (nccs000 poeta poeta))
+                (coord
+                  (cc i i))
+                (grup.nom.ms
+                  (ncms000 dramaturg dramaturg)))
+              (sn.j
+                (grup.nom.ms
+                  (np00000 Joan_Brossa Joan_Brossa))))))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vsn0000 ser ser)
+      (vmp00sf recordada recordar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (ao0ms0 primer primer)))
+          (ncms000 esquetx esquetx)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 gala gala))))
+          (S.F.R
+            (Fc , ,)
+            (relatiu-CCL
+              (pr000000 on on))
+            (grup.verb
+              (vmii3p0 apareixien aparèixer))
+            (sn-SUJ
+              (grup.nom.mp
+                (ncmp000 elements element)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0mp0 escènics escènic)))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.ms
+                      (da0cs0 l' el))
+                    (grup.nom.ms
+                      (ncms000 univers univers)
+                      (sp
+                        (prep
+                          (spcms del del))
+                        (sn
+                          (grup.nom.ms
+                            (ncms000 creador creador)
+                            (s.a.ms
+                              (grup.a.ms
+                                (aq0ms0 català català)))
+                            (S.NF.P
+                              (Fc , ,)
+                              (participi
+                                (aq0msp mort mort))
+                              (sp-CCL
+                                (prep
+                                  (sps00 a a))
+                                (sn
+                                  (grup.nom
+                                    (np00000 Barcelona Barcelona))))
+                              (sn-CCT
+                                (espec.ms
+                                  (da0ms0 el el))
+                                (grup.nom.ms
+                                  (S.NF.P
+                                    (participi
+                                      (aq0msp passat passat))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 presentadora presentadora)
+        (sn
+          (grup.nom.fs
+            (np00000 Anabel_Alonso Anabel_Alonso)))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (sp-CCT
+            (prep
+              (sps00 durant durant))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 cerimònia cerimònia))))
+          (grup.verb
+            (vaip3s0 va anar)
+            (vmn0000 representar representar))
+          (sn.co-CD
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 tragèdia tragèdia)))
+            (coord
+              (cc i i))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 pessimisme pessimisme))))
+          (Fc , ,))))
+    (morf.pron
+      (p0300000 es ell))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 enganxar enganxar))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (ncfp000 galtes galta))))
+    (sn-CD
+      (espec.fp
+        (dn0cp0 tres tres))
+      (grup.nom.fp
+        (ncfp000 llàgrimes llàgrima)
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (grup.nom.fs
+              (ncfs000 forma forma)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 cor cor)))))))
+        (S.NF.P
+          (participi
+            (aq0fpp dedicades dedicat))
+          (sp-CREG
+            (prep
+              (sps00 a a))
+            (sn
+              (grup.nom.ms
+                (np00000 Brossa Brossa)
+                (S.F.R
+                  (Fc , ,)
+                  (sp-CI
+                    (prep
+                      (sps00 a a))
+                    (relatiu
+                      (pr0cn000 qui qui)))
+                  (sn.e-SUJ *0*)
+                  (grup.verb
+                    (vaip3s0 va anar)
+                    (vmn0000 agrair agrair))
+                  (sn-CD
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 visió visió)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0cs0 surrealista surrealista)))
+                      (S.F.R
+                        (relatiu-CD
+                          (pr0cn000 que que))
+                        (sn.e-SUJ *0*)
+                        (grup.verb
+                          (vmii3s0 tenia tenir)))
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (ncfs000 vida vida)))))))))))))
+    (Fp . .)))

@@ -1,0 +1,893 @@
+
+(
+  (S
+    (sno
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 compañía compañía)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 española español)))
+        (sno
+          (grup.nom.fs
+            (np0000o Telefónica Telefónica)))))
+    (grup.verb
+      (vmis3s0 logró lograr))
+    (S.F.A*
+      (Fc , ,)
+      (conj.subord
+        (cs al_igual_que al_igual_que))
+      (sn
+        (espec.mp
+          (da0mp0 los el)
+          (aq0cp0 restantes restante)
+          (dn0cp0 cinco cinco))
+        (grup.nom.mp
+          (ncmp000 competidores competidor)))
+      (Fc , ,))
+    (sn
+      (espec.fs
+        (di0fs0 una uno))
+      (grup.nom.fs
+        (ncfs000 licencia licencia)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (s.a.fs
+                (grup.a.fs
+                  (ao0fs0 tercera tercero)))
+              (ncfs000 generación generación)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 telefonía telefonía)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0cs0 móvil móvil))))))
+              (sna
+                (grup.nom.fs
+                  (Fpa -Fpa- -Fpa-)
+                  (np0000a UMTS UMTS)
+                  (Fpt -Fpt- -Fpt-)))
+              (sp
+                (prep
+                  (sps00 con con))
+                (sn
+                  (espec.fp
+                    (dn0cp0 dos dos))
+                  (grup.nom.fp
+                    (ncfp000 bandas banda)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fp
+                          (ncfp000 frecuencias frecuencia))))))))))))
+    (sp
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (ao0fs0 primera primero)))
+          (ncfs000 parte parte)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 subasta subasta)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 austriaca austriaco)))))))))
+    (Fp . .)))
+(
+  (S
+    (sno
+      (grup.nom.fs
+        (np0000o Telefónica Telefónica)
+        (S.F.R
+          (Fc , ,)
+          (relatiu
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 opera operar))
+          (sp
+            (prep
+              (sps00 bajo bajo))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 nombre nombre)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sno
+                    (grup.nom
+                      (np0000o 3G_Mobile_GmbH 3G_Mobile_GmbH)))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmis3s0 ofreció ofrecer))
+    (snn
+      (espec.mp
+        (Z 59 59))
+      (grup.nom.mp
+        (ncmp000 millones millón)
+        (sp
+          (prep
+            (sps00 de de))
+          (snn
+            (grup.nom.mp
+              (Zm euros euro))))))
+    (sp
+      (prep
+        (sps00 por por))
+      (sn
+        (espec.fs
+          (di0cs0 cada cada))
+        (grup.nom.fs
+          (pi0fs000 una uno)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fp
+                (da0fp0 las el))
+              (grup.nom.fp
+                (ncfp000 bandas banda)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fp
+                      (ncfp000 frecuencias frecuencia))))))))))
+    (sp
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (ao0fs0 primera primero)))
+          (ncfs000 parte parte)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 puja puja)
+                (S.F.R
+                  (relatiu
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmis3s0 concluyó concluir))
+                  (sp
+                    (prep
+                      (sps00 con con))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 concesión concesión)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (espec.fp
+                              (di0ms0 un uno)
+                              (ncms000 total total)
+                              (sps00 de de)
+                              (dn0cp0 seis seis))
+                            (grup.nom.fp
+                              (ncfp000 licencias licencia)
+                              (sp.1c
+                                (prep
+                                  (sps00 con con))
+                                (sn
+                                  (espec.fp
+                                    (dn0cp0 dos dos))
+                                  (grup.nom.fp
+                                    (ncfp000 bandas banda))))
+                              (sn
+                                (espec.fs
+                                  (di0cs0 cada cada))
+                                (grup.nom.fs.1n
+                                  (pi0fs000 una uno))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn
+      (espec.fp
+        (da0fp0 Las el)
+        (dn0cp0 doce doce))
+      (grup.nom.fp
+        (ncfp000 bandas banda)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fp
+              (ncfp000 frecuencias frecuencia))))))
+    (grup.verb
+      (vmis3p0 alcanzaron alcanzar))
+    (sp
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 puja puja))))
+    (sn
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 suma suma)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 total total)))
+        (S.F.R
+          (relatiu
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 oscila oscilar))
+          (sp
+            (prep
+              (sps00 entre entre))
+            (sn.co
+              (sn.co
+                (snn
+                  (espec.mp
+                    (da0mp0 los el))
+                  (grup.nom.mp
+                    (Z 704 704)))
+                (coord
+                  (cc y y))
+                (snn
+                  (espec.mp
+                    (da0mp0 los el)
+                    (Z 706 706))
+                  (grup.nom.mp
+                    (ncmp000 millones millón)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snn
+                        (grup.nom.mp
+                          (Zm euros euro)))))))
+              (coord
+                (Fc , ,)
+                (cc es_decir es_decir)
+                (Fc , ,))
+              (sn
+                (espec.fs
+                  (di0fs0 una uno))
+                (grup.nom.fs
+                  (ncfs000 cantidad cantidad)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 superior superior)
+                      (sp
+                        (prep
+                          (sps00 a a))
+                        (sn
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (ncfs000 puja puja)
+                            (s.a.fs
+                              (grup.a.fs
+                                (aq0fs0 mínima mínimo)))
+                            (S.NF.P
+                              (participi
+                                (aq0fsp establecida establecido))
+                              (sp
+                                (prep
+                                  (sps00 por por))
+                                (sn
+                                  (espec.fp
+                                    (da0fp0 las el))
+                                  (grup.nom.fp
+                                    (ncfp000 autoridades autoridad)
+                                    (s.a.fp
+                                      (grup.a.fp
+                                        (aq0fp0 austriacas austriaco))))))
+                              (sp
+                                (prep
+                                  (sps00 en en))
+                                (snn
+                                  (espec.mp
+                                    (Z 613 613))
+                                  (grup.nom.mp
+                                    (ncmp000 millones millón)
+                                    (sp
+                                      (prep
+                                        (sps00 de de))
+                                      (snn
+                                        (grup.nom.mp
+                                          (Zm euros euro))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv
+      (grup.adv
+        (rg Ahora ahora)
+        (S.F.R
+          (relatiu
+            (pr0cn000 que que))
+          (morfema.verbal
+            (p0000000 se se))
+          (grup.verb
+            (vaip3p0 han haber)
+            (vmp00sm liquidado liquidar))
+          (sn
+            (espec.fp
+              (da0fp0 las el)
+              (dn0cp0 doce doce))
+            (grup.nom.fp
+              (ncfp000 licencias licencia)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (s.a.fs
+                      (grup.a.fs
+                        (ao0fs0 primera primero)))
+                    (ncfs000 fase fase))))))))
+      (Fc , ,))
+    (morfema.verbal
+      (p0000000 se se))
+    (grup.verb
+      (vmip3s0 debe deber)
+      (infinitiu
+        (vmn0000 pasar pasar)))
+    (sp
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (ao0fs0 segunda segundo)))
+          (S.F.R
+            (Fc , ,)
+            (relatiu
+              (pr000000 donde donde))
+            (morfema.verbal
+              (p0000000 se se))
+            (grup.verb
+              (vmip3p0 subastan subastar))
+            (sn
+              (espec.fp
+                (di0fp0 otras otro)
+                (dn0cp0 cinco cinco))
+              (grup.nom.fp
+                (ncfp000 bandas banda)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 frecuencia frecuencia))))
+                (s.a.fp.co
+                  (s.a.fp
+                    (Fc , ,)
+                    (s.a.fp
+                      (espec
+                        (rg más más))
+                      (grup.a.fp
+                        (aq0fp0 pequeñas pequeño)))
+                    (S.F.AComp*.j
+                      (conj.subord
+                        (cs que que))
+                      (sn
+                        (espec.fp
+                          (da0fp0 las el))
+                        (grup.nom.fp
+                          (s.a.fp
+                            (grup.a.fp
+                              (aq0cp0 anteriores anterior))))))
+                    (Fc , ,))
+                  (coord
+                    (cc pero pero))
+                  (S.F.R
+                    (relatiu
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vmip3p0 sirven servir))
+                    (sp
+                      (prep
+                        (sps00 para para))
+                      (S.NF.C
+                        (infinitiu
+                          (vmn0000 reforzarlas reforzar))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 oferta oferta)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 total total)))
+        (s.a.fs
+          (grup.a.fs
+            (ncfs000 final final)))
+        (sp
+          (prep
+            (sps00 por por))
+          (sn
+            (espec.fp
+              (da0fp0 las el))
+            (grup.nom.fp
+              (ncfp000 frecuencias frecuencia)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (s.a.fs
+                      (grup.a.fs
+                        (ao0fs0 segunda segundo)))
+                    (ncfs000 fase fase)))))))))
+    (grup.verb
+      (vmip3s0 debe deber)
+      (infinitiu
+        (vmn0000 superar superar)))
+    (sn
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 precio precio)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 mínimo mínimo)))
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 oficial oficial)))
+        (S.NF.P
+          (participi
+            (aq0msp fijado fijado))
+          (sp
+            (prep
+              (sps00 en en))
+            (snn
+              (espec.mp
+                (Z 25,4 25.4))
+              (grup.nom.mp
+                (ncmp000 millones millón)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snn
+                    (grup.nom.mp
+                      (Zm dólares dólar))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 comienzo comienzo)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (s.a.fs
+                (grup.a.fs
+                  (ao0fs0 segunda segundo)))
+              (ncfs000 parte parte))))))
+    (grup.verb
+      (vsif3s0 será ser)
+      (vmp00sm comunicado comunicar))
+    (sadv
+      (grup.adv
+        (rg oficialmente oficialmente)))
+    (sadv
+      (grup.adv
+        (rg hoy hoy)))
+    (sp
+      (prep
+        (sps00 por por))
+      (sno
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (np0000o Comisión_de_Control Comisión_de_Control)
+          (S.F.R
+            (relatiu
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3s0 verifica verificar))
+            (S.F.C
+              (conj.subord
+                (cs que que))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 desarrollo desarrollo)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 subasta subasta))))))
+              (grup.verb
+                (vaip3s0 ha haber)
+                (vsp00sm sido ser))
+              (sa
+                (grup.a
+                  (aq0ms0 correcto correcto)))
+              (sp
+                (prep
+                  (sps00 hasta hasta))
+                (sadv
+                  (grup.adv
+                    (rg ahora ahora)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (vmip3s0 cifra cifrar)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 final final)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fp
+              (ncfp000 licencias licencia))))))
+    (grup.verb
+      (vmip3s0 depende depender))
+    (sp
+      (prep
+        (spcms del del))
+      (sn
+        (grup.nom.ms
+          (ncms000 número número)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (ncfp000 bandas banda)
+                (S.F.R
+                  (relatiu
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmsp3p0 acumulen acumular))
+                  (sn
+                    (espec.fp
+                      (da0fp0 las el))
+                    (grup.nom.fp
+                      (ncfp000 operadoras operadora))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn
+      (espec.mp
+        (da0mp0 Los el))
+      (grup.nom.mp
+        (s.a.mp
+          (grup.a.mp
+            (aq0cp0 restantes restante)))
+        (ncmp000 competidores competidor)
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (grup.nom
+              (np0000o Telefónica Telefónica))))))
+    (grup.verb
+      (vsip3p0 son ser))
+    (sn.x
+      (grup.nom.co
+        (grup.nom
+          (np0000o Mobilkom Mobilkom)
+          (sn
+            (Fc , ,)
+            (grup.nom.fs
+              (nccs000 filial filial))
+            (sp
+              (prep
+                (spcms del del))
+              (sno
+                (grup.nom.ms
+                  (ncms000 grupo grupo)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0cs0 dominante dominante)
+                      (sp
+                        (prep
+                          (sps00 en en))
+                        (sn
+                          (espec.ms
+                            (da0ms0 el el))
+                          (grup.nom.ms
+                            (ncms000 sector sector)
+                            (s.a.ms
+                              (grup.a.ms
+                                (aq0ms0 austriaco austriaco))))))))
+                  (sno
+                    (grup.nom.ms
+                      (np0000o Telekom_Austria Telekom_Austria))))))
+            (Fc , ,)))
+        (coord
+          (cc y y))
+        (grup.nom
+          (np0000o Hutchison Hutchison)
+          (S.F.R.co
+            (Fc , ,)
+            (relatiu
+              (pr0cn000 que que))
+            (S.F.R
+              (grup.verb
+                (vmip3s0 participa participar))
+              (sp
+                (prep
+                  (sps00 bajo bajo))
+                (sna
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 nombre nombre)
+                    (sno
+                      (grup.nom.ms
+                        (np0000o Hutchison_3G Hutchison_3G)))))))
+            (coord
+              (cc y y))
+            (S.F.R
+              (grup.verb
+                (vmip3s0 representa representar))
+              (sn
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (ncmp000 intereses interés)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0cs0 mayor mayor)))
+                        (ncms000 imperio imperio)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0cs0 empresarial empresarial)))
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 sureste sureste)
+                              (s.a.ms
+                                (grup.a.ms
+                                  (aq0ms0 asiático asiático))))))))))))))))
+    (INC
+      (S
+        (Fc , ,)
+        (sn.e *0*)
+        (grup.verb
+          (vmis3s0 ofreció ofrecer))
+        (snn
+          (espec.mp
+            (di0ms0 un uno)
+            (aq0cs0 total total)
+            (sps00 de de)
+            (Z 114 114))
+          (grup.nom.mp
+            (ncmp000 millones millón)
+            (sp
+              (prep
+                (sps00 de de))
+              (snn
+                (grup.nom.mp
+                  (Zm euros euro))))))
+        (sp
+          (prep
+            (sps00 por por))
+          (sn
+            (espec.fp
+              (dn0cp0 dos dos))
+            (grup.nom.fp
+              (ncfp000 bandas banda)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fp
+                    (ncfp000 frecuencias frecuencia)))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv
+      (grup.adv
+        (rg Asimismo asimismo))
+      (Fc , ,))
+    (grup.verb
+      (vsip3p0 son ser))
+    (sn
+      (grup.nom.mp
+        (ncmp000 adjudicatarios adjudicatario)))
+    (sn.x
+      (grup.nom.co
+        (grup.nom
+          (np0000o max._mobil max._mobil)
+          (sn
+            (Fc , ,)
+            (grup.nom.fs
+              (nccs000 filial filial)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sno
+                  (grup.nom
+                    (np0000o Deutsche_Telekom Deutsche_Telekom)))))))
+        (Fc , ,)
+        (grup.nom
+          (np0000o tele._ring tele._ring)
+          (S.F.R.co
+            (Fc , ,)
+            (relatiu
+              (pr0cn000 que que))
+            (S.F.R
+              (grup.verb
+                (vmip3s0 participa participar))
+              (sp.co
+                (sp
+                  (prep
+                    (sps00 bajo bajo))
+                  (sna
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (ncms000 nombre nombre)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sno
+                          (grup.nom.ms
+                            (np0000o Mannesmann_3G Mannesmann_3G)))))))
+                (coord
+                  (cc y y))
+                (sp
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 representación representación)
+                      (sp
+                        (prep
+                          (spcms del del))
+                        (sno
+                          (grup.nom.ms
+                            (ncms000 consorcio consorcio)
+                            (s.a.ms
+                              (grup.a.ms
+                                (aq00000 anglo-alemán anglo-alemán)))
+                            (sno
+                              (grup.nom.ms
+                                (np0000o Vodafone-Mannesmann Vodafone-Mannesmann))))))))))
+              (Fc , ,))
+            (coord
+              (cc y y))
+            (S.F.R
+              (grup.verb
+                (vmis3s0 ofreció ofrecer))
+              (sno
+                (grup.nom
+                  (np0000o One One)
+                  (S.F.R.co
+                    (Fc , ,)
+                    (S.F.R
+                      (relatiu
+                        (pr0cn000 que que))
+                      (grup.verb
+                        (vmip3s0 opera operar))
+                      (sp
+                        (prep
+                          (sps00 bajo bajo))
+                        (sna
+                          (espec.ms
+                            (da0ms0 el el))
+                          (grup.nom.ms
+                            (ncms000 nombre nombre)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sno
+                                (grup.nom.ms
+                                  (np0000o Connect_Austria Connect_Austria))))))))
+                    (coord
+                      (cc y y))
+                    (S.F.R
+                      (relatiu
+                        (pr0cn000 que que))
+                      (grup.verb
+                        (vmip3s0 pertenece pertenecer))
+                      (sp.co
+                        (sp
+                          (prep
+                            (sps00 a a))
+                          (sno
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (ncfs000 alemana alemana)
+                              (sno
+                                (grup.nom.fs
+                                  (np0000o E._ON E._ON))))))
+                        (Fc , ,)
+                        (sp
+                          (prep
+                            (sps00 a a))
+                          (sno
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (ncfs000 danesa danesa)
+                              (sno
+                                (grup.nom.fs
+                                  (np0000o Tele_Danmark Tele_Danmark))))))
+                        (Fc , ,)
+                        (sp
+                          (prep
+                            (spcms al al))
+                          (sno
+                            (grup.nom.ms
+                              (ncms000 grupo grupo)
+                              (s.a.ms
+                                (grup.a.ms
+                                  (aq0ms0 noruego noruego)))
+                              (sno
+                                (grup.nom.ms
+                                  (np0000o Telenor Telenor))))))
+                        (coord
+                          (cc y y))
+                        (sp
+                          (prep
+                            (spcms al al))
+                          (sno
+                            (grup.nom.ms
+                              (ncms000 austriaco austriaco)
+                              (sno
+                                (grup.nom.ms
+                                  (np0000o RHI RHI))))))))))))))))
+    (Fp . .)))

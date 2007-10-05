@@ -1,0 +1,577 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 sequedad sequedad)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 aire aire)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 ambiental ambiental))))))))
+    (grup.verb
+      (vsip3s0 es ser))
+    (sa-ATR
+      (espec
+        (rg muy mucho))
+      (grup.a
+        (aq0cs0 importante importante)))
+    (S.F.A-CC
+      (Fc , ,)
+      (conj.subord
+        (cs ya_que ya_que))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.ms
+            (dd0ms0 ese ese))
+          (grup.nom.ms
+            (ncms000 caso caso))))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 diferencia diferencia)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 presión presión))))
+          (sp
+            (prep
+              (sps00 entre entre))
+            (sn.co
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 cristal cristal)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 hielo hielo))))))
+              (coord
+                (cc y y))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 vapor vapor)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 agua agua))))))))))
+      (grup.verb
+        (vmip3s0 alcanza alcanzar))
+      (sn-CD
+        (espec.fs
+          (dp3cs0 su su))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 máxima máximo)))
+          (ncfs000 efectividad efectividad)))
+      (S.NF.A-CC
+        (Fc , ,)
+        (gerundi
+          (vmg0000 pudiéndose poder))
+        (S.NF.C-SUJ
+          (infinitiu
+            (vmn0000 producir producir))
+          (sn-CD
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 sublimación sublimación)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 originaria originario)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.mp
+                    (da0mp0 los el))
+                  (grup.nom.mp
+                    (ncmp000 copos copo)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (di0fs0 Otra otro))
+      (grup.nom.fs
+        (ncfs000 técnica técnica)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 diferente diferente)))))
+    (grup.verb
+      (vsip3s0 es ser))
+    (sn-ATR
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 cañón cañón)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 nieve nieve))))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 aire aire)
+              (S.NF.P
+                (participi
+                  (aq0msp comprimido comprimido))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.A-CC
+      (conj.subord
+        (cs Como como))
+      (sn-SUJ
+        (grup.nom.ms
+          (pd0ms000 éste este)))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vmip3s0 contiene contener))
+      (sn-CD
+        (grup.nom.ms
+          (ncms000 propulsor propulsor)))
+      (Fc , ,))
+    (grup.verb
+      (vaip3s0 hay haber)
+      (cs que que)
+      (infinitiu
+        (vmn0000 introducir introducir)))
+    (sn-CD.Q
+      (espec.fs
+        (di0fs0 una uno))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 mayor mayor)))
+        (ncfs000 cantidad cantidad)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 aire aire))))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (dp3cs0 su su))
+        (grup.nom.ms
+          (ncms000 sistema sistema)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (ncfp000 toberas tobera)))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 aire aire)
+          (sp
+            (prep
+              (sps00 a a))
+            (sn
+              (grup.nom.fs
+                (ncfs000 presión presión))))))
+      (neg-MOD
+        (rn no no))
+      (morf.pron
+        (p0300000 se él))
+      (grup.verb
+        (vmip3s0 aplica aplicar))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 producción producción)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 nieve nieve))))))))
+    (coord
+      (cc sino sino))
+    (S*
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.ms
+            (dp3cs0 su su))
+          (grup.nom.ms
+            (ncms000 equipo equipo)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 distribución distribución))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 desventaja desventaja)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (dd0fs0 esta este))
+              (grup.nom.fs
+                (ncfs000 técnica técnica))))))
+      (grup.verb
+        (vsip3s0 es ser))
+      (S.F.C-ATR
+        (conj.subord
+          (cs que que))
+        (morfema.verbal-PASS
+          (p0000000 se se))
+        (grup.verb
+          (vmip3s0 necesita necesitar))
+        (sn-SUJ
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (ncms000 edificio edificio)
+            (S.NF.R
+              (relatiu-CC
+                (pr000000 donde donde))
+              (infinitiu
+                (vmn0000 colocar colocar))
+              (sn.co-CD
+                (sn
+                  (espec.mp
+                    (da0mp0 los el))
+                  (grup.nom.mp
+                    (ncmp000 compresores compresor)))
+                (coord
+                  (cc y y))
+                (sn
+                  (espec.mp
+                    (da0mp0 los el))
+                  (grup.nom.mp
+                    (ncmp000 depósitos depósito)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 aire aire)
+                          (S.NF.P
+                            (participi
+                              (aq0msp comprimido comprimido))))))))))))))
+    (Fx ; ;)
+    (S
+      (sadv-CC
+        (grup.adv
+          (rg después después)))
+      (grup.verb
+        (vaip3s0 hay haber)
+        (cs que que)
+        (infinitiu
+          (vmn0000 instalar instalar)))
+      (sn-CD.Q
+        (espec.fp
+          (di0fp0 unas uno))
+        (grup.nom.fp
+          (ncfp000 conducciones conducción)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmsp3p0 introduzcan introducir))
+            (sn-CD
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 aire aire)
+                (S.NF.P
+                  (participi
+                    (aq0msp comprimido comprimido)))))
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 cañón cañón))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 caso caso)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 cañón cañón)
+                (sp
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 propulsión propulsión)))))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 proceso proceso)))
+    (grup.verb
+      (vsip3s0 es ser))
+    (sa-ATR
+      (espec
+        (rg mucho mucho)
+        (rg más más))
+      (grup.a
+        (aq0ms0 sencillo sencillo)))
+    (S.F.A.co-CC
+      (Fc , ,)
+      (conj.subord
+        (cs ya_que ya_que))
+      (S.F.A
+        (sn.e-SUJ *0*)
+        (morfema.verbal-PASS
+          (p0000000 se se))
+        (grup.verb
+          (vmip3s0 puede poder)
+          (infinitiu
+            (vmn0000 montar montar)))
+        (sp-CC
+          (prep
+            (sps00 sobre sobre))
+          (sn
+            (espec.ms
+              (di0ms0 un uno))
+            (grup.nom.ms
+              (ncms000 vehículo vehículo)
+              (sn
+                (espec.ms
+                  (di0ms0 todo todo))
+                (grup.nom.ms
+                  (ncms000 terreno terreno)))))))
+      (coord
+        (cc y y))
+      (S.F.A*
+        (grup.verb
+          (infinitiu
+            (vmn0000 transportarlo transportar)))
+        (sp-CC
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.ms
+              (di0cs0 cualquier cualquiera))
+            (grup.nom.ms
+              (ncms000 lugar lugar))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ns0 Lo el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 único único)))
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (morfema.verbal-PASS
+            (p0000000 se se))
+          (grup.verb
+            (vmip3s0 necesita necesitar)))))
+    (grup.verb
+      (vsip3s0 es ser))
+    (sn-ATR
+      (espec.fs
+        (di0fs0 una uno))
+      (grup.nom.fs
+        (ncfs000 toma toma)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 agua agua))))
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 cercana cercano)))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 pila pila)))
+    (grup.verb
+      (vmis3s0 comenzó comenzar)
+      (sps00 a a)
+      (infinitiu
+        (vmn0000 construirse construir)))
+    (snd-CC
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (W 16_de_noviembre [??:16/11/????:??.??])))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 pista pista)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 doble doble)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 squash squash))))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmii3s0 contaba contar))
+            (sp-CREG
+              (prep
+                (sps00 con con))
+              (sn
+                (espec.ms
+                  (di0ms0 un uno))
+                (grup.nom.ms
+                  (ncms000 balcón balcón))))
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.fs
+                  (dp3cs0 su su))
+                (grup.nom.fs
+                  (ncfs000 parte parte)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 superior superior))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (grup.nom.ms
+          (pi0cs000 Alguien alguien)))
+      (grup.verb
+        (vmis3s0 trazó trazar))
+      (sp-CC
+        (prep
+          (sps00 con con))
+        (sn
+          (grup.nom.fs
+            (ncfs000 tiza tiza))))
+      (sn-CD
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 marco marco)))
+      (sp-CC
+        (prep
+          (sps00 sobre sobre))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 suelo suelo)))))
+    (coord
+      (cc y y))
+    (S
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vmis3s0 colocó colocar))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (ao0fs0 primera primero)))
+          (ncfs000 fila fila)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 ladrillos ladrillo)))))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vsii3s0 Era ser))
+    (sn-ATR
+      (espec.fs
+        (dn0fs0 una uno))
+      (grup.nom.fs
+        (ncfs000 fila fila)
+        (S.NF.P.co
+          (S.NF.P
+            (participi
+              (aq0fsp muerta muerto)))
+          (Fc , ,)
+          (sp
+            (prep
+              (sps00 sin sin))
+            (sn
+              (grup.nom.ms
+                (ncms000 uranio uranio)))))))
+    (Fp . .)))

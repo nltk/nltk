@@ -1,0 +1,163 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 programa programa)))
+    (grup.verb
+      (vmip3s0 emet emetre))
+    (sn-CD
+      (grup.nom.1n
+        (np00000 Arafat_,_la_lluita_per_Palestina Arafat_,_la_lluita_per_Palestina)))
+    (INC
+      (S*
+        (Fpa -Fpa- -Fpa-)
+        (sn
+          (espec.ms
+            (da0ms0 El el))
+          (grup.nom.ms
+            (np00000 33 33)))
+        (sn
+          (Fc , ,)
+          (grup.nom
+            (W 23.25_hores [??:??/??/??:23.25])))
+        (Fpt -Fpt- -Fpt-)))
+    (sn.1c
+      (Fc , ,)
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 reportatge reportatge)
+        (sp
+          (prep
+            (sps00 sobre sobre))
+          (sn.co
+            (sn.co
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 vida vida)))
+              (coord
+                (cc i i))
+              (sn
+                (espec.fs
+                  (da0cs0 l' el))
+                (grup.nom.fs
+                  (ncfs000 evolució evolució))))
+            (sp.j
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (nccs000 líder líder)
+                  (s.a.ms
+                    (espec
+                      (rg més més))
+                    (grup.a.ms
+                      (aq0ms0 carismàtic carismàtic)))
+                  (sp
+                    (prep
+                      (spcmp dels del))
+                    (sn
+                      (grup.nom.mp
+                        (ncmp000 palestins palestí))))
+                  (sn
+                    (Fd : :)
+                    (grup.nom.ms
+                      (np00000 Iàssir_Arafat Iàssir_Arafat))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC.r
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 espai espai))))
+    (sn-CC.r
+      (grup.nom
+        (pp3cn000 hi hi)))
+    (grup.verb
+      (vmip3p0 participen participar))
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom.co
+          (grup.nom.mp
+            (ncmp000 amics amic))
+          (Fc , ,)
+          (grup.nom.mp
+            (ncmp000 companys company))
+          (coord
+            (cc i i))
+          (grup.nom.mp
+            (ncmp000 biògrafs biògraf)))
+        (sp.j
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.ms
+              (dd0ms0 aquest aquest))
+            (grup.nom.ms
+              (ncms000 personatge personatge)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 crucial crucial)
+                  (sp
+                    (prep
+                      (sps00 en en))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 història història)
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (sn
+                            (grup.nom.ms
+                              (np00000 Pròxim_Orient Pròxim_Orient))))))))))))
+        (sp.j
+          (Fc , ,)
+          (prep
+            (cs com com))
+          (sn.co
+            (sn
+              (grup.nom.ms
+                (np00000 Hanan_Aixraui Hanan_Aixraui)))
+            (Fc , ,)
+            (sn
+              (grup.nom.ms
+                (np00000 Shimon_Peres Shimon_Peres)))
+            (coord
+              (cc i i))
+            (sn
+              (espec.mp
+                (da0mp0 els el))
+              (grup.nom.mp
+                (ncmp000 exsecretaris exsecretari)
+                (sp
+                  (prep
+                    (sps00 d' de))
+                  (sn
+                    (grup.nom
+                      (np00000 Estat Estat))))
+                (sp
+                  (prep
+                    (spcmp dels del))
+                  (sn
+                    (grup.nom.mp
+                      (np00000 EUA EUA))))
+                (sn.x
+                  (grup.nom.co
+                    (grup.nom.ms
+                      (np00000 James_Baker James_Baker))
+                    (coord
+                      (cc i i))
+                    (grup.nom.ms
+                      (np00000 George_Shultz George_Shultz))))))))))
+    (Fp . .)))

@@ -1,0 +1,306 @@
+
+(
+  (S
+    (S.NF.A-CC
+      (gerundi
+        (vmg0000 Seguint seguir))
+      (sadv-MOD
+        (grup.adv
+          (rg potser potser)))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 moda moda)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (ncfp000 pel·lícules pel·lícula)
+                (sp
+                  (prep
+                    (cs com com))
+                  (sn
+                    (grup.nom.co
+                      (grup.nom
+                        (np00000 Hormigaz Hormigaz))
+                      (coord
+                        (cc o o))
+                      (grup.nom
+                        (np00000 Bichos Bichos))))))))))
+      (Fc , ,))
+    (sn-SUJ
+      (grup.nom
+        (np00000 La_noche_temática La_noche_temática)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (np00000 La_2 La_2))))))
+    (morf.pron
+      (p0300000 s' ell))
+    (grup.verb
+      (vmif3s0 internarà internar))
+    (sn-CCT
+      (sn
+        (grup.nom.ms
+          (W divendres [divendres:??/??/??:??.??])))
+      (sn.j
+        (grup.nom
+          (Fpa -Fpa- -Fpa-)
+          (W 22.30_hores [??:??/??/??:22.30])
+          (Fpt -Fpt- -Fpt-))))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 formiguer formiguer))))
+    (sp-CCL
+      (Fc , ,)
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (ao0ms0 primer primer)))
+          (ncms000 documental documental)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 programa programa))))
+          (sn
+            (Fc , ,)
+            (grup.nom
+              (np00000 La_ciudad_de_las_hormigas La_ciudad_de_las_hormigas))
+            (Fc , ,))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3s0 explica explicar))
+            (sn-CD
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 reacció reacció)
+                (sp
+                  (prep
+                    (sps00 d' de))
+                  (sn
+                    (espec.fs
+                      (di0fs0 una un))
+                    (grup.nom.fs
+                      (ncfs000 colònia colònia)
+                      (sp
+                        (prep
+                          (sps00 d' de))
+                        (sn
+                          (espec.mp
+                            (dd0mp0 aquests aquest))
+                          (grup.nom.mp
+                            (ncmp000 insectes insecte)))))))))
+            (sadv-CCL
+              (grup.adv
+                (rg davant davant)
+                (sp
+                  (prep
+                    (sps00 d' de))
+                  (sn
+                    (espec.fs
+                      (di0fs0 una un))
+                    (grup.nom.fs
+                      (ncfs000 catàstrofe catàstrofe)
+                      (S.F.R
+                        (relatiu-SUJ
+                          (pr0cn000 que que))
+                        (grup.verb
+                          (vmip3s0 amenaça amenaçar))
+                        (sp-CREG
+                          (prep
+                            (sps00 de de))
+                          (S.NF.C
+                            (infinitiu
+                              (vmn0000 destruir destruir))
+                            (sn-CD
+                              (espec.ms
+                                (dp3ms0 el_seu el_seu))
+                              (grup.nom.ms
+                                (ncms000 hàbitat hàbitat)
+                                (s.a.ms
+                                  (grup.a.ms
+                                    (aq0cs0 natural natural)))))))))))))))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (grup.nom.fs
+        (ncfs000 Imatge imatge)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 documental documental)
+              (sn
+                (grup.nom
+                  (np00000 La_ciudad_de_las_hormigas La_ciudad_de_las_hormigas))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 pel·lícula pel·lícula)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 nit nit))))))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sn-ATR
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 clàssic clàssic)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 ciència-ficció ciència-ficció))))
+        (S.NF.P
+          (participi
+            (aq0msp dirigit dirigit))
+          (sn-CCT
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (W any_1954 [??:??/??/1954:??.??])))
+          (sp-CAG
+            (prep
+              (sps00 per per))
+            (sn
+              (grup.nom.ms
+                (np00000 Gordon_Douglas Gordon_Douglas)))))))
+    (Fp . .)))
+(
+  (S
+    (morfema.verbal
+      (p0000000 Es es))
+    (grup.verb
+      (vmip3s0 tracta tractar))
+    (sp-CREG
+      (prep
+        (sps00 de de))
+      (sn
+        (grup.nom
+          (np00000 La_humanidad_en_peligro La_humanidad_en_peligro)
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3s0 narra narrar))
+            (sn-CD
+              (espec.fs
+                (da0cs0 l' el))
+              (grup.nom.fs
+                (ncfs000 aparició aparició)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fp
+                      (ncfp000 formigues formiga)
+                      (s.a.fp
+                        (grup.a.fp
+                          (aq0cp0 gegants gegant))))))
+                (sadv
+                  (grup.adv
+                    (rg arran arran)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (s.a.fs
+                            (grup.a.fs
+                              (ao0fs0 primera primer)))
+                          (ncfs000 explosió explosió)
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0fs0 atòmica atòmic)))
+                          (sp
+                            (prep
+                              (spcms al al))
+                            (sn
+                              (grup.nom.ms
+                                (ncms000 desert desert)
+                                (sp
+                                  (prep
+                                    (sps00 de de))
+                                  (sn
+                                    (grup.nom.ms
+                                      (s.a.ms
+                                        (grup.a.ms
+                                          (aq0ms0 Nou nou)))
+                                      (np00000 Mèxic Mèxic))))))))))))
+                (sn
+                  (espec.ms
+                    (da0cs0 l' el))
+                  (grup.nom.ms
+                    (W any_1945 [??:??/??/1945:??.??])))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 tancar tancar))
+        (sn-CD
+          (espec.ms
+            (dd0ms0 aquest aquest))
+          (grup.nom.ms
+            (ncms000 espai espai)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 monogràfic monogràfic)))))))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vmip3p0 ofereixen oferir))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 documentals documental)
+        (sn.x
+          (grup.nom.co
+            (grup.nom
+              (np00000 Insectos_en_sociedad Insectos_en_sociedad))
+            (coord
+              (cc i i))
+            (grup.nom
+              (np00000 Así_se_hizo_..._la_ciudad_de_las_hormigas Así_se_hizo_..._la_ciudad_de_las_hormigas))))))
+    (Fp . .)))

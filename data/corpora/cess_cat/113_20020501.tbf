@@ -1,0 +1,80 @@
+
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Amb amb))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 lema lema)
+          (sn
+            (grup.nom
+              (np00000 Immigrants_?_Gitanos_?_..._Ciutadans_! Immigrants_?_Gitanos_?_..._Ciutadans_!)))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 celebració celebració)))
+    (grup.verb
+      (vmif3s0 tindrà_lloc tenir_lloc))
+    (sn.x-CCT
+      (grup.nom.co
+        (coord
+          (spcms del del))
+        (grup.nom.ms
+          (W 3 [??:3/??/??:??.??]))
+        (coord
+          (spcms al al))
+        (grup.nom.ms
+          (W 5_de_maig [??:05/05/??:??.??]))))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (ncfs000 avinguda avinguda)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (np00000 Maria_Cristina Maria_Cristina)))))))
+    (Fp . .)))
+(
+  (S
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom.mp
+          (ncmp000 Concerts concert))
+        (Fc , ,)
+        (grup.nom.mp
+          (ncmp000 tallers taller)
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 informatius informatiu))))
+        (coord
+          (cc i i))
+        (grup.nom.mp
+          (ncmp000 debats debat))))
+    (grup.verb
+      (vsip3p0 són ser))
+    (sn-ATR
+      (grup.nom.fp
+        (pi0fp000 algunes algun)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (ncfp000 activitats activitat)
+              (S.NF.P
+                (participi
+                  (aq0fpp previstes previst))))))))
+    (Fp . .)))

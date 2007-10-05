@@ -1,0 +1,143 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np00000 Govern Govern)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 català català)))))
+    (grup.verb
+      (vmip3s0 creu creure))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fp
+          (di0fp0 unes un)
+          (Z 30.000 30000))
+        (grup.nom.fp
+          (ncfp000 persones persona)
+          (s.a.fp
+            (grup.a.fp
+              (aq0cp0 menors menor)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.mp
+                    (Z 65 65))
+                  (grup.nom.mp
+                    (ncmp000 anys any))))))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vaip3p0 van anar)
+              (vmn0000 estar estar))
+            (S.NF.P-ATR
+              (participi
+                (aq0fpp empresonades empresonat)))
+            (sp-CCT
+              (prep
+                (sps00 durant durant))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 franquisme franquisme))))
+            (sp-CC
+              (prep
+                (sps00 per per))
+              (sn
+                (grup.nom.fp
+                  (ncfp000 raons raó)
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0fp0 polítiques polític)))))))))
+      (grup.verb
+        (vmif3p0 demanaran demanar))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 indemnització indemnització)
+          (S.F.R
+            (relatiu-CD
+              (pr0cn000 que que))
+            (sn-SUJ
+              (espec.fs
+                (da0cs0 l' el))
+              (grup.nom.fs
+                (np00000 Administració Administració)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 catalana català)))))
+            (grup.verb
+              (vmif3s0 aprovarà aprovar))
+            (sadv-CCT
+              (grup.adv
+                (rg abans abans)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 final final)
+                      (sp
+                        (prep
+                          (sps00 d' de))
+                        (sn
+                          (grup.nom.ms
+                            (ncms000 any any)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (rg Més més)
+        (sps00 de de)
+        (Z 34.000 34000))
+      (grup.nom.mp
+        (ncmp000 presos pres)
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 polítics polític)))
+        (s.a.mp
+          (espec
+            (rg més més))
+          (grup.a.mp
+            (aq0cp0 grans gran)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.mp
+                  (Z 65 65))
+                (grup.nom.mp
+                  (ncmp000 anys any))))))))
+    (sadv-CCT
+      (grup.adv
+        (rg ja ja)))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 presentar presentar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 sol·licitud sol·licitud)))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 rebre rebre))
+        (sn-CD
+          (espec.fs
+            (dd0fs0 aquesta aquest))
+          (grup.nom.fs
+            (ncfs000 compensació compensació)))))
+    (Fp . .)))

@@ -1,0 +1,121 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 alcalde alcalde)
+        (sn
+          (Fc , ,)
+          (sn
+            (grup.nom.ms
+              (np00000 Josep_Pujadas Josep_Pujadas)))
+          (sn.j
+            (Fpa -Fpa- -Fpa-)
+            (grup.nom
+              (np00000 PSC PSC))
+            (Fpt -Fpt- -Fpt-))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 dipositar dipositar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 ofrena ofrena)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 floral floral)))))
+    (sp-CCL
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 monument monument)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3s0 recorda recordar))
+            (sn.co-CD
+              (sn.co
+                (sn
+                  (espec.mp
+                    (da0mp0 els el)
+                    (Z 224 224))
+                  (grup.nom.mp
+                    (ncmp000 veïns veí)
+                    (S.NF.P
+                      (participi
+                        (aq0mpp morts mort)))))
+                (coord
+                  (cc i i))
+                (sn
+                  (espec.mp
+                    (da0mp0 els el)
+                    (Z 165 165))
+                  (grup.nom.mp
+                    (ncmp000 ferits ferit))))
+              (sp.j
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 transcurs transcurs)
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 bombardeig bombardeig)
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0ms0 aeri aeri)))
+                          (sp
+                            (prep
+                              (spcms del del))
+                            (sn
+                              (grup.nom.ms
+                                (W 31_de_maig_de_1938 [??:31/5/1938:??.??])))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 atac atac))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vsn0000 ser ser)
+      (vmp00pm arrasats arrasar))
+    (sn-SUJ
+      (espec.mp
+        (Z 80 80))
+      (grup.nom.mp
+        (ncmp000 edificis edifici)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 centre centre)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 ciutat ciutat)))))))))
+    (Fp . .)))

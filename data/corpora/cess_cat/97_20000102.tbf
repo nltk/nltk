@@ -1,0 +1,154 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (ncfs000 assemblea assemblea)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.mp
+              (ncmp000 patrons patró))))
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom
+              (np00000 ESADE ESADE))))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm nomenat nomenar))
+    (sn-CD
+      (grup.nom.ms
+        (np00000 Joan_Josep_Brugera Joan_Josep_Brugera)))
+    (sn-CPRED.CD
+      (grup.nom.ms
+        (ncms000 president president)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (np00000 Patronat Patronat))))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0cs0 l' el))
+            (grup.nom.fs
+              (ncfs000 entitat entitat))))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (grup.nom.fs
+          (ncfs000 substitució substitució)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (np00000 Juan_Antonio_Delgado Juan_Antonio_Delgado)
+                (S.NF.P
+                  (Fc , ,)
+                  (participi
+                    (aq0msp mort mort))
+                  (sn-CCT
+                    (vmip3s0 fa fer)
+                    (di0mp0 uns un)
+                    (ncmp000 mesos mes)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Brugera Brugera)))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sn-ATR
+      (grup.nom.ms
+        (ncms000 conseller conseller)
+        (S.NF.P
+          (participi
+            (aq0msp delegat delegat)))))
+    (sp-CC
+      (prep
+        (sps00 d' de))
+      (sn
+        (grup.nom
+          (np00000 Inmobiliaria_Colonial Inmobiliaria_Colonial))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3s0 Ha haver)
+        (vsp00sm estat ser)
+        (vmp00sm vinculat vincular))
+      (sp-CC
+        (prep
+          (sps00 a a))
+        (sn
+          (grup.nom
+            (np00000 ESADE ESADE))))
+      (sp-CPRED.SUJ
+        (prep
+          (cs com_a com_a))
+        (sn
+          (grup.nom.ms
+            (ncms000 alumne alumne)))))
+    (Fc , ,)
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 acabar acabar))
+      (sn-CD
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (nccs000 màster màster)))
+      (sn-CCT
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (W 1968 [??:??/??/1968:??.??]))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3s0 ha haver)
+        (vsp00sm estat ser))
+      (sn-ATR
+        (grup.nom.ms
+          (ncms000 professor professor)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0cs0 l' el))
+              (grup.nom.fs
+                (ncfs000 àrea àrea)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 gestió gestió)
+                      (sp
+                        (prep
+                          (sps00 d' de))
+                        (sn
+                          (grup.nom.fs
+                            (ncfs000 empresa empresa)
+                            (s.a.fs
+                              (grup.a.fs
+                                (aq0fs0 bancària bancari)))))))))))))))
+    (Fp . .)))

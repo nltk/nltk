@@ -1,0 +1,167 @@
+
+(
+  (S.co
+    (Fe " ")
+    (S
+      (snp-SUJ
+        (grup.nom.ms
+          (np0000p Guga Guga)))
+      (grup.verb
+        (vmip3s0 viene venir)
+        (gerundi
+          (vmg0000 trabajando trabajar)))
+      (sp-CCT
+        (prep
+          (sps00 desde desde))
+        (sn
+          (vmip3s0 hace hacer)
+          (di0ms0 mucho mucho)
+          (ncms000 tiempo tiempo)))
+      (sp-CC
+        (prep
+          (sps00 para para))
+        (S.NF.C
+          (infinitiu
+            (vsn0000 ser ser))
+          (sn-ATR
+            (espec.ms
+              (di0ms0 un uno))
+            (grup.nom.ms
+              (ncms000 jugador jugador)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 completo completo)))))))
+      (Fc , ,))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (sadv-CCT
+        (grup.adv
+          (rg ya ya)))
+      (grup.verb
+        (vmip3s0 está estar))
+      (sadv-ATR
+        (espec
+          (rg muy mucho))
+        (grup.adv
+          (rg cerca cerca)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (dd0fs0 esa ese))
+              (grup.nom.fs
+                (ncfs000 meta meta)))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (sadv-CCT
+        (grup.adv
+          (rg Ahora ahora)))
+      (sn-SUJ
+        (grup.nom.ms
+          (pp3ms000 él él)))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vsip3s0 es ser))
+      (sn-ATR
+        (sadv.j
+          (grup.adv
+            (rg sólo sólo)))
+        (sn
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (ncms000 jugador jugador)
+            (s.a.ms
+              (espec
+                (rg más más))
+              (grup.a.ms
+                (aq0ms0 completo completo)))
+            (sp
+              (prep
+                (cs como como))
+              (sn
+                (espec.ms
+                  (di0ms0 un uno))
+                (grup.nom.ms
+                  (ncms000 jugador jugador)
+                  (s.a.ms
+                    (espec
+                      (rg más más))
+                    (grup.a.ms
+                      (aq0ms0 maduro maduro)))))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 agregó agregar))
+    (sn.e-SUJ *0*)
+    (Fp . .)))
+(
+  (S.co
+    (sp.j-CC
+      (prep
+        (sps00 Con con))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 victoria victoria)
+          (sp
+            (prep
+              (sps00 de de))
+            (sadv
+              (grup.adv
+                (rg hoy hoy))))))
+      (Fc , ,))
+    (S.co
+      (S
+        (snp-SUJ
+          (grup.nom.ms
+            (np0000p Kuerten Kuerten)))
+        (grup.verb
+          (vmis3s0 elevó elevar))
+        (sp-CC
+          (prep
+            (sps00 a a))
+          (sn
+            (grup.nom.mp
+              (pn0cp000 cinco cinco))))
+        (sn-CD
+          (espec.mp
+            (dp3cp0 sus su))
+          (grup.nom.mp
+            (ncmp000 triunfos triunfo)))
+        (sp-CCT
+          (prep
+            (sps00 en en))
+          (snd
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (W año_2000 [??:??/??/2000:??.??])))))
+      (coord
+        (cc y y))
+      (S*
+        (sp-CC
+          (prep
+            (sps00 a a))
+          (sn
+            (grup.nom.mp
+              (pn0cp000 diez diez))))
+        (sn-CD
+          (espec.mp
+            (dp3cp0 sus su))
+          (grup.nom.mp
+            (ncmp000 títulos título)))
+        (sp-CPRED.SUJ
+          (prep
+            (cs como como))
+          (sn
+            (grup.nom.ms
+              (nccs000 profesional profesional))))))
+    (Fp . .)))

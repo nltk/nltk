@@ -1,0 +1,332 @@
+
+(
+  (S
+    (sno-SUJ
+      (grup.nom
+        (np0000o Calafell Calafell)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm acomiadat acomiadar))
+    (sn-CC
+      (espec.fs
+        (dd0fs0 aquesta aquest))
+      (grup.nom.fs
+        (ncfs000 tarda tarda)))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 funeral funeral)
+          (S.NF.P
+            (participi
+              (aq0msp celebrat celebrat))
+            (sp-CC
+              (prep
+                (sps00 a a))
+              (snl
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 parròquia parròquia)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snl
+                      (grup.nom
+                        (np0000l Sant_Pere Sant_Pere))))))))))
+      (Fc , ,))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (S.F.R
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 qui qui))
+            (grup.verb
+              (vaip3s0 va anar)
+              (vsn0000 ser ser))
+            (sn-ATR
+              (grup.nom.ms
+                (ncms000 alcalde alcalde)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 municipi municipi))))))
+            (sn.co-CC
+              (coord
+                (sps00 entre entre))
+              (snd
+                (espec.mp
+                  (da0mp0 els el))
+                (grup.nom.mp
+                  (W anys_1963 [??:??/??/1963:??.??])))
+              (coord
+                (cc i i))
+              (snd
+                (grup.nom.mp
+                  (W 1975 [??:??/??/1975:??.??])))))
+          (snp.j
+            (Fc , ,)
+            (grup.nom.ms
+              (np0000p Antonio_Romeu_Gibert Antonio_Romeu_Gibert))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 exalcalde exalcalde)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 morir morir))
+    (sadv-CC
+      (grup.adv
+        (rg ahir ahir)))
+    (sp.co-CC
+      (sp
+        (prep
+          (spcmp als al))
+        (sn
+          (espec.mp
+            (Z 89 89))
+          (grup.nom.mp
+            (ncmp000 anys any)
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 edat edat)))))))
+      (Fc , ,)
+      (sp
+        (prep
+          (spcms al al))
+        (sn
+          (grup.nom.ms
+            (ncms000 domicili domicili)
+            (s.a.ms
+              (grup.a.ms
+                (aq0cs0 familiar familiar))))))
+      (coord
+        (cc i i))
+      (sp
+        (prep
+          (sps00 de de))
+        (sn
+          (grup.nom.fp
+            (ncfp000 causes causa)
+            (s.a.fp
+              (grup.a.fp
+                (aq0cp0 naturals natural)))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (sn
+          (grup.nom.ms
+            (ncms000 Pagès pagès)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 professió professió)))))
+          (Fc , ,))
+        (np0000p Antonio_Romeu Antonio_Romeu)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vsn0000 ser ser))
+    (sn-ATR
+      (grup.nom.ms
+        (ncms000 membre membre)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (di0cp0 diferents diferent))
+            (grup.nom.mp
+              (ncmp000 consistoris consistori)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0cs0 l' el))
+                  (grup.nom.fs
+                    (ncfs000 època època)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (espec.ms
+          (da0cs0 L' el))
+        (grup.nom.ms
+          (ncms000 exalcalde exalcalde)))
+      (coord
+        (cc i i))
+      (sn
+        (espec.ms
+          (dp3ms0 el_seu el_seu))
+        (grup.nom.ms
+          (ncms000 equip equip)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 regidors regidor)))))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 adquirir adquirir))
+    (sn-CD
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 terrenys terreny)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (sadv-CC
+                (sn.j
+                  (grup.nom.mp
+                    (ncmp000 anys any)))
+                (sadv
+                  (grup.adv
+                    (rg després després))))
+              (grup.verb
+                (vsic3s0 seria ser))
+              (sn-ATR
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 complex complex)
+                  (S.NF.P
+                    (participi
+                      (aq0msp format format))
+                    (sp-CC
+                      (prep
+                        (spcms pel pel))
+                      (sn.co
+                        (sn
+                          (grup.nom.ms
+                            (ncms000 pavelló pavelló)
+                            (s.a.ms
+                              (grup.a.ms
+                                (aq0ms0 poliesportiu poliesportiu)))
+                            (s.a.ms
+                              (grup.a.ms
+                                (aq0cs0 municipal municipal)))))
+                        (Fc , ,)
+                        (snl
+                          (espec.ms
+                            (da0ms0 el el))
+                          (grup.nom.ms
+                            (np0000l Teatre-Auditori Teatre-Auditori)
+                            (s.a.ms
+                              (grup.a.ms
+                                (aq0cs0 municipal municipal)))))
+                        (coord
+                          (cc i i))
+                        (sn
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (ncfs000 biblioteca biblioteca)
+                            (s.a.fs
+                              (grup.a.fs
+                                (aq0fs0 pública públic)))
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (snl
+                                (grup.nom
+                                  (np0000l Calafell Calafell))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (sadv-MOD
+      (grup.adv
+        (rg També també)))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 adquirir adquirir))
+    (sn-CD
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 terrenys terreny)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 actual actual)))
+              (ncms000 aparcament aparcament)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 públic públic)))
+              (S.NF.P
+                (participi
+                  (aq0msp situat situat))
+                (sp-CC
+                  (prep
+                    (spcms al al))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 costat costat)
+                      (sp
+                        (prep
+                          (spcms del del))
+                        (snl
+                          (grup.nom.ms
+                            (np0000l Mercat_Municipal_de_Calafell Mercat_Municipal_de_Calafell)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (di0fs0 Una un))
+      (grup.nom.fs
+        (ncfs000 plaça plaça)
+        (sp
+          (prep
+            (spcms al al))
+          (sn
+            (grup.nom.ms
+              (ncms000 nucli nucli)
+              (sp
+                (prep
+                  (sps00 de de))
+                (snl
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np0000l Platja_de_Calafell Platja_de_Calafell)))))))))
+    (grup.verb
+      (vmip3s0 porta portar))
+    (sn-CD
+      (espec.ms
+        (dp3ms0 el_seu el_seu))
+      (grup.nom.ms
+        (ncms000 nom nom)))
+    (Fp . .)))

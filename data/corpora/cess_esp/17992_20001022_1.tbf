@@ -1,0 +1,68 @@
+
+(
+  (S*
+    (sn
+      (grup.nom.ms
+        (ncms000 Árbitro árbitro)
+        (snp
+          (Fd : :)
+          (grup.nom.ms
+            (snp
+              (grup.nom.ms
+                (np0000p Mejuto_González Mejuto_González)))
+            (sno.j
+              (grup.nom.ms
+                (Fpa -Fpa- -Fpa-)
+                (np0000o Colegio_Asturiano Colegio_Asturiano)
+                (Fpt -Fpt- -Fpt-)))))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmis3s0 Mostró mostrar))
+    (sn-CD
+      (grup.nom.fs
+        (ncfs000 tarjeta tarjeta)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 amarilla amarillo)))))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (nccp000 visitantes visitante)
+          (sn.x
+            (grup.nom.co
+              (grup.nom.ms
+                (np0000p Baiano Baiano))
+              (Fc , ,)
+              (grup.nom.ms
+                (np0000p Angel Angel))
+              (coord
+                (cc y y))
+              (grup.nom.ms
+                (np0000p Samways Samways)))))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (grup.nom.fp
+        (ncfp000 Incidencias incidencia)
+        (S*
+          (Fd : :)
+          (sn
+            (espec.mp
+              (di0mp0 Unos uno)
+              (Z 32.000 32000))
+            (grup.nom.mp
+              (ncmp000 espectadores espectador)))
+          (sp
+            (prep
+              (sps00 en en))
+            (snl
+              (grup.nom
+                (np0000l San_Mamés San_Mamés)))))))))

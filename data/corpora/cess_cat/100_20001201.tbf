@@ -1,0 +1,140 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np00000 desperfecte desperfecte)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 afectar afectar))
+    (sp-CCT
+      (Fc , ,)
+      (prep
+        (sps00 a_partir_de a_partir_de))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 tarda tarda)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sadv
+              (grup.adv
+                (rg ahir ahir))))))
+      (Fc , ,))
+    (sn-CD
+      (espec.fp
+        (da0fp0 les el))
+      (grup.nom.fp
+        (ncfp000 comunicacions comunicació)
+        (s.a.fp
+          (grup.a.fp
+            (aq0cp0 internacionals internacional)))
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3p0 uneixen unir))
+          (sn.co-CD
+            (sn.co
+              (sn
+                (espec.mp
+                  (da0mp0 els el))
+                (grup.nom.mp
+                  (ncmp000 països país)
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0mp0 escandinaus escandinau)))))
+              (Fc , ,)
+              (sn
+                (grup.nom
+                  (np00000 Bèlgica Bèlgica)))
+              (Fc , ,)
+              (sn
+                (grup.nom
+                  (np00000 Holanda Holanda)))
+              (coord
+                (cc i i))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (np00000 Regne_Unit Regne_Unit))))
+            (sp.co.j
+              (sp
+                (prep
+                  (sps00 entre entre))
+                (sn
+                  (grup.nom.mp
+                    (pp3mp000 ells ell))))
+              (coord
+                (cc i i))
+              (sp
+                (prep
+                  (sps00 amb amb))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el)
+                    (ncfs000 resta resta)
+                    (sps00 de de))
+                  (grup.nom.mp
+                    (ncmp000 països país)
+                    (s.a.mp
+                      (grup.a.mp
+                        (aq0mp0 europeus europeu)))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 cable cable)))
+      (grup.verb
+        (vmip3s0 uneix unir))
+      (sn-CD
+        (grup.nom
+          (np00000 Londres Londres)))
+      (sp-CREG
+        (prep
+          (sps00 amb amb))
+        (sn
+          (grup.nom
+            (np00000 Brussel·les Brussel·les)))))
+    (coord
+      (cc i i))
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 trencament trencament)))
+      (morfema.verbal-PASS
+        (p0000000 es es))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 produir produir))
+      (sp-CCL
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 tram tram)
+            (S.NF.P
+              (participi
+                (aq0msp situat situat))
+              (sp-CREG
+                (prep
+                  (sps00 sota sota))
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (np00000 Canal_de_la_Mànega Canal_de_la_Mànega)))))))))
+    (Fp . .)))

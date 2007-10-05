@@ -1,0 +1,248 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 conseller conseller)
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (grup.nom.ms
+              (nccs000 cap cap))))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np00000 Generalitat Generalitat))))
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (np00000 Artur_Mas Artur_Mas))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm demanat demanar))
+    (sadv-CCT
+      (grup.adv
+        (rg avui avui)))
+    (sp-CCT
+      (prep
+        (sps00 durant durant))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 presentació presentació)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (np00000 Llibre_Blanc_de_les_Indústries_Culturals_de_Catalunya Llibre_Blanc_de_les_Indústries_Culturals_de_Catalunya)))))))
+    (S.F.C-CD
+      (Fc , ,)
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 sector sector)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 cultural cultural)))))
+      (grup.verb
+        (vmsp3s0 tingui tenir))
+      (sa-CPRED.CD
+        (grup.a
+          (aq0cs0 present present)))
+      (sn-CD.Q
+        (espec.fs
+          (dp3fs0 la_seva el_seu))
+        (grup.nom.fs
+          (ncfs000 dimensió dimensió)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 econòmica econòmic))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Mas Mas)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm assegurat assegurar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (morfema.verbal-PASS
+        (p0000000 s' es))
+      (grup.verb
+        (vaip3s0 ha haver)
+        (sps00 de de)
+        (infinitiu
+          (vmn0000 fer fer)))
+      (sn-SUJ
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 aposta aposta)))
+      (sp.co-CC
+        (sp.co
+          (sp
+            (prep
+              (sps00 per per))
+            (sn
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (ncfp000 indústries indústria)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0cp0 culturals cultural)))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom
+                      (np00000 Catalunya Catalunya)))))))
+          (coord
+            (cc i i))
+          (sp
+            (prep
+              (spcms pel pel))
+            (sn
+              (grup.nom.ms
+                (ncms000 català català)))))
+        (coord
+          (cc però però))
+        (sp
+          (neg.j
+            (rn no no))
+          (sadv.j
+            (grup.adv
+              (rg solament solament)))
+          (sp
+            (prep
+              (sps00 amb amb))
+            (sn
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (S.NF.P
+                  (participi
+                    (aq0fpp lligades lligat))
+                  (sp-CREG
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (espec.fs
+                        (dp1fsp la_nostra el_nostre))
+                      (grup.nom.fs
+                        (ncfs000 identitat identitat)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 conseller conseller)))
+    (sadv-MOD
+      (grup.adv
+        (rg també també)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm recordat recordar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sp-CC
+        (prep
+          (spcms a_través_del a_través_del))
+        (sn
+          (grup.nom.ms
+            (S.F.R
+              (relatiu-CD
+                (pr0cn000 que que))
+              (sn.e-SUJ *0*)
+              (grup.verb
+                (vmip3p0 aporten aportar)))))
+        (Fc , ,))
+      (S.F.C
+        (sadv-MOD
+          (grup.adv
+            (rg no_només no_només)))
+        (sn.e-SUJ *0*)
+        (morf.pron
+          (p010p000 ens jo))
+        (sn-CC
+          (grup.nom
+            (pp3cn000 hi hi)))
+        (grup.verb
+          (vmip1p0 juguem jugar))
+        (sn.x-CD
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.co
+            (grup.nom.fs
+              (ncfs000 part part)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 important important)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0cs0 l' el))
+                  (grup.nom.fs
+                    (ncfs000 activitat activitat)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 econòmica econòmic)))))))
+            (coord
+              (cc sinó sinó))
+            (grup.nom.fs
+              (ncfs000 part part)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 identitat identitat)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 col·lectiva col·lectiu)))
+                    (S.NF.P
+                      (participi
+                        (aq0fsp confrontada confrontat))
+                      (sadv-CCT
+                        (grup.adv
+                          (rg avui_dia avui_dia)))
+                      (sp-CREG
+                        (prep
+                          (sps00 amb amb))
+                        (sn.co
+                          (sn
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (ncfs000 globalització globalització)))
+                          (coord
+                            (cc i i))
+                          (sn
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (ncfs000 immigració immigració))))))))))))))
+    (Fp . .)))

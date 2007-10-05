@@ -1,0 +1,176 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (di0ms0 Un un)
+        (ncms000 total total)
+        (sps00 de de)
+        (Z 483 483))
+      (grup.nom.mp
+        (ncmp000 remers remer)))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 participar participar))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (ao0fs0 primera primer)))
+          (np00000 Regata_Internacional_de_Llagut_Català Regata_Internacional_de_Llagut_Català)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (morfema.verbal-PASS
+              (p0000000 es es))
+            (grup.verb
+              (vaip3s0 va anar)
+              (vmn0000 disputar disputar))
+            (sp-CCL
+              (prep
+                (sps00 en en))
+              (sn
+                (grup.nom.fp
+                  (ncfp000 aigües aigua)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (np00000 Port_de_Barcelona Port_de_Barcelona)))))))))))
+    (INC
+      (S
+        (Fpa -Fpa- -Fpa-)
+        (sp-CC
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 foto foto))))
+        (sn-SUJ
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (ncfp000 barques barca)))
+        (grup.verb
+          (vmip3p0 passen passar))
+        (sadv-CCL
+          (grup.adv
+            (rg davant davant)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.fp
+                  (np00000 Maremàgnum Maremàgnum))))))
+        (Fpt -Fpt- -Fpt-)))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 vencedors vencedor)))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (grup.nom.fs
+          (ncfs000 categoria categoria)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 sènior sènior)))
+          (s.a.fs.x
+            (grup.a.fs.co
+              (grup.a.fs
+                (aq0fs0 masculina masculí))
+              (coord
+                (cc i i))
+              (grup.a.fs
+                (aq0fs0 femenina femení)))))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vsn0000 ser ser))
+    (sn.co-ATR
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np00000 Reial_Club_Marítim Reial_Club_Marítim)))
+      (coord
+        (cc i i))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np00000 Club_Arenys_de_Mar Club_Arenys_de_Mar))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (spcms Al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 final final))))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 fer fer))
+    (sn-SUJ
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 demostració demostració)))
+    (sp-CREG
+      (prep
+        (sps00 d' de))
+      (sn
+        (grup.nom.fs
+          (pi0fs000 una un)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.fp
+                (dd0fp0 aquestes aquest))
+              (grup.nom.fp
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0fp0 històriques històric)))
+                (ncfp000 embarcacions embarcació)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0cp0 insubmergibles insubmergible)))
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmii3p0 tenien tenir))
+                  (sp-CPRED.CD
+                    (prep
+                      (sps00 com_a com_a))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 missió missió))))
+                  (sn-CD.Q
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (ncms000 salvament salvament)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.mp
+                            (ncmp000 nàufrags nàufrag)))))))))))))
+    (Fp . .)))

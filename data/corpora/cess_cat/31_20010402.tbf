@@ -1,0 +1,137 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (nccs000 aspirant aspirant)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (np00000 Perú_Posible Perú_Posible))))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 tornar tornar)
+      (sps00 a a)
+      (infinitiu
+        (vmn0000 repetir repetir)))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn.e-SUJ *0*)
+      (neg-MOD
+        (rn no no))
+      (sn-CD
+        (grup.nom
+          (pp3cn000 s' ell)))
+      (grup.verb
+        (vaip3s0 ha haver)
+        (vmp00sm drogat drogar))
+      (sn-CCT
+        (espec.fs
+          (di0cs0 cap cap))
+        (grup.nom.fs
+          (ncfs000 vegada vegada))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg A_més_a_més a_més_a_més))
+      (Fc , ,))
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 acusar acusar))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (nccs000 periodista periodista)))
+    (sp-CREG
+      (prep
+        (sps00 d' de))
+      (S.NF.C
+        (infinitiu
+          (van0000 haver haver)
+          (vmp00sm intentat intentar))
+        (S.NF.C-CD
+          (infinitiu
+            (vmn0000 extorsionar extorsionar))
+          (sn-CD
+            (grup.nom.ms
+              (pp3msa00 -lo ell))))
+        (S.F.A-CCT
+          (conj.subord
+            (cs quan quan))
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vmii3s0 investigava investigar))
+          (sn-CD
+            (espec.ms
+              (di0ms0 un un))
+            (grup.nom.ms
+              (ncms000 escàndol escàndol)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn.x
+                  (grup.nom.co
+                    (grup.nom.ms
+                      (ncms000 sexe sexe))
+                    (coord
+                      (cc i i))
+                    (grup.nom.fs
+                      (ncfs000 cocaïna cocaïna)))))
+              (S.F.R
+                (sn-CC
+                  (prep
+                    (sps00 en en))
+                  (relatiu
+                    (pr0cn000 què què)))
+                (morf.pron
+                  (p0300000 es ell))
+                (grup.verb
+                  (vaip3s0 va anar)
+                  (vmn0000 veure veure))
+                (S.NF.P-CPRED.SUJ
+                  (participi
+                    (aq0msp embolicat embolicat)))
+                (sn-SUJ
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 polític polític)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 eleccions elecció)
+        (s.a.fp
+          (grup.a.fp
+            (aq0cp0 presidencials presidencial)))))
+    (sp-CCL
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom
+          (np00000 Perú Perú))))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vmif3p0 celebraran celebrar))
+    (sn-CCT
+      (grup.nom.ms
+        (W diumenge [diumenge:??/??/??:??.??])
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 ve venir)))))
+    (Fp . .)))

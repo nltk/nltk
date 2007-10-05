@@ -1,0 +1,325 @@
+
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 Segons segons))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 sindicat sindicat)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 delegació delegació)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom
+              (np00000 Ensenyament Ensenyament))))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (grup.nom
+              (np00000 Lleida Lleida))))))
+    (Fe " ")
+    (grup.verb
+      (vsip3s0 és ser))
+    (sn-ATR
+      (espec.fs
+        (da0cs0 l' el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 única únic)))
+        (nccs000 responsable responsable)
+        (Fe " ")
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (ncms000 incompliment incompliment)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 normativa normativa)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0cs0 vigent vigent))))))
+              (sp
+                (prep
+                  (sps00 en_matèria_de en_matèria_de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 dotació dotació)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.mp
+                          (ncmp000 mestres mestre)
+                          (s.a.mp
+                            (grup.a.mp
+                              (aq0cp0 rurals rural))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.fs
+        (np00000 Mercè_Teixidó Mercè_Teixidó)
+        (sn
+          (Fc , ,)
+          (grup.nom.fs
+            (nccs000 responsable responsable)
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 sectorial sectorial)))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom
+                  (np00000 CCOO CCOO)))))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 afirmar afirmar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (S.F.C.co-CD
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sp-CCL
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 demarcació demarcació))))
+        (grup.verb
+          (vmip3p0 falten faltar))
+        (sn-SUJ
+          (espec.fp
+            (Z 12 12))
+          (grup.nom.fp
+            (ncfp000 places plaça)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 mestres mestre))))
+            (sp
+              (prep
+                (sps00 per per))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 cobrir cobrir)))
+              (Fc , ,)))))
+      (coord
+        (cc i i))
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (grup.nom.fp
+            (ncfp000 localitats localitat)
+            (sp
+              (prep
+                (cs com com))
+              (sn.co
+                (sn.co
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (np00000 Fuliola Fuliola)))
+                  (Fc , ,)
+                  (sn
+                    (grup.nom
+                      (np00000 Artesa_de_Lleida Artesa_de_Lleida)))
+                  (Fc , ,)
+                  (sn
+                    (grup.nom
+                      (np00000 Vinaixa Vinaixa)))
+                  (coord
+                    (cc i i))
+                  (sn
+                    (grup.nom
+                      (np00000 Salardú Salardú))))
+                (sp.j
+                  (Fc , ,)
+                  (prep
+                    (sps00 entre entre))
+                  (sp
+                    (prep
+                      (sps00 d' de))
+                    (sn
+                      (grup.nom.fp
+                        (pi0cp000 altres altre))))
+                  (Fc , ,))))))
+        (neg-MOD
+          (rn no no))
+        (grup.verb
+          (vmip3p0 disposen disposar))
+        (sp-CREG
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.ms
+              (da0cs0 suficient suficient))
+            (grup.nom.ms
+              (ncms000 personal personal))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.fs
+        (np00000 Teixidó Teixidó)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 acusar acusar))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 delegat delegat)
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (np00000 Ramon_Alturo Ramon_Alturo))
+          (Fc , ,))))
+    (sp-CREG
+      (prep
+        (sps00 d' de))
+      (s.a.fs.x
+        (grup.a.ms.co
+          (Fe " ")
+          (grup.a.ms
+            (aq0cs0 ineficaç ineficaç))
+          (coord
+            (cc i i))
+          (grup.a.ms
+            (aq0cs0 inoperant inoperant))
+          (Fe " "))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (neg-MOD
+          (rn no no))
+        (infinitiu
+          (vmn0000 dotar dotar))
+        (sp-CC
+          (prep
+            (sps00 amb amb))
+          (sn
+            (espec.mp
+              (da0mp0 els el))
+            (grup.nom.mp
+              (ncmp000 recursos recurs)
+              (S.NF.P
+                (participi
+                  (aq0mpp adequats adequat))))))
+        (sn-CD
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (ncms000 ensenyament ensenyament)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 públic públic)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Alturo Alturo)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 assegurar assegurar))
+    (sp-CCT
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 inici inici)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 curs curs)))))))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (ncfp000 classes classe)))
+      (grup.verb
+        (vaii3p0 havien haver)
+        (vmp00sm començat començar))
+      (sp-CCL
+        (prep
+          (sps00 a a))
+        (sn
+          (grup.nom
+            (np00000 Lleida Lleida))))
+      (sp-CC
+        (Fe " ")
+        (prep
+          (sps00 amb amb))
+        (sn
+          (grup.nom.ms
+            (ncms000 total total)
+            (ncfs000 normalitat normalitat)))
+        (Fe " ")))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom
+        (np00000 CCOO CCOO)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 dir dir))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (ncfs000 afirmació afirmació)))
+      (grup.verb
+        (vsii3s0 era ser))
+      (sn-ATR
+        (Fe " ")
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 miratge miratge))
+        (Fe " ")))
+    (Fp . .)))

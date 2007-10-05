@@ -1,0 +1,107 @@
+
+(
+  (S
+    (sn-SUJ
+      (sn
+        (grup.nom.ms
+          (np00000 Tim_Robbins Tim_Robbins)))
+      (sp.j
+        (Fpa -Fpa- -Fpa-)
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 foto foto)))
+        (Fpt -Fpt- -Fpt-)))
+    (grup.verb
+      (vmip3s0 encarna encarnar))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (s.a.ms.x
+          (grup.a.ms.co
+            (grup.a.ms
+              (aq0cs0 jove jove))
+            (coord
+              (cc i i))
+            (grup.a.ms
+              (aq0cs0 brillant brillant))))
+        (ncms000 banquer banquer)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vsip3s0 és ser)
+            (vmp00sm acusat acusar))
+          (sp-CREG
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (ncms000 assassinat assassinat)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn.co
+                    (sn
+                      (espec.fs
+                        (dp3fs0 la_seva el_seu))
+                      (grup.nom.fs
+                        (ncfs000 dona dona)))
+                    (coord
+                      (cc i i))
+                    (sn
+                      (espec.ms
+                        (dp3ms0 el_seu el_seu))
+                      (grup.nom.ms
+                        (ncms000 amant amant)))))))))))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (sn
+        (sn
+          (grup.nom
+            (np00000 Cadena_perpètua Cadena_perpètua)))
+        (S*.j
+          (Fpa -Fpa- -Fpa-)
+          (sn-CCL
+            (grup.nom
+              (np00000 TV-3 TV-3)))
+          (Fc , ,)
+          (sn-CCT
+            (grup.nom.ms
+              (W 21.20 [??:??/??/??:21.20])))
+          (Fpt -Fpt- -Fpt-))
+        (sn.j
+          (Fc , ,)
+          (grup.nom.ms
+            (ncms000 drama drama)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 carcerari carcerari)))
+            (S.NF.P
+              (participi
+                (aq0msp basat basat))
+              (sp-CREG
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.fs
+                    (di0fs0 una un))
+                  (grup.nom.fs
+                    (ncfs000 novel·la novel·la)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0cs0 original original)))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.ms
+                          (np00000 Stephen_King Stephen_King))))))))))))
+    (Fp . .)))

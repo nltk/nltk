@@ -1,0 +1,265 @@
+
+(
+  (S
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (np0000o Policia_Nacional Policia_Nacional)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm desallotjat desallotjar))
+    (sp-CC
+      (prep
+        (sps00 sense sense))
+      (sn
+        (grup.nom.mp
+          (ncmp000 incidents incident))))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una un)
+        (di0fs0 altra altre))
+      (grup.nom.fs
+        (ncfs000 casa casa)
+        (s.a.fs
+          (grup.a.fs
+            (Fz ' ')
+            (aq0cs0 okupa okupa)
+            (Fz ' ')))
+        (sp
+          (prep
+            (spcms del del))
+          (snl
+            (grup.nom.ms
+              (ncms000 barri barri)
+              (sp
+                (prep
+                  (spcms del del))
+                (snl
+                  (grup.nom.ms
+                    (np0000l Guinardó Guinardó)))))))))
+    (sn-CCT
+      (espec.ms
+        (dd0ms0 aquest aquest))
+      (grup.nom.ms
+        (ncms000 matí matí)))
+    (S.F.A-AO
+      (Fc , ,)
+      (conj.subord
+        (cs segons segons))
+      (grup.verb
+        (vaip3p0 han haver)
+        (vmp00sm informat informar))
+      (sn-SUJ
+        (grup.nom.fp
+          (ncfp000 fonts font)
+          (s.a.fp
+            (grup.a.fp
+              (aq0cp0 policials policial))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 desallotjament desallotjament)))
+      (morf.pron
+        (p0300000 s' ell))
+      (grup.verb
+        (vaip3s0 ha haver)
+        (vmp00sm produït produir))
+      (sp-CCL
+        (prep
+          (spcms al al))
+        (snl
+          (grup.nom.ms
+            (ncms000 passatge passatge)
+            (snl
+              (grup.nom
+                (np0000l Flaugier Flaugier)))
+            (snn
+              (grup.nom.ms
+                (ncms000 número número)
+                (snn
+                  (grup.nom
+                    (Z 49 49)))))
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Barcelona Barcelona)))))))
+      (sp-CCT
+        (prep
+          (sps00 a a))
+        (snd
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (W 9_del_matí [??:??/??/??:09.00]))))
+      (Fc , ,))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (morf.pron
+        (p0300000 s' ell))
+      (grup.verb
+        (vaip3s0 ha haver)
+        (vmp00sm acabat acabar))
+      (sadv-CCT
+        (grup.adv
+          (rg abans abans)
+          (sp
+            (prep
+              (sps00 de de))
+            (snd
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (W 10 [??:10/??/??:??.??])))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (nccs000 policia policia)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm indicat indicar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (neg-MOD
+        (rn no no))
+      (morf.pron
+        (pp3cn000 hi hi))
+      (grup.verb
+        (vaii3s0 havia haver))
+      (sn-CD.Q
+        (grup.nom.fs
+          (ncfs000 gent gent)))
+      (sp-CCL
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (ncms000 interior interior)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 casa casa))))))))
+    (Fp . .)))
+(
+  (S
+    (morfema.verbal-PASS
+      (p0000000 Es es))
+    (grup.verb
+      (vmip3s0 dóna donar))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 circumstància circumstància)
+        (S.F.C.co
+          (conj.subord
+            (cs que que))
+          (S.F.C
+            (sn-CCT
+              (grup.nom.ms
+                (ncmn000 dimarts dimarts)
+                (S.NF.P
+                  (participi
+                    (aq0msp passat passat)))))
+            (morfema.verbal-PASS
+              (p0000000 s' es))
+            (grup.verb
+              (vaii3s0 havia haver)
+              (sps00 de de)
+              (infinitiu
+                (vmn0000 dur_a_terme dur_a_terme)))
+            (sn-SUJ
+              (espec.ms
+                (di0ms0 un un)
+                (di0ms0 altre altre))
+              (grup.nom.ms
+                (ncms000 desallotjament desallotjament)))
+            (sp-CCL
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 zona zona)
+                  (sp
+                    (Fc , ,)
+                    (prep
+                      (spcms al al))
+                    (snl
+                      (grup.nom.ms
+                        (ncms000 districte districte)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (snl
+                            (grup.nom
+                              (np0000l Gràcia Gràcia))))))))))
+            (Fc , ,))
+          (coord
+            (cc però però))
+          (S.F.C
+            (sn.e-SUJ *0*)
+            (neg-MOD
+              (rn no no))
+            (morfema.verbal-PASS
+              (p0000000 es es))
+            (grup.verb
+              (vaip3s0 va anar)
+              (vmn0000 fer fer))
+            (sadv-CCT
+              (grup.adv
+                (rg després després)
+                (S.F.C
+                  (conj.subord
+                    (cs que que))
+                  (sn-SUJ
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 comissió comissió)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0cs0 judicial judicial)))))
+                  (grup.verb
+                    (vmsi3s0 acordés acordar))
+                  (sn-CD
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 suspensió suspensió)))
+                  (sp-CC
+                    (prep
+                      (sps00 per per))
+                    (sp
+                      (prep
+                        (sps00 a a))
+                      (sn
+                        (espec.ms
+                          (di0ms0 un un))
+                        (grup.nom.ms
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0ms0 nou nou)))
+                          (ncms000 emplaçament emplaçament))))))))))))
+    (Fp . .)))

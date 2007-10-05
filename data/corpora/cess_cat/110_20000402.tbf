@@ -1,0 +1,160 @@
+
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 director director)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 general general)))
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 grup grup)
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vmip3s0 fabrica fabricar))
+                (sn-CD
+                  (espec.fp
+                    (da0fp0 les el))
+                  (grup.nom.fp
+                    (nccp000 peces peça)
+                    (sn.x
+                      (grup.nom.co
+                        (grup.nom
+                          (np0000o Lois Lois))
+                        (coord
+                          (cc i i))
+                        (grup.nom
+                          (np0000o Cimarron Cimarron))))))))))
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (np0000p Vicente_Sáez-Merino Vicente_Sáez-Merino))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm anunciat anunciar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 decisió decisió)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 firma firma))))
+        (sp
+          (prep
+            (sps00 d' de))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 invertir invertir))
+            (sn-CD
+              (espec.mp
+                (Z 700 700))
+              (grup.nom.mp
+                (ncmp000 milions milió)))
+            (sn-CCT
+              (espec.ms
+                (dd0ms0 aquest aquest))
+              (grup.nom.ms
+                (ncms000 any any)))
+            (sp-CC
+              (prep
+                (sps00 per per))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 poder poder)
+                  (infinitiu
+                    (vmn0000 incrementar incrementar)))
+                (sn-CD
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 producció producció)
+                    (sp
+                      (prep
+                        (sps00 per per))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 exportació exportació))))
+                    (S.F.R
+                      (Fc , ,)
+                      (relatiu-SUJ
+                        (pr0cn000 que que))
+                      (sadv-CCT
+                        (grup.adv
+                          (rg ja ja)))
+                      (grup.verb
+                        (vmip3s0 representa representar))
+                      (snn-CD
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (Zp 62% 62/100)
+                          (sp
+                            (prep
+                              (spcms del del))
+                            (sn
+                              (grup.nom.ms
+                                (ncms000 total total)
+                                (sp
+                                  (prep
+                                    (sps00 de de))
+                                  (sn
+                                    (grup.nom.fs
+                                      (ncfs000 facturació facturació)
+                                      (sp
+                                        (prep
+                                          (spcms del del))
+                                        (sn
+                                          (grup.nom.ms
+                                            (ncms000 grup grup)))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (dd0fs0 Aquesta aquest))
+      (grup.nom.fs
+        (ncfs000 expansió expansió)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 internacional internacional)))))
+    (sadv-MOD
+      (grup.adv
+        (rg també també)))
+    (grup.verb
+      (vmif3s0 farà fer))
+    (sa-CPRED.CD
+      (grup.a
+        (aq0cs0 possible possible)))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 convertir convertir))
+      (sp-CREG
+        (prep
+          (sps00 en en))
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 fixos fix))))
+      (sn-CD
+        (espec.mp
+          (Z 209 209))
+        (grup.nom.mp
+          (ncmp000 treballadors treballador)
+          (s.a.mp
+            (grup.a.mp
+              (aq0cp0 temporals temporal))))))
+    (Fp . .)))

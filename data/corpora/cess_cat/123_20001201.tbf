@@ -1,0 +1,796 @@
+
+(
+  (S
+    (sno-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (ncfs000 empresa empresa)
+        (sno
+          (grup.nom
+            (np0000o Transports_Metropolitans_de_Barcelona Transports_Metropolitans_de_Barcelona)
+            (sno
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (np0000o TMB TMB)
+                (Fpt -Fpt- -Fpt-)))))))
+    (grup.verb
+      (vmip3s0 està estar))
+    (S.NF.P-ATR
+      (participi
+        (aq0fsp disposada disposat))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 resoldre resoldre))
+          (sp-CC
+            (prep
+              (sps00 amb amb))
+            (sn
+              (grup.nom.mp
+                (ncmp000 acomiadaments acomiadament))))
+          (sn-CD
+            (espec.mp
+              (da0mp0 els el))
+            (grup.nom.mp
+              (ncmp000 expedients expedient)
+              (S.NF.P
+                (participi
+                  (aq0mpp oberts obert)))
+              (sp
+                (prep
+                  (spcmp pels pel))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 incidents incident)
+                    (S.NF.P
+                      (participi
+                        (aq0mpp produïts produït))
+                      (sp-CCT
+                        (prep
+                          (sps00 durant durant))
+                        (sn
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (ncfs000 vaga vaga)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (espec.fs
+                                  (da0fs0 la el))
+                                (grup.nom.fs
+                                  (ncfs000 setmana setmana)
+                                  (S.NF.P
+                                    (participi
+                                      (aq0fsp passada passat))))))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 Els el))
+        (grup.nom.mp
+          (ncmp000 conductors conductor)
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3p0 tenen tenir))
+            (S.NF.P-CPRED.CD
+              (participi
+                (aq0fsp convocada convocat)))
+            (sn-CD.Q
+              (espec.fs
+                (di0fs0 una un))
+              (grup.nom.fs
+                (ncfs000 aturada aturada)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snd
+                    (espec.mp
+                      (Z 17 17))
+                    (grup.nom.mp
+                      (ncmp000 dies dia))))))
+            (sp-CCT
+              (prep
+                (sps00 al_llarg_de al_llarg_de))
+              (sn
+                (espec.fp
+                  (di0fp0 totes tot)
+                  (da0fp0 les el))
+                (grup.nom.fp
+                  (ncfp000 festes festa)
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0fp0 nadalenques nadalenc))))))
+            (Fc , ,))))
+      (grup.verb
+        (vaip3p0 van anar)
+        (vmn0000 tornar tornar)
+        (sps00 a a)
+        (infinitiu
+          (vmn0000 sortir sortir)))
+      (sadv-CCT
+        (grup.adv
+          (rg ahir ahir)))
+      (sp-CCL
+        (prep
+          (spcms al al))
+        (sn
+          (grup.nom.ms
+            (ncms000 carrer carrer)))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3p0 van anar)
+        (vmn0000 tallar tallar))
+      (sn-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 trànsit trànsit)))
+      (sp-CCL
+        (prep
+          (sps00 a a))
+        (sn.co
+          (snl
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 plaça plaça)
+              (sp
+                (prep
+                  (sps00 de de))
+                (snl
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np0000l Universitat Universitat))))))
+          (Fc , ,)
+          (snl
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000l Via_Laietana Via_Laietana)))
+          (coord
+            (cc i i))
+          (snl
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000l Rambla Rambla))))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (grup.nom.fs
+        (ncfs000 Protesta protesta)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.mp
+              (ncmp000 conductors conductor))))
+        (sp
+          (prep
+            (sps00 durant durant))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 vaga vaga))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sp-CCT
+        (prep
+          (sps00 Durant durant))
+        (sn
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs
+            (ncfs000 concentració concentració)
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (espec.mp
+                  (di0mp0 uns un)
+                  (Z 150 150))
+                (grup.nom.mp
+                  (ncmp000 treballadors treballador))))
+            (sp
+              (prep
+                (sps00 a a))
+              (snl
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 plaça plaça)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snp
+                      (grup.nom
+                        (np0000p Sant_Jaume Sant_Jaume)))))))))
+        (Fc , ,))
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (nccp000 representants representant)))
+      (grup.verb
+        (vaip3p0 van anar)
+        (vmn0000 demanar demanar))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 entrevista entrevista)
+          (sp
+            (prep
+              (sps00 amb amb))
+            (snp
+              (grup.nom.ms
+                (np0000p Joan_Clos Joan_Clos))))))
+      (Fc , ,))
+    (coord
+      (cc però però))
+    (S
+      (sn.e-SUJ *0*)
+      (neg-MOD
+        (rn no no))
+      (sn-CI
+        (grup.nom.p
+          (pp3cp000 els ell)))
+      (sn-CD
+        (grup.nom.fs
+          (pp3fsa00 la ell)))
+      (grup.verb
+        (vaip3p0 van anar)
+        (vmn0000 concedir concedir)))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Francisco_Mena Francisco_Mena)
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (nccs000 responsable responsable)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 secció secció)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 sindical sindical))))))
+            (sp
+              (prep
+                (sps00 de de))
+              (sno
+                (grup.nom
+                  (np0000o CCOO CCOO)))))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 atribuir atribuir))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom.fp
+          (Fe " ")
+          (ncfp000 ordres ordre)
+          (S.NF.P
+            (participi
+              (aq0fpp donades donat))
+            (sp-CAG
+              (prep
+                (sps00 per per))
+              (sn
+                (espec.fs
+                  (da0cs0 l' el))
+                (grup.nom.fs
+                  (ncfs000 alcaldia alcaldia)))))
+          (Fe " "))))
+    (sn-CD
+      (espec.ms
+        (dd0ms0 aquest aquest))
+      (grup.nom.ms
+        (Fe " ")
+        (ncms000 enduriment enduriment)
+        (Fe " ")
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 postura postura)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sno
+                  (grup.nom
+                    (np0000o TMB TMB)))))))))
+    (S.F.A-AO
+      (Fc , ,)
+      (conj.subord
+        (cs segons segons))
+      (grup.verb
+        (vmip3s0 informa informar))
+      (sno-SUJ
+        (grup.nom
+          (np0000o Europa_Press Europa_Press))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 xofers xofer)
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (sp-CCT
+            (prep
+              (sps00 fins fins))
+            (sadv
+              (grup.adv
+                (rg ara ara))))
+          (grup.verb
+            (vmii3p0 tenien tenir))
+          (sn-CD.Q
+            (espec.ms
+              (di0ms0 un un))
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 sol sol)))
+              (ncms000 dia dia)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 descans descans))))))
+          (sn-CCT
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 cap cap)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 setmana setmana))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmip3p0 exigeixen exigir))
+    (sn.co-CD
+      (sn.co
+        (sn
+          (espec.mp
+            (Z 16 16))
+          (grup.nom.mp
+            (ncmp000 caps cap)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 setmana setmana))))
+            (s.a.mp
+              (grup.a.mp
+                (aq0mp0 complets complet)))
+            (s.a.mp
+              (grup.a.mp
+                (aq0cp0 lliures lliure)))
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.ms
+                  (da0cs0 l' el))
+                (grup.nom.ms
+                  (ncms000 any any))))))
+        (coord
+          (cc i i))
+        (sn
+          (espec.fp
+            (Z 16 16))
+          (grup.nom.fp
+            (ncfp000 lliurances lliurança)
+            (sadv
+              (grup.adv
+                (rg més més))))))
+      (sp.j
+        (Fc , ,)
+        (prep
+          (sps00 entre entre))
+        (sn
+          (espec.fp
+            (di0cp0 altres altre))
+          (grup.nom.fp
+            (ncfp000 reivindicacions reivindicació)))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (ncfs000 empresa empresa)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 oferir oferir))
+    (sn-CD
+      (espec.mp
+        (Z 12 12))
+      (grup.nom.mp
+        (ncmp000 caps cap)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 setmana setmana))))
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 festius festiu)))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sno-SUJ
+        (grup.nom
+          (np0000o EXPEDIENTS_TMB EXPEDIENTS_TMB)))
+      (grup.verb
+        (vaip3s0 ha haver)
+        (vmp00sm obert obrir))
+      (sn-CD
+        (espec.mp
+          (dn0cp0 nou nou))
+        (grup.nom.mp
+          (ncmp000 expedients expedient)))
+      (sp-CI
+        (prep
+          (sps00 a a))
+        (sn
+          (grup.nom.mp
+            (ncmp000 treballadors treballador))))
+      (sp-CC
+        (prep
+          (sps00 per per))
+        (sn
+          (grup.nom.ms
+            (ncms000 incompliment incompliment)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 serveis servei)
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0mp0 mínims mínim))))))))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (sn-CD.d
+        (grup.nom
+          (pp3cn000 n' en)))
+      (grup.verb
+        (vmif3s0 incoarà incoar))
+      (sn-CD.d
+        (grup.nom
+          (rg més més)))
+      (S.F.ACond-AO
+        (conj.subord
+          (cs si si))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmip3s0 pot poder)
+          (infinitiu
+            (vmn0000 identificar identificar)))
+        (sn.co-CD
+          (sn
+            (espec.mp
+              (da0mp0 els el))
+            (grup.nom.mp
+              (ncmp000 autors autor)
+              (sp
+                (prep
+                  (spcmp dels del))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 danys dany)
+                    (S.F.R
+                      (relatiu-CD
+                        (pr0cn000 que que))
+                      (grup.verb
+                        (vaip3p0 van anar)
+                        (vmn0000 rebre rebre))
+                      (sn-SUJ
+                        (espec.mp
+                          (Z 20 20))
+                        (grup.nom.mp
+                          (ncmp000 vehicles vehicle))))
+                    (sn
+                      (Fg - -)
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 trencament trencament)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom.mp
+                                (ncmp000 vidres vidre))))))
+                      (sadv.j
+                        (Fc , ,)
+                        (grup.adv
+                          (rg sobretot sobretot)))
+                      (Fg - -)))))))
+          (coord
+            (cc i i))
+          (sn
+            (espec.mp
+              (da0mp0 els el))
+            (grup.nom.mp
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 qui qui))
+                (grup.verb
+                  (vaip3p0 van anar)
+                  (vmn0000 llançar llançar))
+                (sn-CD
+                  (grup.nom.mp
+                    (ncmp000 ous ou)))
+                (sp-CC
+                  (prep
+                    (sps00 contra contra))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 seu seu)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.fs
+                            (da0cs0 l' el))
+                          (grup.nom.fs
+                            (ncfs000 empresa empresa)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 direcció direcció)))
+    (grup.verb
+      (vmip3s0 està estar))
+    (S.NF.P-ATR
+      (participi
+        (aq0fsp disposada disposat))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 despatxar despatxar))
+          (sn-CD
+            (grup.nom.mp
+              (ncmp000 treballadors treballador))))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 cas cas)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (ncfp000 faltes falta)
+                (s.a.fp
+                  (espec
+                    (rg més més))
+                  (grup.a.fp
+                    (aq0cp0 greus greu)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (espec.fs
+          (da0cs0 L' el))
+        (grup.nom.fs
+          (ncfs000 empresa empresa)))
+      (coord
+        (cc i i))
+      (sn
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (ncmp000 conductors conductor))))
+    (grup.verb
+      (vmip3p0 intercanvien intercanviar))
+    (sn-CD
+      (grup.nom.fp
+        (ncfp000 acusacions acusació)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.ms
+              (ncms000 immobilisme immobilisme))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (ao0fs0 primera primer)))))
+    (grup.verb
+      (vmip3s0 diu dir))
+    (S.F.C.co-CD
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn.e-SUJ *0*)
+        (neg-MOD
+          (rn no no))
+        (grup.verb
+          (vmip3s0 troba trobar))
+        (sn-CD
+          (grup.nom.mp
+            (ncmp000 interlocutors interlocutor)
+            (s.a.mp
+              (grup.a.mp
+                (aq0mp0 vàlids vàlid)))))
+        (sp-CCL
+          (prep
+            (spcms al al))
+          (sn
+            (grup.nom.ms
+              (ncms000 comitè comitè))))
+        (INC
+          (S
+            (Fg - -)
+            (sn-SUJ
+              (espec.fs
+                (da0cs0 l' el))
+              (grup.nom.fs
+                (ncfs000 assemblea assemblea)))
+            (grup.verb
+              (vaip3s0 va anar)
+              (vmn0000 desautoritzar desautoritzar))
+            (snd-CCT
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (W 21_de_novembre [??:21/11/??:??.??])))
+            (sp-CCT
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 matinada matinada))))
+            (sn-CD
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (ncms000 acord acord)
+                (sp
+                  (prep
+                    (sps00 per per))
+                  (S.NF.C
+                    (infinitiu
+                      (vmn0000 desconvocar desconvocar))
+                    (sn-CD
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 vaga vaga)
+                        (S.F.R
+                          (relatiu-CD
+                            (pr0cn000 que que))
+                          (snd-CCT
+                            (espec.ms
+                              (da0ms0 el el))
+                            (grup.nom.ms
+                              (W dia_17 [??:17/??/??:??.??])))
+                          (grup.verb
+                            (vaii3p0 havien haver)
+                            (vmp00sm firmat firmar))
+                          (sn-SUJ
+                            (sn
+                              (espec.mp
+                                (di0mp0 tots tot)
+                                (da0mp0 els el))
+                              (grup.nom.mp
+                                (ncmp000 sindicats sindicat)))
+                            (sp.j
+                              (prep
+                                (sps00 menys menys))
+                              (sno
+                                (espec.ms
+                                  (da0ms0 el el))
+                                (grup.nom.ms
+                                  (s.a.ms
+                                    (grup.a.ms
+                                      (aq0ms0 minoritari minoritari)))
+                                  (np0000o CGT CGT))))))))))))
+            (Fg - -))))
+      (coord
+        (cc i i))
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (grup.nom.ms
+            (pi0cs000 ningú ningú)))
+        (grup.verb
+          (vaip3s0 ha haver)
+          (vmp00sm respost respondre))
+        (sp-CREG
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fp
+              (dp3fp0 les_seves el_seu))
+            (grup.nom.fp
+              (ncfp000 invitacions invitació)
+              (sp
+                (prep
+                  (sps00 a a))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 negociar negociar))))
+              (s.a.fp
+                (grup.a.fp
+                  (aq0cp0 posteriors posterior)
+                  (sp
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 vaga vaga)))))))))))
+    (Fp . .)))

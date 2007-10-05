@@ -1,0 +1,638 @@
+
+(
+  (S
+    (sna-SUJ
+      (espec.mp
+        (da0mp0 Los el))
+      (grup.nom.mp
+        (np0000a Juegos_Paralímpicos_de_Sydney Juegos_Paralímpicos_de_Sydney)))
+    (grup.verb
+      (vaip3p0 han haber)
+      (vmp00sm levantado levantar))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un uno))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 gran gran)))
+        (ncms000 interés interés)
+        (sp
+          (prep
+            (sps00 entre entre))
+          (sn
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (ncmp000 ciudadanos ciudadano)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 ciudad ciudad)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 australiana australiano))))))
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (sn-CCT
+                  (grup.nom.ms
+                    (ncms000 día día)
+                    (sp
+                      (prep
+                        (sps00 tras tras))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 día día))))))
+                (grup.verb
+                  (vmip3p0 acuden acudir))
+                (sadv-CC
+                  (grup.adv
+                    (rg masivamente masivamente)))
+                (sp-CCL
+                  (prep
+                    (spcms al al))
+                  (snl
+                    (grup.nom.ms
+                      (np0000l Parque_Olímpico Parque_Olímpico))))
+                (sp-CC
+                  (prep
+                    (sps00 para para))
+                  (S.NF.C
+                    (infinitiu
+                      (vmn0000 comprobar comprobar))
+                    (sn-CD
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 desarrollo desarrollo)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (espec.fp
+                              (da0fp0 las el))
+                            (grup.nom.fp
+                              (ncfp000 competiciones competición))))))
+                    (sp-CCL
+                      (prep
+                        (sps00 en en))
+                      (sn
+                        (espec.mp
+                          (da0mp0 los el)
+                          (di0mp0 distintos distinto))
+                        (grup.nom.mp
+                          (ncmp000 escenarios escenario))))))))))))
+    (Fp . .)))
+(
+  (S
+    (snl-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np0000l Nautic_Centre Nautic_Centre)))
+    (grup.verb
+      (vsip3s0 es ser))
+    (sn-ATR
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 recinto recinto)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (sp-CC
+            (Fc , ,)
+            (prep
+              (sps00 hasta hasta))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 momento momento)))
+            (Fc , ,))
+          (sn-CD
+            (grup.nom.fs
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 mayor mayor)))
+              (ncfs000 atención atención)))
+          (grup.verb
+            (vaip3s0 ha haber)
+            (vmp00sm demandado demandar))
+          (sp-CC
+            (prep
+              (sps00 entre entre))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (ncmp000 australianos australiano)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Las el))
+      (grup.nom.fp
+        (ncfp000 gradas grada)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 piscina piscina)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 olímpica olímpico))))))))
+    (grup.verb
+      (vaip3p0 han haber)
+      (vmp00sm estado estar))
+    (sa-ATR
+      (espec
+        (rg prácticamente prácticamente))
+      (grup.a
+        (aq0fp0 llenas lleno)
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.fp
+              (da0fp0 las el)
+              (dn0cp0 tres tres))
+            (grup.nom.fp
+              (ncfp000 jornadas jornada)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 competición competición))))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fp
+                    (da0fp0 las el))
+                  (grup.nom.fp
+                    (ncfp000 pruebas prueba)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 natación natación))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 baloncesto baloncesto)
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (grup.nom.fs
+              (ncfs000 silla silla)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fp
+                    (ncfp000 ruedas rueda)))))))))
+    (grup.verb
+      (vsip3s0 es ser))
+    (sn-ATR
+      (grup.nom.mp
+        (pi0ms000 otro otro)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (ncmp000 deportes deporte)
+              (S.NF.P
+                (sadv-CC
+                  (grup.adv
+                    (rg más más)))
+                (participi
+                  (aq0mpp seguidos seguido))
+                (sp-CAG
+                  (prep
+                    (sps00 por por))
+                  (snp
+                    (espec.mp
+                      (da0mp0 los el))
+                    (grup.nom.mp
+                      (nccp000 habitantes habitante)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (snl
+                          (grup.nom
+                            (np0000l Sydney Sydney)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 selección selección)
+        (sp
+          (prep
+            (sps00 de de))
+          (snl
+            (grup.nom
+              (np0000l Australia Australia))))))
+    (grup.verb
+      (vsip3s0 es ser))
+    (sn-ATR
+      (grup.nom.fs
+        (pi0fs000 una uno)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (da0fp0 las el))
+            (grup.nom.fp
+              (s.a.fp
+                (grup.a.fp
+                  (aq0cp0 principales principal)))
+              (ncfp000 favoritas favorita)
+              (sp
+                (prep
+                  (sps00 para para))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 estar estar))
+                  (sp-CCL
+                    (prep
+                      (sps00 en en))
+                    (sn
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 podio podio))))
+                  (sp-CC
+                    (prep
+                      (sps00 en en))
+                    (sn
+                      (grup.nom.fs
+                        (pi0fs000 una uno)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (espec.fp
+                              (da0fp0 las el))
+                            (grup.nom.fp
+                              (ncfp000 competiciones competición)
+                              (s.a.fp
+                                (espec
+                                  (rg más más))
+                                (grup.a.fp
+                                  (aq0cp0 espectaculares espectacular)))
+                              (sp
+                                (prep
+                                  (spcms del del))
+                                (sn
+                                  (grup.nom.ms
+                                    (ncms000 programa programa)
+                                    (s.a.ms
+                                      (grup.a.ms
+                                        (aq0ms0 paralímpico paralímpico)))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 presencia presencia)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (rg más más)
+              (sps00 de de)
+              (Z cien_mil cien_mil))
+            (grup.nom.mp
+              (ncmp000 espectadores espectador))))
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 ceremonia ceremonia)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 inaugural inaugural))))))))
+    (grup.verb
+      (vmis3s0 advirtió advertir))
+    (sp-CREG
+      (prep
+        (spcms del del))
+      (sn
+        (grup.nom.ms
+          (ncms000 éxito éxito)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 público público))))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmii3s0 podía poder)
+              (infinitiu
+                (vmn0000 significar significar)))
+            (sna-CD
+              (espec.mp
+                (dd0mp0 estos este))
+              (grup.nom.mp
+                (np0000a Juegos Juegos)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Las el))
+      (grup.nom.fp
+        (ncfp000 gradas grada)
+        (sp
+          (prep
+            (spcms del del))
+          (snl
+            (grup.nom.ms
+              (np0000l Estadio_Olímpico Estadio_Olímpico))))))
+    (grup.verb
+      (vaip3p0 han haber)
+      (vmp00sm mantenido mantener))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 extraordinario extraordinario)))
+        (ncms000 aspecto aspecto)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 apertura apertura))))))
+    (sp-AO
+      (prep
+        (sps00 a_pesar_de a_pesar_de))
+      (S.NF.C
+        (neg-MOD
+          (rn no no))
+        (infinitiu
+          (vmn0000 alcanzar alcanzar))
+        (sn-CD
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 lleno lleno)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 inauguración inauguración))))))))
+        (sp-CC
+          (Fc , ,)
+          (sadv.j
+            (grup.adv
+              (rg sobre_todo sobre_todo)))
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.fp
+                (da0fp0 las el))
+              (grup.nom.fp
+                (ncfp000 pruebas prueba)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0fp0 vespertinas vespertino)))))))))
+    (Fp . .)))
+(
+  (S
+    (snl-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 estación estación)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 tren tren)
+              (sp
+                (prep
+                  (sps00 de de))
+                (snl
+                  (grup.nom
+                    (np0000l Homebush Homebush)))))))
+        (s.a.fs
+          (Fc , ,)
+          (grup.a.fs
+            (aq0fs0 anexa anexo)
+            (sp
+              (prep
+                (spcms al al))
+              (snl
+                (grup.nom.ms
+                  (np0000l Parque_Olímpico Parque_Olímpico)))))
+          (Fc , ,))))
+    (grup.verb
+      (vmip3s0 despide despedir))
+    (sadv-CC
+      (grup.adv
+        (rg diariamente diariamente)))
+    (sp.co
+      (Fc , ,)
+      (sp-CCL
+        (prep
+          (sps00 desde desde))
+        (sn
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (ao0fs0 primera primero)))
+            (ncfs000 hora hora)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 mañana mañana)))))))
+      (coord
+        (cc y y))
+      (sp-CC
+        (prep
+          (sps00 de de))
+        (sn
+          (grup.nom.fs
+            (ncfs000 forma forma)
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 constante constante))))))
+      (Fc , ,))
+    (sn-CD
+      (grup.nom.mp
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 numerosos numeroso)))
+        (ncmp000 seguidores seguidor)
+        (sn
+          (Fc , ,)
+          (sadv.j
+            (grup.adv
+              (rg sobre_todo sobre_todo)))
+          (sn
+            (grup.nom.mp
+              (ncmp000 niños niño)))
+          (Fc , ,))
+        (s.a.mp
+          (grup.a.mp
+            (aq0cp0 procedentes procedente)
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Sydney Sydney)
+                  (S.NF.P
+                    (Fc , ,)
+                    (participi
+                      (aq0msp situado situado))
+                    (sp-CREG
+                      (prep
+                        (sps00 a a))
+                      (snn
+                        (espec.mp
+                          (di0mp0 unos uno)
+                          (dn0cp0 cuarenta cuarenta))
+                        (grup.nom.mp
+                          (ncmp000 kilómetros kilómetro)
+                          (sp
+                            (prep
+                              (spcms del del))
+                            (sn
+                              (grup.nom.ms
+                                (ncms000 centro centro)
+                                (sp
+                                  (prep
+                                    (sps00 de de))
+                                  (sna
+                                    (espec.mp
+                                      (da0mp0 los el))
+                                    (grup.nom.mp
+                                      (np0000a Juegos Juegos))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Jane_West Jane_West)
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (ncms000 director director)
+            (s.a.ms
+              (grup.a.ms
+                (aq0cs0 general general)))
+            (sp
+              (prep
+                (spcms del del))
+              (sno
+                (grup.nom.ms
+                  (np0000o Comité_Organizador_de_los_Juegos_Paralímpicos_de_Sydney Comité_Organizador_de_los_Juegos_Paralímpicos_de_Sydney))))))))
+    (grup.verb
+      (vmis3s0 anunció anunciar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vaip3p0 han haber)
+        (vmp00sm vendido vender))
+      (sadv-CCT
+        (grup.adv
+          (rg ya ya)))
+      (sn-SUJ
+        (espec.fp
+          (rg cerca cerca)
+          (sps00 de de)
+          (Z 980.000 980000))
+        (grup.nom.fp
+          (ncfp000 entradas entrada)))
+      (S.NF.PA-CC
+        (Fc , ,)
+        (grup.verb
+          (vmp00pm incluidos incluir))
+        (sn-SUJ
+          (espec.mp
+            (da0mp0 los el)
+            (Z 760.000 760000))
+          (grup.nom.mp
+            (ncmp000 pases pase)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 día día))))
+            (sp
+              (prep
+                (sps00 para para))
+              (sn
+                (espec.mp
+                  (da0mp0 los el)
+                  (di0mp0 distintos distinto))
+                (grup.nom.mp
+                  (ncmp000 acontecimientos acontecimiento)
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0mp0 deportivos deportivo))))))))))
+    (Fp . .)))
+(
+  (S
+    (Fe " ")
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vsip3s0 Es ser))
+    (sa-ATR
+      (grup.a
+        (aq0ms0 fantástico fantástico)))
+    (Fp . .)))

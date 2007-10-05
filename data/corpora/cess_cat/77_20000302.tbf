@@ -1,0 +1,208 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 grup grup)
+        (sn
+          (grup.nom
+            (np00000 Acerinox Acerinox)))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 duplicar duplicar))
+    (sn-CCT
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (W 1999 [??:??/??/1999:??.??])))
+    (sn-CD
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 resultats resultat)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (ncms000 any any)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 anterior anterior))))))))
+    (sp-CCT
+      (prep
+        (sps00 en en))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 aconseguir aconseguir))
+        (sn-CD
+          (espec.mp
+            (di0mp0 uns un))
+          (grup.nom.mp
+            (ncmp000 beneficis benefici)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.mp
+                  (Z 20.831 20831))
+                (grup.nom.mp
+                  (ncmp000 milions milió)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fp
+                        (Zm pessetes pesseta))))
+                  (sn
+                    (Fc , ,)
+                    (grup.nom.fs
+                      (ncfs000 quantitat quantitat)
+                      (S.F.R
+                        (relatiu-SUJ
+                          (pr0cn000 que que))
+                        (grup.verb
+                          (vmip3s0 suposa suposar))
+                        (sn-CD
+                          (espec.ms
+                            (di0ms0 un un))
+                          (grup.nom.ms
+                            (grup.nom.ms
+                              (Zp 125% 125/100)
+                              (sadv
+                                (grup.adv
+                                  (rg més més))))
+                            (S.F.AComp*.j
+                              (conj.subord
+                                (cs que que))
+                              (sn
+                                (espec.ms
+                                  (da0ms0 el el))
+                                (grup.nom.ms
+                                  (W 1998 [??:??/??/1998:??.??]))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 companyia companyia)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 siderúrgica siderúrgic)))))
+    (morf.pron
+      (p0300000 es ell))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 beneficiar beneficiar))
+    (sp.co-CREG
+      (sp
+        (prep
+          (spcms del del))
+        (sn
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 fort fort)))
+            (ncms000 creixement creixement)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (Zp 13% 13/100))))
+            (S.NF.P
+              (participi
+                (aq0msp experimentat experimentat))
+              (sp-CAG
+                (prep
+                  (sps00 per per))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 demanda demanda))))
+              (sp-CCL
+                (prep
+                  (sps00 a a))
+                (sn
+                  (grup.nom
+                    (np00000 Espanya Espanya)))))))
+        (Fc , ,))
+      (coord
+        (cc així_com així_com))
+      (sp
+        (prep
+          (sps00 de de))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 recuperació recuperació)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncms000 mercat mercat)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 asiàtic asiàtic))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom
+        (np00000 Acerinox Acerinox)))
+    (grup.verb
+      (vmip3s0 preveu preveure))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (ncmp000 resultats resultat)))
+      (grup.verb
+        (vsif3p0 seran ser))
+      (sa-ATR
+        (espec
+          (rg encara encara))
+        (grup.a
+          (aq0cp0 millors millor)))
+      (sp-CCT
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.mp
+            (da0mp0 els el)
+            (dn0mp0 dos dos))
+          (grup.nom.mp
+            (s.a.mp
+              (grup.nom.mp
+                (aq0mp0 pròxims pròxim)))
+            (ncmp000 anys any))))
+      (sp-CC
+        (prep
+          (sps00 gràcies_a gràcies_a))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 persistent persistent)))
+            (ncfs000 pujada pujada)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncms000 consum consum))))))))
+    (Fp . .)))

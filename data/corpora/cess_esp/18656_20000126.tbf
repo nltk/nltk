@@ -1,0 +1,326 @@
+
+(
+  (S
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom
+          (np0000o Microsoft Microsoft))
+        (Fc , ,)
+        (grup.nom
+          (np0000o Telefónica_Data Telefónica_Data))
+        (coord
+          (cc y y))
+        (grup.nom
+          (np0000o Bankinter Bankinter)))
+      (Fc , ,))
+    (grup.verb
+      (vaip3p0 han haber)
+      (vmp00sm desarrollado desarrollar))
+    (sna-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 programa programa)
+        (sna
+          (grup.nom.ms
+            (Fe " ")
+            (np0000a Conecta_2000 Conecta_2000)
+            (Fe " ")))
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 consiste consistir))
+          (sp-CREG
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.fs
+                (di0fs0 una uno))
+              (grup.nom.fs
+                (ncfs000 serie serie)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fp
+                      (ncfp000 iniciativas iniciativa)
+                      (sp
+                        (prep
+                          (sps00 para para))
+                        (S.NF.C
+                          (infinitiu
+                            (vmn0000 comunicar comunicar))
+                          (sp-CI
+                            (prep
+                              (sps00 a a))
+                            (sn
+                              (espec.fp
+                                (da0fp0 las el))
+                              (grup.nom.fp
+                                (ncfp000 empresas empresa))))
+                          (sn.x-CD
+                            (espec.fp
+                              (da0fp0 las el))
+                            (grup.nom.co
+                              (grup.nom.co
+                                (grup.nom.fp
+                                  (ncfp000 ventajas ventaja))
+                                (coord
+                                  (cc y y))
+                                (grup.nom.fp
+                                  (ncfp000 oportunidades oportunidad)))
+                              (sp.j
+                                (prep
+                                  (sps00 de de))
+                                (sna
+                                  (grup.nom
+                                    (np0000a Internet Internet)))))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 programa programa)))
+      (morf.pron
+        (p0300000 se él))
+      (grup.verb
+        (vmif3s0 iniciará iniciar))
+      (sp-CC
+        (prep
+          (sps00 con con))
+        (sn
+          (espec.fs
+            (di0fs0 una uno))
+          (grup.nom.fs
+            (ncfs000 feria feria)
+            (sna
+              (grup.nom
+                (Fe " ")
+                (np0000a Info.com/2000 Info.com/2000)
+                (Fe " ")))
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (morfema.verbal-PASS
+                (p0000000 se se))
+              (grup.verb
+                (vmif3s0 celebrará celebrar))
+              (sp-CCT
+                (prep
+                  (spcms a_partir_del a_partir_del))
+                (snd
+                  (grup.nom.ms
+                    (W 17_de_febrero [??:17/2/??:??.??])))))
+            (S.F.R.co
+              (sp-CC
+                (prep
+                  (sps00 en en))
+                (relatiu
+                  (da0fs0 la el)
+                  (pr0cn000 que que)))
+              (S.F.R
+                (sno-SUJ
+                  (grup.nom
+                    (np0000o Microsoft Microsoft)))
+                (grup.verb
+                  (vmif3s0 lanzará lanzar))
+                (sna-CD
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (np0000a Windows_2000 Windows_2000))))
+              (coord
+                (cc y y))
+              (S.F.R
+                (sn.x-SUJ
+                  (grup.nom.co
+                    (grup.nom
+                      (np0000o Telefónica_Data Telefónica_Data))
+                    (coord
+                      (cc y y))
+                    (grup.nom
+                      (np0000o Bankinter Bankinter))))
+                (grup.verb
+                  (vmif3p0 presentarán presentar))
+                (sn-CD
+                  (espec.mp
+                    (dp3cp0 sus su))
+                  (grup.nom.mp
+                    (ncmp000 productos producto)))))))))
+    (coord
+      (cc y y))
+    (S
+      (sp-CCT
+        (prep
+          (sps00 a_partir_de a_partir_de))
+        (sadv
+          (grup.adv
+            (rg entonces entonces))))
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vmif3s0 efectuará efectuar))
+      (sn-SUJ
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 recorrido recorrido)
+          (sp
+            (prep
+              (sps00 por por))
+            (sn
+              (espec.fp
+                (da0fp0 las el)
+                (Z 20 20))
+              (grup.nom.fp
+                (ncfp000 ciudades ciudad)
+                (s.a.fp
+                  (espec
+                    (rg más más))
+                  (grup.a.fp
+                    (aq0cp0 importantes importante)))
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 país país))))
+                (S.F.R
+                  (sp-CCL
+                    (prep
+                      (sps00 en en))
+                    (relatiu
+                      (da0fp0 las el)
+                      (pr0cn000 que que)))
+                  (sn.e-SUJ *0*)
+                  (grup.verb
+                    (vmif3p0 difundirán difundir))
+                  (sn-CD
+                    (espec.fp
+                      (da0fp0 las el))
+                    (grup.nom.fp
+                      (s.a.fp
+                        (grup.a.fp
+                          (aq0fp0 nuevas nuevo)))
+                      (ncfp000 tecnologías tecnología)
+                      (sp
+                        (prep
+                          (sps00 para para))
+                        (sn
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (ncfs000 empresa empresa)))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 programa programa)))
+      (grup.verb
+        (vmip3s0 está estar))
+      (S.NF.P-ATR
+        (participi
+          (aq0msp abierto abierto))
+        (sp-CC
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 participación participación)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fp
+                    (di0fp0 otras otro))
+                  (grup.nom.fp
+                    (ncfp000 empresas empresa)))))))))
+    (coord
+      (cc y y))
+    (S
+      (sn-SUJ
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (pn0cp000 tres tres)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (sn-CD
+              (grup.nom.ms
+                (pp3msa00 lo él)))
+            (grup.verb
+              (vmip3p0 integran integrar)))))
+      (grup.verb
+        (vaip3p0 han haber)
+        (vmp00sm aportado aportar))
+      (sn-CD
+        (snn
+          (espec.mp
+            (Z 125 125))
+          (grup.nom.mp
+            (ncmp000 millones millón)
+            (sp
+              (prep
+                (sps00 de de))
+              (snn
+                (grup.nom.fp
+                  (Zm pesetas peseta))))))
+        (sn.j
+          (espec.fs
+            (di0cs0 cada cada))
+          (grup.a.fs
+            (pi0fs000 una uno))))
+      (sp-CC
+        (prep
+          (sps00 con_objeto_de con_objeto_de))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 realizar realizar))
+          (sn-CD
+            (espec.fp
+              (da0fp0 las el))
+            (grup.nom.fp
+              (ncfp000 actividades actividad)
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (morfema.verbal-PASS
+                  (p0000000 se se))
+                (grup.verb
+                  (vmif3p0 llevarán_a_cabo llevar_a_cabo))
+                (sp-CC
+                  (prep
+                    (sps00 hasta hasta))
+                  (sna
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0fs0 próxima próximo)))
+                      (ncfs000 feria feria)
+                      (sp
+                        (prep
+                          (spcms del del))
+                        (sna
+                          (grup.nom.ms
+                            (np0000a SIMO SIMO)))))))
+                (sp-CCT
+                  (Fc , ,)
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 otoño otoño))))))))))
+    (Fp . .)))

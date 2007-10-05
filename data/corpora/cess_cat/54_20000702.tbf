@@ -1,0 +1,165 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np00000 Col·lectiu_de_Solidaritat_amb_la_Rebel·lió_Zapatista Col·lectiu_de_Solidaritat_amb_la_Rebel·lió_Zapatista)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 organitzar organitzar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 acte acte)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 protesta protesta))))))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom
+          (np00000 Barcelona Barcelona))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 denunciar denunciar))
+        (sn-CD
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 situació situació)
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (morfema.verbal-PASS
+                (p0000000 es es))
+              (grup.verb
+                (vmsi3s0 viu viure))
+              (sp-CCL
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.ms
+                    (da0cs0 l' el))
+                  (grup.nom.ms
+                    (ncms000 estat estat)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 mexicà mexicà)))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom
+                          (np00000 Chiapas Chiapas))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.mp
+          (dn0cp0 Dotze dotze))
+        (grup.nom.mp
+          (nccp000 joves jove)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 col·lectiu col·lectiu))))))
+      (morf.pron
+        (p0300000 es ell))
+      (grup.verb
+        (vaip3p0 van anar)
+        (vmn0000 penjar penjar))
+      (sp-CCT
+        (prep
+          (sps00 durant durant))
+        (sn
+          (espec.fp
+            (dn0cp0 tres tres))
+          (grup.nom.fp
+            (ncfp000 hores hora))))
+      (sp-CCL
+        (prep
+          (sps00 de de))
+        (sn
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (ncfp000 torres torre)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np00000 Sagrada_Família Sagrada_Família)))
+                (sp.j
+                  (Fpa -Fpa- -Fpa-)
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 foto foto)))
+                  (Fpt -Fpt- -Fpt-))))))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3p0 van anar)
+        (vmn0000 desplegar desplegar))
+      (sn-CD
+        (grup.nom.fp
+          (ncfp000 pancartes pancarta)
+          (S.F.R
+            (sp-CCL
+              (prep
+                (sps00 en en))
+              (relatiu
+                (pr0cn000 què què)))
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vaip3p0 van anar)
+              (vmn0000 exigir exigir))
+            (S.F.C-CD
+              (conj.subord
+                (cs que que))
+              (morfema.verbal-PASS
+                (p0000000 s' es))
+              (grup.verb
+                (vmsp3s0 acabi acabar))
+              (sn-SUJ
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 guerra guerra)))
+              (sp-CCL
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.ms
+                    (da0cs0 l' el))
+                  (grup.nom.ms
+                    (ncms000 estat estat)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 mexicà mexicà)))))))))))
+    (Fp . .)))

@@ -1,0 +1,1020 @@
+
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (nc00000 levantinista levantinista)
+        (snp
+          (grup.nom.ms
+            (np0000p Paco_Salillas Paco_Salillas)))))
+    (grup.verb
+      (vmis3s0 puso_fin poner_fin))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 periodo periodo)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 sequía sequía)
+                (s.a.fs
+                  (grup.a.fs
+                    (ncfs000 goleadora goleadora)))))))))
+    (sp-CC
+      (prep
+        (sps00 con con))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 tanto tanto)
+          (S.F.R.co
+            (S.F.R
+              (relatiu-CD
+                (pr0cn000 que que))
+              (sn.e-SUJ *0*)
+              (grup.verb
+                (vmis3s0 marcó marcar))
+              (sadv-CCT
+                (grup.adv
+                  (rg hoy hoy)))
+              (sp-CI
+                (prep
+                  (spcms al al))
+                (sno
+                  (grup.nom.ms
+                    (np0000l Extremadura Extremadura)))))
+            (Fc , ,)
+            (S.F.R.co
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (sp-CI.r
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (espec.ms
+                      (dp3cs0 su su))
+                    (grup.nom.ms
+                      (ncms000 equipo equipo))))
+                (sadv
+                  (grup.adv
+                    (rg sólo sólo)))
+                (sn-CI.r
+                  (grup.nom.s
+                    (pp3csd00 le él)))
+                (grup.verb
+                  (vmis3s0 sirvió servir))
+                (sp-CREG
+                  (prep
+                    (sps00 para para))
+                  (S.NF.C
+                    (infinitiu
+                      (vmn0000 empatar empatar)))))
+              (coord
+                (cc pero pero))
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (sp-CI.r
+                  (prep
+                    (spcms al al))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 jugador jugador))))
+                (sn-CI.r
+                  (grup.nom
+                    (pp3csd00 le él)))
+                (grup.verb
+                  (vmis3s0 permitió permitir))
+                (S.NF.C.co-CD
+                  (S.NF.C
+                    (infinitiu
+                      (vmn0000 aumentar aumentar))
+                    (sn-CD.Q
+                      (espec.fs
+                        (dp3cs0 su su))
+                      (grup.nom.fs
+                        (ncfs000 ventaja ventaja)))
+                    (sp-CC
+                      (prep
+                        (sps00 al_frente_de al_frente_de))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 tabla tabla)))))
+                  (coord
+                    (cc y y))
+                  (S.NF.C
+                    (infinitiu
+                      (vmn0000 sumar sumar))
+                    (sadv-MOD
+                      (grup.adv
+                        (rg ya ya)))
+                    (sn-CD.Q
+                      (espec.mp
+                        (Z 18 18))
+                      (grup.nom.mp
+                        (ncmp000 goles gol)))
+                    (sn-CCT
+                      (espec.fs
+                        (dd0fs0 esta este))
+                      (grup.nom.fs
+                        (ncfs000 temporada temporada)))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S.co
+      (S
+        (snp-SUJ
+          (grup.nom.ms
+            (np0000p Salillas Salillas)
+            (S.F.R
+              (Fc , ,)
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vmii3s0 llevaba llevar))
+              (sn-CCT
+                (espec.fp
+                  (dn0cp0 cuatro cuatro))
+                (grup.nom.fp
+                  (ncfp000 jornadas jornada)))
+              (sp-CC
+                (prep
+                  (sps00 sin sin))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 ver ver))
+                  (sn-CD
+                    (grup.nom.fs
+                      (ncfs000 puerta puerta)))))
+              (Fc , ,))))
+        (grup.verb
+          (vmip3s0 aventaja aventajar))
+        (sp-CC
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.mp
+              (dn0cp0 cuatro cuatro))
+            (grup.nom.mp
+              (ncmp000 goles gol))))
+        (sp-CD
+          (prep
+            (sps00 a a))
+          (snp
+            (grup.nom.ms
+              (np0000p Moisés_García Moisés_García)
+              (sp
+                (Fc , ,)
+                (prep
+                  (spcms del del))
+                (sno
+                  (grup.nom.ms
+                    (np0000o Villarreal Villarreal)))
+                (Fc , ,))))))
+      (coord
+        (cc y y))
+      (S*
+        (sp-CC
+          (prep
+            (sps00 en en))
+          (sn
+            (grup.nom.mp
+              (pn0cp000 cinco cinco))))
+        (sp-CD
+          (prep
+            (sps00 a a))
+          (snp
+            (grup.nom.ms
+              (np0000p Sergio_Pachón Sergio_Pachón)
+              (sp
+                (Fc , ,)
+                (prep
+                  (spcms del del))
+                (sno
+                  (grup.nom.ms
+                    (np0000l Leganés Leganés))))
+              (sn
+                (Fc , ,)
+                (grup.nom.ms
+                  (s.a.ms
+                    (grup.a.ms
+                      (ao0ms0 tercero tercero)))
+                  (sp
+                    (prep
+                      (sps00 en_solitario en_solitario))))))))))
+    (sadv.j-CC
+      (sadv
+        (grup.adv
+          (rg tanto tanto)))
+      (S.F.AComp.j
+        (conj.subord
+          (cs que que))
+        (sadv-CCT
+          (grup.adv
+            (rg hoy hoy)))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmis3s0 dio dar))
+        (sn-CD
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 victoria victoria)))
+        (sp-CI
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.ms
+              (dp3cs0 su su))
+            (grup.nom.ms
+              (ncms000 equipo equipo))))
+        (sp-CCL
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 campo campo)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (nccs000 líder líder)
+                    (sno
+                      (Fc , ,)
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (np0000l Salamanca Salamanca)))))))))))
+    (Fp . .)))
+(
+  (S
+    (coord-ET
+      (cc Pero pero))
+    (sp-ET
+      (Fc , ,)
+      (prep
+        (sps00 con con))
+      (sn
+        (grup.nom.ms
+          (pi0ms000 todo todo)))
+      (Fc , ,))
+    (grup.verb
+      (vsis3s0 fue ser))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Borja_García Borja_García)))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (nccs000 protagonista protagonista)
+        (s.a.ms
+          (grup.a.ms
+            (ncms000 goleador goleador)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (s.a.fs
+                (grup.a.fs
+                  (ao0fs0 trigésima_primera trigésima_primera)))
+              (ncfs000 jornada jornada)
+              (sp
+                (prep
+                  (sps00 en en))
+                (sna
+                  (grup.nom
+                    (np0000a Segunda Segunda)))))))))
+    (sp-CCT
+      (prep
+        (spcms al al))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 marcar marcar))
+        (sn-CD
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (pn0cp000 tres tres)
+            (sp
+              (prep
+                (spcms del del))
+              (sno
+                (grup.nom.ms
+                  (np0000o Logroñés Logroñés))))))
+        (sp-CC
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (dp3cs0 su su))
+            (grup.nom.ms
+              (ncms000 partido partido)
+              (sp
+                (prep
+                  (sps00 contra contra))
+                (sno
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (np0000l Compostela Compostela)))))))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (grup.nom.fs
+        (ncfs000 Clasificación clasificación)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.mp
+              (ncmp000 goleadores goleador))))
+        (sp
+          (prep
+            (sps00 tras tras))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (s.a.fs
+                (grup.a.fs
+                  (ao0fs0 trigésima_primera trigésima_primera)))
+              (ncfs000 jornada jornada))))
+        (sn.x
+          (Fd : :)
+          (grup.nom.co
+            (sn
+              (Fg - -)
+              (snp
+                (sp.j
+                  (prep
+                    (sps00 Con con))
+                  (sn
+                    (grup.nom.mp
+                      (Z 18 18))
+                    (grup.nom.mp
+                      (ncmp000 goles gol)))
+                  (Fd : :))
+                (grup.nom.ms
+                  (np0000p Paco_Salillas Paco_Salillas))
+                (snn.j
+                  (grup.nom.mp
+                    (Fpa -Fpa- -Fpa-)
+                    (Z 3p 3)
+                    (Fpt -Fpt- -Fpt-)))
+                (sno.j
+                  (grup.nom
+                    (Fpa -Fpa- -Fpa-)
+                    (np0000o Levante Levante)
+                    (Fpt -Fpt- -Fpt-)))))))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (Fg - -)
+      (sp.j
+        (prep
+          (sps00 Con con))
+        (sn
+          (espec.mp
+            (Z 14 14))
+          (grup.nom.mp
+            (ncmp000 goles gol)))
+        (Fd : :))
+      (snp
+        (grup.nom.ms
+          (np0000p Moisés Moisés)))
+      (snn.j
+        (grup.nom.ms
+          (Fpa -Fpa- -Fpa-)
+          (Z 1p 1)
+          (Fpt -Fpt- -Fpt-)))
+      (sno.j
+        (grup.nom
+          (Fpa -Fpa- -Fpa-)
+          (np0000o Villarreal Villarreal)
+          (Fpt -Fpt- -Fpt-))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (Fg - -)
+      (sp.j
+        (prep
+          (sps00 Con con))
+        (sn
+          (espec.mp
+            (Z 13 13))
+          (grup.nom.mp
+            (ncmp000 goles gol)))
+        (Fd : :))
+      (snp
+        (grup.nom.ms
+          (np0000p Pachón Pachón)))
+      (snl.j
+        (grup.nom
+          (Fpa -Fpa- -Fpa-)
+          (np0000l Leganés Leganés)
+          (Fpt -Fpt- -Fpt-))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (Fg - -)
+      (sp.j
+        (prep
+          (sps00 Con con))
+        (sn
+          (espec.mp
+            (Z 12 12))
+          (grup.nom.mp
+            (ncmp000 goles gol)))
+        (Fd : :))
+      (sn
+        (grup.nom.co
+          (grup.nom.ms
+            (grup.nom.ms
+              (np0000p Changui Changui))
+            (sno.j
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (np0000l Compostela Compostela)
+                (Fpt -Fpt- -Fpt-))))
+          (Fx ; ;)
+          (grup.nom.ms
+            (grup.nom.ms
+              (np0000p Manel Manel))
+            (sno.j
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (np0000o Logroñés Logroñés)
+                (Fpt -Fpt- -Fpt-)))))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (Fg - -)
+      (sp.j
+        (prep
+          (sps00 Con con))
+        (sn
+          (espec.mp
+            (Z 11 11))
+          (grup.nom.mp
+            (ncmp000 goles gol)))
+        (Fd : :))
+      (snp
+        (grup.nom.ms
+          (np0000p Josemi Josemi)))
+      (snn.j
+        (grup.nom.mp
+          (Fpa -Fpa- -Fpa-)
+          (Z 3p 3)
+          (Fpt -Fpt- -Fpt-)))
+      (sno.j
+        (grup.nom
+          (Fpa -Fpa- -Fpa-)
+          (np0000l Lleida Lleida)
+          (Fpt -Fpt- -Fpt-))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (Fg - -)
+      (sp.j
+        (prep
+          (sps00 Con con))
+        (sn
+          (espec.mp
+            (Z 10 10))
+          (grup.nom.mp
+            (ncmp000 goles gol)))
+        (Fd : :))
+      (snp
+        (grup.nom.ms
+          (np0000p Barata Barata)))
+      (snn.j
+        (grup.nom.ms
+          (Fpa -Fpa- -Fpa-)
+          (Z 1p 1)
+          (Fpt -Fpt- -Fpt-)))
+      (snl.j
+        (grup.nom
+          (Fpa -Fpa- -Fpa-)
+          (np0000l BRA BRA)
+          (Fpt -Fpt- -Fpt-)))
+      (sno.j
+        (grup.nom
+          (Fpa -Fpa- -Fpa-)
+          (np0000l Tenerife Tenerife)
+          (Fpt -Fpt- -Fpt-))))
+    (Fp . .)))
+(
+  (S*
+    (sn.co
+      (Fg - -)
+      (sp.j
+        (prep
+          (sps00 Con con))
+        (sn
+          (espec.mp
+            (Z 9 9))
+          (grup.nom.mp
+            (ncmp000 goles gol)))
+        (Fd : :))
+      (sn.co
+        (snp
+          (snp
+            (grup.nom.ms
+              (np0000p Eloy Eloy)))
+          (snl.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000o Las_Palmas Las_Palmas)
+              (Fpt -Fpt- -Fpt-))))
+        (Fx ; ;)
+        (snp
+          (snp
+            (grup.nom.ms
+              (np0000p Cherishev Cherishev)))
+          (snn.j
+            (grup.nom.mp
+              (Fpa -Fpa- -Fpa-)
+              (Z 2p 2)
+              (Fpt -Fpt- -Fpt-)))
+          (snl.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l RUS RUS)
+              (Fpt -Fpt- -Fpt-))))
+        (coord
+          (cc y y))
+        (snp
+          (snp
+            (grup.nom.ms
+              (np0000p Lediajov Lediajov)))
+          (snn.j
+            (grup.nom.mp
+              (Fpa -Fpa- -Fpa-)
+              (Z 5p 5)
+              (Fpt -Fpt- -Fpt-)))
+          (snl.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l RUS RUS)
+              (Fpt -Fpt- -Fpt-)))
+          (sno.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000o Sporting Sporting)
+              (Fpt -Fpt- -Fpt-))))))
+    (Fp . .)))
+(
+  (S*
+    (sn.co
+      (Fg - -)
+      (sp.j
+        (prep
+          (sps00 Con con))
+        (sn
+          (espec.mp
+            (Z 8 8))
+          (grup.nom.mp
+            (ncmp000 goles gol)))
+        (Fd : :))
+      (sn.co
+        (snp
+          (snp
+            (grup.nom.ms
+              (np0000p Carlos_Torres Carlos_Torres)))
+          (snl.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l PAR PAR)
+              (Fpt -Fpt- -Fpt-)))
+          (sno.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l Badajoz Badajoz)
+              (Fpt -Fpt- -Fpt-))))
+        (Fx ; ;)
+        (snp
+          (snp
+            (grup.nom.ms
+              (np0000p Rubén Rubén)))
+          (sno.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l Eibar Eibar)
+              (Fpt -Fpt- -Fpt-))))
+        (Fx ; ;)
+        (snp
+          (snp
+            (grup.nom.ms
+              (np0000p Sequeiros Sequeiros)))
+          (snn.j
+            (grup.nom.ms
+              (Fpa -Fpa- -Fpa-)
+              (Z 1p 1)
+              (Fpt -Fpt- -Fpt-)))
+          (sno.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l Las_Palmas Las_Palmas)
+              (Fpt -Fpt- -Fpt-))))
+        (Fx ; ;)
+        (snp
+          (snp
+            (grup.nom.ms
+              (np0000p Mista Mista)))
+          (sno.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l Tenerife Tenerife)
+              (Fpt -Fpt- -Fpt-))))
+        (Fx ; ;)
+        (snp
+          (snp
+            (grup.nom.ms
+              (np0000p Craioveanu Craioveanu)))
+          (snl.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l RUM RUM)
+              (Fpt -Fpt- -Fpt-)))
+          (sno.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000o Villarreal Villarreal)
+              (Fpt -Fpt- -Fpt-))))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (Fg - -)
+      (sp.j
+        (prep
+          (sps00 Con con))
+        (sn
+          (espec.mp
+            (Z 7 7))
+          (grup.nom.mp
+            (ncmp000 goles gol)))
+        (Fd : :))
+      (sn.co
+        (snp
+          (snp
+            (grup.nom.ms
+              (np0000p Bracamonte Bracamonte)))
+          (snl.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l ARG ARG)
+              (Fpt -Fpt- -Fpt-)))
+          (sno.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l Badajoz Badajoz)
+              (Fpt -Fpt- -Fpt-))))
+        (Fx ; ;)
+        (snp
+          (snp
+            (grup.nom.ms
+              (np0000p Gudelj Gudelj)))
+          (snl.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l BSH BSH)
+              (Fpt -Fpt- -Fpt-)))
+          (snn.j
+            (grup.nom.ms
+              (Fpa -Fpa- -Fpa-)
+              (Z 1p 1)
+              (Fpt -Fpt- -Fpt-)))
+          (sno.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000o Compostela Compostela)
+              (Fpt -Fpt- -Fpt-))))
+        (Fx ; ;)
+        (snp
+          (snp
+            (grup.nom.ms
+              (np0000p Armentano Armentano)))
+          (snn.j
+            (grup.nom.ms
+              (Fpa -Fpa- -Fpa-)
+              (Z 1p 1)
+              (Fpt -Fpt- -Fpt-)))
+          (snl.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l ARG ARG)
+              (Fpt -Fpt- -Fpt-)))
+          (sno.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l Elche Elche)
+              (Fpt -Fpt- -Fpt-))))
+        (Fx ; ;)
+        (sn.x
+          (sn.x
+            (grup.nom.co
+              (grup.nom.ms
+                (np0000p Manuel Manuel))
+              (coord
+                (cc y y))
+              (grup.nom.ms
+                (np0000p Duré Duré))))
+          (snl.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l ARG ARG)
+              (Fpt -Fpt- -Fpt-)))
+          (sno
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l Extremadura Extremadura)
+              (Fpt -Fpt- -Fpt-))))
+        (Fx ; ;)
+        (snp
+          (snp
+            (grup.nom.ms
+              (np0000p Parrado Parrado)))
+          (snn.j
+            (grup.nom.ms
+              (Fpa -Fpa- -Fpa-)
+              (Z 1p 1)
+              (Fpt -Fpt- -Fpt-)))
+          (sno.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l Getafe Getafe)
+              (Fpt -Fpt- -Fpt-))))
+        (Fx ; ;)
+        (snp
+          (snp
+            (grup.nom.ms
+              (np0000p Fernando_Sales Fernando_Sales)))
+          (sno.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000o Levante Levante)
+              (Fpt -Fpt- -Fpt-))))
+        (Fx ; ;)
+        (snp
+          (snp
+            (grup.nom.ms
+              (np0000p Javi_Peña Javi_Peña)))
+          (sno.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l Lleida Lleida)
+              (Fpt -Fpt- -Fpt-))))
+        (Fx ; ;)
+        (snp
+          (snp
+            (grup.nom.ms
+              (np0000p Prieto Prieto)))
+          (sno.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l Mérida Mérida)
+              (Fpt -Fpt- -Fpt-))))
+        (Fx ; ;)
+        (snp
+          (snp
+            (grup.nom.ms
+              (np0000p Ziganda Ziganda)))
+          (snn.j
+            (grup.nom.ms
+              (Fpa -Fpa- -Fpa-)
+              (Z 1p 1)
+              (Fpt -Fpt- -Fpt-)))
+          (sno.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000o Osasuna Osasuna)
+              (Fpt -Fpt- -Fpt-))))
+        (Fx ; ;)
+        (snp
+          (snp
+            (grup.nom.ms
+              (np0000p Quique_Martín Quique_Martín)))
+          (sno.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l Salamanca Salamanca)
+              (Fpt -Fpt- -Fpt-))))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (grup.nom.co
+        (Fg - -)
+        (sp.j
+          (prep
+            (sps00 Con con))
+          (sn
+            (espec.mp
+              (Z 6 6))
+            (grup.nom.mp
+              (ncmp000 goles gol)))
+          (Fd : :))
+        (grup.nom.co
+          (sn.x
+            (sn.x
+              (grup.nom.co
+                (grup.nom.ms
+                  (np0000p Leandro Leandro))
+                (coord
+                  (cc y y))
+                (grup.nom.ms
+                  (np0000p Vulevic Vulevic))))
+            (snl.j
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (np0000l YUG YUG)
+                (Fpt -Fpt- -Fpt-)))
+            (sno.j
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (np0000l Albacete Albacete)
+                (Fpt -Fpt- -Fpt-))))
+          (Fx ; ;)
+          (sn.x
+            (sn.x
+              (grup.nom.co
+                (grup.nom.ms
+                  (np0000p Luque Luque))
+                (coord
+                  (cc y y))
+                (grup.nom.ms
+                  (np0000p Pepe_Domingo Pepe_Domingo))))
+            (sno.j
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (np0000o At.Madrid_B At.Madrid_B)
+                (Fpt -Fpt- -Fpt-))))
+          (Fx ; ;)
+          (sn.x
+            (sn.x
+              (grup.nom.co
+                (grup.nom.ms
+                  (np0000p Arnau Arnau))
+                (coord
+                  (cc y y))
+                (grup.nom.ms
+                  (np0000p Diego_Ribera Diego_Ribera))))
+            (snn.j
+              (grup.nom.mp
+                (Fpa -Fpa- -Fpa-)
+                (Z 2p 2)
+                (Fpt -Fpt- -Fpt-)))
+            (sno.j
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (np0000l Córdoba Córdoba)
+                (Fpt -Fpt- -Fpt-))))
+          (Fx ; ;)
+          (snp
+            (snp
+              (grup.nom.ms
+                (np0000p Kaiku Kaiku)))
+            (sno.j
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (np0000l Getafe Getafe)
+                (Fpt -Fpt- -Fpt-))))
+          (Fx ; ;)
+          (snp
+            (snp
+              (grup.nom.ms
+                (np0000p Tevenet Tevenet)))
+            (snn.j
+              (grup.nom.mp
+                (Fpa -Fpa- -Fpa-)
+                (Z 4p 4)
+                (Fpt -Fpt- -Fpt-)))
+            (sno.j
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (np0000l Las_Palmas Las_Palmas)
+                (Fpt -Fpt- -Fpt-))))
+          (Fx ; ;)
+          (snp
+            (snp
+              (grup.nom.ms
+                (np0000p Vicente Vicente)))
+            (sno.j
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (np0000o Levante Levante)
+                (Fpt -Fpt- -Fpt-))))
+          (Fx ; ;)
+          (snp
+            (snp
+              (grup.nom.ms
+                (np0000p Roa Roa)))
+            (sno.j
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (np0000l Lleida Lleida)
+                (Fpt -Fpt- -Fpt-))))
+          (Fx ; ;)
+          (snp
+            (snp
+              (grup.nom.ms
+                (np0000p Bodipo Bodipo)))
+            (sno.j
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (np0000o Recreativo Recreativo)
+                (Fpt -Fpt- -Fpt-))))
+          (Fx ; ;)
+          (snp
+            (snp
+              (grup.nom.ms
+                (np0000p Munteanu Munteanu)))
+            (snn.j
+              (grup.nom.ms
+                (Fpa -Fpa- -Fpa-)
+                (Z 1p 1)
+                (Fpt -Fpt- -Fpt-)))
+            (snl.j
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (np0000l RUM RUM)
+                (Fpt -Fpt- -Fpt-))))
+          (coord
+            (cc y y))
+          (sn.co
+            (snp
+              (snp
+                (grup.nom.ms
+                  (np0000p Silvani Silvani)))
+              (snl.j
+                (grup.nom
+                  (Fpa -Fpa- -Fpa-)
+                  (np0000l ARG ARG)
+                  (Fpt -Fpt- -Fpt-)))
+              (sno.j
+                (grup.nom
+                  (Fpa -Fpa- -Fpa-)
+                  (np0000l Salamanca Salamanca)
+                  (Fpt -Fpt- -Fpt-))))
+            (Fx ; ;)
+            (snp
+              (snp
+                (grup.nom.ms
+                  (np0000p Jurado Jurado)))
+              (sno.j
+                (grup.nom
+                  (Fpa -Fpa- -Fpa-)
+                  (np0000o Sporting Sporting)
+                  (Fpt -Fpt- -Fpt-))))
+            (Fx ; ;)
+            (sn.x
+              (sn.x
+                (grup.nom.co
+                  (grup.nom.ms
+                    (np0000p Pier Pier))
+                  (coord
+                    (cc y y))
+                  (grup.nom.ms
+                    (np0000p Pinilla Pinilla))))
+              (sno.j
+                (grup.nom
+                  (Fpa -Fpa- -Fpa-)
+                  (np0000l Tenerife Tenerife)
+                  (Fpt -Fpt- -Fpt-))))
+            (Fx ; ;)
+            (snp
+              (snp
+                (grup.nom.ms
+                  (np0000p Miguel_Angel Miguel_Angel)))
+              (sno.j
+                (grup.nom
+                  (Fpa -Fpa- -Fpa-)
+                  (np0000l Toledo Toledo)
+                  (Fpt -Fpt- -Fpt-))))))))
+    (Fp . .)))

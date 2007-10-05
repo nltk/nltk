@@ -1,0 +1,242 @@
+
+(
+  (S
+    (sn-SUJ
+      (grup.nom.mp
+        (nccp000 Portavoces portavoz)
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (grup.nom
+              (np0000o Aventis Aventis))))))
+    (grup.verb
+      (vmis3p0 indicaron indicar))
+    (snd-CCT
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (W miércoles [miércoles:??/??/??:??.??])))
+    (S.F.C.co-CD
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.mp
+            (di0mp0 unos uno)
+            (Z 260 260))
+          (grup.nom.mp
+            (ncmp000 silos silo)))
+        (grup.verb
+          (vaip3p0 han haber)
+          (vmp00sm recibido recibir))
+        (sn-CD
+          (espec.ms
+            (dd0ms0 ese ese))
+          (grup.nom.ms
+            (ncms000 tipo tipo)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 maíz maíz))))))
+        (sn-CCT
+          (espec.ms
+            (dd0ms0 este este))
+          (grup.nom.ms
+            (ncms000 año año))))
+      (coord
+        (cc y y))
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.fs
+            (di0fs0 una uno))
+          (grup.nom.fs
+            (ncfs000 consulta consulta)
+            (sp
+              (prep
+                (sps00 con con))
+              (sn
+                (espec.mp
+                  (Z 107 107))
+                (grup.nom.mp
+                  (ncmp000 propietarios propietario))))))
+        (grup.verb
+          (vmis3s0 indicó indicar))
+        (S.F.C-CD
+          (conj.subord
+            (cs que que))
+          (sn-SUJ
+            (sadv.j
+              (grup.adv
+                (rg por_lo_menos por_lo_menos)))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 mitad mitad))))
+          (grup.verb
+            (vaip3s0 ha haber)
+            (vmp00sm empleado emplear))
+          (sn-CD
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 maíz maíz)))
+          (sp-CC
+            (prep
+              (sps00 para para))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 fabricación fabricación)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 alimentos alimento)
+                      (s.a.mp
+                        (grup.a.mp
+                          (aq0mp0 humanos humano))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (grup.nom
+        (np0000o Aventis Aventis)))
+    (grup.verb
+      (vaip3s0 ha haber)
+      (vmp00sm identificado identificar))
+    (sn.co-CD
+      (sadv.j
+        (grup.adv
+          (rg aproximadamente aproximadamente)))
+      (sn.co
+        (snn
+          (espec.fp
+            (Z 142.500 142500))
+          (grup.nom.fp
+            (ncfp000 hectáreas hectárea)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 plantación plantación)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sna
+                      (grup.nom.ms
+                        (ncms000 maíz maíz)
+                        (sna
+                          (grup.nom
+                            (np0000a StarLink StarLink)))
+                        (sn
+                          (Fc , ,)
+                          (espec.fs
+                            (di0fs0 una uno))
+                          (grup.nom.fs
+                            (ncfs000 variedad variedad)
+                            (s.a.fs
+                              (grup.a.fs
+                                (aq0fs0 amarilla amarillo)))
+                            (S.F.R
+                              (relatiu-SUJ
+                                (pr0cn000 que que))
+                              (morfema.verbal-PASS
+                                (p0000000 se se))
+                              (grup.verb
+                                (vmip3s0 cultiva cultivar))
+                              (sp-CCL
+                                (sadv.j
+                                  (grup.adv
+                                    (rg principalmente principalmente)))
+                                (sp
+                                  (prep
+                                    (sps00 en en))
+                                  (snl
+                                    (espec.ms
+                                      (da0ms0 el el))
+                                    (grup.nom.ms
+                                      (np0000l Medio_Oeste Medio_Oeste)))))))
+                          (Fc , ,))))))))))
+        (coord
+          (cc y y))
+        (snn
+          (espec.fp
+            (di0fp0 otras otro)
+            (Z 68.000 68000))
+          (grup.nom.fp
+            (ncfp000 hectáreas hectárea)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 cultivos cultivo)
+                  (S.NF.P
+                    (participi
+                      (aq0mpp intercalados intercalado))))))
+            (S.F.R
+              (Fc , ,)
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (morfema.verbal-PASS
+                (p0000000 se se))
+              (grup.verb
+                (vmip3p0 usan usar))
+              (sp-CC
+                (prep
+                  (cs como como))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 protección protección)
+                    (sp
+                      (prep
+                        (sps00 contra contra))
+                      (sn
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (ncms000 polen polen)
+                          (S.F.R
+                            (relatiu-SUJ
+                              (pr0cn000 que que))
+                            (morf.pron
+                              (p0300000 se él))
+                            (grup.verb
+                              (vmip3s0 propaga propagar))
+                            (sp-CCL
+                              (prep
+                                (sps00 desde desde))
+                              (sn
+                                (espec.ms
+                                  (da0ms0 el el))
+                                (grup.nom.ms
+                                  (ncms000 maíz maíz)
+                                  (s.a.ms
+                                    (grup.a.ms
+                                      (aq0ms0 transgénico transgénico))))))))))))))))))
+    (Fp . .)))
+(
+  (S*
+    (sno
+      (grup.nom
+        (np0000o EFE EFE)))
+    (sn
+      (grup.nom
+        (nc00000 jab jab)))
+    (sn
+      (grup.nom
+        (nc00000 jla jla)))
+    (Fh / /)
+    (sn
+      (grup.nom
+        (nc00000 rml rml)))
+    (Fp . .)))

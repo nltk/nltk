@@ -1,0 +1,186 @@
+
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0cs0 L' el))
+        (grup.nom.ms
+          (ncms000 equip equip)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (np00000 Tarragona Tarragona))))))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 aconseguir aconseguir))
+      (sadv-CCT
+        (grup.adv
+          (rg ahir ahir)))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 important important)))
+          (ncfs000 victòria victòria)
+          (sp
+            (prep
+              (sps00 sobre sobre))
+            (sn
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (np00000 Amurrio Amurrio))))
+          (sn
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (Z 4-2 4-2)
+              (Fpt -Fpt- -Fpt-)))))
+      (sp-CCL
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (ao0ms0 tercer tercer)))
+            (ncms000 partit partit)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncms000 play-off play-off)
+                  (sp
+                    (prep
+                      (sps00 d' de))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 ascens ascens)
+                        (sp
+                          (prep
+                            (sps00 a a))
+                          (sn
+                            (grup.nom
+                              (np00000 Segona_Divisió_A Segona_Divisió_A))))))))))))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (morf.pron
+        (p0300000 es ell))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 acostar acostar))
+      (sp-CCL
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs
+            (ncfs000 categoria categoria)
+            (S.F.R
+              (sp-CCL
+                (prep
+                  (sps00 en en))
+                (relatiu
+                  (pr0cn000 què què)))
+              (sn.e-SUJ *0*)
+              (neg-MOD
+                (rn no no))
+              (grup.verb
+                (vmip3s0 milita militar))
+              (sn-CCT
+                (sps00 des_de des_de)
+                (vmip3s0 fa fer)
+                (rg més més)
+                (sps00 de de)
+                (z 30 30)
+                (ncmp000 anys any)))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (np00000 Nàstic Nàstic)
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vaip3s0 va anar)
+              (vmn0000 marcar marcar))
+            (sp-CC
+              (prep
+                (sps00 per_mitjà_de per_mitjà_de))
+              (sn.co
+                (sn
+                  (sn
+                    (grup.nom.ms
+                      (np00000 Castillejo Castillejo)))
+                  (sn.j
+                    (grup.nom
+                      (Fpa -Fpa- -Fpa-)
+                      (Z 2 2)
+                      (Fpt -Fpt- -Fpt-))))
+                (Fc , ,)
+                (sn
+                  (grup.nom.ms
+                    (np00000 Prieto Prieto)))
+                (coord
+                  (cc i i))
+                (sn
+                  (grup.nom.ms
+                    (np00000 Herrero Herrero)))))
+            (Fc , ,))))
+      (grup.verb
+        (vmip3s0 suma sumar))
+      (sn-CD.Q
+        (espec.mp
+          (Z 7 7))
+        (grup.nom.mp
+          (ncmp000 punts punt))))
+    (Fx ; ;)
+    (S*
+      (sn-SUJ
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (np00000 Amurrio Amurrio)))
+      (sn-CD.Q
+        (Fc , ,)
+        (grup.nom.p
+          (Z 4 4)))
+      (Fc , ,))
+    (coord
+      (cc i i))
+    (S*
+      (sn.co-SUJ
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (np00000 Zamora Zamora)))
+        (coord
+          (cc i i))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (np00000 Cadis Cadis))))
+      (sn-CD.Q
+        (Fc , ,)
+        (grup.nom.s
+          (Z 1 1))))
+    (Fp . .)))
+(Fp . .)

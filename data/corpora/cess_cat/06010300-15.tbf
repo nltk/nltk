@@ -1,0 +1,631 @@
+
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Paul_L._Ravelo Paul_L._Ravelo)
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (ncms000 doctor doctor)
+            (sp
+              (prep
+                (sps00 en en))
+              (sn
+                (grup.nom.fp
+                  (ncfp000 ciències ciència)
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0fp0 filosòfiques filosòfic))))))
+            (sp
+              (prep
+                (sps00 per per))
+              (sno
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np0000o Universitat_de_l'_Havana Universitat_de_l'_Havana)))))
+          (Fc , ,))))
+    (grup.verb
+      (vmif3s0 impartirà impartir))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (snl
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (np0000l Casa_de_Cultura Casa_de_Cultura)
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (grup.nom
+                (np0000l Girona Girona)))))))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 curs curs)
+        (sna
+          (grup.nom.fp
+            (Fz ' ')
+            (np0000a Els_mites_de_la_globalització_neoliberal Els_mites_de_la_globalització_neoliberal)
+            (Fz ' ')))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (dd0ms0 Aquest aquest))
+      (grup.nom.ms
+        (ncms000 curs curs)
+        (sp
+          (Fc , ,)
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (dn0cp0 tres tres))
+            (grup.nom.fp
+              (ncfp000 sessions sessió)
+              (sp
+                (prep
+                  (sps00 d' de))
+                (sn.x
+                  (espec.fs
+                    (dn0fs0 una un))
+                  (grup.nom.co
+                    (grup.nom.co
+                      (grup.nom.fs
+                        (ncfs000 hora hora))
+                      (coord
+                        (cc i i))
+                      (grup.nom.fs
+                        (pn0fs000 mitja mig)))
+                    (sp.j
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 durada durada)))))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmip3s0 proposa proposar))
+    (sn-CD
+      (espec.fs
+        (dn0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 reflexió reflexió)
+        (sp
+          (prep
+            (sps00 sobre sobre))
+          (sn.co
+            (sn.co
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 globalització globalització)))
+              (coord
+                (cc i i))
+              (sn
+                (espec.mp
+                  (dp3mp0 els_seus el_seu))
+                (grup.nom.mp
+                  (ncmp000 mites mite))))
+            (Fc , ,)
+            (sn
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (ncms000 expansionisme expansionisme)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 militarista militarista)))))
+            (Fc , ,)
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 moviment moviment)
+                (ncfs000 antiglobalització antiglobalització)))
+            (Fc , ,)
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 democràcia democràcia)))
+            (coord
+              (cc i i))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 responsabilitat responsabilitat)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 ciutadana ciutadà)))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 curs curs)))
+      (grup.verb
+        (vmif3s0 tindrà_lloc tenir_lloc))
+      (snd.x-CC
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.co
+          (grup.nom.mp
+            (W dies_10 [??:10/??/??:??.??]))
+          (Fc , ,)
+          (grup.nom.mp
+            (W 11 [??:11/??/??:??.??]))
+          (coord
+            (cc i i))
+          (grup.nom.mp
+            (W 12_de_juny [??:12/06/??:??.??]))))
+      (Fc , ,))
+    (coord
+      (cc i i))
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 horari horari)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (ncfp000 sessions sessió))))))
+      (grup.verb
+        (vsip3s0 és ser))
+      (snd.x-ATR
+        (grup.nom.co
+          (coord
+            (sps00 de de))
+          (grup.nom
+            (W 18.30 [??:??/??/??:18.30]))
+          (coord
+            (sps00 a a))
+          (snd
+            (grup.nom
+              (W 20_hores [??:??/??/??:20.00]))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Ravelo Ravelo)))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (snl
+        (grup.nom
+          (np0000l Girona Girona))))
+    (S.NF.P-CPRED.SUJ
+      (participi
+        (aq0msp convidat convidat))
+      (sp
+        (prep
+          (sps00 per per))
+        (sna
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 càtedra càtedra)
+            (snp
+              (grup.nom
+                (np0000p Ferrater_Mora Ferrater_Mora)))
+            (sp
+              (prep
+                (sps00 de de))
+              (sna
+                (grup.nom
+                  (np0000a Pensament_Contemporani Pensament_Contemporani))))
+            (sp
+              (prep
+                (sps00 de de))
+              (sno
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np0000o Universitat_de_Girona Universitat_de_Girona))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmif3s0 Tractarà tractar))
+    (sn.co-CD
+      (sp.j
+        (prep
+          (sps00 entre entre))
+        (sn
+          (espec.mp
+            (di0cp0 altres altre))
+          (grup.nom.mp
+            (ncmp000 aspectes aspecte))))
+      (sn.co
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 canvi canvi)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 tecnològic tecnològic)))))
+        (Fc , ,)
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 fi fi)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.ms
+                  (da0cs0 l' el))
+                (grup.nom.ms
+                  (ncms000 estat-nació estat-nació))))))
+        (Fc , ,)
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 biotecnologia biotecnologia)))
+        (Fc , ,)
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 militarisme militarisme)))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn.co-SUJ
+        (sn
+          (espec.fs
+            (da0fs0 La el))
+          (grup.nom.fs
+            (ncfs000 globalització globalització)
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 neoliberal neoliberal)))))
+        (coord
+          (cc i i))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 resistència resistència)
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 ciutadana ciutadà)))
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 internacional internacional))))))
+      (morfema.verbal-PASS
+        (p0000000 es es))
+      (grup.verb
+        (vmif3p0 debatran debatre))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (ao0fs0 segona segon)))
+            (ncfs000 sessió sessió))))
+      (Fx ; ;))
+    (coord
+      (cc i i))
+    (S
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ao0fs0 tercera tercer))))
+      (morfema.verbal-PASS
+        (p0000000 es es))
+      (grup.verb
+        (vmif3s0 posarà posar))
+      (sn-SUJ
+        (grup.nom.ms
+          (ncms000 èmfasi èmfasi)))
+      (sp-CREG
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 situació situació)
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Cuba Cuba))))
+            (sp
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 context context)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 globalització globalització))))
+                  (sp
+                    (prep
+                      (sps00 d' de))
+                    (sadv
+                      (grup.adv
+                        (rg avui_dia avui_dia)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (S.NF.P
+          (participi
+            (aq0msp Nascut nascut))
+          (sp-CC
+            (prep
+              (sps00 a a))
+            (snl
+              (snl
+                (grup.nom
+                  (np0000l L'_Havana L'_Havana)))
+              (snl.j
+                (grup.nom
+                  (Fpa -Fpa- -Fpa-)
+                  (np0000l Cuba Cuba)
+                  (Fpt -Fpt- -Fpt-)))))
+          (snd-CC
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (W any_1962 [??:??/??/1962:??.??])))
+          (Fc , ,))
+        (np0000p Ravelo Ravelo)))
+    (grup.verb
+      (vsip3s0 és ser))
+    (snp-ATR
+      (snp
+        (grup.nom.ms
+          (ncms000 doctor doctor)
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (grup.nom
+                (np0000a Ciències_Filosòfiques Ciències_Filosòfiques))))
+          (sp
+            (prep
+              (sps00 per per))
+            (sno
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs.1n
+                (np0000o Universitat_de_l'_Havana Universitat_de_l'_Havana))))))
+      (snd.j
+        (grup.nom.ms
+          (Fpa -Fpa- -Fpa-)
+          (W 1998 [??:??/??/1998:??.??])
+          (Fpt -Fpt- -Fpt-))))
+    (S.F.R.co.1c
+      (Fc , ,)
+      (relatiu-CC
+        (pr000000 on on))
+      (S.F.R
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmip3s0 treballa treballar))
+        (sp-CPRED.SUJ
+          (prep
+            (sps00 com_a com_a))
+          (snp
+            (grup.nom.ms
+              (ncms000 professor professor)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 auxiliar auxiliar)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sno
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np0000o Facultat_de_Filosofia_,_Sociologia_i_Història Facultat_de_Filosofia_,_Sociologia_i_Història))))))))
+      (coord
+        (cc i i))
+      (S.F.R
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmip3s0 imparteix impartir))
+        (sn.x-CD
+          (grup.nom.co
+            (grup.nom.co
+              (grup.nom.fp
+                (ncfp000 classes classe)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sna
+                    (grup.nom.ms
+                      (np0000a Pensament Pensament)
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0ms0 filosòfic filosòfic)))
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0ms0 contemporani contemporani))))))
+                (Fc , ,))
+              (coord
+                (cc i i))
+              (grup.nom.mp
+                (ncmp000 cursos curs)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn.x
+                    (grup.nom.co
+                      (grup.nom.ms
+                        (ncms000 postgrau postgrau))
+                      (Fc , ,)
+                      (grup.nom.fs
+                        (ncfs000 mestria mestria))
+                      (coord
+                        (cc i i))
+                      (grup.nom.ms
+                        (ncms000 doctorat doctorat)))))))
+            (sp.j
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.ms
+                  (da0cs0 l' el))
+                (grup.nom.ms
+                  (ncms000 àmbit àmbit)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn.co
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 filosofia filosofia)
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0fs0 contemporània contemporani)))))
+                      (Fc , ,)
+                      (sn
+                        (espec.fs
+                          (da0cs0 l' el))
+                        (grup.nom.fs
+                          (ncfs000 ètica ètica)))
+                      (coord
+                        (cc i i))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 globalització globalització))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vaip3s0 Ha haver)
+      (vmp00sm participat participar))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.mp
+          (rg més més)
+          (sps00 de de)
+          (dn0cp0 quaranta quaranta))
+        (grup.nom.mp
+          (ncmp000 congressos congrés)
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 científics científic)))
+          (s.a.mp.x
+            (grup.a.mp.co
+              (grup.a.mp
+                (aq0cp0 nacionals nacional))
+              (coord
+                (cc i i))
+              (grup.a.mp
+                (aq0cp0 internacionals internacional)))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.AConc-AO
+      (conj.subord
+        (cs Tot_i_que tot_i_que))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 matrícula matrícula)
+          (sp
+            (prep
+              (spcms al al))
+            (sn
+              (grup.nom.ms
+                (ncms000 curs curs))))))
+      (grup.verb
+        (vsip3s0 és ser))
+      (sa-ATR
+        (grup.a
+          (aq0fs0 gratuïta gratuït))))
+    (grup.verb
+      (vmip3s0 cal caldre))
+    (S.NF.C-SUJ
+      (infinitiu
+        (vmn0000 inscriure inscriure))
+      (morf.pron
+        (p0300000 's ell))
+      (sp.co-CC
+        (sp
+          (prep
+            (sps00 a a))
+          (snl
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 secretaria secretaria)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sno
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np0000o Casa_Cultura Casa_Cultura)))))))
+        (coord
+          (cc o o))
+        (sp
+          (prep
+            (spcms a_través_del a_través_del))
+          (sna
+            (grup.nom.ms
+              (ncms000 correu correu)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 electrònic electrònic)))
+              (sna
+                (grup.nom
+                  (np0000a secretaria@casadecultura.org secretaria@casadecultura.org))))))))
+    (Fp . .)))

@@ -1,0 +1,76 @@
+
+(
+  (S*
+    (sn.x
+      (grup.nom.co
+        (grup.nom.co
+          (grup.nom.mp
+            (ncmp000 Resultados resultado))
+          (coord
+            (cc y y))
+          (grup.nom.fp
+            (ncfp000 estadísticas estadística)))
+        (sp.j
+          (prep
+            (sps00 de de))
+          (sna
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000a Liga_Americana_de_Béisbol Liga_Americana_de_Béisbol)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 profesional profesional)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sna
+                  (espec.fp
+                    (da0fp0 las el))
+                  (grup.nom.fp
+                    (np0000a Grandes_Ligas Grandes_Ligas)))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 Los el))
+        (grup.nom.mp
+          (ncmp000 equipos equipo)
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (s.a.fs
+                  (grup.a.fs
+                    (ao0fs0 primera primero)))
+                (ncfs000 columna columna))))))
+      (grup.verb
+        (vmip3p0 juegan jugar))
+      (sp-CPRED.SUJ
+        (prep
+          (cs como como))
+        (s.a.mp
+          (grup.a.mp
+            (aq0cp0 locales local)))))
+    (coord
+      (cc y y))
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 horario horario)))
+      (grup.verb
+        (vsip3s0 es ser))
+      (sp-ATR
+        (prep
+          (spcms del del))
+        (snl
+          (grup.nom.ms
+            (np0000l Este Este)))))
+    (Fp . .)))

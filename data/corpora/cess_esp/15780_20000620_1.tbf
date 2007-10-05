@@ -1,0 +1,513 @@
+
+(
+  (S
+    (sn.e-SUJ *0*)
+    (sadv-MOD
+      (grup.adv
+        (rg También también)))
+    (grup.verb
+      (vmip3p0 afirman afirmar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3p0 están estar))
+      (S.NF.P-ATR
+        (participi
+          (aq0mpp dispuestos dispuesto))
+        (sp-CREG
+          (prep
+            (sps00 a a))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 ayudar ayudar))
+            (sp-CD
+              (prep
+                (sps00 a a))
+              (sno
+                (grup.nom
+                  (np0000o Rusia Rusia))))
+            (sp-CREG
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.mp
+                  (dp3cp0 sus su))
+                (grup.nom.mp
+                  (ncmp000 esfuerzos esfuerzo)
+                  (sp
+                    (prep
+                      (sps00 por por))
+                    (S.NF.C
+                      (infinitiu
+                        (vmn0000 fortalecer fortalecer))
+                      (sn.co-CD
+                        (sn
+                          (espec.fp
+                            (da0fp0 las el))
+                          (grup.nom.fp
+                            (ncfp000 instituciones institución)
+                            (s.a.fp
+                              (grup.a.fp
+                                (aq0fp0 democráticas democrático)))))
+                        (Fc , ,)
+                        (sna
+                          (espec.ms
+                            (da0ms0 el el))
+                          (grup.nom.ms
+                            (np0000o Estado Estado)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (grup.nom.ms
+                                  (ncms000 derecho derecho))))))
+                        (coord
+                          (cc y y))
+                        (sn
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (ncfs000 economía economía)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (grup.nom.ms
+                                  (ncms000 mercado mercado))))))))))))))))
+    (S.F.AConc-AO
+      (Fc , ,)
+      (conj.subord
+        (cs aunque aunque))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3p0 recuerdan recordar))
+      (sp-CI
+        (prep
+          (sps00 a a))
+        (sno
+          (grup.nom
+            (np0000o Moscú Moscú))))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 importancia importancia)
+          (sp
+            (prep
+              (sps00 de de))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 garantizar garantizar))
+              (sn-CD
+                (Fe " ")
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 independencia independencia)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.mp
+                        (da0mp0 los el))
+                      (grup.nom.mp
+                        (ncmp000 medios medio)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (grup.nom.fs
+                              (ncfs000 comunicación comunicación))))))))
+                (Fe " ")))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn.co-SUJ
+        (sno
+          (espec.fs
+            (da0fs0 La el))
+          (grup.nom.fs
+            (np0000o Unión_Europea Unión_Europea)))
+        (coord
+          (cc y y))
+        (sno
+          (grup.nom
+            (np0000o Rusia Rusia))))
+      (grup.verb
+        (vmip3p0 tienen tener))
+      (sn-CD.Q
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 acuerdo acuerdo)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn.x
+              (grup.nom.co
+                (grup.nom.fs
+                  (np0000a Asociación Asociación))
+                (coord
+                  (cc y y))
+                (grup.nom.fs
+                  (np0000a Cooperación Cooperación)))))
+          (S.NF.P
+            (Fc , ,)
+            (participi
+              (aq0msp firmado firmado))
+            (sp-CCT
+              (prep
+                (sps00 en en))
+              (snd
+                (grup.nom.ms
+                  (W 1994 [??:??/??/1994:??.??]))))
+            (Fc , ,)))))
+    (coord
+      (cc y y))
+    (S
+      (sp-CCT
+        (prep
+          (sps00 en en))
+        (snd
+          (grup.nom.ms
+            (W junio [??:??/06/??:??.??])
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (S.NF.P
+                    (participi
+                      (aq0msp pasado pasado)))
+                  (ncms000 año año)))))))
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (pn0cp000 Quince quince)))
+      (grup.verb
+        (vmis3p0 aprobaron aprobar))
+      (sadv-MOD
+        (grup.adv
+          (rg también también)))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (Fe " ")
+          (ncfs000 estrategia estrategia)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 común común)))
+          (Fe " ")
+          (sp
+            (prep
+              (sps00 para para))
+            (sn
+              (espec.fp
+                (dp3cp0 sus su))
+              (grup.nom.fp
+                (ncfp000 relaciones relación)
+                (sp
+                  (prep
+                    (sps00 con con))
+                  (sn
+                    (espec.ms
+                      (dd0ms0 ese ese))
+                    (grup.nom.ms
+                      (ncms000 país país)))))))))
+      (sp-CC
+        (Fc , ,)
+        (prep
+          (sps00 con_el_fin_de con_el_fin_de))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 ayudarle ayudar))
+          (sp-CREG
+            (prep
+              (sps00 a a))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 fomentar fomentar))
+              (sn-CD
+                (Fe " ")
+                (espec.fs
+                  (di0fs0 una uno))
+                (grup.nom.fs
+                  (ncfs000 democracia democracia)
+                  (s.a.fs.x
+                    (grup.a.fs.co
+                      (grup.a.fs
+                        (aq0cs0 estable estable))
+                      (Fc , ,)
+                      (participi
+                        (aq0fsp abierta abierto))
+                      (coord
+                        (cc y y))
+                      (grup.a.fs
+                        (aq0cs0 pluralista pluralista)))))
+                (Fe " "))
+              (sp-CCL
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.fs
+                    (di0fs0 una uno))
+                  (grup.nom.fs
+                    (Fe " ")
+                    (ncfs000 economía economía)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 mercado mercado))))
+                    (Fe " ")))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (np0000o UE UE)))
+    (grup.verb
+      (vsip3s0 es ser))
+    (sn-ATR
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 principal principal)))
+        (ncms000 socio socio)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 comercial comercial)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (grup.nom
+              (np0000o Moscú Moscú))))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 por_delante_de por_delante_de))
+      (sn.x
+        (grup.nom.co
+          (grup.nom
+            (np0000o Estados_Unidos Estados_Unidos))
+          (coord
+            (cc y y))
+          (grup.nom
+            (np0000o Japón Japón)))))
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (spcms Pese_al pese_al))
+      (sn
+        (grup.nom.ms
+          (ncms000 malestar malestar)
+          (S.NF.P
+            (participi
+              (aq0msp provocado provocado))
+            (sp-CAG
+              (prep
+                (sps00 por por))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 actuación actuación)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sno
+                      (grup.nom.ms
+                        (np0000o Ejército Ejército)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0ms0 ruso ruso))))))
+                  (sp
+                    (prep
+                      (sps00 en en))
+                    (snl
+                      (grup.nom
+                        (np0000l Chechenia Chechenia))))
+                  (S.NF.P
+                    (Fc , ,)
+                    (participi
+                      (aq0fsp condenada condenado))
+                    (sp-CCT
+                      (prep
+                        (sps00 en en))
+                      (sn
+                        (espec.fp
+                          (di0fp0 varias varios))
+                        (grup.nom.fp
+                          (ncfp000 ocasiones ocasión))))
+                    (sp-CAG
+                      (prep
+                        (sps00 por por))
+                      (sno
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (np0000o UE UE)))))))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.mp
+        (pn0cp000 Quince quince)))
+    (grup.verb
+      (vmis3p0 optaron optar))
+    (sp-CREG
+      (sadv.j
+        (grup.adv
+          (rg sólo sólo)))
+      (sp
+        (prep
+          (sps00 por por))
+        (sn
+          (grup.nom.fp
+            (s.a.fp
+              (grup.a.fp
+                (aq0fp0 tibias tibio)))
+            (ncfp000 sanciones sanción)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 castigo castigo))))
+            (s.a.fp
+              (Fc , ,)
+              (grup.a.fp
+                (grup.a.fp
+                  (sadv
+                    (espec
+                      (rg mucho mucho))
+                    (grup.adv
+                      (rg más más)))
+                  (aq0cp0 testimoniales testimonial))
+                (S.F.AComp*.j
+                  (conj.subord
+                    (cs que que))
+                  (sa
+                    (grup.a
+                      (aq0fp0 efectivas efectivo))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CCT
+      (grup.adv
+        (rg Ya ya)))
+    (snd-CCT
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (S.NF.P
+          (participi
+            (aq0msp pasado pasado)))
+        (W marzo [??:??/03/??:??.??])))
+    (sp-CCT
+      (Fc , ,)
+      (prep
+        (sps00 durante durante))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 cumbre cumbre)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 extraordinaria extraordinario)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (espec.fs
+                (da0fs0 la el))
+              (grup.a.fs
+                (np0000o UE UE))))
+          (sp
+            (prep
+              (sps00 en en))
+            (snl
+              (grup.nom
+                (np0000l Lisboa Lisboa))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.mp
+        (pn0cp000 Quince quince)))
+    (grup.verb
+      (vmis3p0 pidieron pedir))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sno
+        (grup.nom
+          (np0000o Rusia Rusia))))
+    (S.F.C.co-CD
+      (conj.subord
+        (cs que que))
+      (S.F.C
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmsi3s0 hiciera hacer))
+        (Fe " ")
+        (sn-CD
+          (grup.nom.ms
+            (ncms000 honor honor)))
+        (sp-CC
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.mp
+              (dp3cp0 sus su))
+            (grup.nom.mp
+              (ncmp000 compromisos compromiso))))
+        (Fe " "))
+      (coord
+        (cc y y))
+      (S.F.C
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmsi3s0 pusiera_fin poner_fin))
+        (sp-CREG
+          (Fe " ")
+          (prep
+            (spcms al al))
+          (sn
+            (grup.nom.ms
+              (ncms000 uso uso)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 indiscriminado indiscriminado)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 fuerza fuerza)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0cs0 militar militar))))))))
+          (Fe " "))
+        (sp-CCL
+          (prep
+            (sps00 en en))
+          (snl
+            (grup.nom
+              (np0000l Chechenia Chechenia))))))))

@@ -1,0 +1,808 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 taxa taxa)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.ms
+              (ncms000 atur atur))))))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm incrementat incrementar))
+    (sp-CREG
+      (prep
+        (sps00 d' de))
+      (sn
+        (espec.fs
+          (rg una_mica una_mica)
+          (rg més més)
+          (sps00 d' de)
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 dècima dècima))))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (snl
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 comarca comarca)
+          (sp
+            (prep
+              (spcms del del))
+            (snl
+              (grup.nom.ms
+                (np0000l Garraf Garraf)))))))
+    (sp-AO
+      (prep
+        (spcms respecte_del respecte_del))
+      (sn
+        (grup.nom.ms
+          (ncms000 mes mes)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 anterior anterior))))))
+    (sp-AO
+      (Fc , ,)
+      (prep
+        (sps00 segons segons))
+      (sn
+        (grup.nom.fp
+          (ncfp000 dades dada)
+          (S.NF.P
+            (participi
+              (aq0fpp facilitades facilitat))
+            (sp-CAG
+              (prep
+                (spcms pel pel))
+              (sno
+                (grup.nom.ms
+                  (np0000o Departament_de_Treball Departament_de_Treball)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sno
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (np0000o Generalitat Generalitat))))))))
+          (s.a.fp
+            (grup.a.fp
+              (aq0cp0 corresponents corresponent)
+              (sp
+                (prep
+                  (spcms al al))
+                (snd
+                  (grup.nom.ms
+                    (W gener [??:??/01/??:??.??])))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el)
+        (dn0cp0 cinquanta-nou cinquanta-nou))
+      (grup.nom.fp
+        (ncfp000 persones persona)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vaip3p0 han haver)
+            (vmp00sm entrat entrar))
+          (sp-CCL
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (ncms000 atur atur))))
+          (sp-CCL
+            (prep
+              (spcms al al))
+            (snl
+              (grup.nom.ms
+                (np0000l Garraf Garraf)))))))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm situat situar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 taxa taxa)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 actual actual)))))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (snn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (Zp 7'02% 7.02/100)
+          (snn
+            (Fc , ,)
+            (espec.fp
+              (Z 1'4 1.4))
+            (grup.nom.fp
+              (ncfp000 dècimes dècima)
+              (sadv
+                (grup.adv
+                  (rg per_sobre per_sobre)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (snn
+                      (grup.nom.ms
+                        (Z 6'88 6.88)
+                        (S.NF.P
+                          (participi
+                            (aq0msp registrat registrat))
+                          (sp-CCT
+                            (prep
+                              (sps00 durant durant))
+                            (snd
+                              (espec.ms
+                                (da0ms0 el el))
+                              (grup.nom.ms
+                                (W mes_de_desembre [??:??/12/??:??.??])))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (dd0fs0 Aquesta aquest))
+      (grup.nom.fs
+        (ncfs000 dada dada)))
+    (grup.verb
+      (vmip3s0 situa situar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 comarca comarca)))
+    (sadv-CREG
+      (grup.adv
+        (rg per_sobre per_sobre)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 mitjana mitjana)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 demarcació demarcació))))
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vsip3s0 és ser))
+                (sp-ATR
+                  (prep
+                    (spcms del del))
+                  (snn
+                    (grup.nom.ms
+                      (Zp 6'94% 6.94/100))))))))))
+    (S.F.A-CC
+      (conj.subord
+        (cs ja_que ja_que))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3s0 ha haver)
+        (vmp00sm pujat pujar))
+      (snn-CD
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (Zp 1'82% 1.82/100))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CCT
+      (grup.adv
+        (rg Actualment actualment)))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 comarca comarca))))
+    (morf.pron
+      (pp3cn000 hi hi))
+    (grup.verb
+      (vaip3s0 ha haver))
+    (sn-CD.Q
+      (espec.mp
+        (Z 2.861 2861))
+      (grup.nom.mp
+        (ncmp000 aturats aturat)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.fs
+              (di0fs0 una un))
+            (grup.nom.fs
+              (ncfs000 població població)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 activa actiu)))
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vmip3s0 supera superar))
+                (sn-CD
+                  (espec.fp
+                    (da0fp0 les el)
+                    (Z 40.700 40700))
+                  (grup.nom.fp
+                    (ncfp000 persones persona)))))))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 municipis municipi)
+        (sp
+          (prep
+            (spcms del del))
+          (snl
+            (grup.nom.ms
+              (np0000l Garraf Garraf)
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vmip3p0 tenen tenir))
+                (sn-CD.Q
+                  (espec.fs
+                    (di0fs0 una un))
+                  (grup.nom.fs
+                    (ncfs000 taxa taxa)
+                    (sp
+                      (prep
+                        (sps00 d' de))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 atur atur))))
+                    (S.NF.P
+                      (sadv-CC
+                        (grup.adv
+                          (rg més més)))
+                      (participi
+                        (aq0fsp elevada elevat)))))))))))
+    (sn.x
+      (grup.nom.co
+        (grup.nom.co
+          (grup.nom
+            (np0000l Canyelles Canyelles))
+          (coord
+            (cc i i))
+          (grup.nom
+            (np0000l Cubelles Cubelles)))
+        (S.F.R.j
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3p0 superen superar))
+          (sn.co-CD
+            (sn.co
+              (snn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (Zp 9% 9/100)))
+              (coord
+                (cc i i))
+              (snn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (Zp 8% 8/100))))
+            (sadv.j
+              (grup.adv
+                (rg respectivament respectivament)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (dd0fp0 Aquestes aquest))
+      (grup.nom.fp
+        (ncfp000 poblacions població)))
+    (morf.pron
+      (p0300000 se ell))
+    (grup.verb
+      (vmip3p0 situen situar))
+    (sp-CREG
+      (prep
+        (sps00 entre entre))
+      (sn
+        (espec.mp.co
+          (espec.mp
+            (Z 1'5 1.5))
+          (coord
+            (cc i i))
+          (espec.mp
+            (Z 2 2)))
+        (grup.nom.mp
+          (ncmp000 punts punt)
+          (sadv
+            (grup.adv
+              (rg per_sobre per_sobre)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 mitjana mitjana)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0cs0 comarcal comarcal)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Entre entre))
+      (sn
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (ncmp000 municipis municipi)
+          (sp
+            (prep
+              (sps00 amb amb))
+            (sn
+              (espec.fs
+                (di0fs0 una un))
+              (grup.nom.fs
+                (ncfs000 ocupació ocupació)
+                (s.a.fs
+                  (espec
+                    (rg més més))
+                  (grup.a.fs
+                    (aq0fs0 alta alt)))))))))
+    (morf.pron
+      (pp3cn000 hi hi))
+    (grup.verb
+      (vaip3s0 ha haver))
+    (snl-CD.Q
+      (grup.nom
+        (np0000l Olivella Olivella)))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 taxa taxa)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom.ms
+                (ncms000 atur atur))))
+          (sadv
+            (grup.adv
+              (rg per_sota per_sota)
+              (sp
+                (prep
+                  (spcms del del))
+                (snn
+                  (grup.nom.ms
+                    (Zp 5'5% 5.5/100)))))))))
+    (Fp . .)))
+(
+  (S
+    (snl-SUJ
+      (grup.nom
+        (np0000l Catalunya Catalunya)))
+    (grup.verb
+      (vmip3s0 segueix seguir)
+      (gerundi
+        (vsg0000 sent ser)))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 territori territori)
+        (sp
+          (prep
+            (sps00 amb amb))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 taxa taxa)
+              (s.a.fs
+                (espec
+                  (rg més més))
+                (grup.a.fs
+                  (aq0fs0 baixa baix)))
+              (sp
+                (prep
+                  (sps00 d' de))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 atur atur)
+                    (S.NF.P
+                      (participi
+                        (aq0msp registrat registrat))
+                      (sp-CCL
+                        (prep
+                          (sps00 a a))
+                        (sno
+                          (espec.ms
+                            (da0cs0 l' el))
+                          (grup.nom.ms
+                            (np0000o Estat Estat)
+                            (s.a.ms
+                              (grup.a.ms
+                                (aq0ms0 espanyol espanyol))))))))))
+              (sp
+                (prep
+                  (sps00 amb amb))
+                (snn
+                  (espec.ms
+                    (di0ms0 un un))
+                  (grup.nom.ms
+                    (Zp 6,6% 6.6/100)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 població població)
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0fs0 activa actiu))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-ET
+      (prep
+        (sps00 No_obstant no_obstant))
+      (sn
+        (grup.nom.ms
+          (pd0ns000 això això)))
+      (Fc , ,))
+    (sp-CCT
+      (prep
+        (spcms al al))
+      (snd
+        (grup.nom.ms
+          (W gener [??:??/01/??:??.??]))))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 nombre nombre)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.mp
+              (ncmp000 desocupats desocupat))))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 incrementar incrementar))
+    (morf.pron
+      (p0300000 -se ell))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fp
+          (Z 3.482 3482))
+        (grup.nom.fp
+          (ncfp000 persones persona))))
+    (S.F.AConc-AO
+      (Fc , ,)
+      (conj.subord
+        (cs de_manera_que de_manera_que))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 xifra xifra)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 total total)))))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 arribar arribar))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fp
+            (da0fp0 les el)
+            (Z 177.656 177656))
+          (grup.nom.fp
+            (ncfp000 persones persona)))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Per per))
+      (sn
+        (grup.nom.fp
+          (ncfp000 demarcacions demarcació)))
+      (Fc , ,))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (snl
+        (grup.nom
+          (np0000l Barcelona Barcelona))))
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (ncms000 atur atur)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 pujar pujar))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fp
+          (Z 2.494 2494))
+        (grup.nom.fp
+          (ncfp000 persones persona)
+          (snn
+            (Fc , ,)
+            (espec.ms
+              (di0ms0 un un))
+            (grup.nom.ms
+              (grup.nom.ms
+                (Zp 1,82% 1.82/100)
+                (sadv
+                  (grup.adv
+                    (rg més més))))
+              (S.F.AComp*.j
+                (conj.subord
+                  (cs que que))
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 mes mes)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0cs0 anterior anterior)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCL
+      (prep
+        (sps00 A a))
+      (snl
+        (grup.nom
+          (np0000l Girona Girona))))
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (ncms000 augment augment)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 concretar concretar))
+    (morfema.verbal-PASS
+      (p0000000 -se es))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fp
+          (Z 553 553))
+        (grup.nom.fp
+          (ncfp000 persones persona))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 increment increment)
+          (sp
+            (prep
+              (spcms del del))
+            (snn
+              (grup.nom.ms
+                (Zp 3,58% 3.58/100)))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sp-CCL
+        (prep
+          (sps00 A a))
+        (snl
+          (grup.nom
+            (np0000l Lleida Lleida))))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 col·lectiu col·lectiu)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 aturats aturat))))))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 registrar registrar))
+      (sn.co-CD
+        (sn
+          (espec.fp
+            (Z 274 274))
+          (grup.nom.fp
+            (ncfp000 persones persona)
+            (sadv
+              (grup.adv
+                (rg més més)))))
+        (coord
+          (cc i i))
+        (snn
+          (espec.ms
+            (di0ms0 un un))
+          (grup.nom.ms
+            (Zp 4,47% 4.47/100))))
+      (Fc , ,))
+    (coord
+      (cc mentre_que mentre_que))
+    (S
+      (sp-CCL
+        (prep
+          (sps00 a a))
+        (snl
+          (grup.nom
+            (np0000l Tarragona Tarragona))))
+      (morf.pron
+        (pp3cn000 hi hi))
+      (grup.verb
+        (vaip3s0 va anar)
+        (van0000 haver haver))
+      (sn-CD.Q
+        (espec.mp
+          (Z 161 161))
+        (grup.nom.mp
+          (ncmp000 aturats aturat)
+          (sadv
+            (grup.adv
+              (rg més més)))))
+      (sp-CC
+        (Fc , ,)
+        (prep
+          (sps00 amb amb))
+        (sn
+          (espec.ms
+            (di0ms0 un un))
+          (grup.nom.ms
+            (ncms000 augment augment)
+            (sp
+              (prep
+                (sps00 de de))
+              (snn
+                (espec.ms
+                  (da0cs0 l' el))
+                (grup.nom.ms
+                  (Zp 1,04% 1.04/100))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sadv-CCT
+        (grup.adv
+          (rg Ara ara)))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 taxa taxa)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom.ms
+                (ncms000 atur atur))))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fp
+                (da0fp0 les el)
+                (dn0cp0 quatre quatre))
+              (grup.nom.fp
+                (ncfp000 demarcacions demarcació))))))
+      (morf.pron
+        (p0300000 se ell))
+      (grup.verb
+        (vmip3s0 situa situar))
+      (sp-CREG
+        (prep
+          (sps00 en en))
+        (snn
+          (espec.ms
+            (di0ms0 un un))
+          (grup.nom.ms
+            (Zp 6,94% 6.94/100))))
+      (sp-CCL
+        (prep
+          (sps00 a a))
+        (snl
+          (grup.nom
+            (np0000l Barcelona Barcelona)))))
+    (Fc , ,)
+    (S*
+      (snn
+        (grup.nom.ms
+          (Zp 6,2% 6.2/100)))
+      (sp
+        (prep
+          (sps00 a a))
+        (snl
+          (grup.nom
+            (np0000l Girona Girona)))))
+    (Fc , ,)
+    (S*
+      (snn
+        (grup.nom.ms
+          (Zp 4,47% 4.47/100)))
+      (sp
+        (prep
+          (sps00 a a))
+        (snl
+          (grup.nom
+            (np0000l Lleida Lleida)))))
+    (coord
+      (cc i i))
+    (S*
+      (snn
+        (grup.nom.ms
+          (Zp 5,64% 5.64/100)))
+      (sp
+        (prep
+          (sps00 a a))
+        (snl
+          (grup.nom
+            (np0000l Tarragona Tarragona)))))
+    (Fp . .)))

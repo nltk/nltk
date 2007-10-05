@@ -1,0 +1,120 @@
+
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fp
+          (da0fp0 Les el))
+        (grup.nom.fp
+          (ncfp000 obres obra)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.ms
+                (dd0ms0 aquest aquest))
+              (grup.nom.ms
+                (ncms000 tram tram)
+                (sp
+                  (Fc , ,)
+                  (prep
+                    (sps00 de de))
+                  (snn
+                    (espec.mp
+                      (Z 475 475))
+                    (grup.nom.mp
+                      (ncmp000 metres metre)))
+                  (Fc , ,)))))))
+      (grup.verb
+        (vmif3p0 dotaran dotar))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 calçada calçada)))
+      (sp-CREG
+        (prep
+          (sps00 de de))
+        (sn
+          (grup.nom.fp
+            (ncfp000 característiques característica)
+            (s.a.fp
+              (espec
+                (rg més més))
+              (grup.a.fp
+                (aq0fp0 urbanes urbà)))))))
+    (Fc , ,)
+    (S
+      (sn.e-SUJ *0*)
+      (sn-CD
+        (grup.nom.s
+          (pp3csa00 l' ell)))
+      (grup.verb
+        (vmif3p0 ampliaran ampliar))
+      (sp-CC
+        (prep
+          (sps00 a a))
+        (snn
+          (espec.mp
+            (dn0cp0 set set))
+          (grup.nom.mp
+            (ncmp000 metres metre)))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (sn-CCL
+        (grup.nom
+          (pp3cn000 hi hi)))
+      (grup.verb
+        (vmif3p0 crearan crear))
+      (sn-CD
+        (grup.nom.mp
+          (ncmp000 aparcaments aparcament))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 Els el))
+        (grup.nom.mp
+          (ncmp000 treballs treball)
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmif3p0 començaran començar))
+            (sp-CCT
+              (prep
+                (spcms al al))
+              (snd
+                (grup.nom.ms
+                  (W febrer [??:??/02/??:??.??]))))
+            (Fc , ,))))
+      (grup.verb
+        (vmif3p0 duraran durar))
+      (sn-CD.Q
+        (espec.mp
+          (dn0cp0 vuit vuit))
+        (grup.nom.mp
+          (ncmp000 mesos mes))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmif3p0 costaran costar))
+      (snn-CD.Q
+        (espec.mp
+          (Z 62 62))
+        (grup.nom.mp
+          (ncmp000 milions milió)
+          (sp
+            (prep
+              (sps00 de de))
+            (snn
+              (grup.nom.fp
+                (Zm pessetes pesseta)))))))
+    (Fp . .)))

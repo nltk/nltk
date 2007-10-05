@@ -1,0 +1,149 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (rg Més més)
+        (sps00 de de)
+        (Z 700.000 700000))
+      (grup.nom.fp.1n
+        (ncfp000 persones persona)))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 participar participar))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 festa festa)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 treball treball)))))))
+    (sn.1c
+      (Fc , ,)
+      (grup.nom.fs
+        (ncfs000 xifra xifra)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 superior superior)
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 previsió previsió)
+                  (sp
+                    (prep
+                      (spcmp dels del))
+                    (sn
+                      (grup.nom.mp
+                        (ncmp000 organitzadors organitzador)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (nccs000 líder líder)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 comunista comunista)))
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (np00000 Guennadi_Ziugànov Guennadi_Ziugànov))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 aprofitar aprofitar))
+    (sn-CD
+      (espec.fs
+        (da0cs0 l' el))
+      (grup.nom.fs
+        (ncfs000 ocasió ocasió)))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 criticar criticar))
+        (sn-CD
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 política política)
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 econòmica econòmic)))))
+        (S
+          (Fd : :)
+          (Fe " ")
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vaip1p0 Hem haver)
+            (vmp00sm entrat entrar))
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (s.a.fs
+                  (grup.a.fs
+                    (ao0fs0 tercera tercer)))
+                (ncfs000 fase fase)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 política política)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0cs0 antipopular antipopular)))))))))
+          (sp-CC
+            (Fx ; ;)
+            (prep
+              (sps00 amb amb))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 privatització privatització)
+                (sp
+                  (prep
+                    (spcmp dels del))
+                  (sn.co
+                    (sn
+                      (grup.nom.mp
+                        (ncmp000 ferrocarrils ferrocarril)))
+                    (Fc , ,)
+                    (sn
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 monopoli monopoli)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0ms0 elèctric elèctric)))))
+                    (coord
+                      (cc i i))
+                    (sn
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 gas gas))))))))
+          (Fe " "))))
+    (Fp . .)))

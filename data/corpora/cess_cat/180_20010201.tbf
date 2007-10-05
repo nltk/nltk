@@ -1,0 +1,147 @@
+
+(
+  (S
+    (sn-SUJ
+      (grup.nom
+        (np00000 Tele_5 Tele_5)))
+    (grup.verb
+      (vmip3s0 inicia iniciar))
+    (sp-CCT
+      (Fc , ,)
+      (prep
+        (sps00 a_partir_d' a_partir_de))
+      (sadv
+        (grup.adv
+          (rg avui avui)))
+      (Fc , ,))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 campanya campanya)
+        (sn
+          (grup.nom
+            (Fz ' ')
+            (np00000 Por_el_respeto_al_medio_ambiente Por_el_respeto_al_medio_ambiente)
+            (Fz ' ')))
+        (S.NF.P
+          (Fc , ,)
+          (participi
+            (aq0fsp inclosa inclòs))
+          (sp-CREG
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 projecte projecte)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 solidari solidari)))
+                (sn
+                  (grup.nom
+                    (Fz ' ')
+                    (np00000 12_meses_,_12_causas 12_meses_,_12_causas)
+                    (Fz ' ')))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Durant durant))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 mes mes)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 cadena cadena)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fsp privada privat)))))
+    (grup.verb
+      (vmif3s0 buscarà buscar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 sensibilització sensibilització)
+        (sp
+          (prep
+            (spcmp dels del))
+          (sn
+            (grup.nom.mp
+              (ncmp000 teleespectadors teleespectador))))))
+    (S.NF.A-CC
+      (gerundi
+        (vmg0000 aportant aportar))
+      (sn-CD
+        (grup.nom.fp
+          (ncfp000 dades dada)
+          (sp.co
+            (coord
+              (rg tant tant))
+            (sp
+              (prep
+                (sps00 sobre sobre))
+              (sn
+                (espec.mp
+                  (da0mp0 els el))
+                (grup.nom.mp
+                  (ncmp000 problemes problema)
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0mp0 climàtics climàtic)))
+                  (sp
+                    (prep
+                      (sps00 d' de))
+                    (sn.co
+                      (sn
+                        (grup.nom
+                          (np00000 Espanya Espanya)))
+                      (coord
+                        (cc i i))
+                      (sn
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (ncms000 planeta planeta))))))))
+            (coord
+              (cs com com))
+            (sp
+              (prep
+                (sps00 sobre sobre))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 paper paper)
+                  (S.F.R
+                    (relatiu-CD
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vmip3s0 pot poder)
+                      (infinitiu
+                        (vmn0000 exercir exercir)))
+                    (sn-SUJ
+                      (espec.fs
+                        (di0cs0 cada cada))
+                      (grup.nom.fs
+                        (ncfs000 persona persona)))
+                    (sp-CC
+                      (prep
+                        (sps00 per per))
+                      (S.NF.C
+                        (infinitiu
+                          (vmn0000 cuidar cuidar))
+                        (sn-CD
+                          (espec.ms
+                            (da0ms0 el el))
+                          (grup.nom.ms
+                            (ncms000 medi_ambient medi_ambient)))))))))))))
+    (Fp . .)))

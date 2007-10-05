@@ -1,0 +1,374 @@
+
+(
+  (S.co
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmif1p0 Tendremos tener)
+        (cs que que)
+        (infinitiu
+          (vmn0000 pensar pensar)))
+      (sp.co-CREG
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 cronología cronología))))
+        (Fc , ,)
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.fp
+              (da0fp0 las el))
+            (grup.nom.fp
+              (ncfp000 emigraciones emigración)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 antiguas antiguo)))
+              (sn
+                (Fpa -Fpa- -Fpa-)
+                (grup.nom.mp
+                  (ncmp000 pobladores poblador)
+                  (s.a.mp
+                    (neg
+                      (rn no no))
+                    (grup.a.mp
+                      (aq0mp0 andaluces andaluz)))
+                  (S.F.R
+                    (Fc , ,)
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vmis3p0 tuvieron tener))
+                    (sn-CD.Q
+                      (neg.j
+                        (rn no no))
+                      (sn
+                        (espec.fs
+                          (di0fs0 poca poco))
+                        (grup.nom.fs
+                          (ncfs000 importancia importancia))))))
+                (Fpt -Fpt- -Fpt-)))))))
+    (Fc , ,)
+    (S*
+      (sp
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (s.a.fp
+              (grup.a.fp
+                (aq0cp0 posteriores posterior))))))
+      (sp
+        (Fpa -Fpa- -Fpa-)
+        (prep
+          (sps00 sin sin))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 exagerar exagerar))
+          (sn-CD
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (ncmp000 elementos elemento)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0mp0 africanos africano))))))
+        (Fpt -Fpt- -Fpt-)))
+    (coord
+      (cc y y))
+    (S*
+      (sp
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (sadv
+              (grup.adv
+                (rg más más)))
+            (s.a.fp
+              (grup.a.fp
+                (aq0cp0 recientes reciente)))))))
+    (Fp . .)))
+(
+  (S*
+    (coord
+      (cc Y y))
+    (sp
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (ncmp000 procesos proceso)
+          (sp.co
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 adaptación adaptación))))
+            (Fc , ,)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 adopción adopción))))
+            (coord
+              (cc y y))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 creación creación)))))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (dd0mp0 estos este)
+                (dn0mp0 quinientos quinientos))
+              (grup.nom.mp
+                (ncmp000 años año)
+                (S.NF.P
+                  (participi
+                    (aq0mpp transcurridos transcurrido)))))))))
+    (Fp . .)))
+(
+  (S*.co
+    (S*
+      (S.F.C
+        (conj.subord
+          (cs Que que))
+        (sn.co-SUJ
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 distribución distribución)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 procesos proceso))))))
+          (Fc , ,)
+          (sn
+            (espec.fs
+              (dp3cs0 su su))
+            (grup.nom.fs
+              (ncfs000 heterogeneidad heterogeneidad)))
+          (coord
+            (cc y y))
+          (sn
+            (grup.nom.fs
+              (ncfs000 repercusión repercusión))))
+        (neg-MOD
+          (rn no no))
+        (grup.verb
+          (vmip3p0 afectan afectar))
+        (sp-CD
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (di0fs0 una uno))
+            (grup.nom.fs
+              (ncfs000 base base)
+              (s.a.fs
+                (espec
+                  (rg fundamentalmente fundamentalmente))
+                (grup.a.fs
+                  (aq0fs0 andaluza andaluz))))))))
+    (coord
+      (cc y y))
+    (S*
+      (sadv
+        (Fc , ,)
+        (grup.adv
+          (rg sobre_todo sobre_todo))
+        (Fc , ,))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 pensar pensar))
+        (S.F.C-CD
+          (conj.subord
+            (cs que que))
+          (snl-SUJ
+            (grup.nom
+              (np0000l América América)))
+          (grup.verb
+            (vsip3s0 es ser))
+          (sn-ATR
+            (espec.ms
+              (di0ms0 un uno))
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 inmenso inmenso)))
+              (ncms000 continente continente)
+              (S.F.R
+                (relatiu-CC
+                  (pr000000 donde donde))
+                (grup.verb
+                  (vmip3p0 caben caber))
+                (sn-SUJ
+                  (espec.fp
+                    (da0fp0 las el))
+                  (grup.nom.fp
+                    (ncfp000 modalidades modalidad)
+                    (sp.co
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (snl
+                          (grup.nom
+                            (np0000l Nuevo_México Nuevo_México))))
+                      (coord
+                        (cc y y))
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (snl
+                          (grup.nom
+                            (np0000l Chiloé Chiloé)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (Fg - -)
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmip1p0 Vamos ir)
+      (sps00 a a)
+      (infinitiu
+        (vmn0000 decir decir)))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fp
+          (dd0fp0 esas ese))
+        (grup.nom.fp
+          (ncfp000 variedades variedad)))
+      (grup.verb
+        (vsip3p0 son ser))
+      (sa-ATR
+        (grup.a
+          (aq0cp0 iguales igual))))
+    (Fit ? ?)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 libro libro)
+          (S.F.R
+            (relatiu-CD
+              (pr0cn000 que que))
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vmip1p0 leemos leer)))))
+      (grup.verb
+        (vmip3s0 intenta intentar))
+      (S.NF.C-CD
+        (infinitiu
+          (vmn0000 explicarlo explicar)))
+      (Fc , ,))
+    (coord
+      (cc pero pero))
+    (S*
+      (sp
+        (prep
+          (sps00 sin sin))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 exagerar exagerar))
+          (sn-CD
+            (espec.fp
+              (da0fp0 las el))
+            (grup.nom.fp
+              (ncfp000 posturas postura)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn.x
+                  (grup.nom.co
+                    (grup.nom.mp
+                      (ncmp000 tirios tirio))
+                    (coord
+                      (cc y y))
+                    (grup.nom.mp
+                      (ncmp000 troyanos troyano))))))))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 Buen buen)))
+        (ncms000 año año)))
+    (sn
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (sp
+          (prep
+            (sps00 de de))
+          (snd
+            (grup.nom
+              (W 1992 [??:??/??/1992:??.??]))))))
+    (sp.co
+      (sp
+        (prep
+          (sps00 para para))
+        (sna
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (np0000a Nao_de_China Nao_de_China)))
+        (Fc , ,))
+      (coord
+        (cc o o))
+      (sp
+        (prep
+          (sps00 para para))
+        (sna
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (np0000a Galeón_de_Manila Galeón_de_Manila)))
+        (Fc , ,))
+      (coord
+        (cc o o))
+      (sp
+        (prep
+          (sps00 para para))
+        (sna
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (np0000a Galeón_de_Acapulco Galeón_de_Acapulco)
+            (S.F.R
+              (Fc , ,)
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (sadv-CC
+                (grup.adv
+                  (rg tanto tanto)))
+              (grup.verb
+                (vmip3s0 monta montar)))))))
+    (Fp . .)))

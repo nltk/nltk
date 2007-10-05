@@ -1,0 +1,334 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (dd0ms0 Aquest aquest))
+      (grup.nom.ms
+        (ncms000 any any)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 centenari centenari)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.ms
+                    (np00000 Luis_Buñuel Luis_Buñuel)))))))))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vsp00sm estat ser))
+    (sa-CC
+      (grup.a
+        (aq0mp0 nombrosos nombrós)))
+    (sn-ATR
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 homenatges homenatge)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (morfema.verbal-PASS
+            (p0000000 se se))
+          (sn-CI
+            (grup.nom.s
+              (pp3csd00 li ell)))
+          (grup.verb
+            (vaip3p0 han haver)
+            (vmp00sm dedicat dedicar)))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom
+        (np00000 La_2 La_2)))
+    (grup.verb
+      (vmip3s0 reprèn reprendre))
+    (sadv-CCT
+      (grup.adv
+        (rg avui avui)))
+    (sn-CCT
+      (grup.nom.fp
+        (Fpa -Fpa- -Fpa-)
+        (W 00.15_hores [??:??/??/??:00.15])
+        (Fpt -Fpt- -Fpt-)))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 tema tema)))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (ncfs000 emissió emissió)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (ncms000 documental documental)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.mp
+                      (dn0mp0 dos dos))
+                    (grup.nom.mp
+                      (ncmp000 capítols capítol))))
+                (sp
+                  (prep
+                    (sps00 d' de))
+                  (sn
+                    (grup.nom.ms
+                      (np00000 Antonio_Drove Antonio_Drove)
+                      (sn
+                        (Fc , ,)
+                        (grup.nom.ms
+                          (ncms000 director director)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom.fp
+                                (ncfp000 pel·lícules pel·lícula)
+                                (sp
+                                  (prep
+                                    (cs com com))
+                                  (sn
+                                    (sn
+                                      (grup.nom
+                                        (np00000 La_veritat_sobre_el_cas_Savolta La_veritat_sobre_el_cas_Savolta)))
+                                    (sn.j
+                                      (grup.nom.ms
+                                        (Fpa -Fpa- -Fpa-)
+                                        (W 1979 [??:??/??/1979:??.??])
+                                        (Fpt -Fpt- -Fpt-)))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (ao0fs0 segona segon)))
+        (ncfs000 part part)))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vmif3s0 oferirà oferir))
+    (sn-CCT
+      (grup.nom.ms
+        (W diumenge [diumenge:??/??/??:??.??])
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 ve venir)))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (grup.nom.ms
+        (np00000 Luis_Buñuel Luis_Buñuel)))
+    (sp
+      (Fc , ,)
+      (prep
+        (sps00 a a))
+      (sp
+        (prep
+          (sps00 sobre sobre))
+        (sn
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs
+            (nccs000 càmera càmera)))))
+    (Fp . .)))
+(
+  (S.co
+    (sp.j-AO
+      (prep
+        (sps00 Segons segons))
+      (sn
+        (grup.nom.ms
+          (np00000 Jesús_González Jesús_González)
+          (sn
+            (Fc , ,)
+            (grup.nom.ms
+              (ncms000 productor productor)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 executiu executiu)))
+              (sp
+                (prep
+                  (spcmp dels del))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 documentals documental))))))))
+      (Fc , ,))
+    (S.co
+      (S
+        (sn.e-SUJ *0*)
+        (neg-MOD
+          (rn no no))
+        (morfema.verbal-IMPERS
+          (p0000000 es es))
+        (grup.verb
+          (vmip3s0 tracta tractar))
+        (sadv-MOD
+          (grup.adv
+            (rg només només)))
+        (sp.co-CREG
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.fs
+                (di0fs0 una un))
+              (grup.nom.fs
+                (ncfs000 biografia biografia)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (np00000 Buñuel Buñuel)))))))
+          (coord
+            (cc ni ni))
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 mer mer)))
+                (ncms000 estudi estudi)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (dp3fs0 la_seva el_seu))
+                    (grup.nom.fs
+                      (ncfs000 filmografia filmografia))))))))
+        (Fc , ,))
+      (coord
+        (cc sinó_que sinó_que))
+      (S
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vsip3s0 és ser))
+        (sn-ATR
+          (Fe " ")
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs
+            (ncfs000 visió visió)
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 especial especial)))
+            (sp
+              (Fe " ")
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (nccs000 cineasta cineasta))))
+            (S.NF.P
+              (Fc , ,)
+              (participi
+                (aq0fsp centrada centrat))
+              (sp-CREG
+                (prep
+                  (sps00 en en))
+                (sn
+                  (Fe " ")
+                  (espec.fs
+                    (dp3fs0 la_seva el_seu))
+                  (grup.nom.fs
+                    (ncfs000 obsessió obsessió)
+                    (sp
+                      (prep
+                        (spcmp pels pel))
+                      (sn
+                        (grup.nom.mp
+                          (ncmp000 somnis somni)))))
+                  (Fe " "))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Antonio_Drove Antonio_Drove)))
+    (grup.verb
+      (vmip3s0 mostra mostrar))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 documental documental)
+          (S.NF.P
+            (Fc , ,)
+            (participi
+              (aq0msp titulat titulat))
+            (sn-CPRED
+              (grup.nom
+                (np00000 La_memoria_y_los_sueños La_memoria_y_los_sueños)))
+            (Fc , ,)))))
+    (sn-CD
+      (grup.nom.fp
+        (pi0fp000 algunes algun)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (dp3fp0 les_seves el_seu))
+            (grup.nom.fp
+              (s.a.fp
+                (grup.a.fp
+                  (aq0cp0 personals personal)))
+              (ncfp000 opinions opinió)
+              (sp
+                (prep
+                  (sps00 sobre sobre))
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 director director)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 aragonès aragonès)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (sadv-MOD
+      (grup.adv
+        (rg També també)))
+    (grup.verb
+      (vmip3s0 desvela desvelar))
+    (sn-CD
+      (espec.mp
+        (di0mp0 alguns algun))
+      (grup.nom.mp
+        (ncmp000 misteris misteri)))
+    (Fp . .)))

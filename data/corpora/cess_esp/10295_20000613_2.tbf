@@ -1,0 +1,144 @@
+
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Ante ante))
+      (sn
+        (espec.fs
+          (dd0fs0 esta este))
+        (grup.nom.fs
+          (ncfs000 afirmación afirmación)))
+      (Fc , ,))
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 abogado abogado)
+        (snp
+          (grup.nom.ms
+            (np0000p José_Luis_Sierra José_Luis_Sierra)))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (sn-CD.r
+            (grup.nom.ms
+              (pp3cn000 se él)))
+          (grup.verb
+            (vmip3s0 defiende defender))
+          (sp-CD.r
+            (prep
+              (sps00 a a))
+            (sn
+              (grup.nom
+                (pp3cno00 sí él)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 mismo mismo))))))
+          (Fc , ,))))
+    (sn-CI
+      (grup.nom.s
+        (pp3csd00 le él)))
+    (grup.verb
+      (vmis3s0 preguntó preguntar))
+    (S.F.C-CD
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (conj.subord
+          (cs si si))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmii3s0 podía poder)
+          (infinitiu
+            (vmn0000 demostrar demostrar)))
+        (sn-CD
+          (espec.fs
+            (dd0fs0 esa ese))
+          (grup.nom.fs
+            (ncfs000 relación relación)
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 jerárquica jerárquico))))))
+      (S.F.R.j
+        (Fc , ,)
+        (sp-AO
+          (prep
+            (sps00 a a))
+          (relatiu
+            (da0ns0 lo el)
+            (pr0cn000 que que)))
+        (sn-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 ex ex)))
+            (nccs000 gerente gerente)))
+        (grup.verb
+          (vmis3s0 admitió admitir))
+        (S.F.C*-CD
+          (conj.subord
+            (cs que que))
+          (sadv
+            (grup.adv
+              (rg no no)))
+          (S.F.AConc
+            (conj.subord
+              (cs aunque aunque))
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vmis3s0 aseguró asegurar))
+            (S.F.C-CD
+              (conj.subord
+                (cs que que))
+              (grup.verb
+                (vaii3s0 había haber))
+              (Fe " ")
+              (sn-CD.Q
+                (espec.ms
+                  (di0ms0 un uno))
+                (grup.nom.ms.1n
+                  (ncms000 sentir sentir)
+                  (s.a.ms.x
+                    (grup.a.ms.co
+                      (grup.a.ms
+                        (aq0cs0 general general))
+                      (coord
+                        (cc y y))
+                      (grup.a.ms
+                        (aq0cs0 total total))))))
+              (sp-CC
+                (prep
+                  (sps00 en en))
+                (sno
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (np0000o Atlético Atlético))))
+              (sp.1c
+                (prep
+                  (sps00 de de))
+                (S.F.C
+                  (conj.subord
+                    (cs que que))
+                  (sn-SUJ
+                    (grup.nom.ms
+                      (pi0ms000 todo todo)))
+                  (morfema.verbal-PASS
+                    (p0000000 se se))
+                  (sn-CD.r
+                    (grup.nom.s
+                      (pp3csd00 le él)))
+                  (grup.verb
+                    (vmii3s0 preguntaba preguntar))
+                  (sp-CD.r
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (grup.nom.s
+                        (pp2cs00p usted tú))))))
+              (Fe " "))))))
+    (Fp . .)))

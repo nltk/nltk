@@ -1,0 +1,140 @@
+
+(
+  (S
+    (sn-CCT
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (W octubre_del_1998 [??:??/10/1998:??.??]))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (Z 67 67))
+      (grup.nom.mp
+        (nccp000 adolescents adolescent)))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 morir morir))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 incendi incendi)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.fs
+                (di0fs0 una un))
+              (grup.nom.fs
+                (ncfs000 discoteca discoteca))))
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (morfema.verbal-PASS
+              (p0000000 es es))
+            (grup.verb
+              (vaip3s0 va anar)
+              (vmn0000 considerar considerar))
+            (S.NF.P-CPRED.SUJ
+              (participi
+                (aq0msp provocat provocat)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (di0fp0 Unes un))
+      (grup.nom.fp
+        (ncfp000 obres obra)))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 causar causar))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 foc foc)
+        (S.F.R
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (relatiu
+              (pr0cn000 què què)))
+          (grup.verb
+            (vaip3p0 van anar)
+            (vmn0000 morir morir))
+          (sn-SUJ
+            (espec.fp
+              (Z 320 320))
+            (grup.nom.fp
+              (ncfp000 persones persona)))
+          (sn-CCT
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (W 26_de_desembre [??:26/12/??:??.??])))
+          (sp-CCL
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np00000 Xina Xina)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (di0fs0 Una un))
+      (grup.nom.fs
+        (ncfs000 boda boda)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 acabar acabar))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (grup.nom.fs
+          (ncfs000 tragèdia tragèdia))))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.mp
+          (Z 35 35))
+        (grup.nom.mp
+          (ncmp000 morts mort))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 enfonsar enfonsar))
+        (morf.pron
+          (p0300000 -se ell))
+        (sn-CD
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 terra terra)
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (espec.fs
+                  (di0fs0 una un))
+                (grup.nom.fs
+                  (nc00000 disco disco))))))
+        (sn-CCT
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (W 24_de_maig [??:24/05/??:??.??])))))
+    (Fp . .)))

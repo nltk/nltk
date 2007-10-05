@@ -1,0 +1,120 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (di0ms0 Un un))
+      (grup.nom.ms
+        (ncms000 jutjat jutjat)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (np00000 Vilanova Vilanova))))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm obert obrir))
+    (sn-CD
+      (grup.nom.ms
+        (ncms000 judici judici)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 oral oral)))
+        (sp
+          (prep
+            (sps00 contra contra))
+          (sn
+            (grup.nom
+              (np00000 Fecsa Fecsa))))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 incendi incendi)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 muntanya muntanya)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (np00000 Montgròs Montgròs))))
+                (sp
+                  (Fc , ,)
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (grup.nom
+                      (np00000 Sant_Pere Sant_Pere)))))))
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vaip3s0 va anar)
+              (vmn0000 cremar cremar))
+            (sn-CCT
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (W 1997 [??:??/??/1997:??.??])))
+            (sn-CD
+              (espec.fp
+                (rg més més)
+                (sps00 de de)
+                (Z 400 400))
+              (grup.nom.fp
+                (nc00000 hectàrees hectàrea)
+                (sp
+                  (prep
+                    (sps00 d' de))
+                  (sn
+                    (espec.fs
+                      (dd0fs0 aquesta aquest))
+                    (grup.nom.fs
+                      (ncfs000 zona zona)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0fs0 emblemàtica emblemàtic))))))
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom
+                      (np00000 Garraf Garraf))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-CD.r
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (ncfs000 acusació acusació)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 particular particular)))))
+    (sn-CD.r
+      (grup.nom.s
+        (pp3csa00 l' ell)))
+    (grup.verb
+      (vmip3p0 exerceixen exercir))
+    (sn-SUJ
+      (grup.nom.fp
+        (ncfp000 entitats entitat)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 municipi municipi))))))
+    (Fp . .)))

@@ -1,0 +1,986 @@
+
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np0000o Ple Ple)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 municipal municipal)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (np0000o Ajuntament Ajuntament)
+              (sp
+                (prep
+                  (sps00 de de))
+                (snl
+                  (grup.nom
+                    (np0000l Sant_Boi Sant_Boi)))))))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm aprovat aprovar))
+    (sn-CC
+      (espec.fs
+        (dd0fs0 aquesta aquest))
+      (grup.nom.fs
+        (ncfs000 setmana setmana)))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 moció moció)
+        (S.F.R
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (relatiu
+              (da0fs0 la el)
+              (pr0cs000 qual qual)))
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vmip3s0 expressa expressar))
+          (sn-CD
+            (espec.fs
+              (dp3fs0 la_seva el_seu))
+            (Fz ' ')
+            (grup.nom.fs
+              (ncfs000 disconformitat disconformitat)
+              (sp
+                (prep
+                  (sps00 contra contra))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 política política)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 arbitrària arbitrari)))
+                    (sp
+                      (prep
+                        (sps00 d' de))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 assignació assignació)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom.fp
+                                (ncfp000 freqüències freqüència)
+                                (sp
+                                  (prep
+                                    (sps00 de de))
+                                  (sn
+                                    (grup.nom.fs
+                                      (ncfs000 ràdio ràdio))))))))))
+                    (S.F.R
+                      (relatiu-CD
+                        (pr0cn000 que que))
+                      (grup.verb
+                        (vmip3p0 estan estar)
+                        (gerundi
+                          (vmg0000 portant_a_terme portar_a_terme)))
+                      (sn.co-SUJ
+                        (sno
+                          (espec.ms
+                            (da0ms0 el el))
+                          (grup.nom.ms
+                            (np0000o Ministeri_de_Foment Ministeri_de_Foment)))
+                        (coord
+                          (cc i i))
+                        (sno
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (np0000o Direcció_General_de_Radiodifusió_i_Televisió Direcció_General_de_Radiodifusió_i_Televisió)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sno
+                                (espec.fs
+                                  (da0fs0 la el))
+                                (grup.nom.fs
+                                  (np0000o Generalitat_de_Catalunya Generalitat_de_Catalunya))))))))))))
+            (Fz ' ')))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 moció moció)
+        (sp
+          (prep
+            (spcms del del))
+          (sno
+            (grup.nom.ms
+              (ncms000 consistori consistori)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 santboià santboià))))))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vaip3s0 ha haver)
+            (vsp00sm estat ser)
+            (vmp00sf aprovada aprovar))
+          (sp-CC
+            (prep
+              (sps00 amb amb))
+            (sn.co
+              (sn
+                (espec.mp
+                  (da0mp0 els el))
+                (grup.nom.mp
+                  (ncmp000 vots vot)
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0cp0 favorables favorable)))
+                  (sp
+                    (prep
+                      (spcmp dels del))
+                    (sn
+                      (grup.nom.mp
+                        (ncmp000 grups grup)
+                        (s.a.mp
+                          (grup.a.mp
+                            (aq0cp0 municipals municipal)))
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (sn.x
+                            (grup.nom.co
+                              (grup.nom.ms
+                                (np0000o PSC PSC))
+                              (Fc , ,)
+                              (grup.nom
+                                (np0000o IC-V IC-V))
+                              (coord
+                                (cc i i))
+                              (grup.nom
+                                (np0000o CiU CiU))))))))))
+              (coord
+                (cc i i))
+              (sn
+                (espec.fs
+                  (da0cs0 l' el))
+                (grup.nom.fs
+                  (ncfs000 abstenció abstenció)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (np0000o PP PP))))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmip3s0 respon respondre))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 escrit escrit)
+          (S.NF.P
+            (participi
+              (aq0msp adreçat adreçat))
+            (sp-CI
+              (prep
+                (sps00 a a))
+              (snp
+                (espec.fs
+                  (da0cs0 l' el))
+                (grup.nom.fs
+                  (ncfs000 alcaldessa alcaldessa)
+                  (snp
+                    (Fc , ,)
+                    (grup.nom.fs
+                      (np0000p Montserrat_Gibert Montserrat_Gibert))
+                    (Fc , ,)))))
+            (sp-CAG
+              (prep
+                (spcms pel pel))
+              (snp
+                (grup.nom.ms
+                  (ncms000 director director)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0cs0 general general)))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom
+                        (np0000o Radiodifusió_i_Televisió Radiodifusió_i_Televisió)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sno
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (np0000o Generalitat Generalitat)))))))
+                  (snp
+                    (Fc , ,)
+                    (grup.nom.ms
+                      (np0000p Jordi_Alvinyà Jordi_Alvinyà))
+                    (Fc , ,))))))
+          (S.F.R
+            (relatiu-CC
+              (pr000000 on on))
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vmip3s0 insta instar))
+            (sno-CD
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (np0000o Ajuntament Ajuntament)))
+            (sp-CREG
+              (prep
+                (sps00 a a))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 modificar modificar))
+                (sadv-CC
+                  (Fc , ,)
+                  (grup.adv
+                    (rg abans abans)
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (snd
+                        (grup.nom.ms
+                          (W 15_de_juny [??:15/06/??:??.??])))))
+                  (Fc , ,))
+                (sn-CD
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 freqüència freqüència)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sno
+                        (grup.nom
+                          (np0000o Ràdio_Sant_Boi Ràdio_Sant_Boi))))))
+                (sp-CC
+                  (prep
+                    (spcms del del))
+                  (sna
+                    (grup.nom.ms
+                      (np0000a 95,9_MHz 95,9_MHz))))
+                (sp-CC
+                  (prep
+                    (spcms al al))
+                  (sna
+                    (grup.nom.ms
+                      (np0000a 89,4_MHz 89,4_MHz))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 text text)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 moció moció))))))
+      (grup.verb
+        (vmip3s0 preveu preveure))
+      (S.NF.C-CD
+        (Fz ' ')
+        (infinitiu
+          (vmn0000 exercir exercir))
+        (sn-CD
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (ncfp000 accions acció)
+            (s.a.fp
+              (grup.a.fp
+                (aq0fp0 administratives administratiu)))
+            (s.a.fp
+              (grup.a.fp
+                (aq0fp0 oportunes oportú)))))
+        (Fz ' ')
+        (sp-CC
+          (prep
+            (sps00 contra contra))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 comunicat comunicat)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sno
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np0000o Generalitat Generalitat)))))))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3s0 anuncia anunciar))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (S.F.ACond-AO
+          (conj.subord
+            (cs si si))
+          (morfema.verbal-IMPERS
+            (p0000000 s' es))
+          (grup.verb
+            (vmip3s0 escau escaure)))
+        (Fz ' ')
+        (morfema.verbal-PASS
+          (p0000000 s' es))
+        (grup.verb
+          (vmif3p0 exerciran exercir))
+        (sn-SUJ
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (ncfp000 accions acció)
+            (s.a.fp
+              (grup.a.fp
+                (aq0cp0 judicials judicial)))
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vmsp3p0 procedeixin procedir)))))
+        (Fz ' ')))
+    (Fp . .)))
+(
+  (S
+    (sadv-CC
+      (grup.adv
+        (rg Abans abans)
+        (sp
+          (prep
+            (sps00 de de))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 prendre prendre))
+            (sn-CD
+              (espec.fs
+                (di0cs0 qualsevol qualsevol))
+              (grup.nom.fs
+                (ncfs000 decisió decisió)))
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.ms
+                  (dd0ms0 aquest aquest))
+                (grup.nom.ms
+                  (ncms000 sentit sentit)))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (nccp000 responsables responsable)
+        (sp
+          (prep
+            (spcms del del))
+          (snp
+            (grup.nom.ms
+              (np0000p Patronat_Municipal_de_Comunicació Patronat_Municipal_de_Comunicació)
+              (sn
+                (Fc , ,)
+                (grup.nom.ms
+                  (ncms000 òrgan òrgan)
+                  (S.F.R
+                    (sp-CC
+                      (prep
+                        (spcms al al))
+                      (relatiu
+                        (pr0cs000 qual qual)))
+                    (grup.verb
+                      (vmip3s0 està estar))
+                    (S.NF.P-ATR
+                      (participi
+                        (aq0fsp adscrita adscrit)))
+                    (sn-SUJ
+                      (espec.fs
+                        (da0cs0 l' el))
+                      (grup.nom.fs
+                        (ncfs000 emissora emissora)
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0cs0 municipal municipal)))))))
+                (Fc , ,)))))))
+    (grup.verb
+      (vmif3p0 mantindran mantenir))
+    (sadv-CC
+      (grup.adv
+        (rg avui avui)))
+    (sn-CD
+      (espec.fs
+        (dn0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 reunió reunió)))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (snp
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 director director)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 general general)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (grup.nom
+                (np0000o Radiodifusió_i_Televisió Radiodifusió_i_Televisió)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sno
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (np0000o Generalitat Generalitat))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S.co
+      (S
+        (sn-SUJ
+          (espec.ms
+            (da0cs0 L' el))
+          (grup.nom.ms
+            (ncms000 acord acord)
+            (sp
+              (prep
+                (spcms del del))
+              (sno
+                (grup.nom.ms
+                  (ncms000 ple ple)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sno
+                      (espec.ms
+                        (da0cs0 l' el))
+                      (grup.nom.ms
+                        (np0000o Ajuntament Ajuntament)))))))))
+        (grup.verb
+          (vmip3s0 exigeix exigir))
+        (sp.co-CI
+          (sp
+            (prep
+              (sps00 a a))
+            (sno
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000o Generalitat Generalitat))))
+          (coord
+            (cc i i))
+          (sp
+            (prep
+              (spcms al al))
+            (sno
+              (grup.nom.ms
+                (np0000o Ministeri_de_Foment Ministeri_de_Foment)))))
+        (Fz ' ')
+        (sn-CD
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (ncms000 atorgament atorgament)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 immediat immediat)))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 concessió concessió)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 definitiva definitiu))))))
+            (sp
+              (prep
+                (sps00 a a))
+              (sno
+                (espec.ms
+                  (da0cs0 l' el))
+                (grup.nom.ms
+                  (np0000o Ajuntament Ajuntament)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snl
+                      (grup.nom
+                        (np0000l Sant_Boi Sant_Boi)))))))))
+        (sp-CC
+          (prep
+            (sps00 per per))
+          (sp
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (da0cs0 l' el))
+              (grup.nom.fs
+                (ncfs000 explotació explotació)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sno
+                    (espec.fs
+                      (da0cs0 l' el))
+                    (grup.nom.fs
+                      (ncfs000 emissora emissora)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0cs0 municipal municipal)))
+                      (sno
+                        (grup.nom
+                          (np0000o Ràdio_Sant_Boi Ràdio_Sant_Boi))))))))))
+        (Fc , ,))
+      (coord
+        (cc i i))
+      (S*
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 resta resta)
+              (sp
+                (prep
+                  (sps00 d' de))
+                (sn
+                  (grup.nom.fp
+                    (ncfp000 emissores emissora)
+                    (s.a.fp
+                      (grup.a.fp
+                        (aq0cp0 municipals municipal)))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snl
+                        (grup.nom
+                          (np0000l Catalunya Catalunya))))))))))))
+    (S.NF.A.j
+      (Fc , ,)
+      (sadv-AO
+        (grup.adv
+          (rg tot tot)))
+      (gerundi
+        (vmg0000 assignant assignar))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 freqüència freqüència)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 emissió emissió))))
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 definitiva definitiu)))))
+      (Fz ' '))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom
+        (np0000o Ràdio_Sant_Boi Ràdio_Sant_Boi)))
+    (sadv-CC
+      (grup.adv
+        (rg ja ja)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (van0000 haver haver)
+      (sps00 de de)
+      (infinitiu
+        (vmn0000 canviar canviar)))
+    (sn-CC
+      (rg ara ara)
+      (vmip3s0 fa fer)
+      (dn0ms0 un un)
+      (ncms000 any any)
+      (cc i i)
+      (rg mig mig))
+    (sn-CD
+      (espec.fs
+        (da0cs0 l' el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 actual actual)))
+        (ncfs000 freqüència freqüència)))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom.ms
+          (ncms000 requeriment requeriment)
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000o Generalitat Generalitat)
+                (S.F.R.co
+                  (Fc , ,)
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (S.F.R
+                    (sp-CC
+                      (prep
+                        (sps00 en en))
+                      (sn
+                        (espec.ms
+                          (dd0ms0 aquell aquell))
+                        (grup.nom.ms
+                          (ncms000 moment moment))))
+                    (grup.verb
+                      (vaip3s0 va anar)
+                      (vmn0000 reconèixer reconèixer))
+                    (S.F.C-CD
+                      (conj.subord
+                        (cs que que))
+                      (sn-SUJ
+                        (grup.nom.ms
+                          (pd0ns000 això això)))
+                      (grup.verb
+                        (vmii3s0 suposava suposar))
+                      (sn-CD
+                        (espec.ms
+                          (di0ms0 un un))
+                        (grup.nom.ms
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0cs0 greu greu)))
+                          (ncms000 perjudici perjudici)))
+                      (sp-CI
+                        (prep
+                          (sps00 per per))
+                        (sp
+                          (prep
+                            (sps00 a a))
+                          (sn
+                            (espec.fs
+                              (da0cs0 l' el))
+                            (grup.nom.fs
+                              (ncfs000 emissora emissora)
+                              (s.a.fs
+                                (grup.a.fs
+                                  (aq0cs0 municipal municipal)))))))))
+                  (coord
+                    (cc i i))
+                  (S.F.R
+                    (grup.verb
+                      (vaip3s0 va anar)
+                      (vmn0000 assumir assumir))
+                    (sn-CD
+                      (espec.fs
+                        (di0fs0 una un))
+                      (grup.nom.fs
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0cs0 important important)))
+                        (ncfs000 contrapartida contrapartida)
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0fs0 econòmica econòmic)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (grup.nom
+        (np0000o Ràdio_Sant_Boi Ràdio_Sant_Boi)))
+    (grup.verb
+      (vmip3s0 està estar)
+      (gerundi
+        (vmg0000 celebrant celebrar)))
+    (sp-CC
+      (prep
+        (sps00 durant durant))
+      (snd
+        (espec.ms
+          (dd0ms0 aquest aquest))
+        (grup.nom.ms
+          (W mes_de_maig [??:??/5/??:??.??]))))
+    (sn-CD
+      (espec.ms
+        (dp3ms0 el_seu el_seu))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (ao0ms0 vintè vintè)))
+        (ncms000 aniversari aniversari)))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (ncfs000 emissora emissora)))
+    (morfema.verbal
+      (p0000000 es es))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 posar_en_marxa posar_en_marxa))
+    (snd-CC
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (W any_1980 [??:??/??/1980:??.??])))
+    (S.NF.A-CC
+      (Fc , ,)
+      (gerundi
+        (vmg0000 coincidint coincidir))
+      (sp-CREG
+        (prep
+          (sps00 amb amb))
+        (sna
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (np0000a Festa_Major Festa_Major)))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vaip3s0 Va anar)
+      (vsn0000 ser ser))
+    (sn.co-ATR
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (ao0fs0 primera primer)))
+          (ncfs000 emissora emissora)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 municipal municipal)))
+          (sp
+            (prep
+              (spcms del del))
+            (snl
+              (grup.nom.ms
+                (np0000l Baix_Llobregat Baix_Llobregat))))))
+      (coord
+        (cc i i))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (ao0fs0 tercera tercer)))
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (grup.nom
+                (np0000l Catalunya Catalunya)))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CC
+      (grup.adv
+        (rg Després després)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (dn0fp0 dues dos))
+            (grup.nom.fp
+              (ncfp000 dècades dècada)
+              (sp
+                (prep
+                  (sps00 d' de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 existència existència))))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 l' el))
+      (grup.nom.fs
+        (ncfs000 emissora emissora)))
+    (sadv-CC
+      (grup.adv
+        (rg encara encara)))
+    (neg-MOD
+      (rn no no))
+    (grup.verb
+      (vmip3s0 disposa disposar))
+    (sp.co-CREG
+      (sp
+        (prep
+          (sps00 de de))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 concessió concessió)
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 definitiva definitiu)))
+            (S.F.R
+              (relatiu-CD
+                (pr0cn000 que que))
+              (grup.verb
+                (vaip3s0 ha haver)
+                (sps00 d' de)
+                (infinitiu
+                  (vmn0000 atorgar atorgar)))
+              (sno-SUJ
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np0000o Generalitat Generalitat))))))
+        (Fc , ,))
+      (coord
+        (cc ni ni))
+      (sp
+        (prep
+          (sps00 de de))
+        (sn
+          (espec.fs
+            (da0cs0 l' el))
+          (grup.nom.fs
+            (ncfs000 assignació assignació)
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 definitiva definitiu)))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 freqüència freqüència))))
+            (S.F.R
+              (Fc , ,)
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vmip3s0 correspon correspondre))
+              (sp-CI
+                (prep
+                  (spcms al al))
+                (sno
+                  (grup.nom.ms
+                    (np0000o Ministeri_de_Foment Ministeri_de_Foment)))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np0000o Govern_de_la_Generalitat Govern_de_la_Generalitat)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 aprovar aprovar))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 a a))
+      (snd
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (W octubre_del_1991 [??:??/10/1991:??.??])))
+      (Fc , ,))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 concessió concessió)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.fs
+              (di0fs0 una un))
+            (grup.nom.fs
+              (ncfs000 adjudicació adjudicació)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 provisional provisional)))
+              (sp
+                (prep
+                  (sps00 per per))
+                (sp
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (espec.fs
+                      (da0cs0 l' el))
+                    (grup.nom.fs
+                      (ncfs000 explotació explotació)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sno
+                          (espec.fs
+                            (da0cs0 l' el))
+                          (grup.nom.fs
+                            (ncfs000 emissora emissora)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (grup.nom.fs
+                                  (ncfs000 ràdio ràdio))))
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (snl
+                                (grup.nom
+                                  (np0000l Sant_Boi Sant_Boi))))))))))))))))
+    (Fp . .)))

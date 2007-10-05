@@ -1,0 +1,713 @@
+
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Para para))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 atraparlas atrapar)))
+      (Fc , ,))
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 equipo equipo)
+        (sp
+          (prep
+            (sps00 de de))
+          (snp
+            (grup.nom.ms
+              (np0000p Sutter Sutter))))))
+    (grup.verb
+      (vmis3s0 colocó colocar))
+    (sp-CC
+      (prep
+        (sps00 bajo bajo))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 cuero cuero)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 cabelludo cabelludo)))
+          (sp
+            (prep
+              (spcms del del))
+            (snp
+              (grup.nom.ms
+                (ncms000 doctor doctor)
+                (snp
+                  (grup.nom.ms
+                    (np0000p Meagher Meagher)))))))))
+    (sn-CD
+      (espec.mp
+        (dn0cp0 cuatro cuatro))
+      (grup.nom.mp
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 finos fino)))
+        (ncmp000 electrodos electrodo)
+        (s.a.fp
+          (grup.a.fp
+            (Fc , ,)
+            (aq0cp0 similares similar)
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (morfema.verbal-PASS
+                      (p0000000 se se))
+                    (grup.verb
+                      (vmip3p0 usan usar))
+                    (sp-CC
+                      (prep
+                        (sps00 en en))
+                      (sn
+                        (espec.fp
+                          (da0fp0 las el))
+                        (grup.nom.fp
+                          (ncfp000 electroencefalografías electroencefalografía))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (pi0ms000 Uno uno)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.mp
+              (pp3mp000 ellos él))))))
+    (sn-CI
+      (grup.nom.s
+        (pp3csd00 le él)))
+    (grup.verb
+      (vsis3s0 fue ser)
+      (vmp00sm incrustado incrustar))
+    (sadv-CC
+      (grup.adv
+        (rg estratégicamente estratégicamente)))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 punto punto)
+          (sp
+            (prep
+              (sps00 bajo bajo))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 cráneo cráneo)))))))
+    (Fp . .)))
+(
+  (S*
+    (sp
+      (sadv
+        (grup.adv
+          (rg Concretamente concretamente)))
+      (sp
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 nuca nuca))))
+      (Fc , ,))
+    (sp
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.fs
+          (ncfs000 área área)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 cerebro cerebro))))
+          (S.F.R
+            (relatiu-CC
+              (pr000000 donde donde))
+            (morfema.verbal-PASS
+              (p0000000 se se))
+            (grup.verb
+              (vmip3p0 procesan procesar))
+            (sn-SUJ
+              (espec.fp
+                (da0fp0 las el))
+              (grup.nom.fp
+                (ncfp000 señales señal)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0cp0 visuales visual)))
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmip3p0 llegan llegar))
+                  (sp-CC
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.mp
+                        (da0mp0 los el))
+                      (grup.nom.mp
+                        (ncmp000 ojos ojo))))))))
+          (sn
+            (Fc , ,)
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncmn000 córtex córtex)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 visual visual))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.A-CC
+      (conj.subord
+        (cs Cuando cuando))
+      (sn-SUJ
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 células célula)
+          (s.a.fp
+            (grup.a.fp
+              (aq0fp0 fotorreceptoras fotorreceptor)))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3p0 pueblan poblar))
+            (sn-CD
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 retina retina))))))
+      (grup.verb
+        (vmip3p0 registran registrar))
+      (sn-CD
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 estímulo estímulo)
+          (S.NF.P
+            (participi
+              (aq0msp determinado determinado)))
+          (sp
+            (Fc , ,)
+            (prep
+              (cs como como))
+            (sn.co
+              (sn
+                (espec.ms
+                  (di0ms0 un uno))
+                (grup.nom.ms
+                  (ncms000 destello destello)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 luminoso luminoso)))))
+              (coord
+                (cc o o))
+              (sn
+                (espec.fp
+                  (da0fp0 las el))
+                (grup.nom.fp
+                  (ncfp000 letras letra)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.ms
+                        (dd0ms0 este este))
+                      (grup.nom.ms
+                        (ncms000 artículo artículo))))))))))
+      (Fc , ,))
+    (sn-SUJ
+      (grup.nom.ms
+        (pd0ms000 este este)))
+    (grup.verb
+      (vsip3s0 es ser)
+      (vmp00sm codificado codificar))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (grup.nom.fp
+          (ncfp000 señales señal)
+          (s.a.fp
+            (grup.a.fp
+              (aq0fp0 eléctricas eléctrico)))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3p0 viajan viajar))
+            (sp-CC
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 velocidad velocidad)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sna
+                      (espec.ms
+                        (di0ms0 un uno))
+                      (grup.nom.ms
+                        (np0000p Porsche Porsche)))))))
+            (sp-CC
+              (prep
+                (sps00 por por))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 nervio nervio)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 óptico óptico)))
+                  (sn
+                    (Fg - -)
+                    (Fg - -)
+                    (espec.ms
+                      (di0ms0 un uno))
+                    (grup.nom.ms
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0ms0 fino fino)))
+                      (ncms000 cable cable)
+                      (S.NF.P
+                        (participi
+                          (aq0msp fabricado fabricado))
+                        (sp-CC
+                          (prep
+                            (sps00 a_base_de a_base_de))
+                          (sn
+                            (grup.nom.fp
+                              (ncfp000 neuronas neurona))))))
+                    (Fg - -)
+                    (Fg - -)))))
+            (sp-CC
+              (prep
+                (sps00 hasta hasta))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 región región)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (ncmn000 córtex córtex)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0cs0 visual visual)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CC
+      (grup.adv
+        (rg Aquí aquí))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 señal señal)))
+    (grup.verb
+      (vsip3s0 es ser)
+      (vmp00sf procesada procesar))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Los el)
+        (di0mp0 distintos distinto))
+      (grup.nom.mp
+        (ncmp000 estímulos estímulo)
+        (s.a.mp
+          (grup.a.mp
+            (aq0cp0 visuales visual)))))
+    (grup.verb
+      (vmip3p0 van ir)
+      (sps00 a a)
+      (infinitiu
+        (vmn0000 generar generar)))
+    (sn-CD
+      (espec.fp
+        (di0cp0 diferentes diferente))
+      (grup.nom.fp
+        (ncfp000 ondas onda)
+        (s.a.fp
+          (grup.a.fp
+            (aq0cp0 cerebrales cerebral)))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3p0 pueden poder)
+            (infinitiu
+              (vsn0000 ser ser)
+              (vmp00pf atrapadas atrapar)))
+          (sp-CAG
+            (prep
+              (sps00 por por))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 electrodo electrodo)
+                (S.NF.P
+                  (participi
+                    (aq0msp colocado colocado))
+                  (sp-CC
+                    (prep
+                      (sps00 en en))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 nuca nuca)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Sutter Sutter)))
+    (grup.verb
+      (vmis3s0 dividió dividir))
+    (sadv-CC
+      (grup.adv
+        (rg electrónicamente electrónicamente)))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 pantalla pantalla)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.ms
+              (di0ms0 un uno))
+            (grup.nom.ms
+              (ncms000 ordenador ordenador))))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.mp
+          (Z 64 64))
+        (grup.nom.mp
+          (ncmp000 recuadros recuadro))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (cs como como))
+      (S.F.C
+        (conj.subord
+          (cs si si))
+        (morfema.verbal-IMPERS
+          (p0000000 se se))
+        (grup.verb
+          (vmsi3s0 tratara tratar))
+        (sp-CREG
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.ms
+              (di0ms0 un uno))
+            (grup.nom.ms
+              (ncms000 teclado teclado)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 luminoso luminoso))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (di0cs0 Cada cada))
+      (grup.nom.fs
+        (ncfs000 tecla tecla)))
+    (grup.verb
+      (vmip3s0 emite emitir))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una uno))
+      (grup.nom.fs
+        (ncfs000 señal señal)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 luminosa luminoso)))
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 propia propio)))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (morf.pron
+            (p0300000 se él))
+          (grup.verb
+            (vmip3s0 corresponde corresponder))
+          (sp-CREG
+            (prep
+              (sps00 con con))
+            (sn.co
+              (sn.co
+                (sn
+                  (espec.fs
+                    (di0fs0 una uno))
+                  (grup.nom.fs
+                    (ncfs000 función función)))
+                (coord
+                  (cc o o))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 actividad actividad)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 concreta concreto))))))
+              (S.NF.C.co
+                (Fpa -Fpa- -Fpa-)
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 apagar apagar)))
+                (Fc , ,)
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 encender encender)))
+                (Fc , ,)
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 hablar hablar)))
+                (Fc , ,)
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 escribir escribir)))
+                (Fc , ,)
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 imprimir imprimir)))
+                (Fs ... ...)
+                (Fpt -Fpt- -Fpt-)))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 intensidad intensidad)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 señal señal)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 luminosa luminoso))))))))
+      (grup.verb
+        (vsip3s0 es ser))
+      (sa-ATR
+        (grup.a
+          (aq0fs0 idéntica idéntico)
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.ms
+                (di0cs0 cada cada))
+              (grup.nom.ms
+                (pi0ms000 uno uno)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.mp
+                      (da0mp0 los el)
+                      (Z 64 64))
+                    (grup.nom.mp
+                      (ncmp000 recuadros recuadro)))))))))
+      (Fc , ,))
+    (coord
+      (cc pero pero))
+    (S*
+      (neg
+        (rn no no))
+      (sn.co
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 frecuencia frecuencia)))
+        (coord
+          (cc o o))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 ritmo ritmo)
+            (S.F.R
+              (sp-CC
+                (prep
+                  (spcms al al))
+                (sn
+                  (relatiu
+                    (pr0cn000 que que))))
+              (sn.e-SUJ *0*)
+              (grup.verb
+                (vmip3s0 parpadea parpadear)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 ojo ojo)))
+    (grup.verb
+      (vsip3s0 es ser))
+    (sa-ATR
+      (sa
+        (espec
+          (rg tan tanto)
+          (rg terriblemente terriblemente))
+        (grup.a
+          (aq0ms0 selectivo selectivo)))
+      (S.F.ACons.co.j
+        (conj.subord
+          (cs que que))
+        (S.F.ACons
+          (sp-CC
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 sopa sopa)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fp
+                      (ncfp000 luces luz))))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 pantalla pantalla)))))))
+          (sn.e-SUJ *0*)
+          (morf.pron
+            (p0300000 se él))
+          (grup.verb
+            (vmip3s0 queda quedar))
+          (sp-CREG
+            (sadv
+              (grup.adv
+                (rg sólo sólo)))
+            (sp
+              (prep
+                (sps00 con con))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 tecla tecla)
+                  (S.NF.P
+                    (participi
+                      (aq0fsp elegida elegido)))))))
+          (Fc , ,))
+        (coord
+          (cc y y))
+        (S.F.ACons
+          (sn-SUJ
+            (espec.ms
+              (dp1msp nuestro nuestro))
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 exquisito exquisito)))
+              (ncms000 cerebro cerebro)))
+          (grup.verb
+            (vsip3s0 es ser))
+          (sa-ATR
+            (grup.a
+              (aq0cs0 capaz capaz)
+              (sp
+                (prep
+                  (sps00 de de))
+                (S.NF.C.co
+                  (S.NF.C
+                    (infinitiu
+                      (vmn0000 identificar identificar))
+                    (sn-CD
+                      (espec.ms
+                        (di0cs0 cada cada))
+                      (grup.nom.ms
+                        (pi0ms000 uno uno)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (espec.mp
+                              (da0mp0 los el)
+                              (Z 64 64))
+                            (grup.nom.mp
+                              (ncmp000 destellos destello)
+                              (s.a.mp
+                                (grup.a.mp
+                                  (aq0mp0 luminosos luminoso)))))))))
+                  (coord
+                    (cc y y))
+                  (S.NF.C
+                    (infinitiu
+                      (vmn0000 responder responder))
+                    (sp-CC
+                      (prep
+                        (sps00 con con))
+                      (sn
+                        (espec.fs
+                          (di0fs0 una uno))
+                        (grup.nom.fs
+                          (ncfs000 onda onda)
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0fs0 concreta concreto))))))))))))))
+    (Fp . .)))

@@ -1,0 +1,205 @@
+
+(
+  (S.co
+    (S
+      (sp-CCT
+        (prep
+          (sps00 A a))
+        (sn
+          (grup.nom
+            (W tres_quarts_de_deu_d'_aquest_matí [??:??/??/??:9.45]))))
+      (sn-SUJ
+        (espec.mp
+          (dn0cp0 tres tres))
+        (grup.nom.mp
+          (ncmp000 individus individu)))
+      (grup.verb
+        (vaip3p0 han haver)
+        (vmp00sm entrat entrar))
+      (S.NF.P-CC
+        (participi
+          (aq0mpp armats armat)))
+      (sp-CCL
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 seu seu)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncms000 diari diari)
+                  (sn
+                    (grup.nom
+                      (Fz ' ')
+                      (np00000 El_Mundo El_Mundo)
+                      (Fz ' '))))))
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (grup.nom
+                  (np00000 Barcelona Barcelona))))
+            (sp
+              (Fc , ,)
+              (prep
+                (spcms al al))
+              (sn
+                (grup.nom.ms
+                  (ncms000 carrer carrer)
+                  (sn
+                    (grup.nom
+                      (np00000 Diputació Diputació)))))
+              (Fc , ,))))))
+    (coord
+      (cc i i))
+    (S.co
+      (S
+        (sadv-CCT
+          (grup.adv
+            (rg després després)
+            (sp
+              (prep
+                (sps00 d' de))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 encanonar encanonar))
+                (sn.co-CD
+                  (sn
+                    (espec.ms
+                      (di0ms0 un un))
+                    (grup.nom.ms
+                      (nccs000 guarda guarda)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.fs
+                            (ncfs000 seguretat seguretat))))))
+                  (coord
+                    (cc i i))
+                  (sn
+                    (espec.ms
+                      (di0ms0 un un))
+                    (grup.nom.ms
+                      (ncms000 empleat empleat))))))))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vaip3p0 han haver)
+          (vmp00sm pujat pujar))
+        (sp-CREG
+          (prep
+            (spcms al al))
+          (sn
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (ao0ms0 primer primer)))
+              (ncms000 pis pis)))))
+      (coord
+        (cc i i))
+      (S
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vaip3p0 han haver)
+          (vmp00sm advertit advertir))
+        (S.F.C-CREG
+          (conj.subord
+            (cs que que))
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vaii3p0 havien haver)
+            (vmp00sm col·locat col·locar))
+          (sn-CD
+            (espec.ms
+              (di0ms0 un un))
+            (grup.nom.ms
+              (ncms000 paquet paquet)
+              (sn
+                (grup.nom.fs
+                  (ncfs000 bomba bomba)))
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vmic3s0 explotaria explotar))
+                (sp-CCT
+                  (prep
+                    (sps00 al_cap_de al_cap_de))
+                  (sn
+                    (espec.mp
+                      (dn0cp0 deu deu))
+                    (grup.nom.mp
+                      (ncmp000 minuts minut))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn.co-SUJ
+        (sn.co
+          (coord
+            (rg Tant tant))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (nccs000 guarda guarda)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 seguretat seguretat))))))
+          (coord
+            (cs com com))
+          (sn
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (ncms000 empleat empleat))))
+        (S.NF.P.j
+          (participi
+            (aq0mpp encanonats encanonat))))
+      (grup.verb
+        (vaip3p0 han haver)
+        (vmp00sm sortit sortir))
+      (sp-CCL
+        (prep
+          (sps00 de de))
+        (sn
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (ncms000 edifici edifici)))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3p0 han haver)
+        (vmp00sm trucat trucar))
+      (sp-CI
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (nccs000 policia policia))))
+      (S.NF.A-CC
+        (Fc , ,)
+        (gerundi
+          (vmg0000 advertint advertir))
+        (sp-CREG
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 situació situació))))))
+    (Fp . .)))

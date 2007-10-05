@@ -1,0 +1,1323 @@
+
+(
+  (S
+    (sn.co-SUJ
+      (sno
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (np0000o Federació_d'_Hostaleria_de_Girona Federació_d'_Hostaleria_de_Girona)))
+      (Fc , ,)
+      (sno
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (np0000o Associació_d'_Apartaments_Turístics Associació_d'_Apartaments_Turístics)))
+      (coord
+        (cc i i))
+      (sno
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (np0000o Associació_de_Cases_de_Turisme_Rural Associació_de_Cases_de_Turisme_Rural))))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm creat crear))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 central central)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fp
+              (ncfp000 reserves reserva))))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C.co
+        (S.NF.C.co
+          (S.NF.C
+            (infinitiu
+              (vmn0000 unificar unificar)))
+          (coord
+            (cc i i))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 racionalitzar racionalitzar))))
+        (sn.j-CD
+          (espec.fs
+            (da0cs0 l' el))
+          (grup.nom.fs
+            (ncfs000 oferta oferta)
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 turística turístic)))))
+        (sp.j-CCL
+          (prep
+            (sps00 a a))
+          (snl
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (ncfp000 comarques comarca)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 gironines gironí))))))))
+    (Fp . .)))
+(
+  (S
+    (sna-SUJ
+      (grup.nom
+        (Fe " ")
+        (np0000a Girona_Turística Girona_Turística)
+        (Fe " ")))
+    (grup.verb
+      (vmif3s0 oferirà oferir))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 possibilitat possibilitat)
+        (sp
+          (prep
+            (sps00 de de))
+          (S.NF.C.co
+            (S.NF.C
+              (infinitiu
+                (vmn0000 tenir tenir))
+              (sn-CD.Q
+                (grup.nom.fs
+                  (ncfs000 informació informació)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.mp
+                        (di0mp0 tots tot)
+                        (da0mp0 els el))
+                      (grup.nom.mp
+                        (ncmp000 allotjaments allotjament)
+                        (s.a.mp
+                          (grup.a.mp
+                            (aq0cp0 disponibles disponible)))
+                        (sp
+                          (prep
+                            (sps00 en en))
+                          (sn
+                            (espec.fs
+                              (di0fs0 una un))
+                            (grup.nom.fs
+                              (ncfs000 zona zona))))))))))
+            (Fc , ,)
+            (S.NF.C
+              (infinitiu
+                (vmn0000 consultar consultar))
+              (sn.co-CD
+                (sn.co
+                  (sn
+                    (espec.fp
+                      (da0fp0 les el))
+                    (grup.nom.fp
+                      (ncfp000 activitats activitat)))
+                  (coord
+                    (cc i i))
+                  (sn
+                    (espec.fs
+                      (da0cs0 l' el))
+                    (grup.nom.fs
+                      (ncfs000 oferta oferta)
+                      (s.a.fs.x
+                        (grup.a.fs.co
+                          (grup.a.fs
+                            (aq0fs0 lúdica lúdic))
+                          (Fc , ,)
+                          (grup.a.fs
+                            (aq0cs0 cultural cultural))
+                          (coord
+                            (cc o o))
+                          (grup.a.fs
+                            (aq0fs0 esportiva esportiu)))))))
+                (coord
+                  (cc i i))
+                (sn
+                  (espec.fp
+                    (da0fp0 les el)
+                    (di0cp0 diferents diferent))
+                  (grup.nom.fp
+                    (ncfp000 maneres manera)
+                    (sp
+                      (prep
+                        (sps00 d' de))
+                      (S.NF.C
+                        (infinitiu
+                          (vmn0000 arribar arribar))
+                        (sn-CCL
+                          (grup.nom
+                            (pp3cn000 -hi hi)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (spcms Al al))
+      (sn
+        (espec.ms
+          (di0ms0 mateix mateix))
+        (grup.nom.ms
+          (ncmn000 temps temps))))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 central central)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fp
+              (ncfp000 reserves reserva))))
+        (s.a.fs
+          (Fc , ,)
+          (grup.a.fs
+            (aq0fs0 única únic)
+            (sp
+              (prep
+                (sps00 a a))
+              (snl
+                (espec.ms
+                  (di0ms0 tot tot)
+                  (da0cs0 l' el))
+                (grup.nom.ms
+                  (np0000o Estat Estat)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 espanyol espanyol)))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmif3s0 permetrà permetre))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 contractar contractar))
+      (sadv-CC
+        (grup.adv
+          (rg directament directament)))
+      (sp.co-CC
+        (sp
+          (prep
+            (sps00 a_través_d' a_través_de))
+          (sn.x
+            (grup.nom.co
+              (grup.nom
+                (np0000a Internet Internet))
+              (Fc , ,)
+              (grup.nom.ms
+                (ncms000 fax fax))
+              (Fc , ,)
+              (grup.nom.ms
+                (ncms000 telèfon telèfon)))))
+        (coord
+          (cc o_bé o_bé))
+        (sp
+          (prep
+            (sps00 a_través_de a_través_de))
+          (sn
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (ncfp000 agències agència)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 viatges viatge)))))))
+        (Fc , ,))
+      (sn-CD
+        (espec.fs
+          (di0cs0 qualsevol qualsevol))
+        (grup.nom.fs
+          (ncfs000 oferta oferta)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 turística turístic))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el)
+        (dn0cp0 tres tres))
+      (grup.nom.fp
+        (ncfp000 associacions associació)))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm presentat presentar))
+    (sadv-CREG
+      (grup.adv
+        (rg avui avui)))
+    (sna-CD
+      (grup.nom
+        (np0000a Girona_Turística Girona_Turística)
+        (sn
+          (Fc , ,)
+          (espec.ms
+            (di0ms0 un un))
+          (grup.nom.ms
+            (ncms000 portal portal)
+            (sp
+              (prep
+                (sps00 a a))
+              (sna
+                (grup.nom
+                  (np0000a Internet Internet))))
+            (S.F.R
+              (sp-CC
+                (prep
+                  (sps00 en en))
+                (relatiu
+                  (pr0cn000 què què)))
+              (morfema.verbal-PASS
+                (p0000000 s' es))
+              (grup.verb
+                (vaip3s0 ha haver)
+                (vmp00sm concentrat concentrar))
+              (sn-SUJ
+                (espec.fs
+                  (di0fs0 tota tot)
+                  (da0cs0 l' el))
+                (grup.nom.fs
+                  (ncfs000 oferta oferta)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 turística turístic)))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snl
+                      (espec.fp
+                        (da0fp0 les el))
+                      (grup.nom.fp
+                        (ncfp000 comarques comarca)
+                        (s.a.fp
+                          (grup.a.fp
+                            (aq0fp0 gironines gironí)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 pàgina pàgina)
+        (s.a.fs
+          (grup.a.fs
+            (nccs000 web web)))))
+    (grup.verb
+      (vmif3s0 permetrà permetre))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 accedir accedir))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (di0fs0 tota tot)
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 informació informació)
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 referent referent)
+                (sp
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (espec.fs
+                      (di0fs0 una un))
+                    (grup.nom.fs
+                      (ncfs000 zona zona)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0fs0 concreta concret)))
+                      (S.F.R
+                        (relatiu-CD
+                          (pr0cn000 que que))
+                        (sn-SUJ
+                          (espec.ms
+                            (da0cs0 l' el))
+                          (grup.nom.ms
+                            (ncms000 usuari usuari)))
+                        (grup.verb
+                          (vmsp3s0 vulgui voler)
+                          (infinitiu
+                            (vmn0000 visitar visitar)))))))))
+            (sp
+              (prep
+                (sps00 amb amb))
+              (sn
+                (espec.fs
+                  (di0fs0 tota tot)
+                  (da0cs0 l' el))
+                (grup.nom.fs
+                  (ncfs000 oferta oferta)
+                  (sp
+                    (prep
+                      (sps00 d' de))
+                    (sn.x
+                      (grup.nom.co
+                        (grup.nom.ms
+                          (ncms000 allotjament allotjament))
+                        (Fc , ,)
+                        (grup.nom.fp
+                          (ncfp000 activitats activitat))
+                        (Fc , ,)
+                        (grup.nom.fp
+                          (ncfp000 característiques característica))
+                        (Fc , ,)
+                        (grup.nom.fs
+                          (ncfs000 manera manera)
+                          (sp
+                            (prep
+                              (sps00 d' de))
+                            (S.NF.C
+                              (infinitiu
+                                (vmn0000 arribar arribar))
+                              (sn-CCL
+                                (grup.nom
+                                  (pp3cn000 -hi hi))))))
+                        (coord
+                          (cc i i))
+                        (grup.nom.fp
+                          (ncfp000 possibilitats possibilitat)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom.ms
+                                (ncms000 transport transport)))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sp-CC
+        (prep
+          (spcms Al al))
+        (sn
+          (espec.ms
+            (di0ms0 mateix mateix))
+          (grup.nom.ms
+            (ncmn000 temps temps))))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (nccs000 web web)))
+      (grup.verb
+        (vmif3s0 permetrà permetre))
+      (S.NF.C-CD
+        (infinitiu
+          (vmn0000 contractar contractar))
+        (sn-CD
+          (espec.ms
+            (di0cs0 qualsevol qualsevol))
+          (grup.nom.ms
+            (ncms000 servei servei)))))
+    (coord
+      (cc i i))
+    (S
+      (sadv-MOD
+        (grup.adv
+          (rg fins_i_tot fins_i_tot)))
+      (morf.pron
+        (pp3cn000 hi hi))
+      (grup.verb
+        (vaif3s0 haurà haver))
+      (sadv-MOD
+        (grup.adv
+          (rg també també)))
+      (sn-CD.Q
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 possibilitat possibilitat)
+          (sp
+            (prep
+              (sps00 de de))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 contractar contractar))
+              (sn-CD
+                (grup.nom.mp
+                  (ncmp000 paquets paquet)
+                  (S.NF.P
+                    (participi
+                      (aq0mpp tancats tancat)))
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vmsp3p0 incloguin incloure))
+                    (sn-CD
+                      (grup.nom.mp
+                        (ncmp000 forfaits forfait)
+                        (sp
+                          (prep
+                            (sps00 per per))
+                          (sp
+                            (prep
+                              (sps00 a a))
+                            (sn
+                              (espec.fs
+                                (di0fs0 una un))
+                              (grup.nom.fs
+                                (ncfs000 durada durada)
+                                (S.NF.P
+                                  (participi
+                                    (aq0fsp determinada determinat)))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 usuari usuari)))
+    (grup.verb
+      (vmif3s0 tindrà tenir))
+    (sn-CD.Q
+      (espec.fp
+        (da0fp0 les el)
+        (di0fp0 mateixes mateix))
+      (grup.nom.fp
+        (ncfp000 condicions condició)
+        (s.a.fp
+          (grup.a.fp
+            (aq0fp0 econòmiques econòmic)))
+        (S.F.R*
+          (relatiu-CD.Q
+            (pr0cn000 que que))
+          (S.F.ACond*-AO
+            (conj.subord
+              (cs si si))
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vmsi3s0 fes fer))
+            (sn-CD
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 contractació contractació)
+                (sp
+                  (prep
+                    (sps00 a_través_d' a_través_de))
+                  (sn
+                    (espec.fs
+                      (di0fs0 una un))
+                    (grup.nom.fs
+                      (ncfs000 agència agència))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Per per))
+      (sp
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 creació creació)
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (espec.fs
+                  (dd0fs0 aquesta aquest))
+                (grup.nom.fs
+                  (ncfs000 plataforma plataforma))))))))
+    (sna-SUJ
+      (grup.nom
+        (np0000a Girona_Turística Girona_Turística)))
+    (grup.verb
+      (vmip3s0 compta comptar))
+    (sp-CREG
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 suport suport)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sno
+              (grup.nom
+                (np0000o Intercom Intercom)
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vsip3s0 és ser))
+                  (S.F.C-ATR
+                    (relatiu-SUJ
+                      (pr0cn000 qui qui))
+                    (grup.verb
+                      (vmif3s0 posarà posar))
+                    (sn-CD
+                      (espec.mp
+                        (da0mp0 els el))
+                      (grup.nom.mp
+                        (ncmp000 mitjans mitjà)
+                        (s.a.mp
+                          (grup.a.mp
+                            (aq0mp0 tècnics tècnic)))))
+                    (sp-CC
+                      (prep
+                        (sps00 per per))
+                      (sp
+                        (prep
+                          (sps00 a a))
+                        (sn.co
+                          (sn
+                            (espec.fs
+                              (da0cs0 l' el))
+                            (grup.nom.fs
+                              (ncfs000 elaboració elaboració)
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sn
+                                  (espec.fs
+                                    (da0fs0 la el))
+                                  (grup.nom.fs
+                                    (ncfs000 pàgina pàgina)
+                                    (s.a.fs
+                                      (grup.a.fs
+                                        (sn
+                                          (grup.nom
+                                            (nccs000 web web))))))))))
+                          (coord
+                            (cc i i))
+                          (sn
+                            (espec.ms
+                              (dp3ms0 el_seu el_seu))
+                            (grup.nom.ms
+                              (ncms000 manteniment manteniment))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg Finalment finalment)))
+    (sna-SUJ
+      (grup.nom
+        (np0000a Girona_Turística Girona_Turística)))
+    (sadv-MOD
+      (grup.adv
+        (rg també també)))
+    (grup.verb
+      (vmif3s0 entrarà entrar))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (ncmp000 circuits circuit)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (ncfp000 agències agència))))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 viatges viatge)))))))
+    (sp-CC
+      (prep
+        (sps00 a_través_de a_través_de))
+      (sno
+        (grup.nom
+          (np0000o Savia_Amadeus Savia_Amadeus)
+          (sn
+            (Fc , ,)
+            (espec.ms
+              (di0ms0 un un))
+            (grup.nom.ms
+              (nc00000 tour tour)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 operador operador)))
+              (S.F.R.co
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (sadv-CCT
+                    (grup.adv
+                      (rg actualment actualment)))
+                  (grup.verb
+                    (vmip3s0 té tenir))
+                  (snn-CD.Q
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (Zp 90% 90/100)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (ncfs000 quota quota)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (grup.nom.ms
+                                  (ncms000 mercat mercat)))))))
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.fp
+                            (di0fp0 totes tot)
+                            (da0fp0 les el))
+                          (grup.nom.fp
+                            (ncfp000 agències agència)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (grup.nom.mp
+                                  (ncmp000 viatges viatge))))
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sno
+                                (espec.ms
+                                  (da0cs0 l' el))
+                                (grup.nom.ms
+                                  (np0000o Estat Estat)
+                                  (s.a.ms
+                                    (grup.a.ms
+                                      (aq0ms0 espanyol espanyol))))))))))))
+                (coord
+                  (cc i i))
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmip3s0 gestiona gestionar))
+                  (sn.x-CD
+                    (grup.nom.co
+                      (coord
+                        (rg tant tant))
+                      (grup.nom.mp
+                        (ncmp000 allotjaments allotjament)
+                        (Fc , ,))
+                      (coord
+                        (cs com com))
+                      (grup.nom.co
+                        (grup.nom.fp
+                          (ncfp000 activitats activitat))
+                        (coord
+                          (cc o o))
+                        (grup.nom.mp
+                          (ncmp000 bitllets bitllet)
+                          (sp
+                            (prep
+                              (sps00 per per))
+                            (sp
+                              (prep
+                                (sps00 a a))
+                              (sn
+                                (grup.nom.ms
+                                  (ncms000 transport transport))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Pere_Reixac Pere_Reixac)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm indicat indicar))
+    (S.F.C.co-CD
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sp-CCT
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (di0ms0 un un))
+            (grup.nom.ms
+              (ncms000 futur futur))))
+        (morfema.verbal-PASS
+          (p0000000 s' es))
+        (grup.verb
+          (vmif3p0 establiran establir))
+        (sn-CD
+          (grup.nom.mp
+            (ncmp000 contactes contacte)))
+        (sp-CC
+          (prep
+            (sps00 per per))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 accedir accedir))
+            (sp-CREG
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fp
+                  (da0fp0 les el))
+                (grup.nom.fp
+                  (ncfp000 agències agència)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.mp
+                        (ncmp000 viatges viatge))))
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0fp0 europees europeu)))))))))
+      (coord
+        (cc però però))
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sp-CC
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 moment moment))))
+        (sn-SUJ
+          (espec.mp
+            (da0mp0 els el))
+          (grup.nom.mp
+            (nccp000 turistes turista)
+            (s.a.mp
+              (grup.a.mp
+                (aq0mp0 estrangers estranger)))))
+        (grup.verb
+          (vmic3p0 podrien poder)
+          (infinitiu
+            (vmn0000 consultar consultar)))
+        (sn-CD
+          (espec.fs
+            (da0cs0 l' el))
+          (grup.nom.fs
+            (ncfs000 oferta oferta)))
+        (sp-CC
+          (prep
+            (sps00 a_través_de a_través_de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 pàgina pàgina)
+              (s.a.fs
+                (grup.a.fs
+                  (sn
+                    (grup.nom
+                      (nccs000 web web)))))
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (morfema.verbal-PASS
+                  (p0000000 es es))
+                (grup.verb
+                  (vmif3s0 farà fer))
+                (sp-CC
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.mp
+                      (Z 8 8))
+                    (grup.nom.mp
+                      (ncmp000 idiomes idioma))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (nccs000 web web)))
+    (grup.verb
+      (vmif3s0 estarà estar))
+    (sa-ATR
+      (grup.a
+        (aq0ms0 actiu actiu)))
+    (sp-CCT
+      (prep
+        (sps00 a_partir_de a_partir_de))
+      (snd
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (W 1_de_gener_del_2001 [??:01/01/2001:??.??]))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCL
+      (prep
+        (sps00 A a))
+      (sna
+        (grup.nom
+          (np0000a Girona_Turística Girona_Turística))))
+    (sadv-CCT
+      (grup.adv
+        (rg actualment actualment)))
+    (morf.pron
+      (pp3cn000 hi hi))
+    (grup.verb
+      (vaip3s0 ha haver))
+    (sn.x-CD.Q
+      (grup.nom.co
+        (grup.nom.mp
+          (ncmp000 hotels hotel))
+        (Fc , ,)
+        (grup.nom.mp
+          (ncmp000 apartaments apartament))
+        (coord
+          (cc i i))
+        (grup.nom.fp
+          (ncfp000 cases casa)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 turisme turisme)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 rural rural)))))))))
+    (S.F.AConc-AO
+      (conj.subord
+        (cs tot_i_que tot_i_que))
+      (snp-SUJ
+        (grup.nom
+          (np0000p Pere_Reixac Pere_Reixac)))
+      (grup.verb
+        (vaip3s0 ha haver)
+        (vmp00sm indicat indicar))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sp-CC
+          (prep
+            (sps00 entre entre))
+          (sn
+            (espec.mp
+              (da0mp0 els el))
+            (grup.nom.mp
+              (ncmp000 empresaris empresari)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0mp0 hotelers hoteler))))))
+        (sadv-MOD
+          (grup.adv
+            (rg també també)))
+        (morf.pron
+          (pp3cn000 hi hi))
+        (grup.verb
+          (vaip3s0 ha haver))
+        (sn-CD.Q
+          (grup.nom.mp
+            (ncmp000 propietaris propietari)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 càmpings càmping))))))
+        (S.F.ACons-AO
+          (Fc , ,)
+          (conj.subord
+            (cs de_manera_que de_manera_que))
+          (sn-SUJ
+            (espec.fs
+              (dd0fs0 aquesta aquest))
+            (grup.nom.fs
+              (ncfs000 modalitat modalitat)
+              (sp
+                (prep
+                  (sps00 d' de))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 allotjament allotjament))))))
+          (sadv-MOD
+            (grup.adv
+              (rg també també)))
+          (sn-CC.NFc
+            (grup.nom
+              (pp3cn000 hi hi)))
+          (grup.verb
+            (vmip3s0 està estar))
+          (S.NF.P-ATR.NFn
+            (participi
+              (aq0fsp inclosa inclòs))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg A_més a_més)))
+    (morf.pron
+      (pp3cn000 hi hi))
+    (grup.verb
+      (vaip3s0 ha haver))
+    (sn-CD.Q
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 possibilitat possibilitat)
+        (S.F.C
+          (conj.subord
+            (cs que que))
+          (sn-SUJ
+            (espec.ms
+              (di0cs0 qualsevol qualsevol))
+            (grup.nom.ms
+              (ncms000 establiment establiment)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 turístic turístic)))))
+          (morf.pron
+            (p0300000 s' ell))
+          (grup.verb
+            (vmsp3s0 adhereixi adherir))
+          (sp-CREG
+            (prep
+              (sps00 a a))
+            (sna
+              (grup.nom
+                (np0000a Girona_Turística Girona_Turística))))
+          (sp-CC
+            (prep
+              (sps00 a a))
+            (sn
+              (grup.nom.ms
+                (ncms000 títol títol)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 individual individual)))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C.co-CD
+      (S.F.C
+        (sadv-CCT
+          (grup.adv
+            (rg Actualment actualment)))
+        (sp-CCL
+          (prep
+            (sps00 a a))
+          (sna
+            (grup.nom
+              (np0000a Girona_Turística Girona_Turística))))
+        (morf.pron
+          (pp3cn000 hi hi))
+        (grup.verb
+          (vaip3s0 ha haver))
+        (sa-CPRED.CD
+          (grup.a
+            (aq0cp0 disponibles disponible)))
+        (sn-CD.Q
+          (espec.fp
+            (Z 41.620 41620))
+          (grup.nom.fp
+            (ncfp000 places plaça)
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 allotjament allotjament)))))))
+      (coord
+        (cc però però))
+      (S.F.C
+        (sp-CCT
+          (prep
+            (spcms al al))
+          (snd
+            (grup.nom.ms
+              (W gener_del_2001 [??:??/01/2001:??.??]))))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmip3p0 esperen esperar))
+        (S.NF.C-CD
+          (infinitiu
+            (vmn0000 disposar disposar))
+          (sp-CREG
+            (prep
+              (sps00 de de))
+            (snn
+              (grup.nom.mp
+                (Z 80.000 80000)
+                (S.F.R
+                  (Fe " ")
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vsip3s0 és ser))
+                  (snn-ATR
+                    (espec.ms
+                      (di0ms0 un un))
+                    (grup.nom.ms
+                      (Zp 76% 76/100)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.fp
+                            (da0fp0 les el))
+                          (grup.nom.fp
+                            (S.F.R
+                              (relatiu-CD.Q
+                                (pr0cn000 que que))
+                              (morf.pron
+                                (pp3cn000 hi hi))
+                              (grup.verb
+                                (vaip3s0 ha haver))
+                              (sp-CC
+                                (prep
+                                  (sps00 entre entre))
+                                (sn
+                                  (espec.fp
+                                    (da0fp0 les el)
+                                    (dn0cp0 tres tres))
+                                  (grup.nom.fp
+                                    (nc00000 asociacions asociacions))))))))))
+                  (Fe " ")))))))
+      (Fc , ,))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm dit dir))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Reixac Reixac)))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (snp-SUJ
+        (grup.nom.ms
+          (np0000p Reixac Reixac)))
+      (grup.verb
+        (vaip3s0 ha haver)
+        (vmp00sm afegit afegir))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sn
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (ncms000 any any)
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vmip3s0 ve venir)))))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmip3p0 esperen esperar))
+        (S.NF.C-CD
+          (infinitiu
+            (vmn0000 gerenar gerenar))
+          (sn-CD
+            (espec.ms
+              (di0ms0 un un))
+            (grup.nom.ms
+              (ncms000 volum volum)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 negoci negoci))))
+              (sp
+                (prep
+                  (sps00 de de))
+                (snn
+                  (espec.mp
+                    (Z 5.000 5000))
+                  (grup.nom.mp
+                    (ncmp000 milions milió)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snn
+                        (grup.nom.fp
+                          (Zm pessetes pesseta)))))))
+              (snn
+                (Fc , ,)
+                (Fe " ")
+                (espec.ms
+                  (di0ms0 un un))
+                (grup.nom.ms
+                  (Zp 1% 1/100)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 volum volum))))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 negoci negoci)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0cs0 total total))))))
+                  (S.F.R
+                    (relatiu-CD
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vmip3s0 genera generar))
+                    (sn-SUJ
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 sector sector)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0ms0 turístic turístic)))))
+                    (sp-CCL
+                      (prep
+                        (sps00 a a))
+                      (snl
+                        (espec.fp
+                          (da0fp0 les el))
+                        (grup.nom.fp
+                          (ncfp000 comarques comarca)
+                          (s.a.fp
+                            (grup.a.fp
+                              (aq0fp0 gironines gironí))))))))
+                (Fe " "))))))
+      (Fc , ,))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm explicat explicar))
+    (sn.e-SUJ *0*)
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 Segons segons))
+      (snp
+        (grup.nom.ms
+          (np0000p Reixac Reixac)))
+      (Fc , ,))
+    (snd-CCT
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (W any_2001 [??:??/??/2001:??.??])))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vaic3p0 haurien haver)
+      (sps00 de de)
+      (infinitiu
+        (vmn0000 realitzar realitzar)))
+    (sn-SUJ
+      (espec.fp
+        (Z 51.000 51000))
+      (grup.nom.fp
+        (ncfp000 reserves reserva)))
+    (sp-CC
+      (prep
+        (sps00 a_través_de a_través_de))
+      (sna
+        (grup.nom
+          (np0000a Girona_Turística Girona_Turística))))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn.co
+        (sn
+          (espec.mp
+            (di0mp0 uns un)
+            (Z 277.000 277000))
+          (grup.nom.mp
+            (ncmp000 usuaris usuari)))
+        (coord
+          (cc i i))
+        (sn.co
+          (sn.co
+            (sn
+              (espec.mp
+                (di0mp0 uns un)
+                (Z 2 2))
+              (grup.nom.mp
+                (ncmp000 milions milió)))
+            (coord
+              (cc i i))
+            (sn
+              (grup.nom.ms
+                (pn0ms000 mig mig))))
+          (sp.j
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (ncfp000 visites visita)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.fs
+        (pd0fs000 Aquesta aquest)))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sn-ATR
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 iniciativa iniciativa)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 pionera pioner)))))
+    (sp.co-CCL
+      (sp
+        (prep
+          (sps00 a a))
+        (snl
+          (grup.nom
+            (np0000l Catalunya Catalunya))))
+      (coord
+        (cc i i))
+      (sp
+        (prep
+          (sps00 a a))
+        (snl
+          (espec.ms
+            (di0ms0 tot tot)
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (np0000l Estat Estat)))))
+    (Fp . .)))

@@ -1,0 +1,39 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 partit partit)
+        (sn
+          (grup.nom.ms
+            (ncms000 opositor opositor)))))
+    (grup.verb
+      (vmif3s0 celebrarà celebrar))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 congrés congrés)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 extraordinari extraordinari)))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 renovar renovar))
+        (sn-CD
+          (espec.mp
+            (dp3mp0 els_seus el_seu))
+          (grup.nom.mp
+            (ncmp000 òrgans òrgan)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 direcció direcció))))))))
+    (Fp . .)))

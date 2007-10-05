@@ -1,0 +1,590 @@
+
+(
+  (S.co
+    (S*
+      (sadv
+        (grup.adv
+          (rg Luego luego))
+        (Fc , ,))
+      (sn
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (ao0fs0 segunda segundo)))
+          (ncfs000 fila fila)))
+      (Fc , ,))
+    (coord
+      (cc y y))
+    (S
+      (sadv-CC
+        (grup.adv
+          (rg a_partir_de_ahí a_partir_de_ahí)))
+      (sn-SUJ
+        (espec.fs
+          (di0cs0 cada cada))
+        (grup.nom.fs
+          (ncfs000 fila fila)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 alterna alterno)))))
+      (grup.verb
+        (vmii3s0 tenía tener))
+      (sn-CD.Q
+        (grup.nom.fp
+          (ncfp000 pseudoesferas pseudoesfera)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 uranio uranio)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Los el))
+      (grup.nom.mp
+        (ncmp000 físicos físico)))
+    (grup.verb
+      (vsii3p0 eran ser)
+      (vmp00pm asistidos asistir))
+    (sp-CAG
+      (prep
+        (sps00 por por))
+      (sn
+        (grup.nom.mp
+          (ncmp000 universitarios universitario)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 física física))))
+          (S.NF.P
+            (participi
+              (aq0mpp contratados contratado))
+            (sp-CC
+              (prep
+                (sps00 para para))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 colocar colocar))
+                (sn-CD
+                  (espec.mp
+                    (da0mp0 los el))
+                  (grup.nom.mp
+                    (ncmp000 ladrillos ladrillo)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmii3p0 Trabajaban trabajar))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (grup.nom.mp
+          (ncmp000 turnos turno)
+          (sp
+            (prep
+              (sps00 de de))
+            (snn
+              (espec.fp
+                (Z 12 12))
+              (grup.nom.fp
+                (ncfp000 horas hora)))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 turno turno)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 día día))))))
+      (grup.verb
+        (vsii3s0 era ser)
+        (vmp00sm conducido conducir))
+      (sp-CAG
+        (prep
+          (sps00 por por))
+        (snp
+          (grup.nom.ms
+            (np0000p Walter_Zinn Walter_Zinn)))))
+    (Fx ; ;)
+    (S*
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 noche noche)))))
+        (Fc , ,))
+      (sp-CAG
+        (prep
+          (sps00 por por))
+        (snp
+          (grup.nom.ms
+            (np0000p Herb_Anderson Herb_Anderson)))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (di0mp0 Algunos alguno))
+      (grup.nom.mp
+        (ncmp000 ladrillos ladrillo)))
+    (grup.verb
+      (vmii3p0 tenían tener))
+    (sn-CD.Q
+      (grup.nom.fp
+        (ncfp000 ranuras ranura)
+        (sp
+          (prep
+            (sps00 para para))
+          (S.NF.C.co
+            (S.NF.C.co
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 insertar insertar)))
+              (coord
+                (cc y y))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 retirar retirar))))
+            (sn-CD
+              (espec.fp
+                (da0fp0 las el))
+              (grup.nom.fp
+                (ncfp000 varillas varilla)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 control control))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.fp
+        (S.NF.P
+          (participi
+            (aq0fpp Dichas dicho)))
+        (ncfp000 ranuras ranura)))
+    (grup.verb
+      (vmii3p0 debían deber)
+      (infinitiu
+        (vsn0000 ser ser)))
+    (S.NF.P-ATR
+      (sadv-CC
+        (grup.adv
+          (rg cuidadosamente cuidadosamente)))
+      (participi
+        (aq0fpp alineadas alineado)))
+    (sn-CC
+      (grup.nom.fs
+        (ncfs000 fila fila)
+        (sp
+          (prep
+            (sps00 por por))
+          (sn
+            (grup.nom.fs
+              (ncfs000 fila fila))))))
+    (Fp . .)))
+(
+  (S
+    (grup.verb
+      (vaii3s0 Había haber))
+    (sn-CD.Q
+      (espec.fp
+        (dn0cp0 diez diez))
+      (grup.nom.fp
+        (ncfp000 varillas varilla)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 control control))))
+        (S.NF.P.co
+          (S.NF.P
+            (participi
+              (aq0fpp hechas hecho))
+            (sp-CC
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fp
+                  (ncfp000 láminas lámina)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 cadmio cadmio)))))))
+            (INC
+              (S
+                (grup.verb
+                  (vsip3s0 es ser))
+                (S.NF.P-ATR
+                  (participi
+                    (aq0msp conocido conocido)))
+                (sn-SUJ
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0cs0 enorme enorme)))
+                    (ncms000 apetito apetito)
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 cadmio cadmio))))
+                    (sp
+                      (prep
+                        (sps00 por por))
+                      (sn
+                        (espec.mp
+                          (da0mp0 los el))
+                        (grup.nom.mp
+                          (ncmp000 neutrones neutrón)))))))))
+          (coord
+            (cc y y))
+          (S.NF.P
+            (participi
+              (aq0fpp clavadas clavado))
+            (sp-CC
+              (prep
+                (sps00 a a))
+              (sn
+                (grup.nom.fp
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0fp0 largas largo)))
+                  (ncfp000 tiras tira)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 madera madera)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (S.NF.P
+        (participi
+          (aq0fpp Insertadas insertado))
+        (sp-CC
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 pila pila))))
+        (Fc , ,))
+      (sn
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 varillas varilla))))
+    (grup.verb
+      (vmii3p0 absorbían absorber))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 cantidad cantidad)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 suficiente suficiente)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.mp
+              (ncmp000 neutrones neutrón))))))
+    (sp-CC
+      (prep
+        (sps00 para para))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 impedir impedir))
+        (S.F.C-CD
+          (conj.subord
+            (cs que que))
+          (sn-SUJ
+            (espec.fp
+              (da0fp0 las el))
+            (grup.nom.fp
+              (ncfp000 fisiones fisión)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 uranio uranio))))))
+          (morf.pron
+            (p0300000 se él))
+          (grup.verb
+            (vmsi3p0 multiplicaran multiplicar))
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.fs
+                (di0fs0 una uno))
+              (grup.nom.fs
+                (ncfs000 reacción reacción)
+                (sp
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 cadena cadena))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.A-CC
+      (conj.subord
+        (cs A_medida_que a_medida_que))
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vmsi3p0 extrajeran extraer))
+      (sn-SUJ
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 varillas varilla)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (rg más más))
+      (grup.nom.mp
+        (ncmp000 neutrones neutrón)))
+    (grup.verb
+      (vmic3p0 estarían estar))
+    (sa-ATR
+      (grup.a
+        (aq0cp0 disponibles disponible)))
+    (sp-CC
+      (prep
+        (sps00 para para))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 conducir conducir))
+        (sn-CD
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (ncfp000 fisiones fisión)))))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 medicina medicina)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 nuclear nuclear))))
+        (Fc , ,))
+      (coord
+        (cc es_decir es_decir))
+      (sn
+        (Fc , ,)
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 uso uso)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (ncfp000 radiaciones radiación)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0cp0 ionizantes ionizante)))
+                (sp
+                  (Fc , ,)
+                  (prep
+                    (cs como como))
+                  (sn.co
+                    (sn
+                      (espec.mp
+                        (da0mp0 los el))
+                      (grup.nom.mp
+                        (ncmp000 rayos_X rayo_x)))
+                    (coord
+                      (cc o o))
+                    (sn
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 radio radio))))
+                  (Fc , ,)))))
+          (sp
+            (prep
+              (cs como como))
+            (sn
+              (grup.nom.ms
+                (ncms000 medio medio)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn.x
+                    (grup.nom.co
+                      (grup.nom.co
+                        (grup.nom.ms
+                          (ncms000 diagnóstico diagnóstico))
+                        (coord
+                          (cc y y))
+                        (grup.nom.ms
+                          (ncms000 tratamiento tratamiento)
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0ms0 médico médico)))))
+                      (sp.j
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.fp
+                            (di0fp0 ciertas cierto))
+                          (grup.nom.fp
+                            (ncfp000 enfermedades enfermedad)))))))))))))
+    (grup.verb
+      (vsip3s0 es ser)
+      (vmp00sf conocida conocer))
+    (sp-CC
+      (prep
+        (sps00 desde desde))
+      (s.a.ms
+        (grup.a.ms
+          (aq0ms0 antiguo antiguo))))
+    (sadv-CC
+      (Fc , ,)
+      (sadv
+        (grup.adv
+          (rg mucho mucho)))
+      (rg antes antes)
+      (sp
+        (prep
+          (sps00 de de))
+        (S.F.C
+          (conj.subord
+            (cs que que))
+          (grup.verb
+            (vmsi3s0 comenzara comenzar))
+          (sn-SUJ
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (S.NF.P
+                (participi
+                  (aq0fsp llamada llamado)))
+              (ncfs000 era era)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 nuclear nuclear)))))
+          (sp-CC
+            (Fc , ,)
+            (prep
+              (sps00 tras tras))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 estallido estallido)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (s.a.fs
+                        (grup.a.fs
+                          (ao0fs0 primera primero)))
+                      (ncfs000 bomba bomba)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0fs0 atómica atómico))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CC
+      (espec
+        (rg Más más))
+      (grup.adv
+        (rg tarde tarde))
+      (Fc , ,))
+    (sadv-MOD
+      (grup.adv
+        (rg también también)))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.mp
+        (ncmp000 rayos rayo)
+        (s.a.mp
+          (grup.a.mp
+            (ncfs000 gamma gamma)))
+        (S.NF.P
+          (participi
+            (aq0mpp emitidos emitido))
+          (sp-CAG
+            (prep
+              (sps00 por por))
+            (sn
+              (grup.nom.mp
+                (S.NF.P
+                  (participi
+                    (aq0mpp determinados determinado)))
+                (ncmp000 radionucleidos radionucleido)))))))
+    (grup.verb
+      (vaip3p0 han haber)
+      (vsp00sm sido ser)
+      (vmp00pm empleados emplear))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 tratamiento tratamiento)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 tumores tumor)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0mp0 malignos maligno)))))))))
+    (Fp . .)))

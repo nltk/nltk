@@ -1,0 +1,172 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (dp3ms0 El_seu el_seu))
+      (grup.nom.ms
+        (ncms000 desallotjament desallotjament)))
+    (sp-CCT
+      (Fc , ,)
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (W octubre_del_1996 [??:??/10/1996:??.??])))
+      (Fc , ,))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 marcar marcar))
+    (sn-CD
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (ncms000 inici inici)
+        (sp
+          (prep
+            (spcmp dels del))
+          (sn
+            (grup.nom.mp
+              (ncmp000 incidents incident)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0mp0 urbans urbà)))
+              (sp
+                (prep
+                  (sps00 amb amb))
+                (sn
+                  (grup.nom.mp
+                    (nccp000 okupes okupa)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (nccs000 policia policia)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 detenir detenir))
+    (sn-CD
+      (espec.fp
+        (Z 48 48))
+      (grup.nom.fp
+        (ncfp000 persones persona)))
+    (sadv-CCT
+      (grup.adv
+        (rg després després)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.fs
+              (di0fs0 una un))
+            (grup.nom.fs
+              (ncfs000 batalla batalla)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 campal campal)))
+              (S.F.R
+                (sp-CREG
+                  (prep
+                    (sps00 en en))
+                  (relatiu
+                    (pr0cn000 què què)))
+                (grup.verb
+                  (vaip3p0 van anar)
+                  (vmn0000 participar participar))
+                (sn-SUJ
+                  (espec.mp
+                    (Z 200 200))
+                  (grup.nom.mp
+                    (nccp000 agents agent)))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CCT
+      (grup.adv
+        (rg Periòdicament periòdicament))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 jutges jutge)))
+    (grup.verb
+      (vmip3p0 ordenen ordenar))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 desallotjar desallotjar))
+      (sn-CD
+        (grup.nom.mp
+          (ncmp000 edificis edifici)
+          (S.NF.P
+            (participi
+              (aq0mpp ocupats ocupat)))))
+      (sp-CCL
+        (prep
+          (sps00 a a))
+        (sn
+          (grup.nom
+            (np00000 Barcelona Barcelona)))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 anterior anterior)
+            (sp
+              (prep
+                (spcms al al))
+              (sn
+                (grup.nom.ms
+                  (sp
+                    (prep
+                      (sps00 d' de))
+                    (sadv
+                      (grup.adv
+                        (rg ahir ahir)))))))))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 tenir_lloc tenir_lloc))
+    (sn-CCT
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (W 10_de_gener [??:10/01/??:??.??])
+        (S.NF.P
+          (participi
+            (aq0msp passat passat)))))
+    (sp-CREG
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 carrer carrer)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (np00000 Liuva Liuva)))))))
+    (sp-CCL
+      (Fc , ,)
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 barri barri)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (np00000 Sant_Andreu Sant_Andreu)))))))
+    (Fp . .)))

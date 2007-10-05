@@ -1,0 +1,317 @@
+
+(
+  (S
+    (sn-SUJ
+      (grup.nom.fs
+        (np00000 Naomi_Campbell Naomi_Campbell)))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sn-ATR
+      (espec.fs
+        (da0cs0 l' el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (ao0fs0 última últim)))
+        (ncfs000 celebritat celebritat)
+        (sp
+          (prep
+            (sps00 a a))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 reconèixer reconèixer))
+            (sn-CD
+              (espec.fs
+                (dp3fs0 la_seva el_seu))
+              (grup.nom.fs
+                (ncfs000 lluita lluita)
+                (sp
+                  (prep
+                    (sps00 contra contra))
+                  (sn
+                    (espec.fs
+                      (da0cs0 l' el))
+                    (grup.nom.fs
+                      (ncfs000 addicció addicció)
+                      (sp
+                        (prep
+                          (sps00 a a))
+                        (sn
+                          (espec.fp
+                            (da0fp0 les el))
+                          (grup.nom.fp
+                            (nccp000 drogues droga)))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (sp.j-AO
+      (prep
+        (sps00 Segons segons))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 diari diari)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 britànic britànic)))
+          (sn
+            (grup.nom
+              (np00000 The_Mirror The_Mirror)))))
+      (Fc , ,))
+    (S.co
+      (S
+        (sn-SUJ
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (nccs000 model model)))
+        (grup.verb
+          (vmip3s0 assisteix assistir))
+        (sn-CC
+          (sps00 des des)
+          (sps00 de de)
+          (vmip3s0 fa fer)
+          (dn0cp0 tres tres)
+          (ncmp000 mesos mes))
+        (sp-CREG
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (ncfp000 reunions reunió)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 grup grup)
+                    (sn
+                      (grup.nom
+                        (np00000 Narcòtics Narcòtics))))))))))
+      (coord
+        (cc i i))
+      (S
+        (sp-CC
+          (Fc , ,)
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fp
+              (ncfp000 vegades vegada)))
+          (Fc , ,))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmip3s0 participa participar))
+        (sp-CREG
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.fp
+              (dn0fp0 dues dos))
+            (grup.nom.fp
+              (ncfp000 sessions sessió)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 diàries diari)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 rehabilitació rehabilitació)))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (grup.nom.fs
+          (np00000 Naomi Naomi)
+          (sp
+            (Fc , ,)
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (Z 30 30))
+              (grup.nom.mp
+                (ncmp000 anys any)))
+            (Fc , ,))))
+      (grup.verb
+        (vmip3s0 té tenir))
+      (sn-CD.Q
+        (grup.nom.mp
+          (ncmp000 problemes problema)
+          (sp
+            (prep
+              (sps00 amb amb))
+            (sn.co
+              (sn
+                (espec.ms
+                  (da0cs0 l' el))
+                (grup.nom.ms
+                  (ncms000 alcohol alcohol)))
+              (coord
+                (cc i i))
+              (sn
+                (espec.fp
+                  (da0fp0 les el))
+                (grup.nom.fp
+                  (nccp000 drogues droga))))))))
+    (coord
+      (cc i i))
+    (S
+      (sn-SUJ
+        (espec.mp
+          (dp3mp0 els_seus el_seu))
+        (grup.nom.mp
+          (ncmp000 amics amic)))
+      (grup.verb
+        (vmip3p0 asseguren assegurar))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmip3s0 està estar)
+          (gerundi
+            (vmg0000 posant posar)))
+        (sn-CD
+          (espec.fs
+            (di0fs0 molta molt))
+          (grup.nom.fs
+            (ncfs000 voluntat voluntat)))
+        (sp-CC
+          (prep
+            (sps00 per per))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 deixar deixar))
+            (sn-CD
+              (grup.nom.p
+                (pp3cp000 -los ell)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (nccs000 model model)))
+    (sadv-CCT
+      (grup.adv
+        (rg ja ja)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 passar passar))
+    (sn-CD.Q
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 mes mes)))
+    (S.NF.P-CC
+      (participi
+        (aq0fsp internada internat))
+      (sp-CCL
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs
+            (ncfs000 clínica clínica)
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (grup.nom
+                  (np00000 Arizona Arizona))))
+            (S.NF.P
+              (participi
+                (aq0fsp especialitzada especialitzat))
+              (sp-CREG
+                (prep
+                  (sps00 en en))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 desordres desordre)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 personalitat personalitat)))))))))))
+      (sp-CC
+        (prep
+          (sps00 per per))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 intentar intentar))
+          (S.NF.C-CD
+            (infinitiu
+              (vmn0000 superar superar))
+            (sn-CD
+              (espec.mp
+                (dp3mp0 els_seus el_seu))
+              (grup.nom.mp
+                (s.a.mp.x
+                  (grup.a.mp.co
+                    (grup.a.mp
+                      (aq0cp0 freqüents freqüent))
+                    (coord
+                      (cc i i))
+                    (grup.a.mp
+                      (aq0cp0 incontrolables incontrolable))))
+                (ncmp000 atacs atac)
+                (sp
+                  (prep
+                    (sps00 d' de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 ira ira))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC.r
+      (prep
+        (sps00 Per per))
+      (sn
+        (grup.nom
+          (np00000 Narcòtics_Anònims Narcòtics_Anònims))))
+    (sadv-CCT
+      (grup.nom
+        (rg ja ja)))
+    (sn-CC.r
+      (grup.nom
+        (pp3cn000 hi hi)))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm passat passar))
+    (sn.co-SUJ
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (nccs000 cantant cantant)
+          (sn
+            (grup.nom.ms
+              (np00000 Robbie_Williams Robbie_Williams)))))
+      (coord
+        (cc i i))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (sadv.j
+          (grup.adv
+            (rg també també)))
+        (sn
+          (grup.nom.ms
+            (ncms000 model model)
+            (sn
+              (grup.nom.fs
+                (np00000 Kate_Moss Kate_Moss)))))))
+    (Fp . .)))

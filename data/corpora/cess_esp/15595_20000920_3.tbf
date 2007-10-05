@@ -1,0 +1,99 @@
+
+(
+  (S.co
+    (S
+      (sno-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (np0000o IAAF IAAF)))
+      (sn-CI
+        (grup.nom.s
+          (pp3csd00 le él)))
+      (grup.verb
+        (vmis3s0 perdonó perdonar))
+      (snd-CCT
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (W 2_de_agosto [??:2/8/??:??.??])))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el)
+          (ncfs000 mitad mitad)
+          (sps00 de de)
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 sanción sanción)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (dn0cp0 dos dos))
+              (grup.nom.mp
+                (ncmp000 años año))))
+          (S.F.R
+            (relatiu-CD
+              (pr0cn000 que que))
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vmii3s0 cumplía cumplir))
+            (sp-CC
+              (prep
+                (sps00 por por))
+              (S.NF.C
+                (infinitiu
+                  (van0000 haber haber)
+                  (vmp00sm dado dar))
+                (sn-CD
+                  (grup.nom.ms
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 positivo positivo)))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 cocaína cocaína))))))
+                (sp-CC
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (ncms000 control control)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.ms
+                            (ncms000 dopaje dopaje))))
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sna
+                          (espec.mp
+                            (da0mp0 los el))
+                          (grup.nom.mp
+                            (np0000a Juegos_Panamericanos_de_Winnipeg'99 Juegos_Panamericanos_de_Winnipeg'99))))))))))))
+      (Fc , ,))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vmip3s0 quiere querer))
+      (S.NF.C-CD
+        (infinitiu
+          (vmn0000 desperdiciar desperdiciar))
+        (sn-CD
+          (espec.fs
+            (dd0fs0 esta este))
+          (grup.nom.fs
+            (ncfs000 oportunidad oportunidad)))))
+    (Fp . .)))

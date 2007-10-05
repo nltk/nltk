@@ -1,0 +1,765 @@
+
+(
+  (S
+    (S.F.C-CD
+      (sn.co-SUJ
+        (sn
+          (espec.mp
+            (dn0cp0 Tres tres))
+          (grup.nom.mp
+            (ncmp000 polizones polizón)
+            (s.a.mp
+              (grup.a.mp
+                (aq0mp0 ecuatorianos ecuatoriano)))))
+        (coord
+          (cc y y))
+        (sn
+          (espec.ms
+            (di0ms0 otro otro))
+          (grup.nom.ms
+            (ncms000 dominicano dominicano))))
+      (grup.verb
+        (vsis3p0 fueron ser)
+        (vmp00pm detenidos detener))
+      (sp-CC
+        (prep
+          (spcms al al))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 descender descender))
+          (sp-CC
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (di0ms0 un uno))
+              (grup.nom.ms
+                (ncms000 barco barco))))
+          (sp-CCL
+            (prep
+              (sps00 en en))
+            (snl
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 puerto puerto)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 panameño panameño)))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snl
+                    (grup.nom
+                      (np0000l Colón Colón)))))))))
+      (S.F.AConc-AO
+        (Fc , ,)
+        (conj.subord
+          (cs aunque aunque))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmii3p0 pensaban pensar))
+        (S.F.C-CD
+          (conj.subord
+            (cs que que))
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vaii3p0 habían haber)
+            (vmp00sm llegado llegar))
+          (sp-CCL
+            (prep
+              (sps00 a a))
+            (snl
+              (grup.nom
+                (np0000l EEUU EEUU)
+                (sn
+                  (Fc , ,)
+                  (espec.ms
+                    (dp3cs0 su su))
+                  (grup.nom.ms
+                    (ncms000 destino destino)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0cs0 final final))))
+                  (Fc , ,))))))))
+    (grup.verb
+      (vmis3s0 informó informar))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (np0000o Dirección_de_Migración Dirección_de_Migración)
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (grup.nom
+              (np0000o Panamá Panamá))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (di0ms0 Un uno))
+      (grup.nom.ms
+        (nccs000 portavoz portavoz)
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (grup.nom
+              (np0000o Migración Migración))))))
+    (grup.verb
+      (vmis3s0 dijo decir))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sno
+        (grup.nom
+          (np0000o EFE EFE))))
+    (S.F.C.co-CD
+      (conj.subord
+        (cs que que))
+      (S.F.C
+        (sn-SUJ
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (ncmp000 ecuatorianos ecuatoriano)
+            (sn.co
+              (grup.nom.co
+                (snp
+                  (grup.nom.ms
+                    (np0000p Remigio_Benito_Rocano Remigio_Benito_Rocano)
+                    (sp
+                      (Fc , ,)
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.mp
+                          (Z 17 17))
+                        (grup.nom.mp
+                          (ncmp000 años año))))))
+                (Fx ; ;)
+                (snp
+                  (grup.nom.ms
+                    (np0000p Darío_Francisco_Yanza Darío_Francisco_Yanza)
+                    (sp
+                      (Fc , ,)
+                      (prep
+                        (sps00 de de))
+                      (snn
+                        (grup.nom.mp
+                          (Z 27 27)))
+                      (Fc , ,))))
+                (coord
+                  (cc y y))
+                (snp
+                  (grup.nom.ms
+                    (np0000p Edgar_Fabián_Sanchi Edgar_Fabián_Sanchi)
+                    (sp
+                      (Fc , ,)
+                      (prep
+                        (sps00 de de))
+                      (snn
+                        (grup.nom.mp
+                          (Z 19 19)))
+                      (Fc , ,))))
+                (coord
+                  (cc así_como así_como))
+                (snp
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 dominicano dominicano)
+                    (snp
+                      (grup.nom.ms
+                        (np0000p Daniel_Emilio_Richarson Daniel_Emilio_Richarson)))
+                    (sp
+                      (Fc , ,)
+                      (prep
+                        (sps00 de de))
+                      (snn
+                        (grup.nom.mp
+                          (Z 30 30)))
+                      (Fc , ,))))))))
+        (grup.verb
+          (vsis3p0 fueron ser)
+          (vmp00pm detenidos detener))
+        (snd-CCT
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (W domingo [domingo:??/??/??:??.??]))))
+      (coord
+        (cc y y))
+      (S.F.C*
+        (grup.verb
+          (vmp00pm trasladados trasladar))
+        (sp
+          (prep
+            (sps00 a a))
+          (snl
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 capital capital)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 panameña panameño)))
+              (S.F.R
+                (Fc , ,)
+                (sp-CC
+                  (prep
+                    (sps00 desde desde))
+                  (relatiu
+                    (pr000000 donde donde)))
+                (sn.e-SUJ *0*)
+                (grup.verb
+                  (vsif3p0 serán ser)
+                  (vmp00pm deportados deportar))
+                (sp-CCL
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (espec.mp
+                      (dp3cp0 sus su))
+                    (grup.nom.mp
+                      (ncmp000 países país))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sna-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 barco barco)
+          (S.F.R
+            (sp-CCL
+              (prep
+                (sps00 en en))
+              (relatiu
+                (da0ms0 el el)
+                (pr0cn000 que que)))
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vmis3p0 viajaron viajar))
+            (sp-CC
+              (prep
+                (cs como como))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 polizones polizón)))))
+          (sna
+            (Fc , ,)
+            (grup.nom
+              (Fe " ")
+              (np0000a Wuarta Wuarta)
+              (Fe " "))
+            (Fc , ,))
+          (sp
+            (prep
+              (sps00 con con))
+            (sn
+              (grup.nom.fs
+                (ncfs000 bandera bandera)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snl
+                    (grup.nom
+                      (np0000l Bahamas Bahamas))))))))
+        (Fc , ,))
+      (grup.verb
+        (vaii3s0 había haber)
+        (vmp00sm zarpado zarpar))
+      (sp-CCL
+        (prep
+          (sps00 de de))
+        (snl
+          (snl
+            (grup.nom
+              (np0000l Guayaquil Guayaquil)))
+          (snl.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l Ecuador Ecuador)
+              (Fpt -Fpt- -Fpt-)))))
+      (snd-CCT
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (S.NF.P
+            (participi
+              (aq0msp pasado pasado)))
+          (W día_15 [??:15/??/??:??.??])))
+      (sp-CC
+        (prep
+          (sps00 con con))
+        (sn
+          (espec.fs
+            (di0fs0 una uno))
+          (grup.nom.fs
+            (ncfs000 carga carga)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.mp
+                  (di0mp0 diversos diverso))
+                (grup.nom.mp
+                  (ncmp000 productos producto))))
+            (sp
+              (prep
+                (sps00 con con))
+              (sn
+                (grup.nom.ms
+                  (ncms000 destino destino)
+                  (sp
+                    (prep
+                      (sps00 a a))
+                    (snl
+                      (grup.nom
+                        (np0000l Estados_Unidos Estados_Unidos))))))))))
+      (Fc , ,))
+    (coord
+      (cc e e))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3s0 hizo hacer))
+      (sn-CCT
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (S.NF.P
+            (participi
+              (aq0msp pasado pasado)))
+          (ncms000 fin fin)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 semana semana))))))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 escala escala)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 reabastecimiento reabastecimiento))))))
+      (sp-CCL
+        (prep
+          (sps00 en en))
+        (snl
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 puerto puerto)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 caribeño caribeño)))
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Colón Colón))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (np0000o Dirección_de_Migración Dirección_de_Migración)))
+    (grup.verb
+      (vmis3s0 manifestó manifestar))
+    (sadv-CCT
+      (grup.adv
+        (rg recientemente recientemente)))
+    (sn-CD
+      (espec.fs
+        (dp3cs0 su su))
+      (grup.nom.fs
+        (ncfs000 preocupación preocupación)
+        (sp
+          (prep
+            (sps00 por por))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 aumento aumento)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.mp
+                    (da0mp0 los el))
+                  (grup.nom.mp
+                    (ncmp000 casos caso)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.mp
+                          (ncmp000 ecuatorianos ecuatoriano)
+                          (S.NF.P
+                            (participi
+                              (aq0mp0 indocumentados indocumentado)))
+                          (S.F.R
+                            (relatiu-SUJ
+                              (pr0cn000 que que))
+                            (grup.verb
+                              (vmip3p0 tratan tratar))
+                            (sp-CREG
+                              (prep
+                                (sps00 de de))
+                              (S.NF.C
+                                (infinitiu
+                                  (vmn0000 usar usar))
+                                (snl-CD
+                                  (grup.nom
+                                    (np0000l Panamá Panamá)))
+                                (sp-CPRED.CD
+                                  (prep
+                                    (cs como como))
+                                  (sn
+                                    (grup.nom.ms
+                                      (Fe " ")
+                                      (ncms000 puente puente)
+                                      (Fe " ")
+                                      (sp
+                                        (prep
+                                          (sps00 de de))
+                                        (sn
+                                          (grup.nom.ms
+                                            (ncms000 tránsito tránsito)
+                                            (sp
+                                              (prep
+                                                (sps00 hacia hacia))
+                                              (sn
+                                                (espec.ms
+                                                  (da0ms0 el el))
+                                                (grup.nom.ms
+                                                  (ncms000 resto resto)
+                                                  (sp
+                                                    (prep
+                                                      (sps00 de de))
+                                                    (sn.x
+                                                      (grup.nom.co
+                                                        (grup.nom
+                                                          (np0000l Centroamérica Centroamérica))
+                                                        (coord
+                                                          (cc y y))
+                                                        (grup.nom
+                                                          (np0000l Estados_Unidos Estados_Unidos))))))))))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (spcms A_finales_del a_finales_del))
+      (snd
+        (grup.nom.ms
+          (W año [??:??/??/??:??.??])
+          (S.NF.P
+            (participi
+              (aq0msp pasado pasado))))))
+    (grup.verb
+      (vsis3s0 fue ser)
+      (vmp00sm repatriado repatriar))
+    (sn-SUJ
+      (espec.ms
+        (di0ms0 un uno))
+      (grup.nom.ms
+        (ncms000 grupo grupo)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (Z 148 148))
+            (grup.nom.mp
+              (ncmp000 ecuatorianos ecuatoriano)
+              (S.F.R.co
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (S.F.R
+                  (grup.verb
+                    (vmis3p0 entraron entrar))
+                  (sp-CCL
+                    (prep
+                      (sps00 en en))
+                    (snl
+                      (grup.nom
+                        (np0000l Panamá Panamá))))
+                  (sp-CC
+                    (prep
+                      (sps00 con con))
+                    (sn
+                      (grup.nom.fp
+                        (ncfp000 tarjetas tarjeta)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 turismo turismo))))))))
+                (coord
+                  (cc y y))
+                (S.F.R
+                  (grup.verb
+                    (vmii3p0 pretendían pretender))
+                  (S.NF.C-CD
+                    (infinitiu
+                      (vmn0000 viajar viajar))
+                    (sp-CCL
+                      (prep
+                        (sps00 a a))
+                      (snl
+                        (grup.nom
+                          (np0000l Estados_Unidos Estados_Unidos))))
+                    (sp-CC
+                      (prep
+                        (sps00 con con))
+                      (sn
+                        (grup.nom.mp
+                          (ncmp000 visados visado)
+                          (s.a.mp
+                            (grup.a.mp
+                              (aq0mp0 falsos falso))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sp-CCT
+        (prep
+          (sps00 En en))
+        (sn
+          (espec.fp
+            (dd0fp0 esas ese)
+            (di0fp0 mismas mismo))
+          (grup.nom.fp
+            (ncfp000 fechas fecha))))
+      (sn-SUJ
+        (espec.mp
+          (dn0cp0 cien cien))
+        (grup.nom.mp
+          (ncmp000 ecuatorianos ecuatoriano)
+          (sadv
+            (grup.adv
+              (rg más más)))))
+      (grup.verb
+        (vsis3p0 fueron ser)
+        (vmp00pm detenidos detener))
+      (sp-CCL
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 frontera frontera)
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Panamá Panamá))))
+            (sp
+              (prep
+                (sps00 con con))
+              (snl
+                (grup.nom
+                  (np0000l Costa_Rica Costa_Rica)))))))
+      (Fc , ,))
+    (coord
+      (cc mientras_que mientras_que))
+    (S
+      (sn-SUJ
+        (espec.mp
+          (di0mp0 otros otro))
+        (grup.nom.mp
+          (Z 50 50)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmii3p0 procedían proceder))
+            (sp-CREG
+              (prep
+                (sps00 de de))
+              (sn.x
+                (grup.nom.co
+                  (grup.nom
+                    (np0000l Nicaragua Nicaragua))
+                  (coord
+                    (cc y y))
+                  (grup.nom
+                    (np0000l Costa_Rica Costa_Rica))))))))
+      (grup.verb
+        (vmis3p0 corrieron correr))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el)
+          (di0fs0 misma mismo))
+        (grup.nom.fs
+          (ncfs000 suerte suerte))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (di0ms0 Otro otro)
+        (dn0ms0 medio medio))
+      (grup.nom.ms
+        (ncms000 centenar centenar)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmis3s0 llegó llegar))
+          (sp-CCL
+            (prep
+              (sps00 a a))
+            (snl
+              (grup.nom
+                (np0000l Panamá Panamá))))
+          (sp-CCT
+            (prep
+              (sps00 en en))
+            (snd
+              (grup.nom.ms
+                (W octubre [??:??/10/??:??.??])
+                (S.NF.P
+                  (participi
+                    (aq0msp pasado pasado))))))
+          (sp-CC
+            (Fc , ,)
+            (prep
+              (sps00 sin sin))
+            (sn.x
+              (grup.nom.co
+                (grup.nom.mp
+                  (ncmp000 recursos recurso)
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0mp0 económicos económico))))
+                (coord
+                  (cc ni ni))
+                (grup.nom.mp
+                  (ncmp000 pasajes pasaje)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 regreso regreso)
+                        (sp
+                          (prep
+                            (sps00 a a))
+                          (snl
+                            (grup.nom
+                              (np0000l Ecuador Ecuador))))))))))
+            (Fc , ,)))))
+    (grup.verb
+      (vsis3s0 fue ser)
+      (vmp00sm repatriado repatriar))
+    (S.NF.C-CC
+      (sadv-CCT
+        (grup.adv
+          (rg nada_más nada_más)))
+      (infinitiu
+        (vmn0000 desembarcar desembarcar))
+      (sp-CCL
+        (prep
+          (sps00 en en))
+        (snl
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 aeropuerto aeropuerto)
+            (s.a.ms
+              (grup.a.ms
+                (aq0cs0 internacional internacional)))
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Tocumen Tocumen))))
+            (sp
+              (Fc , ,)
+              (prep
+                (sps00 en en))
+              (snl
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 capital capital)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 panameña panameño))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg Además además)))
+    (sn-SUJ
+      (grup.nom.mp
+        (ncmp000 ciudadanos ciudadano)
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 ecuatorianos ecuatoriano)))))
+    (sp-CCL
+      (Fc , ,)
+      (prep
+        (sps00 en en))
+      (snl
+        (grup.nom
+          (np0000l Panamá Panamá))))
+    (grup.verb
+      (vmip3p0 encabezan encabezar))
+    (sn-CD
+      (espec.fp
+        (da0fp0 las el))
+      (grup.nom.fp
+        (ncfp000 estadísticas estadística)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fp
+              (ncfp000 deportaciones deportación)
+              (sn
+                (grup.nom.fp
+                  (ncfp000 personas persona)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 nacionalidad nacionalidad)
+                        (s.a.fs.x
+                          (grup.a.fs.co
+                            (grup.a.fs
+                              (aq0fs0 colombiana colombiano))
+                            (Fc , ,)
+                            (grup.a.fs
+                              (aq0fs0 dominicana dominicano))
+                            (coord
+                              (cc y y))
+                            (grup.a.fs
+                              (aq0fs0 peruana peruano))))))))))))))))

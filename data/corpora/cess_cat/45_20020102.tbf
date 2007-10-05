@@ -1,0 +1,174 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 majoria majoria)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (da0fp0 les el)
+              (Z 276 276))
+            (grup.nom.fp
+              (ncfp000 persones persona)
+              (S.NF.P
+                (participi
+                  (aq0fpp mortes mort))
+                (sn-CCT
+                  (grup.nom.ms
+                    (W diumenge [diumenge:??/??/??:??.??])))
+                (sp-CCL
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (grup.nom
+                      (np00000 Lima Lima))))
+                (sp-CC
+                  (prep
+                    (sps00 a_causa_d' a_causa_de))
+                  (sn
+                    (espec.ms
+                      (di0ms0 un un))
+                    (grup.nom.ms
+                      (ncms000 incendi incendi)
+                      (S.NF.P
+                        (participi
+                          (aq0msp provocat provocat))
+                        (sp-CAG
+                          (prep
+                            (sps00 per per))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 material material)
+                              (s.a.ms
+                                (grup.a.ms
+                                  (aq0ms0 pirotècnic pirotècnic))))))))))))))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vsn0000 ser ser)
+      (vmp00pf enterrades enterrar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sadv-CCT
+      (grup.adv
+        (rg després després)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 celebració celebració)
+              (sp
+                (prep
+                  (sps00 d' de))
+                (sn
+                  (espec.ms
+                    (di0ms0 un un))
+                  (grup.nom.ms
+                    (ncms000 funeral funeral)
+                    (sp
+                      (prep
+                        (sps00 d' de))
+                      (sn
+                        (grup.nom
+                          (np00000 Estat Estat))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fp
+          (di0fs0 Una un)
+          (ncfs000 trentena trentena)
+          (sps00 de de))
+        (grup.nom.fp
+          (ncfp000 persones persona)))
+      (morfema.verbal-PASS
+        (p0000000 es es))
+      (grup.verb
+        (vmip3p0 donen donar))
+      (sp
+        (prep
+          (sps00 per per))
+        (sn
+          (grup.nom.fp
+            (S.NF.P
+              (participi
+                (aq0fpp desaparegudes desaparegut)))))))
+    (coord
+      (cc i i))
+    (S
+      (sn-SUJ
+        (espec.fp
+          (rg més més)
+          (sps00 de de))
+        (grup.nom.fp
+          (Z 130 130)))
+      (morf.pron
+        (p0300000 es ell))
+      (grup.verb
+        (vmip3p0 recuperen recuperar))
+      (sp-CREG
+        (prep
+          (sps00 de de))
+        (sn
+          (grup.nom.fp
+            (ncfp000 ferides ferida))))
+      (sp-CCL
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.mp
+            (di0mp0 diversos divers))
+          (grup.nom.mp
+            (ncmp000 hospitals hospital)))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCL
+      (prep
+        (sps00 A a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 fotografia fotografia)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 dona dona)))
+    (grup.verb
+      (vmip3s0 mostra mostrar))
+    (sn-CD
+      (grup.nom.mp
+        (ncmp000 retrats retrat)
+        (sp
+          (prep
+            (sps00 amb amb))
+          (sn
+            (espec.ms
+              (dp3ms0 el_seu el_seu))
+            (grup.nom.ms
+              (ncms000 marit marit)
+              (sn
+                (Fc , ,)
+                (grup.nom.fs
+                  (ncfs000 víctima víctima)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.ms
+                        (da0cs0 l' el))
+                      (grup.nom.ms
+                        (ncms000 incendi incendi)))))))))))
+    (Fp . .)))

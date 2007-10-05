@@ -1,0 +1,445 @@
+
+(
+  (S
+    (sn.co-SUJ
+      (sno
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (nccs000 fabricante fabricante)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 refrescos refresco))))
+          (sno
+            (grup.nom
+              (np0000o Coca-Cola Coca-Cola)))))
+      (coord
+        (cc y y))
+      (sno
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 empresa empresa)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (nccn000 internet internet))))
+          (sno
+            (grup.nom
+              (np0000o American_Online American_Online))))))
+    (grup.verb
+      (vaip3p0 han haber)
+      (vmp00sm acordado acordar))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una uno))
+      (grup.nom.fs
+        (ncfs000 alianza alianza)
+        (sp
+          (prep
+            (sps00 para para))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 desarrollo desarrollo)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 programas programa)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 comercialización comercialización)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn.x
+                              (espec.mp
+                                (dp3cp0 sus su))
+                              (grup.nom.co
+                                (grup.nom.mp
+                                  (ncmp000 productos producto))
+                                (coord
+                                  (cc y y))
+                                (grup.nom.fp
+                                  (ncfp000 marcas marca))))))))))))))
+        (sp
+          (prep
+            (sps00 durante durante))
+          (sn
+            (espec.mp
+              (di0mp0 varios varios))
+            (grup.nom.mp
+              (ncmp000 años año))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 acuerdo acuerdo)
+          (S.F.R
+            (Fc , ,)
+            (sn-SUJ
+              (espec.mp
+                (pr0mp000 cuyos cuyo))
+              (grup.nom.mp
+                (ncmp000 términos término)))
+            (neg-MOD
+              (rn no no))
+            (grup.verb
+              (vaip3p0 han haber)
+              (vsp00sm sido ser)
+              (vmp00pm revelados revelar))
+            (Fc , ,))))
+      (grup.verb
+        (vsip3s0 es ser))
+      (sn-ATR
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (ao0ms0 primero primero)
+              (sp
+                (prep
+                  (sps00 entre entre))
+                (sp.co
+                  (sno
+                    (grup.nom
+                      (np0000o Coca-Cola Coca-Cola)))
+                  (coord
+                    (cc y y))
+                  (sn
+                    (espec.fs
+                      (di0fs0 una uno))
+                    (grup.nom.fs
+                      (ncfs000 compañía compañía)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.mp
+                            (ncmp000 servicios servicio))))
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0fs0 interactiva interactivo))))))))))))
+    (coord
+      (cc y y))
+    (S
+      (sp-AO
+        (Fc , ,)
+        (prep
+          (sps00 según según))
+        (sn
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (nccp000 analistas analista)))
+        (Fc , ,))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3s0 puede poder)
+        (infinitiu
+          (vmn0000 representar representar)))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 suma suma)
+          (sp
+            (prep
+              (sps00 de de))
+            (snn
+              (espec.mp
+                (Z 64 64))
+              (grup.nom.mp
+                (ncmp000 millones millón)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snn
+                    (grup.nom.mp
+                      (Zm dólares dólar))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 En_virtud_de en_virtud_de))
+      (sn
+        (espec.fs
+          (dd0fs0 esta este))
+        (grup.nom.fs
+          (ncfs000 alianza alianza)))
+      (Fc , ,))
+    (sno-SUJ
+      (grup.nom
+        (np0000o Coca-Cola Coca-Cola)))
+    (grup.verb
+      (vmif3s0 pondrá poner))
+    (sp-CPRED.CD
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom.fs
+          (ncfs000 disposición disposición)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fp
+                (dp3cp0 sus su))
+              (grup.nom.fp
+                (nccp000 clientes cliente)))))))
+    (sp-CC
+      (prep
+        (sps00 a_través_de a_través_de))
+      (sn
+        (espec.fp
+          (dp3cp0 sus su))
+        (grup.nom.fp
+          (ncfp000 canales canal)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 distribución distribución))))
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.ms
+                (di0ms0 todo todo)
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 mundo mundo)))))))
+    (sn.x-CD
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.co
+        (grup.nom.co
+          (grup.nom.mp
+            (ncmp000 servicios servicio))
+          (coord
+            (cc y y))
+          (grup.nom.mp
+            (ncmp000 productos producto)))
+        (sp.j
+          (prep
+            (sps00 de de))
+          (sno
+            (grup.nom
+              (np0000o American_Online American_Online))))))
+    (Fp . .)))
+(
+  (S
+    (sp-ET
+      (prep
+        (sps00 Por por))
+      (sn
+        (espec.fs
+          (dp3cs0 su su))
+        (grup.nom.fs
+          (ncfs000 parte parte)))
+      (Fc , ,))
+    (sno-SUJ
+      (grup.nom
+        (np0000o American_Online American_Online)))
+    (grup.verb
+      (vmif3s0 comercializará comercializar))
+    (sn-CD
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.mp
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (grup.nom
+              (np0000o Coca-Cola Coca-Cola))))))
+    (sp-CC
+      (prep
+        (sps00 a_través_de a_través_de))
+      (sn
+        (espec.fs
+          (dp3cs0 su su))
+        (grup.nom.fs
+          (ncfs000 red red)
+          (sp
+            (prep
+              (sps00 de de))
+            (sna
+              (grup.nom
+                (np0000a Internet Internet)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 pacto pacto)))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmip3s0 produce producir))
+    (sadv-CCT
+      (grup.adv
+        (rg después después)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (S.NF.P
+                (participi
+                  (aq0msp alcanzado alcanzado))
+                (sp-CCT
+                  (prep
+                    (sps00 en en))
+                  (snd
+                    (grup.nom.ms
+                      (W marzo [??:??/03/??:??.??])
+                      (S.NF.P
+                        (participi
+                          (aq0msp pasado pasado))))))
+                (sp-CAG
+                  (prep
+                    (sps00 por por))
+                  (sn.co
+                    (sno
+                      (grup.nom
+                        (np0000o Pepsi Pepsi)))
+                    (coord
+                      (cc y y))
+                    (sno
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 compañía compañía)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (grup.nom
+                              (nccn000 internet internet))))
+                        (sno
+                          (grup.nom
+                            (np0000o Yahoo! Yahoo!)))))))
+                (sp-CC
+                  (prep
+                    (sps00 con con))
+                  (sn
+                    (grup.nom.fp
+                      (ncfp000 intenciones intención)
+                      (S.NF.P
+                        (participi
+                          (aq0fpp parecidas parecido))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (grup.nom
+        (np0000o AOL AOL)
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 tiene tener))
+          (S.NF.P-CPRED.CD
+            (participi
+              (aq0msp previsto previsto)))
+          (S.NF.C-CD.Q
+            (infinitiu
+              (vmn0000 fusionarse fusionar))
+            (sp-CREG
+              (prep
+                (sps00 con con))
+              (sno
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (nccs000 gigante gigante)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.mp
+                        (da0mp0 los el))
+                      (grup.nom.mp
+                        (ncmp000 medios medio)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (grup.nom.fs
+                              (ncfs000 comunicación comunicación)))))))
+                  (sno
+                    (grup.nom
+                      (np0000o Time_Warner Time_Warner)))))))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 ha haber)
+      (vmp00sm firmado firmar))
+    (sp-CCT
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (s.a.mp
+            (grup.a.mp
+              (ao0mp0 últimos último)))
+          (ncmp000 meses mes))))
+    (sn-CD
+      (grup.nom.mp
+        (ncmp000 acuerdos acuerdo)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 promoción promoción))))
+        (sp
+          (prep
+            (sps00 con con))
+          (sn
+            (espec.fp
+              (di0fp0 otras otro))
+            (grup.nom.fp
+              (s.a.fp
+                (grup.a.fp
+                  (aq0cp0 grandes grande)))
+              (ncfp000 compañías compañía)
+              (sp
+                (Fc , ,)
+                (prep
+                  (cs como como))
+                (sn.x
+                  (grup.nom.co
+                    (grup.nom
+                      (np0000o Sears Sears))
+                    (Fc , ,)
+                    (grup.nom
+                      (np0000o Wal-Mart Wal-Mart))
+                    (coord
+                      (cc y y))
+                    (grup.nom
+                      (np0000o General_Motors General_Motors))))))))))
+    (Fp . .)))

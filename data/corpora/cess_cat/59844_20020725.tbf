@@ -1,0 +1,637 @@
+
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (np00000 Departament_de_Cultura Departament_de_Cultura)))
+      (Fc , ,)
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (np00000 Fundació_Banc_Sabadell Fundació_Banc_Sabadell)))
+      (coord
+        (cc i i))
+      (sn
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (np00000 Associació_d'_Amics_de_l'_Òpera Associació_d'_Amics_de_l'_Òpera))))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm signat signar))
+    (sadv-CCT
+      (grup.adv
+        (rg avui avui)))
+    (sp-CCL
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (np00000 Palau_Marc Palau_Marc)
+          (sn
+            (Fc , ,)
+            (grup.nom.fs
+              (ncfs000 seu seu)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (np00000 Departament_de_Cultura Departament_de_Cultura)))))
+            (Fc , ,)))))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 conveni conveni)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 col·laboració col·laboració))))
+        (sp
+          (prep
+            (sps00 per per))
+          (sp
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 programació programació)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 circuit circuit)
+                      (sn
+                        (grup.nom
+                          (np00000 Òpera_Catalunya Òpera_Catalunya)))
+                      (S.NF.P
+                        (Fc , ,)
+                        (participi
+                          (aq0msp organitzat organitzat))
+                        (sn-CCT
+                          (espec.ms
+                            (di0cs0 cada cada))
+                          (grup.nom.ms
+                            (ncms000 any any)))
+                        (sp-CC
+                          (prep
+                            (spcms des_del des_del))
+                          (sn
+                            (grup.nom.ms
+                              (W 1982 [??:??/??/1982:??.??]))))
+                        (sp-CAG
+                          (prep
+                            (sps00 per per))
+                          (sn
+                            (espec.fs
+                              (da0cs0 l' el))
+                            (grup.nom.fs
+                              (np00000 Associació_d'_Amics_de_l'_Òpera Associació_d'_Amics_de_l'_Òpera))))))))
+                (sp-CC
+                  (prep
+                    (sps00 amb amb))
+                  (sn
+                    (grup.nom.fp
+                      (ncfp000 representacions representació)
+                      (sp.co
+                        (sp
+                          (prep
+                            (sps00 a a))
+                          (sn
+                            (grup.nom
+                              (np00000 Sabadell Sabadell))))
+                        (coord
+                          (cc i i))
+                        (sp
+                          (prep
+                            (sps00 a a))
+                          (sn
+                            (espec.fp
+                              (di0cp0 altres altre)
+                              (dn0cp0 vuit vuit))
+                            (grup.nom.fp
+                              (ncfp000 ciutats ciutat)
+                              (s.a.fp
+                                (grup.a.fp
+                                  (aq0fp0 catalanes català))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (grup.verb
+      (vaip3p0 Han haver)
+      (vmp00sm subscrit subscriure))
+    (sn-CD
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (ncms000 acord acord)))
+    (sn.co-SUJ
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 conseller conseller)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (np00000 Cultura Cultura))))
+          (sn
+            (Fc , ,)
+            (grup.nom.ms
+              (np00000 Jordi_Vilajoana Jordi_Vilajoana)))))
+      (Fx ; ;)
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 director director)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np00000 Fundació_Banc_Sabadell Fundació_Banc_Sabadell))))
+          (sn
+            (Fc , ,)
+            (grup.nom.ms
+              (np00000 Miquel_Molins Miquel_Molins))))
+        (Fc , ,))
+      (coord
+        (cc i i))
+      (sn.x
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.co
+          (grup.nom.co
+            (grup.nom.fs
+              (ncfs000 presidenta presidenta))
+            (coord
+              (cc i i))
+            (grup.nom.fs
+              (ncfs000 fundadora fundadora)))
+          (sp.j
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0cs0 l' el))
+              (grup.nom.fs
+                (np00000 Associació_d'_Amics_de_l'_Òpera Associació_d'_Amics_de_l'_Òpera))))
+          (sn.j
+            (Fc , ,)
+            (grup.nom.fs
+              (np00000 Mirna_Lacambra Mirna_Lacambra))))))
+    (Fp . .)))
+(
+  (S
+    (grup.verb
+      (vaip3s0 Ha haver)
+      (vmp00sm acompanyat acompanyar))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 conseller conseller)))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 delegat delegat)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (np00000 Música Música))))
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (np00000 Carles_Sala Carles_Sala)))))
+    (Fp . .)))
+(
+  (S
+    (sp-CREG.r
+      (prep
+        (sps00 A a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 signatura signatura))))
+    (sadv-MOD
+      (grup.adv
+        (rg també també)))
+    (sn-CREG.r
+      (grup.nom
+        (pp3cn000 hi hi)))
+    (grup.verb
+      (vmp00sm assistit assistir))
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Joan_Guitart Joan_Guitart)
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (ncms000 director director)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0cs0 l' el))
+                (grup.nom.fs
+                  (np00000 Agència_de_Patrocini_i_Mecenatge Agència_de_Patrocini_i_Mecenatge))))))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vaip3s0 ha haver)
+            (vmp00sm gestionat gestionar))
+          (sn-CD
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 conveni conveni))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 acord acord)))
+    (grup.verb
+      (vmip3s0 estableix establir))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (np00000 Fundació_Banc_Sabadell Fundació_Banc_Sabadell)))
+      (grup.verb
+        (vmip3s0 aporta aportar))
+      (sn-CD
+        (espec.mp
+          (Z 135.228 135228))
+        (grup.nom.mp
+          (Zm euros euro)
+          (sn
+            (Fpa -Fpa- -Fpa-)
+            (espec.fp
+              (Z 22.500.046 22500046))
+            (grup.nom.fp
+              (Zm pessetes pesseta))
+            (Fpt -Fpt- -Fpt-))))
+      (sp-CC
+        (prep
+          (spcms al al))
+        (sn
+          (grup.nom.ms
+            (ncms000 circuit circuit)))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (grup.nom
+          (np00000 Òpera_Catalunya Òpera_Catalunya)))
+      (sp-CC
+        (Fc , ,)
+        (prep
+          (sps00 per per))
+        (sp
+          (prep
+            (spcms al al))
+          (sn
+            (grup.nom.ms
+              (W 2002 [??:??/??/2002:??.??])))))
+      (grup.verb
+        (vaip3s0 ha haver)
+        (vmp00sm programat programar))
+      (sn-CD
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (ncfs000 òpera òpera)
+          (sn
+            (grup.nom
+              (np00000 Carmen Carmen)))
+          (sp
+            (Fc , ,)
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (np00000 Bizet Bizet))))))
+      (sn.x
+        (Fc , ,)
+        (grup.nom.co
+          (coord
+            (sps00 de de))
+          (grup.nom.ms
+            (W febrer [??:??/02/??:??.??]))
+          (coord
+            (sps00 a a))
+          (grup.nom.ms
+            (W març [??:??/03/??:??.??]))))
+      (sp
+        (Fc , ,)
+        (prep
+          (sps00 a a))
+        (sn.x
+          (grup.nom.co
+            (grup.nom
+              (np00000 Sabadell Sabadell))
+            (Fc , ,)
+            (grup.nom
+              (np00000 Figueres Figueres))
+            (Fc , ,)
+            (grup.nom
+              (np00000 Granollers Granollers))
+            (Fc , ,)
+            (grup.nom
+              (np00000 Reus Reus))
+            (Fc , ,)
+            (grup.nom
+              (np00000 Sant_Cugat_del_Vallès Sant_Cugat_del_Vallès))
+            (Fc , ,)
+            (grup.nom
+              (np00000 Lleida Lleida))
+            (coord
+              (cc i i))
+            (grup.nom
+              (np00000 Vic Vic))))))
+    (Fx ; ;)
+    (S*
+      (sn
+        (grup.nom
+          (np00000 La_Bohème La_Bohème)))
+      (sp
+        (Fc , ,)
+        (prep
+          (sps00 de de))
+        (sn
+          (grup.nom.ms
+            (np00000 Puccini Puccini))))
+      (sn.co
+        (Fc , ,)
+        (coord
+          (sps00 de de))
+        (sn
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (w abril [??:??/4/??:??.??])))
+        (coord
+          (spcms al al))
+        (sn
+          (grup.nom.ms
+            (W maig [??:??/05/??:??.??]))))
+      (sp
+        (prep
+          (sps00 a a))
+        (sn.x
+          (grup.nom.co
+            (grup.nom
+              (np00000 Sabadell Sabadell))
+            (Fc , ,)
+            (grup.nom
+              (np00000 Lleida Lleida))
+            (Fc , ,)
+            (grup.nom
+              (np00000 Sant_Cugat_del_Vallès Sant_Cugat_del_Vallès))
+            (Fc , ,)
+            (grup.nom
+              (np00000 Reus Reus))
+            (coord
+              (cc i i))
+            (grup.nom
+              (np00000 Figueres Figueres))))
+        (Fc , ,)))
+    (coord
+      (cc i i))
+    (S*.co
+      (S*
+        (sn
+          (grup.nom
+            (np00000 Madame_Butterfly Madame_Butterfly)
+            (sp
+              (Fc , ,)
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (np00000 Puccini Puccini))))))
+        (S.NF.P
+          (Fc , ,)
+          (participi
+            (aq0fsp programada programat))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 pròxim pròxim)))
+              (W octubre [??:??/10/??:??.??]))))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (grup.nom
+              (np00000 Sabadell Sabadell)))
+          (Fc , ,)))
+      (coord
+        (cc i i))
+      (S*
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (grup.nom.fs
+              (ncfs000 commemoració commemoració)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (espec.ms
+                    (Z 20è 20))
+                  (grup.nom.ms
+                    (ncms000 aniversari aniversari))))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0cs0 l' el))
+                  (grup.nom.fs
+                    (np00000 Associació_d'_Amics_de_l'_Òpera Associació_d'_Amics_de_l'_Òpera)))))))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn.x
+            (grup.nom.co
+              (grup.nom
+                (np00000 Reus Reus))
+              (Fc , ,)
+              (grup.nom
+                (np00000 Sant_Cugat_del_Vallès Sant_Cugat_del_Vallès))
+              (Fc , ,)
+              (grup.nom
+                (np00000 Lleida Lleida))
+              (Fc , ,)
+              (grup.nom
+                (np00000 Figueres Figueres))
+              (coord
+                (cc i i))
+              (grup.nom
+                (np00000 Granollers Granollers)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 cicle cicle)))
+    (sadv-MOD
+      (grup.adv
+        (rg també també)))
+    (grup.verb
+      (vmip3s0 inclou incloure))
+    (sn-CD
+      (grup.nom.fp
+        (ncfp000 representacions representació)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (np00000 La_Bohème La_Bohème))))
+        (sp
+          (prep
+            (spcmp a_càrrec_dels a_càrrec_del))
+          (sn
+            (grup.nom.mp
+              (ncmp000 alumnes alumne)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0cs0 l' el))
+                  (grup.nom.fs
+                    (np00000 Escola_d'_Òpera Escola_d'_Òpera)))))))))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn.x
+        (grup.nom.co
+          (grup.nom
+            (np00000 Sabadell Sabadell))
+          (Fc , ,)
+          (grup.nom
+            (np00000 Terrassa Terrassa))
+          (coord
+            (cc i i))
+          (grup.nom
+            (np00000 Badalona Badalona)))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np00000 Departament_de_Cultura Departament_de_Cultura)))
+    (sp-ET
+      (Fc , ,)
+      (prep
+        (sps00 per per))
+      (sn
+        (espec.fs
+          (dp3fs0 la_seva el_seu))
+        (grup.nom.fs
+          (ncfs000 part part)))
+      (Fc , ,))
+    (grup.verb
+      (vmif3s0 col·laborarà col·laborar))
+    (sp-CREG
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (np00000 Associació_Amics_de_l'_Òpera Associació_Amics_de_l'_Òpera))))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 promoció promoció)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 publicitària publicitari)))
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 cicle cicle))))
+          (sp
+            (prep
+              (sps00 per per))
+            (sn
+              (grup.nom.fs
+                (ncfs000 televisió televisió))))
+          (sp
+            (Fc , ,)
+            (prep
+              (sps00 per per))
+            (sn
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (ncms000 valor valor)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.mp
+                      (Z 72.121,45 72121.45))
+                    (grup.nom.mp
+                      (Zm euros euro)
+                      (sn
+                        (Fpa -Fpa- -Fpa-)
+                        (espec.mp
+                          (dn0cp0 dotze dotze))
+                        (grup.nom.mp
+                          (ncmp000 milions milió)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom.fp
+                                (Zm pessetes pesseta)))))
+                        (Fpt -Fpt- -Fpt-)))))))))))
+    (Fp . .)))

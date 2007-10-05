@@ -1,0 +1,1032 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (di0mp0 Unos uno)
+        (Z 500 500))
+      (grup.nom.mp
+        (ncmp000 camiones camión)))
+    (grup.verb
+      (vmis3p0 realizaron realizar))
+    (sn-CCT
+      (espec.fs
+        (dd0fs0 esta este))
+      (grup.nom.fs
+        (ncfs000 mañana mañana)))
+    (sn-CD
+      (grup.nom.fp
+        (ncfp000 cortes corte)
+        (s.a.fp
+          (grup.a.fp
+            (aq0cp0 intermitentes intermitente)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 circulación circulación))))))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (snl
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 autopista autopista)
+          (snl
+            (grup.nom.fs
+              (Z A-7 a-7)))
+          (snl
+            (grup.nom.fs
+              (np0000l Barcelona-Valencia Barcelona-Valencia))))))
+    (sp-CCL
+      (Fc , ,)
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 circunvalación circunvalación)
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (grup.nom
+                (np0000l Valencia Valencia))))))
+      (Fc , ,))
+    (sadv-CC
+      (grup.adv
+        (rg dentro dentro)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (s.a.fs
+                (grup.a.fs
+                  (ao0fs0 segunda segundo)))
+              (ncfs000 jornada jornada)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fp
+                    (ncfp000 protestas protesta)
+                    (S.F.R
+                      (relatiu-CD
+                        (pr0cn000 que que))
+                      (grup.verb
+                        (vmip3p0 mantienen mantener))
+                      (sn-SUJ
+                        (espec.mp
+                          (da0mp0 los el))
+                        (grup.nom.mp
+                          (nccp000 transportistas transportista)))
+                      (sp-CC
+                        (prep
+                          (sps00 para para))
+                        (S.NF.C
+                          (infinitiu
+                            (vmn0000 reclamar reclamar))
+                          (sn-CD
+                            (grup.nom.fp
+                              (ncfp000 medidas medida)
+                              (S.F.R
+                                (relatiu-SUJ
+                                  (pr0cn000 que que))
+                                (grup.verb
+                                  (vmsp3p0 compensen compensar))
+                                (sn-CD
+                                  (espec.fp
+                                    (da0fp0 las el))
+                                  (grup.nom.fp
+                                    (s.a.fp
+                                      (grup.a.fp
+                                        (aq0fp0 continuas continuo)))
+                                    (ncfp000 subidas subida)
+                                    (sp
+                                      (prep
+                                        (spcms del del))
+                                      (sn
+                                        (grup.nom.ms
+                                          (ncms000 precio precio)
+                                          (sp
+                                            (prep
+                                              (spcms del del))
+                                            (sn
+                                              (grup.nom.ms
+                                                (ncms000 gasóleo gasóleo)))))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.fp
+        (ncfp000 Fuentes fuente)
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000o Asociación_de_Empresarios_Transportistas_de_Valencia Asociación_de_Empresarios_Transportistas_de_Valencia)
+              (sno
+                (grup.nom.fs
+                  (Fpa -Fpa- -Fpa-)
+                  (np0000o Asetraval Asetraval)
+                  (Fpt -Fpt- -Fpt-)))
+              (sn
+                (Fc , ,)
+                (grup.nom.fs
+                  (nccs000 convocante convocante)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 protesta protesta)))))
+                (Fc , ,)))))))
+    (grup.verb
+      (vmis3p0 manifestaron manifestar))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sno
+        (grup.nom
+          (np0000o EFE EFE))))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 participación participación)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 vehículos vehículo)
+                (S.NF.P
+                  (participi
+                    (aq0mpp pesados pesado))))))
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 bloqueo bloqueo)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 circunvalación circunvalación)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (snl
+                          (grup.nom
+                            (np0000l Valencia Valencia))))))))))))
+      (grup.verb
+        (vaip3s0 ha haber)
+        (vsp00sm sido ser))
+      (sadv-CCT
+        (grup.adv
+          (rg hoy hoy)))
+      (sa-ATR
+        (espec
+          (rg algo algo))
+        (grup.a
+          (aq0cs0 inferior inferior)
+          (sp
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sadv
+                    (grup.adv
+                      (rg ayer ayer)))))))))
+      (S.F.A-CC
+        (Fc , ,)
+        (conj.subord
+          (cs pues pues))
+        (Fe " ")
+        (grup.verb
+          (vaip3s0 hay haber))
+        (sn-CD.Q
+          (espec.mp
+            (rg menos menos))
+          (grup.nom.mp
+            (ncmp000 camiones camión)
+            (S.NF.A
+              (gerundi
+                (vmg0000 circulando circular)))))
+        (sp-CC
+          (prep
+            (spcms al al))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 darse_cuenta darse_cuenta))
+            (sp-CREG
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 conveniencia conveniencia)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (dd0fs0 esta este))
+                      (grup.nom.fs
+                        (ncfs000 protesta protesta)))))))))
+        (Fe " ")))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 concentración concentración)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.mp
+              (ncmp000 camiones camión))))))
+    (sp.co-CCL
+      (Fc , ,)
+      (coord
+        (rg tanto tanto))
+      (sp
+        (prep
+          (sps00 en_dirección_a en_dirección_a))
+        (snl
+          (grup.nom
+            (np0000l Alicante Alicante))))
+      (coord
+        (cs como como))
+      (sp
+        (prep
+          (sps00 a a))
+        (snl
+          (grup.nom
+            (np0000l Barcelona Barcelona))))
+      (Fc , ,))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vaip3s0 ha haber)
+      (vmp00sm iniciado iniciar))
+    (sp-CCT
+      (prep
+        (sps00 sobre sobre))
+      (snn
+        (espec.fp
+          (da0fp0 las el)
+          (Z 07.00 07.00))
+        (grup.nom.fp
+          (ncfp000 horas hora))))
+    (sp-CCL
+      (prep
+        (spcms en_torno_al en_torno_al))
+      (snn
+        (grup.nom.ms
+          (ncms000 kilómetro kilómetro)
+          (snn
+            (grup.nom.p
+              (Z 500 500)))
+          (sp
+            (Fc , ,)
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 altura altura)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 término término)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (snl
+                          (grup.nom
+                            (np0000l Paterna Paterna))))
+                      (S.F.R
+                        (Fc , ,)
+                        (relatiu-CCL
+                          (pr000000 donde donde))
+                        (morfema.verbal-PASS
+                          (p0000000 se se))
+                        (grup.verb
+                          (vmip3s0 produce producir))
+                        (sn-SUJ
+                          (espec.ms
+                            (da0ms0 el el))
+                          (grup.nom.ms
+                            (ncms000 enlace enlace)
+                            (sp
+                              (prep
+                                (spcms del del))
+                              (sn
+                                (grup.nom.ms
+                                  (Fe " ")
+                                  (ncmn000 By-Pass by-pass)
+                                  (Fe " "))))
+                            (sp
+                              (prep
+                                (sps00 con con))
+                              (snl
+                                (espec.fs
+                                  (da0fs0 la el))
+                                (grup.nom.fs
+                                  (np0000l V-30 V-30)
+                                  (S.F.R
+                                    (Fc , ,)
+                                    (sp-CCL
+                                      (prep
+                                        (sps00 por por))
+                                      (sn
+                                        (relatiu
+                                          (pr000000 donde donde))))
+                                    (morfema.verbal-PASS
+                                      (p0000000 se se))
+                                    (grup.verb
+                                      (vmip3s0 canaliza canalizar))
+                                    (sn-SUJ
+                                      (espec.ms
+                                        (da0ms0 el el))
+                                      (grup.nom.ms
+                                        (ncms000 tráfico tráfico)))
+                                    (sp-CCL
+                                      (prep
+                                        (spcms al al))
+                                      (snl
+                                        (grup.nom.ms
+                                          (np0000l Puerto_de_Valencia Puerto_de_Valencia))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.fp
+        (ncfp000 Fuentes fuente)
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (grup.nom
+              (np0000o Tráfico Tráfico))))))
+    (grup.verb
+      (vmis3p0 señalaron señalar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sp-CCT
+        (prep
+          (sps00 a a))
+        (sn
+          (grup.nom.fp
+            (s.a.fp
+              (grup.a.fp
+                (ao0fp0 primeras primero)))
+            (ncfp000 horas hora)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 mañana mañana)))))))
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vmis3p0 produjeron producir))
+      (sn-SUJ
+        (espec.fp
+          (dn0cp0 dos dos))
+        (grup.nom.fp
+          (ncfp000 cortes corte)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 tráfico tráfico))))
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmis3p0 provocaron provocar))
+            (sn-CD
+              (grup.nom.fp
+                (ncfp000 retenciones retención)
+                (sp.co
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snn
+                      (espec.mp
+                        (rg hasta hasta)
+                        (Z 4 4))
+                      (grup.nom.mp
+                        (ncmp000 kilómetros kilómetro)
+                        (sp
+                          (prep
+                            (sps00 en_dirección_a en_dirección_a))
+                          (snl
+                            (grup.nom
+                              (np0000l Alicante Alicante)))))))
+                  (coord
+                    (cc y y))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snn
+                      (espec.mp
+                        (Z 3 3))
+                      (grup.nom.mp
+                        (ncmp000 kilómetros kilómetro)
+                        (sp
+                          (prep
+                            (sps00 en_dirección_a en_dirección_a))
+                          (snl
+                            (grup.nom
+                              (np0000l Barcelona Barcelona))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sadv-CCT
+        (grup.adv
+          (rg Posteriormente posteriormente))
+        (Fc , ,))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 caravana caravana)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 camiones camión))))))
+      (grup.verb
+        (vmis3s0 ocupó ocupar))
+      (sn-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 carril carril)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 derecho derecho)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 calzada calzada)))))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3s0 dejó dejar)
+        (infinitiu
+          (vmn0000 pasar pasar)))
+      (sp-CD
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (ncmp000 turismos turismo))))
+      (sp-CCL
+        (prep
+          (sps00 por por))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 izquierdo izquierdo))))))
+      (sn-AO
+        (Fc , ,)
+        (espec.ms
+          (da0ns0 lo el))
+        (grup.nom.ms
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmis3s0 provocó provocar))
+            (sn.co-CD
+              (sn
+                (grup.nom.ms
+                  (ncms000 tráfico tráfico)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 lento lento)))))
+              (coord
+                (cc y y))
+              (sn
+                (espec.fp
+                  (di0fp0 algunas alguno))
+                (grup.nom.fp
+                  (ncfp000 retenciones retención))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 protesta protesta)))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmis3s0 extendió extender))
+    (sadv-MOD
+      (grup.adv
+        (rg también también)))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 a_lo_largo_de a_lo_largo_de))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 mañana mañana)))
+      (Fc , ,))
+    (sp.co-CC
+      (sp
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 conexión conexión)
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np0000l A-7 A-7))))
+            (sp
+              (prep
+                (sps00 con con))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 pista pista)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snl
+                      (grup.nom
+                        (np0000l Ademuz Ademuz))))))))))
+      (coord
+        (cc y y))
+      (sp
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.mp
+            (di0mp0 algunos alguno))
+          (grup.nom.mp
+            (ncmp000 polígonos polígono)
+            (s.a.mp
+              (grup.a.mp
+                (aq0cp0 industriales industrial)))
+            (sp
+              (Fc , ,)
+              (sadv.j
+                (grup.adv
+                  (rg sobre_todo sobre_todo)))
+              (sp
+                (prep
+                  (sps00 en en))
+                (snl
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 autovía autovía)
+                    (snl
+                      (grup.nom.fs
+                        (np0000l A-3 A-3)))
+                    (snl
+                      (grup.nom
+                        (np0000l Madrid-Valencia Madrid-Valencia))))))
+              (Fc , ,))))))
+    (sp-AO
+      (prep
+        (sps00 según según))
+      (sn
+        (grup.nom.fp
+          (ncfp000 fuentes fuente)
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (grup.nom
+                (np0000o Asetraval Asetraval)))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (sps00 A_partir_de a_partir_de))
+      (snd
+        (espec.fp
+          (da0fp0 las el)
+          (W 11.30 [??:??/??/??:11.30]))
+        (grup.nom.fp
+          (ncfp000 horas hora)))
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 empezó empezar))
+    (sn-SUJ
+      (espec.fs
+        (di0fs0 una uno))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 nueva nuevo)))
+        (ncfs000 concentración concentración)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.mp
+              (ncmp000 camiones camión))))
+        (sp
+          (prep
+            (sps00 en en))
+          (snl
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000l N-340 N-340)
+              (snl
+                (grup.nom
+                  (np0000l Valencia-Barcelona Valencia-Barcelona)))
+              (sp
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.ms
+                    (dp3cs0 su su))
+                  (grup.nom.ms
+                    (ncms000 paso paso)
+                    (sp
+                      (prep
+                        (sps00 por por))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 localidad localidad)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (snl
+                              (grup.nom
+                                (np0000l Sagunto Sagunto)))))))))))))))
+    (sp-AO
+      (Fc , ,)
+      (prep
+        (sps00 según según))
+      (sn
+        (grup.nom.fp
+          (ncfp000 fuentes fuente)
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (grup.nom
+                (np0000o Tráfico Tráfico)))))))
+    (Fp . .)))
+(
+  (S
+    (sp-ET
+      (prep
+        (sps00 Por por))
+      (sn
+        (espec.fs
+          (dp3cs0 su su))
+        (grup.nom.fs
+          (ncfs000 parte parte)))
+      (Fc , ,))
+    (sn-SUJ
+      (grup.nom.fp
+        (ncfp000 fuentes fuente)
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000o Asociación_de_Transportistas_Autónomos_de_Contenedores Asociación_de_Transportistas_Autónomos_de_Contenedores)
+              (sno
+                (grup.nom.fs
+                  (Fpa -Fpa- -Fpa-)
+                  (np0000o Transcont Transcont)
+                  (Fpt -Fpt- -Fpt-))))))))
+    (grup.verb
+      (vmis3p0 señalaron señalar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (snl-SUJ
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (np0000l Puertos Puertos)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn.x
+              (grup.nom.co
+                (grup.nom
+                  (np0000l Valencia Valencia))
+                (Fc , ,)
+                (grup.nom
+                  (np0000l Sagunto Sagunto))
+                (coord
+                  (cc y y))
+                (grup.nom
+                  (np0000l Alicante Alicante)))))))
+      (grup.verb
+        (vmip3p0 siguen seguir))
+      (S.NF.P-CC
+        (participi
+          (aq0mpp paralizados paralizado))
+        (sp-CC
+          (prep
+            (sps00 por por))
+          (sn
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (ao0ms0 segundo segundo)))
+              (ncms000 día día))))
+        (sp-CC
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 actividad actividad)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn.x
+                  (grup.nom.co
+                    (grup.nom.co
+                      (grup.nom.fs
+                        (ncfs000 carga carga))
+                      (coord
+                        (cc y y))
+                      (grup.nom.fs
+                        (ncfs000 descarga descarga)))
+                    (sp.j
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 mercancía mercancía))))
+                    (sp.co.j
+                      (Fc , ,)
+                      (coord
+                        (rg tanto tanto))
+                      (sadv
+                        (grup.adv
+                          (rg a_granel a_granel)))
+                      (coord
+                        (cs como como))
+                      (sp
+                        (prep
+                          (sps00 en en))
+                        (sn
+                          (grup.nom.mp
+                            (ncmp000 contenedores contenedor)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 protesta protesta)
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (ncmp000 puertos puerto))))))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vmip3s0 traduce traducir))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 ausencia ausencia)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 actividad actividad)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 transporte transporte))))))))))
+    (S.F.A-CC
+      (Fc , ,)
+      (conj.subord
+        (cs ya_que ya_que))
+      (sno-SUJ
+        (grup.nom
+          (np0000o Transcont Transcont)))
+      (grup.verb
+        (vmip3s0 considera considerar))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (neg-MOD
+          (rn no no))
+        (morfema.verbal-PASS
+          (p0000000 se se))
+        (grup.verb
+          (vmip3p0 deben deber)
+          (infinitiu
+            (vmn0000 realizar realizar)))
+        (sn-SUJ
+          (grup.nom.fp
+            (ncfp000 concentraciones concentración)))
+        (Fe " ")
+        (sp-CC
+          (prep
+            (sps00 para para))
+          (S.NF.C
+            (neg-MOD
+              (rn no no))
+            (infinitiu
+              (vmn0000 molestar molestar))
+            (sp-CD
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 sociedad sociedad))))))
+        (Fe " ")))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (di0fs0 Toda todo)
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 flota flota)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.mp
+              (ncmp000 camiones camión))))))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmip3s0 encuentra encontrar))
+    (S.NF.P-CPRED.SUJ
+      (participi
+        (aq0fsp estacionada estacionado))
+      (sp
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.mp
+            (dp3cp0 sus su))
+          (grup.nom.mp
+            (ncmp000 lugares lugar)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 aparcamiento aparcamiento))))))))
+    (S.F.A-CC
+      (Fc , ,)
+      (conj.subord
+        (cs ya_que ya_que))
+      (snn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (Zp cien_por_cien cien_por_cien)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (nccp000 transportistas transportista))))))
+      (grup.verb
+        (vaip3p0 han haber)
+        (vmp00sm secundado secundar))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 protesta protesta)
+          (sp
+            (prep
+              (sps00 en en))
+            (snl
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (np0000l Puerto_de_Valencia Puerto_de_Valencia))))))
+      (sp-AO
+        (Fc , ,)
+        (prep
+          (sps00 por por))
+        (sn
+          (espec.ms
+            (da0ns0 lo el))
+          (grup.nom.ms
+            (S.F.R
+              (relatiu-CC
+                (pr0cn000 que que))
+              (sadv-CC
+                (grup.adv
+                  (rg apenas apenas)))
+              (grup.verb
+                (vaip3s0 hay haber))
+              (sn-CD.Q
+                (grup.nom.fs
+                  (ncfs000 actividad actividad)
+                  (sp
+                    (prep
+                      (sps00 en en))
+                    (sn
+                      (espec.mp
+                        (da0mp0 los el))
+                      (grup.nom.mp
+                        (ncmp000 viales vial)))))))))))
+    (Fp . .)))

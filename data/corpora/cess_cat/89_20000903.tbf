@@ -1,0 +1,93 @@
+
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Bertín_Osborne Bertín_Osborne)))
+    (morf.pron
+      (p0300000 se ell))
+    (grup.verb
+      (vmif3s0 sotmetrà sotmetre))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 peculiar peculiar)))
+          (ncms000 càsting càsting)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 presentadors presentador)))))))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (sn
+          (grup.nom
+            (np00000 A_prueba_de_estrellas A_prueba_de_estrellas)))
+        (S*.j
+          (Fpa -Fpa- -Fpa-)
+          (sn-CCL
+            (grup.nom
+              (np00000 Antena_3_TV Antena_3_TV)))
+          (Fc , ,)
+          (sn-CCT
+            (grup.nom.ms
+              (W 21.45 [??:??/??/??:21.45])))
+          (Fpt -Fpt- -Fpt-))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Juan_Y_Medio Juan_Y_Medio)))
+    (grup.verb
+      (vsif3s0 serà ser))
+    (sn-ATR
+      (espec.ms
+        (dp3ms0 el_seu el_seu))
+      (grup.nom.ms
+        (nccs000 guia guia)))
+    (S.F.A-CC
+      (Fc , ,)
+      (conj.subord
+        (cs ja_que ja_que))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (nccs000 cantant cantant)))
+      (grup.verb
+        (vmip3s0 desconeix desconèixer))
+      (sn.co-CD
+        (sn.co
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 guió guió)))
+          (coord
+            (cc i i))
+          (sn
+            (espec.mp
+              (da0mp0 els el))
+            (grup.nom.mp
+              (ncmp000 continguts contingut))))
+        (sp.j
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.ms
+              (dd0ms0 aquest aquest))
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 especial especial))))))))
+    (Fp . .)))

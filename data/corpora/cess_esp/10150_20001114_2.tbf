@@ -1,0 +1,596 @@
+
+(
+  (S
+    (morfema.verbal-PASS
+      (p0000000 Se se))
+    (grup.verb
+      (vmis3s0 suscribió suscribir))
+    (sna-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 programa programa)
+        (sp
+          (prep
+            (spcms del del))
+          (sno
+            (grup.nom.ms
+              (np0000o Fondo_para_el_Desarrollo_de_los_Pueblos_Indígenas Fondo_para_el_Desarrollo_de_los_Pueblos_Indígenas))))))
+    (Fp . .)))
+(
+  (S*
+    (sna
+      (grup.nom.fs
+        (np0000a III_Cumbre III_Cumbre)
+        (Fpa -Fpa- -Fpa-)))
+    (snl
+      (grup.nom
+        (np0000l Salvador_de_Bahía Salvador_de_Bahía)
+        (snl
+          (Fc , ,)
+          (grup.nom
+            (np0000l Brasil Brasil)))))
+    (Fp . .)))
+(
+  (S
+    (snd-CCT
+      (grup.nom.ms
+        (W 1993 [??:??/??/1993:??.??])
+        (Fpt -Fpt- -Fpt-)))
+    (sp-CC
+      (prep
+        (sps00 Bajo bajo))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 lema lema)
+          (sn
+            (Fe " ")
+            (espec.ms
+              (di0ms0 Un uno))
+            (grup.nom.ms
+              (ncms000 programa programa)
+              (sp
+                (prep
+                  (sps00 para para))
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 desarrollo desarrollo)))))
+            (Fe " "))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 texto texto)
+        (sp
+          (prep
+            (sps00 de de))
+          (sna
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000a Declaración Declaración))))))
+    (grup.verb
+      (vmis3s0 resaltó resaltar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 necesidad necesidad)
+        (sp
+          (prep
+            (sps00 de de))
+          (S.NF.C.co
+            (S.NF.C
+              (infinitiu
+                (vmn0000 impulsar impulsar))
+              (sn-CD
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 diálogo diálogo)
+                  (s.a.ms
+                    (grup.a.ms
+                      (np0000l Norte-Sur Norte-Sur))))))
+            (Fc , ,)
+            (S.NF.C
+              (infinitiu
+                (vmn0000 acabar acabar))
+              (sp-CREG
+                (prep
+                  (sps00 con con))
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 proteccionismo proteccionismo)))))
+            (coord
+              (cc y y))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 dar dar))
+              (sn-CD
+                (grup.nom.fs
+                  (ncfs000 prioridad prioridad)))
+              (sp-CI
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.fp
+                    (da0fp0 las el))
+                  (grup.nom.fp
+                    (ncfp000 negociaciones negociación)
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sna
+                        (grup.nom.ms
+                          (np0000a Acuerdo_General_sobre_Aranceles_Aduaneros_y_Comercio Acuerdo_General_sobre_Aranceles_Aduaneros_y_Comercio)
+                          (sna
+                            (grup.nom.ms
+                              (Fpa -Fpa- -Fpa-)
+                              (np0000a GATT GATT)
+                              (Fpt -Fpt- -Fpt-)))))))))
+              (Fc , ,))
+            (coord
+              (cc así_como así_como))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 conjugar conjugar))
+              (sn-CD
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 desarrollo desarrollo)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0cs0 social social)))))
+              (sp-CREG
+                (prep
+                  (sps00 con con))
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 progreso progreso)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 económico económico)))))))))))
+    (Fp . .)))
+(
+  (S
+    (morfema.verbal-PASS
+      (p0000000 Se se))
+    (grup.verb
+      (vmis3p0 destacaron destacar))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.mp
+        (ncmp000 programas programa)
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 conjuntos conjunto)))
+        (S.NF.P
+          (participi
+            (aq0mpp puestos_en_marcha puesto_en_marcha)))
+        (sp
+          (Fc , ,)
+          (prep
+            (cs como como))
+          (sn.co
+            (sno
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (np0000o Fondo_Indígena Fondo_Indígena)
+                (sp
+                  (Fc , ,)
+                  (prep
+                    (sps00 con con))
+                  (snl
+                    (grup.nom.fs
+                      (ncfs000 sede sede)
+                      (sp
+                        (prep
+                          (sps00 en en))
+                        (snl
+                          (grup.nom
+                            (np0000l Bolivia Bolivia))))))
+                  (Fc , ,))))
+            (coord
+              (cc y y))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (ncmp000 programas programa)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 educación educación))))))))))
+    (Fp . .)))
+(
+  (S*
+    (sna
+      (grup.nom.fs
+        (np0000a IV_Cumbre IV_Cumbre)
+        (Fpa -Fpa- -Fpa-)))
+    (snl
+      (grup.nom
+        (np0000l Cartagena_de_Indias Cartagena_de_Indias)
+        (snl
+          (Fc , ,)
+          (grup.nom
+            (np0000l Colombia Colombia)))))
+    (Fp . .)))
+(
+  (S
+    (snd-CCT
+      (grup.nom.ms
+        (W 1994 [??:??/??/1994:??.??])
+        (Fpt -Fpt- -Fpt-)))
+    (sn.co-SUJ
+      (sn
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 desarrollo desarrollo)))
+      (Fc , ,)
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 integración integración)))
+      (coord
+        (cc y y))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 cooperación cooperación))))
+    (grup.verb
+      (vsis3p0 fueron ser))
+    (sn-CD
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.mp
+        (ncmp000 asuntos asunto)
+        (s.a.mp
+          (grup.a.mp
+            (nccp000 protagonistas protagonista)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (dd0fs0 esta este))
+            (grup.nom.fs
+              (ncfs000 reunión reunión))))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmis3s0 Resaltó resaltar))
+    (sn.co-CD
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 firma firma)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (di0ms0 un uno))
+              (grup.nom.ms
+                (ncms000 acuerdo acuerdo)
+                (sp
+                  (prep
+                    (sps00 entre entre))
+                  (sn.co
+                    (sno
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (np0000o Grupo_de_los_Tres Grupo_de_los_Tres)
+                        (sno
+                          (grup.nom.ms
+                            (Fpa -Fpa- -Fpa-)
+                            (Z G-3 g-3)
+                            (Fpt -Fpt- -Fpt-)))
+                        (S.NF.P
+                          (Fc , ,)
+                          (participi
+                            (aq0msp integrado integrado))
+                          (sp-CAG
+                            (prep
+                              (sps00 por por))
+                            (sn.x
+                              (grup.nom.co
+                                (grup.nom
+                                  (np0000l Venezuela Venezuela))
+                                (Fc , ,)
+                                (grup.nom
+                                  (np0000l Colombia Colombia))
+                                (coord
+                                  (cc y y))
+                                (grup.nom
+                                  (np0000l México México)))))
+                          (Fc , ,))))
+                    (coord
+                      (cc y y))
+                    (sno
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (np0000o Asociación_Latinoamericana_de_Integración Asociación_Latinoamericana_de_Integración)
+                        (sno
+                          (grup.nom.fs
+                            (Fpa -Fpa- -Fpa-)
+                            (np0000o ALADI ALADI)
+                            (Fpt -Fpt- -Fpt-)))
+                        (S.NF.P
+                          (Fc , ,)
+                          (participi
+                            (aq0fsp formada formado))
+                          (sp-CAG
+                            (prep
+                              (sps00 por por))
+                            (sn
+                              (espec.mp
+                                (Z 11 11))
+                              (grup.nom.mp
+                                (ncmp000 países país)
+                                (s.a.mp
+                                  (grup.a.mp
+                                    (aq0mp0 latinoamericanos latinoamericano))))))
+                          (Fc , ,)))))))))))
+      (coord
+        (cc así_como así_como))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 propuesta propuesta)
+          (sp
+            (prep
+              (sps00 para para))
+            (sn
+              (espec.ms
+                (di0ms0 un uno))
+              (grup.nom.ms
+                (ncms000 desarrollo desarrollo)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 sostenible sostenible))))))
+          (S.NF.P
+            (Fc , ,)
+            (participi
+              (aq0fsp presentada presentado))
+            (sp-CAG
+              (prep
+                (sps00 por por))
+              (snl
+                (grup.nom
+                  (np0000l Centroamérica Centroamérica))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sna-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (np0000a Declaración_de_Cartagena Declaración_de_Cartagena)))
+      (grup.verb
+        (vmis3s0 apostó apostar))
+      (sp-CREG
+        (prep
+          (sps00 por por))
+        (sn.co
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 libre libre)))
+              (ncms000 comercio comercio)))
+          (coord
+            (cc y y))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 progreso progreso)))))
+      (sp-CC
+        (prep
+          (sps00 sin sin))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 renunciar renunciar))
+          (sp-CREG
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (ncmp000 aspectos aspecto)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0cp0 sociales social))))))))
+      (Fc , ,))
+    (coord
+      (cc e e))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3s0 incluyó incluir))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 referencia referencia)
+          (sp
+            (prep
+              (spcms al al))
+            (sn.x
+              (grup.nom.co
+                (grup.nom.co
+                  (grup.nom.ms
+                    (ncms000 bloqueo bloqueo))
+                  (coord
+                    (cc o o))
+                  (grup.nom.ms
+                    (ncms000 embargo embargo)))
+                (S.NF.P.j
+                  (participi
+                    (aq0msp impuesto impuesto))
+                  (sp-CAG
+                    (prep
+                      (sps00 por por))
+                    (snl
+                      (grup.nom
+                        (np0000l Estados_Unidos Estados_Unidos))))
+                  (sp-CC
+                    (prep
+                      (sps00 contra contra))
+                    (snl
+                      (grup.nom
+                        (np0000l Cuba Cuba))))
+                  (sp-CCT
+                    (prep
+                      (sps00 desde desde))
+                    (sn
+                      (grup.nom.mp
+                        (ncmp000 principios principio)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (snd
+                            (espec.mp
+                              (da0mp0 los el))
+                            (grup.nom.ms
+                              (ncms000 sesenta sesenta))))))))))))))
+    (Fp . .)))
+(
+  (S*
+    (sna
+      (grup.nom.fs
+        (np0000a V_Cumbre V_Cumbre)
+        (Fpa -Fpa- -Fpa-)))
+    (snl
+      (grup.nom
+        (np0000l Bariloche Bariloche)
+        (snl
+          (Fc , ,)
+          (grup.nom
+            (np0000l Argentina Argentina)))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (snd-CCT
+        (grup.nom.ms
+          (W 1995 [??:??/??/1995:??.??])
+          (Fpt -Fpt- -Fpt-)))
+      (sp
+        (prep
+          (sps00 Por por))
+        (sn
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (ao0fs0 primera primero)))
+            (ncfs000 vez vez)))
+        (Fc , ,))
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (nccp000 gobernantes gobernante)
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 iberoamericanos iberoamericano)))))
+      (grup.verb
+        (vmis3p0 rechazaron rechazar))
+      (sp-CC
+        (prep
+          (sps00 de de))
+        (sn
+          (grup.nom.fs
+            (ncfs000 forma forma)
+            (s.a.fs
+              (espec.co
+                (espec
+                  (rg más más))
+                (coord
+                  (cc o o))
+                (espec
+                  (rg menos menos)))
+              (grup.a.fs
+                (aq0fs0 explícita explícito))))))
+      (sn-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 embargo embargo)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 estadounidense estadounidense)))
+          (sp
+            (prep
+              (sps00 contra contra))
+            (snl
+              (grup.nom
+                (np0000l Cuba Cuba))))
+          (S.F.R
+            (Fc , ,)
+            (relatiu-CD
+              (pr0cn000 que que))
+            (snp-SUJ
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 presidente presidente)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 cubano cubano)))
+                (snp
+                  (Fc , ,)
+                  (grup.nom.ms
+                    (np0000p Fidel_Castro Fidel_Castro))
+                  (Fc , ,))))
+            (grup.verb
+              (vmis3s0 consideró considerar))
+            (sa-CPRED.CD
+              (grup.a
+                (Fe " ")
+                (aq0cs0 suficiente suficiente)
+                (Fe " "))))))
+      (Fc , ,))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3p0 deploraron deplorar))
+      (sn-CD
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (ncmp000 ensayos ensayo)
+          (s.a.mp
+            (grup.a.mp
+              (aq0cp0 nucleares nuclear))))))
+    (Fp . .)))

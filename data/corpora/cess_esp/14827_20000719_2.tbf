@@ -1,0 +1,912 @@
+
+(
+  (S
+    (S.F.C-CD
+      (Fe " ")
+      (sn-CCT
+        (espec.ms
+          (dd0ms0 Este este))
+        (grup.nom.ms
+          (ncms000 año año))
+        (Fc , ,))
+      (sno-SUJ
+        (grup.nom
+          (np0000o Ecuador Ecuador)))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vmip3s0 puede poder)
+        (infinitiu
+          (vmn0000 aspirar aspirar)))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 exportar exportar))
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (sn
+              (grup.nom.ms
+                (ncms000 café café)
+                (sp
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 grano grano)))))))
+          (sn.co-CD
+            (sn
+              (espec.mp
+                (rg más más)
+                (sps00 de de)
+                (Z 800.000 800000))
+              (grup.nom.mp
+                (ncmp000 sacos saco)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snn
+                    (espec.mp
+                      (Z 60 60))
+                    (grup.nom.mp
+                      (ncmp000 kilos kilo)))))
+              (Fc , ,))
+            (coord
+              (cc y y))
+            (sn
+              (espec.mp
+                (di0mp0 unos uno))
+              (grup.nom.mp
+                (Z 400.000 400000)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 café café)
+                      (S.NF.P
+                        (participi
+                          (aq0msp industrializado industrializado)))))))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 estimó estimar))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Delgado Delgado)))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sno-SUJ
+        (grup.nom
+          (np0000o Ecuador Ecuador)))
+      (grup.verb
+        (vsip3s0 es ser))
+      (sn-ATR
+        (grup.nom.ms
+          (pi0ms000 uno uno)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (da0mp0 los el)
+                (dn0cp0 catorce catorce))
+              (grup.nom.mp
+                (ncmp000 países país)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 producción producción)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0fs0 mixta mixto)))
+                      (sn.x
+                        (grup.nom.co
+                          (Fpa -Fpa- -Fpa-)
+                          (grup.nom.mp
+                            (np00000 arábigos arábigos))
+                          (coord
+                            (cc y y))
+                          (grup.nom.ms
+                            (np00000 robusta robusta))
+                          (Fpt -Fpt- -Fpt-))))))))))))
+    (S-AO
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3s0 está estar))
+      (S.NF.P-ATR
+        (participi
+          (aq0msp considerado considerado))
+        (sn-CPRED
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (ao0ms0 cuarto cuarto)))
+            (ncms000 país país)
+            (s.a.ms.x
+              (grup.a.ms.co
+                (grup.a.ms.co
+                  (grup.a.ms
+                    (aq0ms0 productor productor))
+                  (coord
+                    (cc y y))
+                  (grup.a.ms
+                    (aq0ms0 exportador exportador)))
+                (sp.j
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 café café)
+                      (S.NF.P
+                        (participi
+                          (aq0msp industrializado industrializado))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Los el))
+      (grup.nom.mp
+        (ncmp000 productores productor)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 café café)
+              (sp
+                (prep
+                  (sps00 de de))
+                (snl
+                  (grup.nom
+                    (np0000l Costa_Rica Costa_Rica)))))))))
+    (sadv-MOD
+      (grup.adv
+        (rg también también)))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmis3p0 mostraron mostrar))
+    (sa-CPRED.SUJ
+      (grup.a
+        (aq0cp0 optimistas optimista)))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (sp-CC
+      (prep
+        (sps00 por por))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 aumento aumento)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 precio precio)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 grano grano)))))))
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 mercado mercado)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 internacional internacional))))))
+          (sp
+            (prep
+              (sps00 como_consecuencia_de como_consecuencia_de))
+            (sn
+              (espec.fp
+                (da0fp0 las el))
+              (grup.nom.fp
+                (ncfp000 heladas helada)
+                (sp
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.fp
+                      (da0fp0 las el))
+                    (grup.nom.fp
+                      (ncfp000 plantaciones plantación)
+                      (s.a.fp
+                        (grup.a.fp
+                          (aq0fp0 brasileñas brasileño))))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 director director)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 ejecutivo ejecutivo)))
+        (sp
+          (prep
+            (spcms del del))
+          (sno
+            (grup.nom.ms
+              (np0000o Instituto_del_Café_de_Costa_Rica Instituto_del_Café_de_Costa_Rica)
+              (sno
+                (grup.nom.ms
+                  (Fpa -Fpa- -Fpa-)
+                  (np0000o ICAFE ICAFE)
+                  (Fpt -Fpt- -Fpt-))))))
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (np0000p Juan_Bautista_Moya Juan_Bautista_Moya))
+          (Fc , ,))))
+    (grup.verb
+      (vmis3s0 indicó indicar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 posible posible)))
+          (ncms000 beneficio beneficio)
+          (sp
+            (prep
+              (sps00 para para))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (ncmp000 productores productor))))))
+      (grup.verb
+        (vmip3s0 depende depender))
+      (sp-CREG
+        (prep
+          (sps00 de de))
+        (S.F.C
+          (conj.subord
+            (cs que que))
+          (morf.pron
+            (p0300000 se él))
+          (grup.verb
+            (vmsp3s0 mantenga mantener))
+          (sn.co-SUJ
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 tendencia tendencia)
+                (sn
+                  (prep
+                    (spcms al al))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 alza alza))))))
+            (coord
+              (cc o o))
+            (sn
+              (espec.fs
+                (di0fs0 una uno))
+              (grup.nom.fs
+                (ncfs000 estabilización estabilización)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.mp
+                      (da0mp0 los el))
+                    (grup.nom.mp
+                      (ncmp000 precios precio))))
+                (sp
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.mp
+                      (da0mp0 los el))
+                    (grup.nom.mp
+                      (ncmp000 topes tope)
+                      (s.a.mp
+                        (grup.a.mp
+                          (aq0cp0 actuales actual))))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Moya Moya)))
+    (grup.verb
+      (vmis3s0 dijo decir))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sno
+        (grup.nom
+          (np0000o EFE EFE))))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.ms
+          (dd0ms0 este este))
+        (grup.nom.ms
+          (ncms000 incremento incremento)
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (ncmp000 precios precio))))))
+      (grup.verb
+        (vmif3s0 incidirá incidir))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.mp
+            (da0mp0 los el)
+            (Z 831.000 831000))
+          (grup.nom.mp
+            (ncmp000 sacos saco)
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (sadv-CCT
+                (grup.adv
+                  (rg todavía todavía)))
+              (grup.verb
+                (vmip3p0 faltan faltar))
+              (sp-CC
+                (prep
+                  (sps00 por por))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 vender vender)))))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 cosecha cosecha)
+                  (snd
+                    (grup.nom
+                      (W 1999-2000 [??:??/??/1999-2000:??.??])))
+                  (S.F.R
+                    (Fc , ,)
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vsis3s0 fue ser))
+                    (sp-ATR
+                      (prep
+                        (sps00 de de))
+                      (snn
+                        (espec.mp
+                          (Z 3,5 3.5))
+                        (grup.nom.mp
+                          (ncmp000 millones millón)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom.mp
+                                (ncmp000 sacos saco)))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmis3s0 Expresó expresar))
+    (S.F.C.co-CD
+      (conj.subord
+        (cs que que))
+      (S.F.C
+        (sp-CCT
+          (prep
+            (sps00 hasta hasta))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 momento momento))))
+        (neg-MOD
+          (rn no no))
+        (morfema.verbal-PASS
+          (p0000000 se se))
+        (grup.verb
+          (vaip3p0 han haber)
+          (vmp00sm generado generar))
+        (sn-SUJ
+          (grup.nom.fp
+            (ncfp000 pérdidas pérdida)
+            (sp
+              (prep
+                (sps00 por por))
+              (sn
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0mp0 bajos bajo)))
+                  (ncmp000 precios precio)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.mp
+                        (da0mp0 los el))
+                      (grup.nom.mp
+                        (ncmp000 meses mes)
+                        (s.a.mp
+                          (grup.a.mp
+                            (aq0cp0 anteriores anterior)))))))))))
+        (sp-CC
+          (Fc , ,)
+          (prep
+            (sps00 debido_a debido_a))
+          (S.F.C
+            (conj.subord
+              (cs que que))
+            (sn-SUJ
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 cosecha cosecha)
+                (snd
+                  (grup.nom
+                    (W 1999-2000 [??:??/??/1999-2000:??.??])))))
+            (grup.verb
+              (vsis3s0 fue ser))
+            (sn-ATR
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (s.a.fs
+                  (grup.a.fs
+                    (ao0fs0 tercera tercero)
+                    (s.a.fs
+                      (espec
+                        (rg más más))
+                      (grup.a.fs
+                        (aq0cs0 grande grande)))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 historia historia)
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0cs0 costarricense costarricense)))))))))))))
+      (coord
+        (cc y y))
+      (S.F.C
+        (sn-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 volumen volumen)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fp
+                  (da0fp0 las el))
+                (grup.nom.fp
+                  (ncfp000 ventas venta))))))
+        (grup.verb
+          (vaip3s0 ha haber)
+          (vmp00sm compensado compensar))
+        (sn-CD
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 baja baja)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 cotización cotización)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 producto producto)))))))))))
+    (Fp . .)))
+(
+  (S
+    (morfema.verbal-IMPERS
+      (p0000000 Se se))
+    (grup.verb
+      (vmip3s0 espera esperar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sp
+        (prep
+          (sps00 para para))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 próxima próximo)))
+            (ncfs000 cosecha cosecha)
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 costarricense costarricense)))
+            (S.F.R
+              (Fc , ,)
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vmip3s0 comienza comenzar))
+              (sp-CCT
+                (prep
+                  (sps00 en en))
+                (snd
+                  (grup.nom.ms
+                    (W octubre [??:??/10/??:??.??]))))
+              (Fc , ,)))))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 precio precio)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 venta venta))))
+          (sn
+            (grup.nom.ms
+              (ncms000 promedio promedio)))
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (grup.nom
+                (np0000l Costa_Rica Costa_Rica))))))
+      (grup.verb
+        (vmsp3s0 supere superar))
+      (snn-CD
+        (espec.mp
+          (da0mp0 los el)
+          (Z 111 111))
+        (grup.nom.mp
+          (Zm dólares dólar)
+          (sp
+            (prep
+              (sps00 por por))
+            (sn
+              (grup.nom.ms
+                (ncms000 saco saco))))
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vsis3s0 fue ser))
+            (sn-ATR
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 valor valor)
+                (S.F.R
+                  (sp-CC
+                    (prep
+                      (sps00 con con))
+                    (relatiu
+                      (pr0cn000 que que)))
+                  (grup.verb
+                    (vmis3s0 cerró cerrar))
+                  (sn-SUJ
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (snd
+                          (grup.nom
+                            (W 1999-2000 [??:??/??/1999-2000:??.??])))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 Los el))
+        (grup.nom.mp
+          (s.a.mp
+            (grup.a.mp
+              (aq0cp0 fuertes fuerte)))
+          (ncmp000 fríos frío)
+          (sp
+            (prep
+              (spcms del del))
+            (snl
+              (grup.nom.ms
+                (np0000l Antártico Antártico))))))
+      (grup.verb
+        (vmis3p0 afectaron afectar))
+      (sn-CCT
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 semana semana)
+          (S.NF.P
+            (participi
+              (aq0fsp pasada pasado)))))
+      (sp-CI
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (ncfp000 plantaciones plantación)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 café café))))
+            (sp
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (ncmp000 estados estado)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn.x
+                      (grup.nom.co
+                        (grup.nom
+                          (np0000l Paraná Paraná))
+                        (coord
+                          (cc y y))
+                        (grup.nom
+                          (np0000l Sao_Paulo Sao_Paulo)))))
+                  (sp
+                    (Fc , ,)
+                    (prep
+                      (spcms al al))
+                    (snl
+                      (grup.nom.ms
+                        (ncms000 sur sur)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (snl
+                            (grup.nom
+                              (np0000l Brasil Brasil))))))
+                    (Fc , ,)))))))))
+    (coord
+      (cc y y))
+    (S*
+      (snd-CCT
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (W lunes [lunes:??/??/??:??.??])
+          (S.NF.P
+            (participi
+              (aq0msp pasado pasado)))))
+      (sp-CI
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Minas_Gerais Minas_Gerais)
+                  (sn
+                    (Fc , ,)
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0cs0 mayor mayor)))
+                      (ncms000 productor productor)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.ms
+                            (ncms000 café café)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Ante ante))
+      (sn
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 bajos bajo)))
+          (ncmp000 precios precio)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (morfema.verbal-PASS
+              (p0000000 se se))
+            (grup.verb
+              (vmii3p0 venían venir)
+              (gerundi
+                (vmg0000 registrando registrar)))
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 mercado mercado)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0cs0 mundial mundial)))))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.mp
+        (ncmp000 miembros miembro)
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000o Asociación_de_Países_Productores_de_Café Asociación_de_Países_Productores_de_Café)
+              (sno
+                (grup.nom.fs
+                  (Fpa -Fpa- -Fpa-)
+                  (np0000o APPC APPC)
+                  (Fpt -Fpt- -Fpt-))))))))
+    (grup.verb
+      (vmis3p0 acordaron acordar))
+    (sp-CCT
+      (prep
+        (sps00 en en))
+      (snd
+        (grup.nom.ms
+          (W mayo [??:??/05/??:??.??])
+          (S.NF.P
+            (participi
+              (aq0msp pasado pasado))))))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 retener retener))
+      (sp-CD
+        (prep
+          (sps00 hasta hasta))
+        (snn
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (Zp 20_por_ciento 20_%)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 producción producción)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 exportable exportable))))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (grup.nom
+        (np0000o Brasil Brasil)))
+    (grup.verb
+      (vmii3s0 calculaba calcular))
+    (sp-CC
+      (prep
+        (sps00 para para))
+      (snd
+        (grup.nom.ms
+          (W 2001 [??:??/??/2001:??.??]))))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una uno))
+      (grup.nom.fs
+        (ncfs000 cosecha cosecha)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (rg más más)
+              (sps00 de de)
+              (Z 35 35))
+            (grup.nom.mp
+              (ncmp000 millones millón)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fp
+                    (ncfp000 sacas saca)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snn
+                        (espec.mp
+                          (Z 60 60))
+                        (grup.nom.mp
+                          (ncmp000 kilos kilo))))
+                    (S.F.R
+                      (Fc , ,)
+                      (sp.1c
+                        (prep
+                          (sps00 de de))
+                        (relatiu
+                          (da0fp0 las el)
+                          (pr0cn000 que que)))
+                      (sn.e-SUJ *0*)
+                      (grup.verb
+                        (vmii3s0 tenía tener))
+                      (S.NF.P-CPRED.SUJ
+                        (participi
+                          (aq0msp programado programado)))
+                      (S.NF.C-CD
+                        (infinitiu
+                          (vmn0000 retener retener))
+                        (snn-CD
+                          (espec.mp
+                            (Z 5 5))
+                          (grup.nom.mp.1n
+                            (ncmp000 millones millón)))))))))))))
+    (Fp . .)))

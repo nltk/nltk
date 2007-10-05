@@ -1,0 +1,667 @@
+
+(
+  (S
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom.co
+          (grup.nom.ms
+            (np0000p Juan_Carlos_Ferrero Juan_Carlos_Ferrero))
+          (coord
+            (cc y y))
+          (grup.nom.ms
+            (np0000p Francisco_Clavet Francisco_Clavet)))
+        (sn
+          (Fc , ,)
+          (espec.fp
+            (da0fp0 las el)
+            (dn0cp0 dos dos))
+          (grup.nom.fp
+            (s.a.fp
+              (grup.a.fp
+                (ao0fp0 últimas último)))
+            (ncfp000 esperanzas esperanza)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncmn000 tenis tenis)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 español español)))
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 masculino masculino))))))
+            (sp
+              (prep
+                (sps00 en en))
+              (sna
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (np0000a Abierto Abierto)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snl
+                      (grup.nom
+                        (np0000l Australia Australia))))))))
+          (Fc , ,))))
+    (grup.verb
+      (vsis3p0 fueron ser)
+      (vmp00pm eliminados eliminar))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (ao0fs0 tercera tercero)))
+          (ncfs000 ronda ronda))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 Los el)
+          (dn0cp0 dos dos))
+        (grup.nom.mp
+          (ncmp000 partidos partido)))
+      (grup.verb
+        (vaii3p0 habían haber)
+        (vsp00sm sido ser)
+        (vmp00pm suspendidos suspender))
+      (snd-CCT
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (W sábado [sábado:??/??/??:??.??])))
+      (sp-CC
+        (prep
+          (sps00 por por))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 lluvia lluvia)))))
+    (coord
+      (cc y y))
+    (S
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 reanudación reanudación)))
+        (Fc , ,))
+      (snp-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 marroquí marroquí)
+          (snp
+            (grup.nom.ms
+              (np0000p Yunes_El_Aynaui Yunes_El_Aynaui)))))
+      (morf.pron
+        (p0300000 se él))
+      (grup.verb
+        (vmis3s0 impuso imponer))
+      (sadv-ET
+        (grup.adv
+          (rg finalmente finalmente)))
+      (sp-CI
+        (prep
+          (sps00 a a))
+        (snp
+          (grup.nom.ms
+            (np0000p Ferrero Ferrero))))
+      (sp-CC
+        (prep
+          (sps00 por por))
+        (sn.co
+          (snn
+            (snn
+              (grup.nom
+                (Z 6-7 6-7)))
+            (snn.j
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (Z 3-7 3-7)
+                (Fpt -Fpt- -Fpt-))))
+          (Fc , ,)
+          (snn
+            (grup.nom
+              (Z 6-4 6-4)))
+          (Fc , ,)
+          (snn
+            (grup.nom
+              (Z 6-4 6-4)))
+          (Fc , ,)
+          (snn
+            (snn
+              (grup.nom
+                (Z 6-7 6-7)))
+            (snn.j
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (Z 5-7 5-7)
+                (Fpt -Fpt- -Fpt-))))
+          (coord
+            (cc y y))
+          (snn
+            (grup.nom
+              (Z 6-4 6-4))))))))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (di0ms0 Un uno))
+      (grup.nom.ms
+        (ncms000 descuido descuido)
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (ncms000 fruto fruto)
+            (sp
+              (sadv.j
+                (grup.adv
+                  (rg quizás quizás)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (dp3cs0 su su))
+                  (grup.nom.fs
+                    (ncfs000 inexperiencia inexperiencia)
+                    (sp
+                      (prep
+                        (sps00 en en))
+                      (sn
+                        (grup.nom.mp
+                          (ncmp000 torneos torneo)
+                          (sp
+                            (prep
+                              (spcms del del))
+                            (sna
+                              (grup.nom.ms
+                                (np0000a Grand_Slam Grand_Slam))))))))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmis3s0 costó costar))
+    (sn-CD.Q
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 partido partido)))
+    (sp-CI
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 jugador jugador)
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (grup.nom
+                (np0000l Onteniente Onteniente)))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (snp-SUJ
+        (grup.nom.ms
+          (np0000p El_Aynaui El_Aynaui)))
+      (sn-CI
+        (grup.nom.s
+          (pp3csd00 le él)))
+      (grup.verb
+        (vmis3s0 rompió romper))
+      (sn-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 servicio servicio)))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (ao0ms0 séptimo séptimo)))
+            (ncms000 juego juego)))))
+    (coord
+      (cc y y))
+    (S
+      (sn-SUJ
+        (espec.fs
+          (dd0fs0 esa ese))
+        (grup.nom.fs
+          (ncfs000 ventaja ventaja)))
+      (grup.verb
+        (vsis3s0 fue ser))
+      (sa-ATR
+        (grup.a
+          (aq0cs0 suficiente suficiente)))
+      (sp
+        (prep
+          (sps00 para para))
+        (S.F.C
+          (conj.subord
+            (cs que que))
+          (sn-SUJ
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 marroquí marroquí)))
+          (morf.pron
+            (p0300000 se él))
+          (grup.verb
+            (vmsi3s0 alzase alzar))
+          (sp-CC
+            (prep
+              (sps00 con con))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 victoria victoria)))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Ferrero Ferrero)
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (sadv-CCT
+            (grup.adv
+              (rg antes antes)
+              (sp
+                (prep
+                  (sps00 de de))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 llegar llegar))
+                  (sadv-CCL
+                    (grup.adv
+                      (rg aquí aquí)))))))
+          (sadv-MOD
+            (grup.adv
+              (rg sólo sólo)))
+          (grup.verb
+            (vaii3s0 había haber)
+            (vmp00sm participado participar))
+          (sp-CREG
+            (prep
+              (sps00 en en))
+            (sna
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (np0000a US_Open US_Open))))
+          (sn-CCT
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (S.NF.P
+                (participi
+                  (aq0msp pasado pasado)))
+              (ncms000 año año)))
+          (S.NF.A-CC
+            (gerundi
+              (vmg0000 cayendo caer))
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (s.a.fs
+                    (grup.a.fs
+                      (ao0fs0 primera primero)))
+                  (ncfs000 ronda ronda)))))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 ha haber)
+      (vmp00sm ganado ganar))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (snl
+        (grup.nom
+          (np0000l Melbourne Melbourne))))
+    (sn-CD
+      (espec.mp
+        (dn0cp0 dos dos))
+      (grup.nom.mp
+        (ncmp000 partidos partido)
+        (sp
+          (Fc , ,)
+          (prep
+            (sps00 contra contra))
+          (sn.co
+            (snp
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 australiano australiano)
+                (snp
+                  (grup.nom.ms
+                    (np0000p Scott_Draper Scott_Draper)))))
+            (coord
+              (cc y y))
+            (snp
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 italiano italiano)
+                (snp
+                  (grup.nom.ms
+                    (np0000p Laurence_Tieleman Laurence_Tieleman)))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (snp-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 discípulo discípulo)
+          (sp
+            (prep
+              (sps00 de de))
+            (snp
+              (grup.nom.ms
+                (np0000p Antonio_Martínez_Cascales Antonio_Martínez_Cascales))))))
+      (morf.pron
+        (p0300000 se él))
+      (grup.verb
+        (vaii3s0 había haber)
+        (vmp00sm convertido convertir))
+      (sp-CREG
+        (prep
+          (sps00 en en))
+        (sn
+          (grup.nom.fs
+            (pi0fs000 una uno)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fp
+                  (da0fp0 las el))
+                (grup.nom.fp
+                  (ncfp000 revelaciones revelación)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 torneo torneo)))))))))))
+    (coord
+      (cc y y))
+    (S
+      (sp-AO
+        (prep
+          (sps00 de de))
+        (S.NF.C
+          (infinitiu
+            (van0000 haber haber)
+            (vmp00sm vencido vencer))
+          (sp-CD
+            (prep
+              (spcms al al))
+            (sn
+              (grup.nom.ms
+                (nccs000 marroquí marroquí))))))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vasi3s0 hubiera haber)
+        (vmp00sm tenido tener))
+      (sp-AO
+        (Fc , ,)
+        (prep
+          (sps00 en en))
+        (sn
+          (grup.nom.fs
+            (ncfs000 teoría teoría)))
+        (Fc , ,))
+      (sn-CD.Q
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 cuadro cuadro)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 accesible accesible)))
+          (sp
+            (prep
+              (sps00 para para))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 seguir seguir))
+              (sadv-CC
+                (grup.adv
+                  (rg adelante adelante)))
+              (sn-AO
+                (Fc , ,)
+                (sadv.j
+                  (grup.adv
+                    (rg al_menos al_menos)))
+                (sn
+                  (espec.fs
+                    (di0fs0 una uno))
+                  (grup.nom.fs
+                    (ncfs000 ronda ronda)))
+                (Fc , ,))))))
+      (S.F.A-CC
+        (conj.subord
+          (cs pues pues))
+        (sn-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 próximo próximo)))
+            (nccs000 rival rival)))
+        (grup.verb
+          (vasi3s0 hubiera haber)
+          (vsp00sm sido ser))
+        (snp-CD
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 francés francés)
+            (snp
+              (grup.nom.ms
+                (np0000p Arnaud_Clement Arnaud_Clement)))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Con con))
+      (sn
+        (espec.fs
+          (dp3cs0 su su))
+        (grup.nom.fs
+          (ncfs000 victoria victoria)))
+      (Fc , ,))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p El_Aynaui El_Aynaui)
+        (sp
+          (Fc , ,)
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (Z 28 28))
+            (grup.nom.mp
+              (ncmp000 años año)))
+          (Fc , ,))))
+    (grup.verb
+      (vmip3s0 iguala igualar))
+    (sn-CD
+      (espec.ms
+        (dp3cs0 su su))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 mejor mejor)))
+        (ncms000 registro registro)
+        (sp
+          (prep
+            (sps00 en en))
+          (sna
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (np0000a Grand_Slam Grand_Slam))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (nccs000 marroquí marroquí)))
+    (grup.verb
+      (vmis3s0 alcanzó alcanzar))
+    (sadv-MOD
+      (grup.adv
+        (rg también también)))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (ao0fs0 cuarta cuarto)))
+        (ncfs000 ronda ronda)
+        (sp
+          (prep
+            (sps00 de de))
+          (sna
+            (grup.nom
+              (np0000a Roland_Garros Roland_Garros))))))
+    (sp-CCT
+      (prep
+        (sps00 en en))
+      (snd
+        (grup.nom.ms
+          (W 1995 [??:??/??/1995:??.??]))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vsip3s0 Es ser))
+    (sn-ATR
+      (espec.fs
+        (dp3cs0 su su))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 mejor mejor)))
+        (ncfs000 actuación actuación)))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (sna
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np0000a Abierto Abierto)
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (grup.nom
+                (np0000l Australia Australia))))
+          (S.F.R
+            (relatiu-CCT
+              (pr000000 donde donde))
+            (sn.e-SUJ *0*)
+            (neg
+              (rn no no))
+            (grup.verb
+              (vaii3s0 había haber)
+              (vmp00sm pasado pasar))
+            (sp-CCL
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (s.a.fs
+                    (grup.a.fs
+                      (ao0fs0 segunda segundo)))
+                  (ncfs000 ronda ronda))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 agresividad agresividad)
+        (sp
+          (prep
+            (spcms del del))
+          (snp
+            (grup.nom.ms
+              (ncms000 surafricano surafricano)
+              (snp
+                (grup.nom.ms
+                  (np0000p Wayne_Ferreira Wayne_Ferreira))))))))
+    (grup.verb
+      (vmis3s0 acabó acabar))
+    (sp-CREG
+      (prep
+        (sps00 con con))
+      (snp
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 madrileño madrileño)
+          (snp
+            (grup.nom.ms
+              (np0000p Francisco_Clavet Francisco_Clavet))))))
+    (sp-CC
+      (prep
+        (sps00 por por))
+      (sn.x
+        (grup.nom.co
+          (grup.nom
+            (Z 6-3 6-3))
+          (Fc , ,)
+          (grup.nom
+            (Z 6-4 6-4))
+          (Fc , ,)
+          (grup.nom
+            (Z 3-6 3-6))
+          (coord
+            (cc y y))
+          (grup.nom
+            (Z 6-3 6-3)))))
+    (Fp . .)))

@@ -1,0 +1,170 @@
+
+(
+  (S*
+    (sna
+      (espec.fs
+        (di0fs0 Una uno))
+      (grup.nom.fs
+        (ncfs000 caja caja)
+        (sp
+          (prep
+            (sps00 de de))
+          (snp
+            (grup.nom
+              (np0000p Pandora Pandora))))
+        (S.F.R
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (sn
+              (relatiu
+                (pr0ms000 cuyo cuyo))
+              (grup.nom.ms
+                (ncms000 fondo fondo))))
+          (S.F.A*-CC
+            (Fc , ,)
+            (conj.subord
+              (cs como como))
+            (sp
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 mito mito)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 clásico clásico))))))
+            (Fc , ,))
+          (grup.verb
+            (vmip3s0 queda quedar))
+          (S.NF.P-CPRED.SUJ
+            (participi
+              (aq0fsp retenida retenido)))
+          (sn-SUJ
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 esperanza esperanza)))
+          (S.F.A.co-CC
+            (conj.subord
+              (cs una_vez_que una_vez_que))
+            (S.F.A
+              (sn-SUJ
+                (espec.mp
+                  (di0mp0 todos todo)
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (ncmp000 males mal)))
+              (morf.pron
+                (p0300000 se él))
+              (grup.verb
+                (vaip3p0 han haber)
+                (vmp00sm derramado derramar))
+              (sp-CC
+                (prep
+                  (sps00 sobre sobre))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 faz faz)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 tierra tierra))))))))
+            (coord
+              (cc y y))
+            (S.F.A
+              (sn.e-SUJ *0*)
+              (grup.verb
+                (vaip3p0 han haber)
+                (vmp00sm devastado devastar))
+              (sn.co-CD
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 suelo suelo)))
+                (coord
+                  (cc y y))
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 aire aire)))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 partido partido)))
+      (grup.verb
+        (vaip3s0 ha haber)
+        (vmp00sm aplazado aplazar))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 muerte muerte)
+          (sp
+            (prep
+              (spcms del del))
+            (sno
+              (grup.nom.ms
+                (np0000l Madrid Madrid)))))))
+    (coord
+      (cc y y))
+    (S*
+      (grup.verb
+        (vmp00sm precipitado precipitar))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (sp
+            (prep
+              (spcms del del))
+            (sno
+              (grup.nom.ms
+                (np0000o Atleti Atleti)
+                (S.F.R
+                  (Fc , ,)
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmip3s0 recibe recibir))
+                  (sn-CD
+                    (espec.ms
+                      (di0ms0 un uno))
+                    (grup.nom.ms
+                      (ncms000 golpe golpe)
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0ms0 deportivo deportivo)))
+                      (s.a.ms.x
+                        (grup.a.ms.co
+                          (grup.a.ms
+                            (aq0ms0 económico económico))
+                          (coord
+                            (cc y y))
+                          (grup.a.ms
+                            (aq0ms0 psicológico psicológico))))
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.fs
+                            (s.a.fs
+                              (grup.a.fs
+                                (aq0fs0 infinita infinito)))
+                            (ncfs000 crueldad crueldad)))))))))))))
+    (Fp . .)))

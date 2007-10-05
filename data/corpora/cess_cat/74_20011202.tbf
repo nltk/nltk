@@ -1,0 +1,225 @@
+
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (di0ms0 Un un))
+        (grup.nom.ms
+          (ncms000 rumor rumor)))
+      (grup.verb
+        (vmip3s0 pot poder)
+        (infinitiu
+          (vmn0000 impulsar impulsar)))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 nova nou)))
+          (ncfs000 idea idea)))
+      (sp-CCL
+        (prep
+          (spcms al al))
+        (sn
+          (grup.nom.ms
+            (ncms000 mercat mercat)))))
+    (coord
+      (cc o o))
+    (S*
+      (S.NF.C
+        (infinitiu
+          (vmn0000 destruir destruir))
+        (sn-CD
+          (grup.a.fs
+            (pp3fsa00 -la ell)))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (Zp 53% 53/100)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (ncfp000 persones persona)
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vaip3p0 van anar))
+                  (sp-CCL
+                    (prep
+                      (spcms al al))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 cine cine))))))))))
+      (grup.verb
+        (vmip3p0 segueixen seguir))
+      (sn-CD
+        (grup.nom.fp
+          (ncfp000 recomanacions recomanació)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 amics amic))))))
+      (Fc , ,))
+    (coord
+      (cc i i))
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (Zp 65% 65/100)
+          (sp
+            (prep
+              (spcmp dels del))
+            (sn
+              (grup.nom.mp
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmip3p0 compren comprar))
+                  (sn-CD
+                    (espec.fs
+                      (di0fs0 una un))
+                    (grup.nom.fs
+                      (ncfs000 agenda agenda)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0fs0 electrònica electrònic)))
+                      (sn
+                        (grup.nom
+                          (np00000 Palm Palm)))))))))))
+      (sn-CD
+        (grup.nom.ms
+          (pp3nn000 ho ho)))
+      (grup.verb
+        (vmip3p0 fan fer))
+      (sp-CC
+        (prep
+          (sps00 gràcies_a gràcies_a))
+        (sn
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (ncms000 entusiasme entusiasme)
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (espec.fp
+                  (di0cp0 altres altre))
+                (grup.nom.fp
+                  (ncfp000 persones persona))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 A a))
+      (sn
+        (grup.nom
+          (np00000 Márketing_de_boca_en_boca Márketing_de_boca_en_boca)))
+      (Fc , ,))
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Emanuel_Rosen Emanuel_Rosen)))
+    (grup.verb
+      (vmip3s0 documenta documentar))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (grup.nom.mp
+          (ncmp000 exemples exemple)
+          (s.a.mp
+            (grup.a.mp
+              (aq0cp0 semblants semblant)
+              (sp
+                (prep
+                  (sps00 a a))
+                (sn
+                  (grup.nom.mp
+                    (pd0mp000 aquests aquest)))))))))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 forma forma)
+        (sp
+          (prep
+            (sps00 d' de))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 establir establir))
+            (sn-CD
+              (grup.nom.fp
+                (ncfp000 estratègies estratègia)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0fp0 específiques específic)))))
+            (sp-CC
+              (prep
+                (sps00 per per))
+              (S.NF.C.co
+                (S.NF.C.co
+                  (S.NF.C
+                    (infinitiu
+                      (vmn0000 crear crear)))
+                  (coord
+                    (cc i i))
+                  (S.NF.C
+                    (infinitiu
+                      (vmn0000 sustentar sustentar))))
+                (sn.j-CD
+                  (grup.nom.fp
+                    (ncfp000 campanyes campanya)
+                    (s.a.fp
+                      (grup.a.fp
+                        (aq0fp0 efectives efectiu)))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 comunicació comunicació))))))
+                (sadv.j-CC
+                  (grup.adv
+                    (rg de_boca_en_boca de_boca_en_boca)))))
+            (sp-CC
+              (Fc , ,)
+              (prep
+                (sps00 al_marge_de al_marge_de))
+              (sn.co
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 publicitat publicitat)))
+                (coord
+                  (cc i i))
+                (sn
+                  (espec.fp
+                    (di0cp0 altres altre))
+                  (grup.nom.fp
+                    (ncfp000 estratègies estratègia)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 màrqueting màrqueting))))))))))))
+    (Fp . .)))

@@ -1,0 +1,159 @@
+
+(
+  (S*
+    (sn
+      (grup.nom.fp
+        (ncfp000 Instal·lacions instal·lació)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 depuradora depuradora))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 ajuntament ajuntament)))
+    (grup.verb
+      (vmif3s0 obrirà obrir))
+    (sn-CD
+      (grup.nom.ms
+        (ncms000 expedient expedient)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 informatiu informatiu)))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 aclarir aclarir))
+        (sn-CD
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (ncfp000 responsabilitats responsabilitat)
+            (sp
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 mort mort)
+                  (sp
+                    (prep
+                      (spcmp dels del))
+                    (sn
+                      (grup.nom.mp
+                        (nccp000 animals animal)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (di0fs0 Una un))
+      (grup.nom.fs
+        (ncfs000 fallada fallada)
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 col.lector lector))))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 fer fer))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (ncfs000 aigua aigua)
+          (S.NF.P
+            (participi
+              (aq0fsp contaminada contaminat)))))
+      (grup.verb
+        (vmsi3s0 arribés arribar))
+      (sp-CC
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.ms
+            (di0ms0 un un))
+          (grup.nom.ms
+            (ncms000 rierol rierol)))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (snp-SUJ
+        (espec.ms
+          (da0cs0 L' el))
+        (grup.nom.ms
+          (ncms000 alcalde alcalde)
+          (snp
+            (Fc , ,)
+            (snp
+              (grup.nom.ms
+                (np0000p Antoni_Solà Antoni_Solà)))
+            (sna.j
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (np0000a CF CF)
+                (Fpt -Fpt- -Fpt-)))
+            (Fc , ,))))
+      (grup.verb
+        (vmif3s0 demanarà demanar))
+      (S.F.C-CD
+        (Fe " ")
+        (conj.subord
+          (cs que que))
+        (morfema.verbal-PASS
+          (p0000000 es es))
+        (grup.verb
+          (vmsp3p0 revisin revisar))
+        (sn-SUJ
+          (espec.mp
+            (da0mp0 els el))
+          (grup.nom.mp
+            (ncmp000 mecanismes mecanisme)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 depuradora depuradora))))))
+        (Fe " ")))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vmip3s0 descarta descartar))
+      (S.NF.C-CD
+        (infinitiu
+          (vmn0000 obrir obrir))
+        (sn-CD
+          (espec.ms
+            (di0ms0 un un))
+          (grup.nom.ms
+            (ncms000 expedient expedient)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 sancionador sancionador)))))))
+    (Fp . .)))

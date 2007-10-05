@@ -1,0 +1,947 @@
+
+(
+  (S
+    (snp-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (nccs000 fiscal fiscal)
+        (sp
+          (prep
+            (spcms del del))
+          (sno
+            (grup.nom.ms
+              (np0000o Tribunal_de_Apelación_de_París Tribunal_de_Apelación_de_París))))
+        (snp
+          (Fc , ,)
+          (grup.nom.fs
+            (np0000p Martine_Ceccaldi Martine_Ceccaldi))
+          (Fc , ,))))
+    (grup.verb
+      (vmis3s0 pidió pedir))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un uno))
+      (grup.nom.ms
+        (nc00000 dictámen dictámen)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 favorable favorable)
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fs
+                  (di0fs0 una uno))
+                (grup.nom.fs
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 nueva nuevo)))
+                  (ncfs000 demanda demanda)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 extradición extradición)
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0fs0 española español))))))
+                  (sp
+                    (prep
+                      (sps00 contra contra))
+                    (snp
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0fs0 presunta presunto)))
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0cn0 ex ex)))
+                        (ncms000 miembro miembro)
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (sno
+                            (grup.nom.ms
+                              (Fe " ")
+                              (ncms000 comando comando)
+                              (snl
+                                (grup.nom.ms
+                                  (np0000l Madrid Madrid)))
+                              (Fe " ")
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sno
+                                  (grup.nom
+                                    (np0000o ETA ETA)))))))
+                        (snp
+                          (grup.nom.fs
+                            (np0000p Idoia_Martínez_García Idoia_Martínez_García)
+                            (snp
+                              (Fc , ,)
+                              (grup.nom.fs
+                                (Fe " ")
+                                (np0000p Olga Olga)
+                                (Fe " ")))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 demanda demanda)))
+      (grup.verb
+        (vsis3s0 fue ser)
+        (vmp00sf cursada cursar))
+      (snd-CCT
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (W 30_de_abril_de_1999 [??:30/4/1999:??.??]))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3s0 responde responder))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (di0fs0 una uno))
+          (grup.nom.fs
+            (ncfs000 orden orden)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 detención detención))))
+            (S.NF.P
+              (participi
+                (aq0fsp dictada dictado))
+              (sp-CAG
+                (prep
+                  (sps00 por por))
+                (snp
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 jueza jueza)
+                    (snp
+                      (grup.nom.fs
+                        (np0000p Teresa_Palacios Teresa_Palacios)))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sno
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (np0000o Audiencia_Nacional Audiencia_Nacional)))))))
+              (snd-CCT
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (W 16_de_julio_de_1998 [??:16/7/1998:??.??]))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (snp
+        (grup.nom.fs
+          (np0000p Palacios Palacios)))
+      (sadv.j
+        (Fc , ,)
+        (grup.adv
+          (rg precisamente precisamente))
+        (Fc , ,)))
+    (grup.verb
+      (vmif3s0 viajará viajar))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (snl
+        (grup.nom
+          (np0000l París París))))
+    (sn-CCT
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 semana semana)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 próxima próximo)))))
+    (sp-CC
+      (prep
+        (sps00 para para))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 interrogar interrogar))
+        (sp-CD
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.mp
+              (dn0cp0 cinco cinco))
+            (grup.nom.mp
+              (ncmp000 presos preso)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0cp0 etarras etarra)))
+              (sn
+                (Fc , ,)
+                (sp.j
+                  (prep
+                    (sps00 entre entre))
+                  (sn
+                    (grup.nom.mp
+                      (pp3mp000 ellos él))))
+                (sn
+                  (espec.mp
+                    (da0mp0 los el))
+                  (grup.nom.mp
+                    (s.a.mp
+                      (grup.a.mp
+                        (aq0cn0 ex ex)))
+                    (nccp000 dirigentes dirigente)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 banda banda))))
+                    (sn.x
+                      (grup.nom.co
+                        (grup.nom.ms
+                          (np0000p José_Javier_Arizcuren_Ruiz José_Javier_Arizcuren_Ruiz)
+                          (snp
+                            (Fc , ,)
+                            (grup.nom.ms
+                              (Fe " ")
+                              (np0000p Kantauri Kantauri)
+                              (Fe " "))
+                            (Fc , ,)))
+                        (grup.nom.ms
+                          (np0000p Julián_Achurra_Egurola Julián_Achurra_Egurola)
+                          (snp
+                            (Fc , ,)
+                            (grup.nom.ms
+                              (Fe " ")
+                              (np0000p Pototo Pototo)
+                              (Fe " "))
+                            (Fc , ,)))
+                        (grup.nom.ms
+                          (np0000p José_María_Arregui_Erostarbe José_María_Arregui_Erostarbe)
+                          (snp
+                            (Fc , ,)
+                            (grup.nom.ms
+                              (Fe " ")
+                              (np0000p Fiti Fiti)
+                              (Fe " "))
+                            (Fc , ,)))
+                        (coord
+                          (cc y y))
+                        (grup.nom.ms
+                          (np0000p Joseba_Urrusolo_Sistiaga Joseba_Urrusolo_Sistiaga))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.fs
+          (dp3cs0 su su))
+        (grup.nom.fs
+          (ncfs000 petición petición)
+          (sp
+            (prep
+              (sps00 contra contra))
+            (snp
+              (grup.nom.fs
+                (Fe " ")
+                (np0000p Olga Olga)
+                (Fe " ")
+                (S.F.R
+                  (Fc , ,)
+                  (sp-AO
+                    (prep
+                      (sps00 sobre sobre))
+                    (relatiu
+                      (da0fs0 la el)
+                      (pr0cn000 que que)))
+                  (sno-SUJ
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (np0000o Tribunal Tribunal)
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0cs0 parisiense parisiense)))))
+                  (grup.verb
+                    (vmif3s0 dictará dictar))
+                  (sn-CD
+                    (grup.nom.fs
+                      (ncfs000 sentencia sentencia)))
+                  (snd-CCT
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0ms0 próximo próximo)))
+                      (W 15_de_marzo [??:15/3/??:??.??])))))))))
+      (Fc , ,))
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (np0000o Audiencia_Nacional Audiencia_Nacional)))
+    (grup.verb
+      (vmip3s0 reclama reclamar))
+    (sn-CD
+      (espec.fs
+        (dp3cs0 su su))
+      (grup.nom.fs
+        (ncfs000 extradición extradición)))
+    (sp-CC
+      (prep
+        (sps00 por por))
+      (sn.co
+        (Fe " ")
+        (sn
+          (grup.nom.ms
+            (ncms000 asesinato asesinato)
+            (s.a.ms
+              (grup.a.ms
+                (aq0cs0 terrorista terrorista)))))
+        (Fc , ,)
+        (sn
+          (espec.mp
+            (Z 24 24))
+          (grup.nom.mp
+            (ncmp000 intentos intento)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 asesinato asesinato)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0cs0 terrorista terrorista))))))))
+        (Fc , ,)
+        (sn
+          (grup.nom.mp
+            (ncmp000 destrozos destrozo)))
+        (coord
+          (cc y y))
+        (sn
+          (grup.nom.fs
+            (ncfs000 falsificación falsificación)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fp
+                  (ncfp000 matrículas matrícula))))))
+        (Fe " ")))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.fp
+        (da0fp0 Las el))
+      (grup.nom.fp
+        (ncfp000 autoridades autoridad)
+        (sp
+          (prep
+            (sps00 de de))
+          (snl
+            (grup.nom
+              (np0000l Madrid Madrid))))))
+    (grup.verb
+      (vmip3p0 reprochan reprochar))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (snp
+        (grup.nom.fs
+          (np0000p Martínez_García Martínez_García)
+          (sp
+            (Fc , ,)
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (Z 31 31))
+              (grup.nom.mp
+                (ncmp000 años año)))
+            (Fc , ,)))))
+    (S.NF.C-CD
+      (infinitiu
+        (van0000 haber haber)
+        (vmp00sm entregado entregar))
+      (sp-CI
+        (prep
+          (spcms al al))
+        (sno
+          (grup.nom.ms
+            (Fe " ")
+            (ncms000 comando comando)
+            (snl
+              (grup.nom.ms
+                (np0000l Andalucía Andalucía)))
+            (Fe " ")
+            (sp
+              (prep
+                (sps00 de de))
+              (sno
+                (grup.nom
+                  (np0000o ETA ETA)))))))
+      (sn-CD
+        (grup.nom.fp
+          (ncfp000 matrículas matrícula)
+          (sp
+            (prep
+              (sps00 para para))
+            (sn
+              (espec.mp
+                (dn0cp0 dos dos))
+              (grup.nom.mp
+                (nc00000 coches-bomba coche-bomba)
+                (S.NF.P
+                  (Fc , ,)
+                  (participi
+                    (aq0mpp cargados cargado))
+                  (sp-CC
+                    (prep
+                      (sps00 con con))
+                    (snn
+                      (espec.mp
+                        (Z 200 200))
+                      (grup.nom.mp
+                        (ncmp000 kilos kilo)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (grup.nom.mp
+                              (ncmp000 explosivos explosivo)
+                              (S.NF.P
+                                (Fc , ,)
+                                (participi
+                                  (aq0mpp destinados destinado))
+                                (sp-CC
+                                  (prep
+                                    (sps00 a a))
+                                  (sn
+                                    (espec.ms
+                                      (di0ms0 un uno))
+                                    (grup.nom.ms
+                                      (ncms000 atentado atentado)
+                                      (sp
+                                        (prep
+                                          (sps00 en en))
+                                        (snl
+                                          (grup.nom
+                                            (np0000l Córdoba Córdoba))))
+                                      (snd
+                                        (espec.ms
+                                          (da0ms0 el el))
+                                        (grup.nom
+                                          (W 20_de_mayo_de_1996 [??:20/5/1996:??.??]))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (di0ms0 Un uno))
+      (grup.nom.ms
+        (ncms000 fallo fallo)
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 mando mando)
+              (sp
+                (prep
+                  (sps00 a a))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 distancia distancia)))))))))
+    (grup.verb
+      (vmis3s0 hizo hacer)
+      (infinitiu
+        (vmn0000 fracasar fracasar)))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 atentado atentado)
+        (S.NF.P
+          (participi
+            (aq0msp planeado planeado))
+          (sp-CAG
+            (prep
+              (sps00 por por))
+            (sn
+              (espec.ms
+                (dd0ms0 ese ese))
+              (grup.nom.ms
+                (ncms000 comando comando)
+                (S.F.R
+                  (Fc , ,)
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmii3s0 pretendía pretender))
+                  (S.NF.C-CD
+                    (infinitiu
+                      (vmn0000 volar volar))
+                    (sn-CD
+                      (espec.ms
+                        (di0ms0 un uno))
+                      (grup.nom.ms
+                        (ncms000 furgón furgón)
+                        (S.NF.P
+                          (participi
+                            (aq0msp ocupado ocupado))
+                          (sp-CAG
+                            (prep
+                              (sps00 por por))
+                            (sn
+                              (espec.mp
+                                (Z 24 24))
+                              (grup.nom.mp
+                                (nccp000 militares militar)))))))))))))))
+    (sp-AO
+      (Fc , ,)
+      (prep
+        (sps00 según según))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 justicia justicia)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 española español))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sadv-ET
+        (grup.adv
+          (rg Sin_embargo sin_embargo))
+        (Fc , ,))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 explosión explosión)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (di0fs0 otra otro))
+              (grup.nom.fs
+                (ncfs000 bomba bomba)
+                (S.NF.P
+                  (participi
+                    (aq0fsp colocada colocado))
+                  (sp-CAG
+                    (prep
+                      (sps00 por por))
+                    (sn
+                      (espec.ms
+                        (da0ms0 el el)
+                        (di0ms0 mismo mismo))
+                      (grup.nom.ms
+                        (ncms000 comando comando))))
+                  (sp-CCL
+                    (prep
+                      (sps00 en en))
+                    (sn
+                      (espec.fs
+                        (dd0fs0 esa ese))
+                      (grup.nom.fs
+                        (ncfs000 ciudad ciudad)
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0fs0 española español))))))
+                  (sn-CCT
+                    (espec.ms
+                      (dd0ms0 ese ese)
+                      (di0ms0 mismo mismo))
+                    (grup.nom.ms
+                      (ncms000 día día)))))))))
+      (grup.verb
+        (vmis3s0 costó costar))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 vida vida)))
+      (sp-CI
+        (prep
+          (spcms al al))
+        (snp
+          (grup.nom.ms
+            (ncms000 sargento sargento)
+            (snp
+              (grup.nom.ms
+                (np0000p Miguel_Angel_Ayllón_Díez-González Miguel_Angel_Ayllón_Díez-González)))))))
+    (coord
+      (cc e e))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3s0 hirió herir))
+      (sp-CD
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fp
+            (dn0cp0 cuatro cuatro))
+          (grup.nom.fp
+            (ncfp000 personas persona)
+            (sn.co
+              (Fd : :)
+              (sn.co
+                (snp
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 capitán capitán)
+                    (snp
+                      (grup.nom.ms
+                        (np0000p Antonio_Duque_Manzano Antonio_Duque_Manzano)))))
+                (coord
+                  (cc y y))
+                (snp
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (nccs000 alférez alférez)
+                    (snp
+                      (grup.nom.ms
+                        (np0000p Antonio_Granado_Bermejo Antonio_Granado_Bermejo)))))
+                (Fc , ,))
+              (coord
+                (cc así_como así_como))
+              (sn
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0cp0 civiles civil)))
+                  (sn.co
+                    (grup.nom.ms
+                      (np0000p Manuel_Espino_Madueño Manuel_Espino_Madueño))
+                    (coord
+                      (cc y y))
+                    (snp
+                      (espec.fs
+                        (dp3cs0 su su))
+                      (grup.nom.fs
+                        (ncfs000 esposa esposa)
+                        (snp
+                          (Fc , ,)
+                          (grup.nom.fs
+                            (np0000p Antonia_Lara_Andreu Antonia_Lara_Andreu)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (nccs000 fiscal fiscal)
+        (snp
+          (grup.nom.fs
+            (np0000p Ceccaldi Ceccaldi)))))
+    (grup.verb
+      (vmis3s0 consideró considerar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 petición petición)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 española español)))))
+      (grup.verb
+        (vmip3s0 cumple cumplir))
+      (sn-CD
+        (espec.mp
+          (di0mp0 todos todo)
+          (da0mp0 los el))
+        (grup.nom.mp
+          (ncmp000 requisitos requisito)
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 necesarios necesario))))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 por por))
+      (sn
+        (espec.ms
+          (da0ns0 lo el))
+        (grup.nom.ms
+          (S.F.R
+            (relatiu-CC
+              (pr0cn000 que que))
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vmis3s0 recomendó recomendar))
+            (sn-CD
+              (espec.fs
+                (dp3cs0 su su))
+              (grup.nom.fs
+                (ncfs000 aceptación aceptación)))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 justicia justicia)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 francesa francés)))))
+    (sadv-CCT
+      (grup.adv
+        (rg ya ya)))
+    (grup.verb
+      (vaip3s0 ha haber)
+      (vmp00sm emitido emitir))
+    (sn-CD
+      (grup.nom.mp
+        (ncmp000 dictámenes dictamen)
+        (s.a.mp
+          (grup.a.mp
+            (aq0cp0 favorables favorable)
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (grup.nom.fp
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0fp0 numerosas numeroso)))
+                  (ncfp000 demandas demanda)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 extradición extradición))))
+                  (S.NF.P
+                    (participi
+                      (aq0fpp presentadas presentado))
+                    (sp-CAG
+                      (prep
+                        (sps00 por por))
+                      (sno
+                        (grup.nom
+                          (np0000o España España))))
+                    (sp-CC
+                      (prep
+                        (sps00 contra contra))
+                      (snp
+                        (grup.nom.fs
+                          (np0000p Martínez_García Martínez_García))))))))))))
+    (S.F.AConc-AO
+      (Fc , ,)
+      (conj.subord
+        (cs aunque aunque))
+      (sn-SUJ
+        (grup.nom.fs
+          (pd0fs000 ésta este)))
+      (sadv-MOD
+        (grup.adv
+          (rg sólo sólo)))
+      (grup.verb
+        (vmif3s0 podrá poder)
+        (infinitiu
+          (vsn0000 ser ser)
+          (vmp00sf extraditada extraditar)))
+      (S.F.A-CC
+        (conj.subord
+          (cs cuando cuando))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmsp3s0 cumpla cumplir))
+        (sp-CCL
+          (prep
+            (sps00 en en))
+          (snl
+            (grup.nom
+              (np0000l Francia Francia))))
+        (sn-CD
+          (espec.fs
+            (dp3cs0 su su))
+          (grup.nom.fs
+            (ncfs000 condena condena)
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.mp
+                  (dn0cp0 siete siete))
+                (grup.nom.mp
+                  (ncmp000 años año)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 prisión prisión)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (nccs000 etarra etarra)))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmis3s0 dirigió dirigir))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (sp-CI
+      (prep
+        (spcms al al))
+      (sno
+        (grup.nom.ms
+          (np0000o Tribunal Tribunal))))
+    (sp-CC
+      (prep
+        (sps00 para para))
+      (S.NF.C.co
+        (S.NF.C
+          (infinitiu
+            (vmn0000 pedir pedir))
+          (sp-CI
+            (prep
+              (spcms al al))
+            (sno
+              (grup.nom.ms
+                (np0000o Gobierno Gobierno)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 español español))))))
+          (S.F.C-CD
+            (conj.subord
+              (cs que que))
+            (Fe " ")
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vmm03s0 negocie negociar))
+            (sp-CC
+              (prep
+                (sps00 con con))
+              (sno
+                (grup.nom
+                  (np0000o ETA ETA))))
+            (sp-CC
+              (Fc , ,)
+              (prep
+                (sps00 en_lugar_de en_lugar_de))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 enviar enviar))
+                (sn-CD
+                  (espec.fp
+                    (di0fp0 tantas tanto))
+                  (grup.nom.fp
+                    (ncfp000 demandas demanda)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 extradición extradición))))))))
+            (Fe " ")
+            (Fc , ,)))
+        (coord
+          (cc y y))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 exigir exigir))
+          (sp-CI
+            (prep
+              (sps00 a a))
+            (sno
+              (espec.fp
+                (da0fp0 las el))
+              (grup.nom.fp
+                (ncfp000 autoridades autoridad)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0fp0 francesas francés))))))
+          (S.F.C-CD
+            (conj.subord
+              (cs que que))
+            (Fe " ")
+            (sn.e-SUJ *0*)
+            (sadv-MOD
+              (grup.adv
+                (rg también también)))
+            (grup.verb
+              (vmsp3p0 contribuyan contribuir))
+            (sp-CREG
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fs
+                  (di0fs0 una uno))
+                (grup.nom.fs
+                  (ncfs000 solución solución)
+                  (S.NF.P
+                    (participi
+                      (aq0fsp negociada negociado)))
+                  (sp
+                    (prep
+                      (spcms al al))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 conflicto conflicto)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0ms0 vasco vasco)))))))))
+            (sp-CC
+              (prep
+                (sps00 en_lugar_de en_lugar_de))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 extraditar extraditar))))
+            (Fe " ")))))
+    (Fp . .)))

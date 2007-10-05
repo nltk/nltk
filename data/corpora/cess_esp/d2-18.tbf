@@ -1,0 +1,94 @@
+
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Frente_a frente_a))
+      (sno
+        (espec.ms
+          (dd0ms0 este este))
+        (grup.nom.ms
+          (np0000l Barcelona Barcelona)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (sn-CC
+              (vmip3s0 hace hacer)
+              (di0mp0 unos uno)
+              (ncmp000 días día))
+            (morf.pron
+              (p0300000 se él))
+            (grup.verb
+              (vmii3s0 jugaba jugar))
+            (sn-CD
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 paso paso)
+                (sp
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 final final)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sna
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (np0000a Copa_de_Europa Copa_de_Europa)))))))))
+            (S.F.A-CC
+              (conj.subord
+                (cs al_mismo_tiempo_que al_mismo_tiempo_que))
+              (sno-SUJ
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (np0000l Madrid Madrid)))
+              (grup.verb
+                (vmii3s0 homenajeaba homenajear))
+              (sp-CD
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.ms
+                    (di0ms0 un uno))
+                  (grup.nom.ms
+                    (S.NF.P
+                      (sadv-CC
+                        (grup.adv
+                          (rg recién recién)))
+                      (participi
+                        (aq0msp ascendido ascendido))))))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 cálculo cálculo)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fp
+              (ncfp000 probabilidades probabilidad))))))
+    (neg-MOD
+      (rn no no))
+    (grup.verb
+      (vmip3s0 basta bastar))
+    (sp-CC
+      (prep
+        (sps00 para para))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 alcanzar alcanzar))
+        (sn-CD
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 victoria victoria)))))
+    (Fp . .)))

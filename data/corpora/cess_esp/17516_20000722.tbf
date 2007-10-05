@@ -1,0 +1,78 @@
+
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 púgil púgil)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 estadounidense estadounidense)))
+        (snp
+          (grup.nom.ms
+            (np0000p Will_"Steel"_Grigsby Will_"Steel"_Grigsby)))))
+    (grup.verb
+      (vmis3s0 conquistó conquistar))
+    (sn-CCT
+      (espec.fs
+        (dd0fs0 esta este))
+      (grup.nom.fs
+        (ncfs000 tarde tarde)))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 corona corona)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 vacante vacante)))
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 junior junior)))
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 peso peso)
+              (s.a.ms
+                (grup.a.ms
+                  (ncfs000 mosca mosca))))))
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000o Organización_Mundial_de_Boxeo Organización_Mundial_de_Boxeo)
+              (sno
+                (grup.nom.fs
+                  (Fpa -Fpa- -Fpa-)
+                  (np0000o OMB OMB)
+                  (Fpt -Fpt- -Fpt-))))))))
+    (sp-CC
+      (prep
+        (spcms al al))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 vencer vencer))
+        (snp-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 puertorriqueño puertorriqueño)
+            (snp
+              (grup.nom.ms
+                (np0000p Nelson_Dieppa Nelson_Dieppa)))))
+        (sp-CC
+          (prep
+            (sps00 por por))
+          (sn
+            (grup.nom.fs
+              (ncfs000 decisión decisión)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 unánime unánime))))))))
+    (Fp . .)))

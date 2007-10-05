@@ -1,0 +1,698 @@
+
+(
+  (S
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (np0000o Organización_de_las_Naciones_Unidas_para_la_Agricultura_y_la_Alimentación Organización_de_las_Naciones_Unidas_para_la_Agricultura_y_la_Alimentación)
+        (sno
+          (grup.nom.fs
+            (Fpa -Fpa- -Fpa-)
+            (np0000o FAO FAO)
+            (Fpt -Fpt- -Fpt-)))))
+    (grup.verb
+      (vmip3s0 insta instar))
+    (sp-CD
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (ncmp000 institutos instituto)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 investigación investigación)))))))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 profundizar profundizar))
+        (sp-CREG
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 estudio estudio)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 almidón almidón)))))))
+        (sp-CC
+          (prep
+            (cs como como))
+          (sn
+            (espec.fs
+              (di0fs0 una uno))
+            (grup.nom.fs
+              (ncfs000 forma forma)
+              (sp
+                (prep
+                  (sps00 de de))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 ayudar ayudar))
+                  (sp-CD
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (espec.mp
+                        (da0mp0 los el))
+                      (grup.nom.mp
+                        (ncmp000 países país)
+                        (sp
+                          (prep
+                            (sps00 en en))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 desarrollo desarrollo))))))))))))))
+    (sp-AO
+      (Fc , ,)
+      (prep
+        (sps00 según según))
+      (sn
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 comunicado comunicado)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (dp3cs0 su su))
+              (grup.nom.fs
+                (ncfs000 sede sede)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 central central)))
+                (sp
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (grup.nom
+                      (np00000 Roma Roma))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (Fe " ")
+      (sn-SUJ
+        (espec.fs
+          (di0fs0 Una uno))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 mayor mayor)))
+          (ncfs000 información información)
+          (sp
+            (prep
+              (sps00 sobre sobre))
+            (sn
+              (espec.fp
+                (da0fp0 las el))
+              (grup.nom.fp
+                (ncfp000 propiedades propiedad)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 almidón almidón)))))))))
+      (grup.verb
+        (vmif3s0 ayudará ayudar))
+      (sp-CD
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.mp
+            (dd0mp0 estos este))
+          (grup.nom.mp
+            (ncmp000 países país))))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 situar situar))
+          (sadv-MOD
+            (grup.adv
+              (rg mejor mejor)))
+          (sn-CD
+            (espec.mp
+              (dp3cp0 sus su))
+            (grup.nom.mp
+              (ncmp000 productos producto)))
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (ncmp000 mercados mercado)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0cp0 mundiales mundial))))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 declaró declarar))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Morton_Satin Morton_Satin)
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (ncms000 jefe jefe)
+            (sp
+              (prep
+                (spcms del del))
+              (sno
+                (grup.nom.ms
+                  (np0000o Servicio_de_Agroindustrias_y_Gestión_Postcosecha Servicio_de_Agroindustrias_y_Gestión_Postcosecha)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sno
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (np0000o FAO FAO)))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (snp-SUJ
+        (grup.nom.ms
+          (np0000p Satin Satin)))
+      (grup.verb
+        (vmis3s0 pidió pedir))
+      (sp-CI
+        (prep
+          (spcms al al))
+        (sn
+          (grup.nom.ms
+            (ncms000 sector sector)
+            (S.NF.P
+              (participi
+                (aq0msp privado privado))))))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmsp3s0 fomente fomentar))
+        (sn-CD
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 investigación investigación)
+            (sp
+              (prep
+                (sps00 sobre sobre))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 almidón almidón))))))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3s0 anunció anunciar))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sadv-CCT
+          (grup.adv
+            (rg en_breve en_breve)))
+        (sn-SUJ
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (np00000 FAO FAO)))
+        (grup.verb
+          (vmif3s0 publicará publicar))
+        (sn-CD
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (S.NF.P
+              (participi
+                (aq0msp detallado detallado)))
+            (ncmn000 atlas atlas)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fp
+                  (da0fp0 las el))
+                (grup.nom.fp
+                  (ncfp000 partículas partícula)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.mp
+                        (da0mp0 los el))
+                      (grup.nom.mp
+                        (ncmp000 granos grano)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 almidón almidón))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 almidón almidón)
+        (sn
+          (Fc , ,)
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (ncms000 hidrato hidrato)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 carbono carbono))))
+            (S.F.R.co
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vmip3s0 constituye constituir))
+                (sn-CD
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0cs0 principal principal)))
+                    (ncfs000 reserva reserva)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 energética energético)))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.mp
+                          (rg casi casi)
+                          (di0mp0 todos todo)
+                          (da0mp0 los el))
+                        (grup.nom.mp
+                          (ncmp000 vegetales vegetal)))))))
+              (coord
+                (cc y y))
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (morf.pron
+                  (p0300000 se él))
+                (grup.verb
+                  (vmip3s0 encuentra encontrar))
+                (sp-CC
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (grup.nom.fp
+                      (s.a.fp
+                        (grup.a.fp
+                          (aq0cp0 grandes grande)))
+                      (ncfp000 cantidades cantidad))))
+                (sp-CC
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 cultivos cultivo)
+                      (sp
+                        (prep
+                          (cs como como))
+                        (sn.co
+                          (sn
+                            (espec.ms
+                              (da0ms0 el el))
+                            (grup.nom.ms
+                              (ncms000 trigo trigo)))
+                          (Fc , ,)
+                          (sn
+                            (espec.ms
+                              (da0ms0 el el))
+                            (grup.nom.ms
+                              (ncms000 maíz maíz)))
+                          (Fc , ,)
+                          (sn
+                            (espec.ms
+                              (da0ms0 el el))
+                            (grup.nom.ms
+                              (ncms000 arroz arroz)))
+                          (Fc , ,)
+                          (sn
+                            (espec.fp
+                              (da0fp0 las el))
+                            (grup.nom.fp
+                              (ncfp000 patatas patata)))
+                          (Fc , ,)
+                          (sn
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (ncfs000 mandioca mandioca)))
+                          (coord
+                            (cc y y))
+                          (sn
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (ncfs000 palmera palmera)
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sn
+                                  (grup.nom.ms
+                                    (ncms000 sagú sagú))))))))))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmip3s0 está estar)
+      (gerundi
+        (vsg0000 siendo ser)
+        (vmp00sm investigado investigar)))
+    (sp.co-CAG
+      (sp
+        (prep
+          (sps00 por por))
+        (sno
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (np0000o FAO FAO))))
+      (coord
+        (cc y y))
+      (sp
+        (prep
+          (sps00 por por))
+        (sn
+          (grup.nom.mp
+            (ncmp000 centros centro)
+            (s.a.mp.x
+              (grup.a.mp.co
+                (grup.a.mp
+                  (aq0mp0 italianos italiano))
+                (coord
+                  (cc y y))
+                (grup.a.mp
+                  (aq0mp0 tailandeses tailandés))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Las el))
+      (grup.nom.fp
+        (ncfp000 ventajas ventaja)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (ncmp000 cultivos cultivo)
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vmip3p0 contienen contener))
+                (sn-CD
+                  (grup.nom.ms
+                    (ncms000 almidón almidón)))))))))
+    (grup.verb
+      (vsip3p0 son ser))
+    (sn-ATR
+      (grup.nom.fp
+        (pi0fp000 muchas mucho)
+        (sp
+          (prep
+            (cs como como))
+          (sn.co
+            (sn.co
+              (sn
+                (espec.fs
+                  (dp3cs0 su su))
+                (grup.nom.fs
+                  (ncfs000 cocción cocción)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 ligera ligero)))))
+              (coord
+                (cc y y))
+              (sn
+                (espec.fs
+                  (dp3cs0 su su))
+                (grup.nom.fs
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 alta alto)))
+                  (ncfs000 retención retención)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 aceite aceite)))))))
+            (S.F.R.j
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (sn-CD
+                (grup.nom.mp
+                  (pp3mpa00 los él)))
+              (grup.verb
+                (vmip3s0 convierte convertir))
+              (sp-CPRED.CD
+                (prep
+                  (sps00 en en))
+                (sn
+                  (grup.nom.mp
+                    (s.a.mp
+                      (grup.a.mp
+                        (aq0mp0 aptos apto)
+                        (sp.co
+                          (sp
+                            (prep
+                              (sps00 para para))
+                            (S.NF.C
+                              (infinitiu
+                                (vmn0000 elaborar elaborar))
+                              (sn.x-CD
+                                (grup.nom.co
+                                  (grup.nom.co
+                                    (grup.nom.mp
+                                      (ncmp000 productos producto)
+                                      (sp
+                                        (prep
+                                          (spcms al al))
+                                        (sn
+                                          (grup.nom.ms
+                                            (ncms000 horno horno)))))
+                                    (Fc , ,)
+                                    (grup.nom.mp
+                                      (ncmp000 cereales cereal))
+                                    (coord
+                                      (cc y y))
+                                    (grup.nom.mp
+                                      (ncmp000 tentempiés tentempié)))
+                                  (Fc , ,)
+                                  (grup.nom.co
+                                    (grup.nom.fp
+                                      (ncfp000 sopas sopa))
+                                    (coord
+                                      (cc y y))
+                                    (grup.nom.fp
+                                      (ncfp000 salsas salsa))))))
+                            (Fc , ,))
+                          (coord
+                            (cc así_como así_como))
+                          (sp
+                            (prep
+                              (sps00 para para))
+                            (sn
+                              (espec.fs
+                                (da0fs0 la el))
+                              (grup.nom.fs
+                                (ncfs000 obtención obtención)
+                                (sp.co
+                                  (sp
+                                    (prep
+                                      (sps00 de de))
+                                    (sn
+                                      (grup.nom.mp
+                                        (ncmp000 aromas aroma)
+                                        (s.a.mp
+                                          (grup.a.mp
+                                            (aq0cp0 naturales natural))))))
+                                  (coord
+                                    (cc y y))
+                                  (sp
+                                    (prep
+                                      (sps00 de de))
+                                    (sn
+                                      (grup.nom.fp
+                                        (ncfp000 cremas crema)
+                                        (sp
+                                          (prep
+                                            (sps00 en en))
+                                          (sn
+                                            (grup.nom.ms
+                                              (ncms000 polvo polvo))))
+                                        (sp
+                                          (prep
+                                            (sps00 de de))
+                                          (sn
+                                            (grup.nom.mp
+                                              (ncmp000 productos producto)
+                                              (s.a.mp.x
+                                                (grup.a.mp.co
+                                                  (grup.a.mp
+                                                    (aq0mp0 lácteos lácteo))
+                                                  (coord
+                                                    (cc y y))
+                                                  (grup.a.mp
+                                                    (neg
+                                                      (rn no no))
+                                                    (aq0mp0 lácteos lácteo)))))))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Entre entre))
+      (sn
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 aplicaciones aplicación)
+          (s.a.fp
+            (grup.a.fp
+              (neg
+                (rn no no))
+              (aq0fp0 alimentarias alimentario))))))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vmip3s0 incluye incluir))
+    (sn-SUJ
+      (espec.ms
+        (dp3cs0 su su))
+      (grup.nom.ms
+        (ncms000 empleo empleo)
+        (sp.co
+          (sp
+            (prep
+              (sps00 en en))
+            (sn.x
+              (grup.nom.co
+                (grup.nom.mp
+                  (ncmp000 adhesivos adhesivo))
+                (Fc , ,)
+                (grup.nom.mp
+                  (ncmp000 explosivos explosivo)))))
+          (Fc , ,)
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fp
+                (ncfp000 industrias industria)
+                (s.a.fp.co
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0fp0 papeleras papelero)))
+                  (coord
+                    (cc y y))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 construcción construcción))))))))
+          (Fc , ,)
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (ncmp000 sectores sector)
+                (s.a.ms.x
+                  (grup.a.ms.co
+                    (grup.a.ms
+                      (aq0cs0 textil textil))
+                    (Fc , ,)
+                    (grup.a.ms
+                      (aq0ms0 minero minero))
+                    (Fc , ,)
+                    (grup.a.ms
+                      (aq0ms0 metalúrgico metalúrgico))
+                    (Fc , ,)
+                    (grup.a.ms
+                      (aq0ms0 cosmético cosmético))
+                    (coord
+                      (cc y y))
+                    (grup.a.ms
+                      (aq0ms0 farmacéutico farmacéutico))))))))))
+    (sn-AO
+      (Fc , ,)
+      (espec.ms
+        (da0ns0 lo el))
+      (grup.nom.ms
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 demuestra demostrar))
+          (sn-CD
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 importancia importancia)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 comercial comercial)))
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 estudio estudio)
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 almidón almidón))))))))))))
+    (Fp . .)))

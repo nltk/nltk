@@ -1,0 +1,624 @@
+
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmis3s0 Suspiró suspirar))
+    (sadv-CC
+      (grup.adv
+        (rg de_nuevo de_nuevo)))
+    (S.NF.A-CC
+      (gerundi
+        (vmg0000 intentando intentar))
+      (S.NF.C-CD
+        (infinitiu
+          (vmn0000 deshacer deshacer))
+        (sn-CD
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 agobio agobio)
+            (S.F.R
+              (relatiu-CD.Q
+                (pr0cn000 que que))
+              (sn.e-SUJ *0*)
+              (grup.verb
+                (vmii3s0 tenía tener))
+              (S.NF.P-CPRED.CD
+                (participi
+                  (aq0msp atravesado atravesado))
+                (sp-CC
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (ncms000 pecho pecho))))
+                (sp-CC
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el)
+                        (di0fs0 misma mismo))
+                      (grup.nom.fs
+                        (ncfs000 manera manera))))
+                  (S.F.AComp.j
+                    (conj.subord
+                      (cs que que))
+                    (morf.pron
+                      (p0300000 se él))
+                    (grup.verb
+                      (vmip3s0 atraviesa atravesar))
+                    (sn-SUJ
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 espina espina)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (espec.ms
+                              (di0ms0 un uno))
+                            (grup.nom.ms
+                              (ncms000 pescado pescado))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (di0ms0 Un uno))
+      (grup.nom.ms
+        (ncms000 moscón moscón)
+        (s.a.ms.co
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 verde verde)))
+          (coord
+            (cc y y))
+          (s.a.ms
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fp
+                  (di0fp0 todas todo))
+                (grup.nom.fp
+                  (ncfp000 luces luz))))
+            (aq0ms0 moribundo moribundo)))))
+    (grup.verb
+      (vmis3s0 revoloteó revolotear))
+    (sadv-CC
+      (grup.adv
+        (rg torpemente torpemente)))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 penumbra penumbra))))
+    (Fp . .)))
+(
+  (S.co
+    (S.co
+      (S
+        (sn-SUJ
+          (espec.fs
+            (da0fs0 La el))
+          (grup.nom.fs
+            (ncfs000 ropa ropa)))
+        (grup.verb
+          (vmii3s0 estaba estar))
+        (S.NF.P-ATR
+          (participi
+            (aq0fsp planchada planchado))))
+      (Fc , ,)
+      (S*
+        (sn-SUJ
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (ncmp000 armarios armario)))
+        (S.NF.P-ATR
+          (sadv-CC
+            (grup.adv
+              (rg bien bien)))
+          (participi
+            (aq0mpp dispuestos dispuesto))))
+      (Fc , ,)
+      (S*
+        (sn-SUJ
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (ncfp000 cacerolas cacerola)))
+        (sa.x-ATR
+          (grup.a.co
+            (grup.a
+              (aq0fp0 limpias limpio))
+            (coord
+              (cc y y))
+            (grup.a
+              (aq0fp0 secas seco)))))
+      (Fc , ,))
+    (coord
+      (cc y y))
+    (S.co
+      (sn-CC
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 víspera víspera)))
+      (S.co
+        (S
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vaii3s0 había haber)
+            (vmp00sm repasado repasar))
+          (sn-CD
+            (espec.mp
+              (di0mp0 todos todo)
+              (da0mp0 los el))
+            (grup.nom.mp
+              (ncmp000 botones botón)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fp
+                    (da0fp0 las el))
+                  (grup.nom.fp
+                    (ncfp000 camisas camisa)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snp
+                        (grup.nom.ms
+                          (np0000p Antonio Antonio))))))))))
+        (coord
+          (cc y y))
+        (S*
+          (grup.verb
+            (vmp00sm subido subir))
+          (sn-CD
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 dobladillo dobladillo)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.mp
+                    (dp3cp0 sus su))
+                  (grup.nom.mp
+                    (ncmp000 trajes traje)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 verano verano)))))))))))
+      (S.F.A-CC
+        (Fc , ,)
+        (conj.subord
+          (cs porque porque))
+        (sn-SUJ
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 moda moda)))
+        (morf.pron
+          (p0300000 se él))
+        (grup.verb
+          (vmii3s0 presentaba presentar))
+        (sa-CPRED.SUJ
+          (grup.a
+            (aq0fs0 faldicorta faldicorto)))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (conj.subord-ET
+        (cs De_modo_que de_modo_que))
+      (sn.e-SUJ *0*)
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vmii3s0 tenía tener))
+      (sn-CD.Q
+        (grup.nom.ms
+          (pi0cs000 nada nada)
+          (S.NF.R
+            (conj.subord
+              (cs que que))
+            (infinitiu
+              (vmn0000 hacer hacer))))))
+    (coord
+      (cc y y))
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 tarde tarde)))
+      (grup.verb
+        (vmii3s0 amenazaba amenazar))
+      (S.NF.C-CD
+        (neg-MOD
+          (rn no no))
+        (infinitiu
+          (vmn0000 acabar acabar))
+        (sadv-CC
+          (grup.adv
+            (rg nunca nunca)))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C*-CD
+      (S.F.ACond
+        (Fg - -)
+        (conj.subord
+          (cs Si si))
+        (sadv-CC
+          (grup.adv
+            (rg por_lo_menos por_lo_menos)))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmsi3s0 pudiera poder)
+          (infinitiu
+            (vmn0000 echarme echar)))
+        (sn-CD
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 siesta siesta)))
+        (sp-CC
+          (Fc , ,)
+          (prep
+            (sps00 como como))
+          (snp
+            (grup.nom.ms
+              (np0000p Antonio Antonio))))
+        (Fg - -))
+      (Fc , ,))
+    (sn.e-SUJ *0*)
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmis3s0 dijo decir))
+    (S.NF.A-CC
+      (Fc , ,)
+      (gerundi
+        (vmg0000 secándose secar))
+      (sn-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 sudor sudor)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 labio labio)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 superior superior))))))))
+      (sp-CC
+        (prep
+          (sps00 con con))
+        (sn
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (ncms000 pico pico)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 bata bata))))))))
+    (Fp . .)))
+(
+  (S.co
+    (coord-ET
+      (cc Pero pero))
+    (S
+      (sn-SUJ
+        (grup.nom.fs
+          (pp3fs000 ella él)))
+      (grup.verb
+        (vsii3s0 era ser))
+      (sp-ATR
+        (prep
+          (sps00 de de))
+        (sn
+          (grup.nom.ms
+            (nccs000 natural natural)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 metódico metódico)))))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (sadv-MOD
+        (grup.adv
+          (rg sólo sólo)))
+      (morf.pron
+        (p0300000 se él))
+      (grup.verb
+        (vmii3s0 dormía dormir))
+      (sp-CC
+        (Fc , ,)
+        (prep
+          (sps00 con con))
+        (sn
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 asombrosa asombroso)))
+            (ncfs000 precisión precisión)))
+        (Fc , ,))
+      (sp-CC
+        (prep
+          (sps00 de de))
+        (snd
+          (grup.nom
+            (W doce_de_la_noche [??:??/??/??:00.00]))))
+      (sp-CC
+        (prep
+          (sps00 a a))
+        (snd
+          (grup.nom
+            (W siete_en_punto_de_la_mañana [??:??/??/??:07.??])))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (sadv-MOD
+      (grup.adv
+        (rg Ni_siquiera ni_siquiera)))
+    (grup.verb
+      (vmii3s0 necesitaba necesitar))
+    (sn-CD
+      (grup.nom.ms
+        (ncms000 despertador despertador)))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 llanto llanto)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (di0ms0 un uno))
+              (grup.nom.ms
+                (ncms000 niño niño))))))
+      (grup.verb
+        (vmis3s0 cortó cortar))
+      (sn-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 silencio silencio)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 patio patio)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 vecinal vecinal)))))))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (morf.pron
+        (p0300000 se él))
+      (grup.verb
+        (vmis3s0 coló colar))
+      (sp-CC
+        (prep
+          (sps00 por por))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 persiana persiana)))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (neg-MOD
+      (rn No no))
+    (grup.verb
+      (vmii3s0 soportaba soportar))
+    (sn-CD
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.mp
+        (ncmp000 domingos domingo)))
+    (Fp . .)))
+(
+  (S
+    (sn-CC
+      (espec.mp
+        (da0mp0 Los el))
+      (grup.nom.mp
+        (ncmp000 días día)
+        (sp
+          (prep
+            (sps00 de de))
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 diario diario))))))
+    (sadv-CC
+      (grup.adv
+        (rg siempre siempre)))
+    (morfema.verbal-IMPERS
+      (p0000000 se se))
+    (grup.verb
+      (vmii3s0 podía poder)
+      (infinitiu
+        (vmn0000 bajar bajar)))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (ao0fs0 última último)))
+          (ncfs000 hora hora))))
+    (sp.co-CC
+      (sp
+        (prep
+          (sps00 a a))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 comprar comprar))
+          (sn.co-CD
+            (sn
+              (espec.ms
+                (dn0ms0 medio medio))
+              (grup.nom.ms
+                (ncms000 litro litro)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 leche leche)))))
+              (Fc , ,))
+            (coord
+              (cc o o))
+            (sn
+              (espec.fs
+                (di0fs0 una uno))
+              (grup.nom.fs
+                (ncfs000 pizca pizca)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 azafrán azafrán))))))))
+        (Fc , ,))
+      (coord
+        (cc o o))
+      (sp
+        (prep
+          (sps00 a a))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 dar dar))
+          (sn-CD
+            (espec.fs
+              (di0fs0 una uno))
+            (grup.nom.fs
+              (ncfs000 vuelta vuelta)))
+          (sp-CC
+            (prep
+              (sps00 por por))
+            (sn
+              (grup.nom.ms
+                (pi0ms000 alguno alguno)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.mp
+                      (da0mp0 los el))
+                    (grup.nom.mp
+                      (s.a.mp
+                        (grup.a.mp
+                          (aq0cp0 grandes grande)))
+                      (ncmp000 almacenes almacén))))))))))
+    (Fp . .)))
+(
+  (S
+    (coord-ET
+      (cc Pero pero))
+    (sn-CC
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.mp
+        (ncmp000 domingos domingo)))
+    (snp-SUJ
+      (grup.nom.fs
+        (np0000p Antonia Antonia)))
+    (grup.verb
+      (vmii3s0 sabía saber))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sp-CC
+        (Fc , ,)
+        (prep
+          (sps00 tras tras))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 regresar regresar))
+          (sp-CC
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 misa misa))))
+          (sp-CC
+            (prep
+              (sps00 con con))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 pan pan)))))
+        (Fc , ,))
+      (sn.e-SUJ *0*)
+      (sadv-CC
+        (grup.adv
+          (rg ya ya)))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vmii3s0 iba ir)
+        (sps00 a a)
+        (infinitiu
+          (vmn0000 volver volver)
+          (sps00 a a)
+          (infinitiu
+            (vmn0000 hablar hablar))))
+      (sp-CC
+        (prep
+          (sps00 con con))
+        (sn
+          (grup.nom.ms
+            (pi0cs000 nadie nadie))))
+      (sp-CC
+        (prep
+          (sps00 hasta hasta))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 día día)
+            (s.a.ms
+              (grup.a.ms
+                (aq0cs0 siguiente siguiente)))))))
+    (Fp . .)))

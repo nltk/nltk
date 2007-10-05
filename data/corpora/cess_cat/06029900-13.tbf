@@ -1,0 +1,523 @@
+
+(
+  (S
+    (sno-SUJ
+      (grup.nom
+        (np0000o La_Garriga La_Garriga)))
+    (grup.verb
+      (vmif3s0 acomiadarà acomiadar))
+    (sadv-CC
+      (grup.adv
+        (rg demà demà)))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 festa festa))))
+    (sn.co-CD
+      (sn
+        (espec.mp
+          (di0mp0 tots tot)
+          (da0mp0 els el))
+        (grup.nom.mp
+          (ncmp000 aliments aliment)))
+      (coord
+        (cc i i))
+      (sn
+        (espec.ms
+          (di0ms0 tot tot)
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 material material)
+          (S.NF.P
+            (participi
+              (aq0msp recollit recollit))
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (sna
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 campanya campanya)
+                  (sna
+                    (grup.nom
+                      (Fe " ")
+                      (np0000a La_Garriga_amb_el_Kosovo La_Garriga_amb_el_Kosovo)
+                      (Fe " ")))
+                  (sn
+                    (Fc , ,)
+                    (espec.fs
+                      (di0fs0 una un))
+                    (grup.nom.fs
+                      (ncfs000 campanya campanya)
+                      (S.NF.P
+                        (participi
+                          (aq0fsp organitzada organitzat))
+                        (sp-CAG
+                          (prep
+                            (sps00 per per))
+                          (sno
+                            (espec.fs
+                              (da0cs0 l' el))
+                            (grup.nom.fs
+                              (ncfs000 entitat entitat)
+                              (sno
+                                (grup.nom
+                                  (np0000o La_Garriga_Espai_Participatiu La_Garriga_Espai_Participatiu)
+                                  (sno
+                                    (grup.nom
+                                      (Fpa -Fpa- -Fpa-)
+                                      (np0000o GEP GEP)
+                                      (Fpt -Fpt- -Fpt-)))
+                                  (S.F.R
+                                    (Fc , ,)
+                                    (relatiu-SUJ
+                                      (pr0cn000 que que))
+                                    (grup.verb
+                                      (vaip3s0 ha haver)
+                                      (vmp00sm recollit recollir))
+                                    (snn-CD
+                                      (espec.fp
+                                        (Z 5 5))
+                                      (grup.nom.fp
+                                        (ncfp000 tones tona)
+                                        (sp
+                                          (prep
+                                            (sps00 de de))
+                                          (sn.x
+                                            (grup.nom.co
+                                              (grup.nom.ms
+                                                (ncms000 menjar menjar))
+                                              (coord
+                                                (cc i i))
+                                              (grup.nom.ms
+                                                (ncms000 material material)))))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (di0ms0 Tot tot)
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 material material)))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmif3s0 farà fer)
+      (infinitiu
+        (vmn0000 arribar arribar)))
+    (sp-CC
+      (prep
+        (spcmp als al))
+      (snl
+        (grup.nom.mp
+          (ncmp000 camps camp)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 refugiats refugiat))))
+          (sp
+            (prep
+              (sps00 d' de))
+            (snl
+              (grup.nom
+                (np0000l Albània Albània)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 festa festa)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmif3s0 servirà servir))
+          (sp-CC
+            (prep
+              (sps00 per per))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 acomiadar acomiadar))
+              (sn-CD
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 camió camió)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn.x
+                      (grup.nom.co
+                        (grup.nom.ms
+                          (ncms000 menjar menjar))
+                        (coord
+                          (cc i i))
+                        (grup.nom.ms
+                          (ncms000 material material)))))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sna
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 campanya campanya)
+                        (sna
+                          (grup.nom
+                            (Fe " ")
+                            (np0000a La_Garriga_amb_el_Kosovo La_Garriga_amb_el_Kosovo)
+                            (Fe " ")))))))))))))
+    (grup.verb
+      (vmif3s0 començarà començar))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (snd
+        (grup.nom
+          (W dos_quarts_de_sis_de_la_tarda [??:??/??/??:17.30]))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 a a))
+      (snl
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (np0000l Plaça_del_Silenci Plaça_del_Silenci))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 festa festa)))
+      (grup.verb
+        (vmif3s0 oferirà oferir))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 possibilitat possibilitat)
+          (sp
+            (prep
+              (sps00 de de))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 pintar pintar))
+              (sn-CD
+                (grup.nom.mp
+                  (ncmp000 cartells cartell)
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0mp0 solidaris solidari))))))))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmif3s0 comptarà comptar))
+      (sp-CREG
+        (prep
+          (sps00 amb amb))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 participació participació)
+            (sp.co
+              (sp
+                (prep
+                  (spcmp dels del))
+                (sno
+                  (grup.nom.mp
+                    (ncmp000 grallers graller)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snl
+                        (grup.nom
+                          (np0000l Can_Duran Can_Duran))))
+                    (sp
+                      (Fc , ,)
+                      (prep
+                        (sps00 de de))
+                      (snl
+                        (grup.nom
+                          (np0000l Granollers Granollers)))))))
+              (Fc , ,)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sno
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 colla colla)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 gegantera geganter)))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snl
+                        (grup.nom
+                          (np0000l La_Garriga La_Garriga)))))))
+              (Fc , ,)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sno
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 coral coral)
+                    (snp
+                      (grup.nom
+                        (np0000p Ariadna Ariadna))))))
+              (coord
+                (cc i i))
+              (sp
+                (prep
+                  (spcms del del))
+                (sno
+                  (grup.nom.ms
+                    (ncms000 grup grup)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 vent vent))))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sno
+                        (espec.fs
+                          (da0cs0 l' el))
+                        (grup.nom.fs
+                          (np0000o Escola_Municipal Escola_Municipal)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom.fs
+                                (ncfs000 música música))))
+                          (snp
+                            (Fc , ,)
+                            (grup.nom
+                              (np0000p Josep_Aymeric Josep_Aymeric))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Tortell_Poltrona Tortell_Poltrona)
+        (sp
+          (Fc , ,)
+          (prep
+            (sps00 de de))
+          (sno
+            (espec.fs
+              (da0cs0 l' el))
+            (grup.nom.fs
+              (np0000o ONG ONG)
+              (sno
+                (grup.nom
+                  (np0000o Pallassos_Sense_Fronteres Pallassos_Sense_Fronteres)))))
+          (Fc , ,))))
+    (sadv-MOD
+      (grup.adv
+        (rg també també)))
+    (grup.verb
+      (vmif3s0 participarà participar))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 comiat comiat)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 camió camió)
+                (S.F.R
+                  (Fc , ,)
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmif3s0 sortirà sortir))
+                  (sn.co-CC
+                    (coord
+                      (sps00 entre entre))
+                    (snd
+                      (espec.fp
+                        (da0fp0 les el))
+                      (grup.nom.fp
+                        (W set_de_la_tarda [??:??/??/??:19.00])))
+                    (coord
+                      (cc i i))
+                    (snd
+                      (espec.fp
+                        (da0fp0 les el))
+                      (grup.nom.fp
+                        (W vuit_del_vespre [??:??/??/??:20.00]))))
+                  (sp-CC
+                    (prep
+                      (sps00 en_direcció_a en_direcció_a))
+                    (snl
+                      (grup.nom
+                        (np0000l Albània Albània)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (grup.nom.ms
+        (np0000o La_Garriga_Espai_Participatiu La_Garriga_Espai_Participatiu)
+        (sno
+          (Fc , ,)
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (np0000o GEP GEP))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm aconseguit aconseguir))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 recollir recollir))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 campanya campanya))))
+      (sn.co-CD
+        (snn
+          (espec.fp
+            (rg gairebé gairebé)
+            (dn0cp0 cinc cinc))
+          (grup.nom.fp
+            (ncfp000 tones tona)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn.x
+                (grup.nom.co
+                  (grup.nom.ms
+                    (ncms000 menjar menjar))
+                  (coord
+                    (cc i i))
+                  (grup.nom.ms
+                    (ncms000 material material)))))))
+        (Fc , ,)
+        (snn
+          (espec.mp
+            (dn0cp0 trenta-vuit trenta-vuit))
+          (grup.nom.mp
+            (ncmp000 metres metre)
+            (s.a.mp
+              (grup.a.mp
+                (aq0mp0 cúbics cúbic)))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 roba roba)
+                  (sp
+                    (prep
+                      (sps00 d' de))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 hivern hivern)))))))
+            (S.F.R
+              (relatiu-CD
+                (pr0cn000 que que))
+              (grup.verb
+                (vaip3s0 ha haver)
+                (vmp00sm cedit cedir))
+              (sno-SUJ
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (np0000o Rotary_Club Rotary_Club))))))
+        (coord
+          (cc i i))
+        (sn
+          (espec.mp
+            (da0mp0 els el))
+          (grup.nom.mp
+            (ncmp000 diners diner)
+            (s.a.mp
+              (grup.a.mp
+                (aq0mp0 necessaris necessari)))
+            (sp
+              (prep
+                (sps00 per per))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 pagar pagar))
+                (sn-CD
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 transport transport)
+                    (sp
+                      (prep
+                        (sps00 en en))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 camió camió))))
+                    (sp
+                      (prep
+                        (sps00 fins fins))
+                      (sn
+                        (espec.mp
+                          (da0mp0 els el))
+                        (grup.nom.mp
+                          (ncmp000 camps camp)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom.mp
+                                (ncmp000 refugiats refugiat))))
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom.p
+                                (nccp000 kosovars kosovar))))
+                          (S.F.R
+                            (relatiu-CD.Q
+                              (pr0cn000 que que))
+                            (morf.pron
+                              (pp3cn000 hi hi))
+                            (grup.verb
+                              (vaip3s0 ha haver))
+                            (sp-CC
+                              (prep
+                                (sps00 a a))
+                              (snl
+                                (grup.nom
+                                  (np0000l Albània Albània))))))))))))))))
+    (Fp . .)))

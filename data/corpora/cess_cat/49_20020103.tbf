@@ -1,0 +1,140 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (np00000 organització organització)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 sahrauí sahrauí)))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 anunciar anunciar))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 pròxim pròxim)))
+        (ncms000 alliberament alliberament)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (Z 115 115))
+            (grup.nom.mp
+              (ncmp000 presoners presoner)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 guerra guerra))))
+              (s.a.mp
+                (grup.a.mp
+                  (aq0mp0 marroquins marroquí))))))))
+    (sp.co-CC
+      (sp
+        (prep
+          (spcms amb_motiu_del amb_motiu_del))
+        (sn
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 nou nou)))
+            (ncms000 any any))))
+      (coord
+        (cc i i))
+      (sp
+        (prep
+          (sps00 de de))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 fi fi)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (np00000 Ramadà Ramadà))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np00000 Polisario Polisario)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 assegurar assegurar))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 comunicat comunicat))))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fs
+          (dd0fs0 aquesta aquest))
+        (grup.nom.fs
+          (ncfs000 mesura mesura)))
+      (morfema.verbal-PASS
+        (p0000000 es es))
+      (grup.verb
+        (vmip3s0 deu deure))
+      (sp-CREG
+        (Fe " ")
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 petició petició)
+            (S.NF.P
+              (participi
+                (aq0fsp feta fet))
+              (sp-CAG
+                (prep
+                  (sps00 per per))
+                (sn
+                  (grup.nom.ms
+                    (np00000 José_María_Aznar José_María_Aznar)
+                    (sn
+                      (Fc , ,)
+                      (grup.nom.ms
+                        (ncms000 president president)
+                        (sp
+                          (prep
+                            (sps00 d' de))
+                          (sn
+                            (grup.nom
+                              (np00000 Espanya Espanya)
+                              (sn
+                                (Fc , ,)
+                                (grup.nom.ms
+                                  (ncms000 país país)
+                                  (S.F.R
+                                    (relatiu-SUJ
+                                      (pr0cn000 que que))
+                                    (grup.verb
+                                      (vmip3s0 presideix presidir))
+                                    (sn-CD
+                                      (espec.fs
+                                        (da0fs0 la el))
+                                      (grup.nom.fs
+                                        (np00000 UE UE)))))))))))))))))
+        (Fe " ")))
+    (Fp . .)))

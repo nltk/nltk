@@ -1,0 +1,307 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 establiment establiment)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 estar estar))
+    (S.NF.P-ATR
+      (participi
+        (aq0msp tancat tancat))
+      (sp-CC
+        (prep
+          (spcms al al))
+        (sn
+          (grup.nom.ms
+            (ncms000 públic públic)))))
+    (sp-CCT
+      (prep
+        (sps00 durant durant))
+      (sn
+        (espec.ms
+          (di0ms0 tot tot)
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 dia dia)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom.ms
+                (ncms000 ahir ahir)))))))
+    (sadv-CCT
+      (Fc , ,)
+      (grup.adv
+        (rg després després)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 denúncia denúncia)
+              (S.F.R
+                (relatiu-CD
+                  (pr0cn000 que que))
+                (sn-CCT
+                  (grup.nom.ms
+                    (W dimecres [dimecres:??/??/??:??.??])
+                    (S.NF.P
+                      (participi
+                        (aq0msp passat passat)))))
+                (grup.verb
+                  (vaip3s0 va anar)
+                  (vmn0000 interposar interposar))
+                (sn-SUJ
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (np00000 Servei_de_Protecció_de_la_Naturalesa Servei_de_Protecció_de_la_Naturalesa)
+                    (sn
+                      (grup.nom.ms
+                        (Fpa -Fpa- -Fpa-)
+                        (np00000 Seprona Seprona)
+                        (Fpt -Fpt- -Fpt-)))
+                    (sn
+                      (Fc , ,)
+                      (grup.nom.fs
+                        (ncfs000 unitat unitat)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (np00000 Guàrdia_Civil Guàrdia_Civil))))
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0cs0 responsable responsable)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (grup.nom.mp
+                                  (ncmp000 temes tema)
+                                  (s.a.mp
+                                    (grup.a.mp
+                                      (aq0cp0 mediambientals mediambiental))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CCT
+      (grup.adv
+        (rg Després després)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 inspecció inspecció)))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (nccp000 guàrdies guàrdia)
+        (s.a.mp
+          (grup.nom.mp
+            (aq0cp0 civils civil)))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 detectar detectar))
+    (S.F.C.co-CD
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 quiosc quiosc)))
+        (grup.verb
+          (vmii3s0 incomplia incomplir))
+        (sn-CD
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (s.a.fp
+              (espec
+                (rg més més))
+              (grup.a.fp
+                (aq0fp0 mínimes mínim)))
+            (ncfp000 mesures mesura)
+            (s.a.fp.x
+              (grup.a.fp.co
+                (grup.a.fp
+                  (aq0fp0 higièniques higiènic))
+                (coord
+                  (cc i i))
+                (grup.a.fp
+                  (aq0fp0 sanitàries sanitari)))))))
+      (Fc , ,)
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn.e-SUJ *0*)
+        (neg-MOD
+          (rn no no))
+        (grup.verb
+          (vmii3s0 tenia tenir))
+        (sn-CD.Q
+          (espec.fs
+            (da0cs0 l' el))
+          (grup.nom.fs
+            (ncfs000 autorització autorització)
+            (sp
+              (prep
+                (sps00 per per))
+              (sp
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.fs
+                    (da0cs0 l' el))
+                  (grup.nom.fs
+                    (ncfs000 obertura obertura)))))
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (espec.ms
+                  (di0ms0 un un))
+                (grup.nom.ms
+                  (ncms000 establiment establiment)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0cs0 comercial comercial)))))))))
+      (coord
+        (cc i i))
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn.e-SUJ *0*)
+        (sadv-MOD
+          (grup.adv
+            (rg tampoc tampoc)))
+        (grup.verb
+          (vmii3s0 tenia tenir))
+        (sn-CD.Q
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 permís permís)
+            (sp
+              (prep
+                (sps00 per per))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 albergar albergar))
+                (sn-CD
+                  (grup.nom.mp
+                    (ncmp000 animals animal)))))
+            (sn
+              (Fc , ,)
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (ncms000 document document)
+                (S.F.R.co
+                  (S.F.R
+                    (relatiu-CD
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vmip3s0 tramita tramitar))
+                    (sn-SUJ
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (np00000 Conselleria_d'_Agricultura Conselleria_d'_Agricultura))))
+                  (coord
+                    (cc i i))
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (morfema.verbal-PASS
+                      (p0000000 es es))
+                    (grup.verb
+                      (vmip3s0 coneix conèixer))
+                    (sadv-CC
+                      (grup.adv
+                        (rg oficialment oficialment)))
+                    (sp-CPRED.SUJ
+                      (prep
+                        (sps00 com_a com_a))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 permís permís)
+                          (sp
+                            (prep
+                              (sps00 per per))
+                            (S.NF.C
+                              (infinitiu
+                                (vmn0000 tenir tenir))
+                              (sn-CD
+                                (grup.nom.mp
+                                  (ncmp000 nuclis nucli)
+                                  (s.a.mp
+                                    (grup.a.mp
+                                      (aq0mp0 zoològics zoològic))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (nccp000 agents agent)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (np00000 Seprona Seprona))))))
+    (grup.verb
+      (vmif3p0 enviaran enviar))
+    (sadv-CCT
+      (grup.adv
+        (rg ara ara)))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 denúncia denúncia)))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (np00000 Conselleria_de_Medi_Ambient Conselleria_de_Medi_Ambient)
+          (S.NF.P
+            (Fc , ,)
+            (participi
+              (aq0fsp encarregada encarregat))
+            (sp-CREG
+              (prep
+                (sps00 d' de))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 imposar imposar))
+                (sn-CD
+                  (espec.fp
+                    (da0fp0 les el))
+                  (grup.nom.fp
+                    (s.a.fp
+                      (grup.a.fp
+                        (aq0cp0 possibles possible)))
+                    (ncfp000 sancions sanció)))))))))
+    (Fp . .)))

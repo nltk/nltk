@@ -1,0 +1,745 @@
+
+(
+  (S
+    (S.F.C-CD
+      (sno-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 firma firma)
+          (sno
+            (grup.nom.fs
+              (np0000o Phillips Phillips)))
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (sp-CCT
+              (prep
+                (sps00 desde desde))
+              (sn
+                (vmip3s0 hace hacer)
+                (di0ms0 un uno)
+                (ncms000 año año)))
+            (grup.verb
+              (vmip3s0 intenta intentar))
+            (S.NF.C-CD
+              (infinitiu
+                (vmn0000 hacerse hacer))
+              (sp-CREG
+                (prep
+                  (sps00 con con))
+                (sn
+                  (espec.fs
+                    (di0fs0 una uno))
+                  (grup.nom.fs
+                    (ncfs000 cuota cuota)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0cs0 importante importante)))
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 mercado mercado)
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0cs0 mundial mundial)))
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom.fp
+                                (ncfp000 subastas subasta)))))))))))
+            (Fc , ,))))
+      (grup.verb
+        (vmip3s0 prevé prever))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 fusión fusión)
+          (sp
+            (prep
+              (sps00 con con))
+            (sno
+              (grup.nom.fs
+                (np0000o De_Pury_&amp_Luxembourg De_Pury_&amp_Luxembourg))))))
+      (Fc , ,))
+    (grup.verb
+      (vmip3s0 informa informar))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (sna-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 diario diario)
+        (sna
+          (grup.nom.ms
+            (Fe " ")
+            (np0000a The_New_York_Times The_New_York_Times)
+            (Fe " ")))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 nueva nuevo)))
+          (ncfs000 empresa empresa)))
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vmic3s0 llamaría llamar))
+      (sno-CPRED
+        (grup.nom.fs
+          (Fe " ")
+          (np0000o Phillips_De_Pury_&amp_Luxembourg Phillips_De_Pury_&amp_Luxembourg)
+          (Fe " "))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmic3s0 estaría estar))
+      (S.NF.P-ATR
+        (participi
+          (aq0fsp presidida presidido))
+        (sp-CAG
+          (prep
+            (sps00 por por))
+          (snp
+            (grup.nom.ms
+              (np0000p Simon_de_Pury Simon_de_Pury)
+              (snp
+                (Fc , ,)
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0cn0 ex ex)))
+                  (ncms000 presidente presidente)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sno
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 firma firma)
+                        (sno
+                          (grup.nom
+                            (np0000o Sotheby's Sotheby's))))))
+                  (sp
+                    (prep
+                      (sps00 en en))
+                    (snl
+                      (grup.nom
+                        (np0000l Europa Europa))))
+                  (S.F.R
+                    (Fc , ,)
+                    (S-SUJ
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vsis3s0 fue ser))
+                    (S.F.C-ATR
+                      (relatiu-SUJ
+                        (pr0cs000 quien quien))
+                      (grup.verb
+                        (vmis3s0 dirigió dirigir))
+                      (sn-CD
+                        (espec.fp
+                          (da0fp0 las el))
+                        (grup.nom.fp
+                          (ncfp000 subastas subasta)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom.s
+                                (nccs000 arte arte)
+                                (s.a.ms.x
+                                  (grup.a.ms.co
+                                    (grup.a.ms
+                                      (aq0cs0 impresionista impresionista))
+                                    (Fc , ,)
+                                    (grup.a.ms
+                                      (aq0ms0 contemporáneo contemporáneo))
+                                    (coord
+                                      (cc y y))
+                                    (grup.a.ms
+                                      (aq0ms0 moderno moderno)))))))
+                          (S.NF.P
+                            (participi
+                              (aq0fpp celebradas celebrado))
+                            (sp-CAG
+                              (prep
+                                (sps00 por por))
+                              (sno
+                                (grup.nom
+                                  (np0000o Phillips Phillips))))
+                            (sp-CCT
+                              (prep
+                                (sps00 en en))
+                              (snd
+                                (grup.nom.ms
+                                  (W noviembre [??:??/11/??:??.??])
+                                  (S.NF.P
+                                    (participi
+                                      (aq0msp pasado pasado))))))
+                            (sp-CCL
+                              (prep
+                                (sps00 en en))
+                              (snl
+                                (grup.nom
+                                  (np0000l Nueva_York Nueva_York))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 operación operación)))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmic3s0 produciría producir))
+    (sn-CCT
+      (espec.mp
+        (dn0cp0 catorce catorce))
+      (grup.nom.mp
+        (ncmp000 meses mes)
+        (sadv
+          (grup.adv
+            (rg después después)
+            (sp
+              (prep
+                (sps00 de de))
+              (S.F.C
+                (conj.subord
+                  (cs que que))
+                (sno-SUJ
+                  (grup.nom.fs
+                    (np0000o Phillips Phillips)))
+                (grup.verb
+                  (vssi3s0 fuera ser)
+                  (vmp00sf comprada comprar))
+                (sp-CAG
+                  (prep
+                    (sps00 por por))
+                  (sno
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (ncms000 grupo grupo)
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0ms0 francés francés)))
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.mp
+                            (ncmp000 productos producto)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (grup.nom.ms
+                                  (ncms000 lujo lujo)))))))
+                      (sno
+                        (grup.nom.ms
+                          (np0000o Louis_Vuitton_Moet-Hennessy Louis_Vuitton_Moet-Hennessy)
+                          (sno
+                            (grup.nom.ms
+                              (Fpa -Fpa- -Fpa-)
+                              (np0000o LVMH LVMH)
+                              (Fpt -Fpt- -Fpt-))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sp-CC
+        (prep
+          (cs Como como))
+        (sn
+          (grup.nom.fs
+            (ncfs000 parte parte)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 fusión fusión))))))
+        (Fc , ,))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 compañía compañía)
+          (S.NF.P
+            (participi
+              (aq0fsp fundada fundado))
+            (sp-CCT
+              (prep
+                (sps00 en en))
+              (snd
+                (grup.nom.ms
+                  (W 1997 [??:??/??/1997:??.??]))))
+            (sp-CAG
+              (prep
+                (sps00 por por))
+              (sn.x
+                (grup.nom.co
+                  (grup.nom.ms
+                    (np0000p De_Pury De_Pury))
+                  (coord
+                    (cc y y))
+                  (grup.nom.fs
+                    (np0000p Daniella_Luxembourg Daniella_Luxembourg)
+                    (S.F.R
+                      (Fc , ,)
+                      (relatiu-SUJ
+                        (pr0cn000 que que))
+                      (grup.verb
+                        (vsii3s0 era ser))
+                      (sp-CCT
+                        (prep
+                          (sps00 hasta hasta))
+                        (sn
+                          (espec.fs
+                            (dd0fs0 esa ese))
+                          (grup.nom.fs
+                            (ncfs000 fecha fecha))))
+                      (snp-ATR
+                        (grup.nom.fs
+                          (ncfs000 presidenta presidenta)
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0fs0 adjunta adjunto)))
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sno
+                              (grup.nom
+                                (np0000o Sotheby's Sotheby's))))
+                          (sp
+                            (prep
+                              (sps00 en en))
+                            (snl
+                              (grup.nom
+                                (np0000l Suiza Suiza))))))
+                      (Fc , ,)))))))))
+      (morf.pron
+        (p0300000 se él))
+      (grup.verb
+        (vmif3s0 convertirá convertir))
+      (sp-CREG
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fs
+            (di0fs0 una uno))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 subsidiaria subsidiario)))
+            (sp
+              (prep
+                (sps00 de de))
+              (sno
+                (grup.nom
+                  (np0000o Phillips Phillips))))))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmif3s0 continuará continuar))
+      (sn-CD
+        (espec.fp
+          (dp3cp0 sus su))
+        (grup.nom.fp
+          (ncfp000 actividades actividad)))
+      (sp-CCL
+        (prep
+          (sps00 en en))
+        (snl
+          (grup.nom
+            (np0000l Ginebra Ginebra)
+            (S.F.R
+              (Fc , ,)
+              (relatiu-CCL
+                (pr000000 donde donde))
+              (grup.verb
+                (vmip3s0 está estar))
+              (sn-SUJ
+                (espec.fs
+                  (dp3cs0 su su))
+                (grup.nom.fs
+                  (ncfs000 sede sede))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 empresa empresa)))
+    (grup.verb
+      (vmip3s0 tiene tener))
+    (sn-CD
+      (grup.nom.mp
+        (ncmp000 planes plan)
+        (sp
+          (prep
+            (sps00 para para))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 abrir abrir))
+            (sn-CD
+              (espec.fs
+                (di0fs0 una uno))
+              (grup.nom.fs.1n
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 nueva nuevo)))
+                (ncfs000 galería galería)))
+            (sp-CCL
+              (prep
+                (sps00 en en))
+              (snl
+                (grup.nom
+                  (np0000l Zurich Zurich))))
+            (sp-CCT
+              (prep
+                (sps00 en en))
+              (snd
+                (grup.nom.ms
+                  (W marzo [??:??/03/??:??.??])
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 próximo próximo))))))
+            (S.F.R.1c
+              (Fc , ,)
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vmic3s0 celebraría celebrar))
+              (sn-CD
+                (espec.fp
+                  (dn0cp0 cuatro cuatro))
+                (grup.nom.fp
+                  (ncfp000 exposiciones exposición)))
+              (sp-CCT
+                (prep
+                  (spcms al al))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 año año))))
+              (sp-AO
+                (Fc , ,)
+                (prep
+                  (sps00 según según))
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 diario diario)))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (grup.nom.fs
+        (np0000o Phillips_De_Pury_&amp_Luxembourg Phillips_De_Pury_&amp_Luxembourg)))
+    (grup.verb
+      (vmic3s0 estaría estar))
+    (S.NF.P-ATR
+      (participi
+        (aq0fsp especializada especializado))
+      (sp-CREG
+        (prep
+          (sps00 en en))
+        (sn.x
+          (grup.nom.co
+            (grup.nom.fp
+              (ncfp000 obras obra)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.s
+                    (nccs000 arte arte)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.ms
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0cs0 gran gran)))
+                          (ncms000 valor valor))))))))
+            (coord
+              (cc y y))
+            (grup.nom.fp
+              (ncfp000 antigüedades antigüedad))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (dp3cs0 Su su))
+      (grup.nom.ms
+        (ncms000 deseo deseo)))
+    (grup.verb
+      (vsip3s0 es ser))
+    (S.NF.C-ATR
+      (infinitiu
+        (vmn0000 diferenciarse diferenciar))
+      (sp-CREG
+        (prep
+          (sps00 de de))
+        (sn.x
+          (grup.nom.co
+            (grup.nom.co
+              (grup.nom
+                (np0000o Sotheby's Sotheby's))
+              (coord
+                (cc y y))
+              (grup.nom
+                (np0000o Christie's Christie's)))
+            (sn.j
+              (Fc , ,)
+              (espec.fp
+                (da0fp0 las el)
+                (dn0cp0 dos dos))
+              (grup.nom.fp
+                (ncfp000 firmas firma)
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmip3p0 controlan controlar))
+                  (sn-CD
+                    (espec.ms
+                      (rg casi casi)
+                      (di0ms0 todo todo)
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (ncms000 mercado mercado)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.fp
+                            (ncfp000 subastas subasta)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (grup.nom.s
+                                  (nccs000 arte arte)))))))))))
+              (Fc , ,)))))
+      (sp-CC
+        (prep
+          (sps00 con con))
+        (sn
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (ncms000 negocio negocio)
+            (S.NF.P.co
+              (S.NF.P
+                (participi
+                  (aq0msp limitado limitado)))
+              (coord
+                (cc pero pero))
+              (S.NF.P
+                (participi
+                  (aq0msp concentrado concentrado))
+                (sp-CREG
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.fp
+                      (da0fp0 las el))
+                    (grup.nom.fp
+                      (ncfp000 áreas área)
+                      (s.a.fp
+                        (espec
+                          (rg más más))
+                        (grup.a.fp
+                          (aq0cp0 rentables rentable)))))))))))
+      (sn-AO
+        (Fc , ,)
+        (grup.nom.ms
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmic3s0 significaría significar))
+            (S.NF.C-CD
+              (infinitiu
+                (vmn0000 dejar dejar))
+              (sadv-CC
+                (grup.adv
+                  (rg de_lado de_lado)))
+              (sn.x-CD
+                (grup.nom.co
+                  (grup.nom.co
+                    (grup.nom.mp
+                      (ncmp000 objetos objeto)
+                      (s.a.mp
+                        (grup.a.mp
+                          (aq0cp0 coleccionables coleccionable))))
+                    (Fc , ,)
+                    (grup.nom.mp
+                      (ncmp000 vinos vino))
+                    (coord
+                      (cc y y))
+                    (grup.nom.mp
+                      (ncmp000 manuscritos manuscrito)))
+                  (sp.j
+                    (Fc , ,)
+                    (prep
+                      (sps00 entre entre))
+                    (sn
+                      (espec.mp
+                        (di0mp0 otros otro))
+                      (grup.nom.mp
+                        (ncmp000 productos producto))))))))))
+      (Fp . .))))
+(
+  (S.co
+    (S
+      (sn.x-SUJ
+        (grup.nom.co
+          (grup.nom.ms
+            (np0000o De_Pury De_Pury))
+          (coord
+            (cc y y))
+          (grup.nom.fs
+            (np0000o Luxembourg Luxembourg))))
+      (grup.verb
+        (vaii3p0 habían haber)
+        (vmp00sm anunciado anunciar))
+      (sp-CCT
+        (prep
+          (sps00 en en))
+        (snd
+          (grup.nom.ms
+            (W junio [??:??/06/??:??.??]))))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 alianza alianza)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 comercial comercial)))
+          (sp
+            (prep
+              (sps00 con con))
+            (sn
+              (espec.mp
+                (di0mp0 otros otro)
+                (dn0cp0 dos dos))
+              (grup.nom.mp
+                (s.a.mp
+                  (grup.nom.mp
+                    (aq0mp0 antiguos antiguo)))
+                (ncmp000 expertos experto)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sno
+                    (grup.nom
+                      (np0000o Sotheby's Sotheby's))))
+                (sn.x
+                  (Fc , ,)
+                  (grup.nom.co
+                    (grup.nom.fs
+                      (np0000p Lucy_Mitchell_Innes Lucy_Mitchell_Innes))
+                    (coord
+                      (cc y y))
+                    (grup.nom.ms
+                      (np0000p David_Nash David_Nash)))
+                  (Fc , ,))
+                (S.NF.P
+                  (participi
+                    (aq0mpp considerados considerado))
+                  (sp-CC
+                    (prep
+                      (cs como como))
+                    (sn
+                      (grup.nom.mp
+                        (pn0cp000 dos dos)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (espec.mp
+                              (da0mp0 los el))
+                            (grup.nom.mp
+                              (s.a.mp
+                                (grup.a.mp
+                                  (sadv
+                                    (grup.adv
+                                      (rg más más)))
+                                  (aq0cp0 importantes importante)))
+                              (ncmp000 intermediarios intermediario)
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sn
+                                  (grup.nom.s
+                                    (nccs000 arte arte))))
+                              (sp
+                                (prep
+                                  (sps00 en en))
+                                (snl
+                                  (grup.nom
+                                    (np0000l Estados_Unidos Estados_Unidos))))))))))))))))
+      (Fc , ,))
+    (coord
+      (cc pero pero))
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 fusión fusión)))
+      (grup.verb
+        (vmic3s0 obligaría obligar))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 poner_fin poner_fin))
+          (sp-CREG
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (dd0fs0 esa ese))
+              (grup.nom.fs
+                (ncfs000 relación relación)))))))
+    (Fp . .)))
+(
+  (S*
+    (sno
+      (grup.nom
+        (np0000o EFE EFE)))
+    (Fp . .)))

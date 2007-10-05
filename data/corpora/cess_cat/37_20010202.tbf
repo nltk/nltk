@@ -1,0 +1,162 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (ncfp000 Desenes desena)
+        (sps00 de de)
+        (ncmp000 milers miler)
+        (sps00 de de))
+      (grup.nom.fp
+        (ncfp000 persones persona)))
+    (morf.pron
+      (p0300000 es ell))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 manifestar manifestar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.ms
+          (di0ms0 tot tot)
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 país país))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 protestar protestar))
+        (sp-CC
+          (prep
+            (sps00 per per))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 mort mort)
+              (sn
+                (Fc , ,)
+                (grup.nom.ms
+                  (W divendres [divendres:??/??/??:??.??])
+                  (S.NF.P
+                    (participi
+                      (aq0msp passat passat))))
+                (Fc , ,))
+              (sp
+                (prep
+                  (sps00 d' de))
+                (sn
+                  (espec.ms
+                    (di0ms0 un un))
+                  (grup.nom.ms
+                    (nccs000 adolescent adolescent)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 negre negre)))
+                    (S.F.R
+                      (relatiu-SUJ
+                        (pr0cn000 que que))
+                      (grup.verb
+                        (vaip3s0 va anar)
+                        (vsn0000 ser ser)
+                        (vmp00sm apunyalat apunyalar))
+                      (sp-CAG
+                        (prep
+                          (sps00 per per))
+                        (sn
+                          (espec.mp
+                            (dn0cp0 sis sis))
+                          (grup.nom.mp
+                            (nccp000 joves jove)
+                            (s.a.mp
+                              (grup.a.mp
+                                (aq0cp0 nazis nazi))))))
+                      (sp-CCL
+                        (prep
+                          (sps00 a a))
+                        (sn
+                          (grup.nom
+                            (np00000 Oslo Oslo)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCL
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.fs
+          (dd0fs0 aquesta aquest))
+        (grup.nom.fs
+          (ncfs000 ciutat ciutat)
+          (sn
+            (Fc , ,)
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 capital capital)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 país país)))))
+            (Fc , ,)))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 desfilar desfilar))
+    (sn-SUJ
+      (espec.mp
+        (rg més més)
+        (sps00 de de)
+        (Z 50.000 50000))
+      (grup.nom.mp
+        (ncmp000 ciutadans ciutadà)))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 marxa marxa)
+          (S.F.R
+            (relatiu-CD
+              (pr0cn000 que que))
+            (grup.verb
+              (vmii3p0 encapçalaven encapçalar))
+            (sn-SUJ
+              (espec.mp
+                (da0mp0 els el))
+              (grup.nom.mp
+                (ncmp000 membres membre)
+                (sp.co
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (np00000 Govern Govern))))
+                  (coord
+                    (cc i i))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 casa casa)
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0cs0 reial reial)))
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0fs0 noruega noruec)))))))))))))
+    (Fp . .)))

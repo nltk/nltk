@@ -1,0 +1,921 @@
+
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 oleada oleada)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 especulativa especulativo)))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (morf.pron
+              (p0300000 se él))
+            (grup.verb
+              (vaip3s0 ha haber)
+              (vmp00sm desatado desatar))
+            (sp-CCL
+              (prep
+                (sps00 en en))
+              (snl
+                (grup.nom
+                  (np0000l Ecuador Ecuador))))
+            (sp-CC
+              (prep
+                (sps00 tras tras))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 anuncio anuncio)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (S.F.C
+                      (conj.subord
+                        (cs que que))
+                      (morfema.verbal-PASS
+                        (p0000000 se se))
+                      (grup.verb
+                        (Fe " ")
+                        (vmip3s0 dolarizará dolarizar)
+                        (Fe " "))
+                      (sn-SUJ
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 economía economía)))))))))))
+      (grup.verb
+        (vmip3s0 continúa continuar))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (grup.nom.ms
+            (ncms000 aumento aumento)))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3s0 hace hacer)
+        (infinitiu
+          (vmn0000 pensar pensar)))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (ncmp000 controles control)
+            (S.NF.P
+              (participi
+                (aq0mpp emprendidos emprendido))
+              (sp-CAG
+                (prep
+                  (sps00 por por))
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (np00000 Gobierno Gobierno)))))))
+        (grup.verb
+          (vmip3p0 resultan resultar))
+        (sa-CPRED.SUJ
+          (grup.a
+            (aq0cp0 insuficientes insuficiente)))
+        (sp-AO
+          (Fc , ,)
+          (prep
+            (sps00 según según))
+          (sno
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000o Tribuna_Ecuatoriana_de_Consumidores_y_Usuarios Tribuna_Ecuatoriana_de_Consumidores_y_Usuarios))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (S.F.AConc-AO
+        (conj.subord
+          (cs Aunque aunque))
+        (sadv-CCT
+          (grup.adv
+            (rg todavía todavía)))
+        (neg-MOD
+          (rn no no))
+        (grup.verb
+          (vaip3s0 hay haber))
+        (sn-CD
+          (grup.nom.mp
+            (ncmp000 datos dato)
+            (s.a.mp
+              (grup.a.mp
+                (aq0cp0 oficiales oficial)))))
+        (Fc , ,))
+      (sp-CC
+        (prep
+          (sps00 a_través_de a_través_de))
+        (sn
+          (grup.nom.fp
+            (ncfp000 denuncias denuncia)
+            (s.a.fp
+              (grup.a.fp
+                (aq0cp0 puntuales puntual))))))
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vmip3p0 constatan constatar))
+      (sn-SUJ
+        (grup.nom.mp
+          (ncmp000 aumentos aumento)
+          (sp.co
+            (sp.co
+              (sp
+                (prep
+                  (spcms del del))
+                (snn
+                  (grup.nom.ms
+                    (Z 50 50))))
+              (coord
+                (cc y y))
+              (sp
+                (prep
+                  (spcms del del))
+                (snn
+                  (grup.nom.ms
+                    (Zp 100_por_ciento 100_%)))))
+            (coord
+              (cc y y))
+            (sp
+              (sadv.j
+                (grup.adv
+                  (rg hasta hasta)))
+              (sp
+                (prep
+                  (spcms del del))
+                (snn
+                  (grup.nom.ms
+                    (Zp 400_por_ciento 400_%))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 dijo decir))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sno
+        (grup.nom
+          (np0000o EFE EFE))))
+    (snp-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 directora directora)
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000o Tribuna Tribuna))))
+        (snp
+          (Fc , ,)
+          (grup.nom.fs
+            (np0000p María_José_Troya María_José_Troya)))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmip3s0 Considera considerar))
+    (S.F.C.co-CD
+      (conj.subord
+        (cs que que))
+      (S.F.C
+        (sn-SUJ
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (ncmp000 controles control)))
+        (grup.verb
+          (vsip3p0 son ser))
+        (sadv-CCT
+          (grup.adv
+            (rg aún aún)))
+        (S.NF.P-ATR
+          (sadv-CC
+            (grup.adv
+              (rg muy mucho)))
+          (participi
+            (aq0mpp reducidos reducido))))
+      (coord
+        (cc y y))
+      (S.F.C
+        (morfema.verbal-IMPERS
+          (p0000000 se se))
+        (grup.verb
+          (vmip3s0 debe deber)
+          (infinitiu
+            (vmn0000 apuntar apuntar)))
+        (sp-CC
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 fijación fijación)
+              (s.a.fs
+                (Fc , ,)
+                (espec
+                  (rg al_menos al_menos))
+                (grup.a.fs
+                  (aq0fs0 momentánea momentáneo))
+                (Fc , ,))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.mp
+                    (da0mp0 los el))
+                  (grup.nom.mp
+                    (ncmp000 precios precio)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.mp
+                          (da0mp0 los el))
+                        (grup.nom.mp
+                          (ncmp000 productos producto)
+                          (s.a.mp
+                            (grup.a.mp
+                              (aq0mp0 básicos básico))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 presidente presidente)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 ecuatoriano ecuatoriano)))
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (np0000p Jamil_Mahuad Jamil_Mahuad))
+          (Fc , ,))))
+    (grup.verb
+      (vmis3s0 anunció anunciar))
+    (sadv-MOD
+      (grup.adv
+        (rg ya ya)))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmif3s0 fijará fijar))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 lista lista)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 precios precio)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 productos producto)))))))
+          (S.NF.P
+            (Fc , ,)
+            (participi
+              (aq0fsp basada basado))
+            (sp-CREG
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0cp0 vigentes vigente)
+                      (snd
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (W 31_de_diciembre [??:31/12/??:??.??])
+                          (S.NF.P
+                            (participi
+                              (aq0msp pasado pasado))))))))))
+            (Fc , ,))))
+      (sp-CC
+        (prep
+          (sps00 para para))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 frenar frenar))
+          (sn-CD
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 ola ola)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 especulativa especulativo)))
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vaip3s0 ha haber)
+                  (vmp00sm disparado disparar))
+                (sn-CD
+                  (espec.mp
+                    (da0mp0 los el))
+                  (grup.nom.mp
+                    (ncmp000 costes coste)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.mp
+                          (di0mp0 varios varios))
+                        (grup.nom.mp
+                          (ncmp000 bienes bien)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom.ms
+                                (ncms000 consumo consumo)))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg Mientras mientras))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.mp
+        (ncmp000 controles control)))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vaip3p0 han haber)
+      (vmp00sm registrado registrar))
+    (sp-CC
+      (prep
+        (sps00 con con))
+      (sn
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 mayor mayor)))
+          (ncfs000 fuerza fuerza))))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (snl
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 provincia provincia)
+          (sp
+            (prep
+              (spcms del del))
+            (snl
+              (grup.nom.ms
+                (np0000l Guayas Guayas)
+                (S.F.R
+                  (Fc , ,)
+                  (sn-SUJ
+                    (espec.fs
+                      (pr0fs000 cuya cuyo))
+                    (grup.nom.fs
+                      (ncfs000 capital capital)))
+                  (grup.verb
+                    (vsip3s0 es ser))
+                  (snl-ATR
+                    (grup.nom
+                      (np0000l Guayaquil Guayaquil)
+                      (snl
+                        (grup.nom.ms
+                          (Fg - -)
+                          (ncms000 nudo nudo)
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0ms0 económico económico)))
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (snl
+                              (grup.nom
+                                (np0000l Ecuador Ecuador))))
+                          (Fg - -)))
+                      (S.F.R.co
+                        (relatiu-CCL
+                          (pr000000 donde donde))
+                        (S.F.R
+                          (morfema.verbal-PASS
+                            (p0000000 se se))
+                          (grup.verb
+                            (vaip3s0 ha haber)
+                            (vmp00sm sancionado sancionar))
+                          (sp-CD
+                            (prep
+                              (sps00 a a))
+                            (sn
+                              (espec.fs
+                                (di0fs0 una uno))
+                              (grup.nom.fs
+                                (ncfs000 fábrica fábrica)))))
+                        (coord
+                          (cc y y))
+                        (S.F.R
+                          (morfema.verbal-PASS
+                            (p0000000 se se))
+                          (grup.verb
+                            (vaip3p0 han haber)
+                            (vmp00sm descubierto descubrir))
+                          (sn-SUJ
+                            (grup.nom.mp
+                              (ncmp000 locales local)
+                              (S.F.R
+                                (relatiu-CCL
+                                  (pr000000 donde donde))
+                                (morfema.verbal-PASS
+                                  (p0000000 se se))
+                                (grup.verb
+                                  (vmii3s0 almacenaba almacenar))
+                                (sn-SUJ
+                                  (grup.nom.fs
+                                    (s.a.fs
+                                      (grup.a.fs
+                                        (aq0cs0 gran gran)))
+                                    (ncfs000 cantidad cantidad)
+                                    (sp
+                                      (prep
+                                        (sps00 de de))
+                                      (sn
+                                        (grup.nom.mp
+                                          (ncmp000 productos producto)
+                                          (S.NF.P.co
+                                            (sp
+                                              (prep
+                                                (sps00 con con))
+                                              (sn
+                                                (espec.mp
+                                                  (da0mp0 los el))
+                                                (grup.nom.mp
+                                                  (ncmp000 pesos peso)
+                                                  (S.NF.P
+                                                    (participi
+                                                      (aq0mpp adulterados adulterado))))))
+                                            (coord
+                                              (cc y y))
+                                            (S.NF.P
+                                              (participi
+                                                (aq0mpp adquiridos adquirido))
+                                              (sadv-CCT
+                                                (grup.adv
+                                                  (rg antes antes)
+                                                  (sp
+                                                    (prep
+                                                      (spcms del del))
+                                                    (sn
+                                                      (grup.nom.ms
+                                                        (ncms000 anuncio anuncio)
+                                                        (sp
+                                                          (prep
+                                                            (sps00 de de))
+                                                          (sn
+                                                            (espec.fs
+                                                              (da0fs0 la el))
+                                                            (grup.nom.fs
+                                                              (Fe " ")
+                                                              (nc00000 dolarización dolarización)
+                                                              (Fe " "))))))))))))))))))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 aumento aumento)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (ncmp000 precios precio))))))
+      (grup.verb
+        (vmip3s0 sobrepasa sobrepasar))
+      (sadv-CC
+        (grup.adv
+          (rg con_creces con_creces)))
+      (sn-CD
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (ncmp000 controles control)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fp
+                (da0fp0 las el))
+              (grup.nom.fp
+                (ncfp000 autoridades autoridad)
+                (S.NF.P
+                  (participi
+                    (aq0fpp encargadas encargado))))))))
+      (Fc , ,))
+    (coord
+      (cc mientras mientras))
+    (S.co
+      (S
+        (sn.x-SUJ
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.co
+            (grup.nom.mp
+              (ncmp000 productores productor))
+            (coord
+              (cc y y))
+            (grup.nom.mp
+              (nccp000 comerciantes comerciante))))
+        (grup.verb
+          (vmip3p0 deslindan deslindar))
+        (sn-CD
+          (grup.nom.fp
+            (ncfp000 responsabilidades responsabilidad))))
+      (coord
+        (cc y y))
+      (S
+        (sn.e-SUJ *0*)
+        (sn-CD
+          (grup.nom.mp
+            (pp3mpa00 los él)))
+        (grup.verb
+          (vmip3p0 atribuyen atribuir))
+        (sp-CI
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (ncmp000 intermediarios intermediario))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 Los el))
+        (grup.nom.mp
+          (ncmp000 incrementos incremento)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (sadv-CC
+              (grup.adv
+                (rg más más)))
+            (grup.verb
+              (vaip3p0 han haber)
+              (vmp00sm afectado afectar))
+            (sp-CI
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (ncmp000 consumidores consumidor)))))))
+      (grup.verb
+        (vsip3p0 son ser))
+      (sn-ATR
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (sp
+            (prep
+              (spcms del del))
+            (sn.x
+              (grup.nom.co
+                (grup.nom.ms
+                  (nccs000 azúcar azúcar))
+                (Fc , ,)
+                (grup.nom.ms
+                  (ncms000 arroz arroz))
+                (coord
+                  (cc y y))
+                (grup.nom.ms
+                  (ncms000 aceite aceite)))))))
+      (Fc , ,))
+    (coord
+      (cc mientras_que mientras_que))
+    (S
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (ncmp000 detergentes detergente)))
+      (sadv-ET
+        (Fc , ,)
+        (grup.adv
+          (rg por_ejemplo por_ejemplo))
+        (Fc , ,))
+      (grup.verb
+        (vaip3p0 han haber)
+        (vmp00sm duplicado duplicar))
+      (sn-CD
+        (espec.mp
+          (dp3cp0 sus su))
+        (grup.nom.mp
+          (ncmp000 precios precio)))
+      (S.F.A*-CC
+        (Fc , ,)
+        (conj.subord
+          (cs al_igual_que al_igual_que))
+        (sn
+          (espec.fp
+            (di0fp0 algunas alguno))
+          (grup.nom.fp
+            (ncfp000 medicinas medicina)))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (di0fs0 Una uno))
+      (grup.nom.fs
+        (ncfs000 monja monja)))
+    (sadv-ET
+      (Fc , ,)
+      (grup.adv
+        (rg por_ejemplo por_ejemplo))
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 denunció denunciar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 tanque tanque)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 grande grande)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 pintura pintura))))
+          (S.F.R
+            (relatiu-CD
+              (pr0cn000 que que))
+            (sn-CCT
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (W año [??:??/??/??:??.??])
+                (S.NF.P
+                  (participi
+                    (aq0msp pasado pasado)))))
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vmis3s0 compró comprar))
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (snn
+                (espec.mp
+                  (Z 190.000 190000))
+                (grup.nom.mp
+                  (Zm sucres sucre)
+                  (snn
+                    (Fpa -Fpa- -Fpa-)
+                    (espec.mp
+                      (Z 7,6 7.6))
+                    (grup.nom.mp
+                      (Zm dólares dólar))
+                    (Fpt -Fpt- -Fpt-))))))))
+      (sadv-CCT
+        (grup.adv
+          (rg ahora ahora)))
+      (grup.verb
+        (vmip3s0 cuesta costar))
+      (snn-CD.Q
+        (espec.mp
+          (Z 970.000 970000))
+        (grup.nom.mp
+          (Zm sucres sucre)
+          (snn
+            (Fpa -Fpa- -Fpa-)
+            (espec.mp
+              (Z 38,8 38.8))
+            (grup.nom.mp
+              (Zm dólares dólar))
+            (Fpt -Fpt- -Fpt-)))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CC
+      (grup.adv
+        (rg A_diario a_diario)))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vmip3p0 escuchan escuchar))
+    (sn-SUJ
+      (grup.nom.fp
+        (ncfp000 quejas queja)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 ciudadanía ciudadanía))))
+        (sp
+          (prep
+            (sps00 por por))
+          (sn.co
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 alto alto)))
+                (ncms000 coste coste)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 vida vida))))))
+            (coord
+              (cc y y))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 constante constante)))
+                (ncfs000 pérdida pérdida)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 valor valor)
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0ms0 adquisitivo adquisitivo)))
+                      (sp
+                        (prep
+                          (spcms del del))
+                        (sn
+                          (grup.nom.ms
+                            (ncms000 sucre sucre)
+                            (sn
+                              (grup.nom.fs
+                                (Fpa -Fpa- -Fpa-)
+                                (ncfs000 moneda moneda)
+                                (s.a.fs
+                                  (grup.a.fs
+                                    (aq0cs0 local local)))
+                                (Fpt -Fpt- -Fpt-)))
+                            (S.F.R
+                              (Fc , ,)
+                              (relatiu-SUJ
+                                (pr0cn000 que que))
+                              (grup.verb
+                                (vsif3s0 será ser)
+                                (vmp00sm relegado relegar))
+                              (sp-CREG
+                                (prep
+                                  (sps00 a a))
+                                (sn
+                                  (espec.ms
+                                    (di0ms0 un uno))
+                                  (grup.nom.ms
+                                    (s.a.ms
+                                      (grup.a.ms
+                                        (ao0ms0 segundo segundo)))
+                                    (ncms000 plano plano))))
+                              (sp-CC
+                                (prep
+                                  (sps00 con con))
+                                (sn
+                                  (espec.fs
+                                    (da0fs0 la el))
+                                  (grup.nom.fs
+                                    (Fe " ")
+                                    (nc00000 dolarización dolarización)
+                                    (Fe " ")))))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (coord
+      (cc Pero pero))
+    (sadv.j-CCT
+      (Fc , ,)
+      (sadv.j
+        (grup.adv
+          (rg también también)))
+      (sadv
+        (espec
+          (rg casi casi))
+        (grup.adv
+          (rg a_diario a_diario)))
+      (Fc , ,))
+    (S.co
+      (S
+        (sno-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (np0000o Gobierno Gobierno)))
+        (grup.verb
+          (vmip3s0 asegura asegurar))
+        (S.F.C-CD
+          (conj.subord
+            (cs que que))
+          (neg-MOD
+            (rn no no))
+          (grup.verb
+            (vaip3s0 hay haber))
+          (sn-CD
+            (grup.nom.fs.1n
+              (ncfs000 razón razón))
+            (espec.fs
+              (di0fs0 alguna alguno)))
+          (sp.1c
+            (prep
+              (sps00 para para))
+            (S.F.C
+              (conj.subord
+                (cs que que))
+              (sn-SUJ
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (ncmp000 precios precio)))
+              (grup.verb
+                (vmsp3p0 sigan seguir)
+                (gerundi
+                  (vmg0000 elevándose elevar))))))
+        (Fc , ,))
+      (coord
+        (cc y y))
+      (S
+        (sp-AO
+          (prep
+            (sps00 según según))
+          (sn
+            (espec.mp
+              (dp3cp0 sus su))
+            (grup.nom.mp
+              (ncmp000 cálculos cálculo)))
+          (Fc , ,))
+        (sadv-MOD
+          (grup.adv
+            (rg incluso incluso)))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmic3p0 deberían deber)
+          (infinitiu
+            (vmn0000 bajar bajar)))))
+    (Fp . .)))

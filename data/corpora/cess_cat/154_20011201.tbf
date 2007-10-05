@@ -1,0 +1,109 @@
+
+(
+  (S
+    (sna-SUJ
+      (grup.nom
+        (np0000a La_hora_Warner La_hora_Warner)
+        (sna
+          (Fc , ,)
+          (grup.nom.ms
+            (ncms000 programa programa)
+            (S.F.R
+              (relatiu-CD
+                (pr0cn000 que que))
+              (grup.verb
+                (vmip3s0 emet emetre))
+              (sadv-CCT
+                (grup.adv
+                  (rg demà demà)))
+              (sno-SUJ
+                (grup.nom
+                  (np0000o TVE-1 TVE-1)))
+              (sp-CCT
+                (prep
+                  (sps00 a a))
+                (snd
+                  (espec.fp
+                    (da0fp0 les el))
+                  (grup.nom.fp
+                    (W 10.00_hores [??:??/??/??:10.00]))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmif3s0 celebrarà celebrar))
+    (sn-CD
+      (espec.fp
+        (da0fp0 les el)
+        (Z 100 100))
+      (grup.nom.fp
+        (ncfp000 emissions emissió)))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 cadena cadena)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 estatal estatal))))))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 especial especial)))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3s0 inclou incloure))
+            (sn-CD
+              (espec.fs
+                (da0cs0 l' el))
+              (grup.nom.fs
+                (ncfs000 emissió emissió)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.mp
+                      (s.a.mp
+                        (grup.a.mp
+                          (aq0mp0 nous nou)))
+                      (ncmp000 episodis episodi)
+                      (sp
+                        (prep
+                          (sps00 d' de))
+                        (sn.x
+                          (grup.nom.co
+                            (grup.nom
+                              (np0000a El_laboratorio_de_Dexter El_laboratorio_de_Dexter))
+                            (Fc , ,)
+                            (grup.nom
+                              (np0000a Tom_y_Jerry Tom_y_Jerry))
+                            (coord
+                              (cc i i))
+                            (grup.nom
+                              (np0000a Batman_del_futuro Batman_del_futuro))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sna-SUJ
+      (grup.nom
+        (np0000a La_hora_Warner La_hora_Warner)))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 estrenar estrenar))
+    (snd-CCT
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (W 7_d'_octubre_del_2000 [??:07/10/2000:??.??])))
+    (Fp . .)))

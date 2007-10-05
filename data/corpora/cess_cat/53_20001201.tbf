@@ -1,0 +1,183 @@
+
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (np00000 Fiscal Fiscal)
+          (sn
+            (grup.nom.ms
+              (np00000 Ignacio_Gordillo Ignacio_Gordillo)))))
+      (coord
+        (cc i i))
+      (sn
+        (espec.ms
+          (dp3ms0 el_seu el_seu))
+        (grup.nom.ms
+          (nccs000 cap cap)
+          (sp
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (da0cs0 l' el))
+              (grup.nom.fs
+                (np00000 Audiència_Nacional Audiència_Nacional))))
+          (sn
+            (Fc , ,)
+            (grup.nom.ms
+              (np00000 Eduardo_Fungairiño Eduardo_Fungairiño))
+            (Fc , ,)))))
+    (grup.verb
+      (vmip3p0 estudien estudiar))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 presentar presentar))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 querella querella)
+          (sp.co
+            (sp
+              (prep
+                (sps00 contra contra))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vaip3s0 va anar)
+                      (vsn0000 ser ser))
+                    (sn-ATR
+                      (grup.nom.ms
+                        (ncms000 amic amic))
+                      (espec.ms
+                        (dp3ms0 seu seu))))
+                  (sn
+                    (grup.nom.ms
+                      (np00000 Baltasar_Garzón Baltasar_Garzón))))))
+            (coord
+              (cc i i))
+            (sp
+              (prep
+                (sps00 contra contra))
+              (sn
+                (grup.nom.fs
+                  (np00000 Pilar_Urbano Pilar_Urbano)))))))
+      (sp-CC
+        (prep
+          (sps00 per per))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 versió versió)
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vmip3s0 ofereix oferir))
+              (sn-CD
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (nccs000 periodista periodista)))
+              (sp-CCL
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 biografia biografia)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 novel·lada novel·lat)))
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 jutge jutge))))))))
+            (sp-AO
+              (prep
+                (sps00 sobre sobre))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 cas cas)
+                  (sn
+                    (grup.nom
+                      (np00000 Sogecable Sogecable))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (grup.nom.ms
+          (np00000 Gordillo Gordillo)))
+      (coord
+        (cc i i))
+      (sn
+        (espec.ms
+          (dp3ms0 el_seu el_seu))
+        (grup.nom.ms
+          (nccs000 superior superior))))
+    (grup.verb
+      (vmip3p0 neguen negar))
+    (sn-CD
+      (grup.nom.fp
+        (ncfp000 acusacions acusació)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 llibre llibre))))
+        (sp
+          (Fc , ,)
+          (prep
+            (cs com com))
+          (S.F.C
+            (conj.subord
+              (cs que que))
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vmsi3p0 rebessin rebre))
+            (sn-CD
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (ncms000 dictamen dictamen)
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmii3s0 deia dir))
+                  (S.F.C-CD
+                    (conj.subord
+                      (cs que que))
+                    (sn-SUJ
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 querella querella)
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 cas cas))))))
+                    (grup.verb
+                      (vsii3s0 era ser))
+                    (sa-ATR
+                      (grup.a
+                        (aq0cs0 inviable inviable)))))))))))
+    (Fp . .)))

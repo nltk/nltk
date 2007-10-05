@@ -1,0 +1,108 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np00000 líder líder)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom
+              (np00000 IC-V IC-V))))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 afirmar afirmar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 nou nou)))
+          (ncms000 finançament finançament)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 autonòmic autonòmic)))))
+      (grup.verb
+        (vmif3s0 reportarà reportar))
+      (sp-CI
+        (prep
+          (sps00 a a))
+        (sn
+          (grup.nom
+            (np00000 Catalunya Catalunya))))
+      (sp-CCT
+        (Fc , ,)
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 període període)
+            (sn
+              (grup.nom.ms
+                (W 2002-2006 [??:??/??/2002-2006:??.??])))))
+        (Fc , ,))
+      (sn-CD
+        (espec.mp
+          (di0mp0 uns un))
+        (grup.nom.mp
+          (ncmp000 ingressos ingrés)
+          (s.a.mp
+            (grup.a.mp
+              (aq0cp0 addicionals addicional)))
+          (sp.co
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.mp
+                  (Z 665.000 665000))
+                (grup.nom.mp
+                  (ncmp000 milions milió)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fp
+                        (Zm pessetes pesseta)))))))
+            (coord
+              (cc i i))
+            (sp
+              (neg.j
+                (rn no no))
+              (neg.j
+                (rn pas pas))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.mp
+                    (Z 770.000 770000))
+                  (grup.nom.mp
+                    (ncmp000 milions milió)
+                    (S.F.A
+                      (Fc , ,)
+                      (conj.subord
+                        (cs com com))
+                      (grup.verb
+                        (vmip3s0 assegura assegurar))
+                      (sn-SUJ
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (np00000 Govern Govern)
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0ms0 català català))))))))))))))
+    (Fp . .)))

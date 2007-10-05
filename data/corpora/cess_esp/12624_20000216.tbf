@@ -1,0 +1,417 @@
+
+(
+  (S*
+    (sn
+      (grup.nom.mp
+        (ncmp000 Resultados resultado)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (s.a.fs
+                (grup.a.fs
+                  (ao0fs0 primera primero)))
+              (ncfs000 jornada jornada)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 torneo torneo)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.ms
+                          (ncmn000 tenis tenis))))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snl
+                        (grup.nom
+                          (np0000l Sao_Paulo Sao_Paulo))))
+                    (s.a.ms.x
+                      (Fc , ,)
+                      (grup.a.ms.co
+                        (grup.a.ms
+                          (aq0cs0 puntuable puntuable)
+                          (sp
+                            (prep
+                              (sps00 para para))
+                            (sn
+                              (espec.ms
+                                (da0ms0 el el))
+                              (grup.nom.ms
+                                (ncms000 circuito circuito)
+                                (sp
+                                  (prep
+                                    (sps00 de de))
+                                  (sno
+                                    (espec.fs
+                                      (da0fs0 la el))
+                                    (grup.nom.fs
+                                      (np0000o WTA WTA))))))))
+                        (coord
+                          (cc y y))
+                        (S.NF.P
+                          (participi
+                            (aq0msp dotado dotado))
+                          (sp-CREG
+                            (prep
+                              (sps00 con con))
+                            (snn
+                              (espec.mp
+                                (Z 142.500 142500))
+                              (grup.nom.mp
+                                (Zm dólares dólar)
+                                (sp
+                                  (prep
+                                    (sps00 en en))
+                                  (sn
+                                    (grup.nom.mp
+                                      (ncmp000 premios premio))))))))))))))))))
+    (Fp . .)))
+(
+  (S*
+    (Fg - -)
+    (Fg - -)
+    (sa
+      (grup.a
+        (aq0cs0 Individual individual)))
+    (Fp . .)))
+(
+  (S*
+    (S*
+      (sn
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (ao0fs0 Primera primero)))
+          (ncfs000 ronda ronda))))
+    (S
+      (Fd : :)
+      (snp-SUJ
+        (snp
+          (grup.nom.fs
+            (np0000p Lenka_Nemeckova Lenka_Nemeckova)))
+        (snl.j
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np0000l CZE CZE)
+            (Fpt -Fpt- -Fpt-))))
+      (grup.verb
+        (vmis3s0 venció vencer))
+      (sp-CD
+        (prep
+          (sps00 a a))
+        (snp
+          (snp
+            (grup.nom.fs
+              (np0000p Zanetti_Serra Zanetti_Serra)))
+          (snl.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l ITA ITA)
+              (Fpt -Fpt- -Fpt-)))))
+      (sp-CC
+        (prep
+          (sps00 por por))
+        (sn.x
+          (grup.nom.co
+            (grup.nom.mp
+              (Z 6-0 6-0))
+            (Fc , ,)
+            (grup.nom.mp
+              (Z 5-7 5-7))
+            (coord
+              (cc y y))
+            (grup.nom.mp
+              (Z 6-3 6-3))))))
+    (Fp . .)))
+(
+  (S*.co
+    (S*
+      (snp
+        (snp
+          (grup.nom.fs
+            (np0000p Joanette_Kruger Joanette_Kruger)))
+        (snl.j
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np0000l RSA RSA)
+            (Fpt -Fpt- -Fpt-))))
+      (sp
+        (prep
+          (sps00 a a))
+        (snp
+          (snp
+            (grup.nom.fs
+              (np0000p Katalin_Marosi Katalin_Marosi)))
+          (snl.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l HUN HUN)
+              (Fpt -Fpt- -Fpt-)))))
+      (sp
+        (prep
+          (sps00 por por))
+        (sn.x
+          (grup.nom.co
+            (grup.nom.mp
+              (Z 6-3 6-3))
+            (coord
+              (cc y y))
+            (grup.nom.mp
+              (Z 6-4 6-4))))))
+    (S*
+      (snp
+        (snp
+          (grup.nom.fs
+            (np0000p Angeles_Montolio Angeles_Montolio)))
+        (snl.j
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np0000l ESP ESP)
+            (snn
+              (Fc , ,)
+              (grup.nom.mp
+                (Z 4 4)))
+            (Fpt -Fpt- -Fpt-))))
+      (sp
+        (prep
+          (sps00 a a))
+        (snp
+          (snp
+            (grup.nom.fs
+              (np0000p Ludmila_Cervanova Ludmila_Cervanova)))
+          (snl.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l SVK SVK)
+              (Fpt -Fpt- -Fpt-)))))
+      (sp
+        (prep
+          (sps00 por por))
+        (sn.x
+          (grup.nom.co
+            (grup.nom.mp
+              (Z 6-2 6-2))
+            (Fc , ,)
+            (grup.nom.mp
+              (Z 6-2 6-2))))))
+    (S*
+      (snp
+        (snp
+          (grup.nom.fs
+            (np0000p Emannuelle_Gagliardi Emannuelle_Gagliardi)))
+        (snl.j
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np0000l SUI SUI)
+            (Fc , ,)
+            (snn
+              (grup.nom.mp
+                (Z 5 5)))
+            (Fpt -Fpt- -Fpt-))))
+      (sp
+        (prep
+          (sps00 a a))
+        (snp
+          (snp
+            (grup.nom.fs
+              (np0000p Maria_Alejandra_Vento Maria_Alejandra_Vento)))
+          (snl.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l VEN VEN)
+              (Fpt -Fpt- -Fpt-)))))
+      (sp
+        (prep
+          (sps00 por por))
+        (sn.x
+          (grup.nom.co
+            (grup.nom.mp
+              (Z 6-4 6-4))
+            (Fc , ,)
+            (grup.nom.mp
+              (Z 6-3 6-3))))))
+    (S*
+      (snp
+        (snp
+          (grup.nom.fs
+            (np0000p Mariana_Díaz_Oliva Mariana_Díaz_Oliva)))
+        (snl.j
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np0000l ARG ARG)
+            (Fpt -Fpt- -Fpt-))))
+      (sp
+        (prep
+          (sps00 a a))
+        (snp
+          (snp
+            (grup.nom.fs
+              (np0000p Seda_Noorlander Seda_Noorlander)))
+          (snl.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l HOL HOL)
+              (Fpt -Fpt- -Fpt-)))))
+      (sp
+        (prep
+          (sps00 por por))
+        (sn.x
+          (grup.nom.co
+            (grup.nom.mp
+              (Z 7-6 7-6)
+              (sn
+                (grup.nom.mp
+                  (Fpa -Fpa- -Fpa-)
+                  (Z 7/3 7/3)
+                  (Fpt -Fpt- -Fpt-))))
+            (Fc , ,)
+            (grup.nom.mp
+              (Z 4-6 4-6))
+            (Fc , ,)
+            (grup.nom.mp
+              (Z 7-5 7-5))))))
+    (S*
+      (snp
+        (grup.nom.fs
+          (np0000p Fabiola_Zuluaga Fabiola_Zuluaga)))
+      (snl
+        (grup.nom
+          (Fpa -Fpa- -Fpa-)
+          (np0000l COL COL)
+          (snn
+            (Fc , ,)
+            (grup.nom.mp
+              (Z 2 2)))
+          (Fpt -Fpt- -Fpt-)))
+      (sp
+        (prep
+          (sps00 a a))
+        (snp
+          (snp
+            (grup.nom.fs
+              (np0000p Alina_Jidkova Alina_Jidkova)))
+          (snl.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l RUS RUS)
+              (Fpt -Fpt- -Fpt-)))))
+      (sp
+        (prep
+          (sps00 por por))
+        (sn.x
+          (grup.nom.co
+            (grup.nom.mp
+              (Z 6-3 6-3))
+            (Fc , ,)
+            (grup.nom.mp
+              (Z 6-3 6-3))))))
+    (S*
+      (snp
+        (snp
+          (grup.nom.fs
+            (np0000p Florencia_Labat Florencia_Labat)))
+        (snl.j
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np0000l ARG ARG)
+            (Fpt -Fpt- -Fpt-))))
+      (sp
+        (prep
+          (sps00 a a))
+        (snp
+          (snp
+            (grup.nom.fs
+              (np0000p Rita_Grande Rita_Grande)))
+          (snl.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l ITA ITA)
+              (Fpt -Fpt- -Fpt-)))))
+      (sp
+        (prep
+          (sps00 por por))
+        (sn.x
+          (grup.nom.co
+            (grup.nom.mp
+              (Z 6-1 6-1))
+            (Fc , ,)
+            (grup.nom.mp
+              (Z 4-6 4-6))
+            (Fc , ,)
+            (grup.nom.mp
+              (Z 6-4 6-4))))))
+    (S*
+      (snp
+        (snp
+          (grup.nom.fs
+            (np0000p Holly_Parkinson Holly_Parkinson)))
+        (snl.j
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np0000l USA USA)
+            (Fpt -Fpt- -Fpt-))))
+      (sp
+        (prep
+          (sps00 a a))
+        (snp
+          (snp
+            (grup.nom.fs
+              (np0000p Joana_Cortez Joana_Cortez)))
+          (snl.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l BRA BRA)
+              (Fpt -Fpt- -Fpt-)))))
+      (sp
+        (prep
+          (sps00 por por))
+        (sn.x
+          (grup.nom.co
+            (grup.nom.mp
+              (Z 6-3 6-3))
+            (Fc , ,)
+            (grup.nom.mp
+              (Z 6-4 6-4))))))
+    (S*
+      (snp
+        (snp
+          (grup.nom.fs
+            (np0000p Paola_Suárez Paola_Suárez)))
+        (snl.j
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np0000l ARG ARG)
+            (Fc , ,)
+            (snn
+              (grup.nom.mp
+                (Z 6 6)))
+            (Fpt -Fpt- -Fpt-))))
+      (sp
+        (prep
+          (sps00 a a))
+        (snp
+          (snp
+            (grup.nom.fs
+              (np0000p Petra_Mandula Petra_Mandula)))
+          (snl.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l HUN HUN)
+              (Fpt -Fpt- -Fpt-)))))
+      (sn.x
+        (grup.nom.co
+          (grup.nom.mp
+            (Z 6-6 6-6))
+          (coord
+            (cc y y))
+          (grup.nom.ms
+            (ncms000 abandono abandono)))))
+    (Fp . .)))

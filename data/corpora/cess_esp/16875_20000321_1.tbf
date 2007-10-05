@@ -1,0 +1,351 @@
+
+(
+  (S.co
+    (S
+      (snp-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 ministro ministro)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 venezolano venezolano)))))
+      (grup.verb
+        (vmis3s0 rechazó rechazar))
+      (sp-CC
+        (Fc , ,)
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fs
+            (di0fs0 una uno))
+          (grup.nom.fs
+            (ncfs000 rueda rueda)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 prensa prensa))))))
+        (Fc , ,))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (morfema.verbal-PASS
+          (p0000000 se se))
+        (grup.verb
+          (vmsp3s0 maneje manejar))
+        (sn-SUJ
+          (espec.ms
+            (di0cs0 cualquier cualquiera))
+          (grup.nom.ms
+            (ncms000 problema problema)
+            (S.NF.P
+              (participi
+                (aq0msp relacionado relacionado))
+              (sp-CREG
+                (prep
+                  (sps00 con con))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 derechos_humanos derechos_humanos)))))))
+        (sp.co-CC
+          (Fe " ")
+          (sp
+            (prep
+              (sps00 en_base_a en_base_a))
+            (sn
+              (grup.nom.fp
+                (ncfp000 conveniencias conveniencia)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0fp0 políticas político))))))
+          (coord
+            (cc o o))
+          (sp
+            (prep
+              (sps00 a a))
+            (sn
+              (grup.nom.fp
+                (ncfp000 relaciones relación)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0cp0 bilaterales bilateral))))))
+          (Fe " ")))
+      (Fc , ,))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3s0 aseguró asegurar))
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.ms
+            (dp3cs0 su su))
+          (grup.nom.ms
+            (ncms000 país país)))
+        (morf.pron
+          (p0300000 se él))
+        (grup.verb
+          (vmif3s0 opondrá oponer))
+        (sp-CREG
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 iniciativa iniciativa)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.mp
+                    (di0mp0 algunos alguno))
+                  (grup.nom.mp
+                    (ncmp000 países país))))
+              (sp
+                (prep
+                  (sps00 de de))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 evaluar evaluar))
+                  (sadv-CC
+                    (grup.adv
+                      (rg unilateralmente unilateralmente)))
+                  (sn-CD
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (ncms000 cumplimiento cumplimiento)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.fp
+                            (da0fp0 las el))
+                          (grup.nom.fp
+                            (ncfp000 normativas normativa)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (grup.nom.mp
+                                  (ncmp000 derechos_humanos derechos_humanos))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Por por))
+      (sn
+        (grup.nom.ms
+          (pp3ns000 ello él)))
+      (Fc , ,))
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmis3s0 dijo decir))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 estar estar))
+      (S.NF.P-ATR
+        (participi
+          (aq0msp preocupado preocupado))
+        (sp-CC
+          (prep
+            (sps00 por por))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 actitud actitud)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sno
+                  (grup.nom
+                    (np0000o Estados_Unidos Estados_Unidos))))
+              (sp
+                (prep
+                  (sps00 ante ante))
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 problema problema)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sno
+                        (grup.nom
+                          (np0000o Colombia Colombia)))))))
+              (S.F.R
+                (Fc , ,)
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vmic3s0 podría poder)
+                  (infinitiu
+                    (vmn0000 llevar llevar)))
+                (sp-CREG
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (espec.fs
+                      (di0fs0 una uno))
+                    (grup.nom.fs
+                      (ncfs000 internacionalización internacionalización)
+                      (sp
+                        (prep
+                          (spcms del del))
+                        (sn
+                          (grup.nom.ms
+                            (ncms000 conflicto conflicto))))
+                      (S.F.R
+                        (Fc , ,)
+                        (Fe " ")
+                        (relatiu-SUJ
+                          (pr0cn000 que que))
+                        (grup.verb
+                          (vsic3s0 sería ser))
+                        (sn-ATR
+                          (espec.ms
+                            (da0ns0 lo el))
+                          (grup.nom.ms
+                            (s.a.ms
+                              (grup.a.ms
+                                (aq0cs0 peor peor)))
+                            (S.F.R
+                              (relatiu-SUJ
+                                (pr0cn000 que que))
+                              (grup.verb
+                                (vmip3s0 puede poder)
+                                (infinitiu
+                                  (vmn0000 ocurrir ocurrir))))))
+                        (Fe " ")))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (snp-SUJ
+        (grup.nom.ms
+          (np0000p Rangel Rangel)))
+      (grup.verb
+        (vmis3s0 recordó recordar))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 violencia violencia)
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Colombia Colombia))))))
+        (grup.verb
+          (vmip3s0 repercute repercutir))
+        (sadv-CC
+          (grup.adv
+            (rg directamente directamente)))
+        (sp-CREG
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (dp3cs0 su su))
+            (grup.nom.ms
+              (ncms000 país país))))
+        (S.F.A-CC
+          (Fc , ,)
+          (conj.subord
+            (cs ya_que ya_que))
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vmip3p0 comparten compartir))
+          (snn-CD
+            (espec.mp
+              (Z 2.219 2219))
+            (grup.nom.mp
+              (ncmp000 kilómetros kilómetro)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (Fe " ")
+                    (ncfs000 frontera frontera)
+                    (s.a.fs.x
+                      (grup.a.fs.co
+                        (grup.a.fs
+                          (aq0cs0 común común))
+                        (Fc , ,)
+                        (grup.a.fs
+                          (aq0fs0 activa activo))
+                        (coord
+                          (cc y y))
+                        (S.NF.P
+                          (participi
+                            (aq0fsp plagada plagado))
+                          (sp-CC
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom.mp
+                                (ncmp000 problemas problema)))))))
+                    (Fe " "))))))
+          (Fc , ,))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3s0 señaló señalar))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sp-CCL
+          (prep
+            (sps00 desde desde))
+          (snl
+            (grup.nom
+              (np0000l Venezuela Venezuela))))
+        (morfema.verbal-IMPERS
+          (p0000000 se se))
+        (grup.verb
+          (vmip3s0 apuesta apostar))
+        (sp-CREG
+          (prep
+            (sps00 por por))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 paz paz)
+              (sp
+                (prep
+                  (sps00 en en))
+                (snl
+                  (grup.nom
+                    (np0000l Colombia Colombia))))
+              (S.F.R
+                (Fc , ,)
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vsip3s0 es ser))
+                (sn-ATR
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 única único)))
+                    (ncfs000 alternativa alternativa)))))))))
+    (Fp . .)))

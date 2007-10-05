@@ -1,0 +1,137 @@
+
+(
+  (S
+    (sn-SUJ
+      (grup.nom
+        (np00000 Tele_5 Tele_5)))
+    (grup.verb
+      (vmif3s0 dedicarà dedicar))
+    (sp-CCT
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (W desembre [??:??/12/??:??.??]))))
+    (sn-CD
+      (espec.fs
+        (dp3fs0 la_seva el_seu))
+      (grup.nom.fs
+        (ncfs000 campanya campanya)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (W 12_meses_,_12_causas 12_meses_,_12_causas))))))
+    (sp-CI
+      (prep
+        (spcmp als al))
+      (sn
+        (grup.nom.mp
+          (ncmp000 nens nen)
+          (S.NF.P
+            (participi
+              (aq0mpp desprotegits desprotegit))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 problema problema)))
+      (morfema.verbal-PASS
+        (p0000000 s' es))
+      (grup.verb
+        (vmif3s0 abordarà abordar))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.mp
+            (dp3mp0 els_seus el_seu))
+          (grup.nom.mp
+            (ncmp000 programes programa)
+            (sp
+              (Fc , ,)
+              (prep
+                (cs com com))
+              (sn
+                (grup.nom
+                  (np00000 Historias_de_hoy Historias_de_hoy)))
+              (Fc , ,))))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (sadv-MOD
+        (grup.adv
+          (rg també també)))
+      (grup.verb
+        (vmif3s0 recaptarà recaptar))
+      (sn-CD
+        (grup.nom.mp
+          (ncmp000 diners diner)))
+      (sp-CC
+        (prep
+          (sps00 per per))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.ms
+              (dd0ms0 aquest aquest))
+            (grup.nom.ms
+              (ncms000 fi fi))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 espot espot)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 institucional institucional)))
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 solidari solidari)))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (morfema.verbal-PASS
+            (p0000000 s' es))
+          (grup.verb
+            (vmif3s0 emetrà emetre))
+          (sp-CCT
+            (prep
+              (sps00 durant durant))
+            (sn
+              (espec.ms
+                (di0ms0 tot tot)
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 mes mes))))
+          (Fc , ,))))
+    (grup.verb
+      (vsip3s0 és ser)
+      (vmp00sm protagonitzat protagonitzar))
+    (sp-CAG
+      (prep
+        (spcms pel pel))
+      (sn
+        (grup.nom.ms
+          (ncms000 grup grup)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (np00000 Cornellà Cornellà))))
+          (sn
+            (grup.nom
+              (np00000 Estopa Estopa))))))
+    (Fp . .)))

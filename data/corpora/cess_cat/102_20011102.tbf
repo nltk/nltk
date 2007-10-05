@@ -1,0 +1,109 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 mostra mostra)
+        (S.F.R.co
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (S.F.R
+            (morfema.verbal-PASS
+              (p0000000 s' es))
+            (grup.verb
+              (vmip3s0 inicia iniciar))
+            (sadv-CCT
+              (grup.adv
+                (rg avui avui))))
+          (coord
+            (cc i i))
+          (S.F.R
+            (morfema.verbal-PASS
+              (p0000000 s' es))
+            (grup.verb
+              (vmip3s0 acaba acabar))
+            (sn-CCT
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (W 4_de_novembre [??:4/11/??:??.??]))))
+          (Fc , ,))))
+    (grup.verb
+      (vmif3s0 reunirà reunir))
+    (sn.co-CD
+      (sn
+        (espec.mp
+          (rg prop prop)
+          (sps00 de de)
+          (Z 400 400))
+        (grup.nom.mp
+          (ncmp000 programadors programador)))
+      (Fc , ,)
+      (sn
+        (espec.fp
+          (Z 78 78))
+        (grup.nom.fp
+          (ncfp000 companyies companyia)))
+      (coord
+        (cc i i))
+      (sn
+        (espec.mp
+          (Z 93 93))
+        (grup.nom.mp
+          (ncmp000 expositors expositor))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.mp
+        (pi0mp000 Alguns algun)))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm utilitzat utilitzar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 llotja llotja)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 virtual virtual)))
+        (sn
+          (Fc , ,)
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 novetat novetat)
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (espec.ms
+                  (dd0ms0 aquest aquest))
+                (grup.nom.ms
+                  (ncms000 any any)))))
+          (Fc , ,))
+        (S.F.R
+          (sp-CC
+            (prep
+              (sps00 a_través_de a_través_de))
+            (relatiu
+              (da0fs0 la el)
+              (pr0cs000 qual qual)))
+          (grup.verb
+            (vmif3p0 podran poder)
+            (infinitiu
+              (vsn0000 ser ser)
+              (vmp00pm contractats contractar)))
+          (sn.x-SUJ
+            (grup.nom.co
+              (grup.nom.mp
+                (ncmp000 grups grup))
+              (coord
+                (cc i i))
+              (grup.nom.fp
+                (ncfp000 companyies companyia)))))))
+    (Fp . .)))

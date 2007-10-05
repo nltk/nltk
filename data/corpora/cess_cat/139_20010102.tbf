@@ -1,0 +1,103 @@
+
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Epstein Epstein)
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (ncms000 coguionista coguionista)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom
+                  (Fz ' ')
+                  (np00000 Casablanca Casablanca)
+                  (Fz ' '))))
+            (sp
+              (prep
+                (sps00 juntament_amb juntament_amb))
+              (sn.co
+                (sn
+                  (espec.ms
+                    (dp3ms0 el_seu el_seu))
+                  (grup.nom.ms
+                    (ncms000 germà germà)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 bessó bessó)))
+                    (sn
+                      (grup.nom.ms
+                        (np00000 Philip Philip)))))
+                (coord
+                  (cc i i))
+                (sn
+                  (grup.nom.ms
+                    (np00000 Howard_Koch Howard_Koch))))))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 morir morir))
+    (sn-CCT
+      (grup.nom.ms
+        (W dissabte [dissabte:??/??/??:??.??])))
+    (sp-CC
+      (prep
+        (spcmp als al))
+      (sn
+        (numero
+          (Z 91 91))
+        (grup.nom.mp
+          (ncmp000 anys any))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Epstein Epstein)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 firmar firmar))
+    (sn-CD
+      (espec.mp
+        (di0fs0 una un)
+        (ncfs000 cinquantena cinquantena)
+        (sps00 de de))
+      (grup.nom.mp
+        (ncmp000 guions guió)
+        (sn
+          (Fc , ,)
+          (sp.j
+            (prep
+              (sps00 entre entre))
+            (sn
+              (grup.nom.mp
+                (pp3mp000 ells ell))))
+          (sn
+            (espec.mp
+              (da0mp0 els el))
+            (grup.nom.mp
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fp
+                    (ncfp000 pel·lícules pel·lícula)
+                    (sp
+                      (prep
+                        (cs com com))
+                      (sn.x
+                        (grup.nom.co
+                          (grup.nom
+                            (Fz ' ')
+                            (np00000 L'_home_que_va_venir_a_sopar L'_home_que_va_venir_a_sopar)
+                            (Fz ' '))
+                          (coord
+                            (cc i i))
+                          (grup.nom
+                            (Fz ' ')
+                            (np00000 The_strawberry_blonde The_strawberry_blonde)
+                            (Fz ' ')))))))))))))
+    (Fp . .)))

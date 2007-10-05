@@ -1,0 +1,152 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 pel·lícula pel·lícula)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (np00000 Juan_José_Campanella Juan_José_Campanella))))))
+    (grup.verb
+      (vmif3s0 representarà representar))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 país país)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 sud-americà sud-americà)))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 categoria categoria)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 millor millor)))
+                (ncfs000 cinta cinta)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 parla parla)
+                      (s.a.fs
+                        (neg
+                          (rn no no))
+                        (grup.a.fs
+                          (aq0fs0 anglesa anglès))))))))))))
+    (S.F.A-AO
+      (Fc , ,)
+      (conj.subord
+        (cs segons segons))
+      (sn.e-SUJ *0*)
+      (morfema.verbal-PASS
+        (p0000000 es es))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 anunciar anunciar))
+      (sn-CCT
+        (grup.nom.ms
+          (W dimecres [dimecres:??/??/??:??.??]))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (grup.nom.ms
+          (np00000 El_hijo_de_la_novia El_hijo_de_la_novia)
+          (S.F.R
+            (Fc , ,)
+            (relatiu-CD
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3p0 protagonitzen protagonitzar))
+            (sn.x-SUJ
+              (grup.nom.co
+                (grup.nom.ms
+                  (np00000 Ricardo_Darín Ricardo_Darín))
+                (Fc , ,)
+                (grup.nom.fs
+                  (np00000 Norma_Aleandro Norma_Aleandro))
+                (coord
+                  (cc i i))
+                (grup.nom.ms
+                  (np00000 Héctor_Alterio Héctor_Alterio))))
+            (Fc , ,))))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 rebre rebre))
+      (sn-CD
+        (espec.mp
+          (dn0mp0 dos dos))
+        (grup.nom.mp
+          (ncmp000 premis premi)))
+      (sp-CC
+        (prep
+          (spcms al al))
+        (sn
+          (grup.nom.ms
+            (np00000 Festival_de_Mont-real Festival_de_Mont-real)))))
+    (Fc , ,)
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3s0 acaba acabar)
+        (sps00 de de)
+        (infinitiu
+          (vsn0000 ser ser)
+          (vmp00sf exhibida exhibir)))
+      (sp-CC
+        (prep
+          (sps00 amb amb))
+        (sn
+          (grup.nom.ms
+            (ncms000 èxit èxit))))
+      (sp-CC
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (np00000 Setmana_Internacional_de_Valladolid Setmana_Internacional_de_Valladolid)))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3s0 està estar)
+        (gerundi
+          (vmg0000 arrasant arrasar)))
+      (sp-CCL
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (ncfp000 taquilles taquilla)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0cs0 l' el))
+                (grup.nom.fs
+                  (np00000 Argentina Argentina))))))))
+    (Fp . .)))

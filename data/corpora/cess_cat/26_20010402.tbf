@@ -1,0 +1,122 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (nccp000 comunistes comunista)
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 francesos francès)))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3p0 formen_part formar_part))
+          (sp-CREG
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 coalició coalició)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 governamental governamental))))))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 dir dir))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (ao0ms0 primer primer)))
+          (ncms000 ministre ministre)))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vmip3s0 sembla semblar))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vasp3s0 hagi haver)
+          (vmp00sm decidit decidir))
+        (sn-CD
+          (espec.ms
+            (di0ms0 un un))
+          (grup.nom.ms
+            (ncms000 canvi canvi)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 polític polític)))))
+        (sp-CCT
+          (prep
+            (sps00 durant durant))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 reunió reunió)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.ms
+                    (W dissabte [dissabte:??/??/??:??.??])))))))
+        (sp-CC
+          (prep
+            (sps00 per per))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 abordar abordar))
+            (sn-CD
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (ncfp000 mesures mesura)
+                (S.NF.P
+                  (participi
+                    (aq0fpp destinades destinat))
+                  (sp-CREG
+                    (prep
+                      (sps00 a a))
+                    (S.NF.C
+                      (infinitiu
+                        (vmn0000 recuperar recuperar))
+                      (sn-CD
+                        (espec.ms
+                          (da0cs0 l' el))
+                        (grup.nom.ms
+                          (ncms000 electorat electorat)
+                          (S.NF.P
+                            (participi
+                              (aq0msp perdut perdut))
+                            (sp-CC
+                              (prep
+                                (sps00 en en))
+                              (sn
+                                (espec.fp
+                                  (da0fp0 les el))
+                                (grup.nom.fp
+                                  (s.a.fp
+                                    (grup.a.fp
+                                      (aq0cp0 recents recent)))
+                                  (ncfp000 eleccions elecció)
+                                  (s.a.fp
+                                    (grup.a.fp
+                                      (aq0cp0 municipals municipal))))))))))))))))))
+    (Fp . .)))

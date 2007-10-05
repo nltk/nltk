@@ -1,0 +1,251 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (di0ms0 Un un))
+      (grup.nom.ms
+        (nccs000 jove jove)
+        (sp
+          (prep
+            (sps00 de de))
+          (snl
+            (grup.nom
+              (np0000l Cervià_de_Ter Cervià_de_Ter))))
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (np0000p Fèlix_S.G. Fèlix_S.G.))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm mort morir))
+    (sadv-CC
+      (grup.adv
+        (rg avui avui)))
+    (sp-AO
+      (prep
+        (sps00 com_a_conseqüència_de com_a_conseqüència_de))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 accident accident)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (morfema.verbal-PASS
+              (p0000000 s' es))
+            (grup.verb
+              (vaip3s0 ha haver)
+              (vmp00sm produït produir))
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (snl
+                (espec.fs
+                  (dd0fs0 aquesta aquest))
+                (grup.nom.fs
+                  (ncfs000 població població)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (snl
+                      (grup.nom.ms
+                        (np0000l Gironès Gironès)))))))
+            (sp-CC
+              (prep
+                (sps00 a a))
+              (snd
+                (espec.fp
+                  (da0fp0 les el))
+                (grup.nom.fs
+                  (W set_de_la_tarda [??:??/??/??:19.00]))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 fets fet)))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm passat passar))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (snl
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 crta crta)
+          (sn
+            (grup.nom
+              (nc00000 GI-633 gi-633))))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (spcms al al))
+      (snn
+        (grup.nom.ms
+          (ncms000 punt punt)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 quilomètric quilomètric)))
+          (snn
+            (grup.nom
+              (Z 2 2)))))
+      (Fc , ,))
+    (S.F.A-CC
+      (conj.subord
+        (cs quan quan))
+      (sn-SUJ
+        (espec.mp
+          (dn0mp0 dos dos))
+        (grup.nom.mp
+          (ncmp000 vehicles vehicle)))
+      (grup.verb
+        (vaip3p0 han haver)
+        (vmp00sm sortit sortir))
+      (sp-CC
+        (prep
+          (sps00 de de))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 via via))))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 intentar intentar))
+          (S.NF.C-CD
+            (infinitiu
+              (vmn0000 evitar evitar))
+            (sn-CD
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (ncms000 xoc xoc)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 frontal frontal)))))))))
+    (sp-AO
+      (Fc , ,)
+      (prep
+        (sps00 segons segons))
+      (sno
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (np0000o Mossos_d'_Esquadra Mossos_d'_Esquadra))))
+    (Fp . .)))
+(
+  (S
+    (morf.pron
+      (p0300000 S' ell))
+    (sn-CC
+      (grup.nom
+        (pp3cn000 hi hi)))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm vist veure))
+    (S.NF.P-CPRED.SUJ
+      (participi
+        (aq0mpp implicats implicat)))
+    (sn.co-SUJ
+      (sn
+        (espec.ms
+          (dn0ms0 un un))
+        (grup.nom.ms
+          (ncms000 jaguar jaguar)
+          (sp
+            (prep
+              (sps00 amb amb))
+            (sn
+              (grup.nom.fs
+                (ncfs000 matrícula matrícula)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 provisional provisional)))
+                (sn
+                  (grup.nom
+                    (nc00000 S-5881-BBG s-5881-bbg))))))
+          (S.NF.P
+            (Fc , ,)
+            (participi
+              (aq0msp conduït conduït))
+            (sp-CAG
+              (prep
+                (sps00 per per))
+              (snp
+                (grup.nom.ms
+                  (np0000p Fèlix_S._G Fèlix_S._G))))
+            (Fc , ,))))
+      (coord
+        (cc i i))
+      (sn
+        (espec.ms
+          (dn0ms0 un un))
+        (grup.nom.ms
+          (np0000a Opel_Astra Opel_Astra)
+          (sp
+            (prep
+              (sps00 amb amb))
+            (sn
+              (grup.nom.fs
+                (ncfs000 matrícula matrícula)
+                (sn
+                  (grup.nom
+                    (nc00000 GI-2909-AV gi-2909-av)))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.mp
+          (dn0mp0 Dos dos))
+        (grup.nom.mp
+          (nccp000 ocupants ocupant)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.ms
+                (dd0ms0 aquest aquest))
+              (grup.nom.ms
+                (ncms000 vehicle vehicle))))))
+      (grup.verb
+        (vaip3p0 han haver)
+        (vmp00sm resultat resultar))
+      (S.NF.P-CPRED.SUJ
+        (participi
+          (aq0mpp ferits ferit))
+        (sadv
+          (grup.adv
+            (rg greument greument)))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (sn-CD
+        (grup.nom.p
+          (pp3cp000 els ell)))
+      (grup.verb
+        (vaip3p0 han haver)
+        (vmp00sm traslladat traslladar))
+      (sp-CC
+        (prep
+          (sps00 a a))
+        (snl
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (ncms000 hospital hospital)
+            (snp
+              (grup.nom
+                (np0000p Josep_Trueta Josep_Trueta)))))))
+    (Fp . .)))

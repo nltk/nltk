@@ -1,0 +1,241 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncmn000 temps temps)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (np00000 Big_Brother Big_Brother))))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 passar passar))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom
+          (np00000 Alemanya Alemanya))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CCT
+      (grup.adv
+        (rg Després després)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (s.a.ms
+                (grup.adv
+                  (aq0cs0 gran gran)))
+              (ncms000 èxit èxit)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (s.a.fs
+                      (grup.a.fs
+                        (ao0fs0 primera primer)))
+                    (ncfs000 entrega entrega))))
+              (sn
+                (Fc , ,)
+                (grup.nom.ms
+                  (Zp 30% 30/100)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 quota quota))))))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (ao0fs0 segona segon)))))
+    (sadv-MOD
+      (grup.adv
+        (rg només només)))
+    (sn-CD.d
+      (grup.nom
+        (pp3cn000 en en)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 aconseguir aconseguir))
+    (sn-CD.d
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (Zp 15% 15/100)))
+    (Fp . .)))
+(
+  (S
+    (coord-ET
+      (cc I i))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 xous xou)
+        (sp
+          (prep
+            (sps00 amb amb))
+          (sn
+            (grup.nom.fs
+              (ncfs000 estructura estructura)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 similar similar))))))))
+    (grup.verb
+      (vsip3p0 són ser))
+    (sn-ATR
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 fracàs fracàs)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 rotund rotund)))))
+    (Fp . .)))
+(
+  (S*
+    (sp
+      (prep
+        (cs Com com))
+      (sn.x
+        (grup.nom.co
+          (grup.nom
+            (np00000 Girlcamp Girlcamp)
+            (S.co
+              (Fpt -Fpt- -Fpt-)
+              (S*
+                (sn
+                  (espec.fp
+                    (Z 10 10))
+                  (grup.nom.fp
+                    (ncfp000 noies noia)
+                    (s.a.fp
+                      (grup.a.fp
+                        (aq0fp0 solteres solter)))))
+                (S.NF.P
+                  (participi
+                    (aq0fpp instal·lades instal·lat))
+                  (sn-CCT
+                    (espec.fp
+                      (dn0cp0 set set))
+                    (grup.nom.fp
+                      (ncfp000 setmanes setmana)))
+                  (sp-CCL
+                    (prep
+                      (sps00 en en))
+                    (sn
+                      (espec.fs
+                        (di0fs0 una un))
+                      (grup.nom.fs
+                        (ncfs000 illa illa)))))
+                (Fc , ,))
+              (coord
+                (cc i i))
+              (S
+                (sn-CCT
+                  (espec.mp
+                    (di0cs0 cada cada)
+                    (dn0cp0 set set))
+                  (grup.nom.mp
+                    (ncmp000 dies dia)))
+                (sn.e-SUJ *0*)
+                (grup.verb
+                  (vmii3p0 rebien rebre))
+                (sn-CD
+                  (grup.nom.mp
+                    (nccp000 joves jove)
+                    (s.a.mp
+                      (grup.a.mp
+                        (aq0mp0 solters solter))))))
+              (Fpa -Fpa- -Fpa-)))
+          (coord
+            (cc i i))
+          (grup.nom
+            (np00000 Big_Diet Big_Diet)
+            (sn
+              (Fpt -Fpt- -Fpt-)
+              (espec.mp
+                (Z 12 12))
+              (grup.nom.mp
+                (ncmp000 candidats candidat)
+                (S.NF.P
+                  (participi
+                    (aq0mpp tancats tancat))
+                  (sp-CC
+                    (prep
+                      (sps00 per per))
+                    (S.NF.C
+                      (infinitiu
+                        (vmn0000 perdre perdre))
+                      (sn-CD
+                        (grup.nom.ms
+                          (ncms000 pes pes)))))))
+              (Fpa -Fpa- -Fpa-))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CCT
+      (grup.adv
+        (rg Ara ara)))
+    (sn-ATR
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (ncms000 èxit èxit)))
+    (grup.verb
+      (vsip3p0 són ser))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 concursos concurs)
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (ncms000 estil estil)
+              (sn
+                (grup.nom
+                  (np00000 Quiere_ser_millonario_? Quiere_ser_millonario_?)))
+              (S
+                (Fd : :)
+                (sn-SUJ
+                  (espec.fp
+                    (di0fp0 totes tot)
+                    (da0fp0 les el))
+                  (grup.nom.fp
+                    (np00000 TV TV)))
+                (grup.verb
+                  (vmip3p0 tenen tenir))
+                (sn-CD.Q
+                  (grup.nom.p
+                    (nccp000 variants variant)
+                    (sp
+                      (prep
+                        (sps00 d' de))
+                      (sn
+                        (espec.mp
+                          (dd0mp0 aquests aquest))
+                        (grup.nom.mp
+                          (ncmp000 formats format))))))))))))
+    (Fp . .)))

@@ -1,0 +1,136 @@
+
+(
+  (S
+    (snp.x-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.co
+        (grup.nom.co
+          (grup.nom.ms
+            (ncms000 diputat diputat))
+          (coord
+            (cc i i))
+          (grup.nom.ms
+            (ncms000 exalcalde exalcalde)))
+        (snp.j
+          (grup.nom.ms
+            (np0000p Jaume_Farguell Jaume_Farguell)))
+        (sno.j
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np0000o CDC CDC)
+            (Fpt -Fpt- -Fpt-)))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm dimitit dimitir))
+    (sadv-CCT
+      (grup.adv
+        (rg després després)
+        (sp
+          (prep
+            (sps00 de de))
+          (S.NF.C
+            (infinitiu
+              (vsn0000 ser ser)
+              (vmp00sm acusat acusar))
+            (sp-CCL
+              (prep
+                (sps00 en en))
+              (sn
+                (grup.nom.fp
+                  (ncfp000 octavetes octavetes)
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0fp0 anònimes anònim))))))
+            (sp-CREG
+              (prep
+                (sps00 d' de))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 estar estar))
+                (sadv-CREG
+                  (grup.adv
+                    (rg darrere darrere)
+                    (sp
+                      (prep
+                        (sps00 d' de))
+                      (sn
+                        (espec.fs
+                          (di0fs0 una un))
+                        (grup.nom.fs
+                          (nccs000 web web)
+                          (S.F.R
+                            (sp-CCL
+                              (prep
+                                (sps00 en en))
+                              (relatiu
+                                (pr0cn000 què què)))
+                            (morfema.verbal-PASS
+                              (p0000000 es es))
+                            (grup.verb
+                              (vmii3p0 difonien difondre))
+                            (sn-SUJ
+                              (grup.nom.mp
+                                (ncmp000 rumors rumor)
+                                (sp
+                                  (prep
+                                    (sps00 sobre sobre))
+                                  (sn
+                                    (espec.fs
+                                      (da0fs0 la el))
+                                    (grup.nom.fs
+                                      (ncfs000 vida vida)
+                                      (s.a.fs
+                                        (grup.a.fs
+                                          (aq0fsp privada privat))))))
+                                (sp
+                                  (prep
+                                    (sps00 de de))
+                                  (snp
+                                    (espec.ms
+                                      (da0cs0 l' el))
+                                    (grup.nom.ms
+                                      (s.a.ms
+                                        (grup.a.ms
+                                          (aq0cs0 actual actual)))
+                                      (ncms000 alcalde alcalde)
+                                      (snp
+                                        (Fc , ,)
+                                        (snp
+                                          (grup.nom.ms
+                                            (np0000p Josep_Maria_Badia Josep_Maria_Badia)))
+                                        (sno.j
+                                          (grup.nom
+                                            (Fpa -Fpa- -Fpa-)
+                                            (np0000o CiU CiU)
+                                            (Fpt -Fpt- -Fpt-)))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Farguell Farguell)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm denunciat denunciar))
+    (sn-CD
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 autors autor)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (nccs000 web web))))))
+    (sp-AO
+      (Fc , ,)
+      (prep
+        (sps00 segons segons))
+      (sno
+        (grup.nom
+          (np0000o Regió7 Regió7))))
+    (Fp . .)))

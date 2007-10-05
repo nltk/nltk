@@ -1,0 +1,313 @@
+
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (nccs000 juez juez)
+        (snp
+          (grup.nom.ms
+            (np0000p Cristián_Lemus Cristián_Lemus)))))
+    (grup.verb
+      (vmis3s0 expulsó expulsar))
+    (sp.co-CD
+      (sp
+        (prep
+          (sps00 a a))
+        (snp
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (nc00000 wanderinos wanderinos)
+            (sn.x
+              (grup.nom.co
+                (grup.nom.ms
+                  (np0000p John_Ahumada John_Ahumada))
+                (coord
+                  (cc y y))
+                (grup.nom.ms
+                  (np0000p Rodrigo_Pérez Rodrigo_Pérez)))))))
+      (coord
+        (cc y y))
+      (sp
+        (prep
+          (sps00 a a))
+        (snp
+          (grup.nom.ms
+            (np0000p Vilarino Vilarino)))))
+    (sp-CCL
+      (Fc , ,)
+      (prep
+        (spcms del del))
+      (sn
+        (grup.nom.ms
+          (ncms000 cuadro cuadro)
+          (s.a.ms
+            (grup.a.ms
+              (ncfs000 visita visita))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 En en))
+      (sn
+        (grup.nom.ms
+          (pi0ms000 otro otro)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (ncmp000 partidos partido)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (dd0fs0 esta este))
+                    (grup.nom.fs
+                      (ncfs000 jornada jornada)
+                      (sp
+                        (prep
+                          (spcms del del))
+                        (sn
+                          (grup.nom.ms
+                            (ncms000 fútbol fútbol)
+                            (s.a.ms
+                              (grup.a.ms
+                                (aq0cs0 local local))))))))))))))
+      (Fc , ,))
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (np0000o Palestino Palestino)
+        (S.F.R
+          (relatiu-CD
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 dirige dirigir))
+          (snp-SUJ
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 argentino argentino)
+              (snp
+                (grup.nom.ms
+                  (np0000p Ricardo_Dabrowski Ricardo_Dabrowski)))))
+          (Fc , ,))))
+    (grup.verb
+      (vmis3s0 venció vencer))
+    (sp-CC
+      (prep
+        (sps00 por por))
+      (snn
+        (grup.nom
+          (Z 1-0 1-0))))
+    (sp-CD
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 cuadro cuadro)
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (grup.nom
+                (np0000o Coquimbo_Unido Coquimbo_Unido)))))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 partido partido)
+          (sp
+            (prep
+              (sps00 para para))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 olvidar olvidar))
+              (S.F.A-CC
+                (Fc , ,)
+                (conj.subord
+                  (cs ya_que ya_que))
+                (sadv-CCT
+                  (grup.adv
+                    (rg después después)
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 gol gol)
+                          (S.NF.P
+                            (participi
+                              (aq0msp convertido convertido))
+                            (sp-CAG
+                              (prep
+                                (sps00 por por))
+                              (snp
+                                (grup.nom.ms
+                                  (np0000p Nelson_Lizana Nelson_Lizana))))
+                            (sp-CCT
+                              (prep
+                                (sps00 a a))
+                              (snn
+                                (espec.mp
+                                  (da0mp0 los el)
+                                  (Z 38 38))
+                                (grup.nom.mp
+                                  (ncmp000 minutos minuto)))))))))
+                  (Fc , ,))
+                (sn-SUJ
+                  (espec.mp
+                    (dn0mp0 ambos ambos))
+                  (grup.nom.mp
+                    (ncmp000 equipos equipo)))
+                (grup.verb
+                  (vmis3p0 demostraron demostrar))
+                (S.F.C-CD
+                  (conj.subord
+                    (cs que que))
+                  (sn-SUJ
+                    (espec.mp
+                      (dp3cp0 sus su))
+                    (grup.nom.mp
+                      (ncmp000 jugadores jugador)))
+                  (sadv-CCT
+                    (grup.adv
+                      (rg aún aún)))
+                  (grup.verb
+                    (vmip3p0 están estar))
+                  (sa-ATR
+                    (grup.a
+                      (aq0mp0 faltos falto)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.ms
+                            (ncms000 rodaje rodaje)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (grup.nom
+        (np0000o Puerto_Montt Puerto_Montt)))
+    (sadv-CCT
+      (Fc , ,)
+      (grup.adv
+        (rg en_tanto en_tanto)))
+    (sp-CCL
+      (Fc , ,)
+      (prep
+        (sps00 a a))
+      (snn
+        (espec.mp
+          (Z 1.044 1044))
+        (grup.nom.mp
+          (ncmp000 kilómetros kilómetro)
+          (sp
+            (prep
+              (spcms al al))
+            (snl
+              (grup.nom.ms
+                (ncms000 sur sur)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snl
+                    (grup.nom
+                      (np0000l Santiago Santiago)))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 venció vencer))
+    (sp-CD
+      (prep
+        (spcms al al))
+      (sno
+        (grup.nom.ms
+          (np0000o Osorno Osorno))))
+    (sp
+      (prep
+        (sps00 por por))
+      (snn
+        (grup.nom
+          (Z 1-0 1-0))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 gol gol)))
+    (grup.verb
+      (vsis3s0 fue ser)
+      (vmp00sm convertido convertir))
+    (sp-CAG
+      (prep
+        (sps00 por por))
+      (snp
+        (grup.nom.ms
+          (np0000p Rodrigo_Barra Rodrigo_Barra))))
+    (sp-CCT
+      (Fc , ,)
+      (prep
+        (sps00 a a))
+      (snn
+        (espec.mp
+          (da0mp0 los el)
+          (Z 25 25))
+        (grup.nom.mp
+          (ncmp000 minutos minuto))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 Próxima próximo)))
+        (ncfs000 jornada jornada)
+        (s.a.fs
+          (grup.a.fs
+            (Fpa -Fpa- -Fpa-)
+            (ao0fs0 segunda segundo)
+            (Fpt -Fpt- -Fpt-)))
+        (sn.x
+          (Fd : :)
+          (grup.nom.co
+            (grup.nom
+              (np0000o Everton-Palestino Everton-Palestino))
+            (Fx ; ;)
+            (grup.nom
+              (np0000o Coquimbo-Cobreloa Coquimbo-Cobreloa))
+            (Fc , ,)
+            (grup.nom
+              (np0000o Colo_Colo-Puerto_Montt Colo_Colo-Puerto_Montt))
+            (Fc , ,)
+            (grup.nom
+              (np0000o Osorno-Huachipato Osorno-Huachipato))
+            (Fc , ,)
+            (grup.nom
+              (np0000o A._Italiano-Universidad_Católica A._Italiano-Universidad_Católica))
+            (Fc , ,)
+            (grup.nom
+              (np0000o Santiago_Morning-Wanderers Santiago_Morning-Wanderers))
+            (Fc , ,)
+            (grup.nom
+              (np0000o Concepción-Unión_Española Concepción-Unión_Española))
+            (coord
+              (cc y y))
+            (grup.nom
+              (np0000o O'Higgins-Universidad_de_Chile O'Higgins-Universidad_de_Chile))))))
+    (Fp . .)))

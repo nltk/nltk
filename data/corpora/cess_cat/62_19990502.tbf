@@ -1,0 +1,332 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 fonts font)
+        (s.a.fp
+          (grup.a.fp
+            (aq0cp0 policials policial)))
+        (s.a.fp
+          (grup.a.fp
+            (aq0fp0 crítiques crític)
+            (sp
+              (prep
+                (sps00 amb amb))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 pla pla)
+                  (sn
+                    (grup.nom
+                      (np00000 Policia_2000 Policia_2000))))))))))
+    (grup.verb
+      (vmip3p0 qualifiquen qualificar))
+    (sp-CPRED.CD
+      (prep
+        (sps00 de de))
+      (sn
+        (grup.nom.ms
+          (Fe " ")
+          (ncms000 miracle miracle)
+          (Fe " "))))
+    (sn-CD
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 espectacular espectacular)))
+        (ncms000 descens descens)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 delinqüència delinqüència))))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 comissaria comissaria)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 districte districte)
+                    (sn
+                      (grup.nom
+                        (np00000 Horta-Guinardó Horta-Guinardó)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-CCT
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (W 1998 [??:??/??/1998:??.??]))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 funcionaris funcionari)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.fp
+              (dd0fp0 aquestes aquest))
+            (grup.nom.fp
+              (ncfp000 dependències dependència)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0cp0 policials policial))))))))
+    (sadv-MOD
+      (grup.adv
+        (rg només només)))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 atendre atendre))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 públic públic)))
+    (sp-CC
+      (prep
+        (sps00 durant durant))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 dia dia))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Per per))
+      (sn
+        (grup.nom.fs
+          (ncfs000 falta falta)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 personal personal))))))
+      (Fc , ,))
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 estar estar))
+    (S.NF.P-ATR
+      (participi
+        (aq0fpp tancades tancat)))
+    (sn.co-CCT
+      (sp
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 nit nit))))
+      (Fc , ,)
+      (sn
+        (grup.nom.mp
+          (ncmp000 dies dia)
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 festius festiu)))))
+      (coord
+        (cc i i))
+      (sn
+        (grup.nom.mp
+          (ncmp000 caps cap)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 setmana setmana)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-CCT
+      (espec.ms
+        (dd0ms0 Aquest aquest))
+      (grup.nom.ms
+        (ncms000 any any))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 comissaria comissaria)))
+    (grup.verb
+      (vmip3s0 està estar))
+    (S.NF.P-ATR
+      (participi
+        (aq0fsp oberta obert)))
+    (sn-CC
+      (espec.fp
+        (da0fp0 les el)
+        (Z 24 24))
+      (grup.nom.fp
+        (ncfp000 hores hora)))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg No_obstant no_obstant))
+      (Fc , ,))
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm reduït reduir))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (Zp 30% 30/100))))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 nombre nombre)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fp
+              (ncfp000 denúncies denúncia)
+              (sp
+                (prep
+                  (sps00 per per))
+                (sn.x
+                  (grup.nom.co
+                    (grup.nom.mp
+                      (ncmp000 delictes delicte))
+                    (coord
+                      (cc i i))
+                    (grup.nom.fp
+                      (ncfp000 faltes falta))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 fonts font)
+        (S.NF.P
+          (participi
+            (aq0fpp consultades consultat)))))
+    (grup.verb
+      (vmip3p0 sostenen sostenir))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (grup.nom
+          (np00000 Horta-Guinardó Horta-Guinardó)))
+      (grup.verb
+        (vmip3s0 té tenir))
+      (sn-CCT
+        (espec.ms
+          (dd0ms0 aquest aquest))
+        (grup.nom.ms
+          (ncms000 any any)))
+      (sn-CD.Q
+        (espec.ms
+          (da0ms0 el el)
+          (di0ms0 mateix mateix))
+        (grup.nom.ms
+          (ncms000 índex índex)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 delinqüència delinqüència)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el)
+        (di0fp0 mateixes mateix))
+      (grup.nom.fp
+        (ncfp000 fonts font)))
+    (grup.verb
+      (vmip3p0 sostenen sostenir))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (Fe " ")
+      (grup.verb
+        (vaic3s0 hauria haver)
+        (sps00 d' de)
+        (infinitiu
+          (van0000 haver haver)
+          (vmp00sm augmentat augmentar)))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 nombre nombre)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (ncfp000 denúncies denúncia))))))
+      (Fe " ")
+      (S.F.A-CC
+        (Fc , ,)
+        (conj.subord
+          (cs ja_que ja_que))
+        (sn-SUJ
+          (espec.mp
+            (da0mp0 els el))
+          (grup.nom.mp
+            (ncmp000 ciutadans ciutadà)))
+        (neg-MOD
+          (rn no no))
+        (grup.verb
+          (vmip3p0 tenen tenir))
+        (S.NF.C-CD.Q
+          (sp
+            (prep
+              (sps00 per per))
+            (sn
+              (grup.nom.s
+                (pt0cs000 què què))))
+          (infinitiu
+            (vmn0000 desplaçar desplaçar))
+          (morf.pron
+            (p0300000 -se ell))
+          (sp-CCL
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fp
+                (di0cp0 altres altre))
+              (grup.nom.fp
+                (ncfp000 comissaries comissaria)))))))
+    (Fp . .)))

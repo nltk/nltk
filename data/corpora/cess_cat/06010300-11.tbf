@@ -1,0 +1,170 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (di0ms0 Un un)
+        (ncms000 total total)
+        (sps00 de de)
+        (dn0cp0 vuit vuit))
+      (grup.nom.fp
+        (ncfp000 comarques comarca)
+        (s.a.fp
+          (grup.a.fp
+            (aq0fp0 catalanes català)))))
+    (grup.verb
+      (vmip3p0 tenen tenir))
+    (sadv-CC
+      (grup.adv
+        (rg hores_d'_ara hores_de_ara)))
+    (sn-CD.Q
+      (grup.nom.ms
+        (ncms000 risc risc)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 alt alt)))
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.ms
+              (ncms000 incendi incendi))))))
+    (sp-AO
+      (Fc , ,)
+      (prep
+        (sps00 segons segons))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 direcció direcció)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 general general)))
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn.x
+              (grup.nom.co
+                (grup.nom.fp
+                  (ncfp000 emergències emergència))
+                (coord
+                  (cc i i))
+                (grup.nom.fs
+                  (ncfs000 seguretat seguretat)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 civil civil))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vsip3p0 Són ser))
+    (sn.x-ATR
+      (grup.nom.co
+        (grup.nom
+          (np0000l La_Noguera La_Noguera))
+        (Fc , ,)
+        (grup.nom
+          (np0000l L'_Alt_Urgell L'_Alt_Urgell))
+        (Fc , ,)
+        (grup.nom
+          (np0000l Les_Garrigues Les_Garrigues))
+        (Fc , ,)
+        (grup.nom
+          (np0000l El_Priorat El_Priorat))
+        (Fc , ,)
+        (grup.nom
+          (np0000l El_Bages El_Bages))
+        (Fc , ,)
+        (grup.nom
+          (np0000l El_Baix_Llobregat El_Baix_Llobregat))
+        (Fc , ,)
+        (grup.nom
+          (np0000l El_Vallès_Oriental El_Vallès_Oriental))
+        (coord
+          (cc i i))
+        (grup.nom
+          (np0000l L'_Alt_Empordà L'_Alt_Empordà))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 resta resta)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 país país))))))
+      (grup.verb
+        (vmip3s0 està estar))
+      (sp-ATR
+        (prep
+          (sps00 amb amb))
+        (sn
+          (grup.nom.ms
+            (ncms000 risc risc)
+            (s.a.ms.x
+              (grup.a.ms.co
+                (grup.a.ms
+                  (aq0ms0 mig mig))
+                (coord
+                  (cc o o))
+                (grup.a.ms
+                  (aq0ms0 baix baix))))
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 incendis incendi))))))))
+    (coord
+      (cc i i))
+    (S
+      (neg-MOD
+        (rn no no))
+      (morf.pron
+        (pp3cn000 hi hi))
+      (grup.verb
+        (vaip3s0 ha haver))
+      (sn.x-CD.Q
+        (grup.nom.co
+          (grup.nom.co
+            (grup.nom.ms
+              (ncms000 risc risc)
+              (s.a.ms
+                (espec
+                  (rg molt molt))
+                (grup.a.ms
+                  (aq0ms0 alt alt))))
+            (coord
+              (cc ni ni))
+            (grup.nom.ms
+              (ncms000 risc risc)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 extrem extrem)))))
+          (sp.j
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom.ms
+                (ncms000 incendi incendi))))))
+      (sp-CC
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (di0cs0 cap cap))
+          (grup.nom.fs
+            (ncfs000 comarca comarca)
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 catalana català)))))))
+    (Fp . .)))

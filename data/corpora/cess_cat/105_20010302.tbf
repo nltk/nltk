@@ -1,0 +1,144 @@
+
+(
+  (S*
+    (sn.x
+      (grup.nom.co
+        (grup.nom.fs
+          (np00000 Rigau Rigau))
+        (Fc , ,)
+        (grup.nom.ms
+          (np00000 Rigol Rigol))
+        (coord
+          (cc i i))
+        (grup.nom.ms
+          (np00000 Mayor_Zaragoza Mayor_Zaragoza))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 trobada trobada)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 comptar comptar))
+    (sp-CREG
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (nc00000 presència presència)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn.co
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 consellera consellera)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom
+                        (np00000 Benestar_Social Benestar_Social))))
+                  (sn
+                    (Fc , ,)
+                    (grup.nom.fs
+                      (np00000 Irene_Rigau Irene_Rigau)))))
+              (Fx ; ;)
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 president president)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (np00000 Parlament Parlament))))
+                  (sn
+                    (Fc , ,)
+                    (grup.nom.ms
+                      (np00000 Joan_Rigol Joan_Rigol))
+                    (Fc , ,))))
+              (coord
+                (cc i i))
+              (sn
+                (espec.ms
+                  (da0cs0 l' el))
+                (grup.nom.ms
+                  (ncms000 exdirector exdirector)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0cs0 general general)))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (np00000 Unesco Unesco))))
+                  (sn
+                    (grup.nom.ms
+                      (np00000 Federico_Mayor_Zaragoza Federico_Mayor_Zaragoza))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CC
+      (grup.adv
+        (rg Actualment actualment)))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom
+          (np00000 Catalunya Catalunya))))
+    (morf.pron
+      (pp3cn000 hi hi))
+    (grup.verb
+      (vaip3s0 ha haver))
+    (sn-CD.Q
+      (espec.fp
+        (rg més més)
+        (sps00 de de)
+        (Z 1.550 1550))
+      (grup.nom.fp
+        (ncfp000 fundacions fundació)
+        (S.F.R.co
+          (Fc , ,)
+          (S.F.R
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (relatiu
+                (pr0cn000 què què)))
+            (grup.verb
+              (vmip3p0 treballen treballar))
+            (sn-SUJ
+              (espec.fp
+                (Z 24.000 24000))
+              (grup.nom.fp
+                (ncfp000 persones persona))))
+          (coord
+            (cc i i))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3p0 compten comptar))
+            (sp-CREG
+              (prep
+                (sps00 amb amb))
+              (sn
+                (espec.mp
+                  (Z 24.000 24000))
+                (grup.nom.mp
+                  (ncmp000 voluntaris voluntari))))))))
+    (Fp . .)))

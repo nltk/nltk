@@ -1,0 +1,99 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 consistori consistori)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm rebut rebre))
+    (sn-CD
+      (espec.fp
+        (Z 180 180))
+      (grup.nom.fp
+        (ncfp000 al·legacions al·legació)
+        (sp
+          (prep
+            (spcms al al))
+          (sn
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 nou nou)))
+              (np00000 Pla_General_d'_Ordenació Pla_General_d'_Ordenació))))
+        (S.F.R.co
+          (Fc , ,)
+          (S.F.R
+            (sn-CD.r
+              (grup.nom.p
+                (Z 18 18)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (relatiu
+                    (da0fp0 les el)
+                    (pr0cp000 quals qual)))))
+            (sn-CD.r
+              (grup.nom.fp
+                (pp3fpa00 les ell)))
+            (grup.verb
+              (vaip3s0 ha haver)
+              (vmp00sm presentat presentar))
+            (sn-SUJ
+              (grup.nom
+                (np00000 CiU CiU))))
+          (coord
+            (cc i i))
+          (S.F.R*
+            (sn-CD
+              (grup.nom.fp
+                (Z 13 13)))
+            (sn-SUJ
+              (grup.nom
+                (np00000 ERC ERC)))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (grup.nom
+          (np00000 CiU CiU)))
+      (grup.verb
+        (vmip3s0 reclama reclamar))
+      (sn-CD
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 futur futur)))
+          (ncms000 recinte recinte)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 firal firal))))))
+    (coord
+      (cc i i))
+    (S*
+      (sn-SUJ
+        (grup.nom
+          (np00000 ERC ERC)))
+      (sn-CD
+        (Fc , ,)
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 construcció construcció)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (ncms000 hospital hospital)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 comarcal comarcal)))))))))
+    (Fp . .)))

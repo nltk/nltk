@@ -1,0 +1,165 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 escriptor escriptor)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 israelià israelià)))
+        (sn
+          (grup.nom.ms
+            (np00000 Amos_Oz Amos_Oz)))
+        (s.a.ms
+          (Fc , ,)
+          (grup.a.ms
+            (aq0ms0 partidari partidari)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.ms
+                  (da0cs0 l' el))
+                (grup.nom.ms
+                  (ncms000 establiment establiment)
+                  (sp
+                    (prep
+                      (sps00 d' de))
+                    (sn
+                      (espec.ms
+                        (di0ms0 un un))
+                      (grup.nom.ms
+                        (np00000 Estat Estat)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0ms0 palestí palestí)))
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0cs0 independent independent))))))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmip3s0 considera considerar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (ncmp000 palestins palestí)))
+      (Fe " ")
+      (grup.verb
+        (vmip3p0 mantenen mantenir))
+      (sadv-CC
+        (grup.adv
+          (rg en_paral·lel en_paral·lel)))
+      (sn-CD
+        (espec.fp
+          (dn0fp0 dues dos))
+        (grup.nom.fp
+          (ncfp000 guerres guerra)
+          (sn.co
+            (Fc , ,)
+            (sn
+              (grup.nom.fs
+                (pi0fs000 una un)
+                (sp
+                  (prep
+                    (sps00 per per))
+                  (sn
+                    (espec.fs
+                      (dp3fs0 la_seva el_seu))
+                    (grup.nom.fs
+                      (ncfs000 independència independència))))
+                (S.F.R
+                  (Fc , ,)
+                  (relatiu-CD
+                    (pr0cn000 que que))
+                  (sn-SUJ
+                    (espec.fs
+                      (di0fs0 tota tot))
+                    (grup.nom.fs
+                      (ncfs000 persona persona)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0fs0 sensata sensat)))))
+                  (grup.verb
+                    (vmip3s0 sosté sostenir))
+                  (Fc , ,))))
+            (coord
+              (cc i i))
+            (sn
+              (espec.fs
+                (di0fs0 una un))
+              (grup.nom.fs
+                (pi0fs000 altra altre)
+                (sp
+                  (prep
+                    (sps00 per per))
+                  (S.NF.C
+                    (infinitiu
+                      (vmn0000 destruir destruir))
+                    (sn-CD
+                      (grup.nom
+                        (np00000 Israel Israel)))
+                    (sp-CC
+                      (prep
+                        (sps00 en_nom_d' en_nom_de))
+                      (sn
+                        (espec.ms
+                          (di0ms0 un un))
+                        (grup.nom.ms
+                          (ncms000 islam islam)
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0ms0 fanàtic fanàtic)))))))))))))
+      (Fe " "))
+    (Fp . .)))
+(
+  (S
+    (Fe " ")
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vaip1p0 Hem haver)
+      (sps00 de de)
+      (infinitiu
+        (vmn0000 lluitar lluitar)))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fp
+          (di0fp0 totes tot)
+          (dp1fpp les_nostres el_nostre))
+        (grup.nom.fp
+          (ncfp000 forces força))))
+    (Fe " ")
+    (INC
+      (S
+        (Fc , ,)
+        (grup.verb
+          (vmip3s0 assegura assegurar))
+        (sn.e-SUJ *0*)
+        (Fc , ,)))
+    (sp-CREG
+      (prep
+        (sps00 contra contra))
+      (sn
+        (Fe " ")
+        (espec.fs
+          (dd0fs0 aquesta aquest))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (ao0fs0 segona segon)))
+          (ncfs000 forma forma)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 guerra guerra)))))
+        (Fe " ")))
+    (Fp . .)))

@@ -1,0 +1,136 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (ao0fs0 séptima séptimo)))
+        (ncfs000 partida partida)
+        (S.F.R
+          (Fc , ,)
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (relatiu
+              (da0fs0 la el)
+              (pr0cn000 que que)))
+          (snp-SUJ
+            (grup.nom.ms
+              (np0000p Kasparov Kasparov)))
+          (grup.verb
+            (vmif3s0 conducirá conducir))
+          (sn-CD
+            (espec.fp
+              (da0fp0 las el))
+            (grup.nom.fp
+              (ncfp000 piezas pieza)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 blancas blanco)))))
+          (Fc , ,))))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vmif3s0 disputará disputar))
+    (snd-CCT
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 próximo próximo)))
+        (W jueves_17 [jueves:17/??/??:??.??])))
+    (Fp . .)))
+(
+  (S
+    (sadv-CCT
+      (grup.adv
+        (rg Después después)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (da0fp0 las el)
+              (dn0cp0 seis seis))
+            (grup.nom.fp
+              (ncfp000 partidas partida)
+              (S.NF.P
+                (participi
+                  (aq0fpp jugadas jugado)))))))
+      (Fc , ,))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Kramnik Kramnik)))
+    (grup.verb
+      (vmip3s0 aventaja aventajar))
+    (sp-CD
+      (prep
+        (sps00 a a))
+      (snp
+        (grup.nom.ms
+          (np0000p Kasparov Kasparov))))
+    (sp-CC
+      (prep
+        (sps00 por por))
+      (snn
+        (grup.nom
+          (Z 3,5-2,5 3.5-2.5))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sna-SUJ
+        (espec.ms
+          (dd0ms0 Este este))
+        (grup.nom.ms
+          (np0000a Mundial Mundial)))
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vmip3s0 juega jugar))
+      (sp-CC
+        (prep
+          (spcms al al))
+        (sn
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (aq0cs0 mejor mejor)))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fp
+                  (Z 16 16))
+                (grup.nom.fp
+                  (ncfp000 partidas partida))))))))
+    (coord
+      (cc y y))
+    (S
+      (sp-CC
+        (prep
+          (sps00 en_caso_de en_caso_de))
+        (sn
+          (grup.nom.ms
+            (ncms000 empate empate)
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (grup.nom.fp
+                  (pn0cp000 ocho ocho)))))))
+      (sn-SUJ
+        (grup.nom.ms
+          (np00000 Kasparov Kasparov)))
+      (grup.verb
+        (vmip3s0 conserva conservar))
+      (sn-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 título título))))
+    (Fp . .)))

@@ -1,0 +1,692 @@
+
+(
+  (S
+    (sn
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (np00000 Emissores_Municipals_de_les_Terres_de_l'_Ebre Emissores_Municipals_de_les_Terres_de_l'_Ebre)
+        (sn
+          (grup.nom.fp
+            (Fpa -Fpa- -Fpa-)
+            (np00000 EMUTE EMUTE)
+            (Fpt -Fpt- -Fpt-)))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 recaptar recaptar))
+    (sn.x
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.co
+        (grup.nom.co
+          (grup.nom.ms
+            (ncms000 milió milió))
+          (coord
+            (cc i i))
+          (grup.nom.ms
+            (pn0ms000 mig mig)))
+        (sp.j
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fp
+              (Zm pessetes pesseta))))))
+    (sp
+      (prep
+        (sps00 durant durant))
+      (sn
+        (espec.fs
+          (da0fs0 la el)
+          (Z 7a 7))
+        (grup.nom.fs
+          (ncfs000 edició edició)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 marató marató)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 solidària solidari))))))
+          (S.NF.P
+            (participi
+              (aq0fsp celebrada celebrat))
+            (sadv
+              (grup.adv
+                (rg ahir ahir)))
+            (sp
+              (Fc , ,)
+              (prep
+                (sps00 a_favor_de a_favor_de))
+              (sn
+                (grup.nom
+                  (np00000 Càritas Càritas))))))))
+    (Fp . .)))
+(
+  (S.co
+    (sp.j
+      (prep
+        (sps00 Durant durant))
+      (sn
+        (espec.fp
+          (dn0cp0 dotze dotze))
+        (grup.nom.fp
+          (ncfp000 hores hora)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 programació programació))))))
+      (Fc , ,))
+    (S.co
+      (S
+        (sn
+          (espec.fp
+            (dn0cp0 deu deu))
+          (grup.nom.fp
+            (ncfp000 emissores emissora)
+            (s.a.fp
+              (grup.a.fp
+                (aq0cp0 municipals municipal)))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fp
+                  (da0fp0 les el))
+                (grup.nom.fp
+                  (ncfp000 comarques comarca))))
+            (sp
+              (prep
+                (spcms del del))
+              (sn.co
+                (sn
+                  (grup.nom.ms
+                    (np00000 Baix_Ebre Baix_Ebre)))
+                (coord
+                  (cc i i))
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (np00000 Montsià Montsià)))))))
+        (grup.verb
+          (vaip3p0 van anar)
+          (vmn0000 solucionar solucionar))
+        (sn
+          (espec.mp
+            (Z 24 24))
+          (grup.nom.mp
+            (ncmp000 casos cas)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (np00000 Finestral_de_Caritat Finestral_de_Caritat)))))
+          (Fc , ,)))
+      (coord
+        (sps00 a_més_de a_més_de))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 donar_a_conèixer donar_a_conèixer))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 tasca tasca)
+            (S.F.R
+              (relatiu
+                (pr0cn000 que que))
+              (grup.verb
+                (vmip3s0 realitza realitzar))
+              (sn
+                (grup.nom
+                  (np00000 Càritas Càritas)))
+              (sp
+                (prep
+                  (sps00 per per))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 ajudar ajudar))
+                  (sn
+                    (espec.mp
+                      (da0mp0 els el))
+                    (grup.nom.fp
+                      (sadv
+                        (grup.adv
+                          (rg més més)))
+                      (ncfp000 necessitats necessitat))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 programació programació)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el)
+              (Z 7a 7))
+            (grup.nom
+              (np00000 Marató Marató)
+              (sp
+                (prep
+                  (sps00 d' de))
+                (sn
+                  (grup.nom
+                    (np00000 EMUTE EMUTE))))
+              (sp
+                (prep
+                  (sps00 a_favor_de a_favor_de))
+                (sn
+                  (grup.nom
+                    (np00000 Càritas Càritas)))))))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 incloure incloure))
+    (sn.co
+      (sn
+        (grup.nom.fp
+          (ncfp000 entrevistes entrevista)
+          (sp
+            (Fc , ,)
+            (prep
+              (sps00 entre entre))
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (grup.nom.p
+                  (pi0cp000 altres altre))))
+            (Fc , ,))
+          (sp.co
+            (sp
+              (prep
+                (sps00 amb amb))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 bisbe bisbe)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom
+                        (np00000 Tortosa Tortosa))))
+                  (sn
+                    (Fc , ,)
+                    (grup.nom.ms
+                      (np00000 Xavier_Salinas Xavier_Salinas))))))
+            (Fc , ,)
+            (sp
+              (prep
+                (sps00 amb amb))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 director director)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom
+                        (np00000 Càritas Càritas))))
+                  (sn
+                    (Fc , ,)
+                    (grup.nom.ms
+                      (np00000 Manel_Miralles Manel_Miralles)))))))))
+      (Fx ; ;)
+      (sn
+        (espec.fp
+          (di0cp0 diferents diferent))
+        (grup.nom.fp
+          (ncfp000 actuacions actuació)
+          (s.a.fp
+            (grup.a.fp
+              (aq0cp0 musicals musical)))
+          (sp
+            (prep
+              (sps00 en en))
+            (sadv
+              (grup.adv
+                (rg directe directe))))
+          (sp
+            (Fc , ,)
+            (prep
+              (cs com com))
+            (sn
+              (grup.nom
+                (np00000 Quico_el_Cèlio_,_el_Noi_i_el_Mut_de_Ferreries Quico_el_Cèlio_,_el_Noi_i_el_Mut_de_Ferreries)))))
+        (Fx ; ;))
+      (coord
+        (cc i i))
+      (sn
+        (grup.nom.fp
+          (ncfp000 taules taula)
+          (s.a.fp
+            (grup.a.fp
+              (aq0fp0 rodones rodó)))
+          (sp
+            (prep
+              (sps00 amb amb))
+            (sn
+              (grup.nom.mp
+                (ncmp000 temes tema)
+                (S.NF.P
+                  (participi
+                    (aq0mpp relacionats relacionat))
+                  (sp
+                    (prep
+                      (sps00 amb amb))
+                    (sn.co
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 immigració immigració)))
+                      (coord
+                        (cc o o))
+                      (sn
+                        (espec.fp
+                          (da0fp0 les el))
+                        (grup.nom.fp
+                          (ncfp000 tradicions tradició)
+                          (s.a.fp
+                            (grup.a.fp
+                              (aq0cp0 populars popular))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn
+        (espec.fs
+          (di0fs0 Una un))
+        (grup.nom.fs
+          (ncfs000 vintena vintena)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn.x
+              (grup.nom.co
+                (grup.nom.co
+                  (grup.nom.mp
+                    (nccp000 professionals professional))
+                  (coord
+                    (cc i i))
+                  (grup.nom.mp
+                    (ncmp000 col·laboradors col·laborador)))
+                (sp.j
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fp
+                      (da0fp0 les el)
+                      (di0cp0 diferents diferent))
+                    (grup.nom.fp
+                      (ncfp000 emissores emissora)))))))))
+      (grup.verb
+        (vaip3p0 van anar)
+        (vmn0000 conduir conduir))
+      (sn
+        (espec.fp
+          (da0fp0 les el)
+          (dn0cp0 dotze dotze))
+        (grup.nom.fp
+          (ncfp000 hores hora)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 programació programació)))))))
+    (coord
+      (cc i i))
+    (S
+      (sn
+        (espec.mp
+          (dn0cp0 deu deu))
+        (grup.nom.mp
+          (ncmp000 voluntaris voluntari)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (np00000 Càritas Càritas))))))
+      (grup.verb
+        (vaip3p0 van anar)
+        (vmn0000 atendre atendre))
+      (sn
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (ncfp000 trucades trucada)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 telèfon telèfon)))))))
+    (Fp . .)))
+(
+  (S
+    (sn
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 president president)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom
+              (np00000 EMUTE EMUTE))))
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (np00000 Francesc_Callau Francesc_Callau))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 reconèixer reconèixer))
+    (S.F.C.co
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 recaptació recaptació)))
+        (Fz ' ')
+        (grup.verb
+          (vaip3s0 ha haver)
+          (vsp00sm estat ser))
+        (sn
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs.1n
+            (grup.nom.fs
+              (sadv
+                (grup.adv
+                  (rg mica mica)))
+              (sadv
+                (grup.adv
+                  (rg més més)))
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 fluixa fluix))))))
+        (sadv
+          (grup.adv
+            (rg enguany enguany)))
+        (S.F.AComp*.j.1c
+          (conj.subord
+            (cs que que))
+          (sn
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (ncms000 any any)
+              (S.NF.P
+                (participi
+                  (aq0msp passat passat)))
+              (S.F.R
+                (relatiu
+                  (pr0cn000 que que))
+                (morfema.verbal
+                  (p0000000 es es))
+                (grup.verb
+                  (vaip3p0 van anar)
+                  (vmn0000 recaptar recaptar))
+                (sn
+                  (espec.fp
+                    (Z 1.922.564 1922564))
+                  (grup.nom.fp
+                    (Zm pessetes pesseta)))))))
+        (Fc , ,))
+      (coord
+        (cc i i))
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn.e *0*)
+        (grup.verb
+          (vaip3p0 van anar)
+          (vmn0000 servir servir))
+        (sp
+          (prep
+            (sps00 per per))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 solucionar solucionar))
+            (sn
+              (espec.mp
+                (Z 28 28))
+              (grup.nom.mp
+                (ncmp000 casos cas)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (np00000 Finestral_de_Caritat_de_Càritas Finestral_de_Caritat_de_Càritas))))))))
+        (Fz ' ')))
+    (Fp . .)))
+(
+  (S
+    (sn
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (np00000 Marató Marató)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom
+              (np00000 EMUTE EMUTE))))
+        (sp
+          (prep
+            (sps00 a_favor_de a_favor_de))
+          (sn
+            (grup.nom
+              (np00000 Càritas Càritas))))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vsn0000 ser ser))
+    (S.NF.P
+      (participi
+        (aq0fpp transmesa transmès))
+      (sp
+        (prep
+          (sps00 per per))
+        (sn
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (ncfp000 emissores emissora)
+            (sn.co
+              (Fd : :)
+              (sn
+                (grup.nom
+                  (np00000 Amposta_Ràdio Amposta_Ràdio)
+                  (sp
+                    (Fc , ,)
+                    (prep
+                      (sps00 d' de))
+                    (sn
+                      (sn
+                        (grup.nom
+                          (np00000 Amposta Amposta)))
+                      (sn.j
+                        (grup.nom
+                          (Fpa -Fpa- -Fpa-)
+                          (np00000 Montsià Montsià)
+                          (Fpt -Fpt- -Fpt-)))))))
+              (Fx ; ;)
+              (sn
+                (grup.nom
+                  (np00000 Antena_Caro Antena_Caro)
+                  (sp
+                    (Fc , ,)
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (sn
+                        (grup.nom
+                          (np00000 Roquetes Roquetes)))
+                      (sn.j
+                        (grup.nom
+                          (Fpa -Fpa- -Fpa-)
+                          (np00000 Baix_Ebre Baix_Ebre)
+                          (Fpt -Fpt- -Fpt-)))))))
+              (Fx ; ;)
+              (sn
+                (grup.nom
+                  (np00000 Ràdio_Joventut Ràdio_Joventut)
+                  (sp
+                    (Fc , ,)
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (sn
+                        (grup.nom
+                          (np00000 Masdenverge Masdenverge)))
+                      (sn.j
+                        (grup.nom
+                          (Fpa -Fpa- -Fpa-)
+                          (np00000 Montsià Montsià)
+                          (Fpt -Fpt- -Fpt-)))))))
+              (Fx ; ;)
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np00000 Plana_Ràdio Plana_Ràdio)
+                  (sp
+                    (Fc , ,)
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (sn
+                        (grup.nom
+                          (np00000 Santa_Bàrbara Santa_Bàrbara)))
+                      (sn.j
+                        (grup.nom
+                          (Fpa -Fpa- -Fpa-)
+                          (np00000 Montsià Montsià)
+                          (Fpt -Fpt- -Fpt-)))))))
+              (Fx ; ;)
+              (sn
+                (grup.nom
+                  (np00000 Ràdio_Tortosa Ràdio_Tortosa)
+                  (sn
+                    (grup.nom
+                      (Fpa -Fpa- -Fpa-)
+                      (np00000 Baix_Ebre Baix_Ebre)
+                      (Fpt -Fpt- -Fpt-)))))
+              (Fx ; ;)
+              (sn
+                (grup.nom
+                  (np00000 Antena_Aldaia Antena_Aldaia)
+                  (sp
+                    (Fc , ,)
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (sn
+                        (espec.fs
+                          (da0cs0 l' el))
+                        (grup.nom.fs
+                          (np00000 Aldea Aldea)))
+                      (sn.j
+                        (grup.nom
+                          (Fpa -Fpa- -Fpa-)
+                          (np00000 Baix_Ebre Baix_Ebre)
+                          (Fpt -Fpt- -Fpt-)))))))
+              (Fx ; ;)
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np00000 Cala_Ràdio Cala_Ràdio)
+                  (sp
+                    (Fc , ,)
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (sn
+                        (espec.fs
+                          (da0cs0 l' el))
+                        (grup.nom.fs
+                          (np00000 Ametlla_de_Mar Ametlla_de_Mar)))
+                      (sn.j
+                        (grup.nom
+                          (Fpa -Fpa- -Fpa-)
+                          (np00000 Baix_Ebre Baix_Ebre)
+                          (Fpt -Fpt- -Fpt-)))))))
+              (Fx ; ;)
+              (sn
+                (grup.nom
+                  (np00000 Alcanar_Ràdio Alcanar_Ràdio)
+                  (sp
+                    (Fc , ,)
+                    (prep
+                      (sps00 d' de))
+                    (sn
+                      (sn
+                        (grup.nom
+                          (np00000 Alcanar Alcanar)))
+                      (sn.j
+                        (grup.nom
+                          (Fpa -Fpa- -Fpa-)
+                          (np00000 Montsià Montsià)
+                          (Fpt -Fpt- -Fpt-)))))))
+              (Fx ; ;)
+              (sn
+                (grup.nom
+                  (np00000 Ràdio_Delta Ràdio_Delta)
+                  (sp
+                    (Fc , ,)
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (sn
+                        (grup.nom
+                          (np00000 Deltebre Deltebre)))
+                      (sn.j
+                        (grup.nom
+                          (Fpa -Fpa- -Fpa-)
+                          (np00000 Baix_Ebre Baix_Ebre)
+                          (Fpt -Fpt- -Fpt-))))))
+                (Fx ; ;))
+              (coord
+                (cc i i))
+              (sn
+                (grup.nom
+                  (np00000 Ràdio_Ràpita Ràdio_Ràpita)
+                  (sp
+                    (Fc , ,)
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (sn
+                        (grup.nom
+                          (np00000 Sant_Carles_de_la_Ràpita Sant_Carles_de_la_Ràpita)))
+                      (sn.j
+                        (grup.nom
+                          (Fpa -Fpa- -Fpa-)
+                          (np00000 Montsià Montsià)
+                          (Fpt -Fpt- -Fpt-))))))))))))
+    (Fp . .)))

@@ -1,0 +1,90 @@
+
+(
+  (S.co
+    (S
+      (sadv-CC
+        (grup.adv
+          (rg A_su_vez a_su_vez))
+        (Fc , ,))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3p0 reprochan reprochar))
+      (sp-CI
+        (prep
+          (sps00 a a))
+        (snp
+          (grup.nom.ms
+            (np0000p Mesic Mesic))))
+      (sn-CD
+        (espec.ms
+          (dp3cs0 su su))
+        (grup.nom.ms
+          (Fe " ")
+          (ncms000 populismo populismo)
+          (Fe " "))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3p0 aseguran asegurar))
+      (S.F.C.co-CD
+        (conj.subord
+          (cs que que))
+        (S.F.C
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vmip3s0 carece carecer))
+          (sp-CREG
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (di0ms0 un uno))
+              (grup.nom.ms
+                (ncms000 programa programa)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 político político)))
+                (S.NF.P
+                  (participi
+                    (aq0msp detallado detallado))))))
+          (Fc , ,))
+        (coord
+          (cc a_la_vez_que a_la_vez_que))
+        (S.F.C
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vmip3s0 representa representar))
+          (sp-CD
+            (prep
+              (spcms al al))
+            (sno
+              (grup.nom.ms
+                (np0000o Partido_Popular_Croata Partido_Popular_Croata)
+                (sno
+                  (grup.nom.ms
+                    (Fpa -Fpa- -Fpa-)
+                    (np0000o HNS HNS)
+                    (Fpt -Fpt- -Fpt-)))
+                (sn
+                  (Fc , ,)
+                  (grup.nom.fs
+                    (ncfs000 formación formación)
+                    (S.F.R
+                      (relatiu-SUJ
+                        (pr0cn000 que que))
+                      (grup.verb
+                        (vmis3s0 logró lograr))
+                      (sn-CD
+                        (espec.fs
+                          (di0fs0 una uno))
+                        (grup.nom.fs
+                          (S.NF.P
+                            (participi
+                              (aq0fsp reducida reducido)))
+                          (ncfs000 representación representación)
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0fs0 parlamentaria parlamentario))))))))))))))
+    (Fp . .)))

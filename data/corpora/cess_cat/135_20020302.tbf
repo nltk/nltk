@@ -1,0 +1,177 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 programa programa)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom
+              (np00000 El_33 El_33))))
+        (sn
+          (grup.nom
+            (np00000 Millennium Millennium)))))
+    (sn-CCT
+      (grup.nom
+        (Fpa -Fpa- -Fpa-)
+        (W 22.05 [??:??/??/??:22.05])
+        (Fpt -Fpt- -Fpt-)))
+    (grup.verb
+      (vmip3s0 ofereix oferir))
+    (sadv-CCT
+      (grup.adv
+        (rg avui avui)))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 edició edició)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 especial especial)))
+        (S.NF.P
+          (participi
+            (aq0fsp titulada titulat))
+          (sn-CPRED
+            (grup.nom
+              (np00000 Som_mediterranis Som_mediterranis))))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 analitzar analitzar))
+        (sn-CD
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 futur futur)
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (espec.fs
+                  (dd0fs0 aquesta aquest))
+                (grup.nom.fs
+                  (ncfs000 àrea àrea)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 geogràfica geogràfic))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 convidats convidat)))
+    (grup.verb
+      (vsip3p0 són ser))
+    (sn.co-ATR
+      (sn.x
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.co
+          (grup.nom.co
+            (grup.nom.ms
+              (nccs000 poeta poeta))
+            (coord
+              (cc i i))
+            (grup.nom.ms
+              (nccs000 novel·lista novel·lista)))
+          (sn.j
+            (grup.nom.ms
+              (np00000 Tahar_ben_Jelloun Tahar_ben_Jelloun)))))
+      (Fc , ,)
+      (sn
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (ncfs000 escriptora escriptora)
+          (sn
+            (grup.nom.fs
+              (np00000 Carme_Riera Carme_Riera)))))
+      (Fc , ,)
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 catedràtic catedràtic)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom
+                (np00000 Història_Contemporània Història_Contemporània))))
+          (sn
+            (grup.nom.ms
+              (np00000 Antoni_Segura Antoni_Segura))))
+        (Fc , ,))
+      (coord
+        (cc i i))
+      (sn.x
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.co
+          (grup.nom.co
+            (grup.nom.ms
+              (ncms000 escriptor escriptor))
+            (coord
+              (cc i i))
+            (grup.nom.ms
+              (nccs000 periodista periodista)))
+          (sn.j
+            (grup.nom.ms
+              (np00000 Xavier_Bru_de_Sala Xavier_Bru_de_Sala))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CCT
+      (grup.adv
+        (rg Abans abans)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 debat debat))))))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vmip3s0 emet emetre))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 pel·lícula pel·lícula)
+        (sn
+          (grup.nom
+            (np00000 Daniya Daniya)))
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (ncms000 jardí jardí)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.ms
+                  (da0cs0 l' el))
+                (grup.nom.ms
+                  (ncms000 harem harem))))))
+        (S.NF.P
+          (Fc , ,)
+          (participi
+            (aq0fsp dirigida dirigit))
+          (sp-CAG
+            (prep
+              (sps00 per per))
+            (sn
+              (grup.nom.ms
+                (np00000 Carles_Mira Carles_Mira)))))))
+    (Fp . .)))

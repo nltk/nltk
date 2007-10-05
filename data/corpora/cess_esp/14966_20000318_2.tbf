@@ -1,0 +1,147 @@
+
+(
+  (S
+    (sn.e-SUJ *0*)
+    (neg-MOD
+      (rn No no))
+    (grup.verb
+      (vmip3s0 parece parecer))
+    (sn-ATR
+      (espec.fs
+        (di0fs0 una uno))
+      (grup.nom.fs
+        (ncfs000 labor labor)
+        (S.NF.P
+          (sadv-CC
+            (grup.adv
+              (rg demasiado demasiado)))
+          (participi
+            (aq0fsp complicada complicado)))))
+    (sp-CC
+      (prep
+        (sps00 ante ante))
+      (sn
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (nccs000 rival rival)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (nccs000 defensa defensa)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (dp3cs0 su su))
+                      (grup.nom.fs
+                        (ncfs000 corona corona)))))))
+            (grup.verb
+              (vmip3s0 cuenta contar))
+            (sn-CD
+              (espec.mp
+                (dp3cp0 sus su))
+              (grup.nom.mp
+                (ncmp000 partidos partido)))
+            (sp-CC
+              (prep
+                (sps00 por por))
+              (sn
+                (grup.nom.fp
+                  (ncfp000 derrotas derrota))))))))
+    (Fp . .)))
+(
+  (S.co
+    (sadv.j-CC
+      (grup.adv
+        (rg Después después)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (dn0cp0 cuatro cuatro))
+            (grup.nom.fp
+              (ncfp000 jornadas jornada))))))
+    (S.co
+      (S
+        (sno-SUJ
+          (grup.nom
+            (np0000o Inglaterra Inglaterra)))
+        (grup.verb
+          (vaip3s0 ha haber)
+          (vmp00sm ganado ganar))
+        (sn-CD
+          (espec.mp
+            (di0mp0 todos todo)
+            (da0mp0 los el))
+          (grup.nom.mp
+            (ncmp000 partidos partido))))
+      (coord
+        (cc y y))
+      (S
+        (sadv-CC
+          (Fc , ,)
+          (grup.adv
+            (rg lógicamente lógicamente))
+          (Fc , ,))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmip3s0 lidera liderar))
+        (sn-CD
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 torneo torneo)))
+        (sp-CC
+          (prep
+            (sps00 en en))
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 solitario solitario))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sp-CC
+        (prep
+          (sps00 Hasta hasta))
+        (sadv
+          (grup.adv
+            (rg ahora ahora))))
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (ncmp000 ingleses inglés)))
+      (grup.verb
+        (vaip3p0 han haber)
+        (vmp00sm logrado lograr))
+      (sn-CD
+        (espec.mp
+          (Z 270 270))
+        (grup.nom.mp
+          (di0mp0 tantos tanto))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3p0 han haber)
+        (vmp00sm encajado encajar))
+      (sn-CD
+        (sadv.j
+          (grup.adv
+            (rg sólo sólo)))
+        (snn
+          (grup.nom.mp
+            (Z 51 51)))))
+    (Fp . .)))

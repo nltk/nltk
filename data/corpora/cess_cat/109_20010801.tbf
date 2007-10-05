@@ -1,0 +1,152 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 foc foc)
+        (S.NF.P
+          (Fc , ,)
+          (participi
+            (aq0msp declarat declarat))
+          (sadv-CCT
+            (espec
+              (rg poc poc))
+            (grup.adv
+              (rg després després)
+              (sp
+                (prep
+                  (sps00 de de))
+                (snd
+                  (espec.fp
+                    (da0fp0 les el))
+                  (grup.nom.fp
+                    (W 17.10_hores [??:??/??/??:17.10]))))))
+          (sp-CCL
+            (prep
+              (sps00 a a))
+            (sno
+              (grup.nom
+                (np0000o Hermanos_Espax Hermanos_Espax))))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 requerir requerir))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 intervenció intervenció)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn.co
+            (sn
+              (espec.mp
+                (Z 11 11))
+              (grup.nom.mp
+                (ncmp000 vehicles vehicle)
+                (sp
+                  (prep
+                    (spcmp dels del))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 bombers bomber))))))
+            (coord
+              (cc i i))
+            (sn
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (ncms000 helicòpter helicòpter)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (di0fs0 Una un))
+      (grup.nom.fs
+        (ncfs000 espurna espurna)
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (ncfp000 màquines màquina)
+              (sp
+                (prep
+                  (sps00 d' de))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 envasament envasament)))))))))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmip3s0 perfila perfilar))
+    (sp-CPRED.SUJ
+      (prep
+        (cs com com))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 causa causa)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 sinistre sinistre)))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCL.r
+      (prep
+        (sps00 A a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 plantilla plantilla)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 firma firma))))
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (morfema.verbal-PASS
+              (p0000000 es es))
+            (grup.verb
+              (vaip3s0 va anar)
+              (van0000 haver haver)
+              (sps00 d' de)
+              (infinitiu
+                (vmn0000 evacuar evacuar)))
+            (Fc , ,)))))
+    (sn-CCL.r
+      (grup.nom
+        (pp3cn000 hi hi)))
+    (grup.verb
+      (vmii3p0 treballaven treballar))
+    (sn.x-SUJ
+      (espec.mp
+        (di0ms0 un un)
+        (ncms000 centenar centenar)
+        (sps00 de de))
+      (grup.nom.co
+        (grup.nom.mp
+          (ncmp000 magribins magribí))
+        (coord
+          (cc i i))
+        (grup.nom.mp
+          (ncmp000 colombians colombià))))
+    (Fp . .)))

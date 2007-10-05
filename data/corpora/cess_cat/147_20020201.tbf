@@ -1,0 +1,116 @@
+
+(
+  (S
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom.fp
+          (ncfp000 Llegendes llegenda))
+        (Fc , ,)
+        (grup.nom.mp
+          (ncmp000 dibuixos dibuix))
+        (Fc , ,)
+        (grup.nom.fp
+          (ncfp000 pintures pintura))
+        (coord
+          (cc i i))
+        (grup.nom.fp
+          (ncfp000 fotografies fotografia))))
+    (grup.verb
+      (vmip3p0 serveixen servir))
+    (sp-CREG
+      (prep
+        (sps00 de de))
+      (sn
+        (grup.nom.ms
+          (ncms000 suport suport))))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (nccs000 artista artista)
+          (sn
+            (grup.nom.ms
+              (np00000 Perejaume Perejaume))))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 reflexionar reflexionar))
+        (sp-CREG
+          (prep
+            (sps00 sobre sobre))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 territorialitat territorialitat)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 llenguatge llenguatge)))))))))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 exposició exposició)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3s0 reuneix reunir))
+            (sp-CCL
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 galeria galeria)
+                  (sn
+                    (grup.nom
+                      (np00000 Joan_Prats Joan_Prats)))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom
+                        (np00000 Barcelona Barcelona)))))))
+            (sn-CD
+              (espec.fs
+                (dp3fs0 la_seva el_seu))
+              (grup.nom.fs
+                (ncfs000 obra obra)
+                (s.a.fs
+                  (espec
+                    (rg més més))
+                  (grup.a.fs
+                    (aq0cs0 recent recent)))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg En_total en_total))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (nccs000 artista artista)))
+    (grup.verb
+      (vmip3s0 exhibeix exhibir))
+    (sn-CD
+      (espec.fp
+        (Z 48 48))
+      (grup.nom.fp
+        (ncfp000 obres obra)))
+    (Fp . .)))

@@ -1,0 +1,501 @@
+
+(
+  (S
+    (neg-MOD
+      (rn No no))
+    (morfema.verbal-IMPERS
+      (p0000000 se se))
+    (grup.verb
+      (vmip3s0 trata tratar))
+    (sp.co-CREG
+      (sp
+        (prep
+          (sps00 de de))
+        (sn
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (ncms000 producto producto)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 laboratorio laboratorio))))))
+        (Fc , ,))
+      (coord
+        (cc ni ni))
+      (sp
+        (prep
+          (sps00 de de))
+        (sn
+          (espec.fs
+            (di0fs0 una uno))
+          (grup.nom.fs
+            (ncfs000 fórmula fórmula)
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 secreta secreto))))))
+      (coord
+        (cc ni ni))
+      (sp
+        (prep
+          (sps00 de de))
+        (sn
+          (grup.nom.fs
+            (ncfs000 magia magia)))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 naturaleza naturaleza)))
+    (sn-CD
+      (grup.nom.p
+        (pp1cp000 nos yo)))
+    (grup.verb
+      (vaip3s0 ha haber)
+      (vmp00sm dotado dotar))
+    (sp-CREG
+      (prep
+        (sps00 de de))
+      (sn
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (ncmp000 componentes componente)
+          (s.a.mp
+            (grup.a.mp
+              (aq0cp0 imprescindibles imprescindible)
+              (sp
+                (prep
+                  (sps00 para para))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 fabricación fabricación)
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 elemento elemento)
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0ms0 blanco blanco)))))))))))
+          (sn.co
+            (Fd : :)
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 aire aire)))
+            (coord
+              (cc y y))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.fs
+                (ncfs000 agua agua)))))))
+    (Fp . .)))
+(
+  (S*
+    (S.F.A
+      (conj.subord
+        (cs Así_que así_que))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 tecnología tecnología)))
+      (sadv-CC
+        (grup.adv
+          (rg no no)))
+      (grup.verb
+        (vmip3s0 tiene tener)
+        (sadv-CC
+          (grup.adv
+            (rg más más)))
+        (cs que que)
+        (infinitiu
+          (vmn0000 utilizarlos utilizar)))
+      (sadv-CC
+        (grup.adv
+          (rg debidamente debidamente))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 nieve nieve)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 artificial artificial)))))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vmip3s0 produce producir))
+    (sadv-CC
+      (grup.adv
+        (rg dentro dentro)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.ms
+              (di0ms0 un uno))
+            (grup.nom.ms
+              (ncms000 cañón cañón)
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vmip3s0 mezcla mezclar))
+                (sn.x-CD
+                  (grup.nom.co
+                    (grup.nom.ms
+                      (ncms000 aire aire)
+                      (sp
+                        (prep
+                          (sps00 a a))
+                        (sn
+                          (grup.nom.fs
+                            (ncfs000 presión presión)))))
+                    (coord
+                      (cc y y))
+                    (grup.nom.fs
+                      (ncfs000 agua agua))))
+                (sp-CC
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.fp
+                      (da0fp0 las el))
+                    (grup.nom.fp
+                      (s.a.fp
+                        (grup.a.fp
+                          (aq0fp0 justas justo)))
+                      (ncfp000 proporciones proporción))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 mezcla mezcla)))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmip3s0 precipita precipitar))
+    (sp-CC
+      (prep
+        (sps00 a_través_de a_través_de))
+      (sn
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 fila fila)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (ncfp000 toberas tobera)
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmip3p0 sirven servir))
+                  (sp-CC
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 atomizador atomizador)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 truco truco)))
+    (grup.verb
+      (vmip3s0 consiste consistir))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 pulverizar pulverizar))
+        (sn.co-CD
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 aire aire)))
+          (coord
+            (cc y y))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.fs
+              (ncfs000 agua agua))))
+        (sp-CC
+          (prep
+            (sps00 en en))
+          (sn
+            (grup.nom.fp
+              (ncfp000 gotas gota)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 pequeñísimas pequeñísimo)))
+              (S.NF.P
+                (Fc , ,)
+                (participi
+                  (aq0fpp enfriadas enfriado))
+                (sadv-CC
+                  (grup.adv
+                    (rg como_consecuencia como_consecuencia)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 pérdida pérdida)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom.fs
+                                (ncfs000 presión presión))))
+                          (sadv
+                            (grup.adv
+                              (rg dentro dentro)
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sn
+                                  (espec.fs
+                                    (da0fs0 la el))
+                                  (grup.nom.fs
+                                    (ncfs000 tobera tobera)))))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 Los el))
+        (grup.nom.mp
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 diminutos diminuto)))
+          (ncmp000 cristales cristal)
+          (S.NF.P
+            (participi
+              (aq0mpp helados helado)))))
+      (morf.pron
+        (p0300000 se él))
+      (grup.verb
+        (vmip3p0 unen unir))
+      (sp-CI
+        (prep
+          (sps00 a a))
+        (sn
+          (grup.nom.mp
+            (pi0mp000 otros otro)
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vmip3p0 salen salir))
+              (sp-CC
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fp
+                    (di0fp0 otras otro))
+                  (grup.nom.fp
+                    (ncfp000 toberas tobera)))))))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vsip3p0 son ser)
+        (vmp00pm expulsados expulsar))
+      (sadv-CC
+        (grup.adv
+          (rg fuera fuera)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 cañón cañón))))))
+      (sp-CC
+        (sadv
+          (grup.adv
+            (rg ya ya)))
+        (sp
+          (prep
+            (sps00 con con))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 forma forma)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 definitiva definitivo)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.mp
+                    (s.a.mp
+                      (grup.a.mp
+                        (aq0mp0 auténticos auténtico)))
+                    (ncmp000 copos copo)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 nieve nieve))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 cañón cañón)))
+    (grup.verb
+      (vmip3s0 puede poder)
+      (infinitiu
+        (vmn0000 expeler expeler)))
+    (sn-CD
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.mp
+        (ncmp000 copos copo)))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (snn
+        (espec.mp
+          (rg más_de más_de)
+          (dn0cp0 cincuenta cincuenta))
+        (grup.nom.mp
+          (ncmp000 metros metro)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 distancia distancia)))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sadv-CC
+        (grup.adv
+          (rg Así así)))
+      (sp-CC
+        (Fc , ,)
+        (prep
+          (sps00 por por))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 camino camino)))
+        (Fc , ,))
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (ncmp000 cristales cristal)))
+      (morf.pron
+        (p0300000 se él))
+      (grup.verb
+        (vmif3p0 unirán unir))
+      (sn-CC
+        (grup.nom.mp
+          (pi0mp000 unos uno)
+          (sp
+            (prep
+              (sps00 con con))
+            (sn
+              (grup.nom.mp
+                (pi0mp000 otros otro)))))))
+    (coord
+      (cc y y))
+    (S
+      (grup.verb
+        (vmif3s0 aumentará aumentar))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 espesor espesor)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 nieve nieve)))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.ACond-AO
+      (conj.subord
+        (cs Cuanto cuanto))
+      (sa.co-ATR
+        (sa
+          (espec
+            (rg más más))
+          (grup.a
+            (aq0ms0 frío frío)))
+        (coord
+          (cc y y))
+        (sa
+          (espec
+            (rg más más))
+          (grup.a
+            (aq0ms0 seco seco))))
+      (grup.verb
+        (vssp3s0 sea ser))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 aire aire)))
+      (Fc , ,))
+    (sadv-CC
+      (espec
+        (rg más más))
+      (grup.adv
+        (rg rápidamente rápidamente)))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmif3p0 formarán formar))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.mp
+        (ncmp000 copos copo)))
+    (Fp . .)))

@@ -1,0 +1,515 @@
+
+(
+  (S
+    (snl-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 demarcació demarcació)
+        (sp
+          (prep
+            (sps00 de de))
+          (snl
+            (grup.nom
+              (np0000l Tarragona Tarragona))))))
+    (grup.verb
+      (vmip3s0 té tenir))
+    (sn-CD.Q
+      (espec.mp
+        (Z 33 33))
+      (grup.nom.mp
+        (ncmp000 municipis municipi)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (sadv-CC
+            (grup.adv
+              (rg encara encara)))
+          (neg-MOD
+            (rn no no))
+          (grup.verb
+            (vmip3p0 disposen disposar))
+          (sp-CREG
+            (prep
+              (sps00 de de))
+            (sna
+              (grup.nom
+                (np0000a Pla_General_d'_Ordenació_Urbana Pla_General_d'_Ordenació_Urbana)
+                (sna
+                  (grup.nom
+                    (Fpa -Fpa- -Fpa-)
+                    (np0000a PGOU PGOU)
+                    (Fpt -Fpt- -Fpt-)))))))))
+    (sp-AO
+      (Fc , ,)
+      (prep
+        (sps00 segons segons))
+      (sn
+        (grup.nom.fp
+          (ncfp000 dades dada)
+          (S.NF.P
+            (participi
+              (aq0fpp facilitades facilitat))
+            (sp-CAG
+              (prep
+                (spcms pel pel))
+              (snp
+                (grup.nom.ms
+                  (ncms000 conseller conseller)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sno
+                      (grup.nom
+                        (np0000o Política_Territorial Política_Territorial))))
+                  (snp
+                    (Fc , ,)
+                    (grup.nom.ms
+                      (np0000p Pere_Macias Pere_Macias))
+                    (Fc , ,)))))
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 resposta resposta)
+                  (sp
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (espec.fs
+                        (di0fs0 una un))
+                      (grup.nom.fs
+                        (ncfs000 pregunta pregunta)
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0fs0 parlamentària parlamentari)))
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (snp
+                            (grup.nom.ms
+                              (ncms000 diputat diputat)
+                              (sp
+                                (prep
+                                  (sps00 d' de))
+                                (sno
+                                  (grup.nom
+                                    (np0000o ERC ERC))))
+                              (snp
+                                (grup.nom.ms
+                                  (np0000p Jaume_Oliveras Jaume_Oliveras))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Macias Macias)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm assenyalat assenyalar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sno-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (np0000o Comissió_d'_Urbanisme Comissió_d'_Urbanisme)
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (grup.nom
+                (np0000l Tarragona Tarragona))))))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 dictar dictar))
+      (snd-CC
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (W any_1979 [??:??/??/1979:??.??])))
+      (sna-CD
+        (espec.fp
+          (di0fp0 unes un))
+        (grup.nom.fp
+          (np0000a Normes_Subsidiàries_i_Complementàries_de_Planejament Normes_Subsidiàries_i_Complementàries_de_Planejament)))
+      (sp-CC
+        (prep
+          (sps00 per per))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 aplicar aplicar))
+          (sp-CC
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 manera manera)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 directa directe))))))
+          (sp-CC
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.mp
+                (Z 117 117))
+              (grup.nom.mp
+                (ncmp000 municipis municipi)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snl
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 demarcació demarcació)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (snl
+                          (grup.nom
+                            (np0000l Tarragona Tarragona))))))))))))
+      (sp-CC
+        (Fc , ,)
+        (prep
+          (sps00 com_a com_a))
+        (sn
+          (grup.nom.ms
+            (ncms000 instrument instrument)
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 ordenació ordenació))))))
+        (Fc , ,))
+      (S.F.A-CC
+        (conj.subord
+          (cs perquè perquè))
+        (sn.e-SUJ *0*)
+        (neg-MOD
+          (rn no no))
+        (grup.verb
+          (vmii3p0 disposaven disposar))
+        (sp-CC
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (dd0ms0 aquell aquell))
+            (grup.nom.ms
+              (ncms000 moment moment))))
+        (sp.co-CREG
+          (sp
+            (prep
+              (sps00 d' de))
+            (sna
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (np0000a PGOU PGOU))))
+          (coord
+            (cc o_bé o_bé))
+          (sp
+            (prep
+              (sps00 de de))
+            (sna
+              (grup.nom
+                (np0000a Normes_Subsidiàries Normes_Subsidiàries)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 planejament planejament)
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0cs0 municipal municipal))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (ncfs000 actualitat actualitat))))
+    (sp-AO
+      (Fc , ,)
+      (prep
+        (sps00 segons segons))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 conseller conseller)))
+      (Fc , ,))
+    (sp.1c
+      (prep
+        (sps00 d' de))
+      (sn
+        (espec.mp
+          (dd0mp0 aquells aquell))
+        (grup.nom.mp
+          (Z 117 117))))
+    (grup.verb
+      (vmip3p0 resten restar))
+    (sadv-MOD
+      (grup.adv
+        (rg només només)))
+    (sn-SUJ
+      (espec.mp
+        (Z 33 33))
+      (grup.nom.mp.1n
+        (ncmp000 municipis municipi)))
+    (sp-CC
+      (prep
+        (sps00 sense sense))
+      (sn
+        (grup.nom.ms
+          (ncms000 planejament planejament)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 general general))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.mp
+        (pd0mp000 Aquests aquest)))
+    (grup.verb
+      (vsip3p0 són ser))
+    (sn.co-ATR
+      (sn.co
+        (sn.co
+          (snl
+            (grup.nom
+              (np0000l Els_Garidells Els_Garidells)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l Mont-ral Mont-ral)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l Nulles Nulles)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l Vallmoll Vallmoll))))
+        (snl.j
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np0000l Alt_Camp Alt_Camp)
+            (Fpt -Fpt- -Fpt-))))
+      (Fc , ,)
+      (sn.co
+        (sn.co
+          (snl
+            (grup.nom
+              (np0000l L'_Arbolí L'_Arbolí)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l L'_Argentera L'_Argentera))))
+        (snl.j
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np0000l Baix_Camp Baix_Camp)
+            (Fpt -Fpt- -Fpt-))))
+      (Fc , ,)
+      (snl
+        (snl
+          (grup.nom
+            (np0000l Tivenys Tivenys)))
+        (snl.j
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np0000l Baix_Ebre Baix_Ebre)
+            (Fpt -Fpt- -Fpt-))))
+      (Fc , ,)
+      (sn.co
+        (sn.co
+          (snl
+            (grup.nom
+              (np0000l Llorac Llorac)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l Les_Piles Les_Piles)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l Pontils Pontils)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l Sarral Sarral)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l Vallfogona_de_Riucorb Vallfogona_de_Riucorb)))
+          (Fc , ,))
+        (snl.j
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np0000l Conca_de_Barberà Conca_de_Barberà)
+            (Fpt -Fpt- -Fpt-))))
+      (Fc , ,)
+      (sn.co
+        (sn.co
+          (snl
+            (grup.nom
+              (np0000l Mas_de_Barberans Mas_de_Barberans)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l Masdenverge Masdenverge))))
+        (snl.j
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np0000l Montsià Montsià)
+            (Fpt -Fpt- -Fpt-))))
+      (Fc , ,)
+      (sn.co
+        (sn.co
+          (snl
+            (grup.nom
+              (np0000l La_Bisbal_de_Falset La_Bisbal_de_Falset)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l Cabassers Cabassers)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l Capçanes Capçanes)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l La_Figuera La_Figuera)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l Gratallops Gratallops)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l El_Lloar El_Lloar)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l Margalef Margalef)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l Poboleda Poboleda)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l Porrera Porrera)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l Pradell_de_Teixeta Pradell_de_Teixeta)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l La_Torre_de_Fontaubella La_Torre_de_Fontaubella)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l Torroja_de_Priorat Torroja_de_Priorat)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l Ulldemolins Ulldemolins)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l La_Vilella_Alta La_Vilella_Alta))))
+        (snl.j
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np0000l Priorat Priorat)
+            (Fpt -Fpt- -Fpt-))))
+      (Fc , ,)
+      (snl
+        (snl
+          (grup.nom
+            (np0000l La_Palma_d'_Ebre La_Palma_d'_Ebre)))
+        (snl.j
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np0000l Ribera_d'_Ebre Ribera_d'_Ebre)
+            (Fpt -Fpt- -Fpt-))))
+      (Fc , ,)
+      (sn.co
+        (sn.co
+          (snl
+            (grup.nom
+              (np0000l Bot Bot)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l Caseres Caseres)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l La_Pobla_de_Massaluca La_Pobla_de_Massaluca)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l Prat_de_Comte Prat_de_Comte))))
+        (snl.j
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np0000l Terra_Alta Terra_Alta)
+            (Fpt -Fpt- -Fpt-)))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (di0mp0 Tots tot))
+      (grup.nom.mp
+        (pp3mp000 ells ell)))
+    (grup.verb
+      (vmip3p0 tenen tenir))
+    (sadv-CC
+      (grup.adv
+        (rg en_curs en_curs)))
+    (sn.co-CD.Q
+      (sn.co
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 redacció redacció)))
+        (coord
+          (cc o o))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 tramitació tramitació))))
+      (sp.j
+        (prep
+          (sps00 de de))
+        (sna
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (s.a.fp
+              (grup.a.fp
+                (aq0cp0 corresponents corresponent)))
+            (np0000a Normes_Subsidiàries Normes_Subsidiàries)
+            (s.a.fp
+              (grup.a.fp
+                (aq0cp0 municipals municipal)))))))
+    (Fp . .)))

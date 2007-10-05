@@ -1,0 +1,121 @@
+
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 José_Manuel_del_Olmo José_Manuel_del_Olmo)))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sn-ATR
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 nou nou)))
+        (ncms000 director director)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 general general)))
+        (s.a.ms.co
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 comercial comercial)))
+          (coord
+            (cc i i))
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom.fp
+                (ncfp000 operacions operació)))))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 firma firma)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 cervesera cerveser)))
+              (sn
+                (grup.nom
+                  (np00000 El_Aguila El_Aguila))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (grup.nom.ms
+          (np00000 Del_Olmo Del_Olmo)))
+      (grup.verb
+        (vaip3s0 ha haver)
+        (vmp00sm desenvolupat desenvolupar))
+      (sn-CD
+        (espec.mp
+          (di0mp0 diversos divers))
+        (grup.nom.mp
+          (ncmp000 càrrecs càrrec)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 responsabilitat responsabilitat))))))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (grup.nom.fp
+            (ncfp000 empreses empresa)
+            (sp
+              (prep
+                (cs com com))
+              (sn.x
+                (grup.nom.co
+                  (grup.nom
+                    (np00000 Europcar_Bélgica Europcar_Bélgica))
+                  (coord
+                    (cc i i))
+                  (grup.nom
+                    (np00000 Cervezas_Maes_España Cervezas_Maes_España)))))))
+        (Fc , ,)))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3s0 ha haver)
+        (vsp00sm estat ser))
+      (sn-ATR
+        (grup.nom.ms
+          (ncms000 director director)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 general general)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (np00000 Cervezas_Alken_Maes Cervezas_Alken_Maes))))
+          (sp
+            (prep
+              (sps00 per per))
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fs
+                  (da0cs0 l' el))
+                (grup.nom.fs
+                  (np00000 Europa Europa)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 sud sud)))))))))))
+    (Fp . .)))

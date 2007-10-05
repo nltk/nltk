@@ -1,0 +1,941 @@
+
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (nccs000 pívot pívot)
+        (snp
+          (grup.nom.ms
+            (np0000p David_Robinson David_Robinson)))))
+    (sn-CI.r
+      (grup.nom.s
+        (pp3csd00 le él)))
+    (grup.verb
+      (vmis3s0 envió enviar))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un uno))
+      (grup.nom.ms.1n
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 claro claro)))
+        (ncms000 mensaje mensaje)))
+    (sp-CI.r
+      (prep
+        (spcms al al))
+      (snp
+        (grup.nom.ms
+          (ncms000 jugador jugador)
+          (s.a.ms
+            (espec
+              (rg más más))
+            (grup.a.ms
+              (aq0cs0 dominante dominante)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 liga liga))))))
+          (snp
+            (Fc , ,)
+            (grup.nom.ms
+              (np0000p Shaquille_O'Neal Shaquille_O'Neal))
+            (Fc , ,)))))
+    (S.F.C.1c
+      (conj.subord
+        (cs que que))
+      (sno-SUJ
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (np0000o Spurs_de_San_Antonio Spurs_de_San_Antonio)))
+      (grup.verb
+        (vsip3p0 son ser))
+      (sn-ATR
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (ncmp000 campeones campeón)
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 defensores defensor)))
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 título título))))))
+      (sadv-CCT
+        (grup.adv
+          (rg después después)
+          (sp
+            (prep
+              (sps00 de de))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 vencerlos vencer))
+              (sp-CCT
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs.1n
+                    (ncfs000 prórroga prórroga))))
+              (sp-CC
+                (prep
+                  (sps00 por por))
+                (snn
+                  (grup.nom
+                    (Z 103-98 103-98))))
+              (sp.1c
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (s.a.ms
+                      (grup.a.ms
+                        (ao0ms0 último último)))
+                    (ncms000 partido partido)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 campaña campaña)
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0cs0 regular regular))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sno-SUJ
+        (espec.mp
+          (da0mp0 Los el))
+        (grup.nom.mp
+          (np0000o Lakers Lakers)))
+      (grup.verb
+        (vaip3p0 han haber)
+        (vsp00sm sido ser))
+      (sn-ATR
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 centro centro)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 atención atención))))))
+      (sp-CCT
+        (prep
+          (sps00 durante durante))
+        (sn
+          (espec.fs
+            (di0fs0 toda todo)
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 liga liga))))
+      (sp-CC
+        (prep
+          (sps00 por por))
+        (sn
+          (espec.mp
+            (dp3cp0 sus su))
+          (grup.nom.mp
+            (ncmp000 triunfos triunfo))))
+      (Fc , ,))
+    (coord
+      (cc pero pero))
+    (S
+      (sp-CCT
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fp
+            (da0fp0 las el)
+            (dn0cp0 dos dos))
+          (grup.nom.fp
+            (s.a.fp
+              (grup.a.fp
+                (ao0fp0 últimas último)))
+            (ncfp000 jornadas jornada)
+            (sp
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.fs
+                  (dp3cs0 su su))
+                (grup.nom.fs
+                  (ncfs000 gira gira)
+                  (sp
+                    (prep
+                      (sps00 por por))
+                    (sn
+                      (grup.nom.fp
+                        (ncfp000 tierras tierra)
+                        (s.a.fp
+                          (grup.a.fp
+                            (aq0fp0 tejanas tejano))))))))))))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3p0 han haber)
+        (vmp00sm sufrido sufrir))
+      (sn-CD
+        (espec.fp
+          (dn0cp0 dos dos))
+        (grup.nom.fp
+          (ncfp000 derrotas derrota)
+          (s.a.fp
+            (espec
+              (rg muy mucho))
+            (grup.a.fp
+              (aq0fp0 significativas significativo)))))
+      (sadv-CCT
+        (grup.adv
+          (rg en_vísperas en_vísperas)
+          (sp
+            (prep
+              (sps00 de de))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 comenzar comenzar))
+              (sn-CD
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (s.a.fs
+                    (grup.a.fs
+                      (ao0fs0 primera primero)))
+                  (ncfs000 ronda ronda)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 fase fase)
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0cs0 final final))))))
+                  (sp
+                    (prep
+                      (sps00 contra contra))
+                    (sno
+                      (espec.mp
+                        (da0mp0 los el))
+                      (grup.nom.mp
+                        (np0000o Kings_de_Sacramento Kings_de_Sacramento)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.mp
+        (da0mp0 Los el))
+      (grup.nom.mp
+        (np0000o Spurs Spurs)))
+    (sp-CC
+      (prep
+        (sps00 sin sin))
+      (snp
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (nccs000 alero alero)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 titular titular)))
+          (snp
+            (grup.nom.ms
+              (np0000p Tim_Duncan Tim_Duncan))))))
+    (sn-CI
+      (grup.nom.s
+        (pp3cpd00 les él)))
+    (grup.verb
+      (vmis3p0 dieron dar))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sno
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (np0000o Lakers Lakers))))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una uno))
+      (grup.nom.fs
+        (ncfs000 lección lección)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 baloncesto baloncesto))))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 equipo equipo))))))
+    (sp-CCT
+      (prep
+        (spcms al al))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 remontar remontar))
+        (sn-CD
+          (espec.fs
+            (di0fs0 una uno))
+          (grup.nom.fs
+            (ncfs000 desventaja desventaja)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.mp
+                  (Z 17 17))
+                (grup.nom.mp
+                  (ncmp000 puntos punto))))
+            (S.F.R
+              (sp-CC
+                (prep
+                  (sps00 con con))
+                (relatiu
+                  (da0fs0 la el)
+                  (pr0cn000 que que)))
+              (sn.e-SUJ *0*)
+              (grup.verb
+                (vmis3p0 llegaron llegar))
+              (sp-CCL
+                (prep
+                  (spcms al al))
+                (sn
+                  (grup.nom.ms
+                    (s.a.ms
+                      (grup.a.ms
+                        (ao0ms0 cuarto cuarto)))
+                    (ncms000 periodo periodo)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-CC
+      (espec.fs
+        (di0fs0 Una uno))
+      (grup.nom.fs
+        (ncfs000 vez vez)
+        (sadv
+          (grup.adv
+            (rg más más)))))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 figura figura)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (Fe " ")
+              (ncms000 Almirante almirante)
+              (Fe " "))))))
+    (grup.verb
+      (vmis3s0 surgió surgir))
+    (sp-CCT
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (ncmp000 momentos momento)
+          (s.a.mp.x
+            (grup.a.mp.co
+              (grup.a.mp
+                (aq0cp0 difíciles difícil))
+              (coord
+                (cc y y))
+              (grup.a.mp
+                (aq0mp0 decisivos decisivo)))))))
+    (sp-CCT
+      (prep
+        (spcms al al))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 conseguir conseguir))
+        (sn-CD
+          (grup.nom.mp
+            (pn0cp000 seis seis)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.mp
+                  (dp3cp0 sus su)
+                  (Z 17 17))
+                (grup.nom.mp
+                  (ncmp000 puntos punto))))))
+        (sp-CCT
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 prórroga prórroga)
+              (S.F.R
+                (relatiu
+                  (pr0cn000 que que))
+                (sn.e-SUJ *0*)
+                (grup.verb
+                  (vmis3p0 dejaron dejar))
+                (sp-CD
+                  (prep
+                    (sps00 a a))
+                  (sno
+                    (sno
+                      (espec.mp
+                        (da0mp0 los el))
+                      (grup.nom.mp
+                        (np0000o Lakers Lakers)))
+                    (snn.j
+                      (grup.nom
+                        (Fpa -Fpa- -Fpa-)
+                        (Z 67-15 67-15)
+                        (Fpt -Fpt- -Fpt-)))))
+                (sp-CC
+                  (prep
+                    (sps00 con con))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (s.a.fs
+                        (grup.a.fs
+                          (ao0fs0 segunda segundo)))
+                      (ncfs000 derrota derrota)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0fs0 consecutiva consecutivo))))))
+                (sadv-CCT
+                  (grup.adv
+                    (rg después después)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (S.NF.C
+                        (infinitiu
+                          (van0000 haber haber)
+                          (vmp00sm estado estar))
+                        (sp-CREG
+                          (prep
+                            (sps00 a a))
+                          (sn
+                            (espec.fp
+                              (da0fp0 las el))
+                            (grup.nom.fp
+                              (ncfp000 puertas puerta)
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sn
+                                  (espec.fs
+                                    (di0fs0 una uno))
+                                  (grup.nom.fs
+                                    (s.a.fs
+                                      (grup.a.fs
+                                        (aq0fs0 nueva nuevo)))
+                                    (ncfs000 marca marca)
+                                    (s.a.fs
+                                      (grup.a.fs
+                                        (aq0fs0 histórica histórico)))
+                                    (sn
+                                      (Fc , ,)
+                                      (espec.mp
+                                        (Z 69 69))
+                                      (grup.nom.mp
+                                        (ncmp000 triunfos triunfo)))))))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S.co
+      (S
+        (snp-SUJ
+          (grup.nom.ms
+            (np0000p Malik_Rose Malik_Rose)))
+        (grup.verb
+          (vmis3s0 consiguió conseguir))
+        (sn.co-CD
+          (sn
+            (espec.mp
+              (Z 14 14))
+            (grup.nom.mp
+              (ncmp000 puntos punto)))
+          (coord
+            (cc y y))
+          (sn
+            (espec.mp
+              (dn0cp0 nueve nueve))
+            (grup.nom.mp
+              (ncmp000 rebotes rebote)))))
+      (Fc , ,)
+      (S
+        (snp-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 veterano veterano)
+            (snp
+              (grup.nom.ms
+                (np0000p Terry_Porter Terry_Porter)))))
+        (grup.verb
+          (vmis3s0 contribuyó contribuir))
+        (sp-CC
+          (prep
+            (sps00 con con))
+          (sn
+            (espec.mp
+              (Z 13 13))
+            (grup.nom.mp
+              (di0mp0 tantos tanto)))))
+      (Fc , ,))
+    (coord
+      (cc mientras_que mientras_que))
+    (S.co
+      (S
+        (snp-SUJ
+          (grup.nom.ms
+            (np0000p Jerome_Kersey Jerome_Kersey)))
+        (grup.verb
+          (vmis3s0 capturó capturar))
+        (sn-CD
+          (espec.mp
+            (dn0cp0 nueve nueve))
+          (grup.nom.mp
+            (ncmp000 balones balón)))
+        (sadv-CCL
+          (grup.adv
+            (rg debajo debajo)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (ncmp000 tableros tablero)))))))
+      (coord
+        (cc y y))
+      (S
+        (snp-SUJ
+          (grup.nom.ms
+            (np0000p Antonio_Daniels Antonio_Daniels)))
+        (grup.verb
+          (vmis3s0 estableció establecer))
+        (sn-CD
+          (espec.fs
+            (dp3cs0 su su))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 mejor mejor)))
+            (ncfs000 marca marca)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fp
+                  (Z 10 10))
+                (grup.nom.fp
+                  (ncfp000 asistencias asistencia))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C
+      (Fe " ")
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3s0 Ha haber)
+        (vsp00sm sido ser))
+      (sn.co-ATR
+        (sn
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (ncms000 triunfo triunfo)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.ms
+                  (di0ms0 todo todo)
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 equipo equipo))))))
+        (coord
+          (cc y y))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (S.F.R
+              (relatiu-CD
+                (pr0cn000 que que))
+              (sn.e-SUJ *0*)
+              (grup.verb
+                (vmii1p0 necesitábamos necesitar))
+              (sp-CC
+                (prep
+                  (sps00 para para))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 comenzar comenzar))
+                  (sn-CD
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 fase fase)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0cs0 final final)))))
+                  (sp-CD
+                    (prep
+                      (sps00 con con))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 moral moral)
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0fs0 alta alto))))))))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 destacó destacar))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 entrenador entrenador)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (np00000 Spurs Spurs))))
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (np00000 Gregg_Popovich Gregg_Popovich)))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (sn
+        (espec.mp
+          (da0mp0 Los el))
+        (grup.nom.mp.1n
+          (nc00000 spurs spurs)))
+      (sn.j
+        (grup.nom
+          (Fpa -Fpa- -Fpa-)
+          (Z 53-29 53-29)
+          (Fpt -Fpt- -Fpt-))))
+    (grup.verb
+      (vmis3p0 tuvieron tener))
+    (sn-CD.Q
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 premio premio)))
+    (sp-CC
+      (prep
+        (sps00 con con))
+      (sn
+        (espec.fs
+          (dp3cs0 su su))
+        (grup.nom.fs
+          (ncfs000 victoria victoria)
+          (sp
+            (prep
+              (sps00 de de))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 conseguir conseguir))
+              (sn-CD
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 ventaja ventaja)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 campo campo))))))
+              (sp-CC
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 serie serie)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (s.a.fs
+                            (grup.a.fs
+                              (ao0fs0 primera primero)))
+                          (ncfs000 ronda ronda))))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 fase fase)
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0cs0 final final))))))))))))))
+    (S.F.R.1c
+      (relatiu-SUJ
+        (pr0cn000 que que))
+      (grup.verb
+        (vmsi3p0 disputaran disputar))
+      (sp-CC
+        (prep
+          (spcms al al))
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 mejor mejor)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom
+                  (pn0cp000 cinco cinco)))))))
+      (sp-CC
+        (prep
+          (sps00 contra contra))
+        (sn
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (np00000 Suns_de_Phoenix Suns_de_Phoenix)))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (nccs000 pívot pívot)
+          (sn
+            (grup.nom.ms
+              (np00000 Shaquille_O'Neal Shaquille_O'Neal)))))
+      (morf.pron
+        (p0300000 se él))
+      (grup.verb
+        (vmis3s0 perdió perder))
+      (sadv-CC
+        (grup.adv
+          (rg por_completo por_completo)))
+      (sp-CCL
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fs
+            (dp3cs0 su su))
+          (grup.nom.fs
+            (ncfs000 ciudad ciudad)
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 natal natal))))))
+      (sp-CCT
+        (prep
+          (spcms al al))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 conseguir conseguir))
+          (sn-CD
+            (sadv.j
+              (grup.adv
+                (rg sólo sólo)))
+            (sn
+              (espec.mp
+                (Z 22 22))
+              (grup.nom.mp
+                (ncmp000 puntos punto))))))
+      (Fc , ,))
+    (coord
+      (cc pero pero))
+    (S*
+      (sn-CD
+        (sadv.j
+          (grup.adv
+            (rg sólo sólo)))
+        (sn
+          (grup.nom.mp
+            (pn0cp000 dos dos))))
+      (sadv-CCT
+        (grup.adv
+          (rg después después)
+          (sp
+            (prep
+              (spcms del del))
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (ao0ms0 tercer tercero)))
+              (ncms000 periodo periodo)))))
+      (S.F.A-CCT
+        (conj.subord
+          (cs cuando cuando))
+        (sn-SUJ
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (np00000 Spurs Spurs)))
+        (grup.verb
+          (vmis3p0 lograron lograr))
+        (sn-CD
+          (grup.nom.fs
+            (ncfs000 racha racha)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom
+                  (Z 16-3 16-3))))
+            (sp
+              (prep
+                (sps00 para para))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 darle dar))
+                (sn-CD
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 vuelta vuelta)))
+                (sp.co-CI
+                  (sp
+                    (prep
+                      (spcms al al))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 partido partido))))
+                  (coord
+                    (cc y y))
+                  (sp
+                    (prep
+                      (spcms al al))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 marcador marcador)))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (Fe " ")
+      (sn.e-SUJ *0*)
+      (morf.pron
+        (p010s000 Me yo))
+      (grup.verb
+        (vmip1s0 siento sentir))
+      (S.NF.P-CPRED.SUJ
+        (participi
+          (aq0msp frustrado frustrado))
+        (sp-CAG
+          (prep
+            (sps00 por por))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 forma forma)
+              (S.F.R
+                (relatiu-CC
+                  (pr000000 como como))
+                (sn.e-SUJ *0*)
+                (grup.verb
+                  (vaip1p0 hemos haber)
+                  (vmp00sm perdido perder))
+                (sn-CD
+                  (espec.ms
+                    (di0ms0 un uno))
+                  (grup.nom.ms
+                    (ncms000 partido partido)
+                    (S.F.R
+                      (relatiu-CD.NFc
+                        (pr0cn000 que que))
+                      (sadv-CC
+                        (grup.adv
+                          (rg sicológicamente sicológicamente)))
+                      (sn.e-SUJ *0*)
+                      (grup.verb
+                        (vmii1p0 necesitábamos necesitar))
+                      (S.NF.C-CD.NFn
+                        (infinitiu
+                          (vmn0000 ganar ganar)))))))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 declaró declarar))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 entrenador entrenador)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (np00000 Lakers Lakers))))
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (np00000 Phil_Jackson Phil_Jackson)))))
+    (Fp . .)))
+(
+  (S*
+    (sno
+      (grup.nom
+        (np00000 EFE EFE)))
+    (sn
+      (grup.nom
+        (np00000 mbj mbj)))
+    (snn
+      (grup.nom
+        (Z 04/20/00-16/00 04/20/00-16/00)))
+    (snn
+      (grup.nom
+        (Z 04/20/04-08/00 04/20/04-08/00)))
+    (snn
+      (grup.nom
+        (Z 04/20/04-05/00 04/20/04-05/00)))
+    (Fp . .)))

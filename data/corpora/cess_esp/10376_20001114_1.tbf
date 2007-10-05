@@ -1,0 +1,843 @@
+
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p George_W._Bush George_W._Bush)))
+    (grup.verb
+      (vmis3s0 propuso proponer))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 por_medio_de por_medio_de))
+      (snp
+        (grup.nom.ms
+          (np0000p James_Baker James_Baker)))
+      (Fc , ,))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un uno))
+      (grup.nom.ms
+        (ncms000 compromiso compromiso)
+        (sp
+          (prep
+            (sps00 para para))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 acabar acabar))
+            (sp-CREG
+              (prep
+                (sps00 con con))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfn000 crisis crisis)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 actual actual))))))))
+        (S.F.R
+          (sp-CC
+            (prep
+              (sps00 por por))
+            (relatiu
+              (da0ms0 el el)
+              (pr0cn000 que que)))
+          (sn-SUJ
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (ncmp000 republicanos republicano)))
+          (grup.verb
+            (vmic3p0 aceptarían aceptar))
+          (sn-CD
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 recuento recuento)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 manual manual)))
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (morfema.verbal-PASS
+                  (p0000000 se se))
+                (grup.verb
+                  (vmsp3s0 efectúe efectuar))
+                (sp-CCT
+                  (prep
+                    (sps00 hasta hasta))
+                  (snn
+                    (espec.fp
+                      (da0fp0 las el))
+                    (grup.nom.fp
+                      (Z 22.00 22.00)
+                      (sna
+                        (grup.nom
+                          (np0000a GMT GMT)))
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sadv
+                          (grup.adv
+                            (rg hoy hoy)
+                            (snd
+                              (Fc , ,)
+                              (grup.nom.ms
+                                (W martes [martes:??/??/??:??.??]))
+                              (Fc , ,))))))))
+                (sp-CCL
+                  (prep
+                    (sps00 en en))
+                  (snl
+                    (grup.nom
+                      (np0000l Florida Florida))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Baker Baker)))
+    (grup.verb
+      (vmis3s0 dijo decir))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (S.F.ACond-AO
+        (conj.subord
+          (cs si si))
+        (sn-SUJ
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (nccp000 demócratas demócrata)))
+        (grup.verb
+          (vmip3p0 aceptan aceptar))
+        (sn
+          (espec.fs
+            (dd0fs0 esta este))
+          (grup.nom.fs
+            (ncfs000 propuesta propuesta)))
+        (Fc , ,))
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (ncmp000 republicanos republicano)))
+      (morf.pron
+        (p0300000 se él))
+      (grup.verb
+        (vmip3p0 comprometen comprometer))
+      (sadv-CC
+        (grup.adv
+          (rg a_cambio a_cambio)))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 retirar retirar))
+          (sn-CD
+            (espec.fp
+              (da0fp0 las el))
+            (grup.nom.fp
+              (ncfp000 demandas demanda)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0cp0 judiciales judicial)))))))
+      (S.F.A-CC
+        (conj.subord
+          (cs porque porque))
+        (Fe " ")
+        (sadv-CCT
+          (grup.adv
+            (rg ya ya)))
+        (grup.verb
+          (vsip3s0 es ser))
+        (sn-SUJ
+          (grup.nom.fs
+            (ncfs000 hora hora)
+            (sp
+              (prep
+                (sps00 de de))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 acabar acabar))
+                (sp-CREG
+                  (prep
+                    (sps00 con con))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfn000 crisis crisis))))))))
+        (Fe " ")))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmis3s0 Agregó agregar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (snp-SUJ
+        (grup.nom.ms
+          (np0000p Bush Bush)))
+      (grup.verb
+        (vmip3s0 acepta aceptar))
+      (sn.co-CD
+        (sn
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (ncmp000 recuentos recuento)
+            (s.a.mp
+              (grup.a.mp
+                (aq0cp0 manuales manual)))
+            (S.NF.P
+              (sadv-CC
+                (grup.adv
+                  (rg ya ya)))
+              (participi
+                (aq0mpp efectuados efectuado)))))
+        (coord
+          (cc y y))
+        (sn
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (morfema.verbal-PASS
+                (p0000000 se se))
+              (grup.verb
+                (vmip3p0 pueden poder)
+                (infinitiu
+                  (vmn0000 hacer hacer)))
+              (sp-CCT
+                (prep
+                  (sps00 hasta hasta))
+                (snn
+                  (espec.fp
+                    (da0fp0 las el))
+                  (grup.nom.fp
+                    (Z 22.00 22.00)
+                    (sna
+                      (grup.nom
+                        (np0000a GMT GMT)))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sadv
+                        (grup.adv
+                          (rg hoy hoy))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (espec.ms
+          (dd0ms0 Este este))
+        (grup.nom.ms
+          (ncms000 recuento recuento)))
+      (coord
+        (cc y y))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (morfema.verbal-PASS
+              (p0000000 se se))
+            (grup.verb
+              (vmsp3s0 haga hacer))
+            (sp-CC
+              (prep
+                (sps00 con con))
+              (sn
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (ncmp000 sufragios sufragio)
+                  (S.NF.P
+                    (participi
+                      (aq0mpp enviados enviado))
+                    (sp-CC
+                      (prep
+                        (sps00 por por))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 correo correo))))))))))))
+    (grup.verb
+      (vsic3s0 sería ser))
+    (sn-ATR
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmic3s0 determinaría determinar))
+          (sadv-CC
+            (grup.adv
+              (rg finalmente finalmente)))
+          (sn-CD
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 resultado resultado)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fp
+                    (da0fp0 las el))
+                  (grup.nom.fp
+                    (ncfp000 elecciones elección)
+                    (sp
+                      (prep
+                        (sps00 en en))
+                      (snl
+                        (grup.nom
+                          (np0000l Florida Florida))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (snp-SUJ
+        (grup.nom.ms
+          (np0000p Baker Baker)))
+      (grup.verb
+        (vmis3s0 indicó indicar))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (ncmp000 republicanos republicano)))
+        (neg-MOD
+          (rn no no))
+        (grup.verb
+          (vmip3p0 tienen tener))
+        (sn-CD.Q
+          (espec.fs
+            (di0fs0 ninguna ninguno))
+          (grup.nom.fs
+            (ncfs000 garantía garantía)
+            (sp
+              (prep
+                (sps00 de de))
+              (S.F.C
+                (conj.subord
+                  (cs que que))
+                (sn-SUJ
+                  (espec.mp
+                    (da0mp0 los el))
+                  (grup.nom.mp
+                    (ncmp000 votos voto)
+                    (sp
+                      (prep
+                        (sps00 por por))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 correo correo))))))
+                (grup.verb
+                  (vmif3p0 favorecerán favorecer))
+                (sp-CD
+                  (prep
+                    (sps00 a a))
+                  (snp
+                    (grup.nom.ms
+                      (np0000p Bush Bush))))))))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3s0 señaló señalar))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (nccp000 demócratas demócrata)))
+        (grup.verb
+          (vmip3p0 deben deber)
+          (infinitiu
+            (vmn0000 aceptar aceptar)))
+        (sadv-MOD
+          (grup.adv
+            (rg también también)))
+        (S.NF.C-CD
+          (infinitiu
+            (vmn0000 retirar retirar))
+          (sn-CD
+            (espec.fp
+              (di0fp0 todas todo)
+              (da0fp0 las el))
+            (grup.nom.fp
+              (ncfp000 demandas demanda)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0cp0 judiciales judicial))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 plazo plazo)
+          (sp
+            (prep
+              (sps00 para para))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 recibir recibir))
+              (sn-CD
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (ncmp000 votos voto)
+                  (sp
+                    (prep
+                      (sps00 por por))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 correo correo))))))))))
+      (grup.verb
+        (vmip3s0 vence vencer))
+      (sp-CCT
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 medianoche medianoche)
+            (sp
+              (prep
+                (spcms del del))
+              (snd
+                (grup.nom.ms
+                  (W viernes [viernes:??/??/??:??.??]))))))))
+    (coord
+      (cc y y))
+    (S
+      (S.F.ACond-AO
+        (Fc , ,)
+        (conj.subord
+          (cs si si))
+        (neg-MOD
+          (rn no no))
+        (grup.verb
+          (vaip3s0 hay haber))
+        (sn-CD.Q
+          (grup.nom.mp
+            (ncmp000 recuentos recuento)
+            (s.a.mp
+              (grup.a.mp
+                (aq0cp0 manuales manual)))))
+        (Fc , ,))
+      (sn.co
+        (sn-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 resultado resultado)
+            (s.a.ms
+              (grup.a.ms
+                (aq0cs0 final final)))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fp
+                  (da0fp0 las el))
+                (grup.nom.fp
+                  (ncfp000 elecciones elección)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snl
+                      (grup.nom
+                        (np0000l Florida Florida)))))))))
+        (coord
+          (cc y y))
+        (sn
+          (sadv.j
+            (Fc , ,)
+            (grup.adv
+              (rg en_consecuencia en_consecuencia))
+            (Fc , ,))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 nombre nombre)
+              (sp
+                (prep
+                  (spcms del del))
+                (snp
+                  (grup.nom.ms
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 nuevo nuevo)))
+                    (ncms000 presidente presidente)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snl
+                        (grup.nom
+                          (np0000l EEUU EEUU)))))))))))
+      (morf.pron
+        (p0300000 se él))
+      (grup.verb
+        (vmic3s0 podría poder)
+        (infinitiu
+          (vmn0000 conocer conocer)))
+      (snd-CCT
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (W sábado [sábado:??/??/??:??.??]))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 ex ex)))
+        (s.a.ms
+          (aq0ms0 secretario secretario))
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (grup.nom
+              (np0000o Estado Estado))))))
+    (grup.verb
+      (vmis3s0 acusó acusar))
+    (sp-CD
+      (prep
+        (sps00 a a))
+      (snp
+        (grup.nom.ms
+          (np0000p Gore Gore))))
+    (sp-CREG
+      (prep
+        (sps00 de de))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 tratar tratar)
+          (sps00 de de)
+          (infinitiu
+            (vmn0000 llevar_a_cabo llevar_a_cabo)))
+        (sn-CD
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (Fe " ")
+                (aq0ms0 selectivo selectivo)
+                (Fe " ")))
+            (ncms000 recuento recuento)
+            (s.a.ms
+              (grup.a.ms
+                (aq0cs0 manual manual)))))
+        (sp-CCL
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.mp
+              (di0mp0 unos uno))
+            (grup.nom.mp
+              (ncmp000 condados condado)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 mayoría mayoría)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0cs0 demócrata demócrata)))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (Fe " ")
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 Los el))
+        (grup.nom.mp
+          (nccp000 demócratas demócrata)))
+      (grup.verb
+        (vmip3p0 están estar))
+      (S.NF.P-ATR
+        (S.NF.P
+          (sadv-MOD
+            (grup.adv
+              (rg más más)))
+          (participi
+            (aq0mpp preocupados preocupado))
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 selectividad selectividad)
+                (sp
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (ncms000 recuento recuento))))))))
+        (S.F.AComp*.j
+          (relatiu
+            (pr0cn000 que que))
+          (sp
+            (prep
+              (sps00 por por))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 limpieza limpieza))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 afirmó afirmar))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Baker Baker)))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3s0 Agregó agregar))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (grup.verb
+          (vsic3s0 sería ser))
+        (sn-ATR
+          (espec.fs
+            (di0fs0 una uno))
+          (grup.nom.fs
+            (Fe " ")
+            (ncfs000 locura locura)
+            (Fe " ")))
+        (S.NF.C-SUJ
+          (infinitiu
+            (vmn0000 llevar_a_cabo llevar_a_cabo))
+          (sn-CD
+            (espec.ms
+              (di0ms0 un uno))
+            (grup.nom.ms
+              (ncms000 recuento recuento)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 manual manual)))))
+          (sp-CCL
+            (prep
+              (sps00 en en))
+            (snl
+              (espec.mp
+                (di0mp0 todos todo)
+                (da0mp0 los el))
+              (grup.nom.mp
+                (ncmp000 condados condado)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snl
+                    (grup.nom
+                      (np0000l Florida Florida))))))))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3s0 citó citar))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 incertidumbre incertidumbre)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 existente existente)))
+          (sp.co
+            (sp
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 país país))))
+            (coord
+              (cc y y))
+            (sp
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (ncmp000 mercados mercado)
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0cp0 internacionales internacional))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (pi0ms000 Todo todo)))
+    (grup.verb
+      (vmip3s0 apunta apuntar))
+    (sp-CD
+      (prep
+        (sps00 a a))
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 oferta oferta)
+            (sp
+              (prep
+                (sps00 de de))
+              (snp
+                (grup.nom.ms
+                  (np0000p Baker Baker))))))
+        (grup.verb
+          (vsif3s0 será ser))
+        (S.NF.P-ATR
+          (participi
+            (aq0fsp rechazada rechazado))
+          (sp-CAG
+            (prep
+              (sps00 por por))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (nccp000 demócratas demócrata)))))))
+    (S.F.A-CC
+      (Fc , ,)
+      (conj.subord
+        (cs ya_que ya_que))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3p0 están estar))
+      (sp-ATR
+        (prep
+          (sps00 a_la_espera_de a_la_espera_de))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 decisión decisión)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.ms
+                  (di0ms0 un uno))
+                (grup.nom.ms
+                  (nccs000 juez juez))))
+            (sp
+              (prep
+                (sps00 sobre sobre))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 demanda demanda)
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vmip3s0 pide pedir))
+                    (S.NF.C-CD
+                      (infinitiu
+                        (vmn0000 ampliar ampliar))
+                      (sn-CD
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (ncms000 plazo plazo)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (snn
+                              (espec.fp
+                                (da0fp0 las el))
+                              (grup.nom.fp
+                                (Z 22.00 22.00)
+                                (sna
+                                  (grup.nom
+                                    (np0000a GMT GMT)))
+                                (sp
+                                  (prep
+                                    (sps00 de de))
+                                  (sadv
+                                    (grup.adv
+                                      (rg hoy hoy)))))))
+                          (sp
+                            (prep
+                              (sps00 para para))
+                            (sn
+                              (espec.fs
+                                (da0fs0 la el))
+                              (grup.nom.fs
+                                (ncfs000 entrega entrega)
+                                (s.a.fs
+                                  (grup.a.fs
+                                    (aq0cs0 oficial oficial)))
+                                (sp
+                                  (prep
+                                    (sps00 de de))
+                                  (sn
+                                    (espec.mp
+                                      (da0mp0 los el))
+                                    (grup.nom.mp
+                                      (ncmp000 resultados resultado)
+                                      (sp
+                                        (prep
+                                          (sps00 de de))
+                                        (sn
+                                          (espec.mp
+                                            (da0mp0 los el))
+                                          (grup.nom.mp
+                                            (ncmp000 condados condado)))))))))))))))))))))
+    (Fp . .)))

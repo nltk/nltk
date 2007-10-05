@@ -1,0 +1,998 @@
+
+(
+  (S
+    (S.F.C-CD
+      (sno-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 empresa empresa)
+          (sno
+            (grup.nom
+              (np0000o Kellogs Kellogs)))
+          (sn
+            (Fc , ,)
+            (grup.nom.fs
+              (nccs000 fabricante fabricante)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 cereales cereal)
+                    (sp
+                      (prep
+                        (sps00 para para))
+                      (sn
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (ncms000 desayuno desayuno))))))))
+            (Fc , ,))))
+      (grup.verb
+        (vaip3s0 ha haber)
+        (vmp00sm cerrado cerrar))
+      (sn-CD
+        (espec.fs
+          (dp3cs0 su su))
+        (grup.nom.fs
+          (ncfs000 planta planta)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 producción producción))))
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (grup.nom
+                (np0000l Michigan Michigan))))))
+      (S.F.A-CC
+        (conj.subord
+          (cs porque porque))
+        (sn.e-SUJ *0*)
+        (neg-MOD
+          (rn no no))
+        (grup.verb
+          (vaip3s0 ha haber)
+          (vmp00sm podido poder)
+          (infinitiu
+            (vmn0000 abastecerse abastecer)))
+        (sp-CREG
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 maíz maíz))))
+        (sp-CC
+          (prep
+            (sps00 con con))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 seguridad seguridad)
+              (sp
+                (prep
+                  (sps00 de de))
+                (S.F.C
+                  (conj.subord
+                    (cs que que))
+                  (sn.e-SUJ *0*)
+                  (neg-MOD
+                    (rn no no))
+                  (grup.verb
+                    (vmip3s0 contiene contener))
+                  (sn-CD
+                    (espec.fs
+                      (di0fs0 una uno))
+                    (grup.nom.fs
+                      (ncfs000 variedad variedad)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0fs0 transgénica transgénico)))
+                      (S.NF.P
+                        (participi
+                          (aq0fsp vetada vetado))
+                        (sp-CC
+                          (prep
+                            (sps00 para para))
+                          (sn
+                            (espec.ms
+                              (da0ms0 el el))
+                            (grup.nom.ms
+                              (ncms000 uso uso)
+                              (s.a.ms
+                                (grup.a.ms
+                                  (aq0ms0 humano humano)))))))))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmis3p0 informaron informar))
+    (sn-SUJ
+      (grup.nom.fp
+        (ncfp000 fuentes fuente)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 industria industria))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 empresa empresa)))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vmis3s0 confirmó confirmar))
+      (sn-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 cierre cierre)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 planta planta))))
+          (sp
+            (prep
+              (sps00 en en))
+            (snl
+              (grup.nom
+                (np0000l Battle_Creek Battle_Creek))))))
+      (Fc , ,))
+    (coord
+      (cc pero pero))
+    (S
+      (sna-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 diario diario)
+          (sna
+            (grup.nom
+              (Fe " ")
+              (np0000a The_Washington_Post The_Washington_Post)
+              (Fe " ")))))
+      (grup.verb
+        (vmis3s0 citó citar))
+      (sn-CD
+        (Fe " ")
+        (espec.fp
+          (dn0cp0 dos dos))
+        (grup.nom.fp
+          (ncfp000 fuentes fuente)
+          (S.NF.P
+            (participi
+              (aq0fpp familiarizadas familiarizado))
+            (sp-CC
+              (prep
+                (sps00 con con))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 situación situación)))))
+          (Fe " ")
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmis3p0 indicaron indicar))
+            (S.F.C-CD
+              (conj.subord
+                (cs que que))
+              (sn-SUJ
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 producción producción)))
+              (morfema.verbal-PASS
+                (p0000000 se se))
+              (grup.verb
+                (vmis3s0 suspendió suspender))
+              (sp-CCT
+                (prep
+                  (sps00 a_mediados_de a_mediados_de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 semana semana))))
+              (sp-CCL
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.fs
+                    (dd0fs0 esa ese))
+                  (grup.nom.fs
+                    (ncfs000 fábrica fábrica)))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (sps00 Durante durante))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 semana semana))))
+    (sn-SUJ
+      (grup.nom.fp
+        (ncfp000 fuentes fuente)
+        (sp.co
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 gobierno gobierno))))
+          (coord
+            (cc y y))
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 sector sector)
+                (s.a.ms
+                  (grup.a.ms
+                    (ncms000 empresario empresario)))))))))
+    (grup.verb
+      (vmis3p0 indicaron indicar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (grup.nom.fp
+          (pn0cp000 miles mil)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (ncfp000 toneladas tonelada)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 maíz maíz)
+                      (s.a.ms.co
+                        (S.NF.P
+                          (participi
+                            (aq0msp producido producido))
+                          (sp-CC
+                            (prep
+                              (sps00 por por))
+                            (sn
+                              (grup.nom.fs
+                                (ncfs000 manipulación manipulación)
+                                (s.a.fs
+                                  (grup.a.fs
+                                    (aq0fs0 genética genético))))))
+                          (Fc , ,))
+                        (coord
+                          (cc y y))
+                        (s.a.ms
+                          (neg
+                            (rn no no))
+                          (grup.a.ms
+                            (aq0ms0 apto apto)
+                            (sp
+                              (prep
+                                (sps00 para para))
+                              (sn
+                                (espec.ms
+                                  (da0ms0 el el))
+                                (grup.nom.ms
+                                  (ncms000 consumo consumo)
+                                  (s.a.ms
+                                    (grup.a.ms
+                                      (aq0ms0 humano humano))))))))))))))))
+        (Fc , ,))
+      (grup.verb
+        (vmip3p0 pueden poder)
+        (infinitiu
+          (van0000 haber haber)
+          (vsp00sm sido ser)
+          (vmp00pf utilizadas utilizar)))
+      (sp-CC
+        (prep
+          (sps00 para para))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 fabricar fabricar))
+          (sn-CD
+            (espec.fs
+              (di0fs0 una uno))
+            (grup.nom.fs
+              (ncfs000 variedad variedad)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 alimentos alimento))))))
+          (sp-CC
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 venta venta)
+                (sp
+                  (prep
+                    (sps00 en en))
+                  (snl
+                    (grup.nom
+                      (np0000l Estados_Unidos Estados_Unidos))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 Según según))
+      (sno
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np0000o Post Post)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 cierre cierre)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 planta planta)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sno
+                  (grup.nom
+                    (np0000o Kellogs Kellogs)))))))))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmis3s0 debió deber))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 imposibilidad imposibilidad)
+          (sp
+            (prep
+              (sps00 de de))
+            (S.F.C
+              (conj.subord
+                (cs que que))
+              (sn-SUJ
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0cp0 grandes grande)))
+                  (ncmp000 proveedores proveedor)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.mp
+                        (ncmp000 granos grano))))))
+              (grup.verb
+                (vmsi3p0 certificaran certificar))
+              (S.F.C-CD
+                (conj.subord
+                  (cs que que))
+                (sn-SUJ
+                  (espec.ms
+                    (dp3cs0 su su))
+                  (grup.nom.ms
+                    (ncms000 maíz maíz)))
+                (neg-MOD
+                  (rn no no))
+                (grup.verb
+                  (vmii3s0 estaba estar))
+                (S.NF.P-ATR
+                  (participi
+                    (Fe " ")
+                    (aq0msp adulterado adulterado)
+                    (Fe " "))
+                  (sp-CC
+                    (prep
+                      (sps00 con con))
+                    (sna
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 variedad variedad)
+                        (sna
+                          (grup.nom
+                            (np0000a StartLink StartLink)))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (sn.j-CCT
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 semana semana)
+        (S.NF.P
+          (participi
+            (aq0fsp pasada pasado)))))
+    (S.co
+      (S
+        (sno-SUJ
+          (grup.nom
+            (np0000o Mission_Foods Mission_Foods)
+            (sno
+              (Fc , ,)
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 mayor mayor)))
+                (ncfs000 productora productora)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 tacos taco))))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snl
+                    (grup.nom
+                      (np0000l Estados_Unidos Estados_Unidos)))))
+              (Fc , ,))))
+        (grup.verb
+          (vmis3s0 ordenó ordenar))
+        (sn-CD
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 retirada retirada)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncms000 mercado mercado))))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn.co
+                (sn
+                  (espec.mp
+                    (di0mp0 todos todo)
+                    (dp3cp0 sus su))
+                  (grup.nom.mp
+                    (ncmp000 tacos taco)))
+                (Fc , ,)
+                (sn
+                  (grup.nom.fp
+                    (ncfp000 tortillas tortilla)))
+                (coord
+                  (cc y y))
+                (sn
+                  (grup.nom.mp
+                    (Fe " ")
+                    (ncmp000 chips chip)
+                    (Fe " "))))))))
+      (coord
+        (cc e e))
+      (S
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmis3s0 indicó indicar))
+        (S.F.C-CD
+          (conj.subord
+            (cs que que))
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vmif3s0 usará usar))
+          (sn.x-CD
+            (grup.nom.co
+              (grup.nom.ms
+                (ncms000 maíz maíz)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 blanco blanco))))
+              (coord
+                (sps00 en_lugar_de en_lugar_de))
+              (grup.nom.ms
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 amarillo amarillo)))))))
+        (S.F.A-CC
+          (Fc , ,)
+          (conj.subord
+            (cs porque porque))
+          (sn-SUJ
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 harina harina)))
+          (grup.verb
+            (vmic3s0 podría poder)
+            (infinitiu
+              (vmn0000 contener contener)))
+          (sn-CD
+            (espec.fs
+              (di0fs0 una uno))
+            (grup.nom.fs
+              (ncfs000 variedad variedad)
+              (S.NF.P.co
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 grano grano)
+                      (S.NF.P
+                        (participi
+                          (aq0msp modificado modificado))
+                        (sadv-CC
+                          (grup.adv
+                            (rg genéticamente genéticamente)))))))
+                (coord
+                  (cc y y))
+                (S.NF.P
+                  (neg-MOD
+                    (rn no no))
+                  (participi
+                    (aq0fsp autorizada autorizado)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 problema problema)))
+    (grup.verb
+      (vmip3s0 está estar))
+    (sp-ATR
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 uso uso)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (di0fs0 una uno))
+              (grup.nom.fs
+                (ncfs000 variedad variedad)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 maíz maíz)
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0ms0 transgénico transgénico))))))
+                (S.NF.P
+                  (Fc , ,)
+                  (participi
+                    (aq0fsp conocida conocido))
+                  (sp-CPRED
+                    (prep
+                      (cs como como))
+                    (sna
+                      (grup.nom
+                        (np0000a StarLink StarLink))))
+                  (Fc , ,))
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (neg-MOD
+                    (rn no no))
+                  (morfema.verbal-PASS
+                    (p0000000 se se))
+                  (grup.verb
+                    (vaip3s0 ha haber)
+                    (vmp00sm aprobado aprobar))
+                  (sp-CC
+                    (prep
+                      (sps00 para para))
+                    (sn
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 consumo consumo)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0ms0 humano humano))))))
+                  (sp-CC
+                    (prep
+                      (sps00 debido_a debido_a))
+                    (S.F.C
+                      (conj.subord
+                        (cs que que))
+                      (sn.e-SUJ *0*)
+                      (grup.verb
+                        (vmip3s0 puede poder)
+                        (infinitiu
+                          (vmn0000 causar causar)))
+                      (sn-CD
+                        (grup.nom.fp
+                          (ncfp000 reacciones reacción)
+                          (s.a.fp
+                            (grup.a.fp
+                              (aq0fp0 alérgicas alérgico))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 firma firma)
+        (S.NF.P
+          (participi
+            (aq0fsp asociada asociado))
+          (sp-CC
+            (prep
+              (sps00 de de))
+            (sno
+              (grup.nom
+                (np0000o Mission Mission)))))
+        (sno
+          (Fc , ,)
+          (grup.nom
+            (np0000o Azteca_Milling Azteca_Milling))
+          (Fc , ,))
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vsip3s0 es ser))
+          (sn-ATR
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 proveedora proveedora)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 harina harina)
+                    (sp
+                      (prep
+                        (sps00 para para))
+                      (sn.co
+                        (sn.co
+                          (sn
+                            (espec.mp
+                              (da0mp0 los el))
+                            (grup.nom.mp
+                              (ncmp000 tacos taco)))
+                          (coord
+                            (cc y y))
+                          (sn
+                            (grup.nom.fp
+                              (ncfp000 tortillas tortilla))))
+                        (sp.j
+                          (prep
+                            (sps00 de de))
+                          (sn.x
+                            (grup.nom.co
+                              (grup.nom
+                                (np0000o Mission_Foods Mission_Foods))
+                              (coord
+                                (cc y y))
+                              (grup.nom
+                                (np0000o Kraft Kraft))))))))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 anunció anunciar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmic3s0 retiraría retirar))
+      (sp-CCL
+        (prep
+          (spcms del del))
+        (sn
+          (grup.nom.ms
+            (ncms000 mercado mercado))))
+      (sn-CD
+        (espec.fs
+          (di0fs0 toda todo)
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 harina harina)
+          (S.NF.P
+            (participi
+              (aq0fsp hecha hecho))
+            (sp-CC
+              (prep
+                (sps00 con con))
+              (sn
+                (grup.nom.ms
+                  (ncms000 maíz maíz)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 amarillo amarillo))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 decisión decisión)))
+    (grup.verb
+      (vmis3s0 siguió seguir))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (S.F.R
+            (relatiu-CD
+              (pr0cn000 que que))
+            (grup.verb
+              (vaii3s0 había haber)
+              (vmp00sm tomado tomar))
+            (sn-CCT
+              (grup.nom.mp
+                (ncmp000 días día)
+                (sadv
+                  (grup.adv
+                    (rg atrás atrás)))))
+            (sno-SUJ
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 cadena cadena)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 supermercados supermercado))))
+                (sno
+                  (grup.nom
+                    (np0000o Safeway Safeway)))
+                (S.F.R
+                  (Fc , ,)
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmis3s0 retiró retirar))
+                  (sp-CCL
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.mp
+                        (dp3cp0 sus su))
+                      (grup.nom.mp
+                        (ncmp000 locales local))))
+                  (sn-CD
+                    (espec.fs
+                      (di0fs0 toda todo)
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 harina harina)
+                      (S.NF.P
+                        (participi
+                          (aq0fsp hecha hecho))
+                        (sp-CC
+                          (prep
+                            (sps00 con con))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 maíz maíz)
+                              (s.a.ms
+                                (grup.a.ms
+                                  (aq0ms0 amarillo amarillo))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p John_Wichtrich John_Wichtrich)
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (ncms000 vicepresidente vicepresidente)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 empresa empresa)
+                  (sno
+                    (grup.nom
+                      (np0000o Aventis_FoodSciences Aventis_FoodSciences)))
+                  (sp
+                    (Fc , ,)
+                    (prep
+                      (sps00 de de))
+                    (snl
+                      (grup.nom
+                        (np0000l Carolina_del_Norte Carolina_del_Norte)))
+                    (Fc , ,))
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vmis3s0 desarrolló desarrollar))
+                    (sn-CD
+                      (espec.ms
+                        (dd0ms0 ese ese))
+                      (grup.nom.ms
+                        (ncms000 maíz maíz)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0ms0 transgénico transgénico))))))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmis3s0 dijo decir))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (Fe " ")
+      (sn-SUJ
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 gran gran)))
+          (ncfs000 cantidad cantidad)))
+      (sadv-MOD
+        (grup.adv
+          (rg ya ya)))
+      (grup.verb
+        (vaip3s0 ha haber)
+        (vmp00sm pasado pasar))
+      (sp-CREG
+        (prep
+          (spcms al al))
+        (sn
+          (grup.nom.ms
+            (ncms000 ciclo ciclo)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (ncmp000 alimentos alimento)))))))
+      (Fe " "))
+    (Fp . .)))
+(
+  (S
+    (S.F.C.co-CD
+      (Fe " ")
+      (S.F.C
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmip1p0 Estamos_en_contacto estar_en_contacto))
+        (sp-CREG
+          (prep
+            (sps00 con con))
+          (sn
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (ncmp000 dueños dueño)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn.co
+                  (sn
+                    (espec.mp
+                      (da0mp0 los el))
+                    (grup.nom.mp
+                      (ncmp000 silos silo)))
+                  (Fc , ,)
+                  (sn
+                    (espec.mp
+                      (da0mp0 los el))
+                    (grup.nom.mp
+                      (ncmp000 molinos molino)))
+                  (coord
+                    (cc y y))
+                  (sn
+                    (espec.mp
+                      (da0mp0 los el))
+                    (grup.nom.mp
+                      (ncmp000 procesadores procesador))))))))
+        (sp
+          (prep
+            (sps00 para para))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 identificar identificar))
+            (sn-CD
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 maíz maíz)
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (morfema.verbal-PASS
+                    (p0000000 se se))
+                  (grup.verb
+                    (vasp3s0 haya haber)
+                    (vmp00sm mezclado mezclar)))))))
+        (Fc , ,))
+      (coord
+        (cc y y))
+      (S.F.C
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmip1p0 vamos ir)
+          (sps00 a a)
+          (infinitiu
+            (vmn0000 retirarlo retirar)))
+        (sp-CCL
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 circuito circuito)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.mp
+                    (da0mp0 los el))
+                  (grup.nom.mp
+                    (ncmp000 alimentos alimento))))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 indicó indicar))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 ejecutivo ejecutivo)))
+    (Fp . .)))

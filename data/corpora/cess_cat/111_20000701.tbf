@@ -1,0 +1,156 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (ao0fs0 primera primer)))
+        (ncfs000 etapa etapa)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (np00000 Tour-2000 Tour-2000))))
+        (sp
+          (Fc , ,)
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (Z 16,5 16.5))
+            (grup.nom.mp
+              (ncmp000 quilòmetres quilòmetre)))
+          (Fc , ,))))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmip3s0 presenta presentar))
+    (sp-CPRED.SUJ
+      (prep
+        (cs com com))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 paradís paradís)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 extraordinari extraordinari))))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (sp
+        (prep
+          (sps00 a a))
+        (sn
+          (grup.nom.mp
+            (nccp000 especialistes especialista)
+            (sp
+              (prep
+                (sps00 en en))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 contrarellotge contrarellotge))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 favorits favorit)))
+    (grup.verb
+      (vmif3p0 sortiran sortir))
+    (sp-CCT
+      (prep
+        (sps00 a_partir_de a_partir_de))
+      (sn
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (W set_del_vespre [??:??/??/??:19.00]))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Ullrich Ullrich)))
+    (sn-CD
+      (grup.nom.ms
+        (pp3nn000 ho ho)))
+    (grup.verb
+      (vmif3s0 farà fer))
+    (sadv-CCT
+      (sn.j
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 minut minut)))
+      (sadv
+        (grup.adv
+          (rg després després)
+          (S.F.C*
+            (conj.subord
+              (cs que que))
+            (sn
+              (grup.nom.ms
+                (np00000 Pantani Pantani)))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Per per))
+      (sn
+        (espec.ms
+          (dd0ms0 aquest aquest))
+        (grup.nom.ms
+          (ncms000 motiu motiu)))
+      (Fc , ,))
+    (sadv-CC
+      (grup.adv
+        (rg possiblement possiblement)))
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (ncms000 alemany alemany)))
+    (grup.verb
+      (vmif3s0 doblarà doblar))
+    (sn-CD
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (ncms000 italià italià)))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (pi0ms000 mateix mateix)))
+    (sn-CI.r
+      (grup.nom.s
+        (pp3csd00 li ell)))
+    (grup.verb
+      (vmip3s0 pot poder)
+      (infinitiu
+        (vmn0000 passar passar)))
+    (sp-CI.r
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom.ms
+          (np00000 Escartín Escartín))))
+    (sp-AO
+      (prep
+        (sps00 en_relació_amb en_relació_amb))
+      (sn
+        (grup.nom.ms
+          (np00000 Zülle Zülle))))
+    (Fp . .)))

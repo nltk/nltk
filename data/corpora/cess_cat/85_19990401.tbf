@@ -1,0 +1,324 @@
+
+(
+  (S
+    (sn-SUJ
+      (grup.nom.fs
+        (np00000 Zulema Zulema)
+        (sn
+          (Fc , ,)
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 filla filla)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncms000 president president)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 argentí argentí)))
+                  (sn
+                    (Fc , ,)
+                    (grup.nom.ms
+                      (np00000 Carlos_Menem Carlos_Menem))
+                    (Fc , ,)))))))))
+    (grup.verb
+      (vmip3s0 continua continuar)
+      (gerundi
+        (vmg0000 exercint exercir)))
+    (sadv-CC
+      (grup.adv
+        (rg fidelment fidelment)))
+    (sp-CC
+      (prep
+        (sps00 de de))
+      (sn
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (ao0fs0 primera primer)))
+          (ncfs000 dama dama))))
+    (S.NF.A-CC
+      (Fc , ,)
+      (gerundi
+        (vmg0000 suplint suplir))
+      (sn-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 buit buit)
+          (S.F.R
+            (relatiu-CD
+              (pr0cn000 que que))
+            (grup.verb
+              (vaip3s0 va anar)
+              (vmn0000 deixar deixar))
+            (sn-CCT
+              (Fc , ,)
+              (vmip3s0 fa fer)
+              (ncmp000 anys any)
+              (Fc , ,))
+            (sn-SUJ
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 divorci divorci)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn.co
+                    (sn
+                      (espec.ms
+                        (dp3ms0 seu seu))
+                      (grup.nom.ms
+                        (ncms000 pare pare)))
+                    (coord
+                      (cc i i))
+                    (sn
+                      (grup.nom.fs
+                        (np00000 Zulema_Yoma Zulema_Yoma)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom.ms
+          (np00000 Pare Pare))
+        (coord
+          (cc i i))
+        (grup.nom.fs
+          (ncfs000 filla filla))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 gaudir gaudir))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sp-CREG
+      (prep
+        (sps00 d' de))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms.1n
+          (ncms000 cafè cafè))))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 plaça plaça)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (np00000 San_Marco San_Marco)))))))
+    (sp-CCL
+      (Fc , ,)
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom
+          (np00000 Venècia Venècia)))
+      (Fc , ,))
+    (S.F.R.1c
+      (relatiu-SUJ
+        (pr0cn000 que que))
+      (grup.verb
+        (vmii3s0 posava posar))
+      (sn-CD
+        (grup.nom.ms
+          (ncms000 punt punt)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 final final)))))
+      (sp-CC
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 visita visita)
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 oficial oficial)))
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (grup.nom
+                  (np00000 Itàlia Itàlia))))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (np00000 Menem Menem))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.fs
+        (np00000 Zulemita Zulemita)
+        (sn
+          (Fc , ,)
+          (espec.fs
+            (di0cs0 cada cada))
+          (grup.nom.fs
+            (ncfs000 vegada vegada)
+            (s.a.fs
+              (espec
+                (rg més més))
+              (grup.a.fs
+                (aq0cs0 elegant elegant))))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 complir complir))
+    (sp-CREG
+      (prep
+        (sps00 amb amb))
+      (sn
+        (grup.nom.fs
+          (ncfs000 diligència diligència))))
+    (sn-CD
+      (espec.ms
+        (dp3ms0 el_seu el_seu))
+      (grup.nom.ms
+        (ncms000 paper paper)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 discreta discret)))
+              (nccs000 acompanyant acompanyant)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 president president)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.co
+      (sn
+        (grup.nom.ms
+          (np00000 Menem Menem)))
+      (coord
+        (cc i i))
+      (sn
+        (espec.fs
+          (dp3fs0 la_seva el_seu))
+        (grup.nom.fs
+          (ncfs000 filla filla)
+          (sn
+            (grup.nom.fs
+              (np00000 Zulema Zulema))))))
+    (sadv
+      (Fc , ,)
+      (grup.adv
+        (rg ahir ahir))
+      (Fc , ,))
+    (sp
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom
+          (np00000 Venècia Venècia))))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 mandatari mandatari)))
+      (coord
+        (cc i i))
+      (sn
+        (espec.fs
+          (dp3fs0 la_seva el_seu))
+        (grup.nom.fs
+          (ncfs000 filla filla))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 estar estar))
+    (S.NF.P-ATR
+      (participi
+        (aq0mpp acompanyats acompanyat))
+      (sp-CAG
+        (prep
+          (sps00 per per))
+        (sn
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (ncms000 alcalde alcalde)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom
+                  (np00000 Venècia Venècia))))
+            (sn
+              (Fc , ,)
+              (grup.nom.ms
+                (np00000 Massimo_Cacciari Massimo_Cacciari))
+              (Fc , ,))
+            (S.F.R
+              (sn-CC
+                (prep
+                  (sps00 amb amb))
+                (relatiu
+                  (pr0cn000 qui qui)))
+              (grup.verb
+                (vaii3p0 havien haver)
+                (vmp00sm inaugurat inaugurar))
+              (sn-SUJ
+                (espec.fs
+                  (da0cs0 l' el))
+                (grup.nom.fs
+                  (ncfs000 exposició exposició)
+                  (sn
+                    (grup.nom.ms
+                      (np00000 Jorge_Luis_Borges_,_1899-1999 Jorge_Luis_Borges_,_1899-1999)))
+                  (S.F.R
+                    (Fc , ,)
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vmip3s0 rememora rememorar))
+                    (sn-CD
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 centenari centenari)
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 naixement naixement)
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sn
+                                  (espec.ms
+                                    (da0cs0 l' el))
+                                  (grup.nom.ms
+                                    (ncms000 escriptor escriptor)
+                                    (s.a.ms
+                                      (grup.a.ms
+                                        (aq0ms0 argentí argentí)))))))))))))))))))
+    (Fp . .)))

@@ -1,0 +1,257 @@
+
+(
+  (S
+    (sn.co-SUJ
+      (sno
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (np0000o Departament_de_Política_Territorial_i_Obres_Públiques Departament_de_Política_Territorial_i_Obres_Públiques)))
+      (coord
+        (cc i i))
+      (sno
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 societat societat)
+          (sn
+            (grup.nom.fs
+              (np0000o AUCAT AUCAT)
+              (s.a.fs
+                (Fc , ,)
+                (grup.a.fs
+                  (aq0fs0 concessionària concessionari)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snl
+                      (espec.fs
+                        (da0cs0 l' el))
+                      (grup.nom.fs
+                        (ncfs000 autopista autopista)
+                        (snl
+                          (grup.nom.fs
+                            (np0000l C-32 C-32)))
+                        (snl
+                          (Fc , ,)
+                          (grup.nom.fs
+                            (s.a.fs
+                              (grup.a.fs
+                                (aq0fs0 antiga antic)))
+                            (np0000l A-16 A-16))
+                          (Fc , ,))))))))))))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm signat signar))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 conveni conveni)
+        (sp
+          (prep
+            (sps00 per per))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 millorar millorar))
+            (sn-CD
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 servei servei)
+                (s.a.ms
+                  (grup.a.ms
+                    (nccn000 antiincendis antiincendis)))
+                (sp
+                  (prep
+                    (spcmp dels del))
+                  (snl
+                    (grup.nom.mp
+                      (ncmp000 túnels túnel)
+                      (sp
+                        (prep
+                          (spcms del del))
+                        (snl
+                          (grup.nom.ms
+                            (np0000l Garraf Garraf)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 acord acord)))
+    (grup.verb
+      (vmip3s0 preveu preveure))
+    (sn.co-CD
+      (sn.co
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 formació formació)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncms000 personal personal)
+                  (sp
+                    (prep
+                      (sps00 d' de))
+                    (sn
+                      (grup.nom.fp
+                        (ncfp000 emergències emergència))))
+                  (sp
+                    (prep
+                      (sps00 d' de))
+                    (sno
+                      (grup.nom
+                        (np0000o AUCAT AUCAT)))))))))
+        (Fc , ,)
+        (S.NF.C
+          (infinitiu
+            (vmn0000 oferir oferir))
+          (sn.co-CD
+            (sn
+              (espec.mp
+                (da0mp0 els el))
+              (grup.nom.mp
+                (ncmp000 hidrants hidrant)))
+            (coord
+              (cc i i))
+            (sn
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (ncfp000 connexions connexió)
+                (sp
+                  (prep
+                    (sps00 d' de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 aigua aigua)))))))
+          (sp-CI
+            (prep
+              (spcmp als al))
+            (sno
+              (grup.nom.mp
+                (np0000o Bombers_de_la_Generalitat Bombers_de_la_Generalitat))))
+          (sp-CC
+            (prep
+              (sps00 en_cas_d' en_cas_de))
+            (sn
+              (grup.nom.ms
+                (ncms000 incendi incendi))))
+          (sp.co-CCL
+            (coord
+              (rg tant tant))
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 pròpia propi)))
+                  (ncfs000 autopista autopista))))
+            (coord
+              (cs com com))
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.ms
+                  (da0cs0 l' el))
+                (grup.nom.ms
+                  (ncms000 entorn entorn)
+                  (S.F.R
+                    (Fc , ,)
+                    (relatiu-CCL
+                      (pr000000 on on))
+                    (morf.pron
+                      (pp3cn000 hi hi))
+                    (grup.verb
+                      (vaip3s0 ha haver))
+                    (sno-CD.Q
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (np0000o Parc_Natural_del_Garraf Parc_Natural_del_Garraf)))))))))
+        (Fc , ,)
+        (S.NF.C
+          (infinitiu
+            (vmn0000 adquirir adquirir))
+          (sn-CD
+            (espec.mp
+              (dn0cp0 sis sis))
+            (grup.nom.mp
+              (ncmp000 equips equip)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 respiració respiració)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 autònoma autònom)))
+                    (sp
+                      (prep
+                        (sps00 en en))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 circuit circuit)
+                          (S.NF.P
+                            (participi
+                              (aq0msp tancat tancat))))))))))))
+        (coord
+          (cc i i))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 editar editar))
+          (sn-CD
+            (espec.ms
+              (di0ms0 un un))
+            (grup.nom.ms.1n
+              (ncms000 fulletó fulletó)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 explicatiu explicatiu)))))
+          (sp-CC
+            (prep
+              (sps00 per per))
+            (sp
+              (prep
+                (spcmp als al))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 usuaris usuari)))))
+          (sp.1c
+            (prep
+              (sps00 sobre sobre))
+            (S.F.C*
+              (sadv-CC
+                (grup.adv
+                  (pt000000 com com)))
+              (infinitiu
+                (vmn0000 actuar actuar))
+              (sp-CC
+                (prep
+                  (sps00 en_cas_d' en_cas_de))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 incendi incendi))))))))
+      (sp.j
+        (Fc , ,)
+        (prep
+          (sps00 entre entre))
+        (sn
+          (espec.fp
+            (di0cp0 altres altre))
+          (grup.nom.fp
+            (ncfp000 iniciatives iniciativa)))))
+    (Fp . .)))

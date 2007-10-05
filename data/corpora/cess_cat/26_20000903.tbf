@@ -1,0 +1,265 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (ncfs000 andanada andanada)
+        (S.NF.P
+          (participi
+            (aq0fsp llançada llançat))
+          (sp-CAG
+            (prep
+              (sps00 per per))
+            (sn
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (ncms000 exministre exministre)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.ms
+                      (da0cs0 l' el))
+                    (grup.nom.ms
+                      (np00000 Interior Interior))))
+                (sn
+                  (grup.nom.ms
+                    (np00000 Jean-Pierre_Chevènement Jean-Pierre_Chevènement)))))))
+        (sp-CC
+          (prep
+            (sps00 contra contra))
+          (sn
+            (espec.mp
+              (da0mp0 els el))
+            (grup.nom.mp
+              (nccp000 ecologistes ecologista))))
+        (sp-CC
+          (prep
+            (spcms pel pel))
+          (sn
+            (grup.nom.ms
+              (Fe " ")
+              (ncms000 xantatge xantatge)
+              (Fe " ")
+              (S.F.R
+                (relatiu-CD
+                  (pr0cn000 que que))
+                (sn.e-SUJ *0*)
+                (grup.verb
+                  (vmip3p0 exerceixen exercir))
+                (sp-AO
+                  (prep
+                    (sps00 sobre sobre))
+                  (sn
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (ncms000 partit partit)
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0cs0 socialista socialista)))))))))))
+      (Fc , ,))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vsn0000 ser ser)
+      (vmp00sf resposta respondre))
+    (sp-CAG
+      (prep
+        (sps00 per per))
+      (sn
+        (grup.nom.fs
+          (np00000 Dominique_Voynet Dominique_Voynet)
+          (sn
+            (Fc , ,)
+            (grup.nom.fs
+              (ncfs000 ministra ministra)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom
+                    (ncms000 Medi_Ambient medi_ambient)))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (Fe " ")
+      (sn-SUJ
+        (grup.nom.fs
+          (np00000 Chevènement Chevènement)))
+      (grup.verb
+        (vmip3s0 caricaturitza caricaturitzar))
+      (sn-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (S.F.R
+            (relatiu-CD
+              (pr0cn000 que que))
+            (sn.e-SUJ *0*)
+            (neg-MOD
+              (rn no no))
+            (grup.verb
+              (vmip3s0 entén entendre)))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmip3s0 afirma afirmar))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 ministra ministra)
+        (S.F.R
+          (sp
+            (Fc , ,)
+            (prep
+              (sps00 per per))
+            (relatiu
+              (pr0cn000 qui qui)))
+          (sn-SUJ
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (ncfp000 crítiques crítica)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.ms
+                    (da0cs0 l' el))
+                  (grup.nom.ms
+                    (ncms000 exministre exministre))))))
+          (grup.verb
+            (vmip3p0 mostren mostrar))
+          (sn-CD
+            (espec.fs
+              (dp3fs0 la_seva el_seu))
+            (grup.nom.fs
+              (ncfs000 incapacitat incapacitat)
+              (sp
+                (prep
+                  (sps00 per per))
+                (S.NF.C
+                  (Fe " ")
+                  (infinitiu
+                    (vmn0000 apartar apartar))
+                  (morf.pron
+                    (p0300000 -se ell))
+                  (sp-CREG
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (espec.ms
+                        (dp3ms0 seu seu))
+                      (grup.nom.ms
+                        (ncms000 credo credo)
+                        (s.a.ms.x
+                          (grup.a.ms.co
+                            (grup.a.ms
+                              (aq0ms0 pseudocientífic pseudocientífic))
+                            (Fc , ,)
+                            (grup.a.ms
+                              (aq0cs0 productivista productivista))
+                            (coord
+                              (cc i i))
+                            (grup.a.ms
+                              (aq0ms0 jacobí jacobí)))))))
+                  (Fe " "))))))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 en en))
+      (sn
+        (grup.nom.fp
+          (ncfp000 declaracions declaració)
+          (sp
+            (prep
+              (sps00 a a))
+            (sn
+              (grup.nom
+                (np00000 Libération Libération)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.fs
+        (np00000 Voynet Voynet)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 advertir advertir))
+    (sp-CREG
+      (prep
+        (sps00 de de))
+      (sn
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (Fe " ")
+          (ncfp000 temptacions temptació)
+          (Fe " ")
+          (S.F.R
+            (sp-CREG
+              (prep
+                (sps00 en en))
+              (relatiu
+                (pr0cn000 què què)))
+            (grup.verb
+              (vmip3s0 pot poder)
+              (infinitiu
+                (vmn0000 caure caure)))
+            (sn-SUJ
+              (grup.nom.ms
+                (np00000 Jean-Pierre_Chevènement Jean-Pierre_Chevènement)))
+            (S.F.ACond-AO
+              (conj.subord
+                (cs si si))
+              (sn.e-SUJ *0*)
+              (grup.verb
+                (vmip3s0 segueix seguir))
+              (sp-CC
+                (prep
+                  (sps00 amb amb))
+                (sn
+                  (espec.ms
+                    (dp3ms0 el_seu el_seu))
+                  (grup.nom.ms
+                    (ncms000 projecte projecte)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.ms
+                          (Fe " ")
+                          (ncms000 pol pol)
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0ms0 republicà republicà)))
+                          (Fe " "))))
+                    (sp
+                      (prep
+                        (sps00 com_a com_a))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 alternativa alternativa)
+                          (sp
+                            (prep
+                              (sps00 a a))
+                            (sn
+                              (espec.fs
+                                (da0cs0 l' el))
+                              (grup.nom.fs
+                                (ncfs000 esquerra esquerra)
+                                (s.a.fs
+                                  (grup.a.fs
+                                    (aq0cs0 plural plural)))
+                                (sp
+                                  (prep
+                                    (sps00 de de))
+                                  (sn
+                                    (grup.nom.ms
+                                      (np00000 Lionel_Jospin Lionel_Jospin))))))))))))))))))
+    (Fp . .)))

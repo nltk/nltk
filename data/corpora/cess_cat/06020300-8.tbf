@@ -1,0 +1,495 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (di0fs0 Una un))
+      (grup.nom.fs
+        (ncfs000 dotzena dotzena)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.fp
+              (ncfp000 entitats entitat)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 món món)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 socioeconòmic socioeconòmic)))
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 català català))))))
+              (S.F.R
+                (Fc , ,)
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vmip3p0 representen representar))
+                (sadv
+                  (grup.adv
+                    (rg principalment principalment)))
+                (sn-CD
+                  (espec.mp
+                    (da0mp0 els el))
+                  (grup.nom.mp
+                    (ncmp000 sectors sector)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn.co
+                        (sn
+                          (espec.fs
+                            (da0cs0 l' el))
+                          (grup.nom.fs
+                            (ncfs000 hostaleria hostaleria)))
+                        (Fc , ,)
+                        (sn
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (ncfs000 restauració restauració)))
+                        (coord
+                          (cc i i))
+                        (sn
+                          (espec.ms
+                            (da0ms0 el el))
+                          (grup.nom.ms
+                            (ncms000 comerç comerç)))))))
+                (Fc , ,)))))))
+    (grup.verb
+      (vmif3p0 signaran signar))
+    (sadv-CC
+      (grup.adv
+        (rg demà demà)))
+    (sp-CC
+      (prep
+        (spcms al al))
+      (snl
+        (grup.nom.ms
+          (np0000l Palau_de_la_Generalitat Palau_de_la_Generalitat))))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 acord acord)
+        (S.F.R
+          (sp-AO
+            (prep
+              (sps00 segons segons))
+            (relatiu
+              (da0ms0 el el)
+              (pr0cs000 qual qual)))
+          (sn.e-SUJ *0*)
+          (sn-CD
+            (grup.nom
+              (pp3cn000 s' ell)))
+          (grup.verb
+            (vmip3p0 inscriuen inscriure))
+          (sp-CREG
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 campanya campanya)
+                (sna
+                  (grup.nom
+                    (Fz ' ')
+                    (np0000a En_català_,_tu_hi_guanyes En_català_,_tu_hi_guanyes)
+                    (Fz ' ')))
+                (S.F.R
+                  (relatiu-CD
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmip3s0 impulsa impulsar))
+                  (sno-SUJ
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (np0000o Govern Govern)))
+                  (sp-CC
+                    (prep
+                      (sps00 amb_l'_objecte_de amb_l'_objecte_de))
+                    (S.NF.C
+                      (infinitiu
+                        (vmn0000 fomentar fomentar))
+                      (sn-CD
+                        (espec.ms
+                          (da0cs0 l' el))
+                        (grup.nom.ms
+                          (ncms000 ús ús)
+                          (sp
+                            (prep
+                              (spcms del del))
+                            (sn
+                              (grup.nom.ms
+                                (ncms000 català català))))))
+                      (sp-CC
+                        (prep
+                          (sps00 en en))
+                        (sn
+                          (espec.fs
+                            (da0cs0 l' el))
+                          (grup.nom.fs
+                            (ncfs000 atenció atenció)
+                            (sp
+                              (prep
+                                (spcms al al))
+                              (sn
+                                (grup.nom.ms
+                                  (ncms000 públic públic)))))))
+                      (sp-CC
+                        (prep
+                          (spcmp als al))
+                        (sn
+                          (grup.nom.mp
+                            (ncmp000 establiments establiment)
+                            (s.a.mp.co
+                              (s.a.mp
+                                (grup.a.mp
+                                  (aq0cp0 comercials comercial)))
+                              (coord
+                                (cc i i))
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sn
+                                  (grup.nom.fs
+                                    (ncfs000 restauració restauració)))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-ATR
+      (espec.fp
+        (da0fp0 Les el)
+        (dn0cp0 dotze dotze))
+      (grup.nom.fp
+        (ncfp000 entitats entitat)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmif3p0 subscriuran subscriure))
+          (sn-CD
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (ncms000 acord acord))))))
+    (grup.verb
+      (vsip3p0 són ser))
+    (sn.x-SUJ
+      (grup.nom.co
+        (Fd : :)
+        (grup.nom
+          (np0000o Agrupament_de_Botiguers_i_Comerciants_de_Catalunya Agrupament_de_Botiguers_i_Comerciants_de_Catalunya)
+          (sno
+            (grup.nom
+              (np0000o ABC ABC)))
+          (Fpt -Fpt- -Fpt-))
+        (Fc , ,)
+        (grup.nom
+          (np0000o Associació_Nacional_de_Grans_Establiments_de_Distribució Associació_Nacional_de_Grans_Establiments_de_Distribució)
+          (sno
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000o ANGED ANGED)
+              (Fpt -Fpt- -Fpt-))))
+        (Fc , ,)
+        (grup.nom
+          (np0000o Comissions_Obreres Comissions_Obreres)
+          (sno
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000o CCOO CCOO)
+              (Fpt -Fpt- -Fpt-))))
+        (Fc , ,)
+        (grup.nom
+          (np0000o Confederació_de_Comerç_de_Catalunya Confederació_de_Comerç_de_Catalunya)
+          (sno
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000o CCC CCC)
+              (Fpt -Fpt- -Fpt-))))
+        (Fc , ,)
+        (grup.nom
+          (np0000o Confederació_Empresarial_d'_Hostaleria_i_Restauració_de_Catalunya Confederació_Empresarial_d'_Hostaleria_i_Restauració_de_Catalunya))
+        (Fc , ,)
+        (grup.nom
+          (np0000o Consell_d'_Empreses_Distribuïdores_d'_Alimentació_de_Catalunya Consell_d'_Empreses_Distribuïdores_d'_Alimentació_de_Catalunya)
+          (sno
+            (grup.nom.fp
+              (Fpa -Fpa- -Fpa-)
+              (np0000o CEDAC CEDAC)
+              (Fpt -Fpt- -Fpt-))))
+        (Fc , ,)
+        (grup.nom
+          (np0000o Consell_General_de_Cambres_de_Comerç_de_Catalunya Consell_General_de_Cambres_de_Comerç_de_Catalunya))
+        (Fc , ,)
+        (grup.nom
+          (np0000o Federació_de_Restauració_de_Catalunya Federació_de_Restauració_de_Catalunya)
+          (sno
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000o FERECA FERECA)
+              (Fpt -Fpt- -Fpt-))))
+        (Fc , ,)
+        (grup.nom
+          (np0000o Foment_del_Treball_Nacional Foment_del_Treball_Nacional))
+        (Fc , ,)
+        (grup.nom
+          (np0000o Pimec-Sefes Pimec-Sefes))
+        (Fc , ,)
+        (grup.nom
+          (np0000o Pimec-Sefes_Comerç Pimec-Sefes_Comerç))
+        (coord
+          (cc i i))
+        (grup.nom
+          (np0000o Unió_General_de_Treballadors Unió_General_de_Treballadors)
+          (sno
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000o UGT UGT)
+              (Fpt -Fpt- -Fpt-))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0cs0 L' el))
+        (grup.nom.ms
+          (ncms000 acte acte)))
+      (grup.verb
+        (vsif3s0 serà ser)
+        (vmp00sm presidit presidir))
+      (sp-CAG
+        (prep
+          (spcms pel pel))
+        (snp
+          (grup.nom.ms
+            (ncms000 president president)
+            (sp
+              (prep
+                (sps00 de de))
+              (sno
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np0000o Generalitat Generalitat))))
+            (snp
+              (Fc , ,)
+              (grup.nom.ms
+                (np0000p Jordi_Pujol Jordi_Pujol))
+              (Fc , ,))))))
+    (coord
+      (cc i i))
+    (S
+      (grup.verb
+        (vmif3p0 subscriuran subscriure))
+      (sn-CD
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 acord acord)))
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (ncmp000 consellers conseller)
+          (sp.co
+            (sp
+              (prep
+                (sps00 de de))
+              (snp
+                (sno
+                  (grup.nom
+                    (np0000o Cultura Cultura)))
+                (snp.j
+                  (Fc , ,)
+                  (grup.nom.ms
+                    (np0000p Jordi_Vilajoana Jordi_Vilajoana))
+                  (Fc , ,))))
+            (coord
+              (cc i i))
+            (sp
+              (prep
+                (sps00 de de))
+              (snp
+                (sno
+                  (grup.nom
+                    (np0000o Treball_,_Indústria_,_Comerç_i_Turisme Treball_,_Indústria_,_Comerç_i_Turisme)))
+                (snp.j
+                  (Fc , ,)
+                  (grup.nom.ms
+                    (np0000p Antoni_Fernández_Teixidó Antoni_Fernández_Teixidó)))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC.r
+      (prep
+        (sps00 A a))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 acte acte))))
+    (sadv-MOD
+      (grup.adv
+        (rg també també)))
+    (sn-CC.r
+      (grup.nom
+        (pp3cn000 hi hi)))
+    (grup.verb
+      (vmif3p0 assistiran assistir))
+    (sn.co-SUJ
+      (sn.co
+        (sn
+          (espec.mp
+            (da0mp0 els el))
+          (grup.nom.mp
+            (ncmp000 secretaris secretari)
+            (s.a.mp
+              (grup.a.mp
+                (aq0cp0 generals general)))
+            (sp.co
+              (sp
+                (prep
+                  (spcms del del))
+                (snp
+                  (sno
+                    (grup.nom.ms
+                      (np0000o Departament_de_Cultura Departament_de_Cultura)))
+                  (snp.j
+                    (Fc , ,)
+                    (grup.nom.ms
+                      (np0000p Pau_Villòria Pau_Villòria))
+                    (Fc , ,))))
+              (coord
+                (cc i i))
+              (sp
+                (prep
+                  (spcms del del))
+                (snp
+                  (sno
+                    (grup.nom.ms
+                      (np0000o Departament_de_Treball_,_Indústria_,_Comerç_i_Turisme Departament_de_Treball_,_Indústria_,_Comerç_i_Turisme)))
+                  (snp.j
+                    (Fc , ,)
+                    (grup.nom.ms
+                      (np0000p Oriol_Pujol Oriol_Pujol))))))))
+        (Fx ; ;)
+        (snp.x
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms.co
+            (grup.nom.ms.co
+              (ncms000 director director)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 general general)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sno
+                  (grup.nom
+                    (np0000o Política_Lingüística Política_Lingüística))))
+              (coord
+                (cc i i))
+              (grup.nom.ms
+                (ncms000 president president)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (grup.nom.ms
+                    (np0000o Consorci_per_a_la_Normalització_Lingüística Consorci_per_a_la_Normalització_Lingüística)))))
+            (snp.j
+              (Fc , ,)
+              (grup.nom.ms
+                (np0000p Jordi_Roigé Jordi_Roigé)))))
+        (Fx ; ;)
+        (snp
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 secretari secretari)
+            (sp
+              (prep
+                (sps00 per per))
+              (sp
+                (prep
+                  (sps00 a a))
+                (sno
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np0000o Immigració Immigració)))))
+            (snp
+              (Fc , ,)
+              (grup.nom.ms
+                (np0000p Salvador_Obiols Salvador_Obiols))
+              (Fc , ,))))
+        (coord
+          (cc i i))
+        (sn
+          (espec.mp
+            (da0mp0 els el))
+          (grup.nom.mp
+            (ncmp000 directors director)
+            (s.a.mp
+              (grup.a.mp
+                (aq0cp0 generals general)))
+            (sp.co
+              (sp
+                (prep
+                  (sps00 de de))
+                (snp
+                  (sno
+                    (grup.nom
+                      (np0000o Comerç Comerç)))
+                  (snp.j
+                    (Fc , ,)
+                    (grup.nom.ms
+                      (np0000p Jaume_Angerri Jaume_Angerri)))))
+              (Fx ; ;)
+              (sp
+                (prep
+                  (sps00 d' de))
+                (snp
+                  (sno
+                    (grup.nom
+                      (np0000o Ocupació Ocupació)))
+                  (snp.j
+                    (Fc , ,)
+                    (grup.nom.ms
+                      (np0000p Manuel_Romero Manuel_Romero))
+                    (Fc , ,))))
+              (coord
+                (cc i i))
+              (sp
+                (prep
+                  (sps00 de de))
+                (snp
+                  (sno
+                    (grup.nom
+                      (np0000o Relacions_Laborals Relacions_Laborals)))
+                  (snp.j
+                    (Fc , ,)
+                    (grup.nom.ms
+                      (np0000p Jaume_Abat Jaume_Abat))
+                    (Fc , ,))))))))
+      (sp.j
+        (prep
+          (sps00 entre entre))
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.ms
+              (pi0cp000 altres altre))))))
+    (Fp . .)))

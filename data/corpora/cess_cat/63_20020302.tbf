@@ -1,0 +1,217 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (di0mp0 Uns un)
+        (di0mp0 quants quant))
+      (grup.nom.mp
+        (ncmp000 centenars centenar)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.mp
+              (nccp000 joves jove))))))
+    (morf.pron
+      (p0300000 es ell))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 manifestar manifestar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sp-CCL
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 centre centre)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (np00000 Madrid Madrid)))))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 protestar protestar))
+        (sp-CC
+          (prep
+            (sps00 per per))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 llei llei)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cn0 antibotellón antibotellón)))
+              (S.NF.P
+                (participi
+                  (aq0fsp anunciada anunciat))
+                (sp.co-CAG
+                  (sp
+                    (prep
+                      (spcms pel pel))
+                    (sn
+                      (grup.nom.ms
+                        (np00000 Govern Govern))))
+                  (coord
+                    (cc i i))
+                  (sp
+                    (prep
+                      (spcms pel pel))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 dispositiu dispositiu)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0cs0 policial policial))))))))
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (sp-CCT
+                  (prep
+                    (sps00 durant durant))
+                  (sn
+                    (espec.mp
+                      (da0mp0 els el))
+                    (grup.nom.mp
+                      (s.a.mp
+                        (grup.a.mp
+                          (ao0mp0 últims últim)))
+                      (ncmp000 caps cap)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.fs
+                            (ncfs000 setmana setmana)))))))
+                (grup.verb
+                  (vaip3s0 ha haver)
+                  (vmp00sm impedit impedir))
+                (sn-CD
+                  (espec.fp
+                    (da0fp0 les el))
+                  (grup.nom.fp
+                    (ncfp000 reunions reunió)
+                    (s.a.fp
+                      (grup.a.fp
+                        (aq0fp0 nocturnes nocturn)))))
+                (sp-CCL
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 plaça plaça)
+                      (sp
+                        (prep
+                          (spcms del del))
+                        (sn
+                          (grup.nom.ms
+                            (np00000 Dos_de_Mayo Dos_de_Mayo)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 marxa marxa)
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vaip3s0 va anar)
+            (vmn0000 mobilitzar mobilitzar))
+          (sn-CD
+            (espec.mp
+              (Z 260 260))
+            (grup.nom.mp
+              (nccp000 policies policia)))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 derivar derivar))
+    (sp-CC
+      (prep
+        (sps00 durant durant))
+      (sn
+        (espec.fs
+          (rg més més)
+          (sps00 de de)
+          (dn0fs0 mitja mig))
+        (grup.nom.fs
+          (ncfs000 hora hora))))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 batalla batalla)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 campal campal)))
+          (sp
+            (prep
+              (sps00 entre entre))
+            (sn.co
+              (sn
+                (espec.mp
+                  (da0mp0 els el))
+                (grup.nom.mp
+                  (nccp000 agents agent)))
+              (coord
+                (cc i i))
+              (sn
+                (espec.fp
+                  (di0fp0 algunes algun))
+                (grup.nom.fp
+                  (ncfp000 desenes desena)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.mp
+                        (nccp000 joves jove)
+                        (s.a.mp
+                          (grup.a.mp
+                            (aq0cp0 radicals radical)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 A a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 foto foto)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 noi noi)))
+    (grup.verb
+      (vsip3s0 és ser)
+      (vmp00sm detingut detenir))
+    (sp-CAG
+      (prep
+        (sps00 per per))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (nccs000 policia policia))))
+    (Fp . .)))

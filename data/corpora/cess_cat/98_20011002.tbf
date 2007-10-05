@@ -1,0 +1,130 @@
+
+(
+  (S
+    (sn-SUJ
+      (grup.nom.mp
+        (ncmp000 Investigadors investigador)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np00000 Universitat_de_Yale Universitat_de_Yale)))
+            (sn.j
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (np00000 EUA EUA)
+                (Fpt -Fpt- -Fpt-)))))))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm aconseguit aconseguir))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 eradicar eradicar))
+      (sadv-CCT
+        (grup.adv
+          (rg completament completament)))
+      (sn-CD
+        (grup.nom.mp
+          (ncmp000 tumors tumor)))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (grup.nom.mp
+            (ncmp000 ratolins ratolí))))
+      (sp-CC
+        (prep
+          (sps00 mitjançant mitjançant))
+        (sn
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs
+            (ncfs000 molècula molècula)
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (sn-CD
+                (grup.nom.p
+                  (pp3cp000 els ell)))
+              (grup.verb
+                (vmip3s0 priva privar))
+              (sp-CREG
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.ms
+                    (da0cs0 l' el))
+                  (grup.nom.ms
+                    (ncms000 oxigen oxigen)))))
+            (sn
+              (Fc , ,)
+              (espec.fs
+                (di0fs0 una un))
+              (grup.nom.fs
+                (ncfs000 línia línia)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 diferent diferent)))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (da0cs0 l' el))
+                    (grup.nom.fs
+                      (ncfs000 angiogènesi angiogènesi)
+                      (S.NF.C
+                        (Fpa -Fpa- -Fpa-)
+                        (infinitiu
+                          (vmn0000 frenar frenar))
+                        (sn-CD
+                          (espec.ms
+                            (da0ms0 el el))
+                          (grup.nom.ms
+                            (ncms000 creixement creixement)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (grup.nom.mp
+                                  (ncmp000 vasos vas)
+                                  (s.a.mp
+                                    (grup.a.mp
+                                      (aq0mp0 sanguinis sanguini))))))))
+                        (Fpt -Fpt- -Fpt-)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 autors autor)))
+    (grup.verb
+      (vmip3p0 creuen creure))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 tècnica tècnica)))
+      (grup.verb
+        (vmic3s0 podria poder)
+        (infinitiu
+          (vmn0000 funcionar funcionar)))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (grup.nom.mp
+            (ncmp000 éssers ésser)
+            (s.a.mp
+              (grup.a.mp
+                (aq0mp0 humans humà)))))))
+    (Fp . .)))

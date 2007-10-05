@@ -1,0 +1,899 @@
+
+(
+  (S.co
+    (S
+      (snp-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 presidente presidente)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 venezolano venezolano)))
+          (snp
+            (Fc , ,)
+            (grup.nom.ms
+              (np0000p Hugo_Chávez Hugo_Chávez))
+            (Fc , ,))))
+      (grup.verb
+        (vmis3s0 aseguró asegurar))
+      (sadv-CCT
+        (grup.adv
+          (rg hoy hoy)))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sno-SUJ
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (np0000o Fuerza_Aérea Fuerza_Aérea)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.ms
+                  (dp3cs0 su su))
+                (grup.nom.ms
+                  (ncms000 país país))))))
+        (grup.verb
+          (vsip3s0 es ser))
+        (sa-ATR
+          (grup.a
+            (Fe " ")
+            (aq0cs0 eficaz eficaz)
+            (Fe " ")
+            (sp
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 custodia custodia)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 espacio espacio)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0ms0 aéreo aéreo)))
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0cs0 nacional nacional)))))))))))
+        (sp-CC
+          (prep
+            (sps00 para para))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 lucha lucha)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cp0 antidrogas antidroga)))))))
+      (Fc , ,))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3s0 calificó calificar))
+      (sp-CPRED.CD
+        (prep
+          (sps00 de de))
+        (sn
+          (grup.nom.ms
+            (Fe " ")
+            (ncms000 hueco hueco)
+            (s.a.ms
+              (espec
+                (rg muy mucho))
+              (grup.a.ms
+                (aq0ms0 negro negro)))
+            (Fe " "))))
+      (sn-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 hecho hecho)
+          (sp
+            (prep
+              (sps00 de de))
+            (S.F.C
+              (conj.subord
+                (cs que que))
+              (morfema.verbal-PASS
+                (p0000000 se se))
+              (grup.verb
+                (vasp3s0 haya haber)
+                (vmp00sm incrementado incrementar))
+              (sn-SUJ
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 consumo consumo)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.p
+                        (nccp000 estupefacientes estupefaciente))))
+                  (sp
+                    (prep
+                      (sps00 en en))
+                    (snl
+                      (grup.nom
+                        (np0000l EEUU EEUU)))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Chávez Chávez)))
+    (neg-MOD
+      (rn no no))
+    (grup.verb
+      (vmis3s0 quiso querer))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 responder responder))
+      (sp-CC
+        (Fc , ,)
+        (prep
+          (sps00 por por))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 desconocerlas desconocer)))
+        (Fc , ,))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (ncfp000 afirmaciones afirmación)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.mp
+                  (nccp000 estadounidenses estadounidense))))
+            (sp
+              (prep
+                (sps00 de de))
+              (S.F.C
+                (conj.subord
+                  (cs que que))
+                (sn-SUJ
+                  (espec.fs
+                    (dp3cs0 su su))
+                  (grup.nom.fs
+                    (ncfs000 decisión decisión)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (S.NF.C
+                        (infinitiu
+                          (vmn0000 prohibir prohibir))
+                        (sn-CD
+                          (espec.ms
+                            (da0ms0 el el))
+                          (grup.nom.ms
+                            (ncms000 sobrevuelo sobrevuelo)
+                            (sp
+                              (prep
+                                (sps00 en en))
+                              (sn
+                                (espec.ms
+                                  (dp3cs0 su su))
+                                (grup.nom.ms
+                                  (ncms000 territorio territorio))))
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (grup.nom.fp
+                                  (ncfp000 aeronaves aeronave)
+                                  (s.a.fp
+                                    (grup.a.fp
+                                      (aq0fp0 norteamericanas norteamericano))))))
+                            (sp
+                              (prep
+                                (sps00 en en))
+                              (sn
+                                (espec.fp
+                                  (da0fp0 las el))
+                                (grup.nom.fp
+                                  (ncfp000 acciones acción)
+                                  (s.a.fp
+                                    (grup.a.fp
+                                      (aq0cp0 antidrogas antidroga))))))))))))
+                (grup.verb
+                  (vaic3s0 habría haber)
+                  (vmp00sm creado crear))
+                (sn-CD
+                  (espec.ms
+                    (di0ms0 un uno))
+                  (grup.nom.ms.1n
+                    (Fe " ")
+                    (ncms000 agujero agujero)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 negro negro)))
+                    (Fe " ")))
+                (sp-CC
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 vigilancia vigilancia)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0cs0 regional regional))))))
+                (S.F.R.1c
+                  (relatiu-CD.NFc
+                    (pr0cn000 que que))
+                  (sn-SUJ
+                    (espec.mp
+                      (da0mp0 los el))
+                    (grup.nom.mp
+                      (nccp000 traficantes traficante)))
+                  (grup.verb
+                    (vmic3p0 sabrían saber))
+                  (S.NF.C-CD.NFn
+                    (infinitiu
+                      (vmn0000 aprovechar aprovechar))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (Fe " ")
+    (S
+      (sn-SUJ
+        (grup.nom.s
+          (pp1csn00 Yo yo)))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vaip1s0 he haber)
+        (vmp00sm leído leer))
+      (sn-CD
+        (grup.nom.ms
+          (pd0ns000 eso ese))))
+    (S
+      (sp-CC
+        (Fc , ,)
+        (prep
+          (sps00 por por))
+        (sn
+          (grup.nom.ms
+            (pp3ns000 ello él))))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip1s0 prefiero preferir))
+      (S.NF.C-CD
+        (neg-MOD
+          (rn no no))
+        (infinitiu
+          (vmn0000 responder responder))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (sn.e-SUJ *0*)
+      (sadv-MOD
+        (grup.adv
+          (rg Sólo sólo)))
+      (grup.verb
+        (vmip1s0 puedo poder)
+        (infinitiu
+          (vmn0000 decir decir)))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sno-SUJ
+          (grup.nom
+            (np0000o Venezuela Venezuela)))
+        (grup.verb
+          (vmip3s0 tiene tener))
+        (sn-CD.Q
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 absoluta absoluto)))
+            (ncfs000 capacidad capacidad)))
+        (sp-CC
+          (prep
+            (sps00 para para))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 garantizar garantizar))
+            (sn-CD
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 soberanía soberanía)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.ms
+                      (dp1msp nuestro nuestro))
+                    (grup.nom.ms
+                      (ncms000 espacio espacio)
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0ms0 aéreo aéreo)))))))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 declaró declarar))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Chávez Chávez)))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (nccp000 periodistas periodista))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 jefe jefe)
+        (sp
+          (prep
+            (spcms del del))
+          (sno
+            (grup.nom.ms
+              (np0000o Estado Estado))))))
+    (grup.verb
+      (vmis3s0 aseguró asegurar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sno-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (np0000o Fuerza_Aérea_Venezolana Fuerza_Aérea_Venezolana)))
+      (grup.verb
+        (vmip3s0 cuenta contar))
+      (sp-CREG
+        (prep
+          (sps00 con con))
+        (sn.co
+          (sn.co
+            (sn
+              (espec.fp
+                (da0fp0 las el))
+              (grup.nom.fp
+                (ncfp000 estrategias estrategia)))
+            (coord
+              (cc y y))
+            (sn
+              (grup.nom.mp
+                (ncmp000 medios medio)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0mp0 necesarios necesario))))))
+          (sp.j
+            (prep
+              (sps00 para para))
+            (S.NF.C.co
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 combatir combatir))
+                (sp-CC
+                  (prep
+                    (sps00 con con))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 eficiencia eficiencia))))
+                (sp-CD
+                  (prep
+                    (spcms al al))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 narcotráfico narcotráfico)))))
+              (coord
+                (cc y y))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 frustrar frustrar))
+                (sn-CD
+                  (espec.mp
+                    (dp3cp0 sus su))
+                  (grup.nom.mp
+                    (ncmp000 intentos intento)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (S.NF.C
+                        (infinitiu
+                          (vmn0000 navegar navegar))
+                        (sn-CD
+                          (espec.ms
+                            (da0ms0 el el))
+                          (grup.nom.ms
+                            (ncms000 espacio espacio)
+                            (s.a.ms
+                              (grup.a.ms
+                                (aq0ms0 aéreo aéreo)))
+                            (s.a.ms
+                              (grup.a.ms
+                                (aq0cs0 nacional nacional)))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (Fe " ")
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmsp3s0 quiera querer))
+            (S.NF.C-CD
+              (infinitiu
+                (vmn0000 ver ver))
+              (sn-CD
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (ncmp000 informes informe)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sno
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (np0000o Aviación_Venezolana Aviación_Venezolana))))
+                  (sp
+                    (prep
+                      (spcms acerca_del acerca_del))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 incremento incremento)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (espec.fs
+                              (dp1fsp nuestra nuestro))
+                            (grup.nom.fs
+                              (ncfs000 eficacia eficacia)))))))
+                  (sp
+                    (prep
+                      (sps00 para para))
+                    (S.NF.C.co
+                      (S.NF.C.co
+                        (S.NF.C
+                          (infinitiu
+                            (vmn0000 detectar detectar)))
+                        (coord
+                          (cc y y))
+                        (S.NF.C
+                          (infinitiu
+                            (vmn0000 seguir seguir))))
+                      (sn.j-CD
+                        (grup.nom.mp
+                          (ncmp000 vuelos vuelo)
+                          (s.a.mp
+                            (grup.a.mp
+                              (aq0mp0 sospechosos sospechoso)))))
+                      (sp.j-CCL
+                        (prep
+                          (sps00 en en))
+                        (sn
+                          (espec.ms
+                            (dp1msp nuestro nuestro))
+                          (grup.nom.ms
+                            (ncms000 territorio territorio)))))))))))
+        (Fc , ,))
+      (conj.subord-ET
+        (cs pues pues))
+      (grup.verb
+        (vmip3s0 puede poder)
+        (infinitiu
+          (vmn0000 verlos ver)))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 agregó agregar))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Chávez Chávez)))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmis3s0 Criticó criticar))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 hecho hecho)
+        (sp
+          (prep
+            (sps00 de de))
+          (S.F.C
+            (conj.subord
+              (cs que que))
+            (sn-SUJ
+              (espec.fp
+                (da0fp0 las el))
+              (grup.nom.fp
+                (ncfp000 autoridades autoridad)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snl
+                    (grup.nom
+                      (np0000l Estados_Unidos Estados_Unidos))))))
+            (morf.pron
+              (p0300000 se él))
+            (grup.verb
+              (vmsp3p0 quejen quejar))
+            (sp-CC
+              (prep
+                (sps00 por por))
+              (sn
+                (espec.fs
+                  (dp3cs0 su su))
+                (grup.nom.fs
+                  (ncfs000 decisión decisión)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (S.NF.C
+                      (infinitiu
+                        (vmn0000 prohibir prohibir))
+                      (sn-CD
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (ncms000 sobrevuelo sobrevuelo)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom.fp
+                                (ncfp000 aeronaves aeronave)
+                                (sp
+                                  (prep
+                                    (sps00 de de))
+                                  (sn
+                                    (espec.ms
+                                      (dd0ms0 ese ese))
+                                    (grup.nom.ms
+                                      (ncms000 país país))))))))))))))
+            (S.F.AConc-AO
+              (conj.subord
+                (cs cuando cuando))
+              (sp-CCL
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.fp
+                    (da0fp0 las el))
+                  (grup.nom.fp
+                    (Fe " ")
+                    (ncfp000 calles calle)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snl
+                        (grup.nom
+                          (np0000l Nueva_York Nueva_York)))))))
+              (morfema.verbal-PASS
+                (p0000000 se se))
+              (grup.verb
+                (vaip3s0 ha haber)
+                (vmp00sm duplicado duplicar))
+              (sn-SUJ
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 consumo consumo)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fp
+                        (ncfp000 drogas droga))))))
+              (Fe " "))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C.co-CD
+      (Fe " ")
+      (S.F.C
+        (S.F.ACond-AO
+          (conj.subord
+            (cs Si si))
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vsip3s0 es ser))
+          (S.F.C-CD
+            (conj.subord
+              (cs que que))
+            (morfema.verbal-PASS
+              (p0000000 se se))
+            (grup.verb
+              (vmip3s0 habla hablar))
+            (S.F.C-SUJ
+              (conj.subord
+                (cs que que))
+              (sn-SUJ
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 espacio espacio)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 aéreo aéreo)))
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 venezolano venezolano)))))
+              (grup.verb
+                (vsip3s0 es ser)
+                (vmp00sm sobrevolado sobrevolar))
+              (sp-CAG
+                (prep
+                  (sps00 por por))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 aviones avión)
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 narcotráfico narcotráfico)))))))))
+          (Fc , ,))
+        (sn-SUJ
+          (grup.nom.s
+            (pp1csn00 yo yo)))
+        (grup.verb
+          (vmis1s0 estuve estar)
+          (gerundi
+            (vmg0000 viendo ver)))
+        (sn-CD
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms.1n
+            (ncms000 informe informe)))
+        (sn-CCT
+          (vmip3s0 hace hacer)
+          (di0mp0 pocos poco)
+          (ncmp000 días día))
+        (S.F.R.1c
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 indica indicar))
+          (S.F.C-CD
+            (conj.subord
+              (cs que que))
+            (sn-SUJ
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 consumo consumo)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fp
+                      (ncfp000 drogas droga))))
+                (sp
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.fp
+                      (da0fp0 las el))
+                    (grup.nom.fp
+                      (ncfp000 calles calle)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (snl
+                          (grup.nom
+                            (np0000l Nueva_York Nueva_York)))))))))
+            (morfema.verbal-PASS
+              (p0000000 se se))
+            (grup.verb
+              (vaip3s0 ha haber)
+              (vmp00sm duplicado duplicar))
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (s.a.fs
+                    (grup.a.fs
+                      (ao0fs0 última último)))))))))
+      (Fc , ,)
+      (S.F.C
+        (sadv-CCT
+          (grup.adv
+            (rg ahí ahí)))
+        (grup.verb
+          (vmsi3s0 pudiera poder)
+          (infinitiu
+            (van0000 haber haber)))
+        (sn-CD.Q
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (ncms000 hueco hueco)
+            (s.a.ms
+              (espec
+                (rg mucho mucho)
+                (rg más más))
+              (grup.a.ms
+                (aq0ms0 oscuro oscuro))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 dijo decir))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Chávez Chávez)))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Los el))
+      (grup.nom.mp
+        (ncmp000 medios medio)
+        (s.a.mp
+          (grup.a.mp
+            (aq0cp0 locales local)))))
+    (grup.verb
+      (vmis3p0 divulgaron divulgar))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)
+        (snd
+          (Fc , ,)
+          (grup.nom.ms
+            (W martes [martes:??/??/??:??.??]))
+          (Fc , ,))))
+    (sn-CD
+      (espec.fp
+        (di0fp0 unas uno))
+      (grup.nom.fp
+        (ncfp000 declaraciones declaración)
+        (sp
+          (prep
+            (spcms del del))
+          (snp
+            (grup.nom.ms
+              (ncms000 zar zar)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0cp0 antidrogas antidroga)))
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 estadounidense estadounidense)))
+              (snp
+                (grup.nom.ms
+                  (np0000p Barry_McCaffrey Barry_McCaffrey))))))
+        (S.F.R
+          (Fc , ,)
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (relatiu
+              (da0fp0 las el)
+              (pr0cn000 que que)))
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vmis3s0 calificó calificar))
+          (sp-CPRED.CD
+            (prep
+              (cs como como))
+            (sn
+              (espec.ms
+                (di0ms0 un uno))
+              (grup.nom.ms
+                (Fe " ")
+                (ncms000 problema problema)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 inmenso inmenso)))
+                (Fe " "))))
+          (sn-CD
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 prohibición prohibición)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 sobrevuelo sobrevuelo)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 norteamericano norteamericano)))
+                    (sp
+                      (prep
+                        (sps00 a a))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 territorio territorio)
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0ms0 venezolano venezolano)))))))))
+              (sn
+                (Fc , ,)
+                (grup.nom.fs
+                  (ncfs000 decisión decisión)
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (INC
+                      (S
+                        (Fc , ,)
+                        (grup.verb
+                          (vmis3s0 aseguró asegurar))
+                        (sn.e-SUJ *0*)
+                        (Fc , ,)))
+                    (grup.verb
+                      (vaic3s0 habría haber)
+                      (vmp00sm creado crear))
+                    (sn-CD
+                      (espec.ms
+                        (di0ms0 un uno))
+                      (grup.nom.ms
+                        (Fe " ")
+                        (ncms000 agujero agujero)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0ms0 negro negro)))
+                        (Fe " ")))
+                    (sp-CC
+                      (prep
+                        (sps00 en en))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 vigilancia vigilancia)
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0cs0 regional regional)))
+                          (sp
+                            (prep
+                              (sps00 para para))
+                            (sn
+                              (espec.fs
+                                (da0fs0 la el))
+                              (grup.nom.fs
+                                (ncfs000 lucha lucha)
+                                (s.a.fp
+                                  (grup.a.fp
+                                    (aq0cp0 antidrogas antidroga)))))))))))))))))
+    (Fp . .)))

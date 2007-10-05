@@ -1,0 +1,619 @@
+
+(
+  (S.co
+    (S
+      (sno-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (np0000o Fundació Fundació)
+          (sno
+            (grup.nom
+              (Fz ' ')
+              (np0000o La_Caixa La_Caixa)
+              (Fz ' ')))))
+      (grup.verb
+        (vmif3s0 col·laborarà col·laborar))
+      (sp-CREG
+        (prep
+          (sps00 amb amb))
+        (sno
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (np0000o Ajuntament_d'_Olot Ajuntament_d'_Olot))))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.ms
+            (di0ms0 un un))
+          (grup.nom.ms
+            (ncms000 projecte projecte)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 reforma reforma)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fp
+                        (da0fp0 les el))
+                      (grup.nom.fp
+                        (ncfp000 instal·lacions instal·lació)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (snl
+                            (espec.ms
+                              (da0cs0 l' el))
+                            (grup.nom.ms
+                              (s.a.ms
+                                (grup.a.ms
+                                  (aq0ms0 antic antic)))
+                              (ncms000 cinema cinema)
+                              (snp
+                                (grup.nom
+                                  (np0000p Núria Núria)))))))))))))))
+      (sp-CC
+        (prep
+          (sps00 per per))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 convertir convertir))
+          (sn-CD
+            (grup.nom.ms
+              (pp3msa00 -lo ell)))
+          (sp-CREG
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (ncms000 equipament equipament)
+                (sp
+                  (prep
+                    (sps00 per per))
+                  (sp
+                    (prep
+                      (spcmp als al))
+                    (sn
+                      (grup.nom.mp
+                        (nccp000 joves jove)))))))))))
+    (coord
+      (cc i i))
+    (S*
+      (sp-CREG
+        (prep
+          (sps00 amb amb))
+        (sno
+          (espec.fs
+            (da0cs0 l' el))
+          (grup.nom.fs
+            (ncfs000 associació associació)
+            (sno
+              (grup.nom
+                (np0000o La_Caritat La_Caritat))))))
+      (sp-CC
+        (prep
+          (sps00 per per))
+        (sn.x
+          (espec.fs
+            (da0cs0 l' el))
+          (grup.nom.co
+            (grup.nom.co
+              (grup.nom.fs
+                (ncfs000 adequació adequació))
+              (coord
+                (cc i i))
+              (grup.nom.fs
+                (ncfs000 modernització modernització)))
+            (sp.j
+              (prep
+                (sps00 d' de))
+              (sn
+                (espec.fs
+                  (di0fs0 una un))
+                (grup.nom.fs
+                  (ncfs000 residència residència)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 geriàtrica geriàtric))))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (np0000o Fundació Fundació)
+        (sno
+          (grup.nom
+            (Fz ' ')
+            (np0000o La_Caixa La_Caixa)
+            (Fz ' ')))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 a_través_de a_través_de))
+      (sn
+        (espec.fs
+          (dp3fs0 la_seva el_seu))
+        (grup.nom.fs
+          (ncfs000 convocatòria convocatòria)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 projectes projecte)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0cp0 socioculturals sociocultural))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmip3s0 col·labora col·laborar))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.mp
+          (dd0mp0 aquests aquest)
+          (dn0cp0 dos dos))
+        (grup.nom.mp
+          (ncmp000 projectes projecte))))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 aportació aportació)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 econòmica econòmic)))
+          (sp
+            (prep
+              (sps00 de de))
+            (snn
+              (espec.mp
+                (Z 30.000 30000))
+              (grup.nom.mp
+                (Zm euros euro)))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (np0000o Fundació Fundació)
+        (sno
+          (grup.nom
+            (Fz ' ')
+            (np0000o La_Caixa La_Caixa)
+            (Fz ' ')))))
+    (grup.verb
+      (vmif3s0 col·laborarà col·laborar))
+    (sp-CREG
+      (prep
+        (sps00 amb amb))
+      (sno
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (np0000o Ajuntament_d'_Olot Ajuntament_d'_Olot))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 reforma reforma)
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 antic antic)))
+                (ncms000 cinema cinema)
+                (snp
+                  (grup.nom
+                    (np0000p Núria Núria)))))))))
+    (sp
+      (prep
+        (sps00 per_tal_de per_tal_de))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 convertir convertir))
+        (sn
+          (grup.nom.ms
+            (pp3msa00 -lo ell)))
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (di0ms0 un un))
+            (grup.nom.ms
+              (ncms000 centre centre)
+              (sp
+                (prep
+                  (sps00 d' de))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 oci oci))))
+              (sp
+                (prep
+                  (spcmp pels pel))
+                (sn
+                  (grup.nom.mp
+                    (nccp000 joves jove)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (dd0ms0 Aquest aquest))
+      (grup.nom.ms
+        (ncms000 projecte projecte)))
+    (sadv-ET
+      (grup.adv
+        (rg a_més_a_més a_més_a_més)))
+    (grup.verb
+      (vmif3s0 contribuirà contribuir))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 dinamitzar dinamitzar))
+        (sn-CD
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 nucli nucli)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 antic antic)))
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 ciutat ciutat)
+                  (sp
+                    (prep
+                      (sps00 d' de))
+                    (snl
+                      (grup.nom
+                        (np0000l Olot Olot)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (dd0ms0 Aquest aquest))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 nou nou)))
+        (ncms000 centre centre)))
+    (grup.verb
+      (vmif3s0 permetrà permetre))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 oferir oferir))
+      (sn-CD
+        (grup.nom.fp
+          (ncfp000 activitats activitat)
+          (s.a.fp.co
+            (s.a.fp
+              (grup.a.fp
+                (aq0fp0 lúdiques lúdic)))
+            (Fc , ,)
+            (s.a.fp
+              (grup.a.fp
+                (aq0cp0 culturals cultural)))
+            (coord
+              (cc i i))
+            (s.a.fp
+              (grup.a.fp
+                (aq0fp0 formatives formatiu))))
+          (sp
+            (prep
+              (sps00 per per))
+            (sp
+              (prep
+                (spcmp als al))
+              (sn
+                (grup.nom.mp
+                  (nccp000 joves jove))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (ncfs000 aportació aportació)
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000o Fundació Fundació))))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (dd0fs0 aquesta aquest))
+            (grup.nom.fs
+              (ncfs000 iniciativa iniciativa))))))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sp-ATR
+      (prep
+        (sps00 de de))
+      (snn
+        (espec.mp
+          (Z 12.000 12000))
+        (grup.nom.mp
+          (Zm euros euro))))
+    (Fp . .)))
+(
+  (S
+    (sp-ET
+      (prep
+        (sps00 D' de))
+      (sn
+        (espec.fs
+          (di0fs0 altra altre))
+        (grup.nom.fs
+          (ncfs000 banda banda)))
+      (Fc , ,))
+    (sno-SUJ
+      (grup.nom
+        (np0000o La_Caritat La_Caritat)))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sn-ATR
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 institució institució)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 benèfica benèfic)))
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vaip3s0 va anar)
+            (vmn0000 néixer néixer))
+          (snd-CC
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (W any_1914 [??:??/??/1914:??.??]))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CC
+      (grup.adv
+        (rg D'_aleshores_ençà d'_aleshores_ençà)))
+    (sn.e-SUJ *0*)
+    (morf.pron
+      (p0300000 s' ell))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm convertit convertir))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 institució institució)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 social social)))
+          (sp
+            (prep
+              (spcms al al))
+            (sn
+              (grup.nom.ms
+                (ncms000 servei servei)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 ciutat ciutat)))))))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vaip3s0 ha haver)
+              (vmp00sm atès atènyer))
+            (sp-CD
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fp
+                  (di0fp0 moltes molt))
+                (grup.nom.fp
+                  (ncfp000 persones persona)
+                  (S.NF.P
+                    (participi
+                      (aq0fpp necessitades necessitat))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CC
+      (grup.adv
+        (rg Actualment actualment))
+      (Fc , ,))
+    (sno-SUJ
+      (grup.nom
+        (np0000o La_Caritat La_Caritat)))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sn-ATR
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 residència residència)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 geriàtrica geriàtric)))
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 presta prestar))
+          (sn-CD
+            (grup.nom.fs
+              (ncfs000 assistència assistència)))
+          (sp-CI
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.mp
+                (Z 42 42))
+              (grup.nom.mp
+                (ncmp000 usuaris usuari)))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (np0000o Fundació Fundació)
+        (sno
+          (grup.nom
+            (Fz ' ')
+            (np0000o La_Caixa La_Caixa)
+            (Fz ' ')))))
+    (grup.verb
+      (vmip3s0 col·labora col·laborar))
+    (sp-CREG
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fs
+          (dd0fs0 aquesta aquest))
+        (grup.nom.fs
+          (ncfs000 entitat entitat))))
+    (sp.co-CC
+      (sp
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.ms
+            (di0ms0 un un))
+          (grup.nom.ms
+            (ncms000 projecte projecte)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn.x
+                (grup.nom.co
+                  (grup.nom.co
+                    (grup.nom.fs
+                      (ncfs000 millora millora))
+                    (coord
+                      (cc i i))
+                    (grup.nom.fs
+                      (ncfs000 adequació adequació)))
+                  (sp.j
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fp
+                        (da0fp0 les el))
+                      (grup.nom.fp
+                        (ncfp000 instal·lacions instal·lació))))))))))
+      (coord
+        (cc i i))
+      (sp
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 creació creació)
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (espec.ms
+                  (di0ms0 un un))
+                (grup.nom.ms
+                  (ncms000 centre centre)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 dia dia)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (np0000o Fundació Fundació)
+        (sno
+          (grup.nom
+            (Fz ' ')
+            (np0000o La_Caixa La_Caixa)
+            (Fz ' ')))))
+    (grup.verb
+      (vmip3s0 col·labora col·laborar))
+    (sp-CREG
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fs
+          (dd0fs0 aquesta aquest))
+        (grup.nom.fs
+          (ncfs000 entitat entitat))))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 ajuda ajuda)
+          (sp
+            (prep
+              (sps00 de de))
+            (snn
+              (espec.mp
+                (Z 18.000 18000))
+              (grup.nom.mp
+                (Zm euros euro)))))))
+    (Fp . .)))

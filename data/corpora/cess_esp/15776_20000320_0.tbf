@@ -1,0 +1,1259 @@
+
+(
+  (S
+    (S.F.C-CD
+      (sno-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (np0000o Gobierno Gobierno)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 chino chino)))))
+      (grup.verb
+        (vmis3s0 evitó evitar))
+      (sp-CCT
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (s.a.fp
+              (grup.a.fp
+                (ao0fp0 últimas último)))
+            (ncfp000 horas hora))))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (snl-SUJ
+          (grup.nom
+            (np0000l Pekín Pekín)))
+        (morf.pron
+          (p0300000 se él))
+        (grup.verb
+          (vmsi3s0 convirtiera convertir))
+        (sp-CREG
+          (prep
+            (sps00 en en))
+          (sn
+            (grup.nom.ms
+              (ncms000 escenario escenario)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fp
+                    (ncfp000 protestas protesta)
+                    (s.a.fp
+                      (grup.a.fp
+                        (aq0cp0 estudiantiles estudiantil)))))))))
+        (sp-CC
+          (prep
+            (sps00 por por))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 victoria victoria)
+              (sp
+                (prep
+                  (spcms del del))
+                (snp
+                  (grup.nom.ms
+                    (nccs000 independentista independentista)
+                    (snp
+                      (grup.nom.ms
+                        (np0000p Chen_Shui-bian Chen_Shui-bian))))))
+              (sp
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.fp
+                    (da0fp0 las el))
+                  (grup.nom.fp
+                    (ncfp000 elecciones elección)
+                    (s.a.fp
+                      (grup.a.fp
+                        (aq0cp0 presidenciales presidencial)))
+                    (S.NF.P
+                      (participi
+                        (aq0fpp celebradas celebrado))
+                      (sp-CCL
+                        (prep
+                          (sps00 en en))
+                        (snl
+                          (grup.nom
+                            (np0000l Taiwán Taiwán))))
+                      (snd-CCT
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (W sábado [sábado:??/??/??:??.??])))))))))))
+      (Fc , ,))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vmis3s0 informó informar))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (snl
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 capital capital)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 china chino))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C.co-CD
+      (S.F.C
+        (sno-SUJ
+          (espec.ms
+            (da0ms0 El el))
+          (grup.nom.ms
+            (np0000o Gobierno Gobierno)))
+        (grup.verb
+          (vmis3s0 emitió emitir))
+        (sp-CC
+          (prep
+            (sps00 para para))
+          (sn
+            (grup.nom.ms
+              (pp3ns000 ello él))))
+        (sn-CD
+          (espec.fs
+            (di0fs0 una uno))
+          (grup.nom.fs
+            (ncfs000 prohibición prohibición)
+            (S.NF.A
+              (gerundi
+                (vmg0000 negando negar))
+              (sn-CD
+                (espec.fp
+                  (di0fp0 todas todo)
+                  (da0fp0 las el))
+                (grup.nom.fp
+                  (ncfp000 solicitudes solicitud)
+                  (S.NF.P
+                    (participi
+                      (aq0fpp presentadas presentado))
+                    (sp-CAG
+                      (prep
+                        (sps00 por por))
+                      (sn
+                        (espec.mp
+                          (da0mp0 los el))
+                        (grup.nom.mp
+                          (ncmp000 universitarios universitario))))
+                    (sp-CC
+                      (prep
+                        (sps00 para para))
+                      (S.NF.C
+                        (infinitiu
+                          (vmn0000 echarse echar))
+                        (sp-CCL
+                          (prep
+                            (sps00 a a))
+                          (sn
+                            (espec.fp
+                              (da0fp0 las el))
+                            (grup.nom.fp
+                              (ncfp000 calles calle))))
+                        (sp-CC
+                          (prep
+                            (sps00 a a))
+                          (S.NF.C
+                            (infinitiu
+                              (vmn0000 demostrar demostrar))
+                            (sn-CD
+                              (espec.ms
+                                (da0ms0 el el))
+                              (grup.nom.ms
+                                (ncms000 rechazo rechazo)
+                                (sp
+                                  (prep
+                                    (sps00 de de))
+                                  (sno
+                                    (grup.nom
+                                      (np0000o Pekín Pekín))))
+                                (sp
+                                  (prep
+                                    (spcms al al))
+                                  (sn
+                                    (grup.nom.ms
+                                      (ncms000 presidente presidente)
+                                      (S.NF.P
+                                        (participi
+                                          (aq0ms0 electo electo))
+                                        (sp-CCL
+                                          (prep
+                                            (sps00 en en))
+                                          (sn
+                                            (espec.fs
+                                              (da0fs0 la el))
+                                            (grup.nom.fs
+                                              (ncfs000 isla isla))))))))))))))))))))
+        (Fc , ,))
+      (coord
+        (cc e e))
+      (S.F.C
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmis3s0 instó instar))
+        (sp-CD
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (nccp000 responsables responsable)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.mp
+                    (da0mp0 los el)
+                    (di0mp0 diversos diverso))
+                  (grup.nom.mp
+                    (ncmn000 campus campus)))))))
+        (sp-CREG
+          (prep
+            (sps00 a a))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 mantener mantener))
+            (sn-CD
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 orden orden)))
+            (sp-CCL
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.mp
+                  (dp3cp0 sus su))
+                (grup.nom.mp
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0mp0 respectivos respectivo)))
+                  (ncmp000 recintos recinto)))))))
+      (Fc , ,))
+    (grup.verb
+      (vmip3s0 señala señalar))
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 diario diario)
+        (sna
+          (grup.nom.ms
+            (Fe " ")
+            (np0000a Hong_Kong_Standard Hong_Kong_Standard)
+            (Fe " ")))))
+    (Fp . .)))
+(
+  (S.co
+    (sp.j-CC
+      (prep
+        (sps00 Tras tras))
+      (sn
+        (espec.mp
+          (Z 50 50))
+        (grup.nom.mp
+          (ncmp000 años año)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 dominio dominio)
+                (sp
+                  (prep
+                    (sps00 en en))
+                  (snl
+                    (grup.nom
+                      (np0000l Taiwán Taiwán))))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.mp
+                      (da0mp0 los el))
+                    (grup.nom.mp
+                      (nccp000 nacionalistas nacionalista)
+                      (sp
+                        (prep
+                          (spcms del del))
+                        (sno
+                          (grup.nom.ms
+                            (np0000o Kuomintang Kuomintang)))))))
+                (sp.co
+                  (Fc , ,)
+                  (sp
+                    (sadv.j
+                      (grup.adv
+                        (rg primero primero)))
+                    (sp
+                      (prep
+                        (cs como como))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 dictadura dictadura)))))
+                  (coord
+                    (cc y y))
+                  (sp
+                    (sp.j
+                      (prep
+                        (sps00 desde desde))
+                      (snd
+                        (grup.nom.ms
+                          (W 1996 [??:??/??/1996:??.??]))))
+                    (sp
+                      (prep
+                        (cs como como))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 régimen régimen)
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0ms0 democrático democrático)))))))))))))
+      (Fc , ,))
+    (S.co
+      (S
+        (sn-SUJ
+          (espec.mp
+            (da0fs0 la el)
+            (ncfs000 mayoría mayoría)
+            (sps00 de de)
+            (da0mp0 los el)
+            (Z 24 24))
+          (grup.nom.mp
+            (ncmp000 millones millón)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 taiwaneses taiwanés))))))
+        (grup.verb
+          (vmis3s0 votó votar))
+        (snd-CCT
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (W sábado [sábado:??/??/??:??.??])))
+        (sp-CC
+          (prep
+            (sps00 por por))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 cambio cambio)))))
+      (coord
+        (cc y y))
+      (S
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmis3s0 eligió elegir))
+        (sp-CD
+          (prep
+            (spcms al al))
+          (snp
+            (grup.nom.ms
+              (ncms000 candidato candidato)
+              (sp
+                (prep
+                  (sps00 por por))
+                (sno
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (np0000o Partido_Demócrata_Progresista Partido_Demócrata_Progresista)
+                    (sno
+                      (grup.nom.ms
+                        (Fpa -Fpa- -Fpa-)
+                        (np0000o PDP PDP)
+                        (Fpt -Fpt- -Fpt-))))))
+              (snp
+                (Fc , ,)
+                (grup.nom.ms
+                  (np0000p Chen_Shui-bian Chen_Shui-bian))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (S.NF.P
+          (participi
+            (aq0msp Opuesto opuesto))
+          (sp-CREG
+            (prep
+              (spcms al al))
+            (sn
+              (grup.nom.ms
+                (ncms000 principio principio)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (Fe " ")
+                    (espec.fs
+                      (di0fs0 una uno))
+                    (grup.nom.fs
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0fs0 sola solo)))
+                      (np0000l China China))
+                    (Fe " ")))
+                (S.NF.P
+                  (Fc , ,)
+                  (participi
+                    (aq0msp impuesto impuesto))
+                  (sp-CAG
+                    (prep
+                      (sps00 por por))
+                    (sno
+                      (grup.nom
+                        (np0000o Pekín Pekín))))
+                  (sp-CC
+                    (prep
+                      (sps00 para para))
+                    (S.NF.C
+                      (infinitiu
+                        (vmn0000 entablar entablar))
+                      (sn-CD
+                        (espec.ms
+                          (di0ms0 un uno))
+                        (grup.nom.ms
+                          (ncms000 diálogo diálogo)
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0cs0 oficial oficial)))))))
+                  (Fc , ,))))))
+        (np0000p Chen Chen)))
+    (grup.verb
+      (vmip3s0 representa representar))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una uno))
+      (grup.nom.fs
+        (ncfs000 amenaza amenaza)
+        (sp
+          (prep
+            (sps00 para para))
+          (sn
+            (espec.fp
+              (da0fp0 las el))
+            (grup.nom.fp
+              (ncfp000 aspiraciones aspiración)
+              (sp
+                (prep
+                  (spcms del del))
+                (sno
+                  (grup.nom.ms
+                    (np0000o Gobierno Gobierno)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0cs0 central central))))))
+              (sp
+                (prep
+                  (sps00 de de))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 negociar negociar))
+                  (sp-CREG
+                    (prep
+                      (sps00 con con))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 isla isla))))
+                  (sn-CD
+                    (espec.ms
+                      (di0ms0 un uno))
+                    (grup.nom.ms
+                      (ncms000 sistema sistema)
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0cs0 similar similar)
+                          (sp
+                            (prep
+                              (spcms al al))
+                            (S.NF.P
+                              (participi
+                                (aq0msp aplicado aplicado))
+                              (sp-CCL
+                                (prep
+                                  (sps00 en en))
+                                (snl
+                                  (grup.nom
+                                    (np0000l Hong_Kong Hong_Kong))))
+                              (sp.co
+                                (sp-CCT
+                                  (prep
+                                    (sps00 en en))
+                                  (snd
+                                    (grup.nom.ms
+                                      (W 1997 [??:??/??/1997:??.??]))))
+                                (coord
+                                  (cc y y))
+                                (sp-CCL
+                                  (prep
+                                    (sps00 en en))
+                                  (snl
+                                    (grup.nom
+                                      (np0000l Macao Macao)))))
+                              (sp-CCT
+                                (prep
+                                  (sps00 desde desde))
+                                (snd
+                                  (grup.nom.ms
+                                    (W diciembre [??:??/12/??:??.??])
+                                    (S.NF.P
+                                      (participi
+                                        (aq0msp pasado pasado)))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 Según según))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 circular circular)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 interna interno)))
+          (S.NF.P
+            (participi
+              (aq0fsp distribuida distribuido))
+            (sp-CC
+              (prep
+                (sps00 entre entre))
+              (sn
+                (espec.fp
+                  (da0fp0 las el))
+                (grup.nom.fp
+                  (ncfp000 autoridades autoridad)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.mp
+                        (da0mp0 los el))
+                      (grup.nom.mp
+                        (ncmp000 centros centro)
+                        (s.a.mp
+                          (grup.a.mp
+                            (aq0mp0 universitarios universitario))))))))))))
+      (Fc , ,))
+    (sn-SUJ
+      (grup.nom.fp
+        (S.NF.P
+          (participi
+            (aq0fpp dichas dicho)))
+        (ncfp000 protestas protesta)))
+    (grup.verb
+      (vmic3p0 podrían poder)
+      (infinitiu
+        (van0000 haber haber)
+        (vmp00sm dado_lugar dar_lugar)))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom.mp
+          (ncmp000 brotes brote)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 inestabilidad inestabilidad)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 social social))))))
+          (sp.co
+            (coord
+              (rg no_sólo no_sólo))
+            (sp
+              (prep
+                (sps00 en en))
+              (snl
+                (grup.nom
+                  (np0000l Pekín Pekín)))
+              (Fc , ,))
+            (coord
+              (cc sino_también sino_también))
+            (sp
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.fp
+                  (di0fp0 otras otro))
+                (grup.nom.fp
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0cp0 grandes grande)))
+                  (ncfp000 ciudades ciudad))))))))
+    (S.F.A-CC
+      (Fc , ,)
+      (conj.subord
+        (cs como como))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3s0 ocurrió ocurrir))
+      (sp-CCT
+        (prep
+          (sps00 en en))
+        (snd
+          (grup.nom.ms
+            (W mayo [??:??/05/??:??.??])
+            (S.NF.P
+              (participi
+                (aq0msp pasado pasado))))))
+      (sp-CC
+        (prep
+          (sps00 tras tras))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 bombardeo bombardeo)
+            (sp
+              (prep
+                (sps00 de de))
+              (sno
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np0000o OTAN OTAN))))
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vmis3s0 destruyó destruir))
+              (snl-CD
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np0000l Embajada Embajada)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 china chino)))
+                  (sp
+                    (prep
+                      (sps00 en en))
+                    (snl
+                      (grup.nom
+                        (np0000l Belgrado Belgrado))))))
+              (sp-CCT
+                (prep
+                  (sps00 durante durante))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfn000 crisis crisis)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snl
+                        (grup.nom
+                          (np0000l Kosovo Kosovo))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.fp
+        (S.NF.P
+          (participi
+            (aq0fpp Dichas dicho)))
+        (ncfp000 manifestaciones manifestación)
+        (sn
+          (Fc , ,)
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (s.a.fp
+              (grup.a.fp
+                (aq0fp0 únicas único)
+                (S.NF.P
+                  (participi
+                    (aq0fpp permitidas permitido))
+                  (sp-CAG
+                    (prep
+                      (sps00 por por))
+                    (sno
+                      (grup.nom
+                        (np0000o Pekín Pekín))))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmis3p0 sirvieron servir))
+    (sp-CREG
+      (prep
+        (sps00 de de))
+      (sn
+        (grup.nom.fs
+          (ncfs000 vía vía)
+          (sp
+            (prep
+              (sps00 para para))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 canalizar canalizar))
+              (sn-CD
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 ira ira)
+                  (sp.co
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 gobierno gobierno))))
+                    (coord
+                      (cc y y))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 población población)))))
+                  (sp
+                    (prep
+                      (sps00 por por))
+                    (sn.co
+                      (sn.co
+                        (sn
+                          (espec.mp
+                            (da0mp0 los el)
+                            (dn0cp0 tres tres))
+                          (grup.nom.mp
+                            (ncmp000 funcionarios funcionario)
+                            (S.NF.P
+                              (participi
+                                (aq0mpp muertos muerto)))))
+                        (coord
+                          (cc y y))
+                        (sn
+                          (espec.mp
+                            (Z 20 20))
+                          (grup.nom.mp
+                            (ncmp000 heridos herido)
+                            (sp
+                              (prep
+                                (sps00 en en))
+                              (sn
+                                (espec.ms
+                                  (da0ms0 el el))
+                                (grup.nom.ms
+                                  (nccs000 incidente incidente)))))))
+                      (S.NF.P.j
+                        (Fc , ,)
+                        (participi
+                          (aq0msp interpretado interpretado))
+                        (sp-CAG
+                          (prep
+                            (sps00 por por))
+                          (sno
+                            (grup.nom
+                              (np0000o China China))))
+                        (sp-CC
+                          (prep
+                            (cs como como))
+                          (sn
+                            (espec.ms
+                              (di0ms0 un uno))
+                            (grup.nom.ms
+                              (ncms000 ataque ataque)
+                              (S.NF.P
+                                (participi
+                                  (aq0msp premeditado premeditado))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Las el))
+      (grup.nom.fp
+        (ncfp000 protestas protesta)
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (morf.pron
+            (p0300000 se él))
+          (grup.verb
+            (vmis3p0 extendieron extender))
+          (sp-CCL
+            (prep
+              (sps00 de de))
+            (snl
+              (grup.nom
+                (np0000l Pekín Pekín))))
+          (sp-CCL
+            (prep
+              (sps00 a a))
+            (sn
+              (grup.nom.fp
+                (ncfp000 ciudades ciudad)
+                (sp
+                  (prep
+                    (cs como como))
+                  (sn.co
+                    (snl
+                      (snl
+                        (grup.nom
+                          (np0000l Shanghai Shanghai)))
+                      (sn.j
+                        (grup.nom.ms
+                          (Fpa -Fpa- -Fpa-)
+                          (ncms000 este este)
+                          (Fpt -Fpt- -Fpt-))))
+                    (coord
+                      (cc y y))
+                    (snl
+                      (snl
+                        (grup.nom
+                          (np0000l Cantón Cantón)))
+                      (sn.j
+                        (grup.nom.ms
+                          (Fpa -Fpa- -Fpa-)
+                          (ncms000 sur sur)
+                          (Fpt -Fpt- -Fpt-)))))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmis3p0 causaron causar))
+    (sn-CD
+      (grup.nom.mp
+        (ncmp000 daños daño)
+        (s.a.mp
+          (grup.a.mp
+            (aq0cp0 importantes importante)))))
+    (sp.co-CCL
+      (coord
+        (rg tanto tanto))
+      (sp
+        (prep
+          (sps00 en en))
+        (snl
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (np0000l Embajada Embajada)
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Estados_Unidos Estados_Unidos))))
+            (sp
+              (prep
+                (sps00 en en))
+              (snl
+                (grup.nom
+                  (np0000l Pekín Pekín)))))))
+      (coord
+        (cs como como))
+      (sp
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.mp
+            (da0ms0 el el)
+            (ncms000 resto resto)
+            (sps00 de de)
+            (da0mp0 los el))
+          (grup.nom.mp
+            (ncmp000 edificios edificio)
+            (s.a.mp
+              (grup.a.mp
+                (aq0cp0 consulares consular)))
+            (S.F.R
+              (relatiu-CD
+                (pr0cn000 que que))
+              (grup.verb
+                (vmip3s0 mantiene mantener))
+              (sn-SUJ
+                (espec.ms
+                  (dd0ms0 ese ese))
+                (grup.nom.ms
+                  (ncms000 país país)))
+              (sp-CCL
+                (prep
+                  (sps00 en en))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 territorio territorio)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 chino chino)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 Según según))
+      (snp
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 experto experto)
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (grup.nom.mp
+                (ncmp000 asuntos asunto)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sno
+                    (grup.nom
+                      (np0000o Taiwán Taiwán)))))))
+          (snp
+            (grup.nom.ms
+              (np0000p Li_Jiaquan Li_Jiaquan)))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.mp
+        (nccp000 estudiantes estudiante)))
+    (grup.verb
+      (vaii3p0 habían haber)
+      (vmp00sm pedido pedir))
+    (sn-CD
+      (grup.nom.ms
+        (ncms000 permiso permiso)
+        (sp
+          (prep
+            (sps00 para para))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 organizar organizar))
+            (sn-CD
+              (grup.nom.fp
+                (ncfp000 protestas protesta)
+                (sp
+                  (prep
+                    (sps00 por por))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 actitud actitud)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.ms
+                            (ncms000 rechazo rechazo)
+                            (sp
+                              (prep
+                                (spcms del del))
+                              (sn
+                                (grup.nom.ms
+                                  (s.a.ms
+                                    (grup.a.ms
+                                      (aq0ms0 nuevo nuevo)))
+                                  (ncms000 presidente presidente))))
+                            (sp.co
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sn
+                                  (espec.fs
+                                    (da0fs0 la el))
+                                  (grup.nom.fs
+                                    (ncfs000 política política)
+                                    (sp
+                                      (prep
+                                        (sps00 de de))
+                                      (sn
+                                        (Fe " ")
+                                        (espec.fs
+                                          (di0fs0 una uno))
+                                        (grup.nom.fs
+                                          (s.a.fs
+                                            (grup.a.fs
+                                              (aq0fs0 sola solo)))
+                                          (np0000l China China))
+                                        (Fe " "))))))
+                              (coord
+                                (cc y y))
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sn
+                                  (espec.fs
+                                    (da0fs0 la el))
+                                  (grup.nom.fs
+                                    (ncfs000 teoría teoría)
+                                    (sp
+                                      (prep
+                                        (sps00 de de))
+                                      (sn
+                                        (Fe " ")
+                                        (espec.ms
+                                          (di0ms0 un uno))
+                                        (grup.nom.ms
+                                          (ncms000 país país)
+                                          (sn
+                                            (Fc , ,)
+                                            (espec.mp
+                                              (dn0cp0 dos dos))
+                                            (grup.nom.mp
+                                              (ncmp000 sistemas sistema))))
+                                        (Fe " ")))
+                                    (S.F.R
+                                      (relatiu-CD
+                                        (pr0cn000 que que))
+                                      (sno-SUJ
+                                        (grup.nom
+                                          (np0000o Pekín Pekín)))
+                                      (grup.verb
+                                        (vmip3s0 plantea plantear))
+                                      (sp-CPRED.CD
+                                        (prep
+                                          (cs como como))
+                                        (sn
+                                          (grup.nom.ms
+                                            (ncms000 requisito requisito)
+                                            (s.a.ms
+                                              (grup.a.ms
+                                                (aq0ms0 previo previo)))
+                                            (sp
+                                              (prep
+                                                (sps00 para para))
+                                              (S.NF.C
+                                                (infinitiu
+                                                  (vmn0000 concluir concluir))
+                                                (sp-CC
+                                                  (prep
+                                                    (sps00 con con))
+                                                  (sn
+                                                    (espec.ms
+                                                      (da0ms0 el el))
+                                                    (grup.nom.ms
+                                                      (ncms000 proceso proceso)
+                                                      (sp
+                                                        (prep
+                                                          (sps00 de de))
+                                                        (sn
+                                                          (grup.nom.fs
+                                                            (ncfs000 reunificación reunificación)
+                                                            (s.a.fs
+                                                              (grup.a.fs
+                                                                (aq0fs0 pacífica pacífico)))
+                                                            (sp
+                                                              (prep
+                                                                (sps00 de de))
+                                                              (sn
+                                                                (espec.fs
+                                                                  (da0fs0 la el))
+                                                                (grup.nom.fs
+                                                                  (Fe " ")
+                                                                  (ncfs000 madre madre)
+                                                                  (s.a.fs
+                                                                    (grup.a.fs
+                                                                      (aq0fs0 patria patrio)))
+                                                                  (Fe " "))))))))))))))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Li Li)
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (aq0cn0 ex ex)))
+            (ncms000 director director)
+            (sp
+              (prep
+                (spcms del del))
+              (sno
+                (grup.nom.ms
+                  (np0000o Instituto_de_Investigación_de_Taiwán_de_la_Academia_China_de_Ciencias_Sociales Instituto_de_Investigación_de_Taiwán_de_la_Academia_China_de_Ciencias_Sociales)))))
+          (Fc , ,))))
+    (grup.verb
+      (vmis3s0 indicó indicar))
+    (sadv-ET
+      (grup.adv
+        (rg además además)))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sno-SUJ
+        (grup.nom
+          (np0000o Pekín Pekín)))
+      (grup.verb
+        (vmif3s0 deberá deber)
+        (infinitiu
+          (vmn0000 replantearse replantear)))
+      (sadv-CCT
+        (grup.adv
+          (rg ahora ahora)))
+      (sn-CD
+        (espec.mp
+          (dp3cp0 sus su))
+        (grup.nom.mp
+          (ncmp000 planes plan)
+          (sp
+            (prep
+              (sps00 para para))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 consumar consumar))
+              (sn-CD
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 reunificación reunificación)))))))
+      (S.F.A-CC
+        (Fc , ,)
+        (conj.subord
+          (cs ya_que ya_que))
+        (sn-SUJ
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 estrategia estrategia)))
+        (sadv-CCT
+          (grup.adv
+            (rg siempre siempre)))
+        (morfema.verbal-PASS
+          (p0000000 se se))
+        (grup.verb
+          (vmis3s0 planteó plantear))
+        (sp-CC
+          (prep
+            (sps00 con con))
+          (sno
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (np0000o Kuomintang Kuomintang)
+              (sp
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 poder poder)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 experto experto)))
+    (grup.verb
+      (vmip3s0 opina opinar))
+    (S.F.C.co-CD
+      (conj.subord
+        (cs que que))
+      (S.F.C
+        (sno-SUJ
+          (grup.nom
+            (np0000o China China)))
+        (grup.verb
+          (vmic3s0 podría poder)
+          (infinitiu
+            (vmn0000 emprender emprender)))
+        (sn.co-CD
+          (sn
+            (grup.nom.fp
+              (ncfp000 acciones acción)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0cp0 militares militar)))))
+          (coord
+            (sps00 en_vez_de en_vez_de))
+          (sn
+            (espec.fs
+              (di0fs0 una uno))
+            (grup.nom.fs
+              (ncfs000 guerra guerra)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 dialéctica dialéctico)))
+              (sp
+                (prep
+                  (sps00 con con))
+                (sno
+                  (grup.nom
+                    (np0000o Taipei Taipei)))))))
+        (Fc , ,))
+      (coord
+        (cc o o))
+      (S.F.C
+        (sadv-MOD
+          (grup.adv
+            (rg quizás quizás)))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmsp3s0 decida decidir))
+        (S.NF.C-CD
+          (infinitiu
+            (vmn0000 continuar continuar))
+          (sp-CC
+            (prep
+              (sps00 con con))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (ncmp000 juegos juego)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 guerra guerra)))))))
+          (sp-CC
+            (prep
+              (sps00 para para))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 mantener mantener))
+              (sp-CD
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 isla isla))))
+              (sp-CC
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 incertidumbre incertidumbre)))))))))
+    (Fp . .)))

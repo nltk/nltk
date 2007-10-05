@@ -1,0 +1,343 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 coneixement coneixement)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 català català))))
+        (sp
+          (prep
+            (spcmp per_part_dels per_part_del))
+          (sn
+            (grup.nom.mp
+              (ncmp000 jutges jutge))))))
+    (grup.verb
+      (vmip3s0 torna tornar)
+      (sps00 a a)
+      (infinitiu
+        (vsn0000 ser ser)))
+    (sn-ATR
+      (grup.nom.ms
+        (ncms000 motiu motiu)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 polèmica polèmica))))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vsip1s0 Sóc ser))
+    (sp-ATR
+      (prep
+        (sps00 de de))
+      (sn
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (ncfs000 opinió opinió)
+          (S.F.C
+            (conj.subord
+              (cs que que))
+            (sn-SUJ
+              (espec.ms
+                (di0cs0 cap cap))
+              (grup.nom.ms
+                (ncms000 servidor servidor)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 públic públic)))
+                (INC
+                  (S
+                    (Fc , ,)
+                    (coord-ET
+                      (cc i i))
+                    (sn-SUJ
+                      (espec.mp
+                        (da0mp0 els el))
+                      (grup.nom.mp
+                        (ncmp000 jutges jutge)))
+                    (sn-ATR
+                      (grup.nom.ms
+                        (pp3nn000 ho ho)))
+                    (grup.verb
+                      (vsip3p0 són ser))
+                    (Fc , ,)))))
+            (grup.verb
+              (vaic3p0 haurien haver)
+              (sps00 de de)
+              (infinitiu
+                (vmn0000 poder poder)
+                (infinitiu
+                  (vmn0000 exercir exercir))))
+            (sadv-CC
+              (grup.adv
+                (rg professionalment professionalment)))
+            (sp-CCL
+              (prep
+                (sps00 a a))
+              (sn
+                (grup.nom
+                  (np00000 Catalunya Catalunya))))
+            (sp-CC
+              (prep
+                (sps00 sense sense))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 tenir tenir))
+                (sn-CD.Q
+                  (grup.nom.ms
+                    (ncms000 coneixement coneixement)
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 català català))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 respecte respecte)
+          (S.F.R
+            (relatiu-CD
+              (pr0cn000 que que))
+            (morf.pron
+              (p0300000 es ell))
+            (grup.verb
+              (vmip3s0 mereix merèixer))
+            (sp-CC
+              (prep
+                (sps00 des_de des_de))
+              (sn
+                (espec.fp
+                  (da0fp0 les el))
+                (grup.nom.fp
+                  (ncfp000 instàncies instància)
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0cp0 oficials oficial))))))
+            (sn-SUJ
+              (espec.ms
+                (di0cs0 qualsevol qualsevol))
+              (grup.nom.ms
+                (ncms000 ciutadà ciutadà))))))
+      (coord
+        (cc i i))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 dret dret)
+          (S.F.R
+            (relatiu-CD.Q
+              (pr0cn000 que que))
+            (sadv-CC
+              (grup.adv
+                (rg individualment individualment)))
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vmip1p0 tenim tenir))
+            (S.NF.P-CPRED.CD
+              (participi
+                (aq0msp reconegut reconegut))))
+          (sp.co
+            (sp
+              (prep
+                (sps00 a a))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 usar usar))))
+            (coord
+              (cc i i))
+            (sp
+              (prep
+                (sps00 a a))
+              (S.NF.C
+                (infinitiu
+                  (vsn0000 ser ser)
+                  (vmp00pm atesos atènyer))
+                (sp-CC
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (pi0cs000 qualsevol qualsevol)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fp
+                          (da0fp0 les el)
+                          (dn0fp0 dues dos))
+                        (grup.nom.fp
+                          (ncfp000 llengües llengua)
+                          (s.a.fp
+                            (grup.a.fp
+                              (aq0cp0 oficials oficial)))))))))))))
+      (Fc , ,))
+    (neg-MOD
+      (rn no no))
+    (morf.pron
+      (p0300000 es ell))
+    (grup.verb
+      (vmip3p0 poden poder)
+      (infinitiu
+        (vmn0000 veure veure)))
+    (S.NF.P-CPRED.SUJ
+      (participi
+        (aq0mpp alterats alterat))
+      (sp-CC
+        (prep
+          (sps00 per per))
+        (sn
+          (grup.nom.fp
+            (ncfp000 circumstàncies circumstància)
+            (s.a.fp
+              (grup.a.fp
+                (aq0cp0 personals personal)))
+            (sp
+              (prep
+                (spcmp dels del))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 servidors servidor)
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0mp0 públics públic))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 coneixement coneixement)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 català català))))))
+    (neg-MOD
+      (rn no no))
+    (grup.verb
+      (vaic3s0 hauria haver)
+      (sps00 de de)
+      (infinitiu
+        (vsn0000 ser ser)))
+    (sadv-CC
+      (grup.adv
+        (rg més més)))
+    (sn-ATR
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 qüestió qüestió)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.mp
+              (ncmp000 mèrits mèrit))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (pd0ns000 Això això)))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm demostrat demostrar))
+    (sa-ATR
+      (grup.a
+        (aq0cs0 insuficient insuficient)
+        (sp
+          (prep
+            (sps00 per per))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 garantir garantir))
+            (sn-CD
+              (espec.mp
+                (da0mp0 els el))
+              (grup.nom.mp
+                (ncmp000 drets dret)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0mp0 lingüístics lingüístic)))
+                (sp
+                  (prep
+                    (spcmp dels del))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 ciutadans ciutadà))))))))))
+    (Fp . .)))
+(
+  (S
+    (neg-MOD
+      (rn No no))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sn-SUJ
+      (grup.nom.ms
+        (pd0ms000 aquest aquest)))
+    (sn-ATR
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 raonament raonament)
+        (s.a.ms.co
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 maximalista maximalista)))
+          (Fc , ,)
+          (s.a.ms
+            (espec
+              (rg ni_tan_sols ni_tan_sols))
+            (grup.a.ms
+              (aq0cs0 nacionalista nacionalista))))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vsip3s0 És ser))
+    (sn-ATR
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 criteri criteri)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 concepció concepció)
+              (s.a.fs
+                (espec
+                  (rg exclusivament exclusivament))
+                (grup.a.fs
+                  (aq0fs0 democràtica democràtic))))))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (grup.nom.ms
+        (np00000 Professor_de_Ciència_Política_de_la_UB Professor_de_Ciència_Política_de_la_UB)))
+    (Fp . .)))

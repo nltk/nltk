@@ -1,0 +1,162 @@
+
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 José_Ramón_Puente José_Ramón_Puente)
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (ncms000 director director)
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (grup.nom.fp
+                  (ncfp000 operacions operació))))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom
+                  (np00000 Telcel Telcel)))))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vsp00sm estat ser)
+      (vmp00sm nomenat nomenar))
+    (sn-CPRED.SUJ
+      (grup.nom.ms
+        (ncms000 conseller conseller)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 director director)))
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 general general)))
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.fs
+              (dd0fs0 aquesta aquest))
+            (grup.nom.fs
+              (ncfs000 companyia companyia)
+              (S.F.R
+                (Fc , ,)
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (morf.pron
+                  (p0300000 s' ell))
+                (grup.verb
+                  (vmip3s0 encarrega encarregar))
+                (sp-CREG
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 infraestructura infraestructura)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0cs0 cel·lular cel·lular)))
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom
+                            (np00000 Motorola Motorola)))))))
+                (sp-CCL
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (grup.nom
+                      (np00000 Espanya Espanya))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (grup.nom
+          (np00000 Telcel Telcel)))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vsn0000 ser ser)
+        (vmp00sf constituïda constituir))
+      (sp-CAG
+        (prep
+          (sps00 per per))
+        (sn.x
+          (grup.nom.co
+            (grup.nom
+              (np00000 Motorola Motorola))
+            (coord
+              (cc i i))
+            (grup.nom
+              (np00000 Amper Amper))))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vsip3s0 és ser))
+      (sn-ATR
+        (grup.nom.fs
+          (ncfs000 subministradora subministradora)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (np00000 Telefónica Telefónica))))
+          (sp
+            (prep
+              (sps00 per per))
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fp
+                  (da0fp0 les el))
+                (grup.nom.fp
+                  (ncfp000 xarxes xarxa)
+                  (sn.x
+                    (grup.nom.co
+                      (grup.nom
+                        (np00000 MoviLine MoviLine))
+                      (coord
+                        (cc i i))
+                      (grup.nom
+                        (np00000 GSM GSM)))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (grup.nom.ms
+          (np00000 Puente Puente)))
+      (grup.verb
+        (vsip3s0 és ser))
+      (sn-ATR
+        (grup.nom.ms
+          (ncms000 enginyer enginyer))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3s0 ha haver)
+        (vmp00sm treballat treballar))
+      (sp-CC
+        (prep
+          (sps00 a a))
+        (sn.x
+          (grup.nom.co
+            (grup.nom
+              (np00000 Telettra Telettra))
+            (coord
+              (cc i i))
+            (grup.nom
+              (np00000 Sintel Sintel))))))
+    (Fp . .)))

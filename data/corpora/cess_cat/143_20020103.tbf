@@ -1,0 +1,124 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 programació programació)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.fs
+              (dd0fs0 aquesta aquest))
+            (grup.nom.fs
+              (ncfs000 cadena cadena))))))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vmif3s0 emetrà emetre))
+    (sadv-CCT
+      (grup.adv
+        (rg avui avui)))
+    (sn.co-CCT
+      (coord
+        (sps00 des_de des_de))
+      (sn
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (W dotze_del_migdia [??:??/??/??:12.00])))
+      (coord
+        (rg fins_a fins_a))
+      (sn
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (W vuit_del_vespre [??:??/??/??:20.00]))))
+    (sp-CCL
+      (prep
+        (spcms des_del des_del))
+      (sn
+        (grup.nom.ms
+          (ncms000 vestíbul vestíbul)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 central central)))
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (np00000 Maremàgnum Maremàgnum)))))))
+    (sp-CC
+      (prep
+        (sps00 amb_motiu_de amb_motiu_de))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 campanya campanya)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 recollida recollida)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fp
+                      (ncfp000 joguines joguina)))))))
+          (sn
+            (grup.nom
+              (np00000 Una_joguina_per_un_somriure Una_joguina_per_un_somriure))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCL.r
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 respectius respectiu)))
+          (ncmp000 espais espai))))
+    (sn-CCL.r
+      (grup.nom
+        (pp3cn000 hi hi)))
+    (grup.verb
+      (vmif3p0 participaran participar))
+    (sn.co-SUJ
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 rei rei)
+          (sn
+            (grup.nom.ms
+              (np00000 Baltasar Baltasar)))))
+      (Fc , ,)
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 vedet vedet)
+          (sn
+            (grup.nom.fs
+              (np00000 Regina_Dos_Santos Regina_Dos_Santos)))))
+      (coord
+        (cc i i))
+      (sn
+        (espec.fp
+          (di0fp0 diverses divers))
+        (grup.nom.fp
+          (ncfp000 personalitats personalitat)
+          (s.a.fp
+            (grup.a.fp
+              (aq0fp0 catalanes català))))))
+    (Fp . .)))

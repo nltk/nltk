@@ -1,0 +1,638 @@
+
+(
+  (S*
+    (sno
+      (grup.nom
+        (np0000o 5.Perú 5.Perú)))
+    (sn.x
+      (Fd : :)
+      (grup.nom.co
+        (grup.nom.ms
+          (np0000p Ibáñez Ibáñez))
+        (Fc , ,)
+        (grup.nom.ms
+          (np0000p Reynoso Reynoso))
+        (Fc , ,)
+        (grup.nom.ms
+          (np0000p Soto_José Soto_José))
+        (Fc , ,)
+        (grup.nom.ms
+          (np0000p Rebosio Rebosio))
+        (Fc , ,)
+        (grup.nom.ms
+          (np0000p Palacios Palacios))
+        (Fc , ,)
+        (grup.nom.ms
+          (np0000p Holsen Holsen))
+        (INC
+          (S*
+            (Fpa -Fpa- -Fpa-)
+            (snp
+              (grup.nom.ms
+                (np0000p Saenz Saenz)))
+            (snn
+              (Fc , ,)
+              (grup.nom.ms
+                (Z m.76 .76)))
+            (Fpt -Fpt- -Fpt-)))
+        (Fc , ,)
+        (grup.nom.ms
+          (np0000p Soto_Jorge Soto_Jorge))
+        (Fc , ,)
+        (grup.nom.ms
+          (np0000p Suárez Suárez))
+        (INC
+          (S*
+            (Fpa -Fpa- -Fpa-)
+            (snp
+              (grup.nom.ms
+                (np0000p Ciurlizza Ciurlizza)))
+            (snn
+              (Fc , ,)
+              (grup.nom.ms
+                (Z m.46 .46)))
+            (Fpt -Fpt- -Fpt-)))
+        (Fc , ,)
+        (grup.nom.ms
+          (np0000p Lobatón Lobatón))
+        (Fc , ,)
+        (grup.nom.ms
+          (np0000p Del_Solar Del_Solar))
+        (Fc , ,)
+        (coord
+          (cc y y))
+        (grup.nom.ms
+          (np0000p Quintero Quintero))
+        (INC
+          (S*
+            (Fpa -Fpa- -Fpa-)
+            (snp
+              (grup.nom.ms
+                (np0000p Salazar Salazar)))
+            (snn
+              (Fc , ,)
+              (grup.nom.ms
+                (Z m.46 .46)))
+            (Fpt -Fpt- -Fpt-)))))
+    (Fp . .)))
+(
+  (S*
+    (sno
+      (grup.nom
+        (np0000o 3.Honduras 3.Honduras)
+        (sn.x
+          (Fd : :)
+          (grup.nom.co
+            (grup.nom.ms
+              (np0000p Cruz_Paredes Cruz_Paredes))
+            (Fc , ,)
+            (grup.nom.ms
+              (np0000p Guerrero Guerrero))
+            (Fc , ,)
+            (grup.nom.ms
+              (np0000p Clavasquin Clavasquin))
+            (Fc , ,)
+            (grup.nom.ms
+              (np0000p Caballero Caballero))
+            (Fc , ,)
+            (grup.nom.ms
+              (np0000p Reyes Reyes))
+            (Fc , ,)
+            (grup.nom.ms
+              (np0000p Medina Medina))
+            (Fc , ,)
+            (grup.nom.ms
+              (np0000p Lagos Lagos))
+            (Fc , ,)
+            (grup.nom.ms
+              (np0000p Carlos_Pavón Carlos_Pavón))
+            (Fc , ,)
+            (grup.nom.ms
+              (np0000p Núñez Núñez))
+            (Fc , ,)
+            (grup.nom.ms
+              (np0000p Francisco_Pavón Francisco_Pavón))
+            (coord
+              (cc y y))
+            (grup.nom.ms
+              (np0000p Guevara Guevara))))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (grup.nom.mp
+        (ncmp000 Goles gol)
+        (sn.x
+          (Fd : :)
+          (grup.nom.co
+            (grup.nom
+              (grup.nom
+                (Z 1-0. 1-0))
+              (S*.j
+                (snn
+                  (grup.nom.ms
+                    (Z m.7 .7)))
+                (snp
+                  (Fd : :)
+                  (grup.nom.ms
+                    (np0000p Holsen Holsen)))))
+            (Fp . .)
+            (grup.nom
+              (grup.nom
+                (Z 2-0. 2-0))
+              (S*.j
+                (snn
+                  (grup.nom.ms
+                    (Z m.14 .14)))
+                (snp
+                  (Fd : :)
+                  (grup.nom.ms
+                    (np0000p Soto Soto)))
+                (sp
+                  (Fc , ,)
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 penalti penalti))))))
+            (Fp . .)
+            (grup.nom
+              (grup.nom
+                (Z 2-1. 2-1))
+              (S*.j
+                (snn
+                  (grup.nom.ms
+                    (Z m.31 .31)))
+                (snp
+                  (Fd : :)
+                  (grup.nom.ms
+                    (np0000p Clavasquin Clavasquin)))))
+            (Fp . .)
+            (grup.nom
+              (grup.nom
+                (Z 3-1. 3-1))
+              (S*.j
+                (snn
+                  (grup.nom.ms
+                    (grup.nom.fp
+                      (Z m.50 .50))))
+                (snp
+                  (Fd : :)
+                  (grup.nom.ms
+                    (np0000p Del_Solar Del_Solar)))))
+            (Fp . .)
+            (grup.nom
+              (grup.nom
+                (Z 4-1. 4-1))
+              (S*.j
+                (snn
+                  (grup.nom.ms
+                    (Z m.52 .52)))
+                (snp
+                  (Fd : :)
+                  (grup.nom.ms
+                    (np0000p Palacios Palacios)))))
+            (Fp . .)
+            (grup.nom
+              (grup.nom
+                (Z 4-2. 4-2))
+              (S*.j
+                (snn
+                  (grup.nom.ms
+                    (Z m.67 .67)))
+                (snp
+                  (Fd : :)
+                  (grup.nom.ms
+                    (np0000p Carlos_Pavón Carlos_Pavón)))
+                (sp
+                  (Fc , ,)
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 penalti penalti))))))
+            (grup.nom
+              (grup.nom
+                (Z 4-3. 4-3))
+              (S*.j
+                (snn
+                  (grup.nom.ms
+                    (Z m.69 .69)))
+                (snp
+                  (Fd : :)
+                  (grup.nom.ms
+                    (np0000p José_Luis_Pineda José_Luis_Pineda)))))
+            (Fp . .)
+            (grup.nom
+              (grup.nom
+                (Z 5-3. 5-3))
+              (S*.j
+                (snn
+                  (grup.nom.ms
+                    (Z m.87 .87)))
+                (snp
+                  (Fd : :)
+                  (grup.nom.ms
+                    (np0000p Sáenz. Sáenz.)))))))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (grup.nom.ms
+        (ncms000 Arbitro árbitro)
+        (snp
+          (Fd : :)
+          (snp
+            (grup.nom.ms
+              (np0000p Mario_Sánchez Mario_Sánchez)))
+          (snl.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (np0000l Chile Chile)
+              (Fpt -Fpt- -Fpt-))))
+        (S.NF.P
+          (Fc , ,)
+          (participi
+            (aq0msp ayudado ayudado))
+          (sp-CAG
+            (prep
+              (sps00 por por))
+            (sn.co
+              (snp
+                (snp
+                  (grup.nom.ms
+                    (np0000p Heinrick_Mackay Heinrick_Mackay)))
+                (snl.j
+                  (grup.nom
+                    (Fpa -Fpa- -Fpa-)
+                    (np0000l Aruba Aruba)
+                    (Fpt -Fpt- -Fpt-))))
+              (coord
+                (cc y y))
+              (snp
+                (snp
+                  (grup.nom.ms
+                    (np0000p Francois_Clemroy Francois_Clemroy)))
+                (snl.j
+                  (grup.nom
+                    (Fpa -Fpa- -Fpa-)
+                    (np0000l San_Vincente San_Vincente)
+                    (Fpt -Fpt- -Fpt-)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmis3s0 Mostró mostrar))
+    (sn-CD
+      (grup.nom.fs
+        (ncfs000 tarjeta tarjeta)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 amarilla amarillo)))))
+    (sp.co-CI
+      (sp
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (ncmp000 peruanos peruano)
+            (sn.x
+              (grup.nom.co
+                (grup.nom.ms
+                  (grup.nom.ms
+                    (np0000p Súarez Súarez))
+                  (snn.j
+                    (grup.nom.ms
+                      (Fpa -Fpa- -Fpa-)
+                      (Z m.19 .19))))
+                (coord
+                  (cc y y))
+                (grup.nom.ms
+                  (grup.nom.ms
+                    (np0000p Lobatón Lobatón))
+                  (snn.j
+                    (grup.nom.ms
+                      (Fpa -Fpa- -Fpa-)
+                      (Z m.62 .62)
+                      (Fpt -Fpt- -Fpt-))))))))
+        (Fc , ,))
+      (coord
+        (cc así_como así_como))
+      (sp
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (ncmp000 hondureños hondureño)
+            (sn.x
+              (grup.nom.co
+                (grup.nom.ms
+                  (grup.nom.ms
+                    (np0000p Medina Medina))
+                  (snn.j
+                    (grup.nom.ms
+                      (Fpa -Fpa- -Fpa-)
+                      (Z m.8 .8)
+                      (Fpt -Fpt- -Fpt-))))
+                (Fc , ,)
+                (grup.nom.ms
+                  (grup.nom.ms
+                    (np0000p Lagos Lagos))
+                  (snn.j
+                    (grup.nom.ms
+                      (Fpa -Fpa- -Fpa-)
+                      (Z m.64 .64)
+                      (Fpt -Fpt- -Fpt-))))
+                (coord
+                  (cc y y))
+                (grup.nom.ms
+                  (grup.nom.ms
+                    (np0000p Alex_Pineda Alex_Pineda))
+                  (snn.j
+                    (grup.nom.ms
+                      (Fpa -Fpa- -Fpa-)
+                      (Z m.71 .71)
+                      (Fpt -Fpt- -Fpt-))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmis3s0 Expulsó expulsar))
+    (sp.co-CD
+      (sp.co
+        (sp
+          (prep
+            (sps00 a a))
+          (snp
+            (grup.nom.ms
+              (np0000p Carlos_Pavón Carlos_Pavón))))
+        (coord
+          (cc y y))
+        (sp
+          (prep
+            (sps00 a a))
+          (snp
+            (grup.nom.ms
+              (np0000p Milton_Reyes Milton_Reyes)))))
+      (sp.j
+        (Fc , ,)
+        (prep
+          (sps00 de de))
+        (sno
+          (grup.nom
+            (np0000o Honduras Honduras)))
+        (Fc , ,)))
+    (sp-CCT
+      (prep
+        (sps00 en en))
+      (snn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 minuto minuto)
+          (snn
+            (grup.nom
+              (Z 87 87))))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (grup.nom.fp
+        (ncfp000 Incidencias incidencia)))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (grup.nom.ms
+        (ncms000 Partido partido)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.mp
+              (ncmp000 cuartos cuarto)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 final final)))))))
+        (sp
+          (prep
+            (sps00 de de))
+          (sna
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000a Copa_de_Oro Copa_de_Oro)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 fútbol fútbol)))))))
+        (S.NF.P
+          (participi
+            (aq0msp disputado disputado))
+          (sp-CCL
+            (prep
+              (sps00 en en))
+            (snl
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (np0000l Orange_Bowl Orange_Bowl)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snl
+                    (grup.nom
+                      (np0000l Miami Miami)))))))
+          (sp-CC
+            (prep
+              (sps00 ante ante))
+            (sn
+              (espec.fp
+                (Z 32.972 32972))
+              (grup.nom.fp
+                (ncfp000 personas persona)))))))
+    (sn
+      (Fc , ,)
+      (grup.nom.fs
+        (ncfs000 noche noche)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 agradable agradable)))))
+    (Fp . .)))
+(
+  (S*.co
+    (S*
+      (sn
+        (grup.nom.fp
+          (ncfp000 Banderas bandera)
+          (s.a.fp
+            (grup.a.fp
+              (aq0fp0 hondureñas hondureño)))))
+      (sp
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fp
+            (di0fp0 todas todo)
+            (da0fp0 las el))
+          (grup.nom.fp
+            (ncfp000 galerías galería)))))
+    (coord
+      (cc y y))
+    (S*
+      (sn
+        (espec.fp
+          (di0fp0 pocas poco))
+        (grup.nom.fp
+          (ncfp000 peruanas peruana))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (grup.nom
+        (np0000o Perú Perú)))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmis3s0 clasificó clasificar))
+    (sn-CCT
+      (espec.fs
+        (dd0fs0 esta este))
+      (grup.nom.fs
+        (ncfs000 noche noche)))
+    (sp-CC
+      (prep
+        (sps00 para para))
+      (sn
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 semifinales semifinal)
+          (sp
+            (prep
+              (sps00 de de))
+            (sna
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000a Copa_de_Oro Copa_de_Oro)))))))
+    (sp-CC
+      (prep
+        (spcms al al))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 vencer vencer))
+        (sp-CD
+          (prep
+            (sps00 a a))
+          (sno
+            (grup.nom
+              (np0000o Honduras Honduras))))
+        (sp-CC
+          (prep
+            (sps00 por por))
+          (sn
+            (grup.nom.mp
+              (pn0cp000 cinco cinco)
+              (sp
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.mp
+                    (dn0cp0 tres tres))
+                  (grup.nom.mp
+                    (ncmp000 goles gol)))))))
+        (sp-CCL
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 estadio estadio)
+              (snl
+                (grup.nom.ms
+                  (np0000l Orange_Bowl Orange_Bowl)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snl
+                      (grup.nom
+                        (np0000l Miami Miami)))))))))
+        (sp-CC
+          (Fc , ,)
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (di0ms0 un uno))
+            (grup.nom.ms
+              (ncms000 partido partido)
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vmis3s0 terminó terminar))
+                (sadv-CCT
+                  (sn.j
+                    (espec.mp
+                      (dn0cp0 dos dos))
+                    (grup.nom.mp
+                      (ncmp000 minutos minuto)))
+                  (sadv
+                    (grup.adv
+                      (rg antes antes))))
+                (sp-CC
+                  (prep
+                    (spcms al al))
+                  (S.NF.C
+                    (infinitiu
+                      (vmn0000 invadir invadir))
+                    (sn-CD
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 campo campo)))
+                    (sn-SUJ
+                      (grup.nom.mp
+                        (ncmp000 seguidores seguidor)
+                        (s.a.mp
+                          (grup.a.mp
+                            (aq0mp0 hondureños hondureño)))))
+                    (sp-CC
+                      (prep
+                        (sps00 en en))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 protesta protesta)
+                          (sp
+                            (prep
+                              (sps00 por por))
+                            (sn
+                              (espec.ms
+                                (di0ms0 un uno))
+                              (grup.nom.ms
+                                (ncms000 gol gol)
+                                (S.NF.P
+                                  (participi
+                                    (aq0msp anulado anulado))
+                                  (sp-CI
+                                    (prep
+                                      (sps00 a a))
+                                    (sn
+                                      (espec.ms
+                                        (dp3cs0 su su))
+                                      (grup.nom.ms
+                                        (ncms000 equipo equipo)))))))))))))))))))
+    (Fp . .)))
