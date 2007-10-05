@@ -1,0 +1,591 @@
+
+(
+  (S
+    (S.F.C-CD
+      (sn-SUJ
+        (espec.fp
+          (da0fp0 Las el))
+        (grup.nom.fp
+          (ncfp000 exportaciones exportación)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 vinos vino)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0mp0 chilenos chileno))))))))
+      (grup.verb
+        (vmis3p0 registraron registrar))
+      (sn-CD
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 aumento aumento)
+          (sp
+            (prep
+              (spcms del del))
+            (snn
+              (grup.nom.ms
+                (Zp 23,3_por_ciento 23,3_%))))))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (snd
+          (grup.nom
+            (W abril_pasado [??:??/4/??:??.??]))))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (grup.nom.fs
+            (ncfs000 comparación comparación)
+            (sp
+              (prep
+                (sps00 con con))
+              (sn
+                (espec.ms
+                  (da0ms0 el el)
+                  (di0ms0 mismo mismo))
+                (grup.nom.ms
+                  (ncms000 mes mes)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snd
+                      (grup.nom
+                        (W 1999 [??:??/??/1999:??.??]))))))))))
+      (sp-CC
+        (Fc , ,)
+        (prep
+          (sps00 hasta hasta))
+        (snn
+          (espec.mp
+            (da0mp0 los el)
+            (Z 164,4 164.4))
+          (grup.nom.mp
+            (ncmp000 millones millón)
+            (sp
+              (prep
+                (sps00 de de))
+              (grup.nom.mp
+                (Zm dólares dólar)))))
+        (Fc , ,)))
+    (grup.verb
+      (vmis3p0 informaron informar))
+    (sadv-CC
+      (grup.adv
+        (rg hoy hoy)))
+    (sn-SUJ
+      (grup.nom.fp
+        (ncfp000 fuentes fuente)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 sector sector))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 volumen volumen)
+        (S.NF.P
+          (participi
+            (aq0msp exportado exportado)))))
+    (grup.verb
+      (vmis3s0 ascendió ascender))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (snn
+        (espec.mp
+          (Z 74 74))
+        (grup.nom.mp
+          (ncmp000 millones millón)
+          (sp
+            (prep
+              (sps00 de de))
+            (snn
+              (grup.nom.mp
+                (ncmp000 litros litro))))
+          (sn
+            (Fc , ,)
+            (snn
+              (espec.ms
+                (di0ms0 un uno))
+              (grup.nom.ms
+                (Zp 22,17_por_ciento 22,17_%))
+              (sadv
+                (grup.adv
+                  (rg más más))))
+            (S.F.AComp*.j
+              (conj.subord
+                (cs que que))
+              (snd
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (W año_pasado [??:??/??/??:??.??])
+                  (S.F.A
+                    (Fc , ,)
+                    (conj.subord
+                      (cs cuando cuando))
+                    (morfema.verbal-PASS
+                      (p0000000 se se))
+                    (grup.verb
+                      (vmis3p0 vendieron vender))
+                    (sp-CI
+                      (prep
+                        (spcms al al))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 exterior exterior))))
+                    (sn-SUJ
+                      (espec.mp
+                        (Z 60.57 60.57))
+                      (grup.nom.mp
+                        (ncmp000 millones millón)))))))))))
+    (S.F.A-CC
+      (Fc , ,)
+      (conj.subord
+        (cs según según))
+      (grup.verb
+        (vmis3s0 precisó precisar))
+      (sn-SUJ
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 informe informe)
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000o Asociación_de_Productores_y_Exportadores_de_Vinos_Finos Asociación_de_Productores_y_Exportadores_de_Vinos_Finos)
+                (sno
+                  (Fpa -Fpa- -Fpa-)
+                  (grup.nom.fs
+                    (np0000o Chilevid Chilevid))
+                  (Fpt -Fpt- -Fpt-))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Las el))
+      (grup.nom.fp
+        (ncfp000 exportaciones exportación)
+        (s.a.fp
+          (grup.a.fp
+            (aq0cp0 totales total)))))
+    (grup.verb
+      (vmis3p0 pasaron pasar))
+    (sp-CC
+      (prep
+        (sps00 de de))
+      (snn
+        (espec.mp
+          (da0mp0 los el)
+          (Z 12,3 12.3))
+        (grup.nom.mp
+          (ncmp000 millones millón)
+          (sp
+            (prep
+              (sps00 de de))
+            (snn
+              (grup.nom.mp
+                (Zm dólares dólar))))
+          (sp
+            (prep
+              (sps00 en en))
+            (snd
+              (grup.nom
+                (W 1999 [??:??/??/1999:??.??])))))))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.mp
+          (da0mp0 los el)
+          (Z 14,8 14.8))
+        (grup.nom.mp
+          (ncmp000 millones millón)
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 presente presente)))
+                (ncms000 año año)))))))
+    (sn-AO
+      (Fc , ,)
+      (espec.ms
+        (da0ns0 lo el))
+      (S.F.R
+        (relatiu-SUJ
+          (pr0cn000 que que))
+        (grup.verb
+          (vmip3s0 supone suponer))
+        (sn-CD
+          (espec.fs
+            (di0fs0 una uno))
+          (grup.nom.fs
+            (ncfs000 subida subida)
+            (sp
+              (prep
+                (spcms del del))
+              (snn
+                (grup.nom.ms
+                  (Zp 20,47_por_ciento 20,47_%))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 precio precio)
+        (sadv
+          (grup.adv
+            (rg medio medio)))
+        (sp
+          (prep
+            (sps00 por por))
+          (sn
+            (grup.nom.ms
+              (ncms000 litro litro))))))
+    (sadv-MOD
+      (grup.adv
+        (rg también también)))
+    (grup.verb
+      (vmis3s0 experimentó experimentar))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un uno))
+      (grup.nom.fs
+        (ncfs000 alza alza)
+        (sp
+          (Fc , ,)
+          (prep
+            (sps00 desde desde))
+          (snn
+            (espec.mp
+              (Z 2,1 2.1))
+            (grup.nom.mp
+              (Zm dólares dólar))))
+        (sp
+          (prep
+            (sps00 a a))
+          (snn
+            (espec.mp
+              (Z 2,2 2.2))
+            (grup.nom.mp
+              (Zm dólares dólar))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 aumento aumento)
+        (S.NF.P
+          (participi
+            (aq0msp sostenido sostenido)))
+        (S.F.R
+          (relatiu-CD
+            (pr0cn000 que que))
+          (grup.verb
+            (vaip3s0 ha haber)
+            (vmp00sm experimentado experimentar))
+          (sn-SUJ
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 exportación exportación)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 vitivinícola vitivinícola)))))
+          (sp-CC
+            (prep
+              (sps00 durante durante))
+            (sn
+              (espec.mp
+                (da0mp0 los el)
+                (ao0mp0 últimos último)
+                (dn0cp0 cuatro cuatro))
+              (grup.nom.mp
+                (ncmp000 meses mes)))))))
+    (grup.verb
+      (vsis3s0 fue ser)
+      (vmp00sm valorado valorar))
+    (sp-CAG
+      (prep
+        (sps00 por por))
+      (sn.x
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.co
+          (grup.nom.mp
+            (ncmp000 productores productor))
+          (coord
+            (cc y y))
+          (grup.nom.mp
+            (ncmp000 exportadores exportador)))))
+    (sp-CC
+      (prep
+        (cs como como))
+      (sn
+        (Fe " ")
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 logro logro)
+          (s.a.ms
+            (espec
+              (rg muy mucho))
+            (grup.a.ms
+              (aq0ms0 significativo significativo))))
+        (Fe " ")))
+    (Fp . .)))
+(
+  (S
+    (sadv-CC
+      (grup.adv
+        (rg Asimismo asimismo)))
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmis3p0 destacaron destacar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 subida subida)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (da0fp0 las el))
+            (grup.nom.fp
+              (ncfp000 exportaciones exportación)
+              (sp
+                (prep
+                  (sps00 a a))
+                (snl
+                  (grup.nom
+                    (np0000l América_del_Norte América_del_Norte))))
+              (S.F.R
+                (Fc , ,)
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vmip3p0 suponen suponer))
+                (snn-CD
+                  (espec.ms
+                    (di0ms0 un uno))
+                  (grup.nom.ms
+                    (Zp 30_por_ciento 30_%)))
+                (S.F.A-CC
+                  (Fc , ,)
+                  (conj.subord
+                    (cs en_tanto_que en_tanto_que))
+                  (sn-SUJ
+                    (espec.fp
+                      (da0fp0 las el))
+                    (grup.nom.fp
+                      (S.NF.P
+                        (participi
+                          (aq0fpp destinadas destinado))
+                        (sp-CI
+                          (prep
+                            (sps00 a a))
+                          (snl
+                            (grup.nom
+                              (np0000l América_del_Sur América_del_Sur)))))))
+                  (grup.verb
+                    (vmis3p0 representaron representar))
+                  (snn-CD
+                    (espec.ms
+                      (di0ms0 un uno))
+                    (grup.nom.ms
+                      (Z 20 20)))
+                  (sp-CC
+                    (Fc , ,)
+                    (prep
+                      (sps00 con con))
+                    (sn
+                      (espec.ms
+                        (di0ms0 un uno))
+                      (grup.nom.fs
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0cs0 importante importante)))
+                        (ncfs000 alza alza)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (espec.fp
+                              (da0fp0 las el))
+                            (grup.nom.fp
+                              (ncfp000 exportaciones exportación)
+                              (sp
+                                (prep
+                                  (sps00 a a))
+                                (snl
+                                  (grup.nom
+                                    (np0000l Brasil Brasil))))
+                              (S.F.R
+                                (Fc , ,)
+                                (relatiu-SUJ
+                                  (pr0cn000 que que))
+                                (grup.verb
+                                  (vmis3p0 aumentaron aumentar))
+                                (snn-CD
+                                  (espec.ms
+                                    (di0ms0 un uno))
+                                  (grup.nom.ms
+                                    (Zp 180_por_ciento 180_%)))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 informe informe)))
+    (grup.verb
+      (vmip3s0 agrega agregar))
+    (S.F.C.co-CD
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (snl-SUJ
+          (grup.nom
+            (np0000l Japón Japón)))
+        (grup.verb
+          (vmip3s0 mantiene mantener))
+        (sn-CD
+          (espec.ms
+            (dp3cs0 su su))
+          (grup.nom.ms
+            (ncms000 ritmo ritmo)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 crecimiento crecimiento))))
+            (s.a.ms
+              (Fc , ,)
+              (aq0ms0 cercano cercano)
+              (sp
+                (prep
+                  (spcms al al))
+                (snn
+                  (grup.nom.ms
+                    (Zp 50_por_ciento 50_%))))
+              (Fc , ,)))))
+      (coord
+        (cc y y))
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (snl-SUJ
+          (grup.nom
+            (np0000l Europa Europa)))
+        (grup.verb
+          (vmip3s0 presenta presentar))
+        (sn-CD
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 nuevo nuevo)))
+            (ncms000 incremento incremento)
+            (sp
+              (prep
+                (spcms del del))
+              (snn
+                (grup.nom.ms
+                  (Zp 15_por_ciento 15_%))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Según según))
+      (sn
+        (grup.nom.fp
+          (ncfp000 proyecciones proyección)
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (grup.nom
+                (np0000o Chilevid Chilevid))))))
+      (Fc , ,))
+    (S.NF.A-CC
+      (gerundi
+        (vmg0000 comparando comparar))
+      (sn-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 comportamiento comportamiento)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (da0mp0 los el)
+                (ao0mp0 últimos último)
+                (dn0cp0 cuatro cuatro))
+              (grup.nom.mp
+                (ncmp000 años año)))))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (snd
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (W año_2000 [??:??/??/2000:??.??]))))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vmic1s0 debería deber)
+      (infinitiu
+        (vmn0000 alcanzar alcanzar)))
+    (snn-SUJ
+      (espec.mp
+        (da0mp0 los el)
+        (Z 600 600))
+      (grup.nom.mp
+        (ncmp000 millones millón)
+        (sp
+          (prep
+            (sps00 de de))
+          (snn
+            (grup.nom.mp
+              (Zm dólares dólar))))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 exportación exportación))))))
+(Fp . .)))

@@ -1,0 +1,146 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 primer primer)))
+        (ncms000 fruit fruit)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (ncfp000 reunions reunió)
+              (sp
+                (prep
+                  (sps00 entre entre))
+                (sn.x
+                  (grup.nom.co
+                    (grup.nom.mp
+                      (ncmp000 albanesos albanès))
+                    (coord
+                      (cc i i))
+                    (grup.nom.mp
+                      (ncmp000 macedonis macedoni)))))
+              (sp
+                (prep
+                  (sps00 a a))
+                (sn
+                  (sn
+                    (grup.nom
+                      (np00000 Ohrid Ohrid)))
+                  (sp.j
+                    (Fpa -Fpa- -Fpa-)
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 imatge imatge)))
+                    (Fpt -Fpt- -Fpt-)))))))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 arribar arribar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 acordar acordar))
+        (sn-SUJ
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (ncfp000 parts part)))
+        (sn-CD
+          (espec.fs
+            (da0cs0 l' el))
+          (grup.nom.fs
+            (ncfs000 oficialitat oficialitat)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 llengua llengua)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 albanesa albanès))))))))))
+    (sp-AO
+      (Fc , ,)
+      (prep
+        (sps00 segons segons))
+      (sn
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (ncmp000 mediadors mediador)
+          (s.a.mp
+            (grup.a.mp
+              (aq0cp0 occidentals occidental))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (grup.nom
+          (np00000 Washington Washington)))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 pressionar pressionar))
+      (sn-CD
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (ncfp000 parts part)))
+      (S.F.A-CC
+        (conj.subord
+          (cs perquè perquè))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmsi3p0 arribessin arribar))
+        (sp-CREG
+          (prep
+            (sps00 a a))
+          (sn
+            (grup.nom.fp
+              (ncfp000 solucions solució))))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 desmentir desmentir))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.mp
+            (da0mp0 els el))
+          (grup.nom.mp
+            (np00000 EUA EUA)))
+        (grup.verb
+          (vmsi3p0 fessin fer))
+        (sn-CD
+          (grup.nom.ms
+            (ncms000 costat costat)))
+        (sp-CI
+          (prep
+            (spcmp als al))
+          (sn
+            (grup.nom.mp
+              (ncmp000 albanesos albanès))))))
+    (Fp . .)))

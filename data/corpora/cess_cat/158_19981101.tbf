@@ -1,0 +1,37 @@
+
+(
+  (S
+    (sn-SUJ
+      (grup.nom
+        (np00000 Buenos_Aires Buenos_Aires)))
+    (grup.verb
+      (vmif3s0 acollirà acollir))
+    (sp-CCT
+      (Fc , ,)
+      (prep
+        (sps00 fins fins))
+      (sp
+        (prep
+          (spcms al al))
+        (sn
+          (grup.nom.ms
+            (W dia_13 [??:13/??/??:??.??]))))
+      (Fc , ,))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (ao0fs0 quarta quart)))
+        (ncfs000 conferència conferència)
+        (sp
+          (prep
+            (sps00 sobre sobre))
+          (sn
+            (grup.nom.ms
+              (ncms000 canvi canvi)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 climàtic climàtic))))))))
+    (Fp . .)))

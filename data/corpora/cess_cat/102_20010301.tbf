@@ -1,0 +1,169 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (np00000 aparcament aparcament)))
+    (sn-CCL
+      (grup.nom
+        (pp3cn000 hi hi)))
+    (grup.verb
+      (vmip3s0 està estar))
+    (S.NF.P-ATR
+      (participi
+        (aq0msp prohibit prohibit)))
+    (sp-CCT
+      (prep
+        (sps00 des_d' des_de))
+      (sadv
+        (grup.adv
+          (rg avui avui))))
+    (sp-CC
+      (prep
+        (sps00 a_causa_de a_causa_de))
+      (sn
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (ncfp000 obres obra)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vaip3p0 han haver)
+              (sps00 de de)
+              (infinitiu
+                (vmn0000 derruir derruir)))
+            (sn-CD
+              (espec.fp
+                (da0fp0 les el)
+                (dn0cp0 quatre quatre))
+              (grup.nom.fp
+                (s.a.fp
+                  (grup.a.fp
+                    (ao0fp0 últimes últim)))
+                (ncfp000 plantes planta)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.ms
+                      (da0cs0 l' el))
+                    (grup.nom.ms
+                      (ncms000 edifici edifici)
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0cs0 municipal municipal)))
+                      (S.NF.P
+                        (participi
+                          (aq0msp conegut conegut))
+                        (sp-CC
+                          (prep
+                            (sps00 amb amb))
+                          (sn
+                            (espec.ms
+                              (da0ms0 el el))
+                            (grup.nom.ms
+                              (ncms000 nom nom)
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sn
+                                  (grup.nom
+                                    (nc00000 novíssim novíssim)))))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (sp.j-CCT
+      (prep
+        (spcms A_partir_del a_partir_del))
+      (sn
+        (grup.nom.ms
+          (W dia_1_d'_abril [??:1/4/??:??.??])))
+      (Fc , ,))
+    (S.co
+      (S
+        (sn-SUJ
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 prohibició prohibició)
+            (sp
+              (prep
+                (sps00 d' de))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 aparcar aparcar))))))
+        (morfema.verbal-PASS
+          (p0000000 s' es))
+        (grup.verb
+          (vmif3s0 estendrà estendre))
+        (sp-CC
+          (prep
+            (spcmp als al))
+          (sn
+            (grup.nom.mp
+              (ncmp000 cotxes cotxe))))
+        (Fc , ,))
+      (coord
+        (cc i i))
+      (S
+        (sadv-CC
+          (grup.adv
+            (rg paral·lelament paral·lelament)))
+        (morfema.verbal-PASS
+          (p0000000 es es))
+        (grup.verb
+          (vmif3s0 restringirà restringir))
+        (sn-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 trànsit trànsit)))
+        (sp-CCL
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 zona zona))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fp
+          (da0fp0 Les el))
+        (grup.nom.fp
+          (ncfp000 obres obra)))
+      (grup.verb
+        (vmif3p0 duraran durar))
+      (sn-CD.Q
+        (espec.mp
+          (dn0cp0 vuit vuit))
+        (grup.nom.mp
+          (ncmp000 mesos mes))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmif3p0 costaran costar))
+      (sn-CD.Q
+        (espec.mp
+          (di0ms0 un un)
+          (ncms000 total total)
+          (sps00 de de)
+          (Z 316 316))
+        (grup.nom.mp
+          (ncmp000 milions milió)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (Zm pessetes pesseta)))))))
+    (Fp . .)))

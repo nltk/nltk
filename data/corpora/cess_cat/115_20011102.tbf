@@ -1,0 +1,119 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 fira fira)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.fp
+              (ncfp000 antiguitats antiguitat))))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 posar posar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 venda venda))))
+    (sn-CD
+      (sp.j
+        (Fc , ,)
+        (prep
+          (sps00 entre entre))
+        (sn
+          (grup.nom.mp
+            (pi0cp000 altres altre)))
+        (Fc , ,))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 oli oli)
+          (sp
+            (prep
+              (spcms del del))
+            (snp
+              (grup.nom.ms
+                (ncms000 pintor pintor)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 lleidatà lleidatà)))
+                (snp
+                  (snp
+                    (grup.nom.ms
+                      (np0000p Xavier_Gosé Xavier_Gosé)))
+                  (snn.j
+                    (grup.nom.ms
+                      (Fpa -Fpa- -Fpa-)
+                      (W 1876-1915 [??:??/??/1876-1915:??.??])
+                      (Fpt -Fpt- -Fpt-))))))))))
+    (Fp . .)))
+(
+  (S
+    (morf.pron
+      (pp3cn000 Hi hi))
+    (grup.verb
+      (vaip3s0 ha haver))
+    (sn-CD.Q
+      (grup.nom.fp
+        (nccp000 peces peça)
+        (S.NF.P
+          (participi
+            (aq0fpp valorades valorat))
+          (sp-CREG
+            (prep
+              (sps00 en en))
+            (snn
+              (espec.fp
+                (Z 3.500.000 3500000))
+              (grup.nom.fp
+                (Zm pessetes pesseta)))))))
+    (Fp . .)))
+(
+  (S
+    (sna-SUJ
+      (grup.nom
+        (np0000a Lleidantic Lleidantic)))
+    (grup.verb
+      (vmip3s0 inclou incloure))
+    (sn.x-CD
+      (grup.nom.co
+        (grup.nom.mp
+          (ncmp000 objectes objecte)
+          (sp
+            (prep
+              (spcms del del))
+            (snd
+              (grup.nom.ms
+                (W segle_XI [s:xi])))))
+        (coord
+          (cc i i))
+        (grup.nom.fp
+          (ncfp000 motos moto)
+          (s.a.fp
+            (grup.a.fp
+              (aq0fp0 americanes americà)))
+          (sp
+            (prep
+              (sps00 de de))
+            (snd
+              (grup.nom.mp
+                (ncmp000 principis principi)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (snd
+                    (grup.nom.ms
+                      (W XX [s:xx]))))))))))
+    (Fp . .)))

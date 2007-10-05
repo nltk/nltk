@@ -1,0 +1,100 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (nccs000 portaveu portaveu)
+        (sn
+          (grup.nom.ms
+            (np00000 Joan_Olòriz Joan_Olòriz)))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 criticar criticar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 pla pla)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (ncms000 equip equip))))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 govern govern))))))
+    (S.F.A-CC
+      (conj.subord
+        (cs perquè perquè))
+      (sn.e-SUJ *0*)
+      (morfema.verbal-PASS
+        (p0000000 s' es))
+      (grup.verb
+        (vaip3s0 ha haver)
+        (vmp00sm elaborat elaborar))
+      (sp.co-CC
+        (sp
+          (Fe " ")
+          (prep
+            (sps00 amb amb))
+          (sn
+            (grup.nom.mp
+              (ncmp000 criteris criteri)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0cp0 economicistes economicista))))))
+        (coord
+          (cc i i))
+        (sp
+          (prep
+            (sps00 al_marge_de al_marge_de))
+          (sn
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (ncfp000 persones persona)))
+          (Fe " "))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vaip3s0 Va anar)
+      (vmn0000 censurar censurar))
+    (sadv-MOD
+      (grup.adv
+        (rg també també)))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 permissivitat permissivitat)
+        (s.a.fs
+          (grup.a.fs
+            (ncfs000 constructora constructora)))
+        (sp
+          (prep
+            (spcms al al))
+          (sn
+            (grup.nom.ms
+              (ncms000 costat costat)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fp
+                    (da0fp0 les el))
+                  (grup.nom.fp
+                    (np00000 Hortes_de_Santa_Eugènia Hortes_de_Santa_Eugènia)))))))))
+    (Fp . .)))

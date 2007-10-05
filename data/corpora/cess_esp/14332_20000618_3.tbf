@@ -1,0 +1,435 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 director director)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 experimento experimento))))))
+    (grup.verb
+      (vmis3s0 explicó explicar))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sno
+        (grup.nom
+          (np0000o EFE EFE))))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (ncmp000 conflictos conflicto)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 futuro futuro))))))
+      (grup.verb
+        (vsif3p0 serán ser))
+      (sa-ATR
+        (espec
+          (rg muy mucho))
+        (grup.a
+          (aq0mp0 distintos distinto)
+          (sp
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 pasado pasado)))))))))
+      (S.F.A-CC
+        (Fc , ,)
+        (conj.subord
+          (cs pues pues))
+        (grup.verb
+          (vsip3s0 es ser))
+        (sa-ATR
+          (espec
+            (rg muy mucho))
+          (grup.a
+            (aq0cs0 probable probable)))
+        (S.F.C.co-SUJ
+          (conj.subord
+            (cs que que))
+          (S.F.C
+            (sn-SUJ
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 enemigo enemigo)))
+            (neg-MOD
+              (rn no no))
+            (grup.verb
+              (vmsp3s0 use usar))
+            (sn-CD
+              (grup.nom.mp
+                (ncmp000 uniformes uniforme)))
+            (Fc , ,))
+          (coord
+            (cc ni ni))
+          (S.F.C
+            (sn.e-SUJ *0*)
+            (morf.pron
+              (p0300000 se él))
+            (sn-CI
+              (grup.nom.p
+                (pp1cp000 nos yo)))
+            (grup.verb
+              (vmsp3s0 presente presentar))
+            (sp-CC
+              (prep
+                (sps00 con con))
+              (sn
+                (grup.nom.fp
+                  (s.a.fp
+                    (grup.nom.fp
+                      (aq0cp0 enormes enorme)))
+                  (ncfp000 divisiones división)
+                  (S.NF.P
+                    (participi
+                      (aq0fpp mecanizadas mecanizado))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Las el))
+      (grup.nom.fp
+        (ncfp000 amenazas amenaza)
+        (s.a.fp
+          (grup.a.fp
+            (aq0cp0 militares militar)))
+        (sp
+          (prep
+            (sps00 para para))
+          (sno
+            (grup.nom
+              (np0000o Estados_Unidos Estados_Unidos))))
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 futuro futuro))))))
+    (sp-AO
+      (Fc , ,)
+      (prep
+        (sps00 según según))
+      (sn.co
+        (snp
+          (grup.nom.ms
+            (np0000p Deichman Deichman)))
+        (coord
+          (cc y y))
+        (sn
+          (espec.mp
+            (di0mp0 otros otro))
+          (grup.nom.mp
+            (ncmp000 expertos experto)
+            (sp.co
+              (sp
+                (prep
+                  (spcms del del))
+                (sno
+                  (grup.nom.ms
+                    (np0000o Pentágono Pentágono))))
+              (coord
+                (cc y y))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sno
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np0000o Agencia_Central_de_Inteligencia Agencia_Central_de_Inteligencia)
+                    (sno
+                      (grup.nom.fs
+                        (Fpa -Fpa- -Fpa-)
+                        (np0000o CIA CIA)
+                        (Fpt -Fpt- -Fpt-))))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmif3p0 provendrán provenir))
+    (sp.co-CREG
+      (sp
+        (prep
+          (sps00 de de))
+        (sn
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (ncmp000 grupos grupo)
+            (s.a.mp
+              (grup.a.mp
+                (aq0cp0 terroristas terrorista)))))
+        (Fc , ,))
+      (coord
+        (cc o o))
+      (sp
+        (prep
+          (sps00 de de))
+        (sn
+          (grup.nom.mp
+            (ncmp000 estados estado)
+            (sp
+              (prep
+                (sps00 con con))
+              (sn
+                (grup.nom.fp
+                  (ncfp000 políticas política)
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0cp0 extremistas extremista))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C.co-CD
+      (Fe " ")
+      (S.F.C
+        (sn-SUJ
+          (espec.fp
+            (dp1fpp Nuestras nuestro))
+          (grup.nom.fp
+            (ncfp000 fuerzas fuerza)))
+        (morfema.verbal-PASS
+          (p0000000 se se))
+        (grup.verb
+          (vmis3p0 diseñaron diseñar))
+        (sp.co-CC
+          (sp
+            (prep
+              (sps00 para para))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 confrontación confrontación)
+                (sp
+                  (prep
+                    (sps00 con con))
+                  (sno
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (np0000o Unión_Soviética Unión_Soviética)))))))
+          (Fc , ,)
+          (sp
+            (prep
+              (sps00 para para))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0cp0 grandes grande)))
+                (ncmp000 desafíos desafío)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0cp0 militares militar)))))))
+        (Fc , ,))
+      (coord
+        (cc pero pero))
+      (S.F.C
+        (sadv-CCT
+          (grup.adv
+            (rg ahora ahora)))
+        (sn-SUJ
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (ncfp000 amenazas amenaza)))
+        (grup.verb
+          (vsip3p0 son ser))
+        (sn.co-ATR
+          (sn.co
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 terrorismo terrorismo))
+              (Fc , ,))
+            (coord
+              (cc y y))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 terrorismo terrorismo)
+                (S.NF.P
+                  (participi
+                    (aq0msp vinculado vinculado))
+                  (sp-CREG
+                    (prep
+                      (spcms al al))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 tráfico tráfico)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (grup.nom.fp
+                              (ncfp000 drogas droga))))))))))
+            (Fc , ,))
+          (coord
+            (cc o o))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 proliferación proliferación)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 armamentos armamento)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 destrucción destrucción)
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0fs0 masiva masivo)))))))))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 indicó indicar))
+    (sn.e-SUJ *0*)
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (sn-ATR
+        (espec.ms
+          (di0ms0 Un uno))
+        (grup.nom.ms
+          (ncms000 aspecto aspecto)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 esencial esencial)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (ncmp000 conflictos conflicto)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 futuro futuro)))))))))
+      (sp-AO
+        (Fc , ,)
+        (prep
+          (sps00 según según))
+        (snp
+          (grup.nom.ms
+            (np0000p Deichman Deichman)))
+        (Fc , ,))
+      (grup.verb
+        (vsif3s0 será ser))
+      (sn.co-SUJ
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 recolección recolección)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 datos dato))))))
+        (coord
+          (cc y y))
+        (sn
+          (espec.fs
+            (dp3cs0 su su))
+          (grup.nom.fs
+            (ncfs000 diseminación diseminación))))
+      (S.F.A.co-CC
+        (Fc , ,)
+        (conj.subord
+          (cs ya_que ya_que))
+        (S.F.A
+          (sn-SUJ
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 proceso proceso)
+              (S.F.R
+                (relatiu-CD
+                  (pr0cn000 que que))
+                (sn.e-SUJ *0*)
+                (grup.verb
+                  (vmip1p0 tenemos tener))
+                (sadv-CCT
+                  (grup.adv
+                    (rg ahora ahora))))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 recogida recogida))))))
+          (Fe " ")
+          (grup.verb
+            (vsip3s0 es ser))
+          (sa-ATR
+            (espec
+              (rg muy mucho))
+            (grup.a
+              (aq0ms0 largo largo))))
+        (Fc , ,))
+      (coord
+        (cc y y))
+      (S.F.A
+        (sn-CC
+          (espec.fp
+            (di0fp0 muchas mucho))
+          (grup.nom.fp
+            (ncfp000 veces vez)))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vsip3s0 es ser))
+        (sn-ATR
+          (espec.fs
+            (di0fs0 una uno))
+          (grup.nom.fs
+            (ncfs000 información información)
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 perecedera perecedero)))))
+        (Fe " "))
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 indicó indicar))
+    (sn.e-SUJ *0*)
+    (Fp . .)))

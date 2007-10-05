@@ -1,0 +1,146 @@
+
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Josep_Piqué Josep_Piqué)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 aclarir aclarir))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (grup.nom
+          (np00000 Espanya Espanya)))
+      (neg-MOD
+        (rn no no))
+      (morf.pron
+        (p0300000 es ell))
+      (grup.verb
+        (vmif3s0 queixarà queixar-se))
+      (sadv-CC
+        (grup.adv
+          (rg formalment formalment)))
+      (sp-CI
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (np00000 Gran_Bretanya Gran_Bretanya))))
+      (sp-AO
+        (prep
+          (sps00 tot_i tot_i))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 malestar malestar)
+            (S.F.R
+              (relatiu-CD
+                (pr0cn000 que que))
+              (grup.verb
+                (vaip3s0 ha haver)
+                (vmp00sm provocat provocar))
+              (sn-SUJ
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 visita visita)
+                  (sp
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (grup.nom
+                        (np00000 Gibraltar Gibraltar))))
+                  (sp
+                    (prep
+                      (sps00 d' de))
+                    (sn
+                      (espec.ms
+                        (di0ms0 un un))
+                      (grup.nom.ms
+                        (ncms000 membre membre)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (np00000 Corona Corona)
+                              (s.a.fs
+                                (grup.a.fs
+                                  (aq0fs0 anglesa anglès))))))
+                        (sn
+                          (Fc , ,)
+                          (espec.ms
+                            (da0ms0 el el))
+                          (grup.nom.ms
+                            (ncms000 príncep príncep)
+                            (sn
+                              (grup.nom.ms
+                                (np00000 Eduard Eduard)))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (Fe " ")
+      (sp-CI.r
+        (prep
+          (sps00 A a))
+        (sn
+          (grup.nom.ms
+            (pi0cs000 ningú ningú))))
+      (sn-CI.r
+        (grup.nom.s
+          (pp3csd00 li ell)))
+      (grup.verb
+        (vmip3s0 agrada agradar))
+      (Fe " ")
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmsp3p0 facin fer))
+        (sn-CD
+          (espec.mp
+            (dd0mp0 aquests aquest))
+          (grup.nom.mp
+            (ncmp000 viatges viatge)))
+        (S.F.AConc-AO
+          (conj.subord
+            (cs encara_que encara_que))
+          (sn.e-SUJ *0*)
+          (neg-MOD
+            (rn no no))
+          (grup.verb
+            (vmsp3p0 tinguin tenir))
+          (sn-CD.Q
+            (grup.nom.ms
+              (ncms000 caràcter caràcter)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 polític polític)))))))
+      (Fc , ,))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 reconèixer reconèixer))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (nccs000 titular titular)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom
+              (np00000 Exteriors Exteriors))))))
+    (Fp . .)))

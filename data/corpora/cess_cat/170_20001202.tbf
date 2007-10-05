@@ -1,0 +1,310 @@
+
+(
+  (S*
+    (sn.co
+      (sn
+        (grup.nom.ms
+          (np00000 Haakon Haakon)))
+      (coord
+        (cc i i))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (nc00000 nòvia nòvia)
+          (sn
+            (Fc , ,)
+            (grup.nom.fs
+              (np00000 Mette-Marit Mette-Marit))))))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 príncep príncep)
+          (sn
+            (grup.nom.ms
+              (np00000 Haakon_de_Noruega Haakon_de_Noruega)))))
+      (coord
+        (cc i i))
+      (sn
+        (espec.fs
+          (dp3fs0 la_seva el_seu))
+        (grup.nom.fs
+          (nc00000 nòvia nòvia)
+          (sn
+            (Fc , ,)
+            (grup.nom.fs
+              (np00000 Mette-Marit_Tjessem Mette-Marit_Tjessem))
+            (Fc , ,)))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 anunciar anunciar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn.e-SUJ *0*)
+      (morf.pron
+        (p0300000 es ell))
+      (grup.verb
+        (vmif3p0 casaran casar))
+      (sn-CCT
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (W 25_d'_agost [??:25/8/??:??.??])
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 vinent vinent))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C.co-CD
+      (Fe " ")
+      (S.F.C.co
+        (S.F.C
+          (sn-SUJ
+            (grup.nom.ms
+              (np00000 Haakon Haakon)))
+          (morf.pron
+            (p0300000 s' ell))
+          (grup.verb
+            (vaip3s0 ha haver)
+            (vmp00sm agenollat agenollar-se)))
+        (coord
+          (cc i i))
+        (S.F.C
+          (sn.e-SUJ *0*)
+          (sn-CI
+            (grup.nom.s
+              (pp1cs000 m' em)))
+          (grup.verb
+            (vaip3s0 ha haver)
+            (vmp00sm ofert oferir))
+          (sn-CD
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (ncms000 anell anell)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 compromís compromís))))))))
+      (sadv.j-CCT
+        (grup.adv
+          (rg avui avui))
+        (espec.ms
+          (di0ms0 mateix mateix)))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 explicar explicar))
+    (sn-SUJ
+      (grup.nom.fs
+        (np00000 Mette-Marit Mette-Marit)
+        (sn
+          (Fc , ,)
+          (grup.nom.fs
+            (ncfs000 mare mare)
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 soltera solter)))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.mp
+                  (Z 27 27))
+                (grup.nom.mp
+                  (ncmp000 anys any)))))
+          (Fc , ,))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (grup.nom.fs
+          (ncfs000 roda roda)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 premsa premsa)))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (Fe " ")
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip1p0 Estem estar))
+      (S.NF.P-ATR
+        (sadv-CC
+          (grup.adv
+            (rg molt molt)))
+        (participi
+          (aq0mpp enamorats enamorat)))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 afegir afegir))
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (ncms000 hereu hereu)))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (spcms Al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 matí matí)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 rei rei)
+        (sn
+          (grup.nom.ms
+            (np00000 Harald Harald)))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 anunciar anunciar))
+    (sadv-CC
+      (grup.adv
+        (rg oficialment oficialment)))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 compromís compromís)))
+    (sp-CI
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (np00000 Govern Govern))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 notícia notícia)))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmip3s0 produeix produir))
+    (sadv-CCT
+      (sn.j
+        (grup.nom.mp
+          (ncmp000 dies dia)))
+      (sadv
+        (grup.adv
+          (rg abans abans)
+          (S.F.C
+            (conj.subord
+              (cs que que))
+            (sn-SUJ
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 parella parella)))
+            (morf.pron
+              (p0300000 es ell))
+            (grup.verb
+              (vmsp3s0 traslladi traslladar))
+            (sadv-CC
+              (grup.adv
+                (rg definitivament definitivament)))
+            (sp-CREG
+              (prep
+                (spcms al al))
+              (sn
+                (grup.nom.ms
+                  (ncms000 pis pis)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 centre centre)
+                        (sp
+                          (prep
+                            (sps00 d' de))
+                          (sn
+                            (grup.nom
+                              (np00000 Oslo Oslo)))))))
+                  (S.F.R
+                    (relatiu-CD
+                      (pr0cn000 que que))
+                    (sn-SUJ
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 príncep príncep)))
+                    (grup.verb
+                      (vaip3s0 va anar)
+                      (vmn0000 comprar comprar))
+                    (sp-CC
+                      (prep
+                        (sps00 per per))
+                      (S.NF.C
+                        (infinitiu
+                          (vmn0000 compartir compartir))
+                        (sn-CD
+                          (grup.nom.ms
+                            (pp3msa00 -lo ell)))
+                        (sp-CC
+                          (prep
+                            (sps00 amb amb))
+                          (sn.co
+                            (sn
+                              (espec.fs
+                                (dp3fs0 la_seva el_seu))
+                              (grup.nom.fs
+                                (nc00000 nòvia nòvia)))
+                            (coord
+                              (cc i i))
+                            (sn
+                              (espec.ms
+                                (da0ms0 el el))
+                              (grup.nom.ms
+                                (ncms000 fill fill)
+                                (sp
+                                  (prep
+                                    (sps00 de de))
+                                  (sn
+                                    (espec.fs
+                                      (da0fs0 la el))
+                                    (grup.nom.fs
+                                      (ncfs000 noia noia))))
+                                (sn
+                                  (Fc , ,)
+                                  (grup.nom.ms
+                                    (np00000 Marius Marius))
+                                  (Fc , ,))
+                                (sp
+                                  (prep
+                                    (sps00 de de))
+                                  (sn
+                                    (espec.mp
+                                      (Z 4 4))
+                                    (grup.nom.mp
+                                      (ncmp000 anys any))))))))))))))))))
+    (Fp . .)))

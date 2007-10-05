@@ -1,0 +1,156 @@
+
+(
+  (S
+    (sadv-CCT
+      (grup.adv
+        (rg Després després)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (espec.ms
+              (dp3ms0 seu seu))
+            (grup.nom.ms
+              (ncms000 pas pas)
+              (sp
+                (prep
+                  (sps00 per per))
+                (sn.x
+                  (grup.nom.co
+                    (grup.nom
+                      (np00000 Barberà Barberà))
+                    (Fc , ,)
+                    (grup.nom
+                      (np00000 Santa_Coloma Santa_Coloma))
+                    (coord
+                      (cc i i))
+                    (grup.nom
+                      (np00000 Sant_Adrià Sant_Adrià)))))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (np00000 Fira_d'_Abril_de_Catalunya Fira_d'_Abril_de_Catalunya)))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vmif3s0 celebrarà celebrar))
+    (sp-CCT
+      (Fc , ,)
+      (prep
+        (sps00 per per))
+      (sn
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (ao0ms0 primer primer)))
+          (ncms000 cop cop)))
+      (Fc , ,))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom
+          (np00000 Barcelona Barcelona))))
+    (sp-CCL
+      (prep
+        (sps00 entre entre))
+      (sn.co
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (W 27_d'_abril [??:27/4/??:??.??])))
+        (coord
+          (cc i i))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (W 6_de_maig [??:6/5/??:??.??])))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 reial reial)))))
+      (morfema.verbal-PASS
+        (p0000000 s' es))
+      (grup.verb
+        (vmif3s0 ubicarà ubicar))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 platja platja)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np00000 Mar_Bella Mar_Bella))))))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmif3s0 ocuparà ocupar))
+      (sn-CD
+        (espec.fp
+          (dn0cp0 quatre quatre))
+        (grup.nom.fp
+          (ncfp000 hectàrees hectàrea))))
+    (Fp . .)))
+(
+  (S
+    (sadv-MOD
+      (grup.adv
+        (rg També també)))
+    (morf.pron
+      (pp3cn000 hi hi))
+    (grup.verb
+      (vaif3s0 haurà haver))
+    (sn.x-CD.Q
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.co
+        (grup.nom.ms
+          (ncms000 espai espai)
+          (sp
+            (prep
+              (sps00 per per))
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fp
+                  (da0fp0 les el))
+                (grup.nom.fp
+                  (ncfp000 atraccions atracció))))))
+        (coord
+          (cc i i))
+        (grup.nom.ms
+          (ncms000 aparcament aparcament)
+          (sp
+            (prep
+              (sps00 per per))
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.mp
+                  (Z 3.000 3000))
+                (grup.nom.mp
+                  (ncmp000 cotxes cotxe))))))))
+    (Fp . .)))

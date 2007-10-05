@@ -1,0 +1,98 @@
+
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 En en))
+      (sn
+        (grup.nom.ms
+          (ncms000 homenatge homenatge)
+          (sp
+            (prep
+              (sps00 a a))
+            (sn.co
+              (snp
+                (snp
+                  (grup.nom.ms
+                    (np0000p McCartney McCartney)))
+                (sn.j
+                  (grup.nom.fs
+                    (Fpa -Fpa- -Fpa-)
+                    (ncfs000 foto foto)
+                    (Fpt -Fpt- -Fpt-))))
+              (Fc , ,)
+              (snp
+                (grup.nom.ms
+                  (np0000p Lennon Lennon)))
+              (coord
+                (cc i i))
+              (sn
+                (espec.mp
+                  (da0mp0 els el)
+                  (di0cp0 altres altre))
+                (grup.nom.mp
+                  (np0000o Beatles Beatles)))))))
+      (Fc , ,))
+    (sno-SUJ
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (np0000o Hotel_Cabana Hotel_Cabana)
+        (sp
+          (Fc , ,)
+          (prep
+            (sps00 a a))
+          (snl
+            (snl
+              (grup.nom
+                (np0000l Palo_Alto Palo_Alto)))
+            (snl.j
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (np0000l Califòrnia Califòrnia)
+                (Fpt -Fpt- -Fpt-)))))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-CCL
+            (pr000000 on on))
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vaip3p0 van anar)
+            (vmn0000 pernoctar pernoctar))
+          (snd-CCT
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (W 1965 [??:??/??/1965:??.??])))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm inaugurat inaugurar))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 habitació habitació)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 especial especial)))
+        (snn
+          (Fc , ,)
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (Z 810 810))
+          (Fc , ,))
+        (sp
+          (prep
+            (sps00 amb amb))
+          (sn
+            (grup.nom.mp
+              (ncmp000 records record)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 grup grup)))))))))
+    (Fp . .)))

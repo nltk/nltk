@@ -1,0 +1,130 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np00000 Primer_Ministre Primer_Ministre)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 malaisi malaisi)))
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (np00000 Mahathir_Mohammad Mahathir_Mohammad))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 dir dir))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.ms
+          (di0cs0 cap cap))
+        (grup.nom.ms
+          (ncms000 ministre ministre)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 britànic britànic)))
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 gai gai)))))
+      (S.NF.P-CPRED.SUJ
+        (participi
+          (aq0msp acompanyat acompanyat))
+        (sp-CAG
+          (prep
+            (sps00 per per))
+          (sn
+            (espec.fs
+              (dp3fs0 la_seva el_seu))
+            (grup.nom.fs
+              (ncfs000 parella parella)))))
+      (grup.verb
+        (vmif3s0 podrà poder)
+        (infinitiu
+          (vmn0000 entrar entrar)))
+      (sp-CCL
+        (prep
+          (spcms al al))
+        (sn
+          (grup.nom.ms
+            (ncms000 país país)))))
+    (Fp . .)))
+(
+  (S
+    (Fe " ")
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vsip3s0 És ser))
+    (sn-ATR
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 diferència diferència)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.mp
+              (ncmp000 valors valor))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C.co-CD
+      (S.F.C
+        (sn-SUJ
+          (espec.mp
+            (da0mp0 Els el))
+          (grup.nom.mp
+            (ncmp000 britànics britànic)))
+        (grup.verb
+          (vmip3p0 accepten acceptar))
+        (sn-CD
+          (espec.mp
+            (da0mp0 els el))
+          (grup.nom.mp
+            (ncmp000 ministres ministre)
+            (s.a.mp
+              (grup.a.mp
+                (aq0cp0 homosexuals homosexual)))))
+        (Fc , ,))
+      (coord
+        (cc però però))
+      (S.F.C
+        (S.F.ACond-AO
+          (conj.subord
+            (cs si si))
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vmip3p0 vénen venir))
+          (S.NF.P-CPRED.SUJ
+            (participi
+              (aq0mpp acompanyats acompanyat)))
+          (Fc , ,))
+        (sn-SUJ
+          (grup.nom.p
+            (pp1cp000 nosaltres jo)))
+        (neg-MOD
+          (rn no no))
+        (sn-CD
+          (grup.nom.p
+            (pp3cp000 els ell)))
+        (grup.verb
+          (vmif1p0 deixarem deixar)
+          (infinitiu
+            (vmn0000 entrar entrar))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 dir dir))
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Mohammad Mohammad)))
+    (Fp . .)))

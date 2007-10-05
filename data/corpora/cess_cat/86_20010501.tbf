@@ -1,0 +1,232 @@
+
+(
+  (S
+    (sn-SUJ
+      (grup.nom
+        (np00000 EL_PERIODICO_DE_CATALUNYA EL_PERIODICO_DE_CATALUNYA)))
+    (grup.verb
+      (vmif3s0 patrocinarà patrocinar))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (np00000 Museu_d'_Història_de_Catalunya Museu_d'_Història_de_Catalunya)))
+    (sp-AO
+      (Fc , ,)
+      (prep
+        (sps00 segons segons))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 conveni conveni)
+          (S.NF.P
+            (participi
+              (aq0msp firmat firmat))
+            (sn-CCT
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (W 24_d'_abril [??:24/04/??:??.??])
+                (S.NF.P
+                  (participi
+                    (aq0msp passat passat)))))
+            (sp-CAG
+              (prep
+                (sps00 per per))
+              (sn.x
+                (grup.nom.co
+                  (grup.nom.ms
+                    (np00000 Joan_Alegre Joan_Alegre)
+                    (sn
+                      (Fc , ,)
+                      (grup.nom.ms
+                        (ncms000 director director)
+                        (sn
+                          (grup.nom.ms
+                            (nccs000 gerent gerent)))
+                        (sp
+                          (prep
+                            (sps00 d' de))
+                          (sn
+                            (grup.nom
+                              (np00000 Ediciones_Primera_Plana Ediciones_Primera_Plana)))))
+                      (Fc , ,)))
+                  (coord
+                    (cc i i))
+                  (grup.nom.ms
+                    (np00000 Jaume_Sobrequés Jaume_Sobrequés)
+                    (sn
+                      (Fc , ,)
+                      (grup.nom.ms
+                        (ncms000 director director)
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 centre centre)
+                              (s.a.ms
+                                (grup.a.ms
+                                  (aq0cs0 cultural cultural))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 Segons segons))
+      (sn
+        (grup.nom.ms
+          (np00000 Alegre Alegre)))
+      (Fc , ,))
+    (sn-SUJ
+      (grup.nom
+        (np00000 EL_PERIODICO EL_PERIODICO)))
+    (Fe " ")
+    (grup.verb
+      (vmip3s0 vol voler))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 mostrar mostrar))
+      (sn-CD
+        (espec.fs
+          (dp3fs0 la_seva el_seu))
+        (grup.nom.fs
+          (ncfs000 sensibilitat sensibilitat)
+          (sp.co
+            (sp
+              (prep
+                (sps00 per per))
+              (sn
+                (espec.fp
+                  (da0fp0 les el))
+                (grup.nom.fp
+                  (ncfp000 institucions institució)
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vmip3p0 promocionen promocionar))
+                    (sn-CD
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 història història)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (grup.nom
+                              (np00000 Catalunya Catalunya)))))))))
+              (Fc , ,))
+            (coord
+              (cc i i))
+            (sp
+              (sadv.j
+                (grup.adv
+                  (rg en_especial en_especial)))
+              (sp
+                (prep
+                  (sps00 per per))
+                (sn
+                  (espec.ms
+                    (dd0ms0 aquest aquest))
+                  (grup.nom.ms
+                    (ncms000 museu museu)))))))))
+    (Fe " ")
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Sobrequés Sobrequés)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 destacar destacar))
+    (sn-CD
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (ncms000 interès interès)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 institució institució)
+              (S.F.R
+                (relatiu-CD
+                  (pr0cn000 que que))
+                (sn.e-SUJ *0*)
+                (grup.verb
+                  (vmip3s0 dirigeix dirigir))))))
+        (sp
+          (prep
+            (sps00 per per))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 col·laborar col·laborar))
+            (sp-CREG
+              (prep
+                (sps00 amb amb))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 diari diari))))))))
+    (Fp . .)))
+(
+  (S*
+    (sp
+      (prep
+        (sps00 A a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 foto foto)))
+      (Fc , ,))
+    (sn.co
+      (sn
+        (sn
+          (grup.nom.ms
+            (np00000 Alegre Alegre)))
+        (sn.j
+          (grup.nom.fs
+            (Fpa -Fpa- -Fpa-)
+            (ncfs000 esquerra esquerra)
+            (Fpt -Fpt- -Fpt-))))
+      (coord
+        (cc i i))
+      (sn
+        (sn
+          (grup.nom.ms
+            (np00000 Sobrequés Sobrequés)))
+        (sp.j
+          (Fc , ,)
+          (prep
+            (sps00 davant davant))
+          (sn
+            (espec.ms
+              (di0ms0 un un))
+            (grup.nom.ms
+              (ncms000 quiosc quiosc)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 antic antic)))
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (morfema.verbal-PASS
+                  (p0000000 s' es))
+                (grup.verb
+                  (vmip3s0 exhibeix exhibir))
+                (sp-CCL
+                  (prep
+                    (spcms al al))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 museu museu))))))))))
+    (Fp . .)))

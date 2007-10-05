@@ -1,0 +1,170 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 bon bo)))
+        (ncmn000 temps temps)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm animat animar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 gent gent)))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 apropar apropar))
+        (morf.pron
+          (p0300000 -se ell))
+        (sadv-CC
+          (grup.adv
+            (rg avui avui)))
+        (sp-CC
+          (prep
+            (sps00 a a))
+          (sna
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000a Sagrada_Família Sagrada_Família))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg En_total en_total))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fp
+        (Z 32.700 32700))
+      (grup.nom.fp
+        (ncfp000 persones persona)))
+    (sn-CD
+      (grup.nom.s
+        (pp3csa00 l' ell)))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm visitat visitar))
+    (sp-CC
+      (prep
+        (sps00 amb_motiu_de amb_motiu_de))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 celebració celebració)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 dia dia)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sna
+                    (grup.nom
+                      (np0000a La_Capta La_Capta))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fp
+          (da0fp0 Les el))
+        (grup.nom.fp
+          (ncfp000 portes porta)))
+      (morfema.verbal-PASS
+        (p0000000 s' es))
+      (grup.verb
+        (vaip3p0 han haver)
+        (vmp00sm obert obrir))
+      (sp-CC
+        (prep
+          (sps00 a a))
+        (snd
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (W nou_del_matí [??:??/??/??:09.00])))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (morfema.verbal-PASS
+        (p0000000 s' es))
+      (grup.verb
+        (vaip3p0 han haver)
+        (vmp00sm tancat tancar))
+      (sp-CC
+        (prep
+          (sps00 a a))
+        (snd
+          (grup.nom
+            (W tres_quarts_de_set_de_la_tarda [??:??/??/??:18.45])))))
+    (Fp . .)))
+(
+  (S
+    (sn-CC
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 any any)
+        (S.NF.P
+          (participi
+            (aq0msp passat passat)))))
+    (sp-CC
+      (prep
+        (sps00 amb_motiu_d' amb_motiu_de))
+      (sn
+        (espec.ms
+          (dd0ms0 aquest aquest))
+        (grup.nom.ms
+          (ncms000 dia dia))))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 temple temple)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 rebre rebre))
+    (sn-CD
+      (espec.mp
+        (Z 28.821 28821))
+      (grup.nom.mp
+        (nccp000 visitants visitant)))
+    (S.F.A-AO
+      (Fc , ,)
+      (conj.subord
+        (cs segons segons))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3p0 han haver)
+        (vmp00sm informat informar))
+      (sp-CC
+        (prep
+          (spcms des_del des_del))
+        (snl
+          (espec.ms
+            (di0ms0 mateix mateix))
+          (grup.nom.ms
+            (ncms000 temple temple)
+            (sp
+              (prep
+                (sps00 de de))
+              (sna
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np0000a Sagrada_Família Sagrada_Família))))))))
+    (Fp . .)))

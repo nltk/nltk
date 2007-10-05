@@ -1,0 +1,166 @@
+
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Ian_Gibson Ian_Gibson)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vsp00sm estat ser)
+      (vmp00sm nomenat nomenar))
+    (sn-CPRED.SUJ
+      (grup.nom.ms
+        (ncms000 president president)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (np00000 Nissan_Europe Nissan_Europe))))
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (ncms000 càrrec càrrec))
+          (S.F.R
+            (relatiu-CD
+              (pr0cn000 que que))
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vmif3s0 compartirà compartir))
+            (sp-CC
+              (prep
+                (sps00 amb amb))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 vicepresident vicepresident)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (ncfs000 matriu matriu))))
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 grup grup)
+                              (s.a.ms
+                                (grup.a.ms
+                                  (aq0ms0 automobilístic automobilístic)))
+                              (s.a.ms
+                                (grup.a.ms
+                                  (aq0ms0 japonès japonès)))
+                              (sn
+                                (grup.nom
+                                  (np00000 Nissan_Motor Nissan_Motor))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Gibson Gibson)
+        (sn
+          (Fpa -Fpa- -Fpa-)
+          (espec.ms
+            (Z 52 52))
+          (grup.nom.mp
+            (ncmp000 anys any))
+          (Fpt -Fpt- -Fpt-))))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sn.co-ATR
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (ao0ms0 primer primer)))
+          (ncms000 europeu europeu)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3s0 ocupa ocupar))
+            (sn-CD
+              (espec.ms
+                (dd0ms0 aquest aquest))
+              (grup.nom.ms
+                (ncms000 lloc lloc)))
+            (sp-CCL
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 companyia companyia)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 japonesa japonès))))))))
+        (Fc , ,))
+      (coord
+        (cc i i))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (ao0ms0 primer primer)))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3s0 dirigeix dirigir))
+            (sn-CD
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (ncfp000 operacions operació)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0fp0 europees europeu)))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (sps00 Fins fins))
+      (sadv
+        (grup.adv
+          (rg ara ara)))
+      (Fc , ,))
+    (sn.e-SUJ *0*)
+    (morf.pron
+      (p0300000 s' ell))
+    (grup.verb
+      (vmii3s0 encarregava encarregar))
+    (sp-CREG
+      (prep
+        (sps00 de de))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 producció producció)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 continental continental)))
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 grup grup)))))))
+    (Fp . .)))

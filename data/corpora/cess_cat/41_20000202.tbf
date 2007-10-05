@@ -1,0 +1,242 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 nombre nombre)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fp
+              (ncfp000 catàstrofes catàstrofe)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 aèries aeri))))))))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmif3s0 doblarà doblar))
+    (sp-CCT
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 futur futur)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 pròxim pròxim))))))
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 Segons segons))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (np00000 Federació_Internacional_de_Pilots_Aeris Federació_Internacional_de_Pilots_Aeris)
+          (sn
+            (grup.nom.fs
+              (Fpa -Fpa- -Fpa-)
+              (np00000 Ifalpa Ifalpa)
+              (Fpt -Fpt- -Fpt-)))))
+      (Fc , ,))
+    (sn-CCT
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (W any_2007 [??:??/??/2007:??.??])))
+    (morf.pron
+      (pp3cn000 hi hi))
+    (grup.verb
+      (vaif3s0 haurà haver))
+    (sn-CD.Q
+      (espec.ms
+        (rg més més)
+        (sps00 d' de)
+        (dn0ms0 un un))
+      (grup.nom.ms
+        (ncms000 accident accident)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.ms
+              (di0ms0 algun algun))
+            (grup.nom.ms
+              (ncms000 avió avió)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 comercial comercial))))))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 setmana setmana))))))
+    (Fp . .)))
+(
+  (S
+    (Fe " ")
+    (S.F.ACond-AO
+      (conj.subord
+        (cs Si si))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip1p0 continuem continuar)
+        (gerundi
+          (vmg0000 fent fer)))
+      (sn-CD
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (ncfp000 coses cosa)))
+      (sp-CC
+        (prep
+          (cs com com))
+        (sp
+          (prep
+            (sps00 fins fins))
+          (sadv
+            (grup.adv
+              (rg ara ara)))))
+      (Fc , ,))
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmif1p0 tindrem tenir))
+    (sn-CD.Q
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (pn0cs000 doble doble)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.mp
+              (ncmp000 accidents accident))))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (espec.mp
+        (di0mp0 Uns un))
+      (grup.nom.mp
+        (Z 50 50)))
+    (sp
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 any any))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C*-CD
+      (coord
+        (cc És_a_dir És_a_dir)
+        (Fc , ,))
+      (sn
+        (grup.nom.ms
+          (pn0ms000 un un)
+          (sp
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 setmana setmana))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmip3p0 afirmen afirmar))
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 les el))
+      (grup.nom.fp
+        (ncfp000 conclusions conclusió)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.ms
+              (di0ms0 un un))
+            (grup.nom.ms
+              (ncms000 seminari seminari)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np00000 Ifalpa Ifalpa))))
+              (S.NF.P
+                (participi
+                  (aq0msp celebrat celebrat))
+                (sp-CCL
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (grup.nom
+                      (np00000 Manila Manila))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 federació federació)))
+    (grup.verb
+      (vmip3s0 adverteix advertir))
+    (S.F.C-CREG
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 indústria indústria)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0cs0 l' el))
+              (grup.nom.fs
+                (ncfs000 aviació aviació))))))
+      (grup.verb
+        (vmip3s0 té tenir))
+      (sn-CD.Q
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 creixement creixement)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 anual anual)))
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (Zp 5% 5/100))))))
+      (sadv-CC
+        (Fc , ,)
+        (grup.adv
+          (rg aproximadament aproximadament))))
+    (Fp . .)))

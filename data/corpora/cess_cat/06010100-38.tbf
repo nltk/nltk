@@ -1,0 +1,235 @@
+
+(
+  (S
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 policia policia)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 catalana català)))))
+    (grup.verb
+      (vmip3s0 busca buscar))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (snl
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 comarca comarca)
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (grup.nom
+                (np0000l La_Segarra La_Segarra)))))))
+    (sn-CD
+      (espec.fs
+        (dn0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 dona dona)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (Z 43 43))
+            (grup.nom.mp
+              (ncmp000 anys any))))
+        (sn
+          (grup.nom.fs
+            (ncfs000 veïna veïna)
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Sant_Fruitós_de_Bages Sant_Fruitós_de_Bages))))))
+        (S.NF.P
+          (Fc , ,)
+          (participi
+            (aq0fsp desapareguda desaparegut))
+          (sp-CC
+            (prep
+              (spcms des_del des_del))
+            (snd
+              (grup.nom.ms
+                (W 27_de_maig [??:27/05/??:??.??])
+                (S.NF.P
+                  (participi
+                    (aq0msp passat passat)))
+                (S.F.R
+                  (Fc , ,)
+                  (relatiu-CC
+                    (pr000000 quan quan))
+                  (sn.e-SUJ *0*)
+                  (grup.verb
+                    (vaip3s0 va anar)
+                    (vmn0000 marxar marxar))
+                  (sp-CC
+                    (prep
+                      (sps00 amb amb))
+                    (sn
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 cotxe cotxe)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 vehicle vehicle)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vsp00sm estat ser)
+      (vmp00sm localitzat localitzar))
+    (sadv-CC
+      (grup.adv
+        (rg avui avui)))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (snd
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (W onze_del_matí [??:??/??/??:11.00]))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg De_moment de_moment)))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmip3p0 desconeixen desconèixer))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 motius motiu)
+        (S.F.R
+          (sp-CC
+            (prep
+              (spcmp pels pel))
+            (relatiu
+              (pr0cp000 quals qual)))
+          (sn-SUJ
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 dona dona)
+              (S.F.R
+                (Fc , ,)
+                (sp.1c
+                  (prep
+                    (sps00 de de))
+                  (relatiu
+                    (da0fs0 la el)
+                    (pr0cs000 qual qual)))
+                (neg-MOD
+                  (rn no no))
+                (grup.verb
+                  (vaip3s0 ha haver)
+                  (vmp00sm transcendit transcendir))
+                (sn-SUJ
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs.1n
+                    (ncfs000 identitat identitat)))
+                (Fc , ,))))
+          (grup.verb
+            (vmip3s0 porta portar))
+          (S.NF.P-CPRED.SUJ
+            (participi
+              (aq0fsp desapareguda desaparegut)))
+          (sp-CC
+            (prep
+              (sps00 des_de des_de))
+            (sn
+              (vmip3s0 fa fer)
+              (dn0cp0 quatre quatre)
+              (ncmp000 dies dia))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (np0000o Mossos Mossos)))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm localitzat localitzar))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 cotxe cotxe)
+        (S.F.R
+          (sp-CC
+            (prep
+              (sps00 amb amb))
+            (relatiu
+              (da0ms0 el el)
+              (pr0cs000 qual qual)))
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vaip3s0 va anar)
+            (vmn0000 marxar marxar)))))
+    (sn-CC
+      (espec.ms
+        (dd0ms0 aquest aquest))
+      (grup.nom.ms
+        (ncms000 matí matí)))
+    (sp-CC
+      (prep
+        (spcms al al))
+      (snl
+        (grup.nom.ms
+          (ncms000 terme terme)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 municipal municipal)))
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (grup.nom
+                (np0000l Les_Oluges Les_Oluges)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 vehicle vehicle)))
+    (neg-MOD
+      (rn no no))
+    (grup.verb
+      (vmip3s0 presenta presentar))
+    (sn-CD
+      (espec.ms
+        (di0cs0 cap cap))
+      (grup.nom.ms
+        (ncms000 senyal senyal)
+        (sp
+          (prep
+            (sps00 d' de))
+          (S.NF.C
+            (infinitiu
+              (van0000 haver haver)
+              (vmp00sm patit patir))
+            (sn-CD
+              (espec.ms
+                (dn0ms0 un un))
+              (grup.nom.ms
+                (ncms000 accident accident)))))))
+    (Fp . .)))

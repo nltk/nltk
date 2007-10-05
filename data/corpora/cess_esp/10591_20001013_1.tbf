@@ -1,0 +1,808 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Los el))
+      (grup.nom.mp
+        (ncmp000 ministros ministro)
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (grup.nom
+              (np0000o Transporte_de_América Transporte_de_América))))))
+    (grup.verb
+      (vmis3p0 subrayaron subrayar))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (snl
+        (grup.nom
+          (np0000l Washington Washington))))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 importancia importancia)
+        (s.a.fs
+          (grup.a.fs
+            (Fe " ")
+            (aq0cs0 vital vital)
+            (Fe " ")))
+        (S.F.R
+          (relatiu-CD.Q
+            (pr0cn000 que que))
+          (sn-SUJ
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 desarrollo desarrollo)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fp
+                    (da0fp0 las el))
+                  (grup.nom.fp
+                    (ncfp000 infraestructuras infraestructura)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.mp
+                          (ncmp000 transportes transporte)))))))))
+          (grup.verb
+            (vmip3p0 tienen tener))
+          (sp-CC
+            (prep
+              (sps00 para para))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 crecimiento crecimiento)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 económico económico)))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.mp
+                      (da0mp0 los el))
+                    (grup.nom.mp
+                      (ncmp000 países país)
+                      (s.a.mp
+                        (grup.a.mp
+                          (aq0mp0 pequeños pequeño)))
+                      (sp
+                        (prep
+                          (spcms del del))
+                        (sn
+                          (grup.nom.ms
+                            (ncms000 continente continente)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (S.NF.P.j
+        (participi
+          (aq0mpp Reunidos reunido))
+        (sp-CC
+          (prep
+            (sps00 a a))
+          (sn
+            (grup.nom.fs
+              (ncfs000 invitación invitación)
+              (sp
+                (prep
+                  (spcms del del))
+                (snp
+                  (grup.nom.ms
+                    (ncms000 secretario secretario)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sno
+                        (grup.nom
+                          (np0000o Transporte_de_EEUU Transporte_de_EEUU))))
+                    (snp
+                      (Fc , ,)
+                      (grup.nom.ms
+                        (np0000p Rodney_Slater Rodney_Slater))
+                      (Fc , ,)))))))))
+      (sn
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (ncmp000 ministros ministro))))
+    (grup.verb
+      (vmis3p0 participaron participar))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 mesa mesa)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 redonda redondo))))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (snl
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 sede sede)
+          (sp
+            (prep
+              (spcms del del))
+            (sno
+              (grup.nom.ms
+                (np0000o Banco_Interamericano_de_Desarrollo Banco_Interamericano_de_Desarrollo)
+                (sno
+                  (grup.nom.ms
+                    (Fpa -Fpa- -Fpa-)
+                    (np0000o BID BID)
+                    (Fpt -Fpt- -Fpt-))))))
+          (sp
+            (prep
+              (sps00 en en))
+            (snl
+              (grup.nom
+                (np0000l Washington Washington)))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 presidente presidente)
+        (sp
+          (prep
+            (spcms del del))
+          (sno
+            (grup.nom.ms
+              (np0000o BID BID))))
+        (snp
+          (Fc , ,)
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 uruguayo uruguayo)))
+            (np0000p Enrique_Iglesias Enrique_Iglesias))
+          (Fc , ,))))
+    (grup.verb
+      (vmis3s0 pronunció pronunciar))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un uno))
+      (grup.nom.ms
+        (ncms000 discurso discurso)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 bienvenida bienvenida))))))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (nccp000 participantes participante)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 mesa mesa)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 redonda redondo))))))
+          (S.F.R
+            (Fc , ,)
+            (sp-CC
+              (prep
+                (sps00 entre entre))
+              (relatiu
+                (da0mp0 los el)
+                (pr0cn000 que que)))
+            (grup.verb
+              (vmis3p0 figuraron figurar))
+            (sn-SUJ
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (ncmp000 ministros ministro)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn.x
+                    (grup.nom.co
+                      (grup.nom
+                        (np0000o Barbados Barbados))
+                      (Fc , ,)
+                      (grup.nom
+                        (np0000o Brasil Brasil))
+                      (Fc , ,)
+                      (grup.nom
+                        (np0000o Canadá Canadá))
+                      (Fc , ,)
+                      (grup.nom
+                        (np0000o El_Salvador El_Salvador))
+                      (Fc , ,)
+                      (grup.nom
+                        (np0000o Estados_Unidos Estados_Unidos))
+                      (Fc , ,)
+                      (grup.nom
+                        (np0000o Guyana Guyana))
+                      (Fc , ,)
+                      (grup.nom
+                        (np0000o Haití Haití))
+                      (Fc , ,)
+                      (grup.nom
+                        (np0000o Honduras Honduras))
+                      (Fc , ,)
+                      (grup.nom
+                        (np0000o Jamaica Jamaica))
+                      (Fc , ,)
+                      (grup.nom
+                        (np0000o México México))
+                      (Fc , ,)
+                      (grup.nom
+                        (np0000o Panamá Panamá))
+                      (coord
+                        (cc y y))
+                      (grup.nom
+                        (np0000o Uruguay Uruguay)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (sn.x
+        (grup.nom.co
+          (grup.nom
+            (np0000o Argentina Argentina))
+          (Fc , ,)
+          (grup.nom
+            (np0000o Bolivia Bolivia))
+          (Fc , ,)
+          (grup.nom
+            (np0000o Chile Chile))
+          (Fc , ,)
+          (grup.nom
+            (np0000o Costa_Rica Costa_Rica))
+          (Fc , ,)
+          (grup.nom
+            (np0000o Ecuador Ecuador))
+          (Fc , ,)
+          (grup.nom
+            (np0000o Guatemala Guatemala))
+          (Fc , ,)
+          (grup.nom
+            (np0000o Santa_Lucía Santa_Lucía))
+          (Fc , ,)
+          (grup.nom
+            (np0000o San_Vicente San_Vicente))))
+      (coord
+        (cc y y))
+      (sn.co
+        (sno
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (np0000o Granadinas Granadinas)))
+        (coord
+          (cc y y))
+        (sno
+          (grup.nom
+            (np0000o Venezuela Venezuela)))))
+    (grup.verb
+      (vmis3p0 estuvieron estar))
+    (S.NF.P-ATR
+      (participi
+        (aq0mpp representados representado))
+      (sp-CAG
+        (prep
+          (sps00 por por))
+        (sn.co
+          (sn
+            (espec.mp
+              (dp3cp0 sus su))
+            (grup.nom.mp
+              (ncmp000 viceministros viceministro)))
+          (Fc , ,)
+          (sn
+            (grup.nom.mp
+              (ncmp000 embajadores embajador)))
+          (coord
+            (cc u u))
+          (sn
+            (espec.fp
+              (di0fp0 otras otro))
+            (grup.nom.fp
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 altas alto)))
+              (ncfp000 autoridades autoridad))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-MOD
+      (grup.adv
+        (rg También también)))
+    (grup.verb
+      (vmis3p0 asistieron asistir))
+    (sn.co-SUJ
+      (sn
+        (espec.mp
+          (di0mp0 algunos alguno))
+        (grup.nom.mp
+          (ncmp000 observadores observador)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 sector sector)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 transporte transporte)))))))))
+      (Fc , ,)
+      (sn
+        (grup.nom.fp
+          (ncfp000 autoridades autoridad)
+          (s.a.fp
+            (grup.a.fp
+              (aq0cp0 gubernamentales gubernamental)))))
+      (coord
+        (cc y y))
+      (sn
+        (grup.nom.mp
+          (ncmp000 organismos organismo)
+          (s.a.mp
+            (grup.a.mp
+              (aq0cp0 internacionales internacional)))
+          (sp
+            (Fc , ,)
+            (prep
+              (cs como como))
+            (sno
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000o Organización_de_Aviación_Civil_Internacional Organización_de_Aviación_Civil_Internacional)
+                (sno
+                  (grup.nom.fs
+                    (Fpa -Fpa- -Fpa-)
+                    (np0000o OACI OACI)
+                    (Fpt -Fpt- -Fpt-)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Los el))
+      (grup.nom.mp
+        (ncmp000 ministros ministro)))
+    (grup.verb
+      (vmis3p0 subrayaron subrayar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (S.F.ACond-AO
+        (Fc , ,)
+        (conj.subord
+          (cs si si))
+        (morfema.verbal-PASS
+          (p0000000 se se))
+        (grup.verb
+          (vmip3s0 tiene_en_cuenta tener_en_cuenta))
+        (sn-SUJ.p
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (ncfp000 disparidades disparidad)
+            (sp
+              (prep
+                (sps00 en en))
+              (sn.x
+                (grup.nom.co
+                  (grup.nom.ms
+                    (ncms000 tamaño tamaño))
+                  (coord
+                    (cc y y))
+                  (grup.nom.fs
+                    (ncfs000 fase fase)))))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 desarrollo desarrollo)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 económico económico))))))
+            (sp
+              (prep
+                (sps00 entre entre))
+              (sn
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (ncmp000 países país)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 continente continente)))))))))
+        (Fc , ,))
+      (Fe " ")
+      (grup.verb
+        (vsip3p0 son ser))
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (ncmp000 países país)
+          (s.a.mp.co
+            (s.a.mp
+              (grup.a.mp
+                (aq0mp0 pequeños pequeño)))
+            (coord
+              (cc y y))
+            (sp
+              (prep
+                (sps00 en_vías_de en_vías_de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 desarrollo desarrollo)))))))
+      (sn-ATR
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3p0 tienen tener)
+              (cs que que)
+              (infinitiu
+                (vmn0000 hacer hacer)))
+            (sn-CD
+              (grup.nom.fp
+                (ncfp000 mejoras mejora)))
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 infraestructura infraestructura)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 transporte transporte))))
+                  (sp
+                    (prep
+                      (spcms al al))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 desarrollo desarrollo))))))))))
+      (Fe " "))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.ms
+          (dp3cs0 su su))
+        (grup.nom.ms
+          (ncms000 comunicado comunicado)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 final final))))))
+    (sn.e-SUJ *0*)
+    (sadv-MOD
+      (grup.adv
+        (rg también también)))
+    (grup.verb
+      (vmis3p0 reiteraron reiterar))
+    (sn-CD
+      (espec.ms
+        (dp3cs0 su su))
+      (grup.nom.ms
+        (ncms000 compromiso compromiso)
+        (sp
+          (prep
+            (sps00 para para))
+          (S.F.C
+            (conj.subord
+              (cs que que))
+            (morfema.verbal-PASS
+              (p0000000 se se))
+            (grup.verb
+              (vmsp3p0 tomen tomar))
+            (sn-SUJ.p
+              (espec.fp
+                (da0fp0 las el))
+              (grup.nom.fp
+                (ncfp000 medidas medida)
+                (S.NF.P
+                  (participi
+                    (aq0fpp adecuadas adecuado)))
+                (sp
+                  (prep
+                    (sps00 para para))
+                  (S.NF.C
+                    (infinitiu
+                      (vmn0000 asegurar asegurar))
+                    (sn-CD
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 participación participación)
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0fs0 plena pleno)))
+                        (sp
+                          (prep
+                            (sps00 en en))
+                          (sn
+                            (espec.mp
+                              (da0mp0 los el))
+                            (grup.nom.mp
+                              (ncmp000 trabajos trabajo)
+                              (sp
+                                (prep
+                                  (sps00 para para))
+                                (S.NF.C
+                                  (infinitiu
+                                    (vmn0000 alcanzar alcanzar))
+                                  (sn-CD
+                                    (espec.fp
+                                      (da0fp0 las el))
+                                    (grup.nom.fp
+                                      (ncfp000 metas meta)
+                                      (S.NF.P
+                                        (sadv-CCT
+                                          (grup.adv
+                                            (rg ya ya)))
+                                        (participi
+                                          (aq0fpp establecidas establecido))
+                                        (sp-CC
+                                          (prep
+                                            (sps00 en en))
+                                          (sn
+                                            (grup.nom.fp
+                                              (ncfp000 reuniones reunión)
+                                              (s.a.fp
+                                                (grup.a.fp
+                                                  (aq0fp0 previas previo))))))))))))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 Los el))
+        (grup.nom.mp
+          (ncmp000 ministros ministro)))
+      (grup.verb
+        (vmis3p0 dieron dar))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 bienvenida bienvenida)))
+      (sp-CI
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 selección selección)
+            (sp
+              (prep
+                (sps00 de de))
+              (sno
+                (grup.nom
+                  (np0000o Canadá Canadá))))
+            (sp
+              (prep
+                (sps00 para para))
+              (sno
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 presidencia presidencia)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sno
+                      (grup.nom.ms
+                        (np0000o Comité_Ejecutivo_de_la_Iniciativa_del_Transporte_del_Hemisferio_Occidental Comité_Ejecutivo_de_la_Iniciativa_del_Transporte_del_Hemisferio_Occidental)
+                        (sno
+                          (grup.nom.ms
+                            (Fpa -Fpa- -Fpa-)
+                            (np0000o ITHO ITHO)
+                            (Fpt -Fpt- -Fpt-))))))))))))
+      (Fc , ,))
+    (coord
+      (cc mientras_que mientras_que))
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 copresidencia copresidencia)))
+      (grup.verb
+        (vsif3s0 será ser))
+      (sp-ATR
+        (prep
+          (sps00 para para))
+        (sn.x
+          (grup.nom.co
+            (grup.nom
+              (np0000o Jamaica Jamaica))
+            (Fc , ,)
+            (grup.nom
+              (np0000o Bolivia Bolivia))
+            (coord
+              (cc y y))
+            (grup.nom
+              (np0000o Perú Perú))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (pd0ms000 Ese ese))
+      (grup.nom.ms
+        (np0000o Comité_Ejecutivo Comité_Ejecutivo)))
+    (grup.verb
+      (vmip3s0 está estar))
+    (S.NF.P-ATR
+      (participi
+        (aq0msp formado formado))
+      (sp-CAG
+        (prep
+          (sps00 por por))
+        (sn
+          (grup.nom.fp
+            (nccp000 representantes representante)
+            (sp.co
+              (sp
+                (prep
+                  (spcms del del))
+                (sno
+                  (grup.nom.ms
+                    (np0000o BID BID))))
+              (Fc , ,)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sno
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np00000 Organización_de_Estados_Americanos Organización_de_Estados_Americanos)
+                    (sno
+                      (grup.nom.fs
+                        (Fpa -Fpa- -Fpa-)
+                        (np0000o OEA OEA)
+                        (Fpt -Fpt- -Fpt-))))))
+              (coord
+                (cc y y))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sno
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np0000o Comisión_Económica_de_las_Naciones_Unidas_para_América_Latina_y_el_Caribe Comisión_Económica_de_las_Naciones_Unidas_para_América_Latina_y_el_Caribe)
+                    (sno
+                      (grup.nom.fs
+                        (Fpa -Fpa- -Fpa-)
+                        (np0000o CEPAL CEPAL)
+                        (Fpt -Fpt- -Fpt-)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Los el))
+      (grup.nom.mp
+        (nccp000 participantes participante)))
+    (grup.verb
+      (vmis3p0 asistieron asistir))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 firma firma)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (di0ms0 un uno))
+              (grup.nom.ms
+                (np0000a Memorándum Memorándum)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 cooperación cooperación)
+                      (sp
+                        (prep
+                          (sps00 entre entre))
+                        (sno
+                          (espec.ms
+                            (da0ms0 el el))
+                          (grup.nom.ms
+                            (np0000o Departamento_de_Transporte_de_EEUU Departamento_de_Transporte_de_EEUU)))
+                        (coord
+                          (cc y y))
+                        (sno
+                          (espec.ms
+                            (da0ms0 el el))
+                          (grup.nom.ms
+                            (np0000o BID BID)))))))
+                (sp
+                  (prep
+                    (sps00 para para))
+                  (S.NF.C
+                    (infinitiu
+                      (vmn0000 promover promover))
+                    (sn-CD
+                      (grup.nom.fp
+                        (ncfp000 mejoras mejora)
+                        (s.a.fp
+                          (grup.a.fp
+                            (aq0cp0 sostenibles sostenible)))))
+                    (sp-CC
+                      (prep
+                        (sps00 en en))
+                      (sn
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (ncms000 transporte transporte)
+                          (sp
+                            (prep
+                              (spcms del del))
+                            (sn
+                              (grup.nom.ms
+                                (ncms000 continente continente)))))))))))))))
+    (Fp . .)))

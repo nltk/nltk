@@ -1,0 +1,76 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (di0ms0 Un un))
+      (grup.nom.ms
+        (ncms000 avió avió)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 ultramodern ultramodern)))))
+    (morf.pron
+      (p0300000 es ell))
+    (grup.verb
+      (vmip3s0 queda quedar))
+    (sp-CPRED.SUJ
+      (prep
+        (sps00 sense sense))
+      (sn
+        (grup.nom.ms
+          (ncms000 combustible combustible))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 ple ple)))
+        (ncms000 vol vol)))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 a_causa_d' a_causa_de))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 sèrie sèrie)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 errors error)
+                (sp
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.mp
+                      (da0mp0 els el))
+                    (grup.nom.mp
+                      (ncmp000 indicadors indicador)
+                      (s.a.mp
+                        (grup.a.mp
+                          (aq0cp0 manuals manual))))))))))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (espec.fs
+        (di0fs0 Una un))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 nova nou)))
+        (ncfs000 producció producció)
+        (sp
+          (prep
+            (sps00 sobre sobre))
+          (sn
+            (grup.nom.fp
+              (ncfp000 catàstrofes catàstrofe)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 aèries aeri))))))))
+    (Fp . .)))

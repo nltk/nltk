@@ -1,0 +1,157 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (dp3fs0 La_seva el_seu))
+      (grup.nom.fs
+        (ncfs000 imatge imatge)))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sn-ATR
+      (grup.nom.ms
+        (pi0ms000 un un)
+        (sp
+          (prep
+            (spcmp dels del))
+          (sn
+            (grup.nom.mp
+              (ncmp000 eixos eix))))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 iniciativa iniciativa)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 solidària solidari)))
+              (sn
+                (grup.nom
+                  (np00000 Doce_meses_,_doce_causas Doce_meses_,_doce_causas)))
+              (S.F.R.co
+                (Fc , ,)
+                (S.F.R
+                  (relatiu-CD
+                    (pr0cn000 que que))
+                  (sn-SUJ
+                    (grup.nom
+                      (np00000 Tele_5 Tele_5)))
+                  (grup.verb
+                    (vmip3s0 posa_en_marxa posar_en_marxa))
+                  (sp-CCT
+                    (prep
+                      (spcms al al))
+                    (sn
+                      (grup.nom.ms
+                        (W setembre [??:??/09/??:??.??])))))
+                (coord
+                  (cc i i))
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmip3s0 porta portar))
+                  (sp-CPRED.CD
+                    (prep
+                      (sps00 per per))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 lema lema))))
+                  (sn-CD
+                    (grup.nom
+                      (np00000 Por_la_donación_de_órganos Por_la_donación_de_órganos))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (nccs000 periodista periodista)))
+    (grup.verb
+      (vmip3s0 protagonitza protagonitzar))
+    (sn-CD
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (ncms000 anunci anunci)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 institucional institucional)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 cadena cadena)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fsp privada privat))))))
+        (S.F.R
+          (Fc , ,)
+          (sp-CCL
+            (prep
+              (sps00 en en))
+            (relatiu
+              (pr0cn000 què què)))
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vmip3s0 convida convidar))
+          (sn-CD
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 teleespectador teleespectador)))
+          (sp-CREG
+            (prep
+              (sps00 a a))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 perdre perdre))
+              (sn-CD
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 por por)))))
+          (S.F.A-CC
+            (Fc , ,)
+            (conj.subord
+              (cs ja_que ja_que))
+            (Fe " ")
+            (sn-SUJ
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 mort mort)
+                (sp
+                  (prep
+                    (sps00 d' de))
+                  (sn
+                    (espec.fs
+                      (di0fs0 una un))
+                    (grup.nom.fs
+                      (ncfs000 persona persona))))))
+            (grup.verb
+              (vmip3s0 pot poder)
+              (infinitiu
+                (vsn0000 ser ser)))
+            (sn-ATR
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 vida vida)
+                (sp
+                  (prep
+                    (sps00 d' de))
+                  (sn
+                    (espec.fs
+                      (di0fs0 una un))
+                    (grup.nom.fs
+                      (pi0fs000 altra altre))))))
+            (Fe " ")))))
+    (Fp . .)))

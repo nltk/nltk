@@ -1,0 +1,99 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (np00000 Seu_d'_Urgell_ERC Seu_d'_Urgell_ERC)
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (ao0ms0 primer primer)))
+            (ncms000 grup grup)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0cs0 l' el))
+                (grup.nom.fs
+                  (ncfs000 oposició oposició)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 municipal municipal)))))))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm presentat presentar))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs.1n
+        (ncfs000 moció moció)))
+    (sp-CCL
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 ple ple)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (W dilluns [dilluns:??/??/??:??.??])
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmip3s0 ve venir)))))))))
+    (S.F.R.1c
+      (sp-CCL
+        (prep
+          (sps00 en en))
+        (relatiu
+          (pr0cn000 què què)))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3s0 reprova reprovar))
+      (sn-CD
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (ncfp000 afirmacions afirmació)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (np00000 Rei Rei)
+                (S.F.R
+                  (Fc , ,)
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vaip3s0 va anar)
+                    (vmn0000 dir dir))
+                  (S.F.C-CD
+                    (conj.subord
+                      (cs que que))
+                    (sadv-CCT
+                      (grup.adv
+                        (rg mai mai)))
+                    (morfema.verbal-PASS
+                      (p0000000 s' es))
+                    (grup.verb
+                      (vaii3s0 havia haver)
+                      (vmp00sm imposat imposar))
+                    (sn-SUJ
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 llengua llengua)
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0fs0 castellana castellà)))))))))))))
+    (Fp . .)))

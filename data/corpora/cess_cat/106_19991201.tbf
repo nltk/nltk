@@ -1,0 +1,179 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (nccp000 ministres ministre)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.mp
+              (np00000 Telecomunicacions Telecomunicacions))))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np00000 Unió_Europea Unió_Europea)
+              (sn
+                (grup.nom.fs
+                  (Fpa -Fpa- -Fpa-)
+                  (np00000 UE UE)
+                  (Fpt -Fpt- -Fpt-))))))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 aprovar aprovar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 directiva directiva)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmif3s0 regularà regular))
+          (sn-CD
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 firma firma)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 electrònica electrònic)))
+              (sn
+                (Fc , ,)
+                (grup.nom.fs
+                  (ncfs000 norma norma)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cn0 clau clau)
+                      (sp
+                        (prep
+                          (sps00 per per))
+                        (sp
+                          (prep
+                            (spcms al al))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 desenvolupament desenvolupament)
+                              (sp
+                                (prep
+                                  (spcms del del))
+                                (sn
+                                  (grup.nom.ms
+                                    (ncms000 comerç comerç))))
+                              (sp
+                                (prep
+                                  (sps00 a_través_d' a_través_de))
+                                (sn
+                                  (grup.nom
+                                    (np00000 Internet Internet)))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (ncfs000 entrada_en_vigor entrada_en_vigor)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 normativa normativa))))))
+    (grup.verb
+      (vmif3s0 permetrà permetre))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 fomentar fomentar))
+      (sn-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms.1n
+          (ncms000 comerç comerç)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 electrònic electrònic)))))
+      (sp-CCL
+        (prep
+          (sps00 a a))
+        (sn
+          (grup.nom
+            (np00000 Europa Europa))))
+      (sn.1c
+        (Fc , ,)
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 sector sector)
+          (S.NF.P
+            (participi
+              (aq0msp dominat dominat))
+            (sp-CAG
+              (prep
+                (spcmp pels pel))
+              (sn
+                (grup.nom.mp
+                  (np00000 EUA EUA)
+                  (S.F.R
+                    (Fc , ,)
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vmip3p0 disposen disposar))
+                    (sp-CREG
+                      (prep
+                        (sps00 d' de))
+                      (sn
+                        (espec.mp
+                          (di0mp0 uns un))
+                        (grup.nom.mp
+                          (ncmp000 operadors operador))))
+                    (S.F.R
+                      (relatiu-SUJ
+                        (pr0cn000 que que))
+                      (grup.verb
+                        (vmip3p0 absorbeixen absorbir))
+                      (sn-CD
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (Zp 85% 85/100)
+                          (sp
+                            (prep
+                              (spcms del del))
+                            (sn
+                              (grup.nom.ms
+                                (ncms000 mercat mercat)
+                                (s.a.ms
+                                  (grup.a.ms
+                                    (aq0cs0 mundial mundial)))
+                                (sp
+                                  (Fc , ,)
+                                  (prep
+                                    (sps00 d' de))
+                                  (sn
+                                    (espec.mp
+                                      (di0mp0 uns un)
+                                      (dn0mp0 dos dos))
+                                    (grup.nom.mp
+                                      (ncmp000 bilions bilió)
+                                      (sp
+                                        (prep
+                                          (sps00 de de))
+                                        (sn
+                                          (grup.nom.fp
+                                            (Zm pessetes pesseta)))))))))))))))))))))
+    (Fp . .)))

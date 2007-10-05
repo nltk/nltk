@@ -1,0 +1,169 @@
+
+(
+  (S.co
+    (S
+      (sp-CCL
+        (prep
+          (sps00 En en))
+        (sn
+          (grup.nom.p
+            (pn0cp000 tres tres)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.mp
+                  (pp3mp000 ellos él)))))))
+      (grup.verb
+        (vsis3p0 fueron ser)
+        (vmp00pm hallados hallar))
+      (sn.co-SUJ
+        (sn
+          (espec.mp
+            (dn0cp0 nueve nueve))
+          (grup.nom.mp
+            (ncmp000 cadáveres cadáver)))
+        (coord
+          (cc y y))
+        (sn
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (ncms000 laboratorio laboratorio)
+            (sp
+              (prep
+                (sps00 para para))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 procesar procesar))
+                (sn-CD
+                  (grup.nom.fs
+                    (ncfs000 cocaína cocaína)))))))))
+    (Fc , ,)
+    (S
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vmis3p0 incautaron incautarse))
+      (sn-SUJ
+        (grup.nom.fp
+          (ncfp000 armas arma)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 fuego fuego)))))))
+    (coord
+      (cc y y))
+    (S
+      (sn-SUJ
+        (espec.fp
+          (dn0cp0 cinco cinco))
+        (grup.nom.fp
+          (ncfp000 personas persona)))
+      (grup.verb
+        (vmip3p0 están estar))
+      (sp-ATR
+        (prep
+          (sps00 bajo bajo))
+        (sn
+          (grup.nom.fs
+            (ncfs000 vigilancia vigilancia)
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 policial policial))))))
+      (S.F.A-CC
+        (conj.subord
+          (cs mientras mientras))
+        (grup.verb
+          (vmip3s0 concluye concluir))
+        (sn-SUJ
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 investigación investigación)))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 operación operación)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 bilateral bilateral))))))
+    (grup.verb
+      (vmis3p0 participaron participar))
+    (sn.co.1n-SUJ
+      (sn
+        (espec.mp
+          (Z 72 72))
+        (grup.nom.mp
+          (nccp000 especialistas especialista)
+          (sp
+            (prep
+              (spcms del del))
+            (sno
+              (grup.nom.ms
+                (np0000o FBI FBI))))
+          (sp
+            (prep
+              (sps00 en en))
+            (sn.x
+              (grup.nom.co
+                (grup.nom.fs
+                  (ncfs000 medicina medicina)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 forense forense))))
+                (Fc , ,)
+                (sn.1c
+                  (grup.nom.mp
+                    (nccp000 dibujantes dibujante)))
+                (Fc , ,)
+                (grup.nom.ms
+                  (ncms000 manejo manejo)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.mp
+                        (ncmp000 materiales material)
+                        (s.a.mp
+                          (grup.a.mp
+                            (aq0mp0 peligrosos peligroso)))))))
+                (coord
+                  (cc e e))
+                (grup.nom.fs
+                  (ncfs000 informática informática)))))))
+      (Fc , ,)
+      (sn
+        (espec.mp
+          (Z 220 220))
+        (grup.nom.mp
+          (nccp000 militares militar)
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 mexicanos mexicano)))))
+      (coord
+        (cc y y))
+      (sn
+        (espec.fp
+          (di0fp0 otras otro)
+          (Z 182 182))
+        (grup.nom.fp
+          (ncfp000 personas persona)
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000o PGR PGR)))))))
+    (Fp . .)))

@@ -1,0 +1,523 @@
+
+(
+  (S
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (np0000o Fiscalia_de_Barcelona Fiscalia_de_Barcelona)))
+    (grup.verb
+      (vmip3s0 demana demanar))
+    (sadv-CC
+      (grup.adv
+        (rg provisionalment provisionalment)))
+    (sn.co-CD
+      (sn.co
+        (sn
+          (espec.mp
+            (dn0cp0 tres tres))
+          (grup.nom.mp
+            (ncmp000 anys any)))
+        (coord
+          (cc i i))
+        (sn
+          (espec.mp
+            (dn0cp0 sis sis))
+          (grup.nom.mp
+            (ncmp000 mesos mes))))
+      (sp.j
+        (prep
+          (sps00 de de))
+        (sn
+          (grup.nom.fs
+            (ncfs000 presó presó)))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (sp
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.ms
+            (di0ms0 un un))
+          (grup.nom.ms
+            (ncms000 empresari empresari)
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (snl
+                  (grup.nom
+                    (np0000l Martorell Martorell)))
+                (snl.j
+                  (grup.nom
+                    (Fpa -Fpa- -Fpa-)
+                    (np0000l Baix_Llobregat Baix_Llobregat)
+                    (Fpt -Fpt- -Fpt-)))))
+            (S.NF.P
+              (participi
+                (aq0msp acusat acusat))
+              (sp-CREG
+                (prep
+                  (sps00 d' de))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 estafar estafar))
+                  (sp-CC
+                    (prep
+                      (sps00 amb amb))
+                    (sn
+                      (grup.nom.fp
+                        (ncfp000 lletres lletra)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 canvi canvi))))
+                        (s.a.fp
+                          (grup.a.fp
+                            (aq0fp0 falses fals))))))
+                  (sn-CD
+                    (espec.fs
+                      (di0fs0 una un))
+                    (grup.nom.fs
+                      (ncfs000 sucursal sucursal)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0fs0 bancària bancari)))
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (ncfs000 localitat localitat)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 judici judici)))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vmif3s0 celebrarà celebrar))
+    (sn-CCT
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 setmana setmana)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 entrant entrant)))))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (snl
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (np0000l Audiència_de_Barcelona Audiència_de_Barcelona))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 fiscalia fiscalia)))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fp
+          (dp3fp0 les_seves el_seu))
+        (grup.nom.fp
+          (ncfp000 conclusions conclusió)
+          (s.a.fp
+            (grup.a.fp
+              (aq0cp0 provisionals provisional)))))
+      (Fc , ,))
+    (grup.verb
+      (vmip3s0 demana demanar))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (sp
+        (prep
+          (sps00 a a))
+        (snp
+          (grup.nom.ms.1n
+            (np0000p Domènech_V.C. Domènech_V.C.)))))
+    (sn.co-CD
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 pena pena)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn.co
+              (sn.co
+                (sn
+                  (espec.mp
+                    (dn0cp0 tres tres))
+                  (grup.nom.mp
+                    (ncmp000 anys any)))
+                (coord
+                  (cc i i))
+                (sn
+                  (espec.mp
+                    (dn0cp0 sis sis))
+                  (grup.nom.mp
+                    (ncmp000 mesos mes))))
+              (sp.j
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 presó presó))))))))
+      (coord
+        (cc i i))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 multa multa)
+          (sp
+            (prep
+              (sps00 d' de))
+            (snn
+              (espec.fp
+                (Z 1.050.000 1050000))
+              (grup.nom.fp
+                (Zm pessetes pesseta)))))))
+    (sp.1c
+      (prep
+        (sps00 com_a com_a))
+      (sn
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 presumpte presumpte)))
+          (ncms000 autor autor)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (ncms000 delicte delicte))))
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom.fs
+                (nccs000 estafa estafa)
+                (S.NF.P
+                  (participi
+                    (aq0fsp continuada continuat)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0ms0 El el))
+      (grup.nom.mp
+        (ncmp000 fets fet)))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 tenir_lloc tenir_lloc))
+    (sp-AO
+      (Fc , ,)
+      (prep
+        (sps00 segons segons))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 escrit escrit)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 acusació acusació))))))
+      (Fc , ,))
+    (snd.x-CCT
+      (grup.nom.co
+        (coord
+          (sps00 entre entre))
+        (grup.nom.ms
+          (W juny [??:??/06/??:??.??]))
+        (coord
+          (cc i i))
+        (grup.nom.ms
+          (W setembre_de_1996 [??:??/9/1996:??.??]))))
+    (S.F.A-CCT
+      (Fc , ,)
+      (conj.subord
+        (cs quan quan))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 processat processat)))
+      (sp-CC
+        (Fc , ,)
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fs
+            (dp3fs0 la_seva el_seu))
+          (grup.nom.fs
+            (ncfs000 condició condició)
+            (sp
+              (prep
+                (sps00 d' de))
+              (snp
+                (grup.nom.ms
+                  (ncms000 administrador administrador)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sno
+                      (grup.nom
+                        (np0000o Serveis_Urbans_Vertex Serveis_Urbans_Vertex)))))))))
+        (Fc , ,))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 presentar presentar))
+      (sp-CC
+        (prep
+          (sps00 davant davant))
+        (sn
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs
+            (ncfs000 sucursal sucursal)
+            (sp
+              (prep
+                (spcms del del))
+              (sno
+                (grup.nom.ms
+                  (np0000o Banc_Bilbao_Vizcaya Banc_Bilbao_Vizcaya))))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 localitat localitat)))))))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 sèrie sèrie)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (ncfp000 lletres lletra)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 canvi canvi))))
+                (sp
+                  (prep
+                    (sps00 per per))
+                  (sn
+                    (espec.ms
+                      (di0ms0 un un))
+                    (grup.nom.ms
+                      (ncms000 import import)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (snn
+                          (espec.fp
+                            (Z 53.521.545 53521545))
+                          (grup.nom.fp
+                            (Zm pessetes pesseta)))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fp
+          (da0fp0 Les el))
+        (grup.nom.fp
+          (ncfp000 lletres lletra)))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vmii3p0 corresponien correspondre))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (sn
+          (grup.nom.fp
+            (ncfp000 operacions operació)
+            (s.a.fp
+              (grup.a.fp
+                (aq0cp0 comercials comercial)))
+            (s.a.fp
+              (grup.a.fp
+                (aq0cp0 reals real)))))
+        (Fc , ,)))
+    (coord
+      (cc sinó_que sinó_que))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaii3p0 havien haver)
+        (vsp00sm estat ser)
+        (vmp00pf falsificades falsificar)))
+    (Fp . .)))
+(
+  (S
+    (sadv-CCT
+      (sn.j
+        (grup.nom.fp
+          (ncfp000 Setmanes setmana)))
+      (sadv
+        (grup.adv
+          (rg abans abans)))
+      (Fc , ,))
+    (sp-CCT
+      (prep
+        (spcms al al))
+      (snd
+        (grup.nom.ms
+          (W juny [??:??/06/??:??.??])))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 processat processat)))
+    (grup.verb
+      (vaii3s0 havia haver)
+      (vmp00sm subscrit subscriure))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 línia línia)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 crèdit crèdit))))))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (ncfs000 entitat entitat)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 bancària bancari))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 ministeri ministeri)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 públic públic)))))
+    (sadv-MOD
+      (grup.adv
+        (rg també també)))
+    (grup.verb
+      (vmip3s0 sol·licita sol·licitar))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 acusat acusat))))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 indemnització indemnització)
+        (sp
+          (prep
+            (sps00 de de))
+          (snn
+            (espec.fp
+              (Z 53.521.545 53521545))
+            (grup.nom.fp
+              (Zm pessetes pesseta))))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (sp
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (da0cs0 l' el))
+          (grup.nom.fs
+            (ncfs000 entitat entitat)
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 bancària bancari)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 judici judici)))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vmif3s0 celebrarà celebrar))
+    (snd-CCT
+      (grup.nom.ms
+        (W dijous [dijous:??/??/??:??.??])
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 pròxim pròxim)))))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (snl
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 secció secció)
+          (s.a.fs
+            (grup.a.fs
+              (ao0fs0 desena desè)))
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (espec.fs
+                (da0cs0 l' el))
+              (grup.nom.fs
+                (np0000l Audiència Audiència)))))))
+    (Fp . .)))

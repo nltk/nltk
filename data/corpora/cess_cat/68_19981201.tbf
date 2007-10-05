@@ -1,0 +1,1273 @@
+
+(
+  (S*
+    (sn
+      (grup.nom.fs
+        (ncms000 Dia dia)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 internacional internacional)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 síndrome_d'_immunodeficiència_adquirida síndrome_de_immunodeficiència_adquirida))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (di0ms0 Un un))
+        (grup.nom.ms
+          (ncms000 grup grup)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 seropositius seropositiu))))))
+      (grup.verb
+        (vmif3s0 deixarà deixar))
+      (sn-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 tractament tractament))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmif3s0 rebrà rebre))
+      (sn-CD
+        (grup.nom.ms
+          (np00000 VIH VIH)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 inactiu inactiu))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (di0ms0 Un un))
+        (grup.nom.ms
+          (ncms000 grup grup)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom.mp
+                (S.NF.P
+                  (participi
+                    (aq0mpp infectats infectat))
+                  (sp-CAG
+                    (prep
+                      (spcms pel pel))
+                    (sn
+                      (grup.nom.ms
+                        (ncmn000 virus virus)
+                        (sp
+                          (prep
+                            (sps00 d' de))
+                          (sn
+                            (grup.nom.fs
+                              (ncfs000 immunodeficiència immunodeficiència)
+                              (s.a.fs
+                                (grup.a.fs
+                                  (aq0fs0 humana humà))))))
+                        (sn
+                          (grup.nom.ms
+                            (Fpa -Fpa- -Fpa-)
+                            (np00000 VIH VIH)
+                            (Fpt -Fpt- -Fpt-)))))))
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmip3p0 mantenen mantenir))
+                  (sn-CD
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 càrrega càrrega)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0cs0 viral viral)))))
+                  (sa-CPRED.CD
+                    (grup.a
+                      (aq0cs0 indetectable indetectable)))
+                  (sp-CC
+                    (prep
+                      (sps00 des_de des_de))
+                    (sn
+                      (vmip3s0 fa fer)
+                      (dn0cp0 tres tres)
+                      (ncmp000 anys any)))))))))
+      (grup.verb
+        (vmif3p0 assajaran assajar))
+      (sn-CCT
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (W 1999 [??:??/??/1999:??.??])))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 vacuna vacuna)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 experimental experimental)))
+          (s.a.fs
+            (grup.a.fs
+              (aq0cn0 antisida antisida)))
+          (sn
+            (grup.nom
+              (np00000 Remune Remune)))))
+      (Fc , ,))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmif3p0 interrompran interrompre))
+      (sadv-CC
+        (grup.adv
+          (rg temporalment temporalment)))
+      (sn-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 tractament tractament)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 antiretroviral antiretroviral)))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (sn-CI
+              (grup.nom.p
+                (pp3cp000 els ell)))
+            (grup.verb
+              (vaip3s0 ha haver)
+              (vmp00sm conservat conservar))
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (sn
+                (grup.nom.ms
+                  (s.a.ms
+                    (espec
+                      (rg molt molt))
+                    (grup.a.ms
+                      (aq0ms0 bon bo)))
+                  (ncms000 estat estat))))
+            (sn-CD
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 sistema sistema)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 immunològic immunològic)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 objectiu objectiu)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 investigació investigació)
+              (S.F.R
+                (Fc , ,)
+                (relatiu-CD
+                  (pr0cn000 que que))
+                (sn-SUJ
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 doctor doctor)
+                    (sn
+                      (grup.nom.ms
+                        (np00000 Buenaventura_Clotet Buenaventura_Clotet)))))
+                (grup.verb
+                  (vmif3s0 portarà_a_terme portar_a_terme))
+                (sp-CCL
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (espec.ms
+                      (da0cs0 l' el))
+                    (grup.nom.ms
+                      (ncms000 hospital hospital)
+                      (sn
+                        (grup.nom
+                          (np00000 Germans_Trias_i_Pujol Germans_Trias_i_Pujol)
+                          (sn
+                            (Fc , ,)
+                            (grup.nom
+                              (np00000 Can_Ruti Can_Ruti))
+                            (Fc , ,))))
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom
+                            (np00000 Badalona Badalona)))))))
+                (Fc , ,)))))))
+    (grup.verb
+      (vsip3s0 és ser))
+    (S.NF.C-ATR
+      (infinitiu
+        (vmn0000 observar observar))
+      (S.F.C-CD
+        (conj.subord
+          (cs si si))
+        (S.NF.A-CC
+          (Fc , ,)
+          (gerundi
+            (vmg0000 suprimint suprimir))
+          (sn-CD
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 tractament tractament)))
+          (Fc , ,))
+        (sn-SUJ
+          (espec.mp
+            (dd0mp0 aquests aquest))
+          (grup.nom.mp
+            (ncmp000 seropositius seropositiu)
+            (sp
+              (Fc , ,)
+              (prep
+                (sps00 amb amb))
+              (sn
+                (espec.fs
+                  (di0fs0 una un))
+                (grup.nom.fs
+                  (ncfs000 càrrega càrrega)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 viral viral)))
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 inferior inferior)
+                      (sp
+                        (prep
+                          (sps00 a a))
+                        (sn
+                          (espec.fp
+                            (da0fp0 les el)
+                            (Z 20 20))
+                          (grup.nom.fp
+                            (ncfp000 còpies còpia)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (grup.nom
+                                  (np00000 VIH VIH))))
+                            (sp
+                              (prep
+                                (sps00 per per))
+                              (sn
+                                (grup.nom.fp
+                                  (ncms000 mil·lilitre mil·lilitre)
+                                  (sp
+                                    (prep
+                                      (sps00 de de))
+                                    (sn
+                                      (grup.nom.fs
+                                        (ncfs000 sang sang))))))))))))))
+              (Fc , ,))))
+        (neg-MOD
+          (rn no no))
+        (grup.verb
+          (vmip3p0 pateixen patir))
+        (sn-CD
+          (espec.ms
+            (di0ms0 un un))
+          (grup.nom.ms
+            (ncms000 rebrot rebrot)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncmn000 virus virus)
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vmip3s0 causa causar))
+                    (sn-CD
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 sida sida)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (np00000 OMS OMS)))
+    (grup.verb
+      (vmip3s0 celebra celebrar))
+    (sadv-CCT
+      (grup.adv
+        (rg avui avui)))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 dia dia)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 mundial mundial)))
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.fs
+              (dd0fs0 aquesta aquest))
+            (grup.nom.fs
+              (ncfs000 malaltia malaltia))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom
+        (np00000 Remune Remune)))
+    (grup.verb
+      (vmip3s0 conté contenir))
+    (sn-CD
+      (grup.nom.ms
+        (ncmn000 virus virus)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 sida sida))))
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 inactivats inactivat)
+            (sadv.x
+              (grup.adv.co
+                (grup.adv
+                  (rg físicament físicament))
+                (coord
+                  (cc i i))
+                (grup.adv
+                  (rg químicament químicament))))))
+        (S.co
+          (Fd : :)
+          (S
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vaip3p0 han haver)
+              (vsp00sm estat ser)
+              (vmp00pm irradiats irradiar)))
+          (coord
+            (cc i i))
+          (S
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vaip3p0 han haver)
+              (vsp00sm estat ser)
+              (vmp00pm tractats tractar))
+            (sp-CC
+              (prep
+                (sps00 amb amb))
+              (sn
+                (grup.nom.fp
+                  (ncfp000 substàncies substància)
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (sn-CD.d
+                      (grup.nom
+                        (pp3cn000 en en)))
+                    (grup.verb
+                      (vmip3p0 desactiven desactivar))
+                    (sn-CD.d
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 capacitat capacitat)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (grup.nom.fs
+                              (ncfs000 multiplicació multiplicació))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 assajos assaig)
+        (S.NF.P
+          (participi
+            (aq0mpp fets fet))
+          (sp-CC
+            (prep
+              (sps00 fins fins))
+            (sadv
+              (grup.adv
+                (rg ara ara)))))
+        (sp
+          (prep
+            (sps00 amb amb))
+          (sn
+            (grup.nom
+              (np00000 Remune Remune))))
+        (S.NF.P
+          (Fc , ,)
+          (participi
+            (aq0mpp iniciats iniciat))
+          (sn-CCT
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (W 1997 [??:??/??/1997:??.??])))
+          (sp.co-CCL
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (grup.nom
+                  (np00000 Europa Europa))))
+            (coord
+              (cc i i))
+            (sp
+              (prep
+                (spcmp als al))
+              (sn
+                (grup.nom.mp
+                  (np00000 EUA EUA)))))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm combinat combinar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 vacuna vacuna)))
+    (sp-CREG
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 teràpia teràpia)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 triple triple))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (Fe " ")
+      (sn-SUJ
+        (espec.mp
+          (dd0mp0 Aquests aquest))
+        (grup.nom.mp
+          (ncmp000 assajos assaig)))
+      (grup.verb
+        (vaip3p0 han haver)
+        (vmp00sm donat donar))
+      (sn-CD
+        (grup.nom.mp
+          (s.a.mp
+            (espec
+              (rg molt molt))
+            (grup.a.mp
+              (aq0mp0 bons bo)))
+          (ncmp000 resultats resultat))))
+    (Fg - -)
+    (grup.verb
+      (vmip3s0 explica explicar))
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Clotet Clotet)))
+    (Fg - -)
+    (Fp . .)))
+(
+  (S
+    (sadv-CCT
+      (grup.adv
+        (rg Ara ara)))
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmip1p0 volem voler)
+      (infinitiu
+        (vmn0000 valorar valorar)))
+    (S.F.C.co-CD
+      (S.F.C
+        (conj.subord
+          (cs si si))
+        (sn-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 sistema sistema)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 immunològic immunològic)))))
+        (morf.pron
+          (p0300000 es ell))
+        (grup.verb
+          (vmip3s0 recupera recuperar))
+        (sadv-CC
+          (grup.adv
+            (rg després després)
+            (sp
+              (prep
+                (sps00 de de))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 rebre rebre))
+                (sadv-MOD
+                  (grup.adv
+                    (rg només només)))
+                (sn-CD
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 vacuna vacuna)))
+                (sp-CCT
+                  (prep
+                    (sps00 durant durant))
+                  (sn
+                    (espec.ms
+                      (di0ms0 un un))
+                    (grup.nom.ms
+                      (ncms000 any any))))))))
+        (Fc , ,))
+      (coord
+        (cc i i))
+      (S.F.C
+        (conj.subord
+          (cs si si))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmip3s0 manté mantenir))
+        (sn-CD
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs
+            (ncfs000 càrrega càrrega)
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 viral viral)))
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 indetectable indetectable)))))))
+    (Fe " ")
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 confirmació confirmació)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.fs
+                (dd0fs0 aquesta aquest))
+              (grup.nom.fs
+                (ncfs000 hipòtesi hipòtesi))))))
+      (grup.verb
+        (vmic3s0 podria poder)
+        (infinitiu
+          (vmn0000 revolucionar revolucionar)))
+      (sn-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 tractament tractament)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 sida sida))))))
+      (Fc , ,))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmic3s0 evitaria evitar))
+      (sn-CD
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (s.a.fp.x
+            (grup.a.fp.co
+              (grup.a.fp
+                (aq0fp0 complexes complex))
+              (coord
+                (cc i i))
+              (grup.a.fp
+                (aq0fp0 costoses costós))))
+          (ncfp000 teràpies teràpia)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (morfema.verbal-PASS
+              (p0000000 s' es))
+            (grup.verb
+              (vmip3p0 apliquen aplicar))
+            (sadv-CCT
+              (grup.adv
+                (rg actualment actualment)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (dn0mp0 Dos dos))
+      (grup.nom.mp
+        (ncmp000 hospitals hospital)
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 catalans català)))
+        (sn.co
+          (Fc , ,)
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (np00000 Clínic Clínic)
+              (sp
+                (Fc , ,)
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom
+                    (np00000 Barcelona Barcelona)))
+                (Fc , ,))))
+          (coord
+            (cc i i))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom
+                    (np00000 Can_Ruti Can_Ruti))))))
+          (Fc , ,))))
+    (sadv-MOD
+      (grup.adv
+        (rg també també)))
+    (grup.verb
+      (vmif3p0 assajaran assajar))
+    (sn-CCT
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (W 1999 [??:??/??/1999:??.??])))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 nou nou)))
+        (ncms000 sistema sistema)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 detecció detecció)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (np00000 VIH VIH)))))))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmif3s0 permetrà permetre))
+          (S.NF.C-CD
+            (infinitiu
+              (vmn0000 dissenyar dissenyar))
+            (sp-CC
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 manera manera)
+                  (S.NF.P
+                    (participi
+                      (aq0fsp personalitzada personalitzat))))))
+            (sn-CD
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 tractament tractament)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.ms
+                      (di0cs0 cada cada))
+                    (grup.nom.ms
+                      (ncms000 seropositiu seropositiu))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 mètode mètode)
+        (sn
+          (Fc , ,)
+          (espec.ms
+            (di0ms0 un un))
+          (grup.nom.ms
+            (ncms000 estudi estudi)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncms000 genotip genotip)
+                  (sn
+                    (grup.nom.fs
+                      (Fpa -Fpa- -Fpa-)
+                      (ncfs000 modalitat modalitat)
+                      (Fpt -Fpt- -Fpt-)))
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (np00000 VIH VIH))))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.ms
+                        (di0cs0 cada cada))
+                      (grup.nom.ms
+                        (ncms000 malalt malalt))))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmif3s0 permetrà permetre))
+    (S.NF.C.co-CD
+      (S.NF.C
+        (infinitiu
+          (vmn0000 deduir deduir))
+        (sn-CD
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (ncfp000 mutacions mutació)
+            (S.F.R
+              (relatiu-CD.Q
+                (pr0cn000 que que))
+              (grup.verb
+                (vmif3s0 tindrà tenir))
+              (sn-SUJ
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 microorganisme microorganisme)))))))
+      (Fc , ,)
+      (S.NF.C
+        (infinitiu
+          (vmn0000 preveure preveure))
+        (sn-CD.d
+          (grup.nom
+            (pp3cn000 'n en)))
+        (sn-CD.d
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (ncfp000 resistències resistència)
+            (sp
+              (prep
+                (spcmp als al))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 fàrmacs fàrmac)))))))
+      (coord
+        (cc i i))
+      (S.NF.C
+        (sadv.j-CC
+          (Fc , ,)
+          (grup.adv
+            (rg abans abans)
+            (S.F.C
+              (conj.subord
+                (cs que que))
+              (sn.e-SUJ *0*)
+              (morf.pron
+                (p0300000 es ell))
+              (grup.verb
+                (vmsp3p0 reprodueixin reproduir))))
+          (Fc , ,))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 canviar canviar))
+          (sn-CD
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (ncfp000 teràpies teràpia))))))
+    (Fp . .)))
+(
+  (S
+    (sn-CD
+      (espec.ms
+        (di0ms0 Un un))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (ao0ms0 tercer tercer)))
+        (ncms000 objectiu objectiu)
+        (S.NF.P
+          (participi
+            (aq0msp perseguit perseguit))
+          (sp-CAG
+            (prep
+              (spcmp pels pel))
+            (sn
+              (grup.nom.mp
+                (nccp000 especialistes especialista)))))))
+    (grup.verb
+      (vsip3s0 és ser))
+    (S.NF.C-ATR
+      (infinitiu
+        (vmn0000 aconseguir aconseguir))
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.mp
+            (da0mp0 els el))
+          (grup.nom.mp
+            (S.NF.P
+              (participi
+                (aq0mpp infectats infectat)))))
+        (grup.verb
+          (vmsp3p0 compleixin complir))
+        (sp-CC
+          (prep
+            (sps00 amb amb))
+          (sn
+            (grup.nom.ms
+              (ncms000 rigor rigor))))
+        (sn-CD
+          (espec.mp
+            (da0mp0 els el))
+          (grup.nom.mp
+            (ncmp000 tractaments tractament)))
+        (sn
+          (Fc , ,)
+          (espec.ms
+            (di0ms0 un un))
+          (grup.nom.ms
+            (ncms000 propòsit propòsit)
+            (S.F.R
+              (sp-CC
+                (prep
+                  (sps00 en en))
+                (relatiu
+                  (pr0cn000 què què)))
+              (sp-CCT
+                (Fc , ,)
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.ms
+                    (da0cs0 l' el))
+                  (grup.nom.ms
+                    (s.a.ms
+                      (grup.a.ms
+                        (ao0ms0 últim últim)))
+                    (ncms000 any any)))
+                (Fc , ,))
+              (grup.verb
+                (vaip3p0 han haver)
+                (vmp00sm fracassat fracassar))
+              (sn-SUJ
+                (espec.ms
+                  (di0ms0 un un))
+                (grup.nom.ms
+                  (Zp 50% 50/100)
+                  (sp
+                    (prep
+                      (spcmp dels del))
+                    (sn
+                      (grup.nom.mp
+                        (ncmp000 afectats afectat)))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (Fe " ")
+      (S.F.A-CC
+        (conj.subord
+          (cs Quan quan))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmip1p0 aconseguim aconseguir))
+        (S.NF.C-CD
+          (infinitiu
+            (vmn0000 reduir reduir))
+          (sn-CD
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 càrrega càrrega)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 viral viral)))))
+          (sp-CREG
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fp
+                (rg menys menys)
+                (sps00 de de)
+                (Z 20 20))
+              (grup.nom.fp
+                (ncfp000 còpies còpia)))))
+        (Fc , ,))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip1p0 tenim tenir))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 seguretat seguretat)
+          (S.F.C
+            (conj.subord
+              (cs que que))
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (Zp 99% 99/100)
+                  (sp
+                    (prep
+                      (spcmp dels del))
+                    (sn
+                      (grup.nom.mp
+                        (ncmp000 casos cas)))))))
+            (sn-SUJ
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncmn000 virus virus)))
+            (neg-MOD
+              (rn no no))
+            (morf.pron
+              (p0300000 es ell))
+            (grup.verb
+              (vmip3s0 replica replicar))
+            (sp-CC
+              (sp
+                (prep
+                  (sps00 durant durant))
+                (sn
+                  (espec.ms
+                    (di0ms0 un un))
+                  (grup.nom.ms
+                    (ncms000 any any))))
+              (sadv.j
+                (grup.adv
+                  (rg com_a_mínim com_a_mínim))))))))
+    (Fg - -)
+    (grup.verb
+      (vmip3s0 afirma afirmar))
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Clotet Clotet)))
+    (Fg - -)
+    (Fp . .)))
+(
+  (S.co
+    (coord
+      (cc Però però))
+    (S
+      (sp-CC
+        (prep
+          (sps00 per per))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 poder poder)
+            (infinitiu
+              (vmn0000 mantenir mantenir)))
+          (sn-CD
+            (grup.nom.ms
+              (pp3msa00 -lo ell)))
+          (sadv-CPRED.CD
+            (grup.adv
+              (rg així així))))
+        (Fc , ,))
+      (morf.pron
+        (p0300000 s' ell))
+      (grup.verb
+        (vaip3s0 ha haver)
+        (sps00 de de)
+        (infinitiu
+          (vsn0000 ser ser)))
+      (sa-ATR
+        (espec
+          (rg molt molt))
+        (grup.a
+          (aq0ms0 rigorós rigorós)
+          (sp
+            (prep
+              (sps00 amb amb))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 tractament tractament))))))
+      (Fc , ,))
+    (coord
+      (cc i i))
+    (S
+      (sn-SUJ
+        (grup.nom.ms
+          (pd0ns000 això això)))
+      (grup.verb
+        (vsip3s0 és ser))
+      (sa-ATR
+        (espec
+          (da0ms0 el el)
+          (rg més més))
+        (grup.a
+          (aq0cs0 difícil difícil))))
+    (Fe " ")
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Clotet Clotet)))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sa-ATR
+      (grup.a
+        (aq0ms0 partidari partidari)
+        (S.F.C
+          (conj.subord
+            (cs que que))
+          (sn-SUJ
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (ncfp000 unitats unitat)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 sida sida)
+                    (sp
+                      (prep
+                        (spcmp dels del))
+                      (sn
+                        (grup.nom.mp
+                          (ncmp000 hospitals hospital)))))))))
+          (grup.verb
+            (vmsp3p0 disposin disposar))
+          (sp-CREG
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 psicòlegs psicòleg)
+                (S.NF.P
+                  (participi
+                    (aq0mpp dedicats dedicat))
+                  (sp-CREG
+                    (prep
+                      (sps00 a a))
+                    (S.NF.C
+                      (infinitiu
+                        (vmn0000 atendre atendre))
+                      (sn-CD
+                        (espec.mp
+                          (da0mp0 els el))
+                        (grup.nom.mp
+                          (ncmp000 problemes problema)
+                          (S.F.R
+                            (relatiu-CD
+                              (pr0cn000 que que))
+                            (grup.verb
+                              (vmip3s0 implica implicar))
+                            (S.NF.C-SUJ
+                              (infinitiu
+                                (vmn0000 seguir seguir))
+                              (sp-CC
+                                (prep
+                                  (sps00 amb amb))
+                                (sn
+                                  (grup.nom.ms
+                                    (ncms000 rigor rigor))))
+                              (sn-SUJ
+                                (espec.fp
+                                  (da0fp0 les el))
+                                (grup.nom.fp
+                                  (ncfp000 teràpies teràpia)
+                                  (S.NF.P
+                                    (Fc , ,)
+                                    (participi
+                                      (aq0fpp compostes compost))
+                                    (sp-CAG
+                                      (prep
+                                        (sps00 per per))
+                                      (sn
+                                        (espec.fs
+                                          (di0fs0 una un))
+                                        (grup.nom.fs
+                                          (ncfs000 vintena vintena)
+                                          (sp
+                                            (prep
+                                              (sps00 de de))
+                                            (sn
+                                              (grup.nom.fp
+                                                (ncfp000 pastilles pastilla)
+                                                (S.F.R
+                                                  (relatiu-SUJ
+                                                    (pr0cn000 que que))
+                                                  (morfema.verbal-PASS
+                                                    (p0000000 s' es))
+                                                  (grup.verb
+                                                    (vaip3p0 han haver)
+                                                    (sps00 de de)
+                                                    (infinitiu
+                                                      (vmn0000 prendre prendre)))
+                                                  (S.NF.A-CC
+                                                    (gerundi
+                                                      (vmg0000 seguint seguir))
+                                                    (sn-CD
+                                                      (espec.fp
+                                                        (di0fp0 unes un))
+                                                      (grup.nom.fp
+                                                        (ncfp000 normes norma)
+                                                        (s.a.fp
+                                                          (grup.a.fp
+                                                            (aq0cp0 estrictes estricte)))))))))))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 abandonament abandonament)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 tractament tractament))))))
+    (grup.verb
+      (vmip3s0 dispara disparar))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.mp
+          (di0mp0 pocs poc))
+        (grup.nom.mp
+          (ncmp000 dies dia))))
+    (sn-CD
+      (espec.fp
+        (da0fp0 les el))
+      (grup.nom.fp
+        (ncfp000 xifres xifra)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (np00000 VIH VIH)
+              (S.F.R
+                (Fc , ,)
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (morf.pron
+                  (p0300000 es ell))
+                (grup.verb
+                  (vmip3s0 replica replicar))
+                (sp-CC
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (espec.fs
+                      (di0fs0 una un))
+                    (grup.nom.fs
+                      (ncfs000 velocitat velocitat)
+                      (sp
+                        (prep
+                          (sps00 d' de))
+                        (sn
+                          (espec.mp
+                            (di0mp0 uns un)
+                            (Z 10.000 10000))
+                          (grup.nom.mp
+                            (ncmp000 milions milió)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (grup.nom.fp
+                                  (ncfp000 còpies còpia))))
+                            (sp
+                              (prep
+                                (sps00 per per))
+                              (sn
+                                (grup.nom.ms
+                                  (ncms000 dia dia))))))))))))))))
+    (Fp . .)))

@@ -1,0 +1,432 @@
+
+(
+  (S
+    (snl-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 port port)
+        (sp
+          (prep
+            (sps00 de de))
+          (snl
+            (grup.nom
+              (np0000l Tarragona Tarragona))))))
+    (grup.verb
+      (vmif3s0 rebrà rebre))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 durant durant))
+      (sn
+        (espec.ms
+          (di0ms0 tot tot)
+          (da0ms0 el el))
+        (grup.nom.ms
+          (W mes_de_juny [??:??/6/??:??.??])))
+      (Fc , ,))
+    (sn.co-CD
+      (sn
+        (espec.mp
+          (rg fins_a fins_a)
+          (dn0cp0 cinc cinc))
+        (grup.nom.mp
+          (ncmp000 creuers creuer)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 luxe luxe))))))
+      (coord
+        (cc i i))
+      (sn
+        (espec.mp
+          (rg vora vora)
+          (Z mil 1000))
+        (grup.nom.mp
+          (ncmp000 passatgers passatger))))
+    (Fp . .)))
+(
+  (S
+    (S.F.AConc-AO
+      (conj.subord
+        (cs Tot_i_que tot_i_que))
+      (sn-SUJ
+        (espec.ms
+          (dd0ms0 aquest aquest))
+        (grup.nom.ms
+          (ncms000 port port)))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vsip3s0 és ser))
+      (sn-ATR
+        (grup.nom.fs
+          (ncfs000 escala escala)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 habitual habitual)))
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.fs
+                (dd0fs0 aquesta aquest))
+              (grup.nom.fs
+                (ncfs000 mena mena)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 creuers creuer)
+                      (s.a.mp
+                        (grup.a.mp
+                          (aq0cp0 comercials comercial)))))))))))
+      (Fc , ,))
+    (morfema.verbal-IMPERS
+      (p0000000 es es))
+    (grup.verb
+      (vmip3s0 tracta tractar))
+    (sp-CREG
+      (prep
+        (sps00 d' de))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 acció acció)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 puntual puntual)))
+          (S.NF.P
+            (participi
+              (aq0fsp endegada endegat))
+            (sp-CAG
+              (prep
+                (spcms pel pel))
+              (sn
+                (grup.nom.ms
+                  (ncms000 departament departament)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0cs0 comercial comercial)))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sno
+                      (espec.fs
+                        (da0cs0 l' el))
+                      (grup.nom.fs
+                        (np0000o Autoritat_Portuària Autoritat_Portuària)))))))
+            (sp-CC
+              (prep
+                (sps00 amb amb))
+              (sn
+                (grup.nom.fp
+                  (ncfp000 companyies companyia)
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0fp0 navilieres navilier)))
+                  (sp
+                    (prep
+                      (sps00 d' de))
+                    (sadv
+                      (grup.adv
+                        (rg arreu arreu)
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 món món))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-CC
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 proper proper)))
+        (W divendres [divendres:??/??/??:??.??])))
+    (grup.verb
+      (vmif3s0 arribarà arribar))
+    (sna-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (ao0ms0 primer primer)))
+        (ncms000 vaixell vaixell)
+        (sna
+          (Fc , ,)
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (Fz ' ')
+            (np0000p Lili_Marleen Lili_Marleen)
+            (Fz ' ')
+            (sp
+              (Fc , ,)
+              (prep
+                (sps00 de de))
+              (sno
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 companyia companyia)
+                  (snp
+                    (grup.nom
+                      (np0000p Peter_Deilmann Peter_Deilmann))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S.co
+      (S
+        (sn-SUJ
+          (espec.ms
+            (da0ms0 El el))
+          (grup.nom.ms
+            (ncms000 creuer creuer)
+            (S.F.R
+              (Fc , ,)
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vmif3s0 atracarà atracar))
+              (sp-CC
+                (prep
+                  (spcms al al))
+                (snl
+                  (grup.nom.ms
+                    (np0000l Moll_de_Costa Moll_de_Costa))))
+              (Fc , ,))))
+        (grup.verb
+          (vmif3s0 arribarà arribar))
+        (sp-CC
+          (prep
+            (sps00 a a))
+          (snd
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (W 8_del_matí [??:??/??/??:08.00])))))
+      (coord
+        (cc i i))
+      (S
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmif3s0 salparà salpar))
+        (sp-CC
+          (prep
+            (sps00 a a))
+          (snd
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (W 22_hores [??:??/??/??:22.00]))))))
+    (Fc , ,)
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3s0 té tenir))
+      (sn-CD.Q
+        (espec.fs
+          (dn0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 eslora eslora)
+          (sp
+            (prep
+              (sps00 de de))
+            (snn
+              (espec.mp
+                (Z 76 76))
+              (grup.nom.mp
+                (ncmp000 metres metre)))))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3s0 duu dur))
+      (sadv-CC
+        (grup.adv
+          (rg a_bord a_bord)))
+      (sn-CD
+        (espec.ms
+          (di0ms0 un un)
+          (ncms000 total total)
+          (sps00 de de)
+          (Z 22 22))
+        (grup.nom.mp
+          (ncmp000 passatgers passatger))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (dd0ms0 Aquest aquest)
+        (di0ms0 mateix mateix))
+      (grup.nom.ms
+        (ncms000 vaixell vaixell)))
+    (grup.verb
+      (vmif3s0 tornarà tornar)
+      (sps00 a a)
+      (infinitiu
+        (vmn0000 atracar atracar)))
+    (sp-CC
+      (prep
+        (spcms al al))
+      (snl
+        (grup.nom.ms
+          (ncms000 port port)
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (grup.nom
+                (np0000l Tarragona Tarragona)))))))
+    (snd.x-CC
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (s.a.mp.j
+          (grup.a.mp
+            (aq0mp0 propers proper)))
+        (grup.nom.co
+          (grup.nom.mp
+            (W dies_11 [??:11/??/??:??.??]))
+          (coord
+            (cc i i))
+          (grup.nom.mp
+            (W 18_de_juny [??:18/6/??:??.??])))))
+    (Fp . .)))
+(
+  (S
+    (sadv-MOD
+      (grup.adv
+        (rg També també)))
+    (grup.verb
+      (vmip3s0 està estar))
+    (S.NF.P-ATR
+      (participi
+        (aq0fsp prevista previst)))
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 l' el))
+      (grup.nom.fs
+        (ncfs000 arribada arribada)
+        (sp
+          (prep
+            (spcms del del))
+          (sna
+            (grup.nom.ms
+              (ncms000 creuer creuer)
+              (sna
+                (grup.nom
+                  (Fz ' ')
+                  (np0000a Silver_Shadow Silver_Shadow)))
+              (sp
+                (Fc , ,)
+                (prep
+                  (sps00 de de))
+                (sno
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 companyia companyia)
+                    (sno
+                      (grup.nom
+                        (np0000o Silversea_Cruises Silversea_Cruises)))))
+                (Fc , ,))
+              (sp
+                (prep
+                  (sps00 amb amb))
+                (sn.co
+                  (sn
+                    (espec.fs
+                      (di0fs0 una un))
+                    (grup.nom.fs
+                      (ncfs000 eslora eslora)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (snn
+                          (espec.mp
+                            (Z 182 182))
+                          (grup.nom.mp
+                            (ncmp000 metres metre))))))
+                  (cc i i)
+                  (sn
+                    (espec.mp
+                      (Z 388 388))
+                    (grup.nom.mp
+                      (ncmp000 passatgers passatger))))))))))
+    (Fp . .)))
+(
+  (S
+    (snd-CC
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (W dia_18 [??:18/??/??:??.??])))
+    (grup.verb
+      (vmif3s0 atracarà atracar))
+    (sna-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 vaixell vaixell)
+        (sna
+          (grup.nom
+            (Fz ' ')
+            (np0000a Assedo Assedo)
+            (Fz ' ')))
+        (sp
+          (Fc , ,)
+          (prep
+            (sps00 de de))
+          (sno
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 companyia companyia)
+              (sno
+                (grup.nom
+                  (np0000o Transtours Transtours)))))
+          (Fc , ,))
+        (sp
+          (prep
+            (sps00 amb amb))
+          (sn.co
+            (snn
+              (espec.mp
+                (Z 175 175))
+              (grup.nom.mp
+                (ncmp000 metres metre)
+                (sp
+                  (prep
+                    (sps00 d' de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 eslora eslora))))))
+            (coord
+              (cc i i))
+            (sn
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (ncms000 passatge passatge)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fp
+                      (Z 500 500))
+                    (grup.nom.fp
+                      (ncfp000 persones persona))))))))))
+    (Fp . .)))

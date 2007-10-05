@@ -1,0 +1,185 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (di0mp0 Tots tot)
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 materials material)
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 magnètics magnètic)))))
+    (morf.pron
+      (p0300000 es ell))
+    (grup.verb
+      (vmip3p0 refreden refredar))
+    (S.F.A-CCT
+      (conj.subord
+        (cs quan quan))
+      (sn.e-SUJ *0*)
+      (morfema.verbal-PASS
+        (p0000000 es es))
+      (grup.verb
+        (vmip3p0 desmagnetitzen desmagnetitzar)))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (pd0ns000 Això això)))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sn-ATR
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (morfema.verbal-PASS
+            (p0000000 es es))
+          (grup.verb
+            (vmip3s0 coneix conèixer))
+          (sp-CPRED.SUJ
+            (prep
+              (sps00 com_a com_a))
+            (sn
+              (grup.nom.ms
+                (ncms000 efecte efecte)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 magnetocalòric magnetocalòric)))
+                (S.NF.P
+                  (participi
+                    (aq0msp associat associat))
+                  (sp-CREG
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (espec.ms
+                        (da0cs0 l' el))
+                      (grup.nom.ms
+                        (ncms000 augment augment)
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 desordre desordre)
+                              (s.a.ms
+                                (grup.a.ms
+                                  (aq0ms0 magnètic magnètic)))
+                              (sp
+                                (prep
+                                  (spcms del del))
+                                (sn
+                                  (grup.nom.ms
+                                    (ncms000 material material)))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CCT
+      (grup.adv
+        (rg Recentment recentment)))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm descobert descobrir))
+    (sn-SUJ
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 material material)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 produeix produir))
+          (sn-CD
+            (espec.ms
+              (rg bastant bastant))
+            (grup.nom.ms
+              (ncms000 fred fred)))
+          (sp-CC
+            (prep
+              (sps00 a a))
+            (sn
+              (grup.nom.fs
+                (ncfs000 temperatura temperatura)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 ambient ambient)))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg Així_mateix així_mateix))
+      (Fc , ,))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm fabricat fabricar))
+    (sadv-CCT
+      (grup.adv
+        (rg ja ja)))
+    (sn-SUJ
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (ao0ms0 primer primer)))
+        (ncms000 prototip prototip)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 nevera nevera)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 magnètica magnètic)))
+              (S.NF.P.co
+                (S.NF.P
+                  (participi
+                    (aq0fsp basada basat))
+                  (sadv-CC
+                    (grup.adv
+                      (rg totalment totalment)))
+                  (sp-CREG
+                    (prep
+                      (sps00 en en))
+                    (sn
+                      (espec.ms
+                        (da0cs0 l' el))
+                      (grup.nom.ms
+                        (ncms000 efecte efecte)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0ms0 magnetocalòric magnetocalòric)))))))
+                (coord
+                  (cc i i))
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmip3s0 respon respondre))
+                  (sp-CREG
+                    (prep
+                      (spcmp als al))
+                    (sn
+                      (grup.nom.mp
+                        (ncmp000 cànons cànon)
+                        (s.a.mp
+                          (grup.a.mp
+                            (aq0mp0 ecològics ecològic)))
+                        (s.a.mp
+                          (espec
+                            (rg més més))
+                          (grup.a.mp
+                            (aq0cp0 estrictes estricte)))))))))))))
+    (Fp . .)))

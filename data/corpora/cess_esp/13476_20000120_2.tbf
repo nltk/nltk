@@ -1,0 +1,69 @@
+
+(
+  (S
+    (Fe " ")
+    (sp-CC
+      (prep
+        (sps00 De de))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 denuncia denuncia))))
+    (sp-CC
+      (prep
+        (spcms al al))
+      (sn.co
+        (sn
+          (grup.nom.ms
+            (ncms000 victimismo victimismo)))
+        (coord
+          (cc y y))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 utilización utilización)))))
+    (grup.verb 
+      (vmip3s0 va ir))
+    (sn-SUJ
+      (espec.ms
+        (di0ms0 un uno))
+      (grup.nom.ms
+        (ncms000 paso paso)))
+    (Fp . .)))
+(
+  (S
+    (S.F.C*.co-CD
+      (S.F.C*
+        (sadv
+          (grup.adv
+            (rg Sí sí)))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 denuncia denuncia))))
+        (Fc , ,))
+      (coord
+        (cc pero pero))
+      (S.F.C*
+        (neg
+          (rn no no))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.ms
+              (da0ns0 lo el))
+            (grup.nom.ms
+              (pi0ms000 otro otro)))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb 
+      (vmis3s0 concluyó concluir))
+    (sn.e-SUJ *0*)
+(Fp . .)))

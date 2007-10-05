@@ -1,0 +1,218 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 aeroport aeroport)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (np00000 Prat Prat))))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm superat superar))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (sn
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (ao0fs0 segona segon)))
+          (ncfs000 vegada vegada)
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.fs
+                (dp3fs0 la_seva el_seu))
+              (grup.nom.fs
+                (ncfs000 història història)))))))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 barrera barrera)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (dn0mp0 dos dos))
+            (grup.nom.mp
+              (ncmp000 milions milió)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 passatgers passatger))))
+              (sp
+                (prep
+                  (sps00 en en))
+                (sn
+                  (sadv.j
+                    (grup.adv
+                      (rg només només)))
+                  (sn
+                    (espec.ms
+                      (di0ms0 un un))
+                    (grup.nom.ms
+                      (ncms000 mes mes))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.ACond-AO
+      (conj.subord
+        (cs Si si))
+      (sn-CCT
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (W juliol [??:??/07/??:??.??])))
+      (morfema.verbal-PASS
+        (p0000000 es es))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 superar superar))
+      (sn-SUJ
+        (espec.fs
+          (dd0fs0 aquesta aquest))
+        (grup.nom.fs
+          (ncfs000 xifra xifra)))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fp
+            (Z 43.083 43083))
+          (grup.nom.fp
+            (ncfp000 persones persona))))
+      (Fc , ,))
+    (sp-CCT
+      (prep
+        (sps00 durant durant))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (W mes_d'_agost [??:??/8/??:??.??]))))
+    (sn.e-SUJ *0*)
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm tornat tornar)
+      (sps00 a a)
+      (infinitiu
+        (vmn0000 superar superar)))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.mp
+          (Z 85.972 85972))
+        (grup.nom.mp
+          (ncmp000 viatgers viatger))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 tràfic tràfic)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 passatge passatge))))))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm incrementat incrementar))
+    (sp-CC
+      (prep
+        (sps00 durant durant))
+      (sn
+        (espec.mp
+          (da0mp0 els el)
+          (dn0mp0 dos dos))
+        (grup.nom.mp
+          (ncmp000 mesos mes)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom.ms
+                (ncms000 estiu estiu)))))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (Zp 7,43% 7.43/100))))
+    (sp-AO
+      (Fc , ,)
+      (prep
+        (sps00 en_relació_a en_relació_a))
+      (sn
+        (espec.fp
+          (da0fp0 les el)
+          (di0fp0 mateixes mateix))
+        (grup.nom.fp
+          (ncfp000 dates data)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (ncms000 any any)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 anterior anterior)))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (sps00 Des_de des_de))
+      (sn
+        (grup.nom.ms
+          (ncms000 gener gener)))
+      (Fc , ,))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm passat passar))
+    (sn-SUJ
+      (espec.mp
+        (rg més més)
+        (sps00 de de)
+        (Z 14 14))
+      (grup.nom.mp
+        (ncmp000 milions milió)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.mp
+              (ncmp000 viatgers viatger))))))
+    (sp-CCL
+      (prep
+        (sps00 per per))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 aeroport aeroport))))
+    (Fp . .)))

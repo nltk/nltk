@@ -1,0 +1,225 @@
+
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 president president)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np00000 Generalitat Generalitat))))
+          (sn
+            (Fc , ,)
+            (grup.nom.ms
+              (np00000 Jordi_Pujol Jordi_Pujol))
+            (Fc , ,))))
+      (coord
+        (cc i i))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 alcalde alcalde)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (np00000 Barcelona Barcelona))))
+          (sn
+            (Fc , ,)
+            (grup.nom.ms
+              (np00000 Joan_Clos Joan_Clos))
+            (Fc , ,)))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 inaugurar inaugurar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 monument monument)
+        (S.NF.P
+          (participi
+            (aq0msp dedicat dedicat))
+          (sp-CREG
+            (prep
+              (sps00 a a))
+            (sn
+              (sn
+                (grup.nom.ms.1n
+                  (np00000 Enric_Prat_de_la_Riba Enric_Prat_de_la_Riba)))
+              (sn.j
+                (grup.nom
+                  (Fpa -Fpa- -Fpa-)
+                  (W 1870-1917 [??:??/??/1870-1917:??.??])
+                  (Fpt -Fpt- -Fpt-)))))
+          (sn.x.1c
+            (Fc , ,)
+            (grup.nom.co
+              (grup.nom.co
+                (grup.nom.ms
+                  (nccs000 artífex artífex))
+                (coord
+                  (cc i i))
+                (grup.nom.ms
+                  (ncms000 president president)))
+              (sp.j
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np00000 Mancomunitat_de_Catalunya Mancomunitat_de_Catalunya))))
+              (sn.j
+                (grup.nom
+                  (Fpa -Fpa- -Fpa-)
+                  (W 1914-1925 [??:??/??/1914-1925:??.??])
+                  (Fpt -Fpt- -Fpt-))))
+            (Fc , ,))
+          (sn.1c
+            (grup.nom.ms
+              (ncms000 precedent precedent)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np00000 Generalitat Generalitat)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 contemporània contemporani)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.1n
+        (ncms000 monòlit monòlit)
+        (S.NF.P
+          (Fc , ,)
+          (participi
+            (aq0msp ubicat ubicat))
+          (sp-CREG
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 plaça plaça)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom
+                      (np00000 Prat_de_la_Riba Prat_de_la_Riba)))))))
+          (sp-CCL
+            (Fc , ,)
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 confluència confluència)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.co
+                      (grup.nom
+                        (np00000 Numància Numància))
+                      (coord
+                        (cc i i))
+                      (grup.nom.fs
+                        (ncfs000 avinguda avinguda)
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (sn
+                            (grup.nom.ms
+                              (np00000 General_Mitre General_Mitre)))))))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmip3s0 consta constar))
+    (sp-CREG
+      (prep
+        (sps00 d' de))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 columna columna)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 blanca blanc)))
+          (S.NF.P
+            (participi
+              (aq0fsp culminada culminat))
+            (sp-CAG
+              (prep
+                (sps00 per per))
+              (sn
+                (espec.mp
+                  (di0mp0 uns un))
+                (grup.nom.mp
+                  (ncmp000 tubs tub)
+                  (sp
+                    (prep
+                      (sps00 d' de))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 acer acer))))
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0mp0 ondulats ondulat))))))))))
+    (sn.1c
+      (Fc , ,)
+      (grup.nom.fs
+        (ncfs000 obra obra)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.ms
+              (np00000 Andreu_Alfaro Andreu_Alfaro))))))
+    (Fp . .)))
+(
+  (S
+    (sn
+      (grup.nom.ms
+        (ncms000 Detall detall)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 monument monument)
+              (S.NF.P
+                (participi
+                  (aq0msp inaugurat inaugurat))))))))
+    (sadv
+      (grup.adv
+        (rg ahir ahir)))
+    (sp
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom
+          (np00000 Barcelona Barcelona))))
+    (Fp . .)))

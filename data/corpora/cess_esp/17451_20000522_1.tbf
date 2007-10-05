@@ -1,0 +1,228 @@
+
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg Asimismo asimismo))
+      (Fc , ,))
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmis3s0 subrayó subrayar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (snp-SUJ
+        (grup.nom.ms
+          (np0000p Pérez_Touriño Pérez_Touriño)))
+      (grup.verb
+        (vsip3s0 es ser))
+      (sn-ATR
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (ao0ms0 primer primero)))
+          (ncms000 candidato candidato)
+          (sp
+            (prep
+              (sps00 a a))
+            (sno
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000o Presidencia_de_la_Xunta Presidencia_de_la_Xunta))))
+          (sp
+            (prep
+              (sps00 de de))
+            (sp
+              (prep
+                (sps00 entre entre))
+              (sn
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (ncmp000 partidos partido)
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vmif3p0 concurrirán concurrir))
+                    (sp-CCL
+                      (prep
+                        (sps00 a a))
+                      (sn
+                        (espec.fp
+                          (da0fp0 las el))
+                        (grup.nom.fp
+                          (ncfp000 elecciones elección)
+                          (s.a.fp
+                            (grup.a.fp
+                              (aq0fp0 autonómicas autonómico))))))
+                    (sn-CCT
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 año año)
+                        (S.F.R
+                          (relatiu-SUJ
+                            (pr0cn000 que que))
+                          (grup.verb
+                            (vmip3s0 viene venir))))))))))
+          (S.NF.P
+            (Fc , ,)
+            (participi
+              (aq0msp avalado avalado))
+            (Fe " ")
+            (sp.co-CAG
+              (sp
+                (prep
+                  (sps00 por por))
+                (sn
+                  (espec.ms
+                    (di0ms0 un uno))
+                  (grup.nom.ms
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0cs0 importante importante)))
+                    (ncms000 número número)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.mp
+                          (nccp000 militantes militante))))))
+                (Fe " "))
+              (coord
+                (cc y y))
+              (sp
+                (prep
+                  (sps00 por por))
+                (sn
+                  (espec.mp
+                    (da0fs0 la el)
+                    (ncfs000 mayoría mayoría)
+                    (sps00 de de)
+                    (da0mp0 los el))
+                  (grup.nom.mp
+                    (ncmp000 miembros miembro)
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 órgano órgano)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom.fs
+                                (ncfs000 dirección dirección))))
+                          (sp
+                            (prep
+                              (spcms del del))
+                            (sno
+                              (grup.nom.ms
+                                (np0000o PSdeG PSdeG)))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C.co-CD
+      (S.F.AConc.j-AO
+        (conj.subord
+          (cs Aunque aunque))
+        (snp-SUJ
+          (grup.nom.ms
+            (np0000p Gilberto_Vila Gilberto_Vila)))
+        (grup.verb
+          (vmis3s0 acudió acudir))
+        (snd-CCT
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (W sábado [sábado:??/??/??:??.??])))
+        (sp-CC
+          (prep
+            (sps00 a a))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 presentar presentar))
+            (sn-CD
+              (espec.fs
+                (dp3cs0 su su))
+              (grup.nom.fs
+                (ncfs000 candidatura candidatura)))))
+        (Fc , ,))
+      (S.F.C.co
+        (S.F.C
+          (sn.e-SUJ *0*)
+          (neg-MOD
+            (rn no no))
+          (grup.verb
+            (vmis3s0 llevó llevar))
+          (sn-CD
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (ncmp000 avales aval)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0mp0 necesarios necesario)))))
+          (Fc , ,))
+        (coord
+          (cc pero pero))
+        (S.F.C
+          (sn.e-SUJ *0*)
+          (sadv-MOD
+            (grup.adv
+              (rg sí sí)))
+          (grup.verb
+            (vmis3s0 solicitó solicitar))
+          (S.F.C-CD
+            (conj.subord
+              (cs que que))
+            (morfema.verbal-PASS
+              (p0000000 se se))
+            (grup.verb
+              (vmsi3s0 ampliase ampliar))
+            (sn-SUJ
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 plazo plazo))))
+          (S.F.R-AO
+            (Fc , ,)
+            (relatiu-SUJ
+              (da0ns0 lo el)
+              (pr0cn000 que que))
+            (sn-CI
+              (grup.nom.s
+                (pp3csd00 le él)))
+            (grup.verb
+              (vsis3s0 fue ser)
+              (vmp00sm denegado denegar))
+            (sp-CAG
+              (prep
+                (sps00 por por))
+              (sno
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (np0000o Comité Comité))))
+            (S.NF.A-CC
+              (Fe " ")
+              (gerundi
+                (vmg0000 siguiendo seguir))
+              (sn-CD
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 reglamento reglamento)))
+              (Fe " ")))))
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 señaló señalar))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Alvarez Alvarez)))
+    (Fp . .)))

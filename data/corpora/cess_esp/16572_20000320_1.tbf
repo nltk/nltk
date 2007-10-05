@@ -1,0 +1,138 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 diplomático diplomático)))
+    (grup.verb
+      (vmif3s0 visitará visitar))
+    (sadv-ET
+      (grup.adv
+        (rg además además)))
+    (sn-CD
+      (espec.fp
+        (da0fp0 las el))
+      (grup.nom.fp
+        (ncfp000 ciudades ciudad)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn.x
+            (grup.nom.co
+              (grup.nom
+                (np0000l Brasilia Brasilia))
+              (Fc , ,)
+              (grup.nom
+                (np0000l Salvador Salvador)
+                (sn
+                  (Fc , ,)
+                  (grup.nom.fs
+                    (ncfs000 capital capital)
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (snl
+                        (grup.nom.ms
+                          (ncms000 estado estado)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (snl
+                              (grup.nom
+                                (np0000l Bahía Bahía))))))))))
+              (Fx ; ;)
+              (grup.nom
+                (np0000l Uberlandia Uberlandia)
+                (sp
+                  (Fc , ,)
+                  (prep
+                    (sps00 en en))
+                  (snl
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (ncms000 estado estado)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (snl
+                          (grup.nom
+                            (np0000l Minas_Gerais Minas_Gerais)))))))
+                (Fx ; ;))
+              (coord
+                (cc y y))
+              (snl
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 localidad localidad)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snl
+                      (grup.nom
+                        (np0000l Carajás Carajás)
+                        (sp
+                          (Fc , ,)
+                          (prep
+                            (sps00 en en))
+                          (snl
+                            (espec.ms
+                              (da0ms0 el el))
+                            (grup.nom.ms
+                              (ncms000 sur sur)
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (snl
+                                  (grup.nom
+                                    (np0000l Pará Pará)
+                                    (S.F.R
+                                      (Fc , ,)
+                                      (relatiu-CCT
+                                        (pr000000 donde donde))
+                                      (morf.pron
+                                        (p0300000 se él))
+                                      (grup.verb
+                                        (vmip3s0 encuentra encontrar))
+                                      (sn-SUJ
+                                        (espec.fs
+                                          (di0fs0 una uno))
+                                        (grup.nom.fs
+                                          (sp
+                                            (prep
+                                              (sps00 de de))
+                                            (sn
+                                              (espec.fp
+                                                (da0fp0 las el))
+                                              (grup.nom.fp
+                                                (ncfp000 minas mina)
+                                                (sp
+                                                  (prep
+                                                    (sps00 de de))
+                                                  (sn
+                                                    (grup.nom.ms
+                                                      (ncms000 oro oro))))
+                                                (sp
+                                                  (prep
+                                                    (sps00 a a))
+                                                  (sn
+                                                    (grup.nom.ms
+                                                      (ncms000 cielo cielo)
+                                                      (S.NF.P
+                                                        (participi
+                                                          (aq0msp abierto abierto))))))
+                                                (s.a.fp
+                                                  (espec
+                                                    (rg más más))
+                                                  (grup.a.fp
+                                                    (aq0cp0 grandes grande)
+                                                    (sp
+                                                      (prep
+                                                        (spcms del del))
+                                                      (sn
+                                                        (grup.nom.ms
+                                                          (ncms000 mundo mundo))))))))))))))))))))))))))))
+    (Fp . .)))

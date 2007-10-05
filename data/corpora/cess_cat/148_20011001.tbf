@@ -1,0 +1,159 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 escriptor escriptor)))
+    (grup.verb
+      (vmip3s0 evoca evocar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 vida vida)
+        (sp
+          (prep
+            (spcmp dels del))
+          (sn
+            (grup.nom.mp
+              (ncmp000 pintors pintor)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0cs0 l' el))
+                  (grup.nom.fs
+                    (ncfs000 època època)))))))))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (dp3fs0 la_seva el_seu))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (ao0fs0 última últim)))
+          (ncfs000 novel·la novel·la)
+          (sn
+            (Fc , ,)
+            (grup.nom
+              (np00000 El_Mestre_de_Taüll El_Mestre_de_Taüll))
+            (Fc , ,))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (morf.pron
+              (p0300000 se ell))
+            (grup.verb
+              (vmip3s0 situa situar))
+            (sp-CREG
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 línia línia)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 mística místic)))
+                  (S.F.R
+                    (sp-CCL
+                      (prep
+                        (sps00 en en))
+                      (relatiu
+                        (pr0cn000 què què)))
+                    (morfema.verbal-PASS
+                      (p0000000 es es))
+                    (grup.verb
+                      (vaip3p0 van anar)
+                      (vmn0000 inscriure inscriure))
+                    (sn-SUJ
+                      (espec.mp
+                        (dp3mp0 els_seus el_seu)
+                        (dn0cp0 tres tres))
+                      (grup.nom.mp
+                        (s.a.mp
+                          (grup.a.mp
+                            (aq0cp0 anteriors anterior)))
+                        (ncmp000 llibres llibre)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (ncfs000 escriptura escriptura)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.fs
+              (dd0fs0 aquesta aquest))
+            (grup.nom.fs
+              (ncfs000 obra obra))))))
+    (sn-CI
+      (grup.nom.s
+        (pp3csd00 li ell)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 exigir exigir))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 esforç esforç)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 suplementari suplementari)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 documentació documentació)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 històrica històric)))
+              (sp.co
+                (Fc , ,)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (da0cs0 l' el))
+                    (grup.nom.fs
+                      (ncfs000 època època))))
+                (Fc , ,)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.ms
+                      (da0cs0 l' el))
+                    (grup.nom.ms
+                      (ncms000 art art)
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0ms0 romànic romànic))))))
+                (coord
+                  (cc i i))
+                (sp
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 pintura pintura))))
+                  (sadv.j
+                    (grup.adv
+                      (rg en_general en_general))))))))))
+    (Fp . .)))

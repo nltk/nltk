@@ -1,0 +1,333 @@
+
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 gran gran)))
+          (ncfs000 anècdota anècdota)
+          (sp
+            (prep
+              (spcms del del))
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (ao0ms0 primer primer)))
+              (np00000 Govern_Aznar_I Govern_Aznar_I)))))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vsn0000 ser ser))
+      (sn-ATR
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 enlluernador enlluernador)))
+          (ncms000 casament casament)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (np00000 Francisco_Álvarez-Cascos Francisco_Álvarez-Cascos))))))
+      (Fc , ,))
+    (coord
+      (cc i i))
+    (S
+      (sadv-CCT
+        (grup.adv
+          (rg ara ara))
+        (Fc , ,))
+      (sp-CCT
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (ncms000 inici inici)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncms000 gabinet gabinet)
+                  (sn
+                    (grup.nom
+                      (np00000 Aznar_II Aznar_II))))))))
+        (Fc , ,))
+      (sn-SUJ
+        (grup.nom.ms
+          (np00000 Cascos Cascos)))
+      (grup.verb
+        (vmip3s0 torna tornar)
+        (sps00 a a)
+        (infinitiu
+          (vmn0000 tenir tenir)))
+      (sn-CD.Q
+        (grup.nom.fs
+          (ncfs000 polèmica polèmica))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.fs
+        (pd0fs000 Aquesta aquest)))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 desencadenar desencadenar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom
+          (np00000 El_Mundo El_Mundo))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCL
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 text text)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 editorial editorial))))))
+    (sadv-CCT
+      (grup.adv
+        (rg ja ja)))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmii3s0 posava posar))
+    (sadv-CPRED.CD
+      (grup.adv
+        (rg en_dubte en_dubte)))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (grup.nom.ms
+          (espec.ms
+            (da0ms0 el el))
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 nou nou)))
+          (ncms000 ministre ministre)))
+      (Fe " ")
+      (grup.verb
+        (vmm03s0 tingui tenir))
+      (sn-CD.Q
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 equilibri equilibri)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 necessari necessari)))))
+      (sp-CC
+        (prep
+          (sps00 per per))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 gestionar gestionar))
+          (sn-CD
+            (espec.ms
+              (di0ms0 un un))
+            (grup.nom.ms
+              (ncms000 ministeri ministeri)))
+          (sp-CC
+            (prep
+              (sps00 amb amb))
+            (sn
+              (espec.mp
+                (di0mp0 tants tant))
+              (grup.nom.mp
+                (ncmp000 recursos recurs)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0mp0 públics públic))))))))
+      (Fe " "))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np00000 Mundo Mundo)))
+    (grup.verb
+      (vmii3s0 responia respondre))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 nota nota))))
+    (S.NF.A-CC
+      (gerundi
+        (vmg0000 qualificant qualificar))
+      (sp-CREG
+        (prep
+          (sps00 de de))
+        (sn
+          (grup.nom.fs
+            (Fe " ")
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 pueril pueril)))
+            (ncfs000 refutació refutació)
+            (Fe " "))))
+      (sp-CC
+        (prep
+          (sps00 amb amb))
+        (sn
+          (espec.ms
+            (di0ms0 un un))
+          (grup.nom.ms
+            (Fe " ")
+            (ncms000 llenguatge llenguatge)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 propi propi)
+                (sp
+                  (prep
+                    (spcmp dels del))
+                  (sn
+                    (grup.nom.mp
+                      (s.a.mp
+                        (grup.a.mp
+                          (aq0mp0 despòtics despòtic)))
+                      (ncmp000 prebostos prebost)
+                      (s.a.mp
+                        (grup.a.mp
+                          (aq00000 felipistes felipista))))))))
+            (Fe " "))))
+      (S.F.C.co-CD
+        (Fc , ,)
+        (S.F.C
+          (conj.subord
+            (cs que que))
+          (sn-SUJ
+            (grup.nom.s
+              (pi0cs000 cap cap)
+              (sp
+                (prep
+                  (sps00 d' de))
+                (sn
+                  (espec.mp
+                    (dd0mp0 aquests aquest))
+                  (grup.nom.mp
+                    (ncmp000 supòsits supòsit))))))
+          (Fe " ")
+          (grup.verb
+            (vsip3s0 és ser))
+          (sa-ATR
+            (grup.a
+              (aq0cs0 aplicable aplicable)))
+          (Fe " ")
+          (Fc , ,))
+        (coord
+          (cc i i))
+        (S.F.C
+          (conj.subord
+            (cs que que))
+          (Fe " ")
+          (sp-CC
+            (prep
+              (sps00 davant davant))
+            (sn
+              (espec.mp
+                (da0mp0 els el))
+              (grup.nom.mp
+                (ncmp000 indicis indici)
+                (S.F.C
+                  (conj.subord
+                    (cs que que))
+                  (sn-SUJ
+                    (espec.ms
+                      (da0cs0 l' el))
+                    (grup.nom.ms
+                      (aq0mp0 Excel·lentíssim_Primer-Vicepresident_-_Que-No-Surt-Per-La-Porta-Falsa excel·lentíssim_primer-vicepresident_-_que-no-surt-per-la-porta-falsa)))
+                  (grup.verb
+                    (vmsi3s0 pogués poder))
+                  (S.NF.C
+                    (neg-MOD
+                      (rn no no))
+                    (infinitiu
+                      (vmn0000 estar estar))
+                    (sp-ATR
+                      (sadv.j
+                        (prep
+                          (spcms del del))
+                        (sn
+                          (grup.nom.ms
+                            (pi0ms000 tot tot))))
+                      (sp
+                        (prep
+                          (sps00 en en))
+                        (sn
+                          (espec.ms
+                            (dp3ms0 el_seu el_seu))
+                          (grup.nom.ms
+                            (ncms000 seny seny)))))))))
+            (Fc , ,))
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vmif1p0 restarem restar))
+          (sa-CC
+            (espec
+              (rg especialment especialment))
+            (grup.a
+              (aq0mp0 atents atent)
+              (sp
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 pantalla pantalla))))))
+          (Fe " "))))
+    (Fp . .)))
+(
+  (S
+    (Fia ¿ ¿)
+    (sp-CI
+      (prep
+        (sps00 A a))
+      (sn
+        (grup.nom.s
+          (pt0cs000 qui qui))))
+    (grup.verb
+      (vmif3s0 clavarà clavar))
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Aznar Aznar)))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (ao0ms0 primer primer)))
+        (nc00000 clatellot clatellot)))
+    (Fit ? ?)))

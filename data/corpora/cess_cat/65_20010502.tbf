@@ -1,0 +1,188 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 intensitat intensitat)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (ncfp000 relacions relació)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 econòmiques econòmic))))))
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (ncms000 àmbit àmbit)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0cs0 l' el))
+                  (grup.nom.fs
+                    (ncfs000 àrea àrea)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 metropolitana metropolità)))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom
+                          (np00000 Barcelona Barcelona))))))))))))
+    (grup.verb
+      (vmip3s0 té tenir))
+    (sn-CD.Q
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 estreta estret)))
+        (ncfs000 relació relació)
+        (sp
+          (prep
+            (sps00 amb amb))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 fenomen fenomen)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 deslocalització deslocalització)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0cs0 industrial industrial))))))
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vaip3s0 ha haver)
+                  (vmp00sm afectat afectar))
+                (sn-CD
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 capital capital)))
+                (sp-CCT
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.fs
+                      (da0cs0 l' el))
+                    (grup.nom.fs
+                      (s.a.fs
+                        (grup.a.fs
+                          (ao0fs0 última últim)))
+                      (ncfs000 dècada dècada))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 estudi estudi)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (np00000 Joan_Trullén Joan_Trullén))))))
+    (grup.verb
+      (vmip3s0 assenyala assenyalar))
+    (S.F.C.co-CD
+      (conj.subord
+        (cs que que))
+      (S.F.C
+        (sn-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 fenomen fenomen)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 descentralització descentralització)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fp
+                        (da0fp0 les el))
+                      (grup.nom.fp
+                        (s.a.fp
+                          (grup.a.fp
+                            (aq0cp0 grans gran)))
+                        (ncfp000 empreses empresa))))
+                  (sp
+                    (prep
+                      (sps00 des_de des_de))
+                    (sn
+                      (espec.fs
+                        (dp3fs0 la_seva el_seu))
+                      (grup.nom.fs
+                        (ncfs000 localització localització)
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0cs0 central central)))))))))))
+        (morfema.verbal-PASS
+          (p0000000 s' es))
+        (grup.verb
+          (vaip3s0 ha haver)
+          (vmp00sm generalitzat generalitzar))
+        (Fc , ,))
+      (coord
+        (cc i i))
+      (S.F.C
+        (Fe " ")
+        (sn.e-SUJ *0*)
+        (morfema.verbal-PASS
+          (p0000000 s' es))
+        (grup.verb
+          (vaip3s0 ha haver)
+          (vmp00sm concentrat concentrar))
+        (sp-CC
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.mp
+              (da0mp0 els el))
+            (grup.nom.mp
+              (ncmp000 corredors corredor)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0mp0 pròxims pròxim)
+                  (sp
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (espec.fp
+                        (da0fp0 les el))
+                      (grup.nom.fp
+                        (ncfp000 autopistes autopista)
+                        (s.a.fp
+                          (grup.a.fp
+                            (aq0fp0 metropolitanes metropolità)))))))))))
+        (Fe " ")))
+    (Fp . .)))

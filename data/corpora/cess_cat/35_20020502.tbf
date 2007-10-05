@@ -1,0 +1,179 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 treballadors treballador)))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 mostrar mostrar))
+    (sp-CCL
+      (prep
+        (spcmp als al))
+      (sn
+        (grup.nom.mp
+          (ncmp000 carrers carrer)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (np00000 Caracas Caracas)))))))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 fractura fractura)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 societat societat)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 veneçolana veneçolà))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (dn0fp0 Dues dos))
+      (grup.nom.fp
+        (s.a.fp
+          (grup.a.fp
+            (aq0cp0 grans gran)))
+        (ncfp000 manifestacions manifestació)
+        (sn.co
+          (Fc , ,)
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (S.NF.P
+              (participi
+                (aq0fsp convocada convocat))
+              (sp-CAG
+                (prep
+                  (sps00 per per))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np00000 Confederació_de_Treballadors_de_Veneçuela Confederació_de_Treballadors_de_Veneçuela)
+                    (sn
+                      (grup.nom.fs
+                        (Fpa -Fpa- -Fpa-)
+                        (np00000 CTV CTV)
+                        (Fpt -Fpt- -Fpt-))))))))
+          (coord
+            (cc i i))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (np00000 Front_Bolivarià_de_Treballadors Front_Bolivarià_de_Treballadors)
+                    (sn
+                      (grup.nom.ms
+                        (Fpa -Fpa- -Fpa-)
+                        (np00000 FBT FBT)
+                        (Fpt -Fpt- -Fpt-))))))))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 recórrer recórrer))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 capital capital)))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (grup.nom.mp
+          (ncmp000 crits crit)
+          (sadv.x
+            (grup.adv.co
+              (grup.adv.co
+                (grup.adv
+                  (rg en_contra en_contra))
+                (coord
+                  (cc o o))
+                (grup.adv
+                  (rg a_favor a_favor)))
+              (sp.j
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 president president)
+                    (sn
+                      (Fc , ,)
+                      (grup.nom.ms
+                        (np00000 Hugo_Chávez Hugo_Chávez)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg No_obstant no_obstant))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (s.a.mp
+          (grup.a.mp
+            (aq0cp0 principals principal)))
+        (nccp000 líders líder)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (di0fp0 totes tot)
+              (dn0fp0 dues dos))
+            (grup.nom.fp
+              (ncfp000 marxes marxa))))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 optar optar))
+    (sp-CREG
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 parlar parlar))
+        (sp.co-CREG
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (Fe " ")
+                (ncfs000 rectificació rectificació)
+                (Fe " "))))
+          (coord
+            (cc i i))
+          (sp
+            (sadv.j
+              (grup.adv
+                (rg també també)))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (Fe " ")
+                  (ncfs000 reconciliació reconciliació)
+                  (Fe " "))))))))
+    (Fp . .)))

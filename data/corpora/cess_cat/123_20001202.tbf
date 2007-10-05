@@ -1,0 +1,119 @@
+
+(
+  (S
+    (sn.co-SUJ
+      (snp
+        (espec.fs
+          (da0cs0 L' el))
+        (grup.nom.fs
+          (ncfs000 alcaldessa alcaldessa)
+          (snp
+            (snp
+              (grup.nom.fs
+                (np0000p Núria_Buenaventura Núria_Buenaventura)))
+            (sno.j
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (np0000o IC-V IC-V)
+                (Fpt -Fpt- -Fpt-))))))
+      (Fc , ,)
+      (snp
+        (snp
+          (grup.nom.ms
+            (np0000p Lluís_Ridao Lluís_Ridao)))
+        (sno.j
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np0000o CiU CiU)
+            (Fpt -Fpt- -Fpt-))))
+      (coord
+        (cc i i))
+      (snp
+        (snp
+          (grup.nom.ms
+            (np0000p Francesc_Sutrias Francesc_Sutrias)))
+        (sno.j
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np0000o ERC ERC)
+            (Fpt -Fpt- -Fpt-)))))
+    (grup.verb
+      (vmif3p0 marcaran marcar))
+    (sn-CD
+      (espec.fp
+        (da0fp0 les el))
+      (grup.nom.fp
+        (ncfp000 directrius directriu)))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 comitè comitè)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 direcció direcció)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 política polític))))))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (morf.pron
+              (p0300000 es ell))
+            (grup.verb
+              (vmif3s0 reunirà reunir))
+            (sn-CCT
+              (espec.mp
+                (di0mp0 diversos divers))
+              (grup.nom.mp
+                (ncmp000 cops cop)
+                (sp
+                  (prep
+                    (sps00 per per))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 setmana setmana))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (di0mp0 Tots tot))
+      (grup.nom.mp
+        (pn0cp000 tres tres)))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 firmar firmar))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 pacte pacte)))
+    (sp-CCL
+      (prep
+        (sps00 davant davant))
+      (snp
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 síndic síndic)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 greuges greuge))))
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 local local)))
+          (snp
+            (Fc , ,)
+            (grup.nom.ms
+              (np0000p Jordi_Xercavins Jordi_Xercavins))))))
+    (Fp . .)))

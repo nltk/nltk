@@ -1,0 +1,39 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 circuit circuit)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (np00000 Donington Donington))))))
+    (grup.verb
+      (vsif3s0 serà ser))
+    (sn-ATR
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (ncms000 escenari escenari)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.fs
+              (di0fs0 una un))
+            (grup.nom.fs
+              (ncfs000 prova prova)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 puntuable puntuable)))
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (np00000 Mundial_de_Motociclisme Mundial_de_Motociclisme)))))))))
+    (Fp . .)))

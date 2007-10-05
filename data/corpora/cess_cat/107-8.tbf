@@ -1,0 +1,572 @@
+
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np0000o Patronat_Comarcal_de_Turisme_del_Solsonès Patronat_Comarcal_de_Turisme_del_Solsonès)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm organitzat organitzar))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (sp
+        (prep
+          (spcmp als al))
+        (snd.x
+          (grup.nom.co
+            (grup.nom.mp
+              (W dies_5 [??:5/??/??:??.??]))
+            (Fc , ,)
+            (grup.nom.mp
+              (W 6 [??:6/??/??:??.??]))
+            (coord
+              (cc i i))
+            (grup.nom.mp
+              (W 13_de_juny [??:13/6/??:??.??]))))))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 curs curs)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 màrqueting màrqueting)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 turístic turístic))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 finalitat finalitat)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.fs
+              (dd0fs0 aquesta aquest))
+            (grup.nom.fs
+              (ncfs000 iniciativa iniciativa))))))
+    (grup.verb
+      (vsip3s0 és ser))
+    (S.NF.C-ATR
+      (infinitiu
+        (vmn0000 estudiar estudiar))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 forma forma)
+          (sp
+            (prep
+              (sps00 de de))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 treballar treballar))
+              (sn-CD
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 promoció promoció)
+                  (sp
+                    (prep
+                      (spcmp dels del))
+                    (sn
+                      (grup.nom.mp
+                        (ncmp000 productes producte)
+                        (s.a.mp
+                          (grup.a.mp
+                            (aq0mp0 turístics turístic)))
+                        (S.F.R
+                          (relatiu-CD
+                            (pr0cn000 que que))
+                          (grup.verb
+                            (vmip3s0 ofereix oferir))
+                          (snl-SUJ
+                            (grup.nom
+                              (np0000l El_Solsonès El_Solsonès))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 curs curs)))
+    (grup.verb
+      (vmip3s0 forma_part formar_part))
+    (sp-CREG
+      (prep
+        (spcms del del))
+      (sna
+        (grup.nom.ms
+          (ncms000 projecte projecte)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 europeu europeu)))
+          (sna
+            (grup.nom
+              (Fz ' ')
+              (np0000a Quants Quants)
+              (Fz ' ')))
+          (S.F.R
+            (Fc , ,)
+            (sp-CC.r
+              (prep
+                (sps00 en en))
+              (relatiu
+                (da0ms0 el el)
+                (pr0cs000 qual qual)))
+            (sn-CC.r
+              (grup.nom
+                (pp3cn000 hi hi)))
+            (grup.verb
+              (vmip3p0 participen participar))
+            (sn.co-SUJ
+              (sno
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (np0000o Consell_Comarcal Consell_Comarcal)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (snl
+                      (grup.nom.ms
+                        (np0000l Solsonès Solsonès))))))
+              (coord
+                (cc i i))
+              (sno
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (np0000o Centre_Tecnològic_Forestal_de_Catalunya Centre_Tecnològic_Forestal_de_Catalunya))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (dd0ms0 Aquest aquest))
+      (grup.nom.ms
+        (ncms000 projecte projecte)))
+    (grup.verb
+      (vmip3s0 té tenir))
+    (sp-CPRED.CD
+      (prep
+        (sps00 com_a com_a))
+      (sn
+        (grup.nom.fs
+          (ncfs000 finalitat finalitat))))
+    (sn.co-CD.Q
+      (sn.co
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 formació formació)))
+        (coord
+          (cc i i))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 preparació preparació))))
+      (sp.j
+        (prep
+          (sps00 per per))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 noves nou)))
+              (ncfp000 tecnologies tecnologia)))))
+      (sp.j
+        (prep
+          (spcmp dels del))
+        (sn.co
+          (sn.co
+            (sn
+              (grup.nom.mp
+                (ncmp000 empresaris empresari)))
+            (coord
+              (cc i i))
+            (sn
+              (espec.mp
+                (da0mp0 els el))
+              (grup.nom.mp
+                (ncmp000 treballadors treballador))))
+          (sp.j
+            (prep
+              (spcmp dels del))
+            (sn
+              (grup.nom.mp
+                (ncmp000 sectors sector)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0mp0 productius productiu)))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 comarca comarca))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (ncfs000 organització organització)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 curs curs))))))
+    (grup.verb
+      (vmip3s0 respon respondre))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 voluntat voluntat)
+          (sp
+            (prep
+              (sps00 de de))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 fomentar fomentar))
+              (sn-CD
+                (espec.fs
+                  (di0fs0 una un))
+                (grup.nom.fs
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 bona bo)))
+                  (ncfs000 promoció promoció)
+                  (sp
+                    (prep
+                      (spcmp dels del))
+                    (sn
+                      (grup.nom.mp
+                        (ncmp000 productes producte)
+                        (s.a.mp
+                          (grup.a.mp
+                            (aq0mp0 turístics turístic)))
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (snl
+                            (grup.nom.ms
+                              (np0000l Solsonès Solsonès))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 Per per))
+      (sp
+        (prep
+          (spcms al al))
+        (snp
+          (grup.nom.ms
+            (ncms000 president president)
+            (sp
+              (prep
+                (spcms del del))
+              (sno
+                (grup.nom.ms
+                  (np0000o Consell_Comarcal Consell_Comarcal))))
+            (snp
+              (grup.nom.ms
+                (Fc , ,)
+                (np0000p Joan_Serra Joan_Serra)
+                (Fc , ,)))))))
+    (Fz ' ')
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 preparació preparació)
+        (sp
+          (prep
+            (sps00 per per))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 afrontar afrontar))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 turisme turisme)))))))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sa-ATR
+      (grup.a
+        (aq0cs0 fonamental fonamental)))
+    (S.NF.PA-CC
+      (Fc , ,)
+      (grup.verb
+        (vmp00sf atesa atènyer))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 creixent creixent)))
+          (ncfs000 importància importància)
+          (sp.co
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (espec.ms
+                  (dd0ms0 aquest aquest))
+                (grup.nom.ms
+                  (ncms000 sector sector))))
+            (coord
+              (cc i i))
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncms000 nombre nombre)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.mp
+                        (nccp000 visitants visitant))))))))
+          (sp
+            (prep
+              (spcms al al))
+            (snl
+              (grup.nom.ms
+                (np0000l Solsonès Solsonès)))))))
+    (Fz ' ')
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Serra Serra)))
+    (grup.verb
+      (vmip3s0 considera considerar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fs
+          (dd0fs0 aquesta aquest))
+        (grup.nom.fs
+          (ncfs000 situació situació)))
+      (grup.verb
+        (vmip3s0 pot poder)
+        (infinitiu
+          (vmn0000 comportar comportar)))
+      (sn-CD
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 increment increment)
+          (sp
+            (prep
+              (spcmp dels del))
+            (sn
+              (grup.nom.mp
+                (ncmp000 ingressos ingrés))))))
+      (sp-CC
+        (prep
+          (sps00 per per))
+        (sp
+          (prep
+            (spcms al al))
+          (sn
+            (grup.nom.ms
+              (ncms000 sector sector)
+              (s.a.ms
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 hoteler hoteler)))
+                (coord
+                  (cc i i))
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 comercial comercial)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 curs curs)))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmif3s0 durà_a_terme dur_a_terme))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (ncfp000 dependències dependència)
+          (sp
+            (prep
+              (spcms del del))
+            (sno
+              (grup.nom.ms
+                (np0000o Centre_Cultural Centre_Cultural)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snl
+                    (grup.nom
+                      (np0000l Sant_Llorenç_de_Morunys Sant_Llorenç_de_Morunys))))))))))
+    (snd.x-CC
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.co
+        (grup.nom.mp
+          (W dies_5 [??:5/??/??:??.??]))
+        (Fc , ,)
+        (grup.nom.mp
+          (W 6 [??:6/??/??:??.??]))
+        (coord
+          (cc i i))
+        (grup.nom.mp
+          (W 13_de_juny [??:13/6/??:??.??]))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (di0mp0 Tots tot)
+        (da0mp0 els el))
+      (grup.nom.mp
+        (nccp000 participants participant)))
+    (grup.verb
+      (vmif3p0 rebran rebre))
+    (sn-CD
+      (espec.ms
+        (dn0ms0 un un))
+      (grup.nom.ms
+        (ncms000 certificat certificat)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 assistència assistència))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np0000o Consell_Comarcal Consell_Comarcal)
+        (sp
+          (prep
+            (spcms del del))
+          (snl
+            (grup.nom.ms
+              (np0000l Solsonès Solsonès))))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (spcms a_través_del a_través_del))
+      (sno
+        (grup.nom.ms
+          (np0000o Patronat_Comarcal_de_Turisme Patronat_Comarcal_de_Turisme)))
+      (Fc , ,))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm decidit decidir))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 impulsar impulsar))
+      (sn
+        (espec.ms
+          (dd0ms0 aquest aquest))
+        (grup.nom.ms
+          (ncms000 curs curs))))
+    (sadv-CC
+      (grup.adv
+        (rg després després)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (ncms000 èxit èxit)
+              (sp
+                (prep
+                  (spcmp dels del))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 cursos curs)
+                    (sp
+                      (prep
+                        (sps00 d' de))
+                      (sn.x
+                        (grup.nom.co
+                          (grup.nom.co
+                            (grup.nom.fs
+                              (ncfs000 imatge imatge))
+                            (coord
+                              (cc i i))
+                            (grup.nom.fs
+                              (ncfs000 marca marca)))
+                          (s.a.fs.j
+                            (grup.a.fs
+                              (aq0fs0 turística turístic)))
+                          (sp.j
+                            (prep
+                              (spcms del del))
+                            (snl
+                              (grup.nom.ms
+                                (np0000l Solsonès Solsonès)))))))
+                    (S.F.R
+                      (relatiu-SUJ
+                        (pr0cn000 que que))
+                      (morfema.verbal-PASS
+                        (p0000000 s' es))
+                      (grup.verb
+                        (vaip3p0 han haver)
+                        (vmp00sm impartit impartir))
+                      (sp-CC
+                        (prep
+                          (sps00 durant durant))
+                        (sn
+                          (espec.ms
+                            (dd0ms0 aquest aquest))
+                          (grup.nom.ms
+                            (ncms000 any any)))))))))))))
+    (Fp . .)))

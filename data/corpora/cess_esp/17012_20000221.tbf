@@ -1,0 +1,600 @@
+
+(
+  (S
+    (S.F.C-CD
+      (sno-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (np0000o Banco_Urquijo Banco_Urquijo)
+          (sn
+            (Fc , ,)
+            (grup.nom.ms
+              (pi0ms000 uno uno)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.mp
+                    (da0mp0 los el))
+                  (grup.nom.mp
+                    (s.a.mp
+                      (espec
+                        (rg más más))
+                      (grup.a.mp
+                        (aq0mp0 antiguos antiguo)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (snl
+                            (grup.nom
+                              (np0000l España España))))))))))
+            (Fc , ,))))
+      (grup.verb
+        (vmip3s0 cuenta contar))
+      (sp-CC
+        (prep
+          (sps00 desde desde))
+        (sadv
+          (grup.adv
+            (rg hoy hoy))))
+      (sp-CREG
+        (prep
+          (sps00 con con))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 autorización autorización)
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 definitiva definitivo)))
+            (sp
+              (prep
+                (sps00 para para))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 operar operar))
+                (sp-CCL
+                  (prep
+                    (sps00 en en))
+                  (snl
+                    (grup.nom
+                      (np0000l Argentina Argentina))))
+                (sp-CPRED
+                  (prep
+                    (cs como como))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 entidad entidad)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0fs0 bancaria bancario)))
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0cs0 comercial comercial)))))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmis3p0 informaron informar))
+    (sn.co-SUJ
+      (sno
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np0000o Banco_Central Banco_Central)))
+      (coord
+        (cc y y))
+      (sn
+        (grup.nom.fp
+          (ncfp000 fuentes fuente)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 banco banco)))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np0000o Urquijo Urquijo)
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 está estar))
+          (S.NF.P-ATR
+            (participi
+              (aq0msp controlado controlar))
+            (sp-CCT
+              (prep
+                (sps00 desde desde))
+              (snd
+                (grup.nom.ms
+                  (W 1998 [??:??/??/1998:??.??]))))
+            (sp-CAG
+              (prep
+                (sps00 por por))
+              (sno
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 grupo grupo)
+                  (sno
+                    (grup.nom
+                      (np0000o Kredietrust_Luxembourg Kredietrust_Luxembourg)))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmif3s0 tendrá tener))
+    (sadv-CC
+      (grup.adv
+        (rg en_principio en_principio)))
+    (sn-CD.Q
+      (espec.fs
+        (di0fs0 una uno))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 única único)))
+        (ncfs000 sucursal sucursal)
+        (sp
+          (prep
+            (sps00 en en))
+          (snl
+            (grup.nom
+              (np0000l Buenos_Aires Buenos_Aires))))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (da0fs0 la el)
+            (pr0cs000 cual cual))
+          (grup.verb
+            (vsif3s0 será ser)
+            (vmp00sf inaugurada inaugurar))
+          (snd-CCT
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 próximo próximo)))
+              (W 2_de_marzo [??:2/3/??:??.??])))
+          (sp-CAG
+            (prep
+              (sps00 por por))
+            (snp
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 presidente presidente)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 banco banco))))
+                (snp
+                  (Fc , ,)
+                  (grup.nom.ms
+                    (np0000p Fernando_Verdonck Fernando_Verdonck)))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (sps00 Durante durante))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 visita visita)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn.co
+              (snp
+                (grup.nom.ms
+                  (np0000p Verdonck Verdonck)))
+              (coord
+                (cc y y))
+              (sn
+                (espec.mp
+                  (di0mp0 otros otro))
+                (grup.nom.mp
+                  (ncmp000 directivos directivo)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 banco banco)))))))))))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vmif3s0 inaugurará inaugurar))
+    (sadv-CC
+      (grup.adv
+        (rg oficialmente oficialmente)))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (snl
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np0000l Museo_Nacional_de_Bellas_Artes Museo_Nacional_de_Bellas_Artes)
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (grup.nom
+                (np0000l Argentina Argentina)))))))
+    (sn-SUJ
+      (espec.fs
+        (di0fs0 una uno))
+      (grup.nom.fs
+        (ncfs000 exposición exposición)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (nccs000 arte arte)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 español español))))))
+        (S.NF.P
+          (participi
+            (aq0fsp titulada titulado))
+          (sna-CPRED
+            (grup.nom
+              (Fe " ")
+              (np0000a De_Goya_a_Picasso De_Goya_a_Picasso)
+              (Fe " "))))
+        (S.F.R
+          (Fc , ,)
+          (sp.1c
+            (prep
+              (sps00 de de))
+            (relatiu
+              (da0fs0 la el)
+              (pr0cn000 que que)))
+          (sno-SUJ
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (np0000o Urquijo Urquijo)))
+          (grup.verb
+            (vsip3s0 es ser))
+          (sa-ATR
+            (grup.a.1n
+              (aq0ms0 patrocinador patrocinador))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sno-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (np0000o Banco_Urquijo Banco_Urquijo)
+          (S.NF.P
+            (Fc , ,)
+            (participi
+              (aq0msp fundado fundado))
+            (sp-CCT
+              (prep
+                (spcms a_fines_del a_fines_del))
+              (snd
+                (grup.nom.ms
+                  (W siglo_XIX [s:xix]))))
+            (Fc , ,))))
+      (grup.verb
+        (vmis3s0 inició iniciar))
+      (sp-CCT
+        (prep
+          (sps00 en en))
+        (snd
+          (grup.nom.ms
+            (W 1998 [??:??/??/1998:??.??]))))
+      (sn-CD
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (ncmp000 trámites trámite)
+          (sp
+            (prep
+              (sps00 para para))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 poder poder)
+                (infinitiu
+                  (vmn0000 entrar entrar)))
+              (sp-CCL
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 sistema sistema)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 financiero financiero)))
+                    (s.a.ms
+                      (grup.a.ms
+                        (ncms000 argentino argentino)))))))))))
+    (coord
+      (cc y y))
+    (S
+      (snd-CCT
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (S.NF.P
+            (participi
+              (aq0msp pasado pasado)))
+          (W enero [??:??/01/??:??.??])))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3s0 recibió recibir))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 autorización autorización)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 preliminar preliminar)))
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (morfema.verbal-PASS
+              (p0000000 se se))
+            (grup.verb
+              (vmis3s0 hizo hacer))
+            (sadv-CCT
+              (grup.adv
+                (rg ahora ahora)))
+            (sa-CPRED.SUJ
+              (grup.a
+                (aq0fs0 definitiva definitivo)))
+            (sp-CC
+              (prep
+                (sps00 con con))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 emisión emisión)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sna
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (S.NF.P
+                          (participi
+                            (aq0fsp llamada llamado)))
+                        (Fe " ")
+                        (np0000a Comunicación_B Comunicación_B)
+                        (Fe " ")
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (sno
+                            (grup.nom.ms
+                              (np0000o Banco_Central Banco_Central))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Con con))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 llegada llegada)
+          (sp
+            (prep
+              (spcms del del))
+            (sno
+              (grup.nom.ms
+                (np0000o Banco_Urquijo Banco_Urquijo)))))))
+    (grup.verb
+      (vsip3p0 son ser))
+    (sn-ATR
+      (grup.nom.p
+        (pn0cp000 tres tres)))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.mp
+        (ncmp000 bancos banco)
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 españoles español)))
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3p0 operan operar))
+          (sp-CPRED.SUJ
+            (prep
+              (cs como como))
+            (sn
+              (grup.nom.fp
+                (ncfp000 entidades entidad)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0cp0 comerciales comercial))))))
+          (sp-CCL
+            (prep
+              (sps00 en en))
+            (snl
+              (grup.nom
+                (np0000l Argentina Argentina)))))))
+    (S.F.A-CC
+      (Fc , ,)
+      (conj.subord
+        (cs pues pues))
+      (sadv-CCT
+        (grup.adv
+          (rg ya ya)))
+      (grup.verb
+        (vmip3p0 están estar))
+      (sa-ATR
+        (grup.a
+          (aq0cp0 presentes presente)))
+      (sn.co-SUJ
+        (sno
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (np0000o Banco_Santander_Central_Hispano Banco_Santander_Central_Hispano)
+            (sno
+              (grup.nom.ms
+                (Fpa -Fpa- -Fpa-)
+                (np0000o BSCH BSCH)
+                (Fpt -Fpt- -Fpt-)))
+            (sp
+              (Fc , ,)
+              (prep
+                (sps00 con con))
+              (sno
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (np0000o Banco_Río Banco_Río)))
+              (Fc , ,))))
+        (coord
+          (cc y y))
+        (sno
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (np0000o Banco_Bilbao_Vizcaya_Argentaria Banco_Bilbao_Vizcaya_Argentaria)
+            (sp
+              (Fc , ,)
+              (prep
+                (spcms por_medio_del por_medio_del))
+              (sno
+                (grup.nom.ms
+                  (np0000o Banco_Francés Banco_Francés)))
+              (Fc , ,))
+            (S.F.R
+              (sp.1c
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (relatiu
+                      (pr0cn000 que que)))))
+              (sn.e-SUJ *0*)
+              (grup.verb
+                (vsip3s0 es ser))
+              (sa-ATR
+                (grup.a.1n
+                  (aq0ms0 controlador controlador))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (sps00 En en))
+      (snd
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (ao0ms0 primer primero)))
+          (ncms000 semestre semestre)
+          (sp
+            (prep
+              (sps00 de de))
+            (snd
+              (grup.nom.ms
+                (W 1999 [??:??/??/1999:??.??]))))))
+      (Fc , ,))
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (np0000o Banco_Urquijo Banco_Urquijo)
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 cuenta contar))
+          (sp-CREG
+            (prep
+              (sps00 con con))
+            (sn
+              (espec.mp
+                (di0mp0 unos uno))
+              (grup.nom.mp
+                (ncmp000 activos activo)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snn
+                    (espec.mp
+                      (Z 4.000 4000))
+                    (grup.nom.mp
+                      (ncmp000 millones millón)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (snn
+                          (grup.nom.mp
+                            (Zm dólares dólar))))))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmis3s0 tuvo tener))
+    (sn-CD.Q
+      (espec.mp
+        (di0mp0 unos uno))
+      (grup.nom.mp
+        (ncmp000 resultados resultado)
+        (s.a.mp
+          (grup.a.mp
+            (aq0cp0 superiores superior)
+            (sp
+              (prep
+                (sps00 en en))
+              (snn
+                (espec.ms
+                  (di0ms0 un uno))
+                (grup.nom.ms
+                  (Zp 20,5_por_ciento 20,5_%))))
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (espec.ms
+                        (di0ms0 mismo mismo))
+                      (grup.nom.ms
+                        (ncms000 periodo periodo)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (snd
+                            (grup.nom.ms
+                              (W 1998 [??:??/??/1998:??.??]))))))))))))))
+    (Fp . .)))

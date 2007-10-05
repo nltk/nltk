@@ -1,0 +1,119 @@
+
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Mediante mediante))
+      (sna
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np0000a Pacto_de_San_José Pacto_de_San_José)))
+      (Fc , ,))
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom
+          (np0000o Venezuela Venezuela))
+        (coord
+          (cc y y))
+        (grup.nom
+          (np0000o México México))))
+    (sn
+      (grup.nom
+        (pp3cn000 se él)))
+    (grup.verb
+      (vmip3p0 comprometen comprometer))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 suministrar suministrar))
+        (sp-CC
+          (Fc , ,)
+          (prep
+            (sps00 bajo bajo))
+          (sn
+            (grup.nom.fp
+              (ncfp000 condiciones condición)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0cp0 comerciales comercial)))
+              (s.a.fp
+                (grup.a.fp
+                  (aq0cp0 especiales especial)))))
+          (Fc , ,))
+        (sn-CD
+          (espec.mp
+            (rg hasta hasta)
+            (Z 160.000 160000))
+          (grup.nom.mp
+            (ncmp000 barriles barril)
+            (s.a.mp
+              (grup.a.ms
+                (aq0mp0 diarios diario)))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn.x
+                (grup.nom.co
+                  (grup.nom.ms
+                    (ncms000 crudo crudo))
+                  (coord
+                    (cc y y))
+                  (grup.nom.mp
+                    (ncmp000 productos producto)
+                    (S.NF.P
+                      (participi
+                        (aq0mpp derivados derivado)))))))))
+        (sp-CI
+          (prep
+            (sps00 a a))
+          (sn.co
+            (snl
+              (grup.nom
+                (np0000l Barbados Barbados)))
+            (Fc , ,)
+            (snl
+              (grup.nom
+                (np0000l Belice Belice)))
+            (Fc , ,)
+            (snl
+              (grup.nom
+                (np0000l Costa_Rica Costa_Rica)))
+            (Fc , ,)
+            (snl
+              (grup.nom
+                (np0000l El_Salvador El_Salvador)))
+            (Fc , ,)
+            (snl
+              (grup.nom
+                (np0000l Guatemala Guatemala)))
+            (Fc , ,)
+            (snl
+              (grup.nom
+                (np0000l Haití Haití)))
+            (Fc , ,)
+            (snl
+              (grup.nom
+                (np0000l Honduras Honduras)))
+            (Fc , ,)
+            (snl
+              (grup.nom
+                (np0000l Jamaica Jamaica)))
+            (Fc , ,)
+            (snl
+              (grup.nom
+                (np0000l Nicaragua Nicaragua)))
+            (Fc , ,)
+            (snl
+              (grup.nom
+                (np0000l Panamá Panamá)))
+            (coord
+              (cc y y))
+            (snl
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000l República_Dominicana República_Dominicana)))))))
+    (Fp . .)))

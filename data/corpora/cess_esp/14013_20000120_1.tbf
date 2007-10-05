@@ -1,0 +1,1114 @@
+
+(
+  (S
+    (S.F.C-CD
+      (sn-SUJ
+        (espec.fp
+          (da0fp0 Las el))
+        (grup.nom.fp
+          (ncfp000 excavaciones excavación)
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.fp
+                (dn0cp0 cuatro cuatro))
+              (grup.nom.fp
+                (ncfp000 fincas finca)
+                (sp
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 frontera frontera)
+                      (sp
+                        (prep
+                          (sps00 con con))
+                        (sn
+                          (grup.nom
+                            (np00000 EEUU EEUU)))))))
+                (S.F.R
+                  (Fc , ,)
+                  (relatiu-CCL
+                    (pr000000 donde donde))
+                  (sn-SUJ
+                    (grup.nom.mp
+                      (nccp000 agentes agente)
+                      (s.a.mp.co
+                        (s.a.mp
+                          (grup.a.mp
+                            (aq0mp0 mexicanos mexicano)))
+                        (coord
+                          (cc y y))
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (sn
+                            (grup.nom.ms
+                              (np00000 FBI FBI)))))))
+                  (grup.verb
+                    (vmis3p0 hallaron hallar))
+                  (sn-CD
+                    (espec.mp
+                      (dn0cp0 nueve nueve))
+                    (grup.nom.mp
+                      (ncmp000 cadáveres cadáver)))
+                  (sp-CCT
+                    (prep
+                      (sps00 en en))
+                    (sn
+                      (grup.nom.ms
+                        (W noviembre [??:??/11/??:??.??]))
+                      (S.NF.P
+                        (participi
+                          (aq0msp pasado pasado)))))
+                  (Fc , ,)))))))
+      (grup.verb
+        (vmis3p0 concluyeron concluir))
+      (sadv-CCT
+        (grup.adv
+          (rg hoy hoy)))
+      (sp-CC
+        (prep
+          (spcms al al))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 considerar considerar))
+          (S.F.C-CD
+            (conj.subord
+              (cs que que))
+            (neg-MOD
+              (rn no no))
+            (grup.verb
+              (vaip3s0 hay haber))
+            (sn-CD.Q
+              (grup.nom.mp
+                (ncmp000 indicios indicio)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (S.F.C
+                    (conj.subord
+                      (cs que que))
+                    (grup.verb
+                      (vmsp3p0 existan existir))
+                    (sn-SUJ
+                      (espec.fp
+                        (rg más más))
+                      (grup.nom.fp
+                        (ncfp000 fosas fosa)
+                        (s.a.fp
+                          (grup.a.fp
+                            (aq0cp0 comunes común))))))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 informó informar))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (np00000 Fiscalía_General Fiscalía_General)))
+    (Fp . .)))
+(
+  (S
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom.mp
+          (nccp000 Agentes agente)
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 mexicanos mexicano))))
+        (coord
+          (cc y y))
+        (grup.nom.mp
+          (nccp000 especialistas especialista)
+          (s.a.mp
+            (grup.a.mp
+              (aq0cp0 estadounidenses estadounidense)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np00000 Policía_Federal Policía_Federal)
+                (sn
+                  (grup.nom.fs
+                    (Fpa -Fpa- -Fpa-)
+                    (np00000 FBI FBI)
+                    (Fpt -Fpt- -Fpt-)))))))))
+    (grup.verb
+      (vmis3p0 comenzaron comenzar))
+    (sn-CCT
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (S.NF.P
+          (participi
+            (aq0msp pasado pasado)))
+        (W 29_de_noviembre [??:29/11/??:??.??])))
+    (sn-CD
+      (espec.fp
+        (da0fp0 las el))
+      (grup.nom.fp
+        (ncfp000 excavaciones excavación)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (morfema.verbal-PASS
+            (p0000000 se se))
+          (grup.verb
+            (vmis3p0 ampliaron ampliar))
+          (sp-CC
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fp
+                (dn0cp0 cuatro cuatro))
+              (grup.nom.fp
+                (ncfp000 fincas finca)
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 propiedad propiedad)
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 cartel cartel)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (espec.fs
+                                (da0fs0 la el))
+                              (grup.nom.fs
+                                (ncfs000 droga droga))))
+                          (S.F.R
+                            (relatiu-CD
+                              (pr0cn000 que que))
+                            (grup.verb
+                              (vmis3s0 encabezó encabezar))
+                            (sp-CCT
+                              (prep
+                                (sps00 hasta hasta))
+                              (sn
+                                (espec.fs
+                                  (dp3cs0 su su))
+                                (grup.nom.fs
+                                  (ncfs000 muerte muerte)
+                                  (sp
+                                    (prep
+                                      (sps00 en en))
+                                    (sn
+                                      (grup.nom.ms
+                                        (W 1997 [??:??/??/1997:??.??]))))))
+                              (Fc , ,))
+                            (sn-SUJ
+                              (grup.nom.ms
+                                (np00000 Amado_Carrillo Amado_Carrillo)))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sp-CCT
+        (prep
+          (spcms Al al))
+        (sn
+          (grup.nom.ms
+            (ncms000 inicio inicio)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fp
+                  (da0fp0 las el))
+                (grup.nom.fp
+                  (ncfp000 excavaciones excavación)))))))
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vmis3s0 manejó manejar))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 versión versión)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 periodística periodístico)))
+          (sp
+            (prep
+              (sps00 de de))
+            (S.F.C
+              (conj.subord
+                (cs que que))
+              (sp-CCL
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.mp
+                    (dd0mp0 esos ese))
+                  (grup.nom.mp
+                    (ncmp000 ranchos rancho))))
+              (grup.verb
+                (vmic3p0 podrían poder)
+                (infinitiu
+                  (vmn0000 estar estar)))
+              (S.NF.P-ATR
+                (participi
+                  (aq0fpp enterradas enterrado)))
+              (sn-SUJ
+                (espec.fp
+                  (rg más más)
+                  (sps00 de de)
+                  (di0ms0 un uno)
+                  (ncms000 centenar centenar)
+                  (sps00 de de))
+                (grup.nom.fp
+                  (ncfp000 personas persona)
+                  (sn
+                    (Fc , ,)
+                    (sp.j
+                      (prep
+                        (sps00 entre entre))
+                      (sn
+                        (grup.nom.fp
+                          (pp3fp000 ellas él))))
+                    (sn
+                      (espec.mp
+                        (Z 22 22))
+                      (grup.nom.mp
+                        (nccp000 estadounidenses estadounidense)
+                        (S.F.R
+                          (Fc , ,)
+                          (relatiu-SUJ
+                            (pr0cn000 que que))
+                          (grup.verb
+                            (vmis3p0 desaparecieron desaparecer))
+                          (sp-CCL
+                            (prep
+                              (sps00 en en))
+                            (sn
+                              (grup.nom
+                                (np00000 Ciudad_Juárez Ciudad_Juárez))))
+                          (sn.x-CCT
+                            (grup.nom.co
+                              (coord
+                                (sps00 entre entre))
+                              (grup.nom.ms
+                                (W 1993 [??:??/??/1993:??.??]))
+                              (coord
+                                (cc y y))
+                              (grup.nom.ms
+                                (W 1999 [??:??/??/1999:??.??]))))))))))))))
+      (Fc , ,))
+    (coord
+      (cc sin_embargo sin_embargo))
+    (S
+      (sadv-CC
+        (grup.adv
+          (rg sólo sólo)))
+      (grup.verb
+        (vsis3p0 fueron ser)
+        (vmp00pm localizados localizar))
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (ncmp000 restos resto)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fp
+                (dn0cp0 nueve nueve))
+              (grup.nom.fp
+                (ncfp000 personas persona)
+                (S.NF.P
+                  (participi
+                    (aq0fpp vinculadas vinculado))
+                  (sp-CREG
+                    (prep
+                      (sps00 con con))
+                    (sn
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 narcotráfico narcotráfico)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 procurador procurador)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 general general)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np00000 República República))))
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (np00000 Jorge_Madrazo Jorge_Madrazo))
+          (Fc , ,))))
+    (grup.verb
+      (vmis3s0 explicó explicar))
+    (S.F.C.co-CD
+      (conj.subord
+        (cs que que))
+      (S.F.C
+        (sn-CCT
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 víspera víspera)))
+        (grup.verb
+          (vmis3s0 concluyó concluir))
+        (sn-SUJ
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 participación participación)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (nccp000 especialistas especialista)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (np00000 FBI FBI))))))))))
+      (coord
+        (cc y y))
+      (S.F.C
+        (sadv-CCT
+          (grup.adv
+            (rg hoy hoy)))
+        (grup.verb
+          (vmis3p0 terminaron terminar))
+        (sn-SUJ
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (ncfp000 excavaciones excavación)))
+        (S.F.A-CC
+          (conj.subord
+            (cs debido_a_que debido_a_que))
+          (neg-MOD
+            (rn no no))
+          (grup.verb
+            (vaip3s0 hay haber))
+          (sn-CD.Q
+            (grup.nom.mp
+              (ncmp000 indicios indicio)
+              (sp
+                (prep
+                  (sps00 de de))
+                (S.F.C
+                  (conj.subord
+                    (cs que que))
+                  (grup.verb
+                    (vmsp3p0 existan existir))
+                  (sn-SUJ
+                    (espec.mp
+                      (rg más más))
+                    (grup.nom.mp
+                      (ncmp000 cadáveres cadáver)))
+                  (sp-CCL
+                    (prep
+                      (sps00 en en))
+                    (sn
+                      (espec.fp
+                        (da0fp0 las el))
+                      (grup.nom.fp
+                        (ncfp000 propiedades propiedad)
+                        (S.NF.P
+                          (participi
+                            (aq0fp0 confiscadas confiscado)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Madrazo Madrazo)))
+    (grup.verb
+      (vmis3s0 señaló señalar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 hallazgo hallazgo)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (dn0cp0 nueve nueve))
+              (grup.nom.mp
+                (ncmp000 cadáveres cadáver))))))
+      (grup.verb
+        (vmip3s0 demuestra demostrar))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 capacidad capacidad)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn.x
+              (grup.nom.co
+                (grup.nom.fs
+                  (ncfs000 beligerancia beligerancia))
+                (coord
+                  (cc y y))
+                (grup.nom.fs
+                  (ncfs000 violencia violencia)))))
+          (S.F.R
+            (relatiu-CD
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3p0 desarrollan desarrollar))
+            (sn-SUJ
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (nccp000 narcotraficantes narcotraficante)))))))
+    (Fp . .)))
+(
+  (S
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (nccs000 fiscal fiscal)))
+      (grup.verb
+        (vmis3s0 informó informar))
+      (sadv-MOD
+        (grup.adv
+          (rg también también)))
+      (sp-CREG
+        (prep
+          (sps00 de de))
+        (S.F.C.co
+          (conj.subord
+            (cs que que))
+          (S.F.C
+            (sn-SUJ
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (ncmp000 restos resto)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0mp0 óseos óseo)))))
+            (grup.verb
+              (vsis3p0 fueron ser)
+              (vmp00pm trasladados trasladar))
+            (sadv-CCT
+              (grup.adv
+                (rg ayer ayer)))
+            (sp-CCL
+              (prep
+                (sps00 desde desde))
+              (sn
+                (sn
+                  (grup.nom
+                    (np00000 El_Paso El_Paso)))
+                (sn.j
+                  (grup.nom
+                    (Fpa -Fpa- -Fpa-)
+                    (np00000 Texas Texas)
+                    (Fpt -Fpt- -Fpt-)))))
+            (sp-CCL
+              (prep
+                (spcms al al))
+              (sn
+                (grup.nom.ms
+                  (np00000 Estado Estado)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 mexicano mexicano)))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom
+                        (np00000 Chihuahua Chihuahua))))))))
+          (coord
+            (cc y y))
+          (S.F.C.co
+            (S.F.C
+              (sn-SUJ
+                (grup.nom.mp
+                  (pn0cp000 seis seis)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.mp
+                        (pp3mp000 ellos él))))))
+              (grup.verb
+                (vaip3p0 han haber)
+                (vsp00sm sido ser)
+                (vmp00pm identificados identificar))
+              (sp-CC
+                (sadv.j
+                  (grup.adv
+                    (rg casi casi)))
+                (sp
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.fs
+                      (dp3cs0 su su))
+                    (grup.nom.fs
+                      (ncfs000 totalidad totalidad))))))
+            (coord
+              (cc y y))
+            (S.F.C
+              (sn.e-SUJ *0*)
+              (grup.verb
+                (vmic3p0 podrían poder)
+                (infinitiu
+                  (vsn0000 ser ser)
+                  (vmp00pm entregados entregar)))
+              (sadv-CCT
+                (grup.adv
+                  (rg en_breve en_breve)))
+              (sp-CI
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.mp
+                    (dp3cp0 sus su))
+                  (grup.nom.mp
+                    (ncmp000 familiares familiar)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Madrazo Madrazo)))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmis3s0 reunió reunir))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (sp-CREG
+      (prep
+        (sps00 con con))
+      (sn
+        (grup.nom.mp
+          (ncmp000 senadores senador)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fp
+                (di0fp0 diversas diverso))
+              (grup.nom.fp
+                (ncfp000 comisiones comisión))))
+          (S.F.R
+            (sp-CI
+              (prep
+                (sps00 a a))
+              (relatiu
+                (pr0cp000 quienes quien)))
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vmis3s0 explicó explicar))
+            (sn-CD
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 mecanismo mecanismo)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 legal legal)))
+                (S.NF.P
+                  (participi
+                    (aq0msp utilizado utilizado))
+                  (sp-CAG
+                    (prep
+                      (sps00 por por))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (np00000 Procuraduría Procuraduría))))
+                  (sp-CC
+                    (prep
+                      (sps00 para para))
+                    (S.NF.C
+                      (infinitiu
+                        (vmn0000 permitir permitir))
+                      (conj.subord-ET
+                        (cs que que))
+                      (sn-CD
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 entrada entrada)
+                          (sp
+                            (prep
+                              (sps00 en en))
+                            (sn
+                              (grup.nom
+                                (np00000 México México))))
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (espec.mp
+                                (Z 72 72))
+                              (grup.nom.mp
+                                (nccp000 especialistas especialista)
+                                (sp
+                                  (prep
+                                    (sps00 de de))
+                                  (sn
+                                    (espec.fs
+                                      (da0fs0 la el))
+                                    (grup.nom.fs
+                                      (np00000 Oficina_Federal_de_Investigación Oficina_Federal_de_Investigación)
+                                      (sn
+                                        (grup.nom.fs
+                                          (Fpa -Fpa- -Fpa-)
+                                          (np00000 FBI FBI)
+                                          (Fpt -Fpt- -Fpt-))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 operación operación)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 conjunta conjunto)))
+        (sp
+          (prep
+            (sps00 para para))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 recabar recabar))
+            (sn-CD
+              (grup.nom.fp
+                (ncfp000 pruebas prueba)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0fp0 físicas físico)))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fp
+                      (ncfp000 operaciones operación)
+                      (sp
+                        (prep
+                          (spcms del del))
+                        (sn
+                          (grup.nom.ms
+                            (ncms000 cartel cartel)
+                            (sp
+                              (prep
+                                (spcms del del))
+                              (sn
+                                (grup.nom.ms
+                                  (ncms000 narcotráfico narcotráfico))))
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (grup.nom.ms
+                                  (np00000 Carrillo Carrillo)
+                                  (sn
+                                    (Fc , ,)
+                                    (grup.nom.ms
+                                      (ncmn000 alias alias)
+                                      (sn
+                                        (Fe " ")
+                                        (espec.ms
+                                          (da0ms0 El el))
+                                        (grup.nom.ms
+                                          (ncms000 señor señor)
+                                          (sp
+                                            (prep
+                                              (sps00 de de))
+                                            (sn
+                                              (espec.mp
+                                                (da0mp0 los el))
+                                              (grup.nom.mp
+                                                (ncmp000 cielos cielo)))))
+                                        (Fe " ")))
+                                    (Fc , ,)))))))))))))))))
+    (grup.verb
+      (vmis3p0 generaron generar))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (sn
+        (grup.nom
+          (np00000 México México))))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una uno))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 fuerte fuerte)))
+        (ncfs000 controversia controversia)
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (grup.nom.mp
+              (ncmp000 círculos círculo)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0mp0 políticos político))))))))
+    (sp-CC
+      (prep
+        (sps00 por por))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 entenderse entender))
+        (S.F.C-CD
+          (conj.subord
+            (cs que que))
+          (sn-SUJ
+            (grup.nom
+              (np00000 EEUU EEUU)))
+          (grup.verb
+            (vaii3s0 había haber)
+            (vmp00sm violado violar))
+          (sn-CD
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 soberanía soberanía)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom
+                    (np00000 México México)))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sp-CC
+        (prep
+          (sps00 En en))
+        (sn
+          (espec.fs
+            (dp3cs0 su su))
+          (grup.nom.fs
+            (ncfs000 reunión reunión)
+            (sp
+              (prep
+                (sps00 con con))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 senadores senador))))))
+        (Fc , ,))
+      (sn-SUJ
+        (grup.nom.ms
+          (np00000 Madrazo Madrazo)))
+      (grup.verb
+        (vmis3s0 ofreció ofrecer))
+      (sn-CD
+        (grup.nom.fp
+          (ncfp000 explicaciones explicación)
+          (sp
+            (prep
+              (sps00 sobre sobre))
+            (sn.co
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 operativo operativo)))
+              (coord
+                (cc y y))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 apoyo apoyo)
+                  (S.F.R
+                    (relatiu-CD
+                      (pr0cn000 que que))
+                    (sn.e-SUJ *0*)
+                    (grup.verb
+                      (vmis3s0 recibió recibir))
+                    (sp-CC
+                      (prep
+                        (sps00 por_parte_de por_parte_de))
+                      (sn
+                        (espec.mp
+                          (da0mp0 los el))
+                        (grup.nom.mp
+                          (ncmp000 ministerios ministerio)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn.x
+                              (grup.nom.co
+                                (grup.nom
+                                  (np00000 Gobernación Gobernación))
+                                (coord
+                                  (cc y y))
+                                (grup.nom
+                                  (np00000 Defensa Defensa))))))))))))))))
+    (Fc , ,)
+    (S
+      (sadv-MOD
+        (grup.adv
+          (rg además además)))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3s0 informó informar))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sp-CCT
+          (prep
+            (sps00 durante durante))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 operación operación))))
+        (morfema.verbal-PASS
+          (p0000000 se se))
+        (grup.verb
+          (vmis3p0 cumplieron cumplir))
+        (sn.x-SUJ
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.co
+            (grup.nom.co
+              (grup.nom.mp
+                (ncmp000 acuerdos acuerdo)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0cp0 bilaterales bilateral))))
+              (coord
+                (cc y y))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 convenios convenio)
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0cp0 internacionales internacional))))))
+            (sp.j
+              (prep
+                (sps00 en_materia_de en_materia_de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 combate combate)
+                  (sp
+                    (prep
+                      (spcms al al))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 narcotráfico narcotráfico)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (spcms Al_término_de al_término_de))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 reunión reunión)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (nccs000 fiscal fiscal)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 general general)))))
+    (grup.verb
+      (vmis3s0 recibió recibir))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 apoyo apoyo)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (ncmp000 legisladores legislador)
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vmis3p0 admitieron admitir))
+                (S.F.C-CD
+                  (conj.subord
+                    (cs que que))
+                  (S.F.C
+                    (conj.subord
+                      (cs si si))
+                    (morfema.verbal-IMPERS
+                      (p0000000 se se))
+                    (grup.verb
+                      (vmis3s0 acudió acudir))
+                    (sp-CC
+                      (prep
+                        (spcms al al))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 apoyo apoyo)
+                          (sp
+                            (prep
+                              (spcms del del))
+                            (sn
+                              (grup.nom.ms
+                                (np00000 FBI FBI))))))))
+                  (grup.verb
+                    (vsis3s0 fue ser))
+                  (S.F.A
+                    (conj.subord
+                      (cs porque porque))
+                    (sn-SUJ
+                      (grup.nom
+                        (np00000 México México)))
+                    (neg-MOD
+                      (rn no no))
+                    (grup.verb
+                      (vmip3s0 cuenta contar))
+                    (sp-CREG
+                      (prep
+                        (sps00 con con))
+                      (sn
+                        (espec.mp
+                          (da0mp0 los el))
+                        (grup.nom.mp
+                          (ncmp000 avances avance)
+                          (sp
+                            (prep
+                              (sps00 en en))
+                            (sn.co
+                              (sn
+                                (grup.nom.fs
+                                  (ncfs000 medicina medicina)
+                                  (s.a.fs
+                                    (grup.a.fs
+                                      (aq0cs0 forense forense)))))
+                              (coord
+                                (cc y y))
+                              (sn
+                                (espec.fp
+                                  (di0fp0 otras otro))
+                                (grup.nom.fp
+                                  (ncfp000 áreas área)
+                                  (S.F.R
+                                    (sp-CC
+                                      (prep
+                                        (sps00 en en))
+                                      (relatiu
+                                        (da0fp0 las el)
+                                        (pr0cn000 que que)))
+                                    (sn-SUJ
+                                      (grup.nom.fp
+                                        (nccp000 especialistas especialista)
+                                        (s.a.fp
+                                          (grup.a.fp
+                                            (aq0cp0 estadounidenses estadounidense)))))
+                                    (grup.verb
+                                      (vmis3p0 respaldaron respaldar))
+                                    (sn-CD
+                                      (espec.fp
+                                        (da0fp0 las el))
+                                      (grup.nom.fp
+                                        (ncfp000 tareas tarea)))
+                                    (sp-CCT
+                                      (prep
+                                        (sps00 durante durante))
+                                      (sn
+                                        (espec.fp
+                                          (da0fp0 las el))
+                                        (grup.nom.fp
+                                          (ncfp000 excavaciones excavación))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 operación operación)))
+    (grup.verb
+      (vmis3s0 implicó implicar))
+    (sn-CD
+      (grup.nom.mp
+        (ncmp000 trabajos trabajo)
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.mp
+              (dn0cp0 cuatro cuatro))
+            (grup.nom.mp
+              (ncmp000 ranchos rancho)
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vmip3p0 siguen seguir))
+                (sp-CC
+                  (prep
+                    (sps00 bajo bajo))
+                  (sn
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (ncms000 control control)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (np00000 Procuraduría_General_de_la_República Procuraduría_General_de_la_República)))))))))))))
+    (Fp . .)))

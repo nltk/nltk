@@ -1,0 +1,180 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np00000 Tribunal_d'_Apel·lació Tribunal_d'_Apel·lació)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (sn
+              (grup.nom
+                (np00000 Zoug Zoug)))
+            (sn.j
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (np00000 Suïssa Suïssa)
+                (Fpt -Fpt- -Fpt-)))))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 decidir decidir))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 concedir concedir))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 demora demora)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (ncms000 mes mes))))))
+      (sp-CI
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 societat societat)
+            (sn
+              (grup.nom
+                (np00000 ISMM-ISL ISMM-ISL)
+                (sn
+                  (Fc , ,)
+                  (grup.nom.fs
+                    (ncfs000 propietària propietària)
+                    (sp
+                      (prep
+                        (spcmp dels del))
+                      (sn
+                        (grup.nom.mp
+                          (ncmp000 drets dret)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom.fs
+                                (ncfs000 comercialització comercialització)))))))
+                    (sp
+                      (prep
+                        (spcmp dels del))
+                      (sn
+                        (grup.nom.mp
+                          (np00000 Mundials Mundials)
+                          (sp
+                            (prep
+                              (spcms del del))
+                            (sn.co
+                              (sn
+                                (grup.nom.ms
+                                  (W 2002 [??:??/??/2002:??.??])))
+                              (coord
+                                (cc i i))
+                              (sn
+                                (espec.ms
+                                  (da0ms0 el el))
+                                (grup.nom.ms
+                                  (W 2006 [??:??/??/2006:??.??])))))))))
+                  (Fc , ,))))))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 trobar trobar))
+        (sn-CD
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs
+            (ncfs000 solució solució)))
+        (sp-CC
+          (prep
+            (spcms al al))
+          (sn
+            (espec.ms
+              (dp3ms0 seu seu))
+            (grup.nom.ms
+              (ncms000 procediment procediment)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 fallida fallida)))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CCT
+      (espec
+        (rg Immediatament immediatament))
+      (grup.adv
+        (rg després després))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (np00000 FIFA FIFA)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 decidir decidir))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 entrar entrar))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (grup.nom.fp
+            (ncfp000 negociacions negociació))))
+      (sp-CC
+        (prep
+          (sps00 amb amb))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 grup grup)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 francès francès)))
+            (sn
+              (grup.nom
+                (np00000 Vivendi Vivendi)))
+            (S.F.R
+              (Fc , ,)
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vaip3s0 ha haver)
+                (vmp00sm mostrat mostrar))
+              (sn-CD
+                (grup.nom.ms
+                  (ncms000 interès interès)
+                  (sp
+                    (prep
+                      (sps00 a a))
+                    (S.NF.C
+                      (infinitiu
+                        (vmn0000 comprar comprar))
+                      (sn-CD
+                        (espec.fs
+                          (da0cs0 l' el))
+                        (grup.nom.fs
+                          (ncfs000 agència agència)
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0fs0 suïssa suís))))))))))))))
+    (Fp . .)))

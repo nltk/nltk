@@ -1,0 +1,947 @@
+
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 candidatura candidatura)
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 ciudad ciudad)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 japonesa japonés)))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snl
+                    (grup.nom
+                      (np0000l Osaka Osaka)))))))
+          (sp
+            (prep
+              (sps00 para para))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 albergar albergar))
+              (sna-CD
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (np0000a Juegos_Olímpicos Juegos_Olímpicos)
+                  (snd
+                    (grup.nom.ms
+                      (W 2008 [??:??/??/2008:??.??])))))))))
+      (grup.verb
+        (vmip3s0 confía confiar))
+      (sp-CREG
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fp
+            (dp3cp0 sus su))
+          (grup.nom.fp
+            (ncfp000 posibilidades posibilidad)
+            (sp
+              (prep
+                (sps00 para para))
+              (S.NF.C
+                (infinitiu
+                  (vsn0000 ser ser))
+                (sn-ATR
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (S.NF.P
+                      (participi
+                        (aq0fsp elegida elegido))
+                      (sp-CAG
+                        (prep
+                          (sps00 por por))
+                        (sn
+                          (espec.ms
+                            (da0ms0 el el))
+                          (grup.nom.ms
+                            (np00000 COI COI))))
+                      (sp-CCT
+                        (prep
+                          (sps00 en en))
+                        (sn
+                          (grup.nom.ms
+                            (W julio [??:??/07/??:??.??])
+                            (sp
+                              (prep
+                                (spcms del del))
+                              (sn
+                                (grup.nom.ms
+                                  (s.a.ms
+                                    (grup.a.ms
+                                      (aq0ms0 próximo próximo)))
+                                  (ncms000 año año)))))))))))))))
+      (Fc , ,))
+    (coord
+      (cc pero pero))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3s0 valora valorar))
+      (sp-CD
+        (prep
+          (spcms al al))
+        (sn
+          (grup.nom.ms
+            (ncms000 resto resto)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fp
+                  (da0fp0 las el))
+                (grup.nom.fp
+                  (nccp000 finalistas finalista))))
+            (sn.x
+              (Fd : :)
+              (grup.nom.co
+                (grup.nom
+                  (np0000l Pekín Pekín))
+                (Fc , ,)
+                (grup.nom
+                  (np0000l París París))
+                (Fc , ,)
+                (grup.nom
+                  (np0000l Toronto Toronto)
+                  (snl
+                    (grup.nom
+                      (Fpa -Fpa- -Fpa-)
+                      (np0000l Canadá Canadá)
+                      (Fpt -Fpt- -Fpt-))))
+                (coord
+                  (cc y y))
+                (grup.nom
+                  (np0000l Estambul Estambul)
+                  (snl
+                    (grup.nom
+                      (Fpa -Fpa- -Fpa-)
+                      (np0000l Turquía Turquía)
+                      (Fpt -Fpt- -Fpt-))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Takafumi_Isomura Takafumi_Isomura)
+        (snp.x
+          (Fc , ,)
+          (grup.nom.co
+            (grup.nom.ms
+              (ncms000 alcalde alcalde)
+              (sp
+                (prep
+                  (sps00 de de))
+                (snl
+                  (grup.nom
+                    (np0000l Osaka Osaka)))))
+            (coord
+              (cc y y))
+            (snl
+              (grup.nom.ms
+                (ncms000 presidente presidente)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sno
+                    (grup.nom.ms
+                      (np0000o Comité_de_la_Candidatura Comité_de_la_Candidatura)
+                      (sno
+                        (grup.nom.ms
+                          (Fpa -Fpa- -Fpa-)
+                          (np0000o OBC OBC)
+                          (Fpt -Fpt- -Fpt-)))))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmis3s0 explicó explicar))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (snl
+        (grup.nom
+          (np0000l Sydney Sydney))))
+    (S.F.C.co-CD
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (snl-SUJ
+          (grup.nom
+            (np0000l Pekín Pekín)))
+        (grup.verb
+          (vmip3s0 puede poder)
+          (infinitiu
+            (vmn0000 tener tener)))
+        (sn-CD.Q
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 ventaja ventaja)
+            (sp
+              (prep
+                (sps00 de de))
+              (S.F.C
+                (conj.subord
+                  (cs que que))
+                (snl-SUJ
+                  (grup.nom
+                    (np0000l China China)))
+                (sadv-CCT
+                  (grup.adv
+                    (rg nunca nunca)))
+                (grup.verb
+                  (vaip3s0 ha haber)
+                  (vmp00sm acogido acoger))
+                (sna-CD
+                  (espec.mp
+                    (di0mp0 unos uno))
+                  (grup.nom.mp
+                    (np0000a Juegos Juegos))))))))
+      (coord
+        (cc pero pero))
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (neg-MOD
+          (rn no no))
+        (grup.verb
+          (vmip3p0 deben deber)
+          (infinitiu
+            (vmn0000 compararse comparar)))
+        (sadv-CC
+          (grup.adv
+            (rg culturalmente culturalmente)))
+        (sn-SUJ
+          (espec.mp
+            (dn0mp0 ambos ambos))
+          (grup.nom.mp
+            (ncmp000 países país)))
+        (S.F.A-CC
+          (conj.subord
+            (cs porque porque))
+          (sn-SUJ
+            (espec.ms
+              (di0cs0 cada cada))
+            (grup.nom.ms
+              (pi0ms000 uno uno)))
+          (morf.pron
+            (p0300000 se él))
+          (grup.verb
+            (vaip3s0 ha haber)
+            (vmp00sm desarrollado desarrollar))
+          (sp-CC
+            (prep
+              (sps00 por por))
+            (sn
+              (espec.ms
+                (dp3cs0 su su))
+              (grup.nom.ms
+                (ncms000 lado lado)))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Isomura Isomura)))
+    (grup.verb
+      (vmis3s0 apuntó apuntar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (snl-SUJ
+        (grup.nom
+          (np0000l Pekín Pekín)))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vmii3s0 tenía tener)
+        (sp
+          (prep
+            (sps00 por por))
+          (sn
+            (grup.nom.s
+              (pt0cs000 qué qué))))
+        (infinitiu
+          (vsn0000 ser ser)))
+      (sn-ATR
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 favorita favorita)))
+      (S.F.A.co-CC
+        (Fc , ,)
+        (conj.subord
+          (cs porque porque))
+        (S.F.A
+          (sn.co-SUJ
+            (coord
+              (rg tanto tanto))
+            (snl
+              (grup.nom
+                (np0000l Osaka Osaka)))
+            (coord
+              (cs como como))
+            (sn
+              (espec.fp
+                (da0fp0 las el))
+              (grup.nom.fp
+                (pi0cp000 demás demás))))
+          (grup.verb
+            (vmip3p0 tienen tener))
+          (sn-CD.Q
+            (grup.nom.mp
+              (ncmp000 proyectos proyecto)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0cp0 importantes importante))))))
+        (coord
+          (cc y y))
+        (S.F.A
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vsip3p0 son ser))
+          (sn-ATR
+            (grup.nom.fp
+              (s.a.fp
+                (grup.a.fp
+                  (aq0cp0 grandes grande)))
+              (ncfp000 ciudades ciudad))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 alcalde alcalde)
+        (sp
+          (prep
+            (sps00 de de))
+          (snl
+            (grup.nom
+              (np0000l Osaka Osaka))))))
+    (grup.verb
+      (vmis3s0 fundamentó fundamentar))
+    (sn-CD
+      (espec.fp
+        (dp3cp0 sus su))
+      (grup.nom.fp
+        (ncfp000 opciones opción)))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn.co
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (aq0cs0 gran gran)))
+            (ncms000 plan plan)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 reurbanización reurbanización))))
+            (S.F.R
+              (relatiu-SUJ.p
+                (pr0cn000 que que))
+              (morfema.verbal-PASS
+                (p0000000 se se))
+              (grup.verb
+                (vmif3s0 culminará culminar))
+              (sp-CCT
+                (prep
+                  (sps00 en en))
+                (snd
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (W año_2007 [??:??/??/2007:??.??])))))))
+        (Fc , ,)
+        (sn
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (s.a.fp
+              (grup.a.fp
+                (aq0fp0 modernas moderno)))
+            (ncfp000 infraestructuras infraestructura)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fp
+                  (ncfp000 telecomunicaciones telecomunicación))))))
+        (Fc , ,)
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 protección protección)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncms000 medio_ambiente medio_ambiente))))))
+        (Fc , ,)
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 seguridad seguridad)))
+        (coord
+          (cc y y))
+        (sn
+          (espec.ms
+            (da0ns0 lo el))
+          (grup.nom.ms
+            (ncms000 atractivo atractivo)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncms000 proyecto proyecto)
+                  (S.F.R.co
+                    (Fc , ,)
+                    (S.F.R
+                      (sn-SUJ
+                        (espec.fp
+                          (pr0fp000 cuyas cuyo))
+                        (grup.nom.fp
+                          (ncfp000 instalaciones instalación)))
+                      (sadv-CCT
+                        (grup.adv
+                          (rg ya ya)))
+                      (grup.verb
+                        (vmip3p0 están estar))
+                      (S.NF.P-ATR
+                        (sp-CC
+                          (prep
+                            (sps00 en en))
+                          (sn
+                            (grup.nom.fs
+                              (s.a.fs
+                                (grup.a.fs
+                                  (aq0fs0 buena buen)))
+                              (ncfs000 parte parte))))
+                        (participi
+                          (aq0fpp construidas construido))))
+                    (coord
+                      (cc y y))
+                    (S.F.R
+                      (relatiu-SUJ
+                        (pr0cn000 que que))
+                      (grup.verb
+                        (vmif3p0 tendrán tener))
+                      (sn-CD.Q
+                        (espec.ms
+                          (dp3cs0 su su))
+                        (grup.nom.ms
+                          (ncms000 centro centro)
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0ms0 neurálgico neurálgico)))))
+                      (sp-CCL
+                        (prep
+                          (sps00 en en))
+                        (sn
+                          (espec.fp
+                            (dn0cp0 tres tres))
+                          (grup.nom.fp
+                            (ncfp000 islas isla)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CD.r
+      (prep
+        (sps00 A a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 principal principal)))
+          (snl
+            (Fc , ,)
+            (grup.nom.fs
+              (np0000l Maishima Maishima))
+            (Fc , ,)))))
+    (morfema.verbal-IMPERS
+      (p0000000 se se))
+    (sn-CD.r
+      (grup.nom.fs
+        (pp3fsa00 la él)))
+    (grup.verb
+      (vmif3s0 denominará denominar))
+    (snl-CPRED.CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (np0000l Isla_Olímpica Isla_Olímpica)))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (sadv-MOD
+      (grup.adv
+        (rg También también)))
+    (grup.verb
+      (vmis3s0 resaltó resaltar))
+    (sp-CC
+      (prep
+        (cs como como))
+      (sn
+        (grup.nom.mp
+          (ncmp000 hechos hecho)
+          (s.a.mp
+            (grup.a.mp
+              (ncfs000 clave clave)))
+          (sp
+            (prep
+              (sps00 para para))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 futuro futuro)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 candidatura candidatura))))))))))
+    (sn.co-CD
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 experiencia experiencia)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 organizativa organizativo)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (sn
+                (grup.nom.mp
+                  (ncmp000 torneos torneo)
+                  (s.a.mp.x
+                    (grup.a.mp.co
+                      (grup.a.mp
+                        (aq0mp0 deportivos deportivo))
+                      (coord
+                        (cc y y))
+                      (grup.a.mp
+                        (aq0cp0 culturales cultural))))))
+              (sna.j
+                (Fpa -Fpa- -Fpa-)
+                (grup.nom.fs
+                  (np0000a Exposición_Mundial Exposición_Mundial)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snd
+                      (grup.nom.ms
+                        (W 1970 [??:??/??/1970:??.??])))))
+                (Fpt -Fpt- -Fpt-))))))
+      (Fc , ,)
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 estabilidad estabilidad)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 política política)))))
+      (coord
+        (cc y y))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 fuerza fuerza)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 financiera financiero))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Tras tras))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 opinar opinar))
+        (S.F.C-CD
+          (conj.subord
+            (cs que que))
+          (sn-SUJ
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 disputa disputa)
+              (sp
+                (prep
+                  (spcms del del))
+                (sna
+                  (grup.nom.ms
+                    (np0000a Mundial Mundial)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 fútbol fútbol))))
+                    (snd
+                      (grup.nom.ms
+                        (W 2002 [??:??/??/2002:??.??])))
+                    (S.NF.P
+                      (Fc , ,)
+                      (participi
+                        (aq0msp coorganizado coorganizado))
+                      (sp-CAG
+                        (prep
+                          (sps00 por por))
+                        (sn.x
+                          (grup.nom.co
+                            (grup.nom
+                              (np0000o Japón Japón))
+                            (coord
+                              (cc y y))
+                            (grup.nom
+                              (np0000o Corea_del_Sur Corea_del_Sur)))))
+                      (Fc , ,)))))))
+          (grup.verb
+            (vsif3s0 será ser))
+          (sn-ATR
+            (espec.ms
+              (di0ms0 un uno))
+            (grup.nom.ms
+              (ncms000 factor factor)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 favorable favorable)))))))
+      (Fc , ,))
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmis3s0 indicó indicar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 inversiones inversión)))
+      (Fe " ")
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vmif3p0 rebasarán rebasar))
+      (sn-CD
+        (sadv.j
+          (Fc , ,)
+          (grup.adv
+            (rg por_ejemplo por_ejemplo))
+          (Fc , ,))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 nivel nivel)
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Atlanta Atlanta)))))))
+      (Fe " "))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.fs
+        (np0000p Mikako_Kotani Mikako_Kotani)
+        (sn.x
+          (Fc , ,)
+          (grup.nom.co
+            (grup.nom.fs
+              (nccs000 medallista medallista)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 olímpica olímpico))))
+            (coord
+              (cc y y))
+            (grup.nom.fs
+              (nccs000 componente componente)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sno
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np0000o Ejecutiva_del_OBC Ejecutiva_del_OBC))))))
+          (Fc , ,))
+        (s.a.fs.co
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 natural natural)
+              (sp
+                (prep
+                  (sps00 de de))
+                (snl
+                  (grup.nom
+                    (np0000l Tokio Tokio))))))
+          (coord
+            (cc pero pero))
+          (S.F.R
+            (sn-SUJ
+              (espec.fs
+                (pr0fs000 cuya cuyo))
+              (grup.nom.fs
+                (ncfs000 madre madre)))
+            (grup.verb
+              (vsip3s0 es ser))
+            (sp-ATR
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Osaka Osaka)))))))
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 ensalzó ensalzar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 amabilidad amabilidad)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 pueblo pueblo)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (dd0fs0 esta este))
+                  (grup.nom.fs
+                    (ncfs000 ciudad ciudad))))
+              (S.F.R.co
+                (Fc , ,)
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (S.F.R
+                  (Fe " ")
+                  (grup.verb
+                    (vmip3s0 adora adorar))
+                  (sn-CD
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (ncms000 deporte deporte)))
+                  (Fe " "))
+                (coord
+                  (cc y y))
+                (S.F.R
+                  (grup.verb
+                    (vmip3s0 tiene tener))
+                  (sn-CD.Q
+                    (Fe " ")
+                    (espec.ms
+                      (di0ms0 un uno))
+                    (grup.nom.ms
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0cs0 gran gran)))
+                      (ncms000 deseo deseo)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.fs
+                            (ncfs000 amistad amistad)))))
+                    (Fe " "))
+                  (sp-CC
+                    (Fc , ,)
+                    (prep
+                      (sps00 al_margen_de al_margen_de))
+                    (sn
+                      (Fe " ")
+                      (espec.fs
+                        (di0fs0 mucha mucho))
+                      (grup.nom.fs
+                        (ncfs000 energía energía)
+                        (sp
+                          (prep
+                            (sps00 a a))
+                          (sn
+                            (grup.nom.fs
+                              (ncfs000 disposición disposición)
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sna
+                                  (espec.mp
+                                    (da0mp0 los el))
+                                  (grup.nom.mp
+                                    (np0000a Juegos Juegos))))))))
+                      (Fe " "))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (snp-SUJ
+        (grup.nom.ms
+          (np0000p Yushiro_Yagi Yushiro_Yagi)
+          (snp
+            (Fc , ,)
+            (grup.nom.ms
+              (ncms000 presidente presidente)
+              (sp
+                (prep
+                  (spcms del del))
+                (sno
+                  (grup.nom.ms
+                    (np0000o Comité_Olímpico_Japonés Comité_Olímpico_Japonés)
+                    (sno
+                      (grup.nom.ms
+                        (Fpa -Fpa- -Fpa-)
+                        (np0000o JOC JOC)
+                        (Fpt -Fpt- -Fpt-)))))))
+            (Fc , ,))))
+      (grup.verb
+        (vmis3s0 aclaró aclarar))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (S.F.AConc-AO
+          (conj.subord
+            (cs pese_a_que pese_a_que))
+          (sn-SUJ
+            (espec.ms
+              (dp3cs0 su su))
+            (grup.nom.ms
+              (ncms000 país país)))
+          (sadv-CCT
+            (grup.adv
+              (rg ya ya)))
+          (grup.verb
+            (vaip3s0 ha haber)
+            (vsp00sm sido ser))
+          (sn-ATR
+            (grup.nom.ms
+              (ncms000 escenario escenario)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sna
+                  (grup.nom.mp
+                    (np0000a Juegos_Olímpicos Juegos_Olímpicos)))))))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmip3s0 confía confiar))
+        (sp-CREG
+          (prep
+            (sps00 en en))
+          (S.F.C
+            (conj.subord
+              (cs que que))
+            (sn-SUJ
+              (espec.ms
+                (dd0ms0 ese ese))
+              (grup.nom.ms
+                (ncms000 aprendizaje aprendizaje)))
+            (sn-CI
+              (grup.nom.p
+                (pp3cpd00 les él)))
+            (grup.verb
+              (vmsp3s0 sirva servir))
+            (sp-CC
+              (prep
+                (sps00 para para))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 albergar albergar))
+                (sn-CD
+                  (grup.nom.mp
+                    (pi0mp000 otros otro)))
+                (sp-CC
+                  (prep
+                    (sps00 con con))
+                  (sn
+                    (grup.nom.fp
+                      (ncfp000 garantías garantía))))))))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3s0 añadió añadir))
+      (S.F.C.co-CD
+        (conj.subord
+          (cs que que))
+        (Fe " ")
+        (S.F.C
+          (sn-SUJ
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 candidatura candidatura)
+              (sp
+                (prep
+                  (sps00 de de))
+                (snl
+                  (grup.nom
+                    (np0000l Osaka Osaka))))))
+          (grup.verb
+            (vsip3s0 es ser))
+          (sa-ATR
+            (espec
+              (rg muy mucho))
+            (grup.a
+              (aq0fs0 sólida sólido))))
+        (coord
+          (cc y y))
+        (S.F.C
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vmip3s0 dispone disponer))
+          (sp-CREG
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (di0ms0 todo todo)
+                (da0ns0 lo el))
+              (grup.nom.ms
+                (aq0ms0 necesario necesario)))))
+        (Fe " ")))
+    (Fp . .)))

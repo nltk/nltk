@@ -1,0 +1,503 @@
+
+(
+  (S
+    (S.F.C-CD
+      (sno-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (np0000o Dirección_de_Aeronáutica_Civil Dirección_de_Aeronáutica_Civil)
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (grup.nom
+                (np0000l Honduras Honduras))))))
+      (grup.verb
+        (vaip3s0 ha haber)
+        (vmp00sm multado multar))
+      (sp.co-CD
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fp
+              (dn0cp0 tres tres))
+            (grup.nom.fp
+              (ncfp000 aerolíneas aerolínea))))
+        (coord
+          (cc y y))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.mp
+              (di0mp0 varios varios))
+            (grup.nom.mp
+              (nccp000 pilotos piloto)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (pi0fs000 una uno)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fp
+                          (pp3fp000 ellas él)))))))))))
+      (sp-CC
+        (prep
+          (sps00 por por))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 volar volar))
+          (sp-CC
+            (prep
+              (sps00 con con))
+            (sn.x
+              (grup.nom.co
+                (grup.nom.mp
+                  (ncmp000 permisos permiso)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 operación operación)))))
+                (coord
+                  (cc y y))
+                (grup.nom.fp
+                  (ncfp000 licencias licencia)
+                  (S.NF.P
+                    (participi
+                      (aq0fpp vencidas vencido)))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 informó informar))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 titular titular)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.ms
+              (dd0ms0 ese ese))
+            (grup.nom.ms
+              (ncms000 ente ente))))
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (np0000p Luis_Rolando_Leiva Luis_Rolando_Leiva)))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (sno-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 empresa empresa)
+          (sno
+            (grup.nom.fs
+              (np0000o Transportes_Aéreos_Centroamericanos Transportes_Aéreos_Centroamericanos)))
+          (sno
+            (Fpa -Fpa- -Fpa-)
+            (grup.nom.fs
+              (np0000o TACA TACA))
+            (Fpt -Fpt- -Fpt-))))
+      (grup.verb
+        (vsis3s0 fue ser)
+        (vmp00sf multada multar))
+      (sadv-CCT
+        (grup.adv
+          (rg hoy hoy)))
+      (sp-CC
+        (prep
+          (sps00 con con))
+        (snn
+          (espec.mp
+            (Z 1.000 1000))
+          (grup.nom.mp
+            (Zm lempiras lempira)
+            (snn
+              (Fpa -Fpa- -Fpa-)
+              (espec.mp
+                (Z 669 669))
+              (grup.nom.mp
+                (Zm dólares dólar))
+              (Fpt -Fpt- -Fpt-)))))
+      (S.F.A-CC
+        (Fc , ,)
+        (conj.subord
+          (cs porque porque))
+        (Fe " ")
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vaip3s0 ha haber)
+          (vmp00sm volado volar))
+        (sp-CCT
+          (prep
+            (sps00 por por))
+          (sn
+            (espec.ms
+              (di0ms0 un uno))
+            (grup.nom.ms
+              (ncms000 espacio espacio)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.mp
+                    (dn0cp0 diez diez))
+                  (grup.nom.mp
+                    (ncmp000 días día)))))))
+        (sp-CC
+          (prep
+            (sps00 con con))
+          (sn
+            (espec.ms
+              (di0ms0 un uno))
+            (grup.nom.ms
+              (ncms000 permiso permiso)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 provisional provisional)))
+              (sp
+                (prep
+                  (sps00 para para))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 operar operar))))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 dijo decir))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 funcionario funcionario)))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom.fp
+          (ncfp000 radios radio)
+          (s.a.fp
+            (grup.a.fp
+              (aq0cp0 locales local))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (sn-SUJ
+        (espec.mp
+          (di0mp0 Varios varios))
+        (grup.nom.mp
+          (nccp000 pilotos piloto)
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (grup.nom
+                (np0000o TACA TACA))))))
+      (sadv-MOD
+        (grup.adv
+          (rg también también)))
+      (grup.verb
+        (vsis3p0 fueron ser)
+        (vmp00pm multados multar))
+      (sp-CC
+        (prep
+          (sps00 con con))
+        (sn
+          (espec.fs
+            (da0fs0 la el)
+            (di0fs0 misma mismo))
+          (grup.nom.fs
+            (ncfs000 cantidad cantidad))))
+      (Fe " ")
+      (sp-CC
+        (prep
+          (sps00 por por))
+        (S.NF.C
+          (infinitiu
+            (van0000 haber haber)
+            (vmp00sm volado volar))
+          (sp-CC
+            (prep
+              (sps00 con con))
+            (sn
+              (espec.fs
+                (dp3cs0 su su))
+              (grup.nom.fs
+                (ncfs000 licencia licencia)
+                (S.NF.P
+                  (participi
+                    (aq0fsp vencida vencido))))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 añadió añadir))
+    (sn.e-SUJ *0*)
+    (Fp . .)))
+(
+  (S
+    (sp.co-CI.r
+      (sp
+        (prep
+          (sps00 A a))
+        (sn
+          (espec.fs
+            (di0fs0 una uno))
+          (grup.nom.fs
+            (ncfs000 aerolínea aerolínea)
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 estadounidense estadounidense)))
+            (S.F.R
+              (Fc , ,)
+              (sn
+                (espec.ms
+                  (pr0ms000 cuyo cuyo))
+                (grup.nom.ms
+                  (ncms000 nombre nombre)))
+              (snp
+                (grup.nom.ms
+                  (np0000p Leiva Leiva)))
+              (neg
+                (rn no no))
+              (grup.verb
+                (vmis3s0 precisó precisar)))))
+        (Fc , ,))
+      (coord
+        (cc y y))
+      (sp
+        (prep
+          (sps00 a a))
+        (sno
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 local local)))
+            (np0000o Isleña_Airlines Isleña_Airlines)))))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (sn-CI.r
+      (grup.nom.p
+        (pp3cpd00 les él)))
+    (grup.verb
+      (vmis3s0 impuso imponer))
+    (sn-SUJ
+      (grup.nom.fp
+        (ncfp000 sanciones sanción)
+        (s.a.fp
+          (grup.a.fp
+            (aq0cp0 similares similar)))))
+    (sp-CC
+      (prep
+        (sps00 por por))
+      (sn
+        (espec.fs
+          (da0fs0 la el)
+          (di0fs0 misma mismo))
+        (grup.nom.fs
+          (ncfs000 causa causa))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Leiva Leiva)))
+    (grup.verb
+      (vmis3s0 afirmó afirmar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sno-SUJ
+        (grup.nom
+          (np0000o Aeronáutica_Civil Aeronáutica_Civil)))
+      (Fe " ")
+      (grup.verb
+        (vmip3s0 está estar)
+        (gerundi
+          (vmg0000 vigilando vigilar)))
+      (sadv-CC
+        (grup.adv
+          (rg estrechamente estrechamente)))
+      (sp-CD
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp.1n
+            (ncfp000 líneas línea)
+            (s.a.fp
+              (grup.a.fp
+                (aq0fp0 aéreas aéreo))))))
+      (Fe " ")
+      (sp-CC
+        (prep
+          (sps00 ante ante))
+        (sn
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (s.a.fp
+              (grup.a.fp
+                (aq0fp0 continuas continuo)))
+            (ncfp000 quejas queja)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (ncmp000 pasajeros pasajero)))))))
+      (sp.1c
+        (Fc , ,)
+        (sadv.j
+          (grup.adv
+            (rg especialmente especialmente)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (grup.nom
+              (np0000o TACA TACA)))))
+      (sp-CC
+        (Fc , ,)
+        (prep
+          (sps00 por por))
+        (sn.co
+          (sn.co
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 constante constante)))
+                (ncms000 extravío extravío)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 equipaje equipaje))))))
+            (Fc , ,)
+            (sn
+              (grup.nom.fs
+                (ncfs000 suspensión suspensión)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 abrupta abrupto)))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 vuelos vuelo))))))
+            (coord
+              (cc o o))
+            (sn
+              (grup.nom.fs
+                (ncfs000 cancelación cancelación)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 cupos cupo)))))))
+          (S.F.AConc.j
+            (Fc , ,)
+            (conj.subord
+              (cs aunque aunque))
+            (sn-SUJ
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 usuario usuario)))
+            (grup.verb
+              (vasp3s0 haya haber)
+              (vmp00sm comprado comprar))
+            (sn-CD
+              (espec.ms
+                (dp3cs0 su su))
+              (grup.nom.ms
+                (ncms000 billete billete)))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCL
+      (prep
+        (sps00 En en))
+      (snl
+        (grup.nom
+          (np0000l Honduras Honduras))))
+    (grup.verb
+      (vmip3p0 operan operar))
+    (sn.co-SUJ
+      (sno
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 aerolíneas aerolínea)
+          (s.a.fp
+            (grup.a.fp
+              (aq0cp0 internacionales internacional)))
+          (sno
+            (grup.nom
+              (np0000o TACA TACA)))))
+      (Fc , ,)
+      (sn
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (aq0cp0 estadounidenses estadounidense)
+          (sn.x
+            (grup.nom.co
+              (grup.nom
+                (np0000o Continental Continental))
+              (coord
+                (cc y y))
+              (grup.nom
+                (np0000o American American))))))
+      (Fc , ,)
+      (sno
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (aq0fs0 española español)
+          (sno
+            (grup.nom
+              (np0000o Iberia Iberia)))))
+      (coord
+        (cc y y))
+      (sn
+        (grup.nom.fp
+          (s.a.fp
+            (grup.a.fp
+              (aq0fp0 pequeñas pequeño)))
+          (ncfp000 empresas empresa)
+          (s.a.fp.x
+            (grup.a.fp.co
+              (grup.a.fp
+                (aq0fp0 hondureñas hondureño))
+              (coord
+                (cc y y))
+              (grup.a.fp
+                (aq0fp0 cubanas cubano)))))))
+    (Fp . .)))

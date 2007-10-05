@@ -1,0 +1,146 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np00000 conductor conductor)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (np00000 Land_Rover Land_Rover))))
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (np00000 Gary_Hart Gary_Hart))
+          (Fc , ,))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (Z 36 36))
+            (grup.nom.mp
+              (ncmp000 anys any))))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vaip3s0 va anar)
+            (vmn0000 provocar provocar))
+          (sn-CCT
+            (grup.nom.ms
+              (W dimecres [dimecres:??/??/??:??.??])))
+          (sn-CD
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 catàstrofe catàstrofe)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 ferroviària ferroviari)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom
+                    (np00000 Selby Selby))))))
+          (sp-CCT
+            (Fc , ,)
+            (prep
+              (sps00 a a))
+            (sn
+              (grup.nom
+                (np00000 Anglaterra Anglaterra)))
+            (Fc , ,)))))
+    (morf.pron
+      (p0300000 s' ell))
+    (grup.verb
+      (vaic3s0 hauria haver)
+      (vmp00sm pogut poder)
+      (infinitiu
+        (vmn0000 adormir adormir)))
+    (sp-CC
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 volant volant))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 investigadors investigador)))
+    (neg-MOD
+      (rn no no))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm trobat trobar))
+    (sadv-CC
+      (grup.adv
+        (rg ara_per_ara ara_per_ara)))
+    (sn-CD
+      (espec.ms
+        (di0cs0 cap cap))
+      (grup.nom.ms
+        (ncms000 senyal senyal)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 frenada frenada))))))
+    (sp-CCL
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 lloc lloc)
+          (S.F.R
+            (relatiu-CCL
+              (pr000000 on on))
+            (sn-SUJ
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 vehicle vehicle)))
+            (grup.verb
+              (vaip3s0 va anar)
+              (vmn0000 sortir sortir))
+            (sp-CCL
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0cs0 l' el))
+                (grup.nom.fs
+                  (ncfs000 autopista autopista))))
+            (sp-CC
+              (Fc , ,)
+              (prep
+                (sps00 per per))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 caure caure))
+                (sp-CCL
+                  (prep
+                    (sps00 sobre sobre))
+                  (sn
+                    (espec.fp
+                      (da0fp0 les el))
+                    (grup.nom.fp
+                      (ncfp000 vies via)
+                      (sp
+                        (prep
+                          (spcms del del))
+                        (sn
+                          (grup.nom.ms
+                            (ncms000 tren tren)))))))))))))
+    (Fp . .)))

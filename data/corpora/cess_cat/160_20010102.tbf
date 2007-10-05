@@ -1,0 +1,179 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 pel·lícula pel·lícula)
+        (sn
+          (grup.nom
+            (Fz ' ')
+            (np00000 Un_ratoncito_duro_de_roer Un_ratoncito_duro_de_roer)
+            (Fz ' ')))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (sn
+            (grup.nom
+              (np00000 Tele_5 Tele_5)))
+          (grup.verb
+            (vaip3s0 va anar)
+            (vmn0000 emetre emetre))
+          (sn-CCT
+            (grup.nom.ms
+              (W divendres [divendres:??/??/??:??.??])
+              (S.NF.P
+                (participi
+                  (aq0msp passat passat)))))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vsn0000 ser ser))
+    (sn-ATR
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 programa programa)
+        (S.NF.P
+          (sadv-CC
+            (grup.adv
+              (rg més més)))
+          (participi
+            (aq0msp vist vist))
+          (sp-CCT
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 dia dia))))
+          (sadv-CC
+            (Fc , ,)
+            (grup.adv
+              (rg per_sobre per_sobre)
+              (sadv
+                (grup.adv
+                  (rg fins_i_tot fins_i_tot)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0cs0 l' el))
+                  (grup.nom.fs
+                    (ncfs000 estrena estrena)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 minisèrie minisèrie)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom
+                                (np00000 TVE-1 TVE-1))))
+                          (sn
+                            (grup.nom.ms
+                              (Fz ' ')
+                              (np00000 El_abuelo El_abuelo)
+                              (Fz ' '))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 film film)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 cadena cadena)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fsp privada privat))))))))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 aconseguir aconseguir))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 audiència audiència)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 mitjana mitjà)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (Z 4.338.000 4338000))
+              (grup.nom.mp
+                (ncmp000 espectadors espectador)
+                (sn
+                  (grup.nom.ms
+                    (Fpa -Fpa- -Fpa-)
+                    (Zp 29,5% 29.5/100)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 quota quota)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom.fs
+                                (ncfs000 pantalla pantalla)))))))
+                    (Fpt -Fpt- -Fpt-)))))))
+        (Fc , ,)))
+    (coord
+      (cc mentre_que mentre_que))
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 producció producció)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3s0 protagonitza protagonitzar))
+            (sn-SUJ
+              (grup.nom.ms
+                (np00000 Fernando_Fernán_Gómez Fernando_Fernán_Gómez))))))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 obtenir obtenir))
+      (sn-CD
+        (espec.mp
+          (Z 4.252.000 4252000))
+        (grup.nom.mp
+          (ncmp000 seguidors seguidor)
+          (sn
+            (grup.nom.ms
+              (Fpa -Fpa- -Fpa-)
+              (Zp 28,4% 28.4/100)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom
+                    (Fz ' ')
+                    (nc00000 share share)
+                    (Fz ' '))))
+              (Fpt -Fpt- -Fpt-))))))
+    (Fp . .)))

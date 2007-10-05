@@ -1,0 +1,344 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 cambres cambra)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 comerç comerç))))
+        (sp.co
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (grup.nom
+                (np0000l Manresa Manresa))))
+          (coord
+            (cc i i))
+          (sp
+            (prep
+              (spcms del del))
+            (snl
+              (grup.nom.ms
+                (ncms000 departament departament)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 francès francès)))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snl
+                    (espec.fs
+                      (da0cs0 l' el))
+                    (grup.nom.fs
+                      (np0000l Ariège Ariège))))))))))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm arribat arribar))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 acord acord)
+          (sp
+            (prep
+              (sps00 per per))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 participar participar))
+              (sp-CREG
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.ms
+                    (di0ms0 un un))
+                  (grup.nom.ms
+                    (ncms000 programa programa)
+                    (sna
+                      (grup.nom
+                        (np0000a Interreg Interreg)))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sno
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (np0000o Unió_Europea Unió_Europea))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 A_través_d' a_través_de))
+      (sn
+        (espec.ms
+          (dd0ms0 aquest aquest))
+        (grup.nom.ms
+          (ncms000 programa programa)
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3s0 pretén pretendre))
+            (S.NF.C-CD
+              (infinitiu
+                (vmn0000 promoure promoure))
+              (sn.co-CD
+                (sn.co
+                  (sn
+                    (espec.mp
+                      (da0mp0 els el))
+                    (grup.nom.mp
+                      (ncmp000 intercanvis intercanvi)))
+                  (coord
+                    (cc i i))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 cooperació cooperació))))
+                (sp.j
+                  (prep
+                    (sps00 entre entre))
+                  (sn.co
+                    (sno
+                      (grup.nom
+                        (np0000o França França)))
+                    (coord
+                      (cc i i))
+                    (sno
+                      (espec.ms
+                        (da0cs0 l' el))
+                      (grup.nom.ms
+                        (ncms000 estat estat)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0ms0 espanyol espanyol)))))))))
+            (Fc , ,)))))
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 les el)
+        (dn0fp0 dues dos))
+      (grup.nom.fp
+        (ncfp000 cambres cambra)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 comerç comerç))))))
+    (grup.verb
+      (vmip3p0 volen voler)
+      (infinitiu
+        (vmn0000 fomentar fomentar)))
+    (sn-CD
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (ncms000 intercanvi intercanvi)
+        (sp
+          (prep
+            (sps00 entre entre))
+          (sn
+            (grup.nom.fp
+              (ncfp000 empreses empresa)
+              (s.a.fp.x
+                (grup.a.fp.co
+                  (grup.a.fp
+                    (aq0fp0 catalanes català))
+                  (coord
+                    (cc i i))
+                  (grup.a.fp
+                    (aq0fp0 franceses francès)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 acord acord)
+        (S.F.R
+          (sp-CC
+            (prep
+              (spcms al al))
+            (relatiu
+              (pr0cs000 qual qual)))
+          (grup.verb
+            (vaip3p0 han haver)
+            (vmp00sm arribat arribar))
+          (sn-SUJ
+            (espec.fp
+              (da0fp0 les el)
+              (dn0fp0 dues dos))
+            (grup.nom.fp
+              (ncfp000 institucions institució)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0cp0 camerals cameral))))))))
+    (sadv-MOD
+      (grup.adv
+        (rg també també)))
+    (grup.verb
+      (vmip3s0 contempla contemplar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 realització realització)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fp
+              (ncfp000 trobades trobada)
+              (sp
+                (prep
+                  (sps00 entre entre))
+                (sn.x
+                  (grup.nom.co
+                    (grup.nom.fp
+                      (ncfp000 institucions institució))
+                    (Fc , ,)
+                    (grup.nom.mp
+                      (ncmp000 centres centre)
+                      (sp
+                        (prep
+                          (sps00 d' de))
+                        (grup.nom.fs
+                          (ncfs000 innovació innovació))))
+                    (coord
+                      (cc i i))
+                    (grup.nom.fp
+                      (ncfp000 accions acció)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.fs
+                            (ncfs000 formació formació)))))))))))
+        (sp
+          (Fc , ,)
+          (prep
+            (sps00 entre entre))
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.fp
+                (di0cp0 altres altre))
+              (grup.nom.fp
+                (ncfp000 iniciatives iniciativa)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (pd0ms000 Aquest aquest)))
+    (neg-MOD
+      (rn no no))
+    (grup.verb
+      (vsif3s0 serà ser))
+    (sn-ATR
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (ao0ms0 primer primer)))
+        (ncms000 contacte contacte)
+        (sp
+          (prep
+            (sps00 entre entre))
+          (sn
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (ncfp000 cambres cambra)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 comerç comerç))))
+              (s.a.fs.x
+                (grup.a.fs.co
+                  (grup.a.fs
+                    (aq0fs0 bagenca bagenc))
+                  (coord
+                    (cc i i))
+                  (grup.a.fs
+                    (aq0fs0 francesa francès)))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (sps00 Des_de des_de))
+      (sn
+        (vmip3s0 fa fer)
+        (ncmp000 anys any))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 les el)
+        (dn0fp0 dues dos))
+      (grup.nom.fp
+        (ncfp000 institucions institució)))
+    (grup.verb
+      (vmip3p0 mantenen mantenir))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 relació relació)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (morfema.verbal-PASS
+            (p0000000 s' es))
+          (grup.verb
+            (vaip3s0 ha haver)
+            (vmp00sm concretat concretar))
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (sn
+              (grup.nom.fp
+                (ncfp000 trobades trobada)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0cp0 empresarials empresarial)))
+                (sp
+                  (prep
+                    (sps00 entre entre))
+                  (sn
+                    (grup.nom.fp
+                      (ncfp000 companyies companyia)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.fp
+                            (da0fp0 les el)
+                            (dn0fp0 dues dos))
+                          (grup.nom.fp
+                            (ncfp000 bandes banda)
+                            (sp
+                              (prep
+                                (spcmp dels del))
+                              (snl
+                                (grup.nom.mp
+                                  (np0000l Pirineus Pirineus))))))))))))))))
+    (Fp . .)))

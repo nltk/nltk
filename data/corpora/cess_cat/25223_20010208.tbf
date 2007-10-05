@@ -1,0 +1,440 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (np00000 Universitat_de_Vic Universitat_de_Vic)))
+    (grup.verb
+      (vmip3s0 reprèn reprendre))
+    (sadv-CCT
+      (grup.adv
+        (rg demà demà)
+        (sn
+          (grup.nom.ms
+            (W divendres [divendres:??/??/??:??.??])))))
+    (sn-CD
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 contactes contacte)
+        (sp
+          (prep
+            (sps00 amb amb))
+          (sn
+            (espec.mp
+              (da0mp0 els el))
+            (grup.nom.mp
+              (ncmp000 partits partit)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0mp0 polítics polític)))
+              (s.a.mp
+                (grup.a.mp
+                  (aq0mp0 catalans català))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Dins dins))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 ronda ronda)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (ncfp000 visites visita))))
+          (S.NF.P
+            (Fc , ,)
+            (participi
+              (aq0fsp destinada destinat))
+            (sp.co-CREG
+              (sp
+                (prep
+                  (sps00 a a))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 parlar parlar))
+                  (sp-CREG
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 situació situació)
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0cs0 actual actual)))
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (ncfs000 institució institució)))))))))
+              (coord
+                (cc i i))
+              (sp
+                (prep
+                  (sps00 a a))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 presentar presentar))
+                  (sn-CD
+                    (espec.mp
+                      (da0mp0 els el))
+                    (grup.nom.mp
+                      (ncmp000 projectes projecte)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.ms
+                            (ncms000 futur futur)))))))))
+            (Fc , ,)))))
+    (sadv-CCT
+      (grup.adv
+        (rg demà demà)))
+    (grup.verb
+      (vmif3s0 visitarà visitar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 universitat universitat)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 osonenca osonenc)))))
+    (sn-SUJ
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 delegació delegació)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (np00000 PPC PPC))))
+        (S.NF.P
+          (participi
+            (aq0fsp encapçalada encapçalat))
+          (sp-CAG
+            (prep
+              (spcms pel pel))
+            (sn
+              (grup.nom.ms
+                (ncms000 secretari secretari)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 general general)))
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 partit partit))))
+                (sn
+                  (Fc , ,)
+                  (grup.nom.ms
+                    (np00000 Alberto_Fernández_Díaz Alberto_Fernández_Díaz)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 ronda ronda)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.fp
+              (ncfp000 entrevistes entrevista)
+              (sp
+                (prep
+                  (sps00 amb amb))
+                (sn
+                  (espec.mp
+                    (da0mp0 els el))
+                  (grup.nom.mp
+                    (ncmp000 partits partit)
+                    (s.a.mp
+                      (grup.a.mp
+                        (aq0mp0 polítics polític)))
+                    (s.a.mp
+                      (grup.a.mp
+                        (aq0mp0 catalans català)))))))))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 començar començar))
+    (sn-CCT
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (W mes_de_novembre [??:??/11/??:??.??])))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 entrevista entrevista)
+          (sp
+            (prep
+              (sps00 amb amb))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 diputat diputat)
+                (sp
+                  (prep
+                    (sps00 d' de))
+                  (sn
+                    (grup.nom
+                      (np00000 ERC ERC))))
+                (sn
+                  (Fc , ,)
+                  (grup.nom.ms
+                    (np00000 Josep_Huguet Josep_Huguet)))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (sps00 Fins fins))
+      (sadv
+        (grup.adv
+          (rg ara ara)))
+      (Fc , ,))
+    (sp-CC
+      (prep
+        (sps00 en_el_marc_d' en_el_marc_de))
+      (sn
+        (espec.mp
+          (dd0mp0 aquests aquest))
+        (grup.nom.mp
+          (ncmp000 contactes contacte)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (np00000 Universitat_de_Vic Universitat_de_Vic)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm mantingut mantenir))
+    (sn-CD
+      (grup.nom.mp
+        (ncmp000 contactes contacte)
+        (sp
+          (prep
+            (sps00 amb amb))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (np00000 PSC PSC))))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmif3p0 continuaran continuar))
+          (sp-CCT
+            (prep
+              (sps00 a a))
+            (sn
+              (grup.nom.fp
+                (ncfp000 finals final)
+                (sp
+                  (prep
+                    (sps00 d' de))
+                  (sn
+                    (espec.ms
+                      (dd0ms0 aquest aquest))
+                    (grup.nom.ms
+                      (ncms000 mes mes)))))))
+          (sp-CC
+            (prep
+              (sps00 amb amb))
+            (sn
+              (espec.fs
+                (di0fs0 una un))
+              (grup.nom.fs
+                (ncfs000 visita visita)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (nccs000 líder líder)
+                      (sp
+                        (prep
+                          (spcmp dels del))
+                        (sn
+                          (grup.nom.mp
+                            (nccp000 socialistes socialista)
+                            (s.a.mp
+                              (grup.a.mp
+                                (aq0mp0 catalans català))))))
+                      (sn
+                        (Fc , ,)
+                        (grup.nom.ms
+                          (np00000 Pasqual_Maragall Pasqual_Maragall))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fp
+          (da0fp0 Les el))
+        (grup.nom.fp
+          (ncfp000 trobades trobada)))
+      (morfema.verbal-PASS
+        (p0000000 es es))
+      (grup.verb
+        (vmif3p0 reprendran reprendre))
+      (sn-CCT
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (W dia_26_de_març [??:26/3/??:??.??])))
+      (sp-CC
+        (prep
+          (sps00 amb amb))
+        (sn
+          (grup.nom
+            (np00000 Convergència_i_Unió Convergència_i_Unió)))))
+    (coord
+      (cc i i))
+    (S*
+      (sadv
+        (grup.adv
+          (rg posteriorment posteriorment))
+        (Fc , ,))
+      (sp
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs
+            (ncfs000 data data)
+            (sp
+              (sadv.j
+                (grup.adv
+                  (rg encara encara)))
+              (sp
+                (prep
+                  (sps00 per per))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 determinar determinar)))))))
+        (Fc , ,))
+      (sp
+        (prep
+          (sps00 amb amb))
+        (sn
+          (grup.nom
+            (np00000 IC-V IC-V)))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Per per))
+      (sp
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (np00000 Universitat_de_Vic Universitat_de_Vic))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (dd0mp0 aquests aquest))
+      (grup.nom.mp
+        (ncmp000 contactes contacte)))
+    (grup.verb
+      (vmip3p0 permeten permetre))
+    (S.NF.C.co-CD
+      (S.NF.C
+        (infinitiu
+          (vmn0000 conèixer conèixer))
+        (sn-CD
+          (espec.mp
+            (da0mp0 els el)
+            (di0mp0 diversos divers))
+          (grup.nom.mp
+            (ncmp000 corrents corrent)
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 opinió opinió))))
+            (sp
+              (prep
+                (sps00 sobre sobre))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 institució institució)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 osonenca osonenc)))))))))
+      (coord
+        (cc i i))
+      (S.NF.C
+        (sadv.j-CCT
+          (grup.adv
+            (rg alhora alhora))
+          (Fc , ,))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 donar_a_conèixer donar_a_conèixer))
+          (sp-CC
+            (prep
+              (sps00 entre entre))
+            (sn
+              (espec.mp
+                (da0mp0 els el))
+              (grup.nom.mp
+                (ncmp000 polítics polític))))
+          (sn.co-CD
+            (sn.co-CD
+              (sn
+                (espec.fp
+                  (da0fp0 les el))
+                (grup.nom.fp
+                  (ncfp000 inquietuds inquietud)))
+              (coord
+                (cc i i))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 projectes projecte))))
+            (sp.j
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np00000 Universitat Universitat))))))))
+    (Fp . .)))

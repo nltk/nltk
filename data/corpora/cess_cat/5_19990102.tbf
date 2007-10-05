@@ -1,0 +1,181 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 majoria majoria)
+        (sp
+          (prep
+            (spcmp dels del))
+          (sn
+            (grup.nom.mp
+              (nccp000 analistes analista)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0mp0 nord-americans nord-americà))))))))
+    (grup.verb
+      (vmip3p0 anticipen anticipar))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 important important)))
+        (ncms000 impacte impacte)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (ncms000 euro euro))))
+        (sp.co
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 dòlar dòlar))))
+          (coord
+            (cc i i))
+          (sp
+            (prep
+              (sps00 sobre sobre))
+            (sn
+              (espec.mp
+                (da0mp0 els el))
+              (grup.nom.mp
+                (ncmp000 mercats mercat)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0mp0 financers financer)))
+                (sp
+                  (prep
+                    (spcmp dels del))
+                  (sn
+                    (grup.nom.mp
+                      (np00000 EUA EUA))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sp-CC
+        (prep
+          (sps00 Per per))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (grup.nom.mp
+              (pi0mp000 uns un)))))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vsif3s0 serà ser))
+      (sa-ATR
+        (sa
+          (sadv
+            (grup.adv
+              (rg més més)))
+          (grup.a
+            (aq0ms0 fort fort)))
+        (S.F.AComp*.j
+          (conj.subord
+            (cs que que))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 dòlar dòlar))))))
+    (Fc , ,)
+    (S
+      (sp-CC
+        (prep
+          (sps00 per per))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (grup.nom.mp
+              (pi0cp000 altres altre)))))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vsif3s0 serà ser))
+      (sa-ATR
+        (espec
+          (rg més més))
+        (grup.a
+          (aq0cs0 feble feble)))
+      (sp.co-CC
+        (sp
+          (prep
+            (sps00 per per))
+          (sn
+            (espec.ms
+              (di0ms0 un un))
+            (grup.nom.ms
+              (ncms000 creixement creixement)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 inferior inferior)))
+              (sp
+                (prep
+                  (spcms al al))
+                (sn
+                  (grup.nom.ms
+                    (S.NF.P
+                      (participi
+                        (aq0msp previst previst)))))))))
+        (coord
+          (cc i i))
+        (sp
+          (prep
+            (spcmp pels pel))
+          (sn
+            (grup.nom.mp
+              (ncmn000 tipus tipus)
+              (sp
+                (prep
+                  (sps00 d' de))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 interès interès))))
+              (s.a.mp
+                (espec
+                  (rg més més))
+                (grup.a.mp
+                  (aq0mp0 baixos baix))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (sadv-MOD
+      (grup.adv
+        (rg També també)))
+    (grup.verb
+      (vmip3p0 preveuen preveure))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 alça alça)
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 mercat mercat)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 deute deute)))))))))
+    (Fp . .)))

@@ -1,0 +1,107 @@
+
+(
+  (S
+    (sn
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (nccs000 general general)))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmis3s0 abstuvo abstener))
+    (sp
+      (prep
+        (sps00 a a))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 detallar detallar))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 tipo tipo)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 misión misión)
+                  (S.F.R
+                    (relatiu
+                      (pr0cn000 que que))
+                    (sn
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 batallón batallón)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0ms0 sudafricano sudafricano)))))
+                    (grup.verb
+                      (vmif3s0 hará hacer))
+                    (sp
+                      (prep
+                        (sps00 en en))
+                      (sn
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (ncms000 marco marco)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (espec.fs
+                                (da0fs0 la el))
+                              (grup.nom.fs
+                                (ncfs000 misión misión)
+                                (sp
+                                  (prep
+                                    (sps00 de de))
+                                  (sn
+                                    (grup.nom.fs
+                                      (ncfs000 paz paz))))
+                                (sp
+                                  (prep
+                                    (sps00 en en))
+                                  (snl
+                                    (espec.ms
+                                      (da0ms0 el el))
+                                    (grup.nom.ms
+                                      (np0000l Congo Congo))))))))))))))))))
+    (S.NF.A
+      (Fc , ,)
+      (gerundi
+        (vmg0000 admitiendo admitir))
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 situación situación)
+            (sp
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.ms
+                  (dd0ms0 este este))
+                (grup.nom.ms
+                  (ncms000 país país))))))
+        (grup.verb
+          (vmip3s0 continúa continuar)
+          (gerundi
+            (vsg0000 siendo ser)))
+        (sa.x
+          (grup.a.co
+            (Fe " ")
+            (grup.a
+              (aq0fs0 compleja complejo))
+            (coord
+              (cc y y))
+            (grup.a
+              (aq0cs0 sensible sensible))
+            (Fe " ")))))
+    (Fp . .)))

@@ -1,0 +1,277 @@
+
+(
+  (S
+    (S.F.C.co-CD
+      (S.F.C
+        (sn.e-SUJ *0*)
+        (neg-MOD
+          (rn No no))
+        (grup.verb
+          (vmip1p0 tenemos tener)
+          (cs que que)
+          (infinitiu
+            (vmn0000 pensar pensar)))
+        (sp-CREG
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 posible posible)))
+              (ncfs000 ausencia ausencia)
+              (sp
+                (prep
+                  (sps00 de de))
+                (snp
+                  (grup.nom.ms
+                    (np0000p Oberto Oberto)))))))
+        (Fc , ,))
+      (coord
+        (cc y y))
+      (S.F.C*
+        (sadv-MOD
+          (grup.adv
+            (rg sí sí)))
+        (grup.verb
+          (infinitiu
+            (vmn0000 tratar tratar)
+            (sps00 de de)
+            (infinitiu
+              (vmn0000 hacer hacer))))
+        (sn-CD
+          (grup.nom.fp
+            (s.a.fp
+              (grup.a.fp
+                (ao0fp0 segundas segundo)))
+            (ncfp000 ayudas ayuda))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 aseveró aseverar))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (nccs000 escolta escolta)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 argentino argentino)))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg Por_último por_último))
+      (Fc , ,))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Espil Espil)))
+    (grup.verb
+      (vmis3s0 reconoció reconocer))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 solución solución)
+          (sp
+            (prep
+              (sps00 para para))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 frenar frenar))
+              (sn-CD
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 poderoso poderoso)))
+                  (ncms000 juego juego)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0cs0 interior interior)))
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sno
+                      (grup.nom.ms
+                        (ncms000 conjunto conjunto)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0ms0 catalán catalán)))
+                        (sp
+                          (Fc , ,)
+                          (prep
+                            (sps00 con con))
+                          (sn
+                            (grup.nom.mp
+                              (ncmp000 jugadores jugador)
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sn.x
+                                  (espec.fs
+                                    (da0fs0 la el))
+                                  (grup.nom.co
+                                    (grup.nom.co
+                                      (grup.nom.fs
+                                        (ncfs000 envergadura envergadura))
+                                      (coord
+                                        (cc y y))
+                                      (grup.nom.fs
+                                        (ncfs000 fuerza fuerza)
+                                        (s.a.fs
+                                          (grup.a.fs
+                                            (aq0fs0 física físico)))))
+                                    (sp.j
+                                      (prep
+                                        (sps00 de de))
+                                      (sn.x
+                                        (grup.nom.co
+                                          (grup.nom.ms
+                                            (np0000p Roberto_Dueñas Roberto_Dueñas))
+                                          (Fc , ,)
+                                          (grup.nom.ms
+                                            (np0000p Derrick_Alston Derrick_Alston))
+                                          (coord
+                                            (cc o o))
+                                          (grup.nom.ms
+                                            (np0000p Efthimios_Rentzias Efthimios_Rentzias))))))))))
+                          (Fc , ,)))))))))))
+      (grup.verb
+        (vmif3s0 radicará radicar))
+      (sp-CREG
+        (prep
+          (sps00 en en))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 conceder conceder))
+          (sn-CD
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 tiro tiro)))
+          (sp-CI
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (dp3cs0 su su))
+              (grup.nom.fs
+                (nccs000 rival rival)))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (Fe " ")
+      (S.F.AConc-AO
+        (conj.subord
+          (cs Si_bien si_bien))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmip3p0 disponen disponer))
+        (sp-CREG
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (di0mp0 muchos mucho))
+            (grup.nom.mp
+              (ncmp000 jugadores jugador)
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vmip3p0 pueden poder)
+                  (infinitiu
+                    (vmn0000 anotar anotar)))
+                (sp-CC
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.mp
+                      (dn0cp0 tres tres))
+                    (grup.nom.mp
+                      (ncmp000 puntos punto))))
+                (S.NF.A-CC
+                  (gerundi
+                    (vmg0000 estando estar))
+                  (sa-CPRED.SUJ
+                    (grup.a
+                      (aq0mp0 solos solo))))))))
+        (Fc , ,))
+      (sn-SUJ
+        (espec.fs
+          (dp3cs0 su su))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 mejor mejor)))
+          (ncfs000 arma arma)))
+      (grup.verb
+        (vmip3s0 consiste consistir))
+      (sp-CREG
+        (prep
+          (sps00 en en))
+        (S.NF.C.co
+          (S.NF.C
+            (infinitiu
+              (vmn0000 jugar jugar))
+            (sadv-CCL
+              (grup.adv
+                (rg dentro dentro)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 zona zona)))))))
+          (coord
+            (cc y y))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 hacerlo hacer))
+            (sp-CC
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 forma forma)
+                  (s.a.fs
+                    (espec
+                      (rg muy mucho))
+                    (grup.a.fs
+                      (aq0fs0 física físico)))))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 concluyó concluir))
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 jugador jugador)
+        (S.NF.P
+          (participi
+            (aq0msp nacido nacido))
+          (sp-CCL
+            (prep
+              (sps00 en en))
+            (snl
+              (snl
+                (grup.nom
+                  (np0000l Bahía_Blanca Bahía_Blanca)))
+              (snl.j
+                (grup.nom
+                  (Fpa -Fpa- -Fpa-)
+                  (np0000l Argentina Argentina)
+                  (Fpt -Fpt- -Fpt-))))))))
+    (Fp . .)))

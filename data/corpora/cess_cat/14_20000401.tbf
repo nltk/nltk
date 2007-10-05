@@ -1,0 +1,636 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 cas cas)
+        (sn
+          (grup.nom
+            (np00000 Banesto Banesto)))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 començar començar))
+    (sn-CCT
+      (vmip3s0 fa fer)
+      (dn0cp0 sis sis)
+      (ncmp000 anys any))
+    (sn-CCT
+      (Fc , ,)
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (W 28_de_desembre_de_1993 [??:28/12/1993:??.??])))
+    (S.F.A-CC
+      (Fc , ,)
+      (conj.subord
+        (cs quan quan))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np00000 Banc_d'_Espanya Banc_d'_Espanya)))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 substituir substituir))
+      (sn-CD
+        (grup.nom.ms
+          (np00000 Mario_Conde Mario_Conde)))
+      (sp-CREG
+        (prep
+          (sps00 per per))
+        (sn
+          (grup.nom.ms
+            (np00000 Alfredo_Sáenz_Abad Alfredo_Sáenz_Abad)
+            (sn
+              (Fc , ,)
+              (grup.nom.ms
+                (ncms000 vicepresident vicepresident)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (np00000 BBV BBV)))))
+              (Fc , ,)))))
+      (sp-CCL
+        (prep
+          (sps00 al_capdavant_de al_capdavant_de))
+        (sn
+          (grup.nom
+            (np00000 Banesto Banesto)))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (grup.nom.ms
+        (W 1994 [??:??/??/1994:??.??])))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 nous nou)))
+        (ncmp000 administradors administrador)))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 presentar presentar))
+    (sp-CCT
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (W abril [??:??/04/??:??.??]))))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 demanda demanda)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 responsabilitat responsabilitat)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 civil civil))))))
+        (sp
+          (prep
+            (sps00 contra contra))
+          (sn
+            (espec.mp
+              (da0mp0 els el)
+              (Z 18 18))
+            (grup.nom.mp
+              (ncmp000 membres membre)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.ms
+                    (da0cs0 l' el))
+                  (grup.nom.ms
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0cs0 anterior anterior)))
+                    (ncms000 consell consell)
+                    (sp
+                      (prep
+                        (sps00 d' de))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 administració administració))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (sps00 Durant durant))
+      (sn.x
+        (grup.nom.co
+          (grup.nom.ms
+            (W setembre [??:??/09/??:??.??]))
+          (coord
+            (cc i i))
+          (grup.nom.ms
+            (W octubre [??:??/10/??:??.??]))))
+      (Fc , ,))
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Conde Conde)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 comparèixer comparèixer))
+    (sp-CCL
+      (prep
+        (sps00 davant davant))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np00000 Congrés_dels_Diputats Congrés_dels_Diputats))))
+    (Fp . .)))
+(
+  (S
+    (sn-CCT
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (W dia_23_de_desembre [??:23/12/??:??.??]))
+      (Fc , ,))
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Conde Conde)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 ingressar ingressar))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom
+          (np00000 Alcalá-Meco Alcalá-Meco))))
+    (sadv-CCT
+      (Fc , ,)
+      (sn.j
+        (grup.nom.mp
+          (ncmp000 dies dia)))
+      (sadv
+        (grup.adv
+          (rg després després)
+          (S.F.C*
+            (conj.subord
+              (cs que que))
+            (sn
+              (grup.nom.ms
+                (np00000 Romaní Romaní)))))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (grup.nom.ms
+        (W 1995 [??:??/??/1995:??.??])))
+    (Fp . .)))
+(
+  (S
+    (sn-CCT
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (W 30_de_gener [??:30/1/??:??.??]))
+      (Fc , ,))
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom.ms
+          (np00000 Conde Conde))
+        (coord
+          (cc i i))
+        (grup.nom.ms
+          (np00000 Romaní Romaní))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 abandonar abandonar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 presó presó)))
+    (sp-CC
+      (prep
+        (sps00 sota sota))
+      (sn
+        (grup.nom.fs
+          (ncfs000 fiança fiança))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sp-CCT
+        (prep
+          (sps00 A a))
+        (sn
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (W octubre [??:??/10/??:??.??])))
+        (Fc , ,))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 jutge jutge)
+          (sn
+            (grup.nom.ms
+              (np00000 Moreiras Moreiras)))))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 ordenar ordenar))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 presó presó)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 incondicional incondicional)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (np00000 Conde Conde))))))
+      (Fc , ,))
+    (coord
+      (cc però però))
+    (S
+      (sn.e-SUJ *0*)
+      (sn-CD
+        (grup.nom.ms
+          (pp3msa00 el ell)))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 deixar deixar))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (grup.nom.fs
+            (ncfs000 llibertat llibertat))))
+      (sp-CCT
+        (prep
+          (sps00 al_cap_de al_cap_de))
+        (sn
+          (espec.fp
+            (dn0cp0 set set))
+          (grup.nom.fp
+            (ncfp000 hores hora))))
+      (sadv-CCT
+        (Fc , ,)
+        (grup.adv
+          (rg després després)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (ncms000 informe informe)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 favorable favorable)))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 fiscalia fiscalia))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (spcms Al al))
+      (sn
+        (grup.nom.ms
+          (W desembre [??:??/12/??:??.??])))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 jutge jutge)
+        (sn
+          (grup.nom.ms
+            (np00000 García_Castellón García_Castellón)))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 reprendre reprendre))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 cas cas)))
+    (Fp . .)))
+(
+  (S
+    (sn
+      (grup.nom.ms
+        (W 1996 [??:??/??/1998:??.??])))
+    (Fp . .)))
+(
+  (S
+    (sn-CCT
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (W 8_d'_abril [??:8/4/??:??.??]))
+      (Fc , ,))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 acabar acabar))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 instrucció instrucció)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 cas cas)
+              (sn
+                (grup.nom
+                  (np00000 Banesto Banesto))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (spcms Al al))
+      (sn
+        (grup.nom.ms
+          (W maig [??:??/05/??:??.??]))))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 obrir obrir))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 judici judici)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 oral oral)))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (grup.nom.ms
+        (W 1997 [??:??/??/1997:??.??])))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 jutgessa jutgessa)
+        (sn
+          (grup.nom.fs
+            (np00000 Teresa_Palacios Teresa_Palacios)))))
+    (grup.verb
+      (vmip3s0 substitueix substituir))
+    (sn-CD
+      (grup.nom.ms
+        (np00000 García_Castellón García_Castellón)))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 instrucció instrucció))))
+    (Fp . .)))
+(
+  (S
+    (sn-CCT
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (Z 20_de_març 20_de_març))
+      (Fc , ,))
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Conde Conde)))
+    (grup.verb
+      (vsip3s0 és ser)
+      (vmp00sm condemnat condemnar))
+    (sp-CAG
+      (prep
+        (sps00 per per))
+      (sn
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (np00000 Audiència_Nacional Audiència_Nacional))))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.mp
+          (dn0cp0 quatre quatre))
+        (grup.nom.mp
+          (ncmp000 anys any)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 presó presó)))))))
+    (sp-CC
+      (prep
+        (spcms pel pel))
+      (sn
+        (grup.nom.ms
+          (ncms000 cas cas)
+          (sn
+            (grup.nom
+              (np00000 Argentia_Trust Argentia_Trust))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (W 1_de_desembre [??:01/12/??:??.??])))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 començar començar))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (nccs000 vista vista)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 oral oral)))
+        (sp
+          (prep
+            (spcms pel pel))
+          (sn
+            (grup.nom.ms
+              (ncms000 cas cas)
+              (sn
+                (grup.nom
+                  (np00000 Banesto Banesto))))))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (grup.nom.ms
+        (W 1998 [??:??/??/1998:??.??])))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (spcms Al al))
+      (sn
+        (grup.nom.ms
+          (W febrer [??:??/02/??:??.??])))
+      (Fc , ,))
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Conde Conde)))
+    (grup.verb
+      (vmip3s0 torna tornar))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom
+          (np00000 Alcalá-Meco Alcalá-Meco))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (sn
+        (grup.nom
+          (np00000 Argentia_Trust Argentia_Trust))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (grup.nom.ms
+        (W 1999 [??:??/??/1999:??.??])))
+    (Fp . .)))
+(
+  (S
+    (sn-CCT
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (W 10_d'_agost [??:10/08/??:??.??]))
+      (Fc , ,))
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Conde Conde)))
+    (grup.verb
+      (vmip3s0 surt sortir))
+    (sp-CCL
+      (prep
+        (sps00 d' de))
+      (sn
+        (grup.nom
+          (np00000 Alcalá-Meco Alcalá-Meco))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (grup.nom.fs
+          (ncfs000 llibertat llibertat)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 condicional condicional))))))
+    (sadv-CCT
+      (grup.adv
+        (rg després després)
+        (sp
+          (prep
+            (sps00 de de))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 complir complir))
+            (sn-CD
+              (espec.fp
+                (da0fp0 les el)
+                (dn0cp0 tres tres))
+              (grup.nom.fp
+                (s.a.fp
+                  (grup.a.fp
+                    (ao0fp0 quartes quart)))
+                (ncfp000 parts part)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (dp3fs0 la_seva el_seu))
+                    (grup.nom.fs
+                      (ncfs000 condemna condemna)
+                      (sp
+                        (prep
+                          (sps00 per per))
+                        (sn
+                          (grup.nom
+                            (np00000 Argentia_Trust Argentia_Trust)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-CCT
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (W 2_de_desembre [??:2/12/??:??.??]))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 cas cas)
+        (sn
+          (grup.nom
+            (np00000 Banesto Banesto)))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 quedar quedar))
+    (S.NF.P-CPRED.SUJ
+      (participi
+        (aq0msp vist vist))
+      (sp-CC
+        (prep
+          (sps00 per per))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (grup.nom.fs
+              (ncfs000 sentència sentència))))))
+    (Fp . .)))

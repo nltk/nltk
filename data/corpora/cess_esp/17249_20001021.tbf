@@ -1,0 +1,729 @@
+
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 operación operación)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 conjunta conjunto)))
+          (sp
+            (prep
+              (sps00 con con))
+            (sno
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000o Policía_Técnica_Judicial Policía_Técnica_Judicial)
+                (sno
+                  (grup.nom.fs
+                    (Fpa -Fpa- -Fpa-)
+                    (np0000o PTJ PTJ)
+                    (Fpt -Fpt- -Fpt-))))))))
+      (Fc , ,))
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (np0000o Viceministerio Viceministerio)))
+    (grup.verb
+      (vmis3s0 constató constatar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 lienzo lienzo)
+          (sp
+            (prep
+              (spcms del del))
+            (snd
+              (grup.nom.ms
+                (W siglo_XVIII [s:xviii]))))
+          (sna
+            (Fc , ,)
+            (grup.nom
+              (Fe " ")
+              (np0000a Jesús_Encarnecido_y_Azotado Jesús_Encarnecido_y_Azotado)
+              (Fe " "))
+            (Fc , ,))
+          (S.F.R
+            (relatiu-CD
+              (cs que que))
+            (sno-SUJ
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (np0000o Instituto_Nacional_de_Cultura_de_Perú Instituto_Nacional_de_Cultura_de_Perú)))
+            (grup.verb
+              (vmis3s0 denunció denunciar))
+            (sp-CCL
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.fs
+                  (dp3cs0 su su))
+                (grup.nom.fs
+                  (ncfs000 página página)
+                  (s.a.fs
+                    (grup.a.fs
+                      (ncfs000 web web))))))
+            (sp-CPRED.CD
+              (prep
+                (cs como como))
+              (S.NF.P
+                (participi
+                  (aq0msp robado robado))
+                (sp-CCT
+                  (prep
+                    (sps00 en en))
+                  (snd
+                    (grup.nom.ms
+                      (W septiembre_de_1999 [??:??/9/1999:??.??]))))
+                (sp-CCL
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 templo templo)
+                      (snl
+                        (grup.nom
+                          (np0000l Ollaytambo_del_Cuzco Ollaytambo_del_Cuzco))))))))))
+        (Fc , ,))
+      (grup.verb
+        (vmip3s0 permanece permanecer))
+      (sp-CCL
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (ncms000 apartamento apartamento)
+            (S.NF.P
+              (participi
+                (aq0msp registrado registrado))
+              (sp-CPRED
+                (prep
+                  (sps00 a_nombre_de a_nombre_de))
+                (snp
+                  (grup.nom
+                    (np0000p Díaz Díaz))))
+              (sp-CCL
+                (prep
+                  (sps00 en en))
+                (snl
+                  (grup.nom
+                    (np0000l La_Paz La_Paz))))))))
+      (sp-AO
+        (Fc , ,)
+        (prep
+          (sps00 según según))
+        (sn
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (ncms000 comunicado comunicado)
+            (S.NF.P
+              (participi
+                (aq0msp enviado enviado))
+              (sadv-CCT
+                (grup.adv
+                  (rg hoy hoy)))
+              (sp-CI
+                (prep
+                  (sps00 a a))
+                (sno
+                  (grup.nom
+                    (np0000o EFE EFE)))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (sno-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 departamento departamento)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 boliviano boliviano)))))
+      (grup.verb
+        (vaip3s0 ha haber)
+        (vmp00sm solicitado solicitar))
+      (sn-CD
+        (grup.nom.fs
+          (Fe " ")
+          (ncfs000 información información)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 técnica técnico)))
+          (sp
+            (prep
+              (spcms del del))
+            (grup.nom.ms
+              (ncms000 lienzo lienzo)))
+          (Fe " ")))
+      (sp-CI
+        (prep
+          (spcms al al))
+        (snp
+          (grup.nom.ms
+            (ncms000 director director)
+            (sp
+              (prep
+                (sps00 de de))
+              (sno
+                (grup.nom.ms
+                  (np0000o Cultura Cultura))))
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 peruano peruano)))
+            (snp
+              (Fc , ,)
+              (grup.nom.ms
+                (np0000p Luis_Repetto Luis_Repetto))
+              (Fc , ,)))))
+      (sp-CC
+        (Fe " ")
+        (prep
+          (sps00 para para))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 realizar realizar))
+          (sn-CD
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 verificación verificación)
+              (Fe " ")
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 caso caso))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmip3s0 agrega agregar))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 nota nota)))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg Además además))
+      (Fc , ,))
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (np0000o Viceministerio Viceministerio)))
+    (grup.verb
+      (vmip3s0 asegura asegurar))
+    (S.NF.C-CD
+      (infinitiu
+        (van0000 haber haber)
+        (vmp00sm hallado hallar))
+      (sna-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 pintura pintura)
+          (sna
+            (grup.nom
+              (Fe " ")
+              (np0000a Obispo_Remigio Obispo_Remigio)
+              (Fe " ")))
+          (s.a.fs
+            (Fc , ,)
+            (grup.a.fs
+              (aq0cs0 correspondiente correspondiente)
+              (sp
+                (prep
+                  (spcms al al))
+                (snd
+                  (grup.nom.ms
+                    (W siglo_XVIII [s:xviii])
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0cs0 colonial colonial)))
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 boliviano boliviano))))))))))
+      (sp-CC
+        (Fc , ,)
+        (prep
+          (sps00 en en))
+        (sn
+          (grup.nom.ms
+            (ncms000 poder poder)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncms000 diplomático diplomático))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (dd0ms0 Este este))
+        (grup.nom.ms
+          (ncms000 lienzo lienzo)))
+      (grup.verb
+        (vmip3s0 está estar))
+      (S.NF.P-ATR
+        (participi
+          (aq0msp catalogado catalogado))
+        (sp-CPRED
+          (prep
+            (cs como como))
+          (sn
+            (grup.nom.fs
+              (ncfs000 propiedad propiedad)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (di0fs0 una uno))
+                  (grup.nom.fs
+                    (ncfs000 ciudadana ciudadana)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 boliviana boliviano)))))))))))
+    (coord
+      (cc y y))
+    (S
+      (sp-AO
+        (Fc , ,)
+        (prep
+          (sps00 de_acuerdo_con de_acuerdo_con))
+        (sn
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (ncfp000 leyes ley)
+            (sp
+              (prep
+                (sps00 sobre sobre))
+              (sna
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 patrimonio patrimonio)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0cs0 cultural cultural)))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snl
+                      (grup.nom
+                        (np0000l Bolivia Bolivia)))))))))
+        (Fc , ,))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 cuadro cuadro)))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vmip3s0 puede poder)
+        (infinitiu
+          (vmn0000 salir salir)))
+      (sp-CCL
+        (prep
+          (spcms del del))
+        (sn
+          (grup.nom.ms
+            (ncms000 país país)))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 A_través_de a_través_de))
+      (sno
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (np0000o Cancillería Cancillería)))
+      (Fc , ,))
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (np0000o Viceministerio_de_Cultura Viceministerio_de_Cultura)))
+    (grup.verb
+      (vmip3s0 gestiona gestionar))
+    (sp-CC
+      (prep
+        (sps00 ante ante))
+      (sno
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (np0000o Embajada_de_Perú Embajada_de_Perú))))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un uno))
+      (grup.nom.ms
+        (ncms000 permiso permiso)
+        (sp
+          (prep
+            (sps00 para para))
+          (S.NF.C
+            (Fe " ")
+            (infinitiu
+              (vmn0000 ingresar ingresar))
+            (sp-CCL
+              (prep
+                (sps00 en en))
+              (snl
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 departamento departamento)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (snl
+                      (snl
+                        (grup.nom.ms
+                          (ncms000 edificio edificio)
+                          (snl
+                            (grup.nom.ms
+                              (np0000l Columbia Columbia)))))
+                      (sp.j
+                        (Fpa -Fpa- -Fpa-)
+                        (prep
+                          (sps00 en en))
+                        (snl
+                          (grup.nom
+                            (np0000l La_Paz La_Paz)))
+                        (Fpt -Fpt- -Fpt-)))))))
+            (sp-CC
+              (prep
+                (sps00 para para))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 continuar continuar))
+                (sp-CC
+                  (prep
+                    (sps00 con con))
+                  (sn.co
+                    (sn
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 registro registro)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0ms0 fotográfico fotográfico)))))
+                    (coord
+                      (cc y y))
+                    (sn
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 inventario inventario)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (espec.fp
+                              (da0fp0 las el))
+                            (grup.nom.fp
+                              (ncfp000 obras obra)
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sn
+                                  (grup.nom.fs
+                                    (nccs000 arte arte))))
+                              (S.NF.P
+                                (Fe " ")
+                                (participi
+                                  (aq0fpp encontradas encontrado))
+                                (sp-CAG
+                                  (prep
+                                    (sps00 por por))
+                                  (sno
+                                    (espec.fs
+                                      (da0fs0 la el))
+                                    (grup.nom.fs
+                                      (np0000o PTJ PTJ))))
+                                (sp-CC
+                                  (prep
+                                    (sps00 en en))
+                                  (sn
+                                    (espec.fs
+                                      (di0fs0 una uno))
+                                    (grup.nom.fs
+                                      (ncfs000 operación operación)
+                                      (sp
+                                        (prep
+                                          (sps00 en en))
+                                        (snd
+                                          (grup.nom.ms
+                                            (W septiembre [??:??/09/??:??.??])
+                                            (S.NF.P
+                                              (participi
+                                                (aq0msp pasado pasado)))))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C.co-CD
+      (sp.j-CC
+        (prep
+          (sps00 En en))
+        (sn
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (ncms000 registro registro)
+            (s.a.ms
+              (grup.a.ms
+                (aq0cs0 policial policial)))
+            (sp
+              (prep
+                (sps00 de de))
+              (sno
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np0000o PTJ PTJ))))
+            (snd
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (W 21_de_septiembre [??:21/9/??:??.??])))
+            (sp
+              (prep
+                (sps00 en en))
+              (snl
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 apartamento apartamento)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (snl
+                      (grup.nom.ms
+                        (ncms000 edificio edificio)
+                        (snl
+                          (grup.nom.ms
+                            (np0000l Columbia Columbia)))
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (snl
+                            (grup.nom
+                              (np0000l La_Paz La_Paz)))))))
+                  (S.F.R
+                    (Fc , ,)
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (neg-MOD
+                      (rn no no))
+                    (grup.verb
+                      (vmii3s0 figuraba figurar))
+                    (sp-CPRED.SUJ
+                      (prep
+                        (cs como como))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 residencia residencia)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (espec.ms
+                                (di0ms0 un uno))
+                              (grup.nom.ms
+                                (ncms000 diplomático diplomático)))))))
+                    (Fc , ,))))))))
+      (S.F.C.co
+        (S.F.C
+          (morfema.verbal-PASS
+            (p0000000 se se))
+          (grup.verb
+            (vmis3p0 encontraron encontrar))
+          (sn-SUJ
+            (espec.fp
+              (rg cerca cerca)
+              (sps00 de de)
+              (dn0cp0 cien cien))
+            (grup.nom.fp
+              (ncfp000 obras obra)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0cp0 coloniales colonial))))))
+        (coord
+          (cc y y))
+        (S.F.C
+          (morfema.verbal-PASS
+            (p0000000 se se))
+          (grup.verb
+            (vmis3p0 decomisaron decomisar))
+          (sn-SUJ
+            (espec.mp
+              (dn0cp0 ocho ocho))
+            (grup.nom.mp
+              (ncmp000 lienzos lienzo)))))
+      (Fc , ,))
+    (grup.verb
+      (vmip3s0 afirma afirmar))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 comunicado comunicado)))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Hasta hasta))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 momento momento)))
+      (Fc , ,))
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (np0000o Embajada_de_Perú Embajada_de_Perú)
+        (sp
+          (prep
+            (sps00 en en))
+          (snl
+            (grup.nom
+              (np0000l La_Paz La_Paz))))))
+    (neg-MOD
+      (rn no no))
+    (grup.verb
+      (vaip3s0 ha haber)
+      (vmp00sm querido querer))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 pronunciarse pronunciar))
+      (sp-AO
+        (prep
+          (sps00 sobre sobre))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 denuncia denuncia)))))
+    (S.F.A-AO
+      (Fc , ,)
+      (conj.subord
+        (cs según según))
+      (grup.verb
+        (vmis3s0 constató constatar))
+      (sno-SUJ
+        (grup.nom
+          (np0000o EFE EFE))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg Sin_embargo sin_embargo))
+      (Fc , ,))
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmis3s0 presentó presentar))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una uno))
+      (grup.nom.fs
+        (ncfs000 queja queja)))
+    (sp-CC
+      (prep
+        (sps00 ante ante))
+      (sno
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np0000o Ministerio_de_Relaciones_Exteriores Ministerio_de_Relaciones_Exteriores))))
+    (S.NF.A-CC
+      (gerundi
+        (vmg0000 alegando alegar))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 domicilio domicilio)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncms000 funcionario funcionario))))))
+        (grup.verb
+          (vsis3s0 fue ser)
+          (vmp00sm allanado allanar))
+        (sp-CC
+          (prep
+            (spcms al al))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 incumplir incumplir))
+            (sn-CD
+              (grup.nom.mp
+                (ncmp000 convenios convenio)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0cp0 internacionales internacional)))
+                (sp
+                  (prep
+                    (sps00 sobre sobre))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 inviolabilidad inviolabilidad)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn.x
+                          (grup.nom.co
+                            (grup.nom.ms
+                              (ncms000 domicilio domicilio))
+                            (coord
+                              (cc e e))
+                            (grup.nom.fs
+                              (ncfs000 inmunidad inmunidad)))))
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.mp
+                            (da0mp0 los el))
+                          (grup.nom.mp
+                            (ncmp000 diplomáticos diplomático)))))))))))))
+    (Fp . .)))

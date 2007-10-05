@@ -1,0 +1,262 @@
+
+(
+  (S
+    (Fe " ")
+    (sp-CC
+      (prep
+        (sps00 Con con))
+      (sn
+        (espec.mp
+          (dd0mp0 esos ese))
+        (grup.nom.mp
+          (ncmp000 elementos elemento))))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vmip3s0 califica calificar))
+    (snn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (Zp 70_por_ciento 70_%)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (nccs000 cliente cliente))))
+        (sn.x
+          (Fd : :)
+          (grup.nom.co
+            (grup.nom.fs
+              (ncfs000 voluntad voluntad)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.mp
+                    (ncms000 pago pago)))))
+            (coord
+              (cc y y))
+            (grup.nom.fs
+              (ncfs000 seriedad seriedad)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 persona persona))))
+              (sp
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.ms
+                    (dp3cs0 su su))
+                  (grup.nom.ms
+                    (ncms000 entorno entorno)))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 resto resto)))
+      (grup.verb
+        (vsip3s0 es ser))
+      (S.NF.C-ATR
+        (infinitiu
+          (vmn0000 medir medir))
+        (sn
+          (espec.fs
+            (dp3cs0 su su))
+          (grup.nom.fs
+            (ncfs000 capacidad capacidad)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 pago pago))))))
+        (sp
+          (prep
+            (sps00 en_función_de en_función_de))
+          (sn
+            (espec.ms
+              (dp3cs0 su su))
+            (grup.nom.ms
+              (ncms000 negocio negocio)))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 añadió añadir))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Ribadeneira Ribadeneira)))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 directivo directivo)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 entidad entidad)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 financiera financiero))))))))
+    (grup.verb
+      (vmis3s0 aseguró asegurar))
+    (sadv-ET
+      (Fc , ,)
+      (grup.adv
+        (rg además además))
+      (Fc , ,))
+    (S.F.C.co-CD
+      (conj.subord
+        (cs que que))
+      (S.F.C
+        (sn-SUJ
+          (espec.fs
+            (dd0fs0 esta este))
+          (grup.nom.fs
+            (ncfs000 labor labor)))
+        (sadv-CCT
+          (grup.adv
+            (rg ya ya)))
+        (morfema.verbal-PASS
+          (p0000000 se se))
+        (grup.verb
+          (vmip3s0 desarrolla desarrollar))
+        (sp-CCL
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.fp
+              (da0fp0 las el))
+            (grup.nom.fp
+              (ncfp000 ciudades ciudad)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn.x
+                  (grup.nom.co
+                    (grup.nom
+                      (np0000l Quito Quito))
+                    (Fc , ,)
+                    (grup.nom
+                      (np0000l Guayaquil Guayaquil))
+                    (Fc , ,)
+                    (grup.nom
+                      (np0000l Riobamba Riobamba))
+                    (Fc , ,)
+                    (grup.nom
+                      (np0000l Ambato Ambato))
+                    (Fc , ,)
+                    (grup.nom
+                      (np0000l Otavalo Otavalo)))))))))
+      (coord
+        (cc y y))
+      (S.F.C
+        (sadv-CCT
+          (grup.adv
+            (rg próximamente próximamente)))
+        (sn.e-SUJ *0*)
+        (morfema.verbal-PASS
+          (p0000000 se se))
+        (grup.verb
+          (vmif3s0 iniciará iniciar))
+        (sp-CCL
+          (prep
+            (sps00 en en))
+          (snl
+            (grup.nom
+              (np0000l Ibarra Ibarra))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np0000o Banco_Solidario Banco_Solidario)))
+    (grup.verb
+      (vmip3s0 tiene tener))
+    (sn.co-CD.Q
+      (sn
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 patrimonio patrimonio)
+          (sp
+            (prep
+              (sps00 de de))
+            (snn
+              (espec.mp
+                (Z 10,5 10.5))
+              (grup.nom.mp
+                (ncmp000 millones millón)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snn
+                    (grup.nom.mp
+                      (Zm dólares dólar)))))))))
+      (coord
+        (cc y y))
+      (sn
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 capacidad capacidad)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 crédito crédito)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 mensual mensual))))))
+          (sp
+            (prep
+              (sps00 de de))
+            (snn
+              (espec.mp
+                (Z 1,5 1.5))
+              (grup.nom.mp
+                (ncmp000 millones millón)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snn
+                    (grup.nom.mp
+                      (Zm dólares dólar)))))))
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 proyecto proyecto))))
+          (sp
+            (prep
+              (sps00 para para))
+            (sn
+              (grup.nom.mp
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0mp0 pequeños pequeño)))
+                (ncmp000 créditos crédito)))))))
+    (Fp . .)))

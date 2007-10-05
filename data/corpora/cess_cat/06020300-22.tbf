@@ -1,0 +1,500 @@
+
+(
+  (S
+    (sn.co-SUJ
+      (sno
+        (espec.fs
+          (da0cs0 L' el))
+        (grup.nom.fs
+          (np0000o Aula_d'_Humanitats Aula_d'_Humanitats)
+          (sp
+            (prep
+              (spcms del del))
+            (sno
+              (grup.nom.ms
+                (np0000o Centre_Cultural_La_Mercè Centre_Cultural_La_Mercè))))))
+      (coord
+        (cc i i))
+      (sno
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np0000o Col·legi_de_Psicòlegs_de_Girona Col·legi_de_Psicòlegs_de_Girona))))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm organitzat organitzar))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 seminari seminari)
+        (sp
+          (prep
+            (sps00 sobre sobre))
+          (sn
+            (espec.fs
+              (da0cs0 l' el))
+            (grup.nom.fs
+              (ncfs000 educació educació)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 persona persona))))
+              (sp
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.ms
+                    (da0cs0 l' el))
+                  (grup.nom.ms
+                    (ncms000 entorn entorn)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 quotidià quotidià)))
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (snd
+                        (grup.nom.ms
+                          (W segle_XXI [s:xxi]))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 seminari seminari)
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 porta portar))
+          (sp-CPRED.CD
+            (prep
+              (sps00 per per))
+            (sn
+              (grup.nom.ms
+                (ncms000 títol títol))))
+          (sna-CD
+            (grup.nom
+              (Fz ' ')
+              (np0000a Ètica_domèstica Ètica_domèstica)
+              (Fz ' '))))))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmif3s0 portarà_a_terme portar_a_terme))
+    (snd-CC
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 proper proper)))
+        (W dimecres [dimecres:??/??/??:??.??])))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (sna
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (np0000p Mercè Mercè))))
+    (Fp . .)))
+(
+  (S
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom.mp
+          (ncmp000 Psiquiatres psiquiatre))
+        (Fc , ,)
+        (grup.nom.mp
+          (ncmp000 psicòlegs psicòleg))
+        (coord
+          (cc i i))
+        (grup.nom.mp
+          (ncmp000 educadors educador)
+          (s.a.mp
+            (grup.a.mp
+              (aq0cp0 socials social))))))
+    (grup.verb
+      (vmif3p0 analitzaran analitzar))
+    (sn-CD
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 aspectes aspecte)
+        (sp
+          (prep
+            (sps00 sobre sobre))
+          (sn
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (ncms000 entorn entorn)
+              (s.a.ms.co
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 emotiu emotiu)))
+                (coord
+                  (cc i i))
+                (sp
+                  (prep
+                    (sps00 d' de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 educació educació)
+                      (sp
+                        (prep
+                          (sps00 en en))
+                        (sn
+                          (grup.nom.mp
+                            (ncmp000 valors valor))))))))
+              (S.F.R
+                (relatiu-CD
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vmip3s0 viu viure))
+                (sn-SUJ
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 nen nen)))
+                (sp-CC
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 societat societat)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0cs0 actual actual))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 seminari seminari)))
+      (grup.verb
+        (vmip3s0 vincula vincular))
+      (sn-CD
+        (grup.nom.mp
+          (ncmp000 àmbits àmbit)
+          (sp
+            (prep
+              (cs com com))
+            (sn.co
+              (sn.co
+                (sn
+                  (espec.fs
+                    (da0cs0 l' el))
+                  (grup.nom.fs
+                    (ncfs000 educació educació)))
+                (Fc , ,)
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 psicologia psicologia)))
+                (coord
+                  (cc i i))
+                (sn
+                  (espec.mp
+                    (da0mp0 els el))
+                  (grup.nom.mp
+                    (s.a.mp
+                      (grup.a.mp
+                        (aq0mp0 nous nou)))
+                    (ncmp000 hàbits hàbit)
+                    (s.a.mp.x
+                      (grup.a.mp.co
+                        (grup.a.mp
+                          (aq0cp0 socials social))
+                        (coord
+                          (cc i i))
+                        (grup.a.mp
+                          (aq0cp0 familiars familiar)))))))
+              (sp.j
+                (prep
+                  (sps00 en_relació_amb en_relació_amb))
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 creixement creixement)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 persona persona))))))))))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3s0 va anar))
+      (S.NF.P-CPRED.SUJ
+        (participi
+          (aq0msp adreçat adreçat))
+        (sp.co-CREG
+          (sp
+            (prep
+              (sps00 a a))
+            (sn
+              (grup.nom.mp
+                (nccp000 professionals professional)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.mp
+                      (di0cp0 diferents diferent))
+                    (grup.nom.mp
+                      (ncmp000 àmbits àmbit))))
+                (S.NF.P
+                  (participi
+                    (aq0mpp relacionats relacionat))
+                  (sp-CREG
+                    (prep
+                      (sps00 amb amb))
+                    (sn.co
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 formació formació)))
+                      (coord
+                        (cc i i))
+                      (sn
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (ncms000 creixement creixement)
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0cs0 interior interior)))
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (espec.fs
+                                (da0fs0 la el))
+                              (grup.nom.fs
+                                (ncfs000 persona persona))))))))))))
+          (coord
+            (cc i i))
+          (sp
+            (prep
+              (spcms al al))
+            (sn
+              (grup.nom.ms
+                (ncms000 públic públic)
+                (sadv
+                  (grup.adv
+                    (rg en_general en_general)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 jornada jornada)))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmif3s0 tancarà tancar))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 conferència conferència)
+          (S.NF.P
+            (participi
+              (aq0fsp oberta obert)))
+          (sp
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 ciutat ciutat))))
+          (sp
+            (Fc , ,)
+            (prep
+              (spcms a_càrrec_del a_càrrec_del))
+            (snp
+              (grup.nom.ms
+                (ncms000 catedràtic catedràtic)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 lingüística lingüística))))
+                (snp
+                  (grup.nom.ms
+                    (np0000p Sebastià_Serrano Sebastià_Serrano)))
+                (S.F.R
+                  (Fc , ,)
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmif3s0 analitzarà analitzar))
+                  (sn-CD
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 importància importància)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (ncfs000 comunicació comunicació))))
+                      (sp
+                        (prep
+                          (sps00 en en))
+                        (sn
+                          (espec.ms
+                            (da0ms0 el el))
+                          (grup.nom.ms
+                            (ncms000 procés procés)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (grup.nom.ms
+                                  (ncms000 creixement creixement)
+                                  (s.a.ms
+                                    (grup.a.ms
+                                      (aq0cs0 emocional emocional))))))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 matrícula matrícula)
+          (sp
+            (prep
+              (spcms al al))
+            (sn
+              (grup.nom.ms
+                (ncms000 seminari seminari))))))
+      (grup.verb
+        (vsip3s0 és ser))
+      (S.NF.P-ATR
+        (participi
+          (aq0fsp oberta obert))))
+    (coord
+      (cc i i))
+    (S.co
+      (S
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmip3s0 costa costar))
+        (snn-CD.Q
+          (espec.mp
+            (Z 30 30))
+          (grup.nom.mp
+            (Zm euros euro))))
+      (Fc , ,)
+      (S*
+        (sp
+          (prep
+            (sps00 amb amb))
+          (sn
+            (grup.nom.ms
+              (ncms000 preu preu)
+              (S.NF.P
+                (participi
+                  (aq0msp reduït reduït))))))
+        (sp
+          (prep
+            (sps00 per per))
+          (sn.co
+            (sn
+              (espec.mp
+                (di0mp0 alguns algun))
+              (grup.nom.mp
+                (ncmp000 grups grup)))
+            (coord
+              (cc i i))
+            (sn
+              (espec.mp
+                (da0mp0 els el))
+              (grup.nom.mp
+                (ncmp000 col·legiats col·legiat)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sno
+                    (grup.nom.ms
+                      (np0000o Col·legi_de_Psicòlegs Col·legi_de_Psicòlegs))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (ncfs000 assistència assistència)
+        (sp
+          (prep
+            (spcms al al))
+          (sn
+            (grup.nom.ms
+              (ncms000 seminari seminari))))))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmip3s0 convalida convalidar))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (sn
+        (espec.ms
+          (dn0ms0 un un))
+        (grup.nom.ms
+          (ncms000 crèdit crèdit)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 lliure lliure)))
+                (ncfs000 elecció elecció)))))))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (sno
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (np0000o UdG UdG))))
+    (Fp . .)))

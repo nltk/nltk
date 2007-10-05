@@ -1,0 +1,607 @@
+
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np0000o Consell_Regulador_de_la_Denominació_d'_Origen_Empordà-Costa_Brava Consell_Regulador_de_la_Denominació_d'_Origen_Empordà-Costa_Brava)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm concedit concedir))
+    (sna-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (np0000a Premi_Tòria_d'_Or Premi_Tòria_d'_Or)
+        (S.NF.P
+          (Fc , ,)
+          (participi
+            (aq0msp creat creat))
+          (sp-CC
+            (prep
+              (sps00 per per))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 premiar premiar))
+              (sn-CD
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 promoció promoció)
+                  (sp
+                    (prep
+                      (spcmp dels del))
+                    (sn
+                      (grup.nom.mp
+                        (ncmp000 vins vi)
+                        (sp
+                          (prep
+                            (sps00 d' de))
+                          (sn
+                            (espec.fs
+                              (dd0fs0 aquesta aquest))
+                            (grup.nom.fs
+                              (ncfs000 denominació denominació)
+                              (sp
+                                (prep
+                                  (sps00 d' de))
+                                (sn
+                                  (grup.nom.ms
+                                    (ncms000 origen origen))))))))))))))
+          (Fc , ,))))
+    (sp-CI
+      (prep
+        (spcms al al))
+      (sno
+        (grup.nom.ms
+          (np0000o Restaurant Restaurant)
+          (sno
+            (grup.nom
+              (np0000o Ca_la_Maria Ca_la_Maria)))
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (grup.nom
+                (np0000l Mollet_de_Peralada Mollet_de_Peralada)))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np0000o Restaurant Restaurant)
+        (sno
+          (grup.nom
+            (np0000o Ca_la_Maria Ca_la_Maria)))
+        (sp
+          (prep
+            (sps00 de de))
+          (snl
+            (grup.nom
+              (np0000l Mollet_de_Peralada Mollet_de_Peralada))))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vsp00sm estat ser)
+      (vmp00sm guardonat guardonar))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sna
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np0000a Tòria_d'_Or Tòria_d'_Or)
+          (sna
+            (Fc , ,)
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 premi premi)
+              (S.F.R
+                (relatiu-CD
+                  (pr0cn000 que que))
+                (sno-SUJ
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (np0000o Consell_Regulador_de_la_Denominació_d'_Origen_Empordà-Costa_Brava Consell_Regulador_de_la_Denominació_d'_Origen_Empordà-Costa_Brava)))
+                (grup.verb
+                  (vmip3s0 atorga atorgar))
+                (sp-CI
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (espec.ms
+                      (da0cs0 l' el))
+                    (grup.nom.ms
+                      (ncms000 establiment establiment)
+                      (S.F.R
+                        (relatiu-SUJ
+                          (pr0cn000 que que))
+                        (sp-CC
+                          (prep
+                            (sps00 durant durant))
+                          (sn
+                            (espec.ms
+                              (da0cs0 l' el))
+                            (grup.nom.ms
+                              (ncms000 any any)
+                              (s.a.ms
+                                (grup.a.ms
+                                  (aq0cs0 anterior anterior))))))
+                        (grup.verb
+                          (vaip3s0 ha haver)
+                          (vmp00sm promocionat promocionar))
+                        (sp-CC
+                          (prep
+                            (sps00 d' de))
+                          (sn
+                            (espec.fs
+                              (di0fs0 una un))
+                            (grup.nom.fs
+                              (ncfs000 manera manera)
+                              (S.NF.P
+                                (sadv
+                                  (grup.adv
+                                    (rg més més)))
+                                (participi
+                                  (aq0fsp destacada destacat))))))
+                        (sn-CD
+                          (espec.mp
+                            (dp3mp0 els_seus el_seu))
+                          (grup.nom.mp
+                            (ncmp000 vins vi)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 jurat jurat)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.fs
+              (dd0fs0 aquesta aquest))
+            (grup.nom.fs
+              (s.a.fs
+                (grup.a.fs
+                  (ao0fs0 segona segon)))
+              (ncfs000 edició edició)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 premi premi)))))))
+        (S.NF.P
+          (Fc , ,)
+          (participi
+            (aq0msp integrat integrat))
+          (sp-CAG
+            (prep
+              (sps00 per per))
+            (sn.co
+              (sn
+                (grup.nom.mp
+                  (nccp000 representants representant)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fp
+                        (da0fp0 les el))
+                      (grup.nom.fp
+                        (ncfp000 empreses empresa)
+                        (s.a.fp
+                          (grup.a.fp
+                            (aq0fp0 embotelladores embotellador)))
+                        (S.NF.P
+                          (participi
+                            (aq0fpp inscrites inscrit))
+                          (sp-CC
+                            (prep
+                              (sps00 a a))
+                            (sna
+                              (espec.fs
+                                (da0fs0 la el))
+                              (grup.nom.fs
+                                (np0000a Denominació_d'_Origen Denominació_d'_Origen))))))))))
+              (coord
+                (cc i i))
+              (sn
+                (espec.mp
+                  (dn0mp0 dos dos))
+                (grup.nom.mp
+                  (nccp000 periodistes periodista)
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0mp0 gastronòmics gastronòmic)))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snl
+                      (espec.fp
+                        (da0fp0 les el))
+                      (grup.nom.fp
+                        (ncfp000 comarques comarca)
+                        (s.a.fp
+                          (grup.a.fp
+                            (aq0fp0 gironines gironí))))))))))
+          (Fc , ,))))
+    (sadv-MOD
+      (grup.adv
+        (rg també també)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm concedit concedir))
+    (sn-CD
+      (espec.mp
+        (dn0mp0 dos dos))
+      (grup.nom.mp
+        (ncmp000 accèssits accèssit)))
+    (sp-CI
+      (prep
+        (spcmp als al))
+      (sn
+        (grup.nom.mp
+          (ncmp000 restaurants restaurant)
+          (sn.co
+            (sno
+              (grup.nom
+                (np0000o El_Molí_de_Pont El_Molí_de_Pont)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snl
+                    (grup.nom
+                      (np0000l Molins Molins))))))
+            (coord
+              (cc i i))
+            (sno
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (np0000o Celler_de_Can_Roca Celler_de_Can_Roca)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snl
+                    (grup.nom
+                      (np0000l Girona Girona))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 jurat jurat)))
+    (sadv-MOD
+      (grup.adv
+        (rg també també)))
+    (grup.verb
+      (vmip3s0 destaca destacar))
+    (sp-CC
+      (prep
+        (sps00 a_través_d' a_través_de))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 comunicat comunicat)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 premsa premsa)))))))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 tasca tasca)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 promoció promoció))))
+        (sp
+          (prep
+            (spcmp dels del))
+          (sn
+            (grup.nom.mp
+              (ncmp000 vins vi)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0mp0 empordanesos empordanès))))))
+        (sp
+          (prep
+            (spcms per_part_del per_part_del))
+          (sno
+            (grup.nom.ms
+              (np0000o Motel_Empordà Motel_Empordà)
+              (sp
+                (prep
+                  (sps00 de de))
+                (snl
+                  (grup.nom
+                    (np0000l Figueres Figueres)))))))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 d' de))
+      (sp
+        (prep
+          (sps00 entre entre))
+        (sn
+          (espec.mp
+            (da0mp0 els el)
+            (Z 45 45))
+          (grup.nom.mp
+            (ncmp000 restaurants restaurant)
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vaip3p0 van anar)
+                (vmn0000 arribar arribar))
+              (sp-CC
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 fase fase)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0cs0 final final)))
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sna
+                        (grup.nom.ms
+                          (np0000a Premi_Tòria_d'_Or Premi_Tòria_d'_Or))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sno-SUJ
+        (espec.ms
+          (da0cs0 L' el))
+        (grup.nom.ms
+          (ncms000 establiment establiment)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 guanyador guanyador)
+              (sp
+                (prep
+                  (spcms del del))
+                (sna
+                  (grup.nom.ms
+                    (np0000a Premi_Tòria_d'_Or Premi_Tòria_d'_Or))))))))
+      (grup.verb
+        (vsif3s0 serà ser)
+        (vmp00sm distingit distingir))
+      (sp-CC
+        (Fc , ,)
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.ms
+            (di0ms0 un un))
+          (grup.nom.ms
+            (ncms000 acte acte)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 públic públic)))
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (morfema.verbal-PASS
+                (p0000000 se se))
+              (grup.verb
+                (vmif3s0 celebrarà celebrar))
+              (snd-CC
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 proper proper)))
+                  (W 22_de_juny [??:22/6/??:??.??]))))))
+        (Fc , ,))
+      (sp-CC
+        (prep
+          (sps00 amb amb))
+        (sn
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs
+            (ncfs000 figura figura)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 bronze bronze))))
+            (S.NF.P
+              (participi
+                (aq0fsp dissenyada dissenyat))
+              (sp-CAG
+                (prep
+                  (spcmp pels pel))
+                (sno
+                  (grup.nom.mp
+                    (ncmp000 tallers taller)
+                    (sp
+                      (prep
+                        (sps00 d' de))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 orfebreria orfebreria))))
+                    (snp
+                      (grup.nom
+                        (np0000p Cunill Cunill)))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snl
+                        (grup.nom
+                          (np0000l Barcelona Barcelona)))))))))))
+      (Fc , ,))
+    (coord
+      (cc i i))
+    (S
+      (sn-SUJ
+        (espec.mp
+          (di0mp0 tots tot)
+          (da0mp0 els el))
+        (grup.nom.mp
+          (ncmp000 establiments establiment)
+          (S.NF.P
+            (participi
+              (aq0mpp distingits distingit))
+            (sp-CC
+              (prep
+                (sps00 amb amb))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 accèssits accèssit)))))))
+      (grup.verb
+        (vmif3p0 rebran rebre))
+      (sn-CD
+        (espec.ms
+          (dn0ms0 un un))
+        (grup.nom.ms
+          (ncms000 diploma diploma)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 acreditatiu acreditatiu))))))
+    (Fp . .)))
+(
+  (S.co
+    (S.co
+      (S
+        (sna-SUJ
+          (espec.fs
+            (da0fs0 La el))
+          (grup.nom.fs
+            (np0000a Denominació_d'_Origen_Empordà-Costa_Brava Denominació_d'_Origen_Empordà-Costa_Brava)))
+        (Fe " ")
+        (grup.verb
+          (vmip3s0 empara emparar)))
+      (coord
+        (cc i i))
+      (S
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmip3s0 garanteix garantir))))
+    (sp.j-CC
+      (prep
+        (sps00 des_de des_de))
+      (snd
+        (grup.nom.ms
+          (W 1975 [??:??/??/1975:??.??]))))
+    (sn.j-CD
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 vins vi)
+        (S.NF.P
+          (participi
+            (aq0mpp produïts produït))
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.fs
+                (dd0fs0 aquesta aquest))
+              (grup.nom.fs
+                (ncfs000 zona zona)
+                (S.NF.P
+                  (participi
+                    (aq0fsp situada situat))
+                  (sp-CREG
+                    (prep
+                      (spcms al al))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 nord nord)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (snl
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (ncfs000 comarca comarca)
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (snl
+                                  (grup.nom
+                                    (np0000l L'_Alt_Empordà L'_Alt_Empordà)))))))))))
+                (sp
+                  (Fe " ")
+                  (Fc , ,)
+                  (prep
+                    (sps00 amb amb))
+                  (sn
+                    (espec.fs
+                      (di0fs0 una un))
+                    (grup.nom.fs
+                      (ncfs000 zona zona)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.fs
+                            (ncfs000 vinya vinya))))
+                      (S.F.R
+                        (relatiu-SUJ
+                          (pr0cn000 que que))
+                        (morf.pron
+                          (p0300000 s' ell))
+                        (grup.verb
+                          (vmip3s0 aproxima aproximar))
+                        (sp-CREG
+                          (prep
+                            (sps00 a a))
+                          (snn
+                            (espec.fp
+                              (da0fp0 les el)
+                              (Z 2.500 2500))
+                            (grup.nom.fp
+                              (ncfp000 hectàrees hectàrea)
+                              (S.NF.P
+                                (participi
+                                  (aq0fpp repartides repartit))
+                                (sp-CC
+                                  (prep
+                                    (sps00 en en))
+                                  (sn
+                                    (espec.mp
+                                      (Z 39 39))
+                                    (grup.nom.mp
+                                      (ncmp000 termes terme)
+                                      (s.a.mp
+                                        (grup.a.mp
+                                          (aq0cp0 municipals municipal))))))))))
+                        (sp-AO
+                          (Fc , ,)
+                          (prep
+                            (sps00 segons segons))
+                          (sno
+                            (espec.ms
+                              (da0ms0 el el))
+                            (grup.nom.ms
+                              (np0000o Consell_Regulador Consell_Regulador))))))))))))))
+    (Fp . .)))

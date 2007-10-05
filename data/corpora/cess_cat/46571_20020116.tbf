@@ -1,0 +1,392 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np00000 Departament_de_Política_Territorial_i_Obres_Públiques Departament_de_Política_Territorial_i_Obres_Públiques)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm expressat expressar))
+    (sn-CD
+      (espec.fs
+        (dp3fs0 la_seva el_seu))
+      (grup.nom.fs
+        (ncfs000 satisfacció satisfacció)))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (sn
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (ncfp000 xifres xifra)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 passatge passatge))))
+          (S.NF.P
+            (participi
+              (aq0fpp assolides assolit))
+            (sp-CCT
+              (prep
+                (sps00 durant durant))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (s.a.ms
+                    (grup.a.ms
+                      (ao0ms0 tercer tercer)))
+                  (ncms000 any any)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 funcionament funcionament))))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 línia línia)
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0cs0 regular regular))))))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 transport transport)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (grup.nom.mp
+                              (ncmp000 viatgers viatger))))))))))
+            (sp-CC
+              (prep
+                (sps00 per per))
+              (sn
+                (espec.ms
+                  (da0cs0 l' el))
+                (grup.nom.ms
+                  (ncms000 eix eix)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.ms
+                        (da0cs0 l' el))
+                      (grup.nom.ms
+                        (np00000 Ebre Ebre))))
+                  (sp
+                    (Fc , ,)
+                    (prep
+                      (sps00 entre entre))
+                    (sn.x
+                      (grup.nom.co
+                        (grup.nom
+                          (np00000 Tortosa Tortosa))
+                        (coord
+                          (cc i i))
+                        (grup.nom
+                          (np00000 Lleida Lleida))))
+                    (Fc , ,))))))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vaip3p0 han haver)
+              (vmp00sm arribat arribar))
+            (sp-CREG
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 xifra xifra)
+                  (sp
+                    (prep
+                      (sps00 d' de))
+                    (sn
+                      (espec.mp
+                        (Z 11.933 11933))
+                      (grup.nom.mp
+                        (ncmp000 viatgers viatger)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (np00000 Direcció_General_de_Ports_i_Transports Direcció_General_de_Ports_i_Transports)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 posar_en_marxa posar_en_marxa))
+    (sn-CCT
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (W any_1998 [??:??/??/1998:??.??]))
+      (Fc , ,))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 servei servei)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.ms
+              (ncms000 autocar autocar))))
+        (sp
+          (prep
+            (sps00 entre entre))
+          (sn.x
+            (grup.nom.co
+              (grup.nom
+                (np00000 Lleida Lleida))
+              (coord
+                (cc i i))
+              (grup.nom
+                (np00000 Tortosa Tortosa)))))
+        (sn
+          (Fc , ,)
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (np00000 Bus Bus)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (Fz ' ')
+                (espec.ms
+                  (da0cs0 l' el))
+                (grup.nom.ms
+                  (np00000 Eix_de_l'_Ebre Eix_de_l'_Ebre))
+                (Fz ' ')))))))
+    (sadv-CCT
+      (Fc , ,)
+      (grup.adv
+        (rg després després)
+        (S.F.C
+          (conj.subord
+            (cs que que))
+          (sn-SUJ
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 direcció direcció)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 general general)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom
+                    (np00000 Carreteres Carreteres))))))
+          (grup.verb
+            (vmsi3s0 fes fer))
+          (sn-CD
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (ncfp000 millores millora)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 necessàries necessari)))))
+          (sp-CCL
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 via via)
+                (sp
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 qüestió qüestió))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CCT
+      (grup.adv
+        (rg Actualment actualment)))
+    (morf.pron
+      (pp3cn000 hi hi))
+    (grup.verb
+      (vaip3s0 ha haver))
+    (sn-CD.Q
+      (espec.fp
+        (dn0fp0 dues dos))
+      (grup.nom.fp
+        (ncfp000 expedicions expedició)
+        (s.a.fp
+          (grup.a.fp
+            (aq0fp0 diàries diari)))
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn.x
+            (grup.nom.co
+              (grup.nom.fs
+                (ncfs000 anada anada))
+              (coord
+                (cc i i))
+              (grup.nom.fs
+                (ncfs000 tornada tornada)))))
+        (sn.x
+          (grup.nom.co
+            (coord
+              (sps00 de de))
+            (grup.nom.ms
+              (W dilluns [dilluns:??/??/??:??.??]))
+            (coord
+              (sps00 a a))
+            (grup.nom.ms
+              (W divendres [divendres:??/??/??:??.??]))))
+        (sp
+          (Fc , ,)
+          (prep
+            (sps00 amb amb))
+          (sn
+            (grup.nom.fp
+              (ncfp000 parades parada)
+              (sp
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.mp
+                    (di0mp0 tots tot)
+                    (da0mp0 els el))
+                  (grup.nom.mp
+                    (ncmp000 municipis municipi)))))))))
+    (Fp . .)))
+(
+  (S
+    (S
+      (sp-CCL
+        (prep
+          (sps00 Des_de des_de))
+        (sn
+          (grup.nom
+            (np00000 Lleida Lleida)))
+        (Fc , ,))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 bus bus)))
+      (grup.verb
+        (vmip3s0 surt sortir))
+      (sp.co-CCT
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (W 6 [??:6/??/??:??.??]))))
+        (coord
+          (cc i i))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (W 13:30_hores [??:??/??/??:13.30]))))
+        (Fc , ,)))
+    (coord
+      (cc mentre_que mentre_que))
+    (S
+      (sp-CCL
+        (prep
+          (sps00 de de))
+        (sn
+          (grup.nom
+            (np00000 Tortosa Tortosa))))
+      (sn-CD
+        (grup.nom.ms
+          (pp3nn000 ho ho)))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3s0 fa fer))
+      (sp.co-CCT
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (W 6:15 [??:??/??/??:06.15]))))
+        (coord
+          (cc i i))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (W 14:15 [??:??/??/??:14.15]))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 itineraris itinerari)
+        (S.NF.P
+          (sadv-CC
+            (grup.adv
+              (rg més més)))
+          (participi
+            (aq0mpp sol·licitats sol·licitat)))))
+    (grup.verb
+      (vsip3p0 són ser))
+    (sn.co-ATR
+      (sn
+        (grup.nom
+          (np00000 Tortosa-Lleida Tortosa-Lleida)))
+      (coord
+        (cc i i))
+      (sadv
+        (grup.adv
+          (rg viceversa viceversa)
+          (sn.x
+            (Fc , ,)
+            (grup.nom.co
+              (grup.nom
+                (np00000 Benifallet-Rasquera-Xerta-Tortosa Benifallet-Rasquera-Xerta-Tortosa))
+              (Fc , ,)
+              (grup.nom
+                (np00000 Lleida-Flix Lleida-Flix))
+              (Fc , ,)
+              (grup.nom
+                (np00000 Lleida-Móra_d'_Ebre Lleida-Móra_d'_Ebre))
+              (coord
+                (cc i i))
+              (grup.nom
+                (np00000 Móra_d'_Ebre-Tortosa Móra_d'_Ebre-Tortosa)))))))
+    (Fp . .)))

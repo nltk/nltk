@@ -1,0 +1,509 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 vicepresident vicepresident)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 econòmic econòmic)))
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (np00000 Rodrigo_Rato Rodrigo_Rato))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 agrair agrair))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sn-CD
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (Fe " ")
+        (ncms000 esforç esforç)
+        (s.a.ms
+          (espec
+            (rg molt molt))
+          (grup.a.ms
+            (aq0cs0 important important)))
+        (Fe " ")
+        (S.NF.P
+          (participi
+            (aq0msp fet fet))
+          (sp-CAG
+            (prep
+              (spcms pel pel))
+            (sn.co
+              (sn
+                (grup.nom.ms
+                  (ncms000 sistema sistema)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 financer financer)))))
+              (Fc , ,)
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 comerç comerç)))
+              (coord
+                (cc i i))
+              (sn
+                (espec.fs
+                  (da0cs0 l' el))
+                (grup.nom.fs
+                  (ncfs000 hostaleria hostaleria)))))
+          (S.F.A-CC
+            (conj.subord
+              (cs perquè perquè))
+            (sn-SUJ
+              (espec.mp
+                (di0mp0 tots tot)
+                (da0mp0 els el))
+              (grup.nom.mp
+                (ncmp000 espanyols espanyol)))
+            (grup.verb
+              (vmsp3p0 puguin poder))
+            (S.NF.C.co-CD
+              (Fe " ")
+              (S.NF.C.co
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 familiaritzar familiaritzar))
+                  (morf.pron
+                    (p0300000 -se ell))
+                  (sp-CC
+                    (prep
+                      (sps00 amb amb))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0fs0 nova nou)))
+                        (ncfs000 moneda moneda)))))
+                (coord
+                  (cc i i))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 entrar entrar))
+                  (sp-CC
+                    (prep
+                      (sps00 en en))
+                    (sn
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 món món)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (espec.ms
+                              (da0cs0 l' el))
+                            (grup.nom.ms
+                              (ncms000 euro euro)))))))))
+              (sadv.j-CC
+                (grup.adv
+                  (rg com_més_aviat_millor com_més_aviat_millor)))
+              (Fe " "))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Rato Rato)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 animar animar))
+    (sn-CD
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 ciutadans ciutadà)))
+    (sp.co-CREG
+      (sp
+        (prep
+          (sps00 a a))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 habituar habituar))
+          (morf.pron
+            (p0300000 -se ell))
+          (sp-CREG
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 nova nou)))
+                (ncfs000 moneda moneda))))
+          (sp-CC
+            (Fe " ")
+            (prep
+              (sps00 sense sense))
+            (sn
+              (grup.nom.fp
+                (ncfp000 reticències reticència)))
+            (Fe " "))))
+      (coord
+        (cc i i))
+      (sp
+        (prep
+          (sps00 a a))
+        (S.NF.C
+          (Fe " ")
+          (infinitiu
+            (vmn0000 passar passar))
+          (morf.pron
+            (p0300000 -se ell))
+          (sp-CREG
+            (prep
+              (spcms al al))
+            (sn
+              (grup.nom.ms
+                (ncms000 món món)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.ms
+                      (da0cs0 l' el))
+                    (grup.nom.ms
+                      (ncms000 euro euro)))))))
+          (sadv-CC
+            (grup.adv
+              (rg com_més_aviat_millor com_més_aviat_millor)))
+          (Fe " "))))
+    (sp-CCT
+      (Fc , ,)
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (s.a.mp
+            (grup.a.mp
+              (ao0mp0 primers primer)))
+          (ncmp000 dies dia)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (ncms000 any any)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np00000 Banc_d'_Espanya Banc_d'_Espanya)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 expressar expressar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sn.co-CCT
+      (sn
+        (espec.fs
+          (dp3fs0 la_seva el_seu))
+        (grup.nom.fs
+          (Fe " ")
+          (ncfs000 satisfacció satisfacció)
+          (Fe " ")
+          (sp
+            (prep
+              (sps00 per per))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 gran gran)))
+                (ncfs000 quantitat quantitat)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 públic públic))))
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (morf.pron
+                    (p0300000 es ell))
+                  (grup.verb
+                    (vaip3s0 va anar)
+                    (vmn0000 acostar acostar))
+                  (sp-CC
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (espec.fp
+                        (dp3fp0 les_seves el_seu))
+                      (grup.nom.fp
+                        (ncfp000 sucursals sucursal))))))))))
+      (coord
+        (cc i i))
+      (sn
+        (espec.fs
+          (dp3fs0 la_seva el_seu))
+        (grup.nom.fs
+          (ncfs000 percepció percepció)
+          (S.F.C
+            (conj.subord
+              (cs que que))
+            (Fe " ")
+            (sn-SUJ
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 procés procés)
+                (sp
+                  (prep
+                    (sps00 d' de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 introducció introducció)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0fs0 física físic)))
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.co
+                            (grup.nom.co
+                              (grup.nom.mp
+                                (ncmp000 bitllets bitllet))
+                              (coord
+                                (cc i i))
+                              (grup.nom.mp
+                                (ncfp000 monedes moneda)))
+                            (sp.j
+                              (prep
+                                (sps00 en en))
+                              (sn
+                                (grup.nom
+                                  (Zm euros euro))))))))))))
+            (grup.verb
+              (vaip3s0 ha haver)
+              (vmp00sm començat començar)
+              (sps00 a a)
+              (infinitiu
+                (vmn0000 funcionar funcionar)))
+            (sp-CC
+              (prep
+                (sps00 amb amb))
+              (sn.x
+                (grup.nom.co
+                  (grup.nom.fs
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0cs0 gran gran)))
+                    (ncfs000 rapidesa rapidesa))
+                  (coord
+                    (cc i i))
+                  (grup.nom.ms
+                    (ncms000 èxit èxit)))))
+            (Fe " ")))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 institució institució)))
+    (grup.verb
+      (vmip3s0 aconsella aconsellar))
+    (sp-CI
+      (prep
+        (spcmp als al))
+      (sn
+        (grup.nom.mp
+          (ncmp000 ciutadans ciutadà))))
+    (S.F.C.co-CD
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmsp3p0 comencin començar)
+          (sps00 a a)
+          (infinitiu
+            (vmn0000 fer_servir fer_servir)))
+        (sadv-CCT
+          (grup.adv
+            (rg ara ara)))
+        (sn.x-CD
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.co
+            (grup.nom.fp
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 noves nou)))
+              (ncfp000 monedes moneda))
+            (coord
+              (cc i i))
+            (grup.nom.mp
+              (ncmp000 bitllets bitllet)))))
+      (Fc , ,)
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmsp3p0 procurin procurar))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 evitar evitar))
+          (sn-CD
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 barreja barreja)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn.x
+                  (grup.nom.co
+                    (grup.nom.fp
+                      (Zm pessetes pesseta))
+                    (coord
+                      (cc i i))
+                    (grup.nom.ms
+                      (Zm euros euro)))))))))
+      (coord
+        (cc i i))
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmsp3p0 abonin abonar))
+        (sn-CD
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (ncms000 import import)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 exacte exacte)))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 compra compra))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (np00000 UGT UGT)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 denunciar denunciar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 introducció introducció)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (ncms000 euro euro))))
+          (s.a.fs
+            (Fc , ,)
+            (grup.a.fs
+              (aq0fs0 avantatjosa avantatjós)
+              (sp
+                (prep
+                  (sps00 per per))
+                (sp
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (espec.fs
+                      (da0cs0 l' el))
+                    (grup.nom.fs
+                      (ncfs000 economia economia)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0fs0 espanyola espanyol))))))))
+            (Fc , ,))))
+      (grup.verb
+        (vmip3s0 està estar)
+        (gerundi
+          (vmg0000 emparant emparar)))
+      (sadv-ET
+        (Fc , ,)
+        (grup.adv
+          (rg no_obstant no_obstant))
+        (Fc , ,))
+      (sn-CD
+        (grup.nom.mp
+          (ncmp000 augments augment)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 preus preu)
+                (s.a.mp
+                  (grup.a.mp
+                    (Fe " ")
+                    (aq0mp0 injustificats injustificat)
+                    (Fe " "))))))))
+      (sp-CC
+        (sadv.j
+          (grup.adv
+            (rg fins_i_tot fins_i_tot)))
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (grup.nom.mp
+              (ncmp000 serveis servei)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0mp0 públics públic)))
+              (S.NF.P
+                (participi
+                  (aq0mpp considerats considerat))
+                (sa-CPRED
+                  (grup.a
+                    (aq0mp0 bàsics bàsic)))))))))
+    (Fp . .)))

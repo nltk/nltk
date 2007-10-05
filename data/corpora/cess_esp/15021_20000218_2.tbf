@@ -1,0 +1,342 @@
+
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Ibarretxe Ibarretxe)))
+    (grup.verb
+      (vmis3s0 retó retar))
+    (sp-CD
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (nccp000 socialistas socialista))))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmsp3p0 presenten presentar))
+        (sn-CD
+          (espec.fs
+            (di0fs0 una uno))
+          (grup.nom.fs
+            (ncfs000 moción moción)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 censura censura))))
+            (S.F.R
+              (Fc , ,)
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (sadv-CC
+                (grup.adv
+                  (rg reglamentariamente reglamentariamente)))
+              (grup.verb
+                (vmip3s0 debe deber)
+                (infinitiu
+                  (vmn0000 llevar llevar)))
+              (sn-CC
+                (grup.nom
+                  (pp3cno00 consigo él)))
+              (sn-CD
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 presentación presentación)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.ms
+                        (di0ms0 un uno))
+                      (grup.nom.ms
+                        (ncms000 candidato candidato)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0ms0 alternativo alternativo)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (nccs000 lehendakari lehendakari)))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom.fp
+          (ncfp000 preguntas pregunta)
+          (sp
+            (prep
+              (spcms del del))
+            (snp
+              (grup.nom.ms
+                (ncms000 secretario secretario)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 general general)))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sno
+                    (grup.nom
+                      (np0000o UA UA))))
+                (snp
+                  (Fc , ,)
+                  (grup.nom.ms
+                    (np0000p Pablo_Mosquera Pablo_Mosquera))
+                  (Fc , ,))))))))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmis3s0 mostró mostrar))
+    (S.NF.P-CPRED.SUJ
+      (participi
+        (aq0msp convencido convencido))
+      (sp.co-CREG
+        (sp
+          (prep
+            (sps00 de de))
+          (S.F.C
+            (conj.subord
+              (cs que que))
+            (sp-CCL
+              (prep
+                (sps00 en en))
+              (sno
+                (grup.nom
+                  (np0000o EH EH))))
+            (grup.verb
+              (vaip3s0 hay haber))
+            (sn-CD.Q
+              (espec.ms
+                (di0ms0 un uno))
+              (grup.nom.ms
+                (Fe " ")
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 importante importante)))
+                (ncms000 sector sector)
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmip3s0 está estar))
+                  (sp.co-ATR
+                    (sp
+                      (prep
+                        (sps00 en_contra_de en_contra_de))
+                      (sno
+                        (grup.nom
+                          (np0000o ETA ETA))))
+                    (coord
+                      (cc y y))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 violencia violencia)
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0fs0 callejera callejero))))))))
+                (Fe " ")))))
+        (coord
+          (cc y y))
+        (sp
+          (prep
+            (sps00 de de))
+          (S.F.C
+            (conj.subord
+              (cs que que))
+            (sn-SUJ
+              (espec.ms
+                (da0ns0 lo el))
+              (grup.nom.ms
+                (S.F.R
+                  (relatiu-CD
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmip3p0 deben deber)
+                    (infinitiu
+                      (vmn0000 hacer hacer)))
+                  (sn-SUJ
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (ncms000 resto resto)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.mp
+                            (ncmp000 partidos partido)))))))))
+            (grup.verb
+              (vsip3s0 es ser))
+            (S.NF.C-ATR
+              (infinitiu
+                (vmn0000 apoyar apoyar))
+              (sp-CD
+                (prep
+                  (sps00 a a))
+                (sn
+                  (grup.nom.mp
+                    (pd0mp000 aquellos aquel)
+                    (S.F.R
+                      (relatiu-SUJ
+                        (pr0cn000 que que))
+                      (Fe " ")
+                      (grup.verb
+                        (vmip3p0 quieren querer))
+                      (S.F.C-CD
+                        (conj.subord
+                          (cs que que))
+                        (sn-SUJ
+                          (espec.fp
+                            (da0fp0 las el))
+                          (grup.nom.fp
+                            (ncfp000 cosas cosa)))
+                        (grup.verb
+                          (vmsp3p0 cambien cambiar))))
+                    (S.F.R
+                      (Fc , ,)
+                      (relatiu-SUJ
+                        (pr0cn000 que que))
+                      (grup.verb
+                        (vsip3p0 son ser))
+                      (sn-ATR
+                        (grup.nom.mp
+                          (pi0mp000 muchos mucho)))))
+                  (Fe " "))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg Por_último por_último))
+      (Fc , ,))
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmis3s0 animó animar))
+    (sp-CD
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 sociedad sociedad)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 vasca vasco))))))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (S.F.C.co
+        (conj.subord
+          (cs que que))
+        (S.F.C
+          (sn.e-SUJ *0*)
+          (morf.pron
+            (p0300000 se él))
+          (Fe " ")
+          (grup.verb
+            (vmm03s0 movilice movilizar))
+          (sadv-CC
+            (grup.adv
+              (rg activamente activamente)))
+          (Fe " "))
+        (coord
+          (cc y y))
+        (S.F.C
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vmm03s0 participe participar))
+          (sp-CREG
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.fp
+                (da0fp0 las el))
+              (grup.nom.fp
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0fp0 próximas próximo)))
+                (ncfp000 elecciones elección)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0cp0 generales general)))))))))
+    (S.F.A-CC
+      (Fc , ,)
+      (conj.subord
+        (cs porque porque))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3s0 vive vivir))
+      (sn-CD
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 momento momento)
+          (S.F.R.co
+            (S.F.R.co
+              (S.F.R
+                (sp-CCT
+                  (prep
+                    (sps00 en en))
+                  (relatiu
+                    (da0ms0 el el)
+                    (pr0cn000 que que)))
+                (Fe " ")
+                (sn.e-SUJ *0*)
+                (grup.verb
+                  (vmip3s0 tiene tener)
+                  (cs que que)
+                  (infinitiu
+                    (vmn0000 hablar hablar))))
+              (coord
+                (cc y y))
+              (S.F.R*
+                (neg-MOD
+                  (rn no no))
+                (grup.verb
+                  (infinitiu
+                    (vmn0000 callar callar))))
+              (Fe " ")
+              (Fc , ,))
+            (sp.j-AO
+              (prep
+                (sps00 en_referencia_a en_referencia_a))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 propuesta propuesta)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 abstención abstención)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sno
+                            (grup.nom
+                              (np0000o EH EH))))))))))))))
+    (Fp . .)))

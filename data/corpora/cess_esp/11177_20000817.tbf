@@ -1,0 +1,604 @@
+
+(
+  (S
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (np0000o Comisión_Europea Comisión_Europea)))
+    (grup.verb
+      (vmis3s0 aprobó aprobar))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)
+        (snd
+          (Fc , ,)
+          (grup.nom.ms
+            (W jueves [jueves:??/??/??:??.??]))
+          (Fc , ,))))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una uno))
+      (grup.nom.fs
+        (ncfs000 ayuda ayuda)
+        (sp
+          (prep
+            (sps00 de de))
+          (snn
+            (espec.mp
+              (Z 2 2))
+            (grup.nom.mp
+              (ncmp000 millones millón)
+              (sp
+                (prep
+                  (sps00 de de))
+                (snn
+                  (grup.nom.mp
+                    (Zm euros euro)))))))
+        (sp.co
+          (sp
+            (prep
+              (sps00 para para))
+            (sn
+              (espec.fp
+                (da0fp0 las el))
+              (grup.nom.fp
+                (ncfp000 víctimas víctima)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.mp
+                      (da0mp0 los el))
+                    (grup.nom.mp
+                      (ncmp000 terremotos terremoto)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (snd.x
+                          (grup.nom.co
+                            (grup.nom.ms
+                              (W mayo [??:??/05/??:??.??]))
+                            (coord
+                              (cc y y))
+                            (grup.nom.ms
+                              (W junio [??:??/06/??:??.??])))))
+                      (sp
+                        (prep
+                          (sps00 en en))
+                        (snl
+                          (grup.nom
+                            (np0000l Sumatra Sumatra)))))))))
+            (Fc , ,))
+          (coord
+            (cc y y))
+          (sp
+            (prep
+              (sps00 para para))
+            (sn.co
+              (sn
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (ncmp000 desplazados desplazado)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snl
+                      (grup.nom
+                        (np0000l Molucas Molucas))))))
+              (coord
+                (cc y y))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 población población)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snl
+                      (grup.nom
+                        (np0000l Timor Timor))))
+                  (S.NF.P
+                    (participi
+                      (aq0fsp refugiada refugiado))
+                    (sp-CCL
+                      (prep
+                        (sps00 en en))
+                      (snl
+                        (grup.nom
+                          (np0000l Timor Timor)
+                          (s.a.fs
+                            (grup.a.ms
+                              (aq0cs0 occidental occidental))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (sn-SUJ
+        (espec.fs
+          (dd0fs0 Esta este))
+        (grup.nom.fs
+          (ncfs000 ayuda ayuda)
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vsif3s0 será ser)
+              (vmp00sf gestionada gestionar))
+            (sp-CAG
+              (prep
+                (sps00 por por))
+              (sno
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np0000o Oficina_de_Ayuda_Humanitaria_de_la_Unión_Europea Oficina_de_Ayuda_Humanitaria_de_la_Unión_Europea)
+                  (sno
+                    (grup.nom.fs
+                      (Fpa -Fpa- -Fpa-)
+                      (np0000o ECHO ECHO)
+                      (Fpt -Fpt- -Fpt-))))))
+            (Fc , ,))))
+      (Fe " ")
+      (grup.verb
+        (vmif3s0 permitirá permitir))
+      (sp-CI
+        (prep
+          (sps00 a a))
+        (sn.co
+          (sno
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000o Cruz_Roja Cruz_Roja)))
+          (coord
+            (cc y y))
+          (sno
+            (espec.fp
+              (da0fp0 las el))
+            (grup.nom.fp
+              (np0000o Organizaciones Organizaciones)
+              (s.a.fp
+                (neg
+                  (rn no no))
+                (grup.a.fp
+                  (aq0cp0 Gubernamentales gubernamental)))
+              (sno
+                (grup.nom.fp
+                  (Fpa -Fpa- -Fpa-)
+                  (np0000o ONG ONG)
+                  (Fpt -Fpt- -Fpt-)))))))
+      (S.NF.C-CD
+        (infinitiu
+          (vmn0000 poner_en_marcha poner_en_marcha))
+        (sp-CCT
+          (Fc , ,)
+          (prep
+            (sps00 durante durante))
+          (sn
+            (espec.mp
+              (da0mp0 los el)
+              (aq0mp0 próximos próximo)
+              (dn0cp0 seis seis))
+            (grup.nom.mp
+              (ncmp000 meses mes)))
+          (Fc , ,))
+        (sn-CD
+          (grup.nom.mp
+            (ncmp000 programas programa)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 asistencia asistencia))))
+            (S.NF.P
+              (participi
+                (aq0mpp destinados destinado))
+              (sp-CREG
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.mp
+                    (rg más más)
+                    (sps00 de de)
+                    (Z 200.000 200000))
+                  (grup.nom.co
+                    (grup.nom.mp
+                      (S.NF.P
+                        (participi
+                          (aq0mpp desplazados desplazado))))
+                    (coord
+                      (cc y y))
+                    (grup.nom.mp
+                      (ncmp000 refugiados refugiado)))))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 precisó precisar))
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (np0000o Comisión Comisión)))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 comunicado comunicado))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (nccs000 montante montante)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 global global)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 ayuda ayuda)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 financiera financiero)))
+              (S.NF.P
+                (participi
+                  (aq0fsp otorgada otorgado))
+                (sp-CAG
+                  (prep
+                    (sps00 por por))
+                  (sno
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (np0000o Ejecutivo Ejecutivo)
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0ms0 comunitario comunitario))))))
+                (sp-CCT
+                  (prep
+                    (sps00 desde desde))
+                  (snd
+                    (grup.nom.ms
+                      (W 1999 [??:??/??/1999:??.??]))))
+                (sp-CCL
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (espec.fs
+                      (dd0fs0 esta este))
+                    (grup.nom.fs
+                      (ncfs000 región región))))))))))
+    (grup.verb
+      (vmip3s0 asciende ascender))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (snn
+        (espec.mp
+          (Z 24.5 24.5))
+        (grup.nom.mp
+          (ncmp000 millones millón))
+        (sp
+          (prep
+            (sps00 de de))
+          (snn
+            (grup.nom.mp
+              (Zm euros euro))))))
+    (sp-AO
+      (Fc , ,)
+      (prep
+        (sps00 según según))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 comunicado comunicado))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCL
+      (prep
+        (sps00 En en))
+      (snl
+        (grup.nom
+          (np0000l Sumatra Sumatra)))
+      (Fc , ,))
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (np0000o Federación_Internacional_de_la_Cruz_Roja Federación_Internacional_de_la_Cruz_Roja)))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmif3s0 encargará encargar))
+    (sp-CREG
+      (prep
+        (sps00 de de))
+      (sn
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 proyecto proyecto)
+          (sp
+            (prep
+              (sps00 para para))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 suministrar suministrar))
+              (sn-CD
+                (grup.nom.fs.1n
+                  (ncfs000 ayuda ayuda)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fs
+                        (s.a.fs
+                          (grup.a.fs
+                            (ao0fs0 primera primero)))
+                        (ncfs000 necesidad necesidad))))))
+              (sp-CI
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.fp
+                    (da0fp0 las el))
+                  (grup.nom.fp
+                    (ncfp000 víctimas víctima)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.mp
+                          (da0mp0 los el))
+                        (grup.nom.mp
+                          (ncmp000 terremotos terremoto)))))))
+              (sp.1c
+                (Fc , ,)
+                (prep
+                  (cs como como))
+                (sn.x
+                  (grup.nom.co
+                    (grup.nom.mp
+                      (ncmp000 productos producto)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.fs
+                            (ncfs000 higiene higiene)))))
+                    (Fc , ,)
+                    (grup.nom.fp
+                      (ncfp000 mantas manta))
+                    (coord
+                      (cc y y))
+                    (grup.nom.mp
+                      (ncmp000 albergues albergue)
+                      (s.a.mp
+                        (grup.a.mp
+                          (aq0cp0 provisionales provisional))))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (sp-AO
+        (prep
+          (sps00 Por por))
+        (sn
+          (espec.fs
+            (di0fs0 otra otro))
+          (grup.nom.fs
+            (ncfs000 parte parte)))
+        (Fc , ,))
+      (sp-CCL
+        (prep
+          (sps00 en en))
+        (snl
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (np0000l Molucas Molucas)))
+        (Fc , ,))
+      (sno-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 organización organización)
+          (sno
+            (grup.nom.fs
+              (np0000o World_Vision_Germany World_Vision_Germany)))))
+      (grup.verb
+        (vmif3s0 suministrará suministrar))
+      (sn-CD
+        (grup.nom.mp
+          (ncmp000 productos producto)
+          (s.a.mp.x
+            (grup.a.mp.co
+              (Fe " ")
+              (grup.a.mp
+                (aq0mp0 alimentarios alimentario))
+              (coord
+                (cc y y))
+              (grup.a.mp
+                (neg
+                  (rn no no))
+                (aq0mp0 alimentarios alimentario))
+              (Fe " ")))))
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 precisó precisar))
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (np0000o Comisión Comisión)))
+    (Fp . .)))
+(
+  (S
+    (sp-CCL
+      (prep
+        (sps00 En en))
+      (snl
+        (grup.nom
+          (np0000l Timor Timor)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 occidental occidental))))))
+    (grup.verb
+      (vsif3s0 será ser))
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 organización organización)
+        (sno
+          (grup.nom.fs
+            (np0000o Care_UK Care_UK)))))
+    (sn-ATR
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 encargada encargada)
+        (sp
+          (prep
+            (sps00 de de))
+          (S.NF.C.co
+            (S.NF.C
+              (infinitiu
+                (vmn0000 combatir combatir))
+              (sn-CD
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 malnutrición malnutrición))))
+            (coord
+              (cc y y))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 poner_en_marcha poner_en_marcha))
+              (sn-CD
+                (espec.ms
+                  (di0ms0 un uno))
+                (grup.nom.ms
+                  (ncms000 programa programa)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn.x
+                      (grup.nom.co
+                        (grup.nom.fs
+                          (ncfs000 higiene higiene))
+                        (coord
+                          (cc y y))
+                        (grup.nom.ms
+                          (ncms000 saneamiento saneamiento)))))
+                  (sp
+                    (prep
+                      (sps00 para para))
+                    (sn
+                      (espec.fp
+                        (da0fp0 las el))
+                      (grup.nom.fp
+                        (ncfp000 víctimas víctima)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (espec.fp
+                              (da0fp0 las el))
+                            (grup.nom.fp
+                              (ncfp000 inundaciones inundación))))
+                        (sp
+                          (prep
+                            (sps00 en en))
+                          (snl
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (ncfs000 frontera frontera)
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (snl
+                                  (grup.nom
+                                    (np0000l Timor Timor)
+                                    (s.a.ms
+                                      (grup.a.ms
+                                        (aq0cs0 oriental oriental)))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg Además además))
+      (Fc , ,))
+    (sno-SUJ
+      (sno
+        (grup.nom
+          (np0000o Save_the_Children Save_the_Children)))
+      (snl.j
+        (grup.nom
+          (Fpa -Fpa- -Fpa-)
+          (np0000l UK UK)
+          (Fpt -Fpt- -Fpt-))))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmif3s0 encargará encargar))
+    (sp-CREG
+      (prep
+        (sps00 de de))
+      (sn
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 programa programa)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 educación educación))))
+          (sp
+            (prep
+              (sps00 para para))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (nccp000 jóvenes joven)
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmip3p0 viven vivir))
+                  (sp-CCL
+                    (prep
+                      (sps00 en en))
+                    (sn
+                      (espec.mp
+                        (da0mp0 los el))
+                      (grup.nom.mp
+                        (ncmp000 campos campo)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (grup.nom.mp
+                              (ncmp000 refugiados refugiado))))))))))))))
+    (Fp . .)))

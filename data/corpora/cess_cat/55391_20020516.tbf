@@ -1,0 +1,257 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (np00000 Premis_Literaris Premis_Literaris)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (np00000 Girona Girona))))))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm rebut rebre))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (ncfs000 edició edició)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.ms
+                (dd0ms0 aquest aquest))
+              (grup.nom.ms
+                (ncms000 any any)))))))
+    (sn-CD
+      (espec.mp
+        (di0ms0 un un)
+        (ncms000 total total)
+        (sps00 de de)
+        (Z 181 181))
+      (grup.nom.mp
+        (ncmp000 originals original)
+        (S.F.R.co
+          (Fc , ,)
+          (sp.1c
+            (prep
+              (spcmp dels del))
+            (relatiu
+              (pr0cp000 quals qual)))
+          (S.F.R
+            (sn-SUJ
+              (grup.nom.p.1n
+                (Z 31 31)))
+            (grup.verb
+              (vmip3p0 corresponen correspondre))
+            (sp-CREG
+              (prep
+                (spcms al al))
+              (sn
+                (grup.nom
+                  (np00000 Prudenci_Bertrana Prudenci_Bertrana)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 novel·la novel·la))))))))
+          (Fc , ,)
+          (S.F.R*
+            (sn-SUJ
+              (grup.nom.p.1n
+                (Z 57 57)))
+            (sp-CREG
+              (prep
+                (spcms al al))
+              (sn
+                (grup.nom
+                  (np00000 Miquel_de_Palol_de_Poesia Miquel_de_Palol_de_Poesia)))))
+          (Fc , ,)
+          (S.F.R*
+            (sn-SUJ
+              (grup.nom.p.1n
+                (Z 42 42)))
+            (sp-CREG
+              (prep
+                (spcms al al))
+              (sn
+                (grup.nom
+                  (np00000 Cerverí Cerverí)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 lletra lletra)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (grup.nom.fs
+                              (ncfs000 cançó cançó)))))))))))
+          (Fc , ,)
+          (S.F.R*
+            (sn-SUJ
+              (grup.nom.p.1n
+                (Z 28 28)))
+            (sp-CREG
+              (prep
+                (spcms al al))
+              (sn
+                (grup.nom
+                  (np00000 Lletra Lletra)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fp
+                        (ncfp000 pàgines pàgina)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (grup.nom.fs
+                              (ncfs000 literatura literatura)
+                              (s.a.fs
+                                (grup.a.fs
+                                  (aq0fs0 catalana català))))))
+                        (sp
+                          (prep
+                            (sps00 a a))
+                          (sn
+                            (grup.nom.fs
+                              (nccs000 internet internet)))))))))))
+          (Fc , ,)
+          (S.F.R*
+            (sn-SUJ
+              (grup.nom.p.1n
+                (Z 14 14)))
+            (sp-CREG
+              (prep
+                (spcms al al))
+              (sn
+                (grup.nom
+                  (np00000 Ramon_Muntaner Ramon_Muntaner)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 literatura literatura)
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0cs0 juvenil juvenil))))))))))
+          (coord
+            (cc i i))
+          (S.F.R*
+            (sn-SUJ
+              (grup.nom.p.1n
+                (Z 9 9)))
+            (sp-CREG
+              (prep
+                (spcms al al))
+              (sn
+                (grup.nom
+                  (np00000 Carles_Rahola_d'_Assaig Carles_Rahola_d'_Assaig))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 decisions decisió)
+        (sp
+          (prep
+            (spcmp dels del))
+          (sn
+            (grup.nom.mp
+              (ncmp000 jurats jurat))))))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmif3p0 faran fer))
+    (sa-CPRED.SUJ
+      (grup.a
+        (aq0fp0 públiques públic)))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 festa festa)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 proclamació proclamació)
+                (sp
+                  (prep
+                    (spcmp dels del))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 premis premi)))))))
+          (S.NF.P
+            (participi
+              (aq0fsp prevista previst))
+            (sp-CC
+              (prep
+                (sps00 per per))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 nit nit)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (W dia_21_de_juny [??:21/6/??:??.??]))))))))
+          (sp
+            (Fc , ,)
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np00000 Devesa Devesa)))
+            (Fc , ,))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmif3s0 comptarà comptar))
+            (sp-CREG
+              (prep
+                (sps00 amb amb))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 presentació presentació)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (da0cs0 l' el))
+                      (grup.nom.fs
+                        (ncfs000 actriu actriu)
+                        (sn
+                          (grup.nom.fs
+                            (np00000 Rosa_Boladeras Rosa_Boladeras)))))))))))))
+    (Fp . .)))

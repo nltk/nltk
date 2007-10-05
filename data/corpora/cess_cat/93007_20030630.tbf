@@ -1,0 +1,1280 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 exportacions exportació)
+        (sp
+          (prep
+            (sps00 de de))
+          (snl
+            (grup.nom
+              (np0000l Girona Girona))))))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm crescut créixer))
+    (sp-CCT
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (ao0ms0 últim últim)))
+          (ncms000 any any))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (snn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (Zp 13'36% 13.36/100))))
+    (S.F.A-AO
+      (Fc , ,)
+      (conj.subord
+        (cs segons segons))
+      (morfema.verbal-IMPERS
+        (p0000000 es es))
+      (grup.verb
+        (vmip3s0 desprèn desprendre))
+      (sp-CREG
+        (prep
+          (sps00 de de))
+        (sn
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (ncfp000 dades dada)
+            (S.NF.P
+              (participi
+                (aq0fpp facilitades facilitat))
+              (sp-CREG
+                (prep
+                  (sps00 per per))
+                (sno
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np0000o Cambra_de_Comerç Cambra_de_Comerç)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snl
+                        (grup.nom
+                          (np0000l Girona Girona))))))))
+            (s.a.fp
+              (grup.a.fp
+                (aq0fp0 relatives relatiu)
+                (sp
+                  (prep
+                    (spcms al al))
+                  (snd
+                    (grup.nom.ms
+                      (ncms000 període període)
+                      (s.a.ms
+                        (grup.a.ms
+                          (ncms000 gener-març gener-març)))
+                      (s.a.ms
+                        (grup.a.ms
+                          (W 2002/2003 [??:??/??/2002/2003:??.??]))))))))))))
+    (Fp . .)))
+(
+  (S
+    (morfema.verbal-IMPERS
+      (p0000000 Es es))
+    (grup.verb
+      (vmip3s0 tracta tractar))
+    (sp-CREG
+      (prep
+        (sps00 d' de))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 xifra xifra)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 superior superior)
+              (sp
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 mitjana mitjana)
+                    (s.a.fs.x
+                      (grup.a.fs.co
+                        (grup.a.fs.co
+                          (grup.a.fs
+                            (aq0fs0 catalana català))
+                          (coord
+                            (cc i i))
+                          (grup.a.fs
+                            (aq0fs0 espanyola espanyol)))
+                        (S.F.R.j
+                          (Fc , ,)
+                          (relatiu-SUJ
+                            (pr0cn000 que que))
+                          (morfema.verbal-PASS
+                            (p0000000 se se))
+                          (grup.verb
+                            (vmip3p0 situen situar))
+                          (sp-CREG
+                            (prep
+                              (sps00 en en))
+                            (sn.x
+                              (espec.ms
+                                (di0ms0 un un))
+                              (grup.nom.co
+                                (grup.nom.co
+                                  (grup.nom.ms
+                                    (Zp 4,75% 4.75/100))
+                                  (coord
+                                    (cc i i))
+                                  (grup.nom.ms
+                                    (Zp 5,56% 5.56/100)))
+                                (sadv.j
+                                  (grup.adv
+                                    (rg respectivament respectivament)))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 dinamisme dinamisme)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 empresarial empresarial)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (ncfp000 empreses empresa)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0fp0 gironines gironí)))))))
+        (Fc , ,))
+      (coord
+        (cc així_com així_com))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 recuperació recuperació)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0mp0 nous nou)))
+                (ncmp000 mercats mercat)
+                (sp
+                  (prep
+                    (cs com com))
+                  (sn
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (sp
+                        (prep
+                          (sps00 d' de))
+                        (snl
+                          (grup.nom
+                            (np0000l Amèrica_Llatina Amèrica_Llatina)))))))))))))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vmip3p0 apunten apuntar))
+    (sp-CPRED.SUJ
+      (prep
+        (cs com com))
+      (sn
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (s.a.fp
+            (grup.a.fp
+              (aq0cp0 principals principal)))
+          (ncfp000 causes causa)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.ms
+                (dd0ms0 aquest aquest))
+              (grup.nom.ms
+                (ncms000 augment augment)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 sector sector)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 metal·lúrgic metal·lúrgic)))
+        (S.NF.P
+          (Fc , ,)
+          (participi
+            (aq0msp seguit seguit))
+          (sp-CAG
+            (prep
+              (spcmp dels del))
+            (sn.co
+              (sn
+                (grup.nom.mp
+                  (ncmp000 productes producte)
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0mp0 agroalimentaris agroalimentari)))))
+              (coord
+                (cc i i))
+              (sn
+                (espec.mp
+                  (da0mp0 els el))
+                (grup.nom.mp
+                  (ncmp000 productes producte)
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0mp0 químics químic))))))))))
+    (grup.verb
+      (vsip3p0 són ser))
+    (sn-ATR
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (sadv-CC
+            (grup.adv
+              (rg més més)))
+          (morfema.verbal-PASS
+            (p0000000 es es))
+          (grup.verb
+            (vmip3p0 venen vendre))
+          (sp-CCL
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (ncms000 estranger estranger)))))))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (sadv.j
+        (grup.adv
+          (rg Concretament concretament)))
+      (sn.co
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 carn carn)))
+        (Fc , ,)
+        (sn
+          (espec.mp
+            (da0mp0 els el))
+          (grup.nom.mp
+            (ncmp000 automòbils automòbil)))
+        (coord
+          (cc i i))
+        (sn
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (ncfp000 màquines màquina)))))
+    (grup.verb
+      (vsip3p0 són ser))
+    (sn-ATR
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 productes producte)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (sadv-CC
+            (grup.adv
+              (rg més més)))
+          (morfema.verbal-PASS
+            (p0000000 s' es))
+          (grup.verb
+            (vmip3p0 exporten exportar)))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (sps00 Entre entre))
+      (snd
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (ncmp000 mesos mes)
+          (sp
+            (prep
+              (sps00 de de))
+            (snd.x
+              (grup.nom.co
+                (grup.nom.co
+                  (grup.nom.ms
+                    (ncms000 gener gener))
+                  (coord
+                    (cc i i))
+                  (grup.nom.ms
+                    (ncms000 març març)))
+                (sp.j
+                  (prep
+                    (sps00 de de))
+                  (snd
+                    (espec.ms
+                      (da0cs0 l' el))
+                    (grup.nom.ms
+                      (W any_2002 [??:??/??/2002:??.??]))))))))))
+    (snl-SUJ
+      (grup.nom
+        (np0000l Girona Girona)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 exportar exportar))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 valor valor)
+          (sp
+            (sadv.j
+              (grup.adv
+                (rg més més)))
+            (sp
+              (prep
+                (sps00 de de))
+              (snn
+                (espec
+                  (Z 553 553))
+                (grup.nom.mp
+                  (ncmp000 milions milió)
+                  (sp
+                    (prep
+                      (sps00 d' de))
+                    (snn
+                      (grup.nom.mp
+                        (Zm euros euro)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.ms
+          (da0ms0 el el)
+          (di0ms0 mateix mateix))
+        (grup.nom.ms
+          (ncms000 període període)
+          (sp
+            (prep
+              (sps00 de de))
+            (snd
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (W any_2003 [??:??/??/2003:??.??]))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 xifra xifra)))
+    (grup.verb
+      (vmii3s0 superava superar))
+    (snn-CD
+      (espec.mp
+        (da0mp0 els el)
+        (Z 627 627))
+      (grup.nom.mp
+        (ncmp000 milions milió)
+        (sp
+          (prep
+            (sps00 d' de))
+          (snn
+            (grup.nom.mp
+              (Zm euros euro))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Narcís_Puigvert Narcís_Puigvert)
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (nccs000 cap cap)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 comerç comerç)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0cs0 exterior exterior))))))
+            (sp
+              (prep
+                (sps00 de de))
+              (sno
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np0000o Cambra_de_Comerç Cambra_de_Comerç)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snl
+                      (grup.nom
+                        (np0000l Girona Girona))))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmip3s0 atribueix atribuir))
+    (sn-CD
+      (espec.ms
+        (dd0ms0 aquest aquest))
+      (grup.nom.ms
+        (ncms000 increment increment)))
+    (sp-CREG
+      (Fz ' ')
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 recuperació recuperació)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0mp0 nous nou)))
+                (ncmp000 mercats mercat))))))
+      (Fz ' '))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vsip3s0 És ser))
+    (sn-ATR
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 cas cas)
+        (sp
+          (prep
+            (sps00 d' de))
+          (snl
+            (grup.nom
+              (np0000l Amèrica_Llatina Amèrica_Llatina)
+              (S.F.R.co
+                (Fc , ,)
+                (relatiu-CCL
+                  (pr000000 on on))
+                (S.F.R
+                  (sp-CCL
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (grup.nom.mp
+                        (ncmp000 països país)
+                        (sp
+                          (prep
+                            (cs com com))
+                          (snl
+                            (grup.nom
+                              (np0000l Argentina Argentina)))))))
+                  (sn-SUJ
+                    (espec.fp
+                      (da0fp0 les el))
+                    (grup.nom.fp
+                      (ncfp000 exportacions exportació)))
+                  (grup.verb
+                    (vaip3p0 han haver)
+                    (vmp00sm crescut créixer))
+                  (snn-CD.Q
+                    (espec.ms
+                      (di0ms0 un un))
+                    (grup.nom.ms
+                      (Zp 163,76_% 163,76_%))))
+                (Fc , ,)
+                (S.F.R*
+                  (snl
+                    (grup.nom
+                      (np0000l Costa_Rica Costa_Rica))
+                    (Fc , ,))
+                  (snn
+                    (espec.ms
+                      (di0ms0 un un))
+                    (grup.nom.ms
+                      (Zp 224_% 224_%))))
+                (coord
+                  (cc o o))
+                (S.F.R*
+                  (snl
+                    (grup.nom
+                      (np0000l Colòmbia Colòmbia))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 empreses empresa)
+        (s.a.fp
+          (grup.a.fp
+            (aq0fp0 gironines gironí)))))
+    (sadv-MOD
+      (grup.adv
+        (rg també també)))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm apostat apostar))
+    (sp-CREG
+      (prep
+        (spcms pel pel))
+      (sn
+        (grup.nom.ms
+          (ncms000 mercat mercat)
+          (sp.co
+            (sp
+              (prep
+                (sps00 d' de))
+              (snl
+                (grup.nom
+                  (np0000l Argèlia Argèlia)
+                  (S.F.R
+                    (Fc , ,)
+                    (relatiu-CCL
+                      (pr000000 on on))
+                    (morfema.verbal-PASS
+                      (p0000000 s' es))
+                    (grup.verb
+                      (vaip3p0 han haver)
+                      (vmp00sm incrementat incrementar))
+                    (sn-SUJ
+                      (espec.fp
+                        (da0fp0 les el))
+                      (grup.nom.fp
+                        (ncfp000 exportacions exportació)))
+                    (sp-CC
+                      (prep
+                        (sps00 en en))
+                      (snn
+                        (espec.ms
+                          (di0ms0 un un))
+                        (grup.nom.ms
+                          (Zp 251_% 251_%))))))))
+            (coord
+              (cc o o))
+            (sp
+              (prep
+                (sps00 a a))
+              (snl
+                (grup.nom
+                  (np0000l Croàcia Croàcia)
+                  (S.F.R
+                    (Fc , ,)
+                    (relatiu-CCL
+                      (pr000000 on on))
+                    (sn.e-SUJ *0*)
+                    (grup.verb
+                      (vaip3p0 han haver)
+                      (vmp00sm crescut créixer))
+                    (snn-CD.Q
+                      (espec.ms
+                        (di0ms0 un un))
+                      (grup.nom.ms
+                        (Zp 224_% 224_%)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 Segons segons))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 informe informe)
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000o Cambra_de_Comerç Cambra_de_Comerç))))))
+      (Fc , ,))
+    (snl-SUJ
+      (grup.nom
+        (np0000l Girona Girona)))
+    (grup.verb
+      (vmip3s0 exporta exportar))
+    (snn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (Zp 82_% 82_%)))
+    (sp-CCL
+      (prep
+        (spcmp als al))
+      (sn
+        (grup.nom.mp
+          (ncmp000 països país)
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000o Unió_Europea Unió_Europea)))))))
+    (Fp . .)))
+(
+  (S
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom
+          (np0000l França França))
+        (Fc , ,)
+        (grup.nom
+          (np0000l Alemanya Alemanya))
+        (Fc , ,)
+        (grup.nom
+          (np0000l Itàlia Itàlia))
+        (Fc , ,)
+        (grup.nom
+          (np0000l Regne_Unit Regne_Unit))
+        (coord
+          (cc i i))
+        (grup.nom
+          (np0000l Portugal Portugal)))
+      (Fc , ,))
+    (morf.pron
+      (p0300000 s' ell))
+    (grup.verb
+      (vmip3p0 emporten emportar-se))
+    (sn-CD
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 bona bo)))
+        (ncfs000 part part)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 pastís pastís)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fp
+                    (da0fp0 les el))
+                  (grup.nom.fp
+                    (ncfp000 exportacions exportació)))))))))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (snn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (Zp 75_% 75_%))))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (snl
+        (grup.nom
+          (np0000l Estats_Units Estats_Units)))
+      (Fc , ,)
+      (snl
+        (grup.nom
+          (np0000l Mèxic Mèxic)))
+      (coord
+        (cc i i))
+      (snl
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np0000l Canadà Canadà))))
+    (grup.verb
+      (vmip3p0 representen representar))
+    (snn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (Zp 7_% 7_%)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (ncfp000 exportacions exportació))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 països país)
+        (sp.co
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (espec.fs
+                (da0cs0 l' el))
+              (grup.nom.fs
+                (np0000l Europa_de_l'_Est Europa_de_l'_Est))))
+          (Fc , ,)
+          (sp
+            (prep
+              (sps00 d' de))
+            (snl
+              (grup.nom
+                (np0000l Amèrica_Llatina Amèrica_Llatina))))
+          (coord
+            (cc i i))
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (np0000l Orient_Mitjà Orient_Mitjà)))))))
+    (grup.verb
+      (vsip3p0 són ser))
+    (sn-ATR
+      (grup.nom.p
+        (pi0cp000 altres altre)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (ncfp000 destinacions destinació)
+              (sp
+                (prep
+                  (spcmp dels del))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 productes producte)
+                    (s.a.mp
+                      (grup.a.mp
+                        (aq0mp0 gironins gironí)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (sps00 Des_de des_de))
+      (snd
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (W any_1986 [??:??/??/1986:??.??]))))
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 les el))
+      (grup.nom.fp
+        (ncfp000 exportacions exportació)
+        (s.a.fp
+          (grup.a.fp
+            (aq0fp0 gironines gironí)))))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm crescut créixer))
+    (sadv-CC
+      (grup.adv
+        (rg per_sobre per_sobre)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 mitjana mitjana)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 espanyola espanyol))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (snp-SUJ
+        (grup.nom.ms
+          (np0000p Narcís_Puigvert Narcís_Puigvert)))
+      (morf.pron
+        (p0300000 es ell))
+      (grup.verb
+        (vmip3s0 mostra mostrar))
+      (S.NF.P-CPRED.SUJ
+        (participi
+          (aq0msp convençut convençut))
+        (S.F.C-CREG
+          (conj.subord
+            (cs que que))
+          (sn-SUJ
+            (espec.fs
+              (dd0fs0 aquesta aquest))
+            (grup.nom.fs
+              (ncfs000 tendència tendència)
+              (sp
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.fs
+                    (da0cs0 l' el))
+                  (grup.nom.fs
+                    (ncfs000 alça alça))))))
+          (grup.verb
+            (vmif3s0 continuarà continuar))
+          (sp-CCT
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 futur futur)))))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3s0 assegura assegurar))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (Fz ' ')
+        (snl-SUJ
+          (grup.nom
+            (np0000l Girona Girona)))
+        (grup.verb
+          (vsif3s0 serà ser))
+        (sa-ATR
+          (grup.a
+            (aq0fs0 capdavantera capdavanter)
+            (sp
+              (prep
+                (sps00 quant_a quant_a))
+              (sn
+                (grup.nom.ms
+                  (ncms000 creixement creixement)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fp
+                        (da0fp0 les el))
+                      (grup.nom.fp
+                        (ncfp000 exportacions exportació))))
+                  (sp
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 nivell nivell)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (snl
+                            (grup.nom
+                              (np0000l Catalunya Catalunya))))))))))))
+        (Fz ' ')))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Per per))
+      (sn
+        (grup.nom.mp
+          (ncmp000 sectors sector)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms.1n
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 metal·lúrgic metal·lúrgic)))))
+    (grup.verb
+      (vmip3s0 continua continuar)
+      (gerundi
+        (vmg0000 encapçalant encapçalar)))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 rànquing rànquing)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.fp
+              (ncfp000 exportacions exportació))))))
+    (sp.1c
+      (Fc , ,)
+      (prep
+        (sps00 amb amb))
+      (snn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (Zp 28_% 28_%)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 total total)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-CD
+      (grup.nom.ms
+        (pp3msa00 El ell)))
+    (grup.verb
+      (vmip3p0 segueixen seguir))
+    (sn.co-SUJ
+      (sn
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (ncmp000 productes producte)
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 agroalimentaris agroalimentari)))
+          (sp
+            (Fc , ,)
+            (prep
+              (sps00 amb amb))
+            (snn
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (Zp 24_% 24_%))))))
+      (Fc , ,)
+      (sn
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (ncmp000 productes producte)
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 químics químic)))
+          (sp
+            (Fc , ,)
+            (prep
+              (sps00 amb amb))
+            (snn
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (Zp 15_% 15_%))))))
+      (coord
+        (cc i i))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 tèxtil tèxtil)
+          (sp
+            (prep
+              (sps00 amb amb))
+            (snn
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (Zp 13_% 13_%)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fp
+                      (da0fp0 les el))
+                    (grup.nom.fp
+                      (ncfp000 exportacions exportació)
+                      (s.a.fp
+                        (grup.a.fp
+                          (aq0cp0 totals total))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (pi0ms000 Tot_i_això tot_i_això))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 les el))
+      (grup.nom.fp.1n
+        (ncfp000 exportacions exportació)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 sector sector)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 tèxtil tèxtil))))))))
+    (grup.verb
+      (vsip3p0 són ser))
+    (sn-ATR
+      (espec.fp
+        (da0fp0 les el))
+      (grup.nom.fp
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (sadv-CC
+            (grup.adv
+              (rg menys menys)))
+          (grup.verb
+            (vaip3p0 han haver)
+            (vmp00sm crescut créixer))
+          (sp-CC
+            (prep
+              (sps00 respecte respecte))
+            (snd
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (W any_2002 [??:??/??/2002:??.??])))))))
+    (sp.1c
+      (Fc , ,)
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 lleuger lleuger)))
+          (ncms000 increment increment)
+          (sp
+            (prep
+              (sps00 d' de))
+            (snn
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (Zp 1,19_% 1,19_%)))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Puigvert Puigvert)
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 qualifica qualificar))
+          (sn-CD
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 sector sector)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 tèxtil tèxtil))))))
+          (sp-CC
+            (prep
+              (cs com com))
+            (sn
+              (Fz ' ')
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (nccn000 ventafocs ventafocs)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fp
+                      (da0fp0 les el))
+                    (grup.nom.fp
+                      (ncfp000 exportacions exportació)))))
+              (sp
+                (prep
+                  (sps00 de de))
+                (snl
+                  (espec.fp
+                    (da0fp0 les el))
+                  (grup.nom.fp
+                    (ncfp000 comarques comarca)
+                    (s.a.fp
+                      (grup.a.fp
+                        (aq0fp0 gironines gironí))))))
+              (Fz ' ')))
+          (Fc , ,))))
+    (grup.verb
+      (vmip3s0 atribueix atribuir))
+    (sn-CD
+      (espec.mp
+        (dd0mp0 aquests aquest))
+      (grup.nom.mp
+        (ncmp000 números número)))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 repercussió repercussió)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 tractats tractat)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0cp0 internacionals internacional)))
+                (sp
+                  (prep
+                    (sps00 d' de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 ajuda ajuda)
+                      (sp
+                        (prep
+                          (sps00 a a))
+                        (sn
+                          (espec.mp
+                            (di0cp0 altres altre))
+                          (grup.nom.mp
+                            (ncmp000 països país)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg Per_contra per_contra))
+      (Fc , ,))
+    (sn-SUJ
+      (grup.nom.ms
+        (pi0ms000 un un)
+        (sp
+          (prep
+            (spcmp dels del))
+          (sn
+            (grup.nom.mp
+              (ncmp000 productes producte))))
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (sadv-CC
+            (grup.adv
+              (rg més més)))
+          (grup.verb
+            (vaip3s0 ha haver)
+            (vmp00sm augmentat augmentar))
+          (sn-CD
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 ritme ritme)
+              (sp
+                (prep
+                  (sps00 d' de))
+                (sn
+                  (grup.nom.fp
+                    (ncfp000 exportacions exportació))))
+              (sn
+                (grup.nom.ms
+                  (ncms000 respecte respecte)
+                  (snd
+                    (espec.ms
+                      (da0cs0 l' el))
+                    (grup.nom.ms
+                      (W any_2002 [??:??/??/2002:??.??]))))))))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vsp00sm estat ser))
+    (sn-ATR
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.mp
+              (ncmp000 productes producte)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0cp0 minerals mineral))))))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vaip3s0 ha haver)
+            (vmp00sm patit patir))
+          (sn-CD
+            (espec.fs
+              (dn0fs0 una un))
+            (grup.nom.fs
+              (ncfs000 puja puja)
+              (sp
+                (prep
+                  (spcms del del))
+                (snn
+                  (grup.nom.ms
+                    (Zp 152,73_% 152,73_%)))))))))
+    (Fp . .)))

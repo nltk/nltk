@@ -1,0 +1,127 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (nccp000 pacients pacient)))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 anar anar))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (grup.nom.fs
+          (ncfs000 normalitat normalitat))))
+    (sp-CREG
+      (prep
+        (spcmp als al))
+      (sn
+        (grup.nom.mp
+          (ncmp000 hospitals hospital))))
+    (sp-CC
+      (prep
+        (sps00 sense sense))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 saber saber))
+        (S.F.C-CD
+          (conj.subord
+            (cs que que))
+          (morf.pron
+            (pp3cn000 hi hi))
+          (grup.verb
+            (vaii3s0 havia haver))
+          (sn-CD.Q
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 protesta protesta)
+              (S.NF.P
+                (Fc , ,)
+                (participi
+                  (aq0fsp convocada convocat))
+                (sp-CAG
+                  (prep
+                    (spcms pel pel))
+                  (sn.co
+                    (sn
+                      (grup.nom.ms
+                        (np00000 Sindicat_de_Metges_de_Catalunya Sindicat_de_Metges_de_Catalunya)))
+                    (coord
+                      (cc i i))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (np00000 Federació_d'_Associacions_de_Metges Federació_d'_Associacions_de_Metges)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 vaga vaga)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (dn0cp0 tres tres))
+            (grup.nom.fp
+              (ncfp000 hores hora))))))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 fer fer))
+    (sp-CCT
+      (prep
+        (sps00 entre entre))
+      (sn.co
+        (sn
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (W deu 10)))
+        (coord
+          (cc i i))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (W una_del_migdia [??:??/??/??:13.00])))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 facultatius facultatiu)))
+    (grup.verb
+      (vmip3p0 demanen demanar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (grup.nom
+          (np00000 Sanitat Sanitat)))
+      (grup.verb
+        (vmsp3s0 inverteixi invertir))
+      (sadv-CC
+        (grup.adv
+          (rg més més)))
+      (sp-CREG
+        (prep
+          (sps00 en en))
+        (sn
+          (grup.nom.mp
+            (ncmp000 hospitals hospital)
+            (s.a.mp
+              (grup.a.mp
+                (aq0mp0 públics públic)))))))
+    (Fp . .)))

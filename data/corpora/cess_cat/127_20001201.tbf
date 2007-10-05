@@ -1,0 +1,99 @@
+
+(
+  (S*
+    (sn
+      (espec.ms
+        (di0ms0 Un un))
+      (grup.nom.ms
+        (ncms000 quadro quadro)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 mostra mostra))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (ncfs000 exposició exposició)))
+    (grup.verb
+      (vmip3s0 ensenya ensenyar))
+    (sn.x
+      (sp.j
+        (Fc , ,)
+        (prep
+          (sps00 entre entre))
+        (sn
+          (espec.mp
+            (di0cp0 altres altre))
+          (grup.nom.mp
+            (ncmp000 tresors tresor)))
+        (Fc , ,))
+      (sn.x-CD
+        (grup.nom.co
+          (grup.nom.mp
+            (ncmp000 documents document)
+            (s.a.mp
+              (grup.a.mp
+                (aq0cp0 originals original)))
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (W segle_XV [s:xv])))))
+          (Fc , ,)
+          (grup.nom.mp
+            (ncmp000 llibres llibre)
+            (s.a.mp
+              (grup.a.mp
+                (aq0cp0 incunables incunable))))
+          (coord
+            (cc i i))
+          (grup.nom.mp
+            (ncmp000 quadros quadro)))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 mostra mostra)))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmip3s0 pot poder)
+      (infinitiu
+        (vmn0000 visitar visitar)))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 edifici edifici)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 plaça plaça))))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np00000 Universitat Universitat)))))))
+    (Fp . .)))

@@ -1,0 +1,687 @@
+
+(
+  (S
+    (S.F.C-CD
+      (snp-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 vicepresidente vicepresidente)
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (grup.nom
+                (np0000l Irak Irak))))
+          (snp
+            (Fc , ,)
+            (grup.nom.ms
+              (np0000p Taha_Yasin_Ramadán Taha_Yasin_Ramadán))
+            (Fc , ,))))
+      (grup.verb
+        (vmif3s0 viajará viajar))
+      (sadv-CCT
+        (grup.adv
+          (rg mañana mañana)))
+      (sp-CCL
+        (prep
+          (sps00 a a))
+        (snl
+          (np0000l Jordania Jordania)))
+      (sp-CC
+        (prep
+          (sps00 para para))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 tratar tratar)
+            (sps00 de de)
+            (infinitiu
+              (vmn0000 mejorar mejorar)))
+          (sn-CD
+            (espec.fp
+              (da0fp0 las el))
+            (grup.nom.fp
+              (ncfp000 relaciones relación)
+              (sp
+                (prep
+                  (sps00 entre entre))
+                (sn
+                  (espec.mp
+                    (da0mp0 los el)
+                    (dn0cp0 dos dos))
+                  (grup.nom.mp
+                    (ncmp000 países país))))
+              (S.F.R.co
+                (Fc , ,)
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (S.F.R
+                  (grup.verb
+                    (vmis3p0 empezaron empezar)
+                    (sps00 a a)
+                    (infinitiu
+                      (vmn0000 deteriorarse deteriorar)))
+                  (sp-CCT
+                    (prep
+                      (sps00 en en))
+                    (snd
+                      (grup.nom.ms
+                        (W 1995 [??:??/??/1995:??.??])))))
+                (coord
+                  (cc y y))
+                (S.F.R
+                  (sp-CCT
+                    (prep
+                      (sps00 en en))
+                    (sn
+                      (espec.mp
+                        (da0mp0 los el))
+                      (grup.nom.mp
+                        (s.a.mp
+                          (grup.a.mp
+                            (ao0mp0 últimos último)))
+                        (ncmp000 meses mes))))
+                  (grup.verb
+                    (vaip3p0 han haber)
+                    (vmp00sm sufrido sufrir))
+                  (sn-CD
+                    (espec.mp
+                      (di0mp0 diversos diverso))
+                    (grup.nom.mp
+                      (ncmp000 reveses revés)))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmis3p0 informaron informar))
+    (sn-SUJ
+      (grup.nom.fp
+        (ncfp000 fuentes fuente)
+        (s.a.fp
+          (grup.a.fp
+            (aq0cp0 oficiales oficial)))
+        (s.a.fp
+          (grup.a.fp
+            (aq0fp0 jordanas jordano)))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 visita visita)
+          (sp
+            (prep
+              (sps00 de de))
+            (snp
+              (grup.nom.ms
+                (np0000p Ramadán Ramadán))))))
+      (grup.verb
+        (vsif3s0 será ser))
+      (sn-ATR
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ao0fs0 primera primero)
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.ms
+                (rg más más)
+                (sps00 de de)
+                (di0ms0 un uno))
+              (grup.nom.ms
+                (ncms000 año año))))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (di0ms0 un uno))
+              (grup.nom.ms
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 alto alto)))
+                (ncms000 cargo cargo)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 gubernamental gubernamental)))
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 iraquí iraquí))))))
+          (sp
+            (prep
+              (sps00 a a))
+            (snl
+              (grup.nom
+                (np0000l Jordania Jordania))))
+          (sp
+            (prep
+              (sps00 para para))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 tratar tratar))
+              (sn-CD
+                (grup.nom.fp
+                  (ncfp000 cuestiones cuestión)
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0fp0 políticas político)))
+                  (s.a.fp.x
+                    (grup.a.fp.co
+                      (grup.a.fp
+                        (aq0cp0 bilaterales bilateral))
+                      (coord
+                        (cc e e))
+                      (grup.a.fp
+                        (aq0cp0 internacionales internacional))))))))))
+      (Fc , ,))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (morfema.verbal
+        (p0000000 se se))
+      (grup.verb
+        (vmif3s0 iniciará iniciar))
+      (sn-CCT
+        (espec.mp
+          (dn0cp0 dos dos))
+        (grup.nom.mp
+          (ncmp000 días día)
+          (sadv
+            (grup.adv
+              (rg después después)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 ratificación ratificación)
+                    (sp
+                      (prep
+                        (sps00 en en))
+                      (sn
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (ncms000 cargo cargo))))
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (snp
+                        (grup.nom.ms
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0ms0 nuevo nuevo)))
+                          (s.a.ms
+                            (grup.a.ms
+                              (ao0ms0 primer primero)))
+                          (ncms000 ministro ministro)
+                          (snp
+                            (Fc , ,)
+                            (grup.nom.ms
+                              (np0000p Ali_Abul_Ragheb Ali_Abul_Ragheb))
+                            (Fc , ,)))))
+                    (sp
+                      (prep
+                        (sps00 por por))
+                      (sno
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (np0000o Parlamento_de_Ammán Parlamento_de_Ammán))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 presentación presentación)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (dp3cs0 su su))
+              (grup.nom.ms
+                (ncms000 programa programa)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 político político))))))
+          (sp
+            (prep
+              (sps00 ante ante))
+            (sno
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000o Cámara_de_Representantes Cámara_de_Representantes)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 jordana jordano)))
+                (S.F.R
+                  (Fc , ,)
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (sn-CD
+                    (grup.nom.s
+                      (pp3csd00 le él)))
+                  (grup.verb
+                    (vmis3s0 apoyó apoyar))
+                  (sp-CC
+                    (prep
+                      (sps00 con con))
+                    (sn.co
+                      (sn
+                        (espec.mp
+                          (Z 74 74))
+                        (grup.nom.mp
+                          (ncmp000 votos voto)
+                          (sp
+                            (prep
+                              (sps00 a a))
+                            (sn
+                              (grup.nom.ms
+                                (ncms000 favor favor))))))
+                      (coord
+                        (cc y y))
+                      (sn
+                        (espec.fp
+                          (Z 6 6))
+                        (grup.nom.fp
+                          (ncfp000 abstenciones abstención)))))
+                  (Fc , ,))))))))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Abul_Ragheb Abul_Ragheb)))
+    (grup.verb
+      (vmis3s0 manifestó manifestar))
+    (sn-CD
+      (espec.fs
+        (dp3cs0 su su))
+      (grup.nom.fs
+        (ncfs000 intención intención)
+        (sp
+          (prep
+            (sps00 de de))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 trabajar trabajar))
+            (sp-CC
+              (prep
+                (sps00 para para))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 conseguir conseguir))
+                (sn-CD
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 levantamiento levantamiento)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fp
+                          (da0fp0 las el))
+                        (grup.nom.fp
+                          (ncfp000 sanciones sanción)
+                          (s.a.fp
+                            (grup.a.fp
+                              (aq0cp0 internacionales internacional)))
+                          (S.NF.P
+                            (participi
+                              (aq0fpp impuestas impuesto))
+                            (sp-CI
+                              (prep
+                                (sps00 a a))
+                              (sno
+                                (grup.nom
+                                  (np0000o Irak Irak))))
+                            (sn-CCT
+                              (sn
+                                (vmip3s0 hace hacer)
+                                (dn0cp0 diez diez)
+                                (ncmp000 años año))
+                              (S.F.R.j
+                                (Fc , ,)
+                                (relatiu-CCT
+                                  (pr000000 cuando cuando))
+                                (sn-SUJ
+                                  (espec.fp
+                                    (dp3cp0 sus su))
+                                  (grup.nom.fp
+                                    (ncfp000 tropas tropa)))
+                                (grup.verb
+                                  (vmis3p0 invadieron invadir))
+                                (snl-CD
+                                  (grup.nom
+                                    (np0000l Kuwait Kuwait)))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (pi0ms000 Uno uno)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (s.a.mp
+                (grup.a.mp
+                  (ao0mp0 últimos último)))
+              (ncmp000 reveses revés)
+              (sp
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.fp
+                    (da0fp0 las el))
+                  (grup.nom.fp
+                    (ncfp000 relaciones relación)
+                    (sp
+                      (prep
+                        (sps00 entre entre))
+                      (sn.x
+                        (grup.nom.co
+                          (grup.nom
+                            (np0000o Ammán Ammán))
+                          (coord
+                            (cc y y))
+                          (grup.nom
+                            (np0000o Bagdad Bagdad)))))))))))))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmis3s0 produjo producir))
+    (sp-CCT
+      (prep
+        (sps00 a_principios_de a_principios_de))
+      (sn
+        (espec.ms
+          (dd0ms0 este este))
+        (grup.nom.ms
+          (ncms000 año año)
+          (S.F.R
+            (Fc , ,)
+            (relatiu
+              (pr000000 cuando cuando))
+            (snp-SUJ
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 anterior anterior)))
+                (s.a.ms
+                  (grup.a.ms
+                    (ao0ms0 primer primero)))
+                (ncms000 ministro ministro)
+                (snp
+                  (Fc , ,)
+                  (grup.nom.ms
+                    (np0000p Abdul_Rauf_Rawabde Abdul_Rauf_Rawabde))
+                  (Fc , ,))))
+            (grup.verb
+              (vmis3s0 rechazó rechazar))
+            (sn-CD
+              (espec.fs
+                (di0fs0 una uno))
+              (grup.nom.fs
+                (ncfs000 propuesta propuesta)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sno
+                    (grup.nom.ms
+                      (np0000o Parlamento Parlamento)
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0ms0 jordano jordano))))))
+                (sp
+                  (prep
+                    (sps00 para para))
+                  (S.NF.C
+                    (infinitiu
+                      (vmn0000 romper romper))
+                    (sn-CD
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 embargo embargo)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0ms0 aéreo aéreo)))
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0cs0 internacional internacional)))
+                        (S.NF.P
+                          (participi
+                            (aq0msp impuesto impuesto))
+                          (sp-CI
+                            (prep
+                              (sps00 a a))
+                            (sno
+                              (grup.nom
+                                (np0000o Irak Irak))))
+                          (sp-CAG
+                            (prep
+                              (sps00 por por))
+                            (sno
+                              (espec.fs
+                                (da0fs0 la el))
+                              (grup.nom.fs
+                                (np0000o ONU ONU))))
+                          (sp-CCT
+                            (prep
+                              (sps00 en en))
+                            (snd
+                              (grup.nom.ms
+                                (W 1990 [??:??/??/1990:??.??])))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CCT
+      (grup.adv
+        (rg Posteriormente posteriormente))
+      (Fc , ,))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vmis3s0 registró registrar))
+    (sn-SUJ
+      (espec.ms
+        (di0ms0 otro otro))
+      (grup.nom.ms
+        (ncms000 percance percance)))
+    (S.F.A-CC
+      (Fc , ,)
+      (conj.subord
+        (cs cuando cuando))
+      (sn-SUJ
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 autoridades autoridad)
+          (s.a.fp
+            (grup.a.fp
+              (aq0fp0 jordanas jordano)))))
+      (grup.verb
+        (vmis3p0 detuvieron detener))
+      (sp-CCT
+        (Fc , ,)
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.ms
+            (dp3cs0 su su))
+          (grup.nom.ms
+            (ncms000 regreso regreso)
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Irak Irak))))))
+        (Fc , ,))
+      (sp-CD
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (nccs000 piloto piloto)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 italiano italiano)))
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vaii3s0 había haber)
+                (vmp00sm violado violar))
+              (sn-CD
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 embargo embargo)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 aéreo aéreo)))
+                  (sp
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (espec.ms
+                        (dd0ms0 ese ese))
+                      (grup.nom.ms
+                        (ncms000 país país))))))))))
+      (S.F.AConc-AO
+        (Fc , ,)
+        (conj.subord
+          (cs aunque aunque))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vsis3s0 fue ser)
+          (vmp00sm puesto poner))
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (grup.nom.fs
+              (ncfs000 libertad libertad))))
+        (sn-CCT
+          (espec.mp
+            (di0mp0 pocos poco))
+          (grup.nom.mp
+            (ncmp000 días día)
+            (sadv
+              (grup.adv
+                (rg después después)))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (s.a.mp
+            (grup.a.mp
+              (ao0mp0 últimos último)))
+          (ncmp000 meses mes)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.mp
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 altos alto)))
+        (ncmp000 cargos cargo)
+        (s.a.mp
+          (grup.a.mp
+            (aq0cp0 iraquíes iraquí)))
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmii3p0 viajaban viajar))
+          (sp-CCL
+            (prep
+              (spcms al al))
+            (sn
+              (grup.nom.ms
+                (ncms000 extranjero extranjero)))))))
+    (grup.verb
+      (vmis3p0 empezaron empezar)
+      (sps00 a a)
+      (infinitiu
+        (vmn0000 utilizar utilizar)))
+    (snl-CD
+      (grup.nom
+        (np0000l Damasco Damasco)))
+    (sp-CC
+      (prep
+        (cs como como))
+      (sn
+        (grup.nom.fs
+          (nccs000 base base)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (ncfp000 operaciones operación))))
+          (sp
+            (prep
+              (sps00 fuera_de fuera_de))
+            (sn
+              (espec.ms
+                (dp3cs0 su su))
+              (grup.nom.ms
+                (ncms000 territorio territorio)))))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 en_lugar_de en_lugar_de))
+      (snl
+        (grup.nom
+          (np0000l Ammán Ammán)
+          (sn
+            (sp.j
+              (Fc , ,)
+              (prep
+                (sps00 durante durante))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 años año))))
+            (sn
+              (espec.fs
+                (dp3cs0 su su))
+              (grup.nom.fs
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 única único)))
+                (ncfs000 salida salida)
+                (sp
+                  (prep
+                    (spcms al al))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 exterior exterior))))))))))
+    (Fp . .)))

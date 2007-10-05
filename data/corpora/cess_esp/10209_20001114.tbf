@@ -1,0 +1,565 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 expansión expansión)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 piratería piratería))))
+        (sp
+          (prep
+            (sps00 en en))
+          (snl
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (np0000l Sudeste_de_Asia Sudeste_de_Asia))))
+        (S.NF.P
+          (Fc , ,)
+          (participi
+            (aq0fsp organizada organizado))
+          (sp-CC
+            (sadv.j
+              (grup.adv
+                (rg principalmente principalmente)))
+            (sp
+              (prep
+                (sps00 en en))
+              (sn
+                (grup.nom.fp
+                  (ncfp000 bandas banda)
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0cp0 internacionales internacional)))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmip3s0 puede poder)
+      (infinitiu
+        (vmn0000 destruir destruir)))
+    (sn-CD
+      (espec.fp
+        (da0fp0 las el))
+      (grup.nom.fp
+        (ncfp000 economías economía)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 región región))))))
+    (S.F.A-CC
+      (Fc , ,)
+      (conj.subord
+        (cs según según))
+      (grup.verb
+        (vmis3p0 advirtieron advertir))
+      (sadv-CCT
+        (grup.adv
+          (rg hoy hoy)
+          (snd
+            (Fc , ,)
+            (grup.nom.ms
+              (W martes [martes:??/??/??:??.??]))
+            (Fc , ,))))
+      (sn-SUJ
+        (grup.nom.mp
+          (ncmp000 expertos experto)
+          (S.NF.P
+            (participi
+              (aq0mpp reunidos reunido))
+            (sp-CCL
+              (prep
+                (sps00 en en))
+              (snl
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 capital capital)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snl
+                      (grup.nom
+                        (np0000l Malasia Malasia))))
+                  (snl
+                    (Fc , ,)
+                    (grup.nom
+                      (np0000l Kuala_Lumpur Kuala_Lumpur))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 transporte transporte)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 naval naval)))
+          (sp
+            (prep
+              (sps00 entre entre))
+            (sn
+              (espec.fp
+                (da0fp0 las el))
+              (grup.nom.fp
+                (ncfp000 naciones nación)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0fp0 asiáticas asiático))))))))
+      (S.F.A-CC
+        (Fc , ,)
+        (conj.subord
+          (cs según según))
+        (grup.verb
+          (vmis3s0 apuntó apuntar))
+        (snp-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 director director)
+            (sp
+              (prep
+                (sps00 de de))
+              (sno
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 japonesa japonés)))
+                  (np0000o Fundación_Nippon Fundación_Nippon))))
+            (snp
+              (Fc , ,)
+              (grup.nom.ms
+                (np0000p Hiroshi_Terashima Hiroshi_Terashima))
+              (Fc , ,)))))
+      (grup.verb
+        (vsip3s0 es ser))
+      (sa-ATR
+        (grup.a
+          (grup.a
+            (sadv
+              (grup.adv
+                (rg mucho mucho)))
+            (aq0cs0 mayor mayor))
+          (S.F.AComp*.j
+            (conj.subord
+              (cs que que))
+            (sp
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 ruta ruta)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 transatlántica transatlántico)))))))))
+      (Fc , ,))
+    (Fe " ")
+    (coord
+      (cc sin_embargo sin_embargo))
+    (S
+      (Fc , ,)
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 papel papel)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 vital vital)))
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 transporte transporte)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 marino marino))))))))
+      (morf.pron
+        (p0300000 se él))
+      (grup.verb
+        (vmip3s0 ve ver))
+      (S.NF.P-CPRED.SUJ
+        (participi
+          (aq0msp minado minado))
+        (sp-CAG
+          (prep
+            (sps00 por por))
+          (sn
+            (espec.fp
+              (da0fp0 las el))
+            (grup.nom.fp
+              (ncfp000 bandas banda)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0cp0 internacionales internacional)))))))
+      (sn-AO
+        (Fc , ,)
+        (espec.ms
+          (da0ns0 lo el))
+        (grup.nom.ms
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3s0 puede poder)
+              (infinitiu
+                (vmn0000 llevar llevar)))
+            (sp-CREG
+              (prep
+                (sps00 a a))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 destruir destruir))
+                (sn-CD
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 progreso progreso)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 económico económico)))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fp
+                          (da0fp0 las el))
+                        (grup.nom.fp
+                          (ncfp000 naciones nación)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (espec.fs
+                                (da0fs0 la el))
+                              (grup.nom.fs
+                                (ncfs000 región región)))))))))))))))
+    (Fe " ")
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Las el))
+      (grup.nom.fp
+        (ncfs000 navieras naviera)
+        (sp.co
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (grup.nom
+                (np0000l Japón Japón))))
+          (Fc , ,)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fp
+                (di0fp0 otras otro))
+              (grup.nom.fp
+                (ncfp000 naciones nación)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0ms0 lejano lejano)))
+                      (ncms000 oriente oriente)))))))
+          (Fc , ,)
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (grup.nom
+                (np0000l Oriente_Medio Oriente_Medio))))
+          (coord
+            (cc y y))
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (grup.nom
+                (np0000l Europa Europa)))))))
+    (grup.verb
+      (vaip3p0 han haber)
+      (vmp00sm mostrado mostrar))
+    (sn-CD
+      (espec.fs
+        (dp3cs0 su su))
+      (grup.nom.fs
+        (ncfs000 preocupación preocupación)
+        (sp
+          (prep
+            (sps00 por por))
+          (sn
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (ncmp000 ataques ataque)
+              (sp
+                (prep
+                  (sps00 contra contra))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 buques buque)
+                    (S.F.R
+                      (relatiu-SUJ
+                        (pr0cn000 que que))
+                      (grup.verb
+                        (vmip3p0 navegan navegar))
+                      (sp-CCL
+                        (prep
+                          (sps00 por por))
+                        (sn.co
+                          (snl
+                            (espec.ms
+                              (da0ms0 el el))
+                            (grup.nom.ms
+                              (np0000l Estrecho_de_Malaca Estrecho_de_Malaca)))
+                          (Fc , ,)
+                          (snl
+                            (espec.ms
+                              (da0ms0 el el))
+                            (grup.nom.ms
+                              (np0000l Mar_de_China_Meridional Mar_de_China_Meridional)))
+                          (coord
+                            (cc o o))
+                          (sn
+                            (espec.fp
+                              (da0fp0 las el))
+                            (grup.nom.fp
+                              (ncfp000 rutas ruta)
+                              (sp
+                                (prep
+                                  (sps00 entre entre))
+                                (sn.x
+                                  (grup.nom.co
+                                    (grup.nom
+                                      (np0000l Singapur Singapur))
+                                    (coord
+                                      (cc e e))
+                                    (grup.nom.co
+                                      (np0000l Indonesia Indonesia))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 número número)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn.x
+            (grup.nom.co
+              (grup.nom.mp
+                (ncmp000 asaltos asalto)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0cp0 piratas pirata))))
+              (coord
+                (cc o o))
+              (grup.nom.mp
+                (ncmp000 secuestros secuestro)))))))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vaip3p0 han haber)
+      (vmp00sm multiplicado multiplicar))
+    (sp-CC
+      (prep
+        (sps00 por por))
+      (snn
+        (grup.nom.mp.1n
+          (Z 30 30))))
+    (sp-CCT
+      (sadv.j
+        (grup.adv
+          (rg sólo sólo)))
+      (sp
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.mp
+            (da0mp0 los el)
+            (ao0mp0 últimos último)
+            (dn0cp0 diez diez))
+          (grup.nom.mp
+            (ncmp000 meses mes)))))
+    (sn.1c
+      (Fc , ,)
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 mayor mayor)))
+        (ncms000 registro registro)
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.fs
+              (di0fs0 una uno))
+            (grup.nom.fs
+              (ncfs000 década década))))))
+    (sp-AO
+      (Fc , ,)
+      (prep
+        (sps00 según según))
+      (sn
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 informe informe)
+          (sp
+            (prep
+              (spcms del del))
+            (sno
+              (grup.nom.ms
+                (np0000o Departamento_Marítimo_para_la_Piratería Departamento_Marítimo_para_la_Piratería)
+                (sp
+                  (Fc , ,)
+                  (prep
+                    (sps00 con con))
+                  (snl
+                    (grup.nom.fs
+                      (ncfs000 sede sede)
+                      (sp
+                        (prep
+                          (sps00 en en))
+                        (snl
+                          (grup.nom
+                            (np0000l Kuala_Lumpur Kuala_Lumpur))))))
+                  (Fc , ,)))))
+          (S.NF.P
+            (participi
+              (aq0msp presentado presentado))
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.fs
+                  (di0fs0 una uno))
+                (grup.nom.fs
+                  (ncfs000 conferencia conferencia)
+                  (sp
+                    (prep
+                      (sps00 sobre sobre))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 piratería piratería))))
+                  (S.F.R.co
+                    (S.F.R
+                      (relatiu-SUJ
+                        (pr0cn000 que que))
+                      (grup.verb
+                        (vmif3s0 durará durar))
+                      (sn-CCT
+                        (espec.mp
+                          (dn0cp0 dos dos))
+                        (grup.nom.mp
+                          (ncmp000 días día))))
+                    (coord
+                      (cc y y))
+                    (S.F.R
+                      (relatiu-SUJ
+                        (pr0cn000 que que))
+                      (grup.verb
+                        (vmis3s0 comenzó comenzar))
+                      (sadv-CCT
+                        (grup.adv
+                          (rg hoy hoy)))
+                      (sp-CCL
+                        (prep
+                          (sps00 en en))
+                        (snl
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (ncfs000 capital capital)
+                            (s.a.fs
+                              (grup.a.fs
+                                (aq0fs0 malasia malasio)))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (sps00 Alrededor_de alrededor_de)
+        (Z 40 40))
+      (grup.nom.mp
+        (ncmp000 expertos experto)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (Z 13 13))
+            (grup.nom.fp
+              (ncfp000 naciones nación))))))
+    (grup.verb
+      (vmip3p0 participan participar))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 conferencia conferencia))))
+    (sp-CC
+      (prep
+        (sps00 para para))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 tratar tratar))
+        (sp-CREG
+          (prep
+            (sps00 acerca_de acerca_de))
+          (sn
+            (espec.fs
+              (di0fs0 una uno))
+            (grup.nom.fs
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 mayor mayor)))
+              (ncfs000 cooperación cooperación)
+              (sp
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 lucha lucha)
+                    (sp
+                      (prep
+                        (sps00 contra contra))
+                      (sn
+                        (espec.mp
+                          (da0mp0 los el))
+                        (grup.nom.mp
+                          (nccp000 piratas pirata))))))))))))
+    (Fp . .)))

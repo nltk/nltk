@@ -1,0 +1,126 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np00000 President President)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np00000 Federació_d'_Associacions_Romanines_d'_Andalusia Federació_d'_Associacions_Romanines_d'_Andalusia))))
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (np00000 Vicente_Rodríguez_Arribas Vicente_Rodríguez_Arribas))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 quedar quedar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (grup.nom.fs
+          (ncfs000 llibertat llibertat))))
+    (sp-CCT
+      (prep
+        (spcms al al))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 dipositar dipositar))
+        (sn-CD
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 fiança fiança)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.mp
+                  (Z 18.030 18030))
+                (grup.nom.mp
+                  (Zm euros euro)
+                  (sn
+                    (Fpa -Fpa- -Fpa-)
+                    (espec.mp
+                      (dn0cp0 tres tres))
+                    (grup.nom.mp
+                      (ncmp000 milions milió)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.fp
+                            (Zm pessetes pesseta)))))
+                    (Fpt -Fpt- -Fpt-)))))))
+        (sp-CCL
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (di0ms0 un un))
+            (grup.nom.ms
+              (ncms000 jutjat jutjat)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom
+                    (np00000 Màlaga Màlaga)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Rodríguez Rodríguez)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vsn0000 ser ser)
+      (vmp00sm detingut detenir))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 operació operació)
+          (sp
+            (prep
+              (sps00 contra contra))
+            (sn.co
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 tràfic tràfic)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fp
+                        (nccp000 drogues droga))))))
+              (coord
+                (cc i i))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 blanqueig blanqueig)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.mp
+                        (ncmp000 capitals capital)))))))))))
+    (Fp . .)))

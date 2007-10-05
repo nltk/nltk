@@ -1,0 +1,1081 @@
+
+(
+  (S
+    (S.NF.A-CC
+      (gerundi
+        (vmg0000 Leyendo leer))
+      (sp-CC
+        (prep
+          (sps00 sobre sobre))
+        (sn
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (ncfp000 hazañas hazaña)
+            (sp
+              (prep
+                (sps00 de de))
+              (snp
+                (grup.nom.ms
+                  (np0000p Lenoir Lenoir)
+                  (snp
+                    (Fc , ,)
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0cs0 joven joven)))
+                      (nccs000 comerciante comerciante)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (snl
+                          (grup.nom
+                            (np0000l Colonia Colonia)))))
+                    (Fc , ,)))))))))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Nikolaus_August_Otto Nikolaus_August_Otto)
+        (snd
+          (Fpa -Fpa- -Fpa-)
+          (grup.nom
+            (W 1832 [??:??/??/1832:??.??])
+            (Fg - -)
+            (W 1891 [??:??/??/1891:??.??]))
+          (Fpt -Fpt- -Fpt-))))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmis3s0 propuso proponer))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 mejorar mejorar))
+      (sn-CD
+        (espec.ms
+          (dd0ms0 aquel aquel))
+        (grup.nom.ms
+          (ncms000 motor motor))))
+    (Fp . .)))
+(
+  (S.co
+    (sp.j-CC
+      (prep
+        (sps00 Tras tras))
+      (sn.co
+        (sn
+          (espec.fp
+            (di0fp0 muchas mucho))
+          (grup.nom.fp
+            (ncfp000 pruebas prueba)))
+        (coord
+          (cc y y))
+        (sn
+          (grup.nom.mp
+            (ncmp000 retoques retoque))))
+      (Fc , ,))
+    (S.co
+      (S
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmis3s0 registró registrar))
+        (sn-CD
+          (espec.fp
+            (di0fp0 varias varios))
+          (grup.nom.fp
+            (ncfp000 patentes patente))))
+      (coord
+        (cc y y))
+      (S
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmis3s0 obtuvo obtener))
+        (sn-CD
+          (grup.nom.mp
+            (s.a.mp
+              (grup.a.mp
+                (aq0mp0 sucesivos sucesivo)))
+            (ncmp000 éxitos éxito)))
+        (sp-CC
+          (prep
+            (sps00 con con))
+          (sn
+            (espec.mp
+              (dp3cp0 sus su))
+            (grup.nom.mp
+              (ncmp000 motores motor)
+              (S.F.R
+                (Fc , ,)
+                (relatiu-CD
+                  (pr0cn000 que que))
+                (sn.e-SUJ *0*)
+                (grup.verb
+                  (vmii3s0 vendía vender))
+                (sp-CC
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 millares millar))))
+                (sp-CI
+                  (Fc , ,)
+                  (sadv
+                    (grup.adv
+                      (rg especialmente especialmente)))
+                  (sp
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (espec.fp
+                        (da0fp0 las el))
+                      (grup.nom.fp
+                        (s.a.fp
+                          (grup.a.fp
+                            (aq0fp0 pequeñas pequeño)))
+                        (ncfp000 industrias industria)
+                        (S.F.R
+                          (sp-CC
+                            (prep
+                              (sps00 para para))
+                            (sn
+                              (espec.fp
+                                (da0fp0 las el))
+                              (relatiu
+                                (pr0cn000 que que))))
+                          (sn-SUJ
+                            (espec.fs
+                              (di0fs0 una uno))
+                            (grup.nom.fs
+                              (ncfs000 máquina máquina)
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sn
+                                  (grup.nom.ms
+                                    (ncms000 vapor vapor))))))
+                          (grup.verb
+                            (vsii3s0 era ser))
+                          (sa-ATR
+                            (espec
+                              (rg demasiado demasiado))
+                            (grup.a
+                              (aq0cs0 grande grande))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 popularidad popularidad)
+        (sp
+          (prep
+            (spcms del del))
+          (sna
+            (grup.nom.ms
+              (np0000a Motor_Otto Motor_Otto))))))
+    (grup.verb
+      (vmis3s0 llevó llevar))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 fundación fundación)
+          (sp
+            (Fc , ,)
+            (prep
+              (sps00 en en))
+            (snd
+              (grup.nom
+                (W 1872 [??:??/??/1872:??.??])))
+            (Fc , ,))
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 firma firma)
+                (sno
+                  (grup.nom
+                    (np0000o Gas-Motoren-Fabrik_Deutz_A._G. Gas-Motoren-Fabrik_Deutz_A._G.)))
+                (S.F.R
+                  (Fc , ,)
+                  (sp-CREG
+                    (prep
+                      (sps00 en en))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (relatiu
+                        (pr0cn000 que que))))
+                  (grup.verb
+                    (vmii3p0 participaban participar))
+                  (sn-SUJ
+                    (espec.mp
+                      (da0mp0 los el))
+                    (grup.nom.mp
+                      (s.a.mp
+                        (grup.a.mp
+                          (aq0cp0 brillantes brillante)))
+                      (ncmp000 ingenieros ingeniero)
+                      (sn.x
+                        (grup.nom.co
+                          (grup.nom.ms
+                            (np0000p Gottlieb_Daimler Gottlieb_Daimler))
+                          (coord
+                            (cc y y))
+                          (grup.nom.ms
+                            (np0000p Wilhelm_Maybach Wilhelm_Maybach)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 En en))
+      (sn
+        (grup.nom.fs
+          (ncfs000 colaboración colaboración)
+          (sp
+            (prep
+              (sps00 con con))
+            (snp
+              (grup.nom.ms
+                (np0000p Otto Otto)))))))
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmis3p0 desarrollaron desarrollar))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (S.F.R.co
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (morf.pron
+            (p0300000 se él))
+          (grup.verb
+            (vmic3s0 llamaría llamar))
+          (sn-CC
+            (grup.nom.ms
+              (ncms000 motor motor)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.mp
+                    (dn0cp0 cuatro cuatro))
+                  (grup.nom.mp
+                    (ncmp000 tiempos tiempo))))))
+          (sp-CC
+            (Fc , ,)
+            (prep
+              (sps00 por por))
+            (sn
+              (espec.fp
+                (da0fp0 las el)
+                (dn0cp0 cuatro cuatro))
+              (grup.nom.fp
+                (ncfp000 carreras carrera)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0fp0 sucesivas sucesivo)))
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 émbolo émbolo))))
+                (sn.x
+                  (Fpa -Fpa- -Fpa-)
+                  (grup.nom.co
+                    (grup.nom.fs
+                      (ncfs000 aspiración aspiración))
+                    (Fc , ,)
+                    (grup.nom.fs
+                      (ncfs000 compresión compresión))
+                    (Fc , ,)
+                    (grup.nom.fs
+                      (ncfs000 explosión explosión))
+                    (coord
+                      (cc y y))
+                    (grup.nom.fs
+                      (ncfs000 expulsión expulsión)))
+                  (Fpt -Fpt- -Fpt-))))))
+        (coord
+          (cc y y))
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmis3s0 obtuvo obtener))
+          (sn-CD
+            (espec.ms
+              (di0ms0 un uno))
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 arrollador arrollador)))
+              (ncms000 triunfo triunfo)))
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (sna
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000a Exposición_Universal_de_París Exposición_Universal_de_París)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snd
+                    (grup.nom
+                      (W 1878 [??:??/??/1878:??.??]))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.AConc-AO
+      (conj.subord
+        (cs Aunque aunque))
+      (sadv-CC
+        (grup.adv
+          (rg rigurosamente rigurosamente)))
+      (grup.verb
+        (vsic3s0 sería ser))
+      (sn-SUJ
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 ingeniero ingeniero)
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (grup.nom
+                (np0000l Mecklenburgo Mecklenburgo))))
+          (S.NF.P
+            (participi
+              (aq0msp llamado llamado))
+            (snp-CPRED
+              (grup.nom.ms
+                (np0000p Sigfried_Marcus Sigfried_Marcus))))))
+      (sn-ATR
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmic3s0 presentaría presentar))
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (snl
+                (grup.nom
+                  (np0000l Viena Viena))))
+            (sn-CD
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (s.a.ms
+                  (grup.a.ms
+                    (ao0ms0 primer primero)))
+                (ncms000 automóvil automóvil)
+                (S.NF.P
+                  (participi
+                    (aq0msp conocido conocido)))
+                (S.NF.P
+                  (participi
+                    (aq0msp movido movido))
+                  (sp-CC
+                    (prep
+                      (sps00 por por))
+                    (sn
+                      (espec.ms
+                        (di0ms0 un uno))
+                      (grup.nom.ms
+                        (ncms000 motor motor)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 gas gas)))))))))))))
+      (Fc , ,))
+    (grup.verb
+      (vsip3s0 es ser))
+    (sp.co-ATR
+      (sp.co
+        (sp
+          (prep
+            (sps00 a a))
+          (snp
+            (grup.nom.ms
+              (np0000p Gottlieb_Daimler Gottlieb_Daimler)
+              (snd
+                (Fpa -Fpa- -Fpa-)
+                (grup.nom
+                  (W 1834 [??:??/??/1834:??.??])
+                  (Fg - -)
+                  (W 1900 [??:??/??/1900:??.??]))
+                (Fpt -Fpt- -Fpt-)))))
+        (coord
+          (cc y y))
+        (sp
+          (prep
+            (sps00 a a))
+          (snp
+            (espec.ms
+              (dp3cs0 su su))
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 fiel fiel)))
+              (ncms000 colaborador colaborador)
+              (snp
+                (grup.nom.ms
+                  (np0000p Maybach Maybach)))))))
+      (S.F.R
+        (sp-CC
+          (prep
+            (sps00 a a))
+          (relatiu
+            (pr0cs000 quien quien)))
+        (morfema.verbal-PASS
+          (p0000000 se se))
+        (grup.verb
+          (vmip3p0 deben deber))
+        (sn-SUJ
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (s.a.mp
+              (grup.a.mp
+                (ao0mp0 primeros primero)))
+            (ncmp000 esfuerzos esfuerzo)
+            (S.NF.P
+              (participi
+                (aq0mpp continuados continuado)))
+            (sp
+              (prep
+                (sps00 para para))
+              (sn.co
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 desarrollo desarrollo)))
+                (coord
+                  (cc y y))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 producción producción)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.mp
+                          (ncmp000 vehículos vehículo)
+                          (sp
+                            (prep
+                              (sps00 a a))
+                            (sn
+                              (grup.nom.ms
+                                (ncms000 motor motor)))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (ao0ms0 primero primero)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.mp
+              (pd0mp000 éstos este))))))
+    (grup.verb
+      (vsis3s0 fue ser))
+    (sn-ATR
+      (espec.fs
+        (di0fs0 una uno))
+      (grup.nom.fs
+        (ncfs000 motocicleta motocicleta)
+        (S.NF.P
+          (participi
+            (aq0fsp patentada patentado))
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (snd
+              (grup.nom
+                (W 1885 [??:??/??/1885:??.??])))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sp-CC
+        (prep
+          (sps00 En en))
+        (snd
+          (grup.nom
+            (W 1887 [??:??/??/1887:??.??]))))
+      (grup.verb
+        (vmis3s0 circuló circular))
+      (sp-CC
+        (prep
+          (sps00 por por))
+        (sn
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (ao0fs0 primera primero)))
+            (ncfs000 vez vez))))
+      (sn-SUJ
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 carruaje carruaje)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fp
+                (dn0cp0 cuatro cuatro))
+              (grup.nom.fp
+                (ncfp000 ruedas rueda))))
+          (S.NF.P
+            (participi
+              (aq0msp hecho hecho))
+            (sp-CAG
+              (prep
+                (sps00 por por))
+              (snp
+                (grup.nom.ms
+                  (np0000p Daimler Daimler)))))))
+      (sp-CC
+        (prep
+          (sps00 a a))
+        (snn
+          (espec.mp
+            (Z 18 18))
+          (grup.nom.mp
+            (ncmp000 kilómetros kilómetro)
+            (sp
+              (prep
+                (sps00 por por))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 hora hora)))))))
+      (Fc , ,))
+    (coord
+      (cc y y))
+    (S*
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (snd
+          (grup.nom
+            (W 1891 [??:??/??/1891:??.??]))))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (ao0ms0 primer primero)))
+          (ncms000 camión camión)
+          (sp
+            (prep
+              (sps00 con con))
+            (sn.co
+              (sn
+                (espec.fp
+                  (dn0cp0 dos dos))
+                (grup.nom.fp
+                  (ncfp000 marchas marcha)
+                  (sadv
+                    (grup.adv
+                      (rg delante delante)))))
+              (coord
+                (cc y y))
+              (sn
+                (grup.nom.fs
+                  (pi0fs000 una uno)
+                  (sadv
+                    (grup.adv
+                      (rg atrás atrás))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Daimler Daimler)))
+    (neg-MOD
+      (rn no no))
+    (grup.verb
+      (vsii3s0 era ser))
+    (sn-ATR
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 único único)))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Por por))
+      (sn
+        (espec.fs
+          (da0fs0 la el)
+          (di0fs0 misma mismo))
+        (grup.nom.fs
+          (ncfs000 época época))))
+    (grup.verb
+      (vmii3s0 circulaba circular))
+    (sp-CC
+      (prep
+        (sps00 por por))
+      (sn
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 calles calle)
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (grup.nom
+                (np0000l Mannheim Mannheim)
+                (sp
+                  (Fc , ,)
+                  (sadv
+                    (grup.adv
+                      (rg también también)))
+                  (sp
+                    (prep
+                      (sps00 en en))
+                    (snl
+                      (grup.nom
+                        (np0000l Alemania Alemania))))
+                  (Fc , ,))))))))
+    (sn-SUJ
+      (espec.ms
+        (di0ms0 un uno))
+      (grup.nom.ms
+        (ncms000 coche coche)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 mecánico mecánico)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (dn0cp0 tres tres))
+            (grup.nom.fp
+              (ncfp000 ruedas rueda))))
+        (S.NF.P
+          (participi
+            (aq0msp diseñado diseñado))
+          (sp-CAG
+            (prep
+              (sps00 por por))
+            (snp
+              (grup.nom.ms
+                (np0000p Karl_Friedrich_Benz Karl_Friedrich_Benz)
+                (snd
+                  (Fpa -Fpa- -Fpa-)
+                  (grup.nom
+                    (W 1844 [??:??/??/1844:??.??])
+                    (Fg - -)
+                    (W 1929 [??:??/??/1929:??.??]))
+                  (Fpt -Fpt- -Fpt-))))))
+        (S.F.R
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (relatiu
+                (pr0cn000 que que))))
+          (Fg - -)
+          (sn.co-SUJ
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncmn000 chasis chasis)))
+            (coord
+              (cc y y))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 motor motor))))
+          (grup.verb
+            (vaii3p0 habían haber)
+            (vsp00sm sido ser)
+            (vmp00pm concebidos concebir))
+          (sp-CC
+            (prep
+              (cs como como))
+            (sn.co
+              (sn
+                (espec.ms
+                  (di0ms0 un uno))
+                (grup.nom.ms
+                  (pi0ms000 todo todo)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 orgánico orgánico))))
+                (Fg - -)
+                (Fx ; ;))
+              (coord
+                (cc es_decir es_decir)
+                (Fc , ,))
+              (sn
+                (espec.ms
+                  (di0ms0 un uno))
+                (grup.nom.ms
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 verdadero verdadero)))
+                  (ncms000 automóvil automóvil))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-CI
+        (grup.nom.s
+          (pp3csd00 Le él)))
+      (grup.verb
+        (vmii3s0 faltaba faltar))
+      (sp-CC
+        (prep
+          (sps00 por por))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 resolver resolver))))
+      (coord-ET
+        (Fc , ,)
+        (cc sin_embargo sin_embargo)
+        (Fc , ,))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 mecanismo mecanismo)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 dirección dirección)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fp
+                      (dn0cp0 dos dos))
+                    (grup.nom.fp
+                      (ncfp000 ruedas rueda))))))))))
+    (Fx ; ;)
+    (S
+      (sp-CC
+        (prep
+          (sps00 por por))
+        (sn
+          (grup.nom.ms
+            (pd0ns000 eso ese))))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vsii3s0 era ser))
+      (sadv-MOD
+        (grup.adv
+          (rg todavía todavía)))
+      (sn-ATR
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 triciclo triciclo))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sp-CC
+        (prep
+          (sps00 En en))
+        (sn
+          (espec.mp
+            (di0mp0 pocos poco))
+          (grup.nom.mp
+            (ncmp000 años año))))
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 nuevos nuevo)))
+          (ncmp000 automóviles automóvil)))
+      (morf.pron
+        (p0300000 se él))
+      (grup.verb
+        (vmii3p0 extendían extender))
+      (sp-CC
+        (prep
+          (sps00 por por))
+        (sn
+          (espec.fp
+            (di0fp0 todas todo))
+          (grup.nom.fp
+            (ncfp000 partes parte))))
+      (Fc , ,))
+    (coord
+      (cc y y))
+    (S
+      (sp-CC
+        (sp
+          (prep
+            (sps00 en en))
+          (snl
+            (grup.nom
+              (np0000l Francia Francia))))
+        (sadv
+          (grup.adv
+            (rg especialmente especialmente))))
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vmii3p0 celebraban celebrar))
+      (sn-SUJ
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (s.a.fp
+            (grup.a.fp
+              (ao0fp0 primeras primero)))
+          (ncfp000 carreras carrera)
+          (S.F.R
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.fp
+                  (da0fp0 las el))
+                (relatiu
+                  (pr0cn000 que que))))
+            (grup.verb
+              (vmis3p0 triunfaron triunfar))
+            (sn-SUJ
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (ncmp000 autos auto)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snp
+                    (grup.nom.ms
+                      (np0000p Daimler Daimler))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (spcms Al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 borde borde)
+          (sp
+            (prep
+              (spcms del del))
+            (snd
+              (grup.nom.ms
+                (W siglo_XX [s:xx])))))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 en en))
+      (snd
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (W año_1900 [??:??/??/1900:??.??])))
+      (Fc , ,))
+    (grup.verb
+      (vmip3p0 crean crear))
+    (sn.co-SUJ
+      (snp
+        (grup.nom.ms
+          (np0000p Daimler Daimler)))
+      (Fc , ,)
+      (snp
+        (espec.ms
+          (dp3cs0 su su))
+        (grup.nom.ms
+          (ncms000 hijo hijo)
+          (snp
+            (grup.nom.ms
+              (np0000p Paul Paul)))))
+      (coord
+        (cc y y))
+      (snp
+        (grup.nom.ms
+          (np0000p Wilhelm_Maybach Wilhelm_Maybach)))
+      (Fc , ,))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un uno))
+      (grup.nom.ms
+        (ncms000 automóvil automóvil)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmii3s0 reunía reunir))
+          (sn-CD
+            (espec.mp
+              (di0mp0 todos todo)
+              (da0mp0 los el))
+            (grup.nom.mp
+              (ncmp000 adelantos adelanto)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0mp0 técnicos técnico)))
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 momento momento))))
+              (sn.co
+                (Fd : :)
+                (snn
+                  (espec.mp
+                    (Z 35 35))
+                  (grup.nom.mp
+                    (np0000a CV CV)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 potencia potencia))))))
+                (Fc , ,)
+                (sn
+                  (grup.nom.ms
+                    (ncms000 carburador carburador)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 inyección inyección))))))
+                (coord
+                  (cc y y))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 neumáticos neumático)
+                    (sn
+                      (Fc , ,)
+                      (espec.ms
+                        (di0ms0 un uno))
+                      (grup.nom.ms
+                        (ncms000 invento invento)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0cs0 reciente reciente)))
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (snp
+                            (espec.mp
+                              (da0mp0 los el))
+                            (grup.nom.mp
+                              (ncmp000 hermanos hermano)
+                              (snp
+                                (grup.nom
+                                  (np0000p Michelín Michelín)))
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (snl
+                                  (grup.nom
+                                    (np0000l París París)))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 En en))
+      (sn
+        (grup.nom.ms
+          (ncms000 honor honor)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 hija hija)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (snp
+                    (grup.nom.ms
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0cs0 gran gran)))
+                      (nccs000 deportista deportista)
+                      (snp
+                        (grup.nom.ms
+                          (np0000p Emil_Jellinek Emil_Jellinek)))))))))))
+      (Fc , ,))
+    (sn.e-SUJ *0*)
+    (sn-CI
+      (grup.nom.s
+        (pp3csd00 le él)))
+    (grup.verb
+      (vmip3p0 ponen poner))
+    (sn-CD
+      (espec.ms
+        (dp3cs0 su su))
+      (grup.nom.ms
+        (ncms000 nombre nombre)
+        (snp
+          (Fd : :)
+          (grup.nom
+            (np0000p Mercedes Mercedes)))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Daimler Daimler)))
+    (grup.verb
+      (vmip3s0 muere morir))
+    (sn-CC
+      (espec.ms
+        (dd0ms0 aquel aquel)
+        (di0ms0 mismo mismo))
+      (grup.nom.ms
+        (ncms000 año año)))
+    (Fp . .)))

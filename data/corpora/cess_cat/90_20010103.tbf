@@ -1,0 +1,139 @@
+
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 goril·la goril·la)))
+      (coord
+        (cc i i))
+      (sn
+        (espec.fp
+          (dp3fp0 les_seves el_seu)
+          (dn0fp0 dues dos))
+        (grup.nom.fp
+          (ncfp000 companyes companya))))
+    (grup.verb
+      (vmip3p0 estan estar))
+    (S.NF.P-ATR
+      (participi
+        (aq0mpp enfocats enfocat))
+      (sp-CAG
+        (prep
+          (sps00 per per))
+        (sn
+          (espec.fp
+            (dn0fp0 dues dos))
+          (grup.nom.fp
+            (nccp000 càmeres càmera)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 vídeo vídeo))))
+            (sn
+              (Fc , ,)
+              (grup.nom.fp
+                (nc00000 web-cams web-cam)
+                (S.NF.P
+                  (participi
+                    (aq0fpp connectades connectat))
+                  (sp
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 xarxa xarxa)))))))))))
+    (sn-AO
+      (Fc , ,)
+      (grup.nom.ms
+        (ncms000 fet fet)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 permet permetre))
+          (S.NF.C-CD
+            (infinitiu
+              (vmn0000 seguir seguir))
+            (sn-CD.d
+              (grup.nom
+                (pp3cn000 -ne en)))
+            (sn-CD.d
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (ncfp000 evolucions evolució)))
+            (sp-CCL
+              (prep
+                (spcms al al))
+              (sn
+                (grup.nom.ms
+                  (ncms000 zoo zoo))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (sps00 Des des))
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn.e-SUJ *0*)
+        (morfema.verbal-PASS
+          (p0000000 es es))
+        (grup.verb
+          (vaip3p0 van anar)
+          (vmn0000 instal·lar instal·lar)))
+      (Fc , ,))
+    (sn-CCT
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (W 22_de_novembre [??:22/11/??:??.??]))
+      (Fc , ,))
+    (morf.pron
+      (p0300000 s' ell))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm registrat registrar))
+    (sn-SUJ
+      (espec.mp
+        (Z 23.338 23338))
+      (grup.nom.mp
+        (ncmp000 usuaris usuari)))
+    (sn-AO
+      (Fc , ,)
+      (grup.nom.fs
+        (ncfs000 cosa cosa)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 representa representar))
+          (S.NF.C-CD
+            (infinitiu
+              (vmn0000 passar passar))
+            (sp-CC
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fp
+                  (Z 216 216))
+                (grup.nom.fp
+                  (ncfp000 visites visita)
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0fp0 diàries diari))))))
+            (sp-CREG
+              (prep
+                (sps00 a a))
+              (sn
+                (grup.nom
+                  (Z 1.200 1200))))))))
+    (Fp . .)))

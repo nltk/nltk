@@ -1,0 +1,1098 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 reconocimiento reconocimiento)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn.x
+            (grup.nom.co
+              (grup.nom
+                (np0000o España España))
+              (coord
+                (cc y y))
+              (grup.nom
+                (np0000o Bélgica Bélgica)))))
+        (sp
+          (prep
+            (sps00 a a))
+          (snp
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 figura figura)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 histórica histórico)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (snp
+                  (grup.nom.ms
+                    (np0000p Carlos_V Carlos_V)))))))))
+    (grup.verb
+      (vmis3s0 presidió pesidir))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 visita visita)
+        (S.F.R
+          (relatiu-CD
+            (pr0cn000 que que))
+          (grup.verb
+            (vmis3p0 realizaron realizar))
+          (sadv-CCT
+            (grup.adv
+              (rg hoy hoy)))
+          (snp-SUJ
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (np0000p Reyes Reyes)
+              (sn.x
+                (grup.nom.co
+                  (grup.nom.ms
+                    (np0000p Juan_Carlos Juan_Carlos))
+                  (coord
+                    (cc y y))
+                  (grup.nom.fs
+                    (np0000p Sofía Sofía)))))))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (grup.nom
+              (np0000l Gante Gante)
+              (snl
+                (Fc , ,)
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 ciudad ciudad)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 natal natal)))
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (snp
+                      (grup.nom.ms
+                        (np0000p Emperador Emperador)))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.NF.P.1c
+      (participi
+        (aq0mpp Acompañados acompañado))
+      (sp-CAG
+        (sps00 por por)
+        (snp
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (np0000p Reina_Paola Reina_Paola))))
+      (Fc , ,))
+    (sn-SUJ.p
+      (espec.fs
+        (dd0fs0 esta este))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (ao0fs0 tercera tercero)))
+        (ncfs000 jornada jornada)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 estancia estancia)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 oficial oficial)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (snp
+                  (espec.mp
+                    (da0mp0 los el))
+                  (grup.nom.mp.1n
+                    (np0000p Reyes_de_España Reyes_de_España))))
+              (sp
+                (prep
+                  (sps00 en en))
+                (snl
+                  (grup.nom
+                    (np0000l Bélgica Bélgica)))))))))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vmis3s0 abrió abrir))
+    (sp-CC
+      (prep
+        (sps00 con con))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 inauguración inauguración)
+          (sp
+            (prep
+              (sps00 de de))
+            (sna
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 exposición exposición)
+                (sna
+                  (grup.nom.fs
+                    (Fe " ")
+                    (np0000a Tapicerías_de_la_Corona_de_España Tapicerías_de_la_Corona_de_España)
+                    (Fe " "))))))
+          (sp
+            (prep
+              (sps00 en en))
+            (snl
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000l Catedral_de_San_Miguel_y_Santa_Gúdula Catedral_de_San_Miguel_y_Santa_Gúdula)
+                (sp
+                  (Fc , ,)
+                  (prep
+                    (sps00 en en))
+                  (snl
+                    (grup.nom
+                      (np0000l Bruselas Bruselas))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCL
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (S.NF.P
+            (sadv-CC
+              (grup.adv
+                (rg recién recién)))
+            (participi
+              (aq0msp restaurado restaurado)))
+          (ncms000 interior interior)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 catedral catedral))))))
+      (Fc , ,))
+    (sn.co-SUJ
+      (snp
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (np0000p Reyes Reyes))
+        (Fc , ,))
+      (coord
+        (sps00 junto_con junto_con))
+      (snp
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 ministro ministro)
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (grup.nom
+                (np0000o Asuntos_Exteriores Asuntos_Exteriores))))
+          (snp
+            (Fc , ,)
+            (grup.nom.ms
+              (np0000p Josep_Piqué Josep_Piqué))
+            (Fc , ,)))))
+    (grup.verb
+      (vmis3p0 contemplaron contemplar))
+    (sn-CD
+      (espec.mp
+        (da0mp0 los el)
+        (dn0cp0 dieciocho dieciocho))
+      (grup.nom.mp
+        (ncmp000 paños paño)
+        (S.NF.P.co
+          (S.NF.P
+            (participi
+              (aq0mpp cedidos cedido))
+            (sp-CAG
+              (prep
+                (sps00 por por))
+              (sno
+                (grup.nom.ms
+                  (np0000o Patrimonio_Nacional Patrimonio_Nacional)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 español español)))))))
+          (Fc , ,)
+          (S.NF.P
+            (participi
+              (aq0mpp tejidos tejido))
+            (sp-CCT
+              (prep
+                (sps00 en en))
+              (snd
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (S.NF.P
+                    (participi
+                      (aq0fsp llamada llamado)))
+                  (ncfs000 edad edad)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 oro oro))))
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 bruselense bruselense)))
+                  (sn
+                    (Fc , ,)
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.ms
+                            (s.a.ms
+                              (grup.a.ms
+                                (aq0cs0 mayor mayor)))
+                            (ncms000 florecimiento florecimiento)
+                            (sp
+                              (prep
+                                (sps00 en en))
+                              (sn
+                                (espec.ms
+                                  (da0ms0 el el))
+                                (grup.nom.ms
+                                  (nccs000 arte arte)
+                                  (sp
+                                    (prep
+                                      (spcms del del))
+                                    (sn
+                                      (grup.nom.ms
+                                        (ncms000 tapiz tapiz)))))))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 colección colección)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 real real)))
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 española español)))
+          (sn
+            (Fc , ,)
+            (grup.nom.fs
+              (pi0fs000 una uno)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fp
+                    (da0fp0 las el))
+                  (grup.nom.fp
+                    (ncfp000 colecciones colección)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.mp
+                          (ncmp000 tapices tapiz)
+                          (s.a.mp
+                            (espec
+                              (rg más más))
+                            (grup.a.mp
+                              (aq0cp0 importantes importante)
+                              (sp
+                                (prep
+                                  (spcms del del))
+                                (sn
+                                  (grup.nom.ms
+                                    (ncms000 mundo mundo)))))))))))))
+            (Fc , ,))))
+      (grup.verb
+        (vsis3s0 fue ser)
+        (vmp00sf iniciada iniciar))
+      (sp-CCT
+        (prep
+          (sps00 en en))
+        (snd
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (W siglo_XV [s:xv]))))
+      (sp-CAG
+        (prep
+          (sps00 por por))
+        (snp
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (np0000p Reyes_Católicos Reyes_Católicos)))))
+    (coord
+      (cc y y))
+    (S*
+      (grup.verb
+        (vmp00sf aumentada aumentar))
+      (sp-CAG
+        (prep
+          (sps00 por por))
+        (sn
+          (espec.mp
+            (dp3cp0 sus su))
+          (grup.nom.mp
+            (ncmp000 sucesores sucesor)
+            (sn
+              (Fc , ,)
+              (sadv.j
+                (grup.adv
+                  (rg especialmente especialmente)))
+              (snp
+                (grup.nom.ms
+                  (np0000p Carlos_V Carlos_V))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCL
+      (prep
+        (sps00 Desde desde))
+      (snl
+        (grup.nom
+          (np0000l Bruselas Bruselas)))
+      (Fc , ,))
+    (sn.co-SUJ
+      (snp
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (np0000p Reyes_de_España Reyes_de_España)))
+      (coord
+        (cc y y))
+      (snp
+        (grup.nom.fs
+          (np0000p Paola_de_Bélgica Paola_de_Bélgica))))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmis3p0 trasladaron trasladar))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (snl
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 capital capital)
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 región región)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snl
+                    (grup.nom
+                      (np0000l Flandes Flandes)))))))
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3s0 celebra celebrar))
+            (sn-CD
+              (sadv.j
+                (grup.adv
+                  (rg especialmente especialmente)))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 nacimiento nacimiento)
+                  (sp
+                    (Fc , ,)
+                    (prep
+                      (sps00 en en))
+                    (snn
+                      (grup.nom.ms
+                        (Z 1500 1500)))
+                    (Fc , ,))
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (snp
+                      (grup.nom.ms
+                        (sadv
+                          (grup.adv
+                            (rg entonces entonces)))
+                        (ncms000 príncipe príncipe)
+                        (snp
+                          (grup.nom.ms
+                            (np0000p Carlos Carlos)))
+                        (S.F.R
+                          (Fc , ,)
+                          (relatiu-SUJ
+                            (pr0cs000 quien quien))
+                          (morf.pron
+                            (p0300000 se él))
+                          (grup.verb
+                            (vaic3s0 habría haber)
+                            (sps00 de de)
+                            (infinitiu
+                              (vmn0000 convertir convertir)))
+                          (sp-CREG
+                            (prep
+                              (sps00 en en))
+                            (snp.x
+                              (grup.nom.co
+                                (grup.nom.ms
+                                  (np0000p Rey_de_España Rey_de_España))
+                                (coord
+                                  (cc y y))
+                                (grup.nom.ms
+                                  (ncms000 emperador emperador)
+                                  (sp
+                                    (prep
+                                      (spcms del del))
+                                    (sno
+                                      (grup.nom.ms
+                                        (np0000o Sacro_Imperio_Romano Sacro_Imperio_Romano)))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCL
+      (prep
+        (sps00 Ante ante))
+      (sno
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np0000o Ayuntamiento Ayuntamiento)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (dd0fs0 esta este))
+              (grup.nom.fs
+                (ncfs000 ciudad ciudad)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 medieval medieval))))))))
+      (Fc , ,))
+    (snp-SUJ
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.mp
+        (np0000p Reyes Reyes)))
+    (grup.verb
+      (vsis3p0 fueron ser)
+      (vmp00pm cumplimentados cumplimentar))
+    (sp-CAG
+      (prep
+        (sps00 por por))
+      (sn
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 autoridades autoridad)
+          (s.a.fp.x
+            (grup.a.fp.co
+              (grup.a.fp
+                (aq0cp0 regionales regional))
+              (Fc , ,)
+              (grup.a.fp
+                (aq0cp0 provinciales provincial))
+              (coord
+                (cc y y))
+              (grup.a.fp
+                (aq0cp0 locales local))))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (pi0fs000 una uno)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fp
+                      (da0fp0 las el))
+                    (grup.nom.fp
+                      (ncfp000 zonas zona)
+                      (s.a.fp
+                        (espec
+                          (rg más más))
+                        (grup.a.fp
+                          (aq0fp0 prósperas próspero)))
+                      (sp.co
+                        (coord
+                          (rg no_sólo no_sólo))
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (snl
+                            (grup.nom
+                              (np0000l Bélgica Bélgica)))
+                          (Fc , ,))
+                        (coord
+                          (cc sino sino))
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (snl
+                            (grup.nom
+                              (np0000l Europa Europa)
+                              (sp.co
+                                (Fc , ,)
+                                (sp
+                                  (prep
+                                    (sps00 entre entre))
+                                  (sn
+                                    (espec.mp
+                                      (da0mp0 los el))
+                                    (grup.nom.mp
+                                      (ncmp000 ríos río)
+                                      (sn.x
+                                        (grup.nom.co
+                                          (grup.nom
+                                            (np0000l Rin Rin))
+                                          (Fc , ,)
+                                          (grup.nom
+                                            (np0000l Mosa Mosa))
+                                          (coord
+                                            (cc y y))
+                                          (grup.nom
+                                            (np0000l Escalda Escalda))))))
+                                  (Fc , ,))
+                                (coord
+                                  (cc y y))
+                                (sp
+                                  (prep
+                                    (sps00 en en))
+                                  (sn
+                                    (espec.ms
+                                      (da0ms0 el el))
+                                    (grup.nom.ms
+                                      (S.NF.P
+                                        (participi
+                                          (aq0msp llamado llamado)))
+                                      (Fe " ")
+                                      (ncms000 triángulo triángulo)
+                                      (sp
+                                        (prep
+                                          (sps00 de de))
+                                        (sn
+                                          (grup.nom.ms
+                                            (ncms000 oro oro))))
+                                      (Fe " ")
+                                      (s.a.ms
+                                        (grup.a.ms
+                                          (aq0cs0 belga belga)))
+                                      (sp
+                                        (prep
+                                          (sps00 de de))
+                                        (snl
+                                          (grup.nom
+                                            (np0000l Amberes-Bruselas-Gante Amberes-Bruselas-Gante)))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (nccs000 burgomaestre burgomaestre)
+        (sn
+          (grup.nom.ms
+            (Fpa -Fpa- -Fpa-)
+            (ncms000 alcalde alcalde)
+            (Fpt -Fpt- -Fpt-)))
+        (sp
+          (prep
+            (sps00 de de))
+          (snl
+            (grup.nom
+              (np0000l Gante Gante))))
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (np0000p Frank_Becke Frank_Becke))
+          (Fc , ,))))
+    (grup.verb
+      (vmis3s0 pronunció pronunciar))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un uno))
+      (grup.nom.ms
+        (ncms000 discurso discurso)))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (snl
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (np0000l Sala_de_la_Pacificación Sala_de_la_Pacificación)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 espléndido espléndido)))
+                (ncms000 palacio palacio)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 municipal municipal)))
+                (S.NF.P
+                  (Fc , ,)
+                  (participi
+                    (aq0msp levantado levantado))
+                  (sp-CCT
+                    (prep
+                      (sps00 en en))
+                    (snn
+                      (grup.nom.ms
+                        (Z 1518 1518))))
+                  (sp-CC
+                    (Fe " ")
+                    (prep
+                      (cs como como))
+                    (sn
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0cs0 mayor mayor)))
+                        (ncms000 ayuntamiento ayuntamiento)
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 mundo mundo))))))
+                    (Fe " "))
+                  (sp-CC
+                    (prep
+                      (sps00 con_ocasión_de con_ocasión_de))
+                    (sn.co
+                      (sn.co
+                        (sn
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (ncfs000 mayoría mayoría)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (grup.nom.fs
+                                  (ncfs000 edad edad))))))
+                        (coord
+                          (cc y y))
+                        (sn
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (ncfs000 subida subida)
+                            (sp
+                              (prep
+                                (spcms al al))
+                              (sn
+                                (grup.nom.ms
+                                  (ncms000 trono trono)))))))
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (snp
+                          (grup.nom.ms
+                            (np0000p Carlos_V Carlos_V)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (sn.x
+        (grup.nom.co
+          (grup.nom.ms
+            (np0000p Don_Juan_Carlos Don_Juan_Carlos))
+          (coord
+            (cc y y))
+          (grup.nom.fs
+            (np0000p Doña_Sofía Doña_Sofía)))
+        (Fc , ,))
+      (coord
+        (sps00 junto_a junto_a))
+      (sn.co
+        (snp
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (np0000p Reina_Paola Reina_Paola)))
+        (coord
+          (cc y y))
+        (sp
+          (prep
+            (spcms al al))
+          (snp
+            (grup.nom.ms
+              (ncms000 presidente presidente)
+              (sp
+                (prep
+                  (spcms del del))
+                (sno
+                  (grup.nom.ms
+                    (np0000o Gobierno Gobierno)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 flamenco flamenco))))))
+              (sn
+                (Fc , ,)
+                (grup.nom.ms
+                  (np0000p Patrick_Dewael Patrick_Dewael))
+                (Fc , ,)))))))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmis3p0 dirigieron dirigir))
+    (sadv-CCT
+      (grup.adv
+        (rg después después)))
+    (sp-CCL
+      (prep
+        (sps00 desde desde))
+      (snl
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np0000l Ayuntamiento Ayuntamiento))))
+    (sp-CCL
+      (prep
+        (sps00 hasta hasta))
+      (snl
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (np0000l Catedral_de_San_Bavón Catedral_de_San_Bavón))))
+    (sp-CCL
+      (prep
+        (sps00 por por))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 zona zona)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 peatonal peatonal)))
+          (sp
+            (prep
+              (spcms del del))
+            (grup.nom.ms
+              (ncms000 casco casco)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 histórico histórico)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (snl
+                  (grup.nom
+                    (np0000l Gante Gante)))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sp-CC
+        (prep
+          (sps00 En en))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 paseo paseo)))
+        (Fc , ,))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3p0 correspondieron corresponder))
+      (sp-CD
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (ncmp000 saludos saludo)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (ncmp000 ciudadanos ciudadano)
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vmis3p0 aguantaron aguantar))
+                    (sn-CD
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 lluvia lluvia)))
+                    (sp-CC
+                      (prep
+                        (sps00 para para))
+                      (S.NF.C
+                        (infinitiu
+                          (vmn0000 darles dar))
+                        (sn-CD
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (ncfs000 bienvenida bienvenida))))))))))))
+      (Fc , ,))
+    (coord
+      (cc y y))
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 cordialidad cordialidad)
+          (S.F.R
+            (sp-CC
+              (prep
+                (sps00 con con))
+              (relatiu
+                (da0fs0 la el)
+                (pr0cn000 que que)))
+            (morfema.verbal-PASS
+              (p0000000 se se))
+            (grup.verb
+              (vmis3s0 produjo producir))
+            (sn-SUJ.p
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 recorrido recorrido))))))
+      (grup.verb
+        (vmis3s0 permitió permitir))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sn.co-SUJ
+          (snp
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (np0000p Reyes Reyes)))
+          (coord
+            (cc y y))
+          (snp
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000p Reina_Paola Reina_Paola))))
+        (morf.pron
+          (p0300000 se él))
+        (grup.verb
+          (vmsi3p0 detuvieran detener))
+        (sp-CCL
+          (prep
+            (sps00 en en))
+          (snl
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 café café)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sna
+                  (grup.nom
+                    (np0000a Koninck Koninck)))))))
+        (sp-CC
+          (prep
+            (sps00 para para))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 tomar tomar))
+            (sn-CD
+              (espec.ms
+                (di0ms0 un uno))
+              (grup.nom.ms
+                (ncms000 tentempié tentempié)))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sp-CCL
+        (prep
+          (sps00 En en))
+        (snl
+          (grup.nom
+            (np0000l San_Bavón San_Bavón)))
+        (Fc , ,))
+      (snp-SUJ
+        (grup.nom.ms
+          (ncms000 monseñor monseñor)
+          (snp
+            (grup.nom.ms
+              (np0000p Luysterman Luysterman)))
+          (snp
+            (Fc , ,)
+            (grup.nom.ms
+              (ncms000 obispo obispo)
+              (sp
+                (prep
+                  (sps00 de de))
+                (snl
+                  (grup.nom
+                    (np0000l Gante Gante)))))
+            (Fc , ,))))
+      (sn-CI
+        (grup.nom.p
+          (pp3cpd00 les él)))
+      (grup.verb
+        (vmis3s0 dio dar))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 bienvenida bienvenida))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (sn-CD
+        (grup.nom.p
+          (pp3cpd00 les él)))
+      (grup.verb
+        (vmis3s0 acompañó acompañar))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (ncms000 recorrido recorrido)
+            (sp
+              (prep
+                (sps00 por por))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 interior interior)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (dd0fs0 esta este))
+                      (grup.nom.fs
+                        (ncfs000 catedral catedral)
+                        (s.a.fs
+                          (Fc , ,)
+                          (grup.a.fs
+                            (aq0fs0 famosa famoso)
+                            (sadv
+                              (grup.adv
+                                (rg especialmente especialmente)))
+                            (S.F.A
+                              (conj.subord
+                                (cs porque porque))
+                              (sn.e-SUJ *0*)
+                              (grup.verb
+                                (vmip3s0 alberga albergar))
+                              (sna-CD
+                                (espec.ms
+                                  (da0ms0 el el))
+                                (grup.nom.ms
+                                  (ncms000 retablo retablo)
+                                  (sp
+                                    (prep
+                                      (sps00 de de))
+                                    (sn.x
+                                      (grup.nom.co
+                                        (grup.nom.ms
+                                          (np0000p Huberto Huberto))
+                                        (coord
+                                          (cc y y))
+                                        (grup.nom.ms
+                                          (np0000p Juan_Van_Eyck Juan_Van_Eyck)))))
+                                  (sna
+                                    (grup.nom.ms
+                                      (Fe " ")
+                                      (np0000a El_cordero_místico El_cordero_místico)
+                                      (Fe " ")))
+                                  (sp
+                                    (Fc , ,)
+                                    (prep
+                                      (sps00 de de))
+                                    (snn
+                                      (grup.nom.ms
+                                        (Z 1432 1432)))
+                                    (Fc , ,))
+                                  (sn
+                                    (espec.fs
+                                      (di0fs0 una uno))
+                                    (grup.nom.fs
+                                      (ncfs000 obra obra)
+                                      (s.a.fs
+                                        (grup.a.fs
+                                          (aq0fs0 maestra maestro)))
+                                      (sp
+                                        (prep
+                                          (sps00 de de))
+                                        (sn
+                                          (espec.fs
+                                            (da0fs0 la el))
+                                          (grup.nom.fs
+                                            (ncfs000 pintura pintura)
+                                            (s.a.fs
+                                              (grup.a.fs
+                                                (aq0fs0 flamenca flamenco)))
+                                            (sp
+                                              (prep
+                                                (spcms del del))
+                                              (snd
+                                                (grup.nom.ms
+                                                  (W siglo_XV [s:xv]))))))))))))))))))))))))
+    (Fp . .)))

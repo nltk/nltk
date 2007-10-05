@@ -1,0 +1,128 @@
+
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Chirac Chirac)))
+    (neg-MOD
+      (rn no no))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 incloure incloure))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (ncfp000 declaracions declaració)
+          (s.a.fp
+            (grup.a.fp
+              (aq0cp0 patrimonials patrimonial))))))
+    (sp-CCT
+      (prep
+        (sps00 entre entre))
+      (sn.co
+        (sn.co
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (W 1988 [??:??/??/1988:??.??])))
+          (coord
+            (cc i i))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (W 1993 [??:??/??/1993:??.??]))))
+        (S.F.R.j
+          (Fc , ,)
+          (relatiu
+            (pr000000 quan quan))
+          (sn.e *0*)
+          (grup.verb
+            (vsii3s0 era ser))
+          (sn
+            (grup.nom.ms
+              (ncms000 diputat diputat)))
+          (Fc , ,))))
+    (sn-CD
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 ingressos ingrés)
+        (s.a.mp
+          (grup.a.mp
+            (aq0cn0 en_efectiu en_efectiu)))
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (sp-AO
+            (Fc , ,)
+            (prep
+              (sps00 segons segons))
+            (sn
+              (grup.nom.ms
+                (pp3ms000 ell ell)))
+            (Fc , ,))
+          (sn-CI
+            (grup.nom.s
+              (pp3csd00 li ell)))
+          (grup.verb
+            (vaip3p0 van anar)
+            (vmn0000 permetre permetre))
+          (S.NF.C-CD
+            (infinitiu
+              (vmn0000 pagar pagar))
+            (sn-CD
+              (grup.nom.mp
+                (ncmp000 viatges viatge)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0mp0 privats privat)))))
+            (sp-CI
+              (prep
+                (sps00 a a))
+              (sn.co
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 família família)))
+                (coord
+                  (cc i i))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 col·laboradors col·laborador)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 president president)))
+    (grup.verb
+      (vmip3s0 sosté sostenir))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn.e-SUJ *0*)
+      (sn-CD
+        (grup.nom.p
+          (pp3cp000 els ell)))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 abonar abonar))
+      (sp-CC
+        (prep
+          (sps00 amb amb))
+        (sn
+          (grup.nom.mp
+            (ncmp000 fons fon)
+            (S.NF.P
+              (participi
+                (aq0mpp reservats reservat)))))))
+    (Fp . .)))

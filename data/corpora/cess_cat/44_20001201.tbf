@@ -1,0 +1,101 @@
+
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (sn
+          (espec.fs
+            (da0fs0 La el))
+          (grup.nom.fs
+            (ncfs000 majoria majoria)
+            (sp
+              (prep
+                (spcmp dels del))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 membres membre)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 club club)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0ms0 conservador conservador)))
+                        (sn
+                          (grup.nom
+                            (np00000 Carlton Carlton)))))))))))
+        (sn.j
+          (Fc , ,)
+          (sp.j
+            (prep
+              (sps00 entre entre))
+            (sn
+              (grup.nom.mp
+                (pp3mp000 ells ell))))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (nccs000 líder líder)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0cs0 l' el))
+                  (grup.nom.fs
+                    (ncfs000 oposició oposició))))
+              (sn
+                (grup.nom.ms
+                  (np00000 William_Hague William_Hague)))))
+          (Fc , ,)))
+      (grup.verb
+        (vaip3p0 van anar)
+        (vmn0000 votar votar))
+      (sp-CC
+        (prep
+          (sps00 a_favor_de a_favor_de))
+        (sn
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (ncms000 ingrés ingrés)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fp
+                  (da0fp0 les el))
+                (grup.nom.fp
+                  (ncfp000 dones dona))))
+            (sp
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 societat societat)))))))
+      (Fc , ,))
+    (coord
+      (cc però però))
+    (S
+      (neg-MOD
+        (rn no no))
+      (morfema.verbal-PASS
+        (p0000000 es es))
+      (grup.verb
+        (vaip3p0 van anar)
+        (vmn0000 aconseguir aconseguir))
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 els el)
+          (dn0mp0 dos dos))
+        (grup.nom.mp
+          (ncmp000 terços terç)
+          (S.NF.P
+            (participi
+              (aq0mpp requerits requerit))))))
+    (Fp . .)))

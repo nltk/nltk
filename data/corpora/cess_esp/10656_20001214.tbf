@@ -1,0 +1,580 @@
+
+(
+  (S
+    (S.F.C-CD
+      (sno-SUJ
+        (grup.nom
+          (np0000o Arabia_Saudí Arabia_Saudí)))
+      (grup.verb
+        (vmif3s0 adelantará adelantar))
+      (sp-CCT
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (s.a.mp
+              (grup.a.mp
+                (aq0mp0 próximos próximo)))
+            (ncmp000 meses mes))))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 retirada retirada)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fp
+                (dp3cp0 sus su))
+              (grup.nom.fp
+                (ncfp000 tropas tropa))))
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 frontera frontera)
+                (sp
+                  (prep
+                    (sps00 con con))
+                  (snl
+                    (grup.nom
+                      (np0000l Yemen Yemen)))))))))
+      (sp-CC
+        (Fc , ,)
+        (prep
+          (sps00 en_lugar_de en_lugar_de))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 hacerlo hacer))
+          (sp-CCT
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.mp
+                (dn0cp0 dos dos))
+              (grup.nom.mp
+                (ncmp000 años año))))
+          (S.F.A-CC
+            (Fc , ,)
+            (conj.subord
+              (cs como como))
+            (grup.verb
+              (vmii3s0 preveía prever))
+            (sn-SUJ
+              (espec.ms
+                (di0ms0 un uno))
+              (grup.nom.ms
+                (ncms000 tratado tratado)
+                (S.NF.P
+                  (participi
+                    (aq0msp firmado firmado))
+                  (sp-CCT
+                    (prep
+                      (sps00 en en))
+                    (snd
+                      (grup.nom.ms
+                        (W junio [??:??/06/??:??.??])
+                        (S.NF.P
+                          (participi
+                            (aq0msp pasado pasado))))))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmip3s0 informa informar))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)
+        (snd
+          (Fc , ,)
+          (grup.nom.ms
+            (W jueves [jueves:??/??/??:??.??]))
+          (Fc , ,))))
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 diario diario)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 árabe árabe)))
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 internacional internacional)))
+        (sna
+          (Fc , ,)
+          (grup.nom.ms
+            (Fe " ")
+            (np0000a Al_Hayat Al_Hayat)
+            (Fe " ")))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C.co-CD
+      (S.F.C.co
+        (Fe " ")
+        (S.F.C
+          (sn-SUJ
+            (espec.fs
+              (da0fs0 La el))
+            (grup.nom.fs
+              (ncfs000 retirada retirada)))
+          (neg-MOD
+            (rn no no))
+          (grup.verb
+            (vmif3s0 tardará tardar))
+          (sn-CCT
+            (espec.mp
+              (dn0cp0 dos dos))
+            (grup.nom.mp
+              (ncmp000 años año)))
+          (Fc , ,))
+        (coord
+          (cc sino sino))
+        (S.F.C*
+          (sn-CC
+            (espec.mp
+              (di0mp0 unos uno))
+            (grup.nom.mp
+              (ncmp000 meses mes)))
+          (Fc , ,)))
+      (S.F.A.j-CC
+        (conj.subord
+          (cs según según))
+        (grup.verb
+          (vaip3p0 han haber)
+          (vmp00sm decidido decidir))
+        (sn-SUJ
+          (espec.mp
+            (dn0mp0 ambos ambos))
+          (grup.nom.mp
+            (ncmp000 países país))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 anunció anunciar))
+    (sadv-CCT
+      (grup.adv
+        (rg ayer ayer)))
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 titular titular)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 saudí saudí)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (grup.nom
+              (np0000o Defensa Defensa))))
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (np0000p Sultan_Ben_Abdel_Aziz Sultan_Ben_Abdel_Aziz))
+          (Fc , ,))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (grup.nom.fs
+          (ncfs000 rueda rueda)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 prensa prensa)))))))
+    (sp-CC
+      (prep
+        (spcms junto_al junto_al))
+      (snp
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (ao0ms0 primer primero)))
+          (ncms000 ministro ministro)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 yemení yemení)))
+          (snp
+            (Fc , ,)
+            (grup.nom.ms
+              (np0000p Abdel_Karim_Al_Ariani Abdel_Karim_Al_Ariani))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (dd0fp0 Estas este))
+      (grup.nom.fp
+        (ncfp000 declaraciones declaración)))
+    (grup.verb
+      (vmis3p0 tuvieron_lugar tener_lugar))
+    (sp-CCT
+      (prep
+        (sps00 tras tras))
+      (sn
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 reunión reunión)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 comité comité)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 bilateral bilateral)))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 coordinación coordinación))))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn.x
+                    (grup.nom.co
+                      (grup.nom
+                        (np0000o Arabia_Saudí Arabia_Saudí))
+                      (coord
+                        (cc y y))
+                      (grup.nom
+                        (np0000o Yemen Yemen))))))))
+          (S.NF.P
+            (participi
+              (aq0fsp celebrada celebrado))
+            (sp-CCL
+              (prep
+                (sps00 en en))
+              (snl
+                (grup.nom
+                  (np0000l Yeda Yeda)
+                  (sp
+                    (Fc , ,)
+                    (prep
+                      (sps00 en en))
+                    (snl
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 costa costa)
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0cs0 saudí saudí)))
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (snl
+                            (grup.nom.ms
+                              (np0000l Mar_Rojo Mar_Rojo))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (nccs000 representante representante)
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (grup.nom
+              (np0000o Arabia_Saudí Arabia_Saudí))))))
+    (grup.verb
+      (vmis3s0 añadió añadir))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (S.F.A-CCT
+        (Fc , ,)
+        (conj.subord
+          (cs mientras mientras))
+        (grup.verb
+          (vmsp3s0 dure durar))
+        (sn-SUJ
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 retirada retirada)))
+        (Fc , ,))
+      (sno-SUJ
+        (grup.nom
+          (np0000o Yemen Yemen)))
+      (grup.verb
+        (vmif3s0 estará estar))
+      (S.NF.P-ATR
+        (participi
+          (aq0msp autorizado autorizado))
+        (sp-CC
+          (prep
+            (sps00 a a))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 ocupar ocupar))
+            (sn-CD
+              (espec.fp
+                (da0fp0 las el))
+              (grup.nom.fp
+                (ncfp000 posiciones posición)
+                (S.NF.P
+                  (participi
+                    (aq0fpp abandonadas abandonado))
+                  (sp-CAG
+                    (prep
+                      (sps00 por por))
+                    (sn
+                      (espec.fp
+                        (da0fp0 las el))
+                      (grup.nom.fp
+                        (ncfp000 tropas tropa)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (snl
+                            (grup.nom
+                              (np0000l Riad Riad))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Abdel_Aziz Abdel_Aziz)))
+    (grup.verb
+      (vmis3s0 consideró considerar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 reunión reunión)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 comité comité)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 coordinación coordinación)))))))))
+    (sn-CC
+      (espec.ms
+        (di0ms0 un uno))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (ao0ms0 primer primero)))
+        (ncms000 paso paso)
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 desarrollo desarrollo)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 cooperación cooperación)
+                    (sp
+                      (prep
+                        (sps00 entre entre))
+                      (sn
+                        (espec.mp
+                          (da0mp0 los el)
+                          (dn0cp0 dos dos))
+                        (grup.nom.mp
+                          (ncmp000 países país))))))))))))
+    (S.F.AConc-AO
+      (Fc , ,)
+      (conj.subord
+        (cs aunque aunque))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3s0 advirtió advertir))
+      (sp-CREG
+        (prep
+          (sps00 de de))
+        (S.F.C
+          (conj.subord
+            (cs que que))
+          (neg-MOD
+            (rn no no))
+          (grup.verb
+            (vmip3p0 deben deber)
+            (infinitiu
+              (vmn0000 esperarse esperar)))
+          (sn-SUJ
+            (grup.nom.mp
+              (ncmp000 resultados resultado)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0mp0 inmediatos inmediato))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (sp-CC
+        (prep
+          (sps00 En en))
+        (sn
+          (espec.ms
+            (dp3cs0 su su))
+          (grup.nom.ms
+            (ncms000 encuentro encuentro)
+            (sp
+              (prep
+                (sps00 de de))
+              (sadv
+                (grup.adv
+                  (rg ayer ayer))))))
+        (Fc , ,))
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (nccp000 representantes representante)
+          (s.a.mp.x
+            (grup.a.mp
+              (grup.a.mp
+                (aq0cp0 saudíes saudí))
+              (coord
+                (cc y y))
+              (grup.a.mp
+                (aq0cp0 yemeníes yemení))))))
+      (grup.verb
+        (vmis3p0 trataron tratar))
+      (sp-CD
+        (sadv.j
+          (grup.adv
+            (rg principalmente principalmente)))
+        (sp
+          (prep
+            (sps00 sobre sobre))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 colaboración colaboración)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 sector sector)
+                    (S.NF.P
+                      (participi
+                        (aq0msp privado privado))))))
+              (sp
+                (prep
+                  (sps00 en en))
+                (sn
+                  (grup.nom.fp
+                    (s.a.fp
+                      (grup.a.fp
+                        (aq0fp0 futuras futuro)))
+                    (ncfp000 inversiones inversión)
+                    (s.a.fp
+                      (grup.a.fp
+                        (aq0fp0 conjuntas conjunto))))))))))
+      (sp-CC
+        (Fc , ,)
+        (Fe " ")
+        (prep
+          (sps00 por por))
+        (sn
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (s.a.fp
+              (grup.a.fp
+                (aq0fp0 amplias amplio)))
+            (ncfp000 oportunidades oportunidad)
+            (S.F.R
+              (relatiu-CD
+                (pr0cn000 que que))
+              (sn.e-SUJ *0*)
+              (grup.verb
+                (vmip3s0 ofrece ofrecer)))))
+        (Fe " ")
+        (Fc , ,)))
+    (grup.verb
+      (vmis3s0 dijo decir))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Ariani Ariani)))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 comité comité)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 coordinación coordinación))))))
+    (grup.verb
+      (vmis3s0 acordó acordar))
+    (S.NF.C.co
+      (S.NF.C.co
+        (S.NF.C
+          (infinitiu
+            (vmn0000 reunirse reunir))
+          (sn-CC
+            (espec.ms
+              (di0cs0 cada cada)
+              (dn0cp0 seis seis))
+            (grup.nom.mp
+              (ncmp000 meses mes))))
+        (coord
+          (cc e e))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 intercambiar intercambiar))
+          (sn-CD
+            (grup.nom.fp
+              (ncfp000 visitas visita)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 periódicas periódico)))))))
+      (sp.j-CC
+        (prep
+          (sps00 para para))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 estudiar estudiar))
+          (sn-CD
+            (grup.nom.fp
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 nuevas nuevo)))
+              (ncfp000 oportunidades oportunidad)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 inversión inversión)))))))))
+    (Fp . .)))

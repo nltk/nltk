@@ -1,0 +1,276 @@
+
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Amb amb))
+      (sna
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 nom nom)
+          (sp
+            (prep
+              (sps00 de de))
+            (sna
+              (grup.nom
+                (np0000a Switch Switch))))))
+      (Fc , ,))
+    (sno-SUJ
+      (grup.nom
+        (np0000o Oakley Oakley)))
+    (grup.verb
+      (vmip3s0 presenta presentar))
+    (sn-SUJ
+      (espec.fs
+        (dp3fs0 la_seva el_seu))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (ao0fs0 última últim)))
+        (ncfs000 creació creació)))
+    (Fp . .)))
+(
+  (S
+    (morfema.verbal-IMPERS
+      (p0000000 Es es))
+    (grup.verb
+      (vmip3s0 tracta tractar))
+    (sp-CREG
+      (prep
+        (sps00 d' de))
+      (sn
+        (espec.fp
+          (di0fp0 unes un))
+        (grup.nom.fp
+          (ncfp000 ulleres ulleres)
+          (sp
+            (prep
+              (sps00 amb amb))
+            (sn
+              (espec.fs
+                (di0fs0 una un))
+              (grup.nom.fs
+                (ncfs000 muntura muntura)
+                (S.NF.P
+                  (participi
+                    (aq0fsp fabricada fabricat))
+                  (sp-CC
+                    (prep
+                      (sps00 amb amb))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 magnesi magnesi)
+                        (sn
+                          (Fc , ,)
+                          (espec.ms
+                            (di0ms0 un un))
+                          (grup.nom.ms
+                            (ncms000 material material)
+                            (s.a.ms.x
+                              (s.a.ms.x
+                                (sadv
+                                  (grup.adv
+                                    (rg més més)))
+                                (grup.a.ms.co
+                                  (grup.a.ms
+                                    (aq0cs0 resistent resistent))
+                                  (coord
+                                    (cc i i))
+                                  (grup.a.ms
+                                    (aq0ms0 lleuger lleuger))))
+                              (S.F.AComp*.j
+                                (conj.subord
+                                  (cs que que))
+                                (sn
+                                  (espec.ms
+                                    (da0ms0 el el))
+                                  (grup.nom.ms
+                                    (ncms000 titani titani)))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 lents lent)
+        (S.NF.P
+          (Fc , ,)
+          (participi
+            (aq0fpp fetes fet))
+          (sp-CREG
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (ncms000 material material)
+                (S.NF.P
+                  (participi
+                    (aq0msp patentat patentat))
+                  (sp-CAG
+                    (prep
+                      (sps00 per per))
+                    (sno
+                      (grup.nom
+                        (np0000o Oakley Oakley)))))
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (morf.pron
+                    (p0300000 es ell))
+                  (grup.verb
+                    (vmip3s0 diu dir))
+                  (sna-CPRED.SUJ
+                    (grup.nom
+                      (np0000a Plutonite Plutonite)))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmip3p0 ofereixen oferir))
+    (sn.co-CD
+      (sn.co
+        (sn
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs
+            (ncfs000 protecció protecció)
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 total total)))
+            (sp
+              (prep
+                (sps00 contra contra))
+              (sn
+                (espec.mp
+                  (da0mp0 els el))
+                (grup.nom.mp
+                  (ncmp000 rajos raig)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 sol sol)))))))))
+        (coord
+          (cc i i))
+        (sn
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 gran gran)))
+            (ncfs000 claredat claredat)
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 òptica òptic)))))
+        (Fc , ,))
+      (coord
+        (sps00 a_més_a_més_d' a_més_a_més_de))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 bona bo)))
+          (ncfs000 resistència resistència)
+          (sp
+            (prep
+              (sps00 contra contra))
+            (sn
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (ncfp000 ratllades ratllada)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 ulleres ulleres)
+        (sna
+          (grup.nom
+            (np0000a Switch Switch)))))
+    (grup.verb
+      (vmip3p0 estan estar))
+    (sa-ATR
+      (grup.a
+        (aq0cp0 disponibles disponible)))
+    (sp.co-CC
+      (sp.co
+        (sp.co
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (grup.nom.ms
+                (ncms000 negre negre))))
+          (coord
+            (cc i i))
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (grup.nom.ms
+                (ncms000 blanc blanc)))))
+        (sp.j
+          (Fpa -Fpa- -Fpa-)
+          (prep
+            (sps00 amb amb))
+          (sn
+            (espec.ms
+              (di0ms0 un un))
+            (grup.nom.ms
+              (ncms000 preu preu)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 orientatiu orientatiu)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (snn
+                  (espec.mp
+                    (Z 289 289))
+                  (grup.nom.mp
+                    (Zm euros euro)
+                    (snn
+                      (Fc , ,)
+                      (espec.fp
+                        (Z 48.086 48086))
+                      (grup.nom.fp
+                        (Zm pessetes pesseta))))))))
+          (Fpt -Fpt- -Fpt-)))
+      (coord
+        (cc i i))
+      (sp
+        (sadv.j
+          (grup.adv
+            (rg també també)))
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (grup.nom.ms
+              (ncms000 vermell vermell))))
+        (sp.j
+          (Fc , ,)
+          (prep
+            (sps00 per per))
+          (snn
+            (espec.mp
+              (Z 305 305))
+            (grup.nom.mp
+              (Zm euros euro)
+              (snn
+                (Fpa -Fpa- -Fpa-)
+                (espec.fp
+                  (Z 50.748 50748))
+                (grup.nom.fp
+                  (Zm pessetes pesseta))
+                (Fpt -Fpt- -Fpt-)))))))
+    (Fp . .)))

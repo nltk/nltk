@@ -1,0 +1,419 @@
+
+(
+  (S
+    (sno-SUJ
+      (grup.nom
+        (np0000o Lloret_de_Mar Lloret_de_Mar)))
+    (grup.verb
+      (vmif3s0 celebrarà celebrar))
+    (sna-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (np0000a Dia_Mundial_del_Medi_Ambient Dia_Mundial_del_Medi_Ambient)))
+    (snd-CC
+      (Fc , ,)
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 proper proper)))
+        (W dimecres_5_de_juny [dimecres:5/6/??:??.??]))
+      (Fc , ,))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn.co
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 inauguració inauguració)
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (espec.fs
+                  (di0fs0 una un))
+                (grup.nom.fs
+                  (ncfs000 escultura escultura)
+                  (S.NF.P
+                    (participi
+                      (aq0fsp feta fet))
+                    (sp-CC
+                      (prep
+                        (sps00 amb amb))
+                      (sn
+                        (grup.nom.mp
+                          (ncmp000 materials material)
+                          (S.NF.P
+                            (participi
+                              (aq0mpp reciclats reciclat))))))))))))
+        (coord
+          (cc i i))
+        (sn
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs
+            (ncfs000 conferència conferència)
+            (sp
+              (prep
+                (spcms a_càrrec_del a_càrrec_del))
+              (snp.x
+                (grup.nom.co
+                  (grup.nom.ms
+                    (ncms000 catedràtic catedràtic)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sna
+                        (grup.nom
+                          (np0000a Geografia_Humana Geografia_Humana)))))
+                  (coord
+                    (cc i i))
+                  (grup.nom.ms
+                    (np0000p Degà Degà)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snl
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (np0000l Facultat_de_Lletres Facultat_de_Lletres)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sno
+                              (espec.fs
+                                (da0fs0 la el))
+                              (grup.nom.fs
+                                (np0000o Universitat_de_Girona Universitat_de_Girona)))))))))))
+            (S.NF.P
+              (Fc , ,)
+              (participi
+                (aq0fsp titulada titulat))
+              (sna-CPRED
+                (grup.nom
+                  (Fz ' ')
+                  (np0000a Per_una_consciència_de_paisatge Per_una_consciència_de_paisatge)
+                  (Fz ' '))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (sno
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 regidoria regidoria)
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (grup.nom
+                (np0000o Medi_Ambient Medi_Ambient))))
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (np0000o Ajuntament Ajuntament)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snl
+                    (grup.nom
+                      (np0000l Lloret_de_Mar Lloret_de_Mar)))))))))
+      (coord
+        (sps00 en_col·laboració_amb en_col·laboració_amb))
+      (sna
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (np0000a Agenda_XXI Agenda_XXI)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 localitat localitat)))))))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm organitzat organitzar))
+    (sn-CD
+      (grup.nom.mp
+        (ncmp000 actes acte)))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 celebrar celebrar))
+        (sna-CD
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (np0000a Dia_Mundial_del_Medi_Ambient Dia_Mundial_del_Medi_Ambient)))
+        (snd-CC
+          (Fc , ,)
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 proper proper)))
+            (W dimecres_5_de_juny [dimecres:5/6/??:??.??])))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (spcms Al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 migdia migdia))))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vmif3s0 inaugurarà inaugurar))
+    (sn-SUJ
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 escultura escultura)
+        (S.F.R.co
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vaip3s0 ha haver)
+              (vsp00sm estat ser)
+              (vmp00sf realitzada realitzar))
+            (sp-CC
+              (prep
+                (sps00 amb amb))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 materials material)
+                  (S.NF.P
+                    (participi
+                      (aq0mpp reciclats reciclat))))))
+            (sp-CAG
+              (prep
+                (spcmp pels pel))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 membres membre)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sno
+                      (grup.nom.ms
+                        (np0000o Casal_de_la_Gent_Gran Casal_de_la_Gent_Gran))))))))
+          (coord
+            (cc i i))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3s0 porta portar))
+            (sp-CPRED.CD
+              (prep
+                (sps00 per per))
+              (sn
+                (grup.nom.ms
+                  (ncms000 títol títol))))
+            (sna-CD
+              (grup.nom
+                (Fz ' ')
+                (np0000a Aigua-Terra-Aire Aigua-Terra-Aire)
+                (Fz ' ')))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 inauguració inauguració)))
+    (grup.verb
+      (vmif3s0 tindrà_lloc tenir_lloc))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (snd
+        (grup.nom
+          (W dos_quarts_d'_una [??:??/??/??:12.30]))))
+    (sp-CC
+      (prep
+        (spcmp als al))
+      (snl
+        (grup.nom.mp
+          (np0000l Jardins Jardins)
+          (S.NF.P
+            (participi
+              (aq0mpp situats situat))
+            (sp-CREG
+              (prep
+                (spcms al al))
+              (sn
+                (grup.nom.ms
+                  (ncms000 costat costat)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (snl
+                      (grup.nom.ms
+                        (ncms000 pàrquing pàrquing)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (snl
+                            (grup.nom
+                              (np0000l Can_Xardó Can_Xardó))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 A a))
+      (snd
+        (grup.nom
+          (W dos_quarts_de_nou_del_vespre [??:??/??/??:20.30]))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 a a))
+      (snl
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 sala sala)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 actes acte))))
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (np0000l Ajuntament Ajuntament))))))
+      (Fc , ,))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Joan_Nogué Joan_Nogué)
+        (snp.x
+          (Fc , ,)
+          (grup.nom.co
+            (grup.nom.ms
+              (ncms000 catedràtic catedràtic)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sna
+                  (grup.nom
+                    (np0000a Geografia_Humana Geografia_Humana)))))
+            (coord
+              (cc i i))
+            (grup.nom.ms
+              (np0000p Degà Degà)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sno
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np0000l Facultat_de_Lletres Facultat_de_Lletres)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sno
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (np0000o Universitat_de_Girona Universitat_de_Girona)))))))))
+          (Fc , ,))))
+    (grup.verb
+      (vsif3s0 serà ser))
+    (sn-ATR
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (ncms000 encarregat encarregat)
+        (sp
+          (prep
+            (sps00 de de))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 donar donar))
+            (sn-CD
+              (espec.fs
+                (di0fs0 una un))
+              (grup.nom.fs
+                (ncfs000 conferència conferència)
+                (S.NF.P
+                  (participi
+                    (aq0fsp titulada titulat))
+                  (sna-CPRED
+                    (grup.nom
+                      (Fz ' ')
+                      (np0000a Per_una_consciència_de_paisatge Per_una_consciència_de_paisatge)
+                      (Fz ' '))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 D' de))
+      (sn
+        (espec.fs
+          (dd0fs0 aquesta aquest))
+        (grup.nom.fs
+          (ncfs000 manera manera)))
+      (Fc , ,))
+    (snl-SUJ
+      (grup.nom
+        (np0000l Lloret Lloret)))
+    (morf.pron
+      (p0300000 es ell))
+    (grup.verb
+      (vmip3s0 suma sumar))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn.x
+        (espec.mp
+          (da0fs0 la el)
+          (ncfs000 resta resta)
+          (sps00 de de))
+        (grup.nom.co
+          (grup.nom.co
+            (grup.nom.mp
+              (ncmp000 pobles poble))
+            (coord
+              (cc i i))
+            (grup.nom.fp
+              (ncfp000 ciutats ciutat)))
+          (S.F.R.j
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3p0 commemoren commemorar))
+            (sna-CD
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (np0000a Dia_Mundial_del_Medi_Ambient Dia_Mundial_del_Medi_Ambient)))))))
+    (Fp . .)))

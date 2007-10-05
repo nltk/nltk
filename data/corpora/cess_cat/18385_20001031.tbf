@@ -1,0 +1,413 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (np00000 Ajuntament_de_Granollers Ajuntament_de_Granollers)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm adjudicat adjudicar))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (ncfs000 empresa empresa)
+          (sn
+            (grup.nom
+              (np00000 Petrobages_SA Petrobages_SA))))))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 concessió concessió)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 administrativa administratiu)))
+        (sp
+          (prep
+            (sps00 per per))
+          (sp
+            (prep
+              (sps00 a a))
+            (S.NF.C.co
+              (S.NF.C.co
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 construir construir)))
+                (coord
+                  (cc i i))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 explotar explotar))))
+              (sn.j-CD
+                (espec.ms
+                  (di0ms0 un un))
+                (grup.nom.ms
+                  (ncms000 aparcament aparcament)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 soterrani soterrani)))
+                  (sp
+                    (prep
+                      (sps00 per per))
+                    (sp
+                      (prep
+                        (sps00 a a))
+                      (sn
+                        (grup.nom.mp
+                          (ncmp000 vehicles vehicle)))))))
+              (sp-CCL
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.fs
+                    (da0cs0 l' el))
+                  (grup.nom.fs
+                    (ncfs000 avinguda avinguda)
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sn
+                        (grup.nom.ms
+                          (np00000 Parc Parc))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 nou nou)))
+          (ncms000 aparcament aparcament)))
+      (grup.verb
+        (vmif3s0 tindrà tenir))
+      (sn-CD.Q
+        (espec.fp
+          (Z 350 350))
+        (grup.nom.fp
+          (ncfp000 places plaça))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmif3s0 suposarà suposar))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 inversió inversió)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (Z 530 530))
+              (grup.nom.mp
+                (ncmp000 milions milió)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fp
+                      (Zm pessetes pesseta))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (ncfs000 adjudicació adjudicació)))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm aprovat aprovar))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np00000 Ple Ple)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.ms
+                (dd0ms0 aquest aquest))
+              (grup.nom.ms
+                (W dilluns [dilluns:??/??/??:??.??])))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom
+        (np00000 Petrobages Petrobages)
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (morf.pron
+            (p0300000 s' ell))
+          (grup.verb
+            (vmif3s0 encarregarà encarregar))
+          (sp.co-CREG
+            (sp.co
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 construcció construcció))))
+              (coord
+                (cc i i))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0cs0 l' el))
+                  (grup.nom.fs
+                    (ncfs000 explotació explotació)))))
+            (sp.j
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 nou nou)))
+                  (ncms000 aparcament aparcament)))))
+          (Fc , ,))))
+    (grup.verb
+      (vmif3s0 tindrà tenir))
+    (sn-CD.Q
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 concessió concessió)))
+    (sp-CCT
+      (prep
+        (sps00 durant durant))
+      (sn
+        (espec.mp
+          (Z 45 45))
+        (grup.nom.mp
+          (ncmp000 anys any))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0cs0 L' el))
+        (grup.nom.ms
+          (ncms000 aparcament aparcament)))
+      (grup.verb
+        (vmif3s0 tindrà tenir))
+      (sn-CD.Q
+        (espec.fp
+          (Z 350 350))
+        (grup.nom.fp
+          (ncfp000 places plaça))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmif3s0 suposarà suposar))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 inversió inversió)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (Z 350 350))
+              (grup.nom.mp
+                (ncmp000 milions milió)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fp
+                      (Zm pessetes pesseta))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 bases base)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 explotació explotació))))
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3p0 regulen regular))
+          (sn-CD
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 concessió concessió)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 administrativa administratiu))))))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vsn0000 ser ser)
+      (vmp00pf aprovades aprovar))
+    (sp-CAG
+      (prep
+        (sps00 per per))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (np00000 Ajuntament Ajuntament))))
+    (sn-CCT
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (W dia_22_de_febrer [??:22/02/??:??.??])
+        (S.NF.P
+          (participi
+            (aq0msp passat passat)))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CCT
+      (sn.j
+        (espec.ms
+          (di0ms0 Un un))
+        (grup.nom.ms
+          (ncms000 mes mes)))
+      (sadv
+        (grup.adv
+          (rg després després)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 consistori consistori)))
+    (grup.verb
+      (vmii3s0 iniciava iniciar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (ao0fs0 segona segon)))
+        (ncfs000 fase fase)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 procés procés)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 concurrència concurrència)
+                    (sp
+                      (prep
+                        (sps00 d' de))
+                      (sn
+                        (grup.nom.fp
+                          (ncfp000 ofertes oferta))))))))))
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 projecte projecte))))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmii3s0 consistia consistir))
+          (sp-CREG
+            (prep
+              (sps00 en en))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 demanar demanar))
+              (sp-CI
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.fs
+                    (da0cs0 l' el))
+                  (grup.nom.fs
+                    (ncfs000 empresa empresa)
+                    (S.NF.P
+                      (participi
+                        (aq0fsp seleccionada seleccionat)))
+                    (sn
+                      (Fc , ,)
+                      (grup.nom
+                        (np00000 Petrobages Petrobages))
+                      (Fc , ,)))))
+              (S.F.C.co-CD
+                (conj.subord
+                  (cs que que))
+                (S.F.C
+                  (sn.e-SUJ *0*)
+                  (grup.verb
+                    (vmsi3s0 formulés formular))
+                  (sn-CD
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 proposta proposta)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0fs0 econòmica econòmic)))
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0fs0 definitiva definitiu))))))
+                (coord
+                  (cc i i))
+                (S.F.C
+                  (sn.e-SUJ *0*)
+                  (grup.verb
+                    (vmsi3s0 redactés redactar))
+                  (sn-CD
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (ncms000 projecte projecte)
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0ms0 executiu executiu)))
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0ms0 definitiu definitiu))))))))))))
+    (Fp . .)))

@@ -1,0 +1,393 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 cementiris cementiri)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (np00000 Barcelona Barcelona))))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 rebre rebre))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sn-CD
+      (espec.fp
+        (Z 110.000 110000))
+      (grup.nom.fp
+        (ncfp000 persones persona)))
+    (sp-CC
+      (prep
+        (sps00 amb_motiu_de amb_motiu_de))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 festivitat festivitat)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (np00000 Tots_Sants Tots_Sants)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 gran gran)))
+        (ncfs000 afluència afluència)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 provocar provocar))
+    (sn-CD
+      (grup.nom.mp
+        (ncmp000 problemes problema)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 trànsit trànsit))))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (ncmp000 accessos accés)
+          (sp
+            (prep
+              (spcmp als al))
+            (sn
+              (grup.nom.mp
+                (ncmp000 cementiris cementiri))))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn.x
+              (grup.nom.co
+                (grup.nom
+                  (np00000 Montjuïc Montjuïc))
+                (coord
+                  (cc i i))
+                (grup.nom
+                  (np00000 Collserola Collserola))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.A.co-CC
+      (conj.subord
+        (cs Com_que com_que))
+      (S.F.A
+        (sn-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 dia dia)))
+        (grup.verb
+          (vsii3s0 era ser))
+        (sa-ATR
+          (grup.a
+            (aq0ms0 plujós plujós)))
+        (sp-CCT
+          (prep
+            (spcms al al))
+          (sn
+            (grup.nom.ms
+              (ncms000 matí matí)))))
+      (coord
+        (cc i i))
+      (S.F.A
+        (sn-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 sol sol)))
+        (neg-MOD
+          (rn no no))
+        (grup.verb
+          (vaip3s0 va anar)
+          (vmn0000 lluir lluir))
+        (sp-CCT
+          (prep
+            (sps00 fins fins))
+          (sp
+            (prep
+              (spcms al al))
+            (sn
+              (grup.nom.ms
+                (ncms000 migdia migdia))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 les el))
+      (grup.nom.fp
+        (ncfp000 aglomeracions aglomeració)))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 començar començar))
+    (sp-CCT
+      (prep
+        (sps00 a_partir_d' a_partir_de))
+      (sn
+        (espec.fs
+          (dd0fs0 aquesta aquest))
+        (grup.nom.fs
+          (ncfs000 hora hora))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.ms
+        (ncmp000 cotxes cotxe)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (morf.pron
+            (p0300000 es ell))
+          (grup.verb
+            (vaip3p0 van anar)
+            (vmn0000 dirigir dirigir))
+          (sp-CCT
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.ms
+                (dd0ms0 aquest aquest))
+              (grup.nom.ms
+                (ncms000 moment moment))))
+          (sp-CREG
+            (prep
+              (spcms al al))
+            (sn
+              (grup.nom.ms
+                (ncms000 cementiri cementiri)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom
+                      (np00000 Montjuïc Montjuïc)))))))
+          (sp-CC
+            (prep
+              (sps00 per per))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np00000 Ronda_Litoral Ronda_Litoral)))))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 provocar provocar))
+    (sn-CD
+      (grup.nom.fp
+        (ncfp000 retencions retenció)))
+    (sn.co-CCL
+      (coord
+        (sps00 des_de des_de))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 sortida sortida)
+          (sn
+            (grup.nom
+              (Z 14 14)))))
+      (coord
+        (rg fins_a fins_a))
+      (sn
+        (grup.nom
+          (np00000 Colom Colom))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCL
+      (prep
+        (sps00 A a))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 interior interior)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 cementiri cementiri))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (nccp000 automobilistes automobilista)))
+    (sadv-MOD
+      (grup.adv
+        (rg també també)))
+    (morf.pron
+      (p0300000 es ell))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 veure veure))
+    (S.NF.P-CPRED.SUJ
+      (participi
+        (aq0mpp atrapats atrapat))
+      (sp-CCL
+        (prep
+          (sps00 en en))
+        (sn
+          (grup.nom.fp
+            (s.a.fp
+              (grup.a.fp
+                (aq0fp0 llargues llarg)))
+            (ncfp000 cues cua)
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vaip3p0 van anar)
+                (vmn0000 dificultar dificultar))
+              (sadv-CC
+                (grup.adv
+                  (rg molt molt)))
+              (sn-CD
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 mobilitat mobilitat))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 trànsit trànsit)))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 normalitzar normalitzar))
+    (sp-CCT
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 tarda tarda))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCL
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (ncmp000 accessos accés)
+          (sp
+            (prep
+              (spcms al al))
+            (sn
+              (grup.nom.ms
+                (ncms000 cementiri cementiri))))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (np00000 Collserola Collserola))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 circulació circulació)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vsn0000 ser ser))
+    (sa-ATR
+      (grup.a
+        (aq0fs0 intensa intens)))
+    (sp-CCT
+      (prep
+        (sps00 durant durant))
+      (sn
+        (espec.fs
+          (di0fs0 tota tot)
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 jornada jornada))))
+    (S.F.AConc-AO
+      (Fc , ,)
+      (conj.subord
+        (rg encara_que encara_que))
+      (neg-MOD
+        (rn no no))
+      (morf.pron
+        (pp3cn000 hi hi))
+      (grup.verb
+        (vaip3s0 va anar)
+        (van0000 haver haver))
+      (sn-CD.Q
+        (grup.nom.fp
+          (ncfp000 retencions retenció)
+          (s.a.fp
+            (espec
+              (rg tan tan))
+            (grup.a.fp
+              (aq0cp0 importants important))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCL
+      (prep
+        (sps00 A a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 foto foto)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 família família)))
+    (grup.verb
+      (vmip3s0 posa posar))
+    (sn-CD
+      (grup.nom.fp
+        (ncfp000 flors flor)))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 tomba tomba)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (np00000 Montjuïc Montjuïc)))))))
+    (Fp . .)))

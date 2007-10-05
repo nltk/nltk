@@ -1,0 +1,89 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (nccs000 dirigente dirigente)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 deportivo deportivo)))))
+    (neg-MOD
+      (rn no no))
+    (grup.verb
+      (vmis3s0 descartó descartar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.ms
+          (dd0ms0 este este))
+        (grup.nom.ms
+          (ncms000 partido partido)))
+      (sadv-MOD
+        (grup.adv
+          (rg también también)))
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vmsp3s0 juegue jugar))
+      (sp-CCL
+        (prep
+          (sps00 en en))
+        (snl
+          (snl
+            (grup.nom.1n
+              (np0000l San_Pedro_Sula San_Pedro_Sula)))
+          (snl.j
+            (Fc , ,)
+            (grup.nom
+              (np0000l Honduras Honduras))
+            (Fc , ,)))))
+    (sn.1c
+      (grup.nom.ms
+        (ncms000 lugar lugar)
+        (S.F.R
+          (sp-CCL
+            (prep
+              (sps00 en en))
+            (sn
+              (relatiu
+                (pr000000 donde donde))))
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vsis3s0 fue ser))
+          (sn-ATR
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (ao0ms0 primero primero))))))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 debido_a debido_a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 disputa disputa)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 territorial territorial)))
+          (S.F.R
+            (relatiu-CD
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3s0 mantiene mantener))
+            (sno-SUJ
+              (grup.nom
+                (np0000o Guatemala Guatemala)))
+            (sp-CC
+              (prep
+                (sps00 con con))
+              (sno
+                (grup.nom
+                  (np0000o Belice Belice))))))))
+    (Fp . .)))

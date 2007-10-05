@@ -1,0 +1,161 @@
+
+(
+  (S
+    (sn-SUJ
+      (grup.nom.fs
+        (ncfs000 Infinidad infinidad)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fp
+              (ncfp000 nebulosas nebulosa)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn.x
+                  (grup.nom.co
+                    (grup.nom.co
+                      (grup.nom.mp
+                        (ncmp000 colores color))
+                      (coord
+                        (cc y y))
+                      (grup.nom.fp
+                        (ncfp000 formas forma)))
+                    (s.a.mp.j
+                      (grup.a.mp
+                        (aq0cp0 sorprendentes sorprendente))))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmip3p0 relucen relucir))
+    (sp-CC
+      (prep
+        (sps00 de de))
+      (sn
+        (grup.nom.ms
+          (pi0ms000 uno uno))))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.ms
+          (di0ms0 otro otro))
+        (grup.nom.ms
+          (ncms000 confín confín)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 bóveda bóveda)
+                (S.NF.P
+                  (participi
+                    (aq0fsp estrellada estrellado)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.fs
+        (pi0fs000 Una uno)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn.x
+            (espec.fp
+              (da0fp0 las el))
+            (grup.nom.co
+              (sadv
+                (grup.adv
+                  (rg más más)))
+              (grup.nom.co
+                (grup.nom.fp
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0cp0 brillantes brillante))))
+                (coord
+                  (cc y y))
+                (grup.nom.fp
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0fp0 grandiosas grandioso))))))))))
+    (grup.verb
+      (vsip3s0 es ser))
+    (sna-ATR
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 famosa famoso)))
+        (ncfs000 nebulosa nebulosa)
+        (sp
+          (prep
+            (sps00 de de))
+          (sna
+            (grup.nom
+              (np0000a Orión Orión))))
+        (S.NF.P
+          (Fc , ,)
+          (participi
+            (aq0fsp emplazada emplazado))
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 constelación constelación)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (espec.ms
+                      (di0ms0 mismo mismo))
+                    (grup.nom.ms
+                      (ncms000 nombre nombre))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 De de))
+      (sn
+        (grup.nom.fs
+          (pp3fs000 ella él))))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vaip3s0 ha haber)
+      (vmp00sm dicho decir))
+    (S.F.C-SUJ
+      (conj.subord
+        (cs que que))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vsip3s0 es ser))
+      (sna-ATR
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (np0000a Capilla_Sixtina Capilla_Sixtina)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 firmamento firmamento))))))
+      (sp-CC
+        (prep
+          (sps00 debido_a debido_a))
+        (sn
+          (espec.fs
+            (dp3cs0 su su))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 indiscutible indiscutible)))
+            (ncfs000 belleza belleza)))))
+    (Fp . .)))

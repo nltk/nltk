@@ -1,0 +1,708 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 músics músic)
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 catalans català)))
+        (sn.co
+          (sn
+            (grup.nom.ms
+              (np00000 Quico_Pi_de_la_Serra Quico_Pi_de_la_Serra)))
+          (coord
+            (cc i i))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 trio trio)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.ms
+                    (np00000 Joan_Vinyals Joan_Vinyals))))
+              (sn
+                (grup.nom
+                  (Fpa -Fpa- -Fpa-)
+                  (np00000 PES PES)
+                  (Fpt -Fpt- -Fpt-))))))))
+    (grup.verb
+      (vmif3p0 participaran participar))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 homenatge homenatge)
+          (sp
+            (prep
+              (sps00 a a))
+            (sn
+              (grup.nom.ms
+                (np00000 Bob_Dylan Bob_Dylan))))
+          (S.F.R
+            (relatiu-CD
+              (pr0cn000 que que))
+            (sn.e-SUJ *0*)
+            (sn-CI
+              (grup.nom.s
+                (pp3csd00 li ell)))
+            (grup.verb
+              (vmif3p0 retran retre))
+            (sp-CCT
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (W dijous [dijous:??/??/??:??.??])
+                  (sp
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (grup.nom.ms
+                        (W diumenge [diumenge:??/??/??:??.??])))))))
+            (sp-CCL
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 ciutat ciutat)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 piemontesa piemontès)))
+                  (sp
+                    (prep
+                      (sps00 d' de))
+                    (sn
+                      (grup.nom
+                        (np00000 Alba Alba)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.mp
+        (pn0mp000 Ambdós ambdós)))
+    (grup.verb
+      (vsif3p0 seran ser))
+    (sn-ATR
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 únics únic)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.ms
+              (di0ms0 tot tot)
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (np00000 Estat Estat))))))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 participar participar))
+        (sp-CREG
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (dd0ms0 aquest aquest))
+            (grup.nom.ms
+              (ncms000 certamen certamen)
+              (S.NF.P
+                (participi
+                  (aq0msp titulat titulat))
+                (sn-CPRED
+                  (grup.nom
+                    (Fz ' ')
+                    (np00000 Neverending_birthday Neverending_birthday)
+                    (Fz ' '))))
+              (S.F.R
+                (Fc , ,)
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vmif3s0 començarà començar))
+                (sn-CD
+                  (espec.ms
+                    (da0ms0 el el)
+                    (di0ms0 mateix mateix))
+                  (grup.nom.ms
+                    (ncms000 dia dia)
+                    (S.F.R
+                      (relatiu-CCT
+                        (pr0cn000 que que))
+                      (sn-SUJ
+                        (grup.nom.ms
+                          (np00000 Dylan Dylan)))
+                      (grup.verb
+                        (vmif3s0 farà fer))
+                      (sn-CD
+                        (espec.mp
+                          (Z 60 60))
+                        (grup.nom.mp
+                          (ncmp000 anys any))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 principal principal)))
+        (ncfs000 estrella estrella)))
+    (grup.verb
+      (vsif3s0 serà ser))
+    (sn-ATR
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (sp
+          (prep
+            (spcmp dels del))
+          (sn
+            (grup.nom.mp
+              (nccp000 guitarristes guitarrista)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0cp0 habituals habitual))))))
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 nord-americà nord-americà)))
+              (Fc , ,)
+              (np00000 Bucky_Baxter Bucky_Baxter))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (grup.nom.ms
+          (np00000 Vinyals Vinyals)))
+      (grup.verb
+        (vmif3s0 tocarà tocar))
+      (sn-CCT
+        (grup.nom.ms
+          (W dijous [dijous:??/??/??:??.??])))
+      (sp-CCL
+        (prep
+          (spcms al al))
+        (sn
+          (grup.nom.ms
+            (np00000 Teatro_Sociale Teatro_Sociale)))))
+    (coord
+      (cc i i))
+    (S*
+      (sn-CCT
+        (grup.nom.ms
+          (W diumenge [diumenge:??/??/??:??.??])))
+      (sp-CCL
+        (prep
+          (spcms al al))
+        (sn
+          (grup.nom.ms
+            (np00000 Convitto_Vescovile Convitto_Vescovile)
+            (sn
+              (Fc , ,)
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (ncms000 indret indret)
+                (S.NF.P.co
+                  (S.NF.P
+                    (participi
+                      (aq0msp dotat dotat))
+                    (sp-CC
+                      (prep
+                        (sps00 amb amb))
+                      (sn
+                        (espec.ms
+                          (di0ms0 un un))
+                        (grup.nom.ms
+                          (ncms000 escenari escenari)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (espec.mp
+                                (Z 330 330))
+                              (grup.nom.mp
+                                (ncmp000 metres metre)
+                                (s.a.mp
+                                  (grup.a.mp
+                                    (aq0mp0 quadrats quadrat))))))))))
+                  (coord
+                    (cc i i))
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (morfema.verbal-PASS
+                      (p0000000 es es))
+                    (grup.verb
+                      (vmif3s0 convertirà convertir))
+                    (sp-CREG
+                      (prep
+                        (sps00 en en))
+                      (sn
+                        (espec.ms
+                          (da0cs0 l' el))
+                        (grup.nom.ms
+                          (ncms000 epicentre epicentre)
+                          (sp
+                            (prep
+                              (spcms del del))
+                            (sn
+                              (grup.nom.ms
+                                (ncms000 festival festival)))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Pi_de_la_Serra Pi_de_la_Serra)))
+    (grup.verb
+      (vmif3s0 intervindrà intervenir))
+    (sp-CCL
+      (prep
+        (spcmp als al))
+      (sn
+        (espec.mp
+          (di0mp0 mateixos mateix))
+        (grup.nom.mp
+          (ncmp000 indrets indret))))
+    (sn.x-CCT
+      (grup.nom.co
+        (grup.nom.co
+          (Fc , ,)
+          (grup.nom.ms
+            (W divendres [divendres:??/??/??:??.??]))
+          (coord
+            (cc i i))
+          (grup.nom.ms
+            (W dissabte [dissabte:??/??/??:??.??]))
+          (Fc , ,))
+        (sadv.j
+          (grup.adv
+            (rg respectivament respectivament)))))
+    (Fp . .)))
+(
+  (S
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom.mp
+          (s.a.mp
+            (grup.a.mp
+              (aq0cp0 Importants important)))
+          (ncmp000 músics músic)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cp0 internacionals internacional))))
+        (coord
+          (cc i i))
+        (grup.nom.fp
+          (s.a.fp
+            (grup.a.fp
+              (aq0cp0 joves jove)))
+          (ncfp000 bandes banda))))
+    (grup.verb
+      (vmif3p0 interpretaran interpretar))
+    (sadv-CC
+      (grup.adv
+        (rg en_viu en_viu)))
+    (sn-CD
+      (espec.fp
+        (da0fp0 les el))
+      (grup.nom.fp
+        (ncfp000 versions versió)
+        (s.a.fp
+          (espec
+            (rg més més))
+          (grup.a.fp
+            (aq0fp0 famoses famós)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (np00000 Dylan Dylan)
+              (S.F.R
+                (Fc , ,)
+                (relatiu-SUJ
+                  (pr0cn000 qui qui))
+                (grup.verb
+                  (vaip3s0 ha haver)
+                  (vmp00sm rebut rebre))
+                (sn-CD
+                  (espec.mp
+                    (di0mp0 diversos divers))
+                  (grup.nom.mp
+                    (ncmp000 homenatges homenatge)))
+                (sn-CCT
+                  (espec.ms
+                    (dd0ms0 aquest aquest))
+                  (grup.nom.ms
+                    (ncms000 cap cap)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 setmana setmana)
+                          (S.NF.P
+                            (participi
+                              (aq0msp passat passat))))))))
+                (sp-CCL
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (grup.nom
+                      (np00000 Nova_York Nova_York))))))))))
+    (Fp . .)))
+(
+  (S*
+    (sadv
+      (grup.adv
+        (rg Sobretot sobretot))
+      (Fc , ,))
+    (sp
+      (prep
+        (sps00 durant durant))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 celebració celebració)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 certamen certamen)
+                (S.F.R
+                  (relatiu-CD
+                    (pr0cn000 que que))
+                  (sn-SUJ
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 revista revista)
+                      (sn
+                        (grup.nom
+                          (np00000 The_New_Yorker The_New_Yorker)))))
+                  (grup.verb
+                    (vmip3s0 celebra celebrar))
+                  (sn-CCT
+                    (espec.ms
+                      (di0cs0 cada cada))
+                    (grup.nom.ms
+                      (ncms000 any any))))))))))
+    (Fp . .)))
+(
+  (S
+    (morfema.verbal-PASS
+      (p0000000 S' es))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm portat_a_terme portar_a_terme))
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom.co
+          (grup.nom.fp
+            (ncfp000 conferències conferència))
+          (Fc , ,)
+          (grup.nom.mp
+            (ncmp000 concerts concert))
+          (coord
+            (cc i i))
+          (grup.nom.fp
+            (s.a.fp
+              (grup.a.fp
+                (aq0cp0 importants important)))
+            (ncfp000 ponències ponència)))
+        (sp.j
+          (prep
+            (sps00 sobre sobre))
+          (sn
+            (grup.nom.ms
+              (np00000 Dylan Dylan))))
+        (sp.j
+          (Fc , ,)
+          (prep
+            (sps00 amb amb))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 participació participació)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn.co
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 literats literat)
+                      (sp
+                        (prep
+                          (cs com com))
+                        (sn.x
+                          (grup.nom.co
+                            (grup.nom.ms
+                              (np00000 Norman_Mailer Norman_Mailer))
+                            (coord
+                              (cc o o))
+                            (grup.nom.ms
+                              (np00000 Michael_Oondatje Michael_Oondatje))))))
+                    (Fc , ,))
+                  (coord
+                    (cc o o))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 músics músic)
+                      (sp
+                        (prep
+                          (cs com com))
+                        (sn.x
+                          (grup.nom.co
+                            (grup.nom.fs
+                              (np00000 Patti_Smith Patti_Smith))
+                            (coord
+                              (cc o o))
+                            (grup.nom.ms
+                              (np00000 Beck Beck))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC.r
+      (prep
+        (sps00 A a))
+      (sn
+        (grup.nom
+          (np00000 Alba Alba)))
+      (Fc , ,))
+    (sn-CC.r
+      (grup.nom
+        (pp3cn000 hi hi)))
+    (grup.verb
+      (vmif3s0 acudirà acudir))
+    (sn.co-SUJ
+      (sn
+        (grup.nom.ms
+          (np00000 Steve_Forbet Steve_Forbet)
+          (sp
+            (prep
+              (sps00 amb amb))
+            (sn
+              (espec.fs
+                (dp3fs0 la_seva el_seu))
+              (grup.nom.fs
+                (ncfs000 banda banda)))))
+        (Fc , ,))
+      (coord
+        (sps00 a_més_de a_més_de))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (S.NF.P
+            (participi
+              (aq0msp esmentat esmentat)))
+          (np00000 Baxter Baxter)
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 qui qui))
+            (grup.verb
+              (vaip3s0 ha haver)
+              (vmp00sm tocat tocar))
+            (sp-CC
+              (prep
+                (sps00 amb amb))
+              (sn
+                (grup.nom.ms
+                  (np00000 Dylan Dylan))))
+            (sp-CC
+              (prep
+                (sps00 durant durant))
+              (sn
+                (espec.mp
+                  (rg més més)
+                  (sps00 de de)
+                  (Z 700 700))
+                (grup.nom.mp
+                  (ncmp000 concerts concert))))
+            (sp-CCT
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.mp
+                  (da0mp0 els el)
+                  (Z 40 40))
+                (grup.nom.mp
+                  (ncmp000 anys any)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 carrera carrera)
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 cantautor cantautor)
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sn
+                                  (grup.nom
+                                    (np00000 Duluth Duluth)))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-MOD
+      (grup.adv
+        (rg També també)))
+    (morf.pron
+      (p0300000 s' ell))
+    (sn-CC
+      (grup.nom
+        (pp3cn000 hi hi)))
+    (grup.verb
+      (vmif3p0 aplegaran aplegar))
+    (sn-SUJ
+      (grup.nom.co
+        (grup.nom.fs
+          (np00000 Michelle_Shocked Michelle_Shocked)
+          (sn
+            (Fc , ,)
+            (grup.nom.fs
+              (nccs000 representant representant)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 folk folk)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 contemporani contemporani)))))))
+            (Fc , ,)))
+        (coord
+          (cc i i))
+        (grup.nom.p
+          (np00000 Andy_Hill_&_Renee_Safier Andy_Hill_&_Renee_Safier))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (grup.nom
+          (np00000 Carmel Carmel)))
+      (sn-CREG
+        (grup.nom
+          (pp3cn000 hi hi)))
+      (grup.verb
+        (vmif3s0 anirà anar))
+      (sp-CCL
+        (prep
+          (sps00 des_de des_de))
+        (sn
+          (grup.nom
+            (np00000 Londres Londres))))
+      (Fc , ,))
+    (coord
+      (cc mentre_que mentre_que))
+    (S
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (ncmp000 italians italià)
+          (s.a.mp
+            (grup.a.mp
+              (aq0cp0 presents present)))))
+      (grup.verb
+        (vsif3p0 seran ser))
+      (sn.x-ATR
+        (grup.nom.co
+          (grup.nom.ms
+            (np00000 Mimmo_Locasciulli Mimmo_Locasciulli))
+          (Fc , ,)
+          (grup.nom.ms
+            (np00000 Massimo_Bubola Massimo_Bubola))
+          (Fc , ,)
+          (grup.nom.ms
+            (np00000 Jimmy_Villotti Jimmy_Villotti))
+          (coord
+            (cc i i))
+          (grup.nom.ms
+            (np00000 Paolo_Bonfanti Paolo_Bonfanti)))))
+    (Fp . .)))
+(
+  (S
+    (sadv-MOD
+      (grup.adv
+        (rg També també)))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm organitzat organitzar))
+    (sn.co-SUJ
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 mostra mostra)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (ncfp000 fotografies fotografia))))))
+      (coord
+        (cc i i))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 passi passi)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 vídeos vídeo)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0mp0 inèdits inèdit)))
+                (sp
+                  (prep
+                    (sps00 sobre sobre))
+                  (sn
+                    (espec.ms
+                      (da0cs0 l' el))
+                    (grup.nom.ms
+                      (nccs000 artista artista))))))))))
+    (Fp . .)))

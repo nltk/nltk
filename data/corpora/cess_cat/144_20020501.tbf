@@ -1,0 +1,122 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (np00000 Acadèmia_de_les_Arts_i_les_Ciències_Cinematogràfiques_d'_Espanya Acadèmia_de_les_Arts_i_les_Ciències_Cinematogràfiques_d'_Espanya)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm decidit decidir))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 premiar premiar))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (s.a.fs.x
+            (grup.a.fs.co
+              (grup.a.fs
+                (aq0fs0 llarga llarg))
+              (coord
+                (cc i i))
+              (grup.a.fs
+                (aq0fs0 prestigiosa prestigiós))))
+          (ncfs000 trajectòria trajectòria)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (np00000 Bernaola Bernaola)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (ncms000 Compositor compositor)
+        (sp.co
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (ncfp000 melodies melodia)
+                (s.a.fp
+                  (espec
+                    (rg tan tan))
+                  (grup.a.fp
+                    (aq0cp0 populars popular)))
+                (sp
+                  (prep
+                    (sps00 com_ara com_ara))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 cançó cançó)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0cs0 infantil infantil)))
+                      (sn
+                        (grup.nom
+                          (np00000 El_cocherito_leré El_cocherito_leré)))))))))
+          (coord
+            (cc o o))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 sèrie sèrie)
+                (sn
+                  (grup.nom
+                    (np00000 Verano_azul Verano_azul))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmip3s0 compta comptar))
+    (sp-CREG
+      (prep
+        (sps00 amb amb))
+      (sn.co
+        (sn
+          (espec.ms
+            (di0ms0 un un))
+          (grup.nom.ms
+            (ncms000 catàleg catàleg)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fp
+                  (Z 300 300))
+                (grup.nom.fp
+                  (ncfp000 composicions composició))))))
+        (coord
+          (cc i i))
+        (sn
+          (espec.fs
+            (da0cs0 l' el))
+          (grup.nom.fs
+            (ncfs000 autoria autoria)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 música música))))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fp
+                  (Z 80 80))
+                (grup.nom.fp
+                  (ncfp000 pel·lícules pel·lícula))))))))
+    (Fp . .)))

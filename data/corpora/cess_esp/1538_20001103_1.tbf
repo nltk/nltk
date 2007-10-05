@@ -1,0 +1,86 @@
+
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 A_partir_de a_partir_de))
+      (sadv
+        (grup.adv
+          (rg ahí ahí)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.mp
+        (ncmp000 locales local)))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmis3p0 adueñaron adueñarse))
+    (sp-CREG
+      (prep
+        (sps00 de de))
+      (sn
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 acciones acción))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 con con))
+      (sn
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 excelente excelente)))
+          (ncms000 trabajo trabajo)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 ofensivo ofensivo)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn.x
+              (grup.nom.co
+                (grup.nom.co
+                  (grup.nom.ms
+                    (np0000p Andrés_Chitiva Andrés_Chitiva))
+                  (Fc , ,)
+                  (grup.nom.ms
+                    (np0000p Andrés_Pérez Andrés_Pérez))
+                  (coord
+                    (cc y y))
+                  (grup.nom.ms
+                    (np0000p Carlos_Castro Carlos_Castro)))
+                (S.F.R.j
+                  (Fc , ,)
+                  (relatiu-SUJ
+                    (pr0cp000 quienes quien))
+                  (neg-MOD
+                    (rn no no))
+                  (grup.verb
+                    (vmis3p0 supieron saber))
+                  (S.NF.C-CD
+                    (infinitiu
+                      (vmn0000 definir definir))
+                    (sadv-CC
+                      (grup.adv
+                        (rg bien bien)))
+                    (sp-CC
+                      (prep
+                        (sps00 ante ante))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 meta meta)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (snp
+                              (grup.nom.ms
+                                (np0000p Nelson_Patiño Nelson_Patiño)))))))))))))))
+    (Fp . .)))

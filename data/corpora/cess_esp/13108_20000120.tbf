@@ -1,0 +1,543 @@
+
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np0000o Banco_Interamericano_de_Desarrollo Banco_Interamericano_de_Desarrollo)
+        (sno
+          (grup.nom.ms
+            (Fpa -Fpa- -Fpa-)
+            (np0000o BID BID)
+            (Fpt -Fpt- -Fpt-)))))
+    (grup.verb
+      (vmif3s0 prestará prestar))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sno
+        (grup.nom
+          (np0000o Perú Perú))))
+    (snn-CD
+      (espec.mp
+        (Z 120 120))
+      (grup.nom.mp
+        (ncmp000 millones millón)
+        (sp
+          (prep
+            (sps00 de de))
+          (snn
+            (grup.nom.mp
+              (Zm dólares dólar))))))
+    (sp-CC
+      (prep
+        (cs como como))
+      (sn
+        (grup.nom.ms
+          (ncms000 apoyo apoyo)
+          (sp
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.ms
+                (di0ms0 un uno))
+              (grup.nom.ms
+                (ncms000 programa programa)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 mejora mejora)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn.x
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.co
+                            (grup.nom.co
+                              (grup.nom.fs
+                                (ncfs000 calidad calidad))
+                              (coord
+                                (cc y y))
+                              (grup.nom.fs
+                                (ncfs000 cobertura cobertura)))
+                            (sp.j
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (espec.fs
+                                  (da0fs0 la el))
+                                (grup.nom.fs
+                                  (ncfs000 educación educación)
+                                  (s.a.fs
+                                    (grup.a.fs
+                                      (aq0fs0 secundaria secundario)))
+                                  (sp
+                                    (prep
+                                      (sps00 en en))
+                                    (snl
+                                      (espec.ms
+                                        (da0ms0 el el))
+                                      (grup.nom.ms
+                                        (ncms000 país país)
+                                        (s.a.ms
+                                          (grup.a.ms
+                                            (aq0ms0 andino andino)))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (dd0fs0 Esa ese))
+      (grup.nom.fs
+        (ncfs000 cantidad cantidad)))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vmif3s0 empleará emplear))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (ao0fs0 primera primero)))
+          (ncfs000 fase fase)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (di0ms0 un uno))
+              (grup.nom.ms
+                (ncms000 programa programa)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snn
+                    (espec.mp
+                      (Z 367 367))
+                    (grup.nom.mp
+                      (ncmp000 millones millón)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (snn
+                          (grup.nom.mp
+                            (Zm dólares dólar))))
+                      (S.F.R
+                        (Fc , ,)
+                        (relatiu-SUJ
+                          (pr0cn000 que que))
+                        (sp-AO
+                          (Fc , ,)
+                          (prep
+                            (sps00 según según))
+                          (sno
+                            (espec.ms
+                              (da0ms0 el el))
+                            (grup.nom.mp
+                              (np0000o BID BID)))
+                          (Fc , ,))
+                        (Fe " ")
+                        (grup.verb
+                          (vmif3p0 fortalecerán fortalecer))
+                        (sn.co-CD
+                          (sn.x
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.co
+                              (grup.nom.co
+                                (grup.nom.fs
+                                  (ncfs000 calidad calidad))
+                                (coord
+                                  (cc y y))
+                                (grup.nom.fs
+                                  (ncfs000 gestión gestión)))
+                              (sp.j
+                                (prep
+                                  (spcms del del))
+                                (grup.nom.ms
+                                  (ncms000 sistema sistema)
+                                  (s.a.ms
+                                    (grup.a.ms
+                                      (aq0ms0 educativo educativo)))))))
+                          (coord
+                            (cc y y))
+                          (sn
+                            (espec.fs
+                              (dp3cs0 su su))
+                            (grup.nom.fs
+                              (ncfs000 articulación articulación)
+                              (sp
+                                (prep
+                                  (sps00 con con))
+                                (sn
+                                  (espec.ms
+                                    (da0ms0 el el))
+                                  (grup.nom.ms
+                                    (ncms000 mercado mercado)
+                                    (s.a.ms
+                                      (grup.a.ms
+                                        (aq0cs0 laboral laboral)))
+                                    (Fe " ")
+                                    (s.a.ms
+                                      (grup.a.ms
+                                        (aq0ms0 peruano peruano)))))))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (morfema.verbal-PASS
+        (p0000000 Se se))
+      (grup.verb
+        (vmif3p0 reforzarán reforzar))
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (ncmp000 recursos recurso)
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 educativos educativo))))))
+    (Fc , ,)
+    (S
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vmif3s0 fortalecerá fortalecer))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 gestión gestión)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 escolar escolar))))))
+    (coord
+      (cc y y))
+    (S
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vmif3s0 apoyará apoyar))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 desarrollo desarrollo)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (di0ms0 un uno))
+              (grup.nom.ms
+                (ncms000 plan plan)
+                (s.a.ms
+                  (grup.a.ms
+                    (nccs000 piloto piloto)))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 formación formación)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0cs0 profesional profesional))))))))))))
+    (S.co
+      (sp.j-CC
+        (Fc , ,)
+        (prep
+          (sps00 bajo bajo))
+        (sn
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 nuevo nuevo)))
+            (ncms000 esquema esquema)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 gestión gestión)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 institucional institucional))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Los el))
+      (grup.nom.mp
+        (ncmp000 recursos recurso)))
+    (grup.verb
+      (vmif3p0 financiarán financiar))
+    (sadv-MOD
+      (grup.adv
+        (rg además además)))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (ao0fs0 primera primero)))
+        (ncfs000 etapa etapa)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 puesta_en_marcha puesta_en_marcha)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.ms
+                    (di0ms0 un uno))
+                  (grup.nom.ms
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 nuevo nuevo)))
+                    (ncms000 nivel nivel)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 educación educación)
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0fs0 secundaria secundario))))))
+                    (sn
+                      (Fc , ,)
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 bachillerato bachillerato)))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 duración duración)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 programa programa))))))
+      (grup.verb
+        (vsip3s0 es ser))
+      (sp-ATR
+        (prep
+          (sps00 de de))
+        (sn
+          (espec.mp
+            (dn0cp0 seis seis))
+          (grup.nom.mp
+            (ncmp000 años año)))))
+    (coord
+      (cc y y))
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 cantidad cantidad)
+          (S.NF.P
+            (participi
+              (aq0fsp prestada prestado))
+            (sp-CAG
+              (prep
+                (sps00 por por))
+              (sno
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (np0000o BID BID)))))))
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vmif3s0 empleará emplear))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 financiación financiación)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (s.a.ms
+                    (grup.a.ms
+                      (ao0ms0 primer primero)))
+                  (ncms000 trienio trienio))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 préstamo préstamo)
+        (sp
+          (prep
+            (spcms del del))
+          (sno
+            (grup.nom.ms
+              (np0000o BID BID))))))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vmip3s0 otorga otorgar))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 plazo plazo)
+          (sp
+            (prep
+              (sps00 de de))
+            (snn
+              (espec.mp
+                (Z 20 20))
+              (grup.nom.mp
+                (ncmp000 años año))))
+          (sp
+            (Fc , ,)
+            (prep
+              (sps00 con con))
+            (sn
+              (espec.ms
+                (di0ms0 un uno))
+              (grup.nom.ms
+                (ncms000 período período)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 gracia gracia))))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.mp
+                      (pn0cp000 tres tres))))))
+            (Fc , ,)))))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 tasa tasa)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 interés interés)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 anual anual)))
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 variable variable))))))
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (sadv-CCT
+              (grup.adv
+                (rg actualmente actualmente)))
+            (grup.verb
+              (vsip3s0 es ser))
+            (sp-ATR
+              (prep
+                (spcms del del))
+              (snn
+                (grup.nom.ms
+                  (Zp 6,84_por_ciento 6,84_%))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Para para))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (ao0fs0 segunda segundo)))
+          (ncfs000 etapa etapa)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (dn0cp0 tres tres))
+              (grup.nom.mp
+                (ncmp000 años año)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 programa programa)))))))))
+      (Fc , ,))
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (np0000o BID BID)))
+    (grup.verb
+      (vmif3s0 aprobará aprobar))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un uno))
+      (grup.nom.ms
+        (ncms000 préstamo préstamo)
+        (sp
+          (prep
+            (sps00 de de))
+          (snn
+            (espec.mp
+              (Z 100 100))
+            (grup.nom.mp
+              (ncmp000 millones millón)
+              (sp
+                (prep
+                  (sps00 de de))
+                (snn
+                  (grup.nom.mp
+                    (Zm dólares dólar)))))))))
+    (Fp . .)))

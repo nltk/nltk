@@ -1,0 +1,418 @@
+
+(
+  (S
+    (sn.co-SUJ
+      (sno
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 club club)
+          (sno
+            (grup.nom
+              (np0000o BM_Granollers BM_Granollers)))
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3s0 milita militar))
+            (sp-CREG
+              (prep
+                (sps00 a a))
+              (sna
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np0000a Divisió_d'_Honor Divisió_d'_Honor)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 estatal estatal))))))
+            (Fc , ,))))
+      (coord
+        (cc i i))
+      (sno
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (np0000o Diputació_de_Barcelona Diputació_de_Barcelona))))
+    (grup.verb
+      (vmip3p0 signen signar))
+    (sn-CCT
+      (espec.ms
+        (dd0ms0 aquest aquest))
+      (grup.nom.ms
+        (ncmn000 dilluns dilluns)))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 acord acord)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 patrocini patrocini)
+              (sp
+                (prep
+                  (sps00 de de))
+                (snn
+                  (espec.mp
+                    (Z 8 8))
+                  (grup.nom.mp
+                    (ncmp000 milions milió)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snn
+                        (grup.nom.fp
+                          (Zm pessetes pesseta))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Entre entre))
+      (sn
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (ncmp000 continguts contingut)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (ncms000 acord acord)))))))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vmip3s0 inclou incloure))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 presència presència)
+        (sp
+          (prep
+            (sps00 de de))
+          (sna
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 marca marca)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sno
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np0000o Diputació_de_Barcelona Diputació_de_Barcelona))))
+              (sna
+                (grup.nom
+                  (Fe " ")
+                  (np0000a Turisme_Total Turisme_Total)
+                  (Fe " "))))))))
+    (sp.co-CCL
+      (sp
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (ncfp000 samarretes samarreta)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.ms
+                  (da0cs0 l' el))
+                (grup.nom.ms
+                  (ncms000 equip equip)
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vmip3s0 juga jugar))
+                    (sp-CC
+                      (prep
+                        (sps00 a a))
+                      (sna
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (np0000a Lliga_Asobal Lliga_Asobal))))))))))
+        (Fc , ,))
+      (coord
+        (cc i i))
+      (sp
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.mp
+            (di0cp0 altres altre))
+          (grup.nom.mp
+            (ncmp000 suports suport)
+            (s.a.mp
+              (grup.a.mp
+                (aq0mp0 publicitaris publicitari)))
+            (sp
+              (prep
+                (spcms del del))
+              (snl
+                (grup.nom.ms
+                  (np0000l Pavelló_Olímpic Pavelló_Olímpic)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snl
+                      (snl
+                        (grup.nom
+                          (np0000l Granollers Granollers)))
+                      (snl.j
+                        (grup.nom
+                          (Fpa -Fpa- -Fpa-)
+                          (np0000l Vallès_Oriental Vallès_Oriental)
+                          (Fpt -Fpt- -Fpt-))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (np0000o Diputació Diputació)))
+    (grup.verb
+      (vmif3s0 pagarà pagar))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (ncfs000 entitat entitat)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 vallesana vallesà))))))
+    (snn-CD
+      (espec.mp
+        (di0ms0 un un)
+        (ncms000 total total)
+        (sps00 de de)
+        (Z 8 8))
+      (grup.nom.mp
+        (ncmp000 milions milió)
+        (sp
+          (prep
+            (sps00 de de))
+          (snn
+            (grup.nom.fp
+              (Zm pessetes pesseta))))))
+    (sp-CC
+      (prep
+        (sps00 arran_d' arran_de))
+      (sn
+        (espec.ms
+          (dd0ms0 aquest aquest))
+        (grup.nom.ms
+          (ncms000 conveni conveni))))
+    (sp-AO
+      (Fc , ,)
+      (prep
+        (sps00 segons segons))
+      (sn
+        (espec.ms
+          (dd0ms0 aquest aquest))
+        (grup.nom.ms
+          (ncmn000 ens ens)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 provincial provincial))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 acord acord)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vsp00sm estat ser)
+      (vmp00sm ratificat ratificar))
+    (sp.co-CAG
+      (sp
+        (prep
+          (spcms pel pel))
+        (snp
+          (grup.nom.ms
+            (ncms000 president president)
+            (sp
+              (prep
+                (spcms del del))
+              (sno
+                (grup.nom.ms
+                  (np0000o Club Club))))
+            (snp
+              (Fc , ,)
+              (grup.nom.ms
+                (np0000p Juan_Maria_Pérez_Ortiz Juan_Maria_Pérez_Ortiz))
+              (Fc , ,)))))
+      (coord
+        (cc i i))
+      (sp
+        (prep
+          (spcms pel pel))
+        (snp.x
+          (grup.nom.co
+            (grup.nom.co
+              (grup.nom.ms
+                (ncms000 diputat diputat)
+                (S.NF.P
+                  (participi
+                    (aq0msp delegat delegat)))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sno
+                    (grup.nom
+                      (np0000o Turisme Turisme)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sno
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (np0000o Diputació_de_Barcelona Diputació_de_Barcelona))))))))
+              (coord
+                (cc i i))
+              (grup.nom.ms
+                (ncms000 regidor regidor)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sno
+                    (grup.nom.ms
+                      (np0000o PSC PSC)
+                      (sp
+                        (prep
+                          (sps00 a a))
+                        (sno
+                          (espec.ms
+                            (da0cs0 l' el))
+                          (grup.nom.ms
+                            (np0000o Ajuntament_de_Granollers Ajuntament_de_Granollers)))))))))
+            (snp.j
+              (Fc , ,)
+              (grup.nom.ms
+                (np0000p Josep_Mayoral Josep_Mayoral)))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Juan_Maria_Pérez Juan_Maria_Pérez)
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (sadv-MOD
+            (grup.adv
+              (rg també també)))
+          (grup.verb
+            (vaip3s0 va anar)
+            (vsn0000 ser ser))
+          (sn-ATR
+            (grup.nom.ms
+              (ncms000 regidor regidor)
+              (sp
+                (prep
+                  (spcms del del))
+                (sno
+                  (grup.nom.ms
+                    (np0000o PSC PSC))))
+              (sp
+                (prep
+                  (sps00 a a))
+                (snl
+                  (grup.nom
+                    (np0000l Granollers Granollers))))))
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.fs
+                (da0cs0 l' el))
+              (grup.nom.fs
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 anterior anterior)))
+                (ncfs000 legislatura legislatura))))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vsn0000 ser ser)
+      (vmp00sm escollit escollir))
+    (sn-CPRED.SUJ
+      (grup.nom.ms
+        (ncms000 president president)
+        (sp
+          (prep
+            (spcms del del))
+          (sno
+            (grup.nom.ms
+              (np0000o BM_Granollers BM_Granollers))))))
+    (sp-CCT
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom.mp
+          (ncmp000 principis principi)
+          (sp
+            (prep
+              (sps00 d' de))
+            (snd
+              (espec.ms
+                (dd0ms0 aquest aquest))
+              (grup.nom.ms
+                (W mes_de_març [??:??/3/??:??.??])))))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 encapçalar encapçalar))
+        (sn-CD
+          (espec.fs
+            (da0cs0 l' el))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 única únic)))
+            (ncfs000 candidatura candidatura)
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vmii3s0 optava optar))
+              (sp-CREG
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 Junta_Directiva junta_directiva)
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 club club))))))))))))
+    (Fp . .)))

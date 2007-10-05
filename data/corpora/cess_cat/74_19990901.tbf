@@ -1,0 +1,653 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (ncfs000 entitat entitat)))
+    (neg-MOD
+      (rn no no))
+    (grup.verb
+      (vmif3s0 podrà poder)
+      (infinitiu
+        (vmn0000 actuar actuar)))
+    (sp-CCT
+      (prep
+        (sps00 fins fins))
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmsp3s0 tingui tenir))
+        (sn-CD.Q
+          (espec.fs
+            (da0cs0 l' el))
+          (grup.nom.fs
+            (ncfs000 autorització autorització)
+            (sp
+              (prep
+                (spcms del del))
+              (sno
+                (grup.nom.ms
+                  (np0000o Banc_d'_Espanya Banc_d'_Espanya))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np0000o Govern_d'_Andorra Govern_d'_Andorra)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 aprovar aprovar))
+    (snd-CCT
+      (grup.nom.ms
+        (W dilluns [dilluns:??/??/??:??.??])))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 atorgar atorgar))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 llicència llicència)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 definitiva definitiu)))))
+      (sp-CCL
+        (prep
+          (spcms al al))
+        (sno
+          (grup.nom.ms
+            (np0000o Banc_Sabadell Banc_Sabadell))))
+      (S.F.A-CC
+        (conj.subord
+          (cs perquè perquè))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmsp3s0 pugui poder)
+          (infinitiu
+            (vmn0000 establir establir)))
+        (morf.pron
+          (p0300000 -se ell))
+        (sp-CCL
+          (prep
+            (spcms al al))
+          (sn
+            (grup.nom.ms
+              (ncms000 país país)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 pirinenc pirinenc))))))
+        (S.F.AConc-AO
+          (Fc , ,)
+          (conj.subord
+            (cs malgrat_que malgrat_que))
+          (sn-SUJ
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 permís permís)))
+          (grup.verb
+            (vmip3s0 està estar))
+          (sadv-CC
+            (grup.adv
+              (Fe " ")
+              (rg en_suspens en_suspens)
+              (Fe " ")))
+          (sp-CCT
+            (prep
+              (sps00 fins fins))
+            (S.F.C
+              (conj.subord
+                (cs que que))
+              (sn-SUJ
+                (espec.fs
+                  (da0cs0 l' el))
+                (grup.nom.fs
+                  (ncfs000 entitat entitat)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 catalana català)))))
+              (grup.verb
+                (vmsp3s0 presenti presentar))
+              (sn-CD
+                (espec.fs
+                  (da0cs0 l' el))
+                (grup.nom.fs
+                  (ncfs000 autorització autorització)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 corresponent corresponent)))
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sno
+                      (grup.nom.ms
+                        (np0000o Banc_d'_Espanya Banc_d'_Espanya)))))))))))
+    (S.F.A-AO
+      (Fc , ,)
+      (conj.subord
+        (cs segons segons))
+      (grup.verb
+        (vaip3p0 van anar)
+        (vmn0000 assenyalar assenyalar))
+      (sn-SUJ
+        (grup.nom.fp
+          (ncfp000 fonts font)
+          (s.a.fp
+            (grup.a.fp
+              (aq0cp0 governamentals governamental))))))
+    (Fp . .)))
+(
+  (S*
+    (snp
+      (grup.nom.ms
+        (np0000p Josep_Oliu Josep_Oliu)
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (ncms000 director director)
+            (s.a.ms
+              (grup.a.ms
+                (aq0cs0 general general)))
+            (sp
+              (prep
+                (sps00 de de))
+              (sno
+                (grup.nom
+                  (np0000o Banc_Sabadell Banc_Sabadell))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 beneplàcit beneplàcit)
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (espec.fs
+              (da0cs0 l' el))
+            (grup.nom.fs
+              (ncfs000 autoritat autoritat)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 monetària monetari)))
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 espanyola espanyol))))))))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sa-ATR
+      (grup.a
+        (aq0cs0 indispensable indispensable)))
+    (S.F.A-CC
+      (conj.subord
+        (cs perquè perquè))
+      (sno-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np0000o Banc_Sabadell Banc_Sabadell)))
+      (grup.verb
+        (vmsp3s0 pugui poder)
+        (infinitiu
+          (vmn0000 transferir transferir)))
+      (sn-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 capital capital)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 social social)))
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 necessari necessari)))))
+      (sp-CC
+        (prep
+          (sps00 per per))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 començar començar)
+            (sps00 a a)
+            (infinitiu
+              (vmn0000 operar operar)))
+          (sp-CCL
+            (prep
+              (sps00 a a))
+            (snl
+              (grup.nom
+                (np0000l Andorra Andorra)))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Per per))
+      (sno
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (np0000o Executiu Executiu)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 andorrà andorrà)))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 vistiplau vistiplau)
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (espec.fs
+              (da0cs0 l' el))
+            (grup.nom.fs
+              (ncfs000 autoritat autoritat)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 financera financer)))
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 espanyola espanyol))))))))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sn-ATR
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (Fe " ")
+        (ncfs000 garantia garantia)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 solvència solvència))))
+        (Fe " ")))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np0000o Govern_d'_Andorra Govern_d'_Andorra)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 exigir exigir))
+    (sp-CI
+      (prep
+        (spcms al al))
+      (sno
+        (grup.nom.ms
+          (ncms000 grup grup)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 financer financer)))
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 català català))))))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 permís permís)
+        (sp
+          (prep
+            (spcms del del))
+          (sno
+            (grup.nom.ms
+              (np0000o Banc_d'_Espanya Banc_d'_Espanya))))))
+    (sadv-CCT
+      (grup.adv
+        (rg abans abans)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (ncms000 estiu estiu))))))
+    (sp-CPRED.CD
+      (prep
+        (cs com com))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (Fe " ")
+          (ncms000 complement complement)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 informació informació))))
+          (Fe " "))))
+    (S.F.A-CC
+      (Fc , ,)
+      (conj.subord
+        (cs ja_que ja_que))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 legislació legislació)
+          (sp
+            (prep
+              (sps00 sobre sobre))
+            (sn
+              (espec.fs
+                (da0cs0 l' el))
+              (grup.nom.fs
+                (ncfs000 obertura obertura)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 bancària bancari))))))))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vmip3s0 fa_referència fer_referència))
+      (sa-CC
+        (grup.a
+          (aq0fs0 estricta estricte)))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.ms
+            (dd0ms0 aquest aquest))
+          (grup.nom.ms
+            (ncms000 requeriment requeriment)))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 silenci silenci)
+        (sp
+          (prep
+            (spcms del del))
+          (sno
+            (grup.nom.ms
+              (np0000o Banc_d'_Espanya Banc_d'_Espanya))))))
+    (grup.verb
+      (vmip3s0 coincideix coincidir))
+    (sp-CREG
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 intent intent)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.fs
+                (dd0fs0 aquesta aquest))
+              (grup.nom.fs
+                (ncfs000 entitat entitat))))
+          (sp
+            (prep
+              (sps00 de de))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 renegociar renegociar))
+              (sp-CREG
+                (prep
+                  (sps00 amb amb))
+                (snl
+                  (grup.nom
+                    (np0000l Andorra Andorra))))
+              (sn-CD
+                (espec.ms
+                  (di0ms0 un un))
+                (grup.nom.ms
+                  (ncms000 conveni conveni)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 col·laboració col·laboració)
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0fs0 bancària bancari)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.A-AO
+      (conj.subord
+        (cs Segons segons))
+      (grup.verb
+        (vmip3p0 confirmen confirmar))
+      (sn-SUJ
+        (grup.nom.fp
+          (ncfp000 fonts font)
+          (sp
+            (prep
+              (spcms del del))
+            (sno
+              (grup.nom.ms
+                (np0000o Govern Govern))))))
+      (Fc , ,))
+    (sno-SUJ
+      (espec.fs
+        (da0cs0 l' el))
+      (grup.nom.fs
+        (ncfs000 autoritat autoritat)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 monetària monetari)))
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 espanyola espanyol)))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm presentat presentar))
+    (sp-CCL
+      (prep
+        (spcms al al))
+      (sno
+        (grup.nom.ms
+          (ncms000 gabinet gabinet)
+          (sp
+            (prep
+              (sps00 de de))
+            (snp
+              (grup.nom.ms
+                (np0000p Marc_Forné Marc_Forné)))))))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 proposta proposta)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.ms
+              (ncms000 acord acord))))
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 està estar))
+          (S.NF.P
+            (participi
+              (aq0fsp basada basat))
+            (sp-CREG
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 model model)
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (morfema.verbal-PASS
+                      (p0000000 s' es))
+                    (grup.verb
+                      (vmip3s0 aplica aplicar))
+                    (sp-CC
+                      (prep
+                        (spcmp als al))
+                      (sn
+                        (espec.mp
+                          (da0mp0 els el))
+                        (grup.nom.mp
+                          (ncmp000 països país)
+                          (s.a.mp
+                            (grup.a.mp
+                              (aq0mp0 llatinoamericans llatinoamericà))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-AO
+      (grup.adv
+        (rg Aparentment aparentment))
+      (Fc , ,))
+    (sno-SUJ
+      (grup.nom
+        (np0000o Espanya Espanya)))
+    (grup.verb
+      (vmip3s0 aspira aspirar))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 tenir tenir))
+        (sn-CD.Q
+          (grup.nom.ms
+            (ncms000 accés accés)
+            (sn
+              (grup.nom.ms
+                (aq0ms0 directe directe)))))
+        (sp-CCL
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (da0cs0 l' el))
+            (grup.nom.fs
+              (ncfs000 activitat activitat)
+              (sp
+                (prep
+                  (spcms del del))
+                (sno
+                  (grup.nom.ms
+                    (np0000o Banc_Sabadell Banc_Sabadell))))
+              (sp
+                (prep
+                  (sps00 a a))
+                (snl
+                  (grup.nom
+                    (np0000l Andorra Andorra)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el)
+        (di0fp0 mateixes mateix))
+      (grup.nom.fp
+        (ncfp000 fonts font)
+        (s.a.fp
+          (grup.a.fp
+            (aq0fp0 andorranes andorrà)))))
+    (grup.verb
+      (vmip3p0 insisteixen insistir))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 fet fet)
+          (S.F.C.co
+            (S.F.C
+              (conj.subord
+                (cs que que))
+              (sno-SUJ
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (np0000o Govern Govern)))
+              (Fe " ")
+              (neg-MOD
+                (rn no no))
+              (grup.verb
+                (vmif3s0 cedirà cedir))
+              (sp-ET
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.ms
+                    (dd0ms0 aquest aquest))
+                  (grup.nom.ms
+                    (ncms000 sentit sentit))))
+              (Fe " "))
+            (coord
+              (cc i i))
+            (S.F.C
+              (conj.subord
+                (cs que que))
+              (sno-SUJ
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (np0000o Banc_d'_Espanya Banc_d'_Espanya)))
+              (Fe " ")
+              (morf.pron
+                (p0300000 s' ell))
+              (grup.verb
+                (vmip3s0 equivoca equivocar))
+              (S.F.ACond-AO
+                (conj.subord
+                  (cs si si))
+                (sn.e-SUJ *0*)
+                (grup.verb
+                  (vmip3s0 pensa pensar))
+                (S.F.C-CD
+                  (conj.subord
+                    (cs que que))
+                  (sn.e-SUJ *0*)
+                  (grup.verb
+                    (vmip3s0 pot poder)
+                    (infinitiu
+                      (vmn0000 controlar controlar)))
+                  (sn-CD
+                    (espec.fs
+                      (da0cs0 l' el))
+                    (grup.nom.fs
+                      (ncfs000 activitat activitat)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0fs0 bancària bancari)))))
+                  (sp-CCL
+                    (prep
+                      (sps00 a a))
+                    (snl
+                      (grup.nom
+                        (np0000l Andorra Andorra))))))
+              (Fe " "))))))
+    (Fp . .)))

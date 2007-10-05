@@ -1,0 +1,202 @@
+
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Serra_Ferrer Serra_Ferrer)))
+    (grup.verb 
+      (vaip3s0 ha haber)
+      (vmp00sm reconocido reconocer))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 suerte suerte)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (np00000 Barcelona Barcelona))))))
+      (grup.verb 
+        (vsip3s0 es ser))
+      (sn-ATR
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (S.F.R
+            (relatiu-CD
+              (pr0cn000 que que))
+            (grup.verb 
+              (vmip3s0 escribe escribir))
+            (sn-SUJ
+              (espec.ms
+                (da0ms0 el el)
+                (di0ms0 propio propio))
+              (grup.nom.ms
+                (ncms000 club club))))))
+      (Fc , ,))
+    (sp-CC
+      (prep
+        (spcms al al))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 señalar señalar))
+        (S.F.C-CD
+          (conj.subord
+            (cs que que))
+          (sp-CC
+            (Fc , ,)
+            (Fe " ")
+            (prep
+              (sps00 con con))
+            (sn
+              (espec.mp
+                (di0mp0 todos todo)
+                (da0mp0 los el))
+              (grup.nom.mp
+                (ncmp000 respetos respeto)
+                (sp
+                  (prep
+                    (spcms al al))
+                  (sn
+                    (grup.nom.ms
+                      (np00000 Brujas Brujas))))))
+            (Fe " ")
+            (Fc , ,))
+          (INC
+            (S
+              (grup.verb 
+                (vaip3s0 ha haber)
+                (vmp00sm señalado señalar))
+              (sn.e-SUJ *0*)
+              (Fc , ,)))
+          (sn-SUJ
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (np00000 Barcelona Barcelona)))
+          (grup.verb 
+            (vmip3s0 tiene tener))
+          (sn-CD.Q
+            (grup.nom.ms
+              (pi0ms000 mucho mucho)
+              (S.NF.R
+                (relatiu-CD
+                  (pr0cn000 que que))
+                (infinitiu
+                  (vmn0000 decir decir))
+                (sp-CCL
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (ncms000 partido partido)
+                      (sp
+                        (prep
+                          (spcms del del))
+                        (sn
+                          (grup.nom.ms
+                            (W jueves [jueves:??/??/??:??.??])))))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (Fe " ")
+      (grup.verb 
+        (vsip3s0 Es ser))
+      (sa-ATR
+        (grup.a
+          (aq0cs0 normal normal)))
+      (S.F.C-SUJ
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (ncmp000 jugadores jugador)))
+        (grup.verb 
+          (vmsp3p0 reclamen reclamar))
+        (sn-CD
+          (espec.fs
+            (di0fs0 una uno))
+          (grup.nom.fs
+            (ncfs000 parcela parcela)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 superioridad superioridad)))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb 
+      (vaip3s0 ha haber)
+      (vmp00sm añadido añadir))
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Serra_Ferrer Serra_Ferrer)))
+    (sp-AO
+      (Fc , ,)
+      (prep
+        (sps00 en en))
+      (sn
+        (grup.nom.fs
+          (ncfs000 alusión alusión)
+          (sp
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fp
+                (di0fp0 unas uno))
+              (grup.nom.fp
+                (ncfp000 declaraciones declaración)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0cs0 barcelonista barcelonista)))
+                      (np00000 Alfonso_Pérez Alfonso_Pérez)
+                      (S.F.R
+                        (Fc , ,)
+                        (relatiu-SUJ
+                          (pr0cs000 quien quien))
+                        (grup.verb 
+                          (vaip3s0 ha haber)
+                          (vmp00sm asegurado asegurar))
+                        (S.F.C-CD
+                          (conj.subord
+                            (cs que que))
+                          (S.F.ACond-AO
+                            (conj.subord
+                              (cs si si))
+                            (sn-SUJ
+                              (espec.ms
+                                (da0ms0 el el))
+                              (grup.nom.ms
+                                (np00000 Barcelona Barcelona)))
+                            (grup.verb 
+                              (vmip3s0 funciona funcionar))
+                            (Fc , ,))
+                          (neg-MOD
+                            (rn no no))
+                          (grup.verb 
+                            (vaip3s0 hay haber))
+                          (S.F.C-CD.Q
+                            (relatiu-SUJ
+                              (pr0cs000 quien quien))
+                            (sn-CD
+                              (grup.nom.ms
+                                (pp3msa00 lo él)))
+                            (grup.verb 
+                              (vmip3s0 pare parir))))))))))))))
+(Fp . .)))

@@ -1,0 +1,189 @@
+
+(
+  (S*
+    (sadv
+      (grup.adv
+        (rg Claro claro)))
+    (S.F.C
+      (conj.subord
+        (cs que que))
+      (S.F.A.co-CC
+        (conj.subord
+          (cs cuando cuando))
+        (S.F.A
+          (snp-SUJ
+            (grup.nom.ms
+              (np0000p Felipe_González Felipe_González)
+              (S.F.R
+                (Fpa -Fpa- -Fpa-)
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (sadv-CC
+                  (grup.adv
+                    (rg a_lo_que_parece a_lo_que_parece)))
+                (neg-MOD
+                  (rn no no))
+                (grup.verb
+                  (vaip3s0 ha haber)
+                  (vmp00sm perdido perder))
+                (sadv-CC
+                  (grup.adv
+                    (rg del_todo del_todo)))
+                (sn-CD
+                  (sn
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (ncms000 carisma carisma))
+                    (espec.ms
+                      (dd0ms0 aquel aquel)))
+                  (S.F.R
+                    (relatiu-CD.Q
+                      (pr0cn000 que que))
+                    (sn.e-SUJ *0*)
+                    (grup.verb
+                      (vmis3s0 tuvo tener))))
+                (Fpt -Fpt- -Fpt-))))
+          (grup.verb
+            (vmip3s0 lanza lanzar))
+          (sn-CD
+            (grup.nom.mp
+              (ncmp000 piropos piropo)))
+          (sp-CI
+            (prep
+              (sps00 a a))
+            (snp
+              (grup.nom.ms
+                (np0000p Aznar Aznar))))
+          (Fc , ,))
+        (coord
+          (cc y y))
+        (S.F.A
+          (sn.e-SUJ *0*)
+          (sn-CD
+            (grup.nom.s
+              (pp3csa00 le él)))
+          (grup.verb
+            (vmip3s0 seduce seducir))
+          (sp-CC
+            (prep
+              (sps00 con con))
+            (sn.x
+              (grup.nom.co
+                (grup.nom.fp
+                  (ncfp000 cenas cena))
+                (coord
+                  (cc y y))
+                (grup.nom.mp
+                  (ncmp000 discursos discurso))))))
+        (coord
+          (cc y y))
+        (S.F.A
+          (sn.e-SUJ *0*)
+          (sn-CD
+            (grup.nom.ms
+              (pp3msa00 lo él)))
+          (grup.verb
+            (vmip3s0 califica calificar))
+          (sp-CPRED.CD
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 clara claro)))
+                (ncfs000 alternativa alternativa))))
+          (sp-CC
+            (Fpa -Fpa- -Fpa-)
+            (sadv
+              (espec
+                (rg acaso acaso))
+              (grup.adv
+                (rg también también)))
+            (sp
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 clásico clásico)))
+                  (ncms000 sentido sentido)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn.x
+                      (grup.nom.co
+                        (grup.nom.ms
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0ms0 claro claro))))
+                        (Fh / /)
+                        (grup.nom.ms
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0cs0 ilustre ilustre)))))))))
+              (Fpt -Fpt- -Fpt-)))))
+      (grup.verb
+        (vmip3s0 está estar)
+        (gerundi
+          (vmg0000 ocurriendo ocurrir)))
+      (sn-SUJ
+        (grup.nom.ms
+          (pi0cs000 algo algo)
+          (s.a.ms.x
+            (grup.a.ms.co
+              (grup.a.ms
+                (aq0ms0 desolador desolador))
+              (coord
+                (cc y y))
+              (grup.a.ms
+                (aq0cs0 terrible terrible))))
+          (s.a.ms
+            (Fc , ,)
+            (s.a.ms
+              (grup.a.ms
+                (aq0cs0 igual igual)))
+            (S.F.AComp*.j
+              (conj.subord
+                (cs que que))
+              (S.F.C
+                (conj.subord
+                  (cs si si))
+                (snp-SUJ
+                  (grup.nom.ms
+                    (S.NF.P
+                      (Fc , ,)
+                      (participi
+                        (aq0msp llegado llegado))
+                      (sp-CC
+                        (prep
+                          (spcms al al))
+                        (sno
+                          (grup.nom.ms
+                            (np0000o Gobierno Gobierno))))
+                      (Fc , ,))
+                    (np0000p José_María_Aznar José_María_Aznar)))
+                (morf.pron
+                  (p0300000 se él))
+                (grup.verb
+                  (vmsi3s0 volcase volcar))
+                (sp-CC
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (grup.nom.fp
+                      (ncfp000 mieles miel)
+                      (s.a.fp
+                        (grup.a.fp
+                          (aq0fp0 dialécticas dialéctico))))))
+                (sp-CC
+                  (prep
+                    (sps00 con con))
+                  (snp
+                    (grup.nom.ms
+                      (np0000p González González))))))))))
+    (Fp . .)))

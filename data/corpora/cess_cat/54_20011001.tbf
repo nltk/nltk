@@ -1,0 +1,249 @@
+
+(
+  (S
+    (sp-CCL
+      (prep
+        (sps00 Enmig_de enmig_de))
+      (sn
+        (grup.nom.fp
+          (ncfp000 mesures mesura)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 seguretat seguretat))))
+          (sp
+            (prep
+              (sps00 sense sense))
+            (sn
+              (grup.nom.mp
+                (ncmp000 precedents precedent))))))
+      (Fc , ,))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 començar començar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom
+          (np00000 Brighton Brighton))))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 conferència conferència)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 anual anual)))
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (np00000 Partit_Laborista Partit_Laborista))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.mp
+        (ncmp000 Efectius efectiu)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn.co
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (nccs000 policia policia)))
+            (coord
+              (cc i i))
+            (sn
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (np00000 Exèrcit Exèrcit)))))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 impedir impedir))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 miler miler)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn.x
+              (grup.nom.co
+                (grup.nom.mp
+                  (nccp000 manifestants manifestant))
+                (Fc , ,)
+                (grup.nom.mp
+                  (nccp000 pacifistes pacifista))
+                (coord
+                  (cc i i))
+                (grup.nom.mp
+                  (nccp000 antimundialització antimundialització))))))))
+    (S.NF.C-CD
+      (Fc , ,)
+      (infinitiu
+        (vmn0000 acostar acostar))
+      (morf.pron
+        (p0300000 -se ell))
+      (sp-CCL
+        (prep
+          (spcms al al))
+        (sn
+          (grup.nom.ms
+            (ncms000 centre centre)
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (espec.fs
+                  (dd0fs0 aquesta aquest))
+                (grup.nom.fs
+                  (ncfs000 ciutat ciutat))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 conferència conferència)
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmif3s0 durarà durar))
+          (sn-CD.Q
+            (espec.mp
+              (dn0cp0 tres tres))
+            (grup.nom.mp
+              (ncmp000 dies dia)
+              (sadv
+                (Fc , ,)
+                (sn.j
+                  (grup.nom.ms
+                    (pn0ms000 un un)))
+                (sadv
+                  (grup.adv
+                    (rg menys menys)
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sn
+                        (grup.nom.ms
+                          (S.F.R
+                            (relatiu-ATR
+                              (pr0cn000 que que))
+                            (grup.verb
+                              (vmip3s0 sol soler)
+                              (infinitiu
+                                (vsn0000 ser ser)))
+                            (sa-ATR
+                              (grup.a
+                                (aq0cs0 habitual habitual))))))))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmip3s0 està estar))
+    (S.NF.P-ATR
+      (sadv-AO
+        (grup.adv
+          (rg completament completament)))
+      (participi
+        (aq0fsp marcada marcat))
+      (sp-CAG
+        (prep
+          (spcmp pels pel))
+        (sn
+          (grup.nom.mp
+            (ncmp000 atemptats atemptat)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (W setembre [??:??/09/??:??.??]))))
+            (sp
+              (prep
+                (sps00 a a))
+              (sn.x
+                (grup.nom.co
+                  (grup.nom
+                    (np00000 Nova_York Nova_York))
+                  (coord
+                    (cc i i))
+                  (grup.nom
+                    (np00000 Washington Washington)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (sadv.j
+        (grup.adv
+          (rg Ni_tan_sols ni_tan_sols)))
+      (sn
+        (grup.nom.ms
+          (np00000 Tony_Blair Tony_Blair))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 assistir assistir))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (ncfs000 obertura obertura))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (ao0ms0 primer primer)))
+        (ncms000 ministre ministre)))
+    (grup.verb
+      (vmip3s0 té tenir))
+    (S.NF.P-CPRED.CD
+      (participi
+        (aq0msp previst previst)))
+    (S.NF.C-CD.Q
+      (infinitiu
+        (vmn0000 dirigir dirigir))
+      (morf.pron
+        (p0300000 -se ell))
+      (sp-CREG
+        (prep
+          (spcmp als al))
+        (sn
+          (grup.nom.mp
+            (ncmp000 delegats delegat))))
+      (sn-CCT
+        (grup.nom.ms
+          (W dimarts [dimarts:??/??/??:??.??])
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3s0 ve venir))))))
+    (Fp . .)))

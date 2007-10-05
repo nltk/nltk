@@ -1,0 +1,97 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 autoritats autoritat)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (np00000 Pequín Pequín))))))
+    (grup.verb
+      (vmip3p0 acusen acusar))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (nccs000 líder líder)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 espiritual espiritual)))
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (np00000 Tibet Tibet))))))
+    (sp-CREG
+      (prep
+        (sps00 de de))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 prestar prestar))
+        (morf.pron
+          (p0300000 -se ell))
+        (sp-CC
+          (prep
+            (spcms al al))
+          (sn
+            (grup.nom.ms
+              (Fe " ")
+              (ncms000 col·laboracionisme col·laboracionisme)
+              (Fe " ")
+              (sp
+                (prep
+                  (sps00 amb amb))
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (np00000 Govern Govern)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom
+                          (np00000 Taipei Taipei))))))))))
+        (sp-CC
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (dp3ms0 el_seu el_seu))
+            (grup.nom.ms
+              (ncms000 intent intent)
+              (sp
+                (prep
+                  (sps00 de de))
+                (S.NF.C.co
+                  (S.NF.C
+                    (infinitiu
+                      (vmn0000 dividir dividir))
+                    (sn-CD
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (np00000 Xina Xina))))
+                  (coord
+                    (cc i i))
+                  (S.NF.C
+                    (infinitiu
+                      (vmn0000 acabar acabar))
+                    (sp-CREG
+                      (prep
+                        (sps00 amb amb))
+                      (sn
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (ncms000 règim règim)
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0cs0 comunista comunista))))))))))))))
+    (Fp . .)))

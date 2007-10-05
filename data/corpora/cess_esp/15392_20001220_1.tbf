@@ -1,0 +1,212 @@
+
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Ladoucette Ladoucette)))
+    (grup.verb
+      (vmis3s0 explicó explicar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sadv-CCT
+        (grup.adv
+          (rg antes antes)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 verano verano))))))
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vmif3p0 cerrarán cerrar))
+      (sn-SUJ
+        (espec.fp
+          (dn0cp0 tres tres))
+        (grup.nom.fp
+          (s.a.fp
+            (grup.a.fp
+              (aq0fp0 nuevas nuevo)))
+          (ncfp000 minas mina)))
+      (S.F.R-AO
+        (Fc , ,)
+        (sp-CC
+          (prep
+            (sps00 con con))
+          (relatiu
+            (da0ns0 lo el)
+            (pr0cn000 que que)))
+        (sadv-MOD
+          (grup.adv
+            (rg sólo sólo)))
+        (grup.verb
+          (vmif3p0 quedarán quedar))
+        (sn-SUJ
+          (espec.fp
+            (di0fp0 otras otro)
+            (di0fp0 tantas tanto))
+          (grup.nom.fp
+            (s.a.fp
+              (grup.a.fp
+                (aq0fp0 subterráneas subterráneo)
+                (sp
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 explotación explotación))))))
+            (S.F.R
+              (Fc , ,)
+              (sn-SUJ
+                (espec.fs
+                  (pr0fs000 cuya cuyo))
+                (grup.nom.fs
+                  (ncfs000 actividad actividad)))
+              (grup.verb
+                (vmif3s0 concluirá concluir))
+              (sp-CCT
+                (prep
+                  (sps00 de de))
+                (sadv
+                  (grup.adv
+                    (rg aquí aquí)
+                    (sp
+                      (prep
+                        (sps00 a a))
+                      (snd
+                        (grup.nom.ms
+                          (W diciembre_de_2005 [??:??/12/2005:??.??]))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 En_cuanto_a en_cuanto_a))
+      (sn
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 cesiones cesión)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 activos activo))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 presidente presidente)))
+    (grup.verb
+      (vmis3s0 dijo decir))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-CCT
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 año año)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3s0 viene venir)))))
+      (sn.e-SUJ *0*)
+      (sn-CI.r
+        (grup.nom.s
+          (pp3csd00 le él)))
+      (grup.verb
+        (vmif3p0 reportarán reportar))
+      (snn-CD
+        (espec.mp
+          (Z 510 510))
+        (grup.nom.mp
+          (ncmp000 millones millón)
+          (sp
+            (prep
+              (sps00 de de))
+            (snn
+              (grup.nom.mp
+                (Zm euros euro))))
+          (sn
+            (Fc , ,)
+            (Fe " ")
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 equivalente equivalente)
+              (sp
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.fp
+                    (da0fp0 las el))
+                  (grup.nom.fp
+                    (ncfp000 ayudas ayuda)
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sno
+                        (grup.nom.ms
+                          (np0000o Estado Estado)))))))))))
+      (sp-CI.r
+        (prep
+          (sps00 a a))
+        (sno
+          (grup.nom
+            (np0000o CdF CdF)
+            (Fe " ")
+            (S.F.R.co
+              (Fc , ,)
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (S.F.R
+                (grup.verb
+                  (vmip3s0 pierde perder))
+                (sn-CCT
+                  (espec.ms
+                    (di0cs0 cada cada))
+                  (grup.nom.ms
+                    (ncms000 año año)))
+                (snn-CD
+                  (espec.mp
+                    (di0mp0 unos uno)
+                    (Z 915 915))
+                  (grup.nom.mp
+                    (ncmp000 millones millón)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snn
+                        (grup.nom.mp
+                          (Zm euros euro)))))))
+              (coord
+                (cc y y))
+              (S.F.R
+                (grup.verb
+                  (vmm02s0 acumula acumular))
+                (sn-CD
+                  (espec.fs
+                    (di0fs0 una uno))
+                  (grup.nom.fs
+                    (ncfs000 deuda deuda)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snn
+                        (espec.mp
+                          (Z 5.335 5335))
+                        (grup.nom.mp
+                          (ncmp000 millones millón)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (snn
+                              (grup.nom.mp
+                                (Zm euros euro)))))))))))))))
+    (Fp . .)))

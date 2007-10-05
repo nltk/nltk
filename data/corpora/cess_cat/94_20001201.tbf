@@ -1,0 +1,256 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 necessitat necessitat)
+        (sp
+          (prep
+            (sps00 de de))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 disposar disposar))
+            (sp-CREG
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fp
+                  (nccp000 professionals professional)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fp
+                        (da0fp0 les el))
+                      (grup.nom.fp
+                        (s.a.fp
+                          (grup.a.fp
+                            (aq0fp0 noves nou)))
+                        (ncfp000 tecnologies tecnologia)))))))
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.ms
+                  (di0ms0 un un))
+                (grup.nom.ms
+                  (ncms000 futur futur)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 immediat immediat))))))))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm provocat provocar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn.co-SUJ
+        (coord
+          (rg tant tant))
+        (sn
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (ncfp000 universitats universitat)))
+        (coord
+          (cs com com))
+        (sn
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (ncfp000 empreses empresa))))
+      (grup.verb
+        (vmsp3p0 reclamin reclamar))
+      (sn-CD
+        (espec.fp
+          (rg més més))
+        (grup.nom.fp
+          (ncfp000 places plaça))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.p
+        (pn0cp000 Sis sis)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (da0fp0 les el)
+              (dn0cp0 set set))
+            (grup.nom.fp
+              (ncfp000 universitats universitat)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 públiques públic)))
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 catalanes català))))))))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm demanat demanar))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 poder poder)
+        (infinitiu
+          (vmn0000 oferir oferir)))
+      (sn-CD
+        (grup.nom.fs
+          (ncfs000 part part)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fp
+                (da0fp0 les el)
+                (Z 500 500))
+              (grup.nom.fp
+                (ncfp000 places plaça)
+                (sp
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 estudis estudi)
+                      (S.NF.P
+                        (participi
+                          (aq0mpp relacionats relacionat))
+                        (sp-CREG
+                          (prep
+                            (sps00 amb amb))
+                          (sn
+                            (espec.fp
+                              (da0fp0 les el))
+                            (grup.nom.fp
+                              (s.a.fp
+                                (grup.a.fp
+                                  (aq0fp0 noves nou)))
+                              (ncfp000 tecnologies tecnologia))))))))
+                (S.F.R
+                  (relatiu-CD.NFc
+                    (pr0cn000 que que))
+                  (sn-SUJ
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 conselleria conselleria)))
+                  (grup.verb
+                    (vmip3s0 projecta projectar))
+                  (S.NF.C-Fn
+                    (infinitiu
+                      (vmn0000 crear crear))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 decisió decisió)))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmic3s0 prendria prendre))
+    (sp-CCT
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (W gener [??:??/01/??:??.??]))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.mp
+        (ncmp000 Països país)
+        (S.NF.P
+          (sadv-CC
+            (grup.adv
+              (rg molt molt)))
+          (participi
+            (aq0mpp desenvolupats desenvolupat)))
+        (sp
+          (prep
+            (cs com com))
+          (sn
+            (espec.mp
+              (da0mp0 els el))
+            (grup.nom.mp
+              (np00000 EUA EUA))))))
+    (grup.verb
+      (vmip3p0 recorren recórrer))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sp
+        (prep
+          (sps00 d' de))
+        (sn
+          (grup.nom.mp
+            (pi0cp000 altres altre)
+            (S.NF.P
+              (sadv-CC
+                (grup.adv
+                  (rg menys menys)))
+              (participi
+                (aq0mpp avançats avançat)))
+            (sp
+              (Fc , ,)
+              (prep
+                (cs com com))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (np00000 Pakistan Pakistan)))
+              (Fc , ,))))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 nodrir nodrir))
+        (morf.pron
+          (p0300000 -se ell))
+        (sp-CC
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.mp
+              (ncmp000 experts expert)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0mp0 informàtics informàtic))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 país país)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 asiàtic asiàtic)))))
+    (grup.verb
+      (vmip3s0 té tenir))
+    (sn-CD.Q
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 gran gran)))
+        (ncms000 prestigi prestigi)))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (dd0fs0 aquesta aquest))
+        (grup.nom.fs
+          (ncfs000 formació formació))))
+    (Fp . .)))

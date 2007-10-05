@@ -1,0 +1,219 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 empreses empresa)
+        (s.a.fp
+          (grup.a.fp
+            (aq0fp0 expositores expositor)))))
+    (grup.verb
+      (vmif3p0 invertiran invertir))
+    (sn-CD
+      (espec.mp
+        (Z 300 300))
+      (grup.nom.mp
+        (ncmp000 milions milió)
+        (sadv
+          (grup.adv
+            (rg més més)))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3s0 Va anar)
+        (vsn0000 ser ser)
+        (vmp00sf inaugurada inaugurar))
+      (sadv-CCT
+        (grup.adv
+          (rg ahir ahir)))
+      (sp-CAG
+        (prep
+          (spcms pel pel))
+        (sn
+          (grup.nom.ms
+            (ncms000 vicepresident vicepresident)
+            (s.a.ms
+              (grup.a.ms
+                (ao0ms0 segon segon)))
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (np00000 Govern Govern))))
+            (sn
+              (Fc , ,)
+              (grup.nom.ms
+                (np00000 Rodrigo_Rato Rodrigo_Rato)))))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmif3s0 comptarà comptar))
+      (sp-CREG
+        (prep
+          (sps00 amb amb))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 presència presència)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncms000 príncep príncep)
+                  (sn
+                    (grup.nom.ms
+                      (np00000 Felip_de_Borbó Felip_de_Borbó))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom
+        (np00000 Expotecnia Expotecnia)))
+    (grup.verb
+      (vmip3s0 pretén pretendre))
+    (S.NF.C.co-CD
+      (S.NF.C
+        (infinitiu
+          (vmn0000 mostrar mostrar))
+        (sn-CD
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 innovació innovació)
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 espanyola espanyol))))))
+      (coord
+        (cc i i))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 canviar canviar))
+        (sn-CD
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 imatge imatge)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncms000 país país))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 En en))
+      (sn
+        (grup.nom.fp
+          (ncfp000 edicions edició)
+          (s.a.fp
+            (grup.a.fp
+              (aq0cp0 anteriors anterior)))
+          (sp
+            (Fc , ,)
+            (prep
+              (cs com com))
+            (sp
+              (sadv.j
+                (grup.adv
+                  (rg per_exemple per_exemple)))
+              (sp
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fs
+                          (da0cs0 l' el))
+                        (grup.nom.fs
+                          (np00000 Índia Índia)))))))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (Zp 66% 66/100)
+        (sp
+          (prep
+            (spcmp dels del))
+          (sn
+            (grup.nom.mp
+              (nccp000 professionals professional)
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (sn-CREG
+                  (grup.nom
+                    (pp3cn000 hi hi)))
+                (grup.verb
+                  (vaip3p0 van anar)
+                  (vmn0000 assistir assistir))))))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 declarar declarar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (grup.verb
+        (vaii3s0 havia haver)
+        (vmp00sm millorat millorar))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 concepte concepte)
+          (S.F.R
+            (relatiu-CD.Q
+              (pr0cn000 que que))
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vmii3p0 tenien tenir)))
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom
+                (np00000 Espanya Espanya)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom
+        (np00000 Expotecnia-99 Expotecnia-99)))
+    (grup.verb
+      (vmip3s0 té tenir))
+    (S.NF.P-CPRED.CD
+      (participi
+        (aq0mpp compromesos compromès))
+      (sp-CC
+        (prep
+          (sps00 per per))
+        (sn
+          (grup.nom.fs
+            (ncfs000 inscripció inscripció)))))
+    (sn-CD.Q
+      (espec.mp
+        (di0ms0 un un)
+        (ncms000 mínim mínim)
+        (sps00 de de)
+        (Z 25.000 25000))
+      (grup.nom.mp
+        (nccp000 visitants visitant)))
+    (Fp . .)))

@@ -1,0 +1,153 @@
+
+(
+  (S
+    (S.F.C-CD
+      (sn-SUJ
+        (grup.nom.ms
+          (np00000 Ukali_Raixid Ukali_Raixid)
+          (S.NF.P
+            (Fc , ,)
+            (participi
+              (aq0msp conegut conegut))
+            (sp
+              (prep
+                (cs com com))
+              (sn
+                (grup.nom.ms
+                  (np00000 Raixid_abu-Thurab Raixid_abu-Thurab)))))
+          (sp
+            (Fc , ,)
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (Z 25 25))
+              (grup.nom.mp
+                (ncmp000 anys any)))
+            (Fc , ,))))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vsn0000 ser ser)
+        (vmp00sm designat designar))
+      (sn-CPRED.SUJ
+        (grup.nom.ms
+          (nccs000 cap cap))
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 nacional nacional))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0cs0 l' el))
+              (grup.nom.fs
+                (ncfs000 organització organització)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 terrorista terrorista)))
+                (sn
+                  (grup.nom
+                    (np00000 Grup_Islàmic_Armat Grup_Islàmic_Armat))))))))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (grup.nom.fs
+            (ncfs000 substitució substitució)
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (grup.nom.ms
+                  (np00000 Antar_Zuabri Antar_Zuabri)
+                  (S.F.R
+                    (Fc , ,)
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vaip3s0 va anar)
+                      (vsn0000 ser ser)
+                      (vmp00sm abatut abatre))
+                    (sp-CAG
+                      (prep
+                        (spcmp pels pel))
+                      (sn
+                        (grup.nom.mp
+                          (ncmp000 serveis servei)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom.fs
+                                (ncfs000 seguretat seguretat)))))))
+                    (sp-CCL
+                      (prep
+                        (sps00 a a))
+                      (sn
+                        (grup.nom
+                          (np00000 Bufarik Bufarik))))
+                    (sn-CCT
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (W 8_de_febrer [??:8/2/??:??.??])
+                        (S.NF.P
+                          (participi
+                            (aq0msp passat passat))))))))))))
+      (Fc , ,))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 informar informar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 premsa premsa)))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.nom.ms
+            (aq0ms0 nou nou)))
+        (nccs000 cap cap)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (np00000 GIA GIA))))))
+    (grup.verb
+      (vmip3s0 promet prometre))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 seguir seguir))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 línia línia)
+          (s.a.fs.x
+            (grup.a.fs.co
+              (grup.a.fs
+                (aq0cs0 radical radical))
+              (coord
+                (cc i i))
+              (grup.a.fs
+                (aq0fs0 violenta violent))))
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (espec.ms
+                (dp3ms0 seu seu))
+              (grup.nom.ms
+                (ncms000 antecessor antecessor)))))))
+    (Fp . .)))

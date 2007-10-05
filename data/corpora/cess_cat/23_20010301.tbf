@@ -1,0 +1,130 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (di0ms0 Un un))
+      (grup.nom.ms
+        (ncms000 terratrèmol terratrèmol)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.p
+              (Z 6,8 6.8)
+              (sp
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.fs
+                    (da0cs0 l' el))
+                  (grup.nom.fs
+                    (ncfs000 escala escala)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom
+                          (np00000 Richter Richter))))))))))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 sacsejar sacsejar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sn.co-CD
+      (sn
+        (grup.nom
+          (np00000 Seattle Seattle)))
+      (coord
+        (cc i i))
+      (sn
+        (espec.fp
+          (di0cp0 altres altre))
+        (grup.nom.fp
+          (ncfp000 ciutats ciutat)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (ncms000 estat estat)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom
+                      (np00000 Washington Washington))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 sisme sisme)
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vaip3s0 va anar)
+            (vmn0000 obligar obligar))
+          (sp-CREG
+            (prep
+              (sps00 a a))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 evacuar evacuar))
+              (sn-CD
+                (grup.nom.mp
+                  (ncmp000 milers miler)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fp
+                        (ncfp000 persones persona))))))))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 causar causar))
+    (sn-CD
+      (sadv.j
+        (grup.adv
+          (rg almenys almenys)))
+      (sn
+        (espec.mp
+          (Z 30 30))
+        (grup.nom.mp
+          (ncmp000 ferits ferit))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 governador governador)
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (np00000 Gary_Locke Gary_Locke))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 declarar declarar))
+    (sn-CD
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (ncms000 estat estat)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 emergència emergència))))))
+    (Fp . .)))

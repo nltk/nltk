@@ -1,0 +1,224 @@
+
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 passar passar))
+        (sp-CC
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fp
+              (Zm pessetes pesseta))))
+        (sp-CREG
+          (prep
+            (sps00 a a))
+          (sn
+            (grup.nom.mp
+              (Zm euros euro)))))
+      (Fc , ,))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (sps00 de de)
+      (infinitiu
+        (vmn0000 dividir dividir)))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 xifra xifra)
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (grup.nom.fp
+              (Zm pessetes pesseta))))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (sn
+        (grup.nom.p
+          (Z 166,386 166.386))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sp-CC
+        (prep
+          (sps00 Amb amb))
+        (sn
+          (espec.fs
+            (dd0fs0 aquesta aquest))
+          (grup.nom.fs
+            (ncfs000 divisió divisió))))
+      (morfema.verbal-PASS
+        (p0000000 s' es))
+      (grup.verb
+        (vmip3p0 obtenen obtenir))
+      (sn-SUJ
+        (espec.mp
+          (di0mp0 molts molt))
+        (grup.nom.mp
+          (ncmp000 decimals decimal)))
+      (Fc , ,))
+    (coord
+      (cc però però))
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 regla regla)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 oficial oficial)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (ncms000 arrodoniment arrodoniment))))))
+      (grup.verb
+        (vmip3s0 persegueix perseguir))
+      (S.NF.C-CD
+        (infinitiu
+          (vmn0000 eliminar eliminar))
+        (sn-CD
+          (grup.nom
+            (pp3cn000 -ne en)))
+        (S.F.A-CC
+          (conj.subord
+            (cs perquè perquè))
+          (sadv-MOD
+            (grup.adv
+              (rg només només)))
+          (sn-SUJ.d
+            (grup.nom
+              (pp3cn000 en en)))
+          (grup.verb
+            (vmsp3p0 quedin quedar))
+          (sn-SUJ.d
+            (grup.nom.mp
+              (pn0mp000 dos dos))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 fer fer))
+        (sn-CD
+          (grup.nom.ms
+            (pp3nn000 -ho ho))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 consumidors consumidor)))
+    (morf.pron
+      (p0300000 s' ell))
+    (grup.verb
+      (vaip3p0 han haver)
+      (sps00 de de)
+      (infinitiu
+        (vmn0000 fixar fixar)))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (ao0ms0 tercer tercer)))
+          (ncms000 decimal decimal)
+          (S.co
+            (Fd : :)
+            (S
+              (S.F.ACond-AO
+                (conj.subord
+                  (cs si si))
+                (sn.e-SUJ *0*)
+                (grup.verb
+                  (vsip3s0 és ser))
+                (sn.co-ATR
+                  (sn
+                    (grup.nom.mp
+                      (pn0cp000 cinc cinc)))
+                  (coord
+                    (cc o o))
+                  (sadv
+                    (grup.adv
+                      (rg més més)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.mp
+                            (pn0cp000 cinc cinc)))))))
+                (Fc , ,))
+              (morfema.verbal-PASS
+                (p0000000 se se))
+              (grup.verb
+                (vmip3s0 suma sumar))
+              (sn-SUJ
+                (grup.nom.ms
+                  (pi0ms000 un un)))
+              (sp-CI
+                (prep
+                  (spcms al al))
+                (sn
+                  (grup.nom.ms
+                    (s.a.ms
+                      (grup.a.ms
+                        (ao0ms0 segon segon)))
+                    (ncms000 decimal decimal)))))
+            (Fx ; ;)
+            (S
+              (S.F.ACond-AO
+                (conj.subord
+                  (cs si si))
+                (sn-SUJ
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (s.a.ms
+                      (grup.a.ms
+                        (ao0ms0 tercer tercer)))
+                    (ncms000 decimal decimal)))
+                (grup.verb
+                  (vsip3s0 és ser))
+                (sa-ATR
+                  (grup.a
+                    (aq0cs0 inferior inferior)
+                    (sp
+                      (prep
+                        (sps00 a a))
+                      (sn
+                        (grup.nom.p
+                          (pn0cp000 cinc cinc))))))
+                (Fc , ,))
+              (sn-SUJ
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (s.a.ms
+                    (grup.a.ms
+                      (ao0ms0 segon segon)))
+                  (ncms000 decimal decimal)))
+              (neg-MOD
+                (rn no no))
+              (grup.verb
+                (vmip3s0 canvia canviar)))))))
+    (Fp . .)))

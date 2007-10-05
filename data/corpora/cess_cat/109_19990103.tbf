@@ -1,0 +1,606 @@
+
+(
+  (S
+    (snp-SUJ
+      (snp
+        (espec.ms
+          (da0cs0 L' el))
+        (grup.nom.ms
+          (ncms000 espanyol espanyol)
+          (snp
+            (grup.nom.ms
+              (np0000p Joan_Roma Joan_Roma)))))
+      (sno.j
+        (grup.nom
+          (Fpa -Fpa- -Fpa-)
+          (np0000o KTM KTM)
+          (Fpt -Fpt- -Fpt-))))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (nccs000 líder líder)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 provisional provisional)))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 categoria categoria)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (ncfp000 motos moto))))
+          (sp
+            (prep
+              (spcms del del))
+            (sna
+              (grup.nom.ms
+                (ncms000 raid raid)
+                (snl
+                  (grup.nom
+                    (np0000l Granada-Dakar Granada-Dakar)))))))))
+    (sadv-CCT
+      (grup.adv
+        (rg després després)
+        (prep
+          (sps00 de de))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (ao0fs0 segona segon)))
+            (ncfs000 etapa etapa)
+            (S.NF.P
+              (Fc , ,)
+              (participi
+                (aq0fsp disputada disputat))
+              (sn.x-CCL
+                (sn.x
+                  (grup.nom.co
+                    (coord
+                      (sps00 entre entre))
+                    (grup.nom
+                      (np0000l Rabat Rabat))
+                    (coord
+                      (cc i i))
+                    (grup.nom
+                      (np0000l Agadir Agadir))))
+                (snl.j
+                  (grup.nom
+                    (Fpa -Fpa- -Fpa-)
+                    (np0000l Marroc Marroc)
+                    (Fpt -Fpt- -Fpt-)))))
+            (sp-AO
+              (prep
+                (sps00 sobre sobre))
+              (sn
+                (espec.ms
+                  (di0ms0 un un))
+                (grup.nom.ms
+                  (ncms000 recorregut recorregut)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snn
+                      (espec.mp
+                        (Z 654 654))
+                      (grup.nom.mp
+                        (ncmp000 quilòmetres quilòmetre)
+                        (S.F.R
+                          (sn-CC
+                            (Fc , ,)
+                            (grup.nom.mp
+                              (pn0cp000 cent cent)
+                              (sp
+                                (prep
+                                  (spcmp dels del))
+                                (relatiu
+                                  (pr0cp000 quals qual)))))
+                          (sn.e-SUJ *0*)
+                          (grup.verb
+                            (vsip3p0 són ser))
+                          (S.NF.P-ATR
+                            (participi
+                              (aq0mpp cronometrats cronometrat))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 En en))
+      (sn
+        (grup.nom.mp
+          (ncmp000 cotxes cotxe)))
+      (Fc , ,))
+    (snp-SUJ
+      (snp
+        (grup.nom.ms
+          (np0000p Miguel_Prieto Miguel_Prieto)))
+      (sno.j
+        (grup.nom
+          (Fpa -Fpa- -Fpa-)
+          (np0000o Mitsubishi Mitsubishi)
+          (Fpt -Fpt- -Fpt-))))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sn-ATR
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (ncms000 espanyol espanyol)
+        (S.NF.P
+          (sadv-CC
+            (espec
+              (rg més més))
+            (grup.adv
+              (rg ben ben)))
+          (participi
+            (aq0msp situat situat)))))
+    (S.F.A-CC
+      (Fc , ,)
+      (conj.subord
+        (cs ja_que ja_que))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vsip3s0 és ser))
+      (sn-ATR
+        (grup.nom.ms
+          (pn0ms000 tercer tercer))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Roma Roma)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 arribar arribar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (snl
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 meta meta)
+          (sp
+            (prep
+              (sps00 d' de))
+            (snl
+              (grup.nom
+                (np0000l Agadir Agadir))))
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (grup.nom.fs
+                (s.a.fs
+                  (grup.a.fs
+                    (ao0fs0 segona segon)))
+                (ncfs000 posició posició)))))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 a a))
+      (sn
+        (sadv.j
+          (grup.adv
+            (rg només només)))
+        (snn
+          (espec.mp
+            (Z 16 16))
+          (grup.nom.mp
+            (ncmp000 segons segon)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncms000 guanyador guanyador)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (da0cs0 l' el))
+                      (grup.nom.fs
+                        (ncfs000 etapa etapa))))
+                  (snp
+                    (Fc , ,)
+                    (espec.ms
+                      (da0cs0 l' el))
+                    (grup.nom.ms
+                      (ncms000 austríac austríac)
+                      (snp
+                        (grup.nom.ms
+                          (np0000p Heinz_Kinigadner Heinz_Kinigadner))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 català català)))
+    (grup.verb
+      (vmip3s0 lidera liderar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 general general)))))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn.co
+        (snn
+          (espec.mp
+            (Z 22 22))
+          (grup.nom.mp
+            (ncmp000 segons segon)
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 avantatge avantatge))))
+            (sp
+              (prep
+                (sps00 sobre sobre))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (s.a.ms
+                    (grup.a.ms
+                      (ao0ms0 segon segon)))
+                  (snp
+                    (Fc , ,)
+                    (snp
+                      (espec.ms
+                        (da0cs0 l' el))
+                      (grup.nom.ms
+                        (ncms000 italià italià)
+                        (snp
+                          (grup.nom.ms
+                            (np0000p Fabio_Fasola Fabio_Fasola)))))
+                    (sno.j
+                      (grup.nom
+                        (Fpa -Fpa- -Fpa-)
+                        (np0000o KTM KTM)
+                        (Fpt -Fpt- -Fpt-)))
+                    (Fc , ,)))))))
+        (coord
+          (cc i i))
+        (snn
+          (grup.nom.mp
+            (Z 26 26)
+            (sp
+              (prep
+                (sps00 sobre sobre))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (pn0ms000 tercer tercer)
+                  (snp
+                    (Fc , ,)
+                    (grup.nom.ms
+                      (np0000p Kinigadner Kinigadner))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (snp
+        (grup.nom.ms
+          (np0000p Oscar_Gallardo Oscar_Gallardo)))
+      (sno.j
+        (grup.nom
+          (Fpa -Fpa- -Fpa-)
+          (np0000o BMW BMW)
+          (Fpt -Fpt- -Fpt-))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vsn0000 ser ser))
+    (sn-ATR
+      (grup.nom.ms
+        (pn0ms000 sisè sisè)))
+    (INC
+      (S
+        (Fg - -)
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmip3s0 ocupa ocupar))
+        (sn-CD
+          (espec.fs
+            (da0fs0 la el)
+            (di0fs0 mateixa mateix))
+          (grup.nom.fs
+            (ncfs000 plaça plaça)))
+        (sp-CCL
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 general general))))))
+        (Fg - -)))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (snp
+        (grup.nom.ms
+          (np0000p Jordi_Arcarons Jordi_Arcarons)))
+      (sno.j
+        (grup.nom
+          (Fpa -Fpa- -Fpa-)
+          (np0000o KTM KTM)
+          (Fpt -Fpt- -Fpt-))))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sa.co-ATR
+      (sa
+        (grup.a
+          (Z 21è 21)))
+      (Fc , ,)
+      (S.NF.P
+        (participi
+          (aq0msp superat superat))
+        (sp-CAG
+          (prep
+            (sps00 per per))
+          (snp
+            (snp
+              (grup.nom.ms
+                (np0000p Isidre_Esteve Isidre_Esteve)))
+            (sno.j
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (np0000o KTM KTM)
+                (Fpt -Fpt- -Fpt-)))
+            (s.a.ms.j
+              (grup.a.ms
+                (Fg - -)
+                (Z 19è 19)
+                (Fg - -)))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (snp
+        (grup.nom.ms
+          (np0000p Carlos_Sotelo Carlos_Sotelo)))
+      (sno.j
+        (grup.nom
+          (Fpa -Fpa- -Fpa-)
+          (np0000o Yamaha Yamaha)
+          (Fpt -Fpt- -Fpt-))))
+    (morf.pron
+      (p0300000 es ell))
+    (grup.verb
+      (vmip3s0 troba trobar))
+    (sn-CREG
+      (prep
+        (sps00 en en))
+      (snn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (Z 30a 30)))
+          (ncfs000 plaça plaça))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 En en))
+      (sn
+        (grup.nom.mp
+          (ncmp000 cotxes cotxe)))
+      (Fc , ,))
+    (sn-ATR
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 guanyador guanyador)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0cs0 l' el))
+            (grup.nom.fs
+              (ncfs000 etapa etapa))))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vsn0000 ser ser))
+    (snp-SUJ
+      (snp
+        (grup.nom.ms
+          (np0000p Jean-Pierre_Fontenay Jean-Pierre_Fontenay)))
+      (sno.j
+        (grup.nom
+          (Fpa -Fpa- -Fpa-)
+          (np0000o Mitsubishi Mitsubishi)
+          (Fpt -Fpt- -Fpt-))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 francès francès)))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 esgarrapar esgarrapar))
+      (snn-CD
+        (espec.mp
+          (Z 1.49 1.49))
+        (grup.nom.mp
+          (ncmp000 minuts minut)))
+      (sp-CI
+        (prep
+          (spcms al al))
+        (sn
+          (espec.ms
+            (dp3ms0 seu seu))
+          (grup.nom.ms
+            (ncms000 company company)
+            (snp
+              (Fc , ,)
+              (grup.nom.ms
+                (np0000p Kenjiro_Shinozuka Kenjiro_Shinozuka))
+              (Fc , ,))))))
+    (coord
+      (cc i i))
+    (S*
+      (snn-CD
+        (grup.nom.mp
+          (Z 3.02 3.02)))
+      (sp-CI
+        (prep
+          (sps00 a a))
+        (snp
+          (grup.nom.ms
+            (np0000p Prieto Prieto)
+            (S.F.R
+              (Fc , ,)
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (sadv-CCT
+                (grup.adv
+                  (rg ara ara)))
+              (grup.verb
+                (vsip3s0 és ser))
+              (sa-ATR
+                (grup.a
+                  (ao0ms0 tercer tercer)))
+              (sp-CC
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0cs0 general general)))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (snp-SUJ
+        (snp
+          (grup.nom.ms
+            (np0000p Josep_Maria_Servià Josep_Maria_Servià)))
+        (sna.j
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np0000a Schlesser Schlesser)
+            (Fpt -Fpt- -Fpt-))))
+      (grup.verb
+        (vsip3s0 és ser))
+      (sa-ATR
+        (grup.a
+          (ao0ms0 cinquè cinquè))))
+    (coord
+      (cc i i))
+    (S*
+      (snp-SUJ
+        (snp
+          (espec.ms
+            (dp3ms0 el_seu el_seu))
+          (grup.nom.ms
+            (ncms000 germà germà)
+            (snp
+              (grup.nom.ms
+                (np0000p Salvador Salvador)))))
+        (sno.j
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np0000o Nissan Nissan)
+            (Fpt -Fpt- -Fpt-))))
+      (sn-ATR
+        (Fc , ,)
+        (grup.nom.ms
+          (pn0ms000 desè desè))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CCT
+      (grup.adv
+        (rg Avui avui)))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmif3s0 disputarà disputar))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (ao0fs0 tercera tercer)))
+        (ncfs000 etapa etapa)
+        (sp
+          (Fc , ,)
+          (prep
+            (sps00 entre entre))
+          (sn.x
+            (grup.nom.co
+              (grup.nom
+                (np0000l Agadir Agadir))
+              (coord
+                (cc i i))
+              (grup.nom
+                (np0000l Tan_Tan Tan_Tan))))
+          (Fc , ,))
+        (sp
+          (prep
+            (sps00 de de))
+          (snn
+            (espec.mp
+              (Z 510 510))
+            (grup.nom.mp
+              (ncmp000 quilòmetres quilòmetre)
+              (S.F.R
+                (snn-CC
+                  (Fc , ,)
+                  (grup.nom.mp
+                    (Z 230 230)
+                    (sp
+                      (prep
+                        (spcmp dels del))
+                      (relatiu
+                        (pr0cp000 quals qual)))))
+                (sn.e-SUJ *0*)
+                (grup.verb
+                  (vsif3p0 seran ser))
+                (S.NF.P-ATR
+                  (participi
+                    (aq0mpp cronometrats cronometrat)))))))))
+    (Fp . .)))

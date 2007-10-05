@@ -1,0 +1,585 @@
+
+(
+  (S
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (np0000o Bolsa_de_París Bolsa_de_París)))
+    (grup.verb
+      (vmis3s0 acogió acoger))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (sp.co-CC
+      (sp
+        (prep
+          (sps00 con con))
+        (sn
+          (grup.nom.ms
+            (ncms000 champán champán)))
+        (Fc , ,))
+      (coord
+        (cc pero pero))
+      (sp
+        (sadv.j
+          (grup.adv
+            (rg también también)))
+        (sp
+          (prep
+            (sps00 con con))
+          (sn
+            (espec.fs
+              (di0fs0 una uno))
+            (grup.nom.fs
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 importante importante)))
+              (ncfs000 caída caída))))))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 nacimiento nacimiento)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 jurídico jurídico)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (grup.nom
+              (np0000o Euronext Euronext)
+              (sn
+                (Fc , ,)
+                (grup.nom.ms
+                  (ncms000 fruto fruto)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (dp3cs0 su su))
+                      (grup.nom.fs
+                        (ncfs000 fusión fusión)
+                        (sp
+                          (prep
+                            (sps00 con con))
+                          (sn
+                            (espec.fp
+                              (da0fp0 las el))
+                            (grup.nom.fp
+                              (ncfp000 plazas plaza)
+                              (s.a.fp
+                                (grup.a.fp
+                                  (aq0fp0 financieras financiero)))
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sn.x
+                                  (grup.nom.co
+                                    (grup.nom
+                                      (np0000l Amsterdam Amsterdam))
+                                    (coord
+                                      (cc y y))
+                                    (grup.nom
+                                      (np0000l Bruselas Bruselas))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (di0mp0 Varios varios))
+      (grup.nom.mp
+        (ncmp000 centenares centenar)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fp
+              (ncfp000 personas persona))))))
+    (grup.verb
+      (vmis3p0 acudieron acudir))
+    (sp-CREG
+      (prep
+        (spcms al al))
+      (snl
+        (grup.nom.ms
+          (ncms000 palacio palacio)
+          (snl
+            (grup.nom.ms
+              (np0000l Brongniart Brongniart)))
+          (sn
+            (Fc , ,)
+            (grup.nom.fs
+              (ncfs000 sede sede)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 simbólica simbólico)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sno
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np0000o Bolsa Bolsa)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0cs0 parisiense parisiense)))))))
+            (Fc , ,))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmis3s0 amaneció amanecer))
+            (S.NF.P-CC
+              (participi
+                (aq0msp cubierto cubierto))
+              (sp-CC
+                (prep
+                  (sps00 con con))
+                (sn
+                  (espec.mp
+                    (da0mp0 los el))
+                  (grup.nom.mp
+                    (ncmp000 colores color)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sno
+                        (grup.nom
+                          (np0000o Euronext Euronext))))
+                    (sn.co
+                      (Fc , ,)
+                      (sn
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (ncms000 amarillo amarillo)))
+                      (coord
+                        (cc y y))
+                      (sn
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (ncms000 azul azul)))
+                      (Fc , ,))
+                    (sp
+                      (prep
+                        (sps00 en en))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 forma forma)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom.fp
+                                (ncfp000 bandas banda)
+                                (S.NF.P
+                                  (participi
+                                    (aq0fpp situadas situado))
+                                  (sp-CCL
+                                    (prep
+                                      (sps00 entre entre))
+                                    (sn
+                                      (espec.fp
+                                        (da0fp0 las el)
+                                        (dn0cp0 catorce catorce))
+                                      (grup.nom.fp
+                                        (ncfp000 columnas columna)
+                                        (sp
+                                          (prep
+                                            (sps00 de de))
+                                          (sn
+                                            (espec.fs
+                                              (da0fs0 la el))
+                                            (grup.nom.fs
+                                              (ncfs000 fachada fachada)
+                                              (sp
+                                                (prep
+                                                  (spcms del del))
+                                                (sn
+                                                  (grup.nom.ms
+                                                    (ncms000 edificio edificio)))))))))))))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 centralita centralita)
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000o Bolsa_de_París Bolsa_de_París))))))
+      (morf.pron
+        (p0300000 se él))
+      (grup.verb
+        (vaip3s0 ha haber)
+        (vmp00sm puesto poner))
+      (sadv-MOD
+        (grup.adv
+          (rg también también)))
+      (sadv-CC
+        (grup.adv
+          (rg al_día al_día)))
+      (sp-CC
+        (prep
+          (sps00 de de))
+        (sn
+          (espec.fs
+            (dp3cs0 su su))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 nueva nuevo)))
+            (ncfs000 realidad realidad)))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (morf.pron
+        (p0300000 se él))
+      (grup.verb
+        (vmip3s0 identifica identificar))
+      (sp-CPRED.SUJ
+        (prep
+          (cs como como))
+        (sno
+          (grup.nom
+            (Fe " ")
+            (np0000o Euronext_París Euronext_París)
+            (Fe " ")))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncmn000 brindis brindis)
+        (sp
+          (prep
+            (sps00 por por))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 nacimiento nacimiento)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sno
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (s.a.fs
+                      (grup.a.fs
+                        (ao0fs0 primera primero)))
+                    (np0000o Bolsa Bolsa)
+                    (s.a.fs
+                      (espec
+                        (rg parcialmente parcialmente))
+                      (grup.a.fs
+                        (aq0fs0 paneuropea paneuropeo)))))))))))
+    (grup.verb
+      (vsis3s0 fue ser)
+      (vmp00sm transmitido transmitir))
+    (sadv-CC
+      (grup.adv
+        (rg en_diferido en_diferido)))
+    (sp.co-CCL
+      (sp
+        (prep
+          (sps00 a a))
+        (snl
+          (grup.nom
+            (np0000l Amsterdam Amsterdam)
+            (S.F.R
+              (Fc , ,)
+              (relatiu-CCL
+                (pr000000 donde donde))
+              (morf.pron
+                (p0300000 se él))
+              (grup.verb
+                (vmis3s0 desarrolló desarrollar))
+              (sn-SUJ
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 ceremonia ceremonia)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 nacimiento nacimiento)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0cs0 oficial oficial)))
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sno
+                            (grup.nom
+                              (np0000o Euronext Euronext))))))))))))
+        (Fc , ,))
+      (coord
+        (cc y y))
+      (sp
+        (prep
+          (sps00 a a))
+        (snl
+          (grup.nom
+            (np0000l Bruselas Bruselas)))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CC
+      (grup.adv
+        (rg Mientras_tanto mientras_tanto))
+      (Fc , ,))
+    (sna-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 principal principal)))
+        (ncms000 índice índice)
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (np0000o Bolsa_de_París Bolsa_de_París))))
+        (sna
+          (Fc , ,)
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (Z CAC-40 cac-40))
+          (Fc , ,))))
+    (grup.verb
+      (vmis3s0 abrió abrir))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 sesión sesión)
+        (sp
+          (prep
+            (sps00 de de))
+          (sadv
+            (grup.adv
+              (rg hoy hoy))))))
+    (sp-CC
+      (prep
+        (sps00 con con))
+      (sn
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 fuerte fuerte)))
+          (ncfs000 bajada bajada)
+          (sp
+            (prep
+              (spcms del del))
+            (snn
+              (grup.nom.ms
+                (Zp 2,38_por_ciento 2,38_%))))
+          (sp
+            (prep
+              (sps00 a a))
+            (snn
+              (espec.mp
+                (Z 6.105 6105))
+              (grup.nom.mp
+                (ncmp000 puntos punto))))
+          (sn
+            (Fc , ,)
+            (espec.fs
+              (di0fs0 una uno))
+            (grup.nom.fs
+              (ncfs000 tendencia tendencia)
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vmis3s0 continuó continuar))
+                (sp-CCT
+                  (prep
+                    (sps00 a_lo_largo_de a_lo_largo_de))
+                  (sn
+                    (grup.nom.fs
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0cs0 gran gran)))
+                      (ncfs000 parte parte)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (ncfs000 sesión sesión)))))))))))))
+    (S.F.AConc-AO
+      (Fc , ,)
+      (conj.subord
+        (cs aunque aunque))
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vmis3p0 enjugaron enjugar))
+      (sadv-CC
+        (grup.adv
+          (rg un_tanto un_tanto)))
+      (sn-SUJ
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 pérdidas pérdida))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg Así así))
+      (Fc , ,))
+    (sp-CCT
+      (prep
+        (sps00 a a))
+      (snd
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (Z 15.25 15.25)
+          (sn
+            (grup.nom.fs
+              (ncfs000 hora hora)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 local local)))))
+          (snd
+            (Fpa -Fpa- -Fpa-)
+            (espec.mp
+              (Z 13.25 13.25))
+            (grup.nom.fp
+              (nc00000 GMT GMT))
+            (Fpt -Fpt- -Fpt-))
+          (S.F.R
+            (Fc , ,)
+            (relatiu-CCT
+              (pr000000 cuando cuando))
+            (sadv-CCT
+              (grup.adv
+                (rg ya ya)))
+            (morfema.verbal-PASS
+              (p0000000 se se))
+            (grup.verb
+              (vaii3s0 había haber)
+              (vmp00sm anunciado anunciar))
+            (sn-SUJ
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 intervención intervención)
+                (S.NF.P
+                  (participi
+                    (aq0fsp concertada concertado)))
+                (sp
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 apoyo apoyo)
+                      (sp
+                        (prep
+                          (spcms del del))
+                        (sn
+                          (grup.nom.ms
+                            (ncms000 euro euro)))))))
+                (sp.co
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sno
+                      (grup.nom.ms
+                        (np0000o Banco_Central_Europeo Banco_Central_Europeo)
+                        (sno
+                          (grup.nom.ms
+                            (Fpa -Fpa- -Fpa-)
+                            (np0000o BCE BCE)
+                            (Fpt -Fpt- -Fpt-))))))
+                  (Fc , ,)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sno
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (np0000o Reserva_Federal_Estadounidense Reserva_Federal_Estadounidense))))
+                  (coord
+                    (cc y y))
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sno
+                      (grup.nom.ms
+                        (np0000o Banco_Central_de_Japón Banco_Central_de_Japón))))))))))
+      (Fc , ,))
+    (sna-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (Z CAC-40 cac-40)))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmii3s0 situaba situar))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (snn
+        (snn
+          (espec.mp
+            (Z 6.145 6145))
+          (grup.nom.mp
+            (ncmp000 puntos punto)))
+        (snn.j
+          (Fc , ,)
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (Zp 1,75_por_ciento 1,75_%)
+            (sp
+              (prep
+                (spcms por_debajo_del por_debajo_del))
+              (sn
+                (grup.nom.ms
+                  (ncms000 cierre cierre)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sadv
+                      (grup.adv
+                        (rg ayer ayer)
+                        (snd
+                          (Fc , ,)
+                          (grup.nom.ms
+                            (W jueves [jueves:??/??/??:??.??])))))))))))))
+    (Fp . .)))

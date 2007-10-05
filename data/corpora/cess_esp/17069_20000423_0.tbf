@@ -1,0 +1,808 @@
+
+(
+  (S.co
+    (S
+      (sno-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (np0000o Deportivo Deportivo)))
+      (morf.pron
+        (p0300000 se él))
+      (grup.verb
+        (vmis3s0 convirtió convertir))
+      (sp-CREG
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (ao0ms0 primer primero)))
+            (ncms000 equipo equipo)
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vmip3s0 alcanza alcanzar))
+              (sn-CD
+                (espec.fp
+                  (da0fp0 las el)
+                  (dn0cp0 veinte veinte))
+                (grup.nom.fp
+                  (ncfp000 victorias victoria)))
+              (sp-CCL
+                (prep
+                  (sps00 en en))
+                (sna
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np0000a Liga Liga)
+                    (snd
+                      (grup.nom
+                        (W 1999-2000 [??:??/??/1999-2000:??.??]))))))
+              (sp-CC
+                (Fc , ,)
+                (prep
+                  (sps00 a_costa_de a_costa_de))
+                (sno
+                  (sno
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (np0000o Real_Sociedad Real_Sociedad)))
+                  (snn.j
+                    (grup.nom
+                      (Fpa -Fpa- -Fpa-)
+                      (Z 2-0 2-0)
+                      (Fpt -Fpt- -Fpt-))))
+                (Fc , ,)))))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3s0 consiguió conseguir))
+      (sadv-ET
+        (Fc , ,)
+        (grup.adv
+          (rg además además))
+        (Fc , ,))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (ao0fs0 octava octavo)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 consecutiva consecutivo)))))))
+      (sp-CCL
+        (prep
+          (sps00 en en))
+        (snl
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 estadio estadio)
+            (snl
+              (grup.nom.ms
+                (np0000l Riazor Riazor)))
+            (S.F.R
+              (Fc , ,)
+              (relatiu-CCL
+                (pr000000 donde donde))
+              (sno-SUJ
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 conjunto conjunto)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 gallego gallego)))))
+              (grup.verb
+                (vaip3s0 ha haber)
+                (vmp00sm cimentado cimentar))
+              (sn-CD
+                (espec.ms
+                  (dp3cs0 su su))
+                (grup.nom.ms
+                  (ncms000 éxito éxito)
+                  (sp
+                    (prep
+                      (sps00 en en))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (s.a.fs
+                          (grup.a.fs
+                            (ncms000 presente presente)))
+                        (ncfs000 campaña campaña)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (Z Cuarenta_y_cinco cuarenta_y_cinco))
+      (grup.nom.mp
+        (ncmp000 puntos punto)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (Z cincuenta_y_uno cincuenta_y_uno))
+            (grup.nom.mp
+              (s.a.mp
+                (grup.a.mp
+                  (aq0cp0 posibles posible))))))))
+    (grup.verb
+      (vsip3s0 es ser))
+    (sn-ATR
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 excelente excelente)))
+        (ncms000 bagaje bagaje)
+        (sp
+          (prep
+            (spcms del del))
+          (sno
+            (grup.nom.ms
+              (ncms000 equipo equipo)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 gallego gallego))))))
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (dp3cs0 su su))
+            (grup.nom.ms
+              (ncms000 feudo feudo))))
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (da0ns0 lo el))
+            (grup.nom.ms
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vmip3s0 va ir))
+                (sp-CC
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 campeonato campeonato))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-MOD
+      (grup.adv
+        (rg También también)))
+    (grup.verb
+      (vmis3s0 alcanzó alcanzar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 veintena veintena)
+        (sp
+          (Fc , ,)
+          (coord
+            (cc pero pero))
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.mp
+              (ncmp000 goles gol)))
+          (Fc , ,))))
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 holandés holandés)
+        (snp
+          (grup.nom.ms
+            (np0000p Roy_Makkay Roy_Makkay)))
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (ncms000 autor autor)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (s.a.ms
+                    (grup.a.ms
+                      (ao0ms0 primero primero)
+                      (sp
+                        (prep
+                          (spcms del del))
+                        (sno
+                          (grup.nom.ms
+                            (np0000o Deportivo Deportivo))))
+                      (sp
+                        (prep
+                          (sps00 ante ante))
+                        (sno
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (np0000o Real_Sociedad Real_Sociedad)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np0000o FC_Barcelona FC_Barcelona)))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 gracias_a gracias_a))
+      (sn.co
+        (sn
+          (sn
+            (espec.ms
+              (dp3cs0 su su))
+            (grup.nom.ms
+              (ncms000 triunfo triunfo)
+              (sp
+                (prep
+                  (sps00 sobre sobre))
+                (sno
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (nccs000 colista colista)
+                    (sno
+                      (grup.nom.ms
+                        (np0000l Sevilla Sevilla))))))
+              (sp
+                (prep
+                  (sps00 en en))
+                (snl
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (np0000l Camp_Nou Camp_Nou))))))
+          (snn.j
+            (grup.nom
+              (Fpa -Fpa- -Fpa-)
+              (numero
+                (Z 2-0 2-0))
+              (Fpt -Fpt- -Fpt-))))
+        (coord
+          (cc y y))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 derrota derrota)
+            (sp
+              (prep
+                (spcms del del))
+              (sno
+                (grup.nom.ms
+                  (np0000o Real_Madrid Real_Madrid))))
+            (sp
+              (prep
+                (spcms frente_al frente_al))
+              (sno
+                (grup.nom.ms
+                  (np0000o Racing_de_Sanatander Racing_de_Sanatander)))))))
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 recuperó recuperar))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (ao0ms0 segundo segundo)))
+        (ncms000 puesto puesto)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 tabla tabla))))
+        (S.F.R
+          (relatiu-CD
+            (pr0cn000 que que))
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vmis3s0 perdió perder))
+          (sn-CCL
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (S.NF.P
+                (participi
+                  (aq0fsp pasada pasado)))
+              (ncfs000 jornada jornada))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (snp-SUJ
+        (grup.nom.ms
+          (np0000p Patrick_Kluivert Patrick_Kluivert)
+          (sn
+            (Fc , ,)
+            (grup.nom.ms
+              (ncms000 autor autor)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (s.a.ms
+                      (grup.a.ms
+                        (ao0ms0 primer primero)))
+                    (ncms000 tanto tanto)
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sno
+                        (grup.nom.ms
+                          (ncms000 equipo equipo)
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0cs0 azulgrana azulgrana))))))))))
+            (Fc , ,))))
+      (grup.verb
+        (vmis3s0 aumentó aumentar))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (snn
+          (grup.nom.mp
+            (Z 13 13))))
+      (sn-CD
+        (espec.fs
+          (dp3cs0 su su))
+        (grup.nom.fs
+          (ncfs000 cuenta cuenta)
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 presente presente)))
+                (ncms000 campeonato campeonato)))))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (sadv-CCT
+        (grup.adv
+          (rg ya ya)))
+      (grup.verb
+        (vsip3s0 es ser))
+      (sn-ATR
+        (grup.nom.ms
+          (nccs000 líder líder)
+          (sp
+            (prep
+              (sps00 en en))
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 solitario solitario))))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 clasificación clasificación)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 goleadores goleador)
+                      (sp
+                        (prep
+                          (spcms del del))
+                        (sno
+                          (grup.nom.ms
+                            (np0000l Barcelona Barcelona)))))))
+                (sp
+                  (prep
+                    (sps00 en en))
+                  (sna
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (np00000 Liga Liga)
+                      (snd
+                        (grup.nom
+                          (W 1999-2000 [??:??/??/1999-2000:??.??])))))))))
+          (sp
+            (Fc , ,)
+            (prep
+              (sps00 con con))
+            (sn
+              (grup.nom.ms
+                (pi0ms000 uno uno)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 ventaja ventaja)
+                      (sp
+                        (prep
+                          (sps00 sobre sobre))
+                        (snp
+                          (grup.nom.ms
+                            (np0000p Rivaldo Rivaldo)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np0000o Racing_de_Santander Racing_de_Santander)))
+    (grup.verb
+      (vmip3s0 consolida consolidar))
+    (sn-CD
+      (espec.fs
+        (dp3cs0 su su))
+      (grup.nom.fs
+        (ncfs000 condición condición)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 equipo equipo)
+              (sp
+                (prep
+                  (sps00 con con))
+                (sn
+                  (espec.mp
+                    (rg más más))
+                  (grup.nom.mp
+                    (ncmp000 triunfos triunfo)
+                    (sp
+                      (prep
+                        (sps00 a a))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 domicilio domicilio)))))))))))
+      (sp-CC
+        (prep
+          (sps00 tras tras))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 vencer vencer))
+          (sp-CD
+            (prep
+              (spcms al al))
+            (sno
+              (grup.nom.ms
+                (np0000o Real_Madrid Real_Madrid))))
+          (sp-CCL
+            (prep
+              (sps00 en en))
+            (snl
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (np0000p Santiago_Bernabéu Santiago_Bernabéu))))
+          (INC
+            (snn
+              (grup.nom
+                (Fpa -Fpa- -Fpa-)
+                (Z 2-4 2-4)
+                (Fpt -Fpt- -Fpt-)))))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vsis3s0 Fue ser))
+    (sn-ATR
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (ao0fs0 séptima séptimo)))
+        (ncfs000 victoria victoria)
+        (sp
+          (prep
+            (spcms del del))
+          (sno
+            (grup.nom.ms
+              (ncms000 equipo equipo)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 cántabro cántabro))))))
+        (sadv
+          (grup.adv
+            (rg lejos lejos)
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom.ms
+                  (np0000l El_Sardinero El_Sardinero))))))
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (da0ns0 lo el))
+            (grup.nom.ms
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vmip3s0 va ir))
+                (sp-CC
+                  (prep
+                    (sps00 de de))
+                  (sna
+                    (grup.nom.fs
+                      (np0000a Liga Liga))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Para para))
+      (sno
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np0000o Real_Madrid Real_Madrid)
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmis3s0 encajó encajar))
+            (sn-CD
+              (espec.fs
+                (dp3cs0 su su))
+              (grup.nom.fs
+                (s.a.fs
+                  (grup.a.fs
+                    (ao0fs0 sexta sexto)))
+                (ncfs000 derrota derrota)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 temporada temporada))))))
+            (Fc , ,)))))
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmis3s0 supuso suponer))
+    (sn.co-CD
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 fin fin)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (di0fs0 una uno))
+              (grup.nom.fs
+                (ncfs000 racha racha)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fp
+                      (dn0cp0 once once))
+                    (grup.nom.fp
+                      (ncfp000 jornadas jornada)
+                      (sp
+                        (prep
+                          (sps00 sin sin))
+                        (S.NF.C
+                          (infinitiu
+                            (vmn0000 perder perder))))))))))))
+      (coord
+        (cc y y))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 descenso descenso)
+          (sp
+            (prep
+              (spcms al al))
+            (sn
+              (grup.nom.ms
+                (s.a.ms
+                  (grup.a.ms
+                    (ao0ms0 cuarto cuarto)))
+                (ncms000 peldaño peldaño)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 tabla tabla))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Salva Salva)
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (ncms000 autor autor)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.mp
+                  (pn0cp000 dos dos)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.mp
+                        (da0mp0 los el)
+                        (dn0cp0 cuatro cuatro))
+                      (grup.nom.mp
+                        (ncmp000 goles gol)
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (sno
+                            (grup.nom.ms
+                              (np0000o Racing Racing)))))))))))
+          (Fc , ,))))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmip3s0 afianza afianzar))
+    (sp-CCL
+      (prep
+        (sps00 al_frente_de al_frente_de))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 clasificación clasificación)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 artilleros artillero)))))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 con con))
+      (sn
+        (espec.fp
+          (Z 25 25))
+        (grup.nom.fp
+          (ncfp000 dianas diana))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np0000l Zaragoza Zaragoza)))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmis3s0 convirtió convertir))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (ao0ms0 tercer tercero)))
+          (ncms000 equipo equipo)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3s0 gana ganar))
+            (sp-CCL
+              (prep
+                (sps00 en en))
+              (snl
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 estadio estadio)
+                  (snl
+                    (grup.nom
+                      (np0000l Los_Pajaritos Los_Pajaritos))))))
+            (sp-CD
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.ms
+                  (di0ms0 un uno))
+                (grup.nom.ms
+                  (np0000o Numancia Numancia)
+                  (S.F.R.co
+                    (S.F.R
+                      (relatiu-SUJ
+                        (pr0cn000 que que))
+                      (grup.verb
+                        (vaip3s0 ha haber)
+                        (vmp00sm perdido perder))
+                      (sn-CD
+                        (grup.nom.ms
+                          (ncms000 gas gas))))
+                    (coord
+                      (cc y y))
+                    (S.F.R
+                      (relatiu-SUJ
+                        (pr0cn000 que que))
+                      (sadv-MOD
+                        (grup.adv
+                          (rg sólo sólo)))
+                      (grup.verb
+                        (vaip3s0 ha haber)
+                        (vmp00sm sumado sumar))
+                      (sn-CD.Q
+                        (espec.mp
+                          (dn0cp0 diez diez))
+                        (grup.nom.mp
+                          (ncmp000 puntos punto)))
+                      (sp-CC
+                        (prep
+                          (sps00 en en))
+                        (sn
+                          (espec.fp
+                            (da0fp0 las el)
+                            (dn0cp0 diez diez))
+                          (grup.nom.fp
+                            (s.a.fp
+                              (grup.a.fp
+                                (ao0fp0 últimas último)))
+                            (ncfp000 jornadas jornada)))))))))))))
+    (Fp . .)))

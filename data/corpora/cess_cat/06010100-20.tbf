@@ -1,0 +1,182 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (s.a.fp
+          (grup.a.fp
+            (aq0fp0 antigues antic)))
+        (ncfp000 instal·lacions instal·lació)
+        (sp
+          (prep
+            (sps00 de de))
+          (snl
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (np0000l IES_Gabriel_i_Ferrater IES_Gabriel_i_Ferrater)
+              (sp
+                (Fc , ,)
+                (prep
+                  (sps00 de de))
+                (snl
+                  (grup.nom
+                    (np0000l Reus Reus)))))))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vsip3p0 són ser))
+          (sn-ATR
+            (grup.nom.fs
+              (ncfs000 propietat propietat)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sno
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np0000o Diputació_de_Tarragona Diputació_de_Tarragona))))))
+          (Fc , ,))))
+    (grup.verb
+      (vsif3p0 seran ser))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fs
+          (di0fs0 tota tot))
+        (grup.nom.fs
+          (ncfs000 probabilitat probabilitat)))
+      (Fc , ,))
+    (sn-ATR
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 futura futur)))
+        (ncfs000 seu seu)
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (espec.fs
+              (da0cs0 l' el))
+            (grup.nom.fs
+              (np0000o Escola_Oficial_d'_Idiomes Escola_Oficial_d'_Idiomes))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 oferiment oferiment)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.ms
+              (dd0ms0 aquest aquest))
+            (grup.nom.ms
+              (ncms000 emplaçament emplaçament))))
+        (sp
+          (prep
+            (spcms per_part_del per_part_del))
+          (snp
+            (grup.nom.ms
+              (np0000p President_de_la_Diputació_de_Tarragona President_de_la_Diputació_de_Tarragona)
+              (snp
+                (Fc , ,)
+                (grup.nom.ms
+                  (np0000p Josep_Mariné Josep_Mariné))
+                (Fc , ,)))))))
+    (grup.verb
+      (vmip3s0 respon respondre))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 petició petició)
+          (S.NF.P
+            (participi
+              (aq0fsp feta fet))
+            (sp-CAG
+              (prep
+                (sps00 per per))
+              (snp
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 consellera consellera)
+                  (sp
+                    (prep
+                      (sps00 d' de))
+                    (sno
+                      (grup.nom
+                        (np0000o Ensenyament Ensenyament))))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sno
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (np0000o Generalitat Generalitat))))
+                  (snp
+                    (Fc , ,)
+                    (grup.nom.fs
+                      (np0000p Carme-Laura_Gil Carme-Laura_Gil))
+                    (Fc , ,)))))
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 sentit sentit)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (S.NF.C
+                      (infinitiu
+                        (vmn0000 demanar demanar))
+                      (sn-CD
+                        (espec.mp
+                          (di0mp0 uns un))
+                        (grup.nom.mp
+                          (ncmp000 emplaçaments emplaçament)))
+                      (sp-CC
+                        (prep
+                          (sps00 per per))
+                        (S.NF.C
+                          (infinitiu
+                            (vmn0000 situar situar))
+                          (sn-CC
+                            (grup.nom
+                              (pp3cn000 -hi hi)))
+                          (sn-CD
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (s.a.fs
+                                (grup.a.fs
+                                  (aq0fs0 nova nou)))
+                              (ncfs000 escola escola)
+                              (sp
+                                (prep
+                                  (sps00 d' de))
+                                (sn
+                                  (grup.nom.mp
+                                    (ncmp000 idiomes idioma)))))))))))))))))
+    (Fp . .)))

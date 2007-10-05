@@ -1,0 +1,968 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (S.NF.P
+          (sadv-CC
+            (grup.adv
+              (rg més més)))
+          (participi
+            (aq0mpp destacats destacat)))
+        (nccp000 luthiers luthier)
+        (sn
+          (grup.nom.mp
+            (Fpa -Fpa- -Fpa-)
+            (ncmp000 constructors constructor)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 violins violí))))
+            (Fpt -Fpt- -Fpt-)))
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 món món))))))
+    (sn-CI
+      (grup.nom
+        (pp3cn000 es ell)))
+    (grup.verb
+      (vmip3p0 donen donar))
+    (sn-CD
+      (grup.nom.fs
+        (ncfs000 cita cita)))
+    (sp-CCT
+      (prep
+        (sps00 des_d' des_de))
+      (sadv
+        (grup.adv
+          (rg ahir ahir))))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom
+          (np00000 València València))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 retre retre))
+        (sn-CD
+          (grup.nom.ms
+            (ncms000 tribut tribut)))
+        (sp-CI
+          (prep
+            (spcmp als al))
+          (sn
+            (grup.nom.mp
+              (ncmp000 instruments instrument)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 corda corda)))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Amb amb))
+      (sn
+        (espec.ms
+          (dd0ms0 aquest aquest))
+        (grup.nom.ms
+          (ncms000 motiu motiu)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (np00000 Palau_de_la_Música Palau_de_la_Música)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 ciutat ciutat))))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm organitzat organitzar))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 exposició exposició)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 inèdita inèdit)))
+        (sn
+          (Fc , ,)
+          (grup.nom
+            (np00000 La_Edad_de_Oro_de_la_Cuerda La_Edad_de_Oro_de_la_Cuerda))
+          (Fc , ,))
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 presenta presentar))
+          (sn-CD
+            (grup.nom.fp
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 autèntiques autèntic)))
+              (ncfp000 joies joia)
+              (sp
+                (prep
+                  (sps00 d' de))
+                (sn
+                  (espec.ms
+                    (dd0ms0 aquest aquest))
+                  (grup.nom.ms
+                    (ncmn000 tipus tipus)
+                    (sp
+                      (prep
+                        (sps00 d' de))
+                      (sn
+                        (grup.nom.mp
+                          (ncmp000 instruments instrument)))))))
+              (S.F.R
+                (Fc , ,)
+                (sp-CC
+                  (prep
+                    (sps00 per per))
+                  (relatiu
+                    (da0fp0 les el)
+                    (pr0cp000 quals qual)))
+                (sn-SUJ
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0cs0 millor millor)))
+                    (sp
+                      (prep
+                        (spcmp dels del))
+                      (sn
+                        (grup.nom.mp
+                          (nccp000 intèrprets intèrpret))))))
+                (grup.verb
+                  (vmic3s0 perdria perdre))
+                (sn-CD
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 cap cap)))))))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (grup.nom.ms
+        (ncms000 Violí violí)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 mostra mostra))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (sadv.j
+        (grup.adv
+          (rg Només només)))
+      (sn
+        (espec.fp
+          (da0fp0 les el)
+          (Z 10 10))
+        (grup.nom.fp
+          (nccp000 peces peça)
+          (s.a.fp
+            (espec
+              (rg més més))
+            (grup.a.fp
+              (aq0cp0 rellevants rellevant)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 mostra mostra)))))))
+    (grup.verb
+      (vmip3p0 tenen tenir))
+    (sn-CD.Q
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 valor valor)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 econòmic econòmic)))
+        (S.NF.P
+          (participi
+            (aq0msp taxat taxat))
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.mp
+                (Z 1.800 1800))
+              (grup.nom.mp
+                (ncmp000 milions milió)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fp
+                      (Zm pessetes pesseta))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 De de))
+      (sn
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 àmplia ampli)))
+          (ncfs000 gamma gamma)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 instruments instrument)
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (morfema.verbal-PASS
+                    (p0000000 es es))
+                  (grup.verb
+                    (vmip3p0 poden poder)
+                    (infinitiu
+                      (vmn0000 observar observar)))
+                  (sp-CCL
+                    (prep
+                      (sps00 en en))
+                    (sn
+                      (espec.fs
+                        (dd0fs0 aquesta aquest))
+                      (grup.nom.fs
+                        (nc00000 col·lecció col·lecció))))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmip3s0 destaca destacar))
+    (sn-SUJ
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 violí violí)
+        (S.NF.P
+          (participi
+            (aq0msp anomenat anomenat))
+          (sn-CPRED
+            (grup.nom
+              (np00000 Ex_Von_Szerdahely_VieuxTemps Ex_Von_Szerdahely_VieuxTemps))))
+        (sp
+          (Fc , ,)
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (W 1736 [??:??/??/1736:??.??]))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 cost cost)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (morfema.verbal-PASS
+              (p0000000 se se))
+            (sn-CI
+              (grup.nom.s
+                (pp3csd00 li ell)))
+            (grup.verb
+              (vmip3s0 estima estimar)))))
+      (grup.verb
+        (vsip3s0 és ser))
+      (sp-ATR
+        (prep
+          (sps00 de de))
+        (sn
+          (espec.mp
+            (Z 450 450))
+          (grup.nom.mp
+            (ncmp000 milions milió)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fp
+                  (Zm pessetes pesseta))))))))
+    (coord
+      (cc i i))
+    (S
+      (sn-SUJ
+        (espec.ms
+          (dp3ms0 el_seu el_seu))
+        (grup.nom.ms
+          (ncms000 constructor constructor)
+          (sn
+            (Fc , ,)
+            (grup.nom.ms
+              (np00000 Joseph_Guarnerius_del_Gesù Joseph_Guarnerius_del_Gesù)
+              (sp
+                (Fc , ,)
+                (prep
+                  (sps00 de de))
+                (sn
+                  (sn
+                    (grup.nom
+                      (np00000 Cremona Cremona)))
+                  (sn.j
+                    (grup.nom
+                      (Fpa -Fpa- -Fpa-)
+                      (np00000 Itàlia Itàlia)
+                      (Fpt -Fpt- -Fpt-))))))
+            (Fc , ,))))
+      (grup.verb
+        (vmip3s0 està estar))
+      (S.NF.P-ATR
+        (participi
+          (aq0msp considerat considerat))
+        (sp-CPRED
+          (prep
+            (cs com com))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (np00000 Van_Gogh Van_Gogh)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (nc00000 luthiere luthiere)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (di0fs0 Una un))
+      (grup.nom.fs
+        (pi0fs000 altra altre)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (nccp000 peces peça)
+              (S.NF.P
+                (sadv-CC
+                  (grup.adv
+                    (rg més més)))
+                (participi
+                  (aq0fpp cotitzades cotitzat))))))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0cs0 l' el))
+            (grup.nom.fs
+              (ncfs000 exposició exposició))))))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sn-ATR
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (nc00000 stradivarius stradivarius)
+        (S.NF.P
+          (participi
+            (aq0msp conegut conegut))
+          (sp-CPRED
+            (prep
+              (cs com com))
+            (sn
+              (grup.nom
+                (np00000 Golden_Bell Golden_Bell)))))
+        (sp
+          (Fc , ,)
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (W 1686 [??:??/??/1686:??.??]))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Per per))
+      (sn
+        (grup.nom.ms
+          (pp3ms000 ell ell))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 sospirar sospirar))
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Yehudi_Menuhin Yehudi_Menuhin)
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vaip3s0 va anar)
+            (vmn0000 elogiar elogiar))
+          (sn-CD.d
+            (grup.nom.ms
+              (pp3cn000 -ne en)))
+          (sn-CD.d
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 sonoritat sonoritat))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (dd0mp0 Aquests aquest))
+      (grup.nom.mp
+        (ncmp000 instruments instrument)))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm passat passar))
+    (sp-CCL
+      (prep
+        (sps00 per per))
+      (sn
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (ncfp000 mans mà)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 virtuosos virtuós)
+                (sp
+                  (prep
+                    (cs com com))
+                  (sn.x
+                    (grup.nom.co
+                      (grup.nom.ms
+                        (np00000 Carl_Flesch Carl_Flesch))
+                      (coord
+                        (cc i i))
+                      (grup.nom.ms
+                        (np00000 Arthur_Grumiaux Arthur_Grumiaux)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (ncfs000 exposició exposició)))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmip3s0 completa completar))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn.co
+        (sn
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs
+            (nc00000 col·lecció col·lecció)
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 arcs arc)
+                  (sp
+                    (Fpa -Fpa- -Fpa-)
+                    (prep
+                      (sps00 per per))
+                    (S.NF.C
+                      (infinitiu
+                        (vmn0000 fer fer)
+                        (infinitiu
+                          (vmn0000 sonar sonar)))
+                      (sn-CD
+                        (espec.fp
+                          (da0fp0 les el))
+                        (grup.nom.fp
+                          (ncfp000 cordes corda))))
+                    (Fpt -Fpt- -Fpt-)))))))
+        (coord
+          (cc i i))
+        (sn
+          (espec.fp
+            (Z 41 41))
+          (grup.nom.fp
+            (nc00000 pochettes pochettes)
+            (sn
+              (Fc , ,)
+              (espec.mp
+                (da0mp0 els el))
+              (grup.nom.mp
+                (ncmp000 instruments instrument)
+                (sp
+                  (prep
+                    (sps00 d' de))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 arc arc))))
+                (s.a.mp
+                  (espec
+                    (rg més més))
+                  (grup.a.mp
+                    (aq0mp0 petits petit)))
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmip3p0 existeixen existir)))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 A_pesar_de a_pesar_de))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 avanç avanç)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 tecnològic tecnològic)))))
+      (Fc , ,))
+    (neg-MOD
+      (rn no no))
+    (morf.pron
+      (pp3cn000 hi hi))
+    (grup.verb
+      (vaip3s0 ha haver))
+    (sn-CD.Q
+      (espec.fs
+        (di0cs0 cap cap))
+      (grup.nom.fs
+        (S.NF.P
+          (participi
+            (aq0fsp sofisticada sofisticat)))
+        (ncfs000 màquina màquina)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vasp3s0 hagi haver)
+            (vsp00sm estat ser))
+          (sa-ATR
+            (grup.a
+              (aq0cs0 capaç capaç)
+              (sp
+                (prep
+                  (sps00 d' de))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 imitar imitar))
+                  (sn-CD
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (ncms000 so so)
+                      (sp.co
+                        (sp
+                          (prep
+                            (sps00 d' de))
+                          (sn
+                            (espec.ms
+                              (di0ms0 un un))
+                            (grup.nom.ms
+                              (s.a.ms
+                                (grup.a.ms
+                                  (aq0ms0 bon bo)))
+                              (nc00000 stradivarius stradivarius))))
+                        (Fc , ,)
+                        (sp
+                          (prep
+                            (sps00 d' de))
+                          (sn
+                            (espec.ms
+                              (di0ms0 un un))
+                            (grup.nom.ms
+                              (np00000 Guadagnini Guadagnini))))
+                        (coord
+                          (cc o o))
+                        (sp
+                          (prep
+                            (sps00 d' de))
+                          (sn
+                            (espec.ms
+                              (di0ms0 un un))
+                            (grup.nom.ms
+                              (np00000 Guarneri_del_Gesù Guarneri_del_Gesù))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (Fe " ")
+    (neg-MOD
+      (rn No no))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sa-ATR
+      (grup.a
+        (aq0cs0 possible possible)))
+    (S.NF.C-SUJ
+      (infinitiu
+        (vmn0000 fer fer))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 rèplica rèplica)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (ncms000 quadro quadro)
+                (sp.co
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.ms
+                        (np00000 Leonardo Leonardo))))
+                  (coord
+                    (cc o o))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.ms
+                        (np00000 Rafael Rafael))))))))))
+      (sp-CC
+        (prep
+          (sps00 sense sense))
+        (S.F.C
+          (conj.subord
+            (cs que que))
+          (sn-SUJ
+            (espec.ms
+              (di0ms0 un un))
+            (grup.nom.ms
+              (ncms000 expert expert)))
+          (sn-CD
+            (grup.nom.ms
+              (pp3nn000 ho ho)))
+          (grup.verb
+            (vmsp3s0 noti notar)))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 Els el))
+        (grup.nom.mp
+          (ncmp000 violins violí)))
+      (sadv-MOD
+        (grup.adv
+          (rg tampoc tampoc)))
+      (morfema.verbal-PASS
+        (p0000000 es es))
+      (grup.verb
+        (vmip3p0 poden poder)
+        (infinitiu
+          (vmn0000 copiar copiar)))
+      (S-AO
+        (Fc , ,)
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vsip3p0 són ser))
+        (sa-ATR
+          (grup.a
+            (aq0mp0 únics únic))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 dir dir))
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Claude_Lebet Claude_Lebet)
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (pi0ms000 un un)
+            (sp
+              (prep
+                (spcmp dels del))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 luthiers luthiere)
+                  (S.NF.P
+                    (sadv-CC
+                      (grup.adv
+                        (rg més més)))
+                    (participi
+                      (aq0mpp reconeguts reconegut))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 constructor constructor)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 destacar destacar))
+    (sn-CD
+      (grup.nom.fp
+        (pi0fp000 algunes algun)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (ncfp000 diferències diferència))))
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3p0 distingeixen distingir))
+          (sn-CD
+            (espec.mp
+              (da0mp0 els el))
+            (grup.nom.mp
+              (s.a.mp
+                (grup.a.mp
+                  (aq0cp0 principals principal)))
+              (nccp000 fabricants fabricant)
+              (sp
+                (prep
+                  (sps00 d' de))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 instruments instrument)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 corda corda))))))))))))
+    (Fp . .)))
+(
+  (S
+    (Fe " ")
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Stradivari Stradivari)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 desenvolupar desenvolupar))
+    (sn-CD
+      (espec.fs
+        (dp3fs0 la_seva el_seu))
+      (grup.nom.fs
+        (ncfs000 tècnica tècnica)))
+    (sp-CC
+      (prep
+        (sps00 a_través_de a_través_de))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 investigació investigació))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (sn-SUJ
+        (espec.fp
+          (da0fs0 La el)
+          (ncfs000 resta resta)
+          (sps00 de de)
+          (da0fp0 les el))
+        (grup.nom.fp
+          (ncfp000 famílies família)))
+      (grup.verb
+        (vaip3p0 van anar)
+        (vmn0000 optar optar))
+      (sadv-ET
+        (Fc , ,)
+        (grup.adv
+          (rg en_canvi en_canvi))
+        (Fc , ,))
+      (sp-CREG
+        (prep
+          (sps00 per per))
+        (sn
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs
+            (ncfs000 via via)
+            (s.a.fs
+              (espec
+                (rg més més))
+              (grup.a.fs
+                (aq0fs0 instintiva instintiu))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 apuntar apuntar))
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Claude_Lebet Claude_Lebet)))
+    (Fp . .)))
+(
+  (S
+    (sp-CPRED.CD
+      (prep
+        (sps00 Com_a com_a))
+      (sn
+        (grup.nom.fs
+          (ncfs000 prova prova)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 fet fet)
+                (S.F.C
+                  (conj.subord
+                    (cs que que))
+                  (sn.co-SUJ
+                    (sn.co
+                      (sn
+                        (espec.mp
+                          (da0mp0 els el))
+                        (grup.nom.mp
+                          (ncmp000 violins violí)))
+                      (Fc , ,)
+                      (sn
+                        (espec.fp
+                          (da0fp0 les el))
+                        (grup.nom.fp
+                          (nccp000 violes viola)))
+                      (coord
+                        (cc i i))
+                      (sn
+                        (espec.mp
+                          (da0mp0 els el))
+                        (grup.nom.mp
+                          (nccp000 violoncels violoncel))))
+                    (S.F.R.j
+                      (relatiu-SUJ
+                        (pr0cn000 que que))
+                      (morfema.verbal-PASS
+                        (p0000000 s' es))
+                      (grup.verb
+                        (vmip3p0 exposen exposar))))
+                  (grup.verb
+                    (vaip3p0 han haver)
+                    (vmp00sm millorat millorar))
+                  (sp-CC
+                    (prep
+                      (sps00 amb amb))
+                    (sn
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncmn000 temps temps))))
+                  (Fc , ,))))))))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (nccp000 solistes solista)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0cs0 l' el))
+            (grup.nom.fs
+              (np00000 Orquestra_de_València Orquestra_de_València))))))
+    (grup.verb
+      (vmif3p0 oferiran oferir))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 concert concert)))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (S.NF.P
+            (participi
+              (aq0fpp cotitzades cotitzat)))
+          (nccp000 peces peça)
+          (sp
+            (prep
+              (sps00 entre entre))
+            (sn
+              (espec.fp
+                (dp3fp0 les_seves el_seu))
+              (grup.nom.fp
+                (ncfp000 mans mà)))))))
+    (sn-CCT
+      (Fc , ,)
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (W dia_14 [??:14/??/??:??.??])
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 vinent vinent)))))
+    (Fp . .)))

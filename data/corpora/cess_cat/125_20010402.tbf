@@ -1,0 +1,109 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np00000 Grup_Parlamentari_d'_Izquierda_Unida Grup_Parlamentari_d'_Izquierda_Unida)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm presentat presentar))
+    (sp-CCL
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (np00000 Congrés Congrés))))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 proposició proposició)
+        (sp
+          (neg.j
+            (rn no no))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (np00000 Llei Llei)))))
+        (S.F.R
+          (sp-CCL
+            (prep
+              (sps00 en en))
+            (relatiu
+              (pr0cn000 què què)))
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vmip3s0 demana demanar))
+          (S.F.C-CD
+            (conj.subord
+              (cs que que))
+            (sn-SUJ
+              (espec.mp
+                (da0mp0 els el))
+              (grup.nom.mp
+                (ncmp000 esdeveniments esdeveniment)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0mp0 televisius televisiu)))
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (neg-MOD
+                    (rn no no))
+                  (morfema.verbal-PASS
+                    (p0000000 s' es))
+                  (grup.verb
+                    (vmsp3p0 emetin emetre))
+                  (sadv-CC
+                    (grup.adv
+                      (rg en_directe en_directe))))))
+            (grup.verb
+              (vmsp3p0 incorporin incorporar))
+            (sn-CD
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (S.NF.P
+                  (participi
+                    (aq0msp subtitulat subtitulat)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 finalitat finalitat)))
+    (grup.verb
+      (vsip3s0 és ser))
+    (S.NF.C-ATR
+      (infinitiu
+        (vmn0000 evitar evitar))
+      (sn-CD
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (ncfp000 barreres barrera)
+          (s.a.fp
+            (grup.a.fp
+              (aq0cp0 comunicacionals comunicacional)))))
+      (sp-CI
+        (prep
+          (sps00 a a))
+        (sn
+          (grup.nom.fp
+            (ncfp000 persones persona)
+            (sp
+              (prep
+                (sps00 amb amb))
+              (sn
+                (grup.nom.fp
+                  (ncfp000 discapacitats discapacitat)
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0fp0 auditives auditiu))))))))))
+    (Fp . .)))

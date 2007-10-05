@@ -1,0 +1,428 @@
+
+(
+  (S
+    (S.F.C-SUJ
+      (sn.co-SUJ
+        (sn.co
+          (sno
+            (espec.ms
+              (da0ms0 El el))
+            (grup.nom.ms
+              (np0000o Ministerio_del_Medio_Ambiente Ministerio_del_Medio_Ambiente)))
+          (coord
+            (cc y y))
+          (sno
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (np0000o Departamento_Nacional_de_Estadísticas Departamento_Nacional_de_Estadísticas)
+              (sno
+                (grup.nom.ms
+                  (Fpa -Fpa- -Fpa-)
+                  (np0000o DANE DANE)
+                  (Fpt -Fpt- -Fpt-))))))
+        (s.a.mp.j
+          (grup.a.mp
+            (aq0mp0 colombianos colombiano))))
+      (grup.verb
+        (vmif3p0 llevarán_a_cabo llevar_a_cabo))
+      (sn-CD
+        (grup.nom.mp
+          (ncmp000 estudios estudio)
+          (sp
+            (prep
+              (sps00 para para))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 adoptar adoptar))
+              (sn-CD
+                (espec.ms
+                  (di0ms0 un uno))
+                (grup.nom.ms
+                  (ncms000 plan plan)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 estadístico estadístico)))
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0cs0 ambiental ambiental)))))))))
+      (Fc , ,))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vmis3s0 anunció anunciar))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (sadv-CC
+      (grup.adv
+        (rg oficialmente oficialmente)))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 convenio convenio)
+        (sp
+          (prep
+            (sps00 para para))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 realizar realizar))
+            (sn-CD
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (ncmp000 estudios estudio)))))
+        (S.NF.P
+          (Fc , ,)
+          (participi
+            (aq0msp firmado firmado))
+          (sp-CAG
+            (prep
+              (sps00 por por))
+            (sn.co
+              (snp
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 ministro ministro)
+                  (snp
+                    (grup.nom.ms
+                      (np0000p Juan_Mayr Juan_Mayr)))))
+              (coord
+                (cc y y))
+              (snp
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 directora directora)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sno
+                      (grup.nom.ms
+                        (np0000o DANE DANE))))
+                  (snp
+                    (Fc , ,)
+                    (grup.nom.fs
+                      (np0000p María_Eulalia_Arteta María_Eulalia_Arteta))
+                    (Fc , ,)))))))))
+    (grup.verb
+      (vmif3s0 permitirá permitir))
+    (S.F.A-CCT
+      (Fc , ,)
+      (conj.subord
+        (cs una_vez una_vez))
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vmsp3s0 adopte adoptar))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 plan plan)))
+      (Fc , ,))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 fortalecer fortalecer))
+      (sp-CD
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (ncfp000 entidades entidad)
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vmip3p0 integran integrar))
+              (sna-CD
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (np0000a Sistema_Nacional_Ambiental Sistema_Nacional_Ambiental)
+                  (sna
+                    (grup.nom.ms
+                      (Fpa -Fpa- -Fpa-)
+                      (np0000a SINA SINA)
+                      (Fpt -Fpt- -Fpt-)))
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 colombiano colombiano))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sp-CCT
+        (prep
+          (sps00 En en))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (ao0fs0 primera primero)))
+            (ncfs000 etapa etapa)))
+        (Fc , ,))
+      (sno-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np0000o DANE DANE)))
+      (grup.verb
+        (vmif3s0 diagnosticará diagnosticar))
+      (sn-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 modelo modelo)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 estadístico estadístico)))
+          (sp
+            (prep
+              (sps00 a a))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 usar usar)))))))
+    (coord
+      (cc y y))
+    (S
+      (sp-CCT
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (ao0fs0 segunda segundo))))))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmif3s0 precisará precisar))
+      (sn.co-CD
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 viabilidad viabilidad)
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 institucional institucional)))))
+        (Fc , ,)
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 ámbito ámbito)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 aplicación aplicación))))))
+        (coord
+          (cc y y))
+        (sn
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (ncfp000 recomendaciones recomendación)
+            (s.a.fp.x
+              (grup.a.fp.co
+                (grup.a.fp
+                  (aq0fp0 financieras financiero))
+                (Fc , ,)
+                (grup.a.fp
+                  (aq0fp0 técnicas técnico))
+                (coord
+                  (cc y y))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 tiempo tiempo)))))))))
+      (sp-CC
+        (prep
+          (sps00 para para))
+        (sn
+          (espec.fs
+            (dp3cs0 su su))
+          (grup.nom.fs
+            (ncfs000 implementación implementación)))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sno-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (np0000o Ministerio_del_Medio_Ambiente Ministerio_del_Medio_Ambiente)))
+      (grup.verb
+        (vmif3s0 dará dar))
+      (sn-CD
+        (grup.nom.ms
+          (ncms000 apoyo apoyo)
+          (s.a.ms.x
+            (grup.a.co
+              (grup.a.ms
+                (aq0ms0 logístico logístico))
+              (coord
+                (cc y y))
+              (grup.a.ms
+                (aq0ms0 técnico técnico)))))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vsif3s0 será ser))
+      (sn-ATR
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 interlocutor interlocutor)))
+      (sp-CC
+        (prep
+          (sps00 ante ante))
+        (sn
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (ncfp000 entidades entidad)
+            (sp
+              (prep
+                (spcms del del))
+              (sna
+                (grup.nom.ms
+                  (np0000a SINA SINA)))))))
+      (sp-CC
+        (prep
+          (sps00 para para))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 medir medir))
+          (sn-CD
+            (espec.fp
+              (da0fp0 las el))
+            (grup.nom.fp
+              (ncfp000 necesidades necesidad)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 información información)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 objetivo objetivo)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 programa programa))))))
+    (grup.verb
+      (vsip3s0 es ser))
+    (S.F.C-ATR
+      (conj.subord
+        (cs que que))
+      (sna-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np0000a SINA SINA)))
+      (grup.verb
+        (vmsp3s0 cuente contar))
+      (sp-CREG
+        (prep
+          (sps00 con con))
+        (sn
+          (grup.nom.fs
+            (ncfs000 información información)
+            (s.a.fs.x
+              (grup.a.fs.co
+                (grup.a.fs
+                  (aq0fs0 básica básico))
+                (coord
+                  (cc y y))
+                (grup.a.fs
+                  (aq0cs0 fiable fiable))))
+            (sp
+              (prep
+                (sps00 para para))
+              (sn.co
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 gestión gestión)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0cs0 ambiental ambiental)))))
+                (coord
+                  (cc y y))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 toma toma)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fp
+                          (ncfp000 decisiones decisión))))))))
+            (S.F.R
+              (Fc , ,)
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vmsp3s0 facilite facilitar))
+              (sn-CD
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (ncmp000 procesos proceso)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn.x
+                      (grup.nom.fs
+                        (grup.nom.fs
+                          (ncfs000 planificación planificación))
+                        (coord
+                          (cc y y))
+                        (grup.nom.fs
+                          (ncfs000 ejecución ejecución)))))
+                  (sp
+                    (prep
+                      (sps00 en en))
+                    (sn
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 marco marco)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sna
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (np0000a Política_Nacional_Ambiental Política_Nacional_Ambiental))))))))))))))))

@@ -1,0 +1,407 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 municipi municipi)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (np00000 Castelló_d'_Empúries Castelló_d'_Empúries))))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm guanyat guanyar))
+    (sn-CD
+      (grup.nom.ms
+        (pn0ms000 un un)
+        (sp
+          (prep
+            (spcmp dels del))
+          (sn
+            (grup.nom.mp
+              (np00000 Premis_1999_de_Recollida_Selectiva_i_Reducció_de_Residus Premis_1999_de_Recollida_Selectiva_i_Reducció_de_Residus))))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 deixalleria deixalleria)
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vaip3s0 ha haver)
+                  (vmp00sm recollit recollir))
+                (sn-CD
+                  (espec.mp
+                    (rg més més))
+                  (grup.nom.mp
+                    (ncmp000 residus residu)
+                    (s.a.mp
+                      (grup.a.mp
+                        (aq0cp0 especials especial)))))
+                (sp-CCT
+                  (prep
+                    (sps00 durant durant))
+                  (sn
+                    (espec.ms
+                      (da0cs0 l' el))
+                    (grup.nom.ms
+                      (ncms000 any any)
+                      (S.NF.P
+                        (participi
+                          (aq0msp passat passat))))))))))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 acte acte)
+          (S.NF.P
+            (participi
+              (aq0msp presidit presidit))
+            (sp-CAG
+              (prep
+                (spcms pel pel))
+              (sn
+                (grup.nom.ms
+                  (ncms000 conseller conseller)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom
+                        (ncms000 Medi_Ambient medi_ambient))))
+                  (sn
+                    (Fc , ,)
+                    (grup.nom
+                      (np00000 Felip_Puig Felip_Puig))
+                    (Fc , ,))))))
+          (sp
+            (prep
+              (spcms al al))
+            (sn
+              (grup.nom.ms
+                (np00000 Palau_de_la_Generalitat Palau_de_la_Generalitat)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (dd0mp0 Aquests aquest))
+      (grup.nom.mp
+        (ncmp000 guardons guardó)))
+    (grup.verb
+      (vmip3p0 compten comptar))
+    (sp-CREG
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fp
+          (dn0cp0 quatre quatre))
+        (grup.nom.fp
+          (ncfp000 categories categoria)
+          (sn.co
+            (Fd : :)
+            (sn
+              (grup.nom.fs
+                (pi0fs000 una un)
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmip3p0 premia premiar))
+                  (sn.co-CD
+                    (sn.x
+                      (grup.nom.co
+                        (grup.nom.co
+                          (grup.nom.mp
+                            (ncmp000 municipis municipi))
+                          (coord
+                            (cc i i))
+                          (grup.nom.fp
+                            (ncfp000 comarques comarca)))
+                        (S.F.R.j
+                          (relatiu-SUJ
+                            (pr0cn000 que que))
+                          (grup.verb
+                            (vasp3p0 hagin haver)
+                            (vmp00sm destacat destacar))
+                          (sp-CC
+                            (prep
+                              (sps00 per per))
+                            (sn
+                              (espec.fs
+                                (da0fs0 la el))
+                              (grup.nom.fs
+                                (ncfs000 recollida recollida)
+                                (sp
+                                  (prep
+                                    (spcmp dels del))
+                                  (sn
+                                    (espec.mp
+                                      (di0cp0 diferents diferent))
+                                    (grup.nom.mp
+                                      (ncmp000 residus residu))))))))))
+                    (coord
+                      (cc i i))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 deixalleria deixalleria)
+                        (S.F.R
+                          (relatiu-SUJ
+                            (pr0cn000 que que))
+                          (grup.verb
+                            (vasp3s0 hagi haver)
+                            (vmp00sm recuperat recuperar))
+                          (sn-CD
+                            (espec.mp
+                              (rg més més))
+                            (grup.nom.mp
+                              (ncmp000 residus residu)))
+                          (sp-CCT
+                            (prep
+                              (sps00 en en))
+                            (sn
+                              (espec.ms
+                                (di0ms0 un un))
+                              (grup.nom.ms
+                                (ncms000 any any))))
+                          (sp
+                            (prep
+                              (sps00 per per))
+                            (sn
+                              (espec.fs
+                                (di0fs0 una un))
+                              (grup.nom.fs
+                                (ncfs000 banda banda)))))))))))
+            (Fc , ,)
+            (sn
+              (espec.fs
+                (di0fs0 una un))
+              (grup.nom.fs
+                (pi0fs000 altra altre)
+                (S.F.R*
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0cs0 millor millor)))
+                      (ncfs000 gestió gestió)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0cs0 integral integral)))
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.mp
+                            (ncmp000 residus residu))))
+                      (sp
+                        (prep
+                          (sps00 en en))
+                        (sn
+                          (espec.mp
+                            (da0mp0 els el))
+                          (grup.nom.mp
+                            (ncmn000 ens ens)
+                            (s.a.mp
+                              (grup.a.mp
+                                (aq0cp0 locals local)))))))))))
+            (coord
+              (cc i i))
+            (sn
+              (espec.fs
+                (di0fs0 una un))
+              (grup.nom.fs
+                (pn0fs000 tercera tercer)
+                (S.F.R*
+                  (sn
+                    (espec.mp
+                      (da0mp0 els el))
+                    (grup.nom.mp
+                      (ncmp000 establiments establiment)
+                      (s.a.mp
+                        (grup.a.mp
+                          (aq0cp0 comercials comercial)))
+                      (S.F.R.co
+                        (S.F.R
+                          (relatiu-SUJ
+                            (pr0cn000 que que))
+                          (grup.verb
+                            (vaip3p0 han haver)
+                            (vmp0000 comercilalitzat comercilalitzat))
+                          (sn-CD
+                            (grup.nom.mp
+                              (ncmp000 productes producte)
+                              (s.a.mp
+                                (grup.a.mp
+                                  (aq0mp0 respectuosos respectuós)
+                                  (sp
+                                    (prep
+                                      (sps00 amb amb))
+                                    (sn
+                                      (espec.ms
+                                        (da0ms0 el el))
+                                      (grup.nom.ms
+                                        (ncms000 medi_ambient medi_ambient)))))))))
+                        (coord
+                          (cc i i))
+                        (S.F.R
+                          (relatiu-SUJ
+                            (pr0cn000 que que))
+                          (grup.verb
+                            (vaip3p0 han haver)
+                            (vmp00sm procurat procurar))
+                          (S.NF.C.co-CD
+                            (S.NF.C
+                              (infinitiu
+                                (vmn0000 recuperar recuperar))
+                              (sn-CD
+                                (espec.mp
+                                  (da0mp0 els el))
+                                (grup.nom.mp
+                                  (ncmp000 residus residu)
+                                  (s.a.mp
+                                    (grup.a.mp
+                                      (aq0mp0 propis propi))))))
+                            (coord
+                              (cc i i))
+                            (S.NF.C
+                              (infinitiu
+                                (vmn0000 conscienciar conscienciar))
+                              (sn-CD
+                                (espec
+                                  (da0mp0 els el))
+                                (grup.nom.mp
+                                  (ncmp000 clients client)))
+                              (sp-AO
+                                (prep
+                                  (sps00 sobre sobre))
+                                (sn
+                                  (espec.fs
+                                    (da0fs0 la el))
+                                  (grup.nom.fs
+                                    (ncfs000 necessitat necessitat)
+                                    (sp
+                                      (prep
+                                        (sps00 d' de))
+                                      (S.NF.C
+                                        (infinitiu
+                                          (vmn0000 actuar actuar))
+                                        (sp-CREG
+                                          (prep
+                                            (sps00 en en))
+                                          (sn
+                                            (espec.ms
+                                              (da0ms0 el el)
+                                              (di0ms0 mateix mateix))
+                                            (grup.nom.ms
+                                              (ncms000 sentit sentit))))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (ao0fs0 darrera darrer)))
+        (ncfs000 categoria categoria)))
+    (grup.verb
+      (vmip3s0 guardona guardonar))
+    (sn.x-CD
+      (espec.fp
+        (da0fp0 les el))
+      (grup.nom.co
+        (grup.nom.co
+          (grup.nom.fp
+            (ncfp000 persones persona))
+          (coord
+            (cc o o))
+          (grup.nom.fp
+            (ncfp000 entitats entitat)))
+        (S.F.R.j
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vaip3p0 han haver)
+            (vmp00sm contribuït contribuir))
+          (sp.co-CREG
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 gestió gestió)
+                  (sp
+                    (prep
+                      (spcmp dels del))
+                    (sn
+                      (grup.nom.mp
+                        (ncmp000 residus residu)
+                        (s.a.mp
+                          (grup.a.mp
+                            (aq0cp0 municipals municipal)))))))))
+            (coord
+              (cc o o))
+            (sp
+              (prep
+                (sps00 a a))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 conscienciar conscienciar))
+                (sn-CD
+                  (espec.mp
+                    (da0mp0 els el))
+                  (grup.nom.mp
+                    (ncmp000 ciutadans ciutadà)))
+                (S.F.C-CREG
+                  (conj.subord
+                    (cs que que))
+                  (grup.verb
+                    (vmip3s0 cal caldre))
+                  (sn-CD
+                    (espec.ms
+                      (di0ms0 un un))
+                    (grup.nom.ms
+                      (ncms000 canvi canvi)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.fs
+                            (ncfs000 cultura cultura))))
+                      (sp
+                        (prep
+                          (sps00 sobre sobre))
+                        (sn
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (ncfs000 relació relació)
+                            (sp
+                              (prep
+                                (sps00 amb amb))
+                              (sn
+                                (espec.mp
+                                  (da0mp0 els el))
+                                (grup.nom.mp
+                                  (ncmp000 residus residu))))))))))))))))
+    (Fp . .)))

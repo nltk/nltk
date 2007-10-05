@@ -1,0 +1,645 @@
+
+(
+  (S
+    (snl-SUJ
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 instal·lacions instal·lació)
+        (sp
+          (prep
+            (spcms del del))
+          (snl
+            (grup.nom.ms
+              (np0000l Parc_Olímpic_del_Segre Parc_Olímpic_del_Segre))))
+        (sp
+          (prep
+            (sps00 de de))
+          (snl
+            (grup.nom
+              (np0000l La_Seu_d'_Urgell La_Seu_d'_Urgell))))))
+    (grup.verb
+      (vmip3p0 acullen acollir))
+    (sadv-CC
+      (grup.adv
+        (rg avui avui)))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 edició edició)
+        (sp
+          (prep
+            (spcms del del))
+          (sna
+            (grup.nom.ms
+              (np0000a Campionat_de_Catalunya_de_BTT Campionat_de_Catalunya_de_BTT))))))
+    (Fp . .)))
+(
+  (S
+    (morfema.verbal-IMPERS
+      (p0000000 Es es))
+    (grup.verb
+      (vmip3s0 tracta tractar))
+    (sp-CREG
+      (prep
+        (sps00 d' de))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 circuit circuit)
+          (sp
+            (prep
+              (sps00 de de))
+            (snn
+              (espec.mp
+                (dn0cp0 vuit vuit))
+              (grup.nom.mp
+                (ncmp000 quilòmetres quilòmetre))))
+          (sp
+            (Fc , ,)
+            (prep
+              (sps00 amb amb))
+            (sn.x
+              (grup.nom.co
+                (grup.nom.co
+                  (grup.nom.fs
+                    (ncfs000 sortida sortida))
+                  (coord
+                    (cc i i))
+                  (grup.nom.fs
+                    (ncfs000 arribada arribada)))
+                (sp.j
+                  (prep
+                    (spcms des_del des_del))
+                  (snl
+                    (espec.ms
+                      (di0ms0 mateix mateix))
+                    (grup.nom.ms
+                      (np0000l Parc_Olímpic Parc_Olímpic))))))
+            (Fc , ,))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (morfema.verbal-PASS
+              (p0000000 es es))
+            (grup.verb
+              (vmif3s0 farà fer))
+            (sadv-CC
+              (grup.adv
+                (rg dins dins)
+                (sp
+                  (prep
+                    (spcmp dels del))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 termes terme)
+                      (s.a.mp
+                        (grup.a.mp
+                          (aq0cp0 municipals municipal)))
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn.x
+                          (grup.nom.co
+                            (grup.nom
+                              (np0000l La_Seu_d'_Urgell La_Seu_d'_Urgell))
+                            (coord
+                              (cc i i))
+                            (grup.nom
+                              (np0000l Alàs_i_Cerc Alàs_i_Cerc))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 competició competició)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vsp00sm estat ser)
+      (vmp00sf organitzada organitzar))
+    (sp-CAG
+      (prep
+        (spcms pel pel))
+      (sn.co
+        (sno
+          (grup.nom.ms
+            (np0000o Centre_BTT_La_Seu-Alt_Urgell Centre_BTT_La_Seu-Alt_Urgell)))
+        (Fc , ,)
+        (sno
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 club club)
+            (sno
+              (grup.nom
+                (np0000o Sedis Sedis)))))
+        (coord
+          (cc i i))
+        (sno
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (np0000o Federació_Catalana_de_Ciclisme Federació_Catalana_de_Ciclisme)))))
+    (Fp . .)))
+(
+  (S
+    (morfema.verbal-PASS
+      (p0000000 S' es))
+    (sn-CC
+      (grup.nom
+        (pp3cn000 hi hi)))
+    (grup.verb
+      (vmip3s0 preveu preveure))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 participació participació)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.fp
+              (di0fp0 unes un)
+              (Z 400 400))
+            (grup.nom.fp
+              (ncfp000 persones persona)
+              (S.F.R
+                (Fc , ,)
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (morfema.verbal-PASS
+                  (p0000000 es es))
+                (grup.verb
+                  (vmif3p0 distribuiran distribuir))
+                (sp-CC
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.fp
+                      (dn0cp0 onze onze))
+                    (grup.nom.fp
+                      (ncfp000 categories categoria)
+                      (sn.x
+                        (Fc , ,)
+                        (grup.nom.co
+                          (grup.nom.p
+                            (pn0cp000 set set)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (s.a.fp
+                                (grup.a.fp
+                                  (aq0fp0 masculines masculí)))))
+                          (coord
+                            (cc i i))
+                          (grup.nom.p
+                            (pn0cp000 quatre quatre)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (s.a.fp
+                                (grup.a.fp
+                                  (aq0fp0 femenines femení))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 recorregut recorregut)))
+    (sadv-ET
+      (Fc , ,)
+      (grup.adv
+        (rg doncs doncs))
+      (Fc , ,))
+    (grup.verb
+      (vsif3s0 serà ser))
+    (sp-ATR
+      (prep
+        (sps00 de de))
+      (snn
+        (espec.mp
+          (dn0cp0 vuit vuit))
+        (grup.nom.mp
+          (ncmp000 quilòmetres quilòmetre)
+          (sp
+            (Fc , ,)
+            (prep
+              (sps00 amb amb))
+            (sn
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (ncms000 desnivell desnivell)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snn
+                    (espec.mp
+                      (Z 198 198))
+                    (grup.nom.mp
+                      (ncmp000 metres metre))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 prova prova)))
+      (grup.verb
+        (vmif3s0 sortirà sortir))
+      (sp-CC
+        (prep
+          (spcms del del))
+        (snl
+          (grup.nom.ms
+            (np0000l Parc_Olímpic_del_Segre Parc_Olímpic_del_Segre))))
+      (sp-CC
+        (prep
+          (sps00 a a))
+        (snd
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (W 10_del_matí [??:??/??/??:10.00])))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmif3s0 passarà passar))
+      (sp-CREG
+        (prep
+          (spcms pel pel))
+        (sn.co
+          (snl
+            (grup.nom.ms
+              (np0000l Pont_de_la_Palanca Pont_de_la_Palanca)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l Cal_Cinca Cal_Cinca)))
+          (Fc , ,)
+          (snl
+            (grup.nom
+              (np0000l La_Collada La_Collada)))
+          (Fc , ,)
+          (snl
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 riu riu)
+              (sp
+                (prep
+                  (sps00 de de))
+                (snl
+                  (grup.nom
+                    (np0000l Cerc Cerc))))))
+          (Fc , ,)
+          (snl
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 rec rec)
+              (sp
+                (prep
+                  (sps00 de de))
+                (snl
+                  (grup.nom
+                    (np0000l L'_Olla L'_Olla))))))
+          (coord
+            (cc i i))
+          (snl
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 riu riu)
+              (snl
+                (grup.nom
+                  (np0000l Segre Segre)))))))
+      (sp-CC
+        (Fc , ,)
+        (prep
+          (sps00 fins fins))
+        (sp
+          (prep
+            (sps00 a a))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 tornar tornar))
+            (sp-CC
+              (prep
+                (spcms al al))
+              (snl
+                (grup.nom.ms
+                  (np0000l Parc_Olímpic Parc_Olímpic)
+                  (S.F.R
+                    (Fc , ,)
+                    (relatiu-CC
+                      (pr000000 on on))
+                    (sn.e-SUJ *0*)
+                    (morfema.verbal-PASS
+                      (p0000000 es es))
+                    (grup.verb
+                      (vmif3s0 donarà donar))
+                    (sp-CPRED.SUJ
+                      (prep
+                        (sps00 per per))
+                      (S.NF.P
+                        (participi
+                          (aq0fsp finalitzada finalitzat))))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-SUJ
+      (conj.subord
+        (cs Que que))
+      (sn-SUJ
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (ncfs000 organització organització)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 campionat campionat))))))
+      (grup.verb
+        (vmsp3s0 vagi anar))
+      (sp-CREG
+        (prep
+          (spcms a_càrrec_del a_càrrec_del))
+        (sno
+          (grup.nom.ms
+            (np0000o Centre_BTT_La_Seu-Alt_Urgell Centre_BTT_La_Seu-Alt_Urgell)))))
+    (grup.verb
+      (vmip3s0 representa representar))
+    (sn-CD
+      (espec.ms
+        (dn0ms0 un un))
+      (grup.nom.ms
+        (ncms000 aval aval)))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 entitat entitat)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vaip3s0 va anar)
+              (vsn0000 ser ser)
+              (vmp00sf creada crear))
+            (sn-CC
+              (rg ara ara)
+              (vmip3s0 fa fer)
+              (rg tan_sols tan_sols)
+              (dn0ms0 un un)
+              (ncms000 any any))
+            (sp-CAG
+              (prep
+                (sps00 per per))
+              (sn.co
+                (sno
+                  (espec.ms
+                    (da0cs0 l' el))
+                  (grup.nom.ms
+                    (np0000o Ajuntament_de_La_Seu_d'_Urgell Ajuntament_de_La_Seu_d'_Urgell)))
+                (Fc , ,)
+                (sno
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (np0000o Consell_Comarcal_de_l'_Alt_Urgell Consell_Comarcal_de_l'_Alt_Urgell)))
+                (coord
+                  (cc i i))
+                (sno
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (np0000o Parc_Olímpic_del_Segre Parc_Olímpic_del_Segre)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (dd0ms0 Aquest aquest))
+      (grup.nom.ms
+        (ncms000 centre centre)))
+    (grup.verb
+      (vmip3s0 ofereix oferir))
+    (sn-CD
+      (espec.fp
+        (di0fp0 unes un))
+      (grup.nom.fp
+        (ncfp000 rutes ruta)
+        (S.NF.P
+          (participi
+            (aq0fpp senyalitzades senyalitzat)))
+        (sp
+          (prep
+            (sps00 d' de))
+          (snn
+            (espec.mp
+              (di0ms0 un un)
+              (ncms000 total total)
+              (sps00 de de)
+              (Z 422 422))
+            (grup.nom.mp
+              (ncmp000 quilòmetres quilòmetre))))
+        (sn
+          (Fc , ,)
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 xarxa xarxa)
+            (s.a.fs
+              (espec
+                (rg més més))
+              (grup.a.fs
+                (aq0fs0 extensa extens)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snl
+                    (grup.nom
+                      (np0000l Catalunya Catalunya))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 Segons segons))
+      (sn
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (ncfs000 organització organització)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 corredors corredor)
+        (s.a.mp
+          (espec
+            (rg més més))
+          (grup.a.mp
+            (aq0mp0 ràpids ràpid)))))
+    (grup.verb
+      (vmif3p0 trigaran trigar))
+    (sn-CD.Q
+      (sadv.j
+        (grup.adv
+          (rg aproximadament aproximadament)))
+      (snn
+        (espec.mp
+          (di0mp0 uns un)
+          (Z 30 30))
+        (grup.nom.mp
+          (ncmp000 minuts minut))))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 fer fer))
+        (sn-CD
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs
+            (ncfs000 volta volta)))
+        (sp-CC
+          (prep
+            (spcms al al))
+          (sn
+            (grup.nom.ms
+              (ncms000 recorregut recorregut))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 corredors corredor)))
+    (sadv-MOD
+      (grup.adv
+        (rg sobretot sobretot)))
+    (morf.pron
+      (p0300000 s' ell))
+    (morf.pron
+      (pp3cn000 hi hi))
+    (grup.verb
+      (vmip3p0 juguen jugar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 possibilitat possibilitat)
+        (sp
+          (prep
+            (sps00 de de))
+          (S.NF.C
+            (infinitiu
+              (vsn0000 ser ser)
+              (vmp00pm seleccionats seleccionar))
+            (sp-CC
+              (prep
+                (sps00 per per))
+              (sp
+                (prep
+                  (sps00 a a))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 disputar disputar))
+                  (sn-CD
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (ncms000 campionat campionat)
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0cs0 estatal estatal))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg En_total en_total)))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vaif3p0 hauran haver)
+      (sps00 de de)
+      (infinitiu
+        (vmn0000 fer fer)))
+    (sn.co-CD
+      (sn
+        (espec.fp
+          (dn0fp0 dues dos))
+        (grup.nom.fp
+          (ncfp000 voltes volta)))
+      (Fc , ,)
+      (sn
+        (grup.nom.p
+          (pn0cp000 tres tres)))
+      (coord
+        (cc o o))
+      (sn
+        (grup.nom.p
+          (pn0cp000 quatre quatre))))
+    (S.NF.A-CC
+      (Fc , ,)
+      (gerundi
+        (vmg0000 depenent dependre))
+      (sp-CREG
+        (prep
+          (sps00 de de))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 categoria categoria)))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (s.a.mp
+          (grup.a.mp
+            (ao0mp0 últims últim)))
+        (ncmp000 campions campió)
+        (sp
+          (prep
+            (sps00 de de))
+          (snl
+            (grup.nom
+              (np0000l Catalunya Catalunya))))))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vsp00sm estat ser))
+    (sn.x-ATR
+      (grup.nom.co
+        (grup.nom.fs
+          (np0000p Sílvia_Rovira Sílvia_Rovira))
+        (coord
+          (cc i i))
+        (grup.nom.ms
+          (np0000p Eloi_Gispert Eloi_Gispert))))
+    (Fp . .)))

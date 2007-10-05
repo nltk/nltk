@@ -1,0 +1,109 @@
+
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (grup.nom
+          (np00000 Informe_semanal Informe_semanal)))
+      (S*.j
+        (Fpa -Fpa- -Fpa-)
+        (sn-CCL
+          (grup.nom
+            (np00000 TVE-1 TVE-1)))
+        (Fc , ,)
+        (sn-CCT
+          (grup.nom.ms
+            (W 21.35 [??:??/??/??:21.35])))
+        (Fpt -Fpt- -Fpt-))
+      (grup.verb
+        (vmip3s0 ret retre))
+      (sn-CD
+        (grup.nom.ms
+          (ncms000 tribut tribut)))
+      (sp-CI
+        (prep
+          (sps00 a a))
+        (sn
+          (sn
+            (grup.nom.ms
+              (np00000 Vittorio_Gassman Vittorio_Gassman)))
+          (sn.j
+            (grup.nom.fs
+              (Fpa -Fpa- -Fpa-)
+              (ncfs000 foto foto)
+              (Fpt -Fpt- -Fpt-))))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3s0 ofereix oferir))
+      (sadv-MOD
+        (grup.adv
+          (rg també també)))
+      (sn-CD
+        (grup.nom.mp
+          (ncmp000 reportatges reportatge)
+          (sp
+            (prep
+              (sps00 sobre sobre))
+            (sn.co
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 genoma genoma)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 humà humà)))))
+              (Fc , ,)
+              (sn
+                (espec.mp
+                  (da0mp0 els el))
+                (grup.nom.mp
+                  (ncmp000 accidents accident)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 trànsit trànsit))))))
+              (Fc , ,)
+              (sn
+                (espec.mp
+                  (da0mp0 els el))
+                (grup.nom.mp
+                  (ncmp000 atracaments atracament)
+                  (sp
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (espec.fp
+                        (da0fp0 les el))
+                      (grup.nom.fp
+                        (ncfp000 joieries joieria))))))
+              (coord
+                (cc i i))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 recerca recerca)
+                  (sp
+                    (prep
+                      (sps00 d' de))
+                    (sn
+                      (espec.ms
+                        (di0ms0 un un))
+                      (grup.nom.ms
+                        (ncms000 tresor tresor)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0cs0 nazi nazi))))))
+                  (sp
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (grup.nom
+                        (np00000 Àustria Àustria)))))))))))
+    (Fp . .)))

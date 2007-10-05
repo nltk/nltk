@@ -1,0 +1,118 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (di0fs0 Una un))
+      (grup.nom.fs
+        (np00000 bomba bomba)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 esclatar esclatar))
+    (sn-CCT
+      (grup.nom.ms
+        (W dissabte [dissabte:??/??/??:??.??])))
+    (sp-CCT
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 nit nit))))
+    (sp-CCT
+      (prep
+        (sps00 durant durant))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 celebració celebració)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (ncms000 concert concert)))))))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 estadi estadi)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 futbol futbol)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom
+                      (np00000 Kurunegala Kurunegala))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.fp
+        (ncfp000 Fonts font)
+        (s.a.fp
+          (grup.a.fp
+            (aq0cp0 policials policial)))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 considerar considerar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 atemptat atemptat)
+          (S.F.R
+            (Fc , ,)
+            (sp-CCL
+              (prep
+                (sps00 en en))
+              (relatiu
+                (pr0cn000 què què)))
+            (grup.verb
+              (vaip3p0 van anar)
+              (vmn0000 resultar resultar))
+            (S.NF.P-CPRED.SUJ
+              (participi
+                (aq0fpp ferides ferit)))
+            (sn-SUJ
+              (espec.fp
+                (Z 200 200))
+              (grup.nom.fp
+                (ncfp000 persones persona)))
+            (Fc , ,))))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vsn0000 ser ser)
+        (vmp00sm perpetrat perpetrar))
+      (sp-CAG
+        (prep
+          (sps00 per per))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 guerrilla guerrilla)
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 separatista separatista)))
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 tàmil tàmil)))))))
+    (Fp . .)))

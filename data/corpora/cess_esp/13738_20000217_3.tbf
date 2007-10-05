@@ -1,0 +1,518 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 parte parte)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 negocio negocio))))
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 corresponde corresponder))
+          (sp-CREG
+            (prep
+              (spcms al al))
+            (sn
+              (grup.nom.ms
+                (ncms000 comercio comercio)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 tradicional tradicional)))))))))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmip3s0 sitúa situar))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (snn
+        (espec.mp
+          (Z 203.000 203000))
+        (grup.nom.mp
+          (ncmp000 millones millón)
+          (sp
+            (prep
+              (sps00 de de))
+            (snn
+              (grup.nom.fp
+                (Zm pesetas peseta)))))))
+    (S.NF.A-CC
+      (Fc , ,)
+      (gerundi
+        (vmg0000 aumentando aumentar))
+      (snn
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (Zp 11,2_por_ciento 11,2_%)
+          (sp
+            (prep
+              (sps00 respecto_a respecto_a))
+            (snd
+              (grup.nom.ms
+                (W 1998 [??:??/??/1998:??.??])))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Los el)
+        (di0mp0 otros otro))
+      (grup.nom.mp
+        (ncmp000 canales canal)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 distribución distribución))))))
+    (grup.verb
+      (vaip3p0 han haber)
+      (vmp00sm aumentado aumentar))
+    (sn-CD
+      (espec.ms
+        (dp3cs0 su su))
+      (grup.nom.ms
+        (ncms000 volumen volumen)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 negocio negocio))))))
+    (snn-CC
+      (espec.ms
+        (di0ms0 un uno))
+      (grup.nom.ms
+        (Zp 14,3_por_ciento 14,3_%)
+        (sp
+          (prep
+            (spcms respecto_al respecto_al))
+          (sn
+            (grup.nom.ms
+              (ncms000 año año)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 anterior anterior))))))))
+    (S.NF.A-CC
+      (Fc , ,)
+      (gerundi
+        (vmg0000 situándose situar))
+      (sp
+        (prep
+          (sps00 en en))
+        (snn
+          (espec.mp
+            (Z 75.412 75412))
+          (grup.nom.mp
+            (ncmp000 millones millón)
+            (sp
+              (prep
+                (sps00 de de))
+              (snn
+                (grup.nom.fp
+                  (Zm pesetas peseta))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fp
+          (da0fp0 Las el))
+        (grup.nom.fp
+          (ncfp000 alternativas alternativa)
+          (sp
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (ncmp000 sistemas sistema)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 compra compra))))
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0cp0 habituales habitual)))
+                (sp
+                  (Fc , ,)
+                  (prep
+                    (cs como como))
+                  (sn
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (ncms000 comercio comercio)
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0ms0 electrónico electrónico)))))
+                  (Fc , ,)))))))
+      (grup.verb
+        (vmip3p0 están estar)
+        (gerundi
+          (vmg0000 ganando ganar)))
+      (sn-CD
+        (espec.fs
+          (di0fs0 mucha mucho))
+        (grup.nom.fs
+          (ncfs000 importancia importancia))))
+    (coord
+      (cc e e))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmif3p0 irán ir)
+        (gerundi
+          (vmg0000 adquiriendo adquirir)))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 gran gran)))
+          (ncfs000 relevancia relevancia))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (pi0ms000 Otro otro)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (ncmp000 factores factor)
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vmip3p0 inciden incidir))
+                (sp-CREG
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (ncms000 consumo consumo)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.mp
+                            (ncmp000 artículos artículo)
+                            (s.a.mp
+                              (grup.a.mp
+                                (aq0mp0 deportivos deportivo)))))))))))))))
+    (grup.verb
+      (vsip3s0 es ser))
+    (sn-ATR
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 frecuencia frecuencia)
+        (S.F.R
+          (sp-CC
+            (prep
+              (sps00 con con))
+            (sn
+              (grup.nom.fs
+                (relatiu
+                  (pr0cn000 que que)))))
+          (morfema.verbal-PASS
+            (p0000000 se se))
+          (grup.verb
+            (vmip3s0 practica practicar))
+          (sn-SUJ
+            (grup.nom.ms
+              (ncms000 deporte deporte))))))
+    (Fp . .)))
+(
+  (S.co
+    (coord
+      (cc Mientras_que mientras_que))
+    (S
+      (sp-CCT
+        (prep
+          (sps00 en en))
+        (snd
+          (grup.nom.ms
+            (W 1975 [??:??/??/1975:??.??]))))
+      (sn-SUJ
+        (sadv.j
+          (grup.adv
+            (rg sólo sólo)))
+        (snn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (Zp 45_por_ciento 45_%)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 población población)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 practicante practicante)))))))))
+      (sn-CD
+        (grup.nom.ms
+          (pp3msa00 lo él)))
+      (grup.verb
+        (vmii3s0 hacía hacer))
+      (sadv-CC
+        (grup.adv
+          (rg regularmente regularmente)))
+      (Fc , ,))
+    (S
+      (sp-CCT
+        (prep
+          (sps00 en en))
+        (snd
+          (grup.nom.ms
+            (W 1995 [??:??/??/1995:??.??]))))
+      (sn-SUJ
+        (espec.ms
+          (dd0ms0 este este))
+        (grup.nom.ms
+          (ncms000 porcentaje porcentaje)))
+      (grup.verb
+        (vaii3s0 había haber)
+        (vmp00sm ascendido ascender))
+      (sp-CC
+        (prep
+          (spcms al al))
+        (snn
+          (grup.nom.ms
+            (Zp 80_por_ciento 80_%)))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (snn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (Zp 20_por_ciento 20_%)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 restante restante)))))
+      (sadv-CC
+        (grup.adv
+          (rg únicamente únicamente)))
+      (grup.verb
+        (vmii3s0 practicaba practicar))
+      (sn-CD
+        (grup.nom.ms
+          (ncms000 deporte deporte)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 forma forma)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 esporádica esporádico)))))))))
+    (coord
+      (cc o o))
+    (S*
+      (sadv-CC
+        (grup.adv
+          (rg solamente solamente)))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (grup.nom.fp
+            (ncfp000 vacaciones vacaciones)))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 clasificación clasificación)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (ncmp000 deportes deporte))))
+        (sp
+          (prep
+            (sps00 por por))
+          (sn
+            (grup.nom.ms
+              (ncms000 número número)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 clubes club))))))))
+      (Fc , ,))
+    (sadv-MOD
+      (grup.adv
+        (rg también también)))
+    (grup.verb
+      (vmip3s0 sitúa situar))
+    (sp-CD
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 fútbol fútbol))))
+    (sp-CC
+      (prep
+        (cs como como))
+      (sn
+        (grup.nom.ms
+          (ncms000 deporte deporte)
+          (s.a.ms
+            (grup.a.ms
+              (nccs000 líder líder)))
+          (sp
+            (Fc , ,)
+            (prep
+              (sps00 con con))
+            (snn
+              (grup.nom.mp
+                (Z 16.049 16049)
+                (S.F.R
+                  (Fc , ,)
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmip3p0 representan representar))
+                  (snn-CD
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (Zp 26,8_por_ciento 26,8_%)
+                      (sp
+                        (prep
+                          (spcms del del))
+                        (sn
+                          (grup.nom.ms
+                            (ncms000 total total)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (snl-SUJ
+      (espec.fp
+        (da0fp0 Las el))
+      (grup.nom.fp
+        (np0000l Comunidades_Autónomas Comunidades_Autónomas)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vaip3p0 han haber)
+            (vmp00sm registrado registrar))
+          (sn-CD
+            (espec.ms
+              (di0ms0 un uno))
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 mayor mayor)))
+              (ncms000 incremento incremento)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 número número)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fp
+                          (ncfp000 instalaciones instalación)))))))
+              (sp
+                (Fc , ,)
+                (prep
+                  (spcms respecto_al respecto_al))
+                (snd
+                  (grup.nom.ms
+                    (W año_1985 [??:??/??/1985:??.??])))
+                (Fc , ,)))))))
+    (grup.verb
+      (vaip3p0 han haber)
+      (vsp00sm sido ser))
+    (sn.x-ATR
+      (grup.nom.co
+        (grup.nom
+          (np0000l Baleares Baleares))
+        (Fc , ,)
+        (grup.nom
+          (np0000l Aragón Aragón))
+        (coord
+          (cc y y))
+        (grup.nom
+          (np0000l Asturias Asturias))))
+    (S.F.AConc-AO
+      (Fc , ,)
+      (conj.subord
+        (cs aunque aunque))
+      (snl-SUJ
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (np0000l Comunidades Comunidades)
+          (S.F.R
+            (relatiu-CCL
+              (pr000000 donde donde))
+            (grup.verb
+              (vaip3s0 hay haber))
+            (sn-CD
+              (espec.ms
+                (di0ms0 un uno))
+              (grup.nom.ms
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 mayor mayor)))
+                (ncms000 número número)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fp
+                      (ncfp000 instalaciones instalación)
+                      (s.a.fp
+                        (grup.a.fp
+                          (aq0fp0 deportivas deportivo)))))))))))
+      (grup.verb
+        (vsip3p0 son ser))
+      (sn.x-ATR
+        (grup.nom.co
+          (grup.nom
+            (np0000l Cataluña Cataluña))
+          (coord
+            (cc y y))
+          (grup.nom
+            (np0000l Andalucía Andalucía)))))
+    (Fp . .)))

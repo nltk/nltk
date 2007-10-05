@@ -1,0 +1,738 @@
+
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (nccs000 piloto piloto)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 italiano italiano)))
+        (snp
+          (grup.nom.ms
+            (np0000p Giuseppe_Burlotti Giuseppe_Burlotti)))))
+    (grup.verb
+      (vmif3s0 afrontará afrontar))
+    (sadv-CCT
+      (grup.adv
+        (rg mañana mañana)))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ao0fs0 primera primero)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (da0fp0 las el)
+              (dn0cp0 dos dos))
+            (grup.nom.fp
+              (ncfp000 carreras carrera)
+              (sp
+                (prep
+                  (spcms del del))
+                (sna
+                  (grup.nom.ms
+                    (np0000a Abierto_Telefónica_de_F-Nissan Abierto_Telefónica_de_F-Nissan)))))))))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (sna
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 circuito circuito)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 francés francés)))
+          (sp
+            (prep
+              (sps00 de de))
+            (snp
+              (grup.nom
+                (np0000p Magny_Cours Magny_Cours)))))))
+    (sp-CC
+      (prep
+        (cs como como))
+      (sn
+        (grup.nom.fs
+          (nccs000 líder líder)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 certamen certamen)))))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 tras tras))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 decisión decisión)
+          (sp
+            (prep
+              (spcms del del))
+            (sno
+              (grup.nom.ms
+                (np0000o Tribunal_de_la_FIA Tribunal_de_la_FIA))))
+          (sp
+            (prep
+              (sps00 de de))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 recalificarlo recalificar))
+              (sp-CC
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.fp
+                    (da0fp0 las el)
+                    (dn0cp0 dos dos))
+                  (grup.nom.fp
+                    (ncfp000 carreras carrera)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snl
+                        (grup.nom
+                          (np0000l Barcelona Barcelona))))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Burlotti Burlotti)))
+    (grup.verb
+      (vsis3s0 fue ser)
+      (vmp00sm excluido excluir))
+    (sp-CC
+      (prep
+        (sps00 de de))
+      (sn
+        (espec.fp
+          (da0fp0 las el)
+          (dn0cp0 dos dos))
+        (grup.nom.fp
+          (ncfp000 mangas manga))))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (sna
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np0000a Circuit_de_Catalunya Circuit_de_Catalunya))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 tras tras))
+      (sn
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 informe informe)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (ncmp000 comisarios comisario)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0mp0 técnicos técnico))))))
+          (S.F.R
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (pr0cn000 que que))))
+            (morfema.verbal-PASS
+              (p0000000 se se))
+            (grup.verb
+              (vmii3s0 constataba constatar))
+            (sn-SUJ
+              (espec.fs
+                (di0fs0 una uno))
+              (grup.nom.fs
+                (ncfs000 modificación modificación)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.mp
+                      (da0mp0 los el))
+                    (grup.nom.mp
+                      (ncmp000 anclajes anclaje)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.fs
+                            (ncfs000 seguridad seguridad))))
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.fp
+                            (da0fp0 las el))
+                          (grup.nom.fp
+                            (ncfp000 llantas llanta)))))))
+                (S.F.R
+                  (Fc , ,)
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmip3s0 permite permitir))
+                  (S.NF.C-CD
+                    (infinitiu
+                      (vmn0000 ganar ganar))
+                    (sn-CD
+                      (espec.ms
+                        (di0ms0 un uno))
+                      (grup.nom.ms
+                        (pi0ms000 poco poco)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 tiempo tiempo))))))
+                    (sp-CC
+                      (prep
+                        (sps00 en en))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 maniobra maniobra)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom.ms
+                                (ncms000 cambio cambio)
+                                (sp
+                                  (prep
+                                    (sps00 de de))
+                                  (sn
+                                    (grup.nom.fp
+                                      (ncfp000 ruedas rueda))))))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 exclusión exclusión)))
+      (grup.verb
+        (vsis3s0 fue ser)
+        (vmp00sf confirmada confirmar))
+      (sp-CAG
+        (prep
+          (sps00 por por))
+        (sno
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (np0000o Tribunal_de_Apelación Tribunal_de_Apelación)
+            (sp
+              (prep
+                (sps00 de de))
+              (sno
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np0000o Federación_Española Federación_Española)))))))
+      (Fc , ,))
+    (coord
+      (cc pero pero))
+    (S
+      (sadv-CCT
+        (grup.adv
+          (rg ahora ahora)))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3s0 ha haber)
+        (vsp00sm sido ser)
+        (vmp00sf revocada revocar)))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (grup.nom.s
+          (pp3ns000 Ello él)))
+      (sn-CI.r
+        (grup.nom.s
+          (pp3csd00 le él)))
+      (grup.verb
+        (vaip3s0 ha haber)
+        (vmp00sm valido valer))
+      (sp-CI.r
+        (prep
+          (sps00 a a))
+        (snp
+          (grup.nom.ms
+            (np0000p Burlotti Burlotti))))
+      (S.NF.C-CD
+        (infinitiu
+          (vmn0000 sumar sumar))
+        (sn-CD.Q
+          (grup.nom.mp
+            (Z 40 40))
+          (grup.nom.mp
+            (ncmp000 puntos punto))))
+      (Fc , ,))
+    (coord
+      (cc mientras_que mientras_que))
+    (S
+      (sn-SUJ
+        (grup.nom.mp
+          (pi0mp000 algunos alguno)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (dp3cp0 sus su))
+              (grup.nom.mp
+                (nccp000 rivales rival))))))
+      (grup.verb
+        (vaip3p0 han haber)
+        (vmp00sm debido deber)
+        (infinitiu
+          (vmn0000 restar restar)))
+      (sn-CD
+        (grup.nom.ms
+          (pi0ms000 alguno alguno))))
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 Por por))
+      (sn
+        (grup.nom.ms
+          (S.NF.P
+            (participi
+              (aq0msp dicho dicho)))
+          (ncms000 motivo motivo)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 italiano italiano)))
+    (grup.verb
+      (vsip3s0 es ser))
+    (sn-ATR
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 nuevo nuevo)))
+        (nccs000 líder líder)))
+    (sp-CC
+      (prep
+        (sps00 con con))
+      (sn
+        (espec.mp
+          (Z 115 115))
+        (grup.nom.mp
+          (ncmp000 puntos punto))))
+    (sp-CC
+      (prep
+        (sps00 por por))
+      (snn
+        (grup.nom.mp
+          (Z 109 109)
+          (sp
+            (prep
+              (sps00 de de))
+            (snp
+              (grup.nom.ms
+                (np0000p Antonio_García Antonio_García)))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CCT
+      (grup.adv
+        (rg Hoy hoy)))
+    (sp-CCL
+      (Fc , ,)
+      (prep
+        (sps00 en en))
+      (snp
+        (grup.nom
+          (np0000p Magnny_Cours Magnny_Cours)))
+      (Fc , ,))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vmis3p0 pusieron poner))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (grup.nom.ms
+          (ncms000 juego juego))))
+    (sn-CD
+      (espec.fp
+        (da0fp0 las el))
+      (grup.nom.fp
+        (ncfp000 parrillas parrilla)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fp
+              (ncfp000 salidas salida))))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (da0fp0 las el)
+              (dn0cp0 dos dos))
+            (grup.nom.fp
+              (ncfp000 carreras carrera)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 fin fin)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 semana semana))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 estado estado)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 pista pista)
+              (Fc , ,)
+              (S.NF.P
+                (sadv-CC
+                  (grup.adv
+                    (rg muy mucho)))
+                (participi
+                  (aq0fsp mojada mojado)))
+              (Fc , ,))))))
+    (grup.verb
+      (vmis3s0 favoreció favorecer))
+    (sp-CD
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (nccp000 pilotos piloto))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (ncmp000 entrenamientos entrenamiento)
+          (sp
+            (prep
+              (sps00 para para))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (s.a.fs
+                  (grup.a.fs
+                    (ao0fs0 primera primero)))
+                (ncfs000 carrera carrera)))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sadv-ET
+        (grup.adv
+          (rg Por_contra por_contra))
+        (Fc , ,))
+      (sp-CD
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (ao0fs0 segunda segundo)))
+            (ncfs000 sesión sesión)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 entrenamientos entrenamiento)))))))
+      (sp-CC
+        (Fc , ,)
+        (prep
+          (sps00 para para))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 parrilla parrilla)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (s.a.fs
+                    (grup.a.fs
+                      (ao0fs0 segunda segundo)))
+                  (ncfs000 carrera carrera)
+                  (S.F.R
+                    (Fc , ,)
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (morfema.verbal-PASS
+                      (p0000000 se se))
+                    (grup.verb
+                      (vmif3s0 disputará disputar))
+                    (sp-CCT
+                      (prep
+                        (sps00 en en))
+                      (snd
+                        (grup.nom.ms
+                          (W domingo [domingo:??/??/??:??.??]))))
+                    (Fc , ,))))))))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 pista pista)))
+      (grup.verb
+        (vmii3s0 estaba estar))
+      (sa-ATR
+        (espec
+          (rg ya ya))
+        (grup.a
+          (aq0fs0 seca seco))))
+    (coord
+      (cc y y))
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 situación situación)))
+      (grup.verb
+        (vmis3s0 varió variar))
+      (sadv-CC
+        (grup.adv
+          (rg sustancialmente sustancialmente)))
+      (S.NF.A-CC
+        (Fc , ,)
+        (gerundi
+          (vsg0000 siendo ser))
+        (sn
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (ncmp000 españoles español)
+            (sn.x
+              (grup.nom.co
+                (grup.nom
+                  (np0000p Antonio_García Antonio_García))
+                (coord
+                  (cc y y))
+                (grup.nom
+                  (np0000p Angel_Burgueño Angel_Burgueño))))
+            (S.F.R
+              (sn-SUJ
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (pr0cn000 que que)))
+              (grup.verb
+                (vmis3p0 coparon copar))
+              (sn-CD
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (s.a.fs
+                    (grup.a.fs
+                      (ao0fs0 primera primero)))
+                  (ncfs000 fila fila)))
+              (sp.co-CC
+                (Fc , ,)
+                (sp
+                  (prep
+                    (spcms por_delante_del por_delante_del))
+                  (snp
+                    (grup.nom.ms
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0ms0 portugués portugués)))
+                      (np0000p Aguas Aguas))))
+                (coord
+                  (cc y y))
+                (sp
+                  (prep
+                    (spcms del del))
+                  (snp
+                    (grup.nom.ms
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0ms0 italiano italiano)))
+                      (np0000p Burlotti Burlotti))))))))))
+    (Fp . .)))
+(
+  (S*
+    (sna
+      (grup.nom
+        (np0000a PARRILLAS_DE_SALIDA PARRILLAS_DE_SALIDA)
+        (Fz =================== =)))
+    (sn
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (ao0fs0 Primera primero)))
+        (ncfs000 carrera carrera)
+        (sn.co
+          (Fd : :)
+          (snp
+            (sn.j
+              (grup.nom
+                (nc00000 1. 1.)))
+            (snp
+              (grup.nom.ms
+                (np0000p Jean_C._Ravier_FRA Jean_C._Ravier_FRA)))
+            (snn.j
+              (grup.nom.ms
+                (Z 1:54.507 1:54.507))))
+          (snp
+            (sn.j
+              (grup.nom.p
+                (nc00000 2. 2.)))
+            (snp
+              (grup.nom.ms
+                (np0000p Jerome_Della_Lana_FRA Jerome_Della_Lana_FRA)))
+            (snn.j
+              (grup.nom.ms
+                (Z 1:54.548 1:54.548))))
+          (snp
+            (sn.j
+              (grup.nom.p
+                (nc00000 3. 3.)))
+            (snp
+              (grup.nom.ms
+                (np0000p Patrice_Gay_FRA Patrice_Gay_FRA)))
+            (snn.j
+              (grup.nom.ms
+                (Z 1:54.831 1:54.831))))
+          (snp
+            (sn.j
+              (grup.nom.p
+                (nc00000 4. 4.)))
+            (snp
+              (grup.nom.ms
+                (np0000p Antonio_García_ESP Antonio_García_ESP)))
+            (snn.j
+              (grup.nom.ms
+                (Z 1:55.628 1:55.628))))
+          (snp
+            (sn.j
+              (grup.nom.p
+                (nc00000 5. 5.)))
+            (snp
+              (grup.nom.fs
+                (np0000p Rui_Aguas_POR Rui_Aguas_POR)))
+            (snn.j
+              (grup.nom.ms
+                (Z 1:55.810 1:55.810)))))))
+    (sn
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (ao0fs0 Segunda segundo)))
+        (ncfs000 carrera carrera)
+        (sn.co
+          (Fd : :)
+          (snp
+            (sn.j
+              (grup.nom
+                (nc00000 1. 1.)))
+            (snp
+              (grup.nom.ms
+                (np0000p Antonio_García_ESP Antonio_García_ESP)))
+            (snn.j
+              (grup.nom.ms
+                (Z 1:31:339 1:31:339))))
+          (snp
+            (sn.j
+              (grup.nom.p
+                (nc00000 2. 2.)))
+            (snp
+              (grup.nom.ms
+                (np0000p Angel_Burgueño_ESP Angel_Burgueño_ESP)))
+            (snn.j
+              (grup.nom.ms
+                (Z 1:31.697 1:31.697))))
+          (snp
+            (sn.j
+              (grup.nom.p
+                (nc00000 3. 3.)))
+            (snp
+              (grup.nom.ms
+                (np0000p Rui_Aguas_POR Rui_Aguas_POR)))
+            (snn.j
+              (grup.nom.ms
+                (Z 1:31.826 1:31.826))))
+          (snp
+            (sn.j
+              (grup.nom.p
+                (nc00000 4. 4.)))
+            (snp
+              (grup.nom.ms
+                (np0000p Giuseppe_Burlotti_ITA Giuseppe_Burlotti_ITA)))
+            (snn.j
+              (grup.nom.ms
+                (Z 1:31.945 1:31.945))))
+          (snp
+            (sn.j
+              (grup.nom.p
+                (nc00000 5. 5.)))
+            (grup.nom.ms
+              (np0000p Jerome_Della_Lana_FRA Jerome_Della_Lana_FRA))
+            (snn.j
+              (grup.nom.ms
+                (Z 1:32.004 1:32.004)))))))
+    (Fp . .)))

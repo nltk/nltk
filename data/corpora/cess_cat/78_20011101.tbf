@@ -1,0 +1,145 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np00000 sinistre sinistre)
+        (S.NF.P
+          (Fc , ,)
+          (participi
+            (aq0msp registrat registrat))
+          (sp-CREG
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 mina mina)
+                (sn
+                  (grup.nom
+                    (np00000 Sierra_de_Arcos_d'_Ariño Sierra_de_Arcos_d'_Ariño))))))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 atrapar atrapar))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 interior interior))))
+    (sp-CCT
+      (prep
+        (sps00 durant durant))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 hora hora))))
+    (sn-CD
+      (espec.mp
+        (Z 28 28))
+      (grup.nom.mp
+        (ncmp000 treballadors treballador)
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (sadv-CC
+            (grup.adv
+              (rg finalment finalment)))
+          (grup.verb
+            (vaip3p0 van anar)
+            (vmn0000 aconseguir aconseguir))
+          (S.NF.C-CD
+            (infinitiu
+              (vmn0000 sortir sortir))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.AConc-AO
+      (conj.subord
+        (cs Tot_i_que tot_i_que))
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (ncmp000 empleats empleat)))
+      (grup.verb
+        (vmii3p0 portaven portar))
+      (sn-CD
+        (grup.nom.fp
+          (ncfp000 màscares màscara)))
+      (Fc , ,))
+    (sn-SUJ
+      (grup.nom.p
+        (pn0cp000 tres tres)))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 patir patir))
+    (sn-CD
+      (grup.nom.fs
+        (ncfs000 intoxicació intoxicació)))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (sn
+        (grup.nom.ms
+          (ncms000 fum fum))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (di0mp0 Diversos divers))
+      (grup.nom.mp
+        (ncmp000 equips equip)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 salvament salvament))))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 col·laborar col·laborar))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 rescat rescat))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 mina mina)))
+    (morf.pron
+      (p0300000 es ell))
+    (grup.verb
+      (vmip3s0 dedica dedicar))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (ncfs000 extracció extracció)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 lignit lignit)))))))
+    (Fp . .)))

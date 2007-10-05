@@ -1,0 +1,127 @@
+
+(
+  (S
+    (sp-CCT
+      (prep
+        (spcms Al al))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 complir complir))
+        (sn-CD
+          (espec.mp
+            (Z 100 100))
+          (grup.nom.mp
+            (ncmp000 dies dia)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (np00000 Govern Govern)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 provisional provisional)))))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 polític polític)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 peruà peruà)))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 dir dir))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmif3s0 recorrerà recórrer))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fp
+            (di0fp0 diverses divers))
+          (grup.nom.fp
+            (ncfp000 instàncies instància))))
+      (sp-CCL
+        (prep
+          (spcms al al))
+        (sn
+          (grup.nom.ms
+            (np00000 Japó Japó))))
+      (sp-CC
+        (prep
+          (sps00 per per))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 aconseguir aconseguir))
+          (S.F.C-CD
+            (conj.subord
+              (cs que que))
+            (sn-SUJ
+              (espec.ms
+                (dp3ms0 el_seu el_seu))
+              (grup.nom.ms
+                (ncms000 antecessor antecessor)))
+            (grup.verb
+              (vssp3s0 sigui ser))
+            (S.NF.P-ATR
+              (participi
+                (aq0msp jutjat jutjat))
+              (sp-CCL
+                (prep
+                  (spcms al al))
+                (sn
+                  (espec.ms
+                    (dp3ms0 seu seu))
+                  (grup.nom.ms
+                    (ncms000 país país)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 president president)))
+    (sadv-MOD
+      (grup.adv
+        (rg també també)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 plantejar plantejar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 possibilitat possibilitat)
+        (sp
+          (prep
+            (sps00 d' de))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 oferir oferir))
+            (sn-CD
+              (espec.fs
+                (di0fs0 una un))
+              (grup.nom.fs
+                (ncfs000 recompensa recompensa)))
+            (sp-CC
+              (prep
+                (sps00 per per))
+              (sn
+                (espec.fs
+                  (da0cs0 l' el))
+                (grup.nom.fs
+                  (ncfs000 entrega entrega)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.ms
+                        (np00000 Vladimiro_Montesinos Vladimiro_Montesinos)))))))))))
+    (Fp . .)))

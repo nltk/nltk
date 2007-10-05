@@ -1,0 +1,210 @@
+
+(
+  (S
+    (sno-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (np0000o Orquestra_Simfònica_del_Vallès Orquestra_Simfònica_del_Vallès)))
+    (grup.verb
+      (vmip3s0 arriba arribar))
+    (sp-CREG
+      (prep
+        (spcms al al))
+      (sn
+        (espec.ms
+          (dp3ms0 seu seu))
+        (grup.nom.ms
+          (ncms000 concert concert)
+          (snn
+            (grup.nom.ms
+              (ncms000 número número)
+              (sn
+                (grup.nom.ms
+                  (ncms000 mil mil))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sno-SUJ
+        (espec.fs
+          (da0cs0 L' el))
+        (grup.nom.fs
+          (np0000o Orquestra_Simfònica_del_Vallès Orquestra_Simfònica_del_Vallès)))
+      (grup.verb
+        (vmip3s0 celebra celebrar))
+      (sadv-CC
+        (grup.adv
+          (rg demà demà)))
+      (sp-CC
+        (prep
+          (spcms al al))
+        (sn
+          (grup.nom.ms
+            (ncms000 vespre vespre))))
+      (sp-CC
+        (prep
+          (spcms al al))
+        (snl
+          (grup.nom.ms
+            (np0000l Palau_de_la_Música Palau_de_la_Música))))
+      (sn-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 concert concert)
+          (snn
+            (grup.nom.ms
+              (ncms000 número número)
+              (sn
+                (grup.nom.ms
+                  (ncms000 mil mil))))))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (morf.pron
+        (p0300000 es ell))
+      (grup.verb
+        (vmip3s0 consolida consolidar))
+      (sp-CC
+        (prep
+          (cs com com))
+        (sn
+          (grup.nom.fs
+            (pi0fs000 una un)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fp
+                  (da0fp0 les el))
+                (grup.nom.fp
+                  (ncfp000 formacions formació)
+                  (s.a.fp
+                    (espec
+                      (rg més més))
+                    (grup.a.fp
+                      (aq0cp0 importants important)
+                      (sp
+                        (prep
+                          (spcms del del))
+                        (sn
+                          (grup.nom.ms
+                            (ncms000 país país)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 actors actor)
+        (sn.x
+          (grup.nom.co
+            (grup.nom.ms
+              (np0000p Jordi_Boixaderas Jordi_Boixaderas))
+            (coord
+              (cc i i))
+            (grup.nom.fs
+              (np0000p Rosa_Cadafalch Rosa_Cadafalch))))))
+    (grup.verb
+      (vmif3p0 participaran participar))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (dd0ms0 aquest aquest))
+        (grup.nom.ms
+          (ncms000 concert concert)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 extraordinari extraordinari)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0cs0 l' el))
+              (grup.nom.fs
+                (ncfs000 orquestra orquestra)
+                (S.F.R.co
+                  (Fc , ,)
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vsif3s0 serà ser)
+                      (vmp00sf dirigida dirigir))
+                    (sp-CAG
+                      (prep
+                        (spcms pel pel))
+                      (snp
+                        (espec.ms
+                          (dp3ms0 seu seu))
+                        (grup.nom.ms
+                          (nccs000 titular titular)
+                          (snp
+                            (Fc , ,)
+                            (grup.nom.ms
+                              (np0000p Salvador_Brotons Salvador_Brotons))
+                            (Fc , ,))))))
+                  (coord
+                    (cc i i))
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vmif3s0 abordarà abordar))
+                    (sn-CD
+                      (espec.ms
+                        (dn0ms0 un un))
+                      (grup.nom.ms
+                        (ncms000 programa programa)
+                        (S.NF.P
+                          (participi
+                            (aq0msp dedicat dedicat))
+                          (sp-CREG
+                            (prep
+                              (spcms al al))
+                            (sn
+                              (grup.nom.ms
+                                (ncms000 tema tema)
+                                (sp
+                                  (prep
+                                    (sps00 de de))
+                                  (sn
+                                    (espec.ms
+                                      (da0cs0 l' el))
+                                    (grup.nom.ms
+                                      (nccs000 amor amor)
+                                      (s.a.ms
+                                        (grup.a.ms
+                                          (aq0ms0 etern etern))))))))))))
+                    (sp-CC
+                      (Fc , ,)
+                      (prep
+                        (sps00 amb amb))
+                      (sna
+                        (espec.mp
+                          (da0mp0 els el))
+                        (grup.nom.mp
+                          (Fz ' ')
+                          (np0000a Romeo_i_Julieta Romeo_i_Julieta)
+                          (Fz ' ')
+                          (sp
+                            (prep
+                              (sps00 d' de))
+                            (sn.x
+                              (grup.nom.co
+                                (grup.nom.ms
+                                  (np0000p Hector_Berlioz Hector_Berlioz))
+                                (Fc , ,)
+                                (grup.nom.ms
+                                  (np0000p Peter_I._Txaikovski Peter_I._Txaikovski))
+                                (coord
+                                  (cc i i))
+                                (grup.nom.ms
+                                  (np0000p Sergei_Prokófiev Sergei_Prokófiev))))))))))))))))
+    (Fp . .)))

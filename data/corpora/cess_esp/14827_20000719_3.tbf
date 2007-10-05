@@ -1,0 +1,72 @@
+
+(
+  (S
+    (sn-CCT
+      (espec.ms
+        (dd0ms0 Este este))
+      (grup.nom.ms
+        (ncms000 año año)))
+    (grup.verb
+      (vmip3p0 pueden poder)
+      (infinitiu
+        (vmn0000 reducirse reducir)))
+    (snn-SUJ
+      (espec.mp
+        (da0mp0 los el)
+        (Z 5 5))
+      (grup.nom.mp
+        (ncmp000 millones millón)))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 oferta oferta))))
+    (sn-AO
+      (Fc , ,)
+      (espec.ms
+        (da0ns0 lo el))
+      (grup.nom.ms
+        (S.F.R.co
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (S.F.R
+            (grup.verb
+              (vmic3s0 arreglaría arreglar))
+            (sn-CD
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 problema problema)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.mp
+                      (da0mp0 los el)
+                          (di0cp0 demás demás))
+                      (ncmp000 productores productor))))))
+            (coord
+              (cc y y)))
+          (S.F.R
+            (grup.verb
+              (vmic3s0 nivelaría nivelar))
+            (sn-CD
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 situación situación)
+                (sp
+                  (prep
+                    (sps00 entre entre))
+                  (sn.x
+                    (grup.nom.co
+                      (grup.nom.fs
+                        (ncfs000 oferta oferta))
+                      (coord
+                        (cc y y))
+                      (grup.nom.fs
+                        (ncfs000 demanda demanda)))))))))))
+    (Fp . .)))

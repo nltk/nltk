@@ -1,0 +1,273 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 mal mal)))
+        (ncmn000 temps temps)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 avortar avortar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (ao0ms0 primer primer)))
+        (ncms000 intent intent)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.ms
+              (ncms000 enllaç enllaç)
+              (s.a.ms.x
+                (grup.a.ms.co
+                  (grup.a.ms
+                    (aq0ms0 marítim marítim))
+                  (coord
+                    (cc i i))
+                  (grup.a.ms
+                    (aq0ms0 directe directe))))
+              (sp
+                (prep
+                  (sps00 entre entre))
+                (sn.co
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (np00000 Xina Xina)))
+                  (coord
+                    (cc i i))
+                  (sn
+                    (grup.nom
+                      (np00000 Taiwan Taiwan))))))))
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.mp
+              (Z 50 50))
+            (grup.nom.mp
+              (ncmp000 anys any))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 onades onada)
+        (s.a.fp
+          (grup.a.fp
+            (aq0cp0 regnants regnant)
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.ms
+                  (da0cs0 l' el))
+                (grup.nom.ms
+                  (ncms000 estret estret)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom
+                        (np00000 Formosa Formosa)))))))))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 fer fer)
+      (infinitiu
+        (vmn0000 tornar tornar)))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom.ms
+          (ncms000 port port))))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 vaixell vaixell)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vaip3s0 va anar)
+            (vmn0000 sortir sortir))
+          (sp-CCL
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0cs0 l' el))
+              (grup.nom.fs
+                (ncfs000 illa illa)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom
+                      (np00000 Kemoi Kemoi))))
+                (sp
+                  (Fpt -Fpt- -Fpt-)
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (grup.nom.fp
+                      (np00000 Taiwan Taiwan)))
+                  (Fpa -Fpa- -Fpa-)))))
+          (sp-CC
+            (prep
+              (sps00 amb amb))
+            (sn
+              (grup.nom.fs
+                (ncfs000 destinació destinació)
+                (sp
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (grup.nom
+                      (np00000 Xiamen Xiamen)
+                      (sp
+                        (Fc , ,)
+                        (prep
+                          (sps00 a a))
+                        (sn
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (np00000 Xina Xina)
+                            (s.a.fs
+                              (grup.a.fs
+                                (aq0cs0 continental continental)))))))))))))
+        (sp
+          (Fc , ,)
+          (prep
+            (sps00 amb amb))
+          (sn
+            (espec.fp
+              (Z 55 55))
+            (grup.nom.fp
+              (ncfp000 persones persona)
+              (sadv
+                (grup.adv
+                  (rg a_bord a_bord))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 viatge viatge)))
+    (grup.verb
+      (vaii3s0 havia haver)
+      (sps00 d' de)
+      (infinitiu
+        (vmn0000 inaugurar inaugurar)))
+    (sn.co-CD
+      (sn.co
+        (sn
+          (espec.mp
+            (da0mp0 els el))
+          (grup.nom.mp
+            (ncmp000 intercanvis intercanvi)
+            (s.a.mp.x
+              (grup.a.mp.co
+                (grup.a.mp
+                  (aq0cp0 postals postal))
+                (coord
+                  (cc i i))
+                (grup.a.mp
+                  (aq0cp0 comercials comercial))))))
+        (Fc , ,)
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 transport transport)))
+        (coord
+          (cc i i))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 circulació circulació)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fp
+                  (ncfp000 persones persona)))))))
+      (sp.j
+        (prep
+          (sps00 entre entre))
+        (sn.co
+          (sn
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (ncfp000 illes illa)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 taiwaneses taiwanès)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn.x
+                  (grup.nom.co
+                    (grup.nom
+                      (np00000 Kemoi Kemoi))
+                    (coord
+                      (cc i i))
+                    (grup.nom
+                      (np00000 Matsu Matsu)))))))
+          (coord
+            (cc i i))
+          (sn
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (ncfp000 ciutats ciutat)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 xineses xinès)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn.x
+                  (grup.nom.co
+                    (grup.nom
+                      (np00000 Fuzhu Fuzhu))
+                    (coord
+                      (cc i i))
+                    (grup.nom
+                      (np00000 Xiamen Xiamen)))))
+              (sp
+                (Fc , ,)
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 província província)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom
+                          (np00000 Fujian Fujian))))))))))))
+    (Fp . .)))

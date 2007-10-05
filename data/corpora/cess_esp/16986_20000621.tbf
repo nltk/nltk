@@ -1,0 +1,395 @@
+
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 portal portal)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 iberoamericano iberoamericano)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 turismo turismo))))
+        (sno
+          (grup.nom.ms
+            (np0000o Despegar.com Despegar.com)))
+        (sp
+          (Fc , ,)
+          (prep
+            (sps00 para para))
+          (sn
+            (grup.nom.fs
+              (ncfs000 venta venta)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 pasajes pasaje)
+                    (s.a.mp
+                      (grup.a.mp
+                        (aq0mp0 aéreos aéreo)))
+                    (sadv
+                      (grup.adv
+                        (rg en_línea en_línea))))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmis3s0 inició iniciar))
+    (sn-CD
+      (espec.fp
+        (dp3cp0 sus su))
+      (grup.nom.fp
+        (ncfp000 operaciones operación)))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (snl
+        (grup.nom
+          (np0000l Venezuela Venezuela))))
+    (S.F.A-AO
+      (Fc , ,)
+      (conj.subord
+        (cs según según))
+      (grup.verb
+        (vmis3s0 informó informar))
+      (snp-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (nccs000 gerente gerente)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 general general)))
+          (sp
+            (prep
+              (sps00 en en))
+            (snl
+              (grup.nom
+                (np0000l Venezuela Venezuela))))
+          (snp
+            (Fc , ,)
+            (grup.nom.fs
+              (np0000p María_Virginia_De_Zabala María_Virginia_De_Zabala))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 sitio sitio)
+          (S.F.R.co
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (S.F.R
+              (grup.verb
+                (vmip3s0 lleva llevar))
+              (sn-CD.Q
+                (espec.mp
+                  (dn0cp0 seis seis))
+                (grup.nom.mp
+                  (ncmp000 meses mes)))
+              (sp-CCL
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 mercado mercado)))))
+            (coord
+              (cc y y))
+            (S.F.R
+              (grup.verb
+                (vmip3s0 está estar))
+              (sa-CPRED.SUJ
+                (grup.a
+                  (aq0cs0 presente presente)))
+              (sp-CREG
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.mp
+                    (dn0cp0 siete siete))
+                  (grup.nom.mp
+                    (ncmp000 países país)
+                    (s.a.mp
+                      (grup.a.mp
+                        (aq0mp0 iberoamericanos iberoamericano)))))))
+            (Fc , ,))))
+      (grup.verb
+        (vsis3s0 fue ser)
+        (vmp00sm diseñado diseñar))
+      (sp-CC
+        (prep
+          (sps00 para para))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 agilizar agilizar))
+          (sp-CC
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 manera manera)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 virtual virtual))))))
+          (sn-CD
+            (espec.fp
+              (da0fp0 las el))
+            (grup.nom.fp
+              (ncfp000 operaciones operación)
+              (S.F.R
+                (relatiu-CD
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vmip3s0 requiere requerir))
+                (sn-SUJ
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (nccs000 turista turista)))
+                (sp-CC
+                  (prep
+                    (sps00 para para))
+                  (S.NF.C
+                    (infinitiu
+                      (vmn0000 planificar planificar))
+                    (sn-CD
+                      (espec.mp
+                        (dp3cp0 sus su))
+                      (grup.nom.mp
+                        (ncmp000 viajes viaje))))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 indicó indicar))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 ejecutiva ejecutiva)))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 portal portal)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 funciona funcionar))
+          (sp-CCL
+            (sadv.j
+              (grup.adv
+                (rg también también)))
+            (sp
+              (prep
+                (sps00 en en))
+              (sn.x
+                (grup.nom.co
+                  (grup.nom
+                    (np0000l Argentina Argentina))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000l Chile Chile))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000l México México))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000l Uruguay Uruguay))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000l Colombia Colombia))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000l Brasil Brasil))
+                  (coord
+                    (cc y y))
+                  (grup.nom
+                    (np0000l España España))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmip3s0 cuenta contar))
+    (sp-CC
+      (prep
+        (sps00 entre entre))
+      (sn
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (ncmp000 inversores inversor)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (sn-CD
+              (grup.nom.ms
+                (pp3msa00 lo él)))
+            (grup.verb
+              (vmip3p0 respaldan respaldar))))))
+    (sp-CREG
+      (prep
+        (sps00 con con))
+      (sn.x
+        (sn.x
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.co
+            (grup.nom.ms
+              (ncms000 grupo grupo)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 hotelero hotelero)))
+              (grup.nom
+                (np0000o Accor Accor)))
+            (Fc , ,)
+            (grup.nom
+              (np0000o Merril_Lynch_Global_Emerging_Markets_Partners Merril_Lynch_Global_Emerging_Markets_Partners)
+              (Fc , ,))
+            (coord
+              (cc y y))
+            (grup.nom
+              (np0000o Tate_&_Furst_Inc Tate_&_Furst_Inc))))
+        (sp.j
+          (Fc , ,)
+          (prep
+            (sps00 entre entre))
+          (sn
+            (grup.nom.mp
+              (pi0mp000 otros otro))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 página página)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 turismo turismo))))))
+    (grup.verb
+      (vmif3s0 ofrecerá ofrecer))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un uno))
+      (grup.nom.ms
+        (ncms000 servicio servicio)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn.x
+            (grup.nom.co
+              (grup.nom.fs
+                (ncfs000 alerta alerta)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fp
+                      (ncfp000 tarifas tarifa)))))
+              (Fc , ,)
+              (grup.nom.fs
+                (ncfs000 entrega entrega)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 pasajes pasaje)))))
+              (coord
+                (cc y y))
+              (grup.nom.fs
+                (ncfs000 línea línea)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 emergencia emergencia))))
+                (sp
+                  (prep
+                    (sps00 para para))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 pasajeros pasajero)
+                      (S.F.R
+                        (relatiu-SUJ
+                          (pr0cn000 que que))
+                        (grup.verb
+                          (vmip3p0 deben deber)
+                          (infinitiu
+                            (vmn0000 viajar viajar)))
+                        (sp-CC
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (grup.nom.fs
+                              (ncfs000 urgencia urgencia))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sadv-CCT
+        (grup.adv
+          (rg Actualmente actualmente)))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 portal portal)))
+      (grup.verb
+        (vmip3s0 tiene tener))
+      (sn-CD.Q
+        (espec.mp
+          (rg más más)
+          (sps00 de de)
+          (Z 120.000 120000))
+        (grup.nom.mp
+          (ncmp000 usuarios usuario)))
+      (S.NF.P-CPRED.CD
+        (participi
+          (aq0mpp registrados registrado))))
+    (coord
+      (cc y y))
+    (S
+      (sadv-CC
+        (grup.adv
+          (rg diariamente diariamente)))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3s0 recibe recibir))
+      (sn-CD
+        (grup.nom.fp
+          (ncfp000 solicitudes solicitud)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (rg más más)
+                (sps00 de de)
+                (Z 4.000 4000))
+              (grup.nom.mp
+                (ncmp000 presupuestos presupuesto)
+                (sp
+                  (prep
+                    (sps00 para para))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 viajes viaje))))))))))
+    (Fp . .)))

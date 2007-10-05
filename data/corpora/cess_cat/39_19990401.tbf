@@ -1,0 +1,182 @@
+
+(
+  (S
+    (S.F.C-CD
+      (sn-SUJ
+        (espec.ms
+          (di0ms0 Un un))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (ao0ms0 segon segon)))
+          (ncms000 míssil míssil)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0cs0 l' el))
+              (grup.nom.fs
+                (np00000 OTAN OTAN))))))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 caure caure))
+      (sp-CCL
+        (prep
+          (sps00 en en))
+        (sn
+          (grup.nom.fs
+            (ncfs000 terra terra)
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 búlgara búlgar))))))
+      (sn-CCT
+        (grup.nom.ms
+          (W dimarts [dimarts:??/??/??:??.??])))
+      (sp-CCT
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 nit nit))))
+      (sp-CC
+        (prep
+          (sps00 sense sense))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 causar causar))
+          (sn.x-CD
+            (grup.nom.co
+              (grup.nom.mp
+                (ncmp000 danys dany))
+              (coord
+                (cc ni ni))
+              (grup.nom.fp
+                (ncfp000 víctimes víctima))))))
+      (Fc , ,))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 anunciar anunciar))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (np00000 Ministeri_de_l'_Interior Ministeri_de_l'_Interior)))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 trossos tros)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 míssil míssil)
+              (S.F.R
+                (Fc , ,)
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vaip3s0 va anar)
+                  (vmn0000 explotar explotar))
+                (sp-CCL
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (espec.ms
+                      (da0cs0 l' el))
+                    (grup.nom.ms
+                      (ncms000 aire aire))))
+                (Fc , ,)))))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 provocar provocar))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 forat forat)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (dn0cp0 sis sis))
+            (grup.nom.mp
+              (ncmp000 metres metre)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 diàmetre diàmetre)))))))))
+    (sp-CCL
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 poble poble)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom
+                (np00000 Elovdol Elovdol))))
+          (S.NF.P
+            (Fc , ,)
+            (participi
+              (aq0msp situat situat))
+            (sp-CREG
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.mp
+                  (Z 20 20))
+                (grup.nom.mp
+                  (ncmp000 quilòmetres quilòmetre)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 frontera frontera)
+                        (sp
+                          (prep
+                            (sps00 amb amb))
+                          (sn
+                            (grup.nom
+                              (np00000 Iugoslàvia Iugoslàvia))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (ao0ms0 primer primer)))
+        (ncms000 míssil míssil)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 caure caure))
+    (sn-CCT
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (W 24_de_març [??:24/3/??:??.??])))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom
+          (np00000 Trun Trun))))
+    (Fp . .)))

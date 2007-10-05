@@ -1,0 +1,197 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np00000 Ministeri_de_Foment Ministeri_de_Foment)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm imposat imposar))
+    (sn-CD
+      (espec.fp
+        (dn0cp0 sis sis))
+      (grup.nom.fp.1n
+        (ncfp000 multes multa)))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom
+          (np00000 Antena_3_TV Antena_3_TV))))
+    (sp-CCT
+      (prep
+        (spcms des_del des_del))
+      (sn
+        (grup.nom.ms
+          (W 1997 [??:??/??/1997:??.??]))))
+    (sn.1c
+      (Fpa -Fpa- -Fpa-)
+      (sadv.j
+        (grup.adv
+          (rg en_total en_total))
+        (Fc , ,))
+      (sn
+        (espec.mp
+          (Z 32,7 32.7))
+        (grup.nom.mp
+          (ncmp000 milions milió)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (Zm pessetes pesseta))))))
+      (Fpt -Fpt- -Fpt-))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 per per))
+      (sn
+        (grup.nom.mp
+          (ncmp000 incompliments incompliment)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 llei llei)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom
+                      (np00000 TV TV)
+                      (sp
+                        (prep
+                          (sps00 sense sense))
+                        (sn
+                          (grup.nom.fp
+                            (ncfp000 fronteres frontera))))))))))
+          (sn.x
+            (grup.nom.co
+              (Fpa -Fpa- -Fpa-)
+              (grup.nom.fp
+                (ncfp000 interrupcions interrupció)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0fp0 publicitàries publicitari))))
+              (coord
+                (cc i i))
+              (grup.nom.fs
+                (ncfs000 identificació identificació)
+                (sp
+                  (prep
+                    (sps00 d' de))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 espots espot)))))
+              (Fpt -Fpt- -Fpt-))))))
+    (Fp . .)))
+(
+  (S.co
+    (sp.j-AO
+      (prep
+        (sps00 Segons segons))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 resposta resposta)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 parlamentària parlamentari)))))
+      (Fc , ,))
+    (S.co
+      (S
+        (sn-SUJ
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (ncfp000 sancions sanció)
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (grup.nom
+                  (np00000 Tele_5 Tele_5))))))
+        (sp-CCT
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.mp
+              (dd0mp0 aquests aquest))
+            (grup.nom.mp
+              (ncmp000 anys any))))
+        (grup.verb
+          (vmip3p0 pugen pujar))
+        (sp-CREG
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.mp
+              (Z 30,69 30.69))
+            (grup.nom.mp
+              (ncmp000 milions milió)))
+          (Fc , ,)))
+      (coord
+        (cc i i))
+      (S*
+        (sn-SUJ
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom
+                  (np00000 TVE TVE))))))
+        (Fc , ,)
+        (sp-CREG
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.mp
+              (Z 26,54 26.54))
+            (grup.nom.mp
+              (ncmp000 milions milió))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom
+        (np00000 C_+ C_+)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vsp00sm estat ser)
+      (vmp00sf multada multar))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 sola sol)))
+          (ncfs000 ocasió ocasió))))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.mp
+          (dn0cp0 cinc cinc))
+        (grup.nom.mp
+          (ncmp000 milions milió)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (Zm pessetes pesseta)))))))
+    (Fp . .)))

@@ -1,0 +1,633 @@
+
+(
+  (S
+    (S.F.C-CD
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 uso uso)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 indiscriminado indiscriminado)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 alimentos alimento)
+                (S.NF.P.co
+                  (S.NF.P
+                    (participi
+                      (aq0mp0 granulados granulado)))
+                  (Fc , ,)
+                  (S.NF.P
+                    (participi
+                      (aq0mpp concentrados concentrado)))
+                  (coord
+                    (cc o o))
+                  (S.NF.P
+                    (participi
+                      (aq0msp deshidratados deshidratado)))))))
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 preparación preparación)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn.x
+                    (grup.nom.co
+                      (grup.nom.mp
+                        (ncmp000 caldos caldo))
+                      (coord
+                        (cc y y))
+                      (grup.nom.fp
+                        (ncfp000 sopas sopa))))))))))
+      (grup.verb
+        (vmip3s0 tiene tener))
+      (sn-CD.Q
+        (grup.nom.mp
+          (ncmp000 efectos efecto)
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 nocivos nocivo)))
+          (sp
+            (prep
+              (sps00 para para))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 salud salud))))))
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 denunció denunciar))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (np0000o Asociación_Mexicana_de_Estudios_para_la_Defensa_del_Consumidor Asociación_Mexicana_de_Estudios_para_la_Defensa_del_Consumidor)
+        (sno
+          (grup.nom.fs
+            (Fpa -Fpa- -Fpa-)
+            (np0000o AMEDEC AMEDEC)
+            (Fpt -Fpt- -Fpt-)))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 presidente presidente)
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (grup.nom
+              (np0000o AMEDEC AMEDEC))))
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (np0000p Arturo_Lomelí Arturo_Lomelí))
+          (Fc , ,))))
+    (grup.verb
+      (vmis3s0 advirtió advertir))
+    (sp-CREG
+      (prep
+        (sps00 de de))
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (Fe " ")
+        (sn-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 consumo consumo)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 excesivo excesivo)))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 granulados granulado))))))
+        (grup.verb
+          (vmip3s0 causa causar))
+        (sn-CD
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (S.NF.P
+              (participi
+                (aq0msp llamado llamado)))
+            (ncms000 'síndrome síndrome)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncms000 restaurante restaurante)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 chino' chino))))))
+            (S.F.R
+              (Fc , ,)
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (morf.pron
+                (p0300000 se él))
+              (grup.verb
+                (vmip3s0 caracteriza caracterizar))
+              (sp-CC
+                (prep
+                  (sps00 por por))
+                (sn
+                  (espec.fs
+                    (di0fs0 una uno))
+                  (grup.nom.fs
+                    (ncfs000 tensión tensión)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.mp
+                          (da0mp0 los el))
+                        (grup.nom.mp
+                          (ncmp000 músculos músculo)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn.x
+                              (grup.nom.co
+                                (grup.nom.fs
+                                  (ncfs000 cara cara))
+                                (coord
+                                  (cc y y))
+                                (grup.nom.ms
+                                  (ncms000 cuello cuello)))))))))))
+              (Fc , ,))
+            (S.NF.P
+              (participi
+                (aq0msp acompañado acompañado))
+              (sp-CAG
+                (prep
+                  (sps00 de de))
+                (sn.x
+                  (grup.nom.co
+                    (grup.nom.ms
+                      (ncms000 dolor dolor)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.fs
+                            (ncfs000 cabeza cabeza)))))
+                    (Fc , ,)
+                    (grup.nom.fp
+                      (ncfp000 náuseas náusea))
+                    (coord
+                      (cc y y))
+                    (grup.nom.ms
+                      (ncms000 vahído vahído))))))))
+        (Fe " ")))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Lomeli Lomeli)))
+    (grup.verb
+      (vmis3s0 agregó agregar))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 comunicado comunicado))))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (snn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (Zp 95_por_ciento 95_%)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (ncmp000 hogares hogar)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0mp0 mexicanos mexicano))))))))
+      (grup.verb
+        (vmip3p0 consumen consumir))
+      (sn-CD
+        (grup.nom.mp
+          (ncmp000 alimentos alimento)
+          (S.NF.P
+            (participi
+              (aq0mpp concentrados concentrado)))
+          (sp
+            (prep
+              (sps00 para para))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 preparar preparar))
+              (sn.x-CD
+                (grup.nom.co
+                  (grup.nom.fp
+                    (ncfp000 sopas sopa))
+                  (coord
+                    (cc y y))
+                  (grup.nom.mp
+                    (ncmp000 caldos caldo))))))
+          (S.NF.P
+            (Fc , ,)
+            (participi
+              (aq0mpp producidos producido))
+            (sp-CAG
+              (prep
+                (sps00 por por))
+              (sn
+                (espec.fp
+                  (di0fp0 unas uno)
+                  (Z 50 50))
+                (grup.nom.fp
+                  (ncfp000 compañías compañía)
+                  (s.a.fp.co
+                    (coord
+                      (rg tanto tanto))
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 país país))))
+                    (coord
+                      (cs como como))
+                    (s.a.fp
+                      (grup.a.fp
+                        (aq0fp0 extranjeras extranjero)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Las el))
+      (grup.nom.fp
+        (ncfp000 amas ama)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 casa casa))))
+        (s.a.fp
+          (grup.a.fp
+            (aq0fp0 mexicanas mexicano)))))
+    (grup.verb
+      (vmip3p0 destinan destinar))
+    (sn-CCT
+      (espec.ms
+        (di0cs0 cada cada))
+      (grup.nom.ms
+        (ncms000 año año)))
+    (snn-CD
+      (snn
+        (espec.mp
+          (di0mp0 unos uno)
+          (Z 3.000 3000))
+        (grup.nom.mp
+          (ncmp000 millones millón)
+          (sp
+            (prep
+              (sps00 de de))
+            (snn
+              (grup.nom.mp
+                (Zm pesos peso))))))
+      (snn.j
+        (Fpa -Fpa- -Fpa-)
+        (espec.mp
+          (Z 316 316))
+        (grup.nom.mp
+          (ncmp000 millones millón)
+          (sp
+            (prep
+              (sps00 de de))
+            (snn
+              (grup.nom.mp
+                (Zm dólares dólar)))))
+        (Fpt -Fpt- -Fpt-)))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 compra compra)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 granulados granulado)
+                (sp
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.fp
+                      (di0fp0 distintas distinto))
+                    (grup.nom.fp
+                      (ncfp000 presentaciones presentación))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Lomelí Lomelí)))
+    (grup.verb
+      (vmis3s0 exigió exigir))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 autoridades autoridad)
+          (s.a.fp
+            (grup.a.fp
+              (aq0fp0 sanitarias sanitario))))))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmsp3p0 alerten alertar))
+      (sp-CD
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fp
+            (da0fp0 las el))
+          (grup.nom.fp
+            (ncfp000 familias familia))))
+      (sp-CC
+        (prep
+          (sps00 para para))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 evitar evitar))
+          (S.F.C-CD
+            (conj.subord
+              (cs que que))
+            (sn-SUJ
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 comida comida)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn.x
+                    (grup.nom.co
+                      (grup.nom.mp
+                        (ncmp000 bebés bebé))
+                      (Fc , ,)
+                      (grup.nom.mp
+                        (ncmp000 niños niño))
+                      (coord
+                        (cc y y))
+                      (grup.nom.fp
+                        (ncfp000 mujeres mujer)
+                        (S.NF.P
+                          (s.a.fp
+                            (aq0fpp embarazadas embarazado)))))))))
+            (grup.verb
+              (vmsp3p0 contengan contener))
+            (sn-CD.Q
+              (grup.nom.mp
+                (ncmp000 granulados granulado)
+                (S.F.R
+                  (Fc , ,)
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (sadv-MOD
+                    (grup.adv
+                      (rg en"_nada en"_nada)))
+                  (grup.verb
+                    (vmip3p0 contribuyen contribuir))
+                  (sp-CREG
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (espec.fs
+                        (di0fs0 una uno))
+                      (grup.nom.fs
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0fs0 buena buen)))
+                        (ncfs000 alimentación alimentación))))
+                  (Fe " "))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 Según según))
+      (snp
+        (grup.nom.ms
+          (np0000p Lomelí Lomelí)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.mp
+        (nccp000 fabricantes fabricante)))
+    (grup.verb
+      (vmip3p0 gastan gastar))
+    (sn-CD
+      (grup.nom.mp
+        (ncmp000 millones millón)
+        (sp
+          (prep
+            (sps00 de de))
+          (snn
+            (grup.nom.mp
+              (Zm dólares dólar))))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (grup.nom.fs
+          (ncfs000 publicidad publicidad))))
+    (sp-CC
+      (prep
+        (sps00 para para))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 convencer convencer))
+        (sp-CD
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fp
+              (da0fp0 las el))
+            (grup.nom.fp
+              (ncfp000 amas ama)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 casa casa)))))))
+        (sp-CREG
+          (prep
+            (sps00 de de))
+          (S.F.C
+            (conj.subord
+              (cs que que))
+            (sn-SUJ
+              (espec.mp
+                (dp3cp0 sus su))
+              (grup.nom.mp
+                (ncmp000 productos producto)
+                (S.NF.P
+                  (participi
+                    (aq0mpp concentrados concentrado)))))
+            (sn-CD
+              (grup.nom.fp
+                (pp3fpa00 las él)))
+            (grup.verb
+              (vmif3p0 convertirán convertir))
+            (sp-CREG
+              (prep
+                (sps00 en en))
+              (sn
+                (grup.nom.fp
+                  (Fe " ")
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0fp0 expertas experto)))
+                  (ncfp000 cocineras cocinera)
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0fp0 dominadoras dominador)
+                      (sp
+                        (prep
+                          (spcms del del))
+                        (sn
+                          (grup.nom.ms
+                            (nccs000 arte arte)
+                            (sp
+                              (prep
+                                (spcms del del))
+                              (sn
+                                (grup.nom.fs
+                                  (s.a.ms
+                                    (grup.a.ms
+                                      (aq0ms0 buen buen)))
+                                  (ncfs000 sazón sazón)))))))))
+                  (Fe " "))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 uso uso)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 granulados granulado))))))
+      (Fe " ")
+      (morf.pron
+        (p0300000 se él))
+      (grup.verb
+        (vaip3s0 ha haber)
+        (vmp00sm extendido extender))
+      (sadv-CC
+        (grup.adv
+          (grup.adv
+            (rg tanto tanto))
+          (S.F.ACons.j
+            (conj.subord
+              (cs que que))
+            (sadv-ET
+              (grup.adv
+                (rg incluso incluso)))
+            (morfema.verbal-PASS
+              (p0000000 se se))
+            (grup.verb
+              (vmis3s0 estandarizó estandarizar))
+            (sn-SUJ
+              (espec.ms
+                (dp3cs0 su su))
+              (grup.nom.ms
+                (ncms000 gusto gusto)))
+            (sp-CCL
+              (prep
+                (sps00 en en))
+              (sn.x
+                (grup.nom.co
+                  (grup.nom.mp
+                    (ncmp000 hogares hogar))
+                  (Fc , ,)
+                  (grup.nom.fp
+                    (ncfp000 fondas fonda))
+                  (Fc , ,)
+                  (grup.nom.fp
+                    (ncfp000 cocinas cocina)
+                    (s.a.fp
+                      (grup.a.fp
+                        (aq0fp0 económicas económico))))
+                  (coord
+                    (cc y y))
+                  (grup.nom.mp
+                    (ncmp000 restaurantes restaurante)))))
+            (S.NF.A-CC
+              (Fc , ,)
+              (gerundi
+                (vmg0000 olvidando olvidar))
+              (sn-CD
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 rica rico)))
+                  (ncfs000 tradición tradición)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 culinaria culinario)))
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 mexicana mexicano)))))))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 agregó agregar))
+    (sn.e-SUJ *0*)
+    (Fp . .)))

@@ -1,0 +1,146 @@
+
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (np00000 dona dona)
+          (sp
+            (Fc , ,)
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (Z 95 95))
+              (grup.nom.mp
+                (ncmp000 anys any))))))
+      (grup.verb
+        (vmii3s0 tenia tenir))
+      (sn-CD.Q
+        (grup.nom.mp
+          (ncmp000 símptomes símptoma)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfn000 gastroenteritis gastroenteritis)))))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3s0 va anar)
+        (vsn0000 ser ser))
+      (S.NF.P-ATR
+        (participi
+          (aq0fsp hospitalitzada hospitalitzat)))
+      (sn-CCT
+        (grup.nom.ms
+          (W dissabte [dissabte:??/??/??:??.??])))
+      (sp-CCT
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 tarda tarda)))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Amb amb))
+      (sn
+        (grup.nom.fs
+          (pp3fs000 ella ell))))
+    (sadv-CCT
+      (grup.adv
+        (rg ja ja)))
+    (grup.verb
+      (vsip3p0 són ser))
+    (sn-ATR
+      (grup.nom.fp
+        (pn0cp000 sis sis)))
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 les el))
+      (grup.nom.fp
+        (ncfp000 persones persona)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 residència residència)
+              (sn
+                (grup.nom
+                  (np00000 Els_Arcs Els_Arcs)
+                  (sp
+                    (Fc , ,)
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (sn
+                        (grup.nom
+                          (np00000 Figueres Figueres)))
+                      (sn.j
+                        (grup.nom
+                          (Fpa -Fpa- -Fpa-)
+                          (np00000 Alt_Empordà Alt_Empordà)
+                          (Fpt -Fpt- -Fpt-))))
+                    (Fc , ,)))))))
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3p0 estan estar))
+          (sp-ATR
+            (prep
+              (sps00 en en))
+            (sn
+              (grup.nom.fs
+                (ncfs000 observació observació)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (di0ms0 Un un))
+      (grup.nom.ms
+        (ncms000 puré puré)
+        (S.NF.P
+          (participi
+            (aq0msp servit servit))
+          (sp-CC
+            (prep
+              (spcms al al))
+            (sn
+              (grup.nom.ms
+                (ncms000 sopar sopar)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (W dimecres [dimecres:??/??/??:??.??])
+                      (S.NF.P
+                        (participi
+                          (aq0msp passat passat))))))))))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 provocar provocar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 intoxicació intoxicació)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 alimentària alimentari)))))
+    (Fp . .)))

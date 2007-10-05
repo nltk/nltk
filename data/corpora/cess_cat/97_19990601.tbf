@@ -1,0 +1,1389 @@
+
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0cs0 L' el))
+        (grup.nom.fs
+          (ncfs000 operació operació)))
+      (grup.verb
+        (vmip3s0 costa costar))
+      (sn-CD.Q
+        (espec.mp
+          (Z 83.600 83600))
+        (grup.nom.mp
+          (ncmp000 milions milió))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3s0 consolida consolidar))
+      (sn-CD
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (ncfs000 aliança aliança)))
+      (sp-CC
+        (prep
+          (sps00 entre entre))
+        (sn
+          (espec.fp
+            (da0fp0 les el)
+            (dn0fp0 dues dos))
+          (grup.nom.fp
+            (ncfp000 firmes firma)
+            (s.a.fp
+              (grup.a.fp
+                (aq0fp0 energètiques energètic)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 companyies companyia)))
+    (grup.verb
+      (vmif3p0 invertiran invertir))
+    (sn-CD
+      (espec.mp
+        (Z 300.000 300000))
+      (grup.nom.mp
+        (ncmp000 milions milió)))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 desenvolupament desenvolupament)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 mercat mercat)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 gas gas)
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0cs0 natural natural))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (ncfs000 empresa empresa)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 elèctrica elèctric)))
+        (sn
+          (grup.nom
+            (np00000 Iberdrola Iberdrola)))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm adquirit adquirir))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (Zp 3,5% 3.5/100)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (np00000 Repsol Repsol))))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (sn
+        (espec.mp
+          (Z 83.668 83668))
+        (grup.nom.mp
+          (ncmp000 milions milió)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (Zm pessetes pesseta)))))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 marc marc)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (Fe " ")
+                (ncms000 procés procés)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0cs0 creixent creixent)))
+                      (ncfs000 cooperació cooperació)
+                      (sp
+                        (prep
+                          (sps00 entre entre))
+                        (sn
+                          (espec.fp
+                            (da0fp0 les el)
+                            (dn0fp0 dues dos))
+                          (grup.nom.fp
+                            (ncfp000 companyies companyia)))))))
+                (S.NF.P
+                  (participi
+                    (aq0msp firmat firmat))
+                  (sn-CCT
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (W gener_del_1997 [??:??/1/1997:??.??]))))
+                (Fe " ")))))))
+    (sp-AO
+      (Fc , ,)
+      (prep
+        (sps00 segons segons))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 comunicació comunicació)
+          (S.NF.P
+            (participi
+              (aq0fsp enviada enviat))
+            (sadv-CCT
+              (grup.adv
+                (rg ahir ahir)))
+            (sp-CCL
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np00000 Comissió_Nacional_del_Mercat_de_Valors Comissió_Nacional_del_Mercat_de_Valors))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (di0mp0 Tots tot)
+        (dn0mp0 dos dos))
+      (grup.nom.mp
+        (ncmp000 grups grup)))
+    (grup.verb
+      (vmip3p0 preveuen preveure))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 invertir invertir))
+      (sn-CD
+        (espec.mp
+          (Z 300.000 300000))
+        (grup.nom.mp
+          (ncmp000 milions milió))))
+    (sp-CC
+      (Fe " ")
+      (prep
+        (sps00 per per))
+      (sp
+        (prep
+          (spcms al al))
+        (sn
+          (grup.nom.ms
+            (ncms000 subministrament subministrament)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 gas gas)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0cs0 natural natural))))))
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (grup.nom.ms
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 llarg llarg)))
+                  (ncms000 termini termini))))
+            (sp
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.fp
+                  (da0fp0 les el))
+                (grup.nom.fp
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0cp0 millors millor)))
+                  (ncfp000 condicions condició)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 mercat mercat))))))))))
+      (Fe " "))
+    (sp-AO
+      (Fc , ,)
+      (prep
+        (sps00 segons segons))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 nota nota)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 conjunta conjunt))))))
+    (Fp . .)))
+(
+  (S*
+    (sp
+      (prep
+        (sps00 D' de))
+      (sn
+        (grup.nom.fs
+          (ncfs000 esquerra esquerra)
+          (sp
+            (prep
+              (sps00 a a))
+            (sn
+              (grup.nom.fs
+                (ncfs000 dreta dreta))))))
+      (Fc , ,))
+    (sn.co
+      (sn
+        (sn
+          (grup.nom.ms
+            (np00000 Iñigo_de_Oriol Iñigo_de_Oriol)))
+        (sn.j
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np00000 Iberdrola Iberdrola)
+            (Fpt -Fpt- -Fpt-))))
+      (Fc , ,)
+      (sn
+        (sn
+          (grup.nom.ms
+            (np00000 Alfonso_Cortina Alfonso_Cortina)))
+        (sn.j
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np00000 Repsol Repsol)
+            (Fpt -Fpt- -Fpt-))))
+      (coord
+        (cc i i))
+      (sn
+        (sn
+          (grup.nom.ms
+            (np00000 Pere_Duran_Farell Pere_Duran_Farell)))
+        (sn.j
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np00000 Gas_Natural Gas_Natural)
+            (Fpt -Fpt- -Fpt-)))))
+    (sn
+      (Fc , ,)
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (W gener_del_1997 [??:??/1/1997:??.??])))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom
+        (np00000 Iberdrola Iberdrola)))
+    (grup.verb
+      (vmip3s0 assegura assegurar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 compra compra)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.fs
+                (dd0fs0 aquesta aquest))
+              (grup.nom.fs
+                (ncfs000 participació participació))))))
+      (grup.verb
+        (vmip3s0 té tenir))
+      (sn-CD.Q
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (Fe " ")
+          (ncms000 caràcter caràcter)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 permanent permanent)))
+          (Fe " "))))
+    (Fp . .)))
+(
+  (S.co
+    (sp.j-CC
+      (prep
+        (sps00 Amb amb))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 inversió inversió))))
+    (S.co
+      (S
+        (sadv-ET
+          (Fc , ,)
+          (grup.adv
+            (rg a_més_a_més a_més_a_més))
+          (Fc , ,))
+        (Fe " ")
+        (morfema.verbal-PASS
+          (p0000000 es es))
+        (grup.verb
+          (vmif3s0 construirà construir))
+        (sn-SUJ
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 nova nou)))
+            (ncfs000 capacitat capacitat)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 producció producció))))
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vmsp3s0 complementi complementar))
+              (sn-CD
+                (espec.fs
+                  (da0cs0 l' el))
+                (grup.nom.fs
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 òptima òptim)))
+                  (ncfs000 competitivitat competitivitat)
+                  (s.a.fs
+                    (espec
+                      (rg ja ja))
+                    (grup.a.fs
+                      (aq0cs0 existent existent))))))))
+        (Fe " "))
+      (coord
+        (cc i i))
+      (S
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmif3s0 suposarà suposar))
+        (sn.co-CD
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 instal·lació instal·lació)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fp
+                    (Z 3.000 3000))
+                  (grup.nom.fp
+                    (nc00000 megawatts megawatt))))
+              (sp
+                (prep
+                  (sps00 en en))
+                (sn
+                  (grup.nom.fp
+                    (ncfp000 centrals central)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 cicle cicle)
+                          (S.NF.P
+                            (participi
+                              (aq0msp combinat combinat))))))))))
+            (Fc , ,))
+          (coord
+            (cc així_com així_com))
+          (sn
+            (espec.fs
+              (dp3fs0 la_seva el_seu))
+            (grup.nom.fs
+              (ncfs000 extensió extensió)
+              (sp
+                (prep
+                  (sps00 cap_a cap_a))
+                (sn
+                  (grup.nom
+                    (np00000 Iberoamèrica Iberoamèrica)
+                    (S.F.R
+                      (Fc , ,)
+                      (relatiu-CCL
+                        (pr000000 on on))
+                      (sadv-CCT
+                        (grup.adv
+                          (rg ja ja)))
+                      (grup.verb
+                        (vmip3p0 existeixen existir))
+                      (sn-SUJ
+                        (espec.fp
+                          (di0fp0 diverses divers))
+                        (grup.nom.fp
+                          (ncfp000 realitzacions realització)))
+                      (sp-CC
+                        (prep
+                          (sps00 en en))
+                        (sn
+                          (espec.ms
+                            (da0ms0 el el))
+                          (grup.nom.ms
+                            (ncms000 subministrament subministrament)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (grup.nom.ms
+                                  (ncms000 gas gas))))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (sp.j-CCT
+      (prep
+        (sps00 Des_de des_de))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 firma firma)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (ncms000 acord acord)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 estratègic estratègic)))
+                (sp
+                  (prep
+                    (sps00 d' de))
+                  (sn.x
+                    (grup.nom.co
+                      (grup.nom
+                        (np00000 Iberdrola Iberdrola))
+                      (coord
+                        (cc i i))
+                      (grup.nom
+                        (np00000 Repsol Repsol))))))))
+          (sn
+            (Fc , ,)
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (W 28_de_gener_del_1997 [??:28/1/1997:??.??])))))
+      (Fc , ,))
+    (S.co
+      (S
+        (sn-SUJ
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 petrolera petrolera)))
+        (grup.verb
+          (vaip3s0 ha haver)
+          (vmp00sm considerat considerar))
+        (sn-CD
+          (espec.fs
+            (da0cs0 l' el))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 elèctrica elèctric)))))
+        (sp-CPRED.CD
+          (prep
+            (cs com com))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 soci soci)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 referència referència)))))))
+        (sp-CCL
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 mercat mercat)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 espanyol espanyol))))))
+        (Fc , ,))
+      (coord
+        (cc mentre_que mentre_que))
+      (S
+        (sp-CC
+          (prep
+            (sps00 amb amb))
+          (sn
+            (grup.nom
+              (np00000 Endesa Endesa))))
+        (sn-SUJ
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 col·laboració col·laboració)))
+        (morfema.verbal-PASS
+          (p0000000 es es))
+        (grup.verb
+          (vmip3s0 limita limitar))
+        (sp-CREG
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (ncms000 àmbit àmbit)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 internacional internacional))))))
+        (sp-CCL
+          (Fc , ,)
+          (sadv.j
+            (grup.adv
+              (rg sobretot sobretot)))
+          (sp
+            (prep
+              (sps00 a a))
+            (sn
+              (grup.nom
+                (np00000 Llatinoamèrica Llatinoamèrica)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (ncfs000 entrada entrada)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom
+              (np00000 Iberdrola Iberdrola))))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (grup.nom
+              (np00000 Repsol Repsol))))))
+    (grup.verb
+      (vmip3s0 equipara equiparar))
+    (sadv-MOD
+      (grup.adv
+        (rg també també)))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 participació participació)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.fs
+              (dd0fs0 aquesta aquest))
+            (grup.nom.fs
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 elèctrica elèctric))))))))
+    (sn-CC
+      (prep
+        (sps00 a a))
+      (grup.nom.fs
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (S.F.R
+              (relatiu-CD
+                (pr0cn000 que que))
+              (grup.verb
+                (vaip3s0 va anar)
+                (vmn0000 adquirir adquirir))
+              (sn-SUJ
+                (grup.nom
+                  (np00000 Endesa Endesa)
+                  (S.F.R
+                    (Fc , ,)
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (sn-CCT
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (W gener [??:??/01/??:??.??])
+                        (S.NF.P
+                          (participi
+                            (aq0msp passat passat)))))
+                    (grup.verb
+                      (vaip3s0 va anar)
+                      (vmn0000 comprar comprar))
+                    (sn-CD
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (Zp 3,64% 3.64/100)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (ncfs000 petroliera petroliera))))))
+                    (sp-CC
+                      (prep
+                        (sps00 per per))
+                      (sn
+                        (espec.mp
+                          (Z 82.000 82000))
+                        (grup.nom.mp
+                          (ncmp000 milions milió))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (ncfs000 operació operació)))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmip3s0 produeix produir))
+    (sp-CCT
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 moment moment)
+          (S.F.R
+            (sp-CCT
+              (prep
+                (sps00 en en))
+              (relatiu
+                (pr0cn000 què què)))
+            (sn-SUJ
+              (grup.nom
+                (np00000 Repsol Repsol)))
+            (grup.verb
+              (vaip3s0 ha haver)
+              (vmp00sm posat_en_marxa posar_en_marxa))
+            (sn-CD
+              (espec.fs
+                (di0fs0 una un))
+              (grup.nom.fs
+                (ncfs000 sèrie sèrie)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 mecanismes mecanisme))))))
+            (sp-CC
+              (prep
+                (sps00 per per))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 finançar finançar))
+                (sn-CD
+                  (espec.fs
+                    (dp3fs0 la_seva el_seu))
+                  (grup.nom.fs
+                    (ncfs000 oferta oferta)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 pública públic)))
+                    (sp
+                      (prep
+                        (sps00 d' de))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 adquisició adquisició))))
+                    (sn
+                      (grup.nom.fs
+                        (Fpa -Fpa- -Fpa-)
+                        (np00000 OPA OPA)
+                        (Fpt -Fpt- -Fpt-)))
+                    (sp
+                      (prep
+                        (sps00 d' de))
+                      (sn
+                        (grup.nom.fp
+                          (ncfp000 accions acció))))))
+                (sp-CC
+                  (prep
+                    (sps00 sobre sobre))
+                  (sn
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (Zp 85% 85/100)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.fs
+                            (da0cs0 l' el))
+                          (grup.nom.fs
+                            (ncfs000 argentina argentina)
+                            (sn
+                              (grup.nom
+                                (np00000 YPF YPF)))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom
+        (np00000 Iberdrola Iberdrola)))
+    (grup.verb
+      (vmif3s0 construirà construir))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (grup.nom
+          (np00000 Repsol Repsol))))
+    (sn-CD
+      (grup.nom.fp
+        (ncfp000 centrals central)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 cicle cicle)
+              (S.NF.P
+                (participi
+                  (aq0msp combinat combinat))))))
+        (S.NF.P
+          (Fg - -)
+          (participi
+            (aq0fpp alimentades alimentat))
+          (sp-CC
+            (prep
+              (sps00 amb amb))
+            (sn
+              (grup.nom.ms
+                (ncms000 gas gas)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 natural natural))))))
+          (Fg - -))))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom
+          (np00000 Espanya Espanya))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el)
+        (dn0fp0 dues dos))
+      (grup.nom.fp
+        (ncfp000 companyies companyia)))
+    (sadv-CCT
+      (grup.adv
+        (rg ja ja)))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm acordat acordar))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (grup.nom
+          (np00000 BP-Amoco BP-Amoco))))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 subministrament subministrament)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.ms
+              (dd0ms0 aquest aquest))
+            (grup.nom.ms
+              (ncms000 combustible combustible))))
+        (sp
+          (prep
+            (sps00 des_de des_de))
+          (sn
+            (grup.nom
+              (np00000 Trinitat_i_Tobago Trinitat_i_Tobago))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (grup.nom
+          (np00000 Iberdrola Iberdrola)))
+      (morf.pron
+        (p0300000 s' ell))
+      (grup.verb
+        (vmif3s0 encarregarà encarregar))
+      (sp-CREG
+        (prep
+          (sps00 de de))
+        (sn
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (ncfp000 centrals central)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 generació generació))))))))
+    (coord
+      (cc i i))
+    (S*
+      (sn-SUJ
+        (grup.nom
+          (np00000 Repsol Repsol)))
+      (sp-CREG
+        (prep
+          (sps00 de de))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 posar_en_marxa posar_en_marxa))
+          (sn-CD
+            (espec.fs
+              (di0fs0 una un))
+            (grup.nom.fs
+              (ncfs000 planta planta)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 regasificació regasificació)))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Amb amb))
+      (sn
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (ncfs000 operació operació)))
+      (Fc , ,))
+    (sn-SUJ
+      (grup.nom
+        (np00000 Iberdrola Iberdrola)))
+    (morf.pron
+      (p0300000 es ell))
+    (grup.verb
+      (vmip3s0 converteix convertir))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn
+        (grup.nom.ms
+          (pi0ms000 un un)
+          (sp
+            (prep
+              (spcmp dels del))
+            (sn
+              (grup.nom.mp
+                (nccp000 accionistes accionista))))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 referència referència))))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (np00000 Repsol Repsol)
+                (sn
+                  (Fc , ,)
+                  (grup.nom.ms
+                    (ncms000 soci soci)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 majoritari majoritari)))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom
+                          (np00000 Gas_Natural Gas_Natural))))
+                    (sp
+                      (prep
+                        (sps00 amb amb))
+                      (sn
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (Zp 45,3% 45.3/100))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np00000 BBV BBV)))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sn-ATR
+      (grup.nom.ms
+        (ncms000 soci soci)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 referència referència))))
+        (sp.co
+          (coord
+            (rg tant tant))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (np00000 Repsol Repsol)
+                (S.F.R
+                  (Fc , ,)
+                  (relatiu-CCL
+                    (pr000000 on on))
+                  (sn.e-SUJ *0*)
+                  (grup.verb
+                    (vmip3s0 disposa disposar))
+                  (sp-CREG
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (Zp 9,5% 9.5/100)
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (sn
+                            (grup.nom.fs
+                              (ncfs000 capital capital)))))))
+                  (Fc , ,)))))
+          (coord
+            (cs com com))
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom
+                (np00000 Iberdrola Iberdrola)
+                (S.F.R
+                  (Fc , ,)
+                  (sp-CC
+                    (prep
+                      (sps00 en en))
+                    (relatiu
+                      (da0fs0 la el)
+                      (pr0cs000 qual qual)))
+                  (sn.e-SUJ *0*)
+                  (grup.verb
+                    (vmip3s0 té tenir))
+                  (sn-CD.Q
+                    (espec.ms
+                      (spcms al_voltant_del al_voltant_del))
+                    (grup.nom.ms
+                      (Zp 7% 7/100))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom
+        (np00000 La_Caixa La_Caixa)))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sn-ATR
+      (espec.ms
+        (da0cs0 l' el)
+        (di0ms0 altre altre))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 gran gran)))
+        (nccs000 accionista accionista)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (np00000 Repsol Repsol))))
+        (sp
+          (Fc , ,)
+          (prep
+            (sps00 amb amb))
+          (sn.co
+            (sn
+              (espec.fs
+                (di0fs0 una un))
+              (grup.nom.fs
+                (ncfs000 quota quota)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 semblant semblant)
+                    (sp
+                      (prep
+                        (sps00 a a))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (sp
+                            (prep
+                              (spcms del del))
+                            (sn
+                              (grup.nom.ms
+                                (np00000 BBV BBV)))))))))
+                (sp
+                  (Fc , ,)
+                  (prep
+                    (sps00 amb amb))
+                  (sn
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (Zp 7,6% 7.6/100))))))
+            (coord
+              (cc i i))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 resta resta)
+                (sp
+                  (Fc , ,)
+                  (prep
+                    (rg fins_a fins_a))
+                  (sn
+                    (espec.ms
+                      (da0cs0 l' el))
+                    (grup.nom.ms
+                      (Zp 1,9% 1.9/100)))
+                  (Fc , ,))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 manera manera)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0fs0 indirecta indirecte))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 societat societat)
+        (sn
+          (grup.nom
+            (np00000 Repinves Repinves)))
+        (S.F.R
+          (Fc , ,)
+          (sp-CCL
+            (prep
+              (sps00 en en))
+            (relatiu
+              (pr0cn000 què què)))
+          (morf.pron
+            (pp3cn000 hi hi))
+          (grup.verb
+            (vaip3s0 ha haver))
+          (sn.x-CD.Q
+            (grup.nom.co
+              (grup.nom
+                (np00000 La_Caixa La_Caixa))
+              (Fc , ,)
+              (grup.nom
+                (np00000 La_Kutxa La_Kutxa))
+              (coord
+                (cc i i))
+              (grup.nom
+                (np00000 Caixa_Catalunya Caixa_Catalunya))))
+          (Fc , ,))))
+    (sn-CD.Q.d
+      (grup.nom
+        (pp3cn000 en en)))
+    (grup.verb
+      (vmip3s0 té tenir))
+    (sn-CD.Q.d
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (Zp 6,1% 6.1/100)))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-CD
+        (grup.nom.fs
+          (pp3fsa00 La ell)))
+      (grup.verb
+        (vmip3s0 segueix seguir))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 mexicana mexicà)))
+          (np00000 Pemex Pemex)))
+      (sp-CC
+        (Fc , ,)
+        (prep
+          (sps00 amb amb))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (Zp 5% 5/100)))))
+    (Fx ; ;)
+    (S*
+      (sn-SUJ
+        (grup.nom
+          (np00000 Endesa Endesa)))
+      (sp-CC
+        (Fc , ,)
+        (prep
+          (sps00 amb amb))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (Zp 3,6% 3.6/100)))
+        (Fx ; ;)))
+    (coord
+      (cc i i))
+    (S*
+      (sadv-CCT
+        (grup.adv
+          (rg ara ara)))
+      (sn-SUJ
+        (grup.nom
+          (np00000 Iberdrola Iberdrola)))
+      (sp-CC
+        (Fc , ,)
+        (prep
+          (sps00 amb amb))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (Zp 3,5% 3.5/100)))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg A_més_a_més a_més_a_més))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 l' el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 elèctrica elèctric)))
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 portuguesa portuguès)))
+        (np00000 EDP EDP)
+        (S.F.R
+          (Fc , ,)
+          (sn-SUJ
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 principal principal)))
+              (nccs000 accionista accionista)
+              (sp
+                (prep
+                  (sps00 de de))
+                (relatiu
+                  (da0fs0 la el)
+                  (pr0cs000 qual qual)))))
+          (grup.verb
+            (vsip3s0 és ser))
+          (sn-ATR
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (np00000 Estat Estat)))
+          (Fc , ,))))
+    (grup.verb
+      (vmip3s0 preveu preveure))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 augmentar augmentar))
+      (sp-CC
+        (prep
+          (sps00 fins fins))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.ms
+              (di0ms0 un un))
+            (grup.nom.ms
+              (nc00000 5% 5/100)))))
+      (sn-CD
+        (espec.fs
+          (dp3fs0 la_seva el_seu))
+        (grup.nom.fs
+          (ncfs000 participació participació)))
+      (sp-CC
+        (prep
+          (sps00 a a))
+        (sn
+          (grup.nom
+            (np00000 Iberdrola Iberdrola)))))
+    (S.F.A-AO
+      (Fc , ,)
+      (conj.subord
+        (cs en_el_cas_que en_el_cas_que))
+      (sn-SUJ
+        (grup.nom.fs
+          (pd0fs000 aquesta aquest)))
+      (grup.verb
+        (vmsp3s0 decideixi decidir))
+      (S.NF.C-CD
+        (infinitiu
+          (vmn0000 augmentar augmentar))
+        (sp-CCL
+          (prep
+            (sps00 fins fins))
+          (sp
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.ms
+                (dd0ms0 aquest aquest))
+              (grup.nom.ms
+                (ncms000 percentatge percentatge)))))
+        (sn-CD
+          (espec.fs
+            (dp3fs0 la_seva el_seu))
+          (grup.nom.fs
+            (ncfs000 quota quota)))
+        (sp-CCL
+          (prep
+            (spcms al al))
+          (sn
+            (grup.nom.ms
+              (ncms000 grup grup)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 portuguès portuguès))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom
+        (np00000 Iberdrola Iberdrola)))
+    (grup.verb
+      (vmip3s0 té tenir))
+    (sadv-CC
+      (grup.adv
+        (rg actualment actualment)))
+    (sn-CD.Q
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (Zp 3% 3/100)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 firma firma)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 portuguesa portuguès)))
+              (sp
+                (prep
+                  (sps00 d' de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 electricitat electricitat)))))))))
+    (Fp . .)))

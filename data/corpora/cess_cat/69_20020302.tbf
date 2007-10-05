@@ -1,0 +1,171 @@
+
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (np00000 Centre_per_a_la_Investigació_del_Genoma Centre_per_a_la_Investigació_del_Genoma)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (sn
+                (grup.nom
+                  (np00000 Edimburg Edimburg)))
+              (sn.j
+                (grup.nom
+                  (Fpa -Fpa- -Fpa-)
+                  (np00000 Escòcia Escòcia)
+                  (Fpt -Fpt- -Fpt-)))))))
+      (coord
+        (cc i i))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np00000 Guy_'s_Hospital Guy_'s_Hospital)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (np00000 Londres Londres)))))))
+    (grup.verb
+      (vsip3p0 són ser))
+    (sn-ATR
+      (espec.fp
+        (da0fp0 les el)
+        (dn0fp0 dues dos))
+      (grup.nom.fp
+        (s.a.fp
+          (grup.a.fp
+            (ao0fp0 primeres primer)))
+        (ncfp000 entitats entitat)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vaip3p0 han haver)
+            (vmp00sm aconseguit aconseguir))
+          (sp-CC
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (ncfp000 autoritats autoritat)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0fp0 britàniques britànic))))))
+          (sn-CC
+            (espec.fs
+              (di0fs0 una un))
+            (grup.nom.fs
+              (ncfs000 llicència llicència)
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (sn-CI
+                  (grup.nom.p
+                    (pp3cp000 els ell)))
+                (grup.verb
+                  (vmsp3s0 permeti permetre))
+                (sn-CD
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 utilització utilització)
+                    (sp
+                      (prep
+                        (spcmp dels del))
+                      (sn
+                        (grup.nom.mp
+                          (ncmp000 embrions embrió)
+                          (s.a.mp
+                            (grup.a.mp
+                              (aq0mp0 humans humà)))))))))))
+          (sadv-CC
+            (Fc , ,)
+            (grup.adv
+              (rg després després)
+              (S.F.C
+                (conj.subord
+                  (cs que que))
+                (sn-CCT
+                  (grup.nom.ms
+                    (W dimecres [dimecres:??/??/??:??.??])
+                    (S.NF.P
+                      (participi
+                        (aq0msp passat passat)))))
+                (sn-SUJ
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np00000 Cambra_dels_Lords Cambra_dels_Lords)))
+                (sn-CD.d
+                  (grup.nom
+                    (pp3cn000 en en)))
+                (grup.verb
+                  (vaip3s0 va anar)
+                  (vmn0000 aprovar aprovar))
+                (sn-CD.d
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 clonació clonació)
+                    (sp
+                      (prep
+                        (sps00 amb amb))
+                      (sn
+                        (grup.nom.fp
+                          (ncfp000 finalitats finalitat)
+                          (s.a.fp
+                            (grup.a.fp
+                              (aq0fp0 terapèutiques terapèutic))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 experts expert)))
+    (grup.verb
+      (vmip3p0 pretenen pretendre))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 produir produir))
+      (sn-CD
+        (grup.nom.fp
+          (ncfp000 cèl·lules cèl·lula)
+          (s.a.fs
+            (grup.a.fs
+              (ncfs000 mare mare)))))
+      (sp-CC
+        (prep
+          (sps00 a_partir_d' a_partir_de))
+        (sn
+          (grup.nom.mp
+            (ncmp000 embrions embrió)
+            (s.a.mp
+              (grup.a.mp
+                (aq0cp0 excedents excedent)))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 tractaments tractament)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 fecundació fecundació)
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0cn0 in_vitro in_vitro)))))))))))))
+    (Fp . .)))

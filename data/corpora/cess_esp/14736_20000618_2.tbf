@@ -1,0 +1,191 @@
+
+(
+  (S*
+    (Fg - -)
+    (sn
+      (grup.nom.fs
+        (ncfs000 Clasificación clasificación)))
+    (sn
+      (grup.nom.fs
+        (ncfs000 carrera carrera)
+        (s.a.fs
+          (grup.a.fs
+            (Z 1 1)))))
+    (Fp . .)))
+(
+  (S*
+    (snp
+      (snp
+        (grup.nom.ms
+          (np0000p Helio_Castro_Neves Helio_Castro_Neves)))
+      (sno.j
+        (grup.nom
+          (Fpa -Fpa- -Fpa-)
+          (np0000o Reynard/Honda Reynard/Honda)
+          (Fpt -Fpt- -Fpt-))))
+    (s.a.fs
+      (grup.a.fs
+        (Z 2 2)))
+    (Fp . .)))
+(
+  (S*
+    (snp
+      (snp
+        (grup.nom.ms
+          (np0000p Max_Papis Max_Papis)))
+      (sno.j
+        (grup.nom
+          (Fpa -Fpa- -Fpa-)
+          (np0000o Lola/Ford Lola/Ford)
+          (Fpt -Fpt- -Fpt-))))
+    (sp
+      (prep
+        (sps00 a a))
+      (snn
+        (grup.nom.mp
+          (Z 4.415 4415))))
+    (s.a.fs
+      (grup.a.fs
+        (Z 3 3)))
+    (Fp . .)))
+(
+  (S*
+    (snp
+      (snp
+        (grup.nom.ms
+          (np0000p Oriol_Serviá Oriol_Serviá)))
+      (sno.j
+        (grup.nom
+          (Fpa -Fpa- -Fpa-)
+          (np0000o Reynard/Toyota Reynard/Toyota)
+          (Fpt -Fpt- -Fpt-))))
+    (sp
+      (prep
+        (sps00 a a))
+      (snn
+        (grup.nom.mp
+          (Z 10.465 10465))))
+    (s.a.fs
+      (grup.a.fs
+        (Z 4 4)))
+    (Fp . .)))
+(
+  (S*
+    (snp
+      (snp
+        (grup.nom.ms
+          (np0000p Dario_Franchitti Dario_Franchitti)))
+      (sno.j
+        (grup.nom
+          (Fpa -Fpa- -Fpa-)
+          (np0000o Reynard/Honda Reynard/Honda)
+          (Fpt -Fpt- -Fpt-))))
+    (sp
+      (prep
+        (sps00 a a))
+      (snn
+        (grup.nom.mp
+          (Z 13.637 13637))))
+    (s.a.fs
+      (grup.a.fs
+        (Z 5 5)))
+    (Fp . .)))
+(
+  (S*
+    (snp
+      (snp
+        (grup.nom.ms
+          (np0000p Patrick_Carpentier Patrick_Carpentier)))
+      (sno.j
+        (grup.nom
+          (Fpa -Fpa- -Fpa-)
+          (np0000o Reynard/Ford Reynard/Ford)
+          (Fpt -Fpt- -Fpt-))))
+    (sp
+      (prep
+        (sps00 a a))
+      (snn
+        (grup.nom.mp
+          (Z 25.313 25313))))
+    (Fg - -)
+    (sn
+      (grup.nom.ms
+        (ncms000 Campeonato campeonato)))
+    (s.a.fs
+      (grup.a.fs
+        (Z 1 1)))
+    (Fp . .)))
+(
+  (S*
+    (snp
+      (grup.nom.ms
+        (np0000p Paul_Tracy Paul_Tracy)))
+    (sn
+      (espec.mp
+        (Z 59 59))
+      (grup.nom.mp
+        (ncmp000 puntos punto)))
+    (s.a.fs
+      (grup.a.fs
+        (Z 2 2)))
+    (Fp . .)))
+(
+  (S*
+    (snp
+      (grup.nom.ms
+        (np0000p Jimmy_Vasser Jimmy_Vasser)))
+    (snn
+      (grup.nom.mp
+        (Z 54 54)))
+    (s.a.fs
+      (grup.a.fs
+        (Z 3 3)))
+    (Fp . .)))
+(
+  (S*
+    (snp
+      (grup.nom.ms
+        (np0000p Roberto_Moreno Roberto_Moreno)))
+    (snn
+      (grup.nom.mp
+        (Z 52 52)))
+    (s.a.fs
+      (grup.a.fs
+        (Z 4 4)))
+    (Fp . .)))
+(
+  (S*
+    (snp
+      (grup.nom.ms
+        (np0000p Max_Papis Max_Papis)))
+    (snn
+      (grup.nom.mp
+        (Z 47 47)))
+    (Fp . .)))
+(
+  (S*
+    (snp
+      (grup.nom.ms
+        (np0000p Gil_de_Ferran Gil_de_Ferran)))
+    (snn
+      (grup.nom.p
+        (Z 47 47)))
+    (Fg - -)
+    (Fg - -)
+    (Fg - -)
+    (Fg - -)
+    (Fg - -)
+    (Fg - -)
+    (snn
+      (grup.nom.p
+        (Z 13 13)))
+    (Fp . .)))
+(
+  (S*
+    (snp
+      (grup.nom.ms
+        (np0000p Oriol_Serviá Oriol_Serviá)))
+    (snn
+      (grup.nom.p
+        (Z 26 26)))
+    (Fp . .)))

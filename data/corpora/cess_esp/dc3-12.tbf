@@ -1,0 +1,1027 @@
+
+(
+  (S
+    (S
+      (morfema.verbal-IMPERS
+        (p0000000 Se se))
+      (grup.verb
+        (vmip3s0 trata tratar))
+      (conj.subord-ET
+        (Fc , ,)
+        (cs pues pues)
+        (Fc , ,))
+      (sp-CREG
+        (prep
+          (sps00 de de))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 modificar modificar))
+          (sn-CD
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (ncmp000 potenciales potencial)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0cn0 redox redox)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn.x
+                  (grup.nom.co
+                    (grup.nom.ms
+                      (ncms000 dador dador))
+                    (coord
+                      (cc y y))
+                    (grup.nom.ms
+                      (ncms000 aceptor aceptor)))))))
+          (sp-CC
+            (prep
+              (sps00 para para))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 modular modular))
+              (sn-CD
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 grado grado)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 transferencia transferencia)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (grup.nom.fs
+                              (ncfs000 carga carga)))))))))))))
+      (Fc , ,))
+    (coord
+      (cc y y))
+    (S
+      (sp-CC
+        (prep
+          (sps00 con con))
+        (sn
+          (espec.ms
+            (dd0ms0 este este))
+          (grup.nom.ms
+            (ncms000 propósito propósito))))
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vaip3s0 ha haber)
+        (vmp00sm sintetizado sintetizar))
+      (sn-SUJ
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 considerable considerable)))
+          (ncms000 número número)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (ncfp000 moléculas molécula)
+                (s.a.fp.x
+                  (grup.a.fp.co
+                    (grup.a.fp
+                      (aq0fp0 dadoras dador))
+                    (coord
+                      (cc y y))
+                    (grup.a.fp
+                      (aq0fp0 aceptoras aceptor))))
+                (sp
+                  (prep
+                    (sps00 con con))
+                  (sn
+                    (grup.nom.fp
+                      (ncfp000 estructuras estructura)
+                      (S.NF.P
+                        (Fg - -)
+                        (participi
+                          (aq0fpp diseñadas diseñado))
+                        (Fg - -)
+                        (sp-CC
+                          (prep
+                            (sps00 para para))
+                          (S.NF.C
+                            (infinitiu
+                              (vmn0000 lograr lograr))
+                            (sn-CD
+                              (grup.nom.mp
+                                (s.a.mp
+                                  (grup.a.mp
+                                    (aq0cp0 mejores mejor)))
+                                (nc00000 CTC CTC)
+                                (s.a.mp
+                                  (grup.a.mp
+                                    (aq0mp0 conductores conductor)))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CC
+      (grup.adv
+        (rg En_particular en_particular))
+      (Fc , ,))
+    (grup.verb
+      (vsip3p0 son ser))
+    (sn-SUJ
+      (grup.nom.p
+        (pn0cp000 tres tres)))
+    (sn-ATR
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.mp
+        (ncmp000 objetivos objetivo)
+        (sn.x
+          (Fd : :)
+          (grup.nom.co
+            (grup.nom.fs
+              (Fg - -)
+              (Fg - -)
+              (ncfs000 Transferencia transferencia)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 carga carga)
+                    (s.a.fs
+                      (grup.a.fs
+                        (ncmn000 D-A D-A))))))
+              (sp
+                (prep
+                  (sps00 entre entre))
+                (sn
+                  (grup.nom
+                    (Z 0 0)))))
+            (grup.nom.fp
+              (Fg - -)
+              (Fg - -)
+              (ncfp000 Interacciones interacción)
+              (sp
+                (prep
+                  (sps00 entre entre))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 apilamientos apilamiento)
+                    (S.NF.P
+                      (participi
+                        (aq0mpp segregados segregado))))))
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vmsp3p0 impidan impedir))
+                (sn-CD
+                  (grup.nom.mp
+                    (ncmp000 cambios cambio)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 fase fase))))
+                    (s.a.fp
+                      (grup.a.fp
+                        (aq0cp0 capaces capaz)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (S.NF.C
+                            (infinitiu
+                              (vmn0000 provocar provocar))
+                            (sn-CD
+                              (espec.fs
+                                (da0fs0 la el))
+                              (grup.nom.fs
+                                (ncfs000 transición transición)
+                                (sp
+                                  (prep
+                                    (sps00 de de))
+                                  (sn
+                                    (grup.nom.fs
+                                      (ncfs000 estructura estructura)
+                                      (s.a.fs
+                                        (grup.a.fs
+                                          (aq0fs0 conductora conductor))))))
+                                (sp
+                                  (prep
+                                    (sps00 a a))
+                                  (s.a.fs
+                                    (grup.a.fs
+                                      (aq0cs0 aislante aislante))))))))))))))))))
+    (Fp . .)))
+(
+  (S*
+    (Fg - -)
+    (Fg - -)
+    (sn
+      (grup.nom.ms
+        (ncms000 Incremento incremento)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 polarizabilidad polarizabilidad)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 molecular molecular))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CREG
+      (prep
+        (sps00 A a))
+      (sn
+        (grup.nom.ms
+          (pp3ns000 ello él))))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vaip3s0 ha haber)
+      (vmp00sm dedicado dedicar))
+    (sn-SUJ
+      (espec.ms
+        (di0ms0 un uno))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 gran gran)))
+        (ncms000 esfuerzo esfuerzo)
+        (sn
+          (grup.nom.ms
+            (ncms000 investigador investigador)))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (s.a.mp
+            (grup.a.mp
+              (ao0mp0 últimos último)))
+          (ncmp000 años año))))
+    (Fp . .)))
+(
+  (S.co
+    (sp.j-CC
+      (prep
+        (sps00 Por por))
+      (sn
+        (espec.ms
+          (da0ns0 lo el))
+        (grup.nom.ms
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3s0 respecta respectar))
+            (sp-CD
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 parte parte)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 dadora dador)))
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 complejo complejo)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0ms0 conductor conductor))))))))))))
+      (Fc , ,))
+    (S.co
+      (S
+        (sn-SUJ
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 mayor mayor)))
+            (ncfs000 parte parte)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fp
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0fp0 nuevas nuevo)))
+                  (ncfp000 moléculas molécula)
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0fp0 dadoras dador)))
+                  (S.NF.P
+                    (participi
+                      (aq0fpp sintetizadas sintetizado))))))))
+        (grup.verb
+          (vaip3p0 han haber)
+          (vmp00sm mantenido mantener))
+        (sn-CD
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 sistema sistema)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (ncms000 anillo anillo)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.ms
+                        (Z 1,3 1.3))
+                      (grup.nom.ms
+                        (ncms000 ditiol ditiol)
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 TTF TTF)))))))))))))
+      (coord
+        (cc y y))
+      (S
+        (morfema.verbal-PASS
+          (p0000000 se se))
+        (grup.verb
+          (vaip3p0 han haber)
+          (vmp00sm estudiado estudiar))
+        (sn.co-SUJ
+          (sn
+            (grup.nom.mp
+              (ncmp000 derivados derivado)
+              (sp
+                (prep
+                  (sps00 con con))
+                (sn.co
+                  (sn
+                    (espec.fs
+                      (di0fs0 una uno))
+                    (grup.nom.fs
+                      (ncfs000 estructura estructura)
+                      (S.NF.P
+                        (participi
+                          (aq0fsp extendida extendido))
+                        (sp.co-CC
+                          (sp
+                            (prep
+                              (sps00 con con))
+                            (sn
+                              (grup.nom.mp
+                                (ncmp000 enlaces enlace))))
+                          (coord
+                            (cc o o))
+                          (sp
+                            (prep
+                              (cs como como))
+                            (sn
+                              (espec.ms
+                                (da0ms0 el el))
+                              (grup.nom.ms
+                                (ncms000 tetrametiltetratiaful tetrametiltetratiaful)
+                                (sn
+                                  (Fpa -Fpa- -Fpa-)
+                                  (grup.nom.ms
+                                    (ncms000 TMTTF TMTTF))
+                                  (Fpt -Fpt- -Fpt-))))))))
+                    (Fc , ,))
+                  (coord
+                    (cc o o))
+                  (sn
+                    (espec.ms
+                      (di0ms0 un uno))
+                    (grup.nom.ms
+                      (ncms000 sistema sistema)
+                      (S.NF.P
+                        (participi
+                          (aq0msp extendido extendido)))
+                      (sp
+                        (prep
+                          (cs como como))
+                        (sn
+                          (sadv
+                            (grup.adv
+                              (rg por_ejemplo por_ejemplo)))
+                          (sn
+                            (espec.ms
+                              (da0ms0 el el))
+                            (grup.nom.ms
+                              (ncms000 dibenzotetratiafulval dibenzotetratiafulval)
+                              (sn
+                                (Fpa -Fpa- -Fpa-)
+                                (grup.nom.ms
+                                  (ncms000 DBTTF DBTTF))
+                                (Fpt -Fpt- -Fpt-))))))))))))
+          (coord
+            (cc o o))
+          (sn
+            (sadv.j
+              (Fc , ,)
+              (grup.adv
+                (rg finalmente finalmente))
+              (Fc , ,))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 sustitución sustitución)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 tomo tomo)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.ms
+                            (ncms000 azufre azufre)))))))
+                (sp
+                  (prep
+                    (sps00 por por))
+                  (sn
+                    (espec.mp
+                      (di0mp0 otros otro))
+                    (grup.nom.mp
+                      (ncmp000 heteroátomos heteroátomos)
+                      (sp
+                        (prep
+                          (cs como como))
+                        (sn.x
+                          (grup.nom.co
+                            (grup.nom.ms
+                              (ncms000 selenio selenio))
+                            (coord
+                              (cc o o))
+                            (grup.nom.ms
+                              (ncms000 teluro teluro))))))))
+                (INC
+                  (sn
+                    (Fpa -Fpa- -Fpa-)
+                    (grup.nom.fs
+                      (ncfs000 fig. fig.)
+                      (sn
+                        (grup.nom.fs
+                          (Z 5 5))))
+                    (Fpt -Fpt- -Fpt-)))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sadv-ET
+        (grup.adv
+          (rg Por_otra_parte por_otra_parte))
+        (Fc , ,))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfn000 síntesis síntesis)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0fp0 nuevas nuevo)))
+                (ncfp000 moléculas molécula)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0fp0 aceptoras aceptor))))))))
+      (grup.verb
+        (vaip3s0 ha haber)
+        (vmp00sm tenido tener)
+        (cs que que)
+        (infinitiu
+          (vmn0000 superar superar)))
+      (sn-CD
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 dificultades dificultad)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 obtención obtención)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 derivados derivado)
+                      (sp
+                        (prep
+                          (spcms del del))
+                        (sn
+                          (grup.nom
+                            (nc00000 TCNQ tcnq))))))))))))
+      (Fc , ,))
+    (coord
+      (cc pero pero))
+    (S
+      (sp-CC
+        (prep
+          (sps00 durante durante))
+        (sn
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (s.a.mp
+              (grup.a.mp
+                (ao0mp0 últimos último)))
+            (ncmp000 años año))))
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vaip3s0 ha haber)
+        (vmp00sm podido poder)
+        (infinitiu
+          (vmn0000 sintetizar sintetizar)))
+      (sn-SUJ
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (S.NF.P
+            (participi
+              (aq0msp elevado elevado)))
+          (ncms000 número número)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (ncfp000 moléculas molécula)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0fp0 aceptoras aceptor)))
+                (INC
+                  (sn
+                    (Fpa -Fpa- -Fpa-)
+                    (grup.nom.fs
+                      (ncfs000 fig. fig.)
+                      (sn
+                        (grup.nom.fs
+                          (Z 5 5))))
+                    (Fpt -Fpt- -Fpt-)))
+                (sp
+                  (prep
+                    (sps00 con con))
+                  (sn
+                    (espec.fs
+                      (di0fs0 una uno))
+                    (grup.nom.fs
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0fs0 amplia amplio)))
+                      (ncfs000 gama gama)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.mp
+                            (ncmp000 valores valor)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (espec.fs
+                                  (da0fs0 la el))
+                                (grup.nom.fs
+                                  (ncfs000 afinidad afinidad)
+                                  (s.a.fs
+                                    (grup.a.fs
+                                      (aq0fs0 electrónica electrónico))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CC
+      (grup.adv
+        (rg En_general en_general))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 sustitución sustitución)
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 esqueleto esqueleto)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 monocíclico monocíclico))))))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (nc00000 TCNQ tcnq))))))
+    (grup.verb
+      (vmip3s0 da_lugar dar_lugar))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom.mp
+          (ncmp000 complejos complejo)
+          (sp
+            (prep
+              (sps00 con con))
+            (sn
+              (grup.nom.fp
+                (ncfp000 propiedades propiedad)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0fp0 conductoras conductor)))
+                (s.a.fp
+                  (aq0cp0 inferiores inferior)
+                  (sp
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (espec.fp
+                        (da0fp0 las el))
+                      (grup.nom.fp
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (sn
+                            (grup.nom
+                              (nc00000 TCNQ tcnq)))))))
+                  (sp
+                    (Fc , ,)
+                    (prep
+                      (sps00 por por))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0cs0 menor menor)))
+                        (ncfs000 planaridad planaridad)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (ncfs000 molécula molécula))))))
+                    (Fc , ,)))))))))
+    (sn-AO
+      (espec.ms
+        (da0ns0 lo el))
+      (grup.nom.ms
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 dificulta dificultar))
+          (sn-CD
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (S.NF.P
+                (participi
+                  (aq0msp apretado apretado)))
+              (ncms000 apilamiento apilamiento)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 necesario necesario)
+                  (sp
+                    (prep
+                      (sps00 para para))
+                    (sn
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 solapamiento solapamiento)
+                        (s.a.ms
+                          (grup.a.ms
+                            (nccn000 n n)))
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0cs0 responsable responsable)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (espec.fs
+                                  (da0fs0 la el))
+                                (grup.nom.fs
+                                  (ncfs000 conductividad conductividad))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.AConc*-AO
+      (conj.subord
+        (cs Aunque aunque))
+      (S.NF.P
+        (sadv-CC
+          (grup.adv
+            (rg menos menos)))
+        (participi
+          (aq0mpp estudiados estudiado)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.mp
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 análogos análogo)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.mp
+              (nc00000 TCNQ tcnq))))
+        (S.NF.P
+          (participi
+            (aq0mpp fusionados fusionado))
+          (sp-CC
+            (prep
+              (sps00 con con))
+            (sn
+              (grup.nom.mp
+                (ncmp000 anillos anillo)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0mp0 aromáticos aromático)))))))))
+    (grup.verb
+      (vmip3p0 presentan presentar))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un uno))
+      (grup.nom.ms
+        (ncms000 interés interés)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 especial especial)))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 De de))
+      (sn
+        (grup.nom.mp
+          (ncmp000 estudios estudio)
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 teóricos teórico))))))
+    (grup.verb
+      (vmis3s0 pudo poder)
+      (infinitiu
+        (vmn0000 concluirse concluir)))
+    (S.F.C-SUJ
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 extensión extensión)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 sistema sistema)
+                (sn
+                  (grup.nom.ms
+                    (Z 11 11))))))
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.mp
+                (dd0mp0 estos este))
+              (grup.nom.mp
+                (ncmp000 compuestos compuesto))))))
+      (grup.verb
+        (vmip3s0 conduce conducir))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (di0fs0 una uno))
+          (grup.nom.fs
+            (ncfs000 disminución disminución)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 repulsión repulsión)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 intramolecular intramolecular)))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sna
+                      (grup.nom.ms
+                        (ncms000 tipo tipo)
+                        (s.a.ms
+                          (grup.a.ms
+                            (np0000a Coulomb Coulomb))))))))))))
+      (sn-AO
+        (espec.ms
+          (da0ns0 lo el))
+        (grup.nom.ms
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vaic3s0 habría haber)
+              (sps00 de de)
+              (infinitiu
+                (vmn0000 favorecer favorecer)))
+            (sn-CD
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 formación formación)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 complejos complejo)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.fs
+                            (ncfs000 transferencia transferencia)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (grup.nom.fs
+                                  (ncfs000 carga carga))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (espec.mp
+          (da0mp0 Los el))
+        (grup.nom.mp
+          (ncmp000 datos dato)
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 espectroscópicos espectroscópico))))
+        (Fc , ,))
+      (coord
+        (cc y y))
+      (sn
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (di0ms0 algún alguno))
+            (grup.nom.ms
+              (ncms000 caso caso))))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 difractograma difractograma)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 rayos_X rayo_x))))))
+        (Fc , ,)))
+    (grup.verb
+      (vmip3p0 indican indicar))
+    (S.F.C.co-CD
+      (conj.subord
+        (cs que que))
+      (S.F.C
+        (sn-SUJ
+          (espec.fp
+            (dd0fp0 estas este))
+          (grup.nom.fp
+            (ncfp000 moléculas molécula)))
+        (neg-MOD
+          (rn no no))
+        (grup.verb
+          (vsip3p0 son ser))
+        (sa-ATR
+          (espec
+            (rg totalmente totalmente))
+          (grup.a
+            (aq0fp0 planas plano))))
+      (coord
+        (cc y y))
+      (S.F.C
+        (sn.e-SUJ *0*)
+        (morf.pron
+          (p0300000 se él))
+        (grup.verb
+          (vmip3p0 encuentran encontrar))
+        (S.NF.P-CPRED.SUJ
+          (sadv-CC
+            (grup.adv
+              (rg bastante bastante)))
+          (participi
+            (aq0fpp deformadas deformado)))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (dd0fs0 Esta este))
+      (grup.nom.fs
+        (ncfs000 distorsión distorsión)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 molecular molecular)))))
+    (grup.verb
+      (vmip3s0 ejerce ejercer))
+    (sadv-CC
+      (grup.adv
+        (rg probablemente probablemente)))
+    (sn-CD
+      (sn
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 mayor mayor)))
+          (ncfs000 influencia influencia)))
+      (S.F.AComp*.j
+        (conj.subord
+          (cs que que))
+        (sn
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (ncmp000 efectos efecto)
+            (s.a.mp
+              (grup.a.mp
+                (aq0mp0 electrónicos electrónico)))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 extensión extensión)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 sistema sistema)))))))))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (grup.nom.fs
+        (ncfs000 Figura figura)
+        (sn
+          (grup.nom.fs
+            (Z 7 7)))))
+    (Fp . .)))

@@ -1,0 +1,184 @@
+
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np0000o Gobierno Gobierno)))
+    (grup.verb
+      (vmis3s0 acordó acordar))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 conceder conceder))
+      (sn-CD
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms.1n
+          (ncms000 crédito crédito)
+          (s.a.ms
+            (grup.a.ms
+              (np0000a FAD FAD)))))
+      (sp-CI
+        (prep
+          (sps00 a a))
+        (snl
+          (grup.nom
+            (np0000l El_Salvador El_Salvador))))
+      (sp.1c
+        (Fc , ,)
+        (prep
+          (sps00 por por))
+        (sn
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (ncms000 importe importe)
+            (sp
+              (prep
+                (sps00 de de))
+              (snn
+                (espec.fp
+                  (rg casi casi)
+                  (Z 1,28 1.28))
+                (grup.nom.mp
+                  (ncmp000 millones millón)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snn
+                      (grup.nom.mp
+                        (Zm dólares dólar))))
+                  (snn
+                    (Fpa -Fpa- -Fpa-)
+                    (espec.mp
+                      (Z 214 214))
+                    (grup.nom.mp
+                      (ncmp000 millones millón))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snn
+                        (grup.nom.fp
+                          (Zm pesetas peseta))))
+                    (Fpt -Fpt- -Fpt-))
+                  (S.F.R
+                    (Fc , ,)
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vmif3p0 irán ir))
+                    (S.NF.P-CPRED.SUJ
+                      (participi
+                        (aq0mpp destinados destinado))
+                      (sp-CREG
+                        (prep
+                          (sps00 a a))
+                        (S.NF.C
+                          (infinitiu
+                            (vmn0000 financiar financiar))
+                          (sn-CD
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (s.a.fs
+                                (grup.a.fs
+                                  (ao0fs0 segunda segundo)))
+                              (ncfs000 fase fase)
+                              (sp
+                                (prep
+                                  (spcms del del))
+                                (sn
+                                  (grup.nom.ms
+                                    (ncms000 catastro catastro)
+                                    (s.a.ms
+                                      (grup.a.ms
+                                        (aq0cs0 municipal municipal)))
+                                    (sp
+                                      (prep
+                                        (sps00 de de))
+                                      (sn
+                                        (espec.fs
+                                          (da0fs0 la el))
+                                        (grup.nom.fs
+                                          (ncfs000 capital capital)
+                                          (sp
+                                            (prep
+                                              (spcms del del))
+                                            (sn
+                                              (grup.nom.ms
+                                                (ncms000 país país)))))))))))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 plazo plazo)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 amortización amortización)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 crédito crédito)))))))))
+      (grup.verb
+        (vsif3s0 será ser))
+      (sp-ATR
+        (prep
+          (sps00 de de))
+        (sn
+          (espec.mp
+            (dn0cp0 doce doce))
+          (grup.nom.mp
+            (ncmp000 años año)
+            (sp
+              (Fc , ,)
+              (prep
+                (sps00 con con))
+              (sn
+                (grup.nom.mp
+                  (pn0cp000 dos dos)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 gracia gracia))))))))))
+      (Fc , ,))
+    (coord
+      (cc y y))
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 tipo tipo)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 interés interés)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 anual anual))))))))
+      (grup.verb
+        (vsip3s0 es ser))
+      (sp-ATR
+        (prep
+          (spcms del del))
+        (snn
+          (grup.nom.ms
+            (Zp 1,3_por_ciento 1,3_%)))))
+    (Fp . .)))

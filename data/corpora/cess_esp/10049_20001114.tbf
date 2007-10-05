@@ -1,0 +1,683 @@
+
+(
+  (S
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (np0000o Comisión_Europea Comisión_Europea)))
+    (grup.verb
+      (vmis3s0 anunció anunciar))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)
+        (snd
+          (grup.nom.ms
+            (Fc , ,)
+            (W martes [martes:??/??/??:??.??])
+            (Fc , ,)))))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3s0 ha haber)
+        (vmp00sm recibido recibir))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 notificación notificación)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (di0ms0 un uno))
+              (grup.nom.ms
+                (ncms000 proyecto proyecto)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 concentración concentración))))
+                (S.F.R
+                  (sp-CC
+                    (prep
+                      (sps00 por por))
+                    (relatiu
+                      (da0ms0 el el)
+                      (pr0cs000 cual cual)))
+                  (sn.x-SUJ
+                    (grup.nom.co
+                      (grup.nom
+                        (np0000o Stet_International_Netherlands Stet_International_Netherlands)
+                        (sno
+                          (grup.nom
+                            (Fpa -Fpa- -Fpa-)
+                            (np0000o SIN SIN)
+                            (Fpt -Fpt- -Fpt-))))
+                      (Fc , ,)
+                      (grup.nom
+                        (np0000o Endesa_Telecomunicaciones Endesa_Telecomunicaciones)
+                        (sno
+                          (grup.nom
+                            (Fpa -Fpa- -Fpa-)
+                            (np0000o ET ET)
+                            (Fpt -Fpt- -Fpt-))))
+                      (coord
+                        (cc y y))
+                      (grup.nom
+                        (np0000o Unión_Fenosa_Inversiones Unión_Fenosa_Inversiones)
+                        (sno
+                          (grup.nom
+                            (Fpa -Fpa- -Fpa-)
+                            (np0000o UFINSA UFINSA)
+                            (Fpt -Fpt- -Fpt-))))))
+                  (grup.verb
+                    (vmip3p0 adquieren adquirir))
+                  (sn-CD
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (ncms000 control control)
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0cs0 común común)))
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.fp
+                            (di0fp0 varias varios))
+                          (grup.nom.fp
+                            (ncfp000 empresas empresa)
+                            (s.a.fp
+                              (grup.a.fs
+                                (aq0fp0 españolas español)))
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (grup.nom.ms
+                                  (ncms000 cable cable))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom
+          (np0000o SIN SIN))
+        (Fc , ,)
+        (grup.nom
+          (np0000o ET ET))
+        (coord
+          (cc y y))
+        (grup.nom
+          (np0000o UFINSA UFINSA))))
+    (grup.verb
+      (vmip3p0 adquieren adquirir))
+    (sp-CC
+      (prep
+        (sps00 mediante mediante))
+      (sn
+        (espec.fs
+          (dd0fs0 esta este))
+        (grup.nom.fs
+          (ncfs000 operación operación))))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 control control)
+        (sadv
+          (grup.adv
+            (rg en_común en_común)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn.x
+            (grup.nom.co
+              (grup.nom
+                (np0000o Aragón_de_Cable Aragón_de_Cable))
+              (Fc , ,)
+              (grup.nom
+                (np0000o Cablelteca Cablelteca))
+              (Fc , ,)
+              (grup.nom
+                (np0000o Supercable_Andalucía Supercable_Andalucía))
+              (Fc , ,)
+              (grup.nom
+                (np0000o Supercable_Sevilla Supercable_Sevilla))
+              (coord
+                (cc y y))
+              (grup.nom
+                (np0000o Supercable_Almería Supercable_Almería)))))
+        (sp
+          (prep
+            (sps00 mediante mediante))
+          (sn
+            (espec.ms
+              (di0ms0 un uno))
+            (grup.nom.ms
+              (ncms000 contrato contrato)
+              (sp.co
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 gestión gestión))))
+                (coord
+                  (cc y y))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 transferencia transferencia)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.fp
+                            (ncfp000 acciones acción))))
+                      (sp
+                        (prep
+                          (sps00 a a))
+                        (sno
+                          (grup.nom.fs
+                            (np0000o AUNA AUNA)
+                            (sn
+                              (Fc , ,)
+                              (espec.fs
+                                (di0fs0 una uno))
+                              (grup.nom.fs
+                                (ncfs000 sociedad sociedad)
+                                (s.a.fs
+                                  (grup.a.fs
+                                    (Fe " ")
+                                    (ncms000 holding holding)
+                                    (Fe " ")))
+                                (S.NF.P
+                                  (participi
+                                    (aq0fsp creada creado))
+                                  (sp-CC
+                                    (prep
+                                      (sps00 para para))
+                                    (sn
+                                      (espec.ms
+                                        (dd0ms0 este este))
+                                      (grup.nom.ms
+                                        (ncms000 fin fin)))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (grup.nom
+        (np0000o Stet_International_Netherlands Stet_International_Netherlands)
+        (sno
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np0000o SIN SIN)
+            (Fpt -Fpt- -Fpt-)))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 pertenece pertenecer))
+          (sp-CREG
+            (prep
+              (spcms al al))
+            (sno
+              (grup.nom.ms
+                (ncms000 grupo grupo)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 italiano italiano)))
+                (sno
+                  (grup.nom.ms
+                    (np0000o Telecom_Italia Telecom_Italia))))))
+          (Fc , ,))))
+    (grup.verb
+      (vsip3s0 es ser))
+    (sn-ATR
+      (espec.fs
+        (di0fs0 una uno))
+      (grup.nom.fs
+        (ncfs000 empresa empresa)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 presta prestar))
+          (sn-CD
+            (grup.nom.mp
+              (ncmp000 servicios servicio)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fp
+                    (ncfp000 telecomunicaciones telecomunicación)))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (grup.nom
+        (np0000o Endesa_Telecomunicaciones Endesa_Telecomunicaciones)
+        (sno
+          (Fpa -Fpa- -Fpa-)
+          (grup.nom
+            (np0000o ET ET))
+          (Fpt -Fpt- -Fpt-))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 pertenece pertenecer))
+          (sp-CREG
+            (prep
+              (spcms al al))
+            (sno
+              (grup.nom.ms
+                (ncms000 grupo grupo)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 español español)))
+                (sno
+                  (grup.nom.ms
+                    (np0000o Endesa Endesa))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmip3s0 ofrece ofrecer))
+    (sn-CD
+      (espec.mp
+        (dp3cp0 sus su))
+      (grup.nom.mp
+        (ncmp000 servicios servicio)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fp
+              (ncfp000 telecomunicaciones telecomunicación))))))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (snl
+        (grup.nom
+          (np0000l España España))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (grup.nom.fs
+        (np0000o Unión_Fenosa_Inversiones Unión_Fenosa_Inversiones)
+        (sno
+          (grup.nom.fs
+            (Fpa -Fpa- -Fpa-)
+            (np0000o UFINSA UFINSA)
+            (Fpt -Fpt- -Fpt-)))))
+    (grup.verb
+      (vsip3s0 es ser))
+    (sn-ATR
+      (espec.fs
+        (di0fs0 una uno))
+      (grup.nom.fs
+        (ncfs000 empresa empresa)
+        (sp
+          (prep
+            (spcms del del))
+          (sno
+            (grup.nom.ms
+              (ncms000 grupo grupo)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 español español)))
+              (sno
+                (grup.nom.ms
+                  (np0000o Unión_Fenosa Unión_Fenosa))))))
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 ofrece ofrecer))
+          (sn-CD
+            (grup.nom.mp
+              (ncmp000 servicios servicio)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn.x
+                  (grup.nom.co
+                    (grup.nom.fs
+                      (ncfs000 asesoría asesoría))
+                    (Fc , ,)
+                    (grup.nom.fs
+                      (ncfs000 ingeniería ingeniería))
+                    (Fc , ,)
+                    (grup.nom.fp
+                      (ncfp000 telecomunicaciones telecomunicación))
+                    (Fc , ,)
+                    (grup.nom.fs
+                      (ncfs000 industria industria))
+                    (Fc , ,)
+                    (grup.nom.fs
+                      (ncfs000 explotación explotación)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.fp
+                            (ncfp000 minas mina)))))
+                    (coord
+                      (cc e e))
+                    (grup.nom.fs
+                      (ncfs000 inmobiliaria inmobiliaria))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom.fs
+          (np0000o Aragón_de_Cable Aragón_de_Cable))
+        (Fc , ,)
+        (grup.nom.fs
+          (np0000o Cablelteca Cablelteca))
+        (Fc , ,)
+        (grup.nom.fs
+          (np0000o Supercable_Andalucía Supercable_Andalucía))
+        (Fc , ,)
+        (grup.nom.fs
+          (np0000o Supercable_Sevilla Supercable_Sevilla))
+        (coord
+          (cc y y))
+        (grup.nom.fs
+          (np0000o Supercable_Almería Supercable_Almería))))
+    (grup.verb
+      (vsip3p0 son ser))
+    (sn-ATR
+      (grup.nom.fp
+        (ncfp000 empresas empresa)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fp
+              (ncfp000 telecomunicaciones telecomunicación)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 españolas español))))))
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3p0 ofrecen ofrecer))
+          (sn-CD
+            (grup.nom.mp
+              (ncmp000 servicios servicio)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 cable cable))))))
+          (sp-CCL
+            (prep
+              (sps00 en en))
+            (sn.x
+              (grup.nom.co
+                (grup.nom.co
+                  (grup.nom
+                    (np0000l Aragón Aragón))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000l Islas_Canarias Islas_Canarias))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000l Andalucía Andalucía))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000l Sevilla Sevilla))
+                  (coord
+                    (cc y y))
+                  (grup.nom
+                    (np0000l Almería Almería)))
+                (sadv.j
+                  (rg respectivamente respectivamente))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (grup.nom.fs
+        (np0000o AUNA AUNA)))
+    (grup.verb
+      (vsip3s0 es ser))
+    (sn-ATR
+      (espec.fs
+        (di0fs0 una uno))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 nueva nuevo)))
+        (ncfs000 empresa empresa)
+        (s.a.fs
+          (grup.a.fs
+            (Fe " ")
+            (ncms000 holding holding)
+            (Fe " ")))
+        (S.NF.P
+          (participi
+            (aq0fsp creada creado))
+          (sp-CAG
+            (prep
+              (sps00 por por))
+            (sn.x
+              (grup.nom.co
+                (grup.nom
+                  (np0000o SIN SIN))
+                (Fc , ,)
+                (grup.nom
+                  (np0000o ET ET))
+                (coord
+                  (cc y y))
+                (grup.nom
+                  (np0000o UFINSA UFINSA)))))
+          (sp-CC
+            (prep
+              (sps00 para para))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 control control)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 común común)))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fp
+                      (dd0fp0 estas este)
+                      (dn0cp0 cinco cinco))
+                    (grup.nom.fp
+                      (ncfp000 empresas empresa)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.ms
+                            (ncms000 cable cable))))
+                      (sa
+                        (s.a.fp
+                          (aq0fp0 españolas español))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (sps00 Tras tras))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 examen examen)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 preliminar preliminar)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 documentación documentación)
+                (S.NF.P
+                  (participi
+                    (aq0fsp presentada presentado))))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.mp
+        (ncmp000 servicios servicio)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 competencia competencia)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sno
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np0000o Comisión_Europea Comisión_Europea)))))))))
+    (grup.verb
+      (vmip3p0 estiman estimar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 operación operación)))
+      (grup.verb
+        (vmic3s0 podría poder)
+        (infinitiu
+          (vmn0000 entrar entrar)))
+      (sadv-CC
+        (grup.adv
+          (rg dentro dentro)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 campo campo)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 aplicación aplicación)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (ncfs000 reglamentación reglamentación)
+                            (s.a.fs
+                              (grup.a.fs
+                                (aq0fs0 comunitaria comunitario)))
+                            (sp
+                              (prep
+                                (sps00 sobre sobre))
+                              (sn
+                                (grup.nom.fp
+                                  (ncfp000 concentraciones concentración))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (np0000o Comisión_Europea Comisión_Europea)))
+    (grup.verb
+      (vmip3s0 invita invitar))
+    (sp-CD
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (s.a.fp
+            (grup.a.fp
+              (ao0fp0 terceras tercero)))
+          (ncfp000 partes parte)
+          (S.NF.P
+            (participi
+              (aq0fpp interesadas interesado))
+            (sp-CREG
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.fs
+                  (dd0fs0 esta este))
+                (grup.nom.fs
+                  (ncfs000 operación operación))))))))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 trasmitirle trasmitir))
+        (sn-CD
+          (espec.fp
+            (dp3cp0 sus su))
+          (grup.nom.fp
+            (ncfp000 observaciones observación)))
+        (sp-CCT
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 plazo plazo)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.mp
+                    (dn0cp0 diez diez))
+                  (grup.nom.mp
+                    (ncmp000 días día)))))))
+        (sp-CC
+          (prep
+            (sps00 sobre sobre))
+          (sn
+            (espec.ms
+              (dd0ms0 este este))
+            (grup.nom.ms
+              (ncms000 proyecto proyecto)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 concentración concentración)))))))))
+    (Fp . .)))

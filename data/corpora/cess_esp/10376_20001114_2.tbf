@@ -1,0 +1,179 @@
+
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 condado condado)
+        (sp
+          (prep
+            (sps00 de de))
+          (snl
+            (grup.nom
+              (np0000l Palm_Beach Palm_Beach))))))
+    (grup.verb
+      (vmis3s0 decidió decidir))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 suspender suspender))
+      (sn-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 recuento recuento)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 manual manual)))))
+      (sp-CC
+        (prep
+          (sps00 a_la_espera_de a_la_espera_de))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 conocer conocer))
+          (sn-CD
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 opinión opinión)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 judicial judicial)))
+              (sp
+                (prep
+                  (sps00 sobre sobre))
+                (sn
+                  (espec.fs
+                    (dp3cs0 su su))
+                  (grup.nom.fs
+                    (ncfs000 validez validez)))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 A_la_espera_de a_la_espera_de))
+      (sn
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 decisiones decisión)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (da0mp0 los el))
+              (grup.nom.mp
+                (nccp000 jueces juez))))))
+      (Fc , ,))
+    (sno-SUJ
+      (grup.nom
+        (np0000o Estados_Unidos Estados_Unidos)))
+    (grup.verb
+      (vmip3s0 vuelve volver)
+      (sadv
+        (grup.adv
+          (rg hoy hoy)))
+      (sps00 a a)
+      (infinitiu
+        (vmn0000 vivir vivir)))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una uno))
+      (grup.nom.fs
+        (ncfs000 jornada jornada)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 pendiente pendiente)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.ms
+                  (da0ns0 lo el))
+                (grup.nom.ms
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vmip3s0 ocurre ocurrir))
+                    (sp-CCL
+                      (prep
+                        (sps00 en en))
+                      (snl
+                        (grup.nom
+                          (np0000l Florida Florida))))
+                    (sp-CC
+                      (prep
+                        (sps00 en en))
+                      (sn
+                        (espec.mp
+                          (da0mp0 los el)
+                          (di0cp0 diferentes diferente))
+                        (grup.nom.fp
+                          (ncfp000 frentes frente)
+                          (sp.co
+                            (Fd : :)
+                            (coord
+                              (rg tanto tanto))
+                            (sp
+                              (prep
+                                (sps00 en en))
+                              (snl
+                                (espec.fs
+                                  (da0fs0 la el))
+                                (grup.nom.fs
+                                  (ncfs000 capital capital)
+                                  (sp
+                                    (prep
+                                      (spcms del del))
+                                    (sn
+                                      (grup.nom.ms
+                                        (ncms000 estado estado))))
+                                  (snl
+                                    (Fc , ,)
+                                    (grup.nom.fs
+                                      (np0000l Tallahassee Tallahassee))
+                                    (Fc , ,)))))
+                            (coord
+                              (cs como como))
+                            (sp
+                              (prep
+                                (sps00 en en))
+                              (sn
+                                (espec.mp
+                                  (da0mp0 los el))
+                                (grup.nom.mp
+                                  (ncmp000 condados condado)
+                                  (S.F.R
+                                    (relatiu-CCL
+                                      (pr000000 donde donde))
+                                    (grup.verb
+                                      (vmii3s0 estaba estar))
+                                    (S.NF.P
+                                      (participi
+                                        (aq0msp previsto previsto)))
+                                    (S.NF.C-SUJ
+                                      (infinitiu
+                                        (vmn0000 hacer hacer))
+                                      (sn-CD
+                                        (espec.ms
+                                          (di0ms0 un uno))
+                                        (grup.nom.ms
+                                          (ncms000 recuento recuento)
+                                          (s.a.ms
+                                            (grup.a.ms
+                                              (aq0cs0 manual manual)))
+                                          (sp
+                                            (prep
+                                              (sps00 de de))
+                                            (sn
+                                              (espec.mp
+                                                (da0mp0 los el))
+                                              (grup.nom.mp
+                                                (ncmp000 sufragios sufragio)))))))))))))))))))))))
+    (Fp . .)))

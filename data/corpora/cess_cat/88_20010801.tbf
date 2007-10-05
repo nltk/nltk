@@ -1,0 +1,96 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 escuts escut)))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmip3p0 poden poder)
+      (infinitiu
+        (vmn0000 veure veure)))
+    (sp-CCL
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 vestíbul vestíbul)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (ncms000 ajuntament ajuntament)))))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmii3p0 Adornaven adornar))
+    (sn-CD
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (ncms000 edifici edifici)
+        (sn
+          (grup.nom
+            (np00000 Novíssim Novíssim)))
+        (S.F.R
+          (Fc , ,)
+          (sp.1c
+            (prep
+              (spcms del del))
+            (relatiu
+              (pr0cs000 qual qual)))
+          (morfema.verbal-PASS
+            (p0000000 s' es))
+          (grup.verb
+            (vmip3p0 estan estar)
+            (gerundi
+              (vmg0000 demolint demolir)))
+          (sn-SUJ
+            (espec.fp
+              (da0fp0 les el)
+              (dn0cp0 quatre quatre))
+            (grup.nom.fp.1n
+              (ncfp000 plantes planta)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0cp0 superiors superior))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (nccs000 jove jove)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 foto foto))))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vsn0000 ser ser))
+    (sn-ATR
+      (grup.nom.ms
+        (pi0ms000 un un)
+        (sp
+          (prep
+            (spcmp dels del))
+          (sn
+            (grup.nom.mp
+              (s.a.mp
+                (grup.a.mp
+                  (ao0mp0 primers primer)))
+              (ncmp000 compradors comprador))))))
+    (Fp . .)))

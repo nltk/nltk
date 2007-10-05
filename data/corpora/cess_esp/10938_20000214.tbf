@@ -1,0 +1,484 @@
+
+(
+  (S
+    (S.F.C-CD
+      (sno-SUJ
+        (grup.nom
+          (np0000o Egipto Egipto)))
+      (grup.verb
+        (vmip3s0 necesita necesitar))
+      (snn-CD
+        (espec.mp
+          (rg más más)
+          (sps00 de de)
+          (Z 250 250))
+        (grup.nom.mp
+          (ncmp000 millones millón)
+          (sp
+            (prep
+              (sps00 de de))
+            (snn
+              (grup.nom.mp
+                (Zm dólares dólar))))))
+      (sp-CC
+        (prep
+          (sps00 para para))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 eliminar eliminar))
+          (sn-CD
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (ncmp000 campos campo)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fp
+                    (ncfp000 minas mina)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.mp
+                          (di0mp0 distintos distinto))
+                        (grup.nom.mp
+                          (ncmp000 tipos tipo)))))))
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (morf.pron
+                  (p0300000 se él))
+                (grup.verb
+                  (vmip3p0 encuentran encontrar))
+                (sp-CCL
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.fp
+                      (di0cp0 diferentes diferente))
+                    (grup.nom.fp
+                      (ncfp000 zonas zona)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.ms
+                            (dd0ms0 este este))
+                          (grup.nom.ms
+                            (ncms000 país país))))))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 dijo decir))
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 ministro ministro)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 egipcio egipcio)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (grup.nom
+              (np0000o Asuntos_Exteriores Asuntos_Exteriores))))
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (np0000p Amro_Musa Amro_Musa)))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C.co-CD
+      (S.F.C
+        (sn-SUJ
+          (espec.mp
+            (rg Al_menos al_menos)
+            (Z 23 23))
+          (grup.nom.mp
+            (ncmp000 millones millón)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fp
+                  (ncfp000 minas mina))))))
+        (grup.verb
+          (vmip3p0 están estar))
+        (S.NF.P-ATR
+          (participi
+            (aq0fpp enterradas enterrado))
+          (sp-CCL
+            (prep
+              (sps00 en en))
+            (snl
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (np0000l Desierto_Occidental Desierto_Occidental)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snl
+                    (grup.nom
+                      (np0000l Egipto Egipto)))))))
+          (sp-CCT
+            (prep
+              (sps00 desde desde))
+            (sna
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (s.a.fs
+                  (grup.a.fs
+                    (ao0fs0 segunda segundo)))
+                (np0000a Guerra_Mundial Guerra_Mundial)))))
+        (Fc , ,))
+      (coord
+        (cc mientras_que mientras_que))
+      (S.F.C
+        (grup.verb
+          (vaip3s0 hay haber))
+        (sn-CD
+          (espec.mp
+            (rg más más)
+            (sps00 de de)
+            (di0mp0 otros otro)
+            (Z tres 3))
+          (grup.nom.mp
+            (ncmp000 millones millón)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 artefactos artefacto)
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0cp0 similares similar))))))))
+        (sp.co-CCL
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (np0000l Sinaí Sinaí))))
+          (coord
+            (cc y y))
+          (sp
+            (prep
+              (spcms a_lo_largo_del a_lo_largo_del))
+            (snl
+              (grup.nom.ms
+                (np0000l Canal_de_Suez Canal_de_Suez)))))
+        (sp-CCT
+          (prep
+            (sps00 desde desde))
+          (sn
+            (espec.fp
+              (da0fp0 las el))
+            (grup.nom.fp
+              (ncfp000 guerras guerra)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0cp0 árabe-israelíes árabe-israelí)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (snd.x
+                  (grup.nom.co
+                    (grup.nom.ms
+                      (W 1956 [??:??/??/1956:??.??]))
+                    (Fc , ,)
+                    (grup.nom.ms
+                      (Z 1967 1967))
+                    (coord
+                      (cc y y))
+                    (grup.nom.ms
+                      (W 1973 [??:??/??/1973:??.??])))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 señaló señalar))
+    (sn.e-SUJ *0*)
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Las el))
+      (grup.nom.fp
+        (ncfp000 afirmaciones afirmación)
+        (sp
+          (prep
+            (sps00 de de))
+          (snp
+            (grup.nom.ms
+              (np0000p Musa Musa)
+              (S.F.R
+                (Fc , ,)
+                (sp-CD
+                  (prep
+                    (sps00 a a))
+                  (relatiu
+                    (pr0cs000 quien quien)))
+                (grup.verb
+                  (vmip3s0 cita citar))
+                (sadv-CCT
+                  (grup.adv
+                    (rg hoy hoy)
+                    (snd
+                      (Fc , ,)
+                      (grup.nom.ms
+                        (W lunes [lunes:??/??/??:??.??]))
+                      (Fc , ,))))
+                (sn-SUJ
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 prensa prensa)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0cs0 local local)))))
+                (Fc , ,)))))))
+    (grup.verb
+      (vmip3p0 coinciden coincidir))
+    (sp-CC
+      (prep
+        (sps00 con con))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs.1n
+          (ncfs000 presencia presencia))))
+    (sn-CCT
+      (espec.mp
+        (dd0mp0 estos este))
+      (grup.nom.mp
+        (ncmp000 días día)))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (snl
+        (grup.nom
+          (np0000l Egipto Egipto))))
+    (sp.1c
+      (prep
+        (sps00 de de))
+      (sn
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 delegación delegación)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (nccp000 especialistas especialista))))
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (espec.fp
+                (da0fp0 las el))
+              (grup.nom.fp
+                (np0000o Naciones_Unidas Naciones_Unidas))))
+          (sp
+            (prep
+              (sps00 para para))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 tratar tratar))
+              (sp-CC
+                (prep
+                  (sps00 con con))
+                (sn
+                  (espec.fp
+                    (da0fp0 las el))
+                  (grup.nom.fp
+                    (ncfp000 autoridades autoridad)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.ms
+                          (dd0ms0 este este))
+                        (grup.nom.ms
+                          (ncms000 país país)))))))
+              (sp-CREG
+                (prep
+                  (sps00 sobre sobre))
+                (sn
+                  (espec.fp
+                    (da0fp0 las el))
+                  (grup.nom.fp
+                    (ncfp000 posibilidades posibilidad)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (S.NF.C
+                        (infinitiu
+                          (vmn0000 eliminar eliminar))
+                        (sn-CD
+                          (espec.mp
+                            (dd0mp0 esos ese))
+                          (grup.nom.mp
+                            (ncmp000 artefactos artefacto)))
+                        (sp-CCL
+                          (prep
+                            (sps00 en en))
+                          (snl
+                            (espec.ms
+                              (da0ms0 el el))
+                            (grup.nom.ms
+                              (ncms000 territorio territorio)
+                              (s.a.ms
+                                (grup.a.ms
+                                  (aq0ms0 egipcio egipcio))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (Fe " ")
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 ayuda ayuda)
+          (S.F.R
+            (relatiu-CD
+              (pr0cn000 que que))
+            (sn-CI
+              (grup.nom.p
+                (pp1cp000 nos yo)))
+            (grup.verb
+              (vaip3p0 han haber)
+              (vmp00sm enviado enviar))
+            (sn.co-SUJ
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 comunidad comunidad)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 internacional internacional)))))
+              (coord
+                (cc y y))
+              (sn
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (ncmp000 países país)
+                  (S.NF.P
+                    (participi
+                      (aq0mpp involucrados involucrado))
+                    (sp-CREG
+                      (prep
+                        (sps00 en en))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 guerra guerra)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (snl
+                              (grup.nom
+                                (np0000l Al_Alamin Al_Alamin)
+                                (sp
+                                  (Fc , ,)
+                                  (prep
+                                    (sps00 en en))
+                                  (snl
+                                    (espec.ms
+                                      (da0ms0 el el))
+                                    (grup.nom.ms
+                                      (np0000l Desierto_Occidental Desierto_Occidental)))))))))))
+                  (sn.x
+                    (Fc , ,)
+                    (grup.nom.co
+                      (Fpa -Fpa- -Fpa-)
+                      (grup.nom
+                        (np0000l Gran_Bretaña Gran_Bretaña))
+                      (Fc , ,)
+                      (grup.nom
+                        (np0000l Alemania Alemania))
+                      (coord
+                        (cc e e))
+                      (grup.nom
+                        (np0000l Italia Italia))
+                      (Fpt -Fpt- -Fpt-)))))))))
+      (grup.verb
+        (vsip3s0 es ser))
+      (S.NF.P-ATR
+        (sadv-CC
+          (grup.adv
+            (rg muy mucho)))
+        (participi
+          (aq0fsp limitada limitado)))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 dijo decir))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Musa Musa)))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.mp
+        (nccp000 Especialistas especialista)
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (espec.fp
+              (da0fp0 las el))
+            (grup.nom.fp
+              (np0000o Fuerzas_Armadas Fuerzas_Armadas)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 egipcias egipcio))))))))
+    (grup.verb
+      (vmip3p0 afirman afirmar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sp-CCT
+        (prep
+          (sps00 hasta hasta))
+        (sn
+          (grup.nom.mp
+            (ncmp000 finales final)
+            (sp
+              (prep
+                (sps00 de de))
+              (snd
+                (grup.nom.ms
+                  (W 1999 [??:??/??/1999:??.??])))))))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3p0 han haber)
+        (vmp00sm eliminado eliminar))
+      (sn-CD
+        (espec.mp
+          (rg más más)
+          (sps00 de de)
+          (Z dos 2))
+        (grup.nom.mp
+          (ncmp000 millones millón)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (ncfp000 minas mina)))))))
+    (Fp . .)))

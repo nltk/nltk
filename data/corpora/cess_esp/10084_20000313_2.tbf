@@ -1,0 +1,66 @@
+
+(
+  (S
+    (sp-CCL
+      (sadv.j
+        (grup.adv
+          (rg También también)))
+      (sp
+        (prep
+          (sps00 en en))
+        (snl
+          (grup.nom
+            (np0000l Campo_Real Campo_Real)
+            (S.F.R
+              (Fc , ,)
+              (relatiu-CCL
+                (pr000000 donde donde))
+              (morfema.verbal-PASS
+                (p0000000 se se))
+              (grup.verb
+                (vmif3s0 ubicará ubicar))
+              (snl-SUJ
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 futuro futuro)))
+                  (ncms000 aeropuerto aeropuerto)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snl
+                      (grup.nom
+                        (np0000l Madrid Madrid)))))))))))
+    (sn-SUJ
+      (sadv.j
+        (grup.adv
+          (rg casi casi)))
+      (snn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (Zp 60_por_ciento 60_%))))
+    (grup.verb
+      (vmis3s0 dio dar))
+    (sn-CD
+      (espec.fs
+        (dp3cs0 su su))
+      (grup.nom.fs
+        (ncfs000 confianza confianza)))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 propuestas propuesta)
+          (sp
+            (prep
+              (spcms del del))
+            (sno
+              (grup.nom.ms
+                (np0000o PP PP)))))))
+    (Fp . .)))

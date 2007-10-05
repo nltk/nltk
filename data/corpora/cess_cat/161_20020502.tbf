@@ -1,0 +1,100 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (ncfs000 actriu actriu)
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 representa representar))
+          (sn-CD
+            (espec.fs
+              (da0cs0 l' el))
+            (grup.nom.fs
+              (ncfs000 obra obra)
+              (sn
+                (grup.nom
+                  (np00000 Escenes_d'_una_execució Escenes_d'_una_execució)))))
+          (sp-CCL
+            (prep
+              (spcms al al))
+            (sn
+              (grup.nom.ms
+                (np00000 Teatre_Nacional_de_Catalunya Teatre_Nacional_de_Catalunya))))
+          (Fc , ,))))
+    (grup.verb
+      (vmif3s0 comentarà comentar))
+    (sn-CD
+      (espec.ms
+        (dp3ms0 el_seu el_seu))
+      (grup.nom.ms
+        (ncms000 personatge personatge)))
+    (sp-CCL
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 magazín magazín)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 radiofònic radiofònic)))
+          (sn
+            (grup.nom
+              (np00000 Els_matins_amb_Josep_Cuní Els_matins_amb_Josep_Cuní))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (ncfs000 entrevista entrevista)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 política polític)))
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 programa programa))))))
+    (grup.verb
+      (vmip3s0 té tenir))
+    (sadv-CCT
+      (grup.adv
+        (rg avui avui)))
+    (sp-CPRED.CD
+      (prep
+        (sps00 com_a com_a))
+      (sn
+        (grup.nom.ms
+          (nccs000 protagonista protagonista))))
+    (sn-CD.Q
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 secretari secretari)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 general general)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 federació federació)
+              (sn
+                (grup.nom
+                  (np00000 Convergència_i_Unió Convergència_i_Unió))))))
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (np00000 Josep_Antoni_Duran_Lleida Josep_Antoni_Duran_Lleida)))))
+    (Fp . .)))

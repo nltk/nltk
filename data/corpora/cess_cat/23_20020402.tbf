@@ -1,0 +1,165 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (di0fp0 Unes un)
+        (Z 3.000 3000))
+      (grup.nom.fp
+        (ncfp000 persones persona)))
+    (morf.pron
+      (p0300000 es ell))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 manifestar manifestar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sp-CCL
+      (prep
+        (sps00 davant davant))
+      (sn
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (np00000 Ambaixada_d'_Israel Ambaixada_d'_Israel)
+          (sp
+            (prep
+              (sps00 a a))
+            (sn
+              (grup.nom
+                (np00000 Madrid Madrid)))))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C.co
+        (S.NF.C
+          (infinitiu
+            (vmn0000 reclamar reclamar))
+          (sn-CD
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 llibertat llibertat)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 president president)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 palestí palestí)))
+                    (sn
+                      (Fc , ,)
+                      (grup.nom.ms
+                        (np00000 Iàssir_Arafat Iàssir_Arafat))
+                      (Fc , ,))))))))
+        (coord
+          (cc i i))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 exigir exigir))
+          (sn-CD
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 retirada retirada)
+              (sp
+                (prep
+                  (spcmp dels del))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 tancs tanc)
+                    (s.a.mp
+                      (grup.a.mp
+                        (aq0mp0 israelians israelià))))))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom
+                    (np00000 Ramal·là Ramal·là)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (nccs000 líder líder)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom
+                (np00000 Izquierda_Unida Izquierda_Unida))))
+          (sn
+            (Fc , ,)
+            (grup.nom.ms
+              (np00000 Gaspar_Llamazares Gaspar_Llamazares)))))
+      (Fc , ,)
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (nccs000 portaveu portaveu)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 socialista socialista)))
+          (sp
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (da0cs0 l' el))
+              (grup.nom.fs
+                (np00000 Assemblea_de_Madrid Assemblea_de_Madrid))))
+          (sn
+            (Fc , ,)
+            (grup.nom.fs
+              (np00000 Cristina_Almeida Cristina_Almeida))
+            (Fc , ,))))
+      (coord
+        (cc i i))
+      (sn
+        (espec.mp
+          (di0mp0 diversos divers))
+        (grup.nom.mp
+          (nccp000 dirigents dirigent)
+          (s.a.mp
+            (grup.a.mp
+              (aq0cp0 sindicals sindical))))))
+    (grup.verb
+      (vmii3p0 figuraven figurar))
+    (sp-CC
+      (prep
+        (sps00 entre entre))
+      (sn
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (nccp000 manifestants manifestant)
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vaip3p0 van anar)
+              (vmn0000 cridar cridar))
+            (sn-CD
+              (grup.nom.fp
+                (ncfp000 consignes consigna)))
+            (sp-CC
+              (prep
+                (sps00 contra contra))
+              (sn.x
+                (grup.nom.co
+                  (grup.nom.ms
+                    (np00000 Ariel_Sharon Ariel_Sharon))
+                  (coord
+                    (cc i i))
+                  (grup.nom.ms
+                    (np00000 George_Bush George_Bush)))))))))
+    (Fp . .)))

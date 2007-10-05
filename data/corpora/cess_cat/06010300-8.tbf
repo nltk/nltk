@@ -1,0 +1,171 @@
+
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 conductor conductor)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.ms
+              (di0ms0 un un))
+            (grup.nom.ms
+              (ncms000 ciclomotor ciclomotor)
+              (sno
+                (grup.nom
+                  (np0000o Yamaha Yamaha)))))
+          (Fc , ,))
+        (snp
+          (grup.nom.ms
+            (np0000p Miguel_Angel_R._M. Miguel_Angel_R._M.)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (Z 28 28))
+            (grup.nom.mp
+              (ncmp000 anys any)))))
+      (Fc , ,))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm resultat resultar))
+    (S.NF.P-CPRED.SUJ
+      (participi
+        (aq0msp ferit ferit))
+      (sa-CPRED
+        (grup.a
+          (aq0cs0 greu greu))))
+    (sadv-CC
+      (grup.adv
+        (rg avui avui)))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (snd
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (W una_del_migdia [??:??/??/??:13.00]))))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (snl
+        (grup.nom
+          (np0000l Viladecans Viladecans))))
+    (sp-AO
+      (prep
+        (sps00 com_a_conseqüència_de com_a_conseqüència_de))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 col·lisió col·lisió)
+          (sp
+            (prep
+              (sps00 amb amb))
+            (sn
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (ncms000 turisme turisme)
+                (sna
+                  (grup.nom
+                    (np0000a Nissan_Almera Nissan_Almera)))
+                (sp
+                  (prep
+                    (sps00 amb amb))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 matrícula matrícula)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (snl
+                          (grup.nom
+                            (np0000l Barcelona Barcelona)))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 ferit ferit)))
+      (grup.verb
+        (vaip3s0 ha haver)
+        (vsp00sm estat ser)
+        (vmp00sm traslladat traslladar))
+      (sp-CC
+        (prep
+          (spcms al al))
+        (snl
+          (grup.nom.ms
+            (ncms000 centre centre)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 hospitalari hospitalari)))
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Viladecans Viladecans)))))))
+      (Fc , ,))
+    (coord
+      (cc mentre_que mentre_que))
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 conductor conductor)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 turisme turisme))))))
+      (grup.verb
+        (vaip3s0 ha haver)
+        (vmp00sm resultat resultar))
+      (sa-CPRED.SUJ
+        (grup.a
+          (aq0ms0 il·lès il·lès))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 fets fet)))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm passat passar))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (snl
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (np0000l B-204 B-204))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (spcms al al))
+      (snn
+        (grup.nom.ms
+          (ncms000 punt punt)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 quilomètric quilomètric)))
+          (snn
+            (grup.nom
+              (Z 0,5 0.5))))))
+    (Fp . .)))

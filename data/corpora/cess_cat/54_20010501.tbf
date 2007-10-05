@@ -1,0 +1,268 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 impresos imprès)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 declaració_simplificada declaració_simplificada)
+              (sn
+                (grup.nom
+                  (Fpa -Fpa- -Fpa-)
+                  (np00000 D-101 D-101)
+                  (Fpt -Fpt- -Fpt-)))
+              (sn
+                (Fc , ,)
+                (espec.fs
+                  (da0fs0 la el))
+                (S.NF.P
+                  (sadv-CC
+                    (grup.adv
+                      (rg més més)))
+                  (participi
+                    (aq0fsp utilitzada utilitzat)))
+                (Fc , ,)))))))
+    (grup.verb
+      (vmip3p0 redueixen reduir))
+    (sn-CD
+      (espec.fp
+        (dp3fp0 les_seves el_seu))
+      (grup.nom.fp
+        (ncfp000 pàgines pàgina)
+        (sn.x
+          (grup.nom.co
+            (coord
+              (sps00 de de))
+            (grup.nom.p
+              (pn0cp000 set set))
+            (coord
+              (sps00 a a))
+            (grup.nom.p
+              (pn0cp000 cinc cinc))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (dd0fs0 Aquesta aquest))
+      (grup.nom.fs
+        (ncfs000 simplificació simplificació)))
+    (sadv-MOD
+      (grup.adv
+        (rg encara encara)))
+    (grup.verb
+      (vmip3s0 està estar))
+    (sadv-ATR
+      (grup.adv
+        (rg lluny lluny)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 antic antic)))
+              (ncms000 model model)
+              (S.NF.P
+                (participi
+                  (aq0msp abreujat abreujat)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fp
+                    (dn0fp0 dues dos))
+                  (grup.nom.fp
+                    (ncfp000 pàgines pàgina)))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC.r
+      (prep
+        (sps00 A a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 modalitat modalitat))))
+    (morf.pron
+      (p0300000 s' ell))
+    (sn-CC.r
+      (grup.nom
+        (pp3cn000 hi hi)))
+    (grup.verb
+      (vmip3p0 acullen acollir))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 qui qui))
+          (grup.verb
+            (vmip3p0 perceben percebre))
+          (sn-CD
+            (grup.nom.co
+              (grup.nom.fp
+                (ncfp000 rendes renda)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0cp0 regulars regular))))
+              (coord
+                (cc o o))
+              (grup.nom.fp
+                (ncfp000 plusvàlues plusvàlua))))
+          (sp-CC
+            (prep
+              (sps00 per per))
+            (sn.x
+              (grup.nom.co
+                (grup.nom.co
+                  (grup.nom.fp
+                    (ncfp000 accions acció))
+                  (coord
+                    (cc o o))
+                  (grup.nom.fp
+                    (ncfp000 participacions participació)))
+                (sp.j
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 fons fon)
+                      (sp
+                        (prep
+                          (sps00 d' de))
+                        (sn
+                          (grup.nom.fs
+                            (ncfs000 inversió inversió)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg Així_mateix així_mateix)))
+    (sn-CD
+      (grup.nom.fs
+        (pp3fsa00 la ell)))
+    (grup.verb
+      (vmif3p0 podran poder)
+      (infinitiu
+        (vmn0000 fer fer)))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 qui qui))
+          (grup.verb
+            (vmip3p0 passen passar))
+          (sn-CD
+            (grup.nom.fs
+              (ncfs000 anualitat anualitat)))
+          (sp-CI
+            (prep
+              (spcmp als al))
+            (sn
+              (grup.nom.mp
+                (ncmp000 fills fill)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 impresos imprès)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 declaració_ordinària declaració_ordinària))))
+        (sn
+          (grup.nom
+            (Fpa -Fpa- -Fpa-)
+            (np00000 D-100 D-100)
+            (Fpt -Fpt- -Fpt-)))))
+    (sadv-MOD
+      (grup.adv
+        (rg també també)))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmip3p0 redueixen reduir))
+    (sn-CC
+      (espec.fp.co
+        (coord
+          (sps00 de de))
+        (espec.fp
+          (Z 17 17))
+        (coord
+          (sps00 a a))
+        (espec.fp
+          (Z 12 12)))
+      (grup.nom.fp
+        (ncfp000 pàgines pàgina)))
+    (Fp . .)))
+(
+  (S
+    (sn-CD.r
+      (espec.ms
+        (dd0ms0 Aquest aquest))
+      (grup.nom.ms
+        (ncms000 model model)))
+    (sn-CD.r
+      (grup.nom.ms
+        (pp3msa00 el ell)))
+    (grup.verb
+      (vmip3p0 formalitzen formalitzar))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 qui qui))
+          (sp-CD.d
+            (prep
+              (sps00 a_més_a_més_de a_més_a_més_de))
+            (sn.x
+              (grup.nom.co
+                (grup.nom.fp
+                  (ncfp000 rendes renda))
+                (coord
+                  (cc i i))
+                (grup.nom.mp
+                  (ncmp000 rendiments rendiment)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 capital capital))))))))
+          (grup.verb
+            (vmip3p0 declaren declarar))
+          (sn-CD.d
+            (espec.fp
+              (di0cp0 altres altre))
+            (grup.nom.fp
+              (ncfp000 activitats activitat)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0cp0 patrimonials patrimonial))))))))
+    (Fp . .)))

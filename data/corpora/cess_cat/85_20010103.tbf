@@ -1,0 +1,625 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (np00000 Guàrdia_Civil Guàrdia_Civil)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 detenir detenir))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sn-CD
+      (espec.fp
+        (Z 30 30))
+      (grup.nom.fp
+        (ncfp000 persones persona)))
+    (S.NF.P-CPRED.CD
+      (participi
+        (aq0fpp acusades acusat))
+      (sp-CREG
+        (prep
+          (sps00 d' de))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 introduir introduir))
+          (sadv-CC
+            (grup.adv
+              (rg il·legalment il·legalment)))
+          (sp-CCL
+            (prep
+              (sps00 a a))
+            (sn
+              (grup.nom
+                (np00000 Espanya Espanya))))
+          (sn-CD
+            (grup.nom.fp
+              (ncfp000 dones dona)))
+          (sp-CC
+            (prep
+              (sps00 per per))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 obligar obligar))
+              (sn-CD
+                (grup.nom.fp
+                  (pp3fpa00 -les ell)))
+              (sadv-CC
+                (grup.adv
+                  (rg posteriorment posteriorment)))
+              (sp-CREG
+                (prep
+                  (sps00 a a))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 exercir exercir))
+                  (sn-CD
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 prostitució prostitució))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 actuacions actuació)
+        (S.NF.P
+          (Fc , ,)
+          (participi
+            (aq0fpp englobades englobat))
+          (sp-CCL
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (ncfp000 operacions operació)
+                (sn.x
+                  (grup.nom.co
+                    (grup.nom
+                      (np00000 Muga Muga))
+                    (coord
+                      (cc i i))
+                    (grup.nom
+                      (np00000 Turquesa Turquesa)))))))
+          (Fc , ,))))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 desenvolupar desenvolupar))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn.co
+        (sn
+          (grup.nom
+            (np00000 Càceres Càceres)))
+        (Fc , ,)
+        (sn
+          (grup.nom
+            (np00000 Badajoz Badajoz)))
+        (Fc , ,)
+        (sn
+          (grup.nom
+            (np00000 Toledo Toledo)))
+        (Fc , ,)
+        (sn
+          (grup.nom
+            (np00000 Madrid Madrid)))
+        (Fc , ,)
+        (sn
+          (espec.fp
+            (di0fp0 diverses divers))
+          (grup.nom.fp
+            (ncfp000 províncies província)
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (grup.nom
+                  (np00000 Euskadi Euskadi))))))
+        (coord
+          (cc i i))
+        (sn
+          (grup.nom
+            (np00000 Almeria Almeria)))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 Els el)
+          (Z 20 20))
+        (grup.nom.mp
+          (ncmp000 detinguts detingut)
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.fs
+                (da0cs0 l' el))
+              (grup.nom.fs
+                (ncfs000 operació operació)
+                (sn
+                  (grup.nom
+                    (np00000 Muga Muga))))))))
+      (grup.verb
+        (vmii3p0 formaven_part formar_part))
+      (sp-CREG
+        (prep
+          (sps00 d' de))
+        (sn
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs
+            (ncfs000 xarxa xarxa)
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vmii3s0 introduïa introduir))
+              (sadv-CC
+                (grup.adv
+                  (rg il·legalment il·legalment)))
+              (sp-CCL
+                (prep
+                  (sps00 a a))
+                (sn
+                  (grup.nom
+                    (np00000 Espanya Espanya))))
+              (sn-CD
+                (grup.nom.fp
+                  (ncfp000 dones dona)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 parla parla)
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0fs0 hispana hispà))))))))
+              (sp-CC
+                (prep
+                  (sps00 amb amb))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 promesa promesa)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (S.NF.C
+                        (infinitiu
+                          (vmn0000 proporcionar proporcionar))
+                        (sn-CI
+                          (grup.nom.p
+                            (pp3cp000 -los ell)))
+                        (sn-CD
+                          (espec.fs
+                            (di0fs0 una un))
+                          (grup.nom.fs
+                            (ncfs000 feina feina)
+                            (s.a.fs
+                              (grup.a.fs
+                                (aq0cs0 diferent diferent)))))
+                        (sp-CC
+                          (prep
+                            (sps00 a_canvi_de a_canvi_de))
+                          (S.NF.C
+                            (infinitiu
+                              (vmn0000 pagar pagar))
+                            (sn-CD
+                              (espec.ms
+                                (di0ms0 un un))
+                              (grup.nom.ms
+                                (ncms000 deute deute)
+                                (sp
+                                  (prep
+                                    (sps00 d' de))
+                                  (sn
+                                    (espec.fp
+                                      (Z 1.200.000 1200000))
+                                    (grup.nom
+                                      (Zm pessetes pesseta)))))))))))))))))
+      (Fc , ,))
+    (coord
+      (cc però però))
+    (S
+      (sadv-CCT
+        (grup.adv
+          (rg després després)))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vsii3p0 eren ser))
+      (S.NF.P-ATR
+        (participi
+          (aq0fpp obligades obligat))
+        (sp-CREG
+          (prep
+            (sps00 a a))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 exercir exercir))
+            (sn-CD
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 prostitució prostitució)))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg A_més_a_més a_més_a_més))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 les el))
+      (grup.nom.fp
+        (ncfp000 víctimes víctima)))
+    (grup.verb
+      (vaii3p0 havien haver)
+      (sps00 de de)
+      (infinitiu
+        (vmn0000 fer_front fer_front)))
+    (sp-CREG
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 pagament pagament)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn.x
+              (grup.nom.co
+                (grup.nom.co
+                  (grup.nom.fp
+                    (ncfp000 hipoteques hipoteca))
+                  (coord
+                    (cc i i))
+                  (grup.nom.mp
+                    (ncmp000 crèdits crèdit)))
+                (S.F.R.j
+                  (relatiu-CD
+                    (pr0cn000 que que))
+                  (sn.e-SUJ *0*)
+                  (grup.verb
+                    (vmii3p0 subscrivien subscriure))
+                  (sp-CCL
+                    (prep
+                      (spcms al al))
+                    (sn
+                      (espec.ms
+                        (dp3ms0 seu seu))
+                      (grup.nom.ms
+                        (ncms000 país país)
+                        (sp
+                          (prep
+                            (sps00 d' de))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 origen origen))))))))))))))
+    (sn-AO
+      (Fc , ,)
+      (grup.nom.fs
+        (ncfs000 condició condició)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 prèvia previ)))
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (sn-CI
+            (grup.nom.p
+              (pp3cp000 els ell)))
+          (grup.verb
+            (vmii3p0 imposaven imposar))
+          (sn-CD
+            (espec.mp
+              (da0mp0 els el))
+            (grup.nom.mp
+              (nc00000 captors captor)))
+          (sp-CC
+            (prep
+              (sps00 per per))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 assegurar assegurar))
+              (morf.pron
+                (p0300000 -se ell))
+              (sn-CD
+                (espec.fs
+                  (dp3fs0 la_seva el_seu))
+                (grup.nom.fs
+                  (ncfs000 obligació obligació)
+                  (sp
+                    (prep
+                      (sps00 a a))
+                    (S.NF.C
+                      (infinitiu
+                        (vmn0000 prostituir prostituir))
+                      (morf.pron
+                        (p0300000 -se ell)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec
+        (da0fp0 Les el)
+        (di0cp0 altres altre)
+        (Z 10 10))
+      (grup.nom.fp
+        (ncfp000 persones persona)
+        (S.NF.P
+          (participi
+            (aq0fpp detingudes detingut))
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.fs
+                (da0cs0 l' el))
+              (grup.nom.fs
+                (ncfs000 operació operació)
+                (sn
+                  (grup.nom
+                    (np00000 Turquesa Turquesa)))
+                (S.NF.P
+                  (Fc , ,)
+                  (participi
+                    (aq0fsp desenvolupada desenvolupat))
+                  (sp-CCL
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (grup.nom
+                        (np00000 Almeria Almeria))))
+                  (Fc , ,))))))))
+    (grup.verb
+      (vmii3p0 obligaven obligar))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 prostituir prostituir))
+        (morf.pron
+          (p0300000 -se ell))))
+    (sn-CD
+      (grup.nom.fp
+        (ncfp000 dones dona)
+        (s.a.fp.co
+          (s.a.fp
+            (grup.a.fp
+              (aq0fp0 sud-americanes sud-americà)))
+          (coord
+            (cc i i))
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom
+                (np00000 Europa_de_l'_Est Europa_de_l'_Est)))))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-CD
+            (pr0cn000 que que))
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vmii3p0 allotjaven allotjar))
+          (S.NF.P
+            (participi
+              (aq0fpp amuntegades amuntegat))
+            (sp-CCL
+              (prep
+                (sps00 en en))
+              (sn
+                (grup.nom.fp
+                  (ncfp000 habitacions habitació)
+                  (sp.co
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fp
+                          (ncfp000 dimensions dimensió)
+                          (S.NF.P
+                            (participi
+                              (aq0fpp reduïdes reduït))))))
+                    (coord
+                      (cc i i))
+                    (sp
+                      (prep
+                        (sps00 sense sense))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 ventilació ventilació))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fp
+          (da0fp0 Les el))
+        (grup.nom.fp
+          (ncfp000 dones dona)))
+      (grup.verb
+        (vsii3p0 eren ser)
+        (vmp00pf obligades obligar))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 treballar treballar))))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (grup.nom.mp
+            (ncmp000 horaris horari)
+            (s.a.mp
+              (grup.a.mp
+                (aq0mp0 abusius abusiu)))))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (morf.pron
+        (p0300000 s' ell))
+      (grup.verb
+        (vaii3p0 havien haver)
+        (sps00 de de)
+        (infinitiu
+          (vmn0000 pagar pagar)))
+      (sn.co-CD
+        (sn
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (ncms000 allotjament allotjament)))
+        (coord
+          (cc i i))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 menjar menjar)))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 L' el))
+      (grup.nom.fs
+        (ncfs000 organització organització)))
+    (grup.verb
+      (vmii3s0 destinava destinar))
+    (sn-CD
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 beneficis benefici)
+        (S.NF.P
+          (participi
+            (aq0mpp obtinguts obtingut)))))
+    (sp-CREG
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 blanqueig blanqueig)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 capitals capital)))))))
+    (sp-CC
+      (prep
+        (sps00 mitjançant mitjançant))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 creació creació)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0fp0 nombroses nombrós)))
+                (ncfp000 societats societat)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0cp0 instrumentals instrumental)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (np00000 Guàrdia_Civil Guàrdia_Civil)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm detingut detenir))
+    (sp-CCT
+      (prep
+        (sps00 des_del des_del))
+      (sn
+        (grup.nom.ms
+          (W mes_de_maig [??:??/5/??:??.??])
+          (S.NF.P
+            (participi
+              (aq0msp passat passat))))))
+    (sn-CD
+      (espec.fp
+        (Z 162 162))
+      (grup.nom.fp
+        (grup.nom.fp
+          (ncfp000 persones persona)
+          (S.NF.P
+            (participi
+              (aq0fpp relacionades relacionat))
+            (sp-CREG
+              (prep
+                (sps00 amb amb))
+              (sn.co
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 tràfic tràfic)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fp
+                          (ncfp000 blanques blanca))))))
+                (coord
+                  (cc i i))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 prostitució prostitució)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.fp
+                          (nccp000 menors menor))))))))))
+        (sp.j
+          (Fc , ,)
+          (sn.j
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 majoria majoria)))
+          (sp
+            (prep
+              (sps00 a a))
+            (sn.x
+              (grup.nom.co
+                (grup.nom
+                  (np00000 Almeria Almeria))
+                (coord
+                  (cc i i))
+                (grup.nom
+                  (np00000 Barcelona Barcelona))))))))
+    (Fp . .)))

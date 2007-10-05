@@ -1,0 +1,109 @@
+
+(
+  (S
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom.co
+          (grup.nom.mp
+            (ncmp000 Sindicats sindicat))
+          (coord
+            (cc i i))
+          (grup.nom.fp
+            (ncfp000 associacions associació)))
+        (sp.j
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.mp
+              (ncmp000 estrangers estranger))))
+        (sp.j
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (np00000 Tarragona Tarragona))))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 explicar explicar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 cas cas)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 funcionària funcionària)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 policial policial)))
+                (S.NF.P
+                  (participi
+                    (aq0fsp detinguda detingut))
+                  (sn
+                    (grup.nom.ms
+                      (W dimarts [dimarts:??/??/??:??.??])))
+                  (sp-CC
+                    (prep
+                      (sps00 per per))
+                    (S.NF.C
+                      (infinitiu
+                        (vmn0000 cobrar cobrar))
+                      (sn
+                        (grup.nom.mp
+                          (ncmp000 diners diner)))
+                      (sp-CC
+                        (prep
+                          (sps00 per per))
+                        (S.NF.C
+                          (infinitiu
+                            (vmn0000 regularitzar regularitzar))
+                          (sn
+                            (grup.nom.mp
+                              (nccp000 immigrants immigrant)))))))))))))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vsip3s0 és ser))
+      (sn-ATR
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 assumpte assumpte)
+          (S.NF.P
+            (participi
+              (aq0msp aïllat aïllat))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 treballadora treballadora)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 quedar quedar))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (grup.nom.fs
+          (ncfs000 llibertat llibertat))))
+    (sp-CC
+      (prep
+        (sps00 sota sota))
+      (sn
+        (grup.nom.fs
+          (ncfs000 fiança fiança))))
+    (Fp . .)))

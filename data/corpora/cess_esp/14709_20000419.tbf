@@ -1,0 +1,810 @@
+
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 moneda moneda)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 nacional nacional)))
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 checa checo)))
+          (sn
+            (Fc , ,)
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 corona corona))
+            (Fc , ,))))
+      (grup.verb
+        (vaip3s0 ha haber)
+        (vmp00sm registrado registrar))
+      (sp-CCT
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (s.a.mp
+              (grup.a.mp
+                (ao0mp0 últimos último)))
+            (ncmp000 días día))))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 fuerte fuerte)))
+          (ncfs000 caída caída))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3s0 ha haber)
+        (vmp00sm tocado tocar))
+      (sn-CD
+        (espec.ms
+          (dp3cs0 su su))
+        (grup.nom.ms
+          (ncms000 mínimo mínimo)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 histórico histórico)))))
+      (sadv-CC
+        (grup.adv
+          (rg frente frente)
+          (sp
+            (prep
+              (spcms al al))
+            (sn
+              (grup.nom.ms
+                (ncms000 dólar dólar)
+                (S.F.R
+                  (Fc , ,)
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmip3s0 cotiza cotizar))
+                  (sadv-CCT
+                    (grup.adv
+                      (rg hoy hoy)
+                      (snd
+                        (Fc , ,)
+                        (grup.nom.ms
+                          (W miércoles [miércoles:??/??/??:??.??]))
+                        (Fc , ,))))
+                  (sp-CC
+                    (prep
+                      (sps00 a a))
+                    (snn
+                      (espec.fp
+                        (Z 39,50 39.50))
+                      (grup.nom.fp
+                        (Zm coronas corona))))
+                  (S.F.A
+                    (Fc , ,)
+                    (conj.subord
+                      (cs cuando cuando))
+                    (sn-CCT
+                      (vmip3s0 hace hacer)
+                      (di0fp0 unas uno)
+                      (ncfp000 semanas semana))
+                    (sn.e-SUJ *0*)
+                    (neg-MOD
+                      (rn no no))
+                    (grup.verb
+                      (vmii3s0 subía subir))
+                    (sp-CC
+                      (prep
+                        (sps00 de de))
+                      (snn
+                        (grup.nom.mp
+                          (Z 36 36))))
+                    (sp-AO
+                      (Fc , ,)
+                      (prep
+                        (sps00 según según))
+                      (sno
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (ncms000 banco banco)
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0ms0 checo checo)))
+                          (sno
+                            (grup.nom.ms
+                              (np0000o Ceska_Sporitelna Ceska_Sporitelna)
+                              (sno
+                                (grup.nom.fs
+                                  (Fpa -Fpa- -Fpa-)
+                                  (np0000o Caja_de_Ahorros Caja_de_Ahorros)
+                                  (Fpt -Fpt- -Fpt-))))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 corona corona)))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vaii3s0 había haber)
+        (vmp00sm caído caer))
+      (sadv-CC
+        (grup.adv
+          (rg tanto tanto)))
+      (sadv-CC
+        (grup.adv
+          (rg frente frente)
+          (sp
+            (prep
+              (spcms al al))
+            (sn
+              (grup.nom.ms
+                (ncms000 dólar dólar))))))
+      (sp-CCT
+        (prep
+          (sps00 desde desde))
+        (snd
+          (grup.nom.ms
+            (W 1993 [??:??/??/1993:??.??])
+            (sn
+              (Fc , ,)
+              (grup.nom.fs
+                (ncfs000 fecha fecha)
+                (sp
+                  (spcms del del)
+                  (grup.nom.ms
+                    (ncms000 nacimiento nacimiento)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snl
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (np0000l República_Checa República_Checa)))))))
+              (Fc , ,))))))
+    (coord
+      (cc y y))
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 tendencia tendencia)))
+      (grup.verb
+        (vsip3s0 es ser))
+      (sp-ATR
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 baja bajo))))))
+      (sp-AO
+        (Fc , ,)
+        (prep
+          (sps00 según según))
+        (snp
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 experto experto)
+            (sp
+              (prep
+                (spcms del del))
+              (sno
+                (grup.nom.ms
+                  (np00000 Banco_Comercial Banco_Comercial)
+                  (sno
+                    (grup.nom.ms
+                      (Fpa -Fpa- -Fpa-)
+                      (np0000o KB KB)
+                      (Fpt -Fpt- -Fpt-))))))
+            (snp
+              (grup.nom.ms
+                (np0000p Jan_Vejmelek Jan_Vejmelek)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Los el))
+      (grup.nom.mp
+        (ncmp000 expertos experto)
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 financieros financiero)))))
+    (grup.verb
+      (vmip3p0 señalan señalar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 dificultades dificultad)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 corona corona))))))
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vmip3p0 deben deber))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (ncmp000 problemas problema)
+            (S.F.R
+              (relatiu-CD
+                (pr0cn000 que que))
+              (grup.verb
+                (vmip3s0 afronta afrontar))
+              (sn-SUJ
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 euro euro)
+                  (S.F.R
+                    (Fc , ,)
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (sadv-CCT
+                      (grup.adv
+                        (rg ayer ayer)))
+                    (sadv-MOD
+                      (grup.adv
+                        (rg también también)))
+                    (grup.verb
+                      (vmis3s0 registró registrar))
+                    (sn-CD
+                      (espec.ms
+                        (dp3cs0 su su))
+                      (grup.nom.ms
+                        (ncms000 mínimo mínimo)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0ms0 histórico histórico)))))
+                    (sadv-CC
+                      (grup.adv
+                        (rg frente frente)
+                        (sp.co
+                          (sp
+                            (prep
+                              (spcms al al))
+                            (sn
+                              (grup.nom.ms
+                                (ncms000 dólar dólar))))
+                          (coord
+                            (cc y y))
+                          (sp
+                            (prep
+                              (spcms al al))
+                            (sn
+                              (grup.nom.ms
+                                (ncms000 yen yen)
+                                (s.a.ms
+                                  (grup.a.ms
+                                    (aq0ms0 japonés japonés)))))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 corona corona)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 checa checo)))))
+      (grup.verb
+        (vmip3s0 está estar))
+      (S.NF.P-ATR
+        (sadv-CC
+          (grup.adv
+            (rg fuertemente fuertemente)))
+        (participi
+          (aq0fsp vinculada vinculado))
+        (sp-CREG
+          (prep
+            (spcms al al))
+          (sn
+            (grup.nom.ms
+              (ncms000 euro euro))))))
+    (coord
+      (cc y y))
+    (S
+      (sp-CCT
+        (prep
+          (sps00 durante durante))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 día día)
+            (sp
+              (prep
+                (sps00 de de))
+              (sadv
+                (grup.adv
+                  (rg ayer ayer)))))))
+      (sadv-CC
+        (grup.adv
+          (rg prácticamente prácticamente)))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3s0 copió copiar))
+      (sn-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 movimiento movimiento)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 moneda moneda)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 única único)))
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 europea europeo)))
+                (S.F.R
+                  (Fc , ,)
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (morf.pron
+                    (p0300000 se él))
+                  (grup.verb
+                    (vmip3s0 ve ver))
+                  (S.NF.P-CPRED.SUJ
+                    (participi
+                      (aq0fsp debilitada debilitado))
+                    (sp-CAG
+                      (prep
+                        (sps00 por por))
+                      (sn
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (ncms000 flujo flujo)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom.ms
+                                (ncms000 capital capital))))
+                          (sp
+                            (prep
+                              (sps00 a a))
+                            (sn
+                              (espec.fs
+                                (da0fs0 la el))
+                              (grup.nom.fs
+                                (ncfs000 economía economía)
+                                (s.a.fs
+                                  (grup.a.fs
+                                    (aq0fs0 japonesa japonés))))))))))
+                  (S.NF.A-CC
+                    (gerundi
+                      (vmg0000 dejando dejar))
+                    (sadv
+                      (grup.adv
+                        (rg de_lado de_lado)))
+                    (sn
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 mercado mercado)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0ms0 europeo europeo)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CC
+      (grup.adv
+        (rg Curiosamente curiosamente))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 corona corona)))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmip3s0 muestra mostrar))
+    (sa-CPRED.SUJ
+      (grup.a
+        (aq0cs0 firme firme)))
+    (sadv-CC
+      (grup.adv
+        (rg frente frente)
+        (sp
+          (prep
+            (spcms al al))
+          (sn
+            (grup.nom.ms
+              (ncms000 euro euro))))))
+    (sn-AO
+      (Fc , ,)
+      (espec.ms
+        (da0ns0 lo el))
+      (grup.nom.ms
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 produce producir))
+          (sn-CD
+            (espec.ms
+              (di0ms0 un uno))
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 cierto cierto)))
+              (ncms000 nerviosismo nerviosismo)))
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (sn
+              (grup.nom.mp
+                (ncmp000 medios medio)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0mp0 bancarios bancario))))))
+          (sp-CC
+            (prep
+              (sps00 ante ante))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 temor temor)
+                (sp
+                  (prep
+                    (sps00 a a))
+                  (S.F.C
+                    (conj.subord
+                      (cs que que))
+                    (sno-SUJ
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 banco banco)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0cs0 central central)))
+                        (sno
+                          (grup.nom.ms
+                            (Fpa -Fpa- -Fpa-)
+                            (np0000o CNB CNB)
+                            (Fpt -Fpt- -Fpt-)))))
+                    (grup.verb
+                      (vmsp3s0 intervenga intervenir))
+                    (sp-CC
+                      (prep
+                        (sps00 contra contra))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 moneda moneda)
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0fs0 comunitaria comunitario))))))
+                    (sp-CC
+                      (prep
+                        (sps00 para para))
+                      (S.NF.C
+                        (infinitiu
+                          (vmn0000 debilitar debilitar))
+                        (sp-CD
+                          (prep
+                            (sps00 a a))
+                          (sn
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (ncfs000 corona corona))))))
+                    (sn-AO
+                      (Fc , ,)
+                      (espec.ms
+                        (da0ns0 lo el))
+                      (grup.nom.ms
+                        (S.F.R
+                          (relatiu-SUJ
+                            (pr0cn000 que que))
+                          (grup.verb
+                            (vmic3s0 haría hacer))
+                          (S.NF.C-CD
+                            (infinitiu
+                              (vmn0000 bajar bajar))
+                            (sadv-MOD
+                              (grup.adv
+                                (rg también también)))
+                            (sn-CD
+                              (espec.ms
+                                (da0ms0 el el))
+                              (grup.nom.ms
+                                (ncms000 precio precio)
+                                (sp
+                                  (prep
+                                    (spcms del del))
+                                  (sn
+                                    (grup.nom.ms
+                                      (ncms000 dólar dólar))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (Fe " ")
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 caída caída)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 corona corona))))
+          (sadv
+            (grup.adv
+              (rg frente frente)
+              (sp
+                (prep
+                  (spcms al al))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 dólar dólar))))))))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vmip3s0 preocupa preocupar))
+      (sadv-CC
+        (grup.adv
+          (rg demasiado demasiado)))
+      (S.F.A.co-CC
+        (Fc , ,)
+        (conj.subord
+          (cs ya_que ya_que))
+        (S.F.A
+          (sn-SUJ
+            (espec.fp
+              (da0fp0 las el)
+              (dn0cp0 dos dos))
+            (grup.nom.fp
+              (s.a.fp
+                (grup.a.fp
+                  (ao0fp0 terceras tercero)))
+              (ncfp000 partes parte)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 comercio comercio)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0cs0 exterior exterior)))
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 checo checo))))))))
+          (morfema.verbal-PASS
+            (p0000000 se se))
+          (grup.verb
+            (vmip3p0 realizan realizar))
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (sn
+              (grup.nom.mp
+                (ncmp000 euros euro)))))
+        (coord
+          (cc y y))
+        (S.F.A
+          (sn-SUJ
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 cotización cotización)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 corona corona))))
+              (sadv
+                (grup.adv
+                  (rg frente frente)
+                  (sp
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 moneda moneda)
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0fs0 europea europeo))))))))))
+          (grup.verb
+            (vsip3s0 es ser))
+          (sa-ATR
+            (grup.a
+              (aq0cs0 estable estable)))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmip3s0 advierte advertir))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Ludek_Niedermayer Ludek_Niedermayer)
+        (sp
+          (Fc , ,)
+          (prep
+            (sps00 de de))
+          (sno
+            (grup.nom.ms
+              (ncms000 consejo consejo)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 bancario bancario)))
+              (sp
+                (prep
+                  (spcms del del))
+                (sno
+                  (grup.nom.ms
+                    (np0000o CNB CNB)))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 relación relación)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 corona corona))))
+          (sp
+            (prep
+              (sps00 con con))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 dólar dólar))))))
+      (grup.verb
+        (vmip3s0 tiene tener))
+      (sn-CD.Q
+        (grup.nom.fs
+          (ncfs000 importancia importancia)
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 compra compra)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 petróleo petróleo)))))))))
+      (S.F.A-CC
+        (Fc , ,)
+        (conj.subord
+          (cs ya_que ya_que))
+        (sn-SUJ
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (ncmp000 pagos pago)))
+        (morfema.verbal-PASS
+          (p0000000 se se))
+        (grup.verb
+          (vmip3p0 hacen hacer))
+        (sp-CC
+          (prep
+            (sps00 en en))
+          (sn
+            (grup.nom.mp
+              (ncmp000 dólares dólar)))))
+      (S.F.AConc-AO
+        (Fc , ,)
+        (conj.subord
+          (cs aunque aunque))
+        (sn-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 encarecimiento encarecimiento)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 moneda moneda)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 estadounidense estadounidense))))))))
+        (morf.pron
+          (p0300000 se él))
+        (grup.verb
+          (vmip3s0 ve ver))
+        (S.NF.P-CPRED.SUJ
+          (participi
+            (aq0msp compensado compensado))
+          (sp-CC
+            (prep
+              (sps00 por por))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (sn
+                (grup.nom.ms
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 bajo bajo)))
+                  (ncms000 precio precio)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 crudo crudo))))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmip3s0 afirma afirmar))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Niedermayer Niedermayer)))
+    (Fp . .)))

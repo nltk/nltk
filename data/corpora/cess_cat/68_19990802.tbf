@@ -1,0 +1,82 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 programa programa)
+        (s.a.ms.x
+          (grup.a.ms.co
+            (grup.a.ms
+              (aq0ms0 nocturn nocturn))
+            (coord
+              (cc i i))
+            (grup.a.ms
+              (aq0cs0 estival estival))))
+        (sn
+          (sn
+            (grup.nom
+              (np00000 Les_1.000_i_una Les_1.000_i_una)))
+          (S*.j
+            (Fpa -Fpa- -Fpa-)
+            (sn
+              (grup.nom
+                (np00000 TV-3 TV-3)))
+            (Fc , ,)
+            (sn
+              (grup.nom
+                (W 23.30 [??:??/??/??:23.30])))
+            (Fpt -Fpt- -Fpt-)))
+        (S.F.R.co
+          (Fc , ,)
+          (relatiu-CD
+            (pr0cn000 que que))
+          (S.F.R
+            (grup.verb
+              (vmip3s0 dirigeix dirigir))
+            (sn.e-SUJ *0*))
+          (coord
+            (cc i i))
+          (S.F.R
+            (grup.verb
+              (vmip3s0 presenta presentar))
+            (sn-SUJ
+              (grup.nom.ms
+                (np00000 Jordi_González Jordi_González))))
+          (Fc , ,))))
+    (grup.verb
+      (vmip3s0 té tenir))
+    (sn-CCT
+      (espec.fs
+        (dd0fs0 aquesta aquest))
+      (grup.nom.fs
+        (ncfs000 nit nit)))
+    (sp-CPRED.CD
+      (prep
+        (sps00 com_a com_a))
+      (sn
+        (grup.nom.fs
+          (ncfs000 convidada convidada))))
+    (sn-CD.Q
+      (grup.nom.fs
+        (np00000 Teresa_Gimpera Teresa_Gimpera)
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vaip3s0 va anar)
+            (vsn0000 ser ser))
+          (sn-ATR
+            (grup.nom.fs
+              (ncfs000 musa musa)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0cs0 l' el))
+                  (grup.nom.fs
+                    (np00000 Escola_de_Barcelona Escola_de_Barcelona)))))))))
+    (Fp . .)))

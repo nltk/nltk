@@ -1,0 +1,124 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 junta junta)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 general general)))
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.mp
+              (nccp000 accionistes accionista))))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (np00000 Jazztel Jazztel))))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 aprovar aprovar))
+    (sn-CCT
+      (grup.nom.ms
+        (W dimecres [dimecres:??/??/??:??.??])
+        (S.NF.P
+          (participi
+            (aq0msp passat passat)))))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 nomenament nomenament)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (np00000 Joaquim_Molins Joaquim_Molins)
+              (sp
+                (prep
+                  (sps00 com_a com_a))
+                (sn
+                  (grup.nom.ms
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 nou nou)))
+                    (ncms000 conseller conseller)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fs
+                          (da0cs0 l' el))
+                        (grup.nom.fs
+                          (ncfs000 operadora operadora))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom.ms
+          (np00000 Víctor_Martins Víctor_Martins))
+        (coord
+          (cc i i))
+        (grup.nom.ms
+          (np00000 Alfredo_Pastor Alfredo_Pastor))))
+    (grup.verb
+      (vmif3p0 acompanyaran acompanyar))
+    (sn-CD
+      (grup.nom.ms
+        (np00000 Molins Molins)
+        (sn
+          (grup.nom.ms
+            (Fg - -)
+            (ncms000 excandidat excandidat)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom
+                  (np00000 CiU CiU))))
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fs
+                  (da0cs0 l' el))
+                (grup.nom.fs
+                  (ncfs000 alcaldia alcaldia)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom
+                        (np00000 Barcelona Barcelona)))))))
+            (Fg - -)))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 consell consell)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 companyia companyia)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fp
+                      (ncfp000 telecomunicacions telecomunicació))))))))))
+    (Fp . .)))

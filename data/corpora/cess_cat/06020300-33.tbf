@@ -1,0 +1,318 @@
+
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (np0000o Ajuntament_de_Sant_Fruitós_de_Bages Ajuntament_de_Sant_Fruitós_de_Bages)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm adjudicat adjudicar))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sno
+        (grup.nom.fs
+          (np0000o Ampans Ampans)
+          (sno
+            (Fc , ,)
+            (espec.fs
+              (da0cs0 l' el))
+            (grup.nom.fs
+              (np0000o Associació_Manresana_de_Pares_de_Nens_Subdotats Associació_Manresana_de_Pares_de_Nens_Subdotats))
+            (Fc , ,)))))
+    (sn-CD
+      (espec.fp
+        (da0fp0 les el))
+      (grup.nom.fp
+        (ncfp000 tasques tasca)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 manteniment manteniment)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fp
+                    (da0fp0 les el))
+                  (grup.nom.fp
+                    (ncfp000 zones zona)
+                    (S.NF.P
+                      (participi
+                        (aq0fpp enjardinades enjardinat)))
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 terme terme)
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0cs0 municipal municipal))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 despesa despesa)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 anual anual)))
+        (S.F.R
+          (relatiu-CD
+            (pr0cn000 que que))
+          (sn-SUJ
+            (grup.nom.ms
+              (pd0ns000 això això)))
+          (grup.verb
+            (vmip3s0 comporta comportar))
+          (sp-CC
+            (prep
+              (sps00 per per))
+            (sp
+              (prep
+                (spcms al al))
+              (sn
+                (grup.nom.ms
+                  (ncms000 consistori consistori))))))))
+    (grup.verb
+      (vmip3s0 ascendeix ascendir))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (snn
+        (espec.mp
+          (Z 170.608,12 170608.12))
+        (grup.nom.mp
+          (Zm euros euro))))
+    (S.F.A-AO
+      (Fc , ,)
+      (conj.subord
+        (cs segons segons))
+      (grup.verb
+        (vaip3p0 han haver)
+        (vmp00sm informat informar))
+      (sn-SUJ
+        (grup.nom.fp
+          (ncfp000 fonts font)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sno
+              (grup.nom.fs
+                (np0000o Ampans Ampans)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 servei servei)
+        (S.F.R
+          (relatiu-CD
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3s0 ofereix oferir))
+          (sno-SUJ
+            (grup.nom.fs
+              (np0000o Ampans Ampans))))))
+    (grup.verb
+      (vmip3s0 inclou incloure))
+    (sn.co-CD
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 manteniment manteniment)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 integral integral)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (ncfp000 zones zona)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0fp0 verdes verd))))))))
+      (Fc , ,)
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 poda poda)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 arbres arbre))))))
+      (coord
+        (cc i i))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 dedicació dedicació)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 exclusiva exclusiu)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 personal personal)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (da0cs0 l' el))
+                    (grup.nom.fs
+                      (ncfs000 empresa empresa))))))))))
+    (S.F.ACons-AO
+      (Fc , ,)
+      (conj.subord
+        (cs de_manera_que de_manera_que))
+      (sno-SUJ
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (np0000o Ajuntament Ajuntament)))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vaip3s0 ha haver)
+        (sps00 de de)
+        (infinitiu
+          (vmn0000 destinar destinar)))
+      (sn-CD
+        (grup.nom.ms
+          (ncms000 personal personal)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 brigada brigada)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 municipal municipal))))))))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fp
+            (dd0fp0 aquestes aquest))
+          (grup.nom.fp
+            (ncfp000 tasques tasca)))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 jardiners jardiner)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0cs0 l' el))
+            (grup.nom.fs
+              (ncfs000 empresa empresa))))))
+    (grup.verb
+      (vmip3p0 assumeixen assumir))
+    (sn.co-CD
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 responsabilitat responsabilitat)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 total total)))
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 manteniment manteniment))))
+          (sp.co
+            (Fc , ,)
+            (coord
+              (rg tant tant))
+            (sp
+              (prep
+                (sps00 pel_que_fa_a pel_que_fa_a))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 adobs adob)))
+              (Fc , ,))
+            (coord
+              (cs com com))
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 reposició reposició)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn.x
+                      (grup.nom.co
+                        (grup.nom.fp
+                          (ncfp000 plantes planta))
+                        (coord
+                          (cc i i))
+                        (grup.nom.mp
+                          (ncmp000 arbres arbre))))))))
+            (Fc , ,))))
+      (coord
+        (cc o o))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 proposta proposta)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 flora flora)
+                (S.NF.P
+                  (sadv-CC
+                    (grup.adv
+                      (rg més més)))
+                  (participi
+                    (aq0fsp adequada adequat))
+                  (sp-CC
+                    (prep
+                      (sps00 per per))
+                    (sp
+                      (prep
+                        (sps00 a a))
+                      (sn
+                        (espec.ms
+                          (di0cs0 cada cada))
+                        (grup.nom.ms
+                          (ncms000 espai espai))))))))))))
+    (Fp . .)))

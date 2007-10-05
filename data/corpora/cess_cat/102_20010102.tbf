@@ -1,0 +1,106 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 ajuntament ajuntament)))
+    (grup.verb
+      (vmif3s0 reformarà reformar))
+    (sn-CCT
+      (espec.ms
+        (dd0ms0 aquest aquest))
+      (grup.nom.ms
+        (ncms000 any any)))
+    (sn-CD
+      (espec.fp
+        (dn0fp0 dues dos))
+      (grup.nom.fp
+        (ncfp000 naus nau)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0cs0 l' el))
+            (grup.nom.fs
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 antiga antic)))
+              (ncfs000 caserna caserna)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 militar militar))))))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 facilitar facilitar))
+        (sn-CD
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 desenvolupament desenvolupament)
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (grup.nom.fp
+                  (ncfp000 iniciatives iniciativa)
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0cp0 empresarials empresarial))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 obres obra)))
+    (grup.verb
+      (vmif3p0 costaran costar))
+    (sn-CD.Q
+      (espec.mp
+        (Z 121 121))
+      (grup.nom.mp
+        (ncmp000 milions milió)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fp
+              (Zm pessetes pesseta))))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-CD.NFc
+            (pr0cn000 que que))
+          (sn-SUJ
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 consistori consistori)))
+          (grup.verb
+            (vmip3s0 espera esperar))
+          (S.NF.C-CD.NFn
+            (infinitiu
+              (vmn0000 finançar finançar))
+            (sp-CC
+              (prep
+                (sps00 amb amb))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 suport suport)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (np00000 UE UE)))))))))))
+    (Fp . .)))

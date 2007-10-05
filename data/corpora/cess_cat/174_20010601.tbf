@@ -1,0 +1,102 @@
+
+(
+  (S
+    (sn-SUJ
+      (grup.nom
+        (np00000 The_Mississipi_Mass_Choir The_Mississipi_Mass_Choir)
+        (sn
+          (Fc , ,)
+          (grup.nom.co
+            (grup.nom.fs
+              (pi0fs000 una un)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fp
+                    (da0fp0 les el))
+                  (grup.nom.fp
+                    (s.a.fp
+                      (grup.a.fp
+                        (aq0cp0 millors millor)))
+                    (ncfp000 masses massa)
+                    (s.a.fp
+                      (grup.a.fp
+                        (aq0cp0 corals coral)))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.ms
+                          (nc00000 gospel gospel))))))))
+            (coord
+              (cc i i))
+            (grup.nom.fs
+              (ncfs000 guanyadora guanyadora)
+              (sp
+                (prep
+                  (sps00 d' de))
+                (sn
+                  (espec.ms
+                    (di0ms0 un un))
+                  (grup.nom.ms
+                    (np00000 Grammy Grammy))))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (W 1997 [??:??/??/1997:??.??])))))
+          (Fc , ,))))
+    (grup.verb
+      (vmif3s0 actuarà actuar))
+    (sn-CCT
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (W dia_29_de_juliol [??:29/7/??:??.??])))
+    (sp-CCL
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (np00000 Festival_Castell_de_Peralada Festival_Castell_de_Peralada)
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (sadv-CCT
+              (grup.adv
+                (rg avui avui)))
+            (grup.verb
+              (vmip3s0 posa posar))
+            (sn-CD
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (ncfp000 entrades entrada)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0cs0 present present)))
+                      (ncfs000 edició edició))))))
+            (sp-CC
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 venda venda))))
+            (sp-CC
+              (prep
+                (sps00 a_través_de a_través_de))
+              (sn
+                (grup.nom
+                  (np00000 Servicaixa Servicaixa))))))))
+    (Fp . .)))

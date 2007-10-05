@@ -1,0 +1,402 @@
+
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Durante durante))
+      (sn
+        (espec.fs
+          (dp3cs0 su su))
+        (grup.nom.fs
+          (ncfs000 intervención intervención)))
+      (Fc , ,))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Iglesias Iglesias)))
+    (grup.verb
+      (vmis3s0 destacó destacar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 importancia importancia)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 seguridad seguridad)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 navegación navegación)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 aérea aéreo)))))))))))
+    (sp-CC
+      (prep
+        (sps00 a_efectos_de a_efectos_de))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 incrementar incrementar))
+        (sn.co-CD
+          (sn.co
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 turismo turismo)))
+            (coord
+              (cc y y))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 comercio comercio))))
+          (Fc , ,)
+          (sn.co
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 inversión inversión)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 extranjera extranjero)))))
+            (coord
+              (cc y y))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 desarrollo desarrollo)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 económico económico)))))))
+        (sp-CC
+          (prep
+            (sps00 a a))
+          (sn
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 largo largo)))
+              (ncms000 plazo plazo))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 Los el))
+        (grup.nom.mp
+          (ncmp000 ministros ministro)))
+      (grup.verb
+        (vmis3p0 reconocieron reconocer))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 importancia importancia)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (di0ms0 un uno))
+              (grup.nom.ms
+                (ncms000 servicio servicio)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 aéreo aéreo)))
+                (s.a.ms.x
+                  (grup.a.ms.co
+                    (grup.a.ms
+                      (aq0ms0 seguro seguro))
+                    (coord
+                      (cc y y))
+                    (grup.a.ms
+                      (aq0cs0 eficiente eficiente)))))))))
+      (Fc , ,))
+    (coord
+      (cc y y))
+    (S
+      (sp-CC
+        (prep
+          (sps00 para para))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 lograrlo lograr))))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3p0 acordaron acordar))
+      (S.NF.C-CD
+        (infinitiu
+          (vmn0000 establecer establecer))
+        (sn-CD
+          (espec.fs
+            (di0fs0 una uno))
+          (grup.nom.fs
+            (np0000o Asociación Asociación)
+            (sp
+              (prep
+                (sps00 para para))
+              (sn
+                (espec.fs
+                  (di0fs0 una uno))
+                (grup.nom.fs
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 mayor mayor)))
+                  (ncfs000 seguridad seguridad)
+                  (sp
+                    (prep
+                      (sps00 en en))
+                    (sn
+                      (espec.mp
+                        (da0mp0 los el))
+                      (grup.nom.mp
+                        (ncmp000 cielos cielo)
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (snl
+                            (grup.nom.ms
+                              (np0000l Hemisferio_Occidental Hemisferio_Occidental))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S.co
+      (S
+        (sn-SUJ
+          (espec.fs
+            (dd0fs0 Esa ese))
+          (grup.nom.fs
+            (ncfs000 asociación asociación)
+            (S.F.R
+              (Fc , ,)
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vmif3s0 deberá deber)
+                (infinitiu
+                  (vmn0000 tener_en_consideración tener_en_consideración)))
+              (sn-CD
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 papel papel)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sno
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (np0000o OACI OACI))))))
+              (Fc , ,))))
+        (grup.verb
+          (vmif3s0 promoverá promover)))
+      (coord
+        (cc y y))
+      (S
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmif3s0 reforzará reforzar))))
+    (sn.x.j-CD
+      (grup.nom.co
+        (grup.nom.fp
+          (ncfp000 mejoras mejora)
+          (s.a.fp
+            (grup.a.fp
+              (aq0cp0 sostenibles sostenible)))
+          (sp
+            (prep
+              (sps00 en_materia_de en_materia_de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 seguridad seguridad)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 aeronavegación aeronavegación)))))))
+          (Fc , ,))
+        (coord
+          (cc así_como así_como))
+        (grup.nom.fp
+          (ncfp000 mejoras mejora)
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.fp
+                (da0fp0 las el))
+              (grup.nom.fp
+                (ncfp000 condiciones condición)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 fortalecimiento fortalecimiento)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.mp
+                            (da0mp0 los el))
+                          (grup.nom.mp
+                            (ncmp000 sistemas sistema)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (grup.nom.fs
+                                  (ncfs000 aviación aviación)
+                                  (s.a.fs
+                                    (grup.a.fs
+                                      (aq0cs0 civil civil))))))
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (espec.fs
+                                  (da0fs0 la el))
+                                (grup.nom.fs
+                                  (ncfs000 región región))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (sadv-MOD
+      (grup.adv
+        (rg También también)))
+    (grup.verb
+      (vmif3s0 promoverá promover))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 crecimiento crecimiento)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (ncmp000 servicios servicio)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0cp0 internacionales internacional)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 aeronavegación aeronavegación))))
+              (sp
+                (prep
+                  (sps00 en en))
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 continente continente)))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 titular titular)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 uruguayo uruguayo)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (grup.nom
+              (np0000o Transportes Transportes))))
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (np0000p Lucio_Cáceres_Behrens Lucio_Cáceres_Behrens))
+          (Fc , ,))))
+    (grup.verb
+      (vmis3s0 anunció anunciar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sno-SUJ
+        (espec.ms
+          (dp3cs0 su su))
+        (grup.nom.ms
+          (np0000o Gobierno Gobierno)))
+      (grup.verb
+        (vsif3s0 será ser))
+      (sn-ATR
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 anfitrión anfitrión)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 próxima próximo)))
+                (ncfs000 reunión reunión)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 plenaria plenario)))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 ministros ministro)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sno
+                          (grup.nom
+                            (np0000o Transporte_del_Hemisferio_Occidental Transporte_del_Hemisferio_Occidental)))))))
+                (sp
+                  (Fc , ,)
+                  (prep
+                    (sps00 en en))
+                  (snl
+                    (grup.nom
+                      (np0000l Punta_del_Este Punta_del_Este)))
+                  (Fc , ,))
+                (sn
+                  (espec.mp
+                    (da0mp0 los el))
+                  (grup.nom.mp
+                    (ncmp000 días día)
+                    (snd.x
+                      (grup.nom.co
+                        (grup.nom.mp
+                          (Z 15 15))
+                        (coord
+                          (cc y y))
+                        (grup.nom.mp
+                          (W 16_de_marzo_del_2001 [??:16/3/2001:??.??]))))))))))))
+    (Fp . .)))

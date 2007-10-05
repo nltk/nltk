@@ -1,0 +1,125 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 ministra ministra)
+        (sn
+          (grup.nom.fs
+            (np00000 Anna_Birulés Anna_Birulés)))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 presidir presidir))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sp-CCT
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 nit nit))))
+    (sp-CCL
+      (Fc , ,)
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (np00000 Palau_de_la_Música Palau_de_la_Música)))
+      (Fc , ,))
+    (sn-CD
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (ncms000 acte acte)))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np00000 Consell_General Consell_General)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (np00000 Col.legis_d'_Enginyers_Industrials Col.legis_d'_Enginyers_Industrials))))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 posar posar))
+    (sadv-CC
+      (grup.adv
+        (rg així així)))
+    (sn-CD
+      (grup.nom.fs
+        (ncfs000 fi fi)))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 intensa intens)))
+          (ncfs000 agenda agenda)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 actes acte))))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (W any_2001 [??:??/??/2001:??.??])))))))
+    (Fp . .)))
+(
+  (S*
+    (sp
+      (prep
+        (sps00 A a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 foto foto))))
+    (sp
+      (Fc , ,)
+      (prep
+        (sps00 amb amb))
+      (sn
+        (grup.nom.fs
+          (np00000 Birulés Birulés)))
+      (Fc , ,))
+    (sn
+      (grup.nom.ms
+        (np00000 Àngel_Llobet Àngel_Llobet)
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (ncms000 degà degà)
+            (sp
+              (prep
+                (spcmp dels del))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 enginyers enginyer)
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0cp0 industrials industrial)))
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0mp0 catalans català))))))))))
+    (Fp . .)))

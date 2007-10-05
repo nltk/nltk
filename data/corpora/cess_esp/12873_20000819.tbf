@@ -1,0 +1,471 @@
+
+(
+  (S
+    (S.F.C-CD
+      (sna-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 remolcador remolcador)
+          (sna
+            (grup.nom
+              (np0000a Chame_II Chame_II)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000o Autoridad_del_Canal_de_Panamá Autoridad_del_Canal_de_Panamá)
+                (sno
+                  (grup.nom.fs
+                    (Fpa -Fpa- -Fpa-)
+                    (np0000o ACP ACP)
+                    (Fpt -Fpt- -Fpt-))))))))
+      (morf.pron
+        (p0300000 se él))
+      (grup.verb
+        (vmis3s0 hundió hundir))
+      (sp-CCT
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 noche noche)
+            (sp
+              (prep
+                (spcms del del))
+              (snd
+                (grup.nom.ms
+                  (W viernes [viernes:??/??/??:??.??])
+                  (S.NF.P
+                    (participi
+                      (aq0msp pasado pasado)))))))))
+      (sp-CC
+        (Fc , ,)
+        (prep
+          (sps00 por por))
+        (sn
+          (grup.nom.fp
+            (ncfp000 razones razón)
+            (S.NF.P
+              (participi
+                (aq0fpp desconocidas desconocido)))))
+        (Fc , ,))
+      (sp-CCL
+        (prep
+          (spcms al al))
+        (snl
+          (grup.nom.ms
+            (ncms000 sur sur)
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (espec.fp
+                  (da0fp0 las el))
+                (grup.nom.fp
+                  (np0000l Esclusas_de_Miraflores Esclusas_de_Miraflores)))))))
+      (sp-CCL
+        (Fc , ,)
+        (prep
+          (sps00 en en))
+        (snl
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 sector sector)
+            (s.a.ms
+              (grup.a.ms
+                (np0000l Pacífico Pacífico)))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 vía vía))))))
+        (Fc , ,))
+      (sp-AO
+        (prep
+          (sps00 por por))
+        (sn
+          (espec.ms
+            (da0ns0 lo el))
+          (S.F.R
+            (relatiu-CC
+              (pr0cn000 que que))
+            (sn-SUJ
+              (espec.fs
+                (dp3cs0 su su))
+              (grup.nom.fs
+                (ncfs000 operadora operadora)))
+            (grup.verb
+              (vsis3s0 fue ser)
+              (vmp00sf evacuada evacuar))
+            (sp-CCL
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.ms
+                  (di0ms0 un uno))
+                (grup.nom.ms
+                  (ncms000 hospital hospital)))))))
+      (Fc , ,))
+    (grup.verb
+      (vmis3p0 informaron informar))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (sn-SUJ
+      (grup.nom.fp
+        (ncfp000 fuentes fuente)
+        (s.a.fp
+          (grup.a.fp
+            (aq0cp0 oficiales oficial)))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (np0000o ACP ACP)))
+    (grup.verb
+      (vmis3s0 indicó indicar))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 comunicado comunicado))))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (ncmp000 remolcadores remolcador)
+          (sn.x
+            (grup.nom.co
+              (grup.nom.ms
+                (np0000a Chame_II Chame_II))
+              (coord
+                (cc y y))
+              (grup.nom.ms
+                (np0000a Gamboa Gamboa))))))
+      (grup.verb
+        (vmii3p0 transportaban transportar))
+      (sna-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 barcaza barcaza)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 perforadora perforador)))
+          (snp
+            (grup.nom.fs
+              (np0000p Thor Thor)))))
+      (sp-CCL
+        (prep
+          (sps00 hacia hacia))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.fs
+            (ncfs000 área área)
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Corozal_Oeste Corozal_Oeste)
+                  (S.F.R
+                    (Fc , ,)
+                    (relatiu-CCL
+                      (pr000000 donde donde))
+                    (morfema.verbal-PASS
+                      (p0000000 se se))
+                    (grup.verb
+                      (vmip3p0 realizan realizar))
+                    (sn-SUJ
+                      (grup.nom.mp
+                        (ncmp000 trabajos trabajo)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (grup.nom.ms
+                              (ncms000 dragado dragado)))))))))))))
+      (S.F.A.co-CCT
+        (Fc , ,)
+        (conj.subord
+          (cs cuando cuando))
+        (sp.j
+          (Fc , ,)
+          (prep
+            (spcms al al))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 parecer parecer)))
+          (Fc , ,))
+        (S.F.A
+          (sn-SUJ
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (ao0ms0 primero primero)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.mp
+                    (pd0mp000 estos este))))))
+          (Fe " ")
+          (grup.verb
+            (vmis3s0 tomó tomar))
+          (sn-CD
+            (grup.nom.fs
+              (ncfs000 agua agua))))
+        (coord
+          (cc y y))
+        (S.F.A
+          (sn.e-SUJ *0*)
+          (morf.pron
+            (p0300000 se él))
+          (grup.verb
+            (vmis3s0 volteó voltear)))
+        (Fe " ")))
+    (Fp . .)))
+(
+  (S.co
+    (S.co
+      (S
+        (sn-SUJ
+          (espec.mp
+            (dn0cp0 Dos dos))
+          (grup.nom.mp
+            (ncmp000 marinos marino)
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vmii3p0 iban ir))
+              (sadv-CCL
+                (grup.adv
+                  (rg a_bordo a_bordo)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sna
+                      (grup.nom.ms
+                        (np0000a Chame_II Chame_II)))))))))
+        (grup.verb
+          (vmis3p0 saltaron saltar))
+        (sp-CCL
+          (prep
+            (spcms al al))
+          (sn
+            (grup.nom.fs
+              (ncfs000 agua agua)))))
+      (coord
+        (cc y y))
+      (S
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vsis3p0 fueron ser)
+          (vmp00pm rescatados rescatar))
+        (sa-CPRED.SUJ
+          (grup.a
+            (aq0mp0 ilesos ileso))))
+      (Fc , ,))
+    (coord
+      (cc mientras_que mientras_que))
+    (S.co
+      (S
+        (snp-SUJ
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 operadora operadora)
+            (snp
+              (Fc , ,)
+              (grup.nom.fs
+                (np0000p Dalila_Rodríguez Dalila_Rodríguez))
+              (Fc , ,))))
+        (grup.verb
+          (vsis3s0 fue ser)
+          (vmp00sf auxiliada auxiliar)))
+      (coord
+        (cc y y))
+      (S
+        (Fe " ")
+        (sn.e-SUJ *0*)
+        (morf.pron
+          (p0300000 se él))
+        (grup.verb
+          (vmip3s0 encuentra encontrar))
+        (sa-CPRED.SUJ
+          (grup.a
+            (aq0cs0 estable estable)))
+        (Fe " ")
+        (sp-CCL
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.fs
+              (di0fs0 una uno))
+            (grup.nom.fs
+              (ncfs000 clínica clínica)
+              (sp
+                (prep
+                  (sps00 de de))
+                (snl
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 capital capital)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 panameña panameño)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sna-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 grúa grúa)
+        (sna
+          (grup.nom.fs
+            (np0000a Titán Titán)))))
+    (grup.verb
+      (vmip3s0 trabaja trabajar))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (nc00000 re-flotamiento re-flotamiento)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 nave nave))))
+          (sn
+            (Fc , ,)
+            (grup.nom.fs
+              (ncfs000 operación operación)
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (neg-MOD
+                  (rn no no))
+                (grup.verb
+                  (vaip3s0 ha haber)
+                  (vmp00sm afectado afectar))
+                (sn-CD
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 tránsito tránsito)
+                    (s.a.ms
+                      (grup.nom.ms
+                        (aq0cs0 normal normal)))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.mp
+                          (ncmp000 barcos barco))))
+                    (sp
+                      (prep
+                        (sps00 por por))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 vía vía)
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0fs0 acuática acuático))))))))
+                (sp-AO
+                  (Fc , ,)
+                  (prep
+                    (sps00 según según))
+                  (sno
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (np0000o ACP ACP)
+                      (S.F.R
+                        (Fc , ,)
+                        (relatiu-SUJ
+                          (pr0cn000 que que))
+                        (snd-CCT
+                          (espec.ms
+                            (da0ms0 el el))
+                          (grup.nom.ms
+                            (S.NF.P
+                              (participi
+                                (aq0msp pasado pasado)))
+                            (W 31_de_diciembre [??:31/12/??:??.??])))
+                        (grup.verb
+                          (vmis3s0 asumió asumir))
+                        (sn.co-CD
+                          (sn.co
+                            (sn
+                              (espec.fs
+                                (da0fs0 la el))
+                              (grup.nom.fs
+                                (ncfs000 administración administración)))
+                            (coord
+                              (cc y y))
+                            (sn
+                              (grup.nom.ms
+                                (ncms000 mantenimiento mantenimiento))))
+                          (sp.j
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (espec.fs
+                                (da0fs0 la el))
+                              (grup.nom.fs
+                                (ncfs000 ruta ruta)
+                                (s.a.fs
+                                  (grup.a.fs
+                                    (aq0fs0 interoceánica interoceánico)))))))
+                        (sp-CC
+                          (Fc , ,)
+                          (prep
+                            (sps00 en en))
+                          (sn
+                            (grup.nom.fs
+                              (ncfs000 sustitución sustitución)
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sno
+                                  (espec.fs
+                                    (da0fs0 la el))
+                                  (grup.nom.fs
+                                    (s.a.fs
+                                      (grup.a.fs
+                                        (aq0cs0 estadounidense estadounidense)))
+                                    (np0000o Comisión_del_Canal_de_Panamá Comisión_del_Canal_de_Panamá)))))))))))))))))
+    (Fp . .)))

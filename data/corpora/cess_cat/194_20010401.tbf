@@ -1,0 +1,153 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 flamant flamant)))
+        (np00000 Miss_Brasil Miss_Brasil)
+        (sn
+          (Fc , ,)
+          (grup.nom.fs
+            (np00000 Juliana_Borges Juliana_Borges))
+          (Fc , ,))
+        (sn
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs
+            (ncfs000 morena morena)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.mp
+                  (Z 22 22))
+                (grup.nom.mp
+                  (ncmp000 anys any))))))
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (morf.pron
+            (p0300000 s' ell))
+          (grup.verb
+            (vaip3s0 ha haver)
+            (vmp00sm sotmès sotmetre))
+          (sp-CREG
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fp
+                (Z 19 19))
+              (grup.nom.fp
+                (ncfp000 operacions operació)
+                (sp
+                  (prep
+                    (sps00 d' de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 estètica estètica)))))))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm anunciat anunciar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmif3s0 augmentarà augmentar))
+      (sn-CD
+        (espec.fp
+          (dp3fp0 les_seves el_seu))
+        (grup.nom.fp
+          (ncfp000 natges natja)))
+      (sadv-CCT
+        (grup.adv
+          (rg abans abans)
+          (sp
+            (prep
+              (sps00 de de))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 presentar presentar))
+              (morf.pron
+                (p0300000 -se ell))
+              (sp-CC
+                (prep
+                  (sps00 a a))
+                (sn
+                  (grup.nom
+                    (np00000 Miss_Univers Miss_Univers)))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (Fe " ")
+      (sadv-CCT
+        (grup.adv
+          (rg Encara encara)))
+      (sn-CI
+        (grup.nom.s
+          (pp1cs000 em jo)))
+      (grup.verb
+        (vmip3s0 falta faltar))
+      (sn-SUJ
+        (grup.nom.fs
+          (ncfs000 silicona silicona)))
+      (sp-CCL
+        (prep
+          (spcms al al))
+        (sn
+          (grup.nom.ms
+            (nc00000 bumbum bumbum))))
+      (S.F.A-CC
+        (Fc , ,)
+        (conj.subord
+          (cs perquè perquè))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmip1s0 crec creure))
+        (S.F.C-CD
+          (conj.subord
+            (cs que que))
+          (sn.e-SUJ *0*)
+          (sn-CD.Q
+            (grup.nom.ms
+              (pp3msa00 el ell)))
+          (grup.verb
+            (vmip1s0 tinc tenir))
+          (sa-CPRED.CD
+            (grup.a
+              (aq0ms0 petitó petitó)))))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 dir dir))
+    (sn.e-SUJ *0*)
+    (S.NF.P-CPRED.SUJ
+      (Fc , ,)
+      (participi
+        (aq0fsp convençuda convençut))
+      (S.F.C-CREG
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 bellesa bellesa)))
+        (morfema.verbal-PASS
+          (p0000000 es es))
+        (grup.verb
+          (vmip3s0 guanya guanyar))
+        (sp-CC
+          (prep
+            (sps00 a_cop_de a_cop_de))
+          (sn
+            (grup.nom.ms
+              (ncms000 bisturí bisturí))))))
+    (Fp . .)))

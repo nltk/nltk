@@ -1,0 +1,255 @@
+
+(
+  (S*
+    (sa.co
+      (sa
+        (grup.a
+          (aq0cs0 Fòssil fòssil)))
+      (Fc , ,)
+      (sa
+        (grup.a
+          (aq0fs0 opaca opac))
+        (coord
+          (cc o o))
+        (grup.a
+          (aq0cs0 semitransparent semitransparent)))
+      (Fc , ,)
+      (sa
+        (espec
+          (rg molt molt))
+        (grup.a
+          (aq0fs0 lleugera lleuger)))
+      (Fc , ,)
+      (sa
+        (grup.a
+          (aq0fs0 dura dur)))
+      (coord
+        (cc i i))
+      (sa
+        (grup.a
+          (aq0fs0 trencadissa trencadís))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vsip3s0 És ser))
+    (sn-ATR
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 resina resina)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (ncms000 color color)
+              (s.a.ms
+                (grup.a.ms
+                  (ncms000 ambre ambre))))))
+        (S.NF.P
+          (Fc , ,)
+          (sadv.j-CCT
+            (grup.adv
+              (rg avui avui)))
+          (S.NF.P
+            (sadv-MOD
+              (grup.adv
+                (rg també també)))
+            (participi
+              (aq0fsp adequada adequat))
+            (sp-CC
+              (prep
+                (sps00 per per))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 definir definir))
+                (sn-CD
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 reforma reforma)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0cs0 laboral laboral)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vsip3s0 És ser))
+    (sn-ATR
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 color color)
+        (sp.co
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 desacord desacord)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn.x
+                    (grup.nom.co
+                      (grup.nom.mp
+                        (ncmp000 sindicats sindicat))
+                      (coord
+                        (cc i i))
+                      (grup.nom.mp
+                        (ncmp000 patrons patró))))))
+              (Fc , ,)))
+          (coord
+            (cc i i))
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 retoc retoc)
+                (INC
+                  (S
+                    (Fg - -)
+                    (sn.e-SUJ *0*)
+                    (neg-MOD
+                      (rn no no))
+                    (grup.verb
+                      (vsip3s0 és ser))
+                    (sn-ATR
+                      (sadv.j
+                        (grup.adv
+                          (rg ni ni)))
+                      (sn
+                        (grup.nom.fs
+                          (ncfs000 reforma reforma))))
+                    (Fg - -)))
+                (S.F.R
+                  (relatiu-CD
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmif3s0 farà fer))
+                  (sn-SUJ
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (np00000 Govern Govern))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmii1p0 Sabíem saber))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fp
+          (dd0fp0 aquestes aquest))
+        (grup.nom.fp
+          (ncfp000 cúpules cúpula)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 funcionaris funcionari))))))
+      (sadv-MOD
+        (grup.adv
+          (rg només només)))
+      (grup.verb
+        (vmip3p0 treballen treballar))
+      (sp-CC
+        (prep
+          (sps00 per per))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fp
+              (dp3fp0 les_seves el_seu))
+            (grup.nom.fp
+              (ncfp000 clienteles clientela)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 fixes fix))))))))
+    (Fp . .)))
+(
+  (S
+    (grup.verb
+      (vsii3s0 Era ser))
+    (sa-ATR
+      (grup.a
+        (aq0cs0 impensable impensable)))
+    (S.F.C-SUJ
+      (conj.subord
+        (cs que que))
+      (sn.e-SUJ *0*)
+      (sn-CC
+        (grup.nom
+          (pp3cn000 hi hi)))
+      (grup.verb
+        (vmsi3p0 seguissin seguir))
+      (sn-CC
+        (grup.nom.s
+          (pd0cs000 tal tal)
+          (S.F.R
+            (relatiu-CC
+              (pr000000 com com))
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vaip3p0 van anar))
+            (S.NF.P-CPRED.SUJ
+              (participi
+                (aq0fpp dades dar))))))
+      (sadv-CCT
+        (grup.adv
+          (rg després després)
+          (S.F.C
+            (conj.subord
+              (cs que que))
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vmsi3p0 posessin posar))
+            (sn-CD
+              (espec.ms
+                (dp3ms0 el_seu el_seu))
+              (grup.nom.ms
+                (ncms000 disc disc)))
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (sn
+                (grup.nom.ms
+                  (ncms000 ambre ambre))))
+            (S.F.A-CCT
+              (conj.subord
+                (cs quan quan))
+              (sadv-CCT
+                (grup.adv
+                  (rg ja ja)))
+              (grup.verb
+                (vmii3p0 circulaven circular))
+              (sn.co-SUJ
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (np00000 PER PER)))
+                (Fc , ,)
+                (sn
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (np00000 Forcem Forcem)))
+                (coord
+                  (cc i i))
+                (sn
+                  (espec.fp
+                    (da0fp0 les el))
+                  (grup.nom.fp
+                    (ncfp000 pasteres pastera)))))))))
+    (Fp . .)))

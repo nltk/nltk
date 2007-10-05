@@ -1,0 +1,251 @@
+
+(
+  (S*
+    (sn
+      (grup.nom.fs
+        (ncfs000 Sardinada sardinada)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 popular popular)))))
+    (sp
+      (prep
+        (spcms al al))
+      (snl
+        (grup.nom.ms
+          (ncms000 mercat mercat)
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (grup.nom
+                (np0000l Sant_Andreu Sant_Andreu)))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Carnestoltes Carnestoltes)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vsn0000 ser ser)
+      (vmp00sm jutjat jutjar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sp-CCT
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 nit nit))))
+    (sp-CCL
+      (prep
+        (sps00 davant davant))
+      (snl
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 mercat mercat)
+          (sp
+            (prep
+              (sps00 de de))
+            (snl
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000l Barceloneta Barceloneta)))))))
+    (sp-CAG
+      (prep
+        (sps00 per per))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 tribunal tribunal)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 popular popular)))
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (sn-CD
+              (grup.nom.ms
+                (pp3msa00 el ell)))
+            (grup.verb
+              (vaip3s0 va anar)
+              (vmn0000 condemnar condemnar))
+            (sp-CC
+              (prep
+                (spcmp pels pel))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 excessos excés)
+                  (S.NF.P
+                    (participi
+                      (aq0mpp comesos comès))
+                    (sp-CCT
+                      (prep
+                        (sps00 al_llarg_d' al_llarg_de))
+                      (sn
+                        (espec.fs
+                          (di0fs0 una un))
+                        (grup.nom.fs
+                          (ncfs000 setmana setmana))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (sadv.j-CCT
+      (grup.adv
+        (rg Després després)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 veredicte veredicte)))))
+      (Fc , ,))
+    (S.co
+      (S
+        (sn-SUJ
+          (espec.ms
+            (di0ms0 un un))
+          (grup.nom.ms
+            (ncms000 banc banc)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fp
+                  (ncfp000 sardines sardina))))))
+        (grup.verb
+          (vaip3s0 va anar)
+          (vmn0000 conduir conduir))
+        (sn-CD
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 rei rei)))
+        (sp-CCL
+          (prep
+            (sps00 fins fins))
+          (sp
+            (prep
+              (sps00 a a))
+            (snl
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 platja platja)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snl
+                    (grup.nom
+                      (np0000l Sant_Sebastià Sant_Sebastià)))))))))
+      (coord
+        (cc i i))
+      (S
+        (sn.e-SUJ *0*)
+        (sn-CD
+          (grup.nom.ms
+            (pp3msa00 el ell)))
+        (grup.verb
+          (vaip3s0 va anar)
+          (vmn0000 enviar enviar))
+        (sp-CCL
+          (prep
+            (spcms al al))
+          (sn
+            (grup.nom.ms
+              (ncms000 regne regne)
+              (sp
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 silenci silenci)))))))
+        (sp-CC
+          (prep
+            (sps00 per per))
+          (sn
+            (espec.ms
+              (di0ms0 un un))
+            (grup.nom.ms
+              (ncms000 any any))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CCT
+      (prep
+        (spcms Al_llarg_del al_llarg_del))
+      (sn
+        (grup.nom.ms
+          (ncms000 dia dia)))
+      (Fc , ,))
+    (morf.pron
+      (pp3cn000 hi hi))
+    (grup.verb
+      (vaip3s0 va anar)
+      (van0000 haver haver))
+    (sn-CD.Q
+      (grup.nom.fp
+        (ncfp000 festes festa)))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 celebrar celebrar))
+        (sn-CD
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 final final)
+            (sp
+              (prep
+                (spcms del del))
+              (sna
+                (grup.nom.ms
+                  (np0000a Carnaval Carnaval))))))))
+    (sp-CCL
+      (prep
+        (spcmp als al))
+      (sn
+        (grup.nom.mp
+          (ncmp000 mercats mercat)
+          (s.a.mp
+            (grup.a.mp
+              (aq0cp0 municipals municipal)))
+          (sp
+            (prep
+              (spcms del del))
+            (sn.x
+              (grup.nom.co
+                (grup.nom.ms
+                  (np0000l Bon_Pastor Bon_Pastor))
+                (Fc , ,)
+                (grup.nom
+                  (np0000l Carmel Carmel))
+                (Fc , ,)
+                (grup.nom
+                  (np0000l Ciutat_Meridiana Ciutat_Meridiana))
+                (Fc , ,)
+                (grup.nom
+                  (np0000l Sant_Andreu Sant_Andreu))
+                (Fc , ,)
+                (grup.nom
+                  (np0000l Sagrada_Família Sagrada_Família))
+                (Fc , ,)
+                (grup.nom
+                  (np0000l Mercè Mercè))
+                (Fc , ,)
+                (grup.nom
+                  (np0000l Concepció Concepció))
+                (coord
+                  (cc i i))
+                (grup.nom
+                  (np0000l Montserrat Montserrat))))))))
+    (Fp . .)))

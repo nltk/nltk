@@ -1,0 +1,196 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 treballadors treballador)))
+    (grup.verb
+      (vmip3p0 donen donar))
+    (sn-CD
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (s.a.mp
+          (grup.a.mp
+            (ao0mp0 últims últim)))
+        (ncmp000 retocs retoc)))
+    (sp-CC
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 temple temple))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 temple temple)))
+    (grup.verb
+      (vmip3s0 ocupa ocupar))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 local local)
+        (S.NF.P
+          (participi
+            (aq0msp llogat llogat))
+          (sp-CAG
+            (prep
+              (spcmp pels pel))
+            (sn
+              (grup.nom.mp
+                (nccp000 fidels fidel)))))
+        (sp
+          (Fc , ,)
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 plaça plaça)
+              (sp
+                (prep
+                  (spcmp dels del))
+                (sn
+                  (grup.nom.mp
+                    (np00000 Farols Farols))))))
+          (Fc , ,))
+        (sp
+          (prep
+            (spcms al al))
+          (sn
+            (grup.nom.ms
+              (ncms000 casc casc)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 antic antic))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Rossend_Bonàs Rossend_Bonàs)
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (ncms000 mediador mediador)
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 ajuda ajuda)
+                  (sp
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (espec.ms
+                        (da0cs0 l' el))
+                      (grup.nom.ms
+                        (nccs000 immigrant immigrant))))))))
+          (Fc , ,))))
+    (grup.verb
+      (vmip3s0 creu creure))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (grup.verb
+        (vmip3p0 viuen viure))
+      (sp-CCL
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 ciutat ciutat))))
+      (sn-SUJ
+        (espec.mp
+          (di0mp0 uns un)
+          (Z 600 600))
+        (grup.nom.mp
+          (ncmp000 musulmans musulmà)
+          (sn
+            (Fc , ,)
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (Zp 2% 2/100)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 població població)))))
+            (Fc , ,))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 doble doble)
+              (sn
+                (prep
+                  (spcmp dels del))
+                (grup.nom.mp
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cn000 que que))
+                    (grup.verb
+                      (vaip3p0 van anar)
+                      (vmn0000 quedar quedar))
+                    (sadv-CCT
+                      (grup.adv
+                        (rg després després)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (ncfs000 conquista conquista)
+                              (s.a.fs
+                                (grup.a.fs
+                                  (aq0fs0 cristiana cristià))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 restes resta)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0cs0 l' el))
+            (grup.nom.fs
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 antiga antic)))
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 gran gran)))
+              (ncfs000 mesquita mesquita))))))
+    (grup.verb
+      (vmip3p0 estan estar))
+    (sp-ATR
+      (prep
+        (sps00 sota sota))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 catedral catedral))))
+    (Fp . .)))

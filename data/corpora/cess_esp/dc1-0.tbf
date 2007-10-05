@@ -1,0 +1,366 @@
+
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (pd0ns000 Esto este)))
+    (grup.verb
+      (vsip3s0 es ser))
+    (sa-ATR
+      (grup.a
+        (aq0cs0 posible posible)))
+    (sp-CC
+      (prep
+        (sps00 gracias_a gracias_a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 diminuta diminuto)))
+          (ncfs000 red red)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 neuronal neuronal)))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmip3s0 da dar))
+            (sn-CD
+              (grup.nom.fs
+                (ncfs000 vida vida)))
+            (sp-CI
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.ms
+                  (dp3cs0 su su))
+                (grup.nom.ms
+                  (ncms000 cerebro cerebro))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Debido_a debido_a))
+      (sn
+        (grup.nom.fs
+          (pp3fs000 ella él)))
+      (Fc , ,))
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmip3p0 tienen tener))
+    (sadv-CC
+      (Fc , ,)
+      (grup.adv
+        (rg además además))
+      (Fc , ,))
+    (sn-CD.Q
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 facultad facultad)
+        (sp
+          (prep
+            (sps00 de de))
+          (S.NF.C.co
+            (S.NF.C.co
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 aprender aprender)))
+              (coord
+                (cc y y))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 reaccionar reaccionar))))
+            (sp-CC
+              (prep
+                (sps00 ante ante))
+              (sn
+                (grup.nom.fp
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0fp0 nuevas nuevo)))
+                  (ncfp000 situaciones situación))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.ACond-AO
+      (conj.subord
+        (cs Si si))
+      (sn-SUJ
+        (espec.fp
+          (dn0cp0 dos dos))
+        (grup.nom.fp
+          (ncfp000 neuronas neurona)))
+      (morf.pron
+        (p0300000 se él))
+      (grup.verb
+        (vmip3p0 activan activar))
+      (sadv-CC
+        (grup.adv
+          (rg a_la_vez a_la_vez)))
+      (sp-CC
+        (prep
+          (sps00 ante ante))
+        (sn
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (ncms000 estímulo estímulo)
+            (S.NF.P
+              (participi
+                (aq0msp determinado determinado))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fp
+        (dp3cp0 sus su))
+      (grup.nom.fp
+        (ncfp000 conexiones conexión)))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmip3p0 refuerzan reforzar))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 De de))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 repetirse repetir)))
+      (Fc , ,))
+    (grup.verb
+      (vsip3s0 es ser))
+    (sa-ATR
+      (grup.a
+        (aq0cs0 probable probable)))
+    (S.F.C-SUJ
+      (conj.subord
+        (cs que que))
+      (grup.verb
+        (vssp3s0 sea ser))
+      (sa-ATR
+        (espec
+          (rg más más))
+        (grup.a
+          (aq0cs0 fácil fácil)))
+      (S.F.C-SUJ
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (ao0fs0 segunda segundo)))
+            (ncfs000 célula célula)
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 nerviosa nervioso)))))
+        (morf.pron
+          (p0300000 se él))
+        (grup.verb
+          (vmsp3s0 dispare disparar))
+        (S.F.A-CC
+          (conj.subord
+            (cs cuando cuando))
+          (sn-CD
+            (grup.nom.ms
+              (pp3msa00 lo él)))
+          (grup.verb
+            (vmip3s0 hace hacer))
+          (sn-SUJ
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (s.a.fs
+                (grup.a.fs
+                  (ao0fs0 primera primero))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (pd0ns000 Esto este)))
+    (grup.verb
+      (vsip3s0 es ser))
+    (sn-ATR
+      (espec.ms
+        (da0ns0 lo el))
+      (grup.nom.ms
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (morfema.verbal-PASS
+            (p0000000 se se))
+          (grup.verb
+            (vmip3s0 llama llamar))
+          (sn-CPRED.SUJ
+            (grup.nom.ms
+              (ncms000 aprendizaje aprendizaje)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 hebbiano hebbiano))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Los el))
+      (grup.nom.mp
+        (ncmp000 mbitis mbitis)))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmip3p0 reproducen reproducir))
+    (sp-CC
+      (prep
+        (sps00 de de))
+      (sn
+        (grup.nom.fs
+          (ncfs000 forma forma)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 sexual sexual))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.A-CC
+      (conj.subord
+        (cs Cuando cuando))
+      (sn-SUJ
+        (grup.nom.mp
+          (pn0cp000 dos dos)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (pp3mp000 ellos él))))))
+      (sn-CD
+        (grup.nom
+          (pp3cn000 se él)))
+      (grup.verb
+        (vmip3p0 aparean aparear)))
+    (sn-SUJ
+      (espec.mp
+        (dp3cp0 sus su))
+      (grup.nom.mp
+        (ncmp000 genes gen)))
+    (S.F.A*-CC
+      (Fc , ,)
+      (conj.subord
+        (cs al_igual_que al_igual_que))
+      (sn
+        (grup.nom.mp
+          (px1mp0p0 los_nuestros el_nuestro)))
+      (Fc , ,))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmip3p0 mezclan mezclar))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 De de))
+      (sn
+        (grup.nom.fs
+          (S.NF.P
+            (participi
+              (aq0fsp dicha dicho)))
+          (ncfs000 combinación combinación))))
+    (grup.verb
+      (vmip3s0 nace nacer))
+    (sn-SUJ
+      (espec.fs
+        (di0fs0 una uno))
+      (grup.nom.fs
+        (ncfs000 criatura criatura)
+        (sp
+          (prep
+            (sps00 con con))
+          (sn
+            (grup.nom.fp
+              (ncfp000 características característica)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 propias propio))))))))
+    (Fp . .)))
+(
+  (S.co
+    (sp.j-CC
+      (prep
+        (sps00 Tras tras))
+      (sn
+        (grup.nom.fp
+          (s.a.fp
+            (grup.a.fp
+              (aq0fp0 sucesivas sucesivo)))
+          (ncfp000 generaciones generación)))
+      (Fc , ,))
+    (S.co
+      (S
+        (sn-SUJ
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (ncmp000 individuos individuo)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (di0fs0 una uno))
+                (grup.nom.fs
+                  (ncfs000 especie especie))))))
+        (grup.verb
+          (vmip3p0 pueden poder)
+          (infinitiu
+            (vmn0000 extinguirse extinguir))))
+      (coord
+        (cc o o))
+      (S*
+        (grup.verb
+          (infinitiu
+            (vmn0000 evolucionar evolucionar)))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (di0fs0 una uno))
+            (grup.nom.fs
+              (ncfs000 estirpe estirpe)
+              (S.NF.P
+                (sadv-CC
+                  (grup.adv
+                    (rg mejor mejor)))
+                (participi
+                  (aq0fsp adaptada adaptado))
+                (sp-CC
+                  (prep
+                    (spcms al al))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 medio medio))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Los el))
+      (grup.nom.mp
+        (ncmp000 mbitis mbitis)))
+    (sadv-MOD
+      (grup.adv
+        (rg también también)))
+    (grup.verb
+      (vmip3p0 mueren morir))
+    (Fp . .)))

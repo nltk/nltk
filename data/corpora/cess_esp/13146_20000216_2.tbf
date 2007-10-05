@@ -1,0 +1,285 @@
+
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np0000o Tribunal_Correccional_de_París Tribunal_Correccional_de_París)))
+    (grup.verb
+      (vmis3s0 condenó condenar))
+    (snd-CCT
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (S.NF.P
+          (participi
+            (aq0msp pasado pasado)))
+        (W 5_de_octubre [??:5/10/??:??.??])))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.mp
+          (dn0cp0 siete siete))
+        (grup.nom.mp
+          (ncmp000 años año)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 prisión prisión)))))))
+    (sp-CC
+      (prep
+        (sps00 por por))
+      (sn
+        (grup.nom.fs
+          (Fe " ")
+          (ncfs000 asociación asociación)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 malhechores malhechor))))
+          (Fe " "))))
+    (sp-CD
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (dd0fs0 esta este))
+        (grup.nom.fs
+          (nccs000 etarra etarra)
+          (S.F.R
+            (Fc , ,)
+            (sp-CD
+              (prep
+                (sps00 a a))
+              (relatiu
+                (da0fs0 la el)
+                (pr0cn000 que que)))
+            (sno-SUJ
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (nccs000 policía policía)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 española español)))))
+            (grup.verb
+              (vmip3s0 relaciona relacionar))
+            (sp-CREG
+              (prep
+                (sps00 con con))
+              (sn.co
+                (sno
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (Fe " ")
+                    (ncms000 comando comando)
+                    (snl
+                      (grup.nom
+                        (np0000l Madrid Madrid)))
+                    (Fe " ")
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sno
+                        (grup.nom
+                          (np0000o ETA ETA))))))
+                (coord
+                  (cc y y))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 organización organización)
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 asesinato asesinato)
+                          (sp
+                            (prep
+                              (spcms del del))
+                            (snp
+                              (grup.nom.ms
+                                (s.a.ms
+                                  (grup.a.ms
+                                    (aq0ms0 ex ex)))
+                                (ncms000 presidente presidente)
+                                (sp
+                                  (prep
+                                    (spcms del del))
+                                  (sno
+                                    (grup.nom.ms
+                                      (np0000o Tribunal_Constitucional Tribunal_Constitucional))))
+                                (snp
+                                  (grup.nom.ms
+                                    (np0000p Francisco_Tomás_y_Valiente Francisco_Tomás_y_Valiente))))))
+                          (sp
+                            (prep
+                              (sps00 en en))
+                            (snd
+                              (grup.nom.ms
+                                (W 1996 [??:??/??/1996:??.??])))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (dp3cs0 Su su))
+      (grup.nom.ms
+        (ncms000 compañero compañero)
+        (s.a.ms
+          (aq0cs0 sentimental sentimental))
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (np0000p José_Naveiro_Gómez José_Naveiro_Gómez)
+            (sn
+              (Fc , ,)
+              (grup.nom.ms
+                (Fe " ")
+                (ncfs000 Gabarra gabarra)
+                (Fe " "))
+              (Fc , ,))))))
+    (grup.verb
+      (vsis3s0 fue ser)
+      (vmp00sm condenado condenar))
+    (sn-CCT
+      (espec.ms
+        (dd0ms0 ese ese)
+        (di0ms0 mismo mismo))
+      (grup.nom.ms
+        (ncms000 día día)))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.mp
+          (dn0cp0 nueve nueve))
+        (grup.nom.mp
+          (ncmp000 años año)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 prisión prisión)))))))
+    (sp-CC
+      (prep
+        (sps00 por por))
+      (S.NF.C
+        (infinitiu
+          (vsn0000 ser ser)
+          (vmp00sm considerado considerar))
+        (sa-CPRED.SUJ
+          (grup.a
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 ex ex)))
+            (aq0cs0 responsable responsable)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (di0fs0 una uno))
+                (grup.nom.fs
+                  (ncfs000 red red)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 logística logístico)))
+                  (sp.co
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sno
+                        (grup.nom
+                          (np0000o ETA ETA))))
+                    (coord
+                      (cc y y))
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 organización organización)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sn
+                              (grup.nom.mp
+                                (ncmp000 cursos curso)
+                                (sp
+                                  (prep
+                                    (sps00 de de))
+                                  (sn
+                                    (grup.nom.fs
+                                      (ncfs000 formación formación)
+                                      (sp
+                                        (prep
+                                          (sps00 de de))
+                                        (sn
+                                          (grup.nom.mp
+                                            (nccp000 etarras etarra)
+                                            (sp
+                                              (Fe " ")
+                                              (prep
+                                                (sps00 en en))
+                                              (sn
+                                                (espec.fs
+                                                  (da0fs0 la el))
+                                                (grup.nom.fs
+                                                  (ncfs000 reserva reserva)))
+                                              (Fe " "))))))))
+                                (sp
+                                  (prep
+                                    (sps00 en en))
+                                  (snl
+                                    (grup.nom
+                                      (np0000l Francia Francia))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom.fs
+          (np0000p Idoia_Martínez Idoia_Martínez))
+        (coord
+          (cc y y))
+        (grup.nom.ms
+          (np0000p José_Naveiro_Gómez José_Naveiro_Gómez))))
+    (grup.verb
+      (vsis3p0 fueron ser)
+      (vmp00pm detenidos detener))
+    (snd-CCT
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (W 6_de_noviembre_de_1997 [??:6/11/1997:??.??])))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (snl
+        (grup.nom
+          (np0000l La_Rochelle La_Rochelle)
+          (snl
+            (grup.nom.ms
+              (Fpa -Fpa- -Fpa-)
+              (ncms000 oeste oeste)
+              (sp
+                (prep
+                  (sps00 de de))
+                (snl
+                  (grup.nom
+                    (np0000l Francia Francia))))
+              (Fpt -Fpt- -Fpt-))))))
+    (Fp . .)))

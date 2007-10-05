@@ -1,0 +1,211 @@
+
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 En en))
+      (sn
+        (grup.nom.fs
+          (ncfs000 arquitectura arquitectura)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 mida mida)))
+    (grup.verb
+      (vsip3s0 és ser))
+    (sn-ATR
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 aspecte aspecte)
+        (s.a.ms
+          (espec
+            (rg bastant bastant))
+          (grup.a.ms
+            (aq0cs0 important important)))
+        (sp
+          (Fc , ,)
+          (sadv.j
+            (grup.adv
+              (rg si_més_no si_més_no)))
+          (sp
+            (prep
+              (sps00 per per))
+            (sp
+              (prep
+                (spcmp als al))
+              (sn
+                (grup.nom.mp
+                  (nccp000 projectistes projectista)
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0mp0 masculins masculí))))))))))
+    (S.F.AConc-AO
+      (Fc , ,)
+      (conj.subord
+        (cs per_més_que per_més_que))
+      (sp-CC
+        (Fc , ,)
+        (prep
+          (sps00 per per))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 confortar confortar))
+          (sn-CD
+            (grup.nom.p
+              (pp3cp000 -los ell))))
+        (Fc , ,))
+      (sn.e-SUJ *0*)
+      (sn-CI
+        (grup.nom.p
+          (pp3cp000 els ell)))
+      (grup.verb
+        (vmsp3p0 diguin dir))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sp-CC
+          (prep
+            (sps00 amb amb))
+          (sn
+            (espec.ms
+              (di0ms0 un un))
+            (grup.nom.ms
+              (ncms000 edifici edifici)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 petit petit))))))
+        (sn.e-SUJ *0*)
+        (sadv-MOD
+          (grup.adv
+            (rg també també)))
+        (morf.pron
+          (p0300000 se ell))
+        (sn-CC
+          (grup.nom
+            (pp3cn000 'n en)))
+        (grup.verb
+          (vmip3p0 surten sortir))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Nouvel Nouvel)))
+    (grup.verb
+      (vmip3s0 està estar))
+    (sa-ATR
+      (grup.a
+        (aq0ms0 recelós recelós)
+        (S.F.C
+          (conj.subord
+            (cs que que))
+          (sn-SUJ
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (ncms000 enlairament enlairament)
+              (S.F.R
+                (relatiu-CD
+                  (pr0cn000 que que))
+                (grup.verb
+                  (vmip3s0 planeja planejar))
+                (sn-SUJ
+                  (grup.nom
+                    (np00000 Soriano Soriano))))))
+          (grup.verb
+            (vssp3s0 sigui ser))
+          (sa-ATR
+            (grup.a
+              (aq0cs0 gran gran))))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmip3s0 Sembla semblar))
+    (sn-ATR
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 disputa disputa)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 prostàtica prostàtic)))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.s
+        (pt0cs000 Qui qui)))
+    (grup.verb
+      (vmip3s0 té tenir))
+    (sn-CD.Q
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 fonaments fonament)
+        (s.a.mp
+          (espec
+            (rg més més))
+          (grup.a.mp
+            (aq0mp0 durs dur)))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.s
+        (pt0cs000 Qui qui)))
+    (sn-CD
+      (grup.nom.s
+        (pp3csa00 l' ell)))
+    (grup.verb
+      (vmip3s0 aixeca aixecar))
+    (sadv-CC
+      (grup.adv
+        (rg més més)))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (pi0mp000 Alguns algun)))
+    (grup.verb
+      (vmip3p0 anomenen anomenar))
+    (sn-CPRED.CD
+      (grup.nom
+        (np00000 El_consolador El_consolador)))
+    (sn-CD
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (ncms000 edifici edifici)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.ms
+              (np00000 Nouvel Nouvel))))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (sadv-MOD
+      (grup.adv
+        (rg Ja ja)))
+    (grup.verb
+      (vmip3s0 té tenir))
+    (S.F.C*-CD.Q
+      (sp
+        (prep
+          (sps00 amb amb))
+        (relatiu
+          (pr0cn000 què què)))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 alleujar alleujar))
+        (morf.pron
+          (p0300000 -se ell))))
+    (Fp . .)))

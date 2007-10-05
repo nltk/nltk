@@ -1,0 +1,980 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (aq0fs0 pràctica pràctic)))
+    (grup.verb
+      (vsii3s0 era ser))
+    (sn-ATR
+      (grup.nom.ms
+        (ncms000 tabú tabú)))
+    (sp-CCT
+      (prep
+        (sps00 des des))
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (morfema.verbal-PASS
+          (p0000000 es es))
+        (grup.verb
+          (vaip3s0 va anar)
+          (vmn0000 acusar acusar))
+        (sn-SUJ
+          (espec.ms
+            (di0ms0 un un))
+          (grup.nom.ms
+            (ncms000 cirurgià cirurgià)))
+        (sp-CREG
+          (prep
+            (sps00 d' de))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 accelerar accelerar))
+            (sn-CD
+              (espec.fs
+                (di0fs0 una un))
+              (grup.nom.fs
+                (ncfs000 mort mort)))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom
+        (np0000o Japó Japó)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 reprendre reprendre))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 pràctica pràctica)
+        (sp
+          (prep
+            (sps00 de de))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 trasplantar trasplantar))
+            (sn-CD
+              (grup.nom.mp
+                (ncmp000 òrgans òrgan)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0cp0 procedents procedent)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom.mp
+                          (ncmp000 donants donant)
+                          (sp
+                            (prep
+                              (sps00 en en))
+                            (sn
+                              (grup.nom.fs
+                                (ncfs000 situació situació)
+                                (sp
+                                  (prep
+                                    (sps00 de de))
+                                  (sn
+                                    (grup.nom.fs
+                                      (ncfs000 mort mort)
+                                      (s.a.fs
+                                        (grup.a.fs
+                                          (aq0cs0 cerebral cerebral))))))))))))))))))
+        (sn
+          (Fc , ,)
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs
+            (ncfs000 intervenció intervenció)
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cn000 que que))
+              (grup.verb
+                (vaip3s0 va anar)
+                (vsn0000 ser ser)
+                (vmp00sf suspesa suspendre))
+              (sadv-CC
+                (grup.adv
+                  (rg voluntàriament voluntàriament)))
+              (sp-CAG
+                (prep
+                  (spcmp pels pel))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 metges metge))))
+              (snd-CCT
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (W 1968 [??:??/??/1968:??.??])))
+              (sadv-CCT
+                (Fc , ,)
+                (grup.adv
+                  (rg després després)
+                  (S.F.C
+                    (conj.subord
+                      (cs que que))
+                    (sn-SUJ
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (s.a.ms
+                          (grup.a.ms
+                            (ao0ms0 primer primer)))
+                        (ncms000 cirurgià cirurgià)
+                        (S.F.R
+                          (relatiu-SUJ
+                            (pr0cn000 que que))
+                          (grup.verb
+                            (vmii3s0 realitzava realitzar))
+                          (sn-CD
+                            (espec.ms
+                              (di0ms0 un un))
+                            (grup.nom.ms
+                              (ncms000 trasplantament trasplantament)
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sn
+                                  (grup.nom.ms
+                                    (ncms000 cor cor)))))))))
+                    (grup.verb
+                      (vssi3s0 fos ser)
+                      (vmp00sm acusat acusar))
+                    (sp-CREG
+                      (prep
+                        (sps00 d' de))
+                      (S.NF.C
+                        (infinitiu
+                          (vmn0000 accelerar accelerar))
+                        (sn-CD
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (ncfs000 mort mort)
+                            (sp
+                              (prep
+                                (spcms del del))
+                              (sn
+                                (grup.nom.ms
+                                  (ncms000 donant donant))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (di0fs0 Una un))
+      (grup.nom.fs
+        (ncfs000 llei llei)))
+    (grup.verb
+      (vmif3s0 regularà regular))
+    (sn-CD
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 trasplantaments trasplantament)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (morfema.verbal-PASS
+            (p0000000 es es))
+          (grup.verb
+            (vmsp3p0 realitzin realitzar))
+          (sp-CCT
+            (prep
+              (sps00 a_partir_d' a_partir_de))
+            (sadv
+              (grup.adv
+                (rg ara ara))))
+          (sp-CCL
+            (prep
+              (spcms al al))
+            (snl
+              (grup.nom.ms
+                (np0000l Japó Japó)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (ao0fs0 primera primer)))
+        (nccs000 donant donant)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.fs
+              (dd0fs0 aquesta aquest))
+            (grup.nom.fs
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 nova nou)))
+              (ncfs000 etapa etapa))))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vsn0000 ser ser))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 dona dona)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (espec.mp
+              (di0mp0 uns un)
+              (Z 40 40))
+            (grup.nom.mp
+              (ncmp000 anys any))))
+        (S.F.R.co
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vaip3s0 va anar)
+              (vmn0000 morir morir))
+            (sp-CC
+              (prep
+                (sps00 d' de))
+              (sn
+                (espec.ms
+                  (di0ms0 un un))
+                (grup.nom.ms
+                  (ncms000 infart infart)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 miocardi miocardi)))))))
+            (sn-CCT
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 nit nit)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snd
+                    (grup.nom.ms
+                      (W dissabte [dissabte:??/??/??:??.??])
+                      (S.NF.P
+                        (participi
+                          (aq0msp passat passat)))))))))
+          (Fc , ,)
+          (S.F.R
+            (sp-CI
+              (prep
+                (sps00 a a))
+              (relatiu
+                (pr0cn000 qui qui)))
+            (morfema.verbal-PASS
+              (p0000000 es es))
+            (grup.verb
+              (vaip3p0 van anar)
+              (vmn0000 extreure extreure))
+            (sn.co-SUJ
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 cor cor)))
+              (Fc , ,)
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 fetge fetge)))
+              (coord
+                (cc i i))
+              (sn
+                (espec.mp
+                  (da0mp0 els el))
+                (grup.nom.mp
+                  (ncmp000 ronyons ronyó))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 Els el))
+        (grup.nom.mp
+          (ncmp000 pulmons pulmó)))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vmii3p0 estaven estar))
+      (sp-ATR
+        (prep
+          (sps00 en en))
+        (sn
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 bon bo)))
+            (ncms000 estat estat)))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vsif3p0 seran ser)
+        (vmp00pm trasplantats trasplantar))
+      (S.F.AConc-AO
+        (Fc , ,)
+        (conj.subord
+          (cs malgrat_que malgrat_que))
+        (sno-SUJ
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (np0000o Xarxa_Japonesa_d'_Òrgans_per_a_Trasplantaments Xarxa_Japonesa_d'_Òrgans_per_a_Trasplantaments)))
+        (grup.verb
+          (vaii3s0 havia haver)
+          (vmp00sm seleccionat seleccionar))
+        (sadv-CCT
+          (grup.adv
+            (rg ja ja)))
+        (sn-CD
+          (espec.mp
+            (da0mp0 els el))
+          (grup.nom.mp
+            (ncmp000 receptors receptor)))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (grup.nom.fs
+        (ncfs000 Recerca recerca)
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.mp
+              (di0cp0 altres altre))
+            (grup.nom.mp
+              (ncmp000 països país))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 mort mort)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (nccs000 donant donant))))))
+      (morfema.verbal-PASS
+        (p0000000 es es))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 produir produir))
+      (sp-CCL
+        (prep
+          (sps00 a a))
+        (snl
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (np0000l Hospital_Kochi Hospital_Kochi)
+            (sp
+              (prep
+                (sps00 de de))
+              (sno
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np0000o Creu_Roja Creu_Roja)))))))
+      (sp-CCL
+        (Fc , ,)
+        (prep
+          (spcms al al))
+        (snl
+          (grup.nom.ms
+            (ncms000 sud sud)
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (grup.nom
+                  (np0000l Tòquio Tòquio)))))))
+      (Fc , ,))
+    (coord
+      (cc i i))
+    (S
+      (sp-CCL
+        (prep
+          (sps00 des_d' des_de))
+        (sadv
+          (grup.adv
+            (rg allà allà))))
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (ncmp000 òrgans òrgan)))
+      (grup.verb
+        (vaip3p0 van anar)
+        (vsn0000 ser ser)
+        (vmp00pm repartits repartir))
+      (sp-CCL
+        (prep
+          (sps00 a a))
+        (sn.x
+          (grup.nom.co
+            (grup.nom
+              (np0000l Nagano Nagano))
+            (Fc , ,)
+            (grup.nom
+              (np0000l Nagasaki Nagasaki))
+            (coord
+              (cc i i))
+            (grup.nom
+              (np0000l Tohoku Tohoku)))))
+      (sp-CC
+        (prep
+          (sps00 per per))
+        (S.NF.C
+          (infinitiu
+            (vsn0000 ser ser)
+            (vmp00pm trasplantats trasplantar))
+          (sp-CC
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fp
+                (di0cp0 diferents diferent))
+              (grup.nom.fp
+                (ncfp000 persones persona)))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (dd0fs0 Aquesta aquest))
+        (grup.nom.fs
+          (ncfs000 intervenció intervenció)))
+      (grup.verb
+        (vaii3s0 havia haver)
+        (vmp00sm creat crear))
+      (sn-CD
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 gran gran)))
+          (ncfs000 expectació expectació)))
+      (Fc , ,))
+    (coord
+      (cc i i))
+    (S
+      (sp-CCT
+        (prep
+          (sps00 des_de des_de))
+        (sn
+          (vmip3s0 fa fer)
+          (di0mp0 uns un)
+          (di0mp0 quants quant)
+          (ncmp000 dies dia)))
+      (sn-SUJ
+        (grup.nom.mp
+          (s.a.mp
+            (grup.a.mp
+              (aq0mp0 nombrosos nombrós)))
+          (nccp000 periodistes periodista)))
+      (morf.pron
+        (p0300000 s' ell))
+      (grup.verb
+        (vmii3p0 esperaven esperar))
+      (sp-CCL
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (ncfp000 portes porta)
+            (sp
+              (prep
+                (sps00 de de))
+              (snl
+                (espec.ms
+                  (da0cs0 l' el))
+                (grup.nom.ms
+                  (np0000l Hospital_Kochi Hospital_Kochi))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (sadv.j
+        (grup.adv
+          (rg Fins_i_tot fins_i_tot)))
+      (snp
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (ao0ms0 primer primer)))
+          (ncms000 ministre ministre)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 japonès japonès)))
+          (snp
+            (Fc , ,)
+            (grup.nom.ms
+              (np0000p Keizo_Obuchi Keizo_Obuchi))
+            (Fc , ,)))))
+    (morf.pron
+      (p0300000 es ell))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 pronunciar pronunciar))
+    (sp-AO
+      (prep
+        (sps00 sobre sobre))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 fet fet)
+          (S.F.C
+            (conj.subord
+              (cs que que))
+            (sno-SUJ
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (np0000o Japó Japó)))
+            (grup.verb
+              (vmsp3s0 comenci començar)
+              (sps00 a a)
+              (infinitiu
+                (vmn0000 recuperar recuperar)))
+            (sn-CD
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 retard retard)
+                (S.F.R
+                  (relatiu-CD
+                    (pr0cn000 que que))
+                  (sn.e-SUJ *0*)
+                  (grup.verb
+                    (vaip3s0 ha haver)
+                    (vmp00sm sofert sofrir))
+                  (sp-CCT
+                    (prep
+                      (sps00 en en))
+                    (snd
+                      (espec.mp
+                        (dd0mp0 aquests aquest))
+                      (grup.nom.mp
+                        (W 30_anys [??:??/??/30:??.??])))))
+                (sp
+                  (prep
+                    (sps00 en_matèria_de en_matèria_de))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 trasplantaments trasplantament))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 impossibilitat impossibilitat)
+        (sp
+          (prep
+            (sps00 de de))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 realitzar realitzar))
+            (sn.x-CD
+              (grup.nom.co
+                (grup.nom.co
+                  (grup.nom.fp
+                    (ncfp000 donacions donació))
+                  (coord
+                    (cc i i))
+                  (grup.nom.mp
+                    (ncmp000 trasplantaments trasplantament)))
+                (sp.j
+                  (prep
+                    (sps00 d' de))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 òrgans òrgan))))))
+            (sp-CCL
+              (prep
+                (spcms al al))
+              (snl
+                (grup.nom.ms
+                  (np0000l Japó Japó))))))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm obligat obligar))
+    (sn-CCT
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (s.a.mp
+          (grup.a.mp
+            (ao0mp0 últims últim)))
+        (ncmp000 anys any)))
+    (S.F.C-CREG
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.mp
+          (di0mp0 molts molt))
+        (grup.nom.mp
+          (ncmp000 malalts malalt)))
+      (grup.verb
+        (vasi3p0 haguessin haver)
+        (sps00 de de)
+        (infinitiu
+          (vmn0000 buscar buscar)))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 solució solució)))
+      (sp-CCL
+        (prep
+          (sps00 en en))
+        (snl
+          (espec.mp
+            (di0cp0 altres altre))
+          (grup.nom.mp
+            (ncmp000 països país)
+            (sp
+              (prep
+                (sps00 d' de))
+              (snl
+                (grup.nom
+                  (np0000l Occident Occident))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 cirurgians cirurgià)
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 japonesos japonès)))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 quedar quedar))
+    (S.NF.P-CPRED.SUJ
+      (participi
+        (aq0mpp marcats marcat))
+      (sp-CCT
+        (prep
+          (sps00 durant durant))
+        (sn
+          (espec.mp
+            (di0mp0 molts molt))
+          (grup.nom.mp
+            (ncmp000 anys any)))))
+    (sadv-CCT
+      (grup.adv
+        (rg després després)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 mort mort)
+              (sp
+                (prep
+                  (sps00 d' de))
+                (sn
+                  (espec.ms
+                    (dd0ms0 aquell aquell))
+                  (grup.nom.ms
+                    (s.a.ms
+                      (grup.a.ms
+                        (ao0ms0 primer primer)))
+                    (ncms000 receptor receptor)
+                    (sp
+                      (prep
+                        (sps00 d' de))
+                      (sn
+                        (espec.ms
+                          (di0ms0 un un))
+                        (grup.nom.ms
+                          (ncms000 cor cor)))))))
+              (snd
+                (Fc , ,)
+                (espec.ms
+                  (da0cs0 l' el))
+                (grup.nom.ms
+                  (W any_1968 [??:??/??/1968:??.??]))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 metge metge)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vaip3s0 va anar)
+            (vmn0000 realitzar realitzar))
+          (sn-CD
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 intervenció intervenció))))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vsn0000 ser ser)
+      (vmp00sm acusat acusar))
+    (sp-CREG
+      (prep
+        (sps00 d' de))
+      (S.NF.C
+        (infinitiu
+          (van0000 haver haver)
+          (vmp00sm extret extreure))
+        (sn-CD
+          (espec.ms
+            (da0cs0 l' el))
+          (grup.nom.ms
+            (ncms000 òrgan òrgan)
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (espec.ms
+                  (di0ms0 un un))
+                (grup.nom.ms
+                  (ncms000 home home)
+                  (S.F.R
+                    (sn-SUJ
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 mort mort)
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (relatiu
+                            (pr0cs000 qual qual)))))
+                    (neg-MOD
+                      (rn no no))
+                    (grup.verb
+                      (vaii3s0 havia haver)
+                      (vsp00sm estat ser)
+                      (sadv-CC
+                        (grup.adv
+                          (rg científicament científicament)))
+                      (vmp00sf confirmada confirmar))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (S.NF.P
+            (participi
+              (aq0msp trasplantat trasplantat)))))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 morir morir))
+      (Fc , ,))
+    (coord
+      (cc i i))
+    (S
+      (sn-SUJ
+        (espec.fs
+          (dd0fs0 aquesta aquest))
+        (grup.nom.fs
+          (ncfs000 pràctica pràctica)))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 passar passar)
+        (sps00 a a)
+        (infinitiu
+          (vsn0000 ser ser)))
+      (sn-ATR
+        (grup.nom.ms
+          (ncms000 tabú tabú))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC.r
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (ncfs000 extracció extracció)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 òrgans òrgan))))
+          (S.NF.P
+            (participi
+              (aq0fsp feta fet))
+            (sadv-CCT
+              (grup.adv
+                (rg ahir ahir)))
+            (sp-CCL
+              (prep
+                (sps00 a a))
+              (snl
+                (espec.ms
+                  (da0cs0 l' el))
+                (grup.nom.ms
+                  (np0000l Hospital_Kochi Hospital_Kochi))))))))
+    (sn-CC.r
+      (grup.nom
+        (pp3cn000 hi hi)))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 intervenir intervenir))
+    (sn-SUJ
+      (espec.mp
+        (dn0cp0 vuit vuit))
+      (grup.nom.mp
+        (ncmp000 cirurgians cirurgià)))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (nccs000 donant donant)))
+    (morf.pron
+      (p0300000 es ell))
+    (grup.verb
+      (vmii3s0 trobava trobar))
+    (sp-CPRED.SUJ
+      (prep
+        (sps00 en en))
+      (sn
+        (grup.nom.fs
+          (ncfs000 situació situació)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 mort mort)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 cerebral cerebral)))
+                (s.a.fs
+                  (Fc , ,)
+                  (grup.a.fs
+                    (aq0cs0 equivalent equivalent)
+                    (sp
+                      (prep
+                        (sps00 a a))
+                      (sn
+                        (espec.ms
+                          (di0ms0 un un))
+                        (grup.nom.ms
+                          (ncms000 coma coma)
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0cs0 irreversible irreversible))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 mort mort)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vsn0000 ser ser)
+      (vmp00sf anunciada anunciar))
+    (sadv-CCT
+      (grup.adv
+        (rg després després)
+        (sp
+          (prep
+            (sps00 d' de))
+          (S.NF.C
+            (infinitiu
+              (van0000 haver haver)
+              (vmp00sm aconseguit aconseguir))
+            (sn-CD
+              (espec.fs
+                (da0cs0 l' el))
+              (grup.nom.fs
+                (ncfs000 autorització autorització)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.fs
+                      (dp3fs0 la_seva el_seu))
+                    (grup.nom.fs
+                      (ncfs000 família família))))
+                (sp
+                  (prep
+                    (sps00 per per))
+                  (S.NF.C
+                    (infinitiu
+                      (vmn0000 procedir procedir))
+                    (sp-CREG
+                      (prep
+                        (sps00 a a))
+                      (sn
+                        (espec.fp
+                          (da0fp0 les el))
+                        (grup.nom.fp
+                          (ncfp000 extraccions extracció)
+                          (sp
+                            (prep
+                              (sps00 d' de))
+                            (sn
+                              (grup.nom.mp
+                                (ncmp000 òrgans òrgan)))))))))))))))
+    (Fp . .)))

@@ -1,0 +1,310 @@
+
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np0000o Tesoro Tesoro)))
+    (grup.verb
+      (vaip3s0 ha haber)
+      (vmp00sm reducido reducir))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (snn
+        (espec.mp
+          (Z 0,242 0.242))
+        (grup.nom.mp
+          (ncmp000 puntos punto))))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 rentabilidad rentabilidad)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (da0fp0 las el))
+            (grup.nom.fp
+              (ncfp000 letras letra))))))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.mp.co
+          (espec.mp
+            (Z 12 12))
+          (coord
+            (cc y y))
+          (espec.mp
+            (Z 18 18)))
+        (grup.nom.mp
+          (ncmp000 meses mes))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 hasta hasta))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 situarla situar))
+        (sp-CREG
+          (prep
+            (sps00 en en))
+          (sn.co
+            (sn.co
+              (snn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (Zp 4,584_por_ciento 4,584_%)))
+              (coord
+                (cc y y))
+              (snn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (Zp 4,590_por_ciento 4,590_%))))
+            (sadv.j
+              (Fc , ,)
+              (grup.adv
+                (rg respectivamente respectivamente))
+              (Fc , ,))))))
+    (sp-AO
+      (prep
+        (sps00 según según))
+      (sn
+        (grup.nom.mp
+          (ncmp000 datos dato)
+          (sp
+            (prep
+              (spcms del del))
+            (sno
+              (grup.nom.ms
+                (np0000o Banco_de_España Banco_de_España)))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fp
+          (dd0fp0 Estas este))
+        (grup.nom.fp
+          (ncfp000 letras letra)))
+      (morfema.verbal-PASS
+        (p0000000 se se))
+      (grup.verb
+        (vmif3p0 emitirán emitir))
+      (snd-CCT
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 próximo próximo)))
+          (W 21_de_diciembre [??:21/12/??:??.??]))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3p0 conllevan conllevar))
+      (sn-CD.Q
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 reducción reducción)))
+      (sp-AO
+        (prep
+          (sps00 con_respecto_a con_respecto_a))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (ao0fs0 última último)))
+            (ncfs000 subasta subasta)
+            (S.F.R
+              (Fc , ,)
+              (sp-CC
+                (prep
+                  (sps00 en en))
+                (relatiu
+                  (da0fs0 la el)
+                  (pr0cn000 que que)))
+              (morfema.verbal-PASS
+                (p0000000 se se))
+              (grup.verb
+                (vmis3p0 adjudicaron adjudicar))
+              (sn.co-SUJ
+                (sn
+                  (grup.nom.fp
+                    (ncfp000 letras letra)
+                    (sp
+                      (prep
+                        (sps00 a a))
+                      (sn
+                        (espec.ms
+                          (di0ms0 un uno))
+                        (grup.nom.ms
+                          (ncms000 año año))))
+                    (sp
+                      (prep
+                        (spcms al al))
+                      (snn
+                        (grup.nom.ms
+                          (Zp 4,826_por_ciento 4,826_%)))))
+                  (Fc , ,))
+                (coord
+                  (cc y y))
+                (sn
+                  (grup.nom.fp
+                    (ncfp000 letras letra)
+                    (sp
+                      (prep
+                        (sps00 a a))
+                      (sn
+                        (espec.mp
+                          (Z 18 18))
+                        (grup.nom.mp
+                          (ncmp000 meses mes))))
+                    (sp
+                      (prep
+                        (spcms al al))
+                      (snn
+                        (grup.nom.ms
+                          (Zp 4,832_por_ciento 4,832_%))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sp-CC
+        (prep
+          (sps00 En en))
+        (sn
+          (grup.nom.fp
+            (ncfp000 letras letra)
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.mp
+                  (Z 12 12))
+                (grup.nom.mp
+                  (ncmp000 meses mes))))))
+        (Fc , ,))
+      (sno-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np0000o Tesoro Tesoro)))
+      (grup.verb
+        (vaip3s0 ha haber)
+        (vmp00sm adjudicado adjudicar))
+      (snn-CD
+        (espec.mp
+          (Z 231 231))
+        (grup.nom.mp
+          (ncmp000 millones millón)
+          (sp
+            (prep
+              (sps00 de de))
+            (snn
+              (grup.nom.mp
+                (Zm euros euro))))
+          (snn
+            (Fpa -Fpa- -Fpa-)
+            (espec.mp
+              (Z 38.435 38435))
+            (grup.nom.mp
+              (ncmp000 millones millón)
+              (sp
+                (prep
+                  (sps00 de de))
+                (snn
+                  (grup.nom.fp
+                    (Zm pesetas peseta)))))
+            (Fpt -Fpt- -Fpt-))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (da0mp0 los el)
+                (Z 1.864 1864))
+              (grup.nom.mp
+                (ncmp000 millones millón)
+                (S.NF.P
+                  (participi
+                    (aq0mpp solicitados solicitado))))))))
+      (Fc , ,))
+    (coord
+      (cc en_tanto_que en_tanto_que))
+    (S
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (grup.nom.fp
+            (ncfp000 letras letra)
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.mp
+                  (Z 18 18))
+                (grup.nom.mp
+                  (ncmp000 meses mes)))))))
+      (sno-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np0000o Tesoro Tesoro)))
+      (grup.verb
+        (vmif3s0 emitirá emitir))
+      (snn-CD
+        (espec.mp
+          (Z 669 669))
+        (grup.nom.mp
+          (ncmp000 millones millón)
+          (sp
+            (prep
+              (sps00 de de))
+            (snn
+              (grup.nom.mp
+                (Zm euros euro))))
+          (snn
+            (Fpa -Fpa- -Fpa-)
+            (espec.mp
+              (Z 111.312 111312))
+            (grup.nom.mp
+              (ncmp000 millones millón)
+              (sp
+                (prep
+                  (sps00 de de))
+                (snn
+                  (grup.nom.fp
+                    (Zm pesetas peseta)))))
+            (Fpt -Fpt- -Fpt-))
+          (sp
+            (prep
+              (sps00 de de))
+            (snn
+              (espec.mp
+                (da0mp0 los el)
+                (Z 2.866 2866))
+              (grup.nom.mp
+                (ncmp000 millones millón)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snn
+                    (grup.nom.mp
+                      (Zm euros euro))))
+                (S.NF.P
+                  (participi
+                    (aq0mpp demandados demandado)))))))))
+    (Fp . .)))

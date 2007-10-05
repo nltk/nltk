@@ -1,0 +1,131 @@
+
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 ignorància ignorància)))
+      (coord
+        (cc i i))
+      (sn
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (ncfs000 audàcia audàcia))))
+    (morf.pron
+      (p0300000 s' ell))
+    (grup.verb
+      (vmip3p0 alien aliar))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 donar donar))
+        (sn-CD
+          (grup.nom.mp
+            (ncmp000 arguments argument)))
+        (sp-CI
+          (prep
+            (sps00 a a))
+          (sn
+            (grup.nom.fs
+              (ncfs000 gent gent)
+              (sp
+                (prep
+                  (cs com com))
+                (sn
+                  (grup.nom.ms
+                    (np00000 Emiliano_Carabante Emiliano_Carabante)
+                    (sn
+                      (Fc , ,)
+                      (espec.ms
+                        (di0ms0 un un))
+                      (grup.nom.ms
+                        (ncms000 pagès pagès)
+                        (S.F.R
+                          (relatiu-SUJ
+                            (pr0cn000 que que))
+                          (grup.verb
+                            (vmii3s0 sabia saber))
+                          (sadv-CC
+                            (grup.adv
+                              (rg molt molt)
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sn
+                                  (espec.fs
+                                    (da0fs0 la el))
+                                  (grup.nom.fs
+                                    (ncfs000 vida vida))))))
+                          (S.F.AConc-AO
+                            (conj.subord
+                              (cs malgrat_que malgrat_que))
+                            (sn.e-SUJ *0*)
+                            (sadv-CCT
+                              (grup.adv
+                                (rg mai mai)))
+                            (grup.verb
+                              (vaip3s0 va anar)
+                              (vmn0000 trepitjar trepitjar))
+                            (sn-CD
+                              (espec.fs
+                                (da0cs0 l' el))
+                              (grup.nom.fs
+                                (ncfs000 escola escola)))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Per per))
+      (sn
+        (espec.fs
+          (di0fs0 alguna algun))
+        (grup.nom.fs
+          (ncfs000 cosa cosa))))
+    (sn-CCT
+      (espec.ms
+        (di0cs0 cada cada))
+      (grup.nom.ms
+        (ncms000 dia dia)))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 esmorzar esmorzar))))
+    (sn.e-SUJ *0*)
+    (morf.pron
+      (p0300000 es ell))
+    (grup.verb
+      (vmii3s0 prenia prendre))
+    (sn.co-CD
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 copa copa)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom.ms
+                (ncms000 anís anís))))))
+      (coord
+        (cc i i))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 cabeça cabeça)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 alls all)))))))
+    (Fp . .)))

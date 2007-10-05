@@ -1,0 +1,276 @@
+
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vmip1s0 Creo crear))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 título título)
+          (S.NF.P
+            (sadv-CC
+              (grup.adv
+                (rg más más)))
+            (participi
+              (aq0msp apropiado apropiado))
+            (sp-CC
+              (prep
+                (sps00 para para))
+              (sn
+                (espec.fs
+                  (di0fs0 una uno))
+                (grup.nom.fs
+                  (ncfs000 colección colección)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.mp
+                        (ncmp000 artículos artículo)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (grup.nom.fs
+                              (ncfs000 crítica crítica)
+                              (s.a.fs
+                                (grup.a.fs
+                                  (aq0fs0 cinematográfica cinematográfico)))))))))))))))
+      (grup.verb
+        (vsip3s0 es ser))
+      (sn-ATR
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (S.F.R
+            (relatiu-CD
+              (pr0cn000 que que))
+            (snp-SUJ
+              (grup.nom.ms
+                (np0000p Guiliermo_Cabrera_Infante Guiliermo_Cabrera_Infante)))
+            (grup.verb
+              (vmis3s0 escogió escoger))
+            (sp-CC
+              (prep
+                (sps00 para para))
+              (sn
+                (espec.ms
+                  (dp3cs0 su su))
+                (grup.nom.ms
+                  (ncms000 libro libro)
+                  (sna
+                    (grup.nom
+                      (Fe " ")
+                      (np0000a Un_oficio_del_siglo_XX Un_oficio_del_siglo_XX)
+                      (Fe " "))))))))))
+    (Fp . .)))
+(
+  (S
+    (Fia ¿ ¿)
+    (sn-SUJ
+      (grup.nom.s
+        (pt0cs000 Cuál cuál)
+        (S.F.ACond*
+          (conj.subord
+            (cs si si))
+          (neg
+            (rn no no)))))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vaic3s0 habría haber)
+      (vmp00sm podido poder)
+      (infinitiu
+        (vmn0000 designar designar)))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un uno))
+      (grup.nom.ms
+        (ncms000 trabajo trabajo)
+        (S.NF.P
+          (participi
+            (aq0msp surgido surgido))
+          (sp-CC
+            (prep
+              (sps00 en_torno_a en_torno_a))
+            (sn
+              (espec.ms
+                (di0ms0 un uno))
+              (grup.nom.ms
+                (ncms000 quehacer quehacer)
+                (S.F.R.co
+                  (relatiu-CD
+                    (pr0cn000 que que))
+                  (S.F.R
+                    (snp-SUJ
+                      (espec.mp
+                        (da0mp0 los el))
+                      (grup.nom.mp
+                        (ncmp000 griegos griego)))
+                    (neg-MOD
+                      (rn no no))
+                    (grup.verb
+                      (vmis3p0 pudieron poder)
+                      (infinitiu
+                        (vmn0000 imaginar imaginar)))
+                    (sp-CC
+                      (prep
+                        (sps00 entre entre))
+                      (sn
+                        (espec.fp
+                          (dp3cp0 sus su)
+                          (dn0cp0 seis seis))
+                        (grup.nom.fp
+                          (ncfp000 categorías categoría)
+                          (s.a.fp
+                            (grup.a.fp
+                              (aq0fp0 artísticas artístico)))))))
+                  (coord
+                    (cc y y))
+                  (S.F.R
+                    (sadv-CC
+                      (grup.adv
+                        (rg hoy hoy)))
+                    (sn.e-SUJ *0*)
+                    (grup.verb
+                      (vmip1p0 llamamos llamar))
+                    (sn-CPRED.CD
+                      (Fe " ")
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (s.a.ms
+                          (grup.a.ms
+                            (ao0ms0 séptimo séptimo)))
+                        (nccs000 arte arte))
+                      (Fe " "))))))))))
+    (Fit ? ?)))
+(
+  (S
+    (grup.verb
+      (vmip3s0 Está estar))
+    (sadv-ATR
+      (grup.adv
+        (rg bien bien)))
+    (S.F.C-SUJ
+      (conj.subord
+        (cs que que))
+      (snp-SUJ
+        (grup.nom.ms
+          (np0000p Guillemmo Guillemmo)))
+      (sn-CD
+        (grup.nom.ms
+          (pp3msa00 lo él)))
+      (grup.verb
+        (vmsp3s0 califique calificar))
+      (sp-CPRED.CD
+        (prep
+          (sps00 de de))
+        (sn
+          (grup.nom.ms
+            (ncms000 oficio oficio)))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CC
+      (grup.adv
+        (rg Así así)))
+    (sn.e-SUJ *0*)
+    (sn-CI
+      (grup.nom.s
+        (pp3csd00 le él)))
+    (grup.verb
+      (vmip3s0 quita quitar))
+    (sn-CD
+      (grup.nom.fs
+        (ncfs000 solemnidad solemnidad)))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 tarea tarea)
+          (S.F.R
+            (relatiu-CD
+              (pr0cn000 que que))
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vmis3s0 desempeñó desempeñar))
+            (sp-CC
+              (prep
+                (sps00 durante durante))
+              (sn
+                (espec.ms
+                  (di0ms0 mucho mucho))
+                (grup.nom.ms
+                  (ncms000 tiempo tiempo))))
+            (sp-CC
+              (prep
+                (cs como como))
+              (sn
+                (sn
+                  (Fe " ")
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (nccs000 cronista cronista))
+                  (Fe " "))
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmii3s0 suscribía suscribir))
+                  (sp-CC
+                    (prep
+                      (sps00 con con))
+                    (sn
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 seudónimo seudónimo)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (snp
+                            (grup.nom.ms
+                              (np0000p G._Caín G._Caín)))))))
+                  (sn-CD
+                    (espec.mp
+                      (dp3cp0 sus su))
+                    (grup.nom.mp
+                      (ncmp000 comentarios comentario)
+                      (sp
+                        (prep
+                          (sps00 sobre sobre))
+                        (sn
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (s.a.fs.x
+                              (grup.a.fs.co
+                                (grup.a.fs
+                                  (aq0fs0 nueva nuevo))
+                                (coord
+                                  (cc y y))
+                                (grup.a.fs
+                                  (aq0cs0 deslumbrante deslumbrante))))
+                            (ncfs000 ficción ficción)
+                            (S.NF.P
+                              (participi
+                                (aq0fsp nacida nacido))
+                              (sp-CC
+                                (prep
+                                  (sps00 con con))
+                                (sn
+                                  (espec.ms
+                                    (da0ms0 el el))
+                                  (grup.nom.ms
+                                    (ncms000 siglo siglo)))))))))))))))))
+    (Fp . .)))

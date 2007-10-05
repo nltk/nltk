@@ -1,0 +1,228 @@
+
+(
+  (S
+    (coord-ET
+      (cc Sin_embargo sin_embargo)
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fs
+        (dp3cs0 su su))
+      (grup.nom.fs
+        (ncfs000 gestión gestión)
+        (sp
+          (prep
+            (sps00 al_frente_de al_frente_de))
+          (sno
+            (grup.nom
+              (np0000o Industria Industria))))
+        (sp
+          (Fg - -)
+          (prep
+            (sps00 con con))
+          (sn
+            (espec.fs
+              (di0fs0 otra otro))
+            (grup.nom.fs
+              (ncfs000 coyuntura coyuntura)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 económica económico)))
+              (sp
+                (Fc , ,)
+                (sadv
+                  (grup.adv
+                    (rg sobre_todo sobre_todo)))
+                (sp
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.mp
+                      (da0mp0 los el))
+                    (grup.nom.mp
+                      (s.a.mp
+                        (grup.a.mp
+                          (ao0mp0 primeros primero)))
+                      (ncmp000 años año)))))))
+          (Fg - -))))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmis3s0 caracterizó caracterizar))
+    (sadv-CC
+      (Fc , ,)
+      (grup.adv
+        (rg efectivamente efectivamente))
+      (Fc , ,))
+    (sp-CREG
+      (prep
+        (sps00 por por))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 evitar evitar))
+        (sp-CC
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (di0ms0 todo todo)
+              (da0ns0 lo el))
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (aq0cs0 posible posible))))))
+        (sn-CD
+          (espec.fs
+            (di0fs0 una uno))
+          (grup.nom.fs
+            (ncfs000 política política)
+            (s.a.fs
+              (espec
+                (rg poco poco))
+              (grup.a.fs
+                (aq0cs0 beligerante beligerante)))))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vsii3s0 Era ser))
+    (sadv-MOD
+      (grup.adv
+        (rg también también)))
+    (sn-ATR
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 política política)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 industrial industrial)))
+        (S.F.R
+          (relatiu-CD
+            (pr0cn000 que que))
+          (sadv-CC
+            (grup.adv
+              (rg entonces entonces)))
+          (grup.verb
+            (vmii3s0 deseaba desear))
+          (snp-SUJ
+            (grup.nom.ms
+              (np0000p Felipe_González Felipe_González))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CC
+      (rg Ahora ahora)
+      (sp.co
+        (Fc , ,)
+        (sp
+          (prep
+            (spcms al al))
+          (sn
+            (grup.nom.ms
+              (ncms000 final final)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfn000 crisis crisis)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 económica económico)))))))))
+        (coord
+          (cc o o))
+        (sp
+          (prep
+            (spcms al al))
+          (sn
+            (grup.nom.ms
+              (ncms000 principio principio)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 recuperación recuperación)))))))
+        (Fc , ,)))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.mp
+        (nccp000 responsables responsable)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 economía economía)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 española español))))))))
+    (grup.verb
+      (vmip3p0 consideran considerar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sadv-MOD
+        (grup.adv
+          (rg tal_vez tal_vez)))
+      (grup.verb
+        (vsic3s0 sería ser))
+      (sa-ATR
+        (grup.a
+          (aq0ms0 oportuno oportuno)))
+      (S.NF.C-SUJ
+        (infinitiu
+          (vmn0000 poner_en_marcha poner_en_marcha))
+        (sn-CD
+          (espec.fs
+            (di0fs0 una uno))
+          (grup.nom.fs
+            (ncfs000 política política)
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 industrial industrial)))
+            (s.a.fs
+              (Fg - -)
+              (sadv
+                (grup.adv
+                  (rg más más)))
+              (aq0fs0 activa activo)
+              (Fg - -))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Juan_Manuel_Eguiagaray Juan_Manuel_Eguiagaray)))
+    (grup.verb
+      (vmip3s0 considera considerar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (grup.verb
+        (vaip3s0 hay haber)
+        (cs que que)
+        (infinitiu
+          (vmn0000 hacer hacer)))
+      (sn-CD
+        (grup.nom.ms
+          (ncms000 hincapié hincapié)))
+      (sp-CREG
+        (prep
+          (sps00 en en))
+        (sn
+          (Fg - -)
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 calidad calidad))
+          (Fg - -))))
+    (Fp . .)))

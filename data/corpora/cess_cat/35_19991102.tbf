@@ -1,0 +1,469 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np00000 PNB PNB)))
+    (grup.verb
+      (vmip3s0 sol·licita sol·licitar))
+    (sn-CD
+      (espec.mp
+        (rg gairebé gairebé)
+        (Z 9.000 9000))
+      (grup.nom.mp
+        (ncmp000 milions milió)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fp
+              (Zm pessetes pesseta))))
+        (sadv
+          (grup.adv
+            (rg més més)))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (sp
+        (prep
+          (sps00 a a))
+        (sn.co
+          (sn
+            (grup.nom.fp
+              (ncfp000 infraestructures infraestructura)))
+          (coord
+            (cc i i))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 gestió gestió)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn.co
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 sanitat sanitat)))
+                  (coord
+                    (cc i i))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 serveis servei)
+                      (s.a.mp
+                        (grup.a.mp
+                          (aq0cp0 socials social)))))))
+              (sp
+                (prep
+                  (sps00 a a))
+                (sn
+                  (grup.nom
+                    (np00000 Euskadi Euskadi)))))))))
+    (S.F.A-AO
+      (Fc , ,)
+      (conj.subord
+        (cs segons segons))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3s0 consta constar))
+      (sp-CCL
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (ncfp000 esmenes esmena)
+            (S.NF.P
+              (participi
+                (aq0fpp presentades presentat))
+              (sp-CC
+                (prep
+                  (spcmp als al))
+                (sn
+                  (grup.nom.mp
+                    (np00000 Pressupostos Pressupostos)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.ms
+                          (da0cs0 l' el))
+                        (grup.nom.ms
+                          (np00000 Estat Estat))))))))
+            (sp-CC
+              (prep
+                (sps00 per per))
+              (sp
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.ms
+                    (da0cs0 l' el))
+                  (grup.nom.ms
+                    (W any_2000 [??:??/??/2000:??.??])))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 A_pesar_de a_pesar_de))
+      (sn
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (ncfp000 desavinences desavinença)
+          (sp
+            (prep
+              (sps00 entre entre))
+            (sn.co
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (np00000 PNB PNB)))
+              (coord
+                (cc i i))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (np00000 Govern Govern)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0cs0 central central)))))))
+          (sp
+            (prep
+              (sps00 pel_que_fa_a pel_que_fa_a))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 política política)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 pacificació pacificació)
+                      (sp
+                        (prep
+                          (sps00 d' de))
+                        (sn
+                          (grup.nom
+                            (np00000 Euskadi Euskadi))))))))))))
+      (Fc , ,))
+    (sn-CCT
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 setmana setmana)
+        (S.NF.P
+          (participi
+            (aq0fsp passada passat)))))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (nccp000 nacionalistes nacionalista)
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 bascos basc)))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 ajudar ajudar))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (np00000 PP PP)))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 derrotar derrotar))
+        (sn-CD
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (ncfp000 esmenes esmena)
+            (sp
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 totalitat totalitat)
+                  (sp
+                    (prep
+                      (spcmp dels del))
+                    (sn
+                      (grup.nom.mp
+                        (np00000 Pressupostos Pressupostos)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn
+                            (espec.ms
+                              (da0cs0 l' el))
+                            (grup.nom.ms
+                              (np00000 Estat Estat))))))))))
+            (S.NF.P
+              (participi
+                (aq0fpp presentades presentat))
+              (sp-CAG
+                (prep
+                  (sps00 per per))
+                (sn
+                  (espec.fs
+                    (da0cs0 l' el))
+                  (grup.nom.fs
+                    (ncfs000 oposició oposició)
+                    (sp
+                      (prep
+                        (sps00 d' de))
+                      (sn
+                        (grup.nom.fp
+                          (ncfp000 esquerres esquerra))))))))))))
+    (S.F.AConc-AO
+      (Fc , ,)
+      (conj.subord
+        (cs si_bé si_bé))
+      (sn-SUJ
+        (espec.ms
+          (dp3ms0 el_seu el_seu))
+        (grup.nom.ms
+          (nccs000 portaveu portaveu)
+          (sn
+            (Fc , ,)
+            (grup.nom.ms
+              (np00000 Jon_Zabalia Jon_Zabalia))
+            (Fc , ,))))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 avisar avisar))
+      (S.F.C-CREG
+        (conj.subord
+          (cs que que))
+        (sp-CC
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 tràmit tràmit)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 parlamentari parlamentari))))))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmif3p0 presentaran presentar))
+        (sn-CD
+          (grup.nom.fp
+            (ncfp000 esmenes esmena)))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 Els el))
+        (grup.nom.mp
+          (nccp000 nacionalistes nacionalista)))
+      (grup.verb
+        (vmip3p0 reclamen reclamar))
+      (sn-CD
+        (espec.mp
+          (Z 2.824 2824))
+        (grup.nom.mp
+          (ncmp000 milions milió)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (Zm pessetes pesseta))))
+          (s.a.mp
+            (grup.a.mp
+              (aq0cp0 addicionals addicional)))))
+      (sp-CC
+        (prep
+          (sps00 per per))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 cobertura cobertura)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fp
+                    (da0fp0 les el))
+                  (grup.nom.fp
+                    (ncfp000 prestacions prestació)
+                    (s.a.fp
+                      (grup.a.fp
+                        (aq0fp0 sanitàries sanitari)))
+                    (S.F.R
+                      (relatiu-CD.Q
+                        (pr0cn000 que que))
+                      (sn.e-SUJ *0*)
+                      (grup.verb
+                        (vmip3p0 tenen tenir))
+                      (S.NF.P-CPRED.CD
+                        (participi
+                          (aq0fpp assumides assumit)))))))))))
+      (Fc , ,))
+    (coord
+      (cc i i))
+    (S*
+      (sn-CD
+        (espec.mp
+          (Z 140 140))
+        (grup.nom.mp
+          (ncmp000 milions milió)
+          (sadv
+            (grup.adv
+              (rg més més)))))
+      (sp-CC
+        (prep
+          (sps00 per per))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 gestió gestió)
+              (sp
+                (prep
+                  (spcmp dels del))
+                (sn
+                  (grup.nom.mp
+                    (ncmp000 serveis servei)
+                    (s.a.mp
+                      (grup.a.mp
+                        (aq0cp0 socials social)))
+                    (S.NF.P
+                      (participi
+                        (aq0mpp transferits transferit))
+                      (sp-CC
+                        (prep
+                          (sps00 des_de des_de))
+                        (sn
+                          (espec.ms
+                            (da0cs0 l' el))
+                          (grup.nom.ms
+                            (np00000 Inserso Inserso)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 En_matèria_d' en_matèria_de))
+      (sn
+        (grup.nom.fp
+          (ncfp000 infraestructures infraestructura)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (np00000 Grup_Basc Grup_Basc)))
+    (grup.verb
+      (vmip3s0 sol·licita sol·licitar))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (ncms000 augment augment)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 dotació dotació))))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.mp
+              (rg gairebé gairebé)
+              (Z 6.000 6000))
+            (grup.nom.mp
+              (ncmp000 milions milió)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fp
+                    (Zm pessetes pesseta)))))))))
+    (Fp . .)))
+(
+  (S
+    (grup.verb
+      (vmip3p0 Destaquen destacar))
+    (sn.co-SUJ
+      (sn
+        (espec.mp
+          (da0mp0 els el)
+          (Z 1.500 1500))
+        (grup.nom.mp
+          (ncmp000 milions milió)
+          (S.NF.P
+            (participi
+              (aq0mpp sol·licitats sol·licitat))
+            (sp-CC
+              (prep
+                (sps00 per per))
+              (sp
+                (prep
+                  (spcms al al))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 metro metro)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (grup.nom
+                          (np00000 Bilbao Bilbao))))))))))
+        (Fc , ,))
+      (coord
+        (cc i i))
+      (sn
+        (espec.mp
+          (da0mp0 els el)
+          (Z 4.000 4000))
+        (grup.nom.mp
+          (ncmp000 milions milió)
+          (sp
+            (prep
+              (sps00 per per))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 destinar destinar))
+              (sp-CREG
+                (prep
+                  (sps00 a a))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 infraestructura infraestructura)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 ferroviària ferroviari)))))))))))
+    (Fp . .)))

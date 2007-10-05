@@ -1,0 +1,1129 @@
+
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 jefe jefe)
+        (sp
+          (prep
+            (spcms del del))
+          (sno
+            (grup.nom.ms
+              (np0000o Estado_Mayor Estado_Mayor))))
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (espec.fp
+              (da0fp0 las el))
+            (grup.nom.fp
+              (np0000o Fuerzas_Armadas Fuerzas_Armadas)
+              (sp
+                (prep
+                  (sps00 de de))
+                (snl
+                  (grup.nom
+                    (np0000l Sudáfrica Sudáfrica)))))))
+        (snp
+          (Fc , ,)
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (nccs000 general general)
+            (snp
+              (grup.nom.ms
+                (np0000p Sywo_Nyanda Sywo_Nyanda))))
+          (Fc , ,))))
+    (grup.verb
+      (vmis3s0 afirmó afirmar))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (dp3cs0 su su))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (ao0fs0 primera primero)))
+          (ncfs000 visita visita)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 oficial oficial)))
+          (sp
+            (prep
+              (sps00 a a))
+            (snl
+              (grup.nom
+                (np0000l Angola Angola)))))))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sno-SUJ
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (np0000o Fuerzas_Armadas Fuerzas_Armadas)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (dd0ms0 este este))
+              (grup.nom.ms
+                (ncms000 país país))))))
+      (Fe " ")
+      (grup.verb
+        (vmis3p0 consiguieron conseguir))
+      (S.NF.C-CD
+        (infinitiu
+          (vmn0000 destruir destruir))
+        (sn-CD
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 buena buen)))
+            (ncfs000 parte parte)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fp
+                  (da0fp0 las el))
+                (grup.nom.fp
+                  (ncfp000 fuerzas fuerza)
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0cp0 convencionales convencional)))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sno
+                      (grup.nom
+                        (np0000o UNITA UNITA))))))))))
+      (Fe " "))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (nccs000 general general)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 sudafricano sudafricano)))))
+    (grup.verb
+      (vmis3s0 hizo hacer))
+    (sn-CD
+      (espec.fp
+        (dd0fp0 estas este))
+      (grup.nom.fp
+        (ncfp000 declaraciones declaración)))
+    (sadv-CCT
+      (grup.adv
+        (rg después después)
+        (sp
+          (prep
+            (sps00 de de))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 visitar visitar))
+            (snl-CD
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 ciudad ciudad)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom
+                      (np0000l Kuito Kuito)
+                      (sn
+                        (Fc , ,)
+                        (grup.nom.fs
+                          (ncfs000 capital capital)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (snl
+                              (espec.fs
+                                (da0fs0 la el))
+                              (grup.nom.fs
+                                (ncfs000 provincia provincia)
+                                (s.a.fs
+                                  (grup.a.fs
+                                    (aq0cs0 central central)))
+                                (s.a.fs
+                                  (grup.a.fs
+                                    (aq0fs0 angoleña angoleño)))
+                                (sp
+                                  (prep
+                                    (sps00 de de))
+                                  (snl
+                                    (grup.nom
+                                      (np0000l Bie Bie))))))))
+                        (Fc , ,)))))))))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 marco marco)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (di0fs0 una uno))
+              (grup.nom.fs
+                (ncfs000 visita visita)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.mp
+                      (dn0cp0 cinco cinco))
+                    (grup.nom.mp
+                      (ncmp000 días día))))
+                (sp
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (espec.ms
+                      (dd0ms0 este este))
+                    (grup.nom.ms
+                      (ncms000 país país)
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0ms0 africano africano))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 Según según))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 agenda agenda)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 trabajo trabajo))))))
+      (Fc , ,))
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (nccs000 general general)
+        (snp
+          (grup.nom.ms
+            (np0000p Nyanda Nyanda)))))
+    (grup.verb
+      (vmif3s0 mantendrá mantener))
+    (sadv-MOD
+      (grup.adv
+        (rg también también)))
+    (sn-CD
+      (espec.ms
+        (di0ms0 un uno))
+      (grup.nom.ms
+        (ncms000 encuentro encuentro)
+        (sp
+          (prep
+            (sps00 con con))
+          (snp
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 presidente presidente)
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 angoleño angoleño)))
+              (snp
+                (Fc , ,)
+                (grup.nom.ms
+                  (np0000p Jose_Eduardo_dos_Santos Jose_Eduardo_dos_Santos))
+                (Fc , ,))
+              (sp
+                (prep
+                  (sps00 en_calidad_de en_calidad_de))
+                (snp
+                  (grup.nom.ms
+                    (np0000p Comandante_en_Jefe Comandante_en_Jefe)
+                    (sp
+                      (sps00 de de)
+                      (sno
+                        (espec.fp
+                          (da0fp0 las el))
+                        (grup.nom.fp
+                          (np0000o Fuerzas_Armadas_Angoleñas Fuerzas_Armadas_Angoleñas))))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (nccs000 general general)
+        (snp
+          (grup.nom.ms
+            (np0000p Nyanda Nyanda)))))
+    (grup.verb
+      (vmis3s0 tuvo tener))
+    (sadv-MOD
+      (grup.adv
+        (rg ya ya)))
+    (sn-CD.Q
+      (grup.nom.fs
+        (ncfs000 ocasión ocasión)
+        (sp
+          (prep
+            (sps00 de de))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 reunirse reunir))
+            (sp-CREG
+              (prep
+                (sps00 con con))
+              (snp
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 ministro ministro)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 angoleño angoleño)))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fs
+                        (nccs000 defensa defensa))))
+                  (snp
+                    (Fc , ,)
+                    (grup.nom.ms
+                      (nccs000 general general)
+                      (snp
+                        (grup.nom.ms
+                          (np0000p Kundi_Paihama Kundi_Paihama))))
+                    (Fc , ,))
+                  (S.F.R
+                    (relatiu-SUJ
+                      (pr0cs000 quien quien))
+                    (sn-CD
+                      (grup.nom.s
+                        (pp3csd00 le él)))
+                    (grup.verb
+                      (vmis3s0 informó informar))
+                    (sp-AO
+                      (prep
+                        (sps00 sobre sobre))
+                      (sn.co
+                        (sn
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (ncfs000 situación situación)
+                            (s.a.fs
+                              (grup.a.fs
+                                (aq0cs0 militar militar)))
+                            (sp
+                              (prep
+                                (sps00 en en))
+                              (sn
+                                (espec.ms
+                                  (da0ms0 el el))
+                                (grup.nom.ms
+                                  (ncms000 país país))))))
+                        (coord
+                          (cc y y))
+                        (sn
+                          (espec.fp
+                            (da0fp0 las el))
+                          (grup.nom.fp
+                            (ncfp000 operaciones operación)
+                            (sp
+                              (prep
+                                (sps00 en en))
+                              (sn
+                                (grup.nom.ms
+                                  (ncms000 curso curso))))
+                            (sp
+                              (prep
+                                (sps00 contra contra))
+                              (sn
+                                (espec.mp
+                                  (da0mp0 los el))
+                                (grup.nom.mp
+                                  (ncmp000 restos resto)
+                                  (sp
+                                    (prep
+                                      (sps00 de de))
+                                    (sn
+                                      (espec.fp
+                                        (da0fp0 las el))
+                                      (grup.nom.fp
+                                        (ncfp000 fuerzas fuerza)
+                                        (s.a.fp
+                                          (grup.a.fp
+                                            (aq0fp0 guerrilleras guerrillero)))
+                                        (sp
+                                          (prep
+                                            (sps00 de de))
+                                          (sno
+                                            (espec.fs
+                                              (da0fs0 la el))
+                                            (grup.nom.fs
+                                              (np0000o Unión_Nacional_para_la_Independencia_Total_de_Angola Unión_Nacional_para_la_Independencia_Total_de_Angola)
+                                              (sno
+                                                (grup.nom.fs
+                                                  (Fpa -Fpa- -Fpa-)
+                                                  (np0000o UNITA UNITA)
+                                                  (Fpt -Fpt- -Fpt-))))))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.fs
+          (dp3cs0 su su))
+        (grup.nom.fs
+          (ncfs000 visita visita)))
+      (Fc , ,))
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (nccs000 general general)
+        (snp
+          (grup.nom.ms
+            (np0000p Nyanda Nyanda)))))
+    (grup.verb
+      (vmis3s0 estuvo estar))
+    (S.NF.P-ATR
+      (participi
+        (aq0msp acompañado acompañado))
+      (sp-CAG
+        (prep
+          (sps00 por por))
+        (snp
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (nccs000 general general)
+            (snp
+              (grup.nom.ms
+                (np0000p Joao_de_Matos Joao_de_Matos)))
+            (snp
+              (Fc , ,)
+              (grup.nom.ms
+                (ncms000 jefe jefe)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sno
+                    (grup.nom.ms
+                      (np0000o Estado_Mayor Estado_Mayor))))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sno
+                    (espec.fp
+                      (da0fp0 las el))
+                    (grup.nom.fp
+                      (np0000o Fuerzas_Armadas Fuerzas_Armadas)
+                      (s.a.fp
+                        (grup.a.fp
+                          (aq0fp0 angoleñas angoleño)))))))
+              (Fc , ,))
+            (S.F.R
+              (relatiu-SUJ
+                (pr0cs000 quien quien))
+              (sn-CD
+                (grup.nom.s
+                  (pp3csd00 le él)))
+              (grup.verb
+                (vmis3s0 mostró mostrar))
+              (sp-CC
+                (Fc , ,)
+                (prep
+                  (sps00 entre entre))
+                (sn
+                  (espec.fp
+                    (di0fp0 otras otro))
+                  (grup.nom.fp
+                    (ncfp000 cosas cosa)))
+                (Fc , ,))
+              (sn-CD
+                (grup.nom.fs
+                  (ncfs000 parte parte)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 armamento armamento)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0ms0 moderno moderno)))
+                        (S.NF.P
+                          (participi
+                            (aq0msp capturado capturado))
+                          (sp-CAG
+                            (prep
+                              (sps00 por por))
+                            (sn
+                              (espec.mp
+                                (da0mp0 los el))
+                              (grup.nom.mp
+                                (nccp000 militares militar))))
+                          (sp-CCL
+                            (prep
+                              (sps00 a a))
+                            (sno
+                              (espec.fs
+                                (da0fs0 la el))
+                              (grup.nom.fs
+                                (np0000o UNITA UNITA)))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 Según según))
+      (sn
+        (grup.nom.fp
+          (ncfp000 fuentes fuente)
+          (s.a.fp
+            (grup.a.fp
+              (aq0fp0 próximas próximo)
+              (sp
+                (prep
+                  (spcms al al))
+                (sno
+                  (grup.nom.ms
+                    (np0000o Ministerio_de_Defensa Ministerio_de_Defensa))))))))
+      (Fc , ,))
+    (sp-CCT
+      (prep
+        (sps00 durante durante))
+      (sn
+        (espec.fp
+          (da0fp0 las el))
+        (grup.nom.fp
+          (ncfp000 conversaciones conversación)
+          (sp
+            (prep
+              (sps00 entre entre))
+            (sn
+              (espec.fp
+                (da0fp0 las el)
+                (dn0cp0 dos dos))
+              (grup.nom.fp
+                (ncfp000 delegaciones delegación)))))))
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (nccs000 general general)
+        (snp
+          (grup.nom.ms
+            (np0000p Nyanda Nyanda)))))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmis3s0 interesó interesar))
+    (sp-AO
+      (sadv.j
+        (grup.adv
+          (rg especialmente especialmente)))
+      (sp
+        (prep
+          (sps00 sobre sobre))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 situación situación)
+            (sp
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.fp
+                  (da0fp0 las el))
+                (grup.nom.fp
+                  (ncfp000 fronteras frontera)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom
+                        (np0000l Angola Angola))))
+                  (sp
+                    (prep
+                      (sps00 con con))
+                    (sn.x
+                      (grup.nom.co
+                        (grup.nom
+                          (np0000l Namibia Namibia))
+                        (coord
+                          (cc y y))
+                        (grup.nom
+                          (np0000l Zambia Zambia)))))
+                  (S.F.R
+                    (Fc , ,)
+                    (relatiu-CCL
+                      (pr000000 donde donde))
+                    (sp-CCT
+                      (prep
+                        (sps00 en en))
+                      (sn
+                        (espec.mp
+                          (da0mp0 los el))
+                        (grup.nom.mp
+                          (s.a.mp
+                            (grup.a.mp
+                              (ao0mp0 últimos último)))
+                          (ncmp000 meses mes))))
+                    (sn-SUJ
+                      (espec.fp
+                        (da0fp0 las el))
+                      (grup.nom.fp
+                        (ncfp000 fuerzas fuerza)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sno
+                            (espec.fs
+                              (da0fs0 la el))
+                            (grup.nom.fs
+                              (np0000o UNITA UNITA))))))
+                    (grup.verb
+                      (vmis3p0 protagonizaron protagonizar))
+                    (sn-CD
+                      (grup.nom.mp
+                        (s.a.mp
+                          (grup.a.mp
+                            (aq0mp0 violentos violento)))
+                        (nccp000 incidentes incidente)
+                        (S.NF.P
+                          (participi
+                            (aq0mpp armados armado)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Las el)
+        (di0fp0 mismas mismo))
+      (grup.nom.fp
+        (ncfp000 fuentes fuente)))
+    (grup.verb
+      (vmis3p0 confirmaron confirmar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sp-CCT
+        (prep
+          (sps00 durante durante))
+        (sn
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (ncmp000 contactos contacto)
+            (s.a.mp
+              (grup.a.mp
+                (aq0cp0 oficiales oficial))))))
+      (snp-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (nccs000 general general)
+          (snp
+            (grup.nom.ms
+              (np0000p Nyanda Nyanda)))))
+      (grup.verb
+        (vmis3s0 informó informar))
+      (sp-CD
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.ms
+            (dp3cs0 su su))
+          (grup.nom.ms
+            (ncms000 homólogo homólogo)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 angoleño angoleño))))))
+      (sp-AO
+        (prep
+          (sps00 sobre sobre))
+        (sn
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 próximo próximo)))
+            (ncms000 despliegue despliegue)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fp
+                  (ncfp000 tropas tropa)
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0fp0 sudafricanas sudafricano))))))
+            (sp
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 marco marco)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sna
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (np0000a Misión_de_la_ONU Misión_de_la_ONU)))))))
+            (sp
+              (prep
+                (sps00 en en))
+              (snl
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 vecino vecino)))
+                  (np0000l Congo Congo))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (grup.nom
+        (np0000o Angola Angola)
+        (sp
+          (Fc , ,)
+          (prep
+            (sps00 con con))
+          (sn.x
+            (grup.nom.co
+              (grup.nom.co
+                (grup.nom
+                  (np0000o Zimbabue Zimbabue))
+                (coord
+                  (cc y y))
+                (grup.nom
+                  (np0000o Namibia Namibia)))
+              (sn.j
+                (Fc , ,)
+                (espec.mp
+                  (dn0cp0 dos dos))
+                (grup.nom.mp
+                  (ncmp000 países país)
+                  (s.a.mp
+                    (grup.a.mp
+                      (ncmp000 miembros miembro)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sno
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (np0000o Conferencia_para_el_Desarrollo_de_Africa_Meridional Conferencia_para_el_Desarrollo_de_Africa_Meridional)
+                            (sno
+                              (grup.nom.fs
+                                (Fpa -Fpa- -Fpa-)
+                                (np0000o SADC SADC)
+                                (Fpt -Fpt- -Fpt-)))
+                            (sn
+                              (Fc , ,)
+                              (grup.nom.fs
+                                (ncfs000 organización organización)
+                                (s.a.fs
+                                  (grup.a.fs
+                                    (aq0cs0 regional regional)))
+                                (S.F.R
+                                  (sp-CREG
+                                    (prep
+                                      (sps00 a a))
+                                    (relatiu
+                                      (da0fs0 la el)
+                                      (pr0cs000 cual cual)))
+                                  (sadv-MOD
+                                    (grup.adv
+                                      (rg también también)))
+                                  (grup.verb
+                                    (vmip3s0 pertenece pertenecer))
+                                  (sno-SUJ
+                                    (grup.nom
+                                      (np0000o Sudáfrica Sudáfrica)))))
+                              (Fc , ,))))))))))))))
+    (grup.verb
+      (vmip3s0 apoya apoyar))
+    (sp-CD
+      (prep
+        (spcms al al))
+      (snp
+        (grup.nom.ms
+          (ncms000 presidente presidente)
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000o República_Democrática_del_Congo República_Democrática_del_Congo)
+                (sno
+                  (grup.nom.fs
+                    (Fpa -Fpa- -Fpa-)
+                    (np0000o RDC RDC)
+                    (Fpt -Fpt- -Fpt-))))))
+          (snp
+            (Fc , ,)
+            (grup.nom.ms
+              (np0000p Laurent_Desire_Kabila Laurent_Desire_Kabila))
+            (Fc , ,)))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (dp3cs0 su su))
+        (grup.nom.fs
+          (ncfs000 lucha lucha)
+          (sp
+            (prep
+              (sps00 contra contra))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 rebelión rebelión)
+                (S.NF.P
+                  (participi
+                    (aq0fsp armada armado)))
+                (sp
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (ncms000 este este)
+                      (sp
+                        (prep
+                          (spcms del del))
+                        (sn
+                          (grup.nom.ms
+                            (ncms000 país país)))))))
+                (S.NF.P
+                  (participi
+                    (aq0fsp apoyada apoyado))
+                  (sp-CAG
+                    (prep
+                      (sps00 por por))
+                    (sn
+                      (grup.nom.fp
+                        (ncfp000 tropas tropa)
+                        (s.a.fp
+                          (grup.a.fp
+                            (aq0cp0 regulares regular)))
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sn.x
+                            (grup.nom.co
+                              (grup.nom
+                                (np0000l Ruanda Ruanda))
+                              (coord
+                                (cc y y))
+                              (grup.nom
+                                (np0000l Uganda Uganda)))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 condición condición)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 esencial esencial)))
+        (sp
+          (prep
+            (sps00 para para))
+          (S.F.C
+            (conj.subord
+              (cs que que))
+            (snp-SUJ
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (np0000p Secretario_General_de_la_ONU Secretario_General_de_la_ONU)
+                (snp
+                  (Fc , ,)
+                  (grup.nom.ms
+                    (np0000p Kofi_Annan Kofi_Annan))
+                  (Fc , ,))))
+            (grup.verb
+              (vmsp3s0 autorice autorizar))
+            (sp-CCT
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.mp
+                  (dd0mp0 estos este))
+                (grup.nom.mp
+                  (ncmp000 días día))))
+            (sn-CD
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 envío envío)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (espec.mp
+                      (Z 5.500 5500))
+                    (grup.nom.mp
+                      (Fe " ")
+                      (ncmp000 cascos casco)
+                      (s.a.mp
+                        (grup.a.mp
+                          (aq0cp0 azules azul)))
+                      (Fe " "))))
+                (sp
+                  (prep
+                    (sps00 para para))
+                  (snl
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (np0000l RDC RDC))))))))))
+    (grup.verb
+      (vsip3s0 es ser))
+    (sn-ATR
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 mantenimiento mantenimiento)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (ncms000 alto_el_fuego alto_el_fuego)
+              (S.NF.P.co
+                (S.NF.P
+                  (participi
+                    (aq0msp logrado logrado))
+                  (sp-CC
+                    (prep
+                      (sps00 entre entre))
+                    (sn
+                      (espec.mp
+                        (da0mp0 los el))
+                      (grup.nom.mp
+                        (nccp000 beligerantes beligerante))))
+                  (snd-CCT
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (W año [??:??/??/??:??.??])
+                      (S.NF.P
+                        (participi
+                          (aq0msp pasado pasado)))))
+                  (sp-CC
+                    (prep
+                      (sps00 en en))
+                    (sn
+                      (espec.fp
+                        (da0fp0 las el))
+                      (grup.nom.fp
+                        (ncfp000 negociaciones negociación)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (snl
+                            (grup.nom
+                              (np0000l Lusaka Lusaka))))))))
+                (coord
+                  (cc y y))
+                (S.NF.P
+                  (participi
+                    (Fe " ")
+                    (aq0msp reforzado reforzado)
+                    (Fe " "))
+                  (snd-CCT
+                    (espec.ms
+                      (da0ms0 el el))
+                    (grup.nom.ms
+                      (S.NF.P
+                        (participi
+                          (aq0msp pasado pasado)))
+                      (W 8_de_abril [??:8/4/??:??.??])))
+                  (sp-CCT
+                    (prep
+                      (sps00 durante durante))
+                    (sn
+                      (espec.fs
+                        (di0fs0 una uno))
+                      (grup.nom.fs
+                        (ncfs000 reunión reunión)
+                        (sp
+                          (prep
+                            (sps00 en en))
+                          (snl
+                            (grup.nom
+                              (np0000l Kampala Kampala))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (grup.nom
+        (np0000o Sudáfrica Sudáfrica)))
+    (morf.pron
+      (p0300000 se él))
+    (grup.verb
+      (vmis3s0 comprometió comprometer))
+    (sp-CC
+      (prep
+        (sps00 de de))
+      (sn
+        (grup.nom.fs
+          (ncfs000 forma forma)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 sorpresiva sorpresivo))))))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (Fe " ")
+          (nc00000 mini-cumbre mini-cumbre)
+          (Fe " ")
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000o Organización_de_la_Unidad_Africana Organización_de_la_Unidad_Africana)
+                (sno
+                  (grup.nom.fs
+                    (Fpa -Fpa- -Fpa-)
+                    (np0000o OUA OUA)
+                    (Fpt -Fpt- -Fpt-))))))
+          (sp
+            (prep
+              (sps00 sobre sobre))
+            (sna
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfn000 crisis crisis)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (snl
+                    (grup.nom.ms
+                      (np0000l Congo Congo)))))))
+          (S.NF.P
+            (Fc , ,)
+            (participi
+              (aq0fsp celebrada celebrado))
+            (snd-CCT
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (W mes [??:??/??/??:??.??])
+                (S.NF.P
+                  (participi
+                    (aq0msp pasado pasado)))))
+            (sp-CCL
+              (prep
+                (sps00 en en))
+              (snl
+                (grup.nom
+                  (np0000l Argelia Argelia))))
+            (Fc , ,)))))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 enviar enviar))
+        (sn-CD
+          (espec.ms
+            (di0ms0 un uno))
+          (grup.nom.ms
+            (ncms000 batallón batallón)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.mp
+                  (dp3cp0 sus su))
+                (grup.nom.mp
+                  (ncmp000 soldados soldado))))))
+        (sp-CC
+          (prep
+            (sps00 para para))
+          (sn
+            (espec.fp
+              (da0fp0 las el))
+            (grup.nom.fp
+              (ncfp000 fuerzas fuerza)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 paz paz))))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sno
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np0000o ONU ONU))))
+              (sp
+                (prep
+                  (sps00 en en))
+                (sno
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np0000o RDC RDC)))))))))
+    (Fp . .)))

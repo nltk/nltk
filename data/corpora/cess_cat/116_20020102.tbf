@@ -1,0 +1,110 @@
+
+(
+  (S
+    (snl-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 vell vell)))
+        (ncms000 teatre teatre)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 òpera òpera))))
+        (sp
+          (prep
+            (sps00 de de))
+          (snl
+            (grup.nom
+              (np0000l Milà Milà))))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 tancar tancar))
+    (snd-CCT
+      (grup.nom.ms
+        (W dilluns [dilluns:??/??/??:??.??])))
+    (sn-CD
+      (espec.fp
+        (da0fp0 les el))
+      (grup.nom.fp
+        (ncfp000 portes porta)))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (sn
+        (grup.nom.fs
+          (ncfs000 reforma reforma))))
+    (sp-CCT
+      (prep
+        (sps00 fins fins))
+      (sp
+        (prep
+          (spcms al al))
+        (snd
+          (grup.nom.ms
+            (W desembre_del_2004 [??:??/12/2004:??.??])))))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 sèrie sèrie)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 espectacles espectacle)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0mp0 gratuïts gratuït)))
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vaip3p0 van anar)
+                    (vmn0000 motivar motivar))
+                  (sn-CD
+                    (grup.nom.fp
+                      (s.a.fp
+                        (grup.a.fp
+                          (aq0fp0 llargues llarg)))
+                      (ncfp000 cues cua)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.mp
+                            (ncmp000 ciutadans ciutadà)
+                            (s.a.mp
+                              (grup.a.mp
+                                (aq0mp0 desitjosos desitjós)
+                                (sp
+                                  (prep
+                                    (sps00 de de))
+                                  (S.NF.C
+                                    (infinitiu
+                                      (vmn0000 presenciar presenciar))
+                                    (sn-CD
+                                      (espec.fs
+                                        (di0fs0 una un))
+                                      (grup.nom.fs
+                                        (ncfs000 funció funció)))
+                                    (sp-CCL
+                                      (prep
+                                        (sps00 en en))
+                                      (sn
+                                        (espec.ms
+                                          (dd0ms0 aquest aquest))
+                                        (grup.nom.ms
+                                          (s.a.ms
+                                            (grup.a.ms
+                                              (aq0ms0 històric històric)))
+                                          (ncms000 recinte recinte))))))))))))))))))))
+    (Fp . .)))

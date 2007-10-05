@@ -1,0 +1,94 @@
+
+(
+  (S
+    (sn-SUJ
+      (grup.nom
+        (np00000 Àustria Àustria)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 introduir introduir))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 xíling xíling)))
+    (sp-CPRED.CD
+      (prep
+        (cs com com))
+      (sn
+        (espec.fs
+          (dp3fs0 la_seva el_seu))
+        (grup.nom.fs
+          (ncfs000 unitat unitat)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 monetària monetari))))))
+    (sn-CCT
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (W 1924 [??:??/??/1924:??.??])))
+    (S.F.AConc-AO
+      (Fc , ,)
+      (conj.subord
+        (cs encara_que encara_que))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3s0 va anar)
+        (vsn0000 ser ser)
+        (vmp00sf substituïda substituir))
+      (sp-CCT
+        (prep
+          (sps00 durant durant))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 invasió invasió)
+            (s.a.fs
+              (grup.a.fs
+                (aq0fs0 alemanya alemany))))))
+      (sp-CCL
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (s.a.fs
+              (grup.a.fs
+                (ao0fs0 segona segon)))
+            (ncfs000 guerra guerra)
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 mundial mundial))))))
+      (sp-CAG
+        (prep
+          (spcms pel pel))
+        (sn
+          (grup.nom.ms
+            (ncms000 marc marc)))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vaip3s0 Va anar)
+      (vmn0000 patir patir))
+    (sn-CD
+      (grup.nom.fp
+        (ncfp000 devaluacions devaluació)))
+    (sn.co-CCT
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (W 1953 [??:??/??/1953:??.??])))
+      (coord
+        (cc i i))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (W 1971 [??:??/??/1971:??.??]))))
+    (Fp . .)))

@@ -1,0 +1,114 @@
+
+(
+  (S
+    (sn.co-SUJ
+      (sn.co
+        (sn
+          (espec.mp
+            (da0mp0 Els el))
+          (grup.nom.mp
+            (ncmp000 hotels hotel)))
+        (coord
+          (cc i i))
+        (sn
+          (espec.mp
+            (da0mp0 els el))
+          (grup.nom.mp
+            (ncmp000 càmpings càmping))))
+      (sp.j
+        (prep
+          (sps00 de de))
+        (sn
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (ncfp000 comarques comarca)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom
+                  (np00000 Girona Girona))))))))
+    (neg-MOD
+      (rn no no))
+    (grup.verb
+      (vmip3p0 registren registrar))
+    (sn-CD
+      (espec.fp
+        (da0fp0 les el))
+      (grup.nom.fp
+        (ncfp000 dades dada)
+        (sp
+          (prep
+            (spcmp dels del))
+          (sn
+            (grup.nom.mp
+              (ncmp000 clients client))))))
+    (S.F.A-CC
+      (conj.subord
+        (cs com com))
+      (grup.verb
+        (vmip3s0 obliga obligar))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 llei llei))))
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 Segons segons))
+      (sn
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (np00000 Mossos Mossos)))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 establiments establiment)))
+    (sadv-CC
+      (Fc , ,)
+      (grup.adv
+        (rg en_general en_general))
+      (Fc , ,))
+    (morf.pron
+      (p0300000 es ell))
+    (grup.verb
+      (vmip3p0 limiten limitar))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 prendre prendre))
+        (sn-CD
+          (grup.nom.fs
+            (ncfs000 nota nota)
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (espec.fs
+                  (di0fs0 una un))
+                (grup.nom.fs
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 única únic)))
+                  (ncfs000 persona persona))))))))
+    (S.F.AConc-AO
+      (conj.subord
+        (cs quan quan))
+      (sn-SUJ.d
+        (grup.nom
+          (pp3cn000 n' en)))
+      (grup.verb
+        (vmip3p0 arriben arribar))
+      (sn-SUJ.d
+        (grup.nom.fp
+          (pi0fp000 diverses divers))))
+    (Fp . .)))

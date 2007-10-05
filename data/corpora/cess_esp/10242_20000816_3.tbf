@@ -1,0 +1,132 @@
+
+(
+  (S
+    (S.F.A
+      (conj.subord
+        (cs Mientras mientras))
+      (snl-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 centro centro)
+          (snl
+            (grup.nom.ms
+              (np0000l Staples Staples)))))
+      (grup.verb
+        (vmii3s0 aclamaba aclamar))
+      (sp-CD
+        (prep
+          (sps00 a a))
+        (snp
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (np0000p Kennedy Kennedy))))
+      (Fc , ,))
+    (snl-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 ciudad ciudad)
+        (sp
+          (prep
+            (sps00 de de))
+          (snl
+            (grup.nom
+              (np0000l Los_Angeles Los_Angeles))))))
+    (grup.verb
+      (vmis3s0 volvió volver)
+      (sps00 a a)
+      (infinitiu
+        (vsn0000 ser ser)))
+    (sn-ATR
+      (grup.nom.ms.1n
+        (ncms000 escenario escenario)))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (sp.1c
+      (prep
+        (sps00 de de))
+      (sn
+        (espec.fp
+          (di0fp0 diversas diverso))
+        (grup.nom.fp
+          (ncfp000 protestas protesta)
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 calle calle))))
+          (S.NF.P
+            (participi
+              (aq0fpp convocadas convocado))
+            (sp-CC
+              (prep
+                (sps00 contra contra))
+              (sn
+                (espec.fp
+                  (di0fp0 diversas diverso))
+                (grup.nom.fp
+                  (ncfp000 causas causa)
+                  (sp
+                    (Fc , ,)
+                    (prep
+                      (cs como como))
+                    (sn.co
+                      (sn
+                        (espec.mp
+                          (da0mp0 los el))
+                        (grup.nom.mp
+                          (ncmp000 bombardeos bombardeo)
+                          (sp
+                            (prep
+                              (sps00 en en))
+                            (snl
+                              (grup.nom
+                                (np0000l Iraq Iraq))))))
+                      (coord
+                        (cc y y))
+                      (sn
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (ncfs000 globalización globalización))))
+                    (Fc , ,)))))))))
+    (S.F.AConc-AO
+      (conj.subord
+        (cs aunque aunque))
+      (neg
+        (rn no no))
+      (morfema.verbal-IMPERS
+        (p0000000 se se))
+      (grup.verb
+        (vmis3s0 informó informar))
+      (sp-CREG
+        (prep
+          (sps00 de de))
+        (sn
+          (grup.nom.mp
+            (ncmp000 altercados altercado)
+            (s.a.mp
+              (grup.a.mp
+                (aq0cp0 similares similar)
+                (sp
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (espec.mp
+                      (da0mp0 los el))
+                    (grup.nom.mp
+                      (S.NF.P
+                        (participi
+                          (aq0mpp producidos producido))
+                        (snd-CCT
+                          (espec.ms
+                            (da0ms0 el el))
+                          (grup.nom.ms
+                            (W lunes_pasado [lunes:??/??/??:??.??])))))))))))))
+    (Fp . .)))

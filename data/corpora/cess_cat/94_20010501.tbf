@@ -1,0 +1,243 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 veïns veí)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0cs0 l' el))
+            (grup.nom.fs
+              (np00000 Eixample Eixample))))))
+    (grup.verb
+      (vmip3p0 tenen tenir))
+    (sn-CD.Q
+      (grup.nom.ms
+        (ncms000 dret dret)))
+    (sp.co-CC
+      (sp
+        (prep
+          (sps00 a a))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 descansar descansar))
+          (sp-CC
+            (prep
+              (sps00 sense sense))
+            (sn
+              (grup.nom.ms
+                (ncms000 soroll soroll))))))
+      (coord
+        (cc i i))
+      (sp
+        (prep
+          (sps00 a a))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 demanar demanar))
+          (sn-CD
+            (grup.nom.fp
+              (ncfp000 explicacions explicació)))
+          (sp-AO
+            (prep
+              (sps00 respecte_a respecte_a))
+            (sn
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (ncfp000 activitats activitat)
+                (sp
+                  (prep
+                    (sps00 d' de))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 oci oci))))
+                (sp
+                  (prep
+                    (spcmp dels del))
+                  (sn.x
+                    (grup.nom.co
+                      (grup.nom.mp
+                        (ncmp000 locals local))
+                      (coord
+                        (cc i i))
+                      (grup.nom.mp
+                        (ncmp000 bars bar)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 limitació limitació)
+          (sp
+            (prep
+              (spcmp dels del))
+            (sn
+              (grup.nom.mp
+                (ncmp000 horaris horari)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0mp0 nocturns nocturn))))))))
+      (coord
+        (cc o o))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 control control)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (ncms000 aforament aforament)))))))
+    (grup.verb
+      (vmip3p0 afecten afectar))
+    (sadv-CC
+      (grup.adv
+        (rg de_la_mateixa_manera de_la_mateixa_manera)))
+    (sn-CD
+      (espec.mp
+        (di0mp0 tots tot)
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 locals local)))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (ncfs000 legislació legislació)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 dret dret)
+                (sp
+                  (prep
+                    (sps00 d' de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 admissió admissió)))))))))
+      (Fc , ,)
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 control control)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 via via)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 pública públic))))))))
+      (Fc , ,)
+      (sn
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (ncfp000 inspeccions inspecció)
+          (s.a.fp
+            (grup.a.fp
+              (aq0cp0 municipals municipal)))))
+      (coord
+        (cc i i))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (nccs000 policia policia)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 local local))))))
+    (grup.verb
+      (vaic3p0 haurien haver)
+      (sps00 de de)
+      (infinitiu
+        (vsn0000 ser ser)))
+    (sa-ATR
+      (grup.a
+        (aq0cp0 suficients suficient)))
+    (Fp . .)))
+(
+  (S
+    (coord-ET
+      (rg Però però))
+    (sn.e-SUJ *0*)
+    (sadv-MOD
+      (grup.adv
+        (rg també també)))
+    (grup.verb
+      (vaip1p0 hem haver)
+      (sps00 de de)
+      (infinitiu
+        (vmn0000 tenir tenir)))
+    (sp-CPRED.CD
+      (prep
+        (sps00 com_a com_a))
+      (sn
+        (grup.nom.fs
+          (ncfs000 aspiració aspiració)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 col·lectiva col·lectiu))))))
+    (sn-CD.Q
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 ciutat ciutat)
+        (s.a.fs.x
+          (grup.a.fs.co
+            (grup.a.fs
+              (aq0cs0 plural plural))
+            (Fc , ,)
+            (grup.a.fs
+              (aq0fs0 heterogènia heterogeni))
+            (coord
+              (cc i i))
+            (sp
+              (prep
+                (sps00 amb amb))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 llocs lloc)
+                  (sp
+                    (prep
+                      (sps00 d' de))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 esbarjo esbarjo))))
+                  (S.F.R
+                    (relatiu-CCL
+                      (pr000000 on on))
+                    (sadv-CC
+                      (grup.adv
+                        (rg possiblement possiblement)))
+                    (sn.e-SUJ *0*)
+                    (neg-MOD
+                      (rn no no))
+                    (grup.verb
+                      (vmic1p0 entraríem entrar))
+                    (sadv-CCT
+                      (grup.adv
+                        (rg mai mai)))))))))))
+    (Fp . .)))

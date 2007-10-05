@@ -1,0 +1,294 @@
+
+(
+  (S
+    (snp-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 nadadora nadadora)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 parapléjica parapléjico)))
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 española español)))
+        (snp
+          (grup.nom.fs
+            (np0000p Teresa_Perales Teresa_Perales)))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmis3s0 logró lograr))
+          (sn-CD
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 plata plata)))
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (snn
+              (espec.mp
+                (Z 50 50))
+              (grup.nom.mp
+                (ncmp000 metros metro)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0cs0 mariposa mariposa)))))))))
+    (grup.verb
+      (vmis3s0 reconoció reconocer))
+    (S.F.C.co-CD
+      (conj.subord
+        (cs que que))
+      (S.F.C
+        (sn-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 ambiente ambiente)))
+        (Fe " ")
+        (grup.verb
+          (vsip3s0 es ser))
+        (sa-ATR
+          (grup.a
+            (aq0ms0 fantástico fantástico))))
+      (Fc , ,)
+      (S.F.C
+        (sn.e-SUJ *0*)
+        (neg-MOD
+          (rn no no))
+        (morf.pron
+          (p010s000 me yo))
+        (sn-CD
+          (grup.nom.ms
+            (pp3msa00 lo él)))
+        (grup.verb
+          (vmii3s0 esperaba esperar))))
+    (Fp . .)))
+(
+  (S
+    (sn.e-SUJ *0*)
+    (morf.pron
+      (p010s000 Me yo))
+    (grup.verb
+      (vmis1s0 encontré encontrar))
+    (sa-CPRED.SUJ
+      (grup.a
+        (aq0fs0 nerviosa nervioso)))
+    (sadv-CCT
+      (grup.adv
+        (rg al_principio al_principio)))
+    (S.F.A-CC
+      (conj.subord
+        (cs porque porque))
+      (sn-SUJ
+        (grup.nom.ms
+          (pd0ns000 esto este)))
+      (grup.verb
+        (vsip3s0 es ser))
+      (sa-ATR
+        (grup.a
+          (aq0ms0 mágico mágico))))
+    (Fe " ")
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 lanzador lanzador)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 ciego ciego)))
+        (sp.co
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 peso peso))))
+          (coord
+            (cc y y))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 disco disco)))))
+        (snp
+          (grup.nom.ms
+            (np0000p Alfonso_Fidalgo Alfonso_Fidalgo)))
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (ncms000 campeón campeón)
+            (s.a.ms
+              (grup.a.ms
+                (aq0ms0 olímpico olímpico)))
+            (sp
+              (prep
+                (sps00 en en))
+              (sn.x
+                (grup.nom.co
+                  (grup.nom
+                    (np0000a Barcelona92 Barcelona92))
+                  (Fc , ,)
+                  (grup.nom
+                    (np0000a Atlanta96 Atlanta96))
+                  (coord
+                    (cc y y))
+                  (grup.nom
+                    (np0000a Sydney2000 Sydney2000)))))))))
+    (grup.verb
+      (vmis3s0 destacó destacar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 enorme enorme)))
+        (ncfs000 sensación sensación)
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (morfema.verbal-PASS
+            (p0000000 se se))
+          (grup.verb
+            (vmip3s0 vive vivir))
+          (sp-CCL
+            (prep
+              (sps00 en en))
+            (snl
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (np0000l Estadio_Olímpico Estadio_Olímpico)))))))
+    (Fp . .)))
+(
+  (S.co
+    (Fe " ")
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip1s0 He haber)
+        (vmp00sm tenido tener))
+      (sn-CD.Q
+        (grup.nom.fp
+          (s.a.fp
+            (espec
+              (rg muy mucho))
+            (grup.a.fp
+              (aq0fp0 buenas buen)))
+          (ncfp000 sensaciones sensación)))
+      (Fc , ,))
+    (coord
+      (cc pero pero))
+    (S
+      (sadv-ET
+        (grup.adv
+          (rg sobre_todo sobre_todo)))
+      (sn.e-SUJ *0*)
+      (morf.pron
+        (p010s000 me yo))
+      (grup.verb
+        (vaip1s0 he haber)
+        (vmp00sm sentido sentir))
+      (sadv-CPRED.SUJ
+        (espec
+          (rg muy mucho))
+        (grup.adv
+          (rg bien bien))))
+    (Fp . .)))
+(
+  (S*
+    (S.NF.P.co
+      (S.NF.P
+        (participi
+          (aq0msp Arropado arropado)))
+      (Fc , ,)
+      (sp
+        (prep
+          (sps00 con con))
+        (sn
+          (grup.nom.ms
+            (ncms000 calor calor)))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3s0 Ha haber)
+        (vsp00sm sido ser))
+      (sn-ATR
+        (grup.nom.ms
+          (pi0cs000 algo algo)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 comparable comparable)
+              (sp
+                (prep
+                  (sps00 a a))
+                (snl
+                  (grup.nom
+                    (np0000l Barcelona Barcelona)))))))))
+    (coord
+      (cc pero pero))
+    (S
+      (sadv-CCT
+        (grup.adv
+          (rg entonces entonces)))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmii1p0 estábamos estar))
+      (sp-CREG
+        (prep
+          (sps00 en en))
+        (sn
+          (grup.nom.fs
+            (ncfs000 casa casa)))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (dd0ms0 Este este))
+      (grup.nom.ms
+        (ncms000 público público)))
+    (grup.verb
+      (vsip3s0 es ser))
+    (sa-ATR
+      (grup.a
+        (aq0ms0 maravilloso maravilloso)))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (sadv-CC
+        (grup.adv
+          (rg Así así)))
+      (S.NF.C-SUJ
+        (infinitiu
+          (vmn0000 competir competir)))
+      (sn-CI
+        (grup.nom.s
+          (pp2cs000 te tú)))
+      (grup.verb
+        (vmip3s0 motiva motivar))
+      (Fe " ")
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 aseguró asegurar))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 campeón campeón)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 español español)))))
+    (Fp . .)))

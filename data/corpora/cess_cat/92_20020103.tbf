@@ -1,0 +1,222 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (np00000 Generalitat Generalitat)))
+    (grup.verb
+      (vmif3s0 construirà construir))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 nova nou)))
+        (ncfs000 presó presó)
+        (sp
+          (prep
+            (sps00 amb amb))
+          (sn
+            (espec.fp
+              (Z 1.500 1500))
+            (grup.nom.fp
+              (ncfp000 places plaça))))))
+    (sp-CCL
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (ncms000 solar solar)
+          (S.NF.P
+            (participi
+              (aq0msp anomenat anomenat))
+            (sn-CPRED
+              (grup.nom
+                (np00000 Can_Margarit Can_Margarit)))))))
+    (sp-CCL
+      (Fc , ,)
+      (prep
+        (sps00 al_voltant_de al_voltant_de))
+      (sn
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 presó presó)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom
+                  (np00000 Brians Brians))))))
+        (sp.j
+          (Fpa -Fpa- -Fpa-)
+          (prep
+            (sps00 a a))
+          (sn
+            (grup.nom
+              (np00000 Sant_Esteve_Sesrovires Sant_Esteve_Sesrovires)))
+          (Fpt -Fpt- -Fpt-))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.fp
+        (ncfp000 Fonts font)
+        (s.a.fp
+          (grup.a.fp
+            (aq0fp0 penitenciàries penitenciari)))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 afirmar afirmar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sadv-CCT
+        (grup.adv
+          (rg encara encara)))
+      (neg-MOD
+        (rn no no))
+      (morfema.verbal-PASS
+        (p0000000 s' es))
+      (grup.verb
+        (vaip3s0 ha haver)
+        (vmp00sm posat posar))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (ao0fs0 primera primer)))
+          (ncfs000 pedra pedra)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.fp
+                (dd0fp0 aquestes aquest))
+              (grup.nom.fp
+                (ncfp000 dependències dependència)))))))
+    (Fp . .)))
+(
+  (S
+    (grup.verb
+      (vmip3s0 Està estar))
+    (S.NF.P-ATR
+      (participi
+        (aq0msp previst previst)))
+    (S.F.C-SUJ
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.ms
+          (dd0ms0 aquest aquest))
+        (grup.nom.ms
+          (ncms000 centre centre)))
+      (grup.verb
+        (vmsp3s0 funcioni funcionar))
+      (sadv.co-CCT
+        (sadv
+          (grup.adv
+            (rg abans abans)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 fi fi)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (W 2003 [??:??/??/2003:??.??])))))))))
+        (coord
+          (cc o o))
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (grup.nom.mp
+              (ncmp000 principis principi)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.ms
+                    (da0cs0 l' el))
+                  (grup.nom.ms
+                    (ncms000 any any)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0cs0 següent següent)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 nova nou)))
+        (ncfs000 presó presó)))
+    (grup.verb
+      (vmif3s0 estarà estar))
+    (S.NF.P-ATR
+      (participi
+        (aq0fsp configurada configurat))
+      (sp-CC
+        (prep
+          (sps00 de de))
+        (sn
+          (grup.nom.fs
+            (ncfs000 forma forma)
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 modular modular)))))))
+    (S.F.ACons-AO
+      (Fc , ,)
+      (conj.subord
+        (cs de_manera_que de_manera_que))
+      (sn-SUJ
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (ncfp000 unitats unitat)
+          (s.a.fp
+            (grup.a.fp
+              (aq0cp0 residencials residencial)))))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vmif3p0 tindran tenir))
+      (sadv-CC
+        (grup.adv
+          (rg individualment individualment)))
+      (sn-CD.Q
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 capacitat capacitat)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 superior superior)
+              (sp
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.fp
+                    (Z 250 250))
+                  (grup.nom.fp
+                    (ncfp000 places plaça)))))))))
+    (Fp . .)))

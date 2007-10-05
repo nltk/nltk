@@ -1,0 +1,185 @@
+
+(
+  (S
+    (sn-SUJ
+      (grup.nom.fs
+        (ncfs000 Part part)
+        (sp
+          (prep
+            (spcmp dels del))
+          (sn
+            (grup.nom.mp
+              (ncmp000 murals mural)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0mp0 pictòrics pictòric)))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fp
+                    (da0fp0 les el))
+                  (grup.nom.fp
+                    (ncfp000 esglésies església)
+                    (s.a.fp
+                      (grup.a.fp
+                        (aq0fp0 romàniques romànic))))))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom
+                    (np00000 Boí Boí)))))))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vsn0000 ser ser)
+      (vmp00pm traslladats traslladar))
+    (sp-CCT
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom.ms
+          (ncms000 principi principi)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 segle segle)))))))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom
+          (np00000 Barcelona Barcelona))))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 preservar preservar))
+        (sn-CD
+          (grup.nom.p
+            (pp3cp000 -los ell)))
+        (sp-CREG
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.mp
+              (s.a.mp
+                (grup.a.mp
+                  (aq0cp0 possibles possible)))
+              (ncmp000 deterioraments deteriorament))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CCT
+      (grup.adv
+        (rg Ara ara)))
+    (sn.e-SUJ *0*)
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (grup.verb
+      (vmip3p0 exposen exposar))
+    (sp-CCL
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (np00000 MNAC MNAC))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 La el))
+        (grup.nom.fs
+          (np00000 Unesco Unesco)))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vmip3s0 obliga obligar))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 restituir restituir))
+          (sn-CD
+            (grup.nom.p
+              (pp3cp000 -los ell)))))
+      (sp-CD
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fp
+            (da0fp0 les el))
+          (grup.nom.fp
+            (ncfp000 esglésies església)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 vall vall)))))))
+      (Fc , ,))
+    (coord
+      (cc però però))
+    (S
+      (sn.e-SUJ *0*)
+      (sadv-MOD
+        (grup.adv
+          (rg sí_que sí_que)))
+      (grup.verb
+        (vmip3s0 indica indicar))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.fs
+            (di0cs0 qualsevol qualsevol))
+          (grup.nom.fs
+            (ncfs000 recreació recreació)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fp
+                  (da0fp0 les el))
+                (grup.nom.fp
+                  (ncfp000 pintures pintura))))))
+        (morfema.verbal-PASS
+          (p0000000 s' es))
+        (grup.verb
+          (vaip3s0 ha haver)
+          (sps00 de de)
+          (infinitiu
+            (vmn0000 fer fer)))
+        (sp-CC
+          (prep
+            (sps00 d'_acord_amb d'_acord_amb))
+          (sn.co
+            (sn.co
+              (sn
+                (espec.fp
+                  (da0fp0 les el))
+                (grup.nom.fp
+                  (ncfp000 tècniques tècnica)))
+              (coord
+                (cc i i))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 materials material)
+                  (s.a.mp
+                    (grup.a.mp
+                      (aq0mp0 propis propi))))))
+            (sp.j
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncms000 romànic romànic))))))))
+    (Fp . .)))

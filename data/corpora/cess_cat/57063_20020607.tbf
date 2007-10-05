@@ -1,0 +1,338 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el)
+        (dn0cp0 tres tres))
+      (grup.nom.fp
+        (ncfp000 corals coral)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (np00000 Col·legi_Jardí Col·legi_Jardí))))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (np00000 Granollers Granollers))))))
+    (grup.verb
+      (vmip3p0 participen participar))
+    (sn-CCT
+      (espec.ms
+        (dd0ms0 aquest aquest))
+      (grup.nom.ms
+        (W diumenge [diumenge:??/??/??:??.??])))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom
+          (np00000 Tarragona Tarragona))))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 final final)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 concurs concurs)
+                (sn
+                  (grup.nom
+                    (np00000 Sons_i_Cançons Sons_i_Cançons))))))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 campanya campanya)
+                (sp
+                  (prep
+                    (sps00 d' de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 acció acció)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0cs0 escolar escolar))))))
+                (sn
+                  (grup.nom
+                    (Fz ' ')
+                    (np00000 El_país_a_l'_escola El_país_a_l'_escola)
+                    (Fz ' ')))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-CCT
+      (espec.ms
+        (dd0ms0 Aquest aquest))
+      (grup.nom.ms
+        (ncms000 any any))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 final final)))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vmip3s0 celebra celebrar))
+    (sp-CCL
+      (prep
+        (spcms al al))
+      (sn
+        (grup.nom.ms
+          (np00000 Teatre_Auditori_de_Tarragona Teatre_Auditori_de_Tarragona))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 coral coral)
+        (s.a.fs
+          (grup.a.fs
+            (aq0cs0 infantil infantil)))
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (np00000 Col·legi_Jardí Col·legi_Jardí))))))
+    (grup.verb
+      (vmif3s0 competirà competir))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 categoria categoria)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 petits petit)))))))
+    (sp-CC
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 interpretació interpretació)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn.x
+              (grup.nom.co
+                (grup.nom
+                  (Fz ' ')
+                  (np00000 Miss_Flitz Miss_Flitz)
+                  (Fz ' '))
+                (Fc , ,)
+                (grup.nom
+                  (Fz ' ')
+                  (np00000 Limbo_Rock Limbo_Rock)
+                  (Fz ' '))
+                (coord
+                  (cc i i))
+                (grup.nom
+                  (Fz ' ')
+                  (np00000 La_pastoreta La_pastoreta)
+                  (Fz ' '))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 En en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 categoria categoria)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 mitjans mitjà))))
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (morf.pron
+              (p0300000 es ell))
+            (grup.verb
+              (vmip3s0 correspon correspondre))
+            (sp-CREG
+              (prep
+                (sps00 amb amb))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 nens nen)
+                  (sn.x
+                    (grup.nom.co
+                      (coord
+                        (sps00 de de))
+                      (grup.nom.ms
+                        (ncms000 quart quart))
+                      (coord
+                        (sps00 a a))
+                      (grup.nom.ms
+                        (ncms000 sisè sisè))))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 primària primària))))))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 cor cor)))
+    (grup.verb
+      (vmif3s0 interpretarà interpretar))
+    (sn.x-CD
+      (grup.nom.co
+        (grup.nom
+          (Fz ' ')
+          (np00000 Cançó_de_bres Cançó_de_bres)
+          (Fz ' '))
+        (Fc , ,)
+        (grup.nom
+          (Fz ' ')
+          (np00000 El_doctor_Pins El_doctor_Pins)
+          (Fz ' '))
+        (coord
+          (cc i i))
+        (grup.nom
+          (Fz ' ')
+          (np00000 Cançó_del_lladre Cançó_del_lladre)
+          (Fz ' '))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg Finalment finalment))
+      (Fc , ,))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 categoria categoria)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 grans gran)
+                (S.F.R
+                  (Fc , ,)
+                  (relatiu-ATR
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vsip3p0 són ser))
+                  (sn-SUJ
+                    (grup.nom.mp
+                      (ncmp000 alumnes alumne)
+                      (sn.x
+                        (grup.nom.co
+                          (coord
+                            (sps00 de de))
+                          (grup.nom.ms
+                            (ncms000 primer primer))
+                          (coord
+                            (sps00 a a))
+                          (grup.nom.ms
+                            (ncms000 quart quart))))
+                      (sp
+                        (prep
+                          (sps00 d' de))
+                        (sn
+                          (grup.nom
+                            (np00000 ESO ESO))))))
+                  (Fc , ,))))))))
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 coral coral)))
+    (grup.verb
+      (vmif3s0 interpretarà interpretar))
+    (sn.co-CD
+      (sn
+        (grup.nom
+          (Fz ' ')
+          (np00000 Donna_,_donna Donna_,_donna)
+          (Fz ' ')))
+      (Fc , ,)
+      (sn
+        (grup.nom
+          (Fz ' ')
+          (np00000 Una_ver_per_al_món Una_ver_per_al_món)
+          (Fz ' ')))
+      (coord
+        (cc i i))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 nou nou)))
+          (ncms000 arranjament arranjament)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 cançó cançó)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 popular popular)))
+                (sn
+                  (grup.nom
+                    (Fz ' ')
+                    (np00000 La_filadora La_filadora)
+                    (Fz ' '))))))
+          (S.NF.P
+            (participi
+              (aq0msp realitzat realitzat))
+            (sp-CAG
+              (prep
+                (spcms pel pel))
+              (sn
+                (grup.nom.ms
+                  (ncms000 músic músic)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 granollerí granollerí)))
+                  (sn
+                    (grup.nom.ms
+                      (np00000 Joan_Vila Joan_Vila))))))))))
+    (Fp . .)))

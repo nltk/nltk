@@ -1,0 +1,105 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np00000 Tribunal_Superior_de_Justícia_de_Catalunya Tribunal_Superior_de_Justícia_de_Catalunya)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 abaixar abaixar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sp-CC
+      (prep
+        (sps00 de de))
+      (sn
+        (grup.nom.p
+          (Z 1.200 1200))))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.mp
+          (Z 715 715))
+        (grup.nom.mp
+          (ncmp000 milions milió))))
+    (sn-CD
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (ncmp000 interessos interès)
+        (S.F.R
+          (relatiu-CD
+            (pr0cn000 que que))
+          (sn-SUJ
+            (grup.nom.ms
+              (np00000 Eduard_Bosch Eduard_Bosch)
+              (sn
+                (Fc , ,)
+                (grup.nom.ms
+                  (nccs000 representant representant)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (da0cs0 l' el))
+                      (grup.nom.fs
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0fs0 antiga antic)))
+                        (ncfs000 propietat propietat)
+                        (sp
+                          (prep
+                            (spcms del del))
+                          (sn
+                            (grup.nom.ms
+                              (np00000 Casino Casino))))))))
+                (Fc , ,))))
+          (grup.verb
+            (vmip3s0 demana demanar))
+          (sp-CI
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (np00000 Ajuntament_de_Manresa Ajuntament_de_Manresa))))
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 plet plet)
+                (S.NF.P
+                  (participi
+                    (aq0msp obert obert))
+                  (sp-CCT
+                    (prep
+                      (spcms des_del des_del))
+                    (sn
+                      (grup.nom.ms
+                        (W 1990 [??:??/??/1990:??.??])))))
+                (sp
+                  (prep
+                    (sps00 per per))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 compra compra)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.ms
+                            (da0cs0 l' el))
+                          (grup.nom.ms
+                            (ncms000 edifici edifici)))))))))))))
+    (Fp . .)))

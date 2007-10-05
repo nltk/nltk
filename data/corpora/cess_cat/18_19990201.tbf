@@ -1,0 +1,1475 @@
+
+(
+  (S*
+    (sn
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 conflicte conflicte)
+        (sp
+          (prep
+            (spcmp dels del))
+          (sn
+            (grup.nom.mp
+              (np00000 Balcans Balcans))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 William_Walker William_Walker)))
+    (grup.verb
+      (vmip3s0 confia confiar))
+    (S.F.C-CREG
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 president president)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 iugoslau iugoslau)))))
+      (grup.verb
+        (vmsp3s0 acudeixi acudir))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 reunió reunió)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom
+                  (np00000 París París))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (nccs000 cap cap)
+        (sp
+          (prep
+            (spcmp dels del))
+          (sn
+            (grup.nom.mp
+              (ncmp000 inspectors inspector))))))
+    (grup.verb
+      (vmip3s0 denuncia denunciar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (grup.nom
+          (np00000 Sèrbia Sèrbia)))
+      (grup.verb
+        (vmip3s0 continua continuar)
+        (gerundi
+          (vmg0000 atacant atacar)))
+      (sn-CD
+        (grup.nom
+          (np00000 Kosovo Kosovo))))
+    (Fp . .)))
+(
+  (S
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom
+          (np00000 EUA EUA))
+        (coord
+          (cc i i))
+        (grup.nom
+          (np00000 Gran_Bretanya Gran_Bretanya))))
+    (grup.verb
+      (vmip3p0 insisteixen insistir))
+    (S.F.C-CREG
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fs
+          (da0cs0 l' el))
+        (grup.nom.fs
+          (np00000 OTAN OTAN)))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vmif3s0 dubtarà dubtar))
+      (sp-CREG
+        (prep
+          (sps00 a a))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 fer_servir fer_servir))
+          (sn-CD
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 força força))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 autoritats autoritat)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (np00000 Belgrad Belgrad))))))
+    (grup.verb
+      (vmii3p0 continuaven continuar)
+      (gerundi
+        (vmg0000 estudiant estudiar)))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sn-CD
+      (espec.fs
+        (da0cs0 l' el))
+      (grup.nom.fs
+        (ncfs000 assistència assistència)
+        (sp
+          (prep
+            (sps00 a a))
+          (sn
+            (espec.fs
+              (di0fs0 una un))
+            (grup.nom.fs
+              (ncfs000 conferència conferència)
+              (sp
+                (prep
+                  (sps00 sobre sobre))
+                (sn
+                  (grup.nom
+                    (np00000 Kosovo Kosovo))))
+              (S.F.R
+                (relatiu-SUJ
+                  (pr0cn000 que que))
+                (morfema.verbal-PASS
+                  (p0000000 se se))
+                (grup.verb
+                  (vmif3s0 celebrarà celebrar))
+                (sp-CCL
+                  (prep
+                    (sps00 a a))
+                  (sn
+                    (grup.nom
+                      (np00000 París París))))
+                (sn-CCT
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (W dia_6_de_febrer [??:6/2/??:??.??])))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (espec.fs
+          (da0cs0 L' el))
+        (grup.nom.fs
+          (ncfs000 amenaça amenaça)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 militar militar)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0cs0 l' el))
+              (grup.nom.fs
+                (np00000 OTAN OTAN))))))
+      (coord
+        (cc i i))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 pressió pressió)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 diplomàtica diplomàtic)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0cs0 l' el))
+              (grup.nom.fs
+                (np00000 Organització_per_a_la_Seguretat_i_la_Cooperació_a_Europa Organització_per_a_la_Seguretat_i_la_Cooperació_a_Europa)
+                (sn
+                  (grup.nom.fs
+                    (Fpt -Fpt- -Fpt-)
+                    (np00000 OSCE OSCE)
+                    (Fpa -Fpa- -Fpa-)))))))))
+    (grup.verb
+      (vmip3p0 estan estar)
+      (sps00 a a)
+      (ncms000 punt punt)
+      (sps00 de de)
+      (infinitiu
+        (vmn0000 fer fer)))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 canviar canviar))
+      (sp-CREG
+        (prep
+          (sps00 d' de))
+        (sn
+          (grup.nom.fs
+            (ncfs000 opinió opinió))))
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (ncmp000 serbis serbi))))
+    (S.F.A-AO
+      (Fc , ,)
+      (conj.subord
+        (cs segons segons))
+      (grup.verb
+        (vmip3s0 informa informar))
+      (sn-SUJ
+        (grup.nom
+          (np00000 Efe Efe))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (nccs000 cap cap)
+        (sp
+          (prep
+            (spcmp dels del))
+          (sn
+            (grup.nom.mp
+              (ncmp000 inspectors inspector))))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0cs0 l' el))
+            (grup.nom.fs
+              (np00000 OSCE OSCE))))
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (np00000 William_Walker William_Walker))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 dir dir))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmii3s0 confiava confiar))
+      (S.F.C-CREG
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 president president)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom
+                  (np00000 Iugoslàvia Iugoslàvia))))
+            (sn
+              (Fc , ,)
+              (grup.nom.ms
+                (np00000 Slobodan_Milosevic Slobodan_Milosevic))
+              (Fc , ,))))
+        (grup.verb
+          (Fe " ")
+          (vmif3s0 acceptarà acceptar)
+          (Fe " "))
+        (sadv-CC
+          (grup.adv
+            (rg finalment finalment)))
+        (S.NF.C-CD
+          (infinitiu
+            (vmn0000 acudir acudir))
+          (sp-CREG
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 conferència conferència)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.mp
+        (ncmp000 Albanesos albanès)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (np00000 Kosovo Kosovo))))))
+    (grup.verb
+      (vmip3p0 fan fer))
+    (sn-CD.Q
+      (grup.nom.fs
+        (ncfs000 cua cua)))
+    (sadv-CCT
+      (Fc , ,)
+      (grup.adv
+        (rg ahir ahir))
+      (Fc , ,))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (S.NF.C
+        (infinitiu
+          (vmn0000 oferir oferir))
+        (sn-CD
+          (espec.ms
+            (dp3ms0 el_seu el_seu))
+          (grup.nom.ms
+            (ncms000 condol condol)))
+        (sp-CI
+          (prep
+            (sps00 a a))
+          (sn
+            (grup.nom.fp
+              (nccp000 familiars familiar)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom.fp
+                    (ncfp000 víctimes víctima)
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sn
+                        (grup.nom.ms
+                          (ncms000 conflicte conflicte))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Walker Walker)))
+    (sadv-ET
+      (Fc , ,)
+      (grup.adv
+        (rg no_obstant no_obstant))
+      (Fc , ,))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 denunciar denunciar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (grup.nom
+          (np00000 Iugoslàvia Iugoslàvia)))
+      (grup.verb
+        (vaip3s0 ha haver)
+        (vmp00sm tornat tornar)
+        (sps00 a a)
+        (infinitiu
+          (vmn0000 ignorar ignorar)))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 comunitat comunitat)
+          (s.a.fs
+            (grup.a.fs
+              (aq0cs0 internacional internacional))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C.co-CD
+      (S.F.C
+        (Fe " ")
+        (sn-SUJ
+          (espec.fp
+            (da0fp0 Les el))
+          (grup.nom.fp
+            (ncfp000 tropes tropa)
+            (s.a.fp
+              (grup.a.fp
+                (aq0cp0 militars militar)))
+            (s.a.fp
+              (grup.a.fp
+                (aq0fp0 sèrbies serbi)))))
+        (grup.verb
+          (vmip3p0 surten sortir))
+        (sp-CC
+          (prep
+            (sps00 amb amb))
+          (sn
+            (espec.fs
+              (di0fs0 una un))
+            (grup.nom.fs
+              (ncfs000 força força)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 considerable considerable))))))
+        (sp-CC
+          (Fc , ,)
+          (prep
+            (sps00 amb amb))
+          (sn.x
+            (grup.nom.co
+              (grup.nom.mp
+                (ncmp000 tancs tanc))
+              (coord
+                (cc i i))
+              (grup.nom.mp
+                (S.NF.P
+                  (participi
+                    (aq0mpp blindats blindat)))))))
+        (Fc , ,))
+      (coord
+        (cc i i))
+      (S.F.C
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmip3p0 fan fer))
+        (sn-CD
+          (grup.nom.fp.1n
+            (ncfp000 coses cosa)))
+        (sp-CI
+          (prep
+            (spcmp als al))
+          (sn
+            (grup.nom.mp
+              (ncmp000 pobles poble))))
+        (S.F.R.1c
+          (relatiu-CD.Fc
+            (pr0cn000 que que))
+          (sn.e-SUJ *0*)
+          (grup.verb
+            (vaip3p0 van anar)
+            (vmn0000 prometre prometre))
+          (S.F.C-CD.Fn
+            (conj.subord
+              (cs que que))
+            (sn.e-SUJ *0*)
+            (neg-MOD
+              (rn no no))
+            (grup.verb
+              (vmic3p0 farien fer))))
+        (Fe " "))
+      (Fc , ,))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 indicar indicar))
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Walker Walker)))
+    (sp-CC
+      (prep
+        (sps00 en en))
+      (sn
+        (grup.nom.fp
+          (ncfp000 declaracions declaració)
+          (S.NF.P
+            (participi
+              (aq0fpp fetes fet))
+            (sp-CCL
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np00000 BBC BBC))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Milosevic Milosevic)))
+    (neg-MOD
+      (rn no no))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm pogut poder)
+      (infinitiu
+        (vmn0000 impedir impedir)))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 crisi crisi)))
+      (grup.verb
+        (vasp3s0 hagi haver)
+        (vmp00sm tingut tenir))
+      (sn-CD.Q
+        (espec.fp
+          (di0fp0 unes un))
+        (grup.nom.fp
+          (ncfp000 repercussions repercussió)
+          (S.F.R
+            (relatiu-CD
+              (pr0cn000 que que))
+            (sn.e-SUJ *0*)
+            (sadv-CCT
+              (grup.adv
+                (rg ja ja)))
+            (neg-MOD
+              (rn no no))
+            (grup.verb
+              (vmip3s0 pot poder)
+              (infinitiu
+                (vmn0000 controlar controlar)))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Milosevic Milosevic)))
+    (grup.verb
+      (vmip3s0 insisteix insistir))
+    (sp-CREG
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (Fe " ")
+          (ncms000 diàleg diàleg)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 directe directe)))
+          (Fe " ")
+          (sp
+            (prep
+              (sps00 entre entre))
+            (sn.x
+              (grup.nom.co
+                (grup.nom.co
+                  (grup.nom.mp
+                    (ncmp000 serbis serbi))
+                  (coord
+                    (cc i i))
+                  (grup.nom.mp
+                    (ncmp000 albanesos albanès)))
+                (S.F.R.j
+                  (Fc , ,)
+                  (sp-CI
+                    (prep
+                      (spcmp als al))
+                    (relatiu
+                      (pr0cp000 quals qual)))
+                  (sn
+                    (sn-SUJ
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (np00000 Grup_de_Contacte Grup_de_Contacte)))
+                    (sn.co.j
+                      (Fpt -Fpt- -Fpt-)
+                      (sn
+                        (grup.nom
+                          (np00000 Alemanya Alemanya)))
+                      (Fc , ,)
+                      (sn
+                        (grup.nom
+                          (np00000 França França)))
+                      (Fc , ,)
+                      (sn
+                        (grup.nom
+                          (np00000 Itàlia Itàlia)))
+                      (Fc , ,)
+                      (sn
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (np00000 Regne_Unit Regne_Unit)))
+                      (Fc , ,)
+                      (sn
+                        (espec.mp
+                          (da0mp0 els el))
+                        (grup.nom.mp
+                          (np00000 EUA EUA)))
+                      (coord
+                        (cc i i))
+                      (sn
+                        (grup.nom
+                          (np00000 Rússia Rússia)))
+                      (Fpa -Fpa- -Fpa-)))
+                  (grup.verb
+                    (vaip3s0 ha haver)
+                    (vmp00sm convocat convocar))
+                  (sp-CREG
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 reunió reunió)
+                        (S.NF.P
+                          (participi
+                            (aq0fsp citada citat)))))))))))))
+    (Fp . .)))
+(
+  (S*
+    (sn
+      (grup.nom.fs
+        (ncfs000 Preparació preparació)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (ncms000 equip equip))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 premsa premsa)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 iugoslava iugoslau)))))
+    (grup.verb
+      (vmii3s0 assenyalava assenyalar))
+    (sn-CCT
+      (vmip3s0 fa fer)
+      (di0mp0 uns un)
+      (ncmp000 dies dia))
+    (S.NF.A-CC
+      (Fc , ,)
+      (gerundi
+        (vmg0000 citant citar))
+      (sn-CD
+        (grup.nom.fp
+          (Fe " ")
+          (ncfp000 fonts font)
+          (s.a.fp
+            (grup.a.fp
+              (aq0cp0 governamentals governamental)))
+          (Fe " ")))
+      (Fc , ,))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (grup.nom.ms
+          (np00000 Milosevic Milosevic)))
+      (grup.verb
+        (vmif3s0 dialogarà dialogar))
+      (sadv-MOD
+        (Fe " ")
+        (grup.adv
+          (rg només només)))
+      (S.F.ACond-AO
+        (conj.subord
+          (sps00 en en)
+          (cs cas_que cas_que))
+        (sn.e-SUJ *0*)
+        (morf.pron
+          (p0300000 s' ell))
+        (sn-CREG
+          (grup.nom
+            (pp3cn000 hi hi)))
+        (grup.verb
+          (vmsp3s0 vegi veure))
+        (S.NF.P-CPRED.SUJ
+          (participi
+            (aq0msp forçat forçat)))
+        (Fe " ")))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (nccs000 dirigent dirigent)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 serbi serbi)))))
+    (sp-AO
+      (Fc , ,)
+      (prep
+        (sps00 segons segons))
+      (sn
+        (espec.fp
+          (dd0fp0 aquestes aquest))
+        (grup.nom.fp
+          (ncfp000 fonts font)))
+      (Fc , ,))
+    (grup.verb
+      (vmip3s0 està estar)
+      (gerundi
+        (vmg0000 preparant preparar)))
+    (sn-CD
+      (espec.ms
+        (da0cs0 l' el))
+      (grup.nom.ms
+        (ncms000 equip equip)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 negociador negociador)))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Milosevic Milosevic)))
+    (morf.pron
+      (p0300000 es ell))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 entrevistar entrevistar))
+    (sn-CCT
+      (grup.nom.ms
+        (W dissabte [dissabte:??/??/??:??.??])
+        (S.NF.P
+          (participi
+            (aq0msp passat passat)))))
+    (sp-CREG
+      (prep
+        (sps00 amb amb))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 ministre ministre)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom
+                (np00000 Afers_Estrangers Afers_Estrangers))))
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 britànic britànic)))
+          (sn
+            (Fc , ,)
+            (grup.nom.ms
+              (np00000 Robin_Cook Robin_Cook))
+            (Fc , ,))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (sn
+                (grup.nom.ms
+                  (ncms000 nom nom)
+                  (sp
+                    (prep
+                      (spcms del del))
+                    (sn
+                      (grup.nom.ms
+                        (np00000 Grup_de_Contacte Grup_de_Contacte)))))))
+            (sn-CI
+              (grup.nom.s
+                (pp3csd00 li ell)))
+            (grup.verb
+              (vaip3s0 va anar)
+              (vmn0000 fer fer))
+            (sn-CD
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 proposta proposta)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (S.NF.C
+                    (infinitiu
+                      (vmn0000 negociar negociar))
+                    (sp-CREG
+                      (prep
+                        (sps00 amb amb))
+                      (sn
+                        (espec.mp
+                          (da0mp0 els el))
+                        (grup.nom.mp
+                          (ncmp000 albanesos albanès))))
+                    (sp-CCL
+                      (prep
+                        (sps00 a a))
+                      (sn
+                        (grup.nom
+                          (np00000 París París))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 president president)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 iugoslau iugoslau)))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 demanar demanar))
+    (sn-CD
+      (grup.nom.ms
+        (ncmn000 temps temps)))
+    (sadv-CCT
+      (grup.adv
+        (rg abans abans)
+        (sp
+          (prep
+            (sps00 de de))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 deixar deixar))
+            (sa-CPRED.CD
+              (grup.a
+                (aq0ms0 clar clar)))
+            (S.F.C-AO
+              (conj.subord
+                (cs si si))
+              (sn.e-SUJ *0*)
+              (grup.verb
+                (vmip3s0 accepta acceptar))
+              (sn-CD
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 invitació invitació))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CREG
+      (sadv-ET
+        (grup.adv
+          (rg No_obstant no_obstant))
+        (Fc , ,))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 fet fet)
+          (S.F.C.co
+            (conj.subord
+              (cs que que))
+            (S.F.C
+              (sn-SUJ
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 premsa premsa)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 oficial oficial)))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (grup.nom
+                        (np00000 Sèrbia Sèrbia))))))
+              (grup.verb
+                (vmsi3s0 publiqués publicar))
+              (sadv-CCT
+                (grup.adv
+                  (rg ahir ahir)))
+              (sn-CD
+                (espec.ms
+                  (da0ms0 el el))
+                (grup.nom.ms
+                  (ncms000 pla pla)
+                  (sp
+                    (prep
+                      (sps00 d' de))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 autonomia autonomia)))))))
+            (coord
+              (cc i i))
+            (S.F.C
+              (sn.e-SUJ *0*)
+              (grup.verb
+                (vmsi3s0 mostrés mostrar))
+              (sadv-CC
+                (grup.adv
+                  (rg en_portada en_portada)))
+              (sn-CD
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 foto foto)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn.x
+                      (grup.nom.co
+                        (grup.nom.ms
+                          (np00000 Cook Cook))
+                        (coord
+                          (cc i i))
+                        (grup.nom.ms
+                          (np00000 Milosevic Milosevic)))))))))))
+      (grup.verb
+        (vmii3s0 feia fer)
+        (infinitiu
+          (vmn0000 pensar pensar)))
+      (sp-CI
+        (prep
+          (spcmp als al))
+        (sn
+          (grup.nom.mp
+            (ncmp000 observadors observador))))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 iniciativa iniciativa)))
+        (grup.verb
+          (vmip3s0 compta comptar))
+        (sp-CREG
+          (prep
+            (sps00 amb amb))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 vistiplau vistiplau)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom
+                    (np00000 Belgrad Belgrad))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmip3s0 informa informar))
+    (sn-SUJ
+      (grup.nom
+        (np00000 Reuters Reuters)))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 vicepresident vicepresident)
+          (s.a.ms
+            (grup.nom.ms
+              (aq0ms0 nord-americà nord-americà)))
+          (sn
+            (Fc , ,)
+            (grup.nom.ms
+              (np00000 Al_Gore Al_Gore))
+            (Fc , ,))))
+      (coord
+        (cc i i))
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (ao0ms0 primer primer)))
+          (ncms000 ministre ministre)
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 britànic britànic)))
+          (sn
+            (Fc , ,)
+            (grup.nom.ms
+              (np00000 Tony_Blair Tony_Blair))
+            (Fc , ,)))))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vmn0000 llançar llançar))
+    (sadv-CCT
+      (grup.adv
+        (rg ahir ahir)))
+    (sp-CCL
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom
+          (np00000 Londres Londres))))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 advertència advertència)
+        (s.a.fs
+          (grup.a.fs
+            (aq0fs0 conjunta conjunt)))))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.fp
+          (ncfp000 parts part)
+          (S.NF.P
+            (participi
+              (aq0fpp implicades implicat))))))
+    (sp-AO
+      (prep
+        (sps00 en_relació_amb en_relació_amb))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 necessitat necessitat)
+          (sp
+            (prep
+              (sps00 d' de))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 asseure asseure))
+              (morf.pron
+                (p0300000 's ell))
+              (sp-CREG
+                (prep
+                  (sps00 a a))
+                (S.NF.C.co
+                  (S.NF.C
+                    (infinitiu
+                      (vmn0000 negociar negociar)))
+                  (coord
+                    (cc o o))
+                  (S.NF.C
+                    (infinitiu
+                      (vmn0000 afrontar afrontar)))
+                  (sn.j-CD
+                    (espec.fs
+                      (di0fs0 una un))
+                    (grup.nom.fs
+                      (ncfs000 acció acció)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0cs0 militar militar)))
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.fs
+                            (da0cs0 l' el))
+                          (grup.nom.fs
+                            (np00000 OTAN OTAN)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C.co-CD
+      (S.F.C
+        (Fe " ")
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vsip1p0 Som ser))
+        (sa-ATR
+          (grup.a
+            (aq0mp0 seriosos seriós)))
+        (sp-AO
+          (prep
+            (sps00 al_voltant_de al_voltant_de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 necessitat necessitat)
+              (sp
+                (prep
+                  (sps00 d' de))
+                (S.NF.C
+                  (infinitiu
+                    (vmn0000 arribar arribar))
+                  (sp-CREG
+                    (prep
+                      (sps00 a a))
+                    (sn
+                      (espec.ms
+                        (di0ms0 un un))
+                      (grup.nom.ms
+                        (ncms000 acord acord))))))))))
+      (coord
+        (cc i i))
+      (S.F.C
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmip1p0 estem estar))
+        (S.NF.P-ATR
+          (participi
+            (aq0mpp preparats preparat))
+          (sp-CC
+            (prep
+              (sps00 per per))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 fer_servir fer_servir))
+              (sn-CD
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 força força)))
+              (sp-CPRED.CD
+                (prep
+                  (sps00 com_a com_a))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 suport suport)))))))
+        (Fe " "))
+      (Fc , ,))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 indicar indicar))
+    (sn-SUJ
+      (grup.nom.ms
+        (np00000 Blair Blair)))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np00000 Consell_Atlàntic Consell_Atlàntic)))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 deixar deixar))
+    (sn-CCT
+      (grup.nom.ms
+        (W dissabte [dissabte:??/??/??:??.??])))
+    (sp-CPRED.CD
+      (prep
+        (spcms en_mans_del en_mans_del))
+      (sn
+        (grup.nom.ms
+          (ncms000 secretari secretari)
+          (s.a.ms
+            (grup.a.ms
+              (aq0cs0 general general)))
+          (S.NF.P
+            (participi
+              (aq0msp aliat aliat)))
+          (sn
+            (Fc , ,)
+            (grup.nom.ms
+              (np00000 Javier_Solana Javier_Solana))
+            (Fc , ,)))))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 potestat potestat)
+        (sp
+          (prep
+            (sps00 d' de))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 ordenar ordenar))
+            (sn-CD
+              (grup.nom.mp
+                (ncmp000 atacs atac)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0mp0 aeris aeri)))
+                (sp
+                  (prep
+                    (sps00 sobre sobre))
+                  (sn
+                    (grup.nom
+                      (np00000 Iugoslàvia Iugoslàvia))))))
+            (S.F.ACond-AO
+              (conj.subord
+                (cs si si))
+              (morfema.verbal-PASS
+                (p0000000 s' es))
+              (grup.verb
+                (vmip3p0 incompleixen incomplir))
+              (sn-SUJ
+                (espec.fp
+                  (da0fp0 les el))
+                (grup.nom.fp
+                  (ncfp000 exigències exigència))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (nccs000 líder líder)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 independentista independentista)))
+        (S.NF.P
+          (participi
+            (aq0msp moderat moderat)))
+        (s.a.ms
+          (grup.a.ms
+            (aq00000 albanesokosovar albanesokosovar)))
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (np00000 Ibrahim_Rugova Ibrahim_Rugova)))
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vaip3s0 va anar)
+            (vmn0000 acceptar acceptar))
+          (S.NF.C-CD
+            (infinitiu
+              (vmn0000 acudir acudir))
+            (sp-CREG
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 conferència conferència)))))
+          (Fc , ,))))
+    (grup.verb
+      (vaip3s0 va anar)
+      (vmn0000 assegurar assegurar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 pla pla)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (np00000 Grup_de_Contacte Grup_de_Contacte))))))
+      (Fe " ")
+      (grup.verb
+        (vmip3s0 ofereix oferir))
+      (sn-CD
+        (grup.nom.mp
+          (ncmp000 mitjans mitjà)))
+      (sp-CC
+        (prep
+          (sps00 per per))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 arribar arribar))
+          (sp-CREG
+            (prep
+              (sps00 a a))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 independència independència)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom
+                      (np00000 Kosovo Kosovo)))))))))
+      (Fe " "))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (grup.nom.ms
+          (np00000 Rugova Rugova)))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 demanar demanar))
+      (sp-CI
+        (prep
+          (spcms al al))
+        (sn
+          (grup.nom.ms
+            (s.a.ms
+              (grup.a.ms
+                (aq0cs0 separatista separatista)))
+            (np00000 Exèrcit_d'_Alliberament_de_Kosovo Exèrcit_d'_Alliberament_de_Kosovo)
+            (sn
+              (grup.nom.ms
+                (Fpt -Fpt- -Fpt-)
+                (np00000 UCK UCK)
+                (Fpa -Fpa- -Fpa-))))))
+      (S.F.C-CD
+        (Fe " ")
+        (conj.subord
+          (cs que que))
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmsp3s0 comenci començar)
+          (sps00 a a)
+          (infinitiu
+            (vmn0000 comportar comportar)))
+        (morf.pron
+          (p0300000 -se ell))
+        (sp-CC
+          (prep
+            (cs com com))
+          (sn
+            (espec.fs
+              (di0fs0 una un))
+            (grup.nom.fs
+              (ncfs000 força força)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 política polític)))
+              (s.a.fs
+                (grup.a.fs
+                  (aq0fs0 seriosa seriós))))))
+        (Fe " "))
+      (Fc , ,))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 afegir afegir))
+      (S.F.C-CD
+        (Fd : :)
+        (Fe " ")
+        (sn-SUJ
+          (espec.mp
+            (da0mp0 Els el))
+          (grup.nom.mp
+            (ncmp000 albanesos albanès)
+            (s.a.mp
+              (grup.a.mp
+                (aq0cp0 kosovars kosovar)))))
+        (neg-MOD
+          (rn no no))
+        (sn-CI
+          (grup.nom.p
+            (pp1cp000 ens jo)))
+        (grup.verb
+          (vmip1p0 podem poder)
+          (infinitiu
+            (vmn0000 permetre permetre)))
+        (sn-CD
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 luxe luxe)
+            (sp
+              (prep
+                (sps00 d' de))
+              (S.NF.C-CD
+                (infinitiu
+                  (vmn0000 estar estar))
+                (S.NF.P-ATR
+                  (participi
+                    (aq0mpp dividits dividit)))))))
+        (Fe " ")))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (nccs000 dirigent dirigent)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 polític polític)))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 guerrilla guerrilla))))
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (np00000 Adem_Demaci Adem_Demaci))
+          (Fc , ,))
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 rival rival)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.ms
+                  (np00000 Rugova Rugova)))))))
+      (Fc , ,))
+    (neg-MOD
+      (rn no no))
+    (morf.pron
+      (p0300000 s' ell))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm pronunciat pronunciar))
+    (sadv-CCT
+      (grup.adv
+        (rg encara encara)))
+    (S-AO
+      (Fd : :)
+      (S.F.C-CD
+        (Fe " ")
+        (sn.e-SUJ *0*)
+        (grup.verb
+          (vmip1s0 Necessito necessitar))
+        (sn-CD
+          (espec.mp
+            (di0mp0 uns un))
+          (grup.nom.mp
+            (ncmp000 dies dia)))
+        (sp-CC
+          (prep
+            (sps00 per per))
+          (S.NF.C
+            (infinitiu
+              (vmn0000 consultar consultar))
+            (sn-CD
+              (grup.nom.ms
+                (pp3nn000 -ho ho)))))
+        (Fe " ")
+        (Fc , ,))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vmn0000 dir dir))
+      (sn.e-SUJ *0*))
+    (Fp . .)))

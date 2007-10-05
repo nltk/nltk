@@ -1,0 +1,443 @@
+
+(
+  (S.co
+    (S
+      (sp-CC
+        (prep
+          (sps00 En en))
+        (sn
+          (espec.ms
+            (dp3cs0 su su))
+          (grup.nom.ms
+            (ncms000 recorrido recorrido)))
+        (Fc , ,))
+      (snp-SUJ
+        (espec.mp
+          (da0mp0 los el))
+        (grup.nom.mp
+          (np0000p Reyes Reyes)))
+      (grup.verb
+        (vmis3p0 pudieron poder)
+        (infinitiu
+          (vmn0000 admirar admirar)))
+      (sadv-MOD
+        (grup.adv
+          (rg también también)))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 arquitectura arquitectura)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 gótica gótico)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.ms
+                (dd0ms0 este este))
+              (grup.nom.ms
+                (ncms000 templo templo)
+                (S.F.R
+                  (Fc , ,)
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmip3s0 alberga albergar))
+                  (sn-CD
+                    (grup.nom.fp
+                      (ncfp000 pinturas pintura)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom.mp
+                            (s.a.mp
+                              (grup.nom.mp
+                                (aq0cp0 grandes grande)))
+                            (ncmp000 maestros maestro)
+                            (sp
+                              (prep
+                                (cs como como))
+                              (snp
+                                (grup.nom.ms
+                                  (np0000p Rubens Rubens)))))))))
+                  (Fc , ,))))))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (morf.pron
+        (p0300000 se él))
+      (grup.verb
+        (vmis3p0 detuvieron detener))
+      (sp-CC
+        (prep
+          (sps00 ante ante))
+        (sn
+          (espec.mp
+            (da0mp0 los el))
+          (grup.nom.mp
+            (ncmp000 escudos escudo)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.mp
+                  (ncmp000 caballeros caballero)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sno
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (np0000o Orden_del_Toisón_de_Oro Orden_del_Toisón_de_Oro)
+                        (sno
+                          (Fc , ,)
+                          (espec.fs
+                            (di0fs0 una uno))
+                          (grup.nom.fs
+                            (ncfs000 institución institución)
+                            (S.F.R
+                              (relatiu-CD
+                                (pr0cn000 que que))
+                              (grup.verb
+                                (vmip3s0 preside presidir))
+                              (sadv-CCT
+                                (grup.adv
+                                  (rg actualmente actualmente)))
+                              (snp-SUJ
+                                (espec.ms
+                                  (da0ms0 el el))
+                                (grup.nom.ms
+                                  (np0000p Rey_Juan_Carlos Rey_Juan_Carlos))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (spcms Del del))
+      (sn
+        (grup.nom.ms
+          (nccs000 arte arte)))
+      (Fc , ,))
+    (sno-SUJ
+      (espec.mp
+        (da0mp0 los el))
+      (grup.nom.mp
+        (np0000o Reyes Reyes)))
+    (grup.verb
+      (vmis3p0 pasaron pasar))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 investigación investigación)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 científica científico)))
+          (S.F.R
+            (relatiu-SUJ.p
+              (pr0cn000 que que))
+            (morfema.verbal-PASS
+              (p0000000 se se))
+            (grup.verb
+              (vmip3s0 practica practicar))
+            (sp-CC
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.mp
+                  (da0mp0 los el))
+                (grup.nom.mp
+                  (ncmp000 laboratorios laboratorio)
+                  (sno
+                    (grup.nom
+                      (np0000o Innogenetics Innogenetics)
+                      (sn
+                        (Fc , ,)
+                        (espec.fs
+                          (di0fs0 una uno))
+                        (grup.nom.fs
+                          (ncfs000 empresa empresa)
+                          (s.a.fs
+                            (grup.a.fs
+                              (aq0fs0 puntera puntero)))
+                          (S.F.R.co
+                            (relatiu-SUJ
+                              (pr0cn000 que que))
+                            (S.F.R
+                              (grup.verb
+                                (vmip3s0 desarrolla desarrollar))
+                              (sn-CD
+                                (grup.nom.fp
+                                  (ncfp000 vacunas vacuna)
+                                  (sp
+                                    (prep
+                                      (sps00 contra contra))
+                                    (sna
+                                      (espec.fs
+                                        (da0fs0 la el))
+                                      (grup.nom.fs
+                                        (ncfn000 hepatitis hepatitis)
+                                        (s.a.fs
+                                          (grup.a.fs
+                                            (np0000a C C)))))))))
+                            (Fc , ,)
+                            (S.F.R
+                              (grup.verb
+                                (vmip3s0 trabaja trabajar))
+                              (sp.co-CC
+                                (sp
+                                  (prep
+                                    (sps00 en en))
+                                  (sn
+                                    (grup.nom.mp
+                                      (ncmp000 desórdenes desorden)
+                                      (s.a.mp
+                                        (grup.nom.mp
+                                          (aq0mp0 genéticos genético)))))
+                                  (Fc , ,))
+                                (coord
+                                  (cc así_como así_como))
+                                (sp.co
+                                  (sp
+                                    (prep
+                                      (sps00 en en))
+                                    (sn
+                                      (grup.nom.fp
+                                        (ncfp000 reconstrucciones reconstrucción)
+                                        (sp
+                                          (prep
+                                            (sps00 de de))
+                                          (sn
+                                            (grup.nom.ms
+                                              (ncms000 tejido tejido)))))))
+                                  (coord
+                                    (cc y y))
+                                  (sp
+                                    (prep
+                                      (sps00 en en))
+                                    (sn
+                                      (espec.fs
+                                        (da0fs0 la el))
+                                      (grup.nom.fs
+                                        (ncfs000 detección detección)
+                                        (sp
+                                          (prep
+                                            (sps00 de de))
+                                          (sn
+                                            (grup.nom.fp
+                                              (ncfp000 enfermedades enfermedad)
+                                              (s.a.fp
+                                                (grup.a.fp
+                                                  (aq0fp0 neurodegenerativas neurodegenerativo)))
+                                              (sp
+                                                (prep
+                                                  (sps00 como como))
+                                                (sna
+                                                  (espec.ms
+                                                    (da0ms0 el el))
+                                                  (grup.nom.ms
+                                                    (np0000p Alzheimer Alzheimer)))))))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (S.NF.P.j
+        (participi
+          (aq0mpp Vestidos vestido))
+        (sp-CC
+          (prep
+            (sps00 con con))
+          (sn
+            (grup.nom.mp
+              (ncmp000 trajes traje)
+              (s.a.mp
+                (grup.a.mp
+                  (aq0cp0 estériles estéril))))))
+        (Fc , ,))
+      (sn.co
+        (snp
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (np0000p Rey Rey)))
+        (coord
+          (cc y y))
+        (snp
+          (grup.nom.ms
+            (np0000p Josep_Piqué Josep_Piqué)))))
+    (grup.verb
+      (vmis3p0 recorrieron recorrer))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 zona zona)
+        (S.F.R
+          (sp-CCL
+            (prep
+              (sps00 en en))
+            (relatiu
+              (pr000000 donde donde)))
+          (morfema.verbal-PASS
+            (p0000000 se se))
+          (grup.verb
+            (vmip3p0 fabrican fabricar))
+          (sn-SUJ
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fp
+              (ncfp000 vacunas vacuna)
+              (sp
+                (prep
+                  (sps00 contra contra))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfn000 hepatitis hepatitis))))
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (dd0fs0 esta este))
+                  (grup.nom.fs
+                    (ncfs000 empresa empresa)
+                    (S.F.R
+                      (Fc , ,)
+                      (relatiu-SUJ
+                        (pr0cn000 que que))
+                      (grup.verb
+                        (vmip3s0 tiene tener))
+                      (sadv-MOD
+                        (grup.adv
+                          (rg también también)))
+                      (sn-CD.Q
+                        (grup.nom.mp
+                          (ncmp000 laboratorios laboratorio)))
+                      (sp-CCL
+                        (prep
+                          (sps00 en en))
+                        (sn.x
+                          (grup.nom.co
+                            (grup.nom
+                              (np0000l Estados_Unidos Estados_Unidos))
+                            (Fc , ,)
+                            (grup.nom
+                              (np0000l Alemania Alemania))
+                            (Fc , ,)
+                            (grup.nom
+                              (np0000l Francia Francia))
+                            (coord
+                              (cc y y))
+                            (grup.nom
+                              (np0000l España España))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ.p
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 estancia estancia)
+        (sp
+          (prep
+            (sps00 en en))
+          (snl
+            (grup.nom
+              (np0000l Gante Gante))))
+        (sp
+          (prep
+            (sps00 de de))
+          (snp
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (np0000p Reyes Reyes))))))
+    (morfema.verbal-PASS
+      (p0000000 se se))
+    (grup.verb
+      (vmis3s0 cerró cerrar))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (snl
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (np0000l Diputación_Provincial Diputación_Provincial)
+          (S.F.R
+            (Fc , ,)
+            (sp-CCL
+              (prep
+                (sps00 en en))
+              (relatiu
+                (pr000000 donde donde)))
+            (snp-SUJ
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 gobernador gobernador)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snl
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (np0000l Provincia_de_Flandes_Oriental Provincia_de_Flandes_Oriental))))
+                (snp
+                  (Fc , ,)
+                  (grup.nom.ms
+                    (np0000p Hermann_Balthazar Hermann_Balthazar))
+                  (Fc , ,))))
+            (grup.verb
+              (vmis3s0 recordó recordar))
+            (sn-CD
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (s.a.fs
+                  (grup.a.fs
+                    (ao0fs0 primera primero)))
+                (ncfs000 visita visita)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sno
+                    (grup.nom
+                      (np0000o Estado Estado))))
+                (S.F.R
+                  (relatiu.1n-CD
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmis3p0 hicieron hacer))
+                  (sn.x-SUJ
+                    (grup.nom.co
+                      (grup.nom.ms
+                        (np0000p Don_Juan_Carlos Don_Juan_Carlos))
+                      (coord
+                        (cc y y))
+                      (grup.nom.fs
+                        (np0000p Doña_Sofía Doña_Sofía))))
+                  (sp.1c
+                    (prep
+                      (sps00 a a))
+                    (snl
+                      (grup.nom
+                        (np0000l Bélgica Bélgica))))
+                  (sp-CCT
+                    (prep
+                      (sps00 en en))
+                    (snd
+                      (grup.nom.ms
+                        (W 1977 [??:??/??/1977:??.??])))))))))))
+    (Fp . .)))

@@ -1,0 +1,284 @@
+
+(
+  (S
+    (sp-CCL.r
+      (prep
+        (sps00 A a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 confluència confluència)
+          (sp
+            (prep
+              (spcmp dels del))
+            (sn
+              (grup.nom.mp
+                (ncmp000 carrers carrer))))
+          (sp.co
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom
+                  (np00000 Giralt Giralt))))
+            (coord
+              (cc i i))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom
+                  (np00000 Colomines Colomines))))))))
+    (morfema.verbal-PASS
+      (p0000000 s' es))
+    (sn-CCL.r
+      (grup.nom
+        (pp3cn000 hi hi)))
+    (grup.verb
+      (vmif3s0 instal·larà instal·lar))
+    (sn-SUJ
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 petit petit)))
+        (ncms000 museu museu)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 arqueològic arqueològic)))
+        (sp
+          (prep
+            (sps00 amb amb))
+          (sn
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (s.a.fp
+                (grup.a.fp
+                  (aq0cp0 principals principal)))
+              (ncfp000 restes resta)
+              (S.NF.P
+                (participi
+                  (aq0fpp trobades trobat))
+                (sp-CCL
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.fs
+                      (da0cs0 l' el))
+                    (grup.nom.fs
+                      (ncfs000 excavació excavació)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom
+                            (np00000 Santa_Caterina Santa_Caterina)
+                            (S.F.R
+                              (Fc , ,)
+                              (relatiu-CCL
+                                (pr000000 on on))
+                              (sp-CCT
+                                (prep
+                                  (sps00 fins fins))
+                                (sp
+                                  (prep
+                                    (spcms al al))
+                                  (sn
+                                    (grup.nom.ms
+                                      (ncms000 segle segle)
+                                      (sn
+                                        (grup.nom.ms
+                                          (W XIX [s:xix])))))))
+                              (morf.pron
+                                (pp3cn000 hi hi))
+                              (grup.verb
+                                (vaip3s0 va anar)
+                                (van0000 haver haver))
+                              (sn-CD.Q
+                                (espec.ms
+                                  (di0ms0 un un))
+                                (grup.nom.ms
+                                  (s.a.ms
+                                    (grup.a.ms
+                                      (aq0cs0 gran gran)))
+                                  (ncms000 convent convent)
+                                  (sp
+                                    (prep
+                                      (sps00 amb amb))
+                                    (sn
+                                      (espec.fp
+                                        (dn0fp0 dues dos))
+                                      (grup.nom.fp
+                                        (ncfp000 esglésies església)
+                                        (sp
+                                          (prep
+                                            (sps00 d' de))
+                                          (sn
+                                            (grup.nom.ms
+                                              (ncms000 estil estil)
+                                              (s.a.ms.x
+                                                (grup.a.ms.co
+                                                  (grup.a.ms
+                                                    (aq0ms0 romànic romànic))
+                                                  (coord
+                                                    (cc i i))
+                                                  (grup.a.ms
+                                                    (aq0ms0 gòtic gòtic)))))))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 accés accés)))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmif3s0 farà fer))
+    (sp-CCL
+      (prep
+        (sps00 des_del des_del))
+      (sn
+        (grup.nom.ms
+          (ncms000 carrer carrer))))
+    (sp-CC
+      (Fc , ,)
+      (prep
+        (sps00 a_través_d' a_través_de))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 escala escala)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vmif3s0 descendirà descendir))
+            (sp-CCL
+              (prep
+                (sps00 fins fins))
+              (sp
+                (prep
+                  (sps00 a a))
+                (sn
+                  (espec.fs
+                    (di0fs0 una un))
+                  (grup.nom.fs
+                    (ncfs000 cripta cripta)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 subterrània subterrani)))))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-CCL
+      (grup.adv
+        (rg Allà allà)))
+    (morfema.verbal-PASS
+      (p0000000 es es))
+    (grup.verb
+      (vmif3s0 veurà veure))
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 perfil perfil)
+        (sp
+          (prep
+            (spcmp dels del))
+          (sn
+            (grup.nom.mp
+              (ncmp000 fonaments fonament))))
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fp
+              (da0fp0 les el)
+              (dn0fp0 dues dos))
+            (grup.nom.fp
+              (ncfp000 esglésies església))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 arquitectes arquitecte)))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm dissenyat dissenyar))
+    (sp-CCL
+      (prep
+        (sps00 en en))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 superfície superfície))))
+    (sn-CD
+      (espec.mp
+        (dn0cp0 tres tres))
+      (grup.nom.mp
+        (ncmp000 elements element)
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 escultòrics escultòric)))
+        (S.F.R
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (grup.verb
+            (vmip3p0 recorden recordar))
+          (sn.x-CD
+            (grup.nom.co
+              (grup.nom.fp
+                (ncfp000 àmfores àmfora))
+              (coord
+                (cc o o))
+              (grup.nom.fp
+                (ncfp000 restes resta)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0fp0 arqueològiques arqueològic)))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (di0fs0 Una un))
+      (grup.nom.fs
+        (ncfs000 base base)
+        (S.NF.P
+          (participi
+            (aq0fsp envidriada envidriat)))))
+    (grup.verb
+      (vmif3s0 permetrà permetre))
+    (S.NF.C-CD
+      (infinitiu
+        (vmn0000 fer fer))
+      (sn-CD
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 cop cop)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (grup.nom.ms
+                (ncms000 ull ull))))))
+      (sp-CCL
+        (prep
+          (sps00 a a))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 cripta cripta)))))
+    (Fp . .)))

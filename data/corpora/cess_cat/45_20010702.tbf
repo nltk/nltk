@@ -1,0 +1,206 @@
+
+(
+  (S
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom
+          (np00000 Itàlia Itàlia))
+        (Fc , ,)
+        (grup.nom
+          (np00000 Alemanya Alemanya))
+        (Fc , ,)
+        (grup.nom
+          (np00000 França França))
+        (np00000 i i)
+        (grup.nom
+          (np00000 El_Regne_Unit El_Regne_Unit))))
+    (grup.verb
+      (vmif3p0 creixeran créixer))
+    (sn-CD.Q
+      (espec.ms
+        (di0ms0 un un))
+      (grup.nom.ms
+        (Zp 8% 8/100)))
+    (sn-CCT
+      (espec.ms
+        (pd0ms000 aquest aquest))
+      (grup.nom.ms
+        (ncms000 any any)))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 aportacions aportació)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (nccs000 broker broker)
+              (sn
+                (grup.nom
+                  (np00000 Fineco Fineco))))))
+        (sp
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (ao0ms0 primer primer)))
+              (ncms000 trimestre trimestre))))))
+    (grup.verb
+      (vmip3p0 fan fer)
+      (infinitiu
+        (vmn0000 pensar pensar)))
+    (sp-CD
+      (prep
+        (spcmp als al))
+      (sn
+        (grup.nom.mp
+          (nccp000 analistes analista))))
+    (S.F.C-CREG
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (grup.nom
+          (np00000 Itàlia Itàlia)))
+      (grup.verb
+        (vmif3s0 tindrà tenir))
+      (sn-CD.Q
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 pujada pujada)
+          (s.a.fs
+            (espec
+              (rg més més))
+            (grup.a.fs
+              (aq0cs0 gran gran)))
+          (sp
+            (prep
+              (sps00 en en))
+            (sn
+              (grup.nom.mp
+                (ncmp000 comptes compte))))
+          (sn
+            (espec.ms
+              (dd0ms0 aquest aquest))
+            (grup.nom.ms
+              (ncms000 any any)))
+          (sn
+            (Fd : :)
+            (grup.nom.ms
+              (Zp 22% 22/100))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (nccp000 brokers broker)))
+    (morf.pron
+      (p0300000 s' ell))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm vist veure))
+    (S.NF.P-CPRED.SUJ
+      (sadv-CC
+        (grup.adv
+          (rg molt molt)))
+      (participi
+        (aq0mpp tocats tocat)))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 caiguda caiguda)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (ncfp000 accions acció)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0fp0 tecnològiques tecnològic)))))))))
+    (Fp . .)))
+(
+  (S
+    (sadv-ET
+      (grup.adv
+        (rg Tot_i_així tot_i_així))
+      (Fc , ,))
+    (sn.e-SUJ *0*)
+    (grup.verb
+      (vsip3s0 és ser))
+    (sn-ATR
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (s.a.ms
+          (grup.a.ms
+            (ao0ms0 primer primer)))
+        (ncms000 mercat mercat)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 europeu europeu)))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.mp
+        (da0mp0 Els el)
+        (Z 49.200 49200))
+      (grup.nom.mp
+        (ncmp000 comptes compte)
+        (S.NF.P
+          (participi
+            (aq0mpp oberts obert))
+          (sn-CCT
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (ao0ms0 primer primer)))
+              (ncms000 trimestre trimestre)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.ms
+                    (da0cs0 l' el))
+                  (grup.nom.ms
+                    (ncms000 any any)))))))))
+    (grup.verb
+      (vmip3p0 suposen suposar))
+    (sn-CD
+      (espec.fs
+        (di0fs0 una un))
+      (grup.nom.fs
+        (ncfs000 caiguda caiguda)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (Zp 32% 32/100))))))
+    (sp-AO
+      (prep
+        (spcms respecte_al respecte_al))
+      (sn
+        (grup.nom.ms
+          (W març_del_2000 [??:??/3/2000:??.??]))))
+    (Fp . .)))

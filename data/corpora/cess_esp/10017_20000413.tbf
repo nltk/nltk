@@ -1,0 +1,662 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 grupo grupo)
+        (s.a.ms
+          (grup.a.ms
+            (aq0cs0 estatal estatal)))
+        (sn
+          (grup.nom.ms
+            (np00000 Electricité_de_France Electricité_de_France)
+            (sn
+              (grup.nom.ms
+                (Fpa -Fpa- -Fpa-)
+                (np00000 EDF EDF)
+                (Fpt -Fpt- -Fpt-)))))))
+    (grup.verb
+      (vmis3s0 anunció anunciar))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)
+        (sn
+          (Fc , ,)
+          (grup.nom.ms
+            (W jueves [jueves:??/??/??:??.??]))
+          (Fc , ,))))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 compra compra)
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (Zp 51_por_ciento 51_%)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 empresa empresa)
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 mexicana mexicano)))
+                    (sn
+                      (grup.nom.fs
+                        (np00000 Electricidad_Águila_de_Altamira Electricidad_Águila_de_Altamira)
+                        (sn
+                          (grup.nom.fs
+                            (Fpa -Fpa- -Fpa-)
+                            (np00000 EAA EAA)
+                            (Fpt -Fpt- -Fpt-)))))
+                    (S.NF.P
+                      (Fc , ,)
+                      (participi
+                        (aq0fsp creada creado))
+                      (sp-CAG
+                        (prep
+                          (sps00 por por))
+                        (sn
+                          (espec.ms
+                            (da0ms0 el el))
+                          (grup.nom.ms
+                            (s.a.ms
+                              (grup.a.ms
+                                (aq0ms0 japonés japonés)))
+                            (np00000 Mitsubishi_Corporation Mitsubishi_Corporation))))
+                      (sp-CC
+                        (prep
+                          (sps00 para para))
+                        (S.NF.C
+                          (infinitiu
+                            (vmn0000 poner_en_marcha poner_en_marcha))
+                          (sn-CD
+                            (espec.fs
+                              (di0fs0 una uno))
+                            (grup.nom.fs
+                              (ncfs000 central central)
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sn
+                                  (grup.nom.ms
+                                    (ncms000 gas gas)
+                                    (sp
+                                      (prep
+                                        (sps00 de de))
+                                      (sn
+                                        (espec.mp
+                                          (Z 495 495))
+                                        (grup.nom.mp
+                                          (ncmp000 megavatios megavatio))))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (di0fs0 Una uno))
+      (grup.nom.fs
+        (nccs000 portavoz portavoz)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom
+              (np00000 EDF EDF))))))
+    (grup.verb
+      (vmis3s0 explicó explicar))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sn
+        (grup.nom
+          (np00000 EFE EFE))))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 proyecto proyecto)
+          (sp
+            (prep
+              (sps00 para para))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 construcción construcción)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom
+                      (np00000 Altamira_2 Altamira_2))))
+                (sp
+                  (Fc , ,)
+                  (prep
+                    (spcms al al))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 norte norte)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (grup.nom
+                            (np00000 Tampico Tampico)))))))))))
+        (Fc , ,))
+      (grup.verb
+        (vmm02s0 prevé prever))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 utilización utilización)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.ms
+                (ncms000 gas gas)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 natural natural)))
+                (sp
+                  (prep
+                    (cs como como))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 combustible combustible)
+                      (s.a.ms
+                        (grup.a.ms
+                          (aq0cs0 principal principal)))
+                      (sp
+                        (prep
+                          (sps00 en en))
+                        (sn
+                          (espec.fs
+                            (di0fs0 una uno))
+                          (grup.nom.fs
+                            (ncfs000 central central)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (sn
+                                (grup.nom.ms
+                                  (ncms000 ciclo ciclo)
+                                  (S.NF.P
+                                    (participi
+                                      (aq0msp combinado combinado))))))
+                            (S.F.R
+                              (relatiu-SUJ
+                                (pr0cn000 que que))
+                              (grup.verb
+                                (vmip3s0 debe deber)
+                                (infinitiu
+                                  (vmn0000 empezar empezar)
+                                  (sps00 a a)
+                                  (infinitiu
+                                    (vmn0000 funcionar funcionar))))
+                              (sp-CCT
+                                (prep
+                                  (sps00 en en))
+                                (sn
+                                  (grup.nom.ms
+                                    (W mayo_del_2002 [??:??/5/2002:??.??])))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 electricidad electricidad)
+        (S.NF.P
+          (participi
+            (aq0fsp producida producido)))))
+    (grup.verb
+      (vmif3s0 pasará pasar))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 red red)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 eléctrica eléctrico)))
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 pública público)))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (np00000 México México)))))))
+    (sp-CC
+      (prep
+        (sps00 en_virtud_de en_virtud_de))
+      (sn
+        (espec.ms
+          (di0ms0 un uno))
+        (grup.nom.ms
+          (ncms000 acuerdo acuerdo)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 venta venta)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 energía energía)))))))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (np00000 EAA EAA))))
+          (sp
+            (prep
+              (sps00 con con))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np00000 Comisión_Federal_de_Electricidad Comisión_Federal_de_Electricidad)
+                (sn
+                  (grup.nom.fs
+                    (Fpa -Fpa- -Fpa-)
+                    (np00000 CFE CFE)
+                    (Fpt -Fpt- -Fpt-)))))))))
+    (sp-CC
+      (prep
+        (sps00 por por))
+      (sn
+        (espec.fs
+          (di0fs0 una uno))
+        (grup.nom.fs
+          (ncfs000 duración duración)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (Z 25 25))
+              (grup.nom.mp
+                (ncmp000 años año)))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (grup.nom
+          (np00000 EDF EDF)
+          (S.F.R
+            (Fc , ,)
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (neg-MOD
+              (rn no no))
+            (grup.verb
+              (vmis3s0 quiso querer))
+            (S.NF.C-CD
+              (infinitiu
+                (vmn0000 revelar revelar))
+              (S.F.C-CD
+                (sn-CD.Q
+                  (grup.nom.ms
+                    (pt0ms000 cuánto cuánto)))
+                (sn.e-SUJ *0*)
+                (grup.verb
+                  (vmis3s0 pagó pagar))
+                (sp-CC
+                  (prep
+                    (sps00 por por))
+                  (sn
+                    (espec.fs
+                      (dp3cs0 su su))
+                    (grup.nom.fs
+                      (ncfs000 participación participación)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0fs0 mayoritaria mayoritario)))
+                      (sp
+                        (prep
+                          (sps00 en en))
+                        (sn
+                          (grup.nom
+                            (np00000 EAA EAA)))))))))
+            (Fc , ,))))
+      (grup.verb
+        (vmif3s0 intervendrá intervenir))
+      (sp-CC
+        (prep
+          (cs como como))
+        (sn
+          (grup.nom.fs
+            (nccs000 asistente asistente))))
+      (sp-CC
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 construcción construcción)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom
+                  (np00000 Altamira_2 Altamira_2))))))))
+    (coord
+      (cc y y))
+    (S
+      (sadv-CC
+        (Fc , ,)
+        (grup.adv
+          (rg posteriormente posteriormente))
+        (Fc , ,))
+      (sn.e-SUJ *0*)
+      (morf.pron
+        (p0300000 se él))
+      (grup.verb
+        (vmif3s0 encargará encargar))
+      (sp-CREG
+        (prep
+          (sps00 de de))
+        (S.NF.C
+          (infinitiu
+            (vmn0000 explotarla explotar))
+          (sp-CC
+            (prep
+              (cs como como))
+            (sn
+              (grup.nom.ms
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 principal principal)))
+                (aq0cs0 accionista accionista)))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn.x-SUJ
+        (grup.nom.co
+          (grup.nom
+            (np00000 EDF EDF))
+          (coord
+            (cc y y))
+          (grup.nom
+            (np00000 Mitsubishi Mitsubishi))))
+      (grup.verb
+        (vmis3p0 participaron participar))
+      (sp-CCT
+        (prep
+          (sps00 en en))
+        (sn
+          (grup.nom.ms
+            (W 1998 [??:??/??/1998:??.??]))))
+      (sp-CREG
+        (prep
+          (sps00 en en))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 licitación licitación)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fp
+                  (ncfp000 licencias licencia)
+                  (sp
+                    (prep
+                      (sps00 para para))
+                    (S.NF.C
+                      (infinitiu
+                        (vmn0000 construir construir))
+                      (sn-CD
+                        (grup.nom.fp
+                          (ncfp000 centrales central)
+                          (s.a.fp
+                            (grup.a.fp
+                              (aq0fp0 eléctricas eléctrico)))))
+                      (sp-CCL
+                        (prep
+                          (sps00 en en))
+                        (sn
+                          (grup.nom
+                            (np00000 México México)))))))))))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (morf.pron
+        (p0300000 se él))
+      (grup.verb
+        (vmis3p0 quedaron quedar))
+      (sp-CREG
+        (prep
+          (sps00 con con))
+        (sn
+          (grup.nom.mp
+            (pn0cp000 dos dos)
+            (sn
+              (espec.fs
+                (di0cs0 cada cada))
+              (grup.nom.fs
+                (pi0fs000 una uno)))
+            (sn.co
+              (Fd : :)
+              (sn.x
+                (grup.nom.co
+                  (grup.nom.co
+                    (grup.nom
+                      (np00000 Río_Bravo Río_Bravo))
+                    (coord
+                      (cc y y))
+                    (grup.nom
+                      (np00000 Saltillo Saltillo)))
+                  (sp.j
+                    (prep
+                      (sps00 para para))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 compañía compañía)
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0fs0 francesa francés))))))))
+              (coord
+                (cc y y))
+              (sn.x
+                (grup.nom.co
+                  (grup.nom.co
+                    (grup.nom
+                      (np00000 Altamira Altamira))
+                    (coord
+                      (cc y y))
+                    (grup.nom
+                      (np00000 Tuxpán Tuxpán)))
+                  (sp.j
+                    (prep
+                      (sps00 para para))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (s.a.fs
+                          (grup.a.fs
+                            (aq0fs0 japonesa japonés)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (grup.nom
+        (np00000 EDF EDF)))
+    (grup.verb
+      (vmip3s0 tiene tener))
+    (S.NF.P-CPRED.CD
+      (participi
+        (aq0msp previsto previsto)))
+    (S.NF.C.co-CD.Q
+      (S.NF.C
+        (infinitiu
+          (vmn0000 invertir invertir))
+        (sn-CD
+          (espec.mp
+            (Z 194 194))
+          (grup.nom.mp
+            (ncmp000 millones millón)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.mp
+                  (Zm euros euro))))
+            (sn
+              (Fpa -Fpa- -Fpa-)
+              (espec.mp
+                (Z 186 186))
+              (grup.nom.mp
+                (ncmp000 millones millón)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.mp
+                      (Zm dólares dólar)))))
+              (Fpt -Fpt- -Fpt-))))
+        (sp-CCL
+          (prep
+            (sps00 en en))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 central central)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (grup.nom
+                    (np00000 Río_Bravo Río_Bravo))))
+              (sp
+                (Fc , ,)
+                (prep
+                  (sps00 con con))
+                (sn
+                  (espec.fs
+                    (di0fs0 una uno))
+                  (grup.nom.fs
+                    (ncfs000 potencia potencia)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.mp
+                          (Z 495 495))
+                        (grup.nom.mp
+                          (ncmp000 megavatios megavatio))))))
+                (Fc , ,))))))
+      (coord
+        (cc y y))
+      (S.NF.C*
+        (sn-CD
+          (espec.mp
+            (Z 134 134))
+          (grup.nom.mp
+            (ncmp000 millones millón)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.mp
+                  (Zm euros euro))))
+            (sn
+              (Fpa -Fpa- -Fpa-)
+              (espec.mp
+                (Z 28 28))
+              (grup.nom.mp
+                (ncmp000 millones millón)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.mp
+                      (Zm dólares dólar)))))
+              (Fpt -Fpt- -Fpt-))))
+        (sp-CCL
+          (prep
+            (sps00 en en))
+          (sn
+            (grup.nom
+              (np00000 Saltillo Saltillo)
+              (S.F.R.co
+                (Fc , ,)
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (sp-CC
+                    (prep
+                      (cs como como))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (s.a.fs
+                          (grup.a.fs
+                            (ao0fs0 primera primero))))))
+                  (grup.verb
+                    (vmif3s0 funcionará funcionar))
+                  (sp-CC
+                    (prep
+                      (sps00 con con))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 gas gas)
+                        (s.a.ms
+                          (grup.a.ms
+                            (aq0cs0 natural natural)))))))
+                (coord
+                  (cc y y))
+                (S.F.R
+                  (sn-SUJ
+                    (espec.fs
+                      (pr0fs000 cuya cuyo))
+                    (grup.nom.fs
+                      (ncfs000 potencia potencia)
+                      (S.NF.P
+                        (participi
+                          (aq0fsp prevista previsto)))))
+                  (grup.verb
+                    (vsip3s0 es ser))
+                  (sp-ATR
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.mp
+                        (Z 247 247))
+                      (grup.nom.mp
+                        (ncmp000 megavatios megavatio)))))))))))
+    (Fp . .)))

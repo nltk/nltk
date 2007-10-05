@@ -1,0 +1,324 @@
+
+(
+  (S
+    (sadv-CCT
+      (grup.adv
+        (sn
+          (grup.nom.mp
+            (ncmp000 Meses mes)))
+        (rg antes antes)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (dp3cs0 su su))
+            (grup.nom.fs
+              (ncfs000 expiración expiración)))))
+      (Fc , ,))
+    (sno-SUJ
+      (grup.nom
+        (np0000o Argentina Argentina)))
+    (grup.verb
+      (vmis3s0 denunció denunciar))
+    (sn-CD
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 acuerdo acuerdo)
+        (S.F.R
+          (Fc , ,)
+          (relatiu-SUJ
+            (pr0cn000 que que))
+          (sadv-CC
+            (grup.adv
+              (rg teóricamente teóricamente)))
+          (grup.verb
+            (vmii3s0 tenía tener))
+          (sp-CC
+            (prep
+              (cs como como))
+            (sn
+              (grup.nom.ms
+                (ncms000 objetivo objetivo))))
+          (S.NF.C-CD.Q
+            (infinitiu
+              (vmn0000 modernizar modernizar))
+            (sn-CD
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 flota flota)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 pesquera pesquero)))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (sp-CC
+        (prep
+          (sps00 En en))
+        (sn
+          (espec.fs
+            (da0fs0 la el))
+          (grup.nom.fs
+            (ncfs000 práctica práctica)))
+        (Fc , ,))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 acuerdo acuerdo)))
+      (grup.verb
+        (vmis3s0 supuso suponer))
+      (sn-CD
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 ampliación ampliación)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 flota flota)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 pesquera pesquero))))))))
+      (S.F.A-CC
+        (Fc , ,)
+        (conj.subord
+          (cs como como))
+        (grup.verb
+          (vmip3s0 demuestra demostrar))
+        (sn-CD
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 hecho hecho)
+            (sp
+              (prep
+                (sps00 de de))
+              (S.F.C.co
+                (conj.subord
+                  (cs que que))
+                (S.F.C
+                  (sp-CCT
+                    (prep
+                      (sps00 en en))
+                    (snd
+                      (grup.nom.ms
+                        (W 1992 [??:??/??/1992:??.??]))))
+                  (grup.verb
+                    (vaii3s0 había haber))
+                  (sn-CD.Q
+                    (espec.mp
+                      (Z 60 60))
+                    (grup.nom.mp
+                      (ncmp000 buques buque)
+                      (s.a.mp
+                        (grup.a.mp
+                          (aq0mp0 congeladores congelador)))
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.ms
+                            (di0ms0 todo todo))
+                          (grup.nom.ms
+                            (ncms000 tipo tipo))))))
+                  (sp-CCL
+                    (prep
+                      (sps00 en en))
+                    (sn
+                      (espec.ms
+                        (da0ms0 el el))
+                      (grup.nom.ms
+                        (ncms000 país país)))))
+                (coord
+                  (cc y y))
+                (S.F.C
+                  (sadv-CCT
+                    (grup.adv
+                      (rg hoy hoy)))
+                  (grup.verb
+                    (vaip3s0 hay haber))
+                  (snn-CD.Q
+                    (grup.nom.mp
+                      (Z 300 300)))))))))
+      (Fc , ,))
+    (grup.verb
+      (vmis3s0 dijo decir))
+    (sadv-CCT
+      (grup.adv
+        (rg hoy hoy)))
+    (sp-CI
+      (prep
+        (sps00 a a))
+      (sno
+        (grup.nom
+          (np0000o EFE EFE))))
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Juan_Villalonga Juan_Villalonga)
+        (sp
+          (Fc , ,)
+          (prep
+            (sps00 de de))
+          (sno
+            (grup.nom
+              (np0000o Greenpeace Greenpeace))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (snp-SUJ
+        (grup.nom.ms
+          (np0000p Villalonga Villalonga)))
+      (grup.verb
+        (vmis3s0 afirmó afirmar))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (grup.verb
+          (vais3s0 hubo haber))
+        (sn.co
+          (sn.co
+            (sn
+              (Fe " ")
+              (espec.fs
+                (di0fs0 poca poco))
+              (grup.nom.fs
+                (ncfs000 rigurosidad rigurosidad))
+              (Fe " "))
+            (coord
+              (cc e e))
+            (sn
+              (grup.nom.fp
+                (Fe " ")
+                (ncfp000 irregularidades irregularidad)
+                (Fe " "))))
+          (sp.j
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 concesión concesión)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 permisos permiso))))))))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmis3s0 señaló señalar))
+      (S.F.C-CD
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (sn
+            (Fe " ")
+            (espec.ms
+              (da0ns0 lo el))
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (aq0ms0 perverso perverso))))
+            (Fe " "))
+          (sp.j
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (ncms000 acuerdo acuerdo)))))
+        (grup.verb
+          (vsip3s0 es ser))
+        (S.F.C-ATR
+          (conj.subord
+            (cs que que))
+          (sn-SUJ
+            (espec.mp
+              (da0mp0 los el))
+            (grup.nom.mp
+              (ncmp000 barcos barco)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fp
+                    (da0fp0 las el))
+                  (grup.nom.fp
+                    (ncfp000 empresas empresa)
+                    (s.a.fp
+                      (grup.a.fp
+                        (aq0fp0 mixtas mixto))))))))
+          (neg-MOD
+            (rn no no))
+          (grup.verb
+            (vmis3p0 tuvieron tener)
+            (cs que que)
+            (infinitiu
+              (vmn0000 dejar dejar)
+              (sps00 de de)
+              (infinitiu
+                (vmn0000 faenar faenar))))
+          (sp-CC
+            (prep
+              (spcms al al))
+            (S.NF.C
+              (neg-MOD
+                (rn no no))
+              (infinitiu
+                (vsn0000 ser ser)
+                (vmp00sm renovado renovar))))
+          (S.F.A.co
+            (conj.subord
+              (cs pues pues))
+            (S.F.A
+              (sn.e-SUJ *0*)
+              (sadv-CCT
+                (grup.adv
+                  (rg ya ya)))
+              (grup.verb
+                (vmip3p0 están estar))
+              (S.NF.P-ATR
+                (participi
+                  (aq0mpp integrados integrado))
+                (sp
+                  (prep
+                    (sps00 en en))
+                  (sn
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 flota flota)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0fs0 argentina argentino))))))))
+            (coord
+              (cc y y))
+            (S.F.A
+              (sn.e-SUJ *0*)
+              (grup.verb
+                (vmip3p0 tienen tener))
+              (sn-CD
+                (grup.nom.fs
+                  (ncfs000 bandera bandera)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.ms
+                        (dd0ms0 este este))
+                      (grup.nom.ms
+                        (ncms000 país país)))))))))))
+    (Fp . .)))

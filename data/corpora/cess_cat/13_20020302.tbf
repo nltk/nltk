@@ -1,0 +1,121 @@
+
+(
+  (S
+    (sp.co-CCT
+      (sp
+        (prep
+          (sps00 Des_de des_de))
+        (sadv
+          (grup.adv
+            (rg demà demà)))
+        (Fc , ,))
+      (coord
+        (cc i i))
+      (sp
+        (prep
+          (sps00 amb amb))
+        (sn
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs
+            (ncfs000 periodicitat periodicitat)
+            (s.a.fs
+              (grup.a.fs
+                (aq0cs0 quinzenal quinzenal))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 les el))
+      (grup.nom.fp
+        (ncfp000 pàgines pàgina)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 opinió opinió))))
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom
+              (np00000 EL_PERIÓDICO EL_PERIÓDICO))))))
+    (grup.verb
+      (vmif3p0 incorporaran incorporar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 secció secció)
+        (sn
+          (grup.nom
+            (np00000 Ccorrespondència Ccorrespondència)
+            (sp
+              (prep
+                (sps00 entre entre))
+              (sn.x
+                (grup.nom.co
+                  (grup.nom
+                    (np00000 Barcelona Barcelona))
+                  (coord
+                    (cc i i))
+                  (grup.nom
+                    (np00000 Madrid Madrid)))))))
+        (S.F.R
+          (Fc , ,)
+          (sp-CCL
+            (prep
+              (sps00 en en))
+            (relatiu
+              (da0fs0 la el)
+              (pr0cs000 qual qual)))
+          (sn.co-SUJ
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 comte comte)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom
+                      (np00000 Sert Sert))))))
+            (coord
+              (cc i i))
+            (sn
+              (grup.nom.ms
+                (np00000 Nicolás_Sartorius Nicolás_Sartorius))))
+          (grup.verb
+            (vmif3p0 analitzaran analitzar))
+          (sn-CD
+            (grup.nom.mp
+              (ncmp000 temes tema)
+              (sp
+                (prep
+                  (sps00 d' de))
+                (sn
+                  (grup.nom.fs
+                    (ncfs000 actualitat actualitat))))
+              (S.NF.P
+                (participi
+                  (aq0mpp vistos vist))
+                (sp-CC
+                  (prep
+                    (sps00 des_de des_de))
+                  (sn
+                    (espec.fp
+                      (da0fp0 les el)
+                      (di0cp0 diferents diferent))
+                    (grup.nom.fp
+                      (ncfp000 òptiques òptica)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.fp
+                            (da0fp0 les el)
+                            (dn0fp0 dues dos))
+                          (grup.nom.fp
+                            (ncfp000 capitals capital)))))))))))))
+    (Fp . .)))

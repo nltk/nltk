@@ -1,0 +1,1001 @@
+
+(
+  (S
+    (sn.co-SUJ
+      (snl
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 riu riu)
+          (np0000l Ebre Ebre)))
+      (Fc , ,)
+      (sn
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 patrimoni patrimoni)
+          (s.a.ms.x
+            (grup.a.ms.co
+              (grup.a.ms
+                (aq0cs0 natural natural))
+              (coord
+                (cc i i))
+              (grup.a.ms
+                (aq0cs0 cultural cultural))))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fp
+                (da0fp0 les el))
+              (grup.nom.fp
+                (ncfp000 terres terra)
+                (s.a.fp
+                  (grup.a.fp
+                    (aq0fp0 ebrenques ebrenc)))))))
+        (Fc , ,))
+      (coord
+        (cc i i))
+      (sn.x
+        (espec.fp
+          (da0fp0 les el))
+        (grup.nom.co
+          (grup.nom.fp
+            (ncfp000 infraestructures infraestructura))
+          (coord
+            (cc i i))
+          (grup.nom.ms
+            (ncms000 plantejament plantejament)))))
+    (grup.verb
+      (vsip3p0 són ser))
+    (sn-ATR
+      (espec.mp
+        (da0mp0 els el))
+      (grup.nom.mp
+        (s.a.mp
+          (grup.a.mp
+            (aq0cp0 grans gran)))
+        (ncmp000 blocs bloc)
+        (s.a.mp
+          (grup.a.mp
+            (aq0mp0 temàtics temàtic)))
+        (sp
+          (prep
+            (spcms del del))
+          (sn
+            (grup.nom.ms
+              (s.a.ms
+                (grup.a.ms
+                  (ao0ms0 darrer darrer)))
+              (ncms000 número número)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sna
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 revista revista)
+                    (sna
+                      (grup.nom
+                        (Fz ' ')
+                        (np0000a Espais Espais)
+                        (Fz ' ')))
+                    (S.NF.P.co
+                      (Fc , ,)
+                      (S.NF.P
+                        (participi
+                          (aq0fsp publicada publicat))
+                        (sp-CAG
+                          (prep
+                            (spcms pel pel))
+                          (sno
+                            (grup.nom.ms
+                              (np0000o Departament_de_Política_Territorial_i_Obres_Públiques Departament_de_Política_Territorial_i_Obres_Públiques)
+                              (sp
+                                (prep
+                                  (sps00 de de))
+                                (sno
+                                  (espec.fs
+                                    (da0fs0 la el))
+                                  (grup.nom.fs
+                                    (np0000o Generalitat_de_Catalunya Generalitat_de_Catalunya)))))))
+                        (Fc , ,))
+                      (coord
+                        (cc i i))
+                      (S.NF.P
+                        (participi
+                          (aq0fsp dedicada dedicat))
+                        (sadv-CC
+                          (grup.adv
+                            (rg monogràficament monogràficament)))
+                        (sp-CREG
+                          (prep
+                            (sps00 a a))
+                          (snl
+                            (grup.nom
+                              (np0000l Les_Terres_de_l'_Ebre Les_Terres_de_l'_Ebre))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 conseller conseller)
+        (snp
+          (grup.nom.ms
+            (np0000p Pere_Macias Pere_Macias)))))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm presentat presentar))
+    (sadv-CC
+      (grup.adv
+        (rg avui avui)))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 publicació publicació)))
+    (sp-CC
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 seu seu)
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (np0000o Institut_per_al_Desenvolupament_de_les_Comarques_de_l'_Ebre Institut_per_al_Desenvolupament_de_les_Comarques_de_l'_Ebre)
+                (sno
+                  (grup.nom.ms
+                    (Fpa -Fpa- -Fpa-)
+                    (np0000o IDECE IDECE)
+                    (Fpt -Fpt- -Fpt-)))))))))
+    (Fp . .)))
+(
+  (S
+    (S.F.C-CD
+      (Fz ' ')
+      (sp-CC
+        (prep
+          (spcmp Dels del))
+        (snn
+          (espec.mp
+            (Z 46 46))
+          (grup.nom.mp
+            (ncmp000 números número)
+            (S.NF.P
+              (participi
+                (aq0mpp editats editat))
+              (sp-CC
+                (prep
+                  (sps00 fins fins))
+                (sadv
+                  (grup.adv
+                    (rg ara ara)))))))
+        (Fc , ,))
+      (sn-SUJ
+        (grup.nom.fs
+          (pd0fs000 aquesta aquest)))
+      (grup.verb
+        (vsip3s0 és ser))
+      (sn-ATR
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (s.a.fs
+            (grup.a.fs
+              (ao0fs0 primera primer)))
+          (ncfs000 vegada vegada)
+          (S.F.R
+            (relatiu-CC
+              (pr0cn000 que que))
+            (sna-SUJ
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 revista revista)
+                (sna
+                  (grup.nom
+                    (np0000a Espais Espais)))))
+            (grup.verb
+              (vmip3s0 té tenir))
+            (sn-CD.Q
+              (espec.ms
+                (dn0ms0 un un))
+              (grup.nom.ms
+                (ncms000 tema tema)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 monogràfic monogràfic))))))))
+      (Fz ' ')
+      (Fc , ,))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm explicat explicar))
+    (snp-SUJ
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 director director)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 publicació publicació))))
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (np0000p Francesc_Vilaró Francesc_Vilaró))
+          (Fc , ,))))
+    (sp-CC
+      (prep
+        (sps00 durant durant))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 presentació presentació)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 publicació publicació))))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vaip3s0 ha haver)
+              (vmp00sm tingut_lloc tenir_lloc))
+            (sp-CREG
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 seu seu)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sno
+                      (espec.ms
+                        (da0cs0 l' el))
+                      (grup.nom.ms
+                        (np0000o Institut_per_al_Desenvolupament_de_les_Comarques_de_l'_Ebre Institut_per_al_Desenvolupament_de_les_Comarques_de_l'_Ebre)))))))
+            (sp-CC
+              (Fc , ,)
+              (prep
+                (sps00 en en))
+              (sn
+                (espec.ms
+                  (di0ms0 un un))
+                (grup.nom.ms
+                  (ncms000 acte acte)
+                  (S.NF.P
+                    (participi
+                      (aq0msp presidit presidit))
+                    (sp-CAG
+                      (prep
+                        (spcms pel pel))
+                      (snp
+                        (grup.nom.ms
+                          (ncms000 conseller conseller)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (sno
+                              (grup.nom
+                                (np0000o Política_Territorial_i_Obres_Públiques Política_Territorial_i_Obres_Públiques))))
+                          (snp
+                            (Fc , ,)
+                            (grup.nom.ms
+                              (np0000p Pere_Macias Pere_Macias))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (espec.ms
+          (di0ms0 Un un))
+        (grup.nom.ms
+          (s.a.ms
+            (grup.a.ms
+              (aq0ms0 nombrós nombrós)))
+          (ncms000 grup grup)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn.x
+              (grup.nom.co
+                (grup.nom.co
+                  (grup.nom.mp
+                    (ncmp000 alcaldes alcalde))
+                  (coord
+                    (cc i i))
+                  (grup.nom.mp
+                    (ncmp000 regidors regidor)))
+                (sp.j
+                  (prep
+                    (spcmp dels del))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 ajuntaments ajuntament)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (snl
+                          (espec.fp
+                            (da0fp0 les el))
+                          (grup.nom.fp
+                            (ncfp000 comarques comarca)
+                            (sp
+                              (prep
+                                (sps00 de de))
+                              (snl
+                                (espec.ms
+                                  (da0cs0 l' el))
+                                (grup.nom.ms
+                                  (np0000l Ebre Ebre)))))))))))))))
+      (Fc , ,)
+      (sn
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (ncmp000 presidents president)
+          (sp
+            (prep
+              (spcmp dels del))
+            (sn
+              (grup.nom.mp
+                (ncmp000 consells consell)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0cp0 comarcals comarcal)))
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn.x
+                    (grup.nom.co
+                      (grup.nom.ms
+                        (np0000l Baix_Ebre Baix_Ebre))
+                      (Fc , ,)
+                      (grup.nom
+                        (np0000l La_Ribera_d'_Ebre La_Ribera_d'_Ebre))
+                      (Fc , ,)
+                      (grup.nom
+                        (np0000l El_Montsià El_Montsià))
+                      (coord
+                        (cc i i))
+                      (grup.nom
+                        (np0000l La_Terra_Alta La_Terra_Alta)))))))))
+        (Fc , ,))
+      (coord
+        (cc i i))
+      (sn
+        (grup.nom.mp
+          (nccp000 representants representant)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (di0mp0 diversos divers))
+              (grup.nom.mp
+                (ncmp000 organismes organisme)
+                (s.a.mp
+                  (grup.a.mp
+                    (aq0cp0 oficials oficial)))))))))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vmp00sm participat participar))
+    (sp-CREG
+      (prep
+        (sps00 a a))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 acte acte)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (ncfs000 presentació presentació))))
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 revista revista)))))))
+    (Fp . .)))
+(
+  (S
+    (morfema.verbal-IMPERS
+      (p0000000 Es es))
+    (grup.verb
+      (vmip3s0 tracta tractar))
+    (sp-CREG
+      (prep
+        (sps00 d' de))
+      (sn
+        (espec.fs
+          (di0fs0 una un))
+        (grup.nom.fs
+          (ncfs000 publicació publicació)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fp
+                (Z 84 84))
+              (grup.nom.fp
+                (ncfp000 pàgines pàgina))))
+          (sp
+            (Fc , ,)
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fs
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0cs0 gran gran)))
+                (ncfs000 qualitat qualitat)
+                (s.a.fs.co
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 fotogràfica fotogràfic)))
+                  (coord
+                    (cc i i))
+                  (sp
+                    (prep
+                      (sps00 d' de))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 impressió impressió)))))))
+            (Fc , ,))
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vaip3s0 ha haver)
+              (vmp00sm comptat comptar))
+            (sp-CREG
+              (prep
+                (sps00 amb amb))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 col·laboració col·laboració)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0cs0 redaccional redaccional)))
+                  (sp.co
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sn
+                        (espec.fp
+                          (di0fp0 moltes molt))
+                        (grup.nom.fp
+                          (ncfp000 personalitats personalitat)
+                          (sp
+                            (prep
+                              (sps00 de de))
+                            (snl
+                              (grup.nom
+                                (np0000l Les_Terres_de_l'_Ebre Les_Terres_de_l'_Ebre)))))))
+                    (coord
+                      (cc i i))
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sn
+                        (grup.nom.ms
+                          (s.a.ms
+                            (grup.a.ms
+                              (aq0ms0 propi propi)))
+                          (ncms000 departament departament))))))))
+            (sp-CC
+              (Fc , ,)
+              (prep
+                (sps00 sota sota))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 coordinació coordinació)
+                  (s.a.fs
+                    (grup.a.fs
+                      (aq0fs0 tècnica tècnic)))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snp
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 directora directora)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sno
+                            (espec.ms
+                              (da0cs0 l' el))
+                            (grup.nom.ms
+                              (np0000o IDECE IDECE))))
+                        (snp
+                          (Fc , ,)
+                          (grup.nom.fs
+                            (np0000p Teresa_Moya Teresa_Moya)))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 publicació publicació)))
+    (grup.verb
+      (vmip3s0 inclou incloure))
+    (sn-CD
+      (grup.nom.mp
+        (ncmp000 articles article)
+        (S.NF.P
+          (participi
+            (aq0mpp signats signat))
+          (sp-CAG
+            (sp.j
+              (Fc , ,)
+              (prep
+                (sps00 entre entre))
+              (sp
+                (prep
+                  (sps00 d' de))
+                (sn
+                  (grup.nom.mp
+                    (pi0cp000 altres altre))))
+              (Fc , ,))
+            (sp
+              (prep
+                (spcms pel pel))
+              (sn.co
+                (snp
+                  (grup.nom.ms
+                    (ncms000 director director)
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sno
+                        (grup.nom.ms
+                          (np0000o Museu_Comarcal_del_Montsià Museu_Comarcal_del_Montsià))))
+                    (snp
+                      (Fc , ,)
+                      (grup.nom.ms
+                        (np0000p Alex_Farnós Alex_Farnós)))))
+                (Fx ; ;)
+                (snp
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 presidenta presidenta)
+                    (sp
+                      (prep
+                        (spcms del del))
+                      (sno
+                        (grup.nom.ms
+                          (np0000o Parc_Natural_del_Delta_de_l'_Ebre Parc_Natural_del_Delta_de_l'_Ebre))))
+                    (snp
+                      (Fc , ,)
+                      (grup.nom.fs
+                        (np0000p Imma_Juan Imma_Juan)))))
+                (Fx ; ;)
+                (snp
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 president president)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sno
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (np0000o Confraria_de_Pescadors_de_l'_Ampolla Confraria_de_Pescadors_de_l'_Ampolla))))
+                    (snp
+                      (Fc , ,)
+                      (grup.nom.ms
+                        (np0000p Josep_Molina Josep_Molina)))))
+                (Fx ; ;)
+                (snp
+                  (espec.ms
+                    (da0ms0 el el))
+                  (grup.nom.ms
+                    (ncms000 president president)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (sno
+                        (espec.fs
+                          (da0fs0 la el))
+                        (grup.nom.fs
+                          (np0000o Federació_de_Cooperatives_Agràries_de_Catalunya Federació_de_Cooperatives_Agràries_de_Catalunya))))
+                    (snp
+                      (Fc , ,)
+                      (grup.nom.ms
+                        (np0000p Francesc_Martí Francesc_Martí))))
+                  (Fx ; ;))
+                (coord
+                  (cc i i))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (s.a.fs
+                      (grup.a.fs
+                        (aq0fs0 pràctica pràctic)))
+                    (ncfs000 totalitat totalitat)
+                    (sp
+                      (prep
+                        (sps00 d' de))
+                      (sn
+                        (grup.nom.mp
+                          (s.a.mp
+                            (grup.a.mp
+                              (aq0mp0 alts alt)))
+                          (ncmp000 càrrecs càrrec)
+                          (sp
+                            (prep
+                              (spcms del del))
+                            (sn
+                              (grup.nom.ms
+                                (ncms000 departament departament)))))))
+                    (S.NF.A
+                      (Fc , ,)
+                      (gerundi
+                        (vmg0000 començant començar))
+                      (sp
+                        (prep
+                          (spcms pel pel))
+                        (snp
+                          (grup.nom.ms
+                            (s.a.ms
+                              (grup.a.ms
+                                (aq0ms0 propi propi)))
+                            (ncms000 conseller conseller)
+                            (snp
+                              (grup.nom.ms
+                                (np0000p Pere_Macias Pere_Macias)))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.fs
+        (da0fs0 La el))
+      (grup.nom.fs
+        (ncfs000 revista revista)))
+    (sadv-MOD
+      (grup.adv
+        (rg també també)))
+    (grup.verb
+      (vmip3s0 inclou incloure))
+    (sn-CD
+      (grup.nom.mp
+        (ncmp000 articles article)
+        (sp.co
+          (sp
+            (prep
+              (spcms del del))
+            (snp
+              (grup.nom.ms
+                (ncms000 secretari secretari)
+                (sp
+                  (prep
+                    (sps00 per per))
+                  (sp
+                    (prep
+                      (sps00 a a))
+                    (sna
+                      (espec.fp
+                        (da0fp0 les el))
+                      (grup.nom.fp
+                        (np0000a Actuacions_Concertades_,_l'_Urbanisme_i_l'_Habitatge Actuacions_Concertades_,_l'_Urbanisme_i_l'_Habitatge)))))
+                (snp
+                  (Fc , ,)
+                  (grup.nom.ms
+                    (np0000p Ramon_Roger Ramon_Roger))))))
+          (Fx ; ;)
+          (sp
+            (prep
+              (spcms del del))
+            (snp
+              (grup.nom.ms
+                (nccs000 cap cap)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sno
+                    (grup.nom.ms
+                      (np0000o Servei_de_Programació_i_Avaluació Servei_de_Programació_i_Avaluació))))
+                (snp
+                  (Fc , ,)
+                  (grup.nom.ms
+                    (np0000p Joan_Torredeflot Joan_Torredeflot))))))
+          (Fx ; ;)
+          (sp
+            (prep
+              (spcms del del))
+            (sn
+              (grup.nom.ms
+                (nccs000 responsable responsable)
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.mp
+                      (ncmp000 projectes projecte))))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (snp
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 direcció direcció)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0cs0 general general)))
+                      (sp
+                        (prep
+                          (sps00 d' de))
+                        (sno
+                          (grup.nom
+                            (np0000o Actuacions_Concertades_,_Arquitectura_i_Habitatge Actuacions_Concertades_,_Arquitectura_i_Habitatge)))))))
+                (snp
+                  (Fc , ,)
+                  (grup.nom.ms
+                    (np0000p Jordi_Segura Jordi_Segura))))))
+          (Fx ; ;)
+          (sp
+            (prep
+              (spcms del del))
+            (snp
+              (grup.nom.ms
+                (ncms000 director director)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 general general)))
+                (sp
+                  (prep
+                    (sps00 d' de))
+                  (sno
+                    (grup.nom
+                      (np0000o Ordenació_del_Territori_i_Urbanisme Ordenació_del_Territori_i_Urbanisme))))
+                (snp
+                  (Fc , ,)
+                  (grup.nom.ms
+                    (np0000p Joan_Llort Joan_Llort))))))
+          (Fx ; ;)
+          (sp
+            (prep
+              (spcms del del))
+            (snp
+              (grup.nom.ms
+                (ncms000 director director)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 general general)))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sno
+                    (grup.nom
+                      (np0000o Ports_i_Transports Ports_i_Transports))))
+                (snp
+                  (Fc , ,)
+                  (grup.nom.ms
+                    (np0000p Enric_Ticó Enric_Ticó))))))
+          (Fx ; ;)
+          (sp
+            (prep
+              (spcms del del))
+            (snp
+              (grup.nom.ms
+                (ncms000 director director)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 general general)))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sno
+                    (grup.nom
+                      (np0000o Carreteres Carreteres))))
+                (snp
+                  (Fc , ,)
+                  (grup.nom.ms
+                    (np0000p Jordi_Follia Jordi_Follia)))))
+            (Fx ; ;))
+          (coord
+            (cc i i))
+          (sp
+            (prep
+              (spcms del del))
+            (snp
+              (grup.nom.ms
+                (ncms000 director director)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sno
+                    (grup.nom.ms
+                      (np0000o Programa_de_Planejament_Territorial Programa_de_Planejament_Territorial))))
+                (snp
+                  (Fc , ,)
+                  (grup.nom.ms
+                    (np0000p Joan_Antoni_Solans Joan_Antoni_Solans)))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-CC
+      (prep
+        (sps00 Durant durant))
+      (sn
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 presentació presentació)
+          (sp
+            (prep
+              (sps00 d' de))
+            (sn
+              (espec.ms
+                (dd0ms0 aquest aquest))
+              (grup.nom.ms
+                (ncms000 número número)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 monogràfic monogràfic)))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sna
+                    (espec.fs
+                      (da0fs0 la el))
+                    (grup.nom.fs
+                      (ncfs000 revista revista)
+                      (sna
+                        (grup.nom
+                          (np0000a Espais Espais))))))))))))
+    (snp-SUJ
+      (Fc , ,)
+      (espec.ms
+        (da0ms0 el el))
+      (grup.nom.ms
+        (ncms000 conseller conseller)
+        (sp
+          (prep
+            (sps00 de de))
+          (sno
+            (grup.nom
+              (np0000o Política_Territorial_i_Obres_Públiques Política_Territorial_i_Obres_Públiques))))
+        (snp
+          (Fc , ,)
+          (grup.nom.ms
+            (np0000p Pere_Macias Pere_Macias))))
+      (Fc , ,))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm manifestat manifestar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 publicació publicació)))
+      (Fz ' ')
+      (grup.verb
+        (vsip3s0 és ser))
+      (sp-ATR
+        (prep
+          (cs com com))
+        (sn
+          (espec.fs
+            (di0fs0 una un))
+          (grup.nom.fs
+            (ncfs000 carta carta)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 presentació presentació))))
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.fs
+                  (da0cs0 l' el))
+                (grup.nom.fs
+                  (ncfs000 autoestima autoestima)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snl
+                      (grup.nom
+                        (np0000l Les_Terres_de_l'_Ebre Les_Terres_de_l'_Ebre))))))))))
+      (Fz ' '))
+    (Fp . .)))
+(
+  (S
+    (snp-SUJ
+      (grup.nom.ms
+        (np0000p Macias Macias)))
+    (grup.verb
+      (vaip3s0 ha haver)
+      (vmp00sm remarcat remarcar))
+    (sn-CD
+      (espec.fs
+        (da0fs0 la el))
+      (grup.nom.fs
+        (ncfs000 necessitat necessitat)
+        (sp
+          (prep
+            (sps00 de de))
+          (S.NF.C
+            (Fz ' ')
+            (infinitiu
+              (vmn0000 canviar canviar))
+            (sn-CD
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 comportament comportament)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 social social)))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom.fs
+                      (ncfs000 depressió depressió))))))
+            (sp-CC
+              (prep
+                (spcms pel pel))
+              (sn
+                (grup.nom.ms
+                  (ncms000 comportament comportament)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0cs0 social social)))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (sn
+                      (espec.fs
+                        (da0fs0 la el))
+                      (grup.nom.fs
+                        (ncfs000 il·lusió il·lusió)))))))
+            (Fz ' ')))))
+    (Fp . .)))

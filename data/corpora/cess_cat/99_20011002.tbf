@@ -1,0 +1,120 @@
+
+(
+  (S
+    (sn-ATR
+      (espec.mp
+        (da0mp0 Els el))
+      (grup.nom.mp
+        (ncmp000 candidats candidat)
+        (sp
+          (prep
+            (sps00 a a))
+          (S.NF.C.co
+            (S.NF.C.co
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 construir construir)))
+              (coord
+                (cc i i))
+              (S.NF.C
+                (infinitiu
+                  (vmn0000 explotar explotar))))
+            (sn.j-CD
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (ncms000 enllaç enllaç)
+                (sp
+                  (prep
+                    (sps00 amb amb))
+                  (sn
+                    (grup.nom
+                      (np00000 França França))))))))))
+    (grup.verb
+      (vsip3p0 són ser))
+    (sn-SUJ
+      (espec.fp
+        (da0fp0 les el))
+      (grup.nom.fp
+        (s.a.fp
+          (grup.a.fp
+            (aq0cp0 següents següent)))
+        (ncfp000 unions unió)
+        (sp
+          (prep
+            (sps00 d' de))
+          (sn
+            (grup.nom.fp
+              (ncfp000 empreses empresa))))
+        (sn.co
+          (Fd : :)
+          (sn.x
+            (grup.nom.co
+              (grup.nom
+                (np00000 Dragados Dragados))
+              (coord
+                (cc i i))
+              (grup.nom
+                (np00000 Buygues Buygues))))
+          (Fx ; ;)
+          (sn.co
+            (sn
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (ncmn000 ens ens)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0ms0 gestor gestor)))
+                (sn
+                  (grup.nom
+                    (np00000 GiF GiF)))))
+            (coord
+              (cc i i))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np00000 Réseau_Ferré_de_France Réseau_Ferré_de_France))))
+          (Fx ; ;)
+          (sn.x
+            (grup.nom.co
+              (grup.nom
+                (np00000 Ferrovial_Agromán Ferrovial_Agromán))
+              (coord
+                (cc i i))
+              (grup.nom
+                (np00000 Vinci_Construcción Vinci_Construcción))))
+          (Fx ; ;)
+          (sn.x
+            (grup.nom.co
+              (grup.nom
+                (np00000 Necso_Entrecanales Necso_Entrecanales))
+              (coord
+                (cc i i))
+              (grup.nom
+                (np00000 Sacyr Sacyr))))
+          (Fx ; ;)
+          (sn.x
+            (grup.nom.co
+              (grup.nom
+                (np00000 ACS ACS))
+              (Fc , ,)
+              (grup.nom
+                (np00000 Cobra Cobra))
+              (coord
+                (cc i i))
+              (grup.nom
+                (np00000 Eiffage Eiffage)))
+            (Fx ; ;))
+          (coord
+            (cc i i))
+          (sn.x
+            (grup.nom.co
+              (grup.nom
+                (np00000 FCC FCC))
+              (coord
+                (cc i i))
+              (grup.nom
+                (np00000 Caja_Madrid Caja_Madrid)))))))
+    (Fp . .)))

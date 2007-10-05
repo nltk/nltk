@@ -1,0 +1,630 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (di0ms0 Un un))
+      (grup.nom.ms
+        (ncms000 estudi estudi)
+        (S.NF.P
+          (participi
+            (aq0msp realitzat realitzat))
+          (sp-CAG
+            (prep
+              (sps00 per per))
+            (sno
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000o Fundació_per_una_Nova_Cultura_de_l'_Aigua Fundació_per_una_Nova_Cultura_de_l'_Aigua)))))
+        (sp
+          (prep
+            (sps00 sobre sobre))
+          (sn
+            (espec.mp
+              (da0mp0 els el))
+            (grup.nom.mp
+              (ncmp000 costos cost)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 dessalació dessalació)))))))))
+    (grup.verb
+      (vmip3s0 revela revelar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sn-SUJ
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (ncms000 cabal cabal)
+          (S.NF.P
+            (participi
+              (aq0msp transvasat transvasat))
+            (sp-CC
+              (prep
+                (sps00 des_de des_de))
+              (snl
+                (espec.ms
+                  (da0cs0 l' el))
+                (grup.nom.ms
+                  (np0000l Ebre Ebre))))
+            (sp-CC
+              (prep
+                (sps00 a a))
+              (sn
+                (espec.fp
+                  (da0fp0 les el))
+                (grup.nom.fp
+                  (ncfp000 conques conca)
+                  (s.a.fp
+                    (grup.a.fp
+                      (aq0fp0 deficitàries deficitari)))
+                  (sp
+                    (prep
+                      (spcms al al))
+                    (sn
+                      (grup.nom.ms
+                        (ncms000 sud sud)
+                        (sp
+                          (prep
+                            (sps00 de de))
+                          (sno
+                            (espec.ms
+                              (da0cs0 l' el))
+                            (grup.nom.ms
+                              (np0000o Estat Estat)
+                              (s.a.ms
+                                (grup.a.ms
+                                  (aq0ms0 espanyol espanyol))))))))))))))
+        (Fc , ,))
+      (grup.verb
+        (vmif3s0 resultarà resultar))
+      (Fz ' ')
+      (sadv-MOD
+        (grup.adv
+          (rg com_a_mínim com_a_mínim))
+        (Fc , ,))
+      (sa-CPRED.SUJ
+        (sa
+          (espec
+            (snn.j
+              (espec.ms
+                (di0ms0 un un))
+              (grup.nom.ms
+                (Zp 66_% 66_%)))
+            (sadv
+              (grup.adv
+                (rg més més))))
+          (grup.a
+            (aq0ms0 car car)))
+        (S.F.AComp*.j
+          (conj.subord
+            (cs que que))
+          (S.F.C
+            (conj.subord
+              (cs si si))
+            (morfema.verbal-PASS
+              (p0000000 es es))
+            (grup.verb
+              (vmsi3s0 tractés tractar))
+            (sn-SUJ
+              (grup.nom.fs
+                (ncfs000 aigua aigua)
+                (S.NF.P
+                  (participi
+                    (aq0fsp salada salat))))))))
+      (Fz ' '))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 estudi estudi)))
+    (grup.verb
+      (vmip3s0 afirma afirmar))
+    (S.F.C.co-CD
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (sn-SUJ
+          (espec.fs
+            (da0cs0 l' el))
+          (grup.nom.fs
+            (ncfs000 aigua aigua)
+            (sp
+              (prep
+                (spcms del del))
+              (sn
+                (grup.nom.ms
+                  (ncms000 transvasament transvasament)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snl
+                      (espec.ms
+                        (da0cs0 l' el))
+                      (grup.nom.ms
+                        (np0000l Ebre Ebre)))))))))
+        (grup.verb
+          (vsif3s0 serà ser))
+        (sp-ATR
+          (prep
+            (sps00 de de))
+          (sn
+            (grup.nom.fs
+              (ncfs000 qualitat qualitat)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 inferior inferior)))))))
+      (coord
+        (cc i i))
+      (S.F.C
+        (conj.subord
+          (cs que que))
+        (Fz ' ')
+        (sn.e-SUJ *0*)
+        (neg-MOD
+          (rn no no))
+        (grup.verb
+          (vmif3s0 podrà poder)
+          (infinitiu
+            (vmn0000 complir complir)))
+        (sn-CD
+          (espec.mp
+            (da0mp0 els el))
+          (grup.nom.mp
+            (ncmp000 mínims mínim)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 prepotabilitat prepotabilitat))))
+            (S.NF.P
+              (participi
+                (aq0mpp recomanats recomanat))
+              (sp-CAG
+                (prep
+                  (sps00 per per))
+                (sno
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (np0000o Unió_Europea Unió_Europea)))))))
+        (Fz ' ')))
+    (Fp . .)))
+(
+  (S
+    (sno-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (np0000o Ministeri_de_Medi_Ambient Ministeri_de_Medi_Ambient)))
+    (grup.verb
+      (vmip3s0 estableix establir))
+    (S.F.C.co-CD
+      (conj.subord
+        (cs que que))
+      (S.F.C
+        (sn-SUJ
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 preu preu)
+            (sp
+              (prep
+                (sps00 de de))
+              (sn
+                (espec.ms
+                  (di0cs0 cada cada))
+                (grup.nom.ms
+                  (ncms000 metre metre)
+                  (s.a.ms
+                    (grup.a.ms
+                      (aq0ms0 cúbic cúbic)))
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (snl
+                      (espec.ms
+                        (da0cs0 l' el))
+                      (grup.nom.ms
+                        (np0000l Ebre Ebre)))))))))
+        (grup.verb
+          (vmif3s0 suposarà suposar))
+        (sn-CD
+          (espec.ms
+            (dn0ms0 un un))
+          (grup.nom.ms
+            (ncms000 cost cost)
+            (sp
+              (prep
+                (sps00 de de))
+              (snn
+                (espec.mp
+                  (Z 0,3 0.3))
+                (grup.nom.mp
+                  (Zm euros euro))))))
+        (sp-CC
+          (prep
+            (sps00 per per))
+          (sn
+            (espec.fp
+              (da0fp0 les el))
+            (grup.nom.fp
+              (ncfp000 conques conca)
+              (s.a.fp
+                (grup.a.fp
+                  (aq0fp0 receptores receptor))))))
+        (Fc , ,))
+      (coord
+        (cc mentre_que mentre_que))
+      (S.F.C
+        (sn-SUJ
+          (espec.ms
+            (da0ms0 el el)
+            (di0ms0 mateix mateix))
+          (grup.nom.ms
+            (ncms000 volum volum)
+            (sp
+              (prep
+                (sps00 d' de))
+              (sn
+                (grup.nom.fs
+                  (ncfs000 aigua aigua)
+                  (sp
+                    (prep
+                      (sps00 per per))
+                    (sn
+                      (grup.nom.fs
+                        (ncfs000 dessalació dessalació)))))))))
+        (grup.verb
+          (vmic3s0 pujaria pujar))
+        (sp-AO
+          (Fc , ,)
+          (prep
+            (sps00 segons segons))
+          (sna
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 llei llei)
+              (sp
+                (prep
+                  (spcms del del))
+                (sna
+                  (grup.nom.ms
+                    (np0000a Pla_Hidrològic_Nacional Pla_Hidrològic_Nacional)))))))
+        (sp-CREG
+          (prep
+            (spcmp als al))
+          (snn
+            (espec.mp
+              (Z 0,60 0.60))
+            (grup.nom.mp
+              (Zm euros euro))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 Els el))
+        (grup.nom.mp
+          (ncmp000 científics científic)
+          (S.F.R
+            (relatiu-SUJ
+              (pr0cn000 que que))
+            (grup.verb
+              (vaip3p0 han haver)
+              (vmp00sm elaborat elaborar))
+            (sn-CD
+              (espec.ms
+                (da0cs0 l' el))
+              (grup.nom.ms
+                (ncms000 estudi estudi)
+                (sp
+                  (prep
+                    (sps00 sobre sobre))
+                  (sn
+                    (espec.mp
+                      (da0mp0 els el))
+                    (grup.nom.mp
+                      (ncmp000 costos cost)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (sn
+                          (espec.fs
+                            (da0fs0 la el))
+                          (grup.nom.fs
+                            (ncfs000 dessalació dessalació))))))))))
+          (sp
+            (prep
+              (sps00 de de))
+            (sno
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (np0000o Fundació_per_una_Nova_Cultura_de_l'_Aigua Fundació_per_una_Nova_Cultura_de_l'_Aigua))))))
+      (grup.verb
+        (vmip3p0 contradiuen contradir))
+      (sno-CD
+        (espec.ms
+          (da0ms0 el el))
+        (grup.nom.ms
+          (np0000o Ministeri Ministeri))))
+    (coord
+      (cc i i))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3p0 afirmen afirmar))
+      (S.F.C.co-CD
+        (conj.subord
+          (cs que que))
+        (S.F.C
+          (sn-SUJ
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 preu preu)
+              (sp
+                (prep
+                  (sps00 de de))
+                (sn
+                  (espec.fs
+                    (da0fs0 la el))
+                  (grup.nom.fs
+                    (ncfs000 dessalació dessalació))))))
+          (Fz ' ')
+          (grup.verb
+            (vmip3s0 està estar)
+            (gerundi
+              (vmg0000 baixant baixar)))
+          (sadv-CC
+            (grup.adv
+              (rg considerablement considerablement)))
+          (sp-CC
+            (prep
+              (sps00 en en))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 mercat mercat)
+                (s.a.ms
+                  (grup.a.ms
+                    (aq0cs0 internacional internacional)))))))
+        (coord
+          (cc i i))
+        (S.F.C
+          (sno-SUJ
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 govern govern)
+              (sp
+                (prep
+                  (sps00 de de))
+                (snl
+                  (espec.ms
+                    (da0cs0 l' el))
+                  (grup.nom.ms
+                    (np0000l Estat Estat)
+                    (s.a.ms
+                      (grup.a.ms
+                        (aq0ms0 espanyol espanyol))))))))
+          (grup.verb
+            (vmip3s0 segueix seguir)
+            (gerundi
+              (vmg0000 deixant_de_banda deixar_de_banda)))
+          (sn-CD
+            (espec.fs
+              (dd0fs0 aquesta aquest))
+            (grup.nom.fs
+              (ncfs000 possibilitat possibilitat)))
+          (Fz ' '))))
+    (Fp . .)))
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0cs0 L' el))
+      (grup.nom.ms
+        (ncms000 informe informe)
+        (sp
+          (prep
+            (sps00 de de))
+          (sn
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 fundació fundació)
+              (s.a.fs
+                (grup.a.fs
+                  (aq0cs0 antitransvasista antitransvasista))))))))
+    (grup.verb
+      (vmip3s0 exposa exposar))
+    (S.F.C-CD
+      (conj.subord
+        (cs que que))
+      (sno-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 companyia companyia)
+          (s.a.fs
+            (grup.a.fs
+              (aq0fs0 francesa francès)))
+          (sno
+            (grup.nom
+              (np0000o Ondeo Ondeo)))))
+      (grup.verb
+        (vaip3s0 ha haver)
+        (vmp00sm adjudicat adjudicar))
+      (sadv-CC
+        (grup.adv
+          (rg recentment recentment)))
+      (sn-CD
+        (espec.ms
+          (dn0ms0 un un))
+        (grup.nom.ms
+          (ncms000 contracte contracte)
+          (sp
+            (prep
+              (sps00 per per))
+            (S.NF.C
+              (infinitiu
+                (vmn0000 construir construir))
+              (sn-CD
+                (espec.fs
+                  (di0fs0 una un))
+                (grup.nom.fs.1n
+                  (ncfs000 dessaladora dessaladora)))
+              (sp-CC
+                (prep
+                  (sps00 a a))
+                (snl
+                  (grup.nom
+                    (np0000l Singapur Singapur))))
+              (sp.co.1c
+                (Fc , ,)
+                (sp
+                  (prep
+                    (sps00 amb amb))
+                  (sn
+                    (espec.fs
+                      (di0fs0 una un))
+                    (grup.nom.fs
+                      (ncfs000 capacitat capacitat)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (snn
+                          (espec.mp
+                            (Z 50 50))
+                          (grup.nom.mp
+                            (ncmp000 hectòmetres hectòmetre)
+                            (s.a.mp
+                              (grup.a.mp
+                                (aq0mp0 cúbics cúbic)))
+                            (sp
+                              (prep
+                                (sps00 d' de))
+                              (sn
+                                (grup.nom.fs
+                                  (ncfs000 aigua aigua)
+                                  (S.NF.P
+                                    (participi
+                                      (aq0fsp dessalada dessalat))))))
+                            (s.a.mp
+                              (grup.a.mp
+                                (aq0cp0 anuals anual)))))))))
+                (coord
+                  (cc i i))
+                (sp
+                  (prep
+                    (sps00 amb amb))
+                  (sn
+                    (espec.ms
+                      (di0ms0 un un))
+                    (grup.nom.ms
+                      (ncms000 preu preu)
+                      (sp
+                        (prep
+                          (sps00 de de))
+                        (snn
+                          (espec.mp
+                            (Z 0,41 0.41))
+                          (grup.nom.mp
+                            (Zm euros euro)
+                            (sp
+                              (prep
+                                (sps00 per per))
+                              (sn
+                                (grup.nom.ms
+                                  (ncms000 metre metre)
+                                  (s.a.ms
+                                    (grup.a.ms
+                                      (aq0ms0 cúbic cúbic))))))))))))))))))
+    (Fp . .)))
+(
+  (S
+    (sp-AO
+      (prep
+        (sps00 Segons segons))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 estudi estudi)
+          (S.NF.P
+            (participi
+              (aq0msp realitzat realitzat))
+            (sp-CAG
+              (prep
+                (sps00 per per))
+              (sno
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np0000o Fundació_per_una_Nova_Cultura_de_l'_Aigua Fundació_per_una_Nova_Cultura_de_l'_Aigua)))))))
+      (Fc , ,))
+    (sn-SUJ
+      (espec.fs
+        (da0cs0 l' el))
+      (grup.nom.fs
+        (ncfs000 aigua aigua)
+        (S.NF.P
+          (participi
+            (aq0fsp dessalada dessalat)))))
+    (grup.verb
+      (vsic3s0 seria ser))
+    (sa-ATR
+      (sa
+        (espec
+          (snn.j
+            (espec.ms
+              (di0ms0 un un))
+            (grup.nom.ms
+              (Zp 66_% 66_%)))
+          (sadv
+            (grup.adv
+              (rg més més))))
+        (grup.a
+          (aq0fs0 barata barat)))
+      (S.F.AComp*.j
+        (conj.subord
+          (cs que que))
+        (sn
+          (espec.fs
+            (da0cs0 l' el))
+          (grup.nom.fs
+            (ncfs000 aigua aigua)
+            (S.NF.P
+              (participi
+                (aq0fsp sortida sortit))
+              (sp-CC
+                (prep
+                  (spcms del del))
+                (sn
+                  (grup.nom.ms
+                    (ncms000 transvasament transvasament)
+                    (sp
+                      (prep
+                        (sps00 de de))
+                      (snl
+                        (espec.ms
+                          (da0cs0 l' el))
+                        (grup.nom.ms
+                          (np0000l Ebre Ebre))))))))))))
+    (Fp . .)))

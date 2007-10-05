@@ -1,0 +1,136 @@
+
+(
+  (S
+    (sn.co-SUJ
+      (sn
+        (grup.nom.ms
+          (np00000 Miguel_M.H. Miguel_M.H.)))
+      (coord
+        (cc i i))
+      (sn
+        (espec.ms
+          (dp3ms0 el_seu el_seu))
+        (grup.nom.ms
+          (ncms000 fill fill)
+          (sn
+            (grup.nom.ms
+              (np00000 José_Antonio_M.B. José_Antonio_M.B.))))))
+    (grup.verb
+      (vaip3p0 han haver)
+      (vsp00sm estat ser)
+      (vmp00pm detinguts detenir))
+    (sp-CC
+      (prep
+        (sps00 per per))
+      (sn
+        (espec.ms
+          (da0cs0 l' el))
+        (grup.nom.ms
+          (ncms000 assassinat assassinat)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.fp
+                (dn0fp0 dues dos))
+              (grup.nom.fp
+                (ncfp000 persones persona))))
+          (sp
+            (prep
+              (spcms al al))
+            (sn
+              (grup.nom.ms
+                (ncms000 pub pub)
+                (sn
+                  (grup.nom
+                    (np00000 Directo Directo)))
+                (sp
+                  (prep
+                    (sps00 de de))
+                  (sn
+                    (grup.nom
+                      (np00000 Granada Granada)))))))
+          (sn
+            (Fc , ,)
+            (espec.ms
+              (da0cs0 l' el))
+            (grup.nom.ms
+              (W abril [??:??/04/??:??.??])
+              (S.NF.P
+                (participi
+                  (aq0msp passat passat))))))))
+    (Fp . .)))
+(
+  (S
+    (sn-ATR
+      (espec.fp
+        (da0fp0 Les el))
+      (grup.nom.fp
+        (ncfp000 víctimes víctima)))
+    (grup.verb
+      (vaip3p0 van anar)
+      (vsn0000 ser ser))
+    (sn.x-SUJ
+      (grup.nom.co
+        (grup.nom.ms
+          (np00000 Juan_Aguilera_González Juan_Aguilera_González)
+          (sp
+            (Fc , ,)
+            (prep
+              (sps00 de de))
+            (sn
+              (espec.mp
+                (Z 30 30))
+              (grup.nom.mp
+                (ncmp000 anys any)))
+            (Fc , ,)))
+        (coord
+          (cc i i))
+        (grup.nom.ms
+          (np00000 José_Manuel_Gutiérrez_Cortés José_Manuel_Gutiérrez_Cortés)
+          (sp
+            (Fc , ,)
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom
+                (Z 28 28)))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sn-ATR
+        (espec.ms
+          (da0ms0 El el))
+        (grup.nom.ms
+          (ncms000 mòbil mòbil)))
+      (grup.verb
+        (vaip3s0 va anar)
+        (vsn0000 ser ser))
+      (sn-SUJ
+        (espec.ms
+          (di0ms0 un un))
+        (grup.nom.ms
+          (ncms000 assumpte assumpte)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.fp
+                (nccp000 drogues droga))))))
+      (Fc , ,))
+    (coord
+      (cc però però))
+    (S
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 els el))
+        (grup.nom.mp
+          (nccp000 assaltants assaltant)))
+      (grup.verb
+        (vaip3p0 van anar)
+        (vmn0000 disparar disparar))
+      (sadv-CC
+        (grup.adv
+          (rg indiscriminadament indiscriminadament))))
+    (Fp . .)))

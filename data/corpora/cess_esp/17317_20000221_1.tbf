@@ -1,0 +1,204 @@
+
+(
+  (S
+    (sn-SUJ
+      (espec.ms
+        (da0ms0 El el))
+      (grup.nom.ms
+        (ncms000 gasto gasto)
+        (s.a.ms
+          (grup.a.ms
+            (aq0ms0 público público)))
+        (sp
+          (prep
+            (sps00 en en))
+          (snl
+            (grup.nom
+              (np0000l Colombia Colombia))))))
+    (grup.verb
+      (vsip3s0 es ser)
+      (vmp00sm considerado considerar))
+    (sp-CPRED.SUJ
+      (prep
+        (cs como como))
+      (s.a.ms.x
+        (grup.a.ms.co
+          (grup.a.ms
+            (sadv
+              (grup.adv
+                (rg poco poco)))
+            (aq0cs0 eficiente eficiente))
+          (coord
+            (cc e e))
+          (grup.a.ms
+            (aq0ms0 improductivo improductivo)))))
+    (S.NF.PA-CC
+      (Fc , ,)
+      (participi
+        (vmp00pm dados dar))
+      (sn-SUJ
+        (espec.mp
+          (da0mp0 los el)
+          (di0mp0 escasos escaso))
+        (grup.nom.mp
+          (ncmp000 resultados resultado)
+          (sp
+            (prep
+              (sps00 de de))
+            (sn
+              (grup.nom.mp
+                (ncmp000 sectores sector)
+                (S.F.R
+                  (relatiu-SUJ
+                    (pr0cn000 que que))
+                  (grup.verb
+                    (vmip3p0 copan copar))
+                  (sn-CD
+                    (espec.fs
+                      (di0fs0 una uno))
+                    (grup.nom.fs
+                      (ncfs000 parte parte)
+                      (s.a.fs
+                        (grup.a.fs
+                          (aq0cs0 importante importante)))
+                      (sp
+                        (prep
+                          (spcms del del))
+                        (sn
+                          (grup.nom.ms
+                            (ncms000 presupuesto presupuesto)
+                            (s.a.ms
+                              (grup.a.ms
+                                (aq0cs0 nacional nacional)))))))))))))))
+    (Fp . .)))
+(
+  (S.co
+    (S
+      (sp-CC
+        (prep
+          (sps00 Para para))
+        (snp
+          (espec.ms
+            (da0ms0 el el))
+          (grup.nom.ms
+            (ncms000 presidente presidente)
+            (sp
+              (prep
+                (sps00 de de))
+              (sno
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (np0000o ANIF ANIF)))))))
+      (sn-SUJ
+        (espec.fs
+          (da0fs0 la el))
+        (grup.nom.fs
+          (ncfs000 economía economía)))
+      (neg-MOD
+        (rn no no))
+      (grup.verb
+        (vmip3s0 resiste resistir))
+      (sn-CD
+        (espec.mp
+          (rg más más))
+        (grup.nom.mp
+          (ncmp000 tributos tributo))))
+    (coord
+      (cc y y))
+    (S
+      (sn.e-SUJ *0*)
+      (grup.verb
+        (vmip3s0 espera esperar))
+      (S.F.C.co-CD
+        (conj.subord
+          (cs que que))
+        (S.F.C
+          (S.F.A-CC
+            (Fc , ,)
+            (conj.subord
+              (cs como como))
+            (sn.e-SUJ *0*)
+            (grup.verb
+              (vmis3s0 sucedió suceder))
+            (sp-CC
+              (prep
+                (sps00 con con))
+              (sn
+                (espec.fs
+                  (da0fs0 la el))
+                (grup.nom.fs
+                  (ncfs000 decisión decisión)
+                  (sp
+                    (prep
+                      (sps00 de de))
+                    (S.NF.C
+                      (neg-MOD
+                        (rn no no))
+                      (infinitiu
+                        (vmn0000 duplicar duplicar))
+                      (sn-CD
+                        (espec.ms
+                          (da0ms0 el el))
+                        (grup.nom.ms
+                          (ncms000 impuesto impuesto)
+                          (sp
+                            (prep
+                              (sps00 sobre sobre))
+                            (sn
+                              (espec.fp
+                                (da0fp0 las el))
+                              (grup.nom.fp
+                                (ncfp000 transacciones transacción)
+                                (s.a.fp
+                                  (grup.a.fp
+                                    (aq0fp0 bancarias bancario))))))))))))))
+          (Fe " ")
+          (grup.verb
+            (vmsp3s0 siga seguir)
+            (gerundi
+              (vmg0000 primando primar)))
+          (sn-SUJ
+            (espec.fs
+              (da0fs0 la el))
+            (grup.nom.fs
+              (ncfs000 sensatez sensatez)))
+          (sp-CC
+            (prep
+              (sps00 sobre sobre))
+            (sn
+              (espec.fs
+                (da0fs0 la el))
+              (grup.nom.fs
+                (ncfs000 voracidad voracidad)
+                (s.a.fs
+                  (grup.a.fs
+                    (aq0fs0 burocrática burocrático))))))
+          (Fe " "))
+        (coord
+          (cc y y))
+        (S.F.C
+          (sn-SUJ
+            (espec.ms
+              (da0ms0 el el))
+            (grup.nom.ms
+              (ncms000 ajuste ajuste)))
+          (morfema.verbal-PASS
+            (p0000000 se se))
+          (grup.verb
+            (vmsp3s0 haga hacer))
+          (sp-CC
+            (prep
+              (sps00 por por))
+            (sn
+              (espec.ms
+                (da0ms0 el el))
+              (grup.nom.ms
+                (ncms000 lado lado)
+                (sp
+                  (prep
+                    (spcms del del))
+                  (sn
+                    (grup.nom.ms
+                      (ncms000 gasto gasto))))))))))
+    (Fp . .)))
