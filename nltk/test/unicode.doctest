@@ -54,8 +54,15 @@ example, we can see ``\xf3``, which corresponds to the glyph |oacute|.
 We can also specify a Unicode string literal by preceding an ordinary
 string literal with a ``u``, as in ``u'hello'``. Arbitrary Unicode
 characters are defined using the ``\u``\ *XXXX* escape sequence inside a
-Unicode string literal. The hexadecimal 4 digit notation for the integer
-ordinal of the letter ``'a'`` is 0061, so we can define the following:
+Unicode string literal.
+
+We find the integer ordinal of a character using ``ord()``. For example:
+
+    >>> ord('a')
+    97
+
+The hexadecimal 4 digit notation for 97 is 0061, so we can define a
+Unicode string literal with the appropriate escape sequence:
 
     >>> a = u'\u0061'
     >>> a
@@ -76,9 +83,18 @@ string's ``__repr__`` attribute.
     >>> print repr(nacute_utf)
     '\xc5\x84'
 
-However, if your operating system is set up to render UTF-8 encoded
-characters, you ought to be able to give the Python command ``print
-nacute_utf`` and see |nacute| on your screen.
+However, if your operating system and locale are set up to render UTF-8 encoded
+characters, you ought to be able to give the Python command
+
+    ``print nacute_utf``
+
+and see |nacute| on your screen.
+
+.. Note:: There are many factors determining what glyphs are rendered
+   on your screen. If you are sure that you have the correct encoding,
+   but are still failing to see the glyphs you expected, you should
+   also check that you have the necessary fonts installed on your
+   system.
 
 The module ``unicodedata`` lets us inspect the properties of Unicode
 characters. In the following example, we select all characters in the
@@ -108,3 +124,13 @@ you should see an output like the following:
 | |aogonek| U+0105 LATIN SMALL LETTER A WITH OGONEK
 | |lstroke| U+0142 LATIN SMALL LETTER L WITH STROKE
 
+Alternatively, you may need to replace the encoding ``'utf8'`` in the
+example by ``'latin2'``, again depending on the details of your system.
+
+    >>> nacute = u'\u0144'
+    >>> nacute
+    u'\u0144'
+    >>> print nacute
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in ?
+    UnicodeEncodeError: 'ascii' codec can't encode character u'\u0144' in position 0: ordinal not in range(128)
