@@ -29,7 +29,7 @@ doc:
 
 DOCTEST_DRIVER = nltk/test/doctest_driver.py
 DOCTEST_FLAGS = --ellipsis --normalize_whitespace
-DOCTEST_FILES = nltk/test/*.doctest
+DOCTEST_FILES = nltk/test/*.doctest nltk/test/*.doctest_latin1
 
 doctest:
 	$(PYTHON) $(DOCTEST_DRIVER) $(DOCTEST_FLAGS) $(DOCTEST_FILES)
