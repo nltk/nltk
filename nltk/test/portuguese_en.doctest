@@ -13,7 +13,7 @@ Accessing the MacMorpho Tagged Corpus
 NLTK includes the MAC-MORPHO Brazilian Portuguese POS-tagged news text,
 with over a million words of
 journalistic texts extracted from ten sections of
-the daily newspaper *Folha de Sau Paulo*, 1994.
+the daily newspaper *Folha de Sao Paulo*, 1994.
 
 We can access this corpus as a sequence of words or tagged words as follows:
 
