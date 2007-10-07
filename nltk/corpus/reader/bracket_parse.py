@@ -15,8 +15,9 @@ import os.path, sys
 Corpus reader for corpora that consist of parenthesis-delineated parse trees.
 """
 
-TAGWORD = re.compile(r'\((\S+?) (\S+?)\)')
-WORD = re.compile(r'\(\S+? (\S+?)\)')
+# we use [^\s()]+ instead of \S+? to avoid matching ()
+TAGWORD = re.compile(r'\(([^\s()]+) ([^\s()]+)\)')
+WORD = re.compile(r'\([^\s()]+ ([^\s()]+)\)')
 EMPTY_BRACKETS = re.compile(r'\s*\(\s*\(')
 
 class BracketParseCorpusReader(SyntaxCorpusReader):
@@ -25,7 +26,7 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
     trees.
     """
     def __init__(self, root, items, extension='', comment_char=None,
-                 detect_blocks='sexpr'):
+                 detect_blocks='unindented_paren'):
         """
         @param root: The root directory for this corpus.
         @param items: A list of items in this corpus.
@@ -33,8 +34,8 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
         @param comment: The character which can appear at the start of a line to
           indicate that the rest of the line is a comment.
         @param detect_blocks: The method that is used to find blocks
-          in the corpus; can be 'unindented_parens' (every unindented
-          parenthasis starts a new parse) or 'sexpr' (brackets are
+          in the corpus; can be 'unindented_paren' (every unindented
+          parenthesis starts a new parse) or 'sexpr' (brackets are
           matched).
         """
         if isinstance(items, basestring):
@@ -52,8 +53,9 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
             # Tokens start with unindented left parens.
             toks = read_regexp_block(stream, start_re=r'^\(')
             # Strip any comments out of the tokens.
-            toks = [re.sub('(?m)^%s.*'%re.escape(self._comment_char), '', tok)
-                    for tok in toks]
+            if self._comment_char:
+                toks = [re.sub('(?m)^%s.*'%re.escape(self._comment_char), '', tok)
+                        for tok in toks]
             return toks
         else:
             assert 0, 'bad block type'
@@ -65,8 +67,10 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
         # parse, then strip them off.
         if EMPTY_BRACKETS.match(t):
             t = t.strip()[1:-1]
-        # Replace any punctuation leaves of the form (!), (,), with (! !), (, ,)
+        # Replace leaves of the form (!), (,), with (! !), (, ,)
         t = re.sub(r"\((.)\)", r"(\1 \1)", t)
+        # Replace leaves of the form (tag word root) with (tag word)
+        t = re.sub(r"\(([^\s()]+) ([^\s()]+) [^\s()]+\)", r"(\1 \2)", t)
         return t
 
     def _parse(self, t):
@@ -93,3 +97,4 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
 
     def _word(self, t):
         return WORD.findall(self._normalize(t))
+

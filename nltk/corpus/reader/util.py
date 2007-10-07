@@ -12,6 +12,12 @@ from api import CorpusReader
 from nltk import tokenize
 from nltk.etree import ElementTree
 
+# Allow enough open files for CESS Corpora
+if os.name == 'posix':
+    import resource
+    soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
+    resource.setrlimit(resource.RLIMIT_NOFILE, (1500, hard))
+
 ######################################################################
 #{ Corpus View
 ######################################################################
@@ -582,7 +588,7 @@ def read_regexp_block(stream, start_re, end_re=None):
     Read a sequence of tokens from a stream, where tokens begin with
     lines that match C{start_re}.  If C{end_re} is specified, then
     tokens end with lines that match C{end_re}; otherwise, tokens end
-    whenever the next line matching C{start_re} is found.
+    whenever the next line matching C{start_re} or EOF is found.
     """
     # Scan until we find a line matching the start regexp.
     while True:
@@ -707,6 +713,14 @@ def _parse_sexpr_block(block):
 ######################################################################
 
 class SyntaxCorpusReader(CorpusReader):
+    """
+    An abstract base class for reading corpora consisting of
+    syntactically parsed text.  Subclasses should define:
+
+      - L{__init__}, which specifies the location of the corpus
+        and a method for detecting the sentence blocks in corpus files.
+      - L{_read_block}, which reads a block from the input stream.
+    """
 
     def raw(self, items=None):
         return concat([open(filename).read()
