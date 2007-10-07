@@ -8,15 +8,15 @@ Examplos para o processamento do português
 familiarizado com o livro do NLTK, disponível em
 ``http://nltk.org/index.php/Book``).
 
-Accessing the MacMorpho Tagged Corpus
--------------------------------------
+Utilizando o Corpus MacMorpho Tagged
+------------------------------------
 
-NLTK includes the MAC-MORPHO Brazilian Portuguese POS-tagged news text,
-with over a million words of
-journalistic texts extracted from ten sections of
-the daily newspaper *Folha de Sau Paulo*, 1994.
+O NLTK inclui o corpus de notícias para o português brasileiro com tags de partes do discurso
+MAC-MORPHO, que conta com mais de um milhão de palavras de textos jornalísticos extraídos
+de dez seções do jornal diário *Folha de São Paulo*, do ano de 1994.
 
-We can access this corpus as a sequence of words or tagged words as follows:
+Podemos utilizar este corpus como uma seqüência de palavras ou de palavras com tags da
+seguinte maneira:
 
     >>> nltk.corpus.mac_morpho.words()
     ['Jersei', 'atinge', 'm\xe9dia', 'de', 'Cr$', '1,4', ...]
@@ -27,8 +27,8 @@ We can access this corpus as a sequence of words or tagged words as follows:
     'do', 'Zebu', ',', 'que', 'come\xe7a', 'dia', '25'], ...]
     >>> nltk.corpus.mac_morpho.tagged_words()
     [('Jersei', 'N'), ('atinge', 'V'), ('m\xe9dia', 'N'), ...]
-    
-We can also access it in sentence chunks.
+
+Também é possível utilizá-lo em chunks de frases.
 
     >>> nltk.corpus.mac_morpho.tagged_sents()
     [[('Jersei', 'N'), ('atinge', 'V'), ('m\xe9dia', 'N'), ('de', 'PREP'),
@@ -39,8 +39,9 @@ We can also access it in sentence chunks.
     ('a', 'ART'), ('Exposi\xe7\xe3o', 'NPROP'), ('Nacional', 'NPROP'),
     ('do', 'NPROP'), ('Zebu', 'NPROP'), (',', ','), ('que', 'PRO-KS-REL'),
     ('come\xe7a', 'V'), ('dia', 'N'), ('25', 'N|AP')], ...]
-    
-This data can be used to train taggers (examples below for the Floresta treebank).
+
+Estes dados podem ser utilizados para efetuar o treinamento de taggers (como nos
+exemplos abaixo para o Floresta treebank).
 
 
 Utilizando o Floresta Portuguese Treebank
@@ -198,43 +199,43 @@ E, em seguida, um tagger bigrama:
     >>> nltk.tag.accuracy(tagger2, test)
     0.86856127886323264
 
-
-Sentence Segmentation
+Segmentação de frases
 ---------------------
 
-Punkt is a language-neutral sentence segmentation tool.  It needs to be trained
-on plain text.
-The source text (from the Floresta Portuguese Treebank) contains one sentence per line.
-We read the text, split it into its lines, and then join these lines together using
-spaces.  Now the information about sentence breaks has been discarded.  We split this
-material into training and testing data:
+O Punkt é uma ferramenta para segmentação de frases lingüisticamente independente, o qual
+requer um treinamento em texto puro.
+O texto de origem (obtido do Floresta Portuguese Treebank) contém uma frase por linha. Podemos
+ler o texto, dividi-lo em função de suas linhas e então agrupar estas linhas utilizando
+espaços. Desta forma as informações sobre quebras de frases terão sido descartadas; podemos
+então dividir este material em dados para treinamento e para verificação:
 
     >>> text = open('floresta.txt').read()
     >>> lines = text.split('\n')
     >>> train = ' '.join(lines[10:])
     >>> test = ' '.join(lines[:10])
 
-Now we train the sentence segmenter (or sentence tokenizer) and use it on our test sentences.
-(In order to display the text in a human-readable form, it may be necessary
-to convert the text to UTF-8, using ``print sent.decode('latin-1').encode('utf-8')``.)
+É agora possível treinar o segmentador de frases (ou tokenizador de frases) e utilizá-lo em
+nossas frases de verificação. (Para exibir o texto em uma forma legível, pode ser necessário
+converter o texto para o UTF-8, utilizando ``print sent.decode('latin-1').encode('utf-8')``.)
 
     >>> stok = nltk.PunktSentenceTokenizer(train)
     >>> for sent in stok.tokenize(test):
     ...     print sent
 
 
-Versions of NLTK more recent than 0.9b1 include a trained model for Portuguese sentence
-segmentation, which can be loaded as follows.  It is faster to load a trained model than
-to retrain it.
+As versões do NLTK a partir da 0.9b1 incluem um modelo treinado para a segmentação de frases
+em português, o qual pode ser carregado pela maneira a seguir. É mais rápido carregar um modelo
+já treinado do que repetir o treinamento do mesmo.
 
     >>> stok = nltk.data.load('tokenizers/punkt/portuguese.pickle')
 
 Stemming
 --------
 
-NLTK includes the RSLP Portuguese stemmer.  Here we use it to stem some Portuguese text:
+O NLTK inclui o stemmer para o português RSLP. Vamos demonstrar sua utilização para algumas
+palavras em português:
 
-    >>> stemmer = nltk.stem.RSLPStemmer() 
+    >>> stemmer = nltk.stem.RSLPStemmer()
     >>> stemmer.stem("copiar")
     u'copi'
     >>> stemmer.stem("paisagem")
@@ -243,14 +244,14 @@ NLTK includes the RSLP Portuguese stemmer.  Here we use it to stem some Portugue
 Stopwords
 ---------
 
-NLTK includes Portuguese stopwords:
+O NLTK inclui stopword ("palavras limite") para o português:
 
     >>> stopwords = nltk.corpus.stopwords.words('portuguese')
     >>> stopwords[:10]
     ['a', 'ao', 'aos', 'aquela', 'aquelas', 'aquele', 'aqueles', 'aquilo', 'as', 'at\xe9']
 
-Now we can use these to filter text.  Let's find the most frequent words (other than stopwords)
-and print them in descending order of frequency:
+A esta altura, é possível utilizá-las para filtrar textos. Vamos encontrar as palavras mais
+comuns (à exceção das stopwords) e listá-las em ordem decrescente de freqüência:
 
     >>> fd = nltk.FreqDist(w.lower() for w in floresta.words() if w not in stopwords)
     >>> for word in fd.sorted()[:20]:
@@ -277,17 +278,18 @@ and print them in descending order of frequency:
     dois 231
     
 
-Character Encodings
--------------------
+Codificações de caracteres
+--------------------------
 
-Python understands the common character encoding used for Portuguese, ISO 8859-1 (ISO Latin 1).
+O Python é capaz de lidar com todas a codificações de caracteres mais utilizada para o português, a
+ISO 8859-1 (ISO Latin 1).
 
     >>> text = open('floresta.txt').read()
     >>> text[:60]
     'O 7 e Meio \xe9 um ex-libris da noite algarvia.\n\xc9 uma das mais '
     >>> print text[:60]
     O 7 e Meio ? um ex-libris da noite algarvia.
-    ? uma das mais 
+    ? uma das mais
     >>> text[:60].decode('latin-1')
     u'O 7 e Meio \xe9 um ex-libris da noite algarvia.\n\xc9 uma das mais '
     >>> text[:60].decode('latin-1').encode('utf-8')
