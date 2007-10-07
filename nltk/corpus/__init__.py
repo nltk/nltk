@@ -67,6 +67,10 @@ abc = LazyCorpusLoader(
     'abc', PlaintextCorpusReader, '(?!\.svn).*', '.txt')
 brown = LazyCorpusLoader(
     'brown', TaggedCorpusReader, list('abcdefghjklmnpr'))
+cess_cat = LazyCorpusLoader(
+    'cess_cat', BracketParseCorpusReader, '(?!\.svn).*', '.tbf')
+cess_esp = LazyCorpusLoader(
+    'cess_esp', BracketParseCorpusReader, '(?!\.svn).*', '.tbf')
 cmudict = LazyCorpusLoader(
     'cmudict', CMUDictCorpusReader, ['cmudict'])
 conll2000 = LazyCorpusLoader(
@@ -76,8 +80,7 @@ conll2002 = LazyCorpusLoader(
     'conll2002', ConllChunkCorpusReader, '.*\.(test|train).*', '',
     ('LOC', 'PER', 'ORG', 'MISC'))
 floresta = LazyCorpusLoader(
-    'floresta', BracketParseCorpusReader, '(?!\.svn).*', '.ptb', '#',
-    'unindented_paren')
+    'floresta', BracketParseCorpusReader, '(?!\.svn).*', '.ptb', '#')
 genesis = LazyCorpusLoader(
     'genesis', PlaintextCorpusReader, '(?!\.svn).*', '.txt')
 gutenberg = LazyCorpusLoader(
