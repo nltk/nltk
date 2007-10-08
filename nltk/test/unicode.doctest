@@ -9,6 +9,35 @@
  Working with Unicode Data
 ==========================
 
+Brief overview of Unicode
+=========================
+
+Unicode supports over a million characters.  Each of these
+characters is assigned a number, called a **code point**.  In Python, code
+points are written in the form ``\u``\ *XXXX*, where *XXXX* is the number
+in 4-digit hexadecimal form.
+
+Within a program, Unicode code points can be manipulated directly, but
+when Unicode characters are stored in files or displayed they must be
+**encoded** as one or more bytes.  Some encodings (such as ASCII and
+Latin-2) use a single byte, so they can only support a small subset of
+Unicode, suited to a single language.  Other encodings (such as UTF-8)
+use multiple bytes and can represent the full range of Unicode.
+
+The Python ``codecs`` module provides functions to read encoded data into Unicode
+strings, and to write out Unicode strings in encoded form.  The
+``codecs.open()`` function takes an encoding parameter to specify the
+encoding of the file being read or written.
+
+To display Unicode text on your terminal, you need to encode it in an
+encoding that the terminal understands.  The Python-specific encoding
+``unicode_escape`` is a dummy encoding that converts all non-ASCII
+characters into their ``\u``\ *XXXX* representations.  Non-ASCII code
+points below 256 are represented in the two-digit form ``\x``\ *XX*.
+
+Getting from files to Unicode
+=============================
+
 Let's assume that we have a small text file, and that we know how it
 is encoded. For example, ``polish-lat2.txt``, as the name suggests, is
 a snippet of Polish text (from the Polish Wikipedia; see
@@ -30,9 +59,11 @@ this case ``'latin2'``.
 For a list of possible values, see
 http://docs.python.org/lib/standard-encodings.html.
 
-In order to view the file on the terminal, we need to encode it, using
-a suitable encoding. The encoding ``'unicode_escape'`` shows us the
-Unicode code points for all characters outside the ASCII range of 0-127.
+The file object ``f`` is in Unicode. In order to view the file on the
+terminal, we need to encode it, using a suitable encoding. As
+mentioned earlier, the encoding ``unicode_escape`` shows us the
+Unicode code points for all characters outside the ASCII range of
+0-127.
 
     >>> lines = f.readlines()
     >>> for l in lines:
@@ -46,13 +77,13 @@ Unicode code points for all characters outside the ASCII range of 0-127.
     Jagiello\u0144skiej w Krakowie, obejmuj\u0105 ponad 500 tys. zabytkowych
     archiwali\xf3w, m.in. manuskrypty Goethego, Mozarta, Beethovena, Bacha.
 
-Unicode code points are integers, usually expressed as 4
-hexadecimal digits preceded by the ``\u`` escape string, such as
-``\u0144`` seen in the first line above. This Unicode character is represented
-as the glyph |nacute|. However,
-Unicode literals can also use the ``\x`` escape sequence followed by 2
-hexadecimal digits; for example, in the third line of the preceding
-example, we can see ``\xf3``, which corresponds to the glyph |oacute|.
+The first line above illustrates a Unicode escape string, namely
+preceded by the ``\u`` escape string, namely ``\u0144`` . The relevant
+Unicode character will be dislayed on the screen as the glyph
+|nacute|. As mentioned above, Unicode literals for code points below
+256 are represented by the ``\x``\ *XX* escape sequence; for example,
+in the third line of the preceding example, we can see ``\xf3``, which
+corresponds to the glyph |oacute|.
 
 In Python, another method of specifying a Unicode string literal is to
 precede an ordinary string literal with a ``u``, as in
@@ -86,7 +117,7 @@ the following example, we have specified that ``print`` should use the
     >>> print repr(nacute_utf)
     '\xc5\x84'
 
-However, if your operating system and locale are set up to render UTF-8 encoded
+If your operating system and locale are set up to render UTF-8 encoded
 characters, you ought to be able to give the Python command
 
     ``print nacute_utf``
@@ -153,6 +184,9 @@ correspondingly yields Unicode strings as output.
     >>> tokenizer.tokenize(line)  # doctest: +NORMALIZE_WHITESPACE
     [u'niemc\xf3w', u'pod', u'koniec', u'ii', u'wojny', u'\u015bwiatowej',
     u'na', u'dolny', u'\u015bl\u0105sk', u'zosta\u0142y']
+
+Using your local encoding in Python
+===================================
     
 If you are used to working with characters in a particular local
 encoding, you probably want to be able to use your standard methods
