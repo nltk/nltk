@@ -27,7 +27,10 @@ this case ``'latin2'``.
     >>> import codecs
     >>> f = codecs.open(path, encoding='latin2')
 
-In order to view the file on the terminal, we need to **encode** it, using
+For a list of possible values, see
+http://docs.python.org/lib/standard-encodings.html.
+
+In order to view the file on the terminal, we need to encode it, using
 a suitable encoding. The encoding ``'unicode_escape'`` shows us the
 Unicode code points for all characters outside the ASCII range of 0-127.
 
@@ -51,11 +54,10 @@ Unicode literals can also use the ``\x`` escape sequence followed by 2
 hexadecimal digits; for example, in the third line of the preceding
 example, we can see ``\xf3``, which corresponds to the glyph |oacute|.
 
-We can also specify a Unicode string literal by preceding an ordinary
-string literal with a ``u``, as in ``u'hello'``. Arbitrary Unicode
-characters are defined using the ``\u``\ *XXXX* escape sequence inside a
-Unicode string literal.
-
+In Python, another method of specifying a Unicode string literal is to
+precede an ordinary string literal with a ``u``, as in
+``u'hello'``. Arbitrary Unicode characters are defined using the
+``\u``\ *XXXX* escape sequence inside a Unicode string literal.
 We find the integer ordinal of a character using ``ord()``. For example:
 
     >>> ord('a')
@@ -70,11 +72,12 @@ Unicode string literal with the appropriate escape sequence:
     >>> print a
     a
 
-The Python ``print`` statement is assuming a default encoding of the
+Notice that the Python ``print`` statement is assuming a default encoding of the
 Unicode character, namely ASCII. However, |nacute| is outside the
 ASCII range, so cannot be printed unless we specify an encoding. In
 the following example, we have specified that ``print`` should use the
-string's ``__repr__`` attribute.
+``repr()`` of the string, which outputs the UTF-8 escape sequences
+(of the form ``\x``\ *XX*) rather than trying to render the glyphs.
         
     >>> nacute = u'\u0144'
     >>> nacute
@@ -92,9 +95,9 @@ and see |nacute| on your screen.
 
 .. Note:: There are many factors determining what glyphs are rendered
    on your screen. If you are sure that you have the correct encoding,
-   but are still failing to see the glyphs you expected, you should
-   also check that you have the necessary fonts installed on your
-   system.
+   but your Python code is still failing to produce the glyphs you
+   expected, you should also check that you have the necessary fonts
+   installed on your system.
 
 The module ``unicodedata`` lets us inspect the properties of Unicode
 characters. In the following example, we select all characters in the
@@ -105,6 +108,8 @@ standard Unicode convention (i.e., prefixing the hex digits with
 
     >>> import unicodedata
     >>> line = lines[2]
+    >>> print line.encode('unicode_escape')
+    Niemc\xf3w pod koniec II wojny \u015bwiatowej na Dolny \u015al\u0105sk, zosta\u0142y\n
     >>> for c in line:
     ...     if ord(c) > 127:
     ...         print '%r U+%04x %s' % (c.encode('utf8'), ord(c), unicodedata.name(c))
@@ -127,10 +132,36 @@ you should see an output like the following:
 Alternatively, you may need to replace the encoding ``'utf8'`` in the
 example by ``'latin2'``, again depending on the details of your system.
 
-    >>> nacute = u'\u0144'
-    >>> nacute
-    u'\u0144'
-    >>> print nacute
-    Traceback (most recent call last):
-      File "<stdin>", line 1, in ?
-    UnicodeEncodeError: 'ascii' codec can't encode character u'\u0144' in position 0: ordinal not in range(128)
+
+
+If you are used to working with characters in a particular local
+encoding, you probably want to be able to use your standard methods
+for inputting and editing strings in a Python file. In order to this,
+you need to include the string ``'# -*- coding: <coding> -*-'`` as the
+first or second line of your file. Note that *<coding>* has to be a
+string like ``'latin-1'``, ``'big5'`` or ``'utf-8'``.
+
+.. Note:: If you are using Emacs as your editor, the coding specification
+   will also be interpreted as a specification of the editor's coding
+   for the file. Not all of the valid Python names for codings are
+   accepted by Emacs.
+
+The following screenshot illustrates the use of UTF-8 encoded string
+literals in a Python file.
+
+.. image:: ../../doc/images/utf8.png
+
+This example also illustrates how regular expressions can use encoded strings.
+
+
+
+.. Note::
+
+    TODO
+
+
+    examples of regular expressions
+
+    example of tokenization
+
+    chinese example with pos markup
