@@ -132,8 +132,28 @@ you should see an output like the following:
 Alternatively, you may need to replace the encoding ``'utf8'`` in the
 example by ``'latin2'``, again depending on the details of your system.
 
+The next examples illustrate how Python string methods and the ``re``
+module accept Unicode strings.
 
+    >>> line.find(u'zosta\u0142y')
+    54
+    >>> line = line.lower()
+    >>> print line.encode('unicode_escape')
+    niemc\xf3w pod koniec ii wojny \u015bwiatowej na dolny \u015bl\u0105sk, zosta\u0142y\n
+    >>> import re
+    >>> m = re.search(u'\u015b\w*', line)
+    >>> m.group()
+    u'\u015bwiatowej'
 
+The NLTK ``tokenizer`` module allows Unicode strings as input, and
+correspondingly yields Unicode strings as output.
+
+    >>> from nltk.tokenize import WordTokenizer
+    >>> tokenizer = WordTokenizer()
+    >>> tokenizer.tokenize(line)  # doctest: +NORMALIZE_WHITESPACE
+    [u'niemc\xf3w', u'pod', u'koniec', u'ii', u'wojny', u'\u015bwiatowej',
+    u'na', u'dolny', u'\u015bl\u0105sk', u'zosta\u0142y']
+    
 If you are used to working with characters in a particular local
 encoding, you probably want to be able to use your standard methods
 for inputting and editing strings in a Python file. In order to this,
@@ -158,10 +178,5 @@ This example also illustrates how regular expressions can use encoded strings.
 .. Note::
 
     TODO
-
-
-    examples of regular expressions
-
-    example of tokenization
 
     chinese example with pos markup
