@@ -66,12 +66,13 @@ our Polish file as Unicode.
 For a list of encoding parameters allowed by ``codecs``, see
 http://docs.python.org/lib/standard-encodings.html.
 
-The file object ``f`` is in Unicode. As we pointed out earlier, in order
-to view the file on a terminal, we need to encode it, using a
-suitable encoding.  The Python-specific encoding ``unicode_escape`` is
-a dummy encoding that converts all non-ASCII characters into their
-``\u``\ *XXXX* representations.  Code points above the ASCII 0-127 range
-but below 256 are represented in the two-digit form ``\x``\ *XX*.
+Text read from the file object ``f`` will be returned in Unicode. As
+we pointed out earlier, in order to view this text on a terminal, we
+need to encode it, using a suitable encoding.  The Python-specific
+encoding ``unicode_escape`` is a dummy encoding that converts all
+non-ASCII characters into their ``\u``\ *XXXX* representations.  Code
+points above the ASCII 0-127 range but below 256 are represented in
+the two-digit form ``\x``\ *XX*.
 
 
     >>> lines = f.readlines()
@@ -93,8 +94,8 @@ Unicode character will be dislayed on the screen as the glyph
 ``\xf3``, which corresponds to the glyph |oacute|, and is within the
 128-255 range.
 
-In Python, another method of specifying a Unicode string literal is to
-precede an ordinary string literal with a ``u``, as in
+In Python, a Unicode string literal can be specified by
+preceding an ordinary string literal with a ``u``, as in
 ``u'hello'``. Arbitrary Unicode characters are defined using the
 ``\u``\ *XXXX* escape sequence inside a Unicode string literal.
 We find the integer ordinal of a character using ``ord()``. For example:
@@ -221,7 +222,8 @@ This example also illustrates how regular expressions can use encoded strings.
     >>> lines = f.readlines()
     >>> for l in lines:
     ...     l = l[:-1]
-    ...     print repr(l.encode('utf8'))
+    ...     utf_enc = l.encode('utf8')
+    ...     print repr(utf_enc)
     '<?xml encoding="GB2312">'
     '<SENT type=1-1>'
     '\xe7\x94\x9a\xe8\x87\xb3\xe7\x8c\xab\xe4\xbb\xa5\xe4\xba\xba\xe8\xb4\xb5\xe3\x80\x82'
