@@ -1,3 +1,4 @@
+.. |mdash| unicode:: U+02014 
 .. |nacute| unicode:: U+0144 
 .. |oacute| unicode:: U+00f3
 .. |sacute| unicode:: U+015b
@@ -5,9 +6,9 @@
 .. |aogonek| unicode:: U+0105
 .. |lstroke| unicode:: U+0142
 
-==========================
- Working with Unicode Data
-==========================
+=======================================
+ Text Processing with Unicode in Python
+=======================================
 
 Brief overview of Unicode
 =========================
@@ -18,22 +19,26 @@ points are written in the form ``\u``\ *XXXX*, where *XXXX* is the number
 in 4-digit hexadecimal form.
 
 Within a program, Unicode code points can be manipulated directly, but
-when Unicode characters are stored in files or displayed they must be
-**encoded** as one or more bytes.  Some encodings (such as ASCII and
-Latin-2) use a single byte, so they can only support a small subset of
-Unicode, suited to a single language.  Other encodings (such as UTF-8)
-use multiple bytes and can represent the full range of Unicode.
+when Unicode characters are stored in files or displayed on a terminal
+they must be encoded as one or more bytes.  Some encodings (such
+as ASCII and Latin-2) use a single byte, so they can only support a
+small subset of Unicode, suited to a single language.  Other encodings
+(such as UTF-8) use multiple bytes and can represent the full range of
+Unicode.
 
-The Python ``codecs`` module provides functions to read encoded data into Unicode
-strings, and to write out Unicode strings in encoded form.  The
-``codecs.open()`` function takes an encoding parameter to specify the
-encoding of the file being read or written.
+Text in files will be in a particular encoding, so we need some
+mechanism for translating it into Unicode |mdash| translation into
+Unicode is called **decoding**. Conversely, to write out Unicode to a
+file or a terminal, we first need to translate it into a suitable
+encoding |mdash| this translation out of Unicode is called **encoding**. The
+following diagram illustrates.
 
-To display Unicode text on your terminal, you need to encode it in an
-encoding that the terminal understands.  The Python-specific encoding
-``unicode_escape`` is a dummy encoding that converts all non-ASCII
-characters into their ``\u``\ *XXXX* representations.  Non-ASCII code
-points below 256 are represented in the two-digit form ``\x``\ *XX*.
+.. image:: ../../doc/images/unicode.png
+   :scale: 10
+
+From a Unicode perspective, characters are abstract entities which can
+be realized as one or more **glyphs**. Only glyphs can appear on a
+screen or be printed on paper. A font is a mapping from characters to glyphs.
 
 Getting from files to Unicode
 =============================
@@ -48,22 +53,26 @@ file for us.
     >>> import nltk.data
     >>> path = nltk.data.find('corpora/polish-lat2.txt')
 
-We import the ``codecs`` module, and use it
-to open the file as Unicode. Note that ``codecs`` requires the
-``encoding`` parameter to be specified with an appropriate value, in
-this case ``'latin2'``.
+The Python ``codecs`` module provides functions to read encoded data
+into Unicode strings, and to write out Unicode strings in encoded
+form.  The ``codecs.open()`` function takes an encoding parameter to
+specify the encoding of the file being read or written. So let's import
+the ``codecs`` module, and call it with the encoding ``'latin2'`` to open
+our Polish file as Unicode.
 
     >>> import codecs
     >>> f = codecs.open(path, encoding='latin2')
 
-For a list of possible values, see
+For a list of encoding parameters allowed by ``codecs``, see
 http://docs.python.org/lib/standard-encodings.html.
 
-The file object ``f`` is in Unicode. In order to view the file on the
-terminal, we need to encode it, using a suitable encoding. As
-mentioned earlier, the encoding ``unicode_escape`` shows us the
-Unicode code points for all characters outside the ASCII range of
-0-127.
+The file object ``f`` is in Unicode. As we pointed out earlier, in order
+to view the file on a terminal, we need to encode it, using a
+suitable encoding.  The Python-specific encoding ``unicode_escape`` is
+a dummy encoding that converts all non-ASCII characters into their
+``\u``\ *XXXX* representations.  Code points above the ASCII 0-127 range
+but below 256 are represented in the two-digit form ``\x``\ *XX*.
+
 
     >>> lines = f.readlines()
     >>> for l in lines:
@@ -80,10 +89,9 @@ Unicode code points for all characters outside the ASCII range of
 The first line above illustrates a Unicode escape string, namely
 preceded by the ``\u`` escape string, namely ``\u0144`` . The relevant
 Unicode character will be dislayed on the screen as the glyph
-|nacute|. As mentioned above, Unicode literals for code points below
-256 are represented by the ``\x``\ *XX* escape sequence; for example,
-in the third line of the preceding example, we can see ``\xf3``, which
-corresponds to the glyph |oacute|.
+|nacute|.  In the third line of the preceding example, we see
+``\xf3``, which corresponds to the glyph |oacute|, and is within the
+128-255 range.
 
 In Python, another method of specifying a Unicode string literal is to
 precede an ordinary string literal with a ``u``, as in
@@ -208,9 +216,17 @@ literals in a Python file.
 This example also illustrates how regular expressions can use encoded strings.
 
 
+    >>> path = nltk.data.find('corpora/sinorama-gb.xml')
+    >>> f = codecs.open(path, encoding='chinese')
+    >>> lines = f.readlines()
+    >>> for l in lines:
+    ...     l = l[:-1]
+    ...     print repr(l.encode('utf8'))
+    '<?xml encoding="GB2312">'
+    '<SENT type=1-1>'
+    '\xe7\x94\x9a\xe8\x87\xb3\xe7\x8c\xab\xe4\xbb\xa5\xe4\xba\xba\xe8\xb4\xb5\xe3\x80\x82'
+    'In some cases. cats were valued above humans.'
+    '</SENT>'
 
-.. Note::
 
-    TODO
 
-    chinese example with pos markup
