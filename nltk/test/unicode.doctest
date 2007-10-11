@@ -217,6 +217,9 @@ literals in a Python file.
 The above example also illustrates how regular expressions can use
 encoded strings.
 
+Chinese and XML
+===============
+
 Codecs for processing Chinese text have been incorporated into Python
 (since version 2.4). 
 
@@ -234,6 +237,19 @@ Codecs for processing Chinese text have been incorporated into Python
     ''
     'In some cases, cats were valued above humans.'
     '</SENT>'
+
+We can also read in the contents of an XML file using the ``etree``
+package (at least, if the file is encoded as UTF-8 |mdash| GB2312
+seems not to work).
+
+    >>> path = nltk.data.find('samples/sinorama-utf8.xml')
+    >>> from nltk.etree import ElementTree as ET
+    >>> tree = ET.parse(path)
+    >>> for s in tree.getiterator('SENT'):
+    ...     text = s.text.encode('utf8')
+    ...     print repr(text)
+    '\n\xe7\x94\x9a\xe8\x87\xb3\xe7\x8c\xab\xe4\xbb\xa5\xe4\xba\xba\xe8\xb4\xb5\n'
+
 
 
 
