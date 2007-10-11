@@ -51,7 +51,7 @@ also known as ISO-8859-2. The function ``nltk.data.find()`` locates the
 file for us.
 
     >>> import nltk.data
-    >>> path = nltk.data.find('corpora/polish-lat2.txt')
+    >>> path = nltk.data.find('samples/polish-lat2.txt')
 
 The Python ``codecs`` module provides functions to read encoded data
 into Unicode strings, and to write out Unicode strings in encoded
@@ -214,20 +214,25 @@ literals in a Python file.
 
 .. image:: ../../doc/images/utf8.png
 
-This example also illustrates how regular expressions can use encoded strings.
+The above example also illustrates how regular expressions can use
+encoded strings.
 
+Codecs for processing Chinese text have been incorporated into Python
+(since version 2.4). 
 
-    >>> path = nltk.data.find('corpora/sinorama-gb.xml')
-    >>> f = codecs.open(path, encoding='chinese')
+    >>> path = nltk.data.find('samples/sinorama-gb.xml')
+    >>> f = codecs.open(path, encoding='gb2312')
     >>> lines = f.readlines()
     >>> for l in lines:
     ...     l = l[:-1]
     ...     utf_enc = l.encode('utf8')
     ...     print repr(utf_enc)
-    '<?xml encoding="GB2312">'
-    '<SENT type=1-1>'
-    '\xe7\x94\x9a\xe8\x87\xb3\xe7\x8c\xab\xe4\xbb\xa5\xe4\xba\xba\xe8\xb4\xb5\xe3\x80\x82'
-    'In some cases. cats were valued above humans.'
+    '<?xml version="1.0" encoding="gb2312" ?>'
+    ''
+    '<SENT>'
+    '\xe7\x94\x9a\xe8\x87\xb3\xe7\x8c\xab\xe4\xbb\xa5\xe4\xba\xba\xe8\xb4\xb5'
+    ''
+    'In some cases, cats were valued above humans.'
     '</SENT>'
 
 
