@@ -579,6 +579,9 @@ def bracket_parse(s):
 
     # Skip any initial whitespace.
     pos = SPACE.match(s).end()
+    
+    if pos == len(s): # only got whitespace
+        return None
 
     stack = []
     while pos < len(s):

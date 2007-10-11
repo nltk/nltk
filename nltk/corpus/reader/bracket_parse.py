@@ -49,6 +49,8 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
     def _read_block(self, stream):
         if self._detect_blocks == 'sexpr':
             return read_sexpr_block(stream, comment_char=self._comment_char)
+        elif self._detect_blocks == 'blankline':
+            return read_blankline_block(stream)
         elif self._detect_blocks == 'unindented_paren':
             # Tokens start with unindented left parens.
             toks = read_regexp_block(stream, start_re=r'^\(')
@@ -98,3 +100,22 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
     def _word(self, t):
         return WORD.findall(self._normalize(t))
 
+class AlpinoCorpusReader(BracketParseCorpusReader):
+    """
+    Reader for the Alpino Dutch Treebank.
+    """
+    def __init__(self, root):
+        BracketParseCorpusReader.__init__(self, root, 'alpino', extension='.xml', detect_blocks='blankline')
+
+# low-level string processing
+    
+    def _normalize(self, t):
+        if t[:10] != "<alpino_ds":
+            return ""
+        # convert XML to sexpr notation
+        t = re.sub(r'  <node .*? cat="(\w+)".*>', r"(\1", t)
+        t = re.sub(r'  <node .*? pos="(\w+)".*? word="([^"]+)".*/>', r"(\1 \2)", t)
+        t = re.sub(r"  </node>", r")", t)
+        t = re.sub(r"<sentence>.*</sentence>", r"", t)
+        t = re.sub(r"</?alpino_ds.*>", r"", t)
+        return t
