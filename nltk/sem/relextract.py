@@ -23,9 +23,6 @@ The two serialization outputs are I{rtuple} and I{clause}.
 # todo: get a more general solution to canonicalized symbols for clauses -- maybe use xmlcharrefs?
 
 from nltk import defaultdict
-from nltk import parse, Tree
-from nltk.corpus import ieer, conll2002
-from nltk.tag import tuple2str
 
 from string import join
 import re
@@ -79,6 +76,7 @@ def _join(lst, sep=' ', untag=False):
     except TypeError:
         if untag:
             return join([tup[0] for tup in lst], sep=sep)            
+        from nltk.tag import tuple2str
         return join([tuple2str(tup) for tup in lst], sep=sep) 
     
 def mk_pairs(tree):
@@ -94,6 +92,8 @@ def mk_pairs(tree):
     @rtype: C{list} of C{tuple}
     """
 
+    from nltk import Tree
+    
     pairs = []
     pair = [[], None]
     
@@ -231,6 +231,7 @@ def show_clause(reldict, relsym):
 ############################################
 def in_demo(trace=0):
  
+    from nltk.corpus import ieer
 
     IN = re.compile(r'.*\bin\b(?!\b.+ing\b)')
     
@@ -253,6 +254,7 @@ def in_demo(trace=0):
 ############################################
     
 def roles_demo(trace=0):
+    from nltk.corpus import ieer
     roles = """
     (.*(                   # assorted roles
     analyst|
@@ -323,6 +325,9 @@ def conllned(trace=1):
     Find the copula+'van' relation ('of') in the Dutch tagged training corpus
     from CoNLL 2002.
     """
+
+    from nltk.corpus import conll2002
+        
     vnv = """
     (
     is/V|
@@ -350,7 +355,8 @@ def conllned(trace=1):
     #############################################
 
 def conllesp():
-    
+    from nltk.corpus import conll2002
+
     de = """
     .*
     (
