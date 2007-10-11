@@ -15,4 +15,6 @@ set-theoretic models.
 from util import *
 from evaluate import *
 from logic import *
+from relextract import *
+
 
