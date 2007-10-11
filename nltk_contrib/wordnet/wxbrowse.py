@@ -28,9 +28,9 @@ import  wx
 import  wx.html as  html
 import  wx.lib.wxpTag
 
-from util import *
-from dictionary import *
-from morphy import morphy
+from nltk.wordnet.util import *
+from nltk.wordnet.dictionary import *
+from nltk.wordnet.morphy import morphy
 
 __all__ = ['demo']
 
@@ -1073,7 +1073,7 @@ class MyHtmlFrame(wx.Frame):
     def on_key_up(self, event):
         event.Skip()
 
-    def  on_frame_close(self, event):
+    def on_frame_close(self, event):
         pos = self.GetPosition()
         size = self.GetSize()
         if pos == (-32000, -32000): # The frame is minimized, ignore pos
@@ -1085,43 +1085,43 @@ class MyHtmlFrame(wx.Frame):
         pkl.close()
         event.Skip()
 
-    def  on_frame_resize(self, event):
+    def on_frame_resize(self, event):
         event.Skip()
 
-    def  on_frame_move(self, event):
+    def on_frame_move(self, event):
         event.Skip()
 
-    def  on_open_file(self, event):
+    def on_open_file(self, event):
         self.load_file()
 
-    def  on_open_URL(self, event):
+    def on_open_URL(self, event):
         self.load_url()
 
-    def  on_save_as(self, event):
+    def on_save_as(self, event):
         self.save_file()
 
-    def  on_print(self, event):
+    def on_print(self, event):
         self.print_()
 
-    def  on_preview(self, event):
+    def on_preview(self, event):
         self.preview()
 
-    def  on_exit(self, event):
+    def on_exit(self, event):
         self.Close()
 
-    def  on_new_tab(self, event):
+    def on_new_tab(self, event):
         current_page = self.panel.nb.add_html_page()
 
-    def  on_close_tab(self, event):
+    def on_close_tab(self, event):
         self.panel.nb.DeletePage(self.panel.nb.current_page)
 
-    def  on_ol_ut(self, event):
+    def on_ol_ut(self, event):
         pass
 
-    def  on_ol_ft(self, event):
+    def on_ol_ft(self, event):
         pass
 
-    def  on_ssw_nt(self, event):
+    def on_ssw_nt(self, event):
         word = self.panel.search_word.GetValue()
         if word == '': return
         current_page = self.panel.nb.add_html_page()
@@ -1133,31 +1133,31 @@ class MyHtmlFrame(wx.Frame):
         else:
             self.panel.nb.h_w.show_msg('The word was not found!')
 
-    def  on_prev_page(self, event):
+    def on_prev_page(self, event):
         self.panel.on_prev_page(event)
 
-    def  on_next_page(self, event):
+    def on_next_page(self, event):
         self.panel.on_next_page(event)
 
-    def  on_incr_font(self, event):
+    def on_incr_font(self, event):
         self.panel.nb.h_w.incr_decr_font_size(+1)
 
-    def  on_decr_font(self, event):
+    def on_decr_font(self, event):
         self.panel.nb.h_w.incr_decr_font_size(-1)
 
-    def  on_norm_font(self, event):
+    def on_norm_font(self, event):
         self.panel.nb.h_w.incr_decr_font_size()
 
-    def  on_db_info(self, event):
+    def on_db_info(self, event):
         self.show_db_info()
 
-    def  on_show_source(self, event):
+    def on_show_source(self, event):
         self.show_source()
 
-    def  on_help_help(self, event):
-        self.read_file('NLTK Wordnet Browser Help.html')
+    def on_help_help(self, event):
+        self.read_file('help.html')
 
-    def  on_help_about(self, event):
+    def on_help_about(self, event):
         wx.MessageBox(help_about)
 
     def show_db_info(self):
