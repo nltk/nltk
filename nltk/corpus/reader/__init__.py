@@ -39,5 +39,6 @@ __all__ = [
     'SinicaTreebankCorpusReader', 'BracketParseCorpusReader',
     'IndianCorpusReader', 'ToolboxCorpusReader',
     'TimitCorpusReader', 'YCOECorpusReader',
-    'MacMorphoCorpusReader', 'SyntaxCorpusReader'
+    'MacMorphoCorpusReader', 'SyntaxCorpusReader',
+    'AlpinoCorpusReader'
 ]

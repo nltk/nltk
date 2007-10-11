@@ -65,6 +65,8 @@ import chat80
 
 abc = LazyCorpusLoader(
     'abc', PlaintextCorpusReader, '(?!\.svn).*', '.txt')
+alpino = LazyCorpusLoader(
+    'alpino', AlpinoCorpusReader)
 brown = LazyCorpusLoader(
     'brown', TaggedCorpusReader, list('abcdefghjklmnpr'))
 cess_cat = LazyCorpusLoader(
