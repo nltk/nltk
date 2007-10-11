@@ -16,7 +16,10 @@ from nltk.etree import ElementTree
 if os.name == 'posix':
     import resource
     soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
-    resource.setrlimit(resource.RLIMIT_NOFILE, (1500, hard))
+    try:
+        resource.setrlimit(resource.RLIMIT_NOFILE, (1500, hard))
+    except ValueError:
+        pass
 
 ######################################################################
 #{ Corpus View
