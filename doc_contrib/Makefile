@@ -10,9 +10,9 @@
 
 PAPER_SIZE = a4
 
-DOCS =  words.txt 
+DOCS =  glue.txt 
 
-REF_EXTENSION = .ref
+#REF_EXTENSION = .ref
 
 PDF := $(DOCS:.txt=.pdf)
 HTML := $(DOCS:.txt=.html)
@@ -21,24 +21,24 @@ REF := $(DOCS:.txt=$(REF_EXTENSION))
 PY := $(DOCS:.txt=.py)
 TEX := $(DOCS:.txt=.tex)
 
-BIBTEX_FILE = ../book.bib
+BIBTEX_FILE = refs.bib
 
 PYTHON = python
 PDFLATEX = TEXINPUTS=".:..:" pdflatex -halt-on-error
 EXAMPLES = ../examples.py
 RST = ../doc/rst.py
-RST2REF = $(RST) 
+#RST2REF = $(RST) --ref
 RST2HTML = $(RST) --html
 RST2LATEX = $(RST) --latex --$(PAPER_SIZE)
-DOCTEST = PYTHONPATH=../.. $(PYTHON) ../../nltk/test/doctest_driver.py
-BIBTEX = bibtex -terse
+DOCTEST = PYTHONPATH=../.. $(PYTHON) ../nltk/test/doctest_driver.py
+#BIBTEX = bibtex -terse
 
 # <http://www.spinellis.gr/sw/textproc/bib2xhtml/>
-BIB2XHTML = bib2xhtml -s named
+# BIB2XHTML = bib2xhtml -s named
 
-WEB = $(USER)@shell.sourceforge.net:/home/groups/n/nl/nltk/htdocs
-BETA = $(WEB)/beta
-RSYNC_OPTS = -arvz -e ssh --relative --cvs-exclude
+# WEB = $(USER)@shell.sourceforge.net:/home/groups/n/nl/nltk/htdocs
+# BETA = $(WEB)/beta
+# RSYNC_OPTS = -arvz -e ssh --relative --cvs-exclude
 
 LATEX_STYLESHEET_PATH = ../doc/definitions.sty
 
@@ -67,13 +67,13 @@ clean:	clean_up
 clean_up:
 	rm -f *.log *.aux *.out *.errs *~ *.bbl *.idx *.ilg *.ind *.toc *.blg
 
-.PRECIOUS: $(REF)
+# .PRECIOUS: $(REF)
 
-%$(REF_EXTENSION): %.txt revision.txt
-	$(RST2REF) $<
+# %$(REF_EXTENSION): %.txt revision.txt
+# 	$(RST2REF) $<
 
-%.html: %.txt $(REF) revision.txt
-	$(RST2HTML) $(REF) $< 
+%.html: %.txt revision.txt
+	$(RST2HTML) $< 
 
 %.tex: %.txt $(REF) revision.txt
 	$(RST2LATEX) $(REF) $< 
@@ -110,7 +110,6 @@ revision.txt: $(DOCS)
 	rm -f $*.log $*.aux $*.out $*.errs $*.bbl 
 	rm -f $*.idx $*.ilg $*.ind $*.toc $*.blg
 
-book.pdf: book.bbl book.tex
 
 .txt.errs:
 	$(DOCTEST) $< --ellipsis --normalize_whitespace --udiff &> $@
