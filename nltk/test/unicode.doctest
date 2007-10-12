@@ -6,6 +6,13 @@
 .. |aogonek| unicode:: U+0105
 .. |lstroke| unicode:: U+0142
 
+.. |CJK-4EBA| unicode:: U+4eba
+.. |CJK-4EE5| unicode:: U+4ee5
+.. |CJK-732B| unicode:: U+732b
+.. |CJK-751A| unicode:: U+751a
+.. |CJK-81F3| unicode:: U+81f3
+.. |CJK-8D35| unicode:: U+8d35
+
 =======================================
  Text Processing with Unicode in Python
 =======================================
@@ -237,6 +244,11 @@ Codecs for processing Chinese text have been incorporated into Python
     ''
     'In some cases, cats were valued above humans.'
     '</SENT>'
+
+With appropriate support on your terminal, the escaped text string
+inside the ``<SENT>`` element above
+will be rendered as the following string of ideographs:
+|CJK-751a|\ |CJK-81f3|\ |CJK-732b|\ |CJK-4ee5|\ |CJK-4eba|\ |CJK-8d35|.
 
 We can also read in the contents of an XML file using the ``etree``
 package (at least, if the file is encoded as UTF-8 |mdash| GB2312
