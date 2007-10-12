@@ -17,7 +17,7 @@ DOCS =  glue.txt
 PDF := $(DOCS:.txt=.pdf)
 HTML := $(DOCS:.txt=.html)
 ERRS := $(DOCS:.txt=.errs)
-REF := $(DOCS:.txt=$(REF_EXTENSION))
+#REF := $(DOCS:.txt=$(REF_EXTENSION))
 PY := $(DOCS:.txt=.py)
 TEX := $(DOCS:.txt=.tex)
 
@@ -75,8 +75,8 @@ clean_up:
 %.html: %.txt revision.txt
 	$(RST2HTML) $< 
 
-%.tex: %.txt $(REF) revision.txt
-	$(RST2LATEX) $(REF) $< 
+%.tex: %.txt revision.txt
+	$(RST2LATEX) $< 
 
 revision.txt: $(DOCS)
 	echo "This document is" > revision.txt
