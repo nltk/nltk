@@ -120,5 +120,5 @@ it will raise an exception.
     ApplicationExpression('(-o p q)', 'p') [] 
     >>> print q.simplify().infixify() 
     q 
-    >>> p = p\_q.applyto(q) 
+    >>> p = p_q.applyto(q) 
     LinearLogicApplicationError: Attempting to apply (-o p q) to q 
