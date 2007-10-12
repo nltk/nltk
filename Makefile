@@ -46,7 +46,7 @@ demotest:
 dist: codedist docdist exampledist datadist
 	touch .dist.done
 
-codedist: gztardist zipdist rpmdist wininstdist
+codedist: gztardist zipdist rpmdist wininstdist dmgdist
 
 gztardist: clean_code
 	$(PYTHON) setup.py -q sdist --format=gztar
@@ -56,6 +56,8 @@ rpmdist: clean_code
 	$(PYTHON) setup.py -q bdist --format=rpm
 wininstdist: clean_code
 	$(PYTHON) setup.py -q bdist --format=wininst
+dmgdist:
+	$(MAKE) -C tools/mac dmg
 
 docdist:
 	find doc -print | egrep -v '.svn' | zip dist/nltk-doc-$(NLTK_VERSION).zip -@
@@ -112,16 +114,16 @@ pylab:
 iso:	.dist.done .python.done .numpy.done .pylab.done
 	rm -rf iso nltk-$(NLTK_VERSION)
 	mkdir -p iso/{mac,win,unix}
-	cp dist/nltk-$(NLTK_VERSION).tar.gz        iso/mac/
+	cp dist/nltk-$(NLTK_VERSION).dmg           iso/mac/
 	cp dist/nltk-$(NLTK_VERSION).win32.exe     iso/win/
 	cp dist/nltk-$(NLTK_VERSION).tar.gz        iso/unix/
 	cp dist/nltk-$(NLTK_VERSION)-1.noarch.rpm  iso/unix/
-	cp dist/nltk-data-$(NLTK_VERSION).zip   iso
+	cp dist/nltk-data-$(NLTK_VERSION).zip      iso
 	cp dist/nltk-doc-$(NLTK_VERSION).zip       iso
-	cp *.txt *.html                                 iso
-	cp python/mac/*                                 iso/mac/
-	cp python/win/*                                 iso/win/
-	cp python/unix/*                                iso/unix/
+	cp *.txt *.html                            iso
+	cp python/mac/*                            iso/mac/
+	cp python/win/*                            iso/win/
+	cp python/unix/*                           iso/unix/
 	ln -f -s iso nltk-$(NLTK_VERSION)
 	mkisofs -f -r -o dist/nltk-$(NLTK_VERSION).iso nltk-$(NLTK_VERSION)
 

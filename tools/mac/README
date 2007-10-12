@@ -1,6 +1,6 @@
 To build OS X packages call 
-make pkg
+make dmg
 
 This must be called only after the .zip distributions has already been
 created. Also this can only be run on a OS X 10.4+ system with the
-developer tools installed. The result will be placed in /nltk/dist/nltk-VER.mpkg
+developer tools installed. The result will be placed in /nltk/dist/nltk-VER.dmg
