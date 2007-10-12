@@ -1,0 +1,124 @@
+.. -*- mode: rst -*-
+.. include:: ../doc/definitions.txt
+
+.. standard global imports
+
+    >>> import nltk, re, pprint
+
+.. |multimap| unicode:: U+22B8
+.. |vdash| unicode:: U+22A6
+.. |nvdash| unicode:: U+22AC
+
+:Author:
+  Daniel H. Garrette
+
+==============
+Glue Semantics
+==============
+
+The `Principle of Compositionality`:dt: states that the meaning
+of a whole is a function of the meanings of the parts and of the way they are
+syntactically combined. Chapter 11 described an algorithm to perform this
+composition.  However, as it was noted in the chapter, there are some
+limitations that quickly arise.  For example, note (43), (44a), and (44b) from
+Chapter 11 repeated here as compexa_--compexc_ respectively.
+
+.. _compex:
+.. ex::
+
+   .. _compexa:
+   .. ex::
+     Every girl chases a dog.
+
+   .. _compexb:
+   .. ex::
+      all x.((girl x) implies some y. ((dog y) and (chase x y)))
+
+   .. _compexc:
+   .. ex::
+      some y.((dog y) and all x. ((girl x) implies (chase x y)))
+
+In this example, compexa_ should give rise to both readings
+compexb_ and compexc_. However, the procedure described in Chapter
+11 only generates the first of these two. The reason for this
+discrepancy is that semantic interpretation in Chapter 11 is too
+closely tied to syntax. In sentence compexa_, the word `every`:lx:
+out-scopes the word `a`:lx:. This is a result of the sentence's word
+order: `every`:lx: comes before `a`:lx:. In the semantic composition,
+`every`:lx: combines with `boy`:lx: and `a`:lx: with `girl`:lx:. But since `a
+girl`:lx: is a sub-part of the VP `chases a girl`:lx:, `a girl`:lx: is
+combined with `chases`:lx: before `every boy`:lx: is.
+
+In contrast, Glue Semantics offers an elegant approach to determining
+scope based on the use of resource-sensitive logic as a means to
+"glue" the |lambda|\ -calculus meaning terms together.
+
+------------
+Linear Logic
+------------
+
+The particular "glue" logic that we will use is `Implicational Linear
+Logic`:dt:. It is a subset of Propositional Logic (see Chapter
+11.3). The logic is "implicational" because its only operator is
+implication. However, we will use the symbol |multimap| for linear
+logic implication instead of the symbol |rarr| which was used
+in the propositional and first order logics. Just as in propositional
+logic, the implication is used in the following way:
+
+.. _imp1:
+.. ex::
+	A, (A |multimap| B) |vdash| B
+
+
+Linear Logic is `resource-sensitive`:dt: because every premise in a
+resource-sensitive proof must be used *once and only once*. Therefore,
+unlike propositional or first order logics, we have the following rules:
+
+.. _imp2:	
+.. ex::
+	A, (A |multimap| B) |nvdash| A, B
+.. _imp3:	
+.. ex::
+	A, A, (A |multimap| B) |nvdash| B
+
+
+The best way to think about these rules is consider the linear logic
+implicational statement as a function that **consumes** its
+antecedent and itself to **produce** its consequent.  Example
+imp1_ is valid because *A* is applied to (*A* |multimap| *B*) which
+consumes both and produces *B*.  On the other hand imp3_ is
+invalid because the premise *A* is consumed by the
+implication and therefore cannot appear in the conclusion.  Finally,
+imp3_ is invalid because the premise *A* appears
+twice, but there is only one implication to consume it, and since
+every premise must be used exactly once, the second instance of *A*
+cannot be ignored.
+
+Linear Logic in NLTK
+~~~~~~~~~~~~~~~~~~~~
+
+All the tools needed to work in implicational linear logic are found
+in the file ``linearlogic.py``.  This module is modeled after the
+module ``logic.py``.  Strings can be parsed using the class
+``Parser``; ``ApplicationExpression``\ s can be applied to other
+``Expression``\ s using the method ``applyto()``.  Note that
+``applyto()`` will only succeed if the application is legal, otherwise
+it will raise an exception.
+
+    >>> from nltk_contrib import linearlogic
+    >>> llp = linearlogic.Parser()
+    >>> p = llp.parse('p')
+    >>> print p
+    p
+    >>> p_q = llp.parse('(p -o q)') 
+    >>> print p_q 
+    (-o p q) 
+    >>> print p_q.infixify() 
+    (p -o q) 
+    >>> q = p_q.applyto(p) 
+    >>> q 
+    ApplicationExpression('(-o p q)', 'p') [] 
+    >>> print q.simplify().infixify() 
+    q 
+    >>> p = p\_q.applyto(q) 
+    LinearLogicApplicationError: Attempting to apply (-o p q) to q 
