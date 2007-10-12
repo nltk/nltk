@@ -46,24 +46,23 @@ E. LINK CHECKING
 The build requires docutils, pdflatex, python imaging library, epydoc
 
   1. Check out a clean copy of the subversion repository (or make clean)
-       (install locally?  python setup.py install; make clean)
+     and install locally with python setup.py install; make clean
   2. make doc (slow; see doc/ for the results)
-  3. make dist (fast; see dist/ for the results)
+  3. make dist (fast; see dist/ for the results; may need "sudo make dist")
      - remove source rpm
   4. make python numpy wordnet (potentially slow; to download all python distros if necessary)
   5. make iso (fast; see dist/ for the iso image)
   6. list distributions and compare size with previous distribution
 
--rw-r--r-- 1 root root  1540841 2007-09-12 18:07 nltk-0.9b2-1.noarch.rpm
--rw-r--r-- 1 root root   677322 2007-09-12 18:07 nltk-0.9b2.tar.gz
--rw-r--r-- 1 root root   855901 2007-09-12 18:07 nltk-0.9b2.win32.exe
--rw-r--r-- 1 root root   804259 2007-09-12 18:07 nltk-0.9b2.zip
--rw-r--r-- 1 root root 50624218 2007-09-12 18:08 nltk-data-0.9b2.zip
--rw-r--r-- 1 root root 39283122 2007-09-12 18:07 nltk-doc-0.9b2.zip
--rw-r--r-- 1 root root    86001 2007-09-12 18:07 nltk-examples-0.9b2.zip
-
-?? -rw-r--r-- 1 sb sb 167860224 2007-08-29 12:35 nltk-0.9b1.iso
-
+-rw-r--r--   1 root  sb    1568039 Oct 12 16:53 nltk-0.9-1.noarch.rpm
+-rw-r--r--   1 root  sb   55594038 Oct 12 16:54 nltk-0.9.dmg
+-rw-r--r--   1 sb    sb  237801472 Oct 12 17:02 nltk-0.9.iso
+-rw-r--r--   1 root  sb     702674 Oct 12 16:53 nltk-0.9.tar.gz
+-rw-r--r--   1 root  sb     884034 Oct 12 16:53 nltk-0.9.win32.exe
+-rw-r--r--   1 sb    sb     831503 Oct 12 16:53 nltk-0.9.zip
+-rw-r--r--   1 root  sb   62990054 Oct 12 16:55 nltk-data-0.9.zip
+-rw-r--r--   1 root  sb   37739738 Oct 12 16:54 nltk-doc-0.9.zip
+-rw-r--r--   1 root  sb      85739 Oct 12 16:54 nltk-examples-0.9.zip
 
   (test the distributions?)
 
