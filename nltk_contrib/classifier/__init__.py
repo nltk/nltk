@@ -96,5 +96,6 @@ def entropy_of_freq_dist(freq_dist):
     for sample in freq_dist.samples():
         freq = freq_dist.freq(sample)
         sum += (freq * math.log(freq, 2))
+    if sum == 0: return 0
     return sum *  -1
     

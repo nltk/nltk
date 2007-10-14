@@ -10,6 +10,7 @@ from nltk_contrib.classifier import instances as ins, decisionstump as ds, Class
 from nltk_contrib.classifier.exceptions import invaliddataerror as inv
 
 class OneR(Classifier):
+    
     def __init__(self, training, attributes, klass):
         Classifier.__init__(self, training, attributes, klass)
         self.__best_decision_stump = None
@@ -30,6 +31,11 @@ class OneR(Classifier):
             raise inv.InvalidDataError('Invalid algorithm to find the best decision stump. ' + str(algorithm) + ' is not defined.')
     
     def possible_decision_stumps(self, ignore_attributes, instances):
+        """
+        Returns a list of decision stumps, one for each attribute ignoring the ones present in the
+        ignore list. Each decision stump maintains a count of instances having particular attribute
+        values.
+        """
         decision_stumps = self.attributes.empty_decision_stumps(ignore_attributes, self.klass);
         for stump in decision_stumps:
             for instance in instances:
@@ -38,6 +44,9 @@ class OneR(Classifier):
 
         
     def minimum_error(self, decision_stumps):
+        """
+        Returns the decision stump with minimum error
+        """
         error, min_error_stump = 1, None
         for decision_stump in decision_stumps:
             new_error = decision_stump.error()
