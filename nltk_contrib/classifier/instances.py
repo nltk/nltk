@@ -99,7 +99,7 @@ class TrainingInstances(Instances):
         we wont be changing the attribute value objects in the gold instances anyway 
         unless something really weird is happening!
         """
-        if fold > len(self): fold = len(self)
+        if fold > len(self): fold = len(self) / 2
         stratified = self.stratified_bunches(fold)
         datasets = []
         for index in range(len(stratified)):

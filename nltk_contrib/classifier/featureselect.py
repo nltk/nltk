@@ -176,11 +176,14 @@ class FeatureSelection:
     
     def get_fold(self):
         if len(self.options) == 1:
-            return DEFAULT_FOLD
-        return int(self.options[1])
+            specified_fold = DEFAULT_FOLD
+        else: specified_fold = int(self.options[1])
+        if specified_fold >= len(self.training):
+            specified_fold = len(self.training) / 2
+        return specified_fold
 
     def avg_accuracy_by_cross_validation(self, datasets, fold, attributes):
-        total_accuracy = 0;
+        total_accuracy = 0
         for index in range(fold):
             training, gold = datasets[index]
             classifier = cy.ALGORITHM_MAPPINGS[self.options[0]](training, attributes, self.klass)
@@ -197,12 +200,10 @@ class FeatureSelection:
         self.attributes.remove_attributes(attributes)
 
 def rank_options_invalid(options):
-    print 'in rank options invalid'
     return len(options) != 2 or not options[0] in OPTION_MAPPINGS or not options[1].isdigit()
 
 def wrapper_options_invalid(options):
-    print 'in wrapper options invalid'
-    val = (len(options) < 1 or len(options) > 3) \
+    return (len(options) < 1 or len(options) > 3) \
            or \
            (not options[0] in cy.ALGORITHM_MAPPINGS \
                 or \
@@ -213,7 +214,6 @@ def wrapper_options_invalid(options):
                 or \
                 len(options) == 3 and not isfloat(options[2])
            )
-    return val
 
 OPTIONS_TEST = {RANK : rank_options_invalid, FORWARD_SELECTION : wrapper_options_invalid, BACKWARD_ELIMINATION : wrapper_options_invalid}
 
