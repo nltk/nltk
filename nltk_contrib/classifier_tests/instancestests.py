@@ -260,15 +260,13 @@ class InstancesTestCase(unittest.TestCase):
         self.assertEqual(6, len(_training))
         datasets = _training.cross_validation_datasets(8)
         
-        self.assertEqual(6, len(datasets))
+        self.assertEqual(3, len(datasets))
         self.assertEqual(ins.TrainingInstances, datasets[0][0].__class__)
         self.assertEqual(ins.GoldInstances, datasets[0][1].__class__)
-        self.assertEqual(5, len(datasets[0][0]))#first training has 4 instances
-        self.assertEqual(1, len(datasets[0][1]))#first gold has 2 instances
-        self.assertEqual(5, len(datasets[1][0]))#second training has 4 instances
-        self.assertEqual(5, len(datasets[2][0]))#third training has 5 instances
-        self.assertEqual(5, len(datasets[5][0]))#eigth training has 5 instances
-        self.assertEqual(1, len(datasets[5][1]))#eigth gold has 1 instance
+        self.assertEqual(4, len(datasets[0][0]))#first training has 4 instances
+        self.assertEqual(2, len(datasets[0][1]))#first gold has 2 instances
+        self.assertEqual(4, len(datasets[1][0]))#second training has 4 instances
+        self.assertEqual(4, len(datasets[2][0]))#third training has 5 instances
 
     def test_flatten(self):
         result = ins.flatten([[2,3],[4,5],[6,7]])

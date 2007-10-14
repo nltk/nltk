@@ -113,10 +113,10 @@ class FeatureSelectTestCase(unittest.TestCase):
         self.assertEqual(0, feature_selection.get_delta())
         
     def test_get_fold(self):
-        feature_selection = fs.FeatureSelection(None, None, None, None, None, ['IG','3', '5'])
+        feature_selection = fs.FeatureSelection(['trainingn'] * 4, None, None, None, None, ['IG','3', '5'])
         self.assertEqual(3, feature_selection.get_fold())
         
-        feature_selection = fs.FeatureSelection(None, None, None, None, None, ['IG'])
+        feature_selection = fs.FeatureSelection(['trainingn'] * 14, None, None, None, None, ['IG'])
         self.assertEqual(10, feature_selection.get_fold())
         
     def test_invert_attrbute_selection(self):
