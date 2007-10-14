@@ -20,14 +20,14 @@ def run(root_path, log_path):
             index = file.rfind('.')
             if index != -1:
                 ext = file[index + 1:]
-                if ext == fmt.C45_FORMAT.NAMES or ext == fmt.C45_FORMAT.DATA or ext == fmt.C45_FORMAT.TEST or ext == fmt.C45_FORMAT.GOLD:
+                if ext == fmt.c45.NAMES or ext == fmt.c45.DATA or ext == fmt.c45.TEST or ext == fmt.c45.GOLD:
                     data.add(dir_name + os.path.sep + file[:index])
         for each in data:
             process(each, log_path)
     
 def process(path, log_path):
-    attributes = fmt.C45_FORMAT.get_attributes(path)
-    training = fmt.C45_FORMAT.get_training_instances(path)
+    attributes, klass = fmt.c45.metadata(path)
+    training = fmt.c45.training(path)
 
     disc_suffixes, filter_inputs = [], []
     has_continuous = attributes.has_continuous()

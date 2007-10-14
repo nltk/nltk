@@ -197,10 +197,12 @@ class FeatureSelection:
         self.attributes.remove_attributes(attributes)
 
 def rank_options_invalid(options):
+    print 'in rank options invalid'
     return len(options) != 2 or not options[0] in OPTION_MAPPINGS or not options[1].isdigit()
 
 def wrapper_options_invalid(options):
-    return (len(options) < 1 or len(options) > 3) \
+    print 'in wrapper options invalid'
+    val = (len(options) < 1 or len(options) > 3) \
            or \
            (not options[0] in cy.ALGORITHM_MAPPINGS \
                 or \
@@ -211,6 +213,7 @@ def wrapper_options_invalid(options):
                 or \
                 len(options) == 3 and not isfloat(options[2])
            )
+    return val
 
 OPTIONS_TEST = {RANK : rank_options_invalid, FORWARD_SELECTION : wrapper_options_invalid, BACKWARD_ELIMINATION : wrapper_options_invalid}
 
@@ -232,13 +235,15 @@ def batch_filter_select(base_path, suffixes, number_of_attributes, log_path, has
     return filter_suffixes
 
 def batch_wrapper_select(base_path, suffixes, classifier, fold, delta, log_path):
-    for each in wrapper_inputs:
+    wrapper_suffixes = []
+    for each in suffixes:
         for alg in [FORWARD_SELECTION, BACKWARD_ELIMINATION]:
             feat_sel = FeatureSelect()
-            params = ['-a', alg, '-f', path + each, '-o', classification_alg + ',' + str(fold) + str(delta), '-l', log_path]
+            params = ['-a', alg, '-f', base_path + each, '-o', classifier + ',' + str(fold) + ',' + str(delta), '-l', log_path]
             print "Params " + str(params)
             feat_sel.run(params)
             wrapper_suffixes.append(each + feat_sel.get_suffix())
+    return wrapper_suffixes
 
 if __name__ == "__main__":
     FeatureSelect().run(sys.argv[1:])
