@@ -63,17 +63,20 @@ def stringcomp (fx, fy):
     # "abc1def" and "abc2def"
     #    Original: 0.534
     #    Current:  0.606
-    for length in range(len(fx), 0, -1):
+    for length in range(n, 0, -1):
         while True:
             length_prev_ssnc = ssnc
             for i in range(len(fx)-length+1):
                 pattern = fx[i:i+length]
                 pattern_prev_ssnc = ssnc
+		fx_removed = False
                 while True:
                     index = fy.find(pattern)
                     if index != -1:
                         ssnc += (2.*length)**2
-                        fx = fx[:i] + fx[i+length:]
+			if fx_removed == False:
+                            fx = fx[:i] + fx[i+length:]
+			    fx_removed = True
                         fy = fy[:index] + fy[index+length:]
                     else:
                         break
