@@ -1,5 +1,6 @@
 from nltk_contrib.drt import DRT
 import linearlogic
+import lfg
 
 class GlueFormula:
     def __init__(self, meaning, glue, indices=set([])):
@@ -170,270 +171,6 @@ class GlueDict(dict):
             glueformulas.append(gf)
         return glueformulas
 
-class FStructure(dict):
-    def __init__(self, pt, current_label = [0], parent = None):
-        from nltk.tree import Tree
-
-        try:
-            assert isinstance(pt, Tree)
-        except AssertionError:
-            print 'Error Tree: \n%s\nis of type %s' % (pt, type(pt))
-            raise
-
-        self.pred = None
-
-        self.label = ['f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','a','b','c','d','e'][current_label[0]]
-        current_label[0] += 1
-
-        self.parent = parent
-        
-        if pt.node.head() == 'S':
-            if pt[0].node.head() == 'NP': # S -> NP VP
-                self['subj'] = FStructure(pt[0], current_label, self)
-                if pt[1][0].node.head() == 'IV' or pt[1][0].node.head() == 'TV' or \
-                   pt[1][0].node.head() == 'DTV'  or pt[1][0].node.head() == 'EquiV' or \
-                   pt[1][0].node.head() == 'ObjEquiV' or pt[1][0].node.head() == 'TVComp' or \
-                   pt[1][0].node.head() == 'RaisingV':
-                    self.pred = pt[1][0] # the verb
-                    if pt[1][0].node.head() == 'TV' or pt[1][0].node.head() == 'DTV' or \
-                       pt[1][0].node.head() == 'ObjEquiV':
-                        # OBJ for TV, DTV, ObjEquiV
-                        self['obj'] = FStructure(pt[1][1], current_label, self)
-                        if pt[1][0].node.head() == 'DTV':
-                            # THEME for VP -> DTV NP [NP]
-                            self['theme'] = FStructure(pt[1][2], current_label, self)
-                        elif pt[1][0].node.head() == 'ObjEquiV':
-                            # XCOMP for VP -> ObjEquiV NP TO [VP]
-                            self['xcomp'] = FStructure(pt[1][3], current_label, self)
-                            # subj of XCOMP is subj of whole
-                            #   ie "John persuades David to go" = "John persaudes David that David goes"
-                            self['xcomp']['subj'] = self['obj']
-                    elif pt[1][0].node.head() == 'TVComp':
-                        # VP -> TVComp [S]
-                        self['comp'] = FStructure(pt[1][1], current_label, self)
-                    elif pt[1][0].node.head() == 'EquiV':
-                        # VP -> EquiV TO [VP]
-                        self['xcomp'] = FStructure(pt[1][2], current_label, self)
-                        # subj of XCOMP is subj of whole
-                        #   ie "John tries to go" = "John tries that John goes"
-                        self['xcomp']['subj'] = self['subj']
-                    elif pt[1][0].node.head() == 'RaisingV':
-                        # VP -> RaisingV TO [VP]
-                        self['xcomp'] = FStructure(pt[1][2], current_label, self)
-                        # subj of XCOMP is subj of whole
-                        #   ie "John tries to go" = "John tries that John goes"
-                        self['xcomp']['subj'] = self['subj']
-##                elif pt[1][0].node.head() == 'ADV':
-##                    # VP -> ADV VP
-##                    r = _get_v_and_adjs(pt[1], current_label)
-##                    self.pred = r[0]
-##                    if r[1] != []: self['adj'] = r[1]
-                elif pt[1][1].node.head() == 'CC':
-                    # VP -> VP CC VP
-                    self.pred = pt[1][1] # the CC
-                    self['conjuncts'] = [FStructure(pt[1][0], current_label, self)]
-                    self['conjuncts'].append(FStructure(pt[1][2], current_label, self))
-                    # Both verbs have the same subject
-                    
-                    self['conjuncts'][0]['subj'] = FStructure(pt[0], current_label, self)
-                    self['conjuncts'][1]['subj'] = self['conjuncts'][0]['subj']
-            elif pt[1].node.head() == 'CC': # S -o S CC S
-                self.pred = pt[1] # the CC
-                self['conjuncts'] = [FStructure(pt[0], current_label, self)]
-                self['conjuncts'].append(FStructure(pt[2], current_label, self))
-             
-        elif pt.node.head() == 'NP':
-            if pt[0].node.head() == 'Det':
-                # NP -> Det N
-                r = _get_n_and_adjs(pt[1], current_label, self)
-                self.pred = r[0]
-                if r[1] != []: self['adj'] = r[1]
-                self['spec'] = pt[0][0] # get the Det
-            elif pt[0].node.head() == 'PropN' or pt[0].node.head() == 'Pro':
-                # NP -> PropN | Pro
-                self.pred = pt[0]
-            elif pt[0].node.head() == 'N':
-                # NP -> N[num=pl]
-                r = _get_n_and_adjs(pt[0], current_label, self)
-                self.pred = r[0]
-                if r[1] != []: self['adj'] = r[1]
-            elif pt[1].node.head() == 'CC': # NP -o NP CC NP
-                self.pred = pt[1] # the CC
-                self['conjuncts'] = [FStructure(pt[0], current_label, self)]
-                self['conjuncts'].append(FStructure(pt[2], current_label, self))
-
-        elif pt.node.head() == 'VP':
-            if pt[0].node.head() == 'IV' or pt[0].node.head() == 'TV' or \
-               pt[0].node.head() == 'DTV'  or pt[0].node.head() == 'EquiV' or \
-               pt[0].node.head() == 'ObjEquiV' or pt[0].node.head() == 'RaisingV' or \
-               pt[0].node.head() == 'TVComp':
-                self.pred = pt[0] # the verb
-                if pt[0].node.head() == 'TV' or pt[0].node.head() == 'DTV' or \
-                   pt[0].node.head() == 'ObjEquiV':
-                    # OBJ for TV, DTV, ObjEquiV
-                    self['obj'] = FStructure(pt[1], current_label, self)
-                    if pt[0].node.head() == 'DTV':
-                        # THEME for VP -o DTV NP [NP]
-                        self['theme'] = FStructure(pt[2], current_label, self)
-                    elif pt[0].node.head() == 'ObjEquiV':
-                        # XCOMP for VP -o ObjEquiV NP TO [VP]
-                        self['xcomp'] = FStructure(pt[3], current_label, self)
-                        # subj of XCOMP is obj of whole
-                        #   ie "John persuades David to go" = "John persaudes David that David goes"
-                        self['xcomp']['subj'] = self['obj']
-                elif pt[0].node.head() == 'TVComp':
-                    # VP -> TVComp [S]
-                    self['comp'] = FStructure(pt[1], current_label, self)
-                elif pt[0].node.head() == 'EquiV':
-                    # VP -> EquiV TO [VP]
-                    self['xcomp'] = FStructure(pt[2], current_label, self)
-                    # subj of XCOMP is subj of whole
-                    #   ie "John tries to go" = "John tries that John goes"
-                    self['xcomp']['subj'] = self['subj']
-                elif pt[0].node.head() == 'RaisingV':
-                    # VP -> RaisingV TO [VP]
-                    self['xcomp'] = FStructure(pt[2], current_label, self)
-                    # subj of XCOMP is subj of whole
-                    #   ie "John tries to go" = "John tries that John goes"
-                    self['xcomp']['subj'] = self['subj']
-##                elif pt[0].node.head() == 'RB':
-##                    # VP -> RB VP
-##                    self.pred = pt[1] # the verb
-##                    self['adj'] = [FStructure(pt[0], current_label, self)]
-            elif pt[1].node.head() == 'CC':
-                # VP -> VP CC VP
-                self.pred = pt[1] # the CC
-                self['conjuncts'] = [FStructure(pt[0], current_label, self)]
-                self['conjuncts'].append(FStructure(pt[2], current_label, self))
-                # Both verbs have the same subject
-                self['conjuncts'][0]['subj'] = FStructure(pt[0], current_label, self)
-                self['conjuncts'][1]['subj'] = self['conjuncts'][0]['subj']
-
-        elif pt.node.head() == 'JJ':
-            if isinstance(pt[0], str):
-                ## JJ lexical entry
-                self.pred = pt
-                
-        elif pt.node.head() == 'ADV':
-            if isinstance(pt[0], str):
-                ## ADV lexical entry
-                self.pred = pt
-
-        if self.pred is None:
-            raise RuntimeError, 'FStructure creation from\n%s\nwas unsuccessful.' % (pt)
-
-    def __repr__(self):
-        from nltk.tree import Tree
-        try:
-            accum = '%s:[' % self.label
-        except NameError:
-            accum = '['
-        try:
-            accum += 'pred \'%s\'' % self.pred[0]
-        except NameError:
-            pass
-
-        for feature in self:
-            if isinstance(self[feature], FStructure):
-                accum += ' %s %s' % (feature, self[feature].__repr__())
-            elif isinstance(self[feature], Tree):
-                accum += ' %s \'%s\'' % (feature, self[feature][0])
-            elif isinstance(self[feature], list):
-                accum += ' %s {' % (feature)
-                for entry in self[feature]:
-                    accum += '%s' % entry
-                accum += '}'
-            else: # ERROR
-                raise Exception, 'feature %s (%s) is not an FStruct, a list, or a Tree' % (feature, self[feature])
-        return accum+']'
-
-    def __str__(self, indent=3):
-        from nltk.tree import Tree
-        accum = '%s:[pred \'%s\'' % (self.label, self.pred[0])
-        for feature in self:
-            if isinstance(self[feature], FStructure):
-                next_indent = indent+len(feature)+3+len(self.label)
-                accum += '\n%s%s %s' % (" "*(indent), feature, self[feature].__str__(next_indent))
-            elif isinstance(self[feature], Tree):
-                accum += '\n%s%s \'%s\'' % (" "*(indent), feature, self[feature][0])
-            elif isinstance(self[feature], list):
-                accum += '\n%s%s {' % (" "*(indent), feature)
-                first = True
-                for entry in self[feature]:
-                    if not first:
-                        accum += '\n%s' % (" "*(indent+len(feature)+2))
-                    accum += '%s' % entry
-                    first = False
-                accum += '}'
-            else: # ERROR
-                raise Exception, 'feature %s is not an FStruct, a list, or a Tree' % feature
-        return accum+']'
-
-    def to_glueformula_list(self, glue_pos_dict, labels_added=[], current_subj=None):
-        from nltk.tree import Tree
-        glueformulas = []
-
-        if current_subj == None:
-            current_subj = self
-
-        # lookup 'pred'
-        glueformulas.extend(glue_pos_dict.lookup(self.pred.node['sem'], self.pred[0], current_subj, self))
-
-        for feature in self:
-            if isinstance(self[feature], FStructure):
-                if not self[feature].label in labels_added:
-                    glueformulas.extend(self[feature].to_glueformula_list(glue_pos_dict, labels_added,self))
-                    labels_added.append(self[feature].label)
-            elif isinstance(self[feature], Tree):
-                glueformulas.extend(glue_pos_dict.lookup(self[feature].node['sem'], self[feature][0], None, self))
-            elif isinstance(self[feature], list):
-                for entry in self[feature]:
-                    glueformulas.extend(entry.to_glueformula_list(glue_pos_dict, labels_added))
-            else:
-                raise Exception, 'feature %s is not an FStruct, a list, or a Tree' % feature
-
-        return glueformulas
-
-    def initialize_label(self, expression, unique_var_id=[0]):
-        try:
-            dot = expression.index('.')
-
-            before_dot = expression[:dot]
-            after_dot = expression[dot+1:]
-            if before_dot=='super':
-                return self.parent.initialize_label(after_dot)
-            else:
-                try:
-                    return self[before_dot].initialize_label(after_dot)
-                except KeyError:
-                    raise KeyError, 'FStructure doesn\'t contain a feature %s' % before_dot
-        except ValueError:
-            lbl = self.label
-            if expression=='f':       return lbl
-            elif expression=='v':     return '%sv' % lbl
-            elif expression=='r':     return '%sr' % lbl
-            elif expression=='super': return self.parent.label
-            elif expression=='var':   return '%s%s' % (self.label.upper(), unique_var_id[0])
-            else:                     return self[expression].label
-
-def _get_n_and_adjs(pt, current_label, parent):
-    """ This function is here to deal with N -o JJ N rules
-        since we don't know exactly where the noun is.
-        Returns (noun_word, list_of_adj_fstructs) """
-    if pt.node.head() == 'N':
-        if isinstance(pt[0], str):
-            # N lexical entry
-            return (pt, [])
-        else: #if self[0].node.head() == 'JJ':
-            # N -o JJ N rule
-            r = _get_n_and_adjs(pt[1], current_label, parent)
-            jj_fstruct = FStructure(pt[0], current_label, parent)
-            r[1].append(jj_fstruct) # append the current node's JJ
-            return (r[0], r[1])
-        
-    #if it doesn't match a pattern
-    raise RuntimeError, '%s is not of a valid N rule.' % (pt[0])
-
 def parse_to_meaning(sentence):
     readings = []
     for agenda in parse_to_compiled(sentence):
@@ -502,13 +239,14 @@ def parse_to_glue(sentence='a man sees Mary'):
     return [fstruct_to_glue(f) for f in fstructs]
 
 def parse(sentence='a man sees Mary'):
-    from nltk.parse import GrammarFile
-    from nltk import tokenize
-
-    return GrammarFile(r'glue_grammar.cfg').earley_parser(0).get_parse_list(list(tokenize.whitespace(sentence)))
+    from nltk.parse import load_earley
+    cp = load_earley(r'grammars/gluesemantics.fcfg')
+    tokens = sentence.split()
+    trees = cp.nbest_parse(tokens)
+    return trees
 
 def pt_to_fstruct(pt):
-    return FStructure(pt[0], [0])
+    return FStructure(pt, [0])
 
 def fstruct_to_glue(fstruct):
     glue_pos_dict = GlueDict()
@@ -703,3 +441,6 @@ def test():
     a = DRT.Parser().parse('\\P Q.((drs([x],[])+(P x))+(Q x))')
     dog = DRT.Parser().parse('\\x.drs([],[(dog x)])')
     
+
+if __name__ == '__main__':
+    proof_demo()
