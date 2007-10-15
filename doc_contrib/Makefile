@@ -10,7 +10,7 @@
 
 PAPER_SIZE = a4
 
-DOCS =  glue.txt 
+DOCS =  gluesem.txt 
 
 #REF_EXTENSION = .ref
 
