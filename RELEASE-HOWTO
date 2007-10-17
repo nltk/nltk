@@ -94,7 +94,7 @@ B. WEBSITE
        nltk-announce@lists.sourceforge.net  (for non-beta-releases)
   7. post announcement to external mailing lists, for major N.N releases only
        CORPORA@uib.no, linguist@linguistlist.org,
-       PythonSIL@lists.sil.org
+       PythonSIL@lists.sil.org, edu-sig@python.org
        mailing lists for any local courses using NLTK
 
 C. INSTALLATION
