@@ -174,7 +174,7 @@ class DRS(AbstractDRS):
 
         return (x_current, y_current)
 
-    def get_drawing_size(self, canvas=None, use_parens=None): #args define the top-left corner of the box
+    def get_drawing_size(self, canvas=None, use_parens=None): 
         canvas = init_canvas(canvas)
         text_height = canvas.font.metrics("linespace")
         x_current = canvas.BUFFER #indent the left side
@@ -242,7 +242,7 @@ class DRSVariable(AbstractDRS):
         return set([self])
 
     def replace(self, variable, expression):
-        if self.variable.equals(variable):
+        if self.variable == variable:
             return expression
         else:
             return self
@@ -264,7 +264,7 @@ class DRSVariable(AbstractDRS):
         return self.__str__()
 
     def _skolemise(self, bound_vars, counter):
-	return self
+        return self
 
     def __str__(self): return '%s' % self.variable
 
@@ -380,15 +380,15 @@ class LambdaDRS(AbstractDRS):
             return '%s%s.%s' % (prefix, self.variable, self.term)
 
     def __hash__(self):
-	return hash(repr(self))
+        return hash(repr(self))
 
     def _skolemise(self, bound_vars, counter):
-	bv = bound_vars.copy()
-	bv.add(self.variable)
-	return self.__class__(self.variable, self.term._skolemise(bv, counter))
+        bv = bound_vars.copy()
+        bv.add(self.variable)
+        return self.__class__(self.variable, self.term._skolemise(bv, counter))
 
     def __repr__(self):
-	return "LambdaDRS('%s', '%s')" % (self.variable, self.term)
+        return "LambdaDRS('%s', '%s')" % (self.variable, self.term)
 
     def draw(self, x=3, y=3, canvas=None, use_parens=None): #args define the top-left corner of the box
         canvas = init_canvas(canvas)
@@ -555,9 +555,9 @@ class ApplicationDRS(AbstractDRS):
         first = self.first.simplify()
         second = self.second.simplify()
         if isinstance(first, LambdaDRS):
-	    variable = first.variable
-	    term = first.term
-	    return term.replace(variable, second).simplify()
+            variable = first.variable
+            term = first.term
+            return term.replace(variable, second).simplify()
         else:
             return self.__class__(first, second)
 
@@ -565,14 +565,14 @@ class ApplicationDRS(AbstractDRS):
         first = self.first.infixify()
         second = self.second.infixify()
         if isinstance(first, DrsOperator) and not str(first) == 'not':
-	    return self.__class__(second, first)
+            return self.__class__(second, first)
         else:
             return self.__class__(first, second)    
 
     def _skolemise(self, bound_vars, counter):
-	first = self.first._skolemise(bound_vars, counter)
-	second = self.second._skolemise(bound_vars, counter)
-	return self.__class__(first, second)
+        first = self.first._skolemise(bound_vars, counter)
+        second = self.second._skolemise(bound_vars, counter)
+        return self.__class__(first, second)
 
     def __str__(self):
         # Print ((M N) P) as (M N P).
@@ -889,9 +889,9 @@ class ApplicationExpression(Expression):
         first = self.first.simplify()
         second = self.second.simplify()
         if isinstance(first, LambdaDRS):
-	    variable = first.variable
-	    term = first.term
-	    return term.replace(variable, second).simplify()
+            variable = first.variable
+            term = first.term
+            return term.replace(variable, second).simplify()
         else:
             return self.__class__(first, second)
 
@@ -899,14 +899,14 @@ class ApplicationExpression(Expression):
         first = self.first.infixify()
         second = self.second.infixify()
         if (isinstance(first, DrsOperator) or isinstance(first, FolOperator)) and not str(first) == 'not':
-	    return self.__class__(second, first)
+            return self.__class__(second, first)
         else:
             return self.__class__(first, second)    
 
     def _skolemise(self, bound_vars, counter):
-	first = self.first._skolemise(bound_vars, counter)
-	second = self.second._skolemise(bound_vars, counter)
-	return self.__class__(first, second)
+        first = self.first._skolemise(bound_vars, counter)
+        second = self.second._skolemise(bound_vars, counter)
+        return self.__class__(first, second)
 
     def __str__(self):
         # Print ((M N) P) as (M N P).
@@ -1015,7 +1015,6 @@ class ApplicationExpression(Expression):
         if use_parens:
             #Draw Open Paren
             y_current = (max_height-canvas.font.metrics("linespace"))/2
-            canvas.create_text(x_current, y_current, anchor='nw', text=Tokens.OPEN_PAREN)
             x_current += canvas.font.measure(Tokens.OPEN_PAREN)
 
         ######################################
@@ -1142,7 +1141,7 @@ class Parser:
         """Parse the next complete expression from the stream and return it."""
         tok = self.token()
         
-	if tok == Tokens.LAMBDA:
+        if tok == Tokens.LAMBDA:
             # Expression is a lambda expression: \x.M
 
             vars = [self.token()]
@@ -1166,7 +1165,7 @@ class Parser:
             refs = []
             while self.token(0) != Tokens.CLOSE_BRACKET:
                 # Support expressions like: drs([x y],C) == drs([x, y],C)
-		if self.token(0) == Tokens.COMMA:
+                if self.token(0) == Tokens.COMMA:
                     self.token() # swallow the comma
                 else:
                     refs.append(self.next())
@@ -1180,13 +1179,13 @@ class Parser:
             # A list of DRS Conditions
             conds = []
             while self.token(0) != Tokens.CLOSE_BRACKET:
-		if self.token(0) == Tokens.COMMA:
+                if self.token(0) == Tokens.COMMA:
                     self.token() # swallow the comma
                 else:
                     conds.append(self.next())
             self.token() # swallow the CLOSE_BRACKET token
             return conds
-	    
+        
         elif tok == Tokens.OPEN_PAREN:
             # Expression is an application expression: (M N)
             first = self.next()
@@ -1269,13 +1268,6 @@ def init_canvas(canvas=None):
         canvas.BUFFER = 3
     return canvas
 
-class MyCanvas(Canvas):
-    def __init__(self, master, width, height):
-        Canvas.__init__(master, width, height)
-
-    def create_text(self, x, y, options):
-        Canvas.create_text(self, x, y, options)
-        
 def expression():
     return ['drs([],[])',
             'drs([x],[(man x), (walks x)])',
@@ -1298,39 +1290,41 @@ def expression():
 #            '(drs([],[(walks x)]) implies (runs x))',
 #            '((walks x) implies drs([],[(walks x)]))',
 #            '((walks x) implies (runs x))'
+            
+            'drs([x],[(x = (alpha x)),(sees John x)])'
             ]
 
-def demo(ex=-1, catch_exception=True):
+def demo(ex=-1, draw=False, catch_exception=True):
     exps = expression()
     for (i, exp) in zip(range(len(exps)),exps):
         if i==ex or ex==-1:
-            print '[[[Example %s]]]: %s' % (i, exp)
-            try:
-                print '  %s' % Parser().parse(exp).simplify().infixify()
-            except Exception, (strerror):
-                if catch_exception:
-                    print '  Error: %s' % strerror
-                else:
-                    raise
-            print ''
-
-def draw_demo(ex=-1, catch_exception=True):
-    exps = expression()
-    for (i, exp) in zip(range(len(exps)),exps):
-        if i==ex or ex==-1:
-            canvas = init_canvas()
-            y_current = canvas.BUFFER
-            canvas.create_text(canvas.BUFFER, y_current, anchor='nw', text='Example %s: %s' % (i, exp))
-            try:
-                y_current += canvas.font.metrics("linespace")+canvas.BUFFER
-                size = Parser().parse(exp).infixify().draw(canvas.BUFFER,y_current,canvas)
-                y_current += size[1]+canvas.BUFFER
-                Parser().parse(exp).simplify().infixify().draw(canvas.BUFFER, y_current, canvas)
-            except Exception, (strerror):
-                if catch_exception:
-                    canvas.create_text(canvas.BUFFER, y_current, anchor='nw', text='  Error: %s' % strerror)
-                else:
-                    raise
-
+            if(not draw):
+                print '[[[Example %s]]]: %s' % (i, exp)
+                try:
+                    print '  %s' % Parser().parse(exp).simplify().infixify()
+                except Exception, (strerror):
+                    if catch_exception:
+                        print '  Error: %s' % strerror
+                    else:
+                        raise
+                print ''
+            else:
+                canvas = init_canvas()
+                y_current = canvas.BUFFER
+                canvas.create_text(canvas.BUFFER, y_current, anchor='nw', text='Example %s: %s' % (i, exp))
+                try:
+                    y_current += canvas.font.metrics("linespace")+canvas.BUFFER
+                    size = Parser().parse(exp).infixify().draw(canvas.BUFFER,y_current,canvas)
+                    y_current += size[1]+canvas.BUFFER
+                    Parser().parse(exp).simplify().infixify().draw(canvas.BUFFER, y_current, canvas)
+                except Exception, (strerror):
+                    if catch_exception:
+                        canvas.create_text(canvas.BUFFER, y_current, anchor='nw', text='  Error: %s' % strerror)
+                    else:
+                        raise
+                
 if __name__ == '__main__':
-    demo()
+    pt = Parser().parse('drs([x],[(x = (alpha x)),(sees John x)])')
+    simp = pt.simplify()
+    inf = simp.infixify()
+    print inf
