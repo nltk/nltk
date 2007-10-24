@@ -28,6 +28,7 @@ from nltk.corpus.reader.indian import *
 from nltk.corpus.reader.toolbox import *
 from nltk.corpus.reader.timit import *
 from nltk.corpus.reader.ycoe import *
+from nltk.corpus.reader.rte import *
 
 __all__ = [
     'PlaintextCorpusReader', 'find_corpus_items',
@@ -40,5 +41,5 @@ __all__ = [
     'IndianCorpusReader', 'ToolboxCorpusReader',
     'TimitCorpusReader', 'YCOECorpusReader',
     'MacMorphoCorpusReader', 'SyntaxCorpusReader',
-    'AlpinoCorpusReader'
+    'AlpinoCorpusReader', 'RTECorpusReader'
 ]
