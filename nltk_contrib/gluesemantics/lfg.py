@@ -215,7 +215,9 @@ class FStructure(dict):
             current_subj = self
 
         # lookup 'pred'
-        glueformulas.extend(glue_pos_dict.lookup(self.pred.node['sem'], self.pred[0], current_subj, self))
+        sem = self.pred.node['sem']
+        lookup = glue_pos_dict.lookup(sem, self.pred[0], current_subj, self)
+        glueformulas.extend(lookup)
 
         for feature in self:
             if isinstance(self[feature], FStructure):
@@ -252,6 +254,8 @@ class FStructure(dict):
             elif expression=='r':     return '%sr' % lbl
             elif expression=='super': return self.parent.label
             elif expression=='var':   return '%s%s' % (self.label.upper(), unique_var_id[0])
+            elif expression=='a':     return self['conjuncts'][0].label
+            elif expression=='b':     return self['conjuncts'][1].label
             else:                     return self[expression].label
 
     def head(node):

@@ -246,7 +246,7 @@ def parse(sentence='a man sees Mary'):
     return trees
 
 def pt_to_fstruct(pt):
-    return FStructure(pt, [0])
+    return lfg.FStructure(pt, [0])
 
 def fstruct_to_glue(fstruct):
     glue_pos_dict = GlueDict()
@@ -388,7 +388,7 @@ def proof_demo():
     every_girl_chases_a_dog = a_dog.applyto(every_girl_chases)
     print '      \'every girl chases a dog\': %s' % every_girl_chases_a_dog.simplify().infixify()
 
-def demo(draw=False, show_example=-1):
+def demo(show_example=-1, draw=False):
     examples = ['David sees Mary',
                 'David eats a sandwich',
                 'every man chases a dog',
@@ -403,7 +403,11 @@ def demo(draw=False, show_example=-1):
 #                'every big cat leaves',
 #                'every gray cat leaves',
                 'every big gray cat leaves',
-                'a former senator leaves']
+                'a former senator leaves',
+                'John likes a cat',
+                'John likes every cat',
+                'he likes a dog',
+                'John likes a cat and he likes a dog']
 
     example_num = 0
     hit = False
@@ -422,7 +426,6 @@ def demo(draw=False, show_example=-1):
                 if draw:
                     canvas.create_text(canvas.BUFFER, y_current, anchor='nw', text='Reading #%s' % (j+1))
                     y_current += canvas.font.metrics("linespace")
-                    #y_current = readings[j].infixify().draw(canvas.BUFFER, y_current, canvas)[1]+canvas.BUFFER*3
                     y_current = readings[j].simplify().infixify().draw(canvas.BUFFER, y_current, canvas)[1]+canvas.BUFFER*3
                     y_current += canvas.BUFFER*5
                 else:
@@ -443,4 +446,9 @@ def test():
     
 
 if __name__ == '__main__':
-    proof_demo()
+    demo(11, True)
+    print "\n\n"
+    #demo(12)
+    #print "\n\n"
+    demo(12, True)
+ 
