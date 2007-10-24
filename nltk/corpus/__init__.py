@@ -100,6 +100,8 @@ names = LazyCorpusLoader(
     'names', WordListCorpusReader, '(?!\.svn).*', '.txt')
 ppattach = LazyCorpusLoader(
     'ppattach', PPAttachmentCorpusReader, ['training', 'test', 'devset'])
+rte = LazyCorpusLoader(
+    'rte', RTECorpusReader, '(?!\.svn).*', '.xml')
 senseval = LazyCorpusLoader(
     'senseval', SensevalCorpusReader, '(?!\.svn).*', '.pos')
 shakespeare = LazyCorpusLoader(
