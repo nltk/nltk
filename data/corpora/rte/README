@@ -1,0 +1,83 @@
+Data provided by Recognising Textual Entailment (RTE) Challenges 1, 2 and 3,
+organized by the EU-funded PASCAL Network of Excellence on Pattern
+Analysis, Statistical Modelling and Computational Learning. 
+
+http://www.pascal-network.org/Challenges/RTE/
+
+
+The following citation should be used when referring to the RTE Challenge
+as a whole:
+
+Ido Dagan, Oren Glickman and Bernardo Magnini. The PASCAL Recognising
+Textual Entailment Challenge. In Quinonero-Candela, J.; Dagan, I.; Magnini,
+B.; d'Alché-Buc, F. (Eds.) Machine Learning Challenges. Lecture Notes in
+Computer Science , Vol. 3944, pp. 177-190, Springer, 2006.
+
+-----
+RTE 1
+-----
+
+Organizers:
+
+Oren Glickman, Bar Ilan University
+Ido Dagan, Bar Ilan University
+Bernardo Magnini, ITC-irst, Istituto per la Ricerca Scientifica e Tecnologica, Povo (TN), Italy 
+
+Please cite:
+
+Ido Dagan, Oren Glickman and Bernardo Magnini. "The PASCAL Recognising
+Textual Entailment Challenge."  In Proceedings of the PASCAL Challenges
+Workshop on Recognising Textual Entailment, 2005.
+
+Proceedings:
+
+http://www.cs.biu.ac.il/~glikmao/rte05/index.html
+
+-----
+RTE 2
+-----
+
+Organizers:
+
+Roy Bar Haim, Bar Ilan University
+Ido Dagan, Bar Ilan University
+Bill Dolan, Microsoft Research
+Lisa Ferro, MITRE
+Danilo Giampiccolo, CELCT, Trento
+Bernardo Magnini, ITC-irst, Istituto per la Ricerca Scientifica e Tecnologica, Povo (TN), Italy
+Idan Szpektor, Bar Ilan University
+
+Please cite:
+
+Roy Bar-Haim, Ido Dagan, Bill Dolan, Lisa Ferro, Danilo Giampiccolo,
+Bernardo Magnini and Idan Szpektor. "The Second PASCAL
+Recognising Textual Entailment Challenge." In Proceedings of the Second
+PASCAL Challenges Workshop on Recognising Textual Entailment, 2006.
+
+Proceedings: 
+
+http://www.cs.biu.ac.il/~dagan/RTE2/Proceedings/
+
+
+-----
+RTE 3
+-----
+
+Organizers:
+
+Patrick Pantel, ISI, USA (RTE Resources Pool)
+Danilo Giampiccolo, CELCT, Trento
+Ido Dagan, Bar Ilan University
+Bill Dolan, Microsoft Research
+Bernardo Magnini, ITC-irst, Istituto per la Ricerca Scientifica e Tecnologica, Povo (TN), Italy
+
+Please cite:
+
+Danilo Giampiccolo, Bernardo Magnini, Ido Dagan  and  Bill Dolan. 
+"The Third PASCAL Recognizing Textual Entailment Challenge." In
+Proceedings of the ACL-PASCAL Workshop on Textual Entailment and
+Paraphrasing, 2007.
+
+Proceedings:
+
+http://www.aclweb.org/anthology-new/W/W07/W07-14.pdf
