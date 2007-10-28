@@ -26,9 +26,9 @@ from api import *
 from xmldocs import XMLCorpusReader
 
 class RTEPair:
-    def __init__(self, pair, rteversion=None, id=None, text=None, hyp=None,
+    def __init__(self, pair, challenge=None, id=None, text=None, hyp=None,
                  value=None, task=None, length=None):
-        self.rteversion =  rteversion    
+        self.challenge =  challenge    
         self.id = pair.attrib["id"]
         self.text = pair[0].text
         self.hyp = pair[1].text
@@ -85,11 +85,11 @@ class RTECorpusReader(XMLCorpusReader):
     
     
     
-from nltk.data  import find
-path = find('corpora/rte/rte1_dev.xml')
-from nltk.etree import ElementTree as ET
-doc = ET.parse(path).getroot()
+# from nltk.data  import find
+# path = find('corpora/rte/rte1_dev.xml')
+# from nltk.etree import ElementTree as ET
+# doc = ET.parse(path).getroot()
 
 
 
-new = RTEPair(doc[0])
+# new = RTEPair(doc[0])
