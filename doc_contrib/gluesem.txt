@@ -208,10 +208,10 @@ for performing applications on other ``GlueFormulas``\.
 	>>> john = glue.GlueFormula('John', 'g')
 	>>> john
 	John : g
-	>>> john walks = walks.applyto(john)
-	>>> john walks
+	>>> john_walks = walks.applyto(john)
+	>>> john_walks
 	(\x.(walks x) John) : (-o g f g)
-	>>> john walks.simplify()
+	>>> john_walks.simplify()
 	(walks John) : f
 
 
@@ -260,11 +260,11 @@ Transitive Verbs in NLTK
 	>>> john = glue.GlueFormula('John', 'g')
 	>>> mary = glue.GlueFormula('Mary', 'h')
 	>>> sees = glue.GlueFormula('\\x y.(sees x y)', '(g -o (h -o f))')
-	>>> john sees = sees.applyto(john)
-	>>> john sees.simplify().infixify()
+	>>> john_sees = sees.applyto(john)
+	>>> john_sees.simplify().infixify()
 	\y.(sees John y) : (h -o f)
-	>>> john sees mary = john sees.applyto(mary)
-	>>> john sees mary.simplify().infixify()
+	>>> john_sees_mary = john_sees.applyto(mary)
+	>>> john_sees_mary.simplify().infixify()
 	(sees John Mary) : f
 
 Also, notice what happens if we try to apply the individuals in the wrong sequence: 
@@ -343,11 +343,11 @@ Quantification in NLTK
 	>>> a = glue.GlueFormula('\\P Q.some x.((P x) and (Q x))', '((gv -o gr) -o ((g -o G) -o G))')
 	>>> man = glue.GlueFormula('\\x.(man x)', '(gv -o gr)')
 	>>> walks = glue.GlueFormula('\\x.(walks x)', '(g -o f)')
-	>>> a man = a.applyto(man)
-	>>> print a man.simplify().infixify()
+	>>> a_man = a.applyto(man)
+	>>> print a_man.simplify().infixify()
 	\Q.some x.((man x) and (Q x)) : ((g -o G) -o G)
-	>>> a man walks = a man.applyto(walks)
-	>>> print a man walks.simplify().infixify()
+	>>> a_man_walks = a man.applyto(walks)
+	>>> print a_man_walks.simplify().infixify()
 	some x.((man x) and (walks x)) : f
 
 ------------------
@@ -445,16 +445,16 @@ the verb `chases`:lx:.
 
 	>>> every = glue.GlueFormula('\\P Q.all x.((P x) implies (Q x))', '((gv -o gr) -o ((g -o G) -o G))')
 	>>> girl = glue.GlueFormula('\\x.(girl x)', '(gv -o gr)')
-	>>> every girl = every.applyto(girl)
-	>>> print every girl.simplify().infixify()
+	>>> every_girl = every.applyto(girl)
+	>>> print every_girl.simplify().infixify()
 	\Q.all x.((girl x) implies (Q x)) : ((g -o G) -o G)
 	>>> chases = glue.GlueFormula('\\x y.(chases x y)', '(g -o (h -o f))')
 	>>> print chases.infixify()
 	\x y.(chases x y) : (g -o (h -o f))
 	>>> a = glue.GlueFormula('\\P Q.some x.((P x) and (Q x))', '((hv -o hr) -o ((h -o H) -o H))')
 	>>> dog = glue.GlueFormula('\\x.(dog x)', '(hv -o hr)')
-	>>> a dog = a.applyto(dog)
-	>>> print a dog.simplify().infixify()
+	>>> a_dog = a.applyto(dog)
+	>>> print a_dog.simplify().infixify()
 	\Q.some x.((dog x) and (Q x)) : ((h -o H) -o H)
 
 Because the rest of the assembly requires the abstraction rule ex22_, we will
@@ -466,10 +466,10 @@ abstracted as its argument.
 
 	>>> x1 = glue.GlueFormula('x1', 'A')
 	>>> psi = glue.GlueFormula('\\x.(psi x)', '(A -o B)')
-	>>> psi x1 = psi.applyto(x1)
-	>>> print psi x1.simplify()
+	>>> psi_x1 = psi.applyto(x1)
+	>>> print psi_x1.simplify()
 	(psi x1) : B
-	>>> psi2 = psi x1.lambda abstract(x1)
+	>>> psi2 = psi_x1.lambda_abstract(x1)
 	>>> print psi2
 	\x1.(\x.(psi x) x1) : (-o A (-o A B A))
 	>>> print psi2.simplify()
@@ -480,40 +480,40 @@ a dog`:lx: from the quantified nouns and the verb.  The first will be modeled af
 ex30_:
 
 	>>> x1 = glue.GlueFormula('x1', 'g')
-	>>> x1 chases = chases.applyto(x1)
-	>>> print x1 chases.simplify().infixify()
+	>>> x1_chases = chases.applyto(x1)
+	>>> print x1_chases.simplify().infixify()
 	\y.(chases x1 y) : (h -o f)
-	>>> x1 chases a dog = a dog.applyto(x1 chases)
-	>>> print x1 chases a dog.simplify().infixify()
+	>>> x1_chases_a_dog = a_dog.applyto(x1_chases)
+	>>> print x1_chases_a_dog.simplify().infixify()
 	some x.((dog x) and (chases x1 x)) : f
-	>>> chases a dog = x1 chases a dog.lambda abstract(x1)
-	>>> print chases a dog.simplify().infixify()
+	>>> chases_a_dog = x1_chases_a_dog.lambda_abstract(x1)
+	>>> print chases_a_dog.simplify().infixify()
 	\x1.some x.((dog x) and (chases x1 x)) : (g -o f)
-	>>> every girl chases a dog = every girl.applyto(chases a dog)
-	>>> print every girl chases a dog.simplify().infixify()
+	>>> every_girl_chases_a_dog = every_girl.applyto(chases_a_dog)
+	>>> print every_girl_chases_a_dog.simplify().infixify()
 	all x.((girl x) implies some z1.((dog z1) and (chases x z1))) : f
 
 The second will be modeled after ex31_:
 
 	>>> x1 = glue.GlueFormula('x1', 'g')
-	>>> x1 chases = chases.applyto(x1)
-	>>> print x1 chases.simplify().infixify()
+	>>> x1_chases = chases.applyto(x1)
+	>>> print x1_chases.simplify().infixify()
 	\y.(chases x1 y) : (h -o f)
 	>>> x2 = glue.GlueFormula('x2', 'h')
-	>>> x1 chases x2 = x1 chases.applyto(x2)
-	>>> print x1 chases x2.simplify().infixify()
+	>>> x1_chases_x2 = x1_chases.applyto(x2)
+	>>> print x1_chases_x2.simplify().infixify()
 	(chases x1 x2) : f
-	>>> chases x2 = x1 chases x2.lambda abstract(x1)
-	>>> print chases x2.simplify().infixify()
+	>>> chases_x2 = x1_chases_x2.lambda_abstract(x1)
+	>>> print chases_x2.simplify().infixify()
 	\x1.(chases x1 x2) : (g -o f)
-	>>> every girl chases x2 = every girl.applyto(chases x2)
-	>>> print every girl chases x2.simplify().infixify()
+	>>> every_girl_chases_x2 = every_girl.applyto(chases_x2)
+	>>> print every_girl_chases_x2.simplify().infixify()
 	all x.((girl x) implies (chases x x2)) : f
-	>>> every girl chases = every girl chases x2.lambda abstract(x2)
-	>>> print every girl chases.simplify().infixify()
+	>>> every_girl_chases = every_girl_chases_x2.lambda_abstract(x2)
+	>>> print every_girl_chases.simplify().infixify()
 	\x2.all x.((girl x) implies (chases x x2)) : (h -o f)
-	>>> every girl chases a dog = a dog.applyto(every girl chases)
-	>>> print every girl chases a dog.simplify().infixify()
+	>>> every_girl_chases_a_dog = a dog.applyto(every_girl_chases)
+	>>> print every_girl_chases_a_dog.simplify().infixify()
 	some x.((dog x) and all z1.((girl z1) implies (chases z1 x))) : f
 
 --------------------------------------
@@ -527,24 +527,25 @@ To generate the glue formulas that will be used in the proof, we must first
 parse the sentence for syntax (see Chapters 7 and 8).  The glue module includes
 a class ``FStructure`` that is created from a parse tree.
 
-	>>> from nltk lite.parse import GrammarFile
-	>>> from nltk lite import tokenize
-	>>> grammar = GrammarFile.read le('grammar.cfg')
-	>>> parsetrees = grammar.earley parser(0).get parse list(list(tokenize.whitespace('John sees a woman')))
+	>>> from nltk.parse import load_earley
 	>>> from nltk_contrib.gluesemantics import glue
-	>>> glue dict = glue.GlueDict()
-	>>> glue dict.read le('glue.cfg')
-	>>> fstruct = glue.FStructure(parsetrees[0][0], [0])
+	>>> from nltk_contrib.gluesemantics import lfg
+	>>> cp = load_earley(r'grammars/gluesemantics.fcfg')
+	>>> tokens = 'John sees a woman'.split()
+	>>> trees = cp.nbest_parse(tokens)
+	>>> glue_dict = glue.GlueDict()
+	>>> glue_dict.read_file(r'glue.cfg')
+	>>> fstruct = lfg.FStructure(trees[0], [0])
 	>>> print fstruct
 	f:[pred 'sees'
-	subj g:[pred 'John']
-	obj h:[pred 'woman'
-	spec 'a']]
-	>>> for gf in fstruct.to glueformula list(glue dict): print gf
+	   obj h:[pred 'woman'
+	          spec 'a']
+	   subj g:[pred 'John']]
+   	>>> for gf in fstruct.to_glueformula_list(glue_dict): print gf
 	\x y.(sees x y) : (-o g (-o h f))
-	John : g
 	\x.(woman x) : (-o hv hr)
 	\P Q.some x.(and (P x) (Q x)) : (-o (-o hv hr) (-o (-o h H0) H0))
+	John : g
 
 Horn Clauses
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -581,7 +582,7 @@ possible readings since each new proof could potentially give a different
 reading. 
 
 The solution to this problem comes from [GL98]_.  The basic
-idea is to "compile" linear logic formulas into "skeletons", which are of the
+idea is to "compile" linear logic formulas into **horn clauses**, which are of the
 form (\ `g`:mathit:\ :subscript:`1` |multimap| (\ `g`:mathit:\ :subscript:`2` |multimap| 
 (\ |dots| |multimap| f))) where `g`:mathit:\ :subscript:`i`
 and `f`:mathit: are propositions.  By doing this we are generating new premises for all of
@@ -599,24 +600,20 @@ The algorithm for linear logic compilation from [Lev07]_ is given as Figure comp
 	| **function** ``compile-glue-formula``\ ( |psi| : X )
 	| |tab| |langle|\ `Y`:mathit:, |Gamma|\ |rangle| := ``compile-pos``\ ( X )
 	| |tab| **return** {\ |psi| : Y : {`i`:mathit:}} |cup| |Gamma| for a fresh index `i`:mathit:
-	| 
 	| **function** ``compile-pos``\ ( X ) where X is atomic
 	| |tab| **return** |langle|\ X\ :subscript:`[]`, |emptyset|\ |rangle|
-	| 
 	| **function** ``compile-pos``\ ( X |multimap| Y )
 	| |tab| |langle|\ |delta|, |Delta|\ |rangle| := ``compile-pos``\ ( Y )
 	| |tab| |langle|\ |gamma|, |Gamma|\ |rangle| := ``compile-neg``\ ( X ) (\ |gamma| will be atomic)
 	| |tab| **return** |langle| ( |gamma|\ |multimap|\ |delta|\ ), |Gamma| |cup| |Delta| |rangle|
-	| 
 	| **function** ``compile-neg``\ ( X ) where X is atomic
 	| |tab| **return** |langle|\ X\ :subscript:`[]`, |emptyset|\ |rangle|
-	| 
 	| **function** ``compile-neg``\ ( X |multimap| Y )
 	| |tab| |langle|\ |delta|\ :subscript:`L`, |Delta|\ |rangle| := ``compile-neg``\ ( Y ) (\ |delta| will be atomic)
 	| |tab| |langle|\ |gamma|\ , |Gamma|\ |rangle| := ``compile-pos``\ ( X )
 	| |tab| **return** |langle|\ |delta|\ :subscript:`[i|L]`, {v\ :subscript:`i` : |gamma| : {`i`:mathit:}} 
 	  |cup| |Gamma| |cup| |Delta|\ |rangle| for a fresh index `i`:mathit:\ :superscript:`|dagger|`
-		
+	  
 	:superscript:`|dagger|`\ [\ `i`:mathit:\ \|L] means a list whose head is `i`:mathit: and whose tail is `L`:mathit:
 
 The compilation method changes our representation of a glue formula slightly
@@ -625,8 +622,8 @@ premise is created, this list is instantiated with one unique index.
 Additionally, every atomic linear logic expression will have its own
 **list of dependencies**. 
 
-To turn our premises into "skeletons", we must get rid of any non-atomic 
-antecedents\ [#skeletons]_. We will use ex35_ as an
+To turn our premises into horn clauses, we must get rid of any non-atomic 
+antecedents\ [#hornClauses]_. We will use ex35_ as an
 example.
 
 .. _ex35:
@@ -657,9 +654,9 @@ In the NLTK package, glue formula compilation can be performed using the
 	>>> g = glue.GlueFormula('m', '((A -o B) -o C)')
 	>>> gc = g.compile()
 	>>> print gc[0]
-	m : (-o B[1] C) : f2g 
+	m : (-o B[1] C) : {2} 
 	>>> print gc[1]
-	v1 : A : f1g
+	v1 : A : {1}
 
 Horn Clause Application
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -694,26 +691,28 @@ since the order of the abstractions does matter.  When `n=0`:mathit:\ , |lambda|
 The example below demonstrates how the NLTK handles horn clause applications:
 
 	>>> from nltk_contrib.gluesemantics import glue
-	>>> a man = glue.GlueFormula('\\Q.some x.((man x) and (Q x))', '((g -o G) -o G)')
+	>>> a_man = glue.GlueFormula('\\Q.some x.((man x) and (Q x))', '((g -o G) -o G)')
 	>>> walks = glue.GlueFormula('\\x.(walks x)', '(g -o f)')
-	>>> amc = a man.compile([1])
+	>>> amc = a_man.compile([1])
 	>>> g2 = amc[0]
 	>>> g1 = amc[1]
 	>>> g3 = walks.compile([3])[0]
 	>>> g1
-	v1 : g : f1g 
+	v1 : g : {1} 
 	>>> g2
-	\Q.some x.(and (man x) (Q x)) : (-o G[1] G) : f2g 
+	\Q.some x.(and (man x) (Q x)) : (-o G[1] G) : {2} 
 	>>> g3
-	\x.(walks x) : (-o g f) : f3g 
+	\x.(walks x) : (-o g f) : {3} 
 	>>> g13 = g3.applyto(g1)
 	>>> g13
-	(\x.(walks x) v1) : (-o g f g) : f1, 3g >>> g13.simplify()
-	(walks v1) : f : f1, 3g >>> g123 = g2.applyto(g13)
+	(\x.(walks x) v1) : (-o g f g) : {1, 3} 
+	>>> g13.simplify()
+	(walks v1) : f : {1, 3} 
+	>>> g123 = g2.applyto(g13)
 	>>> g123.infixify()
-	(\Q.some x.((man x) and (Q x)) nv1.(\x.(walks x) v1)) : (G[1] -o G (g -o f g)) [(G, f)] : f1, 2, 3g 
+	(\Q.some x.((man x) and (Q x)) \v1.(\x.(walks x) v1)) : (G[1] -o G (g -o f g)) [(G, f)] : {1, 2, 3} 
 	>>> g123.simplify().infixify()
-	some x.((man x) and (walks x)) : f : f1, 2, 3g
+	some x.((man x) and (walks x)) : f : {1, 2, 3}
 
 Machine Derivation
 ~~~~~~~~~~~~~~~~~~
@@ -796,6 +795,44 @@ passed to the function ``get_readings()`` is a list of compiled glue formulas.
 	...     return readings
 
 
+Modifiers
+~~~~~~~~~
+
+Horn clauses can be classified into two groups.  The formulas in the first group are skeletons.  As we have mentioned earlier, these are of 
+the form "skeletons", which are of the form (\ `g`:mathit:\ :subscript:`1` |multimap| (\ `g`:mathit:\ :subscript:`2` |multimap| (\ |dots| 
+|multimap| f))) where `g`:mathit:\ :subscript:`i` and `f`:mathit: are propositions and `f`:mathit: is not equal to any `g`:mathit:\ :subscript:`i`.  
+The formulas in the second group are **modifiers**\ .  These are linear logic formulas of the form (\ `A`:mathit:\ |multimap| `A`:mathit:\ )\ , 
+where `A`:mathit: is some linear logic formula.  
+
+The distinction between skeletons and modifiers are important because for a given set of premises, modifiers do not affect provability of a set
+of premises.  For example, given the premises `g`:mathit:\ , `(g`:mathit: |multimap| `g)`:mathit:\ , and `(g`:mathit: |multimap| `f)`:mathit:\ ,
+we can see that the modifier in mod2_ can not make or break the provability of the proof because it takes a linear logic term we already have, 
+`g`:mathit:\ , and returns an identical term.  Therefore, according to [GL98]_\ , we may remove all modifiers (as in mod1_\ ) if our goal is just to see if the 
+glue premises may be assembled or to generate a basic reading.  
+ 
+.. _modifiers:
+.. ex::
+
+	.. _mod2:
+	.. ex::
+		.. image:: gluesem_images/proof_mod2.bmp
+ 
+	.. _mod1:
+	.. ex::
+		.. image:: gluesem_images/proof_mod1.bmp
+	
+The advantage to removing modifiers is an decrease in the time it takes to find proofs.  This 
+advantage is made even more obvious in a situation where many modifiers exist that are modifying the
+same thing.  In examples mod2_\ -\ mod1_ there was no difference in the number of proofs.  However,
+if we add another glue formula with the glue term `(g`:mathit: |multimap| `g)`:mathit:  then the 
+number of proofs increases to two.  If we add a third `(g`:mathit: |multimap| `g)`:mathit: then the
+number of proofs increases to six.  The number of possible proofs is `n!`:mathit: for `n`:mathit: 
+similar modifiers.
+
+This large increase in number of proofs does not necessarily correspond to an increase in the number 
+of different readings.  After all, logically the sentences `The big, grey cat`:lx: and `The grey, big cat`:lx:
+are the same, and therefore, the extra time spent generating both readings is not necessary.  
+
 ---------------
 Further Reading
 ---------------
@@ -803,8 +840,6 @@ Further Reading
 See http://www-csli.stanford.edu/~iddolev/glue_bibliography.html for a
 comprehensive bibliography of glue semantics literature put together by Iddo
 Lev.
-
-[Dal01]_ is a thorough application of formal semantics to transformational grammars in the Government-Binding model.
 
 ----------
 References
@@ -820,4 +855,4 @@ References
 
 .. [#capitals] We will always use capital letters to distinguish linear logic variables.
 .. [#fresh] The index `i`:mathit: in the proof must always be fresh to ensure uniqueness
-.. [#skeletons] We must also move through the formula recursively to ensure that all of its subformulas are also skeletons.
+.. [#hornclauses] We must also move through the formula recursively to ensure that all of its subformulas are also horn clauses.
