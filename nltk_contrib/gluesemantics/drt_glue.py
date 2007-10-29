@@ -445,10 +445,30 @@ def test():
     dog = DRT.Parser().parse('\\x.drs([],[(dog x)])')
     
 
-if __name__ == '__main__':
-    demo(11, True)
-    print "\n\n"
-    #demo(12)
-    #print "\n\n"
-    demo(12, True)
+def test1():
+    cs = parse_to_compiled('David walks')
+    print cs
+    
+def test2():
+    cs = parse_to_compiled('David sees Mary')
+    c = cs[0]
+    f1 = c[0]
+    f3 = c[1]
+    f2 = c[2]
+    f5 = c[3]
+    f4 = c[4]
+    
+    f14 = f1.applyto(f4)
+    f124 = f14.applyto(f2)
+    f1234 = f3.applyto(f124)
+    f12345 = f5.applyto(f1234)
  
+    print f12345
+    print f12345.simplify()    
+
+if __name__ == '__main__':
+    demo(-1, False)
+    print "\n\n\n"
+    proof_demo()
+    print "\n\n\n"
+    compiled_proof_demo()
