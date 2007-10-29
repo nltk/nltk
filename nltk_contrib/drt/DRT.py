@@ -1,26 +1,484 @@
 from nltk.utilities import Counter
-from nltk.sem.logic import Expression
-from nltk.sem.logic import Variable
-from nltk.sem.logic import VariableExpression
-from nltk.sem.logic import Constant
-from nltk.sem.logic import ConstantExpression
-from nltk.sem.logic import IndVariableExpression
-from nltk.sem.logic import is_indvar
-from nltk.sem.logic import Operator as FolOperator
 
 from Tkinter import Canvas
 
 class Error(Exception): pass
+
+class SubstituteBindingsI(object):
+    """
+    An interface for classes that can perform substitutions for
+    variables.
+    """
+    def substitute_bindings(self, bindings):
+        """
+        @return: The object that is obtained by replacing
+        each variable bound by C{bindings} with its values.
+        Aliases are already resolved. (maybe?)
+        @rtype: (any)
+        """
+        raise NotImplementedError()
+
+    def varaibles(self):
+        """
+        @return: A list of all variables in this object.
+        """
+        raise NotImplementedError()
+
+def unique_variable(counter=None):
+    if counter is None: counter = DRS._counter
+    unique = counter.get()
+    return VariableExpression(Variable('z'+str(unique)))
+
+class Expression(SubstituteBindingsI):
+    """The abstract class of a lambda calculus expression."""
+    def __init__(self):
+        if self.__class__ is Expression:
+            raise NotImplementedError
+
+    def __eq__(self, other):
+        """Are the two expressions equal, modulo alpha conversion?"""
+        return NotImplementedError
+
+    def __ne__(self, other):
+        return not (self == other)
+
+    def variables(self):
+        """Set of all variables."""
+        raise NotImplementedError
+
+    def free(self):
+        """Set of free variables."""
+        raise NotImplementedError
+
+    def subterms(self):
+        """Set of all subterms (including self)."""
+        raise NotImplementedError
+
+
+    def replace(self, variable, expression, replace_bound=False):
+        """Replace all instances of variable v with expression E in self,
+        where v is free in self."""
+        raise NotImplementedError
+    
+    def replace_unique(self, variable, counter=None, replace_bound=False):
+        """
+        Replace a variable v with a new, uniquely-named variable.
+        """
+        return self.replace(variable, unique_variable(counter), replace_bound)
+
+    def simplify(self):
+        """Evaluate the form by repeatedly applying applications."""
+        raise NotImplementedError
+
+    def skolemise(self):
+        """
+        Perform a simple Skolemisation operation.  Existential quantifiers are
+        simply dropped and all variables they introduce are renamed so that
+        they are unique.
+        """
+        return self._skolemise(set(), Counter())
+
+    skolemize = skolemise
+
+    def _skolemise(self, bound_vars, counter):
+        raise NotImplementedError
+
+    def clauses(self):
+        return [self]
+    
+    def toFol(self):
+        return self
+
+    def __str__(self):
+        raise NotImplementedError
+
+    def __repr__(self):
+        raise NotImplementedError
+
+    def __hash__(self):
+        raise NotImplementedError, self.__class__
+    
+    def normalize(self):
+        if hasattr(self, '_normalized'): return self._normalized
+        result = self
+        vars = self.variables()
+        counter = 0
+        for var in vars:
+            counter += 1
+            result = result.replace(var, Variable(str(counter)),
+                                    replace_bound=True)
+        self._normalized = result
+        return result
+    
+    def substitute_bindings(self, bindings):
+        expr = self
+        for var in expr.free():
+            if var in bindings:
+                val = bindings[var]
+                if isinstance(val, Variable):
+                    val = VariableExpression(val)
+                if isinstance(val, Constant):
+                    val = ConstantExpression(const)
+                if not isinstance(val, Expression):
+                    raise ValueError('Can not substitute a non-expresion '
+                                     'value into an expression: %r' % val)
+                # Substitute bindings in the target value.
+                val = val.substitute_bindings(bindings)
+                # Replace var w/ the target value.
+                expr = expr.replace(var, val)
+        return expr.simplify()
+    
+class VariableBinderExpression(Expression):
+    """A variable binding expression: e.g. \\x.M."""
+
+    # for generating "unique" variable names during alpha conversion.
+    _counter = Counter()
+
+    def __init__(self, variable, term):
+        Expression.__init__(self)
+        assert isinstance(variable, Variable)
+        assert isinstance(term, Expression)
+        self.variable = variable
+        self.term = term
+        self.prefix = self.__class__.PREFIX.rstrip()
+        self.binder = (self.prefix, self.variable.name)
+        self.body = str(self.term)
+
+    # nb: __ne__ defined by Expression
+    def __eq__(self, other):
+        r"""
+        Defines equality modulo alphabetic variance.
+
+        If we are comparing \x.M  and \y.N, then
+        check equality of M and N[x/y].
+        """
+        if self.__class__ == other.__class__:
+            if self.variable == other.variable:
+                return self.term == other.term
+            else:
+                # Comparing \x.M  and \y.N.
+                # Relabel y in N with x and continue.
+                relabeled = self._relabel(other)
+                return self.term == relabeled
+        else:
+            return False
+
+    def _relabel(self, other):
+        """
+        Relabel C{other}'s bound variables to be the same as C{self}'s
+        variable.
+        """
+        var = VariableExpression(self.variable)
+        return other.term.replace(other.variable, var)
+
+    def variables(self):
+        vars = [self.variable]
+        for var in self.term.variables():
+            if var not in vars: vars.append(var)
+        return vars
+
+    def free(self):
+        return self.term.free().difference(set([self.variable]))
+
+    def subterms(self):
+        return self.term.subterms().union([self])
+
+    def replace(self, variable, expression, replace_bound=False):
+        if self.variable == variable:
+            if not replace_bound: return self
+            else: return self.__class__(expression,
+                                        self.term.replace(variable, 
+                                                          expression, 
+                                                          True))
+        if replace_bound or self.variable in expression.free():
+            v = 'z' + str(self._counter.get())
+            if not replace_bound: 
+                self = self.alpha_convert(Variable(v))
+        return self.__class__(self.variable, 
+                              self.term.replace(variable, 
+                                                expression, 
+                                                replace_bound))
+
+    def alpha_convert(self, newvar):
+        """
+        Rename all occurrences of the variable introduced by this variable
+        binder in the expression to @C{newvar}.
+        """
+        term = self.term.replace(self.variable, VariableExpression(newvar))
+        return self.__class__(newvar, term)
+
+    def simplify(self):
+        return self.__class__(self.variable, self.term.simplify())
+
+    def infixify(self):
+        return self.__class__(self.variable, self.term.infixify())
+    
+    def toFol(self):
+        return self.__class__(self.variable, self.term.toFol())
+
+    def __str__(self, continuation=0):
+        # Print \x.\y.M as \x y.M.
+        if continuation:
+            prefix = ' '
+        else:
+            prefix = self.__class__.PREFIX
+        if self.term.__class__ == self.__class__:
+            return '%s%s%s' % (prefix, self.variable, self.term.__str__(1))
+        else:
+            return '%s%s.%s' % (prefix, self.variable, self.term)
+
+    def __hash__(self):
+        return hash(str(self.normalize()))
+
+class LambdaExpression(VariableBinderExpression):
+    """A lambda expression: \\x.M."""
+    PREFIX = '\\'
+
+    def _skolemise(self, bound_vars, counter):
+        bv = bound_vars.copy()
+        bv.add(self.variable)
+        return self.__class__(self.variable, self.term._skolemise(bv, counter))
+
+    def __repr__(self):
+        return "LambdaExpression('%s', '%s')" % (self.variable, self.term)
+
+class SomeExpression(VariableBinderExpression):
+    """An existential quantification expression: some x.M."""
+    PREFIX = 'some '
+
+    def _skolemise(self, bound_vars, counter):
+        if self.variable in bound_vars:
+            var = Variable("_s" + str(counter.get()))
+            term = self.term.replace(self.variable, VariableExpression(var))
+        else:
+            var = self.variable
+            term = self.term
+        bound_vars.add(var)
+        return term._skolemise(bound_vars, counter)
+
+    def __repr__(self):
+        return str(self)
+        #return "SomeExpression('%s', '%s')" % (self.variable, self.term)
+
+
+class AllExpression(VariableBinderExpression):
+    """A universal quantification expression: all x.M."""
+    PREFIX = 'all '
+
+    def _skolemise(self, bound_vars, counter):
+        bv = bound_vars.copy()
+        bv.add(self.variable)
+        return self.__class__(self.variable, self.term._skolemise(bv, counter))
+
+    def __repr__(self):
+        return "AllExpression('%s', '%s')" % (self.variable, self.term)
+
+class Variable(object):
+    """A variable, either free or bound."""
+    
+    def __init__(self, name):
+        """
+        Create a new C{Variable}.
+
+        @type name: C{string}
+        @param name: The name of the variable.
+        """
+        self.name = name
+
+    def __cmp__(self, other):
+        if not isinstance(other, Variable): return -1
+        return cmp(self.name, other.name)
+
+    def __str__(self): return self.name
+
+    def __repr__(self): return "Variable('%s')" % self.name
+
+    def __hash__(self): return hash(self.name)
+
+    def substitute_bindings(self, bindings):
+        return bindings.get(self, self)
+
+class VariableExpression(Expression):
+    """A variable expression which consists solely of a variable."""
+    def __init__(self, variable):
+        Expression.__init__(self)
+        assert isinstance(variable, Variable)
+        self.variable = variable
+
+    # nb: __ne__ defined by Expression
+    def __eq__(self, other):
+        """
+        Allow equality between instances of C{VariableExpression} and
+        C{IndVariableExpression}.
+        """
+        if isinstance(self, VariableExpression) and \
+           isinstance(other, VariableExpression):
+            return self.variable == other.variable
+        else:
+            return False
+
+    def variables(self):
+        return [self.variable]
+
+    def free(self):
+        return set([self.variable])
+
+    def subterms(self):
+        return set([self])
+
+    def replace(self, variable, expression, replace_bound=False):
+        if self.variable == variable:
+            if isinstance(expression, Variable):
+                return VariableExpression(expression)
+            else:
+                return expression
+        else:
+            return self
+        
+    def simplify(self):
+        return self
+
+    def infixify(self):
+        return self
+
+    def name(self):
+        return self.__str__()
+
+    def _skolemise(self, bound_vars, counter):
+        return self
+
+    def __str__(self): return '%s' % self.variable
+
+    def __repr__(self): return "VariableExpression('%s')" % self.variable
+
+    def __hash__(self): return hash(repr(self))
+
+class Constant(object):
+    """A nonlogical constant."""
+    
+    def __init__(self, name):
+        """
+        Create a new C{Constant}.
+
+        @type name: C{string}
+        @param name: The name of the constant.
+        """
+        self.name = name
+
+    def __cmp__(self, other):
+        if not isinstance(other, Constant): return -1
+        return cmp(self.name, other.name)
+
+    def __str__(self): return self.name
+
+    def __repr__(self): return "Constant('%s')" % self.name
+
+    def __hash__(self): return hash(repr(self))
+
+class ConstantExpression(Expression):
+    """A constant expression, consisting solely of a constant."""
+    def __init__(self, constant):
+        Expression.__init__(self)
+        assert isinstance(constant, Constant)
+        self.constant = constant
+
+    # nb: __ne__ defined by Expression
+    def __eq__(self, other):
+        if self.__class__ == other.__class__:
+            return self.constant == other.constant
+        else:
+            return False
+
+    def variables(self):
+        return []
+
+    def free(self):
+        return set()
+
+    def subterms(self):
+        return set([self])
+
+    def replace(self, variable, expression, replace_bound=False):
+        return self
+        
+    def simplify(self):
+        return self
+
+    def infixify(self):
+        return self
+
+    def name(self):
+        return self.__str__()
+
+    def _skolemise(self, bound_vars, counter):
+        return self
+
+    def __str__(self): return '%s' % self.constant
+
+    def __repr__(self): return "ConstantExpression('%s')" % self.constant
+
+    def __hash__(self): return hash(repr(self))
+
+class IndVariableExpression(VariableExpression):
+    """
+    An individual variable expression, as determined by C{is_indvar()}.
+    """
+    def __init__(self, variable):
+        Expression.__init__(self)
+        assert isinstance(variable, Variable), "Not a Variable: %s" % variable
+        assert is_indvar(str(variable)), "Wrong format for an Individual Variable: %s" % variable
+        self.variable = variable
+
+    def __repr__(self): return "IndVariableExpression('%s')" % self.variable 
+
+def is_indvar(expr):
+    """
+    Check whether an expression has the form of an individual variable.
+    
+    An individual variable matches the following regex:
+    C{'^[wxyz](\d*)'}.
+    
+    @rtype: Boolean
+    @param expr: String
+    """
+    result = expr[0] in ['w', 'x', 'y', 'z']
+    if len(expr) > 1:
+        return result and expr[1:].isdigit()
+    else:
+        return result
+
+class FolOperator(ConstantExpression):
+    """
+    A boolean operator, such as 'not' or 'and', or the equality
+    relation ('=').
+    """
+    def __init__(self, operator):
+        Expression.__init__(self)
+        assert operator in ['and', 'or', 'not', 'implies', 'iff', '=']
+        self.constant = operator
+        self.operator = operator
+
+    # nb: __ne__ defined by Expression
+    def __eq__(self, other):
+        if self.__class__ == other.__class__:
+            return self.constant == other.constant
+        else:
+            return False
+
+    def simplify(self):
+        return self
+
+    def __str__(self): return '%s' % self.operator
+
+    def __repr__(self): return "Operator('%s')" % self.operator
+
 
 class AbstractDRS(Expression):
     """A Discourse Representation Structure."""
     def __add__(self, other):
         raise NotImplementedError
         
-    def replace(self, variable, expression):
-        raise NotImplementedError
-
-    def replace_with_side_effect(self, variable, expression):
+    def replace(self, variable, expression, replace_bound=False):
         raise NotImplementedError
 
     def free(self):
@@ -39,6 +497,9 @@ class AbstractDRS(Expression):
         raise NotImplementedError
 
     def __str__(self):
+        raise NotImplementedError
+    
+    def toFol(self):
         raise NotImplementedError
 
     def draw(self, x=3, y=3, canvas=None, use_parens=None):
@@ -60,8 +521,8 @@ class DRS(AbstractDRS):
         """DRS Concatination"""
         assert isinstance(other, DRS)
         return ConcatinationDRS(ApplicationDRS(DrsOperator(Tokens.DRS_CONC), self), other)
-        
-    def replace(self, variable, expression):
+    
+    def replace(self, variable, expression, replace_bound=False):
         """Replace all instances of variable v with expression E in self,
         where v is free in self."""
         r_refs = [] #the list of refs after replacements
@@ -69,19 +530,15 @@ class DRS(AbstractDRS):
         for ref in self.refs:
             if ref.variable in expression.free():
                 v = Variable('z' + str(self._counter.get())) #get a new var name
-                r_conds = [cond.replace(ref.variable, VariableExpression(v)) for cond in r_conds] #replace every instance of 'ref' with 'v' in every condition
+                r_conds = [cond.replace(ref.variable, VariableExpression(v), True) for cond in r_conds] #replace every instance of 'ref' with 'v' in every condition
                 r_refs.append(VariableExpression(v)) #add the new ref ('v') to the list
             else:
                 r_refs.append(ref) #no replacement needed; add the ref to the list
-        r_conds = [cond.replace(variable, expression) for cond in r_conds] #replace 'variable' with 'expression' in each condition
+        if replace_bound:
+            r_refs.remove(IndVariableExpression(variable))
+            r_refs.append(expression)
+        r_conds = [cond.replace(variable, expression, replace_bound) for cond in r_conds] #replace 'variable' with 'expression' in each condition
         return DRS(r_refs, r_conds)
-
-    def replace_with_side_effect(self, variable, expression):
-        """Replace all instances of variable v with expression E in self,
-        where v is free in self."""
-        r_self = self.replace(variable, expression)
-        self.refs = r_self.refs
-        self.conds = r_self.conds
 
     def free(self):
         conds_free = set()
@@ -102,6 +559,22 @@ class DRS(AbstractDRS):
         r_refs = [ref.infixify() for ref in self.refs]
         r_conds = [cond.infixify() for cond in self.conds]
         return DRS(r_refs, r_conds)
+    
+    def toFol(self):
+        accum = None
+        
+        first = True 
+        for cond in self.conds[::-1]:
+            if first:
+                accum = cond.toFol()
+                first = False
+            else:
+                accum = ApplicationExpression( ApplicationExpression(FolOperator('and'), cond.toFol()), accum) 
+
+        for ref in self.refs[::-1]:
+            accum = SomeExpression(ref.variable, accum)
+        
+        return accum
     
     def __repr__(self):
         accum = '%s([' % (Tokens.DRS)
@@ -241,16 +714,12 @@ class DRSVariable(AbstractDRS):
     def subterms(self):
         return set([self])
 
-    def replace(self, variable, expression):
+    def replace(self, variable, expression, replace_bound=False):
         if self.variable == variable:
             return expression
         else:
             return self
         
-    def replace_with_side_effect(self, variable, expression):
-        r_self = self.replace(variable, expression)
-        self.variable = r_self.variable
-
     def get_refs(self):
         return []
 
@@ -267,6 +736,9 @@ class DRSVariable(AbstractDRS):
         return self
 
     def __str__(self): return '%s' % self.variable
+    
+    def toFol(self):
+        return VariableExpression(self.variable)
 
     def __repr__(self): return "DRSVariable('%s')" % self.variable
 
@@ -337,19 +809,14 @@ class LambdaDRS(AbstractDRS):
     def subterms(self):
         return self.term.subterms().union([self])
 
-    def replace(self, variable, expression):
+    def replace(self, variable, expression, replace_bound=False):
         if self.variable == variable:
             return self
         if self.variable in expression.free():
             v = 'z' + str(DRS._counter.get())
             self = self.alpha_convert(Variable(v))
-        return self.__class__(self.variable, \
-                              self.term.replace(variable, expression))
-
-    def replace_with_side_effect(self, variable, expression):
-        r_self = self.replace(variable, expression)
-        self.variable = r_self.variable
-        self.term = r_self.term
+        return self.__class__(self.variable, self.term.replace(variable, expression, replace_bound))
+                               
 
     def alpha_convert(self, newvar):
         """
@@ -367,6 +834,9 @@ class LambdaDRS(AbstractDRS):
 
     def infixify(self):
         return self.__class__(self.variable, self.term.infixify())
+    
+    def toFol(self):
+        return LambdaExpression(self.variable, self.term.toFol())
 
     def __str__(self, continuation=0):
         # Print \x.\y.M as \x y.M.
@@ -441,11 +911,8 @@ class DrsOperator(AbstractDRS):
         else:
             return False
 
-    def replace(self, variable, expression):
+    def replace(self, variable, expression, replace_bound=False):
         return self
-
-    def replace_with_side_effect(self, variable, expression):
-        return self.replace(variable, expression)
 
     def free(self):
         return set()
@@ -458,6 +925,9 @@ class DrsOperator(AbstractDRS):
 
     def infixify(self):
         return self
+    
+    def toFol(self):
+        return FolOperator(self.operator)
 
     def __str__(self): return '%s' % self.operator
 
@@ -538,9 +1008,9 @@ class ApplicationDRS(AbstractDRS):
         second = self.second.subterms()
         return first.union(second).union(set([self]))
 
-    def replace(self, variable, expression):
-        return self.__class__(self.first.replace(variable, expression),\
-                              self.second.replace(variable, expression))
+    def replace(self, variable, expression, replace_bound=False):
+        return self.__class__(self.first.replace(variable, expression, replace_bound),\
+                              self.second.replace(variable, expression, replace_bound))
 
     def get_refs(self):
         first = self.first.simplify()
@@ -568,6 +1038,9 @@ class ApplicationDRS(AbstractDRS):
             return self.__class__(second, first)
         else:
             return self.__class__(first, second)    
+        
+    def toFol(self):
+        return ApplicationExpression(self.first.toFol(), self.second.toFol())
 
     def _skolemise(self, bound_vars, counter):
         first = self.first._skolemise(bound_vars, counter)
@@ -724,16 +1197,19 @@ class ConcatinationDRS(ApplicationDRS):
         self.first = first
         self.second = second
 
-    def replace(self, variable, expression):
+    def replace(self, variable, expression, replace_bound=False):
         """Replace all instances of variable v with expression E in self,
         where v is free in self."""
-        first  = self.first.replace(variable, expression)
-        second = self.second.replace(variable, expression)
-        for ref in self.get_refs(): # for every ref, across the whole concatination sequence
+        first = self.first
+        second = self.second
+        all_refs = self.get_refs()
+        for ref in all_refs: # for every ref, across the whole concatination sequence
             if ref.variable in expression.free():
                 v = VariableExpression(Variable('z' + str(DRS._counter.get()))) #get a new var name
-                first  = first.replace(ref.variable, v)
-                second = second.replace(ref.variable, v)
+                first  = first.replace(ref.variable, v, True)
+                second = second.replace(ref.variable, v, True)
+        first  = first.replace(variable, expression, replace_bound)
+        second = second.replace(variable, expression, replace_bound)
         return self.__class__(first, second)
 
     def get_refs(self):
@@ -749,7 +1225,10 @@ class ConcatinationDRS(ApplicationDRS):
             return DRS(r_refs, r_conds)
         else:
             return self.__class__(first,second)
-
+        
+    def toFol(self):
+        return ApplicationExpression( ApplicationExpression(FolOperator('and'), self.first.second.toFol()), self.second.toFol())
+        
     def __repr__(self): return "ConcatinationDRS('%s', '%s')" % (self.first, self.second)
 
     def draw(self, x=3, y=3, canvas=None, use_parens=True): #args define the top-left corner of the box
@@ -881,9 +1360,9 @@ class ApplicationExpression(Expression):
         second = self.second.subterms()
         return first.union(second).union(set([self]))
 
-    def replace(self, variable, expression):
-        return self.__class__(self.first.replace(variable, expression),\
-                              self.second.replace(variable, expression))
+    def replace(self, variable, expression, replace_bound=False):
+        return self.__class__(self.first.replace(variable, expression, replace_bound),\
+                              self.second.replace(variable, expression, replace_bound))
 
     def simplify(self):
         first = self.first.simplify()
@@ -902,6 +1381,9 @@ class ApplicationExpression(Expression):
             return self.__class__(second, first)
         else:
             return self.__class__(first, second)    
+    
+    def toFol(self):
+        return self.__class__(self.first.toFol(), self.second.toFol())
 
     def _skolemise(self, bound_vars, counter):
         first = self.first._skolemise(bound_vars, counter)
@@ -1268,9 +1750,8 @@ def init_canvas(canvas=None):
         canvas.BUFFER = 3
     return canvas
 
-def expression():
-    return ['drs([],[])',
-            'drs([x],[(man x), (walks x)])',
+def expressions():
+    return ['drs([x],[(man x), (walks x)])',
             'drs([x,y],[(sees x y)])',
             '\\x.drs([],[(man x), (walks x)])',
             '\\x y.drs([],[(sees x y)])',
@@ -1295,7 +1776,7 @@ def expression():
             ]
 
 def demo(ex=-1, draw=False, catch_exception=True):
-    exps = expression()
+    exps = expressions()
     for (i, exp) in zip(range(len(exps)),exps):
         if i==ex or ex==-1:
             if(not draw):
@@ -1323,8 +1804,30 @@ def demo(ex=-1, draw=False, catch_exception=True):
                     else:
                         raise
                 
+def testToFol():
+    for t in expressions():
+        p = Parser().parse(t)
+        s = p.simplify()
+        f = s.toFol();
+        i = f.infixify()
+        print i
+        
+def test():
+    a = Parser().parse(r'\Q.(drs([x],[(dog x)]) + (Q x))')
+    b = Parser().parse(r'\x2.drs([],[(drs([x],[(girl x)]) implies drs([],[(chases x x2)]))])')
+    ab = a.applyto(b)
+    print ab
+    s = ab.simplify()
+    print s
+    
+def testAlpha():
+    a = Parser().parse(r'\P Q.((drs([x],[(dog x)]) + (P x)) + (Q x))')
+    print a
+    x = Parser().parse(r'x')
+    z = Parser().parse(r'z')
+    print a.replace(x.variable, z, True)
+    print a.replace(x.variable, z, False)
+    print a.replace_unique(x.variable, None, True)
+
 if __name__ == '__main__':
-    pt = Parser().parse('drs([x],[(x = (alpha x)),(sees John x)])')
-    simp = pt.simplify()
-    inf = simp.infixify()
-    print inf
+    demo(-1)
