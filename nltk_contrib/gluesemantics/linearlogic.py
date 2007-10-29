@@ -1,5 +1,7 @@
-import glue
 from nltk.utilities import Counter
+
+import glue
+import drt_glue
 
 class Error(Exception): pass
 
@@ -147,11 +149,11 @@ class Expression:
         """Evaluate the form by repeatedly applying applications."""
         raise NotImplementedError
 
-    def compile_pos(self, fresh_index):
+    def compile_pos(self, fresh_index, drt=False):
         """From Iddo Lev's PhD Dissertation p108-109"""
         raise NotImplementedError
 
-    def compile_neg(self, fresh_index):
+    def compile_neg(self, fresh_index, drt=False):
         """From Iddo Lev's PhD Dissertation p108-109"""
         raise NotImplementedError
 
@@ -238,12 +240,12 @@ class VariableExpression(Expression):
     def name(self):
         return self.variable.name
 
-    def compile_pos(self, fresh_index):
+    def compile_pos(self, fresh_index, drt=False):
         """From Iddo Lev's PhD Dissertation p108-109"""
         self.dependencies = []
         return (self, [])
 
-    def compile_neg(self, fresh_index):
+    def compile_neg(self, fresh_index, drt=False):
         """From Iddo Lev's PhD Dissertation p108-109"""
         self.dependencies = []
         return (self, [])
@@ -560,31 +562,34 @@ class ApplicationExpression(Expression):
         ret_val.varbindings = self.varbindings
         return ret_val
 
-    def compile_pos(self, fresh_index):
+    def compile_pos(self, fresh_index, drt=False):
         """From Iddo Lev's PhD Dissertation p108-109"""
         # ((-o A) B)
         assert isinstance(self.first, ApplicationExpression) and \
                self.first.op == Parser.IMPLIES
-        second_clausified = self.second.compile_pos(fresh_index)
-        first_clausified  = self.first.second.compile_neg(fresh_index)
+        second_clausified = self.second.compile_pos(fresh_index, drt)
+        first_clausified  = self.first.second.compile_neg(fresh_index, drt)
         assert isinstance(first_clausified[0], ConstantExpression) or \
                isinstance(first_clausified[0], VariableExpression)
         return (ApplicationExpression(ApplicationExpression(Operator(Parser.IMPLIES),first_clausified[0]),second_clausified[0]), \
                 first_clausified[1]+second_clausified[1])
 
-    def compile_neg(self, fresh_index):
+    def compile_neg(self, fresh_index, drt=False):
         """From Iddo Lev's PhD Dissertation p108-109"""
 
         # ((-o A) B)
         assert isinstance(self.first, ApplicationExpression) and \
                self.first.op == Parser.IMPLIES
-        second_clausified = self.second.compile_neg(fresh_index)
+        second_clausified = self.second.compile_neg(fresh_index, drt)
         assert isinstance(second_clausified[0], ConstantExpression) or \
                isinstance(second_clausified[0], VariableExpression)
-        first_clausified  = self.first.second.compile_pos(fresh_index)
+        first_clausified  = self.first.second.compile_pos(fresh_index, drt)
         second_clausified[0].dependencies.append(fresh_index[0])
 
-        new_gf = glue.GlueFormula('v%s' % fresh_index[0], first_clausified[0], set([fresh_index[0]]))
+        if drt:
+            new_gf = glue.GlueFormula('v%s' % fresh_index[0], first_clausified[0], set([fresh_index[0]]))
+        else:
+            new_gf = drt_glue.GlueFormula('v%s' % fresh_index[0], first_clausified[0], set([fresh_index[0]]))
         fresh_index[0]+=1
         return (second_clausified[0],
                 [new_gf]+first_clausified[1]+second_clausified[1])
@@ -674,12 +679,12 @@ class ConstantExpression(Expression):
     def _skolemise(self, bound_vars, counter):
         return self
 
-    def compile_pos(self, fresh_index):
+    def compile_pos(self, fresh_index, drt=False):
         """From Iddo Lev's PhD Dissertation p108-109"""
         self.dependencies = []
         return (self, [])
 
-    def compile_neg(self, fresh_index):
+    def compile_neg(self, fresh_index, drt=False):
         """From Iddo Lev's PhD Dissertation p108-109"""
         self.dependencies = []
         return (self, [])
@@ -726,11 +731,11 @@ class Operator(ConstantExpression):
     def simplify(self, varbindings=[]):
         return self
 
-    def compile_pos(self, fresh_index):
+    def compile_pos(self, fresh_index, drt=False):
         """From Iddo Lev's PhD Dissertation p108-109"""
         raise NotImplementedError
 
-    def compile_neg(self, fresh_index):
+    def compile_neg(self, fresh_index, drt=False):
         """From Iddo Lev's PhD Dissertation p108-109"""
         raise NotImplementedError
 

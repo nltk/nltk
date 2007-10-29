@@ -333,12 +333,12 @@ class DrtGlueDemo(object):
     def _exampleList_select(self, event):
         selection = self._exampleList.curselection()
         if len(selection) != 1: return
-        index = int(selection[0])
-        example = self._examples[index]
+        self._curExample = int(selection[0])
+        example = self._examples[self._curExample]
 
         if example:
             self._exampleList.selection_clear(0, 'end')
-            self._exampleList.selection_set(index)
+            self._exampleList.selection_set(self._curExample)
 
             self._readings = drt_glue.parse_to_meaning(example)
             self._populate_readingListbox()
@@ -368,14 +368,8 @@ class DrtGlueDemo(object):
         else:
             # Reset the reading selections.
             self._readingList.selection_clear(0, 'end')
-    
-    def edit_grammar(self, *e):
-        CFGEditor(self._top, self._grammar, self.set_grammar)
 
-    def set_grammar(self, grammar):
-        self._grammar = grammar
-        self._exampleList.delete(0, 'end')
-        
+
 class DrsWidget(object):
     def __init__(self, canvas, drs, **attribs):
         self._drs = drs
@@ -411,7 +405,8 @@ def demo():
                 'John likes a cat',
                 'John likes every cat',
                 'he likes a dog',
-                'John likes a cat and he likes a dog']
+                'John likes a cat and he likes a dog',
+                'every man walks']
     DrtGlueDemo(examples).mainloop()
 
 if __name__ == '__main__': demo()
