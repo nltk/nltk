@@ -1,0 +1,407 @@
+<pkmkdoc spec="1.12"><properties><title>NLTK</title><organization>com.nltk</organization><userSees ui="both"/><min-target os="2"/><domain anywhere="true"/></properties><distribution><versions min-spec="1.000000"/><scripts>/* js:pkmk:start */
+function PyTest() {
+	 return  pythonTest() ;
+}
+/* js:pkmk:end */
+
+
+/* js:pkmk:start */
+function pythonTest() {
+	var result = false;
+	try {
+		result = system.files.fileExistsAtPath('/Library/Frameworks/Python.framework/Versions/2.5/Python') == true || system.files.fileExistsAtPath('/Library/Frameworks/Python.framework/Versions/2.4/Python') == true || system.files.fileExistsAtPath('/usr/bin/python') == true;
+	} catch (e) {}
+
+	if(!result) {
+		my.result.type = 'Fatal';
+		my.result.title = 'No Python';
+		my.result.message = 'Python 2.4 or grater must be installed on this system go to http://pythonmac.org/packages/ to download the latest version of python. ';
+	}
+	return result;
+}
+/* js:pkmk:end */
+
+
+
+
+
+
+
+
+
+
+/* ******* DO NOT EDIT ANYTHING BELOW THIS LINE ******* */
+/* THE TEXT BELOW IS THE DEFINITION FOR THE REQUIREMENTS EDITOR */
+
+/*
+%%%Requirements Editor%%%
+{
+    clauses = (
+        {
+            anyOrAll = 2; 
+            connector = ""; 
+            msg = "Python 2.4 or grater must be installed on this system go to http://pythonmac.org/packages/ to download the latest version of python. "; 
+            msgTitle = "No Python"; 
+            rules = (
+                {
+                    argumentField = ""; 
+                    argumentStringField = ""; 
+                    booleanType = true; 
+                    choiceProperty = enabled; 
+                    comboType = ""; 
+                    comparator = "=="; 
+                    mainChoice = "File Exists"; 
+                    numberType = ""; 
+                    pathField = "/Library/Frameworks/Python.framework/Versions/2.5/Python"; 
+                    pathKeyKeyField = ""; 
+                    pathKeyPathField = ""; 
+                    specificChoice = choice0; 
+                    stringType = ""; 
+                }, 
+                {
+                    argumentField = ""; 
+                    argumentStringField = ""; 
+                    booleanType = true; 
+                    choiceProperty = enabled; 
+                    comboType = ""; 
+                    comparator = "=="; 
+                    mainChoice = "File Exists"; 
+                    numberType = ""; 
+                    pathField = "/Library/Frameworks/Python.framework/Versions/2.4/Python"; 
+                    pathKeyKeyField = ""; 
+                    pathKeyPathField = ""; 
+                    specificChoice = choice0; 
+                    stringType = ""; 
+                }
+            ); 
+            title = "Python Test"; 
+            type = 3; 
+        }
+    ); 
+    functionName = PyTest; 
+}
+%%%Requirements Editor%%%
+*/
+
+/* ******* DO NOT EDIT ANYTHING BELOW THIS LINE ******* */
+/* THE TEXT BELOW IS THE DEFINITION FOR THE REQUIREMENTS EDITOR */
+
+/*
+%%%Requirements Editor%%%
+{
+    clauses = (
+        {
+            anyOrAll = 2; 
+            connector = ""; 
+            msg = "Python 2.4 or grater must be installed on this system go to http://pythonmac.org/packages/ to download the latest version of python. "; 
+            msgTitle = "Python not found"; 
+            rules = (
+                {
+                    argumentField = ""; 
+                    argumentStringField = ""; 
+                    booleanType = true; 
+                    choiceProperty = enabled; 
+                    comboType = ""; 
+                    comparator = "=="; 
+                    mainChoice = "File Exists"; 
+                    numberType = ""; 
+                    pathField = "/Library/Frameworks/Python.framework/Versions/2.5/Python"; 
+                    pathKeyKeyField = ""; 
+                    pathKeyPathField = ""; 
+                    specificChoice = choice0; 
+                    stringType = ""; 
+                }, 
+                {
+                    argumentField = ""; 
+                    argumentStringField = ""; 
+                    booleanType = true; 
+                    choiceProperty = enabled; 
+                    comboType = ""; 
+                    comparator = "=="; 
+                    mainChoice = "File Exists"; 
+                    numberType = ""; 
+                    pathField = "/Library/Frameworks/Python.framework/Versions/2.4/Python"; 
+                    pathKeyKeyField = ""; 
+                    pathKeyPathField = ""; 
+                    specificChoice = choice0; 
+                    stringType = ""; 
+                }
+            ); 
+            title = "Python Test"; 
+            type = 3; 
+        }
+    ); 
+    functionName = PyTest; 
+}
+%%%Requirements Editor%%%
+*/
+
+/* ******* DO NOT EDIT ANYTHING BELOW THIS LINE ******* */
+/* THE TEXT BELOW IS THE DEFINITION FOR THE REQUIREMENTS EDITOR */
+
+/*
+%%%Requirements Editor%%%
+{
+    clauses = (
+        {
+            anyOrAll = 1; 
+            connector = ""; 
+            msg = "Python 2.4 or grater must be installed on this system go to http://pythonmac.org/packages/ to download the latest version of python. "; 
+            msgTitle = "No Python"; 
+            rules = (
+                {
+                    argumentField = ""; 
+                    argumentStringField = ""; 
+                    booleanType = true; 
+                    choiceProperty = enabled; 
+                    comboType = ""; 
+                    comparator = "=="; 
+                    mainChoice = "File Exists"; 
+                    numberType = ""; 
+                    pathField = "/Library/Frameworks/Python.framework/Versions/2.5/Python"; 
+                    pathKeyKeyField = ""; 
+                    pathKeyPathField = ""; 
+                    specificChoice = choice0; 
+                    stringType = ""; 
+                }, 
+                {
+                    argumentField = ""; 
+                    argumentStringField = ""; 
+                    booleanType = true; 
+                    choiceProperty = enabled; 
+                    comboType = ""; 
+                    comparator = "=="; 
+                    mainChoice = "File Exists"; 
+                    numberType = ""; 
+                    pathField = "/Library/Frameworks/Python.framework/Versions/2.4/Python"; 
+                    pathKeyKeyField = ""; 
+                    pathKeyPathField = ""; 
+                    specificChoice = choice0; 
+                    stringType = ""; 
+                }
+            ); 
+            title = "Python Test"; 
+            type = 3; 
+        }
+    ); 
+    functionName = PyTest; 
+}
+%%%Requirements Editor%%%
+*/
+
+/* js:pkmk:start */
+function installationCheckRAM() {
+	return  checkMemsize() ;
+}
+/* js:pkmk:end */
+
+
+/* js:pkmk:start */
+function checkMemsize() {
+	var result = false;
+	try {
+		result = system.sysctl('hw.memsize') >= '134217728';
+	} catch (e) {}
+	
+	if(!result) {
+		my.result.type = 'Warn';
+		my.result.title = 'Memory Warning';
+		my.result.message = 'You have less than 128 MB of RAM.';
+	}
+	return result;
+}
+/* js:pkmk:end */
+
+
+/* ******* DO NOT EDIT ANYTHING BELOW THIS LINE ******* */
+/* THE TEXT BELOW IS THE DEFINITION FOR THE REQUIREMENTS EDITOR */
+
+/*
+ %%%Requirements Editor%%%
+ {
+	 clauses = (
+				{
+					anyOrAll = 2; 
+					connector = ""; 
+					msg = "You have less than 128 MB of RAM."; 
+					msgTitle = "Memory Warning"; 
+					rules = (
+							 {
+								 argumentField = "hw.memsize"; 
+								 argumentStringField = ""; 
+								 booleanType = true; 
+								 choiceProperty = enabled; 
+								 comboType = ""; 
+								 comparator = ">="; 
+								 mainChoice = "Result of Sysctl"; 
+								 numberType = ""; 
+								 pathField = ""; 
+								 pathKeyKeyField = ""; 
+								 pathKeyPathField = ""; 
+								 specificChoice = choice0; 
+								 stringType = 134217728; 
+							 }
+							 ); 
+					title = "Check memsize"; 
+					type = 2; 
+				}
+				); 
+	 functionName = installationCheckRAM; 
+ }
+ %%%Requirements Editor%%%
+ */
+
+/* js:pkmk:start */
+function volumeCheckTiger() {
+	return  checkSystemversion() ;
+}
+/* js:pkmk:end */
+
+
+/* js:pkmk:start */
+function checkSystemversion() {
+	var result = false;
+	try {
+		result = my.target.systemVersion.ProductVersion >= '10.4';
+	} catch (e) {}
+	
+	if(!result) {
+		my.result.type = 'Fatal';
+		my.result.title = '';
+		my.result.message = '';
+	}
+	return result;
+}
+/* js:pkmk:end */
+
+
+/* ******* DO NOT EDIT ANYTHING BELOW THIS LINE ******* */
+/* THE TEXT BELOW IS THE DEFINITION FOR THE REQUIREMENTS EDITOR */
+
+/*
+ %%%Requirements Editor%%%
+ {
+	 clauses = (
+				{
+					anyOrAll = 2; 
+					connector = ""; 
+					msg = ""; 
+					msgTitle = ""; 
+					rules = (
+							 {
+								 argumentField = ""; 
+								 argumentStringField = ""; 
+								 booleanType = true; 
+								 choiceProperty = enabled; 
+								 comboType = ""; 
+								 comparator = ">="; 
+								 mainChoice = "Target OS Version (e.g. 10.x.x)"; 
+								 numberType = ""; 
+								 pathField = ""; 
+								 pathKeyKeyField = ""; 
+								 pathKeyPathField = ""; 
+								 specificChoice = choice0; 
+								 stringType = "10.4"; 
+							 }
+							 ); 
+					title = "Check systemVersion"; 
+					type = 3; 
+				}
+				); 
+	 functionName = volumeCheckTiger; 
+ }
+ %%%Requirements Editor%%%
+ */
+
+/* js:pkmk:start */
+function choiceIsADowngrade() {
+	return  checkChoiceUpgradeAction() ;
+}
+/* js:pkmk:end */
+
+
+/* js:pkmk:start */
+function checkChoiceUpgradeAction() {
+	var result = false;
+	try {
+		result = my.choice.packageUpgradeAction == 'downgrade' || my.choice.packageUpgradeAction == 'mixed';
+	} catch (e) {}
+	
+	return result;
+}
+/* js:pkmk:end */
+
+
+/* ******* DO NOT EDIT ANYTHING BELOW THIS LINE ******* */
+/* THE TEXT BELOW IS THE DEFINITION FOR THE REQUIREMENTS EDITOR */
+
+/*
+ %%%Requirements Editor%%%
+ {
+	 clauses = (
+				{
+					anyOrAll = 1; 
+					connector = ""; 
+					msg = ""; 
+					msgTitle = ""; 
+					rules = (
+							 {
+								 argumentField = ""; 
+								 argumentStringField = ""; 
+								 booleanType = true; 
+								 choiceProperty = packageUpgradeAction; 
+								 comboType = downgrade; 
+								 comparator = "=="; 
+								 mainChoice = "Current Choice"; 
+								 numberType = ""; 
+								 pathField = ""; 
+								 pathKeyKeyField = ""; 
+								 pathKeyPathField = ""; 
+								 specificChoice = choice0; 
+								 stringType = ""; 
+							 }, 
+							 {
+								 argumentField = ""; 
+								 argumentStringField = ""; 
+								 booleanType = true; 
+								 choiceProperty = packageUpgradeAction; 
+								 comboType = mixed; 
+								 comparator = "=="; 
+								 mainChoice = "Current Choice"; 
+								 numberType = ""; 
+								 pathField = ""; 
+								 pathKeyKeyField = ""; 
+								 pathKeyPathField = ""; 
+								 specificChoice = choice0; 
+								 stringType = ""; 
+							 }
+							 ); 
+					title = "Check Choice Upgrade Action"; 
+					type = 0; 
+				}
+				); 
+	 functionName = choiceIsADowngrade; 
+ }
+ %%%Requirements Editor%%%
+ */</scripts></distribution><contents><choice title="NLTK Library" id="choice0" tooltip="Install the NLTK Python Library " description="NLTK includes the following software modules:
+** corpus readers **
+brown, chat80, cmudict, conll2000, conll2002, genesis, gutenberg, ieer, inaugural, indian, names, ppattach, senseval, shakespeare, sinica_treebank, state_union, stopwords, timit, toolbox, treebank, udhr, web, words, ycoe
+
+** tokenizers **
+whitespace, newline, blankline, word, wordpunct, treebank, sexpr, regexp, ...
+
+** stemmers **
+Porter, Lancaster, regexp
+
+** taggers **
+regexp, n-gram, backoff, Brill, HMM
+
+** parsers **
+recursive descent, shift-reduce, chart, feature-based, probabilistic, ...
+
+** wordnet **
+wordnet interface, lexical relations, similarity
+
+** miscellaneous **
+semantic interpretation, clusterers, probability distributions, chatbots, feature detection, evaluation metrics" starts_selected="true" starts_enabled="true" starts_hidden="false"><pkgref id=""/></choice><choice title="NLTK Data" id="choice1" tooltip="Install the NLTK Datapack" description="NLTK Data including 
+Grammars, Stemmers, Tokenizers and the Corpora" starts_selected="true" starts_enabled="true" starts_hidden="false"><pkgref id=""/></choice></contents><resources bg-scale="none" bg-align="topleft"><locale lang="en"><resource type="license">/Users/jritterman/Code/nltk/nltk/LICENSE.txt</resource><resource type="readme">/Users/jritterman/Code/nltk/nltk/README.txt</resource></locale></resources><requirements><requirement id="java" operator="eq" value="true"><argument>PyTest()</argument><message-title>No Python Found</message-title><message>Python 2.4 or grater must be installed on this system go to http://pythonman.org/packages to download the latest version of python.</message></requirement></requirements><flags/><item type="flat-pkgref">01nltklibrary.xml</item><item type="flat-pkgref">02nltk.xml</item><mod>properties.customizeOption</mod></pkmkdoc>
