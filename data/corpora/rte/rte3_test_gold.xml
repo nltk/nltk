@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<entailment-corpus>
+<entailment-corpus challenge="3">
 	<pair id="1" entailment="YES" task="IE" length="short" >
 		<t>Claude Chabrol (born June 24, 1930) is a French movie director and has become well-known in the 40 years since his first film, Le Beau Serge , for his chilling tales of murder, including Le Boucher .</t>
 		<h>Le Beau Serge was directed by Chabrol.</h>

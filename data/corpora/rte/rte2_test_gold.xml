@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE entailment-corpus SYSTEM "RTE2_dev.dtd">
-<entailment-corpus>
+<entailment-corpus challenge="2">
 <pair id="8" entailment="NO" task="IE">
 <t>Mangla was summoned after Madhumita's sister Nidhi Shukla, who was the first witness in the case.</t>
 <h>Shukla is related to Mangla.</h>
