@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE entailment-corpus SYSTEM "RTE2_dev.dtd">
-<entailment-corpus>
+<entailment-corpus challenge="2">
 <pair id="2" entailment="YES" task="IE">
 <t>The Bank of Italy, the ultimate arbiter of Italian banking mergers, has been engulfed by scandal since police wire taps revealed Fazio and his wife advised a local banker in a bid for Bank Antonveneta against Dutch bank ABN AMRO.</t>
 <h>A local banker bids for Bank Antonveneta.</h>

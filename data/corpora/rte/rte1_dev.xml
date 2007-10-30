@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE entailment-corpus SYSTEM "rte.dtd">
-<entailment-corpus>
+<entailment-corpus challenge="1">
 <pair id="8" value="FALSE" task="IR">
 	<t>Crude oil for April delivery traded at $37.80 a barrel, down 28 cents</t>
 	<h>Crude oil prices rose to $37.80 per barrel</h>
