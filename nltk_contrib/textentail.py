@@ -26,7 +26,7 @@ def accuracy(rtetagger, gold):
 	gold_values = [(rtepair.gid, rtepair.value) for rtepair in gold]
 	predictions = []
 	for rtepair in gold:
-		predictions.append((rtepair.gid, tagger.tag(rtepair)))
+		predictions.append((rtepair.gid, rtetagger.tag(rtepair)))
 	return evaluate.accuracy(gold_values, predictions)
 
 
@@ -39,6 +39,37 @@ class RTEGuesser(object):
 		from random import choice
 		return choice([0, 1])
 
+class RTEBoW(object):
+	
+	def __init__(self, threshold=33, stemming=False):
+			self.threshold = threshold
+			self.stemming = stemming
+	
+	def tag(self, rtepair, verbose=False):
+		
+		
+		from nltk.stem.porter import PorterStemmer
+		from nltk.tokenize import WordTokenizer
+		stemmer = PorterStemmer()
+		tokenizer = WordTokenizer()
+		#textbow = set([stemmer.stem(word.lower()) for word in tokenizer.tokenize(rtepair.text)])
+		#hypbow = set([stemmer.stem(word.lower()) for word in tokenizer.tokenize(rtepair.hyp)])
+		stop = set(['a', 'the', 'it', 'they', 'of', 'in', 'have', 'is', 'are', 'were', 'and'])
+		textbow = set([word.lower() for word in tokenizer.tokenize(rtepair.text)]) - stop
+		hypbow = set([word.lower() for word in tokenizer.tokenize(rtepair.hyp)]) - stop
+
+		overlap = float(len(hypbow & textbow))/len(hypbow | textbow) * 100
+		if verbose:
+			print "Text:", textbow
+			print "Hypothesis:", hypbow
+			print "Overlap:", hypbow & textbow
+			print 'overlap=%0.2f, value=%s' % (overlap, rtepair.value)
+		if overlap >= self.threshold:
+			return 1
+		else:
+			return 0
+		
+		
 def demo():
 	"""
 	Demo of the random guesser for RTE
@@ -47,3 +78,11 @@ def demo():
 
 	tagger = RTEGuesser()
 	print accuracy(tagger, gold)
+	
+	gold = rte.pairs('rte1_test_gold')
+
+	tagger = RTEBoW()
+	print accuracy(tagger, gold)
+		
+demo()
+		
