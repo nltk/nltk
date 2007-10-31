@@ -27,80 +27,92 @@ from util import *
 from api import *
 from xmldocs import XMLCorpusReader
 
+def norm(value_string):
+	"""
+	Normalize the string value in an RTE pair's C{value} or C{entailment} 
+	attribute.
+	"""
+	
+	valdict = {"TRUE": 1,
+			   "FALSE": 0,
+			   "YES": 1,
+			   "NO": 0}
+	return valdict[value_string.upper()]
+
 class RTEPair:
-    """
+	"""
     Container for RTE text-hypothesis pairs.
-    
+
     The entailment relation is signalled by the C{value| attribute in RTE1, and by 
     C{entailment} in RTE2 and RTE3. These both get mapped on to the C{entailment}
     attribute of this class.
     """
-    def __init__(self, pair, challenge=None, id=None, text=None, hyp=None,
-                 value=None, task=None, length=None):
-        self.challenge =  challenge    
-        self.id = pair.attrib["id"]
-	self.gid = "%s-%s" % (self.challenge, self.id)
-        self.text = pair[0].text
-        self.hyp = pair[1].text
+	def __init__(self, pair, challenge=None, id=None, text=None, hyp=None,
+				 value=None, task=None, length=None):
+		self.challenge =  challenge    
+		self.id = pair.attrib["id"]
+		self.gid = "%s-%s" % (self.challenge, self.id)
+		self.text = pair[0].text
+		self.hyp = pair[1].text
 
-        if "value" in pair.attrib:
-            self.value = pair.attrib["value"]
-        elif "entailment" in pair.attrib:
-            self.value = pair.attrib["entailment"]
-        else:
-            self.value = value
-        if "task" in pair.attrib:
-            self.task = pair.attrib["task"]
-        else:
-            self.task = task
-        if "length" in pair.attrib:
-            self.length = pair.attrib["length"]
-        else:
-            self.length = length 
+		if "value" in pair.attrib:
+			self.value = norm(pair.attrib["value"])
+		elif "entailment" in pair.attrib:
+			self.value = norm(pair.attrib["entailment"])
+		else:
+			self.value = value
+		if "task" in pair.attrib:
+			self.task = pair.attrib["task"]
+		else:
+			self.task = task
+		if "length" in pair.attrib:
+			self.length = pair.attrib["length"]
+		else:
+			self.length = length 
 
-    def __repr__(self):
-	if self.challenge:
-	    return '<RTEPair: gid=%s-%s>' % (self.challenge, self.id)
-        else:
-	    return '<RTEPair: id=%s>' % self.id
+	def __repr__(self):
+		if self.challenge:
+			return '<RTEPair: gid=%s-%s>' % (self.challenge, self.id)
+		else:
+			return '<RTEPair: id=%s>' % self.id
 
 
 class RTECorpusReader(XMLCorpusReader):
-    """
+	"""
     Corpus reader for corpora in RTE challenges.
     """
-    def __init__(self, root, items, extension=''):
-        """
+	def __init__(self, root, items, extension=''):
+		"""
         @param root: The root directory for this corpus.
         @param items: A list of items in this corpus.
         @param extension: File extension for items in this corpus.
         """
-	if isinstance(items, basestring):
-            items = find_corpus_items(root, items, extension)
-        self._root = root
-        self.items = tuple(items)
-        self._extension = extension
-        
-    def xml(self, items=None):
-        return concat([ElementTree.parse(filename).getroot()
-                       for filename in self._item_filenames(items)])   
- 
-    def _read_etree(self, doc):
-	try:
-            challenge = doc.attrib['challenge']
-        except KeyError:
-	    challenge = None
-        return [RTEPair(pair, challenge=challenge) for pair in doc.getiterator("pair")]
- 
+		if isinstance(items, basestring):
+			items = find_corpus_items(root, items, extension)
+		self._root = root
+		self.items = tuple(items)
+		self._extension = extension
 
-    def pairs(self, items=None):
-        doc = self.xml(items)
-        if doc.tag == 'documents':
-            return concat([self._read_etree(corpus) for corpus in doc.getchildren()])
-        else:
-            return self._read_etree(doc)
-    
-    
-    
- 
+	def xml(self, items=None):
+		return concat([ElementTree.parse(filename).getroot()
+					   for filename in self._item_filenames(items)])   
+
+	def _read_etree(self, doc):
+		try:
+			challenge = doc.attrib['challenge']
+		except KeyError:
+			challenge = None
+		return [RTEPair(pair, challenge=challenge) for pair in doc.getiterator("pair")]
+
+
+	def pairs(self, items=None):
+		doc = self.xml(items)
+		if doc.tag == 'documents':
+			return concat([self._read_etree(corpus) for corpus in doc.getchildren()])
+		else:
+			return self._read_etree(doc)
+
+
+
+
 
