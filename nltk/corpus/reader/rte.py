@@ -6,10 +6,10 @@
 # For license information, see LICENSE.TXT
 
 """
-Corpus reader for the Recognizing Textual Entailment (RTE) Corpus.
+Corpus reader for the Recognizing Textual Entailment (RTE) Challenge Corpora.
 
 The files were taken from the RTE1, RTE2 and RTE3 datasets and the filenames
-were regularized.
+were regularized. 
 
 Filenames are of the form rte*_dev.xml, rte*_test.xml, and rte*_test_gold.xml.
 
@@ -19,6 +19,8 @@ Each entailment corpus is a list of 'text'/'hypothesis' pairs. The following exa
     <t>The sale was made to pay Yukos' US$ 27.5 billion tax bill, Yuganskneftegaz was originally sold for US$ 9.4 billion to a little known company Baikalfinansgroup which was later bought by the Russian state-owned oil company Rosneft .</t>
    <h>Baikalfinansgroup was sold to Rosneft.</h>
 </pair>
+
+In order to provide globally unique IDs for each pair, a new attribute C{challenge} has been added to the root element C{entailment-corpus} of each file, taking values 1, 2 or 3.  The GID is formatted 'm-n', where 'm' is the challenge number and 'n' is the pair ID.
 """
 
 from util import *
@@ -26,10 +28,18 @@ from api import *
 from xmldocs import XMLCorpusReader
 
 class RTEPair:
+    """
+    Container for RTE text-hypothesis pairs.
+    
+    The entailment relation is signalled by the C{value| attribute in RTE1, and by 
+    C{entailment} in RTE2 and RTE3. These both get mapped on to the C{entailment}
+    attribute of this class.
+    """
     def __init__(self, pair, challenge=None, id=None, text=None, hyp=None,
                  value=None, task=None, length=None):
         self.challenge =  challenge    
         self.id = pair.attrib["id"]
+	self.gid = "%s-%s" % (self.challenge, self.id)
         self.text = pair[0].text
         self.hyp = pair[1].text
 
@@ -49,11 +59,15 @@ class RTEPair:
             self.length = length 
 
     def __repr__(self):
-        return '<RTEPair: id = %s>' % self.id
+	if self.challenge:
+	    return '<RTEPair: gid=%s-%s>' % (self.challenge, self.id)
+        else:
+	    return '<RTEPair: id=%s>' % self.id
 
 
 class RTECorpusReader(XMLCorpusReader):
     """
+    Corpus reader for corpora in RTE challenges.
     """
     def __init__(self, root, items, extension=''):
         """
@@ -61,7 +75,7 @@ class RTECorpusReader(XMLCorpusReader):
         @param items: A list of items in this corpus.
         @param extension: File extension for items in this corpus.
         """
-        if isinstance(items, basestring):
+	if isinstance(items, basestring):
             items = find_corpus_items(root, items, extension)
         self._root = root
         self.items = tuple(items)
@@ -72,8 +86,11 @@ class RTECorpusReader(XMLCorpusReader):
                        for filename in self._item_filenames(items)])   
  
     def _read_etree(self, doc):
-        
-        return [RTEPair(pair) for pair in doc.getiterator("pair")]
+	try:
+            challenge = doc.attrib['challenge']
+        except KeyError:
+	    challenge = None
+        return [RTEPair(pair, challenge=challenge) for pair in doc.getiterator("pair")]
  
 
     def pairs(self, items=None):
@@ -85,11 +102,5 @@ class RTECorpusReader(XMLCorpusReader):
     
     
     
-# from nltk.data  import find
-# path = find('corpora/rte/rte1_dev.xml')
-# from nltk.etree import ElementTree as ET
-# doc = ET.parse(path).getroot()
+ 
 
-
-
-# new = RTEPair(doc[0])
