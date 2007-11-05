@@ -363,7 +363,8 @@ class DrtGlueDemo(object):
             self._readingList.selection_clear(0, 'end')
             self._readingList.selection_set(index)
 
-            self._drs = reading.simplify().infixify()
+            self._drs = reading.simplify().resolve_anaphora().infixify()
+            
             self._redraw()
         else:
             # Reset the reading selections.
@@ -404,9 +405,8 @@ def demo():
                 'a former senator leaves',
                 'John likes a cat',
                 'John likes every cat',
-                'he likes a dog',
-                'John likes a cat and he likes a dog',
-                'every man walks']
+                'he walks',
+                'John walks and he leaves']
     DrtGlueDemo(examples).mainloop()
 
 if __name__ == '__main__': demo()

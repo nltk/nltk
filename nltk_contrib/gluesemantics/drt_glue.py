@@ -407,7 +407,8 @@ def demo(show_example=-1, draw=False):
                 'John likes a cat',
                 'John likes every cat',
                 'he likes a dog',
-                'John likes a cat and he likes a dog']
+                'John likes a cat and he likes a dog',
+                'a dog walks and he leaves']
 
     example_num = 0
     hit = False
@@ -423,13 +424,14 @@ def demo(show_example=-1, draw=False):
                 
             readings = parse_to_meaning(sentence)
             for j in range(len(readings)):
+                reading = readings[j].simplify().resolve_anaphora()
                 if draw:
                     canvas.create_text(canvas.BUFFER, y_current, anchor='nw', text='Reading #%s' % (j+1))
                     y_current += canvas.font.metrics("linespace")
-                    y_current = readings[j].simplify().infixify().draw(canvas.BUFFER, y_current, canvas)[1]+canvas.BUFFER*3
+                    y_current = reading.infixify().draw(canvas.BUFFER, y_current, canvas)[1]+canvas.BUFFER*3
                     y_current += canvas.BUFFER*5
                 else:
-                    print readings[j].simplify().infixify()
+                    print reading
             if not draw:
                 print ''
             hit = True
@@ -466,9 +468,42 @@ def test2():
     print f12345
     print f12345.simplify()    
 
+def testPnApp():
+    print 'John seems to vanish'
+    print 'The goal here is to retrieve the reading some x.((x = john) and (seems (vanish x))) \n\
+           without the reading (seems (some x.((x = john) and (vanish x))) because John, as a \n\
+           named entity, is assumed to always exist.  This is accomplished by always adding \n\
+           named entities to the outermost scope.  (See Kamp and Reyle for more)'
+    john = GlueFormula(r'\P.(drs([x],[(x = john)])+(P x))', '((g -o G) -o G)')
+    print '\'john\':                      %s' % john
+    seems = GlueFormula(r'\P.drs([],[(seems P)])', '(h -o f)')
+    print '\'seems\':                     %s' % seems
+    vanish = GlueFormula(r'\x.drs([],[(vanish x)])', '(g -o h)')
+    print '\'vanish\':                    %s' % vanish
+
+    print '  \'John\' can take wide scope: \'There is a John, and he seems to vanish\''
+    xPrime = GlueFormula('x1', 'g')
+    print '      \'x1\':                        %s' % xPrime.infixify()
+    xPrime_vanish = vanish.applyto(xPrime)
+    print '      \'x1 vanishes\':               %s' % xPrime_vanish.simplify().infixify()
+    seems_xPrime_vanish = seems.applyto(xPrime_vanish)
+    print '      \'it seems that x1 vanishes\': %s' % seems_xPrime_vanish.simplify().infixify()
+    seems_vanish = seems_xPrime_vanish.lambda_abstract(xPrime)
+    print '      \'seems to vanish\':           %s' % seems_vanish.simplify().infixify()
+    john_seems_vanish = john.applyto(seems_vanish)
+    print '      \'john seems to vanish\':      %s' % john_seems_vanish.simplify().infixify()
+
+    print '  If \'seems\' takes wide scope:'
+    john_vanish = john.applyto(vanish)
+    print '      \'john vanishes\':               %s' % john_vanish.simplify().infixify()
+    seems_john_vanish = seems.applyto(john_vanish)
+    print '      \'it seems that john vanishes\': %s' % seems_john_vanish.simplify().infixify()
+
 if __name__ == '__main__':
-    demo(-1, False)
-    print "\n\n\n"
     proof_demo()
     print "\n\n\n"
     compiled_proof_demo()
+    print "\n\n\n"
+    demo(-1, False)
+    print "\n\n\n"
+    #testPnApp()
