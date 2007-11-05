@@ -88,6 +88,9 @@ class Expression(SubstituteBindingsI):
     
     def toFol(self):
         return self
+    
+    def resolve_anaphora(self, trail=[]):
+        return self
 
     def __str__(self):
         raise NotImplementedError
@@ -206,6 +209,9 @@ class VariableBinderExpression(Expression):
         """
         term = self.term.replace(self.variable, VariableExpression(newvar))
         return self.__class__(newvar, term)
+    
+    def resolve_anaphora(self, trail=[]):
+        return self.__class__(self.variable, self.term.resolve_anaphora(trail + [self]))
 
     def simplify(self):
         return self.__class__(self.variable, self.term.simplify())
@@ -485,7 +491,7 @@ class AbstractDRS(Expression):
         raise NotImplementedError
 
     def get_refs(self):
-        raise NotImplementedError
+        return []
 
     def simplify(self):
         raise NotImplementedError
@@ -514,13 +520,14 @@ class DRS(AbstractDRS):
 
     """A Discourse Representation Structure."""
     def __init__(self, refs, conds):
+        Expression.__init__(self)
         self.refs = refs   # a list of Variables
         self.conds = conds # a list of Expressions, DRSs, and DRS_concs
 
     def __add__(self, other):
-        """DRS Concatination"""
+        """DRS Concatenation"""
         assert isinstance(other, DRS)
-        return ConcatinationDRS(ApplicationDRS(DrsOperator(Tokens.DRS_CONC), self), other)
+        return ConcatenationDRS(ApplicationDRS(DrsOperator(Tokens.DRS_CONC), self), other)
     
     def replace(self, variable, expression, replace_bound=False):
         """Replace all instances of variable v with expression E in self,
@@ -534,9 +541,22 @@ class DRS(AbstractDRS):
                 r_refs.append(VariableExpression(v)) #add the new ref ('v') to the list
             else:
                 r_refs.append(ref) #no replacement needed; add the ref to the list
+        #===============================================================================
+        # Alpha convert variables that appear on the left side of an implication.  This special processing is
+        # required because referents on the left side of an implication are accessable to the right
+        #===============================================================================
+        for cond in r_conds:
+            if isinstance(cond, ApplicationDRS) and isinstance(cond.first.first, DrsOperator) and cond.first.first.operator == 'implies':
+                for ref in cond.first.second.get_refs():
+                    if ref.variable in expression.free():
+                        r_conds.remove(cond)
+                        v = Variable('z' + str(self._counter.get())) #get a new var name
+                        r_conds.append(cond.replace(ref.variable, VariableExpression(v), True)) #replace every instance of 'ref' with 'v' in the condition
         if replace_bound:
-            r_refs.remove(IndVariableExpression(variable))
-            r_refs.append(expression)
+            try:
+                r_refs.remove(IndVariableExpression(variable))
+                r_refs.append(expression)
+            except ValueError: pass
         r_conds = [cond.replace(variable, expression, replace_bound) for cond in r_conds] #replace 'variable' with 'expression' in each condition
         return DRS(r_refs, r_conds)
 
@@ -545,11 +565,15 @@ class DRS(AbstractDRS):
         for cond in self.conds:
             conds_free = conds_free.union(cond.free())
         refs_set = set([ref.variable for ref in self.refs])
-        return conds_free.difference(refs_set)
+        return conds_free #.difference(refs_set)
 
     def get_refs(self):
         return self.refs
-
+    
+    def resolve_anaphora(self, trail=[]):
+        r_conds = [cond.resolve_anaphora(trail + [self]) for cond in self.conds]
+        return self.__class__(self.refs, r_conds)
+    
     def simplify(self):
         r_refs = [ref.simplify() for ref in self.refs]
         r_conds = [cond.simplify() for cond in self.conds]
@@ -720,9 +744,6 @@ class DRSVariable(AbstractDRS):
         else:
             return self
         
-    def get_refs(self):
-        return []
-
     def simplify(self):
         return self
 
@@ -763,6 +784,7 @@ class LambdaDRS(AbstractDRS):
     PREFIX = '\\'
 
     def __init__(self, variable, term):
+        Expression.__init__(self)
         assert isinstance(variable, Variable)
         assert isinstance(term, AbstractDRS)
         self.variable = variable
@@ -826,8 +848,8 @@ class LambdaDRS(AbstractDRS):
         term = self.term.replace(self.variable, VariableExpression(newvar))
         return self.__class__(newvar, term)
 
-    def get_refs(self):
-        raise NotImplementedError
+    def resolve_anaphora(self, trail=[]):
+        return self.__class__(self.variable, self.term.resolve_anaphora(trail + [self]))
 
     def simplify(self):
         return self.__class__(self.variable, self.term.simplify())
@@ -901,6 +923,7 @@ class DrsOperator(AbstractDRS):
     relation ('=').
     """
     def __init__(self, operator):
+        Expression.__init__(self)
         assert operator in Tokens.DRS_OPS
         self.constant = operator
         self.operator = operator
@@ -916,9 +939,6 @@ class DrsOperator(AbstractDRS):
 
     def free(self):
         return set()
-
-    def get_refs(self):
-        raise NotImplementedError
 
     def simplify(self):
         return self
@@ -947,6 +967,7 @@ class DrsOperator(AbstractDRS):
 class ApplicationDRS(AbstractDRS):
     """An application expression: (M N)."""
     def __init__(self, first, second):
+        Expression.__init__(self)
         first_simp = first.simplify()
         assert isinstance(first, AbstractDRS)
         if not (isinstance(first_simp, LambdaDRS) or isinstance(first_simp, DRSVariable)) :
@@ -1020,6 +1041,17 @@ class ApplicationDRS(AbstractDRS):
             return refs
         else:
             return []
+
+    def resolve_anaphora(self, trail=[]):
+        trail_addition = [self]
+        if isinstance(self.first, ApplicationDRS) \
+                and isinstance(self.first.first, DrsOperator) \
+                and self.first.first.operator == 'implies':
+            trail_addition.append(self.first.second)
+
+        r_first = self.first.resolve_anaphora(trail + trail_addition)
+        r_second = self.second.resolve_anaphora(trail + trail_addition)
+        return self.__class__(r_first, r_second)
 
     def simplify(self):
         first = self.first.simplify()
@@ -1187,9 +1219,10 @@ class ApplicationDRS(AbstractDRS):
 
         return (x_current, max_height)
 
-class ConcatinationDRS(ApplicationDRS):
+class ConcatenationDRS(ApplicationDRS):
     """DRS of the form '(DRS + DRS)'"""
     def __init__(self, first, second):
+        Expression.__init__(self)
         first_simp = first.simplify()
         second_simp = second.simplify()
         assert (isinstance(first, ApplicationDRS) and isinstance(first_simp.first, DrsOperator) and first_simp.first.operator == Tokens.DRS_CONC and isinstance(second, AbstractDRS)) or \
@@ -1203,7 +1236,7 @@ class ConcatinationDRS(ApplicationDRS):
         first = self.first
         second = self.second
         all_refs = self.get_refs()
-        for ref in all_refs: # for every ref, across the whole concatination sequence
+        for ref in all_refs: # for every ref, across the whole concatenation sequence
             if ref.variable in expression.free():
                 v = VariableExpression(Variable('z' + str(DRS._counter.get()))) #get a new var name
                 first  = first.replace(ref.variable, v, True)
@@ -1211,10 +1244,15 @@ class ConcatinationDRS(ApplicationDRS):
         first  = first.replace(variable, expression, replace_bound)
         second = second.replace(variable, expression, replace_bound)
         return self.__class__(first, second)
+    
+    def resolve_anaphora(self, trail=[]):
+        r_first = self.first.resolve_anaphora(trail + [self])
+        r_second = self.second.resolve_anaphora(trail + [self])
+        return self.__class__(r_first, r_second)
 
     def get_refs(self):
         return self.first.get_refs() + self.second.get_refs()
-
+            
     def simplify(self):
         first = self.first.simplify()
         second = self.second.simplify()
@@ -1229,7 +1267,7 @@ class ConcatinationDRS(ApplicationDRS):
     def toFol(self):
         return ApplicationExpression( ApplicationExpression(FolOperator('and'), self.first.second.toFol()), self.second.toFol())
         
-    def __repr__(self): return "ConcatinationDRS('%s', '%s')" % (self.first, self.second)
+    def __repr__(self): return "ConcatenationDRS('%s', '%s')" % (self.first, self.second)
 
     def draw(self, x=3, y=3, canvas=None, use_parens=True): #args define the top-left corner of the box
         canvas = init_canvas(canvas)
@@ -1363,6 +1401,19 @@ class ApplicationExpression(Expression):
     def replace(self, variable, expression, replace_bound=False):
         return self.__class__(self.first.replace(variable, expression, replace_bound),\
                               self.second.replace(variable, expression, replace_bound))
+
+    def resolve_anaphora(self, trail=[]):
+        if isinstance(self.first, VariableExpression) and self.first.variable.name == 'alpha':
+            possible_antecedents = PossibleAntecedents()
+            for ancestor in trail:
+                if isinstance(ancestor, AbstractDRS):
+                    possible_antecedents.extend(ancestor.get_refs())
+            possible_antecedents.remove(self.second)
+            return possible_antecedents
+        else:
+            r_first = self.first.resolve_anaphora(trail + [self])
+            r_second = self.second.resolve_anaphora(trail + [self])
+            return self.__class__(r_first, r_second)
 
     def simplify(self):
         first = self.first.simplify()
@@ -1528,6 +1579,42 @@ class ApplicationExpression(Expression):
             x_current += canvas.font.measure(Tokens.CLOSE_PAREN)
 
         return (x_current, max_height)
+
+class PossibleAntecedents(list, Expression):
+    def variables(self):
+        """Set of all variables."""
+        raise NotImplementedError
+
+    def free(self):
+        """Set of free variables."""
+        return set(self)
+
+    def subterms(self):
+        """Set of all subterms (including self)."""
+        return set([self]) + set(self)
+
+    def replace(self, variable, expression, replace_bound=False):
+        """Replace all instances of variable v with expression E in self,
+        where v is free in self."""
+        result = PossibleAntecedents()
+        for item in self:
+            if item == variable:
+                self.append(expression)
+            else:
+                self.append(item)
+        return result
+    
+    def simplify(self):
+        return self
+
+    def infixify(self):
+        return self
+    
+    def __str__(self):
+        result = '['
+        for item in self:
+            result += item.__str__() + ','
+        return result.rstrip(',') + ']'
 
 class Tokens:
     DRS = 'drs'
@@ -1725,7 +1812,7 @@ class Parser:
         second_simp = second.simplify()
         if (isinstance(first, ApplicationDRS) and isinstance(first_simp.first, DrsOperator) and first_simp.first.operator == Tokens.DRS_CONC and isinstance(second, AbstractDRS)) or \
            (isinstance(second, ApplicationDRS) and isinstance(second_simp.first, DrsOperator) and second_simp.first.operator == Tokens.DRS_CONC and isinstance(first, AbstractDRS)):
-            return ConcatinationDRS(first, second)
+            return ConcatenationDRS(first, second)
         elif isinstance(first, DrsOperator) or isinstance(first, AbstractDRS):
             return ApplicationDRS(first, second)
         else:
@@ -1820,6 +1907,22 @@ def test():
     s = ab.simplify()
     print s
     
+def test2():
+    a = Parser().parse(r'\Q.(drs([x],[(x = john),(walks x)]) + Q)')
+    b = Parser().parse(r'drs([x],[(x = (alpha x)),(leaves x)])')
+    ab = a.applyto(b)
+    print ab
+    s = ab.simplify()
+    print s
+    
+def test3():
+    a = Parser().parse(r'\Q.drs([],[(drs([x],[(girl x)]) implies (Q x))])')
+    b = Parser().parse(r'\x1.drs([x],[(dog x),(chases x1 x)])')
+    ab = a.applyto(b)
+    print ab
+    s = ab.simplify()
+    print s
+    
 def testAlpha():
     a = Parser().parse(r'\P Q.((drs([x],[(dog x)]) + (P x)) + (Q x))')
     print a
@@ -1828,6 +1931,22 @@ def testAlpha():
     print a.replace(x.variable, z, True)
     print a.replace(x.variable, z, False)
     print a.replace_unique(x.variable, None, True)
+    
+def testResolve_anaphora():
+    print 'Test resolve_anaphora():'
+    drs = Parser().parse(r'drs([x,y,z],[(dog x), (cat y), (walks z), (z = (alpha z))])')
+    print '    ' + str(drs.infixify())
+    print '    resolves to: ' + str(drs.simplify().resolve_anaphora().infixify()) + '\n'
+
+    drs = Parser().parse(r'drs([],[(drs([x],[(dog x)]) implies drs([y],[(walks y), (y = (alpha y))]))])')
+    print '    ' + str(drs.infixify())
+    print '    resolves to: ' + str(drs.simplify().resolve_anaphora().infixify()) + '\n'
+
+    drs = Parser().parse(r'drs([],[((drs([x],[]) + drs([],[(dog x)])) implies drs([y],[(walks y), (y = (alpha y))]))])')
+    print '    ' + str(drs.infixify())
+    print '    resolves to: ' + str(drs.simplify().resolve_anaphora().infixify()) + '\n'
 
 if __name__ == '__main__':
     demo(-1)
+    print '\n'
+    testResolve_anaphora()
