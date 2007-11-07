@@ -13,14 +13,14 @@ labels}).
 L{ClassifierI} is a standard interface for X{single-category
 classification}, in which:
 
-    - There set of categories is known.
+    - The set of categories is known.
     - The number of categories is finite.
     - Each text belongs to exactly one category.
 
 L{MultiClassifierI} is a standard interface for C{multi-category
 classification}, in which:
 
-    - There set of categories is known.
+    - The set of categories is known.
     - The number of categories is finite.
     - Each text belongs to zero or more categories.
 """
