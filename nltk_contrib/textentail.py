@@ -36,8 +36,9 @@ class RTEGuesser(object):
 	Random guess tagger to act as baseline.
 	"""
 	def tag(self, rtepair):
-		from random import choice
-		return choice([0, 1])
+		import random
+		random.seed(1234567)
+		return random.choice([0, 1])
 	
 
 class RTEBoWTagger(object):
@@ -65,11 +66,11 @@ class RTEBoWTagger(object):
 		hyp = tokenizer.tokenize(rtepair.hyp)
 		
 		if self.stemming:
-			textbow = set([stemmer.stem(word.lower()) for word in text])
-			hypbow = set([stemmer.stem(word.lower()) for word in hyp])
+			textbow = set(stemmer.stem(word.lower()) for word in text)
+			hypbow = set(stemmer.stem(word.lower()) for word in hyp)
 		else:
-			textbow = set([word.lower() for word in text])
-			hypbow = set([word.lower() for word in hyp])
+			textbow = set(word.lower() for word in text)
+			hypbow = set(word.lower() for word in hyp)
 		
 		if self.stop:
 			textbow = textbow - self.stopwords
@@ -93,7 +94,7 @@ def demo():
 	"""
 	Demo of the random guesser for RTE
 	"""
-	gold = rte.pairs(('rte1_test_gold', 'rte2_test_gold', 'rte3_test_gold'))
+	gold = rte.pairs(('rte1_test', 'rte2_test', 'rte3_test'))
 
 	tagger = RTEGuesser()
 	print "=" * 20
