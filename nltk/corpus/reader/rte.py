@@ -11,7 +11,7 @@ Corpus reader for the Recognizing Textual Entailment (RTE) Challenge Corpora.
 The files were taken from the RTE1, RTE2 and RTE3 datasets and the filenames
 were regularized. 
 
-Filenames are of the form rte*_dev.xml, rte*_test.xml, and rte*_test_gold.xml.
+Filenames are of the form rte*_dev.xml and rte*_test.xml. The latter are the gold standard annotated files.
 
 Each entailment corpus is a list of 'text'/'hypothesis' pairs. The following example is taken from RTE3:
 
@@ -32,11 +32,11 @@ def norm(value_string):
 	Normalize the string value in an RTE pair's C{value} or C{entailment} 
 	attribute.
 	"""
-	
+
 	valdict = {"TRUE": 1,
-			   "FALSE": 0,
-			   "YES": 1,
-			   "NO": 0}
+		   "FALSE": 0,
+		   "YES": 1,
+		   "NO": 0}
 	return valdict[value_string.upper()]
 
 class RTEPair:
@@ -48,7 +48,7 @@ class RTEPair:
     attribute of this class.
     """
 	def __init__(self, pair, challenge=None, id=None, text=None, hyp=None,
-				 value=None, task=None, length=None):
+		     value=None, task=None, length=None):
 		self.challenge =  challenge    
 		self.id = pair.attrib["id"]
 		self.gid = "%s-%s" % (self.challenge, self.id)
@@ -95,7 +95,7 @@ class RTECorpusReader(XMLCorpusReader):
 
 	def xml(self, items=None):
 		return concat([ElementTree.parse(filename).getroot()
-					   for filename in self._item_filenames(items)])   
+			       for filename in self._item_filenames(items)])   
 
 	def _read_etree(self, doc):
 		try:
