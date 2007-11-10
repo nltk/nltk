@@ -69,10 +69,18 @@ class FreqDist(dict):
     """
     def __init__(self, samples=None):
         """
-        Construct a new empty, C{FreqDist}.  In particular, the count
-        for every sample is zero.
+        Construct a new frequency distribution.  If C{samples} is
+        given, then the frequency distribution will be initialized
+        with the count of each object in C{samples}; otherwise, it
+        will be initialized to be empty.
+
+        In particular, C{FreqDist()} returns an empty frequency
+        distribution; and C{FreqDist(samples)} first creates an empty
+        frequency distribution, and then calls C{inc} for each element
+        in the list C{samples}.
         
-        @param samples: The samples to initialize the frequency distribution with
+        @param samples: The samples to initialize the frequency
+        distribution with.
         @type samples: Sequence
         """
         dict.__init__(self)
