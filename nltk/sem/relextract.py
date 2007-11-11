@@ -51,9 +51,9 @@ def _expand(type):
     except KeyError:
         return type
     
-def _shorten(type):
+def class_abbrev(type):
     """
-    Shorten an NE class name.
+    Abbreviate an NE class name.
     @type type: C{str}
     @rtype: C{str}
     """
@@ -199,7 +199,7 @@ def show_raw_rtuple(reldict, lcon=False, rcon=False):
     @param reldict: a relation dictionary
     @type reldict: C{defaultdict}
     """
-    items = [_shorten(reldict['subjclass']), reldict['subjtext'], reldict['filler'], _shorten(reldict['objclass']), reldict['objtext']]
+    items = [class_abbrev(reldict['subjclass']), reldict['subjtext'], reldict['filler'], class_abbrev(reldict['objclass']), reldict['objtext']]
     format = '[%s: %r] %r [%s: %r]'
     if lcon:
         items = [reldict['lcon']] + items
@@ -376,18 +376,12 @@ def conllesp():
     
 
 if __name__ == '__main__':
-#     in_demo(trace=0)
-#     roles_demo(trace=0)
-#     conllned()
+    in_demo(trace=0)
+    roles_demo(trace=0)
+    conllned()
     conllesp()
 
-#IN = re.compile(r'.*\bin\b(?!\b.+ing\b)')
-
-#rels = [rel for item in ieer.items
-        #for doc in ieer.parsed_docs(item)
-        #for rel in relextract('ORG', 'LOC', doc, pattern = IN)]
-
-#for r in rels[9:17]: print show_raw_rtuple(r)     
+   
 
 
 
