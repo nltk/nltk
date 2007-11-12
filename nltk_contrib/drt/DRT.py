@@ -481,6 +481,12 @@ class FolOperator(ConstantExpression):
 
 class AbstractDRS(Expression):
     """A Discourse Representation Structure."""
+    def __init__(self):
+        Expression.__init__(self)
+        if self.__class__ is AbstractDRS:
+            raise NotImplementedError
+        self._size = None
+    
     def __add__(self, other):
         raise NotImplementedError
         
@@ -520,7 +526,7 @@ class DRS(AbstractDRS):
 
     """A Discourse Representation Structure."""
     def __init__(self, refs, conds):
-        Expression.__init__(self)
+        AbstractDRS.__init__(self)
         self.refs = refs   # a list of Variables
         self.conds = conds # a list of Expressions, DRSs, and DRS_concs
 
@@ -624,7 +630,11 @@ class DRS(AbstractDRS):
         return self.__repr__()
 
     def draw(self, x=3, y=3, canvas=None, use_parens=None): #args define the top-left corner of the box
-        canvas = init_canvas(canvas)
+        if not canvas:
+            canvas = init_canvas(self)
+        if not self._size:
+            self.get_drawing_size(canvas, use_parens)
+            
         text_height = canvas.font.metrics("linespace")
         x_current = x+canvas.BUFFER #indent the left side
         y_current = y+canvas.BUFFER #indent the top
@@ -672,7 +682,9 @@ class DRS(AbstractDRS):
         return (x_current, y_current)
 
     def get_drawing_size(self, canvas=None, use_parens=None): 
-        canvas = init_canvas(canvas)
+        if not canvas:
+            canvas = init_canvas(self)
+
         text_height = canvas.font.metrics("linespace")
         x_current = canvas.BUFFER #indent the left side
         y_current = canvas.BUFFER #indent the top
@@ -698,9 +710,9 @@ class DRS(AbstractDRS):
         ######################################
         for cond in self.conds:
             if isinstance(cond, AbstractDRS) or isinstance(cond, ApplicationExpression):
-                size = cond.get_drawing_size(canvas)
-                max_width = max(max_width, size[0])
-                y_current += size[1]+canvas.BUFFER
+                cond_size = cond.get_drawing_size(canvas)
+                max_width = max(max_width, cond_size[0])
+                y_current += cond_size[1]+canvas.BUFFER
             else:
                 text = str(cond)
                 max_width = max(max_width, canvas.font.measure(text))
@@ -713,12 +725,13 @@ class DRS(AbstractDRS):
         if (y_current - horiz_line_y) < text_height:
             y_current += text_height
 
-        return (x_current, y_current)
+        self._size = (x_current, y_current)
+        return self._size
 
 class DRSVariable(AbstractDRS):
     """A Variable DRS which consists solely of a variable."""
     def __init__(self, variable):
-        Expression.__init__(self)
+        AbstractDRS.__init__(self)
         assert isinstance(variable, Variable)
         self.variable = variable
 
@@ -766,17 +779,22 @@ class DRSVariable(AbstractDRS):
     def __hash__(self): return hash(repr(self))
 
     def draw(self, x=3, y=3, canvas=None, use_parens=None): #args define the top-left corner of the box
-        canvas = init_canvas(canvas)
+        if not canvas:
+            canvas = init_canvas(self)
+        if not self._size:
+            self.get_drawing_size(canvas, use_parens)
         text_height = canvas.font.metrics("linespace")
 
         canvas.create_text(x, y, anchor='nw', text=self.variable)
         return (x+canvas.font.measure(self.variable), y+text_height)
        
     def get_drawing_size(self, canvas=None, use_parens=None): #args define the top-left corner of the box
-        canvas = init_canvas(canvas)
+        if not canvas:
+            canvas = init_canvas(self)
         text_height = canvas.font.metrics("linespace")
 
-        return (canvas.font.measure(self.variable), text_height)
+        self._size = (canvas.font.measure(self.variable), text_height)
+        return self._size
        
 
 class LambdaDRS(AbstractDRS):
@@ -784,7 +802,7 @@ class LambdaDRS(AbstractDRS):
     PREFIX = '\\'
 
     def __init__(self, variable, term):
-        Expression.__init__(self)
+        AbstractDRS.__init__(self)
         assert isinstance(variable, Variable)
         assert isinstance(term, AbstractDRS)
         self.variable = variable
@@ -883,7 +901,10 @@ class LambdaDRS(AbstractDRS):
         return "LambdaDRS('%s', '%s')" % (self.variable, self.term)
 
     def draw(self, x=3, y=3, canvas=None, use_parens=None): #args define the top-left corner of the box
-        canvas = init_canvas(canvas)
+        if not canvas:
+            canvas = init_canvas(self)
+        if not self._size:
+            self.get_drawing_size(canvas, use_parens)
         text_height = canvas.font.metrics("linespace")
         
         # Get Variable Info
@@ -903,7 +924,8 @@ class LambdaDRS(AbstractDRS):
         return bottom_right_corner
 
     def get_drawing_size(self, canvas=None, use_parens=None): #args define the top-left corner of the box
-        canvas = init_canvas(canvas)
+        if not canvas:
+            canvas = init_canvas(self)
         text_height = canvas.font.metrics("linespace")
         
         text = '%s%s' % (self.__class__.PREFIX, self.variable)
@@ -915,7 +937,9 @@ class LambdaDRS(AbstractDRS):
         variables_width = canvas.font.measure(text)
 
         size = drs.get_drawing_size(canvas)
-        return (size[0]+variables_width, size[1])
+        
+        self._size = (size[0]+variables_width, size[1])
+        return self._size
 
 class DrsOperator(AbstractDRS):
     """
@@ -923,7 +947,7 @@ class DrsOperator(AbstractDRS):
     relation ('=').
     """
     def __init__(self, operator):
-        Expression.__init__(self)
+        AbstractDRS.__init__(self)
         assert operator in Tokens.DRS_OPS
         self.constant = operator
         self.operator = operator
@@ -954,20 +978,25 @@ class DrsOperator(AbstractDRS):
     def __repr__(self): return "DrsOperator('%s')" % self.operator
 
     def draw(self, x=3, y=3, canvas=None, use_parens=None): #args define the top-left corner of the box
-        canvas = init_canvas(canvas)
+        if not canvas:
+            canvas = init_canvas(self)
+        if not self._size:
+            self.get_drawing_size(canvas, use_parens)
         text_height = canvas.font.metrics("linespace")
 
         canvas.create_text(x, y, anchor='nw', text=self.operator)
         return (x+canvas.font.measure(self.operator), y+text_height)
        
     def get_drawing_size(self, canvas=None, use_parens=None): #args define the top-left corner of the box
-        canvas = init_canvas(canvas)
-        return (canvas.font.measure(self.operator), canvas.font.metrics("linespace"))
+        if not canvas:
+            canvas = init_canvas(self)
+        self._size = (canvas.font.measure(self.operator), canvas.font.metrics("linespace"))
+        return self._size
        
 class ApplicationDRS(AbstractDRS):
     """An application expression: (M N)."""
     def __init__(self, first, second):
-        Expression.__init__(self)
+        AbstractDRS.__init__(self)
         first_simp = first.simplify()
         assert isinstance(first, AbstractDRS)
         if not (isinstance(first_simp, LambdaDRS) or isinstance(first_simp, DRSVariable)) :
@@ -1092,18 +1121,21 @@ class ApplicationDRS(AbstractDRS):
     def __hash__(self): return hash(repr(self))
 
     def draw(self, x=3, y=3, canvas=None, use_parens=True): #args define the top-left corner of the box
-        canvas = init_canvas(canvas)
+        if not canvas:
+            canvas = init_canvas(self)
+        if not self._size:
+            self.get_drawing_size(canvas, use_parens)
 
         ######################################
         # Get sizes of 'first' and 'second'
         ######################################
         if isinstance(self.first, AbstractDRS):
-            first_size = self.first.get_drawing_size(canvas)
+            first_size = self.first._size
         else:
             first_size = (canvas.font.measure(self.first), canvas.font.metrics("linespace"))
             
         if isinstance(self.second, AbstractDRS):
-            second_size = self.second.get_drawing_size(canvas)
+            second_size = self.second._size
         else:
             second_size = (canvas.font.measure(self.second), canvas.font.metrics("linespace"))
             
@@ -1158,7 +1190,8 @@ class ApplicationDRS(AbstractDRS):
         return (x_current, y+max_height)
 
     def get_drawing_size(self, canvas=None, use_parens=True): #args define the top-left corner of the box
-        canvas = init_canvas(canvas)
+        if not canvas:
+            canvas = init_canvas(self)
 
         ######################################
         # Get sizes of 'first' and 'second'
@@ -1194,7 +1227,7 @@ class ApplicationDRS(AbstractDRS):
         ######################################
         y_current = (max_height-first_size[1])/2
         if isinstance(self.first, AbstractDRS):
-            first_bottom_right_corner = self.first.get_drawing_size(canvas, first_use_parens)
+            first_bottom_right_corner = (x_current+self.first._size[0], y_current+self.first._size[1])
         else:
             text = str(self.first)
             if not first_use_parens:
@@ -1209,7 +1242,7 @@ class ApplicationDRS(AbstractDRS):
         ######################################
         y_current = (max_height-second_size[1])/2
         if isinstance(self.second, AbstractDRS):
-            second_bottom_right_corner = self.second.get_drawing_size(canvas)
+            second_bottom_right_corner = (x_current+self.second._size[0], y_current+self.second._size[1])
         else:
             second_bottom_right_corner = (x_current+canvas.font.measure(self.second), y_current+canvas.font.metrics("linespace"))
 
@@ -1217,12 +1250,13 @@ class ApplicationDRS(AbstractDRS):
             x_current = second_bottom_right_corner[0]
             x_current += canvas.font.measure(Tokens.CLOSE_PAREN)
 
-        return (x_current, max_height)
+        self._size = (x_current, max_height)
+        return self._size
 
 class ConcatenationDRS(ApplicationDRS):
     """DRS of the form '(DRS + DRS)'"""
     def __init__(self, first, second):
-        Expression.__init__(self)
+        AbstractDRS.__init__(self)
         first_simp = first.simplify()
         second_simp = second.simplify()
         assert (isinstance(first, ApplicationDRS) and isinstance(first_simp.first, DrsOperator) and first_simp.first.operator == Tokens.DRS_CONC and isinstance(second, AbstractDRS)) or \
@@ -1270,10 +1304,13 @@ class ConcatenationDRS(ApplicationDRS):
     def __repr__(self): return "ConcatenationDRS('%s', '%s')" % (self.first, self.second)
 
     def draw(self, x=3, y=3, canvas=None, use_parens=True): #args define the top-left corner of the box
-        canvas = init_canvas(canvas)
+        if not canvas:
+            canvas = init_canvas(self)
+        if not self._size:
+            self.get_drawing_size(canvas, use_parens)
 
-        first_size = self.first.get_drawing_size(canvas)
-        second_size = self.second.get_drawing_size(canvas)
+        first_size = self.first._size
+        second_size = self.second._size
 
         max_height = max(first_size[1], second_size[1])
 
@@ -1301,10 +1338,11 @@ class ConcatenationDRS(ApplicationDRS):
         return (x_current, max(first_bottom_right_corner[1], second_bottom_right_corner[1]))
 
     def get_drawing_size(self, canvas=None, use_parens=True):
-        canvas = init_canvas(canvas)
+        if not canvas:
+            canvas = init_canvas(self)
 
-        first_size = self.first.get_drawing_size(canvas)
-        second_size = self.second.get_drawing_size(canvas)
+        first_size = self.first._size
+        second_size = self.second._size
 
         max_height = max(first_size[1], second_size[1])
 
@@ -1315,25 +1353,20 @@ class ConcatenationDRS(ApplicationDRS):
             first_use_parens = True
 
         x_current = 0
-        
-        if (isinstance(self.first, ApplicationDRS) or isinstance(self.first, ApplicationExpression)) and \
-           not isinstance(self.second, DrsOperator):
-            first_use_parens = False
-        else:
-            first_use_parens = True
 
         if use_parens:
             x_current += canvas.font.measure(Tokens.OPEN_PAREN)
 
         first_size = self.first.get_drawing_size(canvas, first_use_parens)
         x_current += first_size[0] + canvas.font.measure(' ')
-        second_size = self.second.get_drawing_size(canvas)
+        second_size = self.second._size
         x_current += second_size[0]
 
         if use_parens:
             x_current += canvas.font.measure(Tokens.CLOSE_PAREN)
 
-        return (x_current, max(first_size[1], second_size[1]))
+        self._size = (x_current, max(first_size[1], second_size[1]))
+        return self._size
 
 class ApplicationExpression(Expression):
     """An application expression: (M N)."""
@@ -1454,18 +1487,21 @@ class ApplicationExpression(Expression):
     def __hash__(self): return hash(repr(self))
 
     def draw(self, x=3, y=3, canvas=None, use_parens=True): #args define the top-left corner of the box
-        canvas = init_canvas(canvas)
+        if not canvas:
+            canvas = init_canvas(self)
+        if not self._size:
+            self.get_drawing_size(canvas, use_parens)
 
         ######################################
         # Get sizes of 'first' and 'second'
         ######################################
         if isinstance(self.first, AbstractDRS):
-            first_size = self.first.get_drawing_size(canvas)
+            first_size = self.first._size
         else:
             first_size = (canvas.font.measure(self.first), canvas.font.metrics("linespace"))
             
         if isinstance(self.second, AbstractDRS):
-            second_size = self.second.get_drawing_size(canvas)
+            second_size = self.second._size
         else:
             second_size = (canvas.font.measure(self.second), canvas.font.metrics("linespace"))
             
@@ -1520,7 +1556,8 @@ class ApplicationExpression(Expression):
         return (x_current, y+max_height)
 
     def get_drawing_size(self, canvas=None, use_parens=True): #args define the top-left corner of the box
-        canvas = init_canvas(canvas)
+        if not canvas:
+            canvas = init_canvas(self)
 
         ######################################
         # Get sizes of 'first' and 'second'
@@ -1570,7 +1607,7 @@ class ApplicationExpression(Expression):
         ######################################
         y_current = (max_height-second_size[1])/2
         if isinstance(self.second, AbstractDRS):
-            second_bottom_right_corner = self.second.get_drawing_size(canvas)
+            second_bottom_right_corner = self.second._size
         else:
             second_bottom_right_corner = (x_current+canvas.font.measure(self.second), y_current+canvas.font.metrics("linespace"))
 
@@ -1578,7 +1615,8 @@ class ApplicationExpression(Expression):
             x_current = second_bottom_right_corner[0]
             x_current += canvas.font.measure(Tokens.CLOSE_PAREN)
 
-        return (x_current, max_height)
+        self._size = (x_current, max_height)
+        return self._size
 
 class PossibleAntecedents(list, Expression):
     def variables(self):
@@ -1825,16 +1863,22 @@ class Parser:
     def __str__(self):
         return self.__repr__()
 
-def init_canvas(canvas=None):
-    if not canvas:
-        from Tkinter import *
-        from tkFont import Font
+def init_canvas(drs):
+    from Tkinter import *
+    from tkFont import Font
 
-        master = Tk()
-        canvas = Canvas(master, width=900, height=600)
-        canvas.pack()
-        canvas.font = Font(font=canvas.itemcget(canvas.create_text(0, 0, text=''), 'font'))
-        canvas.BUFFER = 3
+    master = Tk()
+    canvas = Canvas(master, width=0, height=0)
+    canvas.font = Font(font=canvas.itemcget(canvas.create_text(0, 0, text=''), 'font'))
+    canvas.BUFFER = 3
+
+    size = drs.get_drawing_size(canvas)
+
+    canvas = Canvas(master, width=size[0]+3, height=size[1]+3)
+    #canvas = Canvas(master, width=300, height=300)
+    canvas.pack()
+    canvas.font = Font(font=canvas.itemcget(canvas.create_text(0, 0, text=''), 'font'))
+    canvas.BUFFER = 3
     return canvas
 
 def expressions():
@@ -1866,10 +1910,11 @@ def demo(ex=-1, draw=False, catch_exception=True):
     exps = expressions()
     for (i, exp) in zip(range(len(exps)),exps):
         if i==ex or ex==-1:
+            drs = Parser().parse(exp).simplify().infixify()
             if(not draw):
                 print '[[[Example %s]]]: %s' % (i, exp)
                 try:
-                    print '  %s' % Parser().parse(exp).simplify().infixify()
+                    print '  %s' % drs
                 except Exception, (strerror):
                     if catch_exception:
                         print '  Error: %s' % strerror
@@ -1877,14 +1922,14 @@ def demo(ex=-1, draw=False, catch_exception=True):
                         raise
                 print ''
             else:
-                canvas = init_canvas()
+                canvas = init_canvas(drs)
                 y_current = canvas.BUFFER
                 canvas.create_text(canvas.BUFFER, y_current, anchor='nw', text='Example %s: %s' % (i, exp))
                 try:
                     y_current += canvas.font.metrics("linespace")+canvas.BUFFER
-                    size = Parser().parse(exp).infixify().draw(canvas.BUFFER,y_current,canvas)
+                    size = drs.draw(canvas.BUFFER,y_current,canvas)
                     y_current += size[1]+canvas.BUFFER
-                    Parser().parse(exp).simplify().infixify().draw(canvas.BUFFER, y_current, canvas)
+                    drs.draw(canvas.BUFFER, y_current, canvas)
                 except Exception, (strerror):
                     if catch_exception:
                         canvas.create_text(canvas.BUFFER, y_current, anchor='nw', text='  Error: %s' % strerror)
@@ -1947,6 +1992,8 @@ def testResolve_anaphora():
     print '    resolves to: ' + str(drs.simplify().resolve_anaphora().infixify()) + '\n'
 
 if __name__ == '__main__':
-    demo(-1)
-    print '\n'
-    testResolve_anaphora()
+#    demo(-1, True)
+#    print '\n'
+#    testResolve_anaphora()
+    d = Parser().parse(r'drs([x],[(drs([],[]) implies drs([y],[(walks y)]))])')
+    d.draw()
