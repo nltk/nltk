@@ -26,6 +26,7 @@ from nltk import defaultdict
 
 from string import join
 import re
+import htmlentitydefs
 from itertools import ifilter
 
 # Dictionary that associates corpora with NE classes
@@ -70,7 +71,6 @@ def _join(lst, sep=' ', untag=False):
     @type lst: C{list}
     @rtype: C{str}
     """
-    result = ''
     try:
         return join(lst, sep=sep)
     except TypeError:
@@ -78,7 +78,32 @@ def _join(lst, sep=' ', untag=False):
             return join([tup[0] for tup in lst], sep=sep)            
         from nltk.tag import tuple2str
         return join([tuple2str(tup) for tup in lst], sep=sep) 
+
+def descape_entity(m, defs=htmlentitydefs.entitydefs):
+    """
+    Translate one entity to its ISO Latin value.
+    Inspired by example from effbot.org
+    """
+    try:
+        return defs[m.group(1)]
     
+    except KeyError:
+        return m.group(0) # use as is    
+
+def list2sym(lst):
+    """
+    Convert a list of strings into a canonical symbol.
+    @type lst: C{list}
+    @return: a Unicode string without whitespace
+    @rtype: C{unicode}
+    """
+    sym = _join(lst, '_', untag=True)
+    sym = sym.lower()
+    ENT = re.compile("&(\w+?);")
+    sym = ENT.sub(descape_entity, sym)
+    sym = sym.replace('.', '')
+    return sym
+
 def mk_pairs(tree):
     """
     Group a chunk structure into a list of pairs of the form (list(str), L{Tree})
@@ -127,11 +152,11 @@ def mk_reldicts(pairs, window=5, trace=0):
         reldict['lcon'] = _join(pairs[0][0][-window:])
         reldict['subjclass'] = pairs[0][1].node
         reldict['subjtext'] = _join(pairs[0][1].leaves())
-        reldict['subjsym'] = _join(pairs[0][1].leaves(), '_', untag=True)
+        reldict['subjsym'] = list2sym(pairs[0][1].leaves())
         reldict['filler'] = _join(pairs[1][0])
         reldict['objclass'] = pairs[1][1].node
         reldict['objtext'] = _join(pairs[1][1].leaves())
-        reldict['objsym'] = _join(pairs[1][1].leaves(), '_', untag=True)
+        reldict['objsym'] = list2sym(pairs[1][1].leaves())
         reldict['rcon'] = _join(pairs[2][0][:window])
         if trace:
             print "(rel(%s, %s)" % (reldict['subjclass'], reldict['objclass'])
@@ -373,15 +398,22 @@ def conllesp():
             for rel in relextract('ORG', 'LOC', doc, corpus='conll2002', pattern = DE)]
     for r in rels[:10]: print show_clause(r, relsym='DE')
     print
-    
+
+#s = 'mcglashan_&amp;_sarrail'
+#l = ['mcglashan', '&amp;', 'sarrail']
+#pattern = re.compile("&(\w+?);")
+#new = list2sym(l)
+#s = pattern.sub(descape_entity, s)
+#print s, new
 
 if __name__ == '__main__':
     in_demo(trace=0)
-    roles_demo(trace=0)
-    conllned()
-    conllesp()
+    #roles_demo(trace=0)
+    #conllned()
+    #conllesp()
 
-   
+
+
 
 
 
