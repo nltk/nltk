@@ -25,7 +25,7 @@ Currently, NLTK requires Python 2.4 or later.
 # ElementTree
 
 try:
-    import ElementTree
+    from xml.etree import ElementTree
 except ImportError:
     from nltk.etree import ElementTree
 
