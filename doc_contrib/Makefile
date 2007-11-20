@@ -1,5 +1,5 @@
 # Contrib Docs Makefile
-# Adapted from Tutorial Makefile
+# Adapted from Docs Makefile
 #
 # Copyright (C) 2001-2007 University of Pennsylvania
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
@@ -29,9 +29,9 @@ EXAMPLES = ../examples.py
 RST = ../doc/rst.py
 #RST2REF = $(RST) --ref
 RST2HTML = $(RST) --html
-RST2LATEX = $(RST) --latex --$(PAPER_SIZE)
+RST2LATEX = $(RST) --latex --$(PAPER_SIZE) --latex_stylesheet_path=$(LATEX_STYLESHEET_PATH) --bibtex_file=$(BIBTEX_FILE)
 DOCTEST = PYTHONPATH=../.. $(PYTHON) ../nltk/test/doctest_driver.py
-#BIBTEX = bibtex -terse
+BIBTEX = bibtex -terse
 
 # <http://www.spinellis.gr/sw/textproc/bib2xhtml/>
 # BIB2XHTML = bib2xhtml -s named
