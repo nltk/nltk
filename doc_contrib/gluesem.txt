@@ -182,14 +182,14 @@ to another is shown in ex8_:
 
 .. _ex8:
 .. ex::
-	.. image:: gluesem_images/proof_app_abstract.bmp
+	.. image:: gluesem_images/proof_app_abstract.png
 
 Therefore, all together we have the following proof that produces a semantic
 meaning for the sentence `John walks`:lx: in ex9_:
 
 .. _ex9:
 .. ex::
-	.. image:: gluesem_images/proof_app_concrete.bmp
+	.. image:: gluesem_images/proof_app_concrete.png
 
 And |lambda|\ `x.(walks x)(John)`:mathit: |beta|\-reduces to `(walk John)`:mathit:.
 
@@ -233,7 +233,7 @@ with Lexical Functional Grammar (Dal01).  The sentence
 
 .. _ex10:
 .. ex::
-	.. image:: gluesem_images/fstruct_subj.bmp
+	.. image:: gluesem_images/fstruct_subj.png
 
 This style of marking syntactic structure allows us to clearly see that `f`:mathit:
 represented the entire sentence and that `g`:mathit: represents the subject of the
@@ -243,11 +243,11 @@ shown as ex11_ and ex12_ respectively:
 		
 .. _ex11:
 .. ex::
-	.. image:: gluesem_images/fstruct_obj.bmp
+	.. image:: gluesem_images/fstruct_obj.png
 
 .. _ex12:
 .. ex::
-	.. image:: gluesem_images/proof_trans.bmp
+	.. image:: gluesem_images/proof_trans.png
 
 In this case the verb is transitive, so it must have a subject (`John`:lx:) and an
 object (`Mary`:lx:). 
@@ -288,7 +288,7 @@ For reference, let us give the LFG f-structure for the sentence `a man walks`:lx
 
 .. _ex16:
 .. ex::
-	.. image:: gluesem_images/fstruct_quant.bmp
+	.. image:: gluesem_images/fstruct_quant.png
 
 We will examine the noun first.  The meaning of a noun can be viewed as a
 function from an individual to a truth value.  For example, the glue formula for
@@ -307,7 +307,7 @@ to create a quantified noun phrase.
 
 .. _ex17:
 .. ex::
-	.. image:: gluesem_images/proof_quant_noun.bmp
+	.. image:: gluesem_images/proof_quant_noun.png
 
 At this point we must pause to discuss the glue proposition `G`:mathit:.  In the glue
 for this quantified noun phrase, `G`:mathit: is a variable\ [#capitals]_ standing for an
@@ -319,7 +319,7 @@ ex18_:
 
 .. _ex18:
 .. ex::
-	.. image:: gluesem_images/proof_quant_sent.bmp
+	.. image:: gluesem_images/proof_quant_sent.png
 
 An existential quantifier such as `a`:lx: or `some`:lx: is represented as
 quanta_.  A universal quantifier such as `all`:lx: or `every`:lx: is
@@ -381,7 +381,7 @@ temporary hypothesis and then to abstract it away.
 
 .. _ex22:
 .. ex::
-	.. image:: gluesem_images/proof_abstraction.bmp
+	.. image:: gluesem_images/proof_abstraction.png
 
 So, to generate readings for ex19_, we start with a list of premises:
 
@@ -430,11 +430,11 @@ verb `chases`:lx:.  The proofs are detailed as ex30_ and ex31_:
 
 	.. _ex30:
 	.. ex::
-		.. image:: gluesem_images/proof_semanticAmbiguity1.bmp
+		.. image:: gluesem_images/proof_semanticAmbiguity1.png
 		
 	.. _ex31:
 	.. ex::
-		.. image:: gluesem_images/proof_semanticAmbiguity2.bmp
+		.. image:: gluesem_images/proof_semanticAmbiguity2.png
 
 Semantic Ambiguity in NLTK
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -563,15 +563,15 @@ proofs ex32_-ex34_:
 
 	.. _ex32:
 	.. ex::
-		.. image:: gluesem_images/proof_infLoop1.bmp
+		.. image:: gluesem_images/proof_infLoop1.png
 	
 	.. _ex33:
 	.. ex::
-		.. image:: gluesem_images/proof_infLoop2.bmp
+		.. image:: gluesem_images/proof_infLoop2.png
 	
 	.. _ex34:
 	.. ex::
-		.. image:: gluesem_images/proof_infLoop3.bmp
+		.. image:: gluesem_images/proof_infLoop3.png
 
 It should be clear that we could generate an infinite number of proofs following
 this pattern of hypothesizing and retracting variables.  It should also be clear
@@ -666,7 +666,7 @@ application rule from ex8_.  The new rule is shown below as ex38_:
 
 .. _ex38:
 .. ex::
-	.. image:: gluesem_images/proof_hornClauseApp.bmp
+	.. image:: gluesem_images/proof_hornClauseApp.png
 
 You will notice that the set of indices of the conclusion is the sets of
 indices of both premises combined.  This means that a glue formula's set
@@ -815,11 +815,11 @@ glue premises may be assembled or to generate a basic reading.
 
 	.. _mod2:
 	.. ex::
-		.. image:: gluesem_images/proof_mod2.bmp
+		.. image:: gluesem_images/proof_mod2.png
  
 	.. _mod1:
 	.. ex::
-		.. image:: gluesem_images/proof_mod1.bmp
+		.. image:: gluesem_images/proof_mod1.png
 	
 The advantage to removing modifiers is an decrease in the time it takes to find proofs.  This 
 advantage is made even more obvious in a situation where many modifiers exist that are modifying the
