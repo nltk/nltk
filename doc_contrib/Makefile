@@ -10,7 +10,7 @@
 
 PAPER_SIZE = a4
 
-DOCS =  gluesem.txt 
+DOCS =  gluesem.txt drt.txt
 
 #REF_EXTENSION = .ref
 
