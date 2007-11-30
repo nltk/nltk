@@ -24,7 +24,7 @@ TEX := $(DOCS:.txt=.tex)
 BIBTEX_FILE = refs.bib
 
 PYTHON = python
-PDFLATEX = TEXINPUTS=".:..:" pdflatex -halt-on-error
+PDFLATEX = TEXINPUTS=".:../doc:" pdflatex -halt-on-error
 EXAMPLES = ../examples.py
 RST = ../doc/rst.py
 #RST2REF = $(RST) --ref
