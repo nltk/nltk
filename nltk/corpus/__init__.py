@@ -96,6 +96,8 @@ indian = LazyCorpusLoader(
     'indian', IndianCorpusReader, '(?!\.svn).*', '.pos')
 mac_morpho = LazyCorpusLoader(
     'mac_morpho', MacMorphoCorpusReader, '(?!\.svn).*', '.txt')
+movie_reviews = LazyCorpusLoader(
+    'movie_reviews', PlaintextCorpusReader, '(?!\.svn).*', '.txt')
 names = LazyCorpusLoader(
     'names', WordListCorpusReader, '(?!\.svn).*', '.txt')
 ppattach = LazyCorpusLoader(
