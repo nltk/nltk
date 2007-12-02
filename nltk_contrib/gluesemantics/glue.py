@@ -2,6 +2,7 @@ from nltk.sem import logic
 import linearlogic
 from nltk.parse import *
 import lfg
+from nltk import data
 
 class GlueFormula:
     def __init__(self, meaning, glue, indices=set([])):
@@ -101,11 +102,14 @@ class GlueFormula:
         return self.__str__()
 
 class GlueDict(dict):
-    def read_file(self, filename = 'glue.cfg', empty_first = True):
+    def read_file(self, empty_first = True):
+        if empty_first: 
+            self.clear()
 
-        if empty_first: self.clear()
-
-        f = open(filename)
+        try:
+            f = open(data.find('grammars/glue.semtype'))
+        except LookupError:
+            f = open('glue.semtype')
         lines = f.readlines()
         f.close()
 
@@ -262,7 +266,7 @@ def pt_to_fstruct(pt):
 
 def fstruct_to_glue(fstruct):
     glue_pos_dict = GlueDict()
-    glue_pos_dict.read_file(r'glue.cfg')
+    glue_pos_dict.read_file()
     return fstruct.to_glueformula_list(glue_pos_dict, [], None)
 
 def gfl_to_compiled(gfl):
@@ -425,8 +429,8 @@ def demo(show_example=-1):
             print ''
     
 if __name__ == '__main__':
-    demo()
-    print "\n\n"
     proof_demo()
     print "\n\n"
     compiled_proof_demo()
+    print "\n\n"
+    demo()

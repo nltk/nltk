@@ -1,6 +1,7 @@
 from nltk_contrib.drt import DRT
 import linearlogic
 import lfg
+from nltk import data
 
 class GlueFormula:
     def __init__(self, meaning, glue, indices=set([])):
@@ -65,7 +66,7 @@ class GlueFormula:
 
     def compile(self, fresh_index=[1]):
         """From Iddo Lev's PhD Dissertation p108-109"""
-        r = self.glue.simplify().compile_pos(fresh_index)
+        r = self.glue.simplify().compile_pos(fresh_index, True)
         return [self.__class__(self.meaning, r[0], set([fresh_index[0]]))]+r[1]
 
     def infixify(self):
@@ -93,10 +94,14 @@ class GlueFormula:
         return self.__str__()
 
 class GlueDict(dict):
-    def read_file(self, filename = r'drt_glue.cfg', empty_first = True):
-        if empty_first: self.clear()
+    def read_file(self, empty_first = True):
+        if empty_first: 
+            self.clear()
 
-        f = open(filename)
+        try:
+            f = open(data.find('grammars/drt_glue.semtype'))
+        except LookupError:
+            f = open('drt_glue.semtype')
         lines = f.readlines()
         f.close()
 
@@ -171,13 +176,13 @@ class GlueDict(dict):
             glueformulas.append(gf)
         return glueformulas
 
-def parse_to_meaning(sentence):
+def parse_to_meaning(sentence, remove_duplicates=False):
     readings = []
     for agenda in parse_to_compiled(sentence):
-        readings.extend(get_readings(agenda))
+        readings.extend(get_readings(agenda, remove_duplicates))
     return readings
 
-def get_readings(agenda):
+def get_readings(agenda, remove_duplicates=False):
     readings = []
     agenda_length = len(agenda)
     atomics = dict()
@@ -220,13 +225,24 @@ def get_readings(agenda):
     for entry in atomics:
         for gf in atomics[entry]:
             if len(gf.indices) == agenda_length:
-                readings.append(gf.meaning)
+                _add_to_reading_list(gf, readings, remove_duplicates)
     for entry in nonatomics:
         for gf in nonatomics[entry]:
             if len(gf.indices) == agenda_length:
-                readings.append(gf.meaning)
+                _add_to_reading_list(gf, readings, remove_duplicates)
     return readings
         
+def _add_to_reading_list(glueformula, reading_list, remove_duplicates=False):
+    add_reading = True
+    if remove_duplicates:
+        for reading in reading_list:
+            if reading == glueformula.meaning:
+                add_reading = False
+                break;
+    if add_reading:
+        reading_list.append(glueformula.meaning)
+    
+
 def parse_to_compiled(sentence='a man sees Mary'):
     parsetrees = parse(sentence)
     fstructs = [pt_to_fstruct(pt) for pt in parsetrees]
@@ -250,7 +266,7 @@ def pt_to_fstruct(pt):
 
 def fstruct_to_glue(fstruct):
     glue_pos_dict = GlueDict()
-    glue_pos_dict.read_file('drt_glue.cfg')
+    glue_pos_dict.read_file()
     return fstruct.to_glueformula_list(glue_pos_dict, [], None)
 
 def gfl_to_compiled(gfl):
@@ -388,7 +404,7 @@ def proof_demo():
     every_girl_chases_a_dog = a_dog.applyto(every_girl_chases)
     print '      \'every girl chases a dog\': %s' % every_girl_chases_a_dog.simplify().infixify()
 
-def demo(show_example=-1, draw=False):
+def demo(show_example=-1, remove_duplicates=False):
     examples = ['David sees Mary',
                 'David eats a sandwich',
                 'every man chases a dog',
@@ -407,33 +423,18 @@ def demo(show_example=-1, draw=False):
                 'John likes a cat',
                 'John likes every cat',
                 'he likes a dog',
-                'John likes a cat and he likes a dog',
                 'a dog walks and he leaves']
 
     example_num = 0
     hit = False
     for sentence in examples:
         if example_num==show_example or show_example==-1:
-            if draw:
-                canvas = DRT.init_canvas()
-                y_current = canvas.BUFFER
-                canvas.create_text(canvas.BUFFER, y_current, anchor='nw', text='Example %s: %s' % (example_num, sentence))
-                y_current += canvas.font.metrics("linespace")
-            else:
-                print '[[[Example %s]]]  %s' % (example_num, sentence)
-                
-            readings = parse_to_meaning(sentence)
+            print '[[[Example %s]]]  %s' % (example_num, sentence)
+            readings = parse_to_meaning(sentence, remove_duplicates)
             for j in range(len(readings)):
                 reading = readings[j].simplify().resolve_anaphora()
-                if draw:
-                    canvas.create_text(canvas.BUFFER, y_current, anchor='nw', text='Reading #%s' % (j+1))
-                    y_current += canvas.font.metrics("linespace")
-                    y_current = reading.infixify().draw(canvas.BUFFER, y_current, canvas)[1]+canvas.BUFFER*3
-                    y_current += canvas.BUFFER*5
-                else:
-                    print reading
-            if not draw:
-                print ''
+                print reading
+            print ''
             hit = True
         example_num += 1
     if not hit:
@@ -469,7 +470,7 @@ def test2():
     print f12345.simplify()    
 
 def testPnApp():
-    print 'John seems to vanish'
+    print '\'John seems to vanish\''
     print 'The goal here is to retrieve the reading some x.((x = john) and (seems (vanish x))) \n\
            without the reading (seems (some x.((x = john) and (vanish x))) because John, as a \n\
            named entity, is assumed to always exist.  This is accomplished by always adding \n\
@@ -483,27 +484,27 @@ def testPnApp():
 
     print '  \'John\' can take wide scope: \'There is a John, and he seems to vanish\''
     xPrime = GlueFormula('x1', 'g')
-    print '      \'x1\':                        %s' % xPrime.infixify()
+    print '      \'x1\':                          %s' % xPrime.infixify()
     xPrime_vanish = vanish.applyto(xPrime)
-    print '      \'x1 vanishes\':               %s' % xPrime_vanish.simplify().infixify()
+    print '      \'x1 vanishes\':                 %s' % xPrime_vanish.simplify().infixify()
     seems_xPrime_vanish = seems.applyto(xPrime_vanish)
-    print '      \'it seems that x1 vanishes\': %s' % seems_xPrime_vanish.simplify().infixify()
+    print '      \'it seems that x1 vanishes\':   %s' % seems_xPrime_vanish.simplify().infixify()
     seems_vanish = seems_xPrime_vanish.lambda_abstract(xPrime)
-    print '      \'seems to vanish\':           %s' % seems_vanish.simplify().infixify()
+    print '      \'seems to vanish\':             %s' % seems_vanish.simplify().infixify()
     john_seems_vanish = john.applyto(seems_vanish)
-    print '      \'john seems to vanish\':      %s' % john_seems_vanish.simplify().infixify()
+    print '      \'john seems to vanish\':        %s' % john_seems_vanish.simplify().infixify()
 
-    print '  If \'seems\' takes wide scope:'
+    print '  \'Seems\' takes wide scope: \'It seems that there is a John and that he vanishes\''
     john_vanish = john.applyto(vanish)
     print '      \'john vanishes\':               %s' % john_vanish.simplify().infixify()
     seems_john_vanish = seems.applyto(john_vanish)
     print '      \'it seems that john vanishes\': %s' % seems_john_vanish.simplify().infixify()
 
 if __name__ == '__main__':
-    proof_demo()
-    print "\n\n\n"
-    compiled_proof_demo()
-    print "\n\n\n"
-    demo(-1, False)
-    print "\n\n\n"
-    #testPnApp()
+      proof_demo()
+      print "\n\n\n"
+      compiled_proof_demo()
+      print "\n\n\n"
+      demo()
+      #print "\n\n\n"
+      #testPnApp()

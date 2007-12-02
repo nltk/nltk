@@ -371,7 +371,7 @@ class ApplicationExpression(Expression):
     def __init__(self, first=None, second=None, seconds_indicies=set([])):
         Expression.__init__(self)
 
-        if not first is None:
+        if first:
             first_simp = first.simplify()
             second_simp = second.simplify()
             
@@ -402,7 +402,7 @@ class ApplicationExpression(Expression):
                         first_simp.first.second.unify_with(second_simp, self.varbindings)
 
                         # If you are running it on complied premises, more conditions apply
-                        if not seconds_indicies == set([]):
+                        if seconds_indicies:
                             # A.dependencies of (A -o (B -o C)) must be a proper subset of seconds_indicies
                             if not set(first_simp.first.second.dependencies).issubset(seconds_indicies):
                                 raise LinearLogicApplicationError, \
@@ -587,9 +587,9 @@ class ApplicationExpression(Expression):
         second_clausified[0].dependencies.append(fresh_index[0])
 
         if drt:
-            new_gf = glue.GlueFormula('v%s' % fresh_index[0], first_clausified[0], set([fresh_index[0]]))
-        else:
             new_gf = drt_glue.GlueFormula('v%s' % fresh_index[0], first_clausified[0], set([fresh_index[0]]))
+        else:
+            new_gf = glue.GlueFormula('v%s' % fresh_index[0], first_clausified[0], set([fresh_index[0]]))
         fresh_index[0]+=1
         return (second_clausified[0],
                 [new_gf]+first_clausified[1]+second_clausified[1])

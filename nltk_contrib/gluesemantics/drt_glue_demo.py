@@ -32,6 +32,7 @@ class DrtGlueDemo(object):
         self._readings = []
         self._drs = None
         self._drsWidget = None
+        self._remove_duplicates = False
 
         # Create the basic frames.
         self._init_menubar(self._top)
@@ -42,7 +43,7 @@ class DrtGlueDemo(object):
 
         # Resize callback
         self._canvas.bind('<Configure>', self._configure)
-
+        
     #########################################
     ##  Initialization Helpers
     #########################################
@@ -178,12 +179,19 @@ class DrtGlueDemo(object):
                              command=self.destroy, accelerator='q')
         menubar.add_cascade(label='File', underline=0, menu=filemenu)
 
-        rulemenu = Menu(menubar, tearoff=0)
-        rulemenu.add_command(label='Next', underline=0,
-                             command=self.next, accelerator='n, Space')
-        rulemenu.add_command(label='Previous', underline=0,
-                             command=self.prev, accelerator='p, Backspace')
-        menubar.add_cascade(label='Action', underline=0, menu=rulemenu)
+        actionmenu = Menu(menubar, tearoff=0)
+        actionmenu.add_command(label='Next', underline=0,
+                               command=self.next, accelerator='n, Space')
+        actionmenu.add_command(label='Previous', underline=0,
+                               command=self.prev, accelerator='p, Backspace')
+        menubar.add_cascade(label='Action', underline=0, menu=actionmenu)
+
+        optionmenu = Menu(menubar, tearoff=0)
+        optionmenu.add_checkbutton(label='Remove Duplicates', underline=0,
+                                   variable=self._remove_duplicates, 
+                                   command=self._toggle_remove_duplicates,
+                                   accelerator='r')
+        menubar.add_cascade(label='Options', underline=0, menu=optionmenu)
 
         viewmenu = Menu(menubar, tearoff=0)
         viewmenu.add_radiobutton(label='Tiny', variable=self._size,
@@ -318,17 +326,17 @@ class DrtGlueDemo(object):
         self._sysfont.configure(size=-(abs(size)))
         self._bigfont.configure(size=-(abs(size+2)))
         self._redraw()
+        
+    def _toggle_remove_duplicates(self):
+        self._remove_duplicates = not self._remove_duplicates
 
-    #########################################
-    ##  Expand example Selection
-    #########################################
+        self._exampleList.selection_clear(0, 'end')
+        self._readings = []
+        self._populate_readingListbox()
+        
+        self._drs = None
+        self._redraw()
 
-    def _toggle_grammar(self, *e):
-        if self._show_grammar.get():
-            self._exampleFrame.pack(fill='both', side='left', padx=2,
-                                 after=self._feedbackframe)
-        else:
-            self._exampleFrame.pack_forget()
 
     def _exampleList_select(self, event):
         selection = self._exampleList.curselection()
@@ -340,7 +348,7 @@ class DrtGlueDemo(object):
             self._exampleList.selection_clear(0, 'end')
             self._exampleList.selection_set(self._curExample)
 
-            self._readings = drt_glue.parse_to_meaning(example)
+            self._readings = drt_glue.parse_to_meaning(example, self._remove_duplicates)
             self._populate_readingListbox()
             
             self._drs = None
@@ -376,7 +384,7 @@ class DrsWidget(object):
         self._drs = drs
         self._canvas = canvas
         canvas.font = Font(font=canvas.itemcget(canvas.create_text(0, 0, text=''), 'font'))
-        canvas.BUFFER = 3
+        canvas._BUFFER = 3
         self.bbox = (0, 0, 0, 0)
 
     def draw(self):
