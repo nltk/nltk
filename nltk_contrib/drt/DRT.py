@@ -1,6 +1,7 @@
 from nltk.utilities import Counter
-
 from Tkinter import Canvas
+from Tkinter import Tk
+from tkFont import Font
 
 class Error(Exception): pass
 
@@ -94,9 +95,12 @@ class Expression(SubstituteBindingsI):
 
     def __str__(self):
         raise NotImplementedError
-
+    
     def __repr__(self):
         raise NotImplementedError
+    
+    def toProver9String(self):
+        return self.__str__()
 
     def __hash__(self):
         raise NotImplementedError, self.__class__
@@ -232,6 +236,12 @@ class VariableBinderExpression(Expression):
             return '%s%s%s' % (prefix, self.variable, self.term.__str__(1))
         else:
             return '%s%s.%s' % (prefix, self.variable, self.term)
+        
+    def toProver9String(self):
+        prefix = self.__class__.PREFIX
+        variable = self.variable.toProver9String()
+        term = self.term.toProver9String()
+        return '%s%s %s' % (prefix, variable, term)
 
     def __hash__(self):
         return hash(str(self.normalize()))
@@ -266,6 +276,8 @@ class SomeExpression(VariableBinderExpression):
         return str(self)
         #return "SomeExpression('%s', '%s')" % (self.variable, self.term)
 
+    def toProver9String(self):
+        return '%s %s %s' % ('exists', self.variable.toProver9String(), self.term.toProver9String())
 
 class AllExpression(VariableBinderExpression):
     """A universal quantification expression: all x.M."""
@@ -298,6 +310,9 @@ class Variable(object):
     def __str__(self): return self.name
 
     def __repr__(self): return "Variable('%s')" % self.name
+
+    def toProver9String(self):
+        return self.name
 
     def __hash__(self): return hash(self.name)
 
@@ -378,6 +393,9 @@ class Constant(object):
     def __str__(self): return self.name
 
     def __repr__(self): return "Constant('%s')" % self.name
+
+    def toProver9String(self):
+        return self.name
 
     def __hash__(self): return hash(repr(self))
 
@@ -475,7 +493,21 @@ class FolOperator(ConstantExpression):
         return self
 
     def __str__(self): return '%s' % self.operator
-
+    
+    def toProver9String(self):
+        if(self.operator == 'and'):
+            return '&';
+        if(self.operator == 'or'):
+            return '|';
+        if(self.operator == 'not'):
+            return '-';
+        if(self.operator == 'implies'):
+            return '->';
+        if(self.operator == 'iff'):
+            return '<->';
+        else:
+            return self.operator
+        
     def __repr__(self): return "Operator('%s')" % self.operator
 
 
@@ -513,6 +545,25 @@ class AbstractDRS(Expression):
     
     def toFol(self):
         raise NotImplementedError
+    
+    def __eq__(self, other):
+        return self.equals(other)
+        
+    def __ne__(self, other):
+        return not self.equals(other)
+        
+    def equals(self, other):
+        '''Convert both DRSs into Prover9 strings and run the prover 
+        to check whether they are equal'''
+        assert isinstance(self, AbstractDRS)
+        assert isinstance(other, AbstractDRS)
+        
+        from nltk_contrib.prover import prover
+        s1 = self.simplify().toFol().infixify().toProver9String();
+        s2 = other.simplify().toFol().infixify().toProver9String();
+        bicond = '%s <-> %s' % (s1,s2)
+        #print 'Checking equality of: %s' % bicond
+        return prover.attempt_proof(bicond)
 
     def draw(self, x=3, y=3, canvas=None, use_parens=None):
         raise NotImplementedError
@@ -593,11 +644,9 @@ class DRS(AbstractDRS):
     def toFol(self):
         accum = None
         
-        first = True 
         for cond in self.conds[::-1]:
-            if first:
+            if not accum:
                 accum = cond.toFol()
-                first = False
             else:
                 accum = ApplicationExpression( ApplicationExpression(FolOperator('and'), cond.toFol()), accum) 
 
@@ -636,8 +685,8 @@ class DRS(AbstractDRS):
             self.get_drawing_size(canvas, use_parens)
             
         text_height = canvas.font.metrics("linespace")
-        x_current = x+canvas.BUFFER #indent the left side
-        y_current = y+canvas.BUFFER #indent the top
+        x_current = x+canvas._BUFFER #indent the left side
+        y_current = y+canvas._BUFFER #indent the top
         
         ######################################
         # Draw Discourse Referents
@@ -650,11 +699,11 @@ class DRS(AbstractDRS):
             else:
                 first = False
             text += str(ref.variable)
-        canvas.create_text(x_current, y_current, anchor='nw', text=text)
+        canvas.create_text(x_current, y_current, anchor='nw', font=canvas.font, text=text)
         max_width = canvas.font.measure(text)
-        y_current += text_height+canvas.BUFFER
+        y_current += text_height+canvas._BUFFER
         horiz_line_y = y_current
-        y_current += canvas.BUFFER
+        y_current += canvas._BUFFER
 
         ######################################
         # Draw Conditions
@@ -663,17 +712,17 @@ class DRS(AbstractDRS):
             if isinstance(cond, AbstractDRS) or isinstance(cond, ApplicationExpression):
                 bottom_right_corner = cond.draw(x_current, y_current, canvas)
                 max_width = max(max_width, bottom_right_corner[0]-x_current)
-                y_current = bottom_right_corner[1]+canvas.BUFFER
+                y_current = bottom_right_corner[1]+canvas._BUFFER
             else:
                 text = str(cond)
-                canvas.create_text(x_current, y_current, anchor='nw', text=text)
+                canvas.create_text(x_current, y_current, anchor='nw', font=canvas.font, text=text)
                 max_width = max(max_width, canvas.font.measure(text))
-                y_current += text_height+canvas.BUFFER
+                y_current += text_height+canvas._BUFFER
 
         ######################################
         # Draw Box
         ######################################
-        x_current = x+max_width+canvas.BUFFER*2
+        x_current = x+max_width+canvas._BUFFER*2
         if (y_current - horiz_line_y) < text_height:
             y_current += text_height
         canvas.create_rectangle(x, y, x_current, y_current)
@@ -686,8 +735,8 @@ class DRS(AbstractDRS):
             canvas = init_canvas(self)
 
         text_height = canvas.font.metrics("linespace")
-        x_current = canvas.BUFFER #indent the left side
-        y_current = canvas.BUFFER #indent the top
+        x_current = canvas._BUFFER #indent the left side
+        y_current = canvas._BUFFER #indent the top
         
         ######################################
         # Draw Discourse Referents
@@ -701,9 +750,9 @@ class DRS(AbstractDRS):
                 first = False
             text += str(ref.variable)
         max_width = canvas.font.measure(text)
-        y_current += text_height+canvas.BUFFER
+        y_current += text_height+canvas._BUFFER
         horiz_line_y = y_current
-        y_current += canvas.BUFFER
+        y_current += canvas._BUFFER
 
         ######################################
         # Draw Conditions
@@ -712,16 +761,16 @@ class DRS(AbstractDRS):
             if isinstance(cond, AbstractDRS) or isinstance(cond, ApplicationExpression):
                 cond_size = cond.get_drawing_size(canvas)
                 max_width = max(max_width, cond_size[0])
-                y_current += cond_size[1]+canvas.BUFFER
+                y_current += cond_size[1]+canvas._BUFFER
             else:
                 text = str(cond)
                 max_width = max(max_width, canvas.font.measure(text))
-                y_current += text_height+canvas.BUFFER
+                y_current += text_height+canvas._BUFFER
 
         ######################################
         # Draw Box
         ######################################
-        x_current = max_width+canvas.BUFFER*2
+        x_current = max_width+canvas._BUFFER*2
         if (y_current - horiz_line_y) < text_height:
             y_current += text_height
 
@@ -785,7 +834,7 @@ class DRSVariable(AbstractDRS):
             self.get_drawing_size(canvas, use_parens)
         text_height = canvas.font.metrics("linespace")
 
-        canvas.create_text(x, y, anchor='nw', text=self.variable)
+        canvas.create_text(x, y, anchor='nw', font=canvas.font, text=self.variable)
         return (x+canvas.font.measure(self.variable), y+text_height)
        
     def get_drawing_size(self, canvas=None, use_parens=None): #args define the top-left corner of the box
@@ -919,7 +968,7 @@ class LambdaDRS(AbstractDRS):
         # Draw Term (first, so that we know where to place the variable)
         bottom_right_corner = drs.draw(x+variables_width, y, canvas)
         # Draw Variables
-        canvas.create_text(x, y+(bottom_right_corner[1]-y)/2, anchor='w', text=text)
+        canvas.create_text(x, y+(bottom_right_corner[1]-y)/2, anchor='w', font=canvas.font, text=text)
 
         return bottom_right_corner
 
@@ -984,7 +1033,7 @@ class DrsOperator(AbstractDRS):
             self.get_drawing_size(canvas, use_parens)
         text_height = canvas.font.metrics("linespace")
 
-        canvas.create_text(x, y, anchor='nw', text=self.operator)
+        canvas.create_text(x, y, anchor='nw', font=canvas.font, text=self.operator)
         return (x+canvas.font.measure(self.operator), y+text_height)
        
     def get_drawing_size(self, canvas=None, use_parens=None): #args define the top-left corner of the box
@@ -1003,13 +1052,6 @@ class ApplicationDRS(AbstractDRS):
             assert isinstance(second, AbstractDRS)
         self.first = first
         self.second = second
-
-    def equals(self, other):
-        if self.__class__ == other.__class__:
-            return self.first.equals(other.first) and \
-                   self.second.equals(other.second)
-        else:
-            return False
 
     def variables(self):
         return self.first.variables().union(self.second.variables())
@@ -1101,7 +1143,29 @@ class ApplicationDRS(AbstractDRS):
             return self.__class__(first, second)    
         
     def toFol(self):
-        return ApplicationExpression(self.first.toFol(), self.second.toFol())
+        if isinstance(self.first, ApplicationDRS) \
+                and isinstance(self.first.first, DrsOperator) \
+                and self.first.first.operator == 'implies':
+            first_drs = self.first.second
+            second_drs = self.second
+
+            accum = None
+            
+            for cond in first_drs.conds[::-1]:
+                if not accum:
+                    accum = cond.toFol()
+                else:
+                    accum = ApplicationExpression(ApplicationExpression(FolOperator('and'), cond.toFol()), accum) 
+   
+            accum = ApplicationExpression(ApplicationExpression(FolOperator('implies'), accum ), second_drs.toFol())
+    
+            for ref in first_drs.refs[::-1]:
+                accum = AllExpression(ref.variable, accum)
+            
+            return accum
+        
+        else:    
+            return ApplicationExpression(self.first.toFol(), self.second.toFol())
 
     def _skolemise(self, bound_vars, counter):
         first = self.first._skolemise(bound_vars, counter)
@@ -1152,7 +1216,7 @@ class ApplicationDRS(AbstractDRS):
         if use_parens:
             #Draw Open Paren
             y_current = y+(max_height-canvas.font.metrics("linespace"))/2
-            canvas.create_text(x_current, y_current, anchor='nw', text=Tokens.OPEN_PAREN)
+            canvas.create_text(x_current, y_current, anchor='nw', font=canvas.font, text=Tokens.OPEN_PAREN)
             x_current += canvas.font.measure(Tokens.OPEN_PAREN)
 
         ######################################
@@ -1165,7 +1229,7 @@ class ApplicationDRS(AbstractDRS):
             text = str(self.first)
             if not first_use_parens:
                 text = text[1:-1]
-            canvas.create_text(x_current, y_current, anchor='nw', text=text)
+            canvas.create_text(x_current, y_current, anchor='nw', font=canvas.font, text=text)
             first_bottom_right_corner = (x_current+canvas.font.measure(text), y_current+canvas.font.metrics("linespace"))
 
         #Put a space between 'first' and 'second'
@@ -1178,13 +1242,13 @@ class ApplicationDRS(AbstractDRS):
         if isinstance(self.second, AbstractDRS):
             second_bottom_right_corner = self.second.draw(x_current, y_current, canvas)
         else:
-            canvas.create_text(x_current, y_current, anchor='nw', text=self.second)
+            canvas.create_text(x_current, y_current, anchor='nw', font=canvas.font, text=self.second)
             second_bottom_right_corner = (x_current+canvas.font.measure(self.second), y_current+canvas.font.metrics("linespace"))
 
         x_current = second_bottom_right_corner[0]
 
         if use_parens:
-            canvas.create_text(x_current, y+(max_height-canvas.font.metrics("linespace"))/2, anchor='nw', text=Tokens.CLOSE_PAREN)
+            canvas.create_text(x_current, y+(max_height-canvas.font.metrics("linespace"))/2, anchor='nw', font=canvas.font, text=Tokens.CLOSE_PAREN)
             x_current += canvas.font.measure(Tokens.CLOSE_PAREN)
 
         return (x_current, y+max_height)
@@ -1219,7 +1283,7 @@ class ApplicationDRS(AbstractDRS):
         if use_parens:
             #Draw Open Paren
             y_current = (max_height-canvas.font.metrics("linespace"))/2
-            canvas.create_text(x_current, y_current, anchor='nw', text=Tokens.OPEN_PAREN)
+            canvas.create_text(x_current, y_current, anchor='nw', font=canvas.font, text=Tokens.OPEN_PAREN)
             x_current += canvas.font.measure(Tokens.OPEN_PAREN)
 
         ######################################
@@ -1323,7 +1387,7 @@ class ConcatenationDRS(ApplicationDRS):
             first_use_parens = True
 
         if use_parens:
-            canvas.create_text(x_current, y+(first_size[1]-canvas.font.metrics("linespace"))/2, anchor='nw', text=Tokens.OPEN_PAREN)
+            canvas.create_text(x_current, y+(first_size[1]-canvas.font.metrics("linespace"))/2, anchor='nw', font=canvas.font, text=Tokens.OPEN_PAREN)
             x_current += canvas.font.measure(Tokens.OPEN_PAREN)
 
         first_bottom_right_corner = self.first.draw(x_current, y + (max_height - first_size[1])/2, canvas, first_use_parens)
@@ -1332,7 +1396,7 @@ class ConcatenationDRS(ApplicationDRS):
         x_current = second_bottom_right_corner[0]
 
         if use_parens:
-            canvas.create_text(x_current, y+(first_size[1]-canvas.font.metrics("linespace"))/2, anchor='nw', text=Tokens.CLOSE_PAREN)
+            canvas.create_text(x_current, y+(first_size[1]-canvas.font.metrics("linespace"))/2, anchor='nw', font=canvas.font, text=Tokens.CLOSE_PAREN)
             x_current += canvas.font.measure(Tokens.CLOSE_PAREN)
 
         return (x_current, max(first_bottom_right_corner[1], second_bottom_right_corner[1]))
@@ -1412,7 +1476,7 @@ class ApplicationExpression(Expression):
 
     def _arglist(self):
         """Uncurry the argument list."""
-        arglist = [str(self.second)]
+        arglist = [self.second]
         if isinstance(self.first, ApplicationExpression):
             arglist.extend(self.first._arglist())
         return arglist
@@ -1441,6 +1505,10 @@ class ApplicationExpression(Expression):
             for ancestor in trail:
                 if isinstance(ancestor, AbstractDRS):
                     possible_antecedents.extend(ancestor.get_refs())
+        #===============================================================================
+        #   This line ensures that statements of the form ( x = x ) wont appear.
+        #   Possibly change to remove antecedents with the wrong 'gender' 
+        #===============================================================================
             possible_antecedents.remove(self.second)
             return possible_antecedents
         else:
@@ -1482,6 +1550,22 @@ class ApplicationExpression(Expression):
                 strFirst = strFirst[1:-1]
         return '(%s %s)' % (strFirst, self.second)
 
+    def toProver9String(self):
+        # Print '((M op) N)' as '(M op N)'.
+        # Print '(M N)' as 'M(N)'.
+        if isinstance(self.first, ApplicationExpression) \
+            and isinstance(self.first.second, FolOperator):
+                firstStr = self.first.first.toProver9String()
+                opStr = self.first.second.toProver9String()
+                secondStr = self.second.toProver9String()
+                return '(%s %s %s)' % (firstStr, opStr, secondStr)
+        else:
+            accum = '%s(' % self.fun.toProver9String()
+            for arg in self.args:
+                accum += '%s, ' % arg.toProver9String()
+            return '%s)' % accum[0:-2]
+                
+    
     def __repr__(self): return "ApplicationExpression('%s', '%s')" % (self.first, self.second)
 
     def __hash__(self): return hash(repr(self))
@@ -1518,7 +1602,7 @@ class ApplicationExpression(Expression):
         if use_parens:
             #Draw Open Paren
             y_current = y+(max_height-canvas.font.metrics("linespace"))/2
-            canvas.create_text(x_current, y_current, anchor='nw', text=Tokens.OPEN_PAREN)
+            canvas.create_text(x_current, y_current, anchor='nw', font=canvas.font, text=Tokens.OPEN_PAREN)
             x_current += canvas.font.measure(Tokens.OPEN_PAREN)
 
         ######################################
@@ -1531,7 +1615,7 @@ class ApplicationExpression(Expression):
             text = str(self.first)
             if not first_use_parens:
                 text = text[1:-1]
-            canvas.create_text(x_current, y_current, anchor='nw', text=text)
+            canvas.create_text(x_current, y_current, anchor='nw', font=canvas.font, text=text)
             first_bottom_right_corner = (x_current+canvas.font.measure(text), y_current+canvas.font.metrics("linespace"))
 
         #Put a space between 'first' and 'second'
@@ -1544,13 +1628,13 @@ class ApplicationExpression(Expression):
         if isinstance(self.second, AbstractDRS):
             second_bottom_right_corner = self.second.draw(x_current, y_current, canvas)
         else:
-            canvas.create_text(x_current, y_current, anchor='nw', text=self.second)
+            canvas.create_text(x_current, y_current, anchor='nw', font=canvas.font, text=self.second)
             second_bottom_right_corner = (x_current+canvas.font.measure(self.second), y_current+canvas.font.metrics("linespace"))
 
         x_current = second_bottom_right_corner[0]
 
         if use_parens:
-            canvas.create_text(x_current, y+(max_height-canvas.font.metrics("linespace"))/2, anchor='nw', text=Tokens.CLOSE_PAREN)
+            canvas.create_text(x_current, y+(max_height-canvas.font.metrics("linespace"))/2, anchor='nw', font=canvas.font, text=Tokens.CLOSE_PAREN)
             x_current += canvas.font.measure(Tokens.CLOSE_PAREN)
 
         return (x_current, y+max_height)
@@ -1864,26 +1948,32 @@ class Parser:
         return self.__repr__()
 
 def init_canvas(drs):
-    from Tkinter import *
-    from tkFont import Font
+    #font = Font(family='helvetica', size=12)
+    buffer = 3
 
     master = Tk()
     canvas = Canvas(master, width=0, height=0)
-    canvas.font = Font(font=canvas.itemcget(canvas.create_text(0, 0, text=''), 'font'))
-    canvas.BUFFER = 3
+    font = Font(font=canvas.itemcget(canvas.create_text(0, 0, text=''), 'font'))
+    canvas.font = font
+    canvas._BUFFER = buffer
 
     size = drs.get_drawing_size(canvas)
 
-    canvas = Canvas(master, width=size[0]+3, height=size[1]+3)
+    canvas = Canvas(master, width=size[0]+20, height=size[1]+20)
     #canvas = Canvas(master, width=300, height=300)
     canvas.pack()
-    canvas.font = Font(font=canvas.itemcget(canvas.create_text(0, 0, text=''), 'font'))
-    canvas.BUFFER = 3
+    canvas.font = font
+    canvas._BUFFER = buffer
     return canvas
 
+def testToProver9Input():
+    for t in expressions():
+        p = Parser().parse(t)
+        print p.simplify().toFol().infixify().toProver9String();
+
 def expressions():
-    return ['drs([x],[(man x), (walks x)])',
-            'drs([x,y],[(sees x y)])',
+    return ['drs([x,y],[(sees x y)])',
+            'drs([x],[(man x), (walks x)])',
             '\\x.drs([],[(man x), (walks x)])',
             '\\x y.drs([],[(sees x y)])',
 
@@ -1903,7 +1993,9 @@ def expressions():
 #            '((walks x) implies drs([],[(walks x)]))',
 #            '((walks x) implies (runs x))'
             
-            'drs([x],[(x = (alpha x)),(sees John x)])'
+            'drs([x],[(x = (alpha x)),(sees John x)])',
+            'drs([x],[(man x), (not drs([],[(walks x)]))])',
+            'drs([],[(drs([x],[(man x)]) implies drs([],[(walks x)]))])'
             ]
 
 def demo(ex=-1, draw=False, catch_exception=True):
@@ -1923,16 +2015,16 @@ def demo(ex=-1, draw=False, catch_exception=True):
                 print ''
             else:
                 canvas = init_canvas(drs)
-                y_current = canvas.BUFFER
-                canvas.create_text(canvas.BUFFER, y_current, anchor='nw', text='Example %s: %s' % (i, exp))
+                y_current = canvas._BUFFER
+                canvas.create_text(canvas._BUFFER, y_current, anchor='nw', font=canvas.font, text='Example %s: %s' % (i, exp))
                 try:
-                    y_current += canvas.font.metrics("linespace")+canvas.BUFFER
-                    size = drs.draw(canvas.BUFFER,y_current,canvas)
-                    y_current += size[1]+canvas.BUFFER
-                    drs.draw(canvas.BUFFER, y_current, canvas)
+                    y_current += canvas.font.metrics("linespace")+canvas._BUFFER
+                    size = drs.draw(canvas._BUFFER,y_current,canvas)
+                    y_current += size[1]+canvas._BUFFER
+                    drs.draw(canvas._BUFFER, y_current, canvas)
                 except Exception, (strerror):
                     if catch_exception:
-                        canvas.create_text(canvas.BUFFER, y_current, anchor='nw', text='  Error: %s' % strerror)
+                        canvas.create_text(canvas._BUFFER, y_current, anchor='nw', font=canvas.font, text='  Error: %s' % strerror)
                     else:
                         raise
                 
@@ -1991,9 +2083,15 @@ def testResolve_anaphora():
     print '    ' + str(drs.infixify())
     print '    resolves to: ' + str(drs.simplify().resolve_anaphora().infixify()) + '\n'
 
+def testEquals():
+    a = Parser().parse(r'drs([x],[(man x), (walks x)])')
+    b = Parser().parse(r'drs([x],[(walks x), (man x)])')
+    print '%s == %s' % (a,b)
+    print a == b
+
 if __name__ == '__main__':
-#    demo(-1, True)
-#    print '\n'
-#    testResolve_anaphora()
-    d = Parser().parse(r'drs([x],[(drs([],[]) implies drs([y],[(walks y)]))])')
-    d.draw()
+    demo()
+    print '\n'
+    testResolve_anaphora()
+    print '\n'
+    testToFol()
