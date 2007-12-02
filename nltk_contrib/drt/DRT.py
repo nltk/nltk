@@ -558,7 +558,7 @@ class AbstractDRS(Expression):
         assert isinstance(self, AbstractDRS)
         assert isinstance(other, AbstractDRS)
         
-        from nltk_contrib.prover import prover
+        from nltk_contrib.theorem_prover import prover
         s1 = self.simplify().toFol().infixify().toProver9String();
         s2 = other.simplify().toFol().infixify().toProver9String();
         bicond = '%s <-> %s' % (s1,s2)
@@ -784,13 +784,6 @@ class DRSVariable(AbstractDRS):
         assert isinstance(variable, Variable)
         self.variable = variable
 
-    def equals(self, other):
-        if isinstance(self, DRSVariable) and \
-           isinstance(other, DRSVariable):
-            return self.variable.equals(other.variable)
-        else:
-            return False
-
     def variables(self):
         return set([self.variable])
 
@@ -859,24 +852,6 @@ class LambdaDRS(AbstractDRS):
         self.prefix = self.__class__.PREFIX.rstrip()
         self.binder = (self.prefix, self.variable.name)
         self.body = str(self.term)
-
-    def equals(self, other):
-        r"""
-        Defines equality modulo alphabetic variance.
-
-        If we are comparing \x.M  and \y.N, then
-        check equality of M and N[x/y].
-        """
-        if self.__class__ == other.__class__:
-            if self.variable == other.variable:
-                return self.term == other.term
-            else:
-                # Comparing \x.M  and \y.N.
-                # Relabel y in N with x and continue.
-                relabeled = self._relabel(other)
-                return self.term == relabeled
-        else:
-            return False
 
     def _relabel(self, other):
         """
@@ -1000,12 +975,6 @@ class DrsOperator(AbstractDRS):
         assert operator in Tokens.DRS_OPS
         self.constant = operator
         self.operator = operator
-
-    def equals(self, other):
-        if self.__class__ == other.__class__:
-            return self.constant == other.constant
-        else:
-            return False
 
     def replace(self, variable, expression, replace_bound=False):
         return self
