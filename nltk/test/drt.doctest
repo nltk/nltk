@@ -1,0 +1,38 @@
+================================
+ Discourse Representation Theory
+================================
+
+.. include:: ../../doc/definitions.txt
+
+A DRS is created with ``drs()``. This takes two arguments: a list of
+discourse referents and list of conditions. 
+
+    >>> from nltk_contrib.drt import DRT
+    >>> dp = DRT.Parser()
+    >>> man_x = dp.parse('(man x)')
+    >>> walk_x = dp.parse('(walks x)')
+    >>> x = dp.parse('x')
+    >>> drs1 = DRT.DRS([x], [man_x, walk_x])
+    >>> drs1
+    drs([x],[(man x),(walks x)])
+
+The ``parse()`` method can also be applied directly to DRS
+expressions, which allows them to be specified more
+easily.
+
+    >>> drs1 = dp.parse('drs([x],[(man x),(walks x)])')
+    >>> drs1
+    drs([x],[(man x),(walks x)])
+
+DRSs can be *merged* using the ``+`` operator.
+
+    >>> drs2 = dp.parse('drs([y],[(woman y),(stops y)])')
+    >>> drs3 = drs1 + drs2
+    >>> drs3.simplify()
+    drs([x,y],[(man x),(walks x),(woman y),(stops y)])
+
+We can embed DRSs as components of an ``implies`` condition.
+
+    >>> s = 'drs([], [(%s implies %s)])' % (drs1, drs2)
+    >>> dp.parse(s).infixify()
+    drs([],[(drs([x],[(man x),(walks x)]) implies drs([y],[(woman y),(stops y)]))])
