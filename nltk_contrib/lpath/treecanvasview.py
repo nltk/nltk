@@ -408,7 +408,7 @@ class TreeCanvasView(QCanvasView):
                 return 0
 
     def overrideLineShape(self, item, cls):
-        clsName = str(cls).split("'")[1].split('.')[1]
+        clsName = str(cls).split("'")[1].split('.')[-1]
         item.target.setAxisType(clsName)
         self.emitLPath()
 
