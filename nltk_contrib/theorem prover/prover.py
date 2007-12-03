@@ -1,6 +1,14 @@
-def attempt_proof(formula, prover_name='Prover9'):
-    assert isinstance(formula, str)
+from nltk_contrib.drt import DRT
+
+def attempt_proof(expression, prover_name='Prover9'):
+    assert isinstance(expression, DRT.Expression)
     
+    if prover_name == 'tableau':
+        return expression.tableau()
+    elif prover_name == 'Prover9':
+        return attempt_proof_prover9(expression)
+    
+def attempt_proof_prover9(expression):
     import os
     
     FILENAME = 'prove'
@@ -10,19 +18,20 @@ def attempt_proof(formula, prover_name='Prover9'):
     try:
         f = open('%s/%s.in' % (PROVER_PATH, FILENAME), 'w')
         f.write('formulas(goals).\n')
-        f.write('    %s.\n' % formula)
-        f.write('end_of_list.\n')
-    finally:
-        if f:
-            f.close()
 
-    if prover_name == 'Prover9':
+        s = expression.infixify().toProver9String()
+        
         execute_string = \
             '%s/prover9/provers.src/prover9 -f %s/%s.in > %s/%s.out 2>> %s/%s.out' % \
                                           (PROVER_PATH, PROVER_PATH, FILENAME, \
                                                         PROVER_PATH, FILENAME, \
                                                         PROVER_PATH, FILENAME)
-    
+                                          
+        f.write('    %s.\n' % s)
+        f.write('end_of_list.\n')
+    finally:
+        if f: f.close()
+
     tp_result = os.system(execute_string)
     return tp_result == 0
     
@@ -33,7 +42,7 @@ def demo_drt_glue_remove_duplicates():
 def demo():
       from nltk_contrib.drt import DRT
       
-      DRT.testEquals()
+      DRT.testTp_equals()
       print '\n\n'
       demo_drt_glue_remove_duplicates()
 
