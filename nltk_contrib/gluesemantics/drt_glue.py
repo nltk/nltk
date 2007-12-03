@@ -236,7 +236,7 @@ def _add_to_reading_list(glueformula, reading_list, remove_duplicates=False):
     add_reading = True
     if remove_duplicates:
         for reading in reading_list:
-            if reading == glueformula.meaning:
+            if reading.tp_equals(glueformula.meaning):
                 add_reading = False
                 break;
     if add_reading:
