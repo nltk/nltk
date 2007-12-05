@@ -1,0 +1,10788 @@
+14826 trade
+14828 grain
+14829 nat-gas crude
+14832 rubber tin sugar corn rice grain trade
+14833 palm-oil veg-oil
+14839 ship
+14840 rubber coffee lumber palm-oil veg-oil
+14841 wheat grain
+14842 gold
+14843 acq
+14844 tin
+14849 interest money-fx
+14852 copper acq
+14854 ipi
+14858 soybean oilseed corn grain carcass livestock rice trade
+14859 earn
+14860 earn
+14861 interest money-fx
+14862 bop trade
+14863 lead gas
+14865 acq
+14867 jobs
+14872 earn
+14873 earn
+14875 earn
+14876 earn
+14877 tin
+14881 trade
+14882 zinc
+14885 sugar
+14886 sugar
+14888 acq
+14890 money-fx interest
+14891 cpi gnp
+14892 soybean oilseed soy-oil palm-oil veg-oil
+14899 earn
+14900 acq
+14903 earn
+14904 trade
+14907 acq
+14909 acq
+14911 earn
+14912 trade
+14913 yen dlr money-fx
+14918 cpi
+14919 interest money-fx
+14921 acq
+14922 sugar
+14923 sugar
+14926 earn
+14928 nickel
+14930 earn
+14931 dlr money-fx
+14932 acq
+14933 earn
+14934 earn
+14941 acq
+14943 acq
+14949 acq
+14951 groundnut
+14954 earn
+14957 ship
+14958 earn
+14959 ship
+14960 earn
+14962 earn
+14963 earn
+14964 interest money-fx
+14965 earn
+14967 earn
+14968 earn
+14969 earn
+14970 earn
+14971 earn
+14974 jobs
+14975 earn
+14978 acq
+14981 earn
+14982 acq
+14983 earn
+14984 earn
+14985 earn
+14986 sugar
+14987 money-fx
+14988 sugar
+14993 earn
+14995 earn
+14998 earn
+15000 earn
+15001 acq
+15002 earn
+15004 acq
+15005 earn
+15006 earn
+15011 earn
+15012 earn
+15013 sugar
+15016 earn
+15017 sugar
+15020 earn
+15023 earn
+15024 acq
+15026 earn
+15027 earn
+15028 earn
+15029 earn
+15031 acq
+15032 earn
+15033 corn grain
+15037 acq
+15038 heat
+15043 soybean oilseed wheat sunseed sorghum corn grain
+15045 jobs
+15046 earn
+15048 money-fx
+15049 interest
+15052 acq
+15053 earn
+15055 earn
+15056 earn
+15060 acq
+15061 acq
+15062 earn
+15063 earn acq crude pet-chem
+15065 earn
+15067 earn
+15069 acq
+15070 earn
+15074 earn
+15077 earn
+15078 earn
+15079 earn
+15082 earn
+15090 earn
+15091 acq
+15092 interest
+15093 earn
+15094 earn
+15095 cocoa
+15096 interest
+15097 wheat grain
+15103 earn
+15104 earn
+15106 soybean oilseed corn grain
+15107 earn
+15109 earn
+15110 earn
+15111 acq
+15112 tin
+15118 earn
+15119 acq
+15120 earn
+15121 earn
+15122 acq
+15124 acq
+15126 earn
+15128 acq
+15129 rapeseed oilseed
+15130 earn
+15132 wheat grain
+15136 earn
+15138 acq
+15141 earn
+15144 earn
+15145 earn
+15146 acq
+15149 acq
+15152 earn
+15153 earn
+15154 trade
+15156 acq
+15157 earn
+15161 acq
+15162 earn
+15171 trade
+15172 earn
+15175 earn
+15179 cocoa
+15180 earn
+15185 earn
+15188 earn
+15189 earn
+15190 earn
+15193 earn
+15194 earn
+15197 earn
+15198 coffee
+15200 crude
+15204 acq
+15205 earn
+15206 rice
+15207 earn
+15208 earn
+15210 acq
+15211 earn
+15212 interest dlr money-fx
+15213 earn
+15217 acq
+15219 tin
+15220 cotton
+15221 earn
+15222 earn
+15223 trade
+15226 earn
+15227 earn
+15230 crude
+15233 earn
+15234 money-fx
+15237 livestock
+15238 earn crude
+15239 acq
+15240 earn
+15242 money-supply
+15243 earn
+15244 crude
+15246 money-supply
+15247 earn
+15250 earn
+15253 money-fx
+15254 carcass livestock
+15255 acq
+15258 earn
+15259 earn
+15262 iron-steel trade
+15263 earn
+15264 copper
+15265 earn
+15270 earn
+15271 wheat grain
+15273 wheat grain
+15274 earn
+15276 acq
+15278 earn
+15280 earn
+15281 acq
+15283 earn
+15287 corn grain
+15290 l-cattle livestock
+15292 earn
+15294 acq
+15295 earn
+15296 earn
+15299 earn
+15300 earn
+15302 acq
+15303 grain
+15306 acq
+15307 earn
+15308 acq
+15309 earn
+15310 interest
+15311 acq
+15312 earn
+15313 iron-steel trade
+15314 earn
+15315 earn
+15321 earn
+15322 crude nat-gas
+15324 earn
+15325 earn
+15326 earn
+15327 earn
+15329 coffee
+15335 acq
+15336 earn
+15337 acq
+15339 crude gas
+15341 wheat corn grain veg-oil
+15344 crude gas
+15345 earn
+15348 earn
+15349 acq
+15351 gas crude
+15352 trade
+15354 earn
+15356 earn
+15357 coffee
+15359 earn
+15363 acq
+15364 money-fx interest
+15365 jobs
+15366 acq
+15367 rice grain
+15368 alum
+15372 trade acq
+15375 money-fx trade
+15378 interest money-fx
+15379 earn
+15380 earn
+15383 earn
+15384 interest
+15386 trade
+15387 earn
+15388 grain wheat
+15389 earn
+15391 earn
+15394 sugar
+15396 earn
+15397 earn
+15400 yen
+15404 acq
+15406 earn
+15409 rubber
+15410 interest
+15411 gold
+15413 earn
+15415 sugar
+15416 nat-gas
+15417 earn
+15420 palladium strategic-metal platinum
+15421 acq
+15424 rubber
+15425 acq
+15427 earn
+15428 trade
+15429 earn
+15430 trade
+15431 money-fx dlr
+15432 yen
+15436 interest money-fx
+15438 earn
+15441 reserves
+15442 money-fx dlr
+15444 interest money-fx
+15446 sugar
+15447 trade
+15448 money-fx
+15449 money-fx dlr
+15450 money-fx
+15451 earn
+15452 money-fx trade
+15453 money-fx
+15454 yen
+15455 yen
+15457 earn
+15459 earn
+15460 money-fx dlr
+15462 sugar
+15464 acq
+15467 acq
+15468 acq
+15471 gold
+15472 grain wheat
+15476 earn
+15477 earn
+15478 earn
+15479 acq
+15481 gold
+15482 earn
+15483 yen
+15484 ship
+15485 jobs
+15487 acq
+15489 earn
+15494 earn
+15495 earn
+15496 earn
+15500 meal-feed wheat sun-oil rape-oil soy-oil groundnut-oil lin-oil sun-meal sorghum veg-oil oilseed grain
+15501 acq
+15503 yen
+15504 livestock
+15510 money-fx
+15511 earn
+15515 earn
+15520 heat crude
+15521 earn
+15522 interest money-fx
+15523 money-fx
+15527 money-fx
+15528 earn
+15531 ship grain
+15532 livestock hog
+15535 earn
+15536 soybean oilseed
+15539 interest money-fx
+15540 coffee
+15542 acq
+15543 bop
+15544 acq
+15545 acq
+15547 earn
+15548 earn
+15549 yen dlr
+15550 interest
+15551 gnp
+15552 trade money-supply interest
+15553 earn
+15556 lead
+15558 earn
+15559 earn
+15560 interest
+15561 acq
+15562 dlr
+15563 lead
+15565 acq
+15566 earn
+15567 sorghum wheat rice grain
+15568 cotton
+15569 earn
+15570 earn
+15571 acq
+15572 wheat grain
+15573 bop
+15574 groundnut oilseed
+15575 acq
+15578 interest
+15579 interest
+15580 grain
+15581 earn
+15582 grain wheat
+15583 earn
+15584 coffee
+15585 earn
+15590 earn
+15591 acq
+15593 earn
+15594 earn
+15595 acq
+15596 acq
+15597 earn
+15598 earn
+15600 acq
+15601 earn
+15602 earn
+15603 interest
+15605 acq
+15607 heat
+15610 interest
+15613 earn
+15615 interest money-fx
+15616 acq
+15617 interest
+15618 barley wheat corn grain
+15620 potato
+15621 money-fx
+15623 iron-steel
+15624 tin
+15625 money-fx dlr
+15626 earn
+15629 acq
+15632 earn
+15634 earn
+15636 money-fx
+15637 earn
+15639 iron-steel
+15640 earn
+15641 earn
+15642 livestock carcass
+15643 cotton
+15646 bop trade
+15648 grain corn
+15649 barley grain
+15651 earn
+15653 cocoa
+15655 earn
+15656 money-fx
+15664 acq
+15666 trade
+15667 earn
+15668 earn
+15669 earn
+15672 acq
+15674 earn
+15675 orange
+15676 wheat corn barley grain
+15677 money-fx dlr
+15679 earn
+15680 earn
+15682 acq
+15686 wheat corn grain soybean oilseed
+15688 earn
+15689 money-fx dlr
+15691 earn
+15692 earn
+15694 money-fx
+15695 earn
+15696 ship sugar
+15698 acq
+15702 earn
+15703 earn
+15704 earn
+15707 earn
+15708 earn
+15709 earn
+15710 ship grain
+15713 acq
+15715 earn
+15717 acq
+15719 earn
+15720 corn grain
+15721 rapeseed oilseed
+15723 earn
+15725 coffee trade
+15726 ship grain
+15727 ship sugar
+15728 barley wheat ship grain
+15729 earn
+15732 earn
+15733 earn
+15736 earn
+15737 coffee trade
+15739 acq
+15742 retail
+15749 earn
+15751 soy-oil veg-oil
+15753 earn
+15757 earn
+15759 earn
+15762 earn
+15767 lead
+15768 reserves
+15769 earn
+15772 earn
+15777 earn
+15778 acq
+15780 earn
+15782 earn
+15785 acq
+15790 earn
+15793 bop
+15797 earn
+15798 carcass livestock
+15800 earn
+15801 earn
+15803 gold
+15804 sugar
+15805 interest
+15807 earn
+15808 earn
+15810 acq
+15811 gold
+15816 interest
+15817 tin
+15819 earn
+15821 earn
+15822 earn
+15823 earn
+15829 heat
+15831 copper
+15832 earn
+15833 earn
+15834 earn
+15836 wheat grain
+15838 strategic-metal
+15840 trade
+15841 earn
+15842 grain
+15844 grain
+15845 soybean oilseed wheat corn grain
+15846 orange
+15847 orange
+15851 earn
+15852 earn
+15853 meal-feed soy-meal oilseed veg-oil soy-oil soybean cotton wheat grain
+15854 orange
+15855 orange
+15856 corn grain
+15858 potato
+15859 potato
+15860 wheat corn grain
+15861 acq
+15863 corn wheat grain
+15864 wheat grain
+15865 soybean oilseed
+15866 wheat grain
+15867 earn
+15868 wheat grain
+15869 wheat grain
+15870 wheat grain
+15871 rice oat barley cotton-oil sorghum cotton soy-oil veg-oil meal-feed soy-meal soybean oilseed corn grain
+15872 strategic-metal
+15874 wheat grain
+15875 oat barley sorghum rice cotton soy-meal soy-oil soybean wheat corn veg-oil meal-feed oilseed grain
+15876 cotton
+15877 corn grain
+15878 earn
+15879 acq
+15881 earn
+15885 acq
+15886 earn
+15888 earn
+15889 earn
+15890 cotton soy-meal soy-oil soybean corn wheat veg-oil meal-feed oilseed grain
+15892 acq
+15893 wheat grain
+15894 acq
+15895 wheat grain
+15896 earn
+15897 earn
+15898 acq
+15899 earn
+15900 acq
+15901 earn
+15902 earn
+15903 soy-meal meal-feed
+15904 corn grain
+15906 rice cotton soy-oil veg-oil soy-meal meal-feed soybean oilseed corn wheat grain
+15908 earn
+15909 earn
+15910 corn grain
+15911 soy-meal corn wheat meal-feed grain
+15912 acq
+15913 earn
+15914 grain
+15916 wheat grain
+15917 sunseed oilseed sorghum corn soybean wheat grain
+15918 acq
+15920 acq
+15921 soybean oilseed
+15922 soy-meal meal-feed
+15923 soy-oil veg-oil
+15924 fuel
+15925 cotton
+15927 wheat grain
+15928 rice grain
+15929 orange
+15930 earn
+15932 copper
+15933 earn
+15934 earn
+15937 earn
+15939 crude
+15942 ship grain
+15944 earn
+15949 livestock
+15950 money-supply
+15951 money-supply
+15952 sorghum oat barley corn wheat grain
+15953 meal-feed soy-meal soybean oilseed
+15956 acq
+15959 earn
+15960 orange
+15961 acq
+15963 acq
+15964 crude
+15967 earn
+15968 acq
+15969 earn
+15970 acq
+15973 cotton
+15975 veg-oil meal-feed oilseed grain
+15976 money-supply
+15977 money-supply
+15978 money-supply
+15979 earn
+15980 earn
+15981 earn
+15984 earn
+15985 earn
+15987 money-supply
+15988 copper
+15989 money-supply
+15993 acq
+15995 acq
+15996 money-supply
+15997 acq
+15999 soybean oilseed corn grain
+16002 acq
+16003 earn
+16004 money-fx
+16005 crude
+16006 money-fx
+16007 nat-gas crude acq
+16009 silver gold livestock cotton grain money-fx
+16012 corn grain
+16013 earn
+16014 ship grain
+16015 earn
+16016 earn
+16021 acq
+16022 earn
+16023 earn
+16026 acq
+16029 acq
+16030 earn
+16033 acq
+16037 acq
+16040 crude ship
+16041 acq
+16045 earn
+16052 trade
+16053 dlr money-fx interest
+16055 earn
+16063 money-supply
+16066 dlr money-fx
+16067 dlr money-fx
+16068 dlr money-fx
+16069 dlr money-fx
+16071 oat sorghum corn wheat grain
+16072 interest money-fx
+16074 interest
+16075 interest
+16076 ship
+16077 crude
+16079 rice grain
+16080 rape-oil soy-oil veg-oil
+16083 money-supply interest
+16086 earn
+16088 trade
+16091 acq
+16093 sugar
+16094 trade
+16095 trade
+16096 interest
+16097 coffee
+16098 cocoa
+16099 rice corn grain
+16100 jobs
+16103 cpi
+16106 money-fx dlr
+16107 cotton
+16108 cpi gnp bop
+16110 copper
+16111 money-fx dlr
+16112 earn
+16115 coffee
+16117 acq
+16118 retail income cpi wpi trade
+16119 earn
+16120 interest
+16122 iron-steel
+16123 copper
+16125 trade
+16126 trade
+16130 acq
+16133 money-fx
+16134 cpi
+16136 acq
+16139 trade
+16140 earn
+16141 earn
+16142 ipi
+16143 money-fx
+16144 wheat grain
+16145 acq
+16146 meal-feed
+16147 groundnut oilseed rice corn grain
+16148 cocoa
+16149 gold
+16150 interest
+16152 acq
+16155 acq
+16158 cpi bop jobs gnp
+16159 acq
+16161 money-fx interest
+16162 platinum gold
+16163 acq
+16164 wpi
+16166 nat-gas
+16170 earn
+16171 gnp
+16172 earn
+16173 acq
+16175 earn
+16176 acq
+16177 money-fx
+16179 alum
+16180 interest money-fx
+16185 sugar
+16188 money-fx
+16189 money-fx dlr
+16190 trade money-fx
+16193 palm-oil veg-oil
+16194 zinc
+16195 wpi
+16196 gnp
+16197 gnp
+16200 dlr
+16201 gnp
+16202 earn
+16203 acq
+16206 earn
+16207 earn
+16210 acq
+16211 acq
+16212 gold
+16213 money-fx
+16214 interest
+16215 acq
+16216 acq
+16219 earn
+16221 earn
+16223 acq
+16225 tea
+16226 cpi bop gnp
+16228 earn
+16230 earn
+16232 acq
+16233 acq
+16234 earn
+16236 livestock
+16238 nat-gas
+16241 cpi
+16243 acq
+16244 earn
+16246 earn
+16247 acq
+16248 platinum silver gold
+16250 money-supply reserves
+16251 money-fx
+16252 earn
+16255 livestock hog
+16256 trade
+16257 trade
+16258 acq
+16260 earn
+16262 earn
+16263 earn
+16264 earn
+16265 meal-feed oilseed grain
+16266 earn
+16268 gnp cpi money-supply
+16269 earn
+16270 wpi
+16271 wheat grain
+16274 interest
+16275 earn
+16277 acq
+16278 earn
+16279 coffee
+16281 lei
+16282 money-supply
+16283 earn
+16284 earn
+16285 money-fx
+16286 gold
+16287 acq
+16288 earn
+16289 lead
+16291 earn
+16294 earn
+16297 earn
+16298 interest
+16299 earn
+16300 earn
+16301 earn
+16302 acq
+16303 earn
+16304 interest
+16307 acq
+16310 lei
+16311 earn
+16312 earn
+16314 fuel
+16315 earn
+16316 livestock
+16317 earn
+16318 alum
+16319 earn
+16320 alum acq
+16324 earn
+16327 sugar
+16331 money-fx
+16332 acq
+16336 earn
+16337 earn
+16339 earn
+16342 earn
+16343 earn
+16346 earn
+16347 earn
+16348 earn
+16350 earn
+16354 earn
+16357 trade
+16359 grain
+16360 earn
+16362 palm-oil veg-oil
+16363 earn
+16365 earn
+16366 ship crude
+16367 earn
+16369 earn
+16370 acq
+16371 earn
+16372 earn
+16374 earn
+16376 earn
+16377 earn
+16379 carcass livestock acq
+16380 earn
+16383 interest money-fx
+16385 earn
+16386 earn
+16388 earn
+16390 earn
+16392 earn
+16393 earn
+16394 earn
+16395 acq
+16396 earn
+16398 acq
+16399 earn
+16400 earn
+16401 earn
+16402 earn acq
+16403 acq
+16404 acq
+16405 earn
+16406 acq
+16407 interest
+16409 acq
+16410 earn
+16415 cpi
+16417 earn
+16418 earn
+16419 acq
+16420 acq
+16421 earn
+16422 earn
+16424 earn
+16426 earn
+16427 acq
+16428 earn
+16429 crude
+16430 earn
+16432 earn
+16433 rapeseed oilseed
+16434 earn
+16437 earn
+16438 nat-gas crude
+16440 earn
+16441 earn
+16442 trade
+16443 acq
+16444 acq
+16448 earn
+16449 acq
+16450 acq
+16454 earn
+16457 acq
+16458 earn
+16459 acq
+16460 acq
+16461 earn
+16463 acq
+16465 acq
+16468 earn
+16469 earn
+16470 earn
+16471 earn
+16472 earn
+16473 earn
+16475 acq
+16476 earn
+16478 earn
+16479 acq
+16480 earn
+16481 earn
+16483 earn acq
+16486 earn
+16487 earn
+16488 earn
+16490 earn
+16492 earn
+16493 acq
+16495 earn
+16496 earn
+16499 nat-gas
+16502 earn
+16505 trade
+16510 acq
+16512 acq
+16513 acq
+16518 earn
+16519 livestock acq
+16521 acq
+16522 earn
+16523 acq
+16525 soybean oilseed wheat corn grain
+16527 earn
+16530 earn
+16531 acq
+16533 earn
+16538 earn
+16539 earn
+16545 earn
+16546 earn
+16549 earn
+16551 earn
+16554 earn
+16555 acq
+16561 earn
+16563 acq
+16564 livestock carcass
+16565 money-fx interest
+16568 earn
+16569 earn
+16570 acq
+16574 earn
+16577 acq
+16581 gas
+16583 acq
+16584 earn
+16585 earn
+16587 earn
+16588 earn
+16589 gold
+16590 earn
+16591 acq
+16592 earn
+16593 nat-gas crude
+16597 acq
+16598 earn
+16599 earn
+16600 earn
+16601 rice grain
+16602 earn
+16604 gold
+16606 earn
+16607 crude
+16608 earn
+16610 earn
+16611 earn
+16615 earn
+16619 earn
+16621 acq
+16622 acq
+16623 earn
+16624 corn grain
+16625 earn
+16626 earn
+16627 orange
+16628 earn
+16630 orange
+16633 earn
+16635 earn
+16636 crude
+16638 earn
+16641 earn
+16642 earn
+16644 earn
+16645 earn
+16646 acq
+16648 acq
+16649 crude
+16650 money-supply
+16651 crude
+16652 acq
+16653 earn
+16654 earn
+16655 earn
+16656 acq
+16658 crude
+16662 earn
+16663 acq
+16664 earn
+16665 earn
+16667 acq
+16668 earn
+16670 earn
+16672 earn
+16675 acq
+16676 acq
+16677 acq
+16678 earn
+16679 earn
+16680 acq
+16681 interest
+16684 acq
+16685 acq
+16687 earn
+16688 acq
+16695 acq
+16698 earn
+16700 acq
+16705 earn
+16706 iron-steel
+16707 acq
+16708 earn
+16710 crude
+16711 earn
+16714 acq
+16715 earn
+16717 earn
+16718 acq
+16719 earn
+16723 crude
+16725 earn
+16726 earn
+16727 acq
+16734 acq
+16735 earn
+16737 acq
+16739 crude
+16740 cpi
+16743 money-fx dlr
+16744 money-fx dlr
+16745 trade
+16746 wpi
+16747 acq
+16749 sugar
+16750 alum
+16751 corn grain
+16752 soybean veg-oil
+16753 sorghum grain
+16754 money-fx
+16755 money-supply
+16759 bop
+16761 acq
+16762 crude
+16763 trade grain
+16765 corn grain
+16766 trade bop
+16767 lei
+16770 money-fx
+16772 wpi
+16774 trade
+16775 reserves trade
+16776 rubber
+16777 trade
+16779 money-supply
+16783 cpi
+16784 rice orange carcass trade
+16787 trade
+16788 trade
+16790 grain trade
+16792 earn
+16794 trade
+16795 earn
+16796 acq
+16797 earn
+16798 earn
+16799 earn
+16800 earn
+16801 earn
+16802 earn
+16803 earn
+16804 earn
+16806 earn
+16807 earn
+16808 earn
+16809 earn
+16810 earn
+16811 acq
+16812 earn
+16813 earn
+16814 earn
+16815 earn
+16816 earn
+16817 earn
+16818 earn
+16819 earn
+16824 earn
+16825 earn
+16826 earn
+16833 acq
+16834 earn
+16835 earn
+16836 earn
+16837 earn
+16838 earn
+16839 earn
+16843 ipi
+16848 earn
+16850 earn
+16851 acq
+16852 interest
+16853 ipi
+16854 wpi
+16856 trade
+16858 earn
+16865 earn
+16868 alum
+16871 trade
+16872 acq
+16873 acq
+16874 acq
+16875 acq
+16884 earn
+16885 earn
+16886 earn
+16888 earn
+16890 earn
+16893 earn
+16897 ipi
+16903 money-fx
+16908 money-supply
+16909 earn
+16910 earn
+16911 earn
+16912 earn
+16913 earn
+16916 earn
+16917 acq
+16918 earn
+16921 earn
+16922 acq
+16923 acq
+16925 acq
+16926 trade
+16929 trade
+16932 trade
+17031 earn
+17032 earn
+17034 earn
+17035 earn
+17036 money-supply
+17037 earn
+17038 coffee
+17039 acq
+17041 dlr money-fx
+17042 money-supply
+17044 dlr money-fx
+17045 dlr
+17046 acq
+17047 dlr money-fx
+17048 acq
+17051 interest money-supply
+17052 interest
+17053 acq
+17054 crude
+17436 ship
+17440 earn
+17441 fuel gas
+17442 cpi
+17443 sugar orange grain
+17445 interest
+17446 gas
+17448 interest
+17449 trade
+17452 trade
+17455 rubber
+17457 gold
+17462 ship
+17463 gas
+17470 interest
+17472 gas
+17473 fuel
+17477 coconut-oil palm-oil meal-feed copra-cake coconut veg-oil
+17478 crude
+17479 acq
+17480 strategic-metal lead zinc
+17481 acq
+17484 acq
+17486 strategic-metal zinc lead
+17487 acq
+17488 acq
+17489 earn
+17491 acq
+17492 ship nat-gas
+17493 acq
+17494 tea
+17499 cocoa
+17501 acq
+17502 acq
+17503 corn wheat grain
+17506 acq
+17507 acq
+17509 corn grain sugar copper
+17511 trade
+17513 acq
+17516 nat-gas crude
+17518 acq
+17519 crude
+17521 wheat grain
+17523 money-fx
+17529 acq
+17534 acq
+17538 acq
+17540 acq
+17543 earn
+17544 earn
+17545 earn
+17547 earn
+17551 acq
+17554 earn
+17556 earn
+17558 earn
+17559 acq
+17562 acq
+17563 pet-chem
+17567 acq
+17568 cocoa
+17569 acq
+17573 acq
+17574 acq
+17576 acq
+17577 interest money-fx
+17579 acq
+17580 acq pet-chem
+17584 crude
+17585 pet-chem acq
+17589 acq
+17593 interest
+17595 acq
+17596 acq
+17597 acq
+17601 acq
+17607 earn
+17612 acq
+17616 earn
+17617 earn
+17618 crude
+17619 earn
+17620 dmk dfl money-fx interest
+17622 gold
+17625 acq
+17630 earn
+17632 gold
+17633 jobs
+17640 acq
+17643 acq
+17644 acq
+17651 acq
+17652 acq
+17654 silver gold
+17655 earn
+17658 crude nat-gas
+17659 acq
+17660 earn
+17661 earn
+17662 wheat grain
+17664 cocoa coffee
+17666 acq
+17669 nat-gas crude
+17670 lumber trade
+17671 acq
+17672 earn
+17673 acq
+17674 iron-steel
+17677 acq
+17682 acq
+17683 acq
+17685 earn
+17686 lumber
+17687 acq
+17688 acq
+17694 acq
+17698 alum
+17700 acq
+17701 acq
+17702 alum
+17703 earn
+17706 acq
+17707 cocoa
+17710 acq
+17712 earn
+17714 alum copper silver gold
+17716 acq
+17719 acq
+17722 corn wheat grain soybean
+17723 acq
+17727 acq
+17728 acq
+17731 tin
+17733 cocoa
+17738 acq
+17742 money-fx
+17743 pet-chem acq
+17746 acq
+17748 money-fx
+17749 acq
+17750 crude ship
+17751 earn
+17752 acq
+17753 earn
+17755 oilseed wheat grain
+17757 crude
+17758 interest
+17759 veg-oil
+17760 acq
+17762 acq
+17763 acq
+17766 acq
+17767 barley grain
+17769 barley grain
+17770 acq
+17771 crude
+17773 earn
+17775 acq
+17776 acq
+17777 acq
+17780 crude
+17782 acq
+17783 strategic-metal zinc lead
+17784 acq
+17785 acq
+17787 acq
+17788 earn
+17791 earn
+17792 acq
+17795 earn
+17798 acq
+17802 earn
+17805 strategic-metal zinc lead
+17808 earn
+17809 acq
+17810 acq
+17811 earn
+17812 acq
+17813 crude
+17816 crude
+17822 acq
+17823 hog
+17825 acq
+17827 hog acq
+17829 iron-steel
+17834 earn
+17835 acq
+17837 acq
+17839 acq
+17847 acq
+17848 earn
+17849 acq
+17853 acq
+17857 acq
+17860 acq
+17863 acq
+17864 acq
+17866 acq
+17867 acq
+17870 alum
+17871 trade dlr money-fx
+17872 acq
+17873 acq
+17874 alum
+17875 crude
+17876 acq
+17877 money-fx
+17878 gas
+17880 naphtha
+17881 interest
+17883 gnp interest
+17886 acq crude
+17887 earn
+17888 crude ship
+17892 crude
+17894 rubber
+17896 gnp
+17897 ipi
+17899 interest
+17900 earn
+17901 earn
+17906 gnp
+17907 acq
+17911 acq
+17913 nat-gas crude acq
+17915 money-fx
+17916 bop
+17922 earn
+17923 sugar
+17924 bop trade
+17925 ship
+17926 bop trade
+17927 propane
+17929 crude
+17930 money-fx
+17932 reserves
+17933 reserves
+17939 interest
+17943 interest
+17948 trade
+17950 acq
+17952 money-fx
+17955 ship wheat grain
+17956 acq
+17957 acq
+17958 acq
+17960 acq
+17962 rice wheat grain
+17963 crude
+17964 earn
+17965 earn
+17966 interest reserves
+17967 earn
+17968 acq
+17970 gnp cpi
+17972 earn
+17973 acq
+17975 earn
+17978 acq
+17979 ship
+17980 money-fx
+17981 acq
+17984 acq cocoa
+17986 acq
+17988 earn
+17993 acq
+18001 cpi
+18009 gnp
+18010 dlr money-fx
+18011 interest
+18012 dlr money-fx
+18013 platinum silver gold
+18014 cocoa
+18017 acq
+18024 barley grain
+18028 earn
+18029 acq
+18034 carcass
+18035 corn grain
+18036 acq
+18037 acq
+18038 acq
+18040 acq
+18048 earn
+18050 money-fx
+18051 interest money-fx
+18052 earn
+18061 trade
+18062 earn
+18065 earn
+18066 crude
+18068 earn
+18071 acq
+18075 acq
+18079 acq
+18080 acq
+18085 crude
+18086 money-fx interest
+18093 alum
+18095 gnp
+18096 earn
+18099 carcass
+18101 acq
+18104 trade
+18106 interest
+18108 crude
+18109 reserves
+18111 acq
+18120 earn
+18128 sugar ship
+18135 acq
+18136 dmk money-fx
+18138 acq
+18142 dlr interest money-fx
+18145 acq
+18146 crude gas
+18148 trade
+18149 acq
+18150 veg-oil
+18152 earn
+18155 earn
+18157 acq
+18158 earn
+18160 ship
+18166 earn
+18176 gold
+18177 meal-feed soy-meal soybean oilseed
+18180 earn
+18182 acq
+18185 money-fx interest
+18186 crude
+18187 acq
+18188 acq
+18191 pet-chem
+18205 acq
+18210 acq
+18213 crude ship
+18217 pet-chem
+18221 cocoa
+18222 cocoa
+18223 acq
+18225 copper
+18228 fuel
+18229 acq
+18231 ship
+18232 acq
+18234 crude
+18236 acq
+18238 acq
+18239 acq
+18242 earn
+18243 earn
+18249 earn
+18252 acq
+18253 nat-gas
+18254 iron-steel
+18257 trade
+18258 earn
+18263 barley grain
+18271 ship
+18275 wheat grain
+18276 carcass
+18277 carcass
+18280 copper
+18281 lumber
+18283 earn
+18294 earn
+18296 instal-debt
+18297 wheat grain
+18300 acq
+18302 trade
+18303 earn
+18306 oilseed grain
+18307 earn
+18308 earn
+18309 earn
+18311 crude gas
+18313 acq
+18317 copper acq
+18321 reserves
+18323 coffee
+18325 nat-gas crude acq
+18326 earn
+18328 ship
+18329 crude ship
+18332 crude
+18334 acq
+18336 acq
+18337 zinc lead
+18339 copper
+18340 ship crude
+18342 acq
+18345 rapeseed oilseed wheat grain
+18347 trade bop
+18348 strategic-metal
+18351 acq
+18352 carcass
+18354 earn
+18355 earn
+18356 alum
+18357 ship
+18360 money-fx
+18362 interest
+18363 yen dlr money-fx
+18366 wpi
+18367 gas
+18370 yen dlr money-fx
+18465 interest
+18466 strategic-metal
+18467 acq
+18470 ship
+18472 trade
+18476 acq
+18479 acq
+18480 fuel naphtha gas
+18481 earn
+18482 rapeseed soy-meal oilseed sorghum corn grain carcass livestock meal-feed
+18483 earn
+18487 money-supply
+18488 interest
+18489 platinum silver
+18490 gnp
+18493 crude
+18495 earn
+18496 trade bop
+18497 earn
+18504 acq
+18509 wpi
+18514 earn
+18519 trade
+18520 interest
+18521 ship crude
+18523 crude
+18524 reserves
+18527 reserves
+18530 acq
+18531 sugar
+18533 jobs
+18534 income
+18536 ipi
+18537 money-supply
+18538 interest
+18539 jobs
+18540 income
+18544 soybean oilseed
+18549 interest
+18554 trade
+18557 sugar
+18563 earn
+18564 interest
+18565 veg-oil
+18566 acq
+18567 acq
+18569 acq
+18570 acq
+18571 lead ship
+18575 acq
+18576 acq
+18577 acq
+18585 acq
+18590 acq
+18591 earn
+18592 acq
+18595 interest
+18599 veg-oil
+18600 acq
+18602 earn
+18604 coffee
+18605 acq
+18606 earn
+18609 sugar rice grain
+18610 earn
+18614 corn grain
+18616 jobs
+18621 crude
+18625 nzdlr money-fx
+18627 earn
+18638 acq
+18642 sugar rice grain
+18643 acq
+18644 acq
+18646 earn
+18648 earn
+18651 nat-gas crude
+18654 acq
+18655 crude
+18658 acq
+18660 acq
+18663 acq
+18664 income
+18665 income
+18667 acq
+18668 money-fx
+18670 interest
+18672 income jobs reserves interest
+18674 money-fx
+18676 livestock
+18678 crude
+18680 crude
+18682 acq
+18686 acq
+18688 acq
+18689 crude
+18692 crude
+18698 crude
+18699 earn
+18700 veg-oil
+18701 crude
+18703 earn
+18704 crude
+18705 crude
+18706 crude
+18707 crude
+18708 earn
+18713 earn
+18718 earn
+18719 earn
+18721 earn
+18724 interest money-fx
+18728 crude
+18730 acq
+18732 earn
+18736 crude
+18738 crude
+18739 nat-gas
+18743 crude
+18744 veg-oil
+18746 crude
+18747 crude
+18748 trade bop
+18749 reserves
+18750 interest money-fx
+18751 acq
+18752 iron-steel
+18753 trade bop
+18754 crude
+18763 interest money-fx
+18765 crude
+18768 iron-steel
+18769 earn
+18773 crude
+18774 crude
+18778 acq
+18779 earn
+18781 sun-oil coconut-oil cotton-oil rape-oil soy-oil palm-oil veg-oil
+18782 nat-gas
+18783 acq
+18789 crude
+18795 crude
+18798 reserves trade
+18807 pet-chem
+18810 crude
+18811 acq
+18816 earn
+18824 crude
+18828 earn
+18830 earn
+18832 earn
+18835 trade
+18840 crude
+18842 acq
+18849 copper
+18851 ship
+18852 pet-chem
+18856 acq
+18857 nat-gas crude acq
+18858 fuel
+18859 acq
+18860 coffee
+18861 acq
+18863 acq
+18865 ship
+18867 trade
+18870 earn
+18872 strategic-metal
+18873 cotton
+18875 earn
+18882 acq
+18888 platinum
+18895 acq
+18896 nat-gas crude
+18898 acq
+18899 wheat grain
+18902 fuel
+18904 interest
+18906 acq
+18908 wheat barley grain
+18910 acq
+18911 housing income gnp
+18917 nat-gas
+18920 alum
+18921 acq
+18922 acq
+18924 tin
+18930 alum
+18932 nat-gas
+18938 acq
+18943 zinc
+18944 strategic-metal
+18945 zinc
+18946 money-supply
+18951 iron-steel
+18952 copper
+18953 earn
+18954 corn grain
+18955 earn
+18959 acq
+18962 acq
+18963 acq
+18973 corn grain
+18975 acq
+18985 bop gnp
+18986 acq
+18987 cpi jobs gnp
+18988 acq
+18990 jobs gnp
+18991 gnp bop trade
+18992 trade
+18993 cpi jobs gnp
+18994 gnp
+18995 gnp
+18996 bop jobs gnp
+18997 earn
+19000 cpi jobs gnp
+19004 gnp
+19005 bop cpi gnp
+19006 acq
+19009 earn
+19017 gnp
+19020 interest
+19021 dlr money-fx
+19022 interest
+19023 dlr money-fx
+19028 dlr money-fx money-supply
+19029 earn
+19033 trade
+19037 alum
+19040 reserves money-fx
+19041 alum
+19042 acq
+19044 trade
+19045 earn
+19048 acq
+19050 acq
+19053 earn
+19055 grain ship
+19057 soybean oilseed
+19059 rice grain
+19061 gnp bop yen dlr money-fx
+19062 trade
+19065 tin
+19069 crude
+19073 ship
+19075 bop gnp
+19077 ipi
+19079 cpi
+19081 cpi
+19082 wpi
+19083 gas
+19087 acq
+19088 palm-oil veg-oil
+19092 ship
+19097 ship
+19101 groundnut
+19110 nat-gas crude
+19113 acq
+19118 acq
+19121 interest
+19122 ship
+19127 acq
+19128 crude
+19136 acq
+19137 acq
+19142 earn
+19152 gold acq
+19155 acq
+19159 acq
+19163 trade
+19165 rice corn grain
+19167 interest
+19169 wheat grain
+19170 earn
+19171 earn
+19174 earn
+19178 earn
+19180 acq
+19181 acq
+19182 crude
+19191 interest
+19193 crude
+19198 reserves
+19199 ship
+19201 money-fx interest
+19202 acq
+19208 acq
+19213 wheat grain
+19223 heat
+19229 interest money-fx
+19237 interest money-fx
+19238 ship
+19240 acq
+19241 acq
+19254 earn
+19255 acq
+19256 acq
+19258 acq
+19262 sugar
+19263 acq
+19267 earn
+19269 carcass livestock
+19270 acq
+19271 nat-gas acq
+19272 acq
+19273 trade
+19275 barley oat wheat grain
+19277 rapeseed oilseed
+19280 acq
+19281 acq
+19283 acq
+19284 money-supply
+19285 crude
+19286 acq
+19290 acq
+19291 crude
+19293 trade
+19294 money-supply
+19295 platinum
+19297 acq
+19304 earn
+19307 acq
+19308 earn
+19312 acq
+19318 coffee
+19322 wheat grain
+19325 acq
+19327 acq
+19329 alum
+19331 acq
+19334 acq
+19341 acq
+19343 acq
+19344 acq
+19351 acq
+19352 acq
+19356 acq
+19357 earn
+19358 cocoa
+19359 acq
+19360 acq
+19364 acq
+19365 earn
+19367 alum palm-oil veg-oil tin
+19368 acq
+19369 acq
+19371 lumber
+19373 sugar
+19374 earn
+19375 earn
+19377 trade
+19378 acq
+19379 acq
+19380 acq
+19381 acq
+19383 acq
+19386 acq
+19387 coffee
+19388 meal-feed grain rice
+19397 propane pet-chem crude
+19403 crude ship
+19406 acq
+19409 acq
+19410 earn
+19411 acq
+19412 acq
+19416 money-supply
+19418 money-fx
+19419 acq
+19420 acq
+19422 earn
+19424 earn
+19426 acq
+19427 earn
+19428 acq
+19431 lead zinc
+19432 acq
+19433 trade
+19435 acq
+19440 earn
+19441 acq
+19444 bop trade
+19447 acq
+19448 acq
+19450 earn
+19451 acq
+19453 acq
+19458 coffee
+19459 earn
+19461 acq
+19462 acq
+19463 nat-gas
+19464 acq
+19466 earn
+19470 acq
+19471 nat-gas
+19473 acq
+19474 earn
+19475 earn
+19477 zinc lead
+19478 gnp
+19480 coffee
+19482 acq
+19483 interest
+19487 interest
+19489 money-fx
+19491 ship
+19492 crude
+19497 naphtha fuel crude
+19499 crude
+19500 cocoa
+19501 acq
+19505 crude
+19506 crude
+19507 acq
+19509 crude
+19510 acq
+19511 interest
+19512 interest
+19513 cpi
+19515 earn
+19529 interest
+19534 veg-oil
+19537 nkr money-fx
+19539 trade
+19540 alum
+19541 nkr money-fx
+19545 interest
+19546 trade
+19547 interest
+19549 rapeseed oilseed wheat grain
+19551 veg-oil
+19555 hog livestock trade
+19556 crude
+19557 interest
+19559 crude
+19560 crude
+19561 earn
+19562 earn
+19568 bop
+19569 trade
+19570 coffee cotton cocoa
+19571 earn
+19572 acq
+19625 cpi
+19630 soybean sunseed oilseed acq
+19631 acq
+19635 acq
+19639 earn
+19642 earn
+19644 earn
+19645 acq
+19647 earn
+19648 earn
+19649 acq
+19650 earn
+19651 earn
+19653 cpi
+19654 acq
+19655 earn
+19657 earn
+19658 trade
+19663 acq
+19664 gas
+19666 acq
+19667 earn
+19668 sugar rapeseed oilseed oat barley wheat rye grain
+19672 castor-oil cotton coffee tea trade
+19674 earn
+19675 acq
+19679 acq
+19680 earn
+19681 acq
+19683 acq
+19684 crude ship
+19689 money-fx interest
+19690 acq
+19692 zinc
+19693 money-fx interest
+19697 acq
+19699 acq
+19702 acq
+19703 acq
+19704 earn
+19706 acq
+19710 earn
+19711 acq
+19712 earn
+19713 acq
+19719 acq
+19721 soybean oilseed corn grain
+19723 earn
+19726 acq
+19727 acq
+19731 acq
+19732 acq
+19734 acq
+19737 acq
+19742 earn
+19744 acq
+19745 earn
+19748 acq
+19751 acq
+19756 crude ship
+19758 acq
+19760 acq
+19761 earn
+19762 acq
+19763 acq
+19764 silver lead zinc gold
+19766 acq
+19767 acq
+19769 acq
+19773 acq
+19775 interest
+19780 acq
+19781 copper
+19784 earn
+19786 copper
+19787 earn
+19788 earn
+19790 earn
+19796 acq
+19799 acq
+19802 gold
+19803 earn
+19807 coffee
+19808 gold
+19810 acq
+19812 earn
+19815 earn
+19821 corn wheat grain soybean oilseed
+19823 acq
+19826 acq
+19828 acq
+19830 acq
+19831 acq
+19832 crude
+19833 acq
+19835 cotton rice grain
+19837 acq
+19839 acq
+19844 crude
+19850 earn
+19854 earn
+19856 acq
+19860 acq
+19862 earn
+19864 acq
+19865 earn
+19866 acq
+19867 veg-oil
+19869 crude money-fx
+19870 acq
+19872 acq
+19874 acq
+19875 housing interest
+19880 acq
+19882 ship
+19887 earn
+19890 acq
+19892 acq
+19895 acq
+19900 acq
+19902 acq
+19903 pet-chem naphtha crude
+19906 acq
+19912 acq
+19913 acq
+19915 earn
+19918 trade trade
+19921 acq
+19927 crude
+19930 acq
+19933 earn
+19935 acq
+19939 acq
+19943 acq
+19946 acq
+19947 cotton rice grain trade
+19950 acq
+19955 acq
+19957 earn
+19959 acq
+19962 acq
+19963 acq
+19964 grain
+19965 acq
+19966 earn
+19968 acq
+19975 acq
+19978 earn
+19981 acq
+19982 tea
+19983 acq
+19984 acq
+19985 jobs
+19986 jobs
+19989 money-fx
+19991 money-fx
+19993 money-fx
+19996 ship crude
+19998 crude
+20001 money-fx
+20005 cocoa
+20008 crude
+20009 money-fx
+20012 money-fx
+20013 money-fx
+20016 money-supply
+20018 corn grain
+20019 cotton
+20021 interest
+20025 money-supply
+20030 ship crude
+20031 jet
+20032 interest
+20034 ship
+20035 acq
+20037 acq
+20038 interest
+20039 acq
+20045 coconut
+20048 interest
+20052 rice grain
+20055 alum
+20058 alum
+20062 money-supply
+20063 money-supply
+20068 money-fx
+20071 money-fx
+20079 rubber
+20080 money-fx
+20081 money-fx
+20082 money-fx
+20083 money-fx
+20087 money-fx
+20089 money-fx
+20090 crude
+20092 ship crude
+20093 nat-gas crude
+20095 crude
+20096 copper gold
+20101 ship crude
+20103 ship crude
+20105 earn
+20106 housing
+20112 earn
+20114 acq
+20116 housing
+20117 earn
+20118 earn
+20119 earn
+20127 reserves
+20129 earn
+20132 earn
+20135 earn
+20137 acq
+20138 earn
+20140 earn
+20142 acq
+20145 interest
+20151 earn
+20153 interest
+20159 interest
+20161 earn
+20165 earn
+20166 earn
+20168 earn
+20170 earn
+20174 earn
+20176 earn
+20180 earn
+20181 earn
+20186 coffee
+20187 earn
+20189 earn
+20191 earn
+20193 acq
+20195 earn
+20206 earn
+20207 earn
+20208 rapeseed sunseed soybean oilseed soy-meal meal-feed
+20210 acq
+20213 earn
+20214 earn
+20215 earn
+20216 acq
+20217 earn
+20220 earn
+20221 earn
+20223 earn
+20226 earn
+20228 earn
+20230 rubber
+20231 wheat grain
+20232 veg-oil
+20233 earn
+20234 earn
+20235 earn
+20237 earn
+20239 wheat grain
+20241 earn
+20247 cpi
+20248 jobs trade
+20249 earn
+20251 earn
+20252 earn
+20255 earn
+20256 earn
+20257 earn
+20258 wheat grain
+20259 money-fx
+20261 ship
+20262 interest
+20263 interest money-fx
+20264 reserves
+20265 interest
+20266 earn
+20267 rubber
+20269 earn
+20270 crude
+20273 earn
+20274 earn
+20275 interest
+20278 earn
+20279 earn
+20284 earn
+20286 earn
+20291 earn
+20297 acq
+20298 acq
+20299 earn
+20300 earn
+20302 earn
+20304 earn
+20306 acq
+20308 earn
+20309 earn
+20310 earn
+20311 acq
+20314 earn
+20318 iron-steel
+20319 earn
+20321 acq
+20324 earn
+20328 acq
+20332 earn
+20333 ship crude
+20334 earn
+20335 veg-oil soybean trade
+20337 earn
+20339 earn
+20340 earn
+20341 iron-steel
+20343 interest money-fx
+20344 earn
+20347 money-fx
+20348 money-fx
+20352 acq
+20353 earn
+20357 earn
+20358 earn
+20363 earn
+20364 earn
+20365 earn
+20366 corn grain
+20367 earn
+20368 earn
+20370 earn
+20371 earn
+20372 earn
+20373 earn
+20374 earn
+20376 earn
+20377 money-fx
+20378 earn
+20379 acq
+20380 earn
+20381 earn
+20382 coffee
+20384 earn
+20385 earn
+20386 earn
+20388 earn
+20389 veg-oil
+20391 earn
+20392 earn
+20393 earn
+20395 earn
+20396 acq
+20398 acq
+20400 earn
+20401 earn
+20406 fuel
+20407 earn
+20409 interest
+20412 earn
+20414 earn
+20415 earn
+20419 earn
+20420 crude
+20421 earn
+20432 earn
+20438 earn
+20439 acq
+20440 earn
+20441 carcass trade
+20442 earn
+20443 earn
+20444 ship
+20446 earn
+20448 earn
+20450 earn
+20453 earn
+20455 earn
+20457 acq
+20458 tin
+20459 crude
+20461 trade veg-oil soybean oilseed
+20462 sugar carcass livestock trade
+20463 earn
+20464 crude ship
+20465 coffee
+20467 acq
+20468 earn
+20469 trade
+20470 earn
+20471 earn
+20473 earn
+20474 crude
+20476 earn
+20479 earn
+20480 earn
+20485 acq
+20488 earn
+20489 acq
+20490 earn
+20493 earn
+20494 earn
+20496 money-fx
+20497 earn
+20498 earn
+20499 earn
+20500 interest money-fx
+20502 earn
+20507 earn
+20511 wheat grain carcass livestock trade
+20514 earn
+20515 earn
+20517 earn
+20523 earn
+20525 acq
+20527 earn
+20529 earn
+20531 earn
+20532 interest
+20533 earn
+20535 earn
+20545 earn
+20546 earn
+20548 earn
+20550 sunseed oilseed wheat grain
+20552 acq
+20557 earn
+20558 earn
+20561 earn
+20562 earn
+20564 earn
+20566 earn
+20567 earn
+20569 earn
+20583 earn
+20584 acq
+20586 earn
+20593 earn
+20596 earn
+20598 earn
+20600 earn
+20605 earn
+20606 earn
+20611 wheat grain
+20618 acq
+20620 l-cattle livestock
+20624 ship
+20628 earn
+20630 earn
+20631 money-fx interest
+20632 crude
+20634 earn
+20637 corn grain
+20639 earn
+20640 earn
+20641 acq
+20645 soybean oilseed wheat corn grain
+20646 earn
+20648 earn
+20649 corn grain trade
+20650 earn
+20651 earn
+20652 earn
+20653 crude
+20654 earn
+20655 earn
+20657 earn
+20658 earn
+20660 earn
+20662 crude
+20666 nat-gas
+20667 acq
+20668 earn
+20669 earn
+20670 earn
+20671 earn
+20672 earn
+20673 earn
+20678 interest money-fx
+20679 acq
+20680 earn
+20682 trade
+20685 earn
+20692 crude
+20693 acq
+20695 earn
+20698 acq
+20699 gold
+20706 earn
+20708 earn
+20709 crude
+20710 pet-chem
+20711 earn
+20712 earn
+20715 earn
+20719 ship
+20721 crude
+20723 corn grain soy-meal meal-feed
+20725 acq
+20728 earn
+20730 gas crude
+20734 acq
+20735 earn
+20736 earn
+20738 wheat grain
+20744 acq
+20746 earn
+20747 earn
+20753 earn
+20754 acq
+20755 acq
+20756 ship crude
+20757 trade
+20759 interest
+20763 corn grain
+20764 interest money-fx
+20766 acq
+20767 earn
+20768 earn
+20769 interest
+20770 earn
+20771 earn
+20773 earn
+20774 crude ship
+20775 acq
+20776 earn
+20778 crude
+20779 earn
+20784 earn
+20787 trade
+20790 lumber
+20791 earn
+20792 acq
+20793 earn
+20794 earn
+20795 money-fx
+20797 acq
+20798 earn
+20800 earn
+20801 earn
+20802 earn
+20803 earn
+20804 earn
+20807 earn
+20811 acq
+20812 earn
+20813 earn
+20814 earn
+20817 earn
+20822 earn
+20824 acq
+20825 earn
+20826 earn
+20828 ship crude
+20829 trade
+20833 earn
+20834 acq
+20835 acq
+20836 earn
+20837 earn
+20838 earn
+20840 acq
+20858 money-fx
+20862 yen dlr money-fx
+20865 trade
+20868 dlr money-fx
+20869 crude
+20878 crude
+20879 earn
+20881 ship crude
+20882 ship crude
+20883 earn
+20885 earn
+20887 acq
+20888 earn
+20890 crude ship
+20893 money-fx
+20894 earn
+20896 earn
+20898 acq
+20900 earn
+20901 acq
+20902 ship
+20904 earn
+20905 acq
+20907 money-fx
+20909 crude
+20910 earn
+20911 coconut-oil palmkernel palm-oil veg-oil soybean oilseed
+20913 earn
+20915 earn
+20917 acq
+20918 earn
+20919 crude
+20920 earn
+20921 acq
+20922 money-fx
+20925 money-fx
+20926 earn
+20927 earn
+20930 earn
+20931 earn
+20932 earn
+20936 crude
+20937 earn
+20938 earn
+20941 money-fx
+20943 earn
+20944 crude
+20945 acq
+20946 acq
+20947 earn
+20948 money-fx
+20949 earn
+20954 earn
+20958 money-fx
+20959 crude
+20968 earn
+20969 earn
+20972 earn
+20973 earn
+20974 earn
+20975 earn
+20976 earn
+20979 earn
+20981 ship crude
+20982 acq
+20983 earn
+20984 earn
+20988 earn
+20989 trade
+20991 ship crude
+20995 acq
+21000 acq
+21002 ship crude
+21003 acq
+21006 ship crude
+21007 acq
+21012 earn
+21013 ship crude
+21014 earn
+21016 earn
+21017 earn
+21018 crude
+21019 acq
+21022 earn
+21023 money-fx
+21028 earn
+21030 acq
+21031 trade
+21032 earn
+21034 earn
+21036 earn
+21037 earn
+21038 earn
+21039 acq
+21040 acq
+21041 acq
+21042 earn
+21044 earn
+21045 earn
+21046 acq
+21047 earn
+21049 earn
+21050 acq
+21051 acq
+21053 earn
+21055 earn
+21058 crude
+21059 acq
+21060 acq
+21061 acq
+21063 acq
+21065 acq
+21067 crude
+21071 acq
+21073 acq
+21076 crude
+21077 earn
+21078 acq
+21080 soybean oilseed
+21081 earn
+21082 acq
+21091 corn wheat grain soybean oilseed
+21093 acq
+21095 earn
+21096 bop
+21097 acq
+21100 earn
+21103 earn
+21105 earn
+21106 earn
+21109 earn
+21112 earn
+21113 earn
+21114 earn
+21117 earn
+21122 money-fx
+21123 grain
+21124 interest
+21128 money-fx
+21129 acq
+21130 cpi
+21131 crude
+21132 earn
+21133 acq
+21134 acq
+21135 earn
+21136 earn
+21138 money-fx
+21140 acq
+21142 earn
+21143 acq
+21146 earn
+21148 earn
+21149 ship crude
+21151 money-fx
+21152 veg-oil grain
+21157 dlr money-fx
+21163 money-fx
+21164 earn
+21165 earn
+21166 earn
+21168 grain
+21172 dlr money-fx
+21173 earn
+21175 earn
+21176 earn
+21177 coffee
+21178 earn
+21179 earn
+21181 earn
+21182 earn
+21187 trade
+21189 earn
+21190 earn
+21191 earn
+21192 earn
+21193 earn
+21194 earn
+21195 earn
+21196 earn
+21197 crude
+21199 earn
+21201 acq
+21202 money-fx
+21203 earn
+21205 earn
+21206 earn
+21207 ipi
+21208 earn
+21209 earn
+21210 acq
+21211 earn
+21212 earn
+21214 earn
+21215 earn
+21216 crude ship
+21218 earn
+21219 earn
+21221 earn
+21222 earn
+21224 earn
+21227 earn
+21228 acq
+21230 acq
+21232 earn
+21233 earn
+21234 earn
+21236 earn
+21237 earn
+21238 earn
+21240 earn
+21242 earn
+21243 corn wheat grain
+21244 earn
+21245 cpu
+21248 earn
+21251 acq
+21252 earn
+21253 acq
+21255 earn
+21256 earn
+21257 earn
+21259 earn
+21260 earn
+21261 acq
+21262 earn
+21264 earn
+21265 earn
+21266 earn
+21267 crude
+21271 earn
+21272 earn
+21274 crude
+21275 earn
+21277 money-fx
+21278 acq
+21281 earn
+21282 acq
+21283 earn
+21285 interest
+21286 earn
+21287 acq
+21291 acq
+21292 acq
+21293 gold
+21295 earn
+21297 acq
+21298 earn
+21300 earn
+21301 acq
+21302 earn
+21303 money-fx
+21307 acq
+21308 earn
+21314 gold silver
+21315 earn
+21318 acq
+21319 acq
+21321 sugar
+21322 earn
+21323 money-fx
+21324 earn
+21325 earn
+21330 earn
+21331 interest
+21333 acq
+21336 earn
+21337 earn
+21339 money-fx
+21342 interest
+21343 money-fx
+21346 earn
+21350 earn
+21352 earn
+21354 earn
+21356 earn
+21357 acq
+21358 acq
+21359 earn
+21360 earn
+21362 earn
+21363 crude
+21367 hog carcass livestock
+21368 grain gnp ipi
+21369 crude
+21371 ship
+21372 earn
+21373 earn
+21375 acq
+21376 acq
+21378 earn
+21380 crude
+21382 acq
+21385 earn
+21386 earn
+21387 acq
+21388 earn
+21391 trade
+21392 trade bop
+21393 acq
+21394 acq
+21401 acq
+21403 earn
+21404 acq
+21405 earn
+21406 earn
+21408 acq
+21410 acq
+21411 acq
+21412 earn
+21413 earn
+21414 earn
+21415 earn
+21416 earn
+21417 nat-gas crude acq
+21419 acq
+21421 acq
+21423 ipi
+21427 acq
+21429 acq
+21430 earn
+21431 earn
+21435 earn
+21436 earn
+21437 earn
+21440 acq
+21441 earn
+21443 crude ship
+21447 earn
+21448 earn
+21451 earn
+21453 earn
+21454 acq
+21455 earn
+21459 crude ship
+21460 earn
+21462 acq
+21465 crude
+21466 acq
+21468 interest money-fx
+21469 acq
+21473 bop
+21474 earn
+21475 crude ship
+21477 money-fx
+21478 acq
+21479 earn
+21480 earn
+21482 crude ship
+21484 crude
+21485 ship crude
+21486 ship propane
+21488 earn
+21489 earn
+21490 earn
+21492 ship crude
+21493 rubber sugar corn grain
+21496 dmk dlr money-fx
+21497 veg-oil oilseed
+21501 ship
+21502 crude
+21503 acq
+21506 ship crude
+21508 interest money-fx
+21510 interest money-fx
+21511 money-fx interest
+21512 money-fx
+21517 ship
+21519 bop
+21521 money-fx
+21523 ship
+21525 bop jobs gnp
+21526 ship alum
+21530 cotton grain
+21532 cpi
+21535 rand money-fx
+21536 sugar
+21538 acq
+21539 money-fx
+21541 crude
+21542 dmk yen dlr money-fx
+21550 acq
+21551 earn
+21553 earn
+21555 acq
+21556 money-fx
+21557 rubber
+21561 nzdlr money-fx
+21562 trade
+21565 sugar
+21567 coffee
+21568 crude
+21570 rice grain
+21571 acq
+21573 yen dlr money-fx
+21574 ship
+21575 ipi
+21576 gold
+1 cocoa
+5 sorghum oat barley corn wheat grain
+6 wheat sorghum grain sunseed corn oilseed soybean sun-oil soy-oil lin-oil veg-oil
+9 earn
+10 acq
+11 earn
+12 acq earn
+13 earn
+14 earn
+18 earn
+19 grain wheat
+22 copper
+23 earn
+24 earn
+27 earn
+29 housing
+30 money-supply
+36 earn
+37 earn
+38 earn
+40 earn
+41 earn
+42 coffee
+44 ship acq
+45 acq
+46 sugar
+47 trade
+48 reserves
+49 ship
+50 earn
+53 earn
+56 earn
+57 corn grain
+58 money-supply
+59 ship
+64 earn
+65 earn
+66 earn
+68 acq
+69 soy-meal meal-feed oilseed soybean veg-oil
+71 earn
+74 earn
+75 coffee
+76 money-supply
+77 money-supply
+78 money-supply
+80 money-supply
+81 money-supply
+82 earn
+83 earn
+85 earn
+86 earn
+87 earn
+89 earn
+92 money-supply
+93 earn
+94 money-supply
+95 money-supply
+96 acq
+97 oilseed soybean sorghum rye oat corn wheat grain
+98 earn
+99 money-supply
+100 money-supply
+101 money-supply
+102 money-supply
+103 money-supply
+104 cotton
+105 sugar
+106 ship grain
+108 earn
+109 money-supply
+110 acq
+111 money-supply
+113 earn
+121 livestock carcass
+123 earn
+124 grain
+125 acq
+126 earn
+127 crude
+128 acq
+129 earn
+130 earn
+132 money-supply
+133 money-supply
+134 acq
+135 acq
+136 grain
+138 earn
+139 earn
+140 earn
+142 earn
+143 earn
+144 crude
+145 earn
+146 earn
+147 earn
+151 earn
+152 earn
+153 acq
+157 acq
+160 earn
+162 acq
+163 earn
+164 earn
+165 earn
+166 earn
+167 earn
+168 earn
+169 earn
+176 nat-gas
+179 gnp cpi
+180 wheat grain
+183 earn
+185 acq
+186 acq
+187 earn
+189 crude
+191 crude
+193 corn grain
+194 crude
+196 earn
+197 oat corn grain
+198 money-supply
+199 acq
+200 soy-meal soy-oil soybean meal-feed oilseed veg-oil
+201 earn
+202 earn
+203 money-supply
+209 gnp cpi
+210 earn
+211 crude
+212 earn
+213 cpi
+214 earn
+216 money-supply
+220 money-supply
+221 interest money-fx
+225 interest
+227 bop gnp
+228 rice grain
+229 oilseed soybean
+232 coffee
+233 interest
+235 cotton soy-meal tea coffee palmkernel palm-oil corn copra-cake rubber sugar soybean veg-oil rice wheat grain
+236 crude
+237 crude
+241 wheat grain
+242 crude
+246 crude
+247 money-fx
+248 crude
+249 coffee
+253 wheat grain
+254 wheat grain
+256 money-fx
+259 sugar
+260 acq
+267 copra-cake meal-feed
+271 trade
+272 alum
+273 crude
+274 palm-oil veg-oil
+275 coffee cocoa tea
+279 earn
+281 ship
+283 reserves
+284 reserves
+290 coffee
+293 sugar
+296 interest money-fx
+297 soybean oilseed
+298 acq
+299 earn
+302 acq
+303 soy-meal meal-feed soybean oilseed
+304 acq
+307 interest money-fx
+309 strategic-metal platinum gold
+310 meal-feed
+311 tin
+312 bop trade
+313 groundnut-oil palm-oil soy-oil veg-oil rapeseed soybean sunseed oilseed
+314 gold
+315 acq
+317 earn
+320 palm-oil rape-oil veg-oil
+322 interest
+323 reserves
+327 rapeseed oilseed corn grain soy-meal meal-feed
+330 money-supply
+331 acq
+332 palm-oil veg-oil
+334 acq
+336 interest money-fx
+338 trade
+341 interest money-fx
+342 trade
+343 sugar
+345 earn
+346 strategic-metal
+349 crude
+352 crude
+353 crude
+354 trade
+356 earn
+361 acq
+362 acq
+366 acq
+368 ship crude
+369 acq
+371 acq
+372 acq
+374 cotton
+376 acq
+377 alum
+378 earn
+379 acq
+381 earn
+383 acq
+387 acq
+388 earn
+389 acq
+390 earn
+392 earn
+393 acq
+395 barley corn wheat grain
+396 earn
+398 acq
+399 earn
+400 acq
+401 acq
+402 coffee
+404 earn
+405 earn
+406 earn
+407 earn
+408 acq
+409 earn
+410 earn
+411 interest money-fx
+416 reserves
+417 oat grain
+418 acq
+420 earn
+422 earn
+423 earn
+424 acq
+425 dlr wheat grain
+435 earn
+436 acq
+438 earn
+439 earn
+440 acq
+441 acq
+442 acq
+443 l-cattle livestock
+444 retail
+447 acq
+448 platinum acq gold
+449 earn
+450 ipi
+455 earn
+456 earn
+459 crude
+461 earn
+464 earn
+466 earn
+467 acq
+470 earn
+473 acq earn
+474 acq
+475 interest money-fx
+478 acq
+480 earn
+483 earn
+484 earn
+486 oilseed
+488 silver gold
+489 crude
+490 earn
+494 earn
+496 acq
+497 acq
+498 acq
+501 barley wheat corn grain
+502 crude
+504 acq
+505 acq
+506 earn
+508 earn
+509 earn
+511 crude
+512 earn
+513 earn
+514 earn
+516 corn grain
+517 earn
+518 ship
+519 interest money-fx
+521 earn
+522 interest money-fx
+524 earn
+525 iron-steel
+528 earn
+529 earn
+530 earn
+531 earn
+532 acq
+533 earn
+534 earn
+535 earn
+536 earn
+538 earn
+539 earn
+541 earn
+543 crude
+544 nat-gas
+545 acq
+546 earn
+547 acq
+548 earn
+550 acq
+551 acq
+552 earn
+553 acq
+554 earn
+555 earn
+557 earn
+558 acq
+559 acq
+560 earn
+562 coffee
+677 ship
+679 acq
+680 earn
+682 acq
+684 sugar
+685 rubber
+686 earn
+687 earn
+688 tin
+689 earn
+690 earn
+691 earn
+692 earn
+693 earn
+694 corn wheat soybean grain oilseed
+695 earn
+696 earn
+697 gold
+698 earn
+699 earn
+700 earn
+701 earn
+702 earn
+703 acq
+704 crude
+706 acq
+707 earn
+708 nat-gas crude
+709 acq
+712 acq
+714 acq
+715 earn
+718 trade
+722 earn
+724 acq
+725 acq
+728 earn
+730 acq earn
+731 earn
+732 acq
+733 acq
+734 earn
+735 acq
+736 acq
+739 earn
+741 acq
+742 wheat grain
+743 earn
+745 acq
+748 acq
+754 coffee
+756 earn
+757 acq
+758 earn
+762 acq
+764 acq
+767 acq
+768 acq
+773 earn
+774 earn
+776 earn
+778 earn
+780 earn
+781 earn
+783 earn
+787 acq
+791 crude
+793 copper
+797 acq
+798 hog livestock
+800 copper
+811 earn
+816 copper
+817 earn
+818 earn
+820 acq
+828 earn
+829 gas heat propane
+830 money-supply
+833 soybean oilseed soy-oil veg-oil
+834 heat
+835 crude
+836 acq
+837 earn
+839 money-supply
+840 acq
+842 coffee
+843 trade gnp
+844 acq
+846 earn
+848 earn
+849 acq
+850 acq
+851 acq
+852 earn
+853 acq
+855 soybean oilseed corn oat grain
+856 wheat grain
+857 ship
+859 earn
+861 earn
+865 earn
+866 earn
+867 jobs
+868 earn
+870 lei
+872 dlr yen money-fx
+873 crude
+874 wheat grain
+875 coffee
+879 earn
+880 bop
+882 acq
+883 earn
+884 rubber
+885 palm-oil veg-oil
+886 earn
+887 earn
+889 jobs
+890 bop
+894 trade
+895 jobs
+896 reserves
+897 bop
+899 earn
+900 interest
+901 interest
+903 money-fx
+904 acq
+908 tin
+913 interest money-fx
+915 money-fx
+918 crude
+920 earn
+921 alum earn
+922 earn
+924 trade
+925 trade
+926 money-fx interest
+929 cpi
+930 crude
+932 acq
+934 corn grain
+937 reserves
+938 alum earn
+939 acq
+940 money-supply
+941 acq
+942 money-fx interest
+943 interest money-fx
+944 palm-oil veg-oil
+945 crude
+949 earn
+952 crude
+953 interest money-fx
+955 jobs
+958 earn
+960 acq
+963 acq
+968 earn
+969 ship
+971 earn
+972 lei
+974 lei
+976 earn
+977 coffee
+978 acq
+981 earn
+982 acq
+983 earn
+984 earn
+985 acq
+986 earn
+988 crude earn
+991 trade
+995 earn
+998 earn
+999 interest money-fx
+1000 acq
+1003 earn
+1007 earn
+1008 interest money-fx
+1009 earn
+1010 earn
+1011 earn
+1013 earn
+1015 earn
+1016 earn
+1017 earn
+1019 earn
+1020 acq
+1022 trade
+1023 lei
+1024 earn
+1026 crude coffee
+1029 acq
+1030 coffee
+1032 acq
+1033 earn
+1035 housing
+1036 housing
+1039 acq
+1040 jobs
+1044 earn
+1047 earn
+1049 gnp
+1050 bop
+1052 ship
+1057 wheat grain
+1058 gnp
+1059 earn
+1063 earn
+1065 earn
+1066 earn
+1067 barley wheat grain
+1068 gnp
+1069 wheat grain
+1070 earn
+1071 earn
+1072 gold
+1074 acq
+1076 acq
+1077 zinc
+1078 interest
+1079 ipi
+1080 earn
+1082 gold
+1084 earn
+1085 coffee
+1087 earn
+1088 money-fx
+1090 earn
+1091 earn
+1094 wheat grain
+1096 earn
+1099 acq
+1100 bop
+1101 earn
+1102 gnp
+1103 acq
+1104 acq
+1105 earn
+1108 earn
+1109 earn
+1110 carcass livestock veg-oil
+1111 earn
+1112 interest money-fx
+1117 earn
+1118 acq
+1120 interest
+1122 earn
+1123 acq
+1124 earn
+1125 interest
+1128 earn
+1131 sorghum corn grain
+1134 earn
+1135 earn
+1137 earn
+1138 earn
+1143 earn
+1147 cpi
+1148 copper
+1151 rapeseed oilseed
+1152 earn
+1153 acq
+1154 interest money-fx
+1156 iron-steel
+1157 earn
+1158 ipi
+1159 acq
+1160 earn
+1164 acq
+1167 earn
+1169 earn
+1170 earn
+1173 earn
+1174 reserves
+1176 earn
+1177 earn
+1178 earn
+1181 earn
+1182 earn
+1184 copper
+1185 wheat grain
+1188 earn
+1191 earn
+1192 earn
+1193 earn
+1197 trade
+1198 earn
+1200 earn
+1201 trade
+1203 acq
+1205 earn
+1207 coffee
+1208 earn
+1209 acq
+1210 trade
+1211 veg-oil
+1212 coffee
+1213 acq
+1215 corn grain soy-meal meal-feed
+1216 sugar
+1217 acq
+1220 acq
+1225 earn
+1226 trade
+1228 acq
+1229 earn
+1234 earn
+1238 acq
+1239 earn
+1243 acq
+1244 earn
+1245 earn
+1246 coffee
+1251 earn
+1252 earn
+1257 ship wheat grain
+1258 earn
+1260 earn
+1263 alum
+1264 earn
+1265 earn
+1268 corn grain
+1269 earn
+1271 earn
+1272 gnp
+1273 corn grain
+1276 acq
+1277 earn
+1280 acq
+1283 earn
+1284 earn
+1285 earn
+1287 earn
+1288 earn
+1291 acq
+1292 acq
+1293 earn
+1295 wheat grain
+1298 earn
+1299 grain
+1300 alum
+1301 earn
+1303 acq
+1306 crude
+1308 money-supply
+1311 earn
+1312 coffee
+1313 earn
+1314 earn
+1315 earn
+1316 acq
+1317 earn
+1320 earn
+1322 earn
+1324 crude
+1326 earn
+1327 earn
+1328 earn
+1331 crude
+1332 alum
+1335 crude
+1339 earn
+1340 acq
+1341 earn
+1342 earn
+1343 crude
+1344 earn
+1345 earn
+1347 trade
+1350 orange
+1351 earn
+1354 acq
+1355 earn
+1356 trade
+1359 earn
+1360 earn
+1361 orange
+1363 earn
+1364 earn
+1366 earn
+1367 earn
+1369 sorghum corn grain
+1372 carcass livestock
+1375 earn
+1377 wheat grain
+1378 earn
+1379 earn
+1381 earn
+1382 earn
+1384 earn
+1385 corn wheat
+1387 crude
+1388 wheat grain
+1391 earn
+1393 carcass livestock
+1394 soybean oilseed
+1395 corn grain
+1396 wheat grain
+1398 carcass livestock
+1399 corn grain
+1404 earn
+1405 soybean oilseed oat wheat cotton grain
+1406 grain
+1407 carcass
+1409 acq
+1412 acq
+1414 earn
+1420 earn
+1421 interest money-fx
+1425 acq
+1427 interest
+1428 earn
+1429 acq
+1433 earn
+1434 earn
+1435 earn
+1436 sugar
+1438 earn
+1440 sugar
+1444 rubber
+1445 earn
+1446 earn
+1449 earn
+1452 earn
+1456 earn
+1457 money-fx
+1460 earn
+1461 earn
+1466 earn
+1467 earn
+1469 earn
+1471 earn
+1477 acq
+1478 trade
+1480 acq
+1483 earn
+1488 earn
+1492 earn
+1493 pet-chem
+1494 earn
+1496 earn
+1497 acq
+1498 earn
+1499 trade
+1500 acq
+1502 earn
+1503 interest money-fx
+1506 acq
+1508 earn
+1512 acq
+1514 money-fx dlr
+1519 sugar
+1520 gas
+1521 crude
+1524 earn
+1525 earn
+1526 earn
+1527 earn
+1528 earn
+1529 earn
+1532 earn
+1533 dlr money-fx
+1535 rubber
+1536 earn
+1537 sugar
+1541 earn
+1543 earn
+1545 earn
+1546 earn
+1550 cpi
+1553 money-fx interest
+1554 earn
+1555 earn
+1556 ship crude
+1557 grain carcass livestock
+1560 interest money-fx
+1562 acq
+1563 earn
+1564 earn
+1566 earn
+1567 earn
+1568 earn
+1569 earn
+1570 wheat grain
+1571 earn
+1572 earn
+1575 earn
+1577 acq
+1579 coffee
+1581 acq
+1582 soybean sunseed oilseed sorghum corn grain
+1584 acq
+1585 earn
+1586 earn
+1588 trade
+1590 rice cotton wheat grain
+1598 sugar
+1601 acq
+1602 earn
+1606 acq
+1607 copper gold
+1608 earn
+1610 earn
+1611 gnp trade bop
+1616 crude
+1619 nat-gas
+1620 earn
+1622 acq
+1623 grain
+1626 acq
+1628 acq
+1631 grain
+1633 earn
+1634 acq
+1638 earn
+1639 earn
+1640 wheat grain
+1642 earn
+1643 earn
+1644 earn
+1648 earn
+1649 acq
+1650 earn
+1651 earn
+1652 corn barley grain
+1653 earn
+1655 earn
+1656 trade
+1657 earn
+1658 earn
+1659 acq
+1660 fuel gas
+1661 crude nat-gas
+1665 acq
+1666 acq
+1667 acq
+1673 acq
+1674 wheat grain
+1675 trade
+1676 acq
+1677 earn
+1678 acq
+1679 acq
+1680 trade
+1681 cpi
+1682 earn
+1684 acq
+1686 crude
+1688 earn
+1689 earn
+1692 crude
+1693 acq
+1694 acq
+1696 earn
+1706 earn
+1708 earn
+1709 nat-gas crude
+1711 crude
+1714 earn
+1715 coffee
+1716 earn
+1718 earn
+1719 acq
+1722 earn
+1723 ship
+1724 money-fx interest
+1727 earn
+1729 acq
+1731 grain
+1732 earn
+1734 earn
+1735 acq
+1739 acq
+1740 acq
+1741 acq
+1747 earn
+1751 earn
+1752 earn
+1758 earn
+1759 earn
+1760 acq
+1761 orange
+1763 earn
+1764 earn
+1765 earn
+1767 earn
+1768 earn
+1769 earn
+1771 acq
+1772 trade carcass livestock
+1773 reserves
+1777 wheat corn grain
+1783 earn
+1785 sugar
+1787 acq
+1789 acq
+1790 acq
+1792 soybean oilseed wheat grain
+1794 earn
+1797 earn
+1798 acq
+1799 crude
+1801 acq
+1803 earn
+1808 acq
+1809 trade
+1811 trade money-fx
+1814 earn
+1815 sugar
+1816 earn
+1820 earn
+1824 earn
+1832 alum
+1835 acq
+1836 acq
+1837 earn
+1839 trade
+1842 coffee
+1843 sorghum corn grain
+1845 grain
+1846 earn
+1847 acq
+1848 veg-oil
+1849 earn
+1851 crude gas
+1853 earn
+1855 acq
+1856 fuel gas crude
+1858 gnp
+1860 earn acq
+1861 earn
+1862 acq
+1863 trade
+1871 trade
+1872 earn
+1873 earn
+1875 crude
+1877 earn
+1878 gas crude
+1880 coffee
+1882 soybean oilseed rice cotton grain
+1885 reserves
+1886 acq
+1889 coffee
+1890 trade bop
+1897 gold
+1898 money-supply
+1901 ship wheat grain
+1902 ship
+1904 crude ship
+1907 wheat grain
+1909 crude
+1910 coffee
+1912 money-supply
+1913 reserves
+1915 rice grain
+1917 earn
+1918 gold
+1919 earn
+1920 acq
+1924 earn
+1926 yen dlr money-fx
+1929 tin
+1931 interest money-fx
+1932 trade
+1933 money-supply
+1934 iron-steel
+1940 trade reserves
+1942 gold silver
+1943 interest money-fx
+1946 sugar
+1948 crude
+1949 money-fx
+1951 trade
+1952 corn grain
+1959 gnp
+1960 coffee
+1961 bop trade
+1963 trade
+1964 bop trade
+1965 wpi
+1966 oilseed
+1967 interest money-fx
+1970 livestock carcass hog soy-meal meal-feed barley wheat potato grain
+1971 interest
+1975 sugar
+1976 interest money-fx
+1980 ship crude
+1982 interest money-fx
+1983 money-fx
+1987 acq
+1989 acq
+1990 crude
+1994 acq
+1995 interest
+1996 acq
+2000 jobs
+2001 earn
+2003 wheat grain
+2004 crude
+2005 earn
+2006 copper
+2007 nat-gas crude
+2008 wheat grain
+2010 acq
+2012 ship
+2013 acq
+2016 earn
+2020 earn
+2022 interest money-fx
+2024 acq
+2025 money-fx
+2026 earn
+2027 acq
+2028 earn
+2029 earn
+2033 earn
+2035 earn
+2039 acq
+2042 earn
+2044 corn barley wheat grain
+2046 crude
+2047 earn
+2048 earn
+2049 earn
+2054 acq
+2055 earn
+2056 earn
+2061 crude earn
+2064 interest
+2065 earn
+2067 acq
+2073 gold
+2074 copper wheat grain
+2079 earn
+2080 acq
+2087 soybean oilseed
+2089 earn
+2092 earn
+2095 wheat grain
+2097 acq
+2098 reserves
+2099 earn
+2101 earn
+2102 acq
+2107 acq
+2108 earn
+2109 earn
+2110 reserves
+2112 earn
+2114 acq
+2115 coffee
+2116 earn
+2118 acq
+2121 crude
+2122 earn
+2126 acq
+2128 acq
+2130 earn
+2133 earn
+2136 earn
+2137 earn
+2148 earn
+2149 earn
+2151 acq
+2153 earn
+2154 earn
+2155 interest
+2157 earn
+2159 acq
+2163 earn
+2166 earn
+2167 earn
+2168 livestock
+2169 wheat grain
+2171 barley grain
+2172 rapeseed oilseed corn wheat barley grain
+2173 earn
+2174 crude
+2175 crude
+2176 earn
+2178 yen money-fx
+2181 dlr money-fx
+2182 earn
+2183 corn grain
+2186 strategic-metal zinc lead copper
+2187 ship crude
+2188 earn
+2190 yen dlr money-fx
+2191 barley wheat grain
+2193 earn acq
+2194 earn
+2195 acq sugar
+2196 earn
+2197 jobs gnp
+2198 earn
+2202 acq
+2203 earn
+2205 earn
+2206 sugar
+2207 acq
+2211 earn
+2212 earn
+2213 earn
+2216 earn
+2217 corn barley wheat grain
+2219 acq
+2220 acq
+2221 earn
+2223 wheat grain
+2224 acq
+2225 acq
+2226 carcass hog livestock
+2227 earn
+2228 interest
+2230 earn
+2231 crude
+2232 barley grain
+2234 earn
+2236 earn
+2237 acq
+2238 earn
+2239 sugar
+2240 acq
+2244 acq
+2246 sugar
+2247 acq
+2249 earn
+2251 acq
+2252 earn
+2253 earn
+2257 acq
+2259 earn
+2260 earn
+2264 corn grain
+2265 earn
+2266 earn
+2268 acq
+2269 retail
+2270 earn
+2271 acq
+2273 earn
+2275 earn
+2276 earn
+2278 trade gnp
+2279 earn
+2281 acq
+2286 yen money-fx
+2290 earn
+2291 acq
+2297 acq
+2298 earn
+2301 acq
+2303 earn
+2304 earn
+2307 earn
+2308 earn
+2309 earn
+2310 ship
+2312 earn
+2316 earn
+2320 earn
+2322 acq
+2323 acq
+2325 acq
+2326 ship
+2327 dlr money-fx
+2332 earn
+2333 earn
+2335 earn
+2336 trade
+2337 earn
+2338 earn
+2339 earn
+2340 earn
+2342 earn
+2344 acq
+2346 earn
+2347 earn
+2348 earn
+2350 earn
+2352 money-fx trade
+2353 earn
+2354 yen dlr money-fx
+2357 earn
+2358 interest
+2359 oilseed groundnut cotton sugar trade
+2365 acq
+2366 earn
+2367 wheat grain
+2370 earn
+2371 pet-chem
+2374 acq
+2375 acq
+2376 acq
+2377 earn
+2379 earn
+2380 earn
+2382 oilseed soybean corn wheat grain
+2383 crude
+2385 earn
+2386 earn
+2389 sugar carcass l-cattle livestock
+2390 orange
+2391 earn
+2393 earn
+2394 nat-gas
+2396 earn
+2397 earn
+2398 earn
+2402 earn
+2403 money-supply
+2405 earn
+2406 money-fx
+2409 earn
+2410 acq
+2411 gold
+2417 trade
+2419 acq
+2420 groundnut veg-oil
+2421 earn
+2425 wheat grain
+2428 earn
+2429 earn
+2433 earn
+2434 acq
+2435 earn
+2436 corn grain
+2437 earn
+2440 earn
+2441 money-supply
+2442 money-supply
+2447 acq
+2448 carcass livestock
+2449 crude
+2452 dlr money-fx
+2456 cotton soy-meal meal-feed soy-oil veg-oil soybean oilseed corn grain
+2458 earn
+2459 earn
+2460 earn
+2462 acq
+2465 money-supply
+2466 money-supply
+2467 coffee
+2468 money-supply
+2470 acq
+2471 earn
+2474 acq
+2475 acq
+2476 acq
+2478 earn
+2479 earn
+2480 nat-gas
+2482 earn
+2483 earn
+2484 earn
+2488 earn
+2490 earn
+2491 acq
+2492 earn
+2494 earn
+2495 carcass livestock
+2496 earn
+2497 acq
+2499 trade
+2500 acq
+2504 earn
+2505 acq
+2508 wheat grain
+2511 nat-gas crude trade
+2512 acq
+2513 earn
+2515 nat-gas crude
+2517 crude
+2518 earn
+2519 earn
+2520 acq
+2521 cocoa sugar trade soybean oilseed coffee
+2522 crude
+2524 wheat grain
+2526 acq
+2528 acq
+2529 cpi
+2530 crude
+2531 retail
+2532 acq
+2534 acq
+2535 wheat grain trade
+2538 acq
+2539 earn
+2540 acq
+2542 ship
+2543 acq
+2544 earn
+2546 acq
+2548 earn
+2549 earn
+2550 coffee
+2551 acq
+2552 acq
+2553 coffee
+2554 money-supply
+2555 cpi
+2557 meal-feed
+2558 earn
+2559 gold
+2560 earn
+2561 earn
+2562 earn
+2564 acq
+2565 money-fx
+2566 earn
+2567 earn
+2568 earn
+2569 earn
+2570 acq
+2572 livestock hog
+2574 acq
+2576 interest money-fx
+2577 acq
+2578 acq
+2579 earn
+2580 earn
+2582 acq
+2583 acq
+2584 earn
+2585 crude
+2587 earn
+2590 earn
+2591 earn
+2593 earn
+2594 livestock
+2595 corn grain
+2596 acq
+2599 corn grain
+2601 interest money-fx
+2602 earn
+2604 acq
+2606 coffee
+2608 earn
+2609 acq
+2611 earn
+2613 earn
+2617 corn grain
+2618 retail trade income gnp ipi jobs
+2619 earn
+2620 trade
+2622 trade
+2623 money-fx dlr
+2626 interest money-fx
+2630 earn
+2633 money-fx dlr
+2634 acq
+2635 ship
+2637 acq
+2638 acq
+2645 earn
+2647 acq
+2648 trade
+2649 earn
+2650 acq
+2652 acq
+2658 earn
+2659 earn
+2660 acq
+2663 earn
+2664 earn
+2666 earn
+2667 earn
+2671 earn
+2672 acq
+2674 earn
+2677 earn
+2678 interest money-fx
+2681 ship
+2683 interest money-fx
+2686 reserves money-supply
+2687 earn
+2688 crude
+2691 earn
+2693 earn
+2695 earn
+2696 heat
+2697 money-fx interest
+2699 acq
+2700 earn
+2708 earn
+2709 gnp interest
+2711 earn
+2714 acq
+2718 earn
+2720 earn
+2722 earn
+2723 earn
+2725 interest
+2727 corn grain
+2728 acq
+2729 earn
+2737 acq
+2741 corn wheat grain
+2742 earn
+2743 money-supply
+2744 money-supply
+2746 jobs
+2747 wheat grain
+2748 earn
+2749 corn grain
+2750 earn
+2751 earn
+2752 earn
+2754 earn
+2756 earn
+2757 earn
+2760 sugar
+2761 earn
+2762 gold
+2763 acq
+2764 copper
+2765 money-fx
+2767 crude
+2768 acq
+2769 acq
+2771 earn
+2772 earn
+2773 earn
+2775 crude
+2777 grain corn sugar
+2779 earn
+2781 earn
+2782 copper nickel palladium platinum gold
+2783 acq
+2784 acq
+2785 gold
+2787 earn
+2789 earn
+2791 acq
+2792 earn
+2793 lumber
+2794 acq
+2797 earn
+2798 acq
+2799 acq
+2800 earn
+2801 earn
+2802 acq
+2803 earn
+2806 earn
+2807 earn
+2809 earn
+2810 acq
+2811 acq
+2813 acq
+2815 acq
+2818 acq
+2819 ship
+2820 earn
+2825 earn
+2826 earn
+2827 earn
+2828 gas ship
+2833 acq
+2834 earn
+2836 earn
+2838 crude
+2839 earn
+2843 gnp
+2847 acq
+2848 corn grain
+2849 earn
+2850 earn
+2851 livestock
+2853 ship
+2856 earn
+2857 wheat grain
+2858 money-supply
+2862 trade
+2864 wheat grain
+2866 earn
+2867 acq
+2870 money-supply
+2872 money-supply
+2873 earn
+2877 earn
+2880 nickel copper palladium platinum gold
+2881 livestock
+2884 acq
+2886 earn
+2887 earn
+2890 earn
+2896 acq
+2897 acq
+2898 acq
+2902 acq
+2907 acq
+2908 earn
+2909 acq
+2912 earn
+2913 meal-feed corn grain
+2915 earn
+2916 earn
+2917 acq
+2918 earn
+2919 earn
+2920 earn
+2922 corn grain
+2923 nat-gas
+2924 acq
+2925 crude interest
+2926 acq
+2927 acq
+2928 earn
+2929 earn
+2930 earn
+2933 acq
+2936 strategic-metal
+2938 earn
+2939 acq
+2940 acq
+2942 strategic-metal
+2944 ship
+2945 acq
+2946 acq
+2947 corn grain
+2948 acq
+2950 acq
+2951 acq
+2952 interest
+2953 acq
+2954 coffee
+2955 ship
+2956 acq
+2957 jet fuel crude
+2958 ship
+2959 ship
+2960 earn
+2961 earn
+2962 earn
+2963 earn
+2964 sugar
+2965 gnp
+2966 money-fx interest
+2968 ship
+2970 crude
+2971 ship
+2973 crude
+2974 meal-feed
+2975 grain veg-oil sugar cotton
+2976 sugar
+2977 rubber
+2978 livestock carcass
+2979 interest
+2982 iron-steel
+2983 gold
+2985 trade
+2990 ipi
+2993 money-fx
+2994 money-supply
+2995 ipi
+2996 interest money-fx
+2998 crude
+2999 acq
+3001 money-fx
+3002 interest money-fx
+3003 crude
+3006 interest
+3007 interest
+3008 earn
+3009 acq
+3010 strategic-metal
+3013 acq
+3015 nat-gas crude
+3016 instal-debt
+3017 ship crude
+3019 dlr bop gnp trade
+3020 dlr money-fx interest
+3023 acq
+3024 dfl bop cpi jobs gnp
+3025 acq
+3026 earn
+3028 ship
+3031 gnp money-fx
+3034 coffee
+3035 acq
+3036 meal-feed
+3037 earn
+3038 acq
+3039 acq
+3040 coffee
+3041 acq
+3042 acq
+3043 interest
+3044 interest money-fx
+3046 ship
+3047 ship
+3048 crude
+3049 money-supply
+3051 rubber
+3053 acq
+3056 acq
+3057 livestock hog
+3060 interest money-fx
+3061 acq
+3062 earn
+3063 acq
+3065 dlr gnp crude money-fx bop trade
+3067 money-fx
+3068 interest money-fx
+3069 acq
+3071 acq
+3072 acq
+3073 money-supply
+3074 acq
+3076 dmk dlr money-fx
+3077 earn
+3078 trade
+3080 earn
+3082 oilseed grain
+3083 acq
+3084 livestock soy-meal carcass meal-feed grain
+3085 acq
+3086 acq
+3087 interest
+3088 interest
+3089 acq
+3091 earn
+3092 interest
+3093 acq
+3094 acq
+3095 acq
+3096 acq
+3098 orange
+3100 acq
+3103 interest
+3104 zinc
+3105 housing
+3107 acq
+3109 orange
+3110 ship
+3111 interest
+3114 acq
+3115 crude
+3117 earn
+3118 earn
+3120 acq pet-chem
+3121 interest money-fx
+3122 interest
+3125 acq
+3128 interest
+3129 acq
+3131 interest
+3132 barley wheat grain
+3133 interest
+3134 interest
+3135 meal-feed
+3137 interest money-fx
+3138 corn wheat grain
+3139 acq
+3142 acq
+3145 nat-gas crude
+3146 crude
+3149 orange
+3152 acq
+3153 acq
+3154 acq
+3155 rubber
+3157 acq
+3159 money-fx
+3161 earn
+3162 crude
+3163 zinc
+3164 money-fx interest
+3166 acq
+3168 acq
+3169 nat-gas crude
+3174 nat-gas crude acq
+3176 acq
+3180 acq
+3181 heat
+3183 zinc
+3184 acq
+3186 acq
+3187 coffee
+3189 crude
+3190 cocoa
+3191 sugar corn grain
+3192 interest
+3194 earn
+3198 acq
+3199 trade
+3204 crude
+3205 acq
+3206 rapeseed oilseed
+3207 zinc
+3210 nat-gas
+3211 lead
+3216 acq
+3217 ship
+3219 interest
+3222 money-fx
+3223 acq
+3225 cocoa
+3228 sugar
+3229 acq
+3235 acq
+3239 acq
+3241 acq
+3242 earn acq
+3243 earn
+3246 money-supply gnp
+3247 earn
+3249 bop
+3251 acq
+3252 acq
+3253 interest
+3254 earn
+3256 ship
+3258 earn
+3259 ship
+3261 acq
+3263 acq
+3264 acq
+3266 acq
+3267 acq trade dlr money-fx
+3269 earn
+3271 earn
+3272 wheat grain
+3273 earn
+3275 earn
+3276 acq
+3277 acq
+3278 livestock l-cattle hog
+3282 wheat corn grain soybean oilseed
+3283 interest
+3285 ship
+3287 acq
+3290 acq
+3292 interest money-fx
+3295 acq
+3298 acq
+3299 oilseed wheat corn grain
+3302 acq
+3303 crude
+3305 acq
+3306 corn grain
+3309 acq
+3310 heat sugar coffee cocoa
+3311 grain
+3312 grain
+3313 acq
+3314 wheat grain
+3315 orange
+3317 potato
+3318 hog livestock carcass
+3320 acq
+3322 gold
+3323 wheat grain
+3324 barley grain
+3327 gold
+3329 ship
+3330 corn wheat grain
+3332 crude
+3333 acq
+3334 wheat grain
+3335 wheat grain
+3336 acq
+3337 corn grain
+3338 dlr money-fx bop trade
+3339 livestock
+3340 livestock
+3341 instal-debt
+3342 crude
+3343 earn
+3344 earn
+3345 acq
+3347 ship
+3348 money-supply
+3349 ship
+3351 gnp
+3352 gnp
+3353 instal-debt
+3354 crude
+3356 acq
+3358 rice wheat corn grain
+3359 earn
+3360 interest
+3363 acq
+3364 crude
+3365 interest
+3367 acq
+3370 acq
+3371 interest
+3372 acq
+3377 acq
+3378 acq
+3380 earn
+3381 acq
+3382 earn
+3384 acq
+3386 ship grain
+3387 acq
+3389 crude
+3390 grain
+3394 acq
+3395 acq
+3396 acq
+3399 acq
+3400 acq
+3401 corn wheat grain
+3405 earn
+3406 acq
+3409 acq
+3411 money-fx cpi gnp
+3413 acq
+3415 acq
+3416 acq
+3417 acq
+3418 acq
+3419 yen dlr money-fx
+3420 earn
+3421 yen dlr money-fx
+3422 acq
+3425 acq
+3429 wheat corn grain
+3430 crude
+3433 money-fx
+3435 money-fx
+3438 rubber
+3440 ship
+3441 trade
+3442 money-fx
+3445 rice wheat grain
+3446 trade
+3448 interest
+3449 interest
+3452 crude
+3453 soybean oilseed
+3454 copper lead zinc
+3455 crude
+3456 earn
+3458 soybean oilseed
+3459 acq
+3460 strategic-metal
+3461 money-fx
+3463 earn
+3466 earn
+3467 soybean oilseed
+3468 earn
+3469 iron-steel
+3472 jobs
+3473 ship
+3474 earn
+3476 earn
+3477 acq
+3480 earn
+3481 earn
+3482 money-fx
+3483 money-fx
+3486 earn
+3488 bop
+3490 earn
+3491 acq
+3492 sugar
+3493 money-fx interest
+3497 strategic-metal earn
+3499 palm-oil veg-oil
+3504 interest
+3505 earn
+3507 crude
+3509 crude
+3511 sugar
+3512 bop trade
+3514 money-fx
+3517 earn
+3520 jobs
+3524 interest money-supply
+3526 money-fx
+3528 interest
+3531 lei
+3532 trade yen money-fx
+3533 money-fx
+3534 interest
+3535 money-fx
+3538 earn
+3539 interest
+3540 coconut-oil palm-oil veg-oil soybean oilseed
+3541 bop
+3542 interest
+3543 earn
+3545 earn
+3547 acq
+3553 trade
+3554 money-fx
+3556 crude
+3557 earn
+3559 coffee
+3563 crude
+3564 earn
+3565 acq
+3569 earn
+3570 acq
+3571 crude
+3572 ship
+3573 acq
+3574 silver gold
+3575 earn
+3577 sugar
+3578 earn
+3579 earn
+3580 earn
+3582 earn
+3584 money-fx
+3585 earn
+3586 acq
+3587 acq
+3589 sugar
+3591 acq
+3592 crude
+3593 reserves cpi money-fx trade
+3594 crude
+3595 livestock hog
+3596 acq
+3597 earn
+3598 earn
+3599 acq
+3601 earn
+3602 earn
+3603 earn
+3604 earn
+3605 earn
+3607 acq
+3609 crude
+3610 trade bop
+3611 sugar
+3612 money-fx
+3613 earn copper
+3615 trade bop
+3616 sugar
+3619 earn
+3620 earn
+3621 lei
+3622 acq
+3623 earn
+3624 earn
+3625 gold
+3626 earn
+3629 earn
+3630 earn
+3631 earn
+3632 acq
+3633 earn
+3634 earn
+3637 earn
+3639 sugar
+3640 lei
+3643 earn
+3645 acq
+3646 silver gold
+3647 earn
+3649 earn
+3651 earn
+3652 acq
+3660 reserves
+3661 money-supply
+3666 money-fx
+3667 earn
+3668 earn
+3669 earn
+3672 earn
+3673 acq
+3674 earn
+3676 earn
+3680 earn
+3681 earn
+3684 acq
+3688 earn
+3690 sugar trade
+3694 money-fx
+3695 earn
+3697 earn
+3699 earn
+3701 sugar
+3702 interest
+3704 gold
+3707 acq
+3708 housing
+3711 acq
+3713 earn
+3717 jobs
+3720 housing
+3721 earn
+3723 housing
+3729 money-fx
+3730 earn
+3734 earn
+3735 money-fx
+3737 wheat grain
+3738 earn
+3740 earn
+3741 acq
+3742 earn
+3743 earn
+3744 acq
+3747 acq
+3748 rubber
+3750 earn
+3751 earn
+3755 earn
+3757 earn
+3758 nat-gas
+3759 acq
+3760 earn
+3762 interest
+3763 earn
+3764 earn
+3765 earn
+3766 acq
+3768 earn
+3770 trade
+3771 earn
+3772 earn
+3774 earn
+3775 acq
+3777 earn
+3779 acq
+3782 earn
+3784 earn
+3785 earn
+3786 earn
+3787 earn
+3788 earn
+3790 acq
+3792 sugar
+3793 gold
+3795 acq
+3796 ship
+3797 acq
+3798 nat-gas crude
+3800 gnp
+3801 earn
+3806 earn
+3807 earn
+3808 earn
+3817 earn
+3821 acq
+3825 interest
+3828 acq
+3830 ship
+3831 earn
+3833 acq
+3838 gnp
+3839 acq
+3840 earn
+3841 earn
+3843 crude
+3846 earn
+3847 corn grain
+3850 earn
+3851 earn
+3853 earn
+3855 corn grain gas
+3856 acq
+3857 earn
+3858 earn
+3860 earn
+3862 silver zinc copper
+3864 acq
+3865 earn
+3867 earn
+3868 silver acq
+3869 ship crude
+3870 earn
+3872 earn
+3873 acq
+3874 earn
+3875 earn
+3879 acq
+3881 corn grain
+3884 earn
+3886 earn
+3888 oilseed
+3890 earn
+3892 orange
+3893 earn
+3894 earn
+3895 earn
+3897 wheat grain
+3898 housing
+3899 earn
+3900 earn
+3901 livestock carcass
+3902 trade
+3903 earn
+3904 wheat grain
+3905 earn
+3906 crude acq
+3908 earn
+3909 earn
+3910 acq
+3912 acq
+3913 wheat grain
+3916 acq
+3917 earn
+3918 acq
+3920 acq
+3922 earn
+3926 acq
+3928 sugar
+3930 money-supply
+3931 trade
+3933 acq
+3934 acq
+3937 earn
+3939 acq
+3942 lumber
+3944 earn
+3946 earn
+3948 acq
+3949 corn grain
+3950 rape-oil sun-oil veg-oil
+3951 earn
+3952 earn
+3954 earn
+3955 ship coffee
+3957 alum
+3958 earn
+3959 crude
+3960 acq
+3961 acq
+3964 acq
+3968 earn
+3970 acq
+3971 earn
+3973 ship
+3976 crude
+3977 earn
+3979 oilseed soybean corn grain
+3980 crude
+3981 oilseed sunseed sorghum corn grain
+3982 interest
+3983 acq
+3984 acq
+3985 crude
+3989 earn
+3990 acq
+3991 acq
+3993 acq
+3994 earn
+3995 crude fuel gas
+3996 earn
+3997 gold
+3999 acq
+4000 earn
+4005 ipi retail interest
+4012 earn
+4014 earn
+4015 earn
+4016 iron-steel nat-gas crude
+4019 earn
+4021 earn
+4022 livestock carcass
+4023 earn
+4025 earn
+4026 trade
+4027 trade
+4028 crude
+4029 earn
+4031 trade
+4032 acq
+4033 acq
+4035 veg-oil
+4036 jobs
+4038 money-fx
+4039 crude
+4040 rapeseed oilseed
+4041 crude
+4043 acq
+4045 bop
+4047 corn grain
+4048 trade
+4049 iron-steel ship
+4051 ship
+4052 acq
+4054 pet-chem
+4055 acq
+4056 cotton
+4057 wheat grain
+4058 gold acq
+4061 ship
+4062 reserves
+4063 coffee
+4064 acq
+4065 earn
+4066 gold
+4067 earn
+4069 acq
+4071 coffee
+4074 earn
+4075 earn
+4076 soybean oilseed
+4077 sugar wheat grain
+4078 trade bop
+4080 gnp
+4081 earn
+4083 sunseed soybean rapeseed oilseed
+4084 trade
+4085 earn
+4087 earn
+4088 money-fx
+4089 earn
+4090 interest money-fx
+4091 jobs
+4092 earn
+4093 reserves money-fx
+4094 earn
+4096 sugar
+4097 earn
+4098 earn
+4099 sugar
+4100 earn
+4101 livestock carcass
+4103 cotton
+4105 earn
+4106 earn
+4107 acq
+4111 earn
+4113 reserves
+4114 trade
+4115 trade
+4117 sugar
+4120 earn
+4122 tin
+4123 earn
+4125 crude
+4127 acq
+4129 crude
+4131 interest money-fx
+4132 earn
+4133 orange soybean oilseed rice corn grain
+4135 acq
+4138 palm-oil veg-oil
+4139 money-fx
+4141 earn
+4142 earn
+4143 earn
+4144 earn
+4145 acq
+4146 acq
+4147 coffee cocoa
+4148 acq
+4149 earn
+4150 retail
+4152 retail
+4153 acq
+4155 earn
+4156 trade
+4157 earn
+4158 trade acq
+4159 acq
+4160 earn
+4161 acq
+4162 nat-gas crude
+4164 acq
+4165 gnp
+4167 acq
+4169 earn
+4170 money-fx
+4171 crude ship
+4172 trade
+4173 retail
+4174 crude
+4175 earn
+4176 earn
+4177 earn
+4178 earn
+4182 acq
+4184 earn
+4185 earn
+4188 interest money-fx
+4189 earn
+4192 earn
+4193 earn
+4194 earn
+4199 veg-oil
+4201 acq
+4203 ship wheat grain
+4204 acq
+4205 earn
+4206 livestock hog
+4209 ship acq
+4210 earn
+4212 acq
+4215 iron-steel
+4216 earn
+4218 earn
+4219 earn
+4220 earn
+4223 earn
+4227 acq
+4228 earn
+4229 acq
+4231 cotton
+4232 nat-gas crude earn
+4233 acq
+4235 acq
+4237 acq
+4238 trade
+4239 earn
+4240 earn
+4241 earn
+4245 earn
+4246 crude
+4249 acq
+4253 earn
+4255 retail
+4257 earn
+4258 earn
+4259 trade
+4261 earn
+4266 earn
+4267 coffee
+4273 earn
+4275 interest money-fx
+4276 earn
+4277 acq
+4278 wheat grain
+4279 earn
+4280 barley grain
+4281 acq
+4282 acq
+4284 acq
+4285 earn
+4286 earn
+4288 earn
+4289 corn grain
+4290 retail
+4291 copper earn
+4292 earn
+4293 money-fx
+4296 corn barley wheat grain
+4297 gnp
+4298 interest money-fx
+4301 acq
+4302 earn
+4303 acq
+4304 earn
+4305 palm-oil veg-oil
+4306 jobs
+4307 earn
+4310 acq
+4313 earn
+4314 rice grain
+4315 crude acq
+4318 earn
+4323 acq
+4327 earn
+4328 ship
+4330 earn
+4331 earn
+4333 crude
+4337 earn
+4338 earn
+4339 acq
+4340 crude
+4341 earn
+4343 acq
+4344 earn
+4345 ship
+4346 earn
+4347 earn
+4349 coffee
+4351 earn
+4353 earn
+4356 wheat grain
+4357 earn
+4358 earn
+4360 acq
+4361 earn
+4363 earn
+4364 earn
+4365 crude
+4366 bop
+4367 acq crude
+4369 acq
+4370 earn
+4371 acq
+4372 earn
+4374 earn
+4376 earn
+4378 earn
+4380 earn
+4382 wheat corn grain
+4384 earn
+4385 earn
+4386 crude
+4387 earn
+4388 earn
+4389 earn
+4392 soybean oilseed
+4397 earn
+4398 earn
+4399 earn
+4401 acq
+4404 earn
+4405 rubber
+4407 gold
+4408 acq
+4409 interest
+4410 earn
+4411 acq
+4412 earn
+4419 earn
+4420 earn
+4425 crude
+4429 crude
+4431 copper
+4433 earn
+4434 acq
+4436 veg-oil
+4437 earn
+4438 earn
+4439 earn
+4440 earn
+4445 crude
+4446 earn
+4447 acq
+4449 interest
+4451 earn
+4452 earn
+4453 crude
+4454 earn
+4455 interest
+4457 earn
+4458 interest
+4459 earn
+4460 earn
+4462 crude
+4465 acq
+4466 crude
+4467 nat-gas crude
+4468 earn
+4470 cocoa
+4472 earn
+4473 wheat grain
+4474 crude
+4475 earn
+4476 earn
+4477 acq
+4478 wheat grain
+4480 trade
+4481 crude
+4483 interest
+4484 interest
+4486 cpi
+4487 money-supply
+4488 acq
+4490 soybean oilseed corn wheat grain
+4493 acq
+4494 earn
+4498 earn
+4499 interest
+4503 livestock carcass
+4504 earn
+4505 earn
+4507 gas
+4509 trade
+4510 acq
+4512 rapeseed oilseed
+4513 trade
+4514 livestock carcass
+4515 money-supply
+4516 money-supply
+4517 earn
+4518 acq
+4519 money-supply
+4521 earn
+4523 earn
+4524 grain
+4525 crude
+4532 money-supply
+4533 money-supply
+4534 money-supply
+4536 acq
+4537 acq
+4541 orange
+4544 money-supply
+4548 reserves cpi gnp
+4549 rice cotton soybean oilseed wheat grain
+4551 earn
+4552 trade
+4554 earn
+4555 cpi
+4558 crude
+4560 earn
+4562 earn
+4564 livestock l-cattle
+4569 nat-gas crude
+4573 cpi gnp
+4574 earn
+4576 crude
+4577 livestock carcass
+4578 crude
+4579 acq
+4581 earn
+4583 earn
+4584 crude
+4585 earn
+4586 acq
+4590 nat-gas crude
+4591 acq
+4592 acq
+4593 crude
+4595 trade
+4599 soybean oilseed corn wheat grain
+4600 crude
+4602 interest money-supply
+4603 coffee
+4604 crude
+4605 acq
+4606 acq
+4609 crude
+4610 earn
+4613 earn
+4615 acq
+4616 dlr money-fx
+4617 ship
+4620 earn
+4621 earn
+4622 acq
+4623 acq
+4625 gnp
+4629 bop trade
+4630 sugar
+4631 carcass livestock
+4632 trade
+4633 yen money-fx
+4634 wpi
+4635 trade
+4636 carcass livestock
+4637 grain
+4638 trade
+4640 ship
+4641 wpi
+4644 earn
+4648 gold
+4649 earn
+4650 palm-oil veg-oil
+4652 earn
+4654 trade
+4656 interest
+4657 earn
+4658 crude
+4659 acq
+4660 wpi
+4662 crude
+4664 crude
+4665 acq
+4666 money-fx
+4671 wheat grain
+4675 yen dlr money-fx
+4678 rice grain
+4679 cotton
+4680 yen money-fx
+4681 palm-oil veg-oil
+4682 interest money-fx
+4686 money-supply
+4687 earn
+4689 crude
+4690 acq
+4691 earn
+4692 earn
+4695 earn
+4696 wheat grain
+4697 alum
+4698 jobs
+4700 jobs
+4703 yen money-fx
+4708 gold
+4709 yen money-fx
+4711 ship
+4712 money-fx
+4713 crude
+4714 crude
+4717 trade
+4719 grain rice
+4720 interest money-fx
+4729 earn
+4732 earn
+4733 acq
+4735 ship
+4739 ship
+4740 ship
+4741 cpi
+4742 crude
+4743 wpi
+4744 wpi
+4745 earn
+4747 earn
+4748 acq
+4751 earn
+4755 earn
+4756 earn
+4758 acq
+4759 earn
+4761 acq
+4763 interest
+4765 earn
+4768 money-fx
+4769 nickel
+4770 ipi
+4771 ipi
+4772 acq
+4773 earn
+4774 acq
+4775 earn
+4776 earn
+4777 earn
+4778 grain ship
+4779 earn
+4780 earn
+4781 ship
+4782 earn
+4783 interest money-fx
+4785 coffee
+4787 wpi
+4788 earn
+4791 earn
+4792 earn
+4794 earn
+4795 earn
+4796 earn
+4797 earn
+4798 acq
+4801 earn
+4803 earn
+4804 earn
+4805 earn
+4806 acq
+4807 acq
+4809 money-fx
+4810 earn
+4812 acq
+4814 earn
+4816 gold
+4818 acq
+4819 earn
+4820 earn
+4821 earn
+4822 interest money-fx
+4824 rubber
+4825 corn grain
+4827 earn
+4829 money-fx
+4831 crude
+4832 ship
+4833 hog livestock
+4835 trade
+4841 acq
+4843 earn
+4845 ship
+4848 crude
+4850 acq
+4867 crude
+4881 interest
+4882 dlr money-fx
+4884 acq
+4887 acq
+4889 acq
+4890 acq
+4892 earn
+4893 acq
+4894 acq
+4898 sugar
+4900 earn
+4901 earn
+4903 trade
+4904 acq
+4905 corn grain
+4908 acq
+4910 acq
+4911 earn
+4914 earn
+4918 acq
+4920 earn
+4922 earn
+4925 interest
+4929 money-supply
+4930 earn
+4933 acq
+4934 earn
+4937 acq
+4938 money-supply
+4939 corn grain
+4941 rubber
+4944 wpi ipi gnp interest
+4951 nat-gas crude
+4952 acq
+4953 ship crude
+4954 earn
+4955 acq
+4956 earn
+4959 acq
+4960 earn
+4962 crude nat-gas
+4963 acq
+4964 acq
+4965 sugar
+4970 acq
+4972 earn
+4974 earn
+4976 acq
+4981 acq
+4983 crude
+4987 trade
+4988 corn grain
+4990 earn
+4991 earn
+4993 ipi
+4998 earn
+4999 earn
+5001 acq
+5002 coffee
+5003 corn grain
+5009 carcass livestock
+5012 earn
+5013 earn
+5015 earn
+5017 corn grain
+5018 earn
+5020 acq
+5021 earn
+5029 earn
+5031 carcass livestock
+5033 corn grain
+5034 earn
+5037 wpi nat-gas gas crude
+5040 cotton
+5042 earn
+5043 earn
+5044 acq
+5046 earn
+5048 earn
+5050 earn
+5051 earn
+5052 ipi
+5053 earn
+5054 earn
+5055 earn
+5056 wheat grain
+5057 trade
+5058 earn
+5059 money-supply
+5060 money-supply
+5061 heat crude nat-gas gas wpi
+5062 earn
+5068 earn
+5070 money-fx
+5071 earn
+5072 earn
+5076 earn
+5077 acq
+5078 earn
+5080 acq
+5081 acq
+5082 acq
+5083 earn
+5084 earn
+5085 earn
+5086 earn
+5089 earn
+5090 earn
+5091 acq
+5092 earn
+5094 acq
+5095 earn
+5097 acq
+5100 earn
+5102 acq
+5105 earn
+5109 corn grain
+5112 acq
+5113 acq
+5114 earn
+5115 lumber
+5116 crude acq
+5117 acq
+5118 crude
+5119 crude
+5121 acq
+5123 crude
+5125 crude
+5126 earn
+5127 interest
+5128 earn
+5132 lumber
+5134 coffee
+5138 rubber
+5139 rubber
+5141 acq
+5142 soy-oil veg-oil
+5145 gas cpi
+5146 trade
+5148 iron-steel
+5149 alum
+5150 crude pet-chem
+5152 palm-oil veg-oil
+5153 lead zinc iron-steel
+5154 ship
+5156 ship crude
+5160 trade
+5162 acq
+5166 crude
+5167 crude
+5168 cocoa
+5169 veg-oil trade
+5171 crude
+5172 earn
+5175 sugar
+5176 money-fx
+5177 acq
+5178 ipi
+5181 reserves money-fx
+5183 money-fx
+5185 corn grain
+5188 earn
+5189 trade bop
+5190 money-fx
+5191 ship
+5192 cocoa
+5193 money-fx reserves
+5194 cpi
+5195 rubber
+5196 ipi
+5201 money-fx
+5203 acq
+5204 yen money-fx
+5205 retail
+5206 gnp yen money-fx
+5207 money-supply
+5209 gold
+5210 earn
+5212 acq
+5214 sugar
+5215 jobs
+5216 reserves
+5218 palm-oil veg-oil
+5219 earn
+5220 trade
+5222 earn
+5223 money-fx
+5226 acq
+5228 earn
+5231 cpi
+5232 interest money-fx
+5234 acq
+5235 interest
+5236 trade
+5237 interest
+5238 cpi
+5240 ipi
+5241 interest money-fx
+5243 alum
+5244 crude
+5245 cpi
+5250 earn
+5251 money-supply
+5253 money-supply
+5254 retail
+5255 gold
+5256 retail
+5257 earn
+5258 cocoa
+5260 cpi
+5264 earn
+5266 rice grain
+5268 crude
+5269 money-fx
+5270 crude
+5271 gnp yen money-fx
+5272 acq
+5273 crude
+5274 trade
+5276 earn
+5277 interest money-fx
+5278 trade
+5279 reserves money-fx
+5280 trade money-fx
+5281 crude
+5283 earn
+5284 acq
+5285 veg-oil trade
+5286 acq
+5287 acq
+5288 trade
+5290 interest dlr money-fx
+5291 acq
+5292 ship palm-oil veg-oil
+5293 acq
+5295 earn
+5296 earn
+5297 earn
+5299 acq
+5300 earn
+5303 acq
+5304 acq
+5308 earn
+5309 acq
+5312 earn
+5313 earn
+5314 earn
+5315 palm-oil veg-oil
+5316 earn
+5317 earn
+5318 cpi
+5320 acq
+5321 earn
+5323 gold
+5326 earn
+5327 earn
+5328 earn
+5329 acq
+5330 ship
+5331 acq
+5332 acq
+5333 livestock hog
+5334 coffee
+5335 acq
+5336 interest money-fx
+5338 corn grain money-fx
+5339 earn
+5340 acq
+5342 earn
+5344 interest money-fx
+5345 earn
+5346 earn
+5349 acq
+5350 acq
+5351 earn
+5352 acq
+5354 earn
+5355 earn
+5356 earn
+5357 acq
+5358 earn
+5359 earn
+5360 money-fx
+5362 acq
+5363 grain
+5366 earn
+5367 earn
+5371 trade
+5373 acq
+5375 cpi
+5376 trade
+5377 earn
+5378 cpi
+5379 acq
+5382 cocoa
+5383 wheat grain
+5385 earn
+5388 cpu
+5389 cpi
+5390 earn
+5391 soybean veg-oil oilseed
+5392 jobs
+5394 money-fx
+5396 acq
+5398 acq
+5400 livestock
+5402 earn
+5404 interest money-fx
+5407 earn
+5408 grain
+5409 acq
+5410 earn
+5411 acq
+5412 money-fx
+5414 earn
+5415 earn
+5416 earn
+5417 earn
+5421 pet-chem
+5422 earn
+5423 earn
+5426 earn
+5429 earn
+5431 earn
+5434 money-fx
+5435 copper acq
+5437 earn
+5438 earn
+5439 interest money-fx
+5440 earn
+5441 acq
+5442 acq
+5443 earn
+5444 earn
+5445 livestock carcass
+5447 gnp
+5451 earn
+5452 earn
+5453 gnp
+5454 earn
+5455 acq
+5456 earn
+5458 gnp trade
+5460 cpu
+5461 earn
+5464 earn
+5465 acq
+5467 corn barley sorghum cotton corn wheat grain
+5469 acq
+5470 earn
+5471 coffee
+5472 gnp
+5473 earn
+5474 earn
+5475 earn
+5476 trade
+5477 acq
+5481 gold
+5483 earn
+5485 cpu
+5487 livestock carcass
+5490 cpi
+5491 cocoa
+5492 earn
+5494 earn
+5495 earn
+5496 earn
+5498 trade
+5499 ship
+5500 earn
+5501 earn
+5502 earn
+5505 acq
+5506 veg-oil
+5507 trade
+5508 trade
+5511 earn
+5516 acq
+5517 acq
+5518 corn grain
+5520 acq
+5522 earn
+5523 cpi
+5525 earn
+5526 gold
+5528 earn
+5530 earn
+5531 soybean oilseed wheat corn grain
+5532 earn
+5533 acq
+5535 earn
+5537 earn
+5538 earn
+5540 earn
+5541 gold
+5542 crude ship trade
+5543 earn
+5544 earn
+5545 earn
+5546 earn
+5549 earn
+5553 ship crude
+5554 bop
+5555 earn
+5556 earn
+5558 gold
+5559 acq
+5561 trade
+5563 earn
+5564 gold
+5565 earn
+5566 earn
+5567 gold
+5568 earn
+5570 coffee trade
+5571 earn
+5572 earn
+5573 earn
+5575 earn
+5576 earn
+5579 earn
+5582 earn
+5583 earn
+5585 earn
+5586 earn
+5592 earn
+5593 earn
+5594 earn
+5595 earn
+5596 acq
+5597 acq
+5598 cocoa
+5600 earn
+5602 earn
+5603 earn
+5604 earn
+5606 oilseed soybean corn wheat grain
+5608 acq
+5609 acq
+5610 rice cotton sorghum barley oilseed soybean wheat corn grain
+5611 grain
+5615 acq
+5617 earn
+5620 earn
+5624 earn
+5627 earn
+5629 earn
+5630 fuel crude ship
+5632 earn
+5634 acq
+5635 veg-oil meal-feed
+5636 sorghum corn wheat grain
+5637 corn grain
+5639 wheat grain
+5640 barley grain
+5641 acq
+5643 acq
+5644 earn
+5647 earn
+5648 wheat grain
+5650 earn
+5652 acq
+5654 earn
+5655 veg-oil
+5657 earn
+5658 earn
+5659 acq
+5660 earn
+5661 acq
+5662 earn
+5663 earn
+5664 acq
+5665 acq
+5667 acq
+5669 earn
+5670 acq
+5671 acq
+5672 acq
+5675 acq
+5677 earn
+5678 earn
+5679 earn
+5680 earn
+5682 earn
+5683 fuel crude
+5684 trade
+5686 acq
+5687 earn
+5688 earn
+5689 earn
+5690 acq
+5692 trade
+5693 strategic-metal nickel acq
+5694 earn
+5701 earn
+5702 oilseed soybean
+5706 heat
+5707 earn
+5708 acq
+5710 acq
+5711 earn
+5712 earn
+5713 acq
+5715 earn
+5716 earn
+5717 trade
+5719 earn
+5720 earn
+5721 earn
+5722 earn
+5723 earn
+5724 acq
+5725 earn
+5727 earn
+5729 earn
+5731 earn
+5732 acq
+5734 ship
+5737 earn
+5738 earn
+5739 acq
+5740 acq
+5741 earn
+5742 earn
+5743 earn
+5744 earn
+5746 earn
+5749 earn
+5750 acq
+5751 acq
+5752 trade
+5754 acq
+5755 acq
+5756 acq
+5757 acq
+5758 earn
+5761 veg-oil oilseed
+5762 acq
+5764 bop
+5765 bop
+5767 reserves
+5768 wpi
+5769 wpi
+5778 dlr money-fx
+5779 interest money-fx trade bop
+5780 acq
+5782 money-supply
+5783 gnp
+5785 bop trade
+5786 bop trade
+5787 earn
+5788 copper
+5789 acq
+5791 soy-oil veg-oil
+5792 rubber
+5793 nat-gas
+5796 crude
+5797 money-supply
+5798 money-supply
+5800 grain
+5803 gnp
+5804 gnp
+5805 gnp
+5807 gnp
+5808 acq
+5810 trade
+5811 money-fx
+5812 carcass livestock
+5814 interest money-fx
+5815 earn
+5818 ship
+5819 money-fx
+5822 earn
+5826 grain
+5827 copper
+5830 cpi
+5833 oilseed
+5835 sugar
+5836 money-supply interest
+5838 bop
+5839 wpi
+5841 money-fx reserves
+5842 bop
+5845 ipi
+5847 grain corn
+5848 ipi
+5849 gnp
+5850 trade
+5852 crude trade ship
+5854 acq
+5858 money-fx
+5861 interest money-fx
+5866 crude ship
+5868 alum
+5870 ship
+5873 acq
+5875 acq
+5876 acq
+5879 gnp
+5880 cocoa
+5883 housing
+5886 housing
+5887 meal-feed
+5888 copper
+5889 acq
+5894 earn
+5895 trade
+5896 carcass l-cattle livestock
+5898 earn
+5899 acq
+5900 acq
+5901 earn
+5902 acq
+5905 money-fx
+5906 earn
+5908 trade
+5909 money-fx
+5910 acq
+5911 earn
+5912 earn
+5913 earn
+5914 earn
+5915 acq
+5919 acq
+5922 earn
+5925 earn
+5926 earn
+5930 earn
+5931 earn
+5932 gold
+5933 corn grain
+5934 acq
+5935 earn
+5937 acq
+5938 earn
+5939 trade bop
+5941 trade bop
+5945 money-fx
+5946 acq
+5947 acq
+5949 acq
+5950 earn
+5951 earn
+5954 trade
+5955 acq
+5957 rubber
+5958 gold
+5960 earn
+5964 trade
+5965 earn
+5967 earn
+5968 earn
+5969 earn
+5972 grain
+5973 trade
+5974 acq
+5975 acq
+5976 earn
+5977 acq
+5980 gnp
+5981 trade bop
+5982 earn
+5984 earn
+5985 gnp
+5986 acq
+5991 earn
+5993 earn
+5994 earn
+5998 money-fx
+6000 housing
+6003 acq
+6005 earn
+6006 wheat grain
+6010 earn
+6013 earn
+6014 earn
+6017 earn
+6018 earn
+6020 acq
+6023 crude
+6025 copper
+6026 acq
+6027 acq
+6030 acq
+6033 earn
+6034 acq
+6035 earn
+6037 bop gnp
+6041 earn
+6042 earn
+6043 earn
+6044 interest money-fx
+6046 interest money-fx
+6047 earn
+6048 earn
+6051 earn
+6054 earn
+6055 earn
+6056 acq
+6058 veg-oil
+6059 acq
+6060 crude
+6062 soybean veg-oil
+6063 cotton
+6065 acq
+6067 housing
+6068 acq
+6069 acq
+6070 acq
+6073 earn
+6075 earn
+6078 earn
+6079 wheat grain
+6081 wheat grain
+6082 acq
+6083 money-fx
+6084 earn
+6085 acq
+6086 crude
+6088 earn
+6090 acq
+6091 interest
+6092 acq
+6093 acq
+6094 earn
+6096 acq
+6101 acq
+6102 earn
+6103 acq
+6104 earn
+6105 earn
+6106 earn
+6107 earn
+6108 money-fx dlr
+6111 crude
+6113 earn
+6114 rice wheat grain
+6115 earn
+6116 soybean oilseed
+6119 crude
+6120 acq
+6121 acq
+6123 earn
+6124 acq
+6125 crude
+6127 wheat grain
+6128 cocoa
+6129 earn
+6130 earn
+6134 earn
+6135 acq
+6137 money-fx
+6138 earn
+6142 corn grain
+6146 earn
+6147 earn
+6149 earn
+6153 rice wheat grain
+6154 earn
+6155 earn
+6156 money-supply bop interest
+6157 acq
+6158 jobs ipi
+6159 crude
+6163 crude
+6165 earn
+6166 crude
+6169 crude
+6172 earn
+6173 earn
+6175 earn
+6176 interest
+6177 crude
+6178 interest
+6179 earn
+6180 acq
+6181 earn
+6184 crude
+6185 earn
+6186 earn
+6187 earn
+6188 acq
+6189 alum
+6197 gnp interest housing
+6198 earn
+6199 acq
+6201 crude
+6202 earn
+6204 earn
+6205 earn
+6208 crude
+6209 wheat grain
+6211 earn
+6212 acq
+6213 earn
+6214 earn
+6215 earn
+6217 acq
+6218 gold
+6220 earn
+6221 corn wheat grain
+6222 earn
+6223 acq
+6225 acq
+6227 earn
+6231 earn
+6232 earn
+6233 earn
+6234 earn
+6235 earn
+6236 corn grain
+6239 corn wheat
+6240 earn
+6242 earn
+6243 earn
+6244 earn
+6246 acq
+6248 earn
+6252 earn
+6253 grain trade
+6254 earn
+6257 earn
+6259 corn wheat grain
+6264 crude
+6265 soybean oilseed grain
+6267 grain
+6269 rice cotton corn carcass soybean oilseed grain
+6271 earn
+6273 earn
+6274 earn
+6275 earn
+6276 acq
+6277 acq
+6278 acq
+6279 earn
+6280 earn
+6282 acq
+6283 earn
+6287 earn
+6288 earn
+6293 earn
+6294 crude
+6295 earn
+6296 wheat grain
+6297 earn
+6298 earn
+6299 earn
+6301 crude
+6305 earn
+6306 earn
+6309 earn
+6310 earn
+6311 earn
+6312 earn
+6313 earn
+6315 acq
+6317 carcass
+6323 earn
+6324 earn
+6325 earn
+6326 wheat grain
+6331 acq
+6333 earn
+6335 earn
+6337 acq
+6338 yen money-fx
+6339 wheat grain
+6340 acq
+6341 earn
+6342 palm-oil veg-oil
+6344 palm-oil veg-oil
+6346 acq
+6347 earn
+6348 crude
+6349 earn
+6350 interest
+6352 interest
+6353 earn
+6354 palm-oil veg-oil
+6355 earn
+6356 earn
+6357 yen money-fx
+6358 earn
+6359 interest money-fx
+6361 acq
+6362 interest
+6364 interest
+6365 interest
+6366 interest
+6368 acq
+6369 interest
+6371 wpi
+6372 earn
+6373 acq
+6375 ipi
+6376 earn
+6382 acq
+6384 gnp
+6385 cpi
+6386 corn grain
+6394 money-fx
+6398 interest
+6399 interest money-fx
+6400 interest money-fx
+6402 acq
+6404 crude ship
+6405 cocoa
+6406 cpi bop gnp trade interest
+6407 cocoa
+6410 acq
+6412 cotton-oil sun-oil veg-oil
+6413 crude
+6414 cocoa
+6416 gnp
+6417 gnp
+6419 earn
+6420 earn
+6421 coconut-oil veg-oil
+6422 acq
+6425 nat-gas
+6426 interest money-fx
+6427 gnp
+6428 acq
+6430 acq
+6432 crude
+6433 acq
+6434 earn
+6435 acq
+6436 ship
+6437 earn
+6438 earn
+6440 earn
+6441 acq
+6442 acq
+6443 acq
+6445 money-fx
+6447 earn
+6449 acq
+6450 trade
+6451 lead zinc
+6452 interest money-fx
+6453 interest
+6454 earn
+6455 earn
+6456 earn
+6457 earn
+6458 earn
+6459 earn
+6460 earn
+6461 earn
+6463 acq
+6464 bop trade
+6465 earn
+6466 earn
+6471 earn
+6473 acq
+6474 earn
+6475 earn
+6476 earn
+6477 acq
+6478 earn
+6481 earn
+6483 interest
+6484 sugar
+6485 earn
+6486 sugar
+6488 acq
+6491 earn
+6492 l-cattle
+6493 cocoa
+6494 gnp
+6495 earn
+6496 earn
+6497 acq
+6498 acq
+6499 acq
+6500 earn
+6502 acq
+6503 earn
+6504 earn
+6505 earn
+6506 earn
+6507 earn
+6509 earn
+6511 acq
+6514 earn
+6515 silver
+6520 earn
+6521 earn
+6522 earn
+6523 earn
+6524 earn
+6525 earn
+6527 acq
+6528 earn
+6529 earn
+6531 money-fx interest
+6532 earn
+6533 earn
+6534 earn
+6535 palm-oil veg-oil naphtha iron-steel cotton trade
+6537 acq
+6538 acq
+6539 earn
+6540 earn
+6541 ship
+6542 earn
+6543 interest money-fx
+6546 alum
+6547 earn
+6549 earn
+6551 earn
+6552 earn
+6556 acq
+6557 silver
+6559 earn
+6561 pet-chem
+6562 acq
+6568 earn
+6572 earn
+6573 earn
+6575 earn
+6576 money-fx
+6577 earn
+6578 crude
+6581 earn
+6583 earn
+6584 earn
+6585 veg-oil corn grain
+6586 earn
+6588 ship corn grain
+6590 earn
+6591 earn
+6592 earn
+6593 trade gnp
+6594 earn
+6595 coffee
+6596 bop trade
+6597 earn
+6598 crude
+6601 earn
+6603 jobs
+6604 acq
+6606 nat-gas crude
+6607 earn
+6609 earn
+6611 earn
+6612 earn
+6616 acq
+6619 money-supply
+6620 earn
+6621 gnp
+6622 earn
+6623 meal-feed
+6626 barley grain
+6629 earn
+6630 acq
+6632 coffee
+6635 earn
+6636 earn
+6637 bop trade
+6638 acq
+6639 acq
+6641 earn
+6642 earn
+6647 earn
+6650 nat-gas
+6652 ship crude
+6653 earn
+6654 acq
+6655 acq
+6656 nat-gas crude
+6657 sugar
+6658 gold
+6659 acq
+6660 nat-gas
+6661 earn
+6665 acq
+6666 acq
+6668 earn
+6669 earn
+6670 earn
+6672 earn
+6673 earn
+6674 earn
+6675 acq
+6677 rubber
+6679 earn
+6680 earn
+6681 earn
+6682 acq
+6683 earn
+6684 earn
+6685 earn
+6686 earn
+6687 earn
+6689 acq
+6694 acq
+6695 acq
+6696 earn
+6697 acq
+6699 earn
+6701 earn
+6702 acq
+6705 earn
+6707 acq
+6708 earn
+6709 earn
+6710 acq
+6711 earn
+6712 nat-gas
+6713 earn
+6714 ship
+6716 trade
+6719 acq
+6720 wheat grain
+6721 earn
+6722 nat-gas crude
+6723 earn
+6725 acq
+6726 earn
+6729 earn
+6730 earn
+6731 acq
+6732 earn
+6733 earn
+6734 earn
+6735 corn grain
+6737 earn
+6738 earn
+6739 earn
+6740 earn
+6741 earn
+6742 earn nat-gas crude
+6743 earn
+6744 wheat grain
+6746 crude
+6747 earn
+6748 earn
+6751 wheat grain
+6752 earn
+6757 trade
+6758 gnp
+6759 earn
+6760 nat-gas crude
+6761 earn
+6762 earn
+6763 earn
+6764 interest
+6765 earn
+6767 acq
+6770 earn
+6771 earn
+6773 earn
+6774 earn
+6776 earn
+6777 earn
+6778 earn
+6779 earn
+6783 earn
+6784 earn
+6785 earn
+6787 earn
+6788 acq
+6789 acq
+6790 earn
+6791 crude
+6794 earn
+6797 earn
+6798 fuel
+6799 earn
+6801 earn
+6802 earn
+6804 carcass
+6805 acq
+6807 acq
+6809 earn
+6810 acq
+6811 acq
+6813 earn
+6814 earn
+6815 acq
+6816 earn
+6817 acq
+6818 acq
+6819 acq
+6825 earn
+6827 earn
+6828 jet
+6830 earn
+6831 earn
+6836 gas
+6837 earn
+6840 earn
+6841 acq
+6844 acq
+6846 copper
+6848 earn
+6849 acq
+6850 earn
+6852 earn
+6853 acq
+6855 acq
+6856 acq
+6859 earn
+6860 earn
+6861 earn
+6862 earn
+6863 earn
+6864 earn
+6865 earn
+6866 trade
+6869 acq
+6871 gas crude
+6872 gold
+6873 acq
+6874 acq
+6875 earn
+6876 nat-gas crude
+6877 earn
+6880 earn
+6881 earn
+6882 wheat grain
+6884 acq
+6886 acq
+6887 acq
+6888 acq
+6890 soybean oilseed sunseed sorghum corn grain
+6893 gas crude
+6894 earn
+6897 corn grain
+6898 wheat grain
+6903 wheat grain
+6905 nat-gas crude
+6906 soybean oilseed
+6907 earn
+6908 acq
+6909 wheat grain
+6912 coffee
+6913 crude
+6914 acq
+6917 earn
+6920 cpi
+6922 interest
+6926 trade
+6927 copper
+6928 acq
+6929 acq
+6930 acq
+6931 earn
+6934 tin
+6935 sugar
+6939 sugar
+6941 ship
+6942 gnp
+6943 gnp
+6944 acq
+6945 nzdlr money-fx
+6946 wheat grain
+6951 jobs
+6952 trade
+6953 acq
+6954 palm-oil veg-oil rubber bop trade
+6955 retail
+6957 gold
+6959 gnp bop trade
+6960 wheat grain
+6961 acq
+6964 trade
+6965 cpi
+6968 iron-steel
+6969 earn
+6970 money-supply
+6972 earn
+6975 wpi
+6976 trade
+6981 money-fx
+6982 cpi
+6983 reserves
+6985 gold
+6986 earn
+6993 veg-oil
+6994 soy-oil veg-oil
+6995 zinc
+6996 crude
+6998 sugar
+6999 earn
+7000 earn
+7001 earn
+7003 earn
+7004 jobs
+7005 income
+7006 income
+7007 money-supply
+7008 earn
+7009 money-supply
+7010 jobs
+7011 trade
+7012 money-supply
+7013 jobs
+7014 money-supply
+7015 income
+7020 money-fx
+7023 gold
+7024 acq
+7027 money-fx
+7029 money-supply
+7030 acq
+7031 interest
+7032 gnp
+7036 money-supply income money-fx
+7037 soybean oilseed veg-oil
+7039 acq
+7041 acq
+7043 rand money-fx
+7045 acq
+7046 acq
+7047 bop
+7048 earn
+7049 reserves
+7052 earn
+7057 acq
+7058 earn
+7060 earn
+7061 earn
+7062 corn wheat grain
+7063 earn
+7064 earn
+7065 acq
+7066 earn
+7067 crude
+7068 acq
+7070 jobs
+7071 cocoa
+7072 earn
+7073 earn
+7074 earn
+7075 earn
+7076 earn
+7077 earn
+7078 earn
+7079 earn
+7080 money-fx
+7083 earn
+7085 earn
+7087 trade
+7088 gold
+7090 acq
+7092 earn
+7093 acq
+7096 earn
+7097 crude
+7098 income
+7099 income
+7100 money-fx
+7101 livestock hog
+7102 earn
+7103 ship grain
+7104 coffee
+7106 earn
+7107 earn
+7109 acq
+7110 acq
+7111 acq
+7113 earn
+7115 earn
+7117 retail
+7119 ship
+7120 earn
+7123 earn
+7124 coffee
+7126 nickel
+7128 earn
+7129 retail
+7130 acq
+7132 earn
+7133 earn
+7135 trade
+7136 acq
+7139 earn
+7141 earn
+7143 coffee
+7146 earn
+7148 earn
+7149 acq
+7150 crude gas
+7152 crude gas
+7154 grain
+7155 earn
+7157 earn
+7158 earn
+7159 interest money-fx
+7160 rice grain
+7161 iron-steel
+7166 gold
+7167 earn
+7168 acq
+7174 nat-gas earn crude
+7177 cpi
+7184 earn
+7185 earn
+7188 reserves
+7189 earn
+7190 earn
+7191 earn
+7192 earn
+7193 earn
+7196 ship
+7199 acq
+7204 money-fx
+7205 barley wheat corn grain
+7207 money-fx interest
+7208 earn
+7209 earn
+7212 earn
+7215 corn wheat grain
+7216 earn
+7217 earn
+7218 acq
+7220 acq
+7221 reserves
+7222 gnp
+7225 acq
+7226 earn
+7229 earn
+7234 acq
+7235 earn
+7240 acq
+7244 earn
+7245 earn
+7247 acq
+7250 earn
+7253 acq
+7256 earn
+7259 earn
+7260 acq
+7261 earn
+7263 alum
+7264 earn
+7266 earn
+7267 earn
+7272 earn
+7275 earn
+7276 earn
+7277 earn
+7278 earn
+7279 earn
+7286 earn
+7287 crude
+7296 acq
+7297 earn
+7302 earn
+7304 rubber
+7305 acq
+7308 sugar
+7310 interest
+7311 cocoa
+7312 money-fx
+7313 interest money-fx money-supply
+7314 cpi
+7315 acq
+7317 earn
+7318 lumber
+7319 acq
+7320 earn
+7321 interest
+7322 earn
+7323 iron-steel
+7326 wheat grain
+7329 earn
+7330 earn
+7331 earn
+7332 earn
+7336 corn grain
+7337 acq
+7338 earn
+7339 earn
+7341 earn
+7342 acq
+7344 acq
+7346 earn
+7349 earn
+7352 acq
+7353 acq
+7354 acq
+7355 crude
+7356 soybean oilseed
+7357 orange
+7358 earn
+7359 earn
+7362 acq
+7363 earn
+7366 earn
+7367 coffee
+7370 acq
+7375 money-fx trade
+7379 earn
+7381 earn
+7382 earn
+7385 earn
+7386 acq
+7387 corn grain
+7388 earn
+7389 corn grain
+7390 corn grain
+7391 acq
+7394 money-fx
+7395 corn grain
+7397 fuel jet naphtha heat
+7398 earn
+7404 earn
+7406 coffee
+7407 acq
+7408 nat-gas
+7410 earn
+7413 earn
+7419 money-supply
+7420 money-supply
+7421 money-supply
+7423 nat-gas crude
+7424 earn
+7425 money-supply
+7426 money-supply
+7427 earn
+7428 money-supply
+7429 money-fx
+7432 earn
+7433 acq
+7437 money-supply
+7438 earn
+7439 earn
+7441 earn
+7442 earn
+7443 earn
+7444 earn
+7447 retail
+7449 earn
+7452 pet-chem
+7453 acq
+7455 earn
+7459 earn
+7460 interest money-fx
+7462 earn
+7464 acq
+7465 earn
+7466 earn
+7468 earn
+7469 acq
+7470 acq
+7471 wheat grain
+7472 earn
+7474 earn
+7475 acq
+7476 earn
+7477 trade
+7481 earn
+7482 acq
+7483 earn
+7484 acq
+7487 earn
+7488 earn
+7490 acq
+7491 earn
+7494 acq
+7495 earn
+7496 crude
+7497 acq
+7498 earn
+7499 interest money-supply
+7500 ship
+7501 sugar
+7504 acq
+7505 earn
+7508 earn
+7510 sugar
+7512 sugar
+7514 earn
+7515 soybean oilseed veg-oil
+7516 earn
+7517 earn
+7518 earn
+7519 earn
+7520 earn
+7521 trade
+7528 crude
+7529 crude
+7531 trade
+7533 tin
+7534 ship
+7537 bop trade
+7538 interest money-fx
+7539 acq
+7541 earn
+7543 trade bop
+7544 earn
+7545 sugar tea wheat rice grain
+7548 acq
+7552 copper
+7554 money-supply
+7555 money-supply
+7557 iron-steel
+7558 acq
+7559 interest money-fx
+7562 interest money-fx
+7564 interest
+7565 meal-feed grain
+7566 lumber
+7568 money-fx
+7569 sugar
+7570 acq
+7571 interest money-fx
+7574 alum
+7576 earn
+7577 alum
+7579 barley grain
+7580 cpi
+7581 gnp
+7583 gnp
+7584 cpi
+7585 wpi
+7587 money-supply interest money-fx
+7590 cpi
+7591 cpi
+7592 tin
+7593 acq
+7596 acq
+7599 interest money-fx
+7600 trade
+7602 alum
+7603 acq
+7604 acq
+7605 acq
+7606 ipi
+7609 earn
+7611 crude
+7614 interest money-fx
+7618 crude
+7620 earn
+7621 earn
+7622 earn
+7623 ipi
+7625 veg-oil soybean oilseed
+7626 trade
+7627 acq
+7628 money-fx trade
+7629 gold
+7631 earn
+7632 trade
+7633 bop trade
+7634 earn
+7635 acq
+7636 earn
+7637 acq
+7638 interest
+7639 crude
+7640 cotton iron-steel trade
+7641 acq
+7642 ship
+7643 trade
+7644 acq
+7645 silver gold
+7647 earn
+7650 acq
+7652 interest money-fx
+7657 earn
+7659 acq
+7662 bop trade
+7669 money-fx
+7670 acq
+7671 gas
+7672 acq
+7673 earn
+7674 money-supply
+7676 earn
+7678 acq
+7679 acq
+7681 earn
+7682 earn
+7684 crude
+7686 earn
+7687 earn
+7690 earn
+7693 acq
+7694 earn
+7696 earn
+7698 acq
+7700 soybean oilseed corn grain
+7702 earn
+7704 acq
+7707 earn
+7709 earn
+7710 money-fx
+7715 acq
+7716 money-fx interest
+7722 earn
+7723 earn
+7725 earn
+7726 earn
+7728 earn
+7729 acq
+7730 earn
+7732 earn
+7733 acq
+7734 earn
+7735 earn
+7736 earn
+7737 acq
+7738 earn
+7739 earn
+7742 crude earn
+7743 earn
+7744 ipi
+7746 earn
+7747 acq
+7749 acq
+7752 earn
+7755 earn
+7757 earn
+7761 earn
+7762 earn
+7763 earn
+7764 interest money-fx
+7765 acq
+7766 earn
+7767 money-supply
+7768 earn
+7769 interest money-fx
+7771 trade
+7773 acq
+7774 earn
+7775 strategic-metal gold zinc lead copper silver
+7776 earn
+7782 earn
+7784 acq
+7785 acq
+7789 acq
+7790 earn
+7791 acq
+7792 ship corn grain
+7795 acq
+7796 acq
+7797 earn
+7802 trade
+7804 money-fx trade
+7805 earn
+7807 money-supply
+7809 lead
+7810 acq
+7813 acq
+7814 acq
+7816 acq
+7817 acq
+7818 money-supply
+7819 acq
+7820 acq
+7821 earn
+7823 gold
+7824 acq
+7825 acq
+7826 earn
+7828 earn
+7830 earn
+7831 acq
+7835 earn
+7836 earn
+7837 earn
+7838 earn
+7839 acq
+7840 earn
+7841 earn
+7842 zinc lead
+7843 earn
+7845 earn
+7847 acq
+7848 earn
+7850 earn
+7851 earn
+7854 crude gas
+7855 acq
+7857 earn
+7858 earn
+7859 acq earn
+7860 rubber
+7861 earn
+7862 acq
+7864 earn
+7865 acq
+7866 earn
+7867 acq
+7869 earn
+7870 earn
+7871 acq earn
+7872 earn
+7873 rubber
+7874 earn
+7875 earn
+7876 earn
+7877 tin
+7878 earn
+7879 earn
+7880 earn
+7881 earn
+7883 earn
+7884 earn
+7887 earn
+7888 coffee
+7891 acq
+7893 earn
+7894 earn
+7895 acq
+7896 acq
+7897 acq
+7899 acq
+7901 earn
+7902 earn
+7903 earn
+7904 acq earn
+7907 trade
+7912 acq
+7913 earn
+7914 earn
+7917 cotton corn rice grain
+7918 earn
+7920 orange
+7921 livestock
+7922 earn
+7924 livestock
+7927 acq earn
+7928 acq
+7930 acq
+7934 corn wheat grain
+7935 acq
+7937 reserves
+7939 earn
+7940 acq
+7942 earn
+7943 corn grain
+7948 earn
+7949 earn
+7950 money-fx
+7951 meal-feed oilseed
+7953 earn
+7954 earn
+7955 earn
+7956 earn
+7957 wheat grain
+7958 earn
+7959 ship acq
+7961 ship
+7962 livestock
+7963 acq
+7964 acq
+7966 acq
+7967 acq
+7968 acq
+7969 acq
+7970 earn
+7971 money-supply
+7972 gas
+7974 earn
+7975 earn
+7977 acq
+7979 earn
+7980 money-supply
+7983 acq
+7984 acq
+7985 gold
+7987 earn
+7990 earn
+7991 earn
+7992 acq
+7993 acq
+7994 earn
+7997 acq
+8000 earn
+8001 earn
+8002 acq
+8003 veg-oil soybean oilseed wheat grain
+8004 corn grain sugar
+8005 earn
+8007 earn
+8008 livestock
+8009 grain ship
+8010 acq
+8011 earn
+8012 earn
+8015 crude
+8016 earn
+8017 earn
+8020 acq
+8021 acq
+8022 earn
+8023 acq
+8025 earn
+8026 earn
+8027 earn
+8028 earn
+8029 trade
+8030 earn
+8032 earn
+8036 earn
+8039 earn
+8040 acq
+8041 fuel nat-gas crude
+8044 trade
+8045 earn
+8047 earn
+8048 earn
+8050 earn
+8051 earn
+8055 tin
+8056 earn
+8060 rubber
+8063 ipi
+8064 money-fx
+8068 gold
+8069 crude
+8074 money-fx
+8080 trade
+8085 acq
+8086 veg-oil
+8087 earn
+8088 pet-chem
+8089 crude
+8091 acq
+8094 earn
+8096 earn
+8097 money-fx dlr
+8098 money-fx
+8100 nat-gas crude acq
+8102 trade
+8103 interest
+8105 coffee
+8106 trade
+8108 nat-gas
+8109 ship
+8111 gnp
+8112 coconut oilseed
+8113 iron-steel
+8115 acq
+8117 crude
+8119 cpi
+8120 earn
+8123 acq
+8125 earn
+8126 acq
+8130 acq
+8131 crude
+8132 grain oilseed trade
+8134 crude
+8135 trade gnp interest
+8137 interest
+8138 trade
+8140 soybean oilseed sorghum corn grain meal-feed
+8141 trade
+8144 interest
+8145 interest money-fx
+8147 interest money-fx
+8149 palm-oil rubber coffee trade
+8151 trade
+8153 trade money-fx interest gnp
+8155 earn
+8156 veg-oil trade
+8158 trade reserves
+8159 ship rape-oil palm-oil veg-oil
+8160 crude
+8161 rice corn grain
+8162 earn
+8163 earn
+8164 grain reserves cpi gnp
+8166 corn grain acq
+8167 crude
+8168 interest money-fx
+8169 earn
+8172 gnp
+8173 retail jobs trade gnp
+8174 bop trade
+8176 sugar
+8177 earn
+8178 lei
+8179 wheat grain
+8180 ipi
+8182 interest money-fx
+8184 interest
+8186 trade
+8188 ship crude
+8189 trade dlr money-fx
+8190 ipi
+8193 coffee
+8194 interest money-fx
+8197 ship
+8198 trade
+8199 money-fx
+8200 ship coffee
+8204 acq
+8205 acq
+8206 rubber
+8209 crude
+8210 nat-gas crude
+8211 cpi
+8212 trade
+8213 rapeseed oilseed barley grain
+8214 ship
+8217 acq
+8218 earn
+8219 earn
+8220 acq
+8221 earn
+8222 acq
+8223 earn
+8224 acq
+8225 acq
+8226 earn
+8227 earn
+8229 earn
+8234 money-fx
+8236 earn
+8240 trade
+8244 trade
+8245 earn
+8246 ship
+8247 interest money-fx
+8252 trade
+8253 earn
+8254 earn
+8255 acq
+8257 barley corn grain
+8258 earn
+8259 acq
+8262 earn
+8264 acq
+8269 earn
+8270 earn
+8273 oilseed wheat corn grain cotton trade
+8275 earn
+8276 earn
+8279 acq
+8286 earn
+8287 acq
+8288 acq crude
+8289 earn
+8291 earn
+8292 earn
+8293 acq
+8294 earn
+8296 earn
+8297 earn
+8298 acq
+8299 interest money-fx
+8300 earn
+8302 money-fx
+8306 sugar
+8308 zinc
+8309 money-fx
+8311 earn
+8313 earn
+8314 earn
+8317 earn
+8318 earn
+8319 oilseed grain ship
+8320 earn
+8322 earn
+8326 cocoa
+8327 acq
+8331 gold
+8334 earn
+8335 earn
+8337 earn
+8338 earn
+8339 earn
+8340 earn
+8342 iron-steel
+8343 interest
+8344 interest
+8347 gnp
+8349 earn
+8350 earn
+8351 acq
+8353 acq
+8355 acq
+8359 acq
+8361 acq
+8363 ipi
+8364 earn
+8366 earn
+8367 acq
+8368 acq
+8370 acq
+8373 acq
+8374 grain
+8378 earn
+8387 acq
+8388 earn
+8391 earn
+8394 earn
+8396 acq
+8399 earn
+8400 corn grain
+8401 interest
+8402 crude
+8405 crude
+8406 acq
+8407 earn
+8409 earn
+8413 rice cotton wheat grain
+8415 tin
+8416 tin
+8421 ship crude
+8422 lumber
+8424 earn
+8425 earn
+8426 earn
+8427 tin
+8428 acq
+8429 acq
+8430 acq
+8432 acq
+8433 acq
+8435 earn
+8438 acq
+8440 ship crude
+8441 acq
+8443 corn oilseed grain
+8446 sorghum corn grain
+8447 earn
+8448 earn
+8449 earn
+8451 retail
+8453 gnp
+8454 earn
+8457 earn
+8458 earn
+8467 acq
+8472 acq
+8475 earn
+8478 crude
+8479 earn
+8480 earn
+8481 earn
+8487 earn
+8488 earn
+8489 earn
+8490 earn
+8491 earn
+8493 crude
+8496 acq
+8497 acq
+8501 earn
+8502 earn
+8506 earn
+8509 acq
+8510 earn
+8512 acq
+8513 earn
+8514 acq
+8516 crude ship
+8518 acq
+8520 earn
+8521 earn
+8522 soybean oilseed
+8526 earn
+8528 earn
+8530 earn
+8533 earn
+8534 earn
+8535 corn wheat grain
+8536 acq
+8540 earn
+8541 earn
+8543 acq
+8544 acq
+8545 earn
+8546 acq
+8547 earn
+8553 crude
+8554 trade
+8555 earn
+8556 earn
+8558 acq
+8559 earn
+8561 earn acq
+8562 earn
+8563 money-fx
+8565 earn
+8567 acq
+8569 earn
+8571 acq
+8572 acq
+8574 carcass livestock
+8577 earn
+8578 money-fx
+8579 earn
+8580 earn
+8581 earn
+8582 earn
+8584 dlr money-fx
+8585 ipi
+8586 money-fx
+8587 money-fx
+8588 money-fx
+8590 dlr money-fx
+8591 dlr money-fx
+8592 trade
+8595 earn
+8596 coconut-oil veg-oil trade
+8597 money-fx trade reserves
+8598 crude
+8599 trade
+8600 crude earn
+8602 trade
+8603 rubber
+8604 wheat grain
+8605 money-fx
+8606 crude
+8607 money-fx
+8608 trade
+8609 earn
+8610 crude
+8611 earn
+8612 earn
+8613 grain
+8614 earn
+8615 acq
+8616 earn
+8617 acq
+8618 acq
+8619 earn
+8621 dlr money-fx
+8623 crude
+8624 trade
+8628 acq
+8629 money-fx
+8630 nat-gas crude earn
+8632 earn
+8635 trade
+8636 money-supply
+8637 trade
+8638 rubber
+8641 money-fx
+8643 earn
+8644 earn
+8654 sugar
+8656 grain
+8657 dlr money-fx
+8658 money-fx
+8661 ipi
+8662 trade
+8663 trade
+8664 dlr money-fx
+8665 earn
+8666 acq
+8667 trade
+8668 earn
+8670 money-fx
+8671 trade ipi
+8672 crude
+8673 interest
+8674 money-fx
+8675 ship crude
+8676 trade
+8677 interest
+8678 money-fx
+8681 jobs
+8683 sugar
+8684 sugar
+8685 acq
+8686 grain
+8688 ship
+8689 acq
+8690 acq
+8691 acq
+8692 trade
+8694 wpi cpi
+8696 ship
+8699 trade
+8701 retail
+8702 earn
+8704 acq
+8705 livestock
+8706 retail
+8707 earn
+8708 earn
+8709 acq
+8710 money-fx
+8711 acq
+8713 potato
+8714 dlr money-fx
+8716 earn
+8717 acq
+8722 earn
+8723 money-supply interest money-fx
+8724 earn
+8725 trade
+8726 cpi
+8728 money-fx
+8730 acq
+8731 earn
+8732 earn
+8733 earn
+8734 acq
+8735 dlr money-fx
+8736 earn
+8738 earn
+8740 earn
+8741 earn
+8742 earn
+8744 livestock ship
+8745 earn
+8746 cpi trade gnp jobs retail
+8747 trade
+8748 acq
+8749 crude ship
+8750 earn
+8755 crude
+8756 acq
+8757 gold
+8758 acq
+8759 oat barley sorghum wheat cotton corn rice grain
+8760 money-fx
+8761 earn
+8765 crude
+8767 earn
+8768 earn
+8771 acq
+8777 earn
+8778 acq
+8780 acq
+8781 acq
+8784 earn
+8785 earn
+8788 earn
+8791 earn
+8793 earn
+8794 earn
+8795 ship acq
+8796 money-fx
+8797 earn
+8799 earn
+8800 livestock carcass sugar grain
+8802 interest
+8806 earn
+8808 earn
+8810 earn
+8812 nat-gas crude
+8814 earn
+8815 nat-gas crude
+8820 nat-gas crude earn
+8822 acq
+8823 acq
+8826 earn
+8829 reserves
+8830 acq
+8835 crude
+8836 acq
+8837 earn
+8845 money-fx
+8846 earn
+8849 acq
+8850 cocoa
+8853 acq
+8854 lead zinc silver gold acq
+8855 acq
+8856 crude ship
+8857 gold
+8858 earn
+8859 earn
+8860 earn
+8861 earn
+8863 earn
+8865 earn
+8866 earn
+8868 earn
+8873 alum
+8877 zinc lead silver gold acq
+8879 earn
+8880 acq
+8882 gas crude
+8884 interest money-fx
+8890 earn
+8892 earn
+8893 earn
+8895 grain
+8898 earn
+8899 earn
+8902 ship earn
+8903 coffee
+8905 earn
+8906 acq
+8908 earn
+8909 acq
+8911 trade
+8912 earn
+8914 crude
+8915 earn
+8916 acq
+8918 acq
+8919 acq
+8922 money-fx trade
+8925 earn
+8928 earn
+8930 earn
+8932 acq
+8933 tin
+8935 earn
+8940 earn
+8941 corn grain
+8943 grain
+8944 acq
+8945 acq
+8946 earn
+8947 acq
+8948 gold
+8950 coffee ship
+8951 interest
+8956 earn
+8959 crude earn
+8961 cocoa
+8962 acq
+8964 gas crude earn
+8965 earn
+8968 earn
+8969 earn
+8970 earn
+8971 pet-chem crude earn
+8972 earn
+8974 earn acq
+8975 acq
+8976 earn
+8977 acq
+8978 cocoa
+8979 earn
+8981 earn
+8982 trade
+8983 corn grain
+8984 money-fx
+8985 earn
+8986 earn
+8987 acq
+8991 interest
+8992 earn
+8993 wheat corn grain
+8995 earn
+8996 acq
+8997 earn
+8998 acq
+8999 earn
+9003 earn
+9007 money-fx trade
+9010 acq
+9012 interest
+9014 iron-steel
+9015 trade
+9018 rice grain
+9020 acq
+9021 wheat grain
+9022 dlr money-fx
+9025 acq
+9027 acq
+9029 earn
+9030 earn
+9031 crude
+9032 pet-chem
+9033 acq
+9034 earn
+9036 acq earn
+9039 gas crude
+9040 earn
+9041 acq
+9044 earn
+9045 acq
+9047 acq
+9048 earn
+9049 earn
+9051 trade
+9053 earn
+9054 dlr money-fx
+9055 trade money-fx
+9056 earn
+9058 soybean oilseed corn grain
+9059 acq
+9060 livestock carcass hog trade
+9061 dlr money-fx
+9064 acq
+9065 crude
+9066 earn
+9067 acq
+9068 acq
+9069 sugar
+9072 earn
+9073 earn
+9074 earn
+9075 acq
+9076 trade
+9077 nat-gas pet-chem
+9079 dlr money-fx
+9081 acq
+9087 acq
+9088 acq
+9090 acq
+9091 earn
+9093 corn grain
+9094 corn grain
+9095 wheat grain
+9097 earn
+9098 acq
+9100 nat-gas
+9101 earn
+9102 acq
+9103 earn
+9104 gold
+9107 money-supply
+9108 acq
+9110 acq
+9111 earn
+9112 acq earn
+9113 earn
+9115 earn
+9116 earn
+9117 earn
+9118 dlr money-fx
+9120 dlr money-fx
+9124 sugar
+9127 earn
+9128 dlr money-fx
+9129 dlr money-fx
+9131 money-fx
+9132 money-fx
+9133 reserves
+9134 money-fx
+9135 trade
+9137 interest
+9138 money-fx interest
+9139 earn
+9142 earn
+9143 bop trade
+9146 iron-steel
+9147 acq
+9149 yen money-fx
+9152 acq
+9153 rubber tea coffee
+9155 crude
+9156 acq
+9158 earn
+9159 earn
+9160 earn
+9161 earn
+9162 dlr money-fx
+9163 sugar
+9164 interest money-fx
+9165 cpi
+9166 dlr money-fx
+9170 money-fx
+9171 trade
+9172 acq
+9175 earn
+9177 earn
+9178 money-supply
+9181 earn
+9182 earn
+9184 trade
+9187 earn
+9189 earn
+9190 gold
+9192 earn
+9193 sun-oil veg-oil
+9194 trade
+9195 copper silver
+9196 gnp
+9197 oilseed
+9201 meal-feed
+9202 earn
+9203 rubber
+9204 pet-chem
+9205 iron-steel
+9206 earn
+9207 sugar
+9208 crude
+9210 acq
+9213 yen dlr money-fx
+9214 dlr money-fx
+9216 money-fx interest
+9217 money-fx
+9218 money-fx
+9220 money-fx
+9222 yen dlr money-fx
+9224 dlr money-fx
+9228 earn
+9229 earn
+9230 acq
+9231 earn
+9232 earn
+9234 acq
+9235 earn
+9237 earn
+9238 earn
+9239 acq
+9240 earn
+9242 earn
+9243 acq
+9246 acq
+9250 earn
+9252 acq
+9253 crude
+9255 earn
+9258 acq
+9259 acq
+9260 earn
+9261 interest money-fx
+9263 earn
+9264 acq
+9265 coffee
+9266 earn
+9267 earn
+9268 earn
+9270 earn
+9271 earn
+9272 earn
+9273 earn
+9274 earn
+9277 acq
+9278 earn
+9279 crude
+9280 earn
+9282 dlr money-fx
+9283 acq
+9284 earn
+9285 acq
+9287 earn
+9288 acq
+9290 livestock
+9293 crude
+9294 cpi
+9295 dlr money-fx
+9296 acq
+9299 money-fx
+9301 earn
+9302 acq
+9304 sugar
+9305 sugar
+9306 earn
+9308 trade
+9311 earn
+9312 earn
+9313 earn
+9314 ship
+9315 trade
+9316 earn
+9324 acq
+9326 alum
+9327 orange tea
+9328 earn
+9330 earn
+9332 acq
+9333 earn
+9334 earn
+9335 earn
+9336 rand
+9337 earn
+9338 acq
+9339 earn
+9343 acq
+9345 platinum
+9346 earn
+9348 ship
+9349 sugar
+9352 earn
+9354 earn
+9356 ship
+9357 acq
+9361 money-fx interest
+9362 ship sugar
+9363 acq
+9364 earn
+9365 acq
+9366 earn
+9369 earn
+9371 earn
+9372 earn
+9373 earn
+9374 sugar
+9377 dlr money-fx
+9378 earn
+9381 acq
+9382 acq
+9383 earn
+9385 earn
+9388 earn
+9389 earn
+9392 acq
+9393 sugar
+9397 acq
+9398 sugar
+9399 earn
+9403 earn
+9405 earn
+9406 grain trade
+9408 earn
+9410 acq
+9412 acq
+9413 earn
+9414 earn
+9415 trade
+9417 earn
+9422 earn
+9423 acq
+9425 earn
+9426 earn
+9427 earn
+9428 earn
+9429 earn
+9431 acq
+9432 acq
+9433 cpi
+9434 acq
+9435 acq
+9436 nat-gas crude
+9437 earn
+9438 earn
+9441 earn
+9443 acq
+9444 earn
+9445 crude
+9450 cocoa
+9453 gold
+9454 acq
+9463 earn
+9465 earn
+9469 acq
+9470 corn grain sugar
+9472 acq
+9473 ship
+9475 earn
+9477 earn
+9478 earn
+9479 ship
+9484 earn
+9486 earn
+9487 acq
+9488 earn
+9489 gold
+9491 earn
+9493 trade
+9497 acq
+9498 money-fx trade
+9499 acq
+9502 earn
+9503 earn
+9505 earn
+9509 acq
+9510 acq
+9511 earn
+9515 trade
+9519 earn
+9521 sunseed sorghum soybean oilseed corn grain
+9525 earn
+9526 acq
+9527 crude
+9530 earn
+9531 earn
+9532 trade
+9534 money-fx
+9535 money-fx
+9538 acq
+9539 acq
+9543 earn
+9544 acq
+9547 earn
+9549 earn
+9550 veg-oil
+9551 earn
+9554 iron-steel
+9556 earn
+9557 acq
+9558 earn
+9559 cocoa
+9560 earn
+9561 acq
+9562 earn
+9563 earn
+9565 acq
+9566 earn
+9570 acq
+9572 earn
+9573 jet
+9576 earn
+9577 earn
+9578 earn
+9580 earn
+9582 acq
+9583 nat-gas crude
+9585 hog livestock
+9587 earn
+9588 earn
+9590 earn
+9592 iron-steel trade
+9597 acq
+9598 earn
+9599 earn
+9600 trade
+9603 trade
+9604 ship
+9605 earn
+9606 earn
+9607 acq
+9608 acq
+9610 earn
+9611 earn
+9612 earn
+9613 earn
+9614 gas crude
+9615 housing
+9617 soybean oilseed
+9618 earn
+9619 acq
+9625 earn
+9626 acq
+9628 trade
+9634 gas crude
+9635 acq
+9637 acq
+9638 acq
+9639 nat-gas crude
+9640 acq
+9641 earn
+9642 acq
+9644 acq
+9647 earn
+9650 nat-gas crude
+9652 earn
+9654 coffee
+9656 interest money-fx
+9657 trade
+9661 acq
+9667 corn grain
+9668 acq
+9671 earn
+9674 crude
+9675 interest
+9677 acq
+9678 earn
+9680 coffee
+9681 money-fx
+9682 earn
+9686 money-fx
+9689 money-fx
+9697 trade
+9698 yen money-fx
+9699 money-fx
+9700 money-supply
+9701 interest yen money-fx
+9704 trade
+9705 rice grain
+9706 earn
+9707 earn
+9712 trade
+9718 ship crude
+9720 money-fx
+9723 earn
+9727 money-fx
+9728 earn
+9729 bop trade
+9730 interest money-fx
+9731 acq
+9733 acq
+9734 earn
+9735 interest
+9736 earn
+9737 acq
+9738 alum
+9741 earn
+9742 acq
+9744 earn
+9745 money-fx
+9746 sugar
+9747 bop
+9748 trade
+9749 trade bop
+9751 trade jobs
+9752 money-supply
+9753 money-fx
+9754 carcass livestock
+9755 acq
+9756 oilseed meal-feed veg-oil
+9760 earn
+9761 earn
+9763 trade
+9764 money-fx
+9767 trade
+9768 trade bop
+9769 gnp
+9770 bop trade
+9771 earn
+9772 grain
+9773 wheat grain
+9777 trade
+9779 acq
+9781 money-fx
+9782 wheat grain
+9783 dlr money-fx
+9784 money-fx interest bop trade
+9787 reserves
+9792 money-fx
+9793 wheat grain
+9795 trade
+9797 money-fx
+9799 gold
+9801 ship crude
+9804 earn
+9805 jobs
+9807 earn
+9809 acq
+9810 earn
+9812 jobs
+9814 acq
+9815 earn
+9816 bop trade
+9818 earn
+9821 bop trade
+9822 reserves
+9823 acq
+9824 cpi
+9825 earn
+9827 earn
+9829 cpi
+9833 acq
+9834 jobs
+9836 bop trade
+9837 earn
+9839 earn
+9841 interest
+9844 acq
+9847 trade
+9848 money-fx interest bop trade
+9849 crude trade
+9850 acq
+9851 money-fx
+9852 money-fx
+9853 gold
+9855 interest money-fx
+9857 money-fx
+9858 acq
+9860 earn
+9861 earn
+9862 dlr money-fx
+9864 trade money-fx
+9865 barley wheat corn grain
+9866 gold
+9867 acq
+9868 earn
+9869 earn
+9871 dlr money-fx
+9872 acq
+9874 earn
+9875 earn
+9878 earn
+9880 money-fx
+9884 earn
+9891 acq
+9892 alum
+9893 acq
+9894 earn
+9896 earn
+9897 jobs trade
+9901 earn
+9902 earn
+9903 cocoa
+9904 earn
+9905 reserves
+9906 ship
+9907 grain
+9909 earn
+9912 gas
+9913 crude acq
+9914 earn
+9915 gas
+9918 acq
+9919 soybean oilseed
+9920 acq
+9923 money-fx
+9925 acq
+9926 acq
+9927 earn
+9928 acq
+9929 acq
+9930 earn
+9933 veg-oil
+9934 earn
+9936 earn
+9937 earn
+9939 earn
+9940 earn
+9941 sugar
+9942 acq
+9943 interest
+9946 yen dlr money-fx
+9947 crude acq
+9952 earn
+9953 cocoa
+9954 acq
+9955 money-fx
+9956 earn
+9957 money-fx trade
+9958 barley corn grain
+9959 earn
+9961 earn
+9963 earn
+9964 earn
+9965 earn
+9967 earn
+9970 earn
+9971 acq
+9972 interest
+9973 earn
+9974 retail
+9975 money-fx
+9976 acq
+9977 acq
+9978 acq
+9981 earn
+9982 veg-oil
+9984 acq
+9985 earn
+9988 interest
+9989 corn grain
+9992 earn
+9993 earn
+9994 earn
+9995 earn
+10000 earn
+10002 earn
+10005 acq trade
+10008 earn
+10011 nat-gas crude
+10014 sugar cocoa coffee
+10015 veg-oil
+10018 acq
+10023 earn
+10025 acq
+10027 earn
+10032 earn
+10035 earn
+10037 earn
+10038 gas
+10040 earn
+10041 earn
+10042 acq
+10043 ship iron-steel
+10046 earn
+10048 money-fx
+10049 acq
+10050 earn
+10052 acq
+10053 earn
+10054 earn
+10057 earn
+10058 acq
+10061 earn
+10062 cotton
+10064 earn
+10065 acq
+10066 acq
+10067 earn
+10068 earn
+10071 acq
+10073 earn acq
+10074 earn
+10075 dlr money-fx
+10076 earn
+10078 crude acq
+10079 money-supply
+10080 crude
+10081 dlr money-fx
+10083 earn
+10085 earn
+10086 acq
+10088 acq
+10089 earn
+10090 earn
+10091 interest money-fx
+10092 earn
+10094 earn
+10095 earn
+10096 earn
+10097 earn
+10098 acq
+10099 earn
+10100 coffee
+10102 acq
+10105 earn
+10106 crude acq
+10107 sugar
+10108 earn
+10109 earn
+10110 earn
+10112 earn
+10114 earn
+10115 earn
+10119 earn
+10120 corn wheat grain
+10122 cocoa
+10124 carcass livestock sugar grain
+10128 acq
+10129 acq
+10130 earn
+10135 jobs gnp
+10136 money-fx
+10139 corn grain acq
+10140 earn
+10146 acq
+10151 strategic-metal
+10153 money-supply
+10154 money-supply
+10155 money-supply
+10156 interest
+10158 acq
+10162 earn
+10163 earn
+10165 earn
+10168 crude acq
+10171 acq
+10172 soybean oilseed wheat corn grain
+10173 earn
+10174 earn
+10175 barley sorghum soy-oil veg-oil meal-feed soybean oilseed wheat corn grain
+10176 money-supply
+10177 money-supply
+10178 money-supply
+10180 earn
+10181 earn
+10183 money-supply
+10185 earn
+10186 earn
+10190 nat-gas crude acq
+10191 money-fx
+10192 crude
+10196 earn
+10197 earn
+10200 crude
+10201 earn
+10207 earn
+10208 earn
+10209 trade
+10211 earn
+10213 acq
+10214 gold
+10215 earn
+10216 gold
+10218 earn acq
+10219 acq
+10222 earn
+10224 acq
+10225 earn
+10227 earn
+10228 nat-gas crude
+10230 ipi
+10231 earn
+10233 earn
+10235 earn
+10237 earn
+10238 acq
+10240 earn
+10242 earn
+10243 earn
+10245 earn
+10246 interest money-supply
+10253 earn
+10254 earn
+10255 trade
+10258 alum
+10260 cpi
+10261 cpi
+10262 reserves
+10263 dlr money-fx
+10264 trade
+10265 trade
+10268 crude iron-steel coffee tea wheat grain trade
+10272 earn
+10275 trade iron-steel
+10277 interest
+10280 earn
+10281 earn
+10282 earn
+10283 ipi
+10284 earn
+10285 ipi
+10289 gnp
+10291 earn
+10292 earn
+10294 bop
+10295 bop
+10297 trade bop
+10299 sugar
+10300 castor-oil veg-oil oilseed
+10302 ship
+10305 wheat grain
+10306 sugar
+10308 dlr money-fx
+10310 acq
+10311 acq
+10313 acq
+10314 ipi
+10315 iron-steel
+10318 earn
+10319 corn grain
+10321 money-fx
+10322 alum
+10323 dlr money-fx
+10324 alum
+10328 earn
+10330 rape-oil veg-oil
+10332 tin
+10334 carcass
+10335 acq
+10337 dlr money-fx
+10338 earn
+10339 corn grain
+10340 money-fx gnp
+10341 bop trade
+10342 earn
+10344 dfl money-fx
+10347 trade
+10348 acq
+10349 earn
+10352 trade
+10354 money-fx
+10355 trade
+10356 money-fx
+10357 dlr money-fx
+10358 money-fx
+10359 money-fx
+10361 acq
+10362 trade bop
+10364 yen dlr money-fx
+10367 sugar
+10368 money-fx
+10370 dlr money-fx
+10371 acq
+10372 bop trade
+10373 sugar carcass
+10375 trade
+10376 bop trade
+10377 cpi
+10381 earn
+10382 dlr money-fx
+10384 cpi
+10385 cpi
+10387 earn
+10388 ship
+10390 earn
+10391 ship
+10393 earn
+10394 ship
+10395 ship crude
+10397 interest
+10398 earn
+10399 acq
+10401 earn
+10402 earn
+10403 cocoa
+10404 acq
+10406 crude iron-steel tea coffee wheat grain trade
+10411 earn
+10412 earn
+10414 acq
+10416 money-fx
+10418 money-fx
+10419 acq
+10423 acq
+10427 earn
+10429 acq
+10430 earn
+10431 earn
+10432 earn
+10434 acq
+10435 acq
+10436 earn
+10439 earn
+10440 earn
+10442 acq
+10444 wheat grain
+10445 earn
+10446 acq
+10447 earn
+10449 cocoa
+10452 ship crude
+10453 acq
+10454 acq
+10455 trade
+10458 acq
+10459 earn
+10462 acq
+10464 interest
+10467 acq
+10470 earn
+10471 cocoa
+10472 earn
+10473 acq
+10475 dlr money-fx
+10478 earn
+10484 earn
+10485 lead zinc silver gold
+10487 corn grain
+10489 grain corn
+10491 cocoa
+10494 wheat grain
+10498 earn
+10499 earn
+10500 earn
+10503 money-fx interest
+10505 cocoa
+10506 cocoa
+10508 acq
+10509 earn
+10515 earn
+10518 acq
+10519 rice wheat corn grain
+10520 trade ipi
+10521 nat-gas
+10524 earn
+10527 acq
+10529 earn
+10530 trade
+10531 reserves gnp
+10532 earn
+10534 earn
+10536 earn
+10537 cotton
+10538 earn
+10539 ship crude
+10541 acq
+10542 earn
+10544 earn
+10545 interest
+10546 money-fx gold
+10547 earn
+10548 earn
+10551 acq
+10553 cpi
+10555 acq
+10556 earn
+10559 ship
+10561 earn
+10563 acq
+10564 earn
+10565 earn
+10566 earn
+10567 propane heat nat-gas crude cpi
+10569 grain wheat
+10573 earn
+10576 acq
+10581 pet-chem
+10582 acq ship
+10584 cocoa
+10585 acq
+10586 cocoa
+10587 acq
+10588 ship crude
+10590 oilseed
+10592 money-supply
+10593 alum
+10594 money-supply
+10596 acq
+10597 earn
+10598 earn
+10599 earn
+10600 earn
+10601 earn
+10602 income
+10604 income
+10606 money-fx
+10608 trade
+10609 earn
+10610 earn
+10611 earn
+10612 earn
+10613 cocoa
+10615 rubber
+10616 carcass livestock
+10617 dlr money-fx
+10618 money-fx
+10619 cocoa
+10620 crude ship
+10621 ship crude
+10622 money-fx
+10623 trade
+10625 trade
+10627 crude ship
+10632 crude
+10633 money-fx
+10634 reserves
+10636 money-fx
+10638 money-fx
+10640 coffee
+10641 crude ship
+10642 trade
+10643 grain trade
+10644 earn
+10648 earn
+10650 dlr money-fx
+10651 dlr money-fx
+10652 dlr money-fx
+10653 dlr money-fx
+10654 dlr money-fx
+10657 dlr money-fx
+10658 dlr money-fx
+10659 dlr money-fx
+10660 dlr money-fx
+10661 money-fx
+10662 gold
+10665 trade
+10669 crude
+10674 acq
+10676 acq
+10678 nickel
+10679 yen dlr money-fx
+10681 yen dlr money-fx
+10682 coffee
+10684 yen dlr money-fx
+10685 earn
+10687 sugar
+10688 earn
+10689 dlr yen money-fx
+10692 acq
+10693 crude
+10694 acq
+10695 trade
+10696 yen dlr money-fx
+10699 earn
+10701 corn grain
+10702 earn
+10703 earn
+10704 money-fx
+10705 soybean oilseed
+10708 money-supply
+10709 alum
+10710 money-fx
+10712 coconut oilseed
+10714 acq
+10715 earn
+10717 ship
+10718 yen dmk money-fx
+10720 coconut oilseed
+10721 acq
+10724 cpi
+10729 rubber
+10731 dlr money-fx
+10734 money-fx
+10736 dlr money-fx
+10737 money-supply
+10738 earn
+10742 cocoa
+10743 earn
+10744 acq
+10746 money-supply
+10748 ship
+10749 money-fx
+10750 crude
+10751 dmk dlr money-fx
+10752 coffee
+10754 money-supply
+10755 money-fx
+10756 money-fx
+10757 money-supply
+10758 rape-oil sun-oil veg-oil rapeseed sunseed oilseed
+10760 cocoa
+10762 yen dlr money-fx
+10766 yen dlr money-fx
+10767 trade
+10768 acq
+10769 yen dlr money-fx
+10770 yen dlr money-fx
+10771 money-fx trade
+10773 money-fx
+10774 money-fx
+10779 trade
+10780 trade money-fx
+10781 trade
+10782 dlr money-fx
+10784 acq
+10786 acq
+10787 acq
+10788 acq
+10790 earn
+10794 acq
+10796 money-fx
+10797 ship crude
+10803 ship sugar
+10804 yen money-fx
+10805 earn
+10807 trade money-fx
+10808 money-fx
+10809 money-fx
+10811 gold
+10815 acq
+10816 acq
+10817 earn
+10822 earn
+10825 trade
+10826 earn
+10827 gnp
+10830 rice wheat grain
+10831 acq
+10832 earn
+10833 earn
+10834 acq
+10839 earn
+10840 earn
+10841 earn
+10843 acq
+10844 acq
+10845 crude
+10847 earn
+10848 acq
+10849 acq
+10851 earn
+10853 earn
+10855 earn
+10856 earn
+10857 livestock hog
+10859 money-fx
+10860 fuel
+10864 money-fx
+10867 acq
+10868 gold
+10870 earn
+10871 acq
+10872 acq
+10873 crude
+10874 acq
+10876 coffee
+10877 earn
+10879 earn
+10882 soybean oilseed corn wheat grain
+10883 acq
+10884 earn
+10885 earn
+10886 pet-chem rubber
+10887 acq
+10891 earn
+10892 acq
+10893 earn
+10894 earn
+10895 acq
+10897 earn
+10899 acq
+10901 acq
+10902 coffee
+10903 veg-oil
+10904 earn
+10905 trade
+10907 earn
+10908 acq
+10909 acq
+10913 money-fx
+10917 earn
+10918 acq
+10919 earn
+10921 earn
+10922 earn
+10923 earn
+10924 earn
+10925 earn
+10926 earn
+10928 acq
+10931 nzdlr
+10941 acq
+10943 earn
+10944 earn
+10946 earn
+10947 crude
+10950 acq
+10956 corn wheat grain
+10959 coffee
+10960 acq
+10961 acq
+10962 acq
+10963 earn
+10964 earn
+10966 earn
+10969 gold acq
+10971 acq
+10972 earn
+10973 earn
+10974 earn
+10978 acq
+10980 earn
+10983 earn
+10985 acq
+10988 acq
+10989 acq
+10992 acq
+10994 gold acq
+10998 acq
+10999 earn
+11000 money-fx
+11006 acq
+11007 crude
+11012 soybean oilseed corn wheat grain
+11015 earn
+11018 earn
+11019 earn
+11025 crude
+11027 earn
+11028 earn
+11029 acq
+11030 iron-steel
+11031 earn
+11034 earn
+11035 earn
+11036 earn
+11039 iron-steel
+11040 wheat grain
+11041 acq
+11043 sugar
+11046 earn
+11047 earn
+11048 acq
+11049 earn
+11051 acq
+11052 rapeseed oilseed
+11056 acq
+11057 earn
+11058 earn
+11059 money-fx
+11060 earn
+11063 acq
+11064 cotton
+11065 grain
+11066 acq
+11070 fuel
+11071 orange
+11074 acq
+11076 trade
+11078 acq
+11083 gnp interest
+11085 corn wheat grain
+11086 acq
+11087 earn
+11088 acq
+11090 earn
+11091 cotton sorghum corn wheat grain
+11093 nat-gas
+11095 acq
+11098 earn
+11100 crude
+11101 acq
+11102 acq
+11103 money-fx
+11104 iron-steel
+11105 earn
+11106 earn
+11107 iron-steel
+11109 earn
+11111 earn
+11112 earn
+11113 acq
+11115 earn
+11118 crude
+11119 wheat grain
+11120 money-fx dlr
+11121 iron-steel
+11123 earn
+11124 earn alum iron-steel
+11126 acq
+11127 bop
+11128 earn
+11132 earn
+11133 acq
+11134 acq
+11135 money-fx dlr
+11136 acq
+11137 bop
+11139 acq
+11143 acq
+11144 acq
+11145 earn
+11149 crude
+11153 earn
+11154 earn
+11156 earn
+11158 earn
+11159 jobs
+11160 jobs
+11161 acq
+11162 dlr
+11163 dlr
+11164 dlr
+11166 sugar
+11168 earn
+11170 housing
+11171 earn
+11173 sugar
+11174 trade
+11175 trade
+11177 acq
+11179 iron-steel
+11181 earn
+11183 coffee
+11185 bop
+11190 zinc
+11191 gnp
+11192 acq
+11193 money-fx
+11196 earn
+11197 cpi
+11198 trade
+11200 interest money-fx
+11201 acq
+11202 acq
+11203 yen money-fx
+11205 earn
+11208 barley wheat grain
+11209 trade money-fx
+11210 acq
+11211 earn
+11212 dmk dlr money-fx
+11213 crude sugar acq
+11216 rice grain
+11220 earn
+11221 earn
+11222 trade
+11224 rubber coffee cocoa wheat grain sugar tin
+11225 trade
+11227 earn
+11228 money-fx
+11229 trade
+11230 sugar
+11231 sugar nat-gas crude
+11232 earn
+11233 oilseed
+11234 money-fx
+11236 acq
+11237 acq
+11238 interest money-fx
+11239 acq
+11241 earn
+11242 acq
+11243 earn
+11244 interest money-fx
+11249 earn
+11251 ship
+11252 acq
+11253 acq
+11254 dlr yen trade
+11255 acq
+11256 money-fx
+11257 acq
+11259 lei
+11260 trade
+11261 lei
+11263 interest money-fx
+11265 coffee
+11268 acq
+11269 corn grain
+11270 earn
+11271 ship
+11272 earn
+11273 alum
+11274 acq
+11276 jobs
+11277 earn
+11278 carcass
+11279 acq
+11281 trade money-fx
+11282 earn
+11283 earn
+11284 money-fx
+11285 acq
+11287 trade
+11289 acq
+11291 gnp
+11292 acq
+11295 acq
+11297 money-fx
+11299 acq
+11300 earn
+11301 earn
+11302 earn
+11305 earn
+11306 earn
+11307 earn
+11308 earn
+11314 interest
+11315 trade
+11316 barley wheat grain
+11317 earn
+11320 earn
+11322 money-fx
+11324 acq
+11327 gnp
+11330 sugar
+11333 earn
+11335 earn
+11336 earn
+11338 earn
+11340 earn
+11341 cocoa sugar coffee
+11343 wheat grain
+11344 acq
+11348 acq
+11349 acq
+11350 nat-gas crude
+11352 trade
+11354 earn
+11356 lei gnp
+11357 trade
+11358 earn
+11359 earn
+11362 acq
+11365 interest money-fx
+11369 acq
+11370 earn
+11371 alum
+11372 coffee
+11373 acq
+11374 acq
+11377 earn
+11378 acq
+11379 ipi
+11380 wheat grain
+11381 earn
+11384 trade
+11385 ship
+11386 acq
+11387 sugar
+11388 crude earn
+11390 trade
+11392 corn wheat grain
+11393 acq
+11394 earn
+11395 earn
+11396 acq
+11397 trade
+11399 wheat grain
+11400 earn
+11402 acq
+11403 crude
+11405 acq
+11406 gas
+11407 earn
+11413 earn
+11415 wheat grain
+11416 earn
+11417 money-fx
+11418 earn
+11420 trade
+11421 crude
+11422 interest
+11424 earn
+11425 interest
+11427 wheat grain
+11428 earn
+11429 earn
+11430 money-fx
+11431 acq
+11433 earn
+11435 earn
+11436 corn grain
+11437 veg-oil
+11440 earn
+11441 acq
+11443 earn
+11444 crude
+11445 wheat grain
+11446 trade
+11447 money-fx
+11449 acq
+11450 money-fx
+11451 earn
+11452 earn
+11455 crude
+11459 cocoa
+11460 trade
+11461 trade
+11462 cocoa sugar coffee
+11464 acq
+11465 acq
+11466 nat-gas
+11468 acq
+11469 acq
+11470 earn
+11475 earn
+11476 earn
+11477 acq
+11478 earn
+11479 earn
+11481 earn
+11484 acq
+11487 trade
+11488 acq
+11490 earn
+11491 heat gas crude
+11492 acq
+11494 earn
+11496 trade
+11497 earn
+11498 trade
+11499 earn
+11500 earn
+11501 earn
+11503 earn
+11504 acq
+11505 acq
+11506 earn
+11507 cotton
+11508 acq
+11510 earn
+11514 acq
+11515 acq
+11519 lumber
+11522 acq
+11523 acq
+11526 acq
+11527 acq
+11528 earn
+11529 earn
+11536 rice grain
+11539 acq
+11540 earn
+11541 oilseed
+11543 earn
+11544 carcass
+11545 trade
+11546 lei
+11549 earn
+11550 acq
+11551 money-fx
+11553 acq
+11554 trade
+11555 trade
+11558 trade
+11559 crude
+11563 acq
+11564 earn
+11565 earn
+11566 earn
+11567 earn
+11568 earn
+11569 earn
+11570 earn
+11571 earn
+11572 earn
+11574 trade
+11575 earn
+11578 earn
+11579 acq
+11580 trade
+11584 acq
+11587 ship
+11588 earn
+11597 acq
+11598 acq
+11599 acq
+11602 acq
+11607 soybean oilseed corn grain
+11608 wheat grain
+11609 sorghum cotton
+11610 wheat grain
+11611 sugar
+11612 soybean oilseed corn grain
+11614 earn
+11617 earn
+11619 acq
+11621 earn
+11622 earn
+11623 acq
+11625 pet-chem
+11627 gold
+11628 earn
+11629 earn
+11630 earn
+11632 nat-gas crude
+11633 earn
+11634 trade
+11635 earn
+11636 earn
+11637 earn
+11638 gold
+11639 crude
+11640 cotton rice grain
+11643 earn
+11644 earn
+11645 wheat grain
+11649 earn
+11655 rice wheat grain
+11657 acq
+11658 trade
+11660 interest
+11661 acq
+11663 earn
+11664 earn
+11665 housing
+11666 earn
+11667 earn
+11668 earn
+11671 cotton wheat grain veg-oil
+11674 earn
+11679 acq
+11682 earn
+11683 earn
+11684 earn
+11685 earn
+11687 earn
+11689 earn
+11690 earn
+11694 wheat grain ship
+11696 earn
+11697 earn
+11699 gas crude
+11700 earn
+11701 earn
+11702 earn
+11705 earn
+11706 iron-steel
+11707 acq
+11708 earn
+11711 earn
+11713 earn
+11714 earn
+11716 interest
+11717 earn
+11721 earn
+11722 acq
+11723 crude
+11724 earn
+11725 earn
+11726 earn
+11727 earn
+11728 earn
+11729 corn grain
+11730 earn
+11731 crude
+11733 earn
+11734 money-fx
+11736 earn
+11738 acq
+11739 soybean oilseed corn grain
+11743 acq
+11744 acq
+11746 interest
+11748 acq
+11750 earn
+11751 acq
+11752 earn
+11753 money-fx
+11754 earn
+11755 acq
+11756 earn
+11758 earn
+11762 acq
+11763 acq
+11764 yen dlr money-fx
+11765 money-supply
+11767 alum
+11768 grain
+11769 cotton corn grain
+11771 trade
+11772 yen dlr money-fx
+11773 earn
+11774 money-fx dlr
+11775 rubber
+11776 money-fx gnp interest
+11778 veg-oil oilseed palmkernel palm-oil
+11783 dlr money-fx
+11787 earn
+11789 gnp
+11790 acq
+11791 acq
+11793 acq
+11794 money-fx
+11795 gnp
+11798 money-fx
+11801 tin
+11802 earn
+11808 acq
+11811 cocoa
+11812 acq
+11813 iron-steel ship
+11815 grain wheat
+11816 acq coffee
+11817 interest
+11820 interest money-fx
+11821 acq
+11822 acq
+11825 acq
+11826 sugar
+11829 acq
+11830 gold
+11831 interest
+11832 money-fx
+11833 acq
+11834 grain wheat
+11836 oilseed coconut
+11837 acq
+11839 silver gold
+11840 meal-feed veg-oil oilseed grain ship
+11841 acq
+11843 cocoa
+11844 money-fx dlr
+11847 acq
+11848 interest
+11850 earn
+11852 silver gold
+11854 acq
+11855 earn
+11856 earn
+11858 interest
+11859 earn
+11860 acq
+11861 interest
+11862 grain
+11863 acq
+11864 money-fx
+11866 coffee
+11867 acq
+11871 acq
+11872 acq
+11873 acq
+11876 acq
+11877 earn
+11878 earn
+11879 earn
+11880 gas heat
+11882 bop coffee gnp
+11883 earn
+11884 earn
+11885 ship oilseed grain rapeseed corn barley wheat
+11886 veg-oil grain wheat
+11888 acq
+11891 acq
+11892 acq
+11893 sugar
+11894 cpi
+11895 acq
+11896 earn
+11898 earn
+11900 interest
+11903 interest
+11904 earn
+11905 acq
+11907 interest
+11908 earn
+11909 acq
+11910 acq
+11911 oilseed grain ship
+11913 interest
+11914 livestock hog
+11915 acq
+11916 acq
+11918 iron-steel earn
+11920 acq
+11923 acq
+11925 earn
+11930 earn
+11932 veg-oil
+11933 earn
+11934 interest
+11935 lead
+11936 soybean corn oilseed grain
+11938 money-fx
+11939 soybean corn oilseed grain
+11940 interest
+11941 interest
+11944 dmk dlr money-fx
+11945 copper
+11946 money-fx
+11947 earn
+11949 coffee gnp
+11953 veg-oil
+11954 acq
+11957 livestock
+11958 lead
+11960 interest
+11961 livestock
+11962 acq
+11964 oilseed grain soybean sunseed corn
+11966 earn
+11967 earn
+11968 acq
+11970 cotton
+11972 dmk nkr dlr money-fx
+11976 earn
+11977 earn
+11978 earn
+11979 earn
+11980 earn
+11981 acq
+11982 acq
+11983 earn
+11984 oilseed soybean
+11989 interest
+11990 earn
+11993 earn
+11994 earn
+11996 acq
+11997 acq
+11999 strategic-metal acq
+12001 earn
+12002 oilseed grain soybean corn wheat
+12003 sugar
+12005 earn
+12007 strategic-metal acq
+12008 coffee
+12009 grain wheat
+12010 interest
+12011 coffee
+12014 earn
+12016 interest
+12017 earn
+12018 acq
+12019 interest
+12022 earn
+12024 copper
+12027 interest
+12028 acq
+12031 earn
+12032 acq
+12033 earn
+12035 earn
+12036 earn
+12040 interest
+12042 earn
+12044 earn
+12045 earn
+12046 iron-steel
+12048 earn
+12049 acq
+12050 earn
+12052 grain sorghum corn
+12053 acq
+12054 acq
+12055 grain corn
+12059 earn
+12061 earn
+12063 earn
+12064 earn
+12067 earn
+12068 acq
+12073 interest
+12076 oilseed rapeseed
+12077 earn
+12078 earn
+12079 earn
+12080 cpi
+12081 ship grain
+12083 acq
+12084 interest
+12085 earn
+12087 acq
+12091 interest
+12093 acq
+12094 acq
+12098 earn
+12101 interest
+12102 interest
+12106 acq
+12110 earn
+12112 interest
+12114 earn
+12115 earn
+12117 sugar
+12119 earn
+12121 money-fx
+12122 interest
+12125 interest
+12127 acq
+12128 earn
+12131 interest
+12132 acq
+12133 acq
+12135 sugar
+12136 money-fx dlr
+12138 acq
+12139 acq
+12140 acq
+12145 yen dlr money-fx
+12146 acq
+12147 interest
+12149 earn
+12150 earn
+12152 coffee
+12153 earn
+12154 earn
+12155 earn
+12156 acq
+12159 earn
+12160 sorghum soybean corn sunseed oilseed grain
+12161 ship grain
+12162 ship
+12163 earn
+12164 ship
+12166 earn
+12169 earn
+12171 acq
+12172 acq
+12173 acq
+12174 ship sugar
+12176 earn
+12177 money-fx
+12178 acq
+12179 ship
+12182 earn
+12183 interest money-fx
+12184 earn
+12185 earn
+12186 acq
+12187 earn
+12191 acq
+12192 oilseed soybean wheat grain
+12195 acq
+12197 interest
+12201 earn
+12202 earn
+12203 acq
+12204 earn
+12205 acq
+12207 earn
+12208 coffee
+12209 gas
+12211 earn
+12213 acq
+12215 copper
+12216 earn
+12219 acq
+12221 acq
+12222 acq
+12223 copper
+12224 veg-oil
+12225 acq
+12226 acq
+12227 earn
+12229 interest
+12231 earn
+12235 interest
+12236 acq
+12237 earn
+12239 earn
+12240 earn
+12243 silver
+12244 earn
+12246 interest
+12249 ship
+12250 acq
+12251 interest
+12254 groundnut soybean rapeseed sunseed grain wheat cotton oilseed
+12255 earn
+12257 livestock carcass
+12258 earn
+12259 interest
+12260 interest
+12261 wheat grain
+12266 earn
+12267 crude
+12269 grain wheat
+12270 ship
+12271 earn
+12274 interest
+12275 oilseed groundnut
+12276 acq
+12278 interest
+12281 acq
+12283 earn
+12285 earn
+12286 crude
+12288 earn
+12293 earn
+12294 earn
+12296 earn
+12298 acq
+12301 earn
+12302 interest
+12303 earn
+12304 earn
+12305 acq
+12306 earn
+12309 acq
+12311 grain corn
+12312 nat-gas
+12313 nat-gas
+12315 fuel
+12316 interest
+12317 earn
+12318 earn
+12321 acq
+12323 grain corn
+12325 wheat grain
+12327 ship grain
+12331 acq
+12332 livestock
+12333 interest
+12334 earn
+12336 interest
+12337 dlr interest
+12338 grain
+12339 acq
+12340 coffee
+12341 earn
+12344 acq
+12345 acq
+12346 earn
+12348 soybean oilseed
+12350 acq
+12351 earn
+12352 earn
+12353 earn
+12355 coffee
+12356 acq
+12361 soy-meal sun-meal meal-feed
+12362 earn
+12364 earn
+12366 ship grain
+12368 acq
+12371 crude ship
+12372 veg-oil cotton oilseed groundnut livestock carcass sugar corn wheat grain
+12374 acq
+12375 meal-feed
+12376 carcass livestock
+12378 acq
+12379 earn
+12380 earn
+12382 earn
+12383 earn
+12386 acq
+12389 earn
+12390 acq
+12391 earn
+12394 earn
+12395 acq
+12396 dlr interest money-fx
+12397 earn
+12398 interest
+12399 coffee
+12400 earn
+12401 cocoa trade
+12403 ipi
+12404 pet-chem
+12406 interest money-fx
+12407 ipi
+12408 earn
+12409 acq
+12410 interest money-fx
+12411 sugar
+12413 money-fx
+12415 sugar
+12416 reserves money-fx
+12417 sorghum corn grain
+12418 interest money-fx
+12420 wheat grain
+12421 earn
+12422 dlr money-fx
+12423 sugar
+12424 coffee
+12425 soy-oil veg-oil soy-meal soybean oilseed
+12426 coffee
+12428 barley wheat grain
+12429 wpi money-supply
+12432 earn
+12433 reserves
+12435 reserves
+12436 corn grain
+12437 dlr money-fx
+12439 oilseed pet-chem
+12441 acq
+12442 gold
+12443 acq
+12447 money-fx interest
+12448 earn
+12449 acq
+12453 interest money-fx
+12454 acq
+12455 interest
+12456 interest money-fx
+12457 trade
+12458 wheat grain
+12460 acq
+12461 gnp
+12462 sugar
+12463 earn
+12464 cpi
+12465 coffee
+12466 ipi
+12468 acq
+12469 interest
+12470 interest yen dlr money-fx
+12471 interest money-fx
+12472 trade
+12473 trade
+12480 reserves
+12483 interest
+12484 alum nickel silver zinc lead copper
+12485 acq
+12487 earn
+12488 earn
+12489 copper
+12490 coffee
+12492 acq
+12494 interest money-fx
+12495 interest
+12500 corn wheat grain
+12501 interest money-fx
+12503 crude
+12504 acq
+12505 earn
+12506 earn
+12507 jobs
+12508 earn
+12509 interest
+12511 earn
+12512 acq
+12514 interest
+12515 earn
+12516 earn
+12517 earn
+12520 earn
+12521 earn
+12522 dmk dlr money-fx
+12523 money-fx
+12524 earn
+12525 dmk
+12529 acq
+12530 acq
+12531 earn
+12532 acq
+12533 crude iron-steel
+12534 jobs
+12538 acq
+12540 acq
+12543 wheat grain
+12545 earn
+12546 acq
+12549 earn
+12550 earn
+12551 earn
+12554 interest money-fx
+12555 jobs
+12557 acq
+12558 trade
+12559 earn
+12562 earn
+12563 trade
+12564 trade
+12569 earn
+12570 earn
+12571 interest
+12572 earn
+12573 earn
+12574 earn
+12576 gnp money-supply
+12579 earn
+12580 earn
+12583 corn grain
+12585 palm-oil veg-oil
+12587 corn grain
+12588 money-fx
+12592 interest
+12593 money-fx
+12728 nat-gas
+12731 interest
+12732 interest
+12737 orange livestock carcass
+12741 interest money-fx
+12743 jobs
+12745 interest money-fx
+12746 veg-oil palm-oil
+12748 money-supply
+12751 acq
+12752 jobs
+12753 soy-meal meal-feed
+12754 tea
+12755 trade
+12757 oilseed soybean
+12758 money-supply
+12759 acq
+12760 sugar
+12761 ship
+12762 grain wheat
+12763 cocoa
+12767 acq
+12768 ship grain
+12770 ship pet-chem
+12771 ipi gnp cpi
+12772 sugar
+12774 interest
+12775 crude
+12778 sugar
+12780 money-fx dlr
+12783 earn
+12785 money-fx
+12786 soy-oil veg-oil
+12787 meal-feed soy-meal
+12788 gnp
+12789 interest money-fx
+12790 sugar
+12791 money-fx
+12795 dlr money-fx
+12796 silver gold
+12797 acq
+12799 earn
+12801 reserves money-fx
+12802 grain wheat
+12803 crude
+12805 interest
+12806 money-fx
+12810 interest
+12812 interest money-fx
+12813 cocoa
+12814 coffee
+12815 money-fx
+12817 reserves
+12818 jobs
+12819 interest money-fx
+12822 acq
+12823 ship
+12824 earn
+12827 acq
+12829 reserves
+12830 grain
+12831 earn
+12834 acq
+12836 alum
+12839 acq
+12840 interest money-fx
+12841 money-supply
+12842 money-fx
+12843 coffee
+12846 interest
+12848 trade
+12849 grain ship
+12851 nat-gas
+12852 acq
+12853 acq
+12857 copper
+12858 acq
+12860 earn
+12861 copper
+12862 earn
+12866 acq
+12869 earn
+12872 grain corn
+12874 earn
+12875 reserves
+12877 dmk dlr money-fx
+12878 earn
+12880 interest
+12882 interest
+12883 acq
+12885 earn
+12886 earn
+12887 grain wheat
+12888 acq
+12889 acq
+12890 acq
+12891 interest
+12893 earn
+12897 earn
+12898 earn
+12900 acq
+12901 earn
+12904 earn
+12905 acq
+12907 tea
+12908 interest
+12910 copper
+12912 interest
+12914 earn
+12915 earn
+12917 earn
+12919 interest
+12923 interest money-fx
+12924 ship
+12929 earn
+12933 acq
+12935 heat
+12937 acq
+12940 crude
+12943 lumber
+12948 lumber
+12949 earn
+12956 acq
+12959 rubber
+12962 earn
+12963 gold
+12965 acq
+12969 cotton
+12971 grain wheat
+12973 acq
+12974 acq
+12978 earn
+12980 copper
+12981 acq
+12982 oilseed rapeseed
+12986 bop gnp
+12987 gold
+12988 acq
+12992 copper
+12995 acq
+12996 acq
+13003 copper
+13005 acq
+13006 earn
+13007 cpi
+13008 interest
+13010 money-supply
+13011 acq
+13014 earn
+13019 money-supply
+13021 acq
+13023 acq
+13024 interest
+13025 earn
+13026 earn
+13027 earn
+13031 earn
+13032 earn
+13036 acq
+13037 acq
+13039 trade
+13041 acq
+13043 acq
+13045 trade
+13046 trade
+13052 strategic-metal
+13053 money-fx
+13054 acq
+13059 earn
+13060 acq
+13062 earn
+13064 earn
+13067 grain
+13070 grain
+13072 acq
+13077 acq
+13078 earn
+13080 coconut-oil palm-oil veg-oil
+13085 acq
+13089 acq
+13090 acq
+13092 earn
+13093 earn
+13094 grain wheat
+13095 acq
+13096 crude
+13097 grain wheat
+13099 grain barley
+13102 nat-gas crude
+13103 acq
+13105 interest
+13110 earn
+13113 earn
+13114 earn
+13115 crude
+13116 gold
+13118 earn
+13119 silver
+13120 ship grain
+13122 earn
+13123 rice grain
+13124 acq
+13126 earn
+13129 rice grain
+13130 propane nat-gas
+13131 earn
+13136 earn
+13138 earn
+13139 acq
+13141 earn
+13142 crude
+13143 money-supply
+13144 interest
+13148 earn
+13149 carcass livestock
+13151 acq
+13157 money-supply
+13158 money-supply
+13159 money-supply
+13162 ship grain
+13163 acq
+13165 earn
+13168 acq
+13170 coffee
+13172 cpi
+13173 corn soy-oil oilseed grain
+13174 earn
+13175 acq
+13179 ship soy-oil palm-oil corn wheat grain rapeseed oilseed
+13180 earn
+13182 acq
+13184 crude
+13185 tin
+13186 earn
+13187 earn
+13188 acq
+13189 acq
+13190 coffee
+13191 earn
+13192 earn
+13194 acq
+13195 acq
+13196 acq
+13197 acq
+13199 acq
+13200 crude
+13201 coffee
+13203 earn
+13204 earn
+13205 acq
+13206 acq
+13210 acq
+13211 acq
+13212 acq
+13214 earn
+13223 earn
+13224 earn
+13225 earn
+13230 interest
+13231 interest
+13232 wpi
+13238 ipi
+13242 coffee
+13243 money-fx
+13244 money-fx
+13245 money-fx
+13247 ship
+13251 strategic-metal
+13255 reserves
+13256 crude
+13258 gnp
+13261 money-fx
+13262 interest
+13263 earn
+13265 acq
+13266 crude
+13269 coffee
+13270 money-fx
+13271 cocoa
+13272 grain wheat
+13274 gnp
+13294 rice grain
+13313 rapeseed wheat oilseed grain
+13315 money-fx dlr
+13317 interest
+13320 ship
+13321 interest
+13333 cpi
+13336 earn
+13380 carcass livestock
+13382 carcass livestock
+13393 acq
+13398 money-fx
+13404 money-fx
+13435 earn
+13458 grain
+13462 cocoa
+13468 money-supply
+13471 money-supply
+13482 trade
+13507 alum
+13512 dlr money-fx
+13524 dlr money-fx
+13530 money-fx
+13531 dlr money-fx
+13532 acq
+13539 meal-feed
+13542 ship crude
+13543 interest
+13544 yen dlr money-fx
+13552 money-fx
+13559 ipi
+13611 crude
+13615 earn
+13633 crude
+13649 trade
+13656 earn
+13660 money-fx dlr
+13688 ship
+13690 reserves gold
+13694 copper
+13695 earn
+13702 nat-gas
+13704 acq
+13708 earn
+13709 earn
+13710 earn
+13711 acq
+13714 acq
+13715 earn
+13717 earn
+13721 earn
+13729 wheat grain
+13735 earn
+13738 palm-oil veg-oil
+13739 money-fx
+13744 barley wheat
+13753 acq
+13757 gold
+13775 acq
+13787 acq
+13790 acq
+13791 reserves gold
+13795 barley grain
+13831 dlr money-fx
+13834 coffee
+13836 trade
+13842 trade
+13849 trade
+13852 oat barley sorghum corn wheat grain
+13854 earn
+13856 barley sorghum corn wheat grain
+13869 trade dlr money-fx
+13870 acq
+13874 acq
+13877 zinc copper
+13889 trade
+13890 earn
+13900 earn
+13903 trade dlr money-fx
+13904 earn
+13908 trade
+13915 soy-oil soybean oilseed
+13919 money-fx dmk dlr
+13946 trade
+13949 money-fx money-supply
+13950 money-fx
+13958 money-fx
+13963 ship crude
+13966 earn
+13988 dlr money-fx
+13994 money-fx money-supply
+14012 trade
+14028 acq
+14034 money-fx
+14055 money-fx
+14069 earn
+14091 earn
+14093 earn
+14099 acq
+14103 earn
+14109 trade bop
+14126 wheat grain
+14131 acq
+14146 sugar
+14150 money-fx
+14154 acq
+14156 acq
+14166 earn
+14168 earn
+14177 acq
+14178 money-fx
+14180 earn
+14182 earn
+14199 trade
+14201 acq
+14207 reserves money-fx
+14211 crude ship
+14212 grain
+14214 interest
+14220 trade
+14263 acq
+14270 interest
+14282 earn
+14285 earn
+14293 interest
+14297 nickel copper
+14298 acq
+14300 earn
+14310 earn
+14313 grain
+14314 earn
+14315 acq
+14316 earn
+14324 earn
+14340 grain
+14354 cotton
+14360 ship grain
+14376 acq
+14388 earn
+14389 grain
+14393 earn
+14394 acq
+14395 crude
+14402 earn
+14417 earn
+14418 coffee
+14423 acq
+14427 earn
+14434 livestock sugar
+14440 sugar
+14469 acq
+14476 copper
+14483 livestock oilseed corn grain
+14485 acq
+14491 wheat grain ship
+14499 copper
+14504 acq
+14506 acq
+14509 veg-oil wheat grain
+14512 oilseed
+14515 rice grain
+14516 earn
+14517 earn
+14524 earn
+14525 earn
+14537 ship
+14539 earn
+14540 earn
+14542 acq
+14544 earn
+14545 earn
+14547 earn
+14549 earn
+14550 earn
+14551 earn
+14558 heat
+14563 acq
+14566 instal-debt
+14569 earn
+14572 lead zinc copper silver gold
+14573 money-supply
+14582 acq
+14586 earn
+14587 acq
+14603 rapeseed oilseed
+14604 acq
+14612 instal-debt
+14619 acq
+14622 earn
+14623 acq
+14626 acq
+14629 earn
+14630 earn
+14642 interest
+14646 earn
+14655 money-fx
+14666 earn
+14672 earn
+14679 acq
+14682 ship sugar
+14686 money-fx
+14688 ship grain
+14689 pet-chem
+14697 earn
+14698 heat gas crude
+14701 ship grain
+14704 crude gas
+14706 soybean oilseed grain
+14709 crude ship
+14715 acq
+14718 wheat grain
+14719 strategic-metal
+14721 wheat grain
+14722 wheat grain
+14729 earn
+14732 fuel crude gas
+14736 acq
+14739 trade
+14744 earn
+14751 earn
+14752 earn
+14755 earn
+14757 money-fx
+14761 earn
+14767 yen dlr money-fx
+14770 money-supply cpi trade money-fx dlr
+14771 jobs
+14777 money-fx dlr
+14779 money-fx dlr
+14783 rubber
+14785 money-fx
+14805 copper
+14818 ship
