@@ -47,6 +47,7 @@ setup(
                 'nltk_contrib.fst',
                 'nltk_contrib.gluesemantics',
                 'nltk_contrib.lpath',
+                'nltk_contrib.readability',
                 'nltk_contrib.toolbox',
                 'nltk_contrib.wordnet'
                 ],
