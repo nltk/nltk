@@ -281,6 +281,7 @@ class IndexFile(object):
             offset = self.file.tell()
             line = self.file.readline()
             if (line[0] != ' '):
+                self.file.seek(offset)
                 break
         self.nextIndex = 0
         self.nextOffset = offset
