@@ -35,6 +35,7 @@ def parse_lpath(q):
     i = 0
     ret = [p]
     branch = False
+    scope = [None]
     while i < len(tokens):
         a, b = tokens[i]
         if a == 'r':
@@ -89,6 +90,8 @@ def parse_lpath(q):
                 if node.data['label'][0] == '^': node.lpAlignLeft()
                 if node.data['label'][-1] == '$': node.lpAlignRight()
 
+                node.setScope(scope[-1])
+                
                 p = node
                 ret[-1] = p
                 i += 1
@@ -105,14 +108,19 @@ def parse_lpath(q):
                         node.data['label'] = tokens[i+3][1]
                     p.attach(node)
                     p.lpAttachBranch(node)
+                    node.setScope(scope[-1])
                 if tokens[i+2][1] in OPERATION:
                     i += 3
                 else:
                     i += 1
+            elif b == '{':
+                scope.append(p)
+            elif b == '}':
+                scope.pop()
         i += 1
 
     root = root.lpChildren[0]
-    root.lpPrune()
+    #root.lpPrune()
     return root
                 
 if __name__ == "__main__":

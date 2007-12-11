@@ -94,6 +94,11 @@ class LPathTreeModel(PureLPathTree,object):
         PureLPathTree.resetScope(self)
         self.gui.canvas().update()
 
+    def setScope(self, node):
+        PureLPathTree.setScope(self, node)
+        self.gui.canvas().update()
+        self.gui.canvas().signal()
+        
     def shiftScope(self):
         PureLPathTree.shiftScope(self)
         self.gui.canvas().update()

@@ -195,7 +195,14 @@ class LPathTreeModel(PureTree):
         while p and p != self:
             p = p.lpParent
         return p is not None
-    
+
+    def setScope(self, node):
+        if node is None or node.lpAncestorOf(self):
+            self.lpScope = node
+            for c in self.lpChildren:
+                if c is not None:
+                    c.lpDfs(lambda t:t.resetScope())
+            
     def shiftScope(self):
         if self._lpAxisType == self.AxisParent or \
            self._lpAxisType == self.AxisAncestor or \
