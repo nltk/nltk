@@ -6,6 +6,7 @@ __all__ = ["find_overlays", "Overlay"];
 class Overlay:
     def __init__(self, matches):
         self._L = matches
+        self._h = dict(matches)
         
     def findMatchingNode(self, node):
         for oldNode, newNode in self._L:
@@ -51,6 +52,10 @@ class Overlay:
                 elif alignment == a1.AlignBoth:
                     b1.lpAlignLeft()
                     b1.lpAlignRight()
+                if a1.lpScope is None:
+                    b1.setScope(None)
+                else:
+                    b1.setScope(self._h[a1.lpScope])
             for a1 in a0.lpChildren[1:]:
                 if 'lexical' in a1.data and a1.data['lexical']==True:
                     # terminal node == lexical node
@@ -71,7 +76,12 @@ class Overlay:
                 elif alignment == a1.AlignBoth:
                     b1.lpAlignLeft()
                     b1.lpAlignRight()
+                if a1.lpScope is None:
+                    b1.setScope(None)
+                else:
+                    b1.setScope(self._h[a1.lpScope])
             self.markNegation(a0,b0)
+        self._L[0][1].gui.canvas().update()
     
     def clear(self):
         def g(t,L): L.append(t)

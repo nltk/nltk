@@ -255,8 +255,8 @@ class QBA(QMainWindow):
             self.btnNextMatch.setText("Next match (%d/%d)" % \
                                       (self.overlayIdx+1, len(self.overlays)))
             self._setLPath()
-    
-if __name__ == "__main__":        
+
+def main():
     app = QApplication(sys.argv)
     w = QBA()
     app.setMainWidget(w)
@@ -266,3 +266,6 @@ if __name__ == "__main__":
     w.show()
     w.setCaption('LPath QBA')   # this is only necessary on windows
     app.exec_loop()
+
+if __name__ == "__main__":
+    main()
