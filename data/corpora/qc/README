@@ -2,7 +2,9 @@ Experimental Data for Question Classification
 Xin Li and Dan Roth, UIUC
 http://l2r.cs.uiuc.edu/~cogcomp/Data/QA/QC/
 
-Xin Li, Dan Roth, Learning Question Classifiers. COLING'02, Aug., 2002.
+Xin Li, Dan Roth, Learning Question Classifiers: The Role of Semantic Information
+http://l2r.cs.uiuc.edu/~danr/Papers/LiRo05a.pdf
+http://l2r.cs.uiuc.edu/~cogcomp/asoftware.php?skey=LBJ
 
 Contents:
 train.txt (http://l2r.cs.uiuc.edu/~cogcomp/Data/QA/QC/train_5500.label)
