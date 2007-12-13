@@ -1,7 +1,6 @@
-===============================
+==============
 Theorem Prover
-===============================
-
+==============
 
 ---------------------------------
 NLTK Interface to Theorem Provers
@@ -14,9 +13,11 @@ an ``Expression`` and, optionally, a name of a theorem prover.  The default is
 
     >>> from nltk_contrib.theorem_prover import prover
     >>> from nltk_contrib.drt import DRT
-    >>> f = DRT.Parser().parse('drs([x],[(man x)])').toFol()
-
-.. >>> prover.attempt_proof(f)
+    >>> f = DRT.Parser().parse('drs([],[(drs([],[(man x)]) implies drs([],[(man x)]))])').toFol()
+    >>> print f
+    (implies (man x) (man x))
+    >>> prover.attempt_proof(f)
+    True
 
 
 -------
@@ -69,12 +70,14 @@ DRS Equality
 ------------
 
 The theorem prover functionality can be used in NLTK to check whether
-two Discourse Representation Structures (DRSs) are logically equivalent.  
+two Discourse Representation Structures (DRSs) are logically equivalent.
+The ``tp_equals()`` method calls Prover9 to determine whether the
+FOL versions of the two DRSs are logically equivalent.
 
     >>> from nltk_contrib.drt import DRT
     >>> a = DRT.Parser().parse(r'drs([x],[(man x), (walks x)])')
     >>> b = DRT.Parser().parse(r'drs([x],[(walks x), (man x)])')
-    >>> print a == b
+    >>> print a.tp_equals(b)
     True
 
 Use
@@ -86,15 +89,16 @@ For example, the ``drt_glue`` module generates two readings for the sentence
 
     >>> from nltk_contrib.gluesemantics import drt_glue
     >>> readings = drt_glue.parse_to_meaning('John sees Mary')
+    >>> 
     >>> for drs in readings: print drs.simplify()
     ...
     drs([z1,x],[(= z1 John),(= x Mary),(sees z1 x)])
     drs([z2,x],[(= z2 Mary),(= x John),(sees x z2)])
 
 However, it is easy to tell that these two readings are logially the same, and 
-therefore, we have no need to keep both of them.  we can use the theorem prover
-to determine that they are the same, and to delete one of the readings.
+therefore, we have no need to keep both of them.  We can use the theorem prover
+to determine that they are the same, and then delete one of them.
 
-    >>> readings[0] == readings[1]
+    >>> readings[0].tp_equals(readings[1])
     True
 
