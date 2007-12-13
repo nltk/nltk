@@ -6,10 +6,11 @@ Theorem Prover
 NLTK Interface to Theorem Provers
 ---------------------------------
 
-The module ``nltk_contrib/theorem_prover/prover.py`` can be used to access the 
+The module ``nltk_contrib.theorem_prover`` can be used to access the 
 theorem provers.  The module contains a method ``attempt_proof()`` that takes 
 an ``Expression`` and, optionally, a name of a theorem prover.  The default is 
 ``'Prover9'`` , but the tableau prover may be used by specifying ``'tableau'``.
+
 
     >>> from nltk_contrib.theorem_prover import prover
     >>> from nltk_contrib.drt import DRT
@@ -33,21 +34,20 @@ You can download Prover9 from http://www.cs.unm.edu/~mccune/prover9/.
 
 Extract the source code into a suitable directory and follow the
 instructions in the ``README.make`` file to compile the executables.
-Install these into an appropriate location. To see where the
-``prover`` module will look by default on Unix-like system, you can
+Install these into an appropriate location. To see where NLTK's
+``theorem_prover`` module will look by default on a Unix-like system, you can
 inspect the ``_prover9_search`` variable:
 
-    >>> from nltk_contrib.theorem_prover import prover
     >>> prover._prover9_search
     ['.', '/usr/local/bin', '/usr/local/prover9', '/usr/local/share/prover9']
 
-In order to make sure that NLTK knows where to find Prover9, use the
+In order to make sure that NLTK has successfully located Prover9, use the
 ``config_prover9()`` function.
 
     >>> prover.config_prover9()
     [Found Prover9: /usr/local/bin/prover9]
 
-You can also give an explicit path to this function. 
+You can also give an explicit path to this function:
 
     >>> prover.config_prover9('/usr/local/bin')
     [Found Prover9: /usr/local/bin/prover9]
@@ -56,7 +56,8 @@ You can also give an explicit path to this function.
 
       >>> prover._prover9_path = None
 
-If the path is incorrect, ``config_prover9()`` will raise an error.
+If ``config_prover9()`` fails to find the Prover9 executable, for
+example if the explicitly supplied path is incorrect, it will raise an error.
 
     >>> prover.config_prover9('/nonexistent/path')    
     Traceback (most recent call last):
@@ -69,10 +70,10 @@ If the path is incorrect, ``config_prover9()`` will raise an error.
 DRS Equality
 ------------
 
-The theorem prover functionality can be used in NLTK to check whether
-two Discourse Representation Structures (DRSs) are logically equivalent.
-The ``tp_equals()`` method calls Prover9 to determine whether the
-FOL versions of the two DRSs are logically equivalent.
+One application of the theorem prover functionality is to check if
+two Discourse Representation Structures (DRSs) have the same meaning.
+The ``tp_equals()`` method calls Prover9 to determine whether (the
+FOL versions of) two DRSs are logically equivalent.
 
     >>> from nltk_contrib.drt import DRT
     >>> a = DRT.Parser().parse(r'drs([x],[(man x), (walks x)])')
@@ -80,12 +81,9 @@ FOL versions of the two DRSs are logically equivalent.
     >>> print a.tp_equals(b)
     True
 
-Use
-~~~
-
 Checking for equality of two DRSs is very useful when generating readings of a sentence.
 For example, the ``drt_glue`` module generates two readings for the sentence 
-'John sees Mary':
+*John sees Mary*:
 
     >>> from nltk_contrib.gluesemantics import drt_glue
     >>> readings = drt_glue.parse_to_meaning('John sees Mary')
@@ -95,9 +93,9 @@ For example, the ``drt_glue`` module generates two readings for the sentence
     drs([z1,x],[(= z1 John),(= x Mary),(sees z1 x)])
     drs([z2,x],[(= z2 Mary),(= x John),(sees x z2)])
 
-However, it is easy to tell that these two readings are logially the same, and 
-therefore, we have no need to keep both of them.  We can use the theorem prover
-to determine that they are the same, and then delete one of them.
+However, it is easy to tell that these two readings are logically the
+same, and therefore one of them is superfluous.  We can use the theorem prover
+to determine this equivalence, and then delete one of them.
 
     >>> readings[0].tp_equals(readings[1])
     True
