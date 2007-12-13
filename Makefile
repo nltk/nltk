@@ -150,6 +150,7 @@ rsync:	clean_up
 clean:	clean_up
 	rm -rf build iso dist MANIFEST
 	$(MAKE) -C doc clean
+	$(MAKE) -C doc_contrib clean
 
 clean_up: clean_code
 	$(MAKE) -C doc clean_up
