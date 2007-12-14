@@ -63,12 +63,12 @@ Discourse Representation Structures in NLTK
 In NLTK, Discourse Representation Structures can be created as follows:
 
 	>>> from nltk_contrib.drt import DRT
-	>>> d = DRT.Parser().parse(r'drs([x],[(man x), (walks x)])')
+	>>> d = DRT.Parser().parse(r'DRS([x],[(man x), (walks x)])')
 	>>> print d
-	drs([x],[(man x),(walks x)])
+	DRS([x],[(man x),(walks x)])
 	
-Notice that a DRS is predicated by `drs`:mathit:\ , which takes two lists as arguments:
-a list of discourse referents and a list of drs conditions.  The demo function 
+Notice that a DRS is predicated by `DRS`:mathit:\ , which takes two lists as arguments:
+a list of discourse referents and a list of DRS conditions.  The demo function 
 `DRT.demo()`:mathit: displays a list of example DRSs that demonstrate various 
 functionalities such as |lambda|\-DRSs and DRS concatenations.
 	
@@ -101,10 +101,10 @@ the concatenation in concat1_ results in the DRS in concat2_\ .
 
 The following example shows the concatenation of two DRSs in NLTK:
 
-	>>> a = DRT.Parser().parse(r'drs([x],[(man x), (walks x)])')
-	>>> b = DRT.Parser().parse(r'drs([y],[(woman y), (stops y)])')
+	>>> a = DRT.Parser().parse(r'DRS([x],[(man x), (walks x)])')
+	>>> b = DRT.Parser().parse(r'DRS([y],[(woman y), (stops y)])')
 	>>> (a+b).simplify().infixify()
-	drs([x,y],[(man x),(walks x),(woman y),(stops y)])
+	DRS([x,y],[(man x),(walks x),(woman y),(stops y)])
 
 Accessibility
 ~~~~~~~~~~~~~
@@ -180,9 +180,9 @@ for converting a DRS into an expression in first order logic:
 
 In NLTK, the ``toFol()`` method can be used on a DRS to return its first order logic representation:
 
-	>>> print DRT.Parser().parse(r'drs([x],[(man x), (walks x)])').toFol()
+	>>> print DRT.Parser().parse(r'DRS([x],[(man x), (walks x)])').toFol()
 	some x.(and (man x) (walks x))
-	>>> print DRT.Parser().parse(r'drs([],[(drs([x],[(man x)]) implies drs([],[(walks x)]))])').toFol()
+	>>> print DRT.Parser().parse(r'DRS([],[(DRS([x],[(man x)]) implies DRS([],[(walks x)]))])').toFol()
 	all x.(implies (man x) (walks x))
 
 -------------------
@@ -200,9 +200,10 @@ Consider the discourse in anaphora1sent_ and its DRS representation in anaphora1
 	.. image:: drt_images/anaphora1.png
 	
 In the DRS, the discourse referent `y`:mathit: represents the individual identified by `He`:lx: and 
-`(alpha y)`:mathit: is a placeholder for the antecedent of `y`:mathit:\ .  The process of anaphora
-resolution is therefore the replacement of `(alpha y)`:mathit: with a *suitable* antecedent to `y`:mathit:\ .
-The nature of DRT makes the process of finding this suitable replacement simpler.  For an anaphor that appears in a DRS, 
+`(PRO y)`:mathit: is a placeholder for the resolution of `y`:mathit:\ .  The process of anaphora
+resolution is therefore the replacement of `(PRO y)`:mathit: with an expression equating `y`:mathit: with a *suitable* 
+antecedent to `y`:mathit:\ .
+The nature of DRT makes the process of finding this suitable antecedent simpler.  For an anaphor that appears in a DRS, 
 its antecedent will be a discourse referent from its own DRS or any accessible DRS.  In this case, the only
 suitable antecedent is `x`:mathit: and so anaphora1_ is resolved to anaphora1res_\ , where the discourse
 referents `x`:mathit: and `y`:mathit: are equal, meaning that they refer to the same individual.  Thus, `He`:lx: refers
@@ -215,12 +216,12 @@ to the individual `John`:lx:\ .
 Anaphora Resolution in NLTK
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In NLTK, the `resolve_anaphora()`:mathit: method replaces a formula of the form `(alpha y)`:mathit: with
-list of all possible antecedents of `y`:mathit:\ .
+In NLTK, the `resolve_anaphora()`:mathit: method replaces a formula of the form `(PRO y)`:mathit: with
+and expression equating `y`:mathit: with a list of all possible antecedents of `y`:mathit:\ .
 
-	>>> a = DRT.Parser().parse(r'drs([x,y],[(x = John), (man x), (y = (alpha y)), (walks y)])')
+	>>> a = DRT.Parser().parse(r'DRS([x,y],[(x = John), (man x), (PRO y), (walks y)])')
 	>>> a.resolve_anaphora().infixify()
-	drs([x,y],[(x = John),(man x),(y = [x]),(walks y)])
+	DRS([x,y],[(x = John),(man x),(y = [x]),(walks y)])
 	
 Multiple Possible Resolutions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -240,7 +241,7 @@ The DRS for this discourse is shown below in anaphora2_\ .
 	.. image:: drt_images/anaphora2.png
 
 The DRS structure shows that both `John`:lx: and `Every man`:lx: are suitable candidates because both
-discourse referents `x`:mathit: and `y`:mathit: are accessible from `(alpha z)`:mathit:\ .
+discourse referents `x`:mathit: and `y`:mathit: are accessible from `(PRO z)`:mathit:\ .
 
 .. _anaphora2res:
 .. ex::
@@ -261,14 +262,14 @@ The pair of sentences is expressed in DRS as unresolvableAnaphora2_\ :
 .. ex::
 	.. image:: drt_images/unresolvable1.png
 
-While `x`:mathit: is a discourse referent, it is not accessible to `(alpha y)`:mathit: 
+While `x`:mathit: is a discourse referent, it is not accessible to `(PRO y)`:mathit: 
 and therefore cannot be used as a possible antecedent to `y`:mathit:\ .  This is demonstrated in 
 the following code.  Notice that the list of possible antecedents for `y`:mathit: is empty since
 there are no viable antecedents.
 
-	>>> b = DRT.Parser().parse(r'drs([y],[(not drs([x],[(walks x)])),(y = (alpha y)),(tired y)])')
+	>>> b = DRT.Parser().parse(r'DRS([y],[(not DRS([x],[(walks x)])),(PRO y),(tired y)])')
 	>>> b.resolve_anaphora().infixify()
-	drs([y],[(not drs([x],[(walks x)])),(y = []),(tired y)])
+	DRS([y],[(not DRS([x],[(walks x)])),(y = []),(tired y)])
 	
 ----------------
 Building the DRS
