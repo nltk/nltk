@@ -24,12 +24,6 @@ class Expression(logic.Expression):
     def resolve_anaphora(self, trail=[]):
         return self
 
-    def toProver9String(self):
-        return self.__str__()
-    
-    def tableau(self, agenda=[], atoms=set([]), bound_variables=set([])):
-        raise NotImplementedError
-    
     def negate(self):
         if isinstance(self, AbstractDRS):
             return ApplicationDrs(DrsOperator('not'), self)
@@ -48,37 +42,23 @@ class VariableBinderExpression(Expression, logic.VariableBinderExpression):
     def toFol(self):
         return self.__class__(self.variable, self.term.toFol())
 
-    def toProver9String(self):
-        prefix = self.__class__.PREFIX
-        variable = self.variable.toProver9String()
-        term = self.term.toProver9String()
-        return '%s%s %s' % (prefix, variable, term)
-
 class LambdaExpression(VariableBinderExpression, logic.LambdaExpression):
-    def tableau(self, agenda=[], atoms=set([]), bound_variables=set([])):
-        raise NotImplementedError, 'Tableau theorem prover does not work on Lambda terms'
+    pass
 
 class SomeExpression(VariableBinderExpression, logic.SomeExpression):
-    def toProver9String(self):
-        return '%s %s %s' % ('exists', self.variable.toProver9String(), self.term.toProver9String())
-
-    def tableau(self, agenda=[], atoms=set([]), bound_variables=set([])):
-        pass
+    pass
 
 class AllExpression(VariableBinderExpression, logic.AllExpression):
-    def tableau(self, agenda=[], atoms=set([]), bound_variables=set([])):
-        pass
+    pass
 
 class Variable(logic.Variable):
-    def toProver9String(self):
-        return self.name
+    pass
 
 class VariableExpression(Expression, logic.VariableExpression):
     pass
 
 class Constant(logic.Constant):
-    def toProver9String(self):
-        return self.name
+    pass
 
 class ConstantExpression(Expression, logic.ConstantExpression):
     pass
@@ -87,19 +67,7 @@ class IndVariableExpression(VariableExpression, logic.IndVariableExpression):
     pass 
 
 class FolOperator(ConstantExpression, logic.Operator):
-    def toProver9String(self):
-        if(self.operator == 'and'):
-            return '&';
-        if(self.operator == 'or'):
-            return '|';
-        if(self.operator == 'not'):
-            return '-';
-        if(self.operator == 'implies'):
-            return '->';
-        if(self.operator == 'iff'):
-            return '<->';
-        else:
-            return self.operator
+    pass
 
 class AbstractDRS(Expression):
     """A Discourse Representation Structure."""
@@ -137,8 +105,10 @@ class AbstractDRS(Expression):
         raise NotImplementedError
     
     def tp_equals(self, other):
-        '''Convert both DRSs into Prover9 strings and run the prover 
-        to check whether they are equal'''
+        '''
+        Pass the expression (self <-> other) to the theorem prover.   
+        If the prover says it is valid, then the self and other are equal.
+        '''
         assert isinstance(self, AbstractDRS)
         assert isinstance(other, AbstractDRS)
         
@@ -993,7 +963,7 @@ class ApplicationExpression(Expression, logic.ApplicationExpression):
         return arglist
 
     def resolve_anaphora(self, trail=[]):
-        if isinstance(self.first, VariableExpression) and self.first.variable.name == 'alpha':
+        if isinstance(self.first, VariableExpression) and self.first.variable.name == Tokens.PRONOUN:
             possible_antecedents = PossibleAntecedents()
             for ancestor in trail:
                 if isinstance(ancestor, AbstractDRS):
@@ -1003,7 +973,8 @@ class ApplicationExpression(Expression, logic.ApplicationExpression):
         #   Possibly change to remove antecedents with the wrong 'gender' 
         #===============================================================================
             possible_antecedents.remove(self.second)
-            return possible_antecedents
+            eqalityExp = ApplicationExpression(ApplicationExpression(FolOperator(Tokens.EQ), self.second),possible_antecedents) 
+            return eqalityExp
         else:
             r_first = self.first.resolve_anaphora(trail + [self])
             r_second = self.second.resolve_anaphora(trail + [self])
@@ -1011,21 +982,6 @@ class ApplicationExpression(Expression, logic.ApplicationExpression):
 
     def toFol(self):
         return self.__class__(self.first.toFol(), self.second.toFol())
-
-    def toProver9String(self):
-        # Print '((M op) N)' as '(M op N)'.
-        # Print '(M N)' as 'M(N)'.
-        if isinstance(self.first, ApplicationExpression) \
-            and isinstance(self.first.second, FolOperator):
-                firstStr = self.first.first.toProver9String()
-                opStr = self.first.second.toProver9String()
-                secondStr = self.second.toProver9String()
-                return '(%s %s %s)' % (firstStr, opStr, secondStr)
-        else:
-            accum = '%s(' % self.fun.toProver9String()
-            for arg in self.args:
-                accum += '%s, ' % arg.toProver9String()
-            return '%s)' % accum[0:-2]
 
     def draw(self, x=3, y=3, canvas=None, use_parens=True): #args define the top-left corner of the box
         if not canvas:
@@ -1159,92 +1115,6 @@ class ApplicationExpression(Expression, logic.ApplicationExpression):
         self._size = (x_current, max_height)
         return self._size
 
-    def tableau(self, agenda=[], atoms=set([]), bound_variables=set([])):
-        new_agenda_items = []
-        new_atoms = set([])
-        new_bound_variables = set([])
-        
-        split = None
-        
-        # if self is a binary operation
-        if isinstance(self.first, ApplicationExpression) \
-            and isinstance(self.first.first, FolOperator):
-                first = self.first.second
-                op = self.first.first
-                second = self.second
-                
-                if str(op) == 'and':
-                    new_agenda_items.append(first)
-                    new_agenda_items.append(second)
-                elif str(op) == 'or':
-                    split = (first, second)
-                elif str(op) == 'implies':
-                    split = (first.negate(), second)
-                elif str(op) == 'iff':
-                    first_branch = ApplicationExpression(ApplicationExpression(FolOperator('and'),first),second)
-                    second_branch = ApplicationExpression(ApplicationExpression(FolOperator('and'),first.negate()),second.negate())
-                    split = (first_branch, second_branch)
-
-        #if self is a negation
-        elif isinstance(self.first, FolOperator) and str(self.first.operator) == 'not':
-            negated = self.second
-                
-            # if self is a negated binary operation
-            if isinstance(negated.first, ApplicationExpression) \
-                and isinstance(negated.first.first, FolOperator):
-                    inner_first = negated.first.second
-                    inner_op = negated.first.first
-                    inner_second = negated.second
-                    
-                    if str(inner_op) == 'and':
-                        split = (inner_first, inner_second)
-                    elif str(inner_op) == 'or':
-                        new_agenda_items.append(inner_first)
-                        new_agenda_items.append(inner_second)
-                    elif str(inner_op) == 'implies':
-                        new_agenda_items.append(inner_first)
-                        new_agenda_items.append(inner_second.negate())
-                    elif str(inner_op) == 'iff':
-                        first_branch = ApplicationExpression(ApplicationExpression(FolOperator('and'),inner_first),inner_second.negate())
-                        second_branch = ApplicationExpression(ApplicationExpression(FolOperator('and'),inner_first.negate()),inner_second)
-                        split = (first_branch, second_branch)
-                        
-            #self is a double negation
-            elif isinstance(negated.first, FolOperator) and str(negated.first.operator) == 'not':
-                new_agenda_items.append(negated.second)
-            
-            #self is a negated relation
-            else:
-               new_atoms.add((negated, True))
-               new_bound_variables |= set(negated.args) 
-
-        # self is a relation
-        else:
-            new_atoms.add((self, False))
-            new_bound_variables |= set(self.args)
-        
-        # Check if the branch is closed.  Return TRUE if it is
-        all_atoms = atoms|new_atoms
-        for atom in all_atoms:
-            if (atom[0], not atom[1]) in all_atoms:
-                return True
-        
-        all_agenda = agenda+new_agenda_items
-        all_bound_variables = bound_variables|new_bound_variables
-        
-        #if the branch is splitting, return TRUE if both branches close
-        if split: 
-            return split[0].tableau(all_agenda, all_atoms, all_bound_variables) \
-                and split[1].tableau(all_agenda, all_atoms, all_bound_variables)
-        
-        #if there's no split, no more agenda, and we're not closed, then return FALSE
-        if not all_agenda:
-            return False
-        
-        next_agenda_item = all_agenda.pop()
-        return next_agenda_item.tableau(all_agenda, all_atoms, all_bound_variables)
-        
-
 class PossibleAntecedents(list, Expression):
     def variables(self):
         """Set of all variables."""
@@ -1282,7 +1152,7 @@ class PossibleAntecedents(list, Expression):
         return result.rstrip(',') + ']'
 
 class Tokens:
-    DRS = 'drs'
+    DRS = 'DRS'
     DRS_CONC = '+'
     LAMBDA = '\\'
     DOT = '.'
@@ -1293,7 +1163,9 @@ class Tokens:
     CLOSE_BRACKET = ']'
     DRS_OPS = ['or', 'not', 'implies', 'iff']
     DRS_OPS.append(DRS_CONC)
-    FOL_OPS = ['=']
+    EQ = '='
+    FOL_OPS = [EQ]
+    PRONOUN = 'PRO'
     
 class Parser:
     """A lambda calculus expression parser."""
@@ -1332,12 +1204,14 @@ class Parser:
         self.buffer = self.buffer.replace('\n', ' ')
         self.buffer = self.buffer.replace(Tokens.LAMBDA, ' %s ' % Tokens.LAMBDA)
         self.buffer = self.buffer.replace(Tokens.DRS, ' %s ' % Tokens.DRS)
+        self.buffer = self.buffer.replace(Tokens.DRS.lower(), ' %s ' % Tokens.DRS)
         self.buffer = self.buffer.replace(Tokens.DOT, ' %s ' % Tokens.DOT)
         self.buffer = self.buffer.replace(Tokens.COMMA, ' %s ' % Tokens.COMMA)
         self.buffer = self.buffer.replace(Tokens.OPEN_PAREN, ' %s ' % Tokens.OPEN_PAREN)
         self.buffer = self.buffer.replace(Tokens.CLOSE_PAREN, ' %s ' % Tokens.CLOSE_PAREN)
         self.buffer = self.buffer.replace(Tokens.OPEN_BRACKET, ' %s ' % Tokens.OPEN_BRACKET)
         self.buffer = self.buffer.replace(Tokens.CLOSE_BRACKET, ' %s ' % Tokens.CLOSE_BRACKET)
+        self.buffer = self.buffer.replace(Tokens.EQ, ' %s ' % Tokens.EQ)
 
     def token(self, destructive=1):
         """Get the next waiting token.  The destructive flag indicates
@@ -1459,7 +1333,7 @@ class Parser:
         
         else:
             if self.isVariable(tok):
-                if tok[0].isupper():
+                if tok[0].isupper() and tok != Tokens.PRONOUN:
                     # Uppercase variables stand for DRSs
                     return DRSVariable(Variable(tok))
                 else:
@@ -1502,17 +1376,12 @@ def init_canvas(drs):
 
     size = drs.get_drawing_size(canvas)
 
-    canvas = Canvas(master, width=size[0]+20, height=size[1]+20)
+    canvas = Canvas(master, width=size[0]+20, height=size[1]+20, bg='white')
     #canvas = Canvas(master, width=300, height=300)
     canvas.pack()
     canvas.font = font
     canvas._BUFFER = buffer
     return canvas
-
-def testToProver9Input():
-    for t in expressions():
-        p = Parser().parse(t)
-        print p.simplify().toFol().infixify().toProver9String();
 
 def expressions():
     return ['drs([x,y],[(sees x y)])',
@@ -1536,7 +1405,7 @@ def expressions():
 #            '((walks x) implies drs([],[(walks x)]))',
 #            '((walks x) implies (runs x))'
             
-            'drs([x],[(x = (alpha x)),(sees John x)])',
+            'drs([x],[(PRO x),(sees John x)])',
             'drs([x],[(man x), (not drs([],[(walks x)]))])',
             'drs([],[(drs([x],[(man x)]) implies drs([],[(walks x)]))])'
             ]
@@ -1589,7 +1458,7 @@ def test():
     
 def test2():
     a = Parser().parse(r'\Q.(drs([x],[(x = john),(walks x)]) + Q)')
-    b = Parser().parse(r'drs([x],[(x = (alpha x)),(leaves x)])')
+    b = Parser().parse(r'drs([x],[(PRO x),(leaves x)])')
     ab = a.applyto(b)
     print ab
     s = ab.simplify()
@@ -1614,15 +1483,15 @@ def testAlpha():
     
 def testResolve_anaphora():
     print 'Test resolve_anaphora():'
-    drs = Parser().parse(r'drs([x,y,z],[(dog x), (cat y), (walks z), (z = (alpha z))])')
+    drs = Parser().parse(r'drs([x,y,z],[(dog x), (cat y), (walks z), (PRO z)])')
     print '    ' + str(drs.infixify())
     print '    resolves to: ' + str(drs.simplify().resolve_anaphora().infixify()) + '\n'
 
-    drs = Parser().parse(r'drs([],[(drs([x],[(dog x)]) implies drs([y],[(walks y), (y = (alpha y))]))])')
+    drs = Parser().parse(r'drs([],[(drs([x],[(dog x)]) implies drs([y],[(walks y), (PRO y)]))])')
     print '    ' + str(drs.infixify())
     print '    resolves to: ' + str(drs.simplify().resolve_anaphora().infixify()) + '\n'
 
-    drs = Parser().parse(r'drs([],[((drs([x],[]) + drs([],[(dog x)])) implies drs([y],[(walks y), (y = (alpha y))]))])')
+    drs = Parser().parse(r'drs([],[((drs([x],[]) + drs([],[(dog x)])) implies drs([y],[(walks y), (PRO y)]))])')
     print '    ' + str(drs.infixify())
     print '    resolves to: ' + str(drs.simplify().resolve_anaphora().infixify()) + '\n'
 
@@ -1632,33 +1501,9 @@ def testTp_equals():
     print '%s == %s' % (a,b)
     print a.tp_equals(b)
 
-def testTableau():
-    f = Parser().parse(r'drs([],[(man x)])').toFol().negate()
-    print '%s: %s' % (f.infixify(), f.tableau())
-    f = Parser().parse(r'drs([],[(not drs([],[(not drs([],[(man x)]))]))])').toFol().negate()
-    print '%s: %s' % (f.infixify(), f.tableau())
-    f = Parser().parse(r'drs([],[(not drs([],[(man x), (not drs([],[(man x)]))]))])').toFol().negate()
-    print '%s: %s' % (f.infixify(), f.tableau())
-    f = Parser().parse(r'drs([],[(drs([],[(man x)]) or drs([],[(not drs([],[(man x)]))]))])').toFol().negate()
-    print '%s: %s' % (f.infixify(), f.tableau())
-    f = Parser().parse(r'drs([],[(drs([],[(man x)]) implies drs([],[(man x)]))])').toFol().negate()
-    print '%s: %s' % (f.infixify(), f.tableau())
-    f = Parser().parse(r'drs([],[(not drs([],[(man x), (not drs([],[(man x)]))]))])').toFol().negate()
-    print '%s: %s' % (f.infixify(), f.tableau())
-    f = Parser().parse(r'drs([],[(drs([],[(man x)]) or drs([],[(not drs([],[(man x)]))]))])').toFol().negate()
-    print '%s: %s' % (f.infixify(), f.tableau())
-    f = Parser().parse(r'drs([],[(drs([],[(man x)]) implies drs([],[(man x)]))])').toFol().negate()
-    print '%s: %s' % (f.infixify(), f.tableau())
-    f = Parser().parse(r'drs([],[(drs([],[(man x)]) iff drs([],[(man x)]))])').toFol().negate()
-    print '%s: %s' % (f.infixify(), f.tableau())
-    f = Parser().parse(r'drs([],[(not drs([],[(drs([],[(man x)]) iff drs([],[(not drs([],[(man x)]))]))]))])').toFol().negate()
-    print '%s: %s' % (f.infixify(), f.tableau())
-
 if __name__ == '__main__':
     demo()
     print '\n'
     testResolve_anaphora()
     print '\n'
     testToFol()
-    print '\n'
-    testTableau()
