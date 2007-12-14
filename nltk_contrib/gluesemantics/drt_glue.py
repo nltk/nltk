@@ -236,9 +236,15 @@ def _add_to_reading_list(glueformula, reading_list, remove_duplicates=False):
     add_reading = True
     if remove_duplicates:
         for reading in reading_list:
-            if reading.tp_equals(glueformula.meaning):
-                add_reading = False
-                break;
+            try:
+                if reading.tp_equals(glueformula.meaning):
+                    add_reading = False
+                    break;
+            except:
+                #if there is an exception, the syntax of the formula  
+                #may not be understandable by the prover, so don't
+                #throw out the reading.
+                pass
     if add_reading:
         reading_list.append(glueformula.meaning)
     
@@ -404,8 +410,8 @@ def proof_demo():
     every_girl_chases_a_dog = a_dog.applyto(every_girl_chases)
     print '      \'every girl chases a dog\': %s' % every_girl_chases_a_dog.simplify().infixify()
 
-def demo(show_example=-1, remove_duplicates=False):
-    examples = ['David sees Mary',
+def examples():
+    return [    'David sees Mary',
                 'David eats a sandwich',
                 'every man chases a dog',
                 'every man believes a dog yawns',
@@ -425,9 +431,10 @@ def demo(show_example=-1, remove_duplicates=False):
                 'he likes a dog',
                 'a dog walks and he leaves']
 
+def demo(show_example=-1, remove_duplicates=False):
     example_num = 0
     hit = False
-    for sentence in examples:
+    for sentence in examples():
         if example_num==show_example or show_example==-1:
             print '[[[Example %s]]]  %s' % (example_num, sentence)
             readings = parse_to_meaning(sentence, remove_duplicates)
