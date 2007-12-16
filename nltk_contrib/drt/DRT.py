@@ -970,10 +970,13 @@ class ApplicationExpression(Expression, logic.ApplicationExpression):
                     possible_antecedents.extend(ancestor.get_refs())
         #===============================================================================
         #   This line ensures that statements of the form ( x = x ) wont appear.
-        #   Possibly change to remove antecedents with the wrong 'gender' 
+        #   Possibly amend to remove antecedents with the wrong 'gender' 
         #===============================================================================
             possible_antecedents.remove(self.second)
-            eqalityExp = ApplicationExpression(ApplicationExpression(FolOperator(Tokens.EQ), self.second),possible_antecedents) 
+            if len(possible_antecedents) == 1:
+                eqalityExp = ApplicationExpression(ApplicationExpression(FolOperator(Tokens.EQ), self.second),possible_antecedents[0])
+            else:
+                eqalityExp = ApplicationExpression(ApplicationExpression(FolOperator(Tokens.EQ), self.second),possible_antecedents) 
             return eqalityExp
         else:
             r_first = self.first.resolve_anaphora(trail + [self])
