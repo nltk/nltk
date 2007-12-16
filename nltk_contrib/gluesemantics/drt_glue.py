@@ -2,6 +2,7 @@ from nltk_contrib.drt import DRT
 import linearlogic
 import lfg
 from nltk import data
+from nltk_contrib.theorem_prover.tableau import ProverParseError
 
 class GlueFormula:
     def __init__(self, meaning, glue, indices=set([])):
@@ -240,7 +241,7 @@ def _add_to_reading_list(glueformula, reading_list, remove_duplicates=False):
                 if reading.tp_equals(glueformula.meaning):
                     add_reading = False
                     break;
-            except:
+            except ProverParseError:
                 #if there is an exception, the syntax of the formula  
                 #may not be understandable by the prover, so don't
                 #throw out the reading.
