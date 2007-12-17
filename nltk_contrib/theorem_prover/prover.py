@@ -68,9 +68,9 @@ def demo():
     print "Trying to prove:\n '%s <-> %s'" % (a.infixify(), b.infixify())
     print 'tableau: %s' % attempt_proof(bicond, 'tableau')
     print 'Prover9: %s' % attempt_proof(bicond, 'Prover9')
+    print '\n'
     
     demo_drt_glue_remove_duplicates()
-    print '\n'
     
 if __name__ == '__main__': 
     demo()

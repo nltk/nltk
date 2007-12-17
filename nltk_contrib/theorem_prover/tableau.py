@@ -215,7 +215,7 @@ def _attempt_proof_atom(current, agenda, accessible_vars, atoms, debug=(False, 0
 
     #mark all AllExpressions as 'not exhausted' into the agenda since we are (potentially) adding new accessible vars
     agenda.mark_alls_fresh();
-    return _attempt_proof(agenda, accessible_vars|set(current.args), atoms|set([(current, False)]), (debug[0], debug[1]+1)) 
+    return _attempt_proof(agenda, accessible_vars|set(args(current)), atoms|set([(current, False)]), (debug[0], debug[1]+1)) 
     
 def _attempt_proof_n_atom(current, agenda, accessible_vars, atoms, debug=(False, 0)):
     # Check if the branch is closed.  Return 'True' if it is
@@ -225,7 +225,7 @@ def _attempt_proof_n_atom(current, agenda, accessible_vars, atoms, debug=(False,
 
     #mark all AllExpressions as 'not exhausted' into the agenda since we are (potentially) adding new accessible vars
     agenda.mark_alls_fresh();
-    return _attempt_proof(agenda, accessible_vars|set(current.second.args), atoms|set([(current.second, True)]), (debug[0], debug[1]+1)) 
+    return _attempt_proof(agenda, accessible_vars|set(args(current.second)), atoms|set([(current.second, True)]), (debug[0], debug[1]+1)) 
     
 def _attempt_proof_n_eq(current, agenda, accessible_vars, atoms, debug=(False, 0)):
     ###########################################################################
@@ -237,7 +237,7 @@ def _attempt_proof_n_eq(current, agenda, accessible_vars, atoms, debug=(False, 0
     
     agenda[Categories.N_EQ].add(current)
     current._exhausted = True
-    return _attempt_proof(agenda, accessible_vars|set(current.second.args), atoms, (debug[0], debug[1]+1)) 
+    return _attempt_proof(agenda, accessible_vars|set(args(current.second)), atoms, (debug[0], debug[1]+1)) 
     
 def _attempt_proof_d_neg(current, agenda, accessible_vars, atoms, debug=(False, 0)):
     agenda.put(current.second.second)
@@ -361,6 +361,19 @@ def negate(expression):
     assert isinstance(expression, Expression)
     return ApplicationExpression(Operator('not'), expression)
     
+def args(appEx):
+    """
+    Uncurry the argument list.  
+    This is an 'overload' of logic.ApplicationExpression._args() 
+    because this version returns a list of Expressions instead 
+    of str objects.
+    """
+    assert isinstance(appEx, ApplicationExpression)
+    if isinstance(appEx.first, ApplicationExpression):
+        return args(appEx.first) + [appEx.second]
+    else:
+        return [appEx.second]
+    
 class Categories:
     ATOM   = 0
     N_ATOM = 1
@@ -417,7 +430,7 @@ def testTableau():
     print '%s |- %s: %s' % (p.infixify(), c.infixify(), attempt_proof(c, [p]))
     f = LogicParser().parse('all x.all y.((x = y) implies (y = x))')
     print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-    f = LogicParser().parse('all x.all y.all z.(((x=y)and(y=z))implies(x=z))')
+    f = LogicParser().parse('all x.all y.all z.(((x = y)and(y = z))implies(x = z))')
     print '|- %s: %s' % (f.infixify(), attempt_proof(f))
     f = LogicParser().parse('(not(all x.some y.(F y x) and some x.all y.(not(F y x))))')
     print '|- %s: %s' % (f.infixify(), attempt_proof(f))
