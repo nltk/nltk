@@ -128,9 +128,22 @@ def _toProver9String_ApplicationExpression(current):
             return '(%s %s %s)' % (firstStr, opStr, secondStr)
     else:
         accum = '%s(' % toProver9String(current.fun)
-        for arg in current.args:
+        for arg in args(current):
             accum += '%s, ' % toProver9String(arg)
         return '%s)' % accum[0:-2]
+
+def args(appEx):
+    """
+    Uncurry the argument list.  
+    This is an 'overload' of logic.ApplicationExpression._args() 
+    because this version returns a list of Expressions instead 
+    of str objects.
+    """
+    assert isinstance(appEx, ApplicationExpression)
+    if isinstance(appEx.first, ApplicationExpression):
+        return args(appEx.first) + [appEx.second]
+    else:
+        return [appEx.second]
 
 def _toProver9String_Operator(current):
     if(current.operator == 'and'):
