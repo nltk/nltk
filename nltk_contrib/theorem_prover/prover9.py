@@ -6,6 +6,7 @@ _prover9_path = None
 _prover9_executable = None
 
 _prover9_search = ['.',
+                   '/usr/local/bin/prover9/bin',
                    '/usr/local/bin',
                    '/usr/local/prover9',
                    '/usr/local/share/prover9']
@@ -33,7 +34,7 @@ def config_prover9(path=None, verbose=True):
         exe = os.path.join(path, 'prover9')
         if os.path.exists(exe):
             _prover9_path = path
-            _prover9_executable = '%s/bin/prover9' % exe
+            _prover9_executable = exe
             if verbose:
                 print '[Found Prover9: %s]' % _prover9_executable
             break
