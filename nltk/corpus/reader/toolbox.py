@@ -16,8 +16,6 @@ Module for reading, writing and manipulating Toolbox databases.
 import os, re
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
-from string import split
-from itertools import imap
 from StringIO import StringIO
 from nltk.etree.ElementTree import TreeBuilder, Element
 from nltk.utilities import deprecated
@@ -302,3 +300,22 @@ def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
                     l.append("\\%s%s\n" % (mkr, value))
     return ''.join(l[1:])
 
+def demo():
+    from nltk.corpus import toolbox
+    from itertools import islice
+
+    lexicon = toolbox.xml('rotokas.dic')
+    print 'first field in fourth record:'
+    print lexicon[3][0].tag
+    print lexicon[3][0].text
+    
+    print '\nfields in sequential order:'
+    for field in islice(lexicon.find('record'), 10):
+        print field.tag, field.text
+
+    print '\nlx fields:'
+    for field in islice(lexicon.findall('record/lx'), 10):
+        print field.text
+
+if __name__ == '__main__':
+    demo()
