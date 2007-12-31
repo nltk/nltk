@@ -102,6 +102,10 @@ names = LazyCorpusLoader(
     'names', WordListCorpusReader, '(?!\.svn).*', '.txt')
 ppattach = LazyCorpusLoader(
     'ppattach', PPAttachmentCorpusReader, ['training', 'test', 'devset'])
+qc = LazyCorpusLoader(
+    'qc', StringCategoryCorpusReader, ['train.txt', 'test.txt'])
+reuters = LazyCorpusLoader(
+    'reuters', ReutersCorpusReader, '(training|test).*', '', 'cats.txt')
 rte = LazyCorpusLoader(
     'rte', RTECorpusReader, '(?!\.svn).*', '.xml')
 senseval = LazyCorpusLoader(
