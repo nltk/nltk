@@ -1,3 +1,32 @@
+
+Version 0.9.1 2008-01-03
+
+NLTK:
+- RTE corpus reader
+- Movie reviews corpus reader
+
+Data:
+- Question classification data, included with permission of Li & Roth
+- Reuters 21578 Corpus, ApteMod version, from CPAN
+- Movie reviews corpus (sentiment polarity), included with permission of Lillian Lee
+- RTE corpus
+
+Contrib:
+- theorem_prover: Prover9, tableau, docs (Dan Garrette, Ewan Klein)
+- drt: improved drawing, conversion to FOL (Dan Garrette)
+- gluesemantics: GUI demonstration, abstracted LFG code, documentation (Dan Garrette)
+- readability: various text readability scores (Thomas Jakobsen, Thomas Skardal)
+- toolbox: code to normalize toolbox databases (Greg Aumann)
+	
+Book:
+- many improvements in early chapters in response to reader feedback
+- moved unicode section to chapter 3
+- work on engineering.txt (not included in 0.9.1)
+
+Distributions:
+- Fixed installation for Mac OS 10.5 (Joshua Ritterman)
+- Generalize doctest_driver to work with doc_contrib
+
 Version 0.9 2007-10-12
 
 NLTK:

@@ -3,7 +3,7 @@
 
 # Natural Language Toolkit: RSLP Stemmer
 #
-# Copyright (C) 2001-2007 University of Melbourne
+# Copyright (C) 2001-2008 University of Pennsylvania
 # Author: Tiago Tresoldi <tresoldi@gmail.com>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
