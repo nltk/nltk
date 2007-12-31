@@ -12,12 +12,12 @@ from api import CorpusReader
 from nltk import tokenize
 from nltk.etree import ElementTree
 
-# Allow enough open files for CESS Corpora
+# Maximize the number of open files allowed (for CESS and Reuters Corpora)
 if os.name == 'posix':
     import resource
     soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
     try:
-        resource.setrlimit(resource.RLIMIT_NOFILE, (1500, hard))
+        resource.setrlimit(resource.RLIMIT_NOFILE, (hard, hard))
     except ValueError:
         pass
 
@@ -807,3 +807,56 @@ def _path_from(parent, child):
         assert os.path.split(child)[0] != child
     return path
 
+######################################################################
+#{ Corpora containing categorized items
+######################################################################
+
+class CategorizedCorpus(object):
+    """Parent class for categorized corpora, allowing us to map between
+    corpus categories and corpus items (two-way dict).  Derived classes use idiosyncratic
+    methods to define the defaultdicts used by this class."""
+    
+    def categories(self, item=None):
+        """List the categories defined for the corpus, or for the item if it is given."""
+        if item:
+            return self._item_to_categories[item]
+        else:
+            return self._category_to_items.keys()
+    
+    def items(self, category=None):
+        """List the items defined in the corpus, or the items in the given category."""
+        if category:
+            return self._category_to_items[category]
+        else:
+            return self._item_to_categories.keys()
+
+    def _add(self, item, category):
+        """Add the item of the given category to the dictionaries."""
+        if not self._item_to_categories:
+            self._item_to_categories = nltk.defaultdict(set)
+        if not self._category_to_items:
+            self._category_to_items = nltk.defaultdict(set)
+        self._item_to_categories[item].add(category)
+        self._category_to_items[category].add(item)
+
+class DirectoryCategorizedCorpus(CategorizedCorpus):
+    """Corpora whose files are categorized by directory, e.g. movie_reviews"""
+    # just an instance of FilenameCategorizedCorpus using pattern = "(.*)/.*" ? 
+
+class FilenameCategorizedCorpus(CategorizedCorpus):
+    """Corpora whose files are categorized by filename pattern, e.g. brown"""
+
+    def __init__(self, pattern):
+        """pattern is applied to each filename and its matching segment is the category"""
+        # for each item in the corpus:
+        #     category = re.match(pattern, item).group(1)     # for brown: pattern = "c(\a)\d\d", e.g. ca01 -> a
+        #     self._add(item, category)     
+        
+class ListCategorizedCorpus(CategorizedCorpus):
+    """Corpora whose files are categorized by a list, e.g. reuters"""
+
+    def __init__(self, file):
+        # for each line of the file: # for reuters, the file is cats.txt
+        #     item, categories = line.split(' ', 1)
+        #     for category in categories.split(' '):
+        #         self._add(item, category)

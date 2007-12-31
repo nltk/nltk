@@ -159,5 +159,9 @@ class PlaintextCorpusReader(CorpusReader):
     def tokenized(self, items=None):
         return self.words(items)
     #}
-            
-        
+
+class ReutersCorpusReader(PlaintextCorpusReader, ListCategorizedCorpus):
+    pass
+    # NEED TO DEFINE INITIALIZER TO CALL BOTH SUPERCLASSES
+    # NEED TO TELL ListCategorizedCorpus the filename
+    
