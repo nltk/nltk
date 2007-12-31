@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Punkt sentence tokenizer
 #
-# Copyright (C) 2001-2007 University of Pennsylvania
+# Copyright (C) 2001-2008 University of Pennsylvania
 # Algorithm: Kiss & Strunk (2006)
 # Author: Willy <willy@csse.unimelb.edu.au> (original Python port)
 #         Steven Bird <sb@csse.unimelb.edu.au> (additions)

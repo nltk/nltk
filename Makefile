@@ -1,6 +1,6 @@
 # Natural Language Toolkit: source Makefile
 #
-# Copyright (C) 2001-2006 University of Pennsylvania
+# Copyright (C) 2001-2008 University of Pennsylvania
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
 #	 Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sf.net>
@@ -90,8 +90,6 @@ python:
 	wget -N -P python/win  $(PYFTP)/python-2.5.1.msi
 	wget -N -P python/unix $(PYFTP)/Python-2.5.1.tgz
 	touch .python.done
-	
-	
 
 numpy:
 	mkdir -p python/{mac,win,unix}

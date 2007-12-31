@@ -4,11 +4,11 @@ Authors: Steven Bird <sb@csse.unimelb.edu.au>
          Edward Loper <edloper@gradient.cis.upenn.edu>
          Ewan Klein <ewan@inf.ed.ac.uk>
 
-Copyright (C) 2007 University of Pennsylvania
+Copyright (C) 2001-2008 University of Pennsylvania
 
-For license information, see LICENSE.TXT
+For license information, see LICENSE.txt
 
-NLTK Ñ the Natural Language Toolkit Ñ is a suite of open source
+NLTK -- the Natural Language Toolkit -- is a suite of open source
 Python modules, data sets and tutorials supporting research and
 development in natural language processing.
 
@@ -49,5 +49,5 @@ Redistributing: NLTK source code is distributed under the Gnu Public License.
     the provisions of these licenses.
 
 Citing: Please cite NLTK as follows:
-    Bird, Steven, Edward Loper and Ewan Klein (2007).
+    Bird, Steven, Edward Loper and Ewan Klein (2008).
     Natural Language Toolkit.  http://nltk.org/

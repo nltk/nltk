@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Sun Tsu-Bot
 #
-# Copyright (C) 2007 University of Melbourne
+# Copyright (C) 2001-2008 University of Pennsylvania
 # Author: Sam Huston 2007
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT

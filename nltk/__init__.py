@@ -1,6 +1,6 @@
 # Natural Language Toolkit (NLTK)
 #
-# Copyright (C) 2001-2007 University of Pennsylvania
+# Copyright (C) 2001-2008 University of Pennsylvania
 # Authors: Steven Bird <sb@csse.unimelb.edu.au>
 #          Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL:     http://nltk.org/
@@ -11,7 +11,7 @@ NLTK -- the Natural Language Toolkit -- is a suite of open source
 Python modules, data sets and tutorials supporting research and
 development in natural language processing.
 
-@version: 0.9
+@version: 0.9.1
 """
 
 ##//////////////////////////////////////////////////////
@@ -20,11 +20,11 @@ development in natural language processing.
 
 # Version.  For each new release, the version number should be updated
 # here and in the Epydoc comment (above).
-__version__ = "0.9"
+__version__ = "0.9.1"
 
 # Copyright notice
 __copyright__ = """\
-Copyright (C) 2001-2007 University of Pennsylvania.
+Copyright (C) 2001-2008 University of Pennsylvania.
 
 Distributed and Licensed under provisions of the GNU Public
 License, which is included by reference.

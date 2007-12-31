@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Wordnet stemmer interface
 #
-# Copyright (C) 2001-2007 University of Melbourne
+# Copyright (C) 2001-2008 University of Pennsylvania
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sf.net>

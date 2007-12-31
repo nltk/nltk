@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Stemmers
 #
-# Copyright (C) 2001-2007 University of Pennsylvania
+# Copyright (C) 2001-2008 University of Pennsylvania
 # Author: Steven Tomcavage <stomcava@law.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT

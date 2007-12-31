@@ -1,6 +1,6 @@
 # Natural Language Toolkit: K-Means Clusterer
 #
-# Copyright (C) 2004-2007 University of Melbourne
+# Copyright (C) 2001-2008 University of Pennsylvania
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # Porting: Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://nltk.sf.net>
