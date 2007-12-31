@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Relation Extraction
 #
-# Copyright (C) 2005-2007 University of Edinburgh
+# Copyright (C) 2005-2008 University of Edinburgh
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT

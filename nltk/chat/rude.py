@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Zen Chatbot
 #
-# Copyright (C) 2005-2007 University of Melbourne
+# Copyright (C) 2001-2008 University of Pennsylvania
 # Author: Peter Spiller <pspiller@csse.unimelb.edu.au>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
