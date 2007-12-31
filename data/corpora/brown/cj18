@@ -1,0 +1,178 @@
+
+
+
+6.4/cd-hl ./.-hl
+The/at-hl primary/jj-hl decomposition/nn-hl theorem/nn-hl 
+We/ppss are/ber trying/vbg to/to study/vb a/at linear/jj operator/nn T/nn on/in the/at finite-dimensional/jj space/nn V/nn ,/, by/in decomposing/vbg T/nn into/in a/at direct/jj sum/nn of/in operators/nns which/wdt are/ber in/in some/dti sense/nn elementary/jj ./.
+We/ppss can/md do/do this/dt through/in the/at characteristic/jj values/nns and/cc vectors/nns of/in T/nn in/in certain/ap special/jj cases/nns ,/, i.e./rb ,/, when/wrb the/at minimal/jj polynomial/nn for/in T/nn factors/nns over/in the/at scalar/jj field/nn F/nn into/in a/at product/nn of/in distinct/jj monic/jj polynomials/nns of/in degree/nn 1/cd ./.
+What/wdt can/md we/ppss do/do with/in the/at general/jj T/nn ?/. ?/.
+If/cs we/ppss try/vb to/to study/vb T/nn using/vbg characteristic/jj values/nns ,/, we/ppss are/ber confronted/vbn with/in two/cd problems/nns ./.
+First/od ,/, T/nn may/md not/* have/hv a/at single/ap characteristic/jj value/nn ;/. ;/.
+this/dt is/bez really/rb a/at deficiency/nn in/in the/at scalar/jj field/nn ,/, namely/rb ,/, that/cs it/pps is/bez not/* algebraically/rb closed/vbn ./.
+Second/od ,/, even/rb if/cs the/at characteristic/jj polynomial/nn factors/vbz completely/rb over/in F/nn into/in a/at product/nn of/in polynomials/nns of/in degree/nn 1/cd ,/, there/ex may/md not/* be/be enough/ap characteristic/jj vectors/nns for/in T/nn to/to span/vb the/at space/nn V/nn ./.
+This/dt is/bez clearly/rb a/at deficiency/nn in/in T/nn ./.
+The/at second/od situation/nn is/bez illustrated/vbn by/in the/at operator/nn T/nn on/in Af/nn (/( F/nn any/dti field/nn )/) represented/vbn in/in the/at standard/jj basis/nn by/in Af/nn ./.
+The/at characteristic/jj polynomial/nn for/in A/nn is/bez Af/nn and/cc this/dt is/bez plainly/rb also/rb the/at minimal/jj polynomial/nn for/in A/nn (/( or/cc for/in T/nn )/) ./.
+Thus/rb T/nn is/bez not/* diagonalizable/jj ./.
+One/pn sees/vbz that/cs this/dt happens/vbz because/cs the/at null/jj space/nn of/in Af/nn has/hvz dimension/nn 1/cd only/rb ./.
+On/in the/at other/ap hand/nn ,/, the/at null/jj space/nn of/in Af/nn and/cc the/at null/jj space/nn of/in Af/nn together/rb span/vb V/nn ,/, the/at former/ap being/beg the/at subspace/nn spanned/vbn by/in Af/nn and/cc the/at latter/ap the/at subspace/nn spanned/vbn by/in Af/nn and/cc Af/nn ./.
+
+
+	This/dt will/nn be/be more/ap or/cc less/ap our/pp$ general/jj method/nn for/in the/at second/od problem/nn ./.
+If/cs (/( remember/vb this/dt is/bez an/at assumption/nn )/) the/at minimal/jj polynomial/nn for/in T/nn decomposes/vbz Af/nn where/wrb Af/nn are/ber distinct/jj elements/nns of/in F/nn ,/, then/rb we/ppss shall/md show/vb that/cs the/at space/nn V/nn is/bez the/at direct/jj sum/nn of/in the/at null/jj spaces/nns of/in Af/nn ./.
+The/at diagonalizable/jj operator/nn is/bez the/at special/jj case/nn of/in this/dt in/in which/wdt Af/nn for/in each/dt i/nn ./.
+The/at theorem/nn which/wdt we/ppss prove/vb is/bez more/ql general/jj than/cs what/wdt we/ppss have/hv described/vbn ,/, since/cs it/pps works/vbz with/in the/at primary/jj decomposition/nn of/in the/at minimal/jj polynomial/nn ,/, whether/cs or/cc not/* the/at primes/nns which/wdt enter/vb are/ber all/abn of/in first/od degree/nn ./.
+The/at reader/nn will/md find/vb it/ppo helpful/jj to/to think/vb of/in the/at special/jj case/nn when/wrb the/at primes/nns are/ber of/in degree/nn 1/cd ,/, and/cc even/rb more/ql particularly/rb ,/, to/to think/vb of/in the/at proof/nn of/in Theorem/nn-tl 10/cd-tl ,/, a/at special/jj case/nn of/in this/dt theorem/nn ./.
+
+
+
+Theorem/nn-tl-hl 12/cd-tl-hl ./.-hl
+(/(-hl primary/jj-hl decomposition/nn-hl theorem/nn-hl )/)-hl ./.-hl
+
+Let/vb T/nn be/be a/at linear/jj operator/nn on/in the/at finite-dimensional/jj vector/nn space/nn V/np over/in the/at field/nn F/np ./.
+Let/vb p/nn be/be the/at minimal/jj polynomial/nn for/in T/np ,/, Af/nn ,/, where/wrb the/at Af/nn ,/, are/ber distinct/jj irreducible/jj monic/jj polynomials/nns over/in F/np and/cc the/at Af/nn are/ber positive/jj integers/nns ./.
+Let/vb Af/nn be/be the/at null/jj space/nn of/in Af/nn ./.
+Then/rb (/( A/np )/) Af/nn ;/. ;/.
+(/( B/np )/) each/dt Af/nn is/bez invariant/jj under/in T/np ;/. ;/.
+(/( C/np )/) if/cs Af/nn is/bez the/at operator/nn induced/vbn on/in Af/nn by/in T/np ,/, then/rb the/at minimal/jj polynomial/nn for/in Af/nn is/bez Af/nn ./.
+Proof/nn-hl ./.-hl
+
+The/at idea/nn of/in the/at proof/nn is/bez this/dt ./.
+If/cs the/at direct-sum/nn decomposition/nn (/( A/at-tl )/) is/bez valid/jj ,/, how/wrb can/md we/ppss get/vb hold/nn of/in the/at projections/nns Af/nn associated/vbn with/in the/at decomposition/nn ?/. ?/.
+The/at projection/nn Af/nn will/md be/be the/at identity/nn on/in Af/nn and/cc zero/nn on/in the/at other/ap Af/nn ./.
+We/ppss shall/md find/vb a/at polynomial/nn Af/nn such/jj that/cs Af/nn is/bez the/at identity/nn on/in Af/nn and/cc is/bez zero/nn on/in the/at other/ap Af/nn ,/, and/cc so/cs that/cs Af/nn ,/, etc./rb ./.
+
+
+	For/in each/dt i/nn ,/, let/vb Af/nn ./.
+Since/cs Af/nn are/ber distinct/jj prime/jj polynomials/nns ,/, the/at polynomials/nns Af/nn are/ber relatively/rb prime/jj (/( Theorem/nn-tl 8/cd-tl ,/, Chapter/nn-tl 4/cd-tl )/) ./.
+Thus/rb there/ex are/ber polynomials/nns Af/nn such/jj that/cs Af/nn ./.
+Note/vb also/rb that/cs if/cs Af/nn ,/, then/rb Af/nn is/bez divisible/jj by/in the/at polynomial/nn p/nn ,/, because/cs Af/nn contains/vbz each/dt Af/nn as/cs a/at factor/nn ./.
+We/ppss shall/md show/vb that/cs the/at polynomials/nns Af/nn behave/vb in/in the/at manner/nn described/vbn in/in the/at first/od paragraph/nn of/in the/at proof/nn ./.
+
+
+	Let/vb Af/nn ./.
+Since/cs Af/nn and/cc P/np divides/vbz Af/nn for/in Af/nn ,/, we/ppss have/hv Af/nn ./.
+Thus/rb the/at Af/nn are/ber projections/nns which/wdt correspond/vb to/in some/dti direct-sum/nn decomposition/nn of/in the/at space/nn V/nn ./.
+We/ppss wish/vb to/to show/vb that/cs the/at range/nn of/in Af/nn is/bez exactly/rb the/at subspace/nn Af/nn ./.
+It/pps is/bez clear/jj that/cs each/dt vector/nn in/in the/at range/nn of/in Af/nn is/bez in/in Af/nn for/cs if/cs **ya/nn is/bez in/in the/at range/nn of/in Af/nn ,/, then/rb Af/nn and/cc so/rb Af/nn because/cs Af/nn is/bez divisible/jj by/in the/at minimal/jj polynomial/nn P/np ./.
+Conversely/rb ,/, suppose/vb that/cs **ya/nn is/bez in/in the/at null/jj space/nn of/in Af/nn ./.
+If/cs Af/nn ,/, then/jj Af/nn is/bez divisible/jj by/in Af/nn and/cc so/rb Af/nn ,/, i.e./rb ,/, Af/nn ./.
+But/cc then/rb it/pps is/bez immediate/jj that/dt Af/nn ,/, i.e./rb ,/, that/cs **ya/nn is/bez in/in the/at range/nn of/in Af/nn ./.
+This/dt completes/vbz the/at proof/nn of/in statement/nn (/( A/np )/) ./.
+
+
+	It/pps is/bez certainly/rb clear/jj that/cs the/at subspaces/nns Af/nn are/ber invariant/jj under/in T/nn ./.
+If/cs Af/nn is/bez the/at operator/nn induced/vbn on/in Af/nn by/in T/nn ,/, then/rb evidently/rb Af/nn ,/, because/cs by/in definition/nn Af/nn is/bez 0/cd on/in the/at subspace/nn Af/nn ./.
+This/dt shows/vbz that/cs the/at minimal/jj polynomial/nn for/in Af/nn divides/vbz Af/nn ./.
+Conversely/rb ,/, let/vb G/np be/be any/dti polynomial/nn such/jj that/cs Af/nn ./.
+Then/rb Af/nn ./.
+Thus/rb Af/nn is/bez divisible/jj by/in the/at minimal/jj polynomial/nn P/np of/in T/nn ,/, i.e./rb ,/, Af/nn divides/vbz Af/nn ./.
+It/pps is/bez easily/rb seen/vbn that/cs Af/nn divides/vbz G/np ./.
+Hence/rb the/at minimal/jj polynomial/nn for/in Af/nn is/bez Af/nn ./.
+
+
+
+Corollary/nn-hl ./.-hl
+
+If/cs Af/nn are/ber the/at projections/nns associated/vbn with/in the/at primary/jj decomposition/nn of/in T/np ,/, then/rb each/dt Af/nn is/bez a/at polynomial/nn in/in T/np ,/, and/cc accordingly/rb if/cs a/at linear/jj operator/nn U/np commutes/vbz with/in T/np then/rb U/nn commutes/vbz with/in each/dt of/in the/at Af/nn ,/, i.e./rb ,/, each/dt subspace/nn Af/nn is/bez invariant/jj under/in U/np ./.
+
+
+	In/in the/at notation/nn of/in the/at proof/nn of/in Theorem/nn-tl 12/cd-tl ,/, let/vb us/ppo take/vb a/at look/nn at/in the/at special/jj case/nn in/in which/wdt the/at minimal/jj polynomial/nn for/in T/nn is/bez a/at product/nn of/in first-degree/nn polynomials/nns ,/, i.e./rb ,/, the/at case/nn in/in which/wdt each/dt Af/nn is/bez of/in the/at form/nn Af/nn ./.
+Now/rb the/at range/nn of/in Af/nn is/bez the/at null/jj space/nn Af/nn of/in Af/nn ./.
+Let/vb us/ppo put/vb Af/nn ./.
+By/in Theorem/nn-tl 10/cd-tl ,/, D/nn is/bez a/at diagonalizable/jj operator/nn which/wdt we/ppss shall/md call/vb the/at diagonalizable/jj part/nn of/in T/nn ./.
+Let/vb us/ppo look/vb at/in the/at operator/nn Af/nn ./.
+Now/rb Af/nn Af/nn so/rb Af/nn ./.
+The/at reader/nn should/md be/be familiar/jj enough/qlp with/in projections/nns by/in now/rb so/cs that/cs he/pps sees/vbz that/cs Af/nn and/cc in/in general/jj that/cs Af/nn ./.
+When/wrb Af/nn for/in each/dt i/nn ,/, we/ppss shall/md have/hv Af/nn ,/, because/cs the/at operator/nn Af/nn will/md then/rb be/be 0/cd on/in the/at range/nn of/in Af/nn ./.
+
+
+
+Definition/nn-hl ./.-hl
+
+Let/vb N/nn be/be a/at linear/jj operator/nn on/in the/at vector/nn space/nn V/np ./.
+We/ppss say/vb that/cs N/nn-tl is/bez nilpotent/jj if/cs there/ex is/bez some/dti positive/jj integer/nn R/np such/jj that/cs Af/nn ./.
+
+
+
+Theorem/nn-hl 13/cd-hl ./.-hl
+
+Let/vb T/nn be/be a/at linear/jj operator/nn on/in the/at finite-dimensional/jj vector/nn space/nn V/np over/in the/at field/nn F/np ./.
+Suppose/vb that/cs the/at minimal/jj polynomial/nn for/in T/np decomposes/vbz over/in F/np into/in a/at product/nn of/in linear/jj polynomials/nns ./.
+Then/rb there/ex is/bez a/at diagonalizable/jj operator/nn D/np on/in V/nn and/cc a/at nilpotent/jj operator/nn N/nn in/in V/nn such/jj that/cs (/( A/np )/) Af/nn ,/, (/( b/nn )/) Af/nn ./.
+The/at diagonalizable/jj operator/nn D/np and/cc the/at nilpotent/jj operator/nn N/nn-tl are/ber uniquely/rb determined/vbn by/in (/( A/np )/) and/cc (/( B/np )/) and/cc each/dt of/in them/ppo is/bez a/at polynomial/nn in/in T/np ./.
+Proof/nn-hl ./.-hl
+
+We/ppss have/hv just/rb observed/vbn that/cs we/ppss can/md write/vb Af/nn where/wrb D/nn is/bez diagonalizable/jj and/cc N/nn is/bez nilpotent/jj ,/, and/cc where/wrb D/nn and/cc N/nn not/* only/rb commute/vb but/cc are/ber polynomials/nns in/in T/nn ./.
+Now/rb suppose/vb that/cs we/ppss also/rb have/hv Af/nn where/wrb D'/nn is/bez diagonalizable/jj ,/, N'/nn is/bez nilpotent/jj ,/, and/cc Af/nn ./.
+We/ppss shall/md prove/vb that/cs Af/nn ./.
+
+
+	Since/cs D'/nn and/cc N'/nn commute/vb with/in one/cd another/dt and/cc Af/nn ,/, we/ppss see/vb that/cs D'/nn and/cc N'/nn commute/vb with/in T/nn ./.
+Thus/rb D'/nn and/cc N'/nn commute/vb with/in any/dti polynomial/nn in/in T/nn ;/. ;/.
+hence/rb they/ppss commute/vb with/in D/nn and/cc with/in N/nn ./.
+Now/rb we/ppss have/hv Af/nn or/cc Af/nn and/cc all/abn four/cd of/in these/dts operators/nns commute/vb with/in one/cd another/dt ./.
+Since/cs D/nn and/cc D'/nn are/ber both/abx diagonalizable/jj and/cc they/ppss commute/vb ,/, they/ppss are/ber simultaneously/rb diagonalizable/jj ,/, and/cc Af/nn is/bez diagonalizable/jj ./.
+Since/cs N/nn and/cc N'/nn are/ber both/abx nilpotent/jj and/cc they/ppss commute/vb ,/, the/at operator/nn Af/nn is/bez nilpotent/jj ;/. ;/.
+for/cs ,/, using/vbg the/at fact/nn that/dt N/nn and/cc N'/nn commute/vb Af/nn and/cc so/rb when/wrb R/np is/bez sufficiently/ql large/jj every/at term/nn in/in this/dt expression/nn for/in Af/nn will/md be/be 0/cd ./.
+(/( Actually/rb ,/, a/at nilpotent/jj operator/nn on/in an/at n-dimensional/nn space/nn must/md have/hv its/pp$ T/np power/nn 0/cd ;/. ;/.
+if/cs we/ppss take/vb Af/nn above/rb ,/, that/dt will/md be/be large/jj enough/qlp ./.
+It/pps then/rb follows/vbz that/cs Af/nn is/bez large/jj enough/qlp ,/, but/cc this/dt is/bez not/* obvious/jj from/in the/at above/jj expression/nn ./.
+)/) Now/rb Af/nn is/bez a/at diagonalizable/jj operator/nn which/wdt is/bez also/rb nilpotent/jj ./.
+Such/abl an/at operator/nn is/bez obviously/rb the/at zero/nn operator/nn ;/. ;/.
+for/cs since/cs it/pps is/bez nilpotent/jj ,/, the/at minimal/jj polynomial/nn for/in this/dt operator/nn is/bez of/in the/at form/nn Af/nn for/in some/dti Af/nn ;/. ;/.
+but/cc then/rb since/cs the/at operator/nn is/bez diagonalizable/jj ,/, the/at minimal/jj polynomial/nn cannot/md* have/hv a/at repeated/vbn root/nn ;/. ;/.
+hence/rb Af/nn and/cc the/at minimal/jj polynomial/nn is/bez simply/rb x/nn ,/, which/wdt says/vbz the/at operator/nn is/bez 0/cd ./.
+Thus/rb we/ppss see/vb that/cs Af/nn and/cc Af/nn ./.
+
+
+
+Corollary/nn-hl ./.-hl
+
+Let/vb V/nn be/be a/at finite-dimensional/jj vector/nn space/nn over/in an/at algebraically/rb closed/vbn field/nn F/nn ,/, e.g./rb ,/, the/at field/nn of/in complex/jj numbers/nns ./.
+Then/rb every/at linear/jj operator/nn T/np in/in V/nn can/md be/be written/vbn as/cs the/at sum/nn of/in a/at diagonalizable/jj operator/nn D/np and/cc a/at nilpotent/jj operator/nn N/nn-tl which/wdt commute/vb ./.
+These/dts operators/nns D/nn and/cc N/nn are/ber unique/jj and/cc each/dt is/bez a/at polynomial/nn in/in T/np ./.
+
+
+	From/in these/dts results/nns ,/, one/pn sees/vbz that/cs the/at study/nn of/in linear/jj operators/nns on/in vector/nn spaces/nns over/in an/at algebraically/rb closed/vbn field/nn is/bez essentially/rb reduced/vbn to/in the/at study/nn of/in nilpotent/jj operators/nns ./.
+For/in vector/nn spaces/nns over/in non-algebraically/rb closed/vbn fields/nns ,/, we/ppss still/rb need/vb to/to find/vb some/dti substitute/nn for/in characteristic/jj values/nns and/cc vectors/nns ./.
+It/pps is/bez a/at very/ql interesting/jj fact/nn that/cs these/dts two/cd problems/nns can/md be/be handled/vbn simultaneously/rb and/cc this/dt is/bez what/wdt we/ppss shall/md do/do in/in the/at next/ap chapter/nn ./.
+
+
+	In/in concluding/vbg this/dt section/nn ,/, we/ppss should/md like/vb to/to give/vb an/at example/nn which/wdt illustrates/vbz some/dti of/in the/at ideas/nns of/in the/at primary/jj decomposition/nn theorem/nn ./.
+We/ppss have/hv chosen/vbn to/to give/vb it/ppo at/in the/at end/nn of/in the/at section/nn since/cs it/pps deals/vbz with/in differential/jj equations/nns and/cc thus/rb is/bez not/* purely/rb linear/jj algebra/nn ./.
+
+
+
+Example/nn-hl 11/cd-hl ./.-hl
+
+In/in the/at primary/jj decomposition/nn theorem/nn ,/, it/pps is/bez not/* necessary/jj that/cs the/at vector/nn space/nn V/nn be/be finite/jj dimensional/jj ,/, nor/cc is/bez it/pps necessary/jj for/in parts/nns (/( A/np )/) and/cc (/( B/np )/) that/cs P/np be/be the/at minimal/jj polynomial/nn for/in T/nn ./.
+If/cs T/nn is/bez a/at linear/jj operator/nn on/in an/at arbitrary/jj vector/nn space/nn and/cc if/cs there/ex is/bez a/at monic/jj polynomial/nn P/np such/jj that/cs Af/nn ,/, then/rb parts/nns (/( A/np )/) and/cc (/( B/np )/) of/in Theorem/nn-tl 12/cd-tl are/ber valid/jj for/in T/nn with/in the/at proof/nn which/wdt we/ppss gave/vbd ./.
+
+
+	Let/vb N/nn-tl be/be a/at positive/jj integer/nn and/cc let/vb V/nn be/be the/at space/nn of/in all/abn N/nn-tl times/nns continuously/rb differentiable/jj functions/nns F/np on/in the/at real/jj line/nn which/wdt satisfy/vb the/at differential/jj equation/nn Af/nn where/wrb Af/nn are/ber some/dti fixed/vbn constants/nns ./.
+If/cs Af/nn denotes/vbz the/at space/nn of/in N/nn-tl times/nns continuously/rb differentiable/jj functions/nns ,/, then/rb the/at space/nn V/nn of/in solutions/nns of/in this/dt differential/jj equation/nn is/bez a/at subspace/nn of/in Af/nn ./.
+If/cs D/nn denotes/vbz the/at differentiation/nn operator/nn and/cc P/np is/bez the/at polynomial/nn Af/nn then/rb V/nn is/bez the/at null/jj space/nn of/in the/at operator/nn p/nn (/( ,/, )/) ,/, because/cs Af/nn simply/rb says/vbz Af/nn ./.
+Let/vb us/ppo now/rb regard/vb D/nn as/cs a/at linear/jj operator/nn on/in the/at subspace/nn V/nn ./.
+Then/rb Af/nn ./.
+
+
+	If/cs we/ppss are/ber discussing/vbg differentiable/jj complex-valued/jj functions/nns ,/, then/jj Af/nn and/cc V/nn are/ber complex/jj vector/nn spaces/nns ,/, and/cc Af/nn may/md be/be any/dti complex/jj numbers/nns ./.
+We/ppss now/rb write/vb Af/nn where/wrb Af/nn are/ber distinct/jj complex/jj numbers/nns ./.
+If/cs Af/nn is/bez the/at null/jj space/nn of/in Af/nn ,/, then/rb Theorem/nn-tl 12/cd-tl says/vbz that/cs Af/nn ./.
+In/in other/ap words/nns ,/, if/cs F/np satisfies/vbz the/at differential/jj equation/nn Af/nn ,/, then/rb F/np is/bez uniquely/rb expressible/jj in/in the/at form/nn Af/nn where/wrb Af/nn satisfies/vbz the/at differential/jj equation/nn Af/nn ./.
+Thus/rb ,/, the/at study/nn of/in the/at solutions/nns to/in the/at equation/nn Af/nn is/bez reduced/vbn to/in the/at study/nn of/in the/at space/nn of/in solutions/nns of/in a/at differential/jj equation/nn of/in the/at form/nn Af/nn ./.
+This/dt reduction/nn has/hvz been/ben accomplished/vbn by/in the/at general/jj methods/nns of/in linear/jj algebra/nn ,/, i.e./rb ,/, by/in the/at primary/jj decomposition/nn theorem/nn ./.
+
+
+	To/to describe/vb the/at space/nn of/in solutions/nns to/in Af/nn ,/, one/pn must/md know/vb something/pn about/in differential/jj equations/nns ;/. ;/.
+that/dt is/bez ,/, one/pn must/md know/vb something/pn about/in D/nn other/ap than/cs the/at fact/nn that/cs it/pps is/bez a/at linear/jj operator/nn ./.
+However/rb ,/, one/pn does/doz not/* need/vb to/to know/vb very/ql much/ap ./.
+It/pps is/bez very/ql easy/jj to/to establish/vb by/in induction/nn on/in R/np that/cs if/cs F/np is/bez in/in Af/nn then/rb Af/nn ;/. ;/.
+that/dt is/bez ,/, Af/nn ,/, etc./rb ./.
+Thus/rb Af/nn if/cs and/cc only/rb if/cs Af/nn ./.
+A/at function/nn G/np such/jj that/cs Af/nn ,/, i.e./rb ,/, Af/nn ,/, must/md be/be a/at polynomial/jj function/nn of/in degree/nn Af/nn or/cc less/ap :/: Af/nn ./.
+Thus/rb F/np satisfies/vbz Af/nn if/cs and/cc only/rb if/cs F/np has/hvz the/at form/nn Af/nn ./.
+Accordingly/rb ,/, the/at '/' functions/nns '/' Af/nn span/vb the/at space/nn of/in solutions/nns of/in Af/nn ./.
+Since/cs Af/nn are/ber linearly/rb independent/jj functions/nns and/cc the/at exponential/jj function/nn has/hvz no/at zeros/nns ,/, these/dts R/np functions/nns Af/nn ,/, form/vb a/at basis/nn for/in the/at space/nn of/in solutions/nns ./.
+

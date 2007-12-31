@@ -1,0 +1,117 @@
+
+
+
+Introduction/nn-hl ./.-hl
+
+In/in 1/cd we/ppss investigate/vb a/at new/jj series/nn of/in line/nn involutions/nns in/in a/at projective/jj space/nn of/in three/cd dimensions/nns over/in the/at field/nn of/in complex/jj numbers/nns ./.
+These/dts are/ber defined/vbn by/in a/at simple/jj involutorial/jj transformation/nn of/in the/at points/nns in/in which/wdt a/at general/jj line/nn meets/vbz a/at nonsingular/jj quadric/jj surface/nn bearing/vbg a/at curve/nn of/in symbol/nn Af/nn ./.
+Then/rb in/in 2/cd we/ppss show/vb that/cs any/dti line/nn involution/nn with/in the/at properties/nns that/cs (/( A/np )/) It/pps has/hvz no/at complex/nn of/in invariant/jj lines/nns ,/, and/cc (/( B/np )/) Its/pp$ singular/jj lines/nns form/vb a/at complex/nn consisting/vbg exclusively/rb of/in the/at lines/nns which/wdt meet/vb a/at twisted/vbn curve/nn ,/, is/bez necessarily/rb of/in the/at type/nn discussed/vbn in/in 1/cd ./.
+No/at generalization/nn of/in these/dts results/nns to/in spaces/nns of/in more/ap than/in three/cd dimensions/nns has/hvz so/ql far/rb been/ben found/vbn possible/jj ./.
+
+
+
+1/cd-hl ./.-hl
+
+Let/vb Q/nn be/be a/at nonsingular/jj quadric/jj surface/nn bearing/vbg reguli/nns Af/nn and/cc Af/nn ,/, and/cc let/vb **zg/nn be/be a/at Af/nn curve/nn of/in order/nn K/np on/in Q/nn ./.
+A/at general/jj line/nn L/np meets/vbz Q/nn in/in two/cd points/nns ,/, Af/nn and/cc Af/nn ,/, through/in each/dt of/in which/wdt passes/vbz a/at unique/jj generator/nn of/in the/at regulus/nn ,/, Af/nn ,/, whose/wp$ lines/nns are/ber simple/jj secants/nns of/in Aj/nn ./.
+On/in these/dts generators/nns let/vb Af/nn and/cc Af/nn be/be ,/, respectively/rb ,/, the/at harmonic/jj conjugates/nns of/in Af/nn and/cc Af/nn with/in respect/nn to/in the/at two/cd points/nns in/in which/wdt the/at corresponding/jj generator/nn meets/vbz Aj/nn ./.
+The/at line/nn Af/nn is/bez the/at image/nn of/in L/np ./.
+Clearly/rb ,/, the/at transformation/nn is/bez involutorial/jj ./.
+
+
+	We/ppss observe/vb first/rb that/cs no/at line/nn ,/, l/nn ,/, can/md meet/vb its/pp$ image/nn except/in at/in one/cd of/in its/pp$ intersections/nns with/in Q/nn ./.
+For/cs if/cs it/pps did/dod ,/, the/at plane/nn of/in L/np and/cc l'/nn would/md contain/vb two/cd generators/nns of/in Af/nn ,/, which/wdt is/bez impossible/jj ./.
+Moreover/rb ,/, from/in the/at definitive/jj transformation/nn of/in intercepts/nns on/in the/at generators/nns of/in Af/nn ,/, it/pps is/bez clear/jj that/cs the/at only/ap points/nns of/in Q/nn at/in which/wdt a/at line/nn can/md meet/vb its/pp$ image/nn are/ber the/at points/nns of/in Aj/nn ./.
+Hence/rb the/at totality/nn of/in singular/jj lines/nns is/bez the/at T/np order/nn complex/nn of/in lines/nns which/wdt meet/vb Aj/nn ./.
+
+
+	The/at invariant/jj lines/nns are/ber the/at lines/nns of/in the/at congruence/nn of/in secants/nns of/in **zg/nn ,/, since/cs each/dt of/in these/dts meets/nns Q/nn in/in two/cd points/nns which/wdt are/ber invariant/jj ./.
+The/at order/nn of/in this/dt congruence/nn is/bez Af/nn ,/, since/cs Af/nn secants/nns of/in a/at curve/nn of/in symbol/nn (/( B/np )/) on/in a/at quadric/jj surface/nn pass/vb through/in an/at arbitrary/jj point/nn ./.
+The/at class/nn of/in the/at congruence/nn is/bez Af/nn ,/, since/cs an/at arbitrary/jj plane/nn meets/vbz **zg/nn in/in K/np points/nns ./.
+
+
+	Since/cs the/at complex/nn of/in singular/jj lines/nns is/bez of/in order/nn K/np and/cc since/cs there/ex is/bez no/at complex/nn of/in invariant/jj lines/nns ,/, it/pps follows/vbz from/in the/at formula/nn Af/nn that/cs the/at order/nn of/in the/at involution/nn is/bez Af/nn ./.
+
+
+	There/ex are/ber various/jj sets/nns of/in exceptional/jj lines/nns ,/, or/cc lines/nns whose/wp$ images/nns are/ber not/* unique/jj ./.
+The/at most/ql obvious/jj of/in these/dts is/bez the/at quadratic/jj complex/nn of/in tangents/nns to/in Q/nn ,/, each/dt line/nn of/in which/wdt is/bez transformed/vbn into/in the/at entire/jj pencil/nn of/in lines/nns tangent/jj to/in Q/nn at/in the/at image/nn of/in the/at point/nn of/in tangency/nn of/in the/at given/vbn line/nn ./.
+Thus/rb pencils/nns of/in tangents/nns to/in Q/nn are/ber transformed/vbn into/in pencils/nns of/in tangents/nns ./.
+It/pps is/bez interesting/jj that/cs a/at 1/cd :/in 1/cd correspondence/nn can/md be/be established/vbn between/in the/at lines/nns of/in two/cd such/jj pencils/nns ,/, so/cs that/cs in/in a/at sense/nn a/at unique/jj image/nn can/md actually/rb be/be assigned/vbn to/in each/dt tangent/nn ./.
+For/cs the/at lines/nns of/in any/dti plane/nn ,/, **yp/nn ,/, meeting/vbg Q/nn in/in a/at conic/nn C/nn ,/, are/ber transformed/vbn into/in the/at congruence/nn of/in secants/nns of/in the/at curve/nn C'/nn into/in which/wdt C/nn is/bez transformed/vbn in/in the/at point/nn involution/nn on/in Q/nn ./.
+In/in particular/jj ,/, tangents/nns to/in C/nn are/ber transformed/vbn into/in tangents/nns to/in C'/nn ./.
+Moreover/rb ,/, if/cs Af/nn and/cc Af/nn are/ber two/cd planes/nns intersecting/vbg in/in a/at line/nn l/nn ,/, tangent/jj to/in Q/nn at/in a/at point/nn P/nn ,/, the/at two/cd free/jj intersections/nns of/in the/at image/nn curves/nns Af/nn and/cc Af/nn must/md coincide/vb at/in P'/nn ,/, the/at image/nn of/in P/nn ,/, and/cc at/in this/dt point/nn Af/nn and/cc Af/nn must/md have/hv a/at common/jj tangent/nn l'/nn ./.
+Hence/rb ,/, thought/vbn of/in as/cs a/at line/nn in/in a/at particular/jj plane/nn **yp/nn ,/, any/dti tangent/nn to/in Q/nn has/hvz a/at unique/jj image/nn and/cc moreover/rb this/dt image/nn is/bez the/at same/ap for/in all/abn planes/nns through/in L/np ./.
+
+
+	Each/dt generator/nn ,/, **yl/nn ,/, of/in Af/nn is/bez also/rb exceptional/jj ,/, for/cs each/dt is/bez transformed/vbn into/in the/at entire/jj congruence/nn of/in secants/nns of/in the/at curve/nn into/in which/wdt that/dt generator/nn is/bez transformed/vbn by/in the/at point/nn involution/nn on/in Q/nn ./.
+This/dt curve/nn is/bez of/in symbol/nn Af/nn since/cs it/pps meets/vbz **yl/nn ,/, and/cc hence/rb every/at line/nn of/in Af/nn in/in the/at Af/nn invariant/jj points/nns on/in **yl/nn and/cc since/cs it/pps obviously/rb meets/vbz every/at line/nn of/in Af/nn in/in a/at single/ap point/nn ./.
+The/at congruence/nn of/in its/pp$ secants/nns is/bez therefore/rb of/in order/nn Af/nn and/cc class/nn Af/nn ./.
+
+
+	A/at final/jj class/nn of/in exceptional/jj lines/nns is/bez identifiable/jj from/in the/at following/vbg considerations/nns :/: Since/cs no/at two/cd generators/nns of/in Af/nn can/md intersect/vb ,/, it/pps follows/vbz that/cs their/pp$ image/nn curves/nns can/md have/hv no/at free/jj intersections/nns ./.
+In/in other/ap words/nns ,/, these/dts curves/nns have/hv only/rb fixed/vbn intersections/nns common/jj to/in them/ppo all/abn ./.
+Now/rb the/at only/ap way/nn in/in which/wdt all/abn curves/nns of/in the/at image/nn family/nn of/in Af/nn can/md pass/vb through/in a/at fixed/vbn point/nn is/bez to/to have/hv a/at generator/nn of/in Af/nn which/wdt is/bez not/* a/at secant/nn but/cc a/at tangent/nn of/in **zg/nn ,/, for/cs then/rb any/dti point/nn on/in such/abl a/at generator/nn will/md be/be transformed/vbn into/in the/at point/nn of/in tangency/nn ./.
+Since/cs two/cd curves/nns of/in symbol/nn Af/nn on/in Q/nn intersect/vb in/in Af/nn points/nns ,/, it/pps follows/vbz that/cs there/ex are/ber Af/nn lines/nns of/in Af/nn which/wdt are/ber tangent/jj to/in Aj/nn ./.
+Clearly/rb ,/, any/dti line/nn ,/, l/nn ,/, of/in any/dti bundle/nn having/hvg one/cd of/in these/dts points/nns of/in tangency/nn ,/, T/nn ,/, as/cs vertex/nn will/md be/be transformed/vbn into/in the/at entire/jj pencil/nn having/hvg the/at image/nn of/in the/at second/od intersection/nn of/in L/np and/cc Q/nn as/cs vertex/nn and/cc lying/vbg in/in the/at plane/nn determined/vbn by/in the/at image/nn point/nn and/cc the/at generator/nn of/in Af/nn which/wdt is/bez tangent/jj to/in **zg/nn at/in T/nn ./.
+A/at line/nn through/in two/cd of/in these/dts points/nns ,/, Af/nn and/cc Af/nn ,/, will/md be/be transformed/vbn into/in the/at entire/jj bilinear/jj congruence/nn having/hvg the/at tangents/nns to/in **zg/nn at/in Af/nn and/cc Af/nn as/cs directrices/nns ./.
+
+
+	A/at conic/nn ,/, C/nn ,/, being/beg a/at (/( 1/cd ,/, 1/cd )/) curve/nn on/in Q/nn ,/, meets/vbz the/at image/nn of/in any/dti line/nn of/in Af/nn ,/, which/wdt we/ppss have/hv already/rb found/vbn to/to be/be a/at Af/nn curve/nn on/in Q/nn ,/, in/in Af/nn points/nns ./.
+Hence/rb its/pp$ image/nn ,/, C'/nn ,/, meets/vbz any/dti line/nn of/in Af/nn in/in Af/nn points/nns ./.
+Moreover/rb ,/, C'/nn obviously/rb meets/vbz any/dti line/nn Af/nn in/in a/at single/ap point/nn ./.
+Hence/rb C'/nn is/bez a/at Af/nn curve/nn on/in Q/nn ./.
+Therefore/rb ,/, the/at congruence/nn of/in its/pp$ secants/nns ,/, that/dt is/bez the/at image/nn of/in a/at general/jj plane/nn field/nn of/in lines/nns ,/, is/bez of/in order/nn Af/nn and/cc class/nn Af/nn ./.
+Finally/rb ,/, the/at image/nn of/in a/at general/jj bundle/nn of/in lines/nns is/bez a/at congruence/nn whose/wp$ order/nn is/bez the/at order/nn of/in the/at congruence/nn of/in invariant/jj lines/nns ,/, namely/rb Af/nn and/cc whose/wp$ class/nn is/bez the/at order/nn of/in the/at image/nn congruence/nn of/in a/at general/jj plane/nn field/nn of/in lines/nns ,/, namely/rb Af/nn ./.
+
+
+
+2/cd-hl ./.-hl
+
+The/at preceding/vbg observations/nns make/vb it/ppo clear/jj that/cs there/ex exist/vb line/nn involutions/nns of/in all/abn orders/nns greater/jjr than/in 1/cd with/in no/at complex/nn of/in invariant/jj lines/nns and/cc with/in a/at complex/nn of/in singular/jj lines/nns consisting/vbg exclusively/rb of/in the/at lines/nns which/wdt meet/vb a/at twisted/vbn curve/nn Aj/nn ./.
+We/ppss now/rb shall/md show/vb that/cs any/dti involution/nn with/in these/dts characteristics/nns is/bez necessarily/rb of/in the/at type/nn we/ppss have/hv just/rb described/vbn ./.
+
+
+	To/to do/do this/dt we/ppss must/md first/rb show/vb that/cs every/at line/nn which/wdt meets/vbz **zg/nn in/in a/at point/nn P/nn meets/vbz its/pp$ image/nn at/in P/nn ./.
+To/to see/vb this/dt ,/, consider/vb a/at general/jj pencil/nn of/in lines/nns containing/vbg a/at general/jj secant/nn of/in Aj/nn ./.
+By/in (/( 1/cd )/) ,/, the/at image/nn of/in this/dt pencil/nn is/bez a/at ruled/vbn surface/nn of/in order/nn Af/nn which/wdt is/bez met/vbn by/in the/at plane/nn of/in the/at pencil/nn in/in a/at curve/nn ,/, C/nn ,/, of/in order/nn Af/nn ./.
+On/in C/nn there/ex is/bez a/at Af/nn correspondence/nn in/in which/wdt the/at Af/nn points/nns cut/vbn from/in C/nn by/in a/at general/jj line/nn ,/, l/nn ,/, of/in the/at pencil/nn correspond/vb to/in the/at point/nn of/in intersection/nn of/in the/at image/nn of/in L/np and/cc the/at plane/nn of/in the/at pencil/nn ./.
+Since/cs C/nn is/bez rational/jj ,/, this/dt correspondence/nn has/hvz K/np coincidences/nns ,/, each/dt of/in which/wdt implies/vbz a/at line/nn of/in the/at pencil/nn which/wdt meets/vbz its/pp$ image/nn ./.
+However/rb ,/, since/cs the/at pencil/nn contains/vbz a/at secant/nn of/in **zg/nn it/pps actually/rb contains/vbz only/rb Af/nn singular/jj lines/nns ./.
+To/to avoid/vb this/dt contradiction/nn it/pps is/bez necessary/jj that/cs C/nn be/be composite/jj ,/, with/in the/at secant/nn of/in **zg/nn and/cc a/at curve/nn of/in order/nn Af/nn as/cs components/nns ./.
+Thus/rb it/pps follows/vbz that/cs the/at secants/nns of/in **zg/nn are/ber all/abn invariant/jj ./.
+But/cc if/cs this/dt is/bez the/at case/nn ,/, then/rb an/at arbitrary/jj pencil/nn of/in lines/nns having/hvg a/at point/nn ,/, P/nn ,/, of/in **zg/nn as/cs vertex/nn is/bez transformed/vbn into/in a/at ruled/vbn surface/nn of/in order/nn Af/nn having/hvg Af/nn generators/nns concurrent/jj at/in P/nn ./.
+Since/cs a/at ruled/vbn surface/nn of/in order/nn N/np with/in N/np concurrent/jj generators/nns is/bez necessarily/rb a/at cone/nn ,/, it/pps follows/vbz finally/rb that/cs every/at line/nn through/in a/at point/nn ,/, P/nn ,/, of/in **zg/nn meets/vbz its/pp$ image/nn at/in P/nn ,/, as/cs asserted/vbn ./.
+
+
+	Now/rb consider/vb the/at transformation/nn of/in the/at lines/nns of/in a/at bundle/nn with/in vertex/nn ,/, P/nn ,/, on/in **zg/nn which/wdt is/bez effected/vbn by/in the/at involution/nn as/cs a/at whole/nn ./.
+From/in the/at preceding/vbg remarks/nns ,/, it/pps is/bez clear/jj that/cs such/abl a/at bundle/nn is/bez transformed/vbn into/in itself/ppl in/in an/at involutorial/jj fashion/nn ./.
+Moreover/rb ,/, in/in this/dt involution/nn there/ex is/bez a/at cone/nn of/in invariant/jj lines/nns of/in order/nn Af/nn ,/, namely/rb the/at cone/nn of/in secants/nns of/in **zg/nn which/wdt pass/vb through/in P/nn ./.
+Hence/rb it/pps follows/vbz that/cs the/at involution/nn within/in the/at bundle/nn must/md be/be a/at perspective/nn De/np Jonquieres/np involution/nn of/in order/nn Af/nn and/cc the/at invariant/jj locus/nn must/md have/hv a/at multiple/jj line/nn of/in multiplicity/nn either/cc Af/nn or/cc Af/nn ./.
+The/at first/od possibility/nn requires/vbz that/cs there/ex be/be a/at line/nn through/in P/nn which/wdt meets/vbz **zg/nn in/in Af/nn points/nns ;/. ;/.
+the/at second/od requires/vbz that/cs there/ex be/be a/at line/nn through/in P/nn which/wdt meets/vbz **zg/nn in/in Af/nn points/nns ./.
+In/in each/dt case/nn ,/, lines/nns of/in the/at bundles/nns are/ber transformed/vbn by/in involutions/nns within/in the/at pencils/nns they/ppss determine/vb with/in the/at multiple/jj secant/nn ./.
+In/in the/at first/od case/nn the/at fixed/vbn elements/nns within/in each/dt pencil/nn are/ber the/at multiple/jj secant/nn and/cc the/at line/nn joining/vbg the/at vertex/nn ,/, P/nn ,/, to/in the/at intersection/nn of/in **zg/nn and/cc the/at plane/nn of/in the/at pencil/nn which/wdt does/doz not/* lie/vb on/in the/at multiple/jj secant/nn ./.
+In/in the/at second/od ,/, the/at fixed/vbn elements/nns are/ber the/at lines/nns which/wdt join/vb the/at vertex/nn ,/, P/nn ,/, to/in the/at two/cd intersections/nns of/in **zg/nn and/cc the/at plane/nn of/in the/at pencil/nn which/wdt do/do not/* lie/vb on/in the/at multiple/jj secant/nn ./.
+The/at multiple/jj secants/nns ,/, of/in course/nn ,/, are/ber exceptional/jj and/cc in/in each/dt case/nn are/ber transformed/vbn into/in cones/nns of/in order/nn Af/nn ./.
+
+
+	Observations/nns similar/jj to/in these/dts can/md be/be made/vbn at/in each/dt point/nn of/in Aj/nn ./.
+Hence/rb **zg/nn must/md have/hv either/cc a/at regulus/nn of/in Af-fold/nn secants/nns or/cc a/at regulus/nn of/in Af-fold/nn secants/nns ./.
+Moreover/rb ,/, if/cs Af/nn ,/, no/at two/cd of/in the/at multiple/jj secants/nns can/md intersect/vb ./.
+For/cs if/cs such/jj were/bed the/at case/nn ,/, either/cc the/at plane/nn of/in the/at two/cd lines/nns would/md meet/vb **zg/nn in/in more/ap than/in K/np points/nns or/cc ,/, alternatively/rb ,/, the/at order/nn of/in the/at image/nn regulus/nn of/in the/at pencil/nn determined/vbn by/in the/at two/cd lines/nns would/md be/be too/ql high/jj ./.
+But/cc if/cs no/at two/cd lines/nns of/in the/at regulus/nn of/in multiple/jj secants/nns of/in **zg/nn can/md intersect/vb ,/, then/rb the/at regulus/nn must/md be/be quadratic/jj ,/, or/cc in/in other/ap words/nns ,/, **zg/nn must/md be/be either/cc a/at Af/nn or/cc a/at Af/nn curve/nn on/in a/at nonsingular/jj quadric/jj surface/nn ./.
+
+
+	We/ppss now/rb observe/vb that/cs the/at case/nn in/in which/wdt **zg/nn is/bez a/at Af/nn curve/nn on/in a/at quadric/nn is/bez impossible/jj if/cs the/at complex/nn of/in singular/jj lines/nns consists/vbz exclusively/rb of/in the/at lines/nns which/wdt meet/vb Aj/nn ./.
+For/cs any/dti pencil/nn in/in a/at plane/nn containing/vbg a/at Af-fold/nn secant/nn of/in **zg/nn has/hvz an/at image/nn regulus/nn which/wdt meets/vbz the/at plane/nn of/in the/at pencil/nn in/in Af/nn lines/nns ,/, namely/rb the/at images/nns of/in the/at lines/nns of/in the/at pencil/nn which/wdt pass/vb through/in the/at intersection/nn of/in **zg/nn and/cc the/at multiple/jj secant/nn ,/, plus/in an/at additional/jj component/nn to/to account/vb for/in the/at intersections/nns of/in the/at images/nns of/in the/at general/jj lines/nns of/in the/at pencil/nn ./.
+However/rb ,/, if/cs there/ex is/bez no/at additional/jj complex/nn of/in singular/jj lines/nns ,/, the/at order/nn of/in the/at image/nn regulus/nn of/in a/at pencil/nn is/bez precisely/rb Af/nn ./.
+This/dt contradicts/vbz the/at preceding/vbg observations/nns ,/, and/cc so/rb ,/, under/in the/at assumption/nn of/in this/dt paper/nn ,/, we/ppss must/md reject/vb the/at possibility/nn that/cs **zg/nn is/bez a/at Af/nn curve/nn on/in a/at quadric/jj surface/nn ./.
+
+
+	Continuing/vbg with/in the/at case/nn in/in which/wdt **zg/nn is/bez a/at Af/nn curve/nn on/in a/at quadric/jj Q/nn ,/, we/ppss first/rb observe/vb that/cs the/at second/od regulus/nn of/in Q/nn consists/vbz precisely/rb of/in the/at lines/nns which/wdt join/vb the/at two/cd free/jj intersections/nns of/in **zg/nn and/cc the/at planes/nns through/in any/dti one/cd of/in the/at multiple/jj secants/nns ./.
+For/cs each/dt of/in these/dts lines/nns meets/nns Q/nn in/in three/cd points/nns ,/, namely/rb two/cd points/nns on/in **zg/nn and/cc one/cd point/nn on/in one/cd of/in the/at multiple/jj secants/nns ./.
+
+
+	Now/rb consider/vb an/at arbitrary/jj line/nn ,/, l/nn ,/, meeting/vbg Q/nn in/in two/cd points/nns ,/, Af/nn and/cc Af/nn ./.
+If/cs **ya/nn is/bez the/at multiple/jj secant/nn of/in **zg/nn which/wdt passes/vbz through/in Af/nn and/cc **yb/nn is/bez the/at simple/jj secant/nn of/in **zg/nn which/wdt passes/vbz through/in Af/nn ,/, and/cc if/cs Af/nn are/ber the/at points/nns in/in which/wdt **ya/nn meets/vbz **zg/nn ,/, and/cc if/cs Af/nn is/bez the/at image/nn of/in Af/nn on/in the/at generator/nn **yb/nn ,/, it/pps follows/vbz that/cs the/at image/nn of/in the/at line/nn Af/nn is/bez Af/nn ./.
+

@@ -1,0 +1,183 @@
+
+
+	High-gain/nn ,/, photoelectronic/jj image/nn intensification/nn is/bez applied/vbn under/in conditions/nns of/in low/jj incident/jj light/nn levels/nns whenever/wrb the/at integration/nn time/nn required/vbn by/in a/at sensor/nn or/cc recording/vbg instrument/nn exceeds/vbz the/at limits/nns of/in practicability/nn ./.
+Examples/nns of/in such/jj situations/nns are/ber (/( aerial/jj )/) night/nn reconnaissance/nn ,/, the/at recording/nn of/in radioactive/jj tracers/nns in/in live/jj body/nn tissues/nns ,/, special/jj radiography/nn in/in medical/jj or/cc industrial/jj applications/nns ,/, track/nn recording/nn of/in high/jj energy/nn particles/nns ,/, etc./rb ./.
+
+
+	High-gain/nn photoelectronic/jj image/nn intensification/nn may/md be/be achieved/vbn by/in several/ap methods/nns ;/. ;/.
+some/dti of/in these/dts are/ber listed/vbn below/rb :/: (/(-hl A/np-hl )/)-hl 
+Cascading/vbg single/ap stages/nns by/in coupling/vbg lens/nn systems/nns ,/, (/(-hl B/np-hl )/)-hl 
+Channel-type/jj ,/, secondary/jj emission/nn image/nn intensifier/nn ,/, (/(-hl C/np-hl )/)-hl 
+Image/nn intensifier/nn based/vbn upon/in the/at ``/`` multipactor/nn ''/'' principle/nn ,/, (/(-hl D/np-hl )/)-hl 
+Transmission/nn secondary/jj electron/nn multiplication/nn image/nn intensifiers/nns (/( TSEM/np tubes/nns )/) ,/, (/(-hl E/np-hl )/)-hl 
+Cascading/vbg of/in single/ap stages/nns ,/, enclosed/vbn in/in one/cd common/jj envelope/nn ./.
+
+
+	Cascading/vbg single/ap stages/nns by/in coupling/vbg lens/nn systems/nns is/bez rather/ql inefficient/jj as/cs the/at lens/nn systems/nns limit/vb the/at obtainable/jj gain/nn quite/ql severely/rb ./.
+Channel-type/jj image/nn intensifiers/nns are/ber capable/jj of/in achieving/vbg high-gain/nn values/nns ;/. ;/.
+they/ppss suffer/vb ,/, however/rb ,/, from/in an/at inherently/rb low/jj resolution/nn ./.
+Image/nn intensifiers/nns based/vbn upon/in the/at multipactor/nn principle/nn appear/vb to/to hold/vb promise/nn as/ql far/rb as/cs obtainable/jj resolution/nn is/bez concerned/vbn ./.
+However/rb ,/, the/at unavoidable/jj low-duty/nn cycle/nn restricts/vbz the/at effective/jj gain/nn ./.
+TSEM/np tubes/nns have/hv been/ben constructed/vbn showing/vbg high/jj gain/nn and/cc resolution/nn ./.
+However/rb ,/, electrostatic/jj focus/nn ,/, important/jj for/in many/ap applications/nns ,/, has/hvz not/* been/ben realized/vbn for/in these/dts devices/nns ./.
+Resolution/nn limitations/nns with/in electrostatic/jj focus/nn might/md be/be anticipated/vbn due/rb to/in chromatic/jj aberrations/nns ./.
+Furthermore/rb ,/, the/at thin/jj film/nn dynodes/nns appear/vb to/to have/hv a/at natural/jj diameter/nn limitation/nn wherever/wrb a/at mesh/nn support/nn cannot/md* be/be tolerated/vbn ./.
+
+
+	Cascaded/vbn single/ap stages/nns enclosed/vbn by/in a/at common/jj envelope/nn have/hv been/ben constructed/vbn with/in high/jj gain/nn and/cc high/jj resolution/nn ./.
+These/dts tubes/nns may/md differ/vb both/abx in/in the/at choice/nn of/in the/at electron/nn optical/jj system/nn and/cc in/in the/at design/nn of/in the/at coupling/vbg members/nns ./.
+The/at electron/nn optical/jj system/nn may/md be/be either/cc a/at magnetic/jj or/cc electrostatic/jj one/cd ./.
+The/at magnification/nn may/md be/be smaller/jjr ,/, equal/jj ,/, or/cc larger/jjr than/cs unity/nn ./.
+
+
+	An/at electrostatic/jj system/nn suffers/vbz generally/rb from/in image/nn plane/nn curvature/nn leading/vbg to/in defocusing/vbg in/in the/at peripheral/jj image/nn region/nn if/cs a/at flat/jj viewing/vbg screen/nn (/( or/cc interstage/jj coupler/nn )/) is/bez utilized/vbn ,/, while/cs a/at magnetic/jj system/nn requires/vbz accurate/jj adjustment/nn of/in the/at solenoid/nn ,/, which/wdt is/bez heavy/jj and/cc bulky/jj ./.
+As/cs it/pps will/md be/be discussed/vbn later/rbr ,/, peripheral/jj defocusing/vbg can/md be/be improved/vbn on/rp by/in utilizing/vbg curved/vbn fiber/nn couplers/nns ./.
+It/pps should/md be/be noted/vbn ,/, however/rb ,/, that/cs the/at paraxial/jj resolution/nn is/bez quite/ql similar/jj for/in both/abx electron/nn optical/jj systems/nns ./.
+
+
+	It/pps is/bez felt/vbn that/cs fiber-coupled/jj double-/jj (/( and/cc multi-/jj )/) stage/nn image/nn intensifiers/nns will/md gain/vb considerable/jj importance/nn in/in the/at future/nn ./.
+Therefore/rb ,/, we/ppss shall/md consider/vb in/in this/dt paper/nn the/at theoretical/jj gain/nn and/cc resolution/nn capabilities/nns of/in such/jj tubes/nns ./.
+The/at luminous/jj efficiency/nn and/cc resolution/nn of/in single/ap stages/nns ,/, fiber/nn couplers/nns ,/, and/cc finally/rb of/in the/at composite/jj tube/nn will/md be/be computed/vbn ./.
+
+
+	It/pps will/md be/be shown/vbn theoretically/rb that/cs the/at high/jj image/nn intensification/nn obtainable/jj with/in such/abl a/at tube/nn and/cc contact/nn photography/nn permits/vbz the/at utilization/nn of/in extremely/ql low/jj incident/jj light/nn levels/nns ./.
+The/at effect/nn of/in device/nn and/cc quantum/nn noise/nn ,/, associated/vbn with/in such/ql low/jj input/nn levels/nns ,/, will/md be/be described/vbn ./.
+
+
+	After/in these/dts theoretical/jj considerations/nns ,/, constructional/jj details/nns of/in a/at fiber-coupled/jj ,/, double-stage/nn X-ray/nn-tl image/nn intensifier/nn will/md be/be discussed/vbn ./.
+Measured/vbn performance/nn characteristics/nns for/in this/dt experimental/jj tube/nn will/md be/be listed/vbn ./.
+
+
+	The/at conclusion/nn shall/md be/be reached/vbn that/cs fiber-coupled/jj ,/, double-stage/nn tubes/nns represent/vb a/at sensible/jj and/cc practical/jj approach/nn to/in high-gain/nn image/nn intensification/nn ./.
+
+
+
+Basic/jj-hl design/nn-hl of/in-hl a/at-hl fiber-coupled/jj-hl ,/,-hl double-stage/nn-hl image/nn-hl intensifier/nn-hl 
+The/at tube/nn design/nn which/wdt forms/vbz the/at basis/nn of/in the/at theoretical/jj discussion/nn shall/md be/be described/vbn now/rb ./.
+The/at electron/nn optical/jj system/nn (/( see/vb fig./nn 14-1/cd )/) is/bez based/vbn in/in principle/nn on/in the/at focusing/vbg action/nn of/in concentric/jj spherical/jj cathode/nn and/cc anode/nn surfaces/nns ./.
+The/at inner/jj (/( anode/nn )/) sphere/nn is/bez pierced/vbn ,/, elongated/vbn into/in a/at cup/nn ,/, and/cc terminated/vbn by/in the/at phosphor/nn screen/nn ./.
+The/at photoelectrons/nns emitted/vbn from/in a/at circular/jj segment/nn of/in the/at cathode/nn sphere/nn are/ber focused/vbn by/in the/at positive/jj lens/nn action/nn of/in the/at two/cd concentric/jj spheres/nns ,/, pass/vb through/in the/at (/( negative/jj )/) lens/nn formed/vbn by/in the/at anode/nn aperture/nn ,/, and/cc impinge/vb upon/in the/at cathodoluminescent/jj viewing/vbg screen/nn ./.
+The/at cylindrical/jj focusing/vbg electrode/nn permits/vbz adjustment/nn of/in the/at positive/jj lens/nn part/nn by/in varying/vbg the/at focusing/vbg potential/nn ./.
+The/at anode/nn potential/nn codetermines/vbz the/at gain/nn ,/, G/nn ,/, and/cc magnification/nn ,/, M/nn ,/, of/in the/at stage/nn ./.
+
+
+	Both/abx the/at photocathode/nn and/cc the/at image/nn plane/nn of/in such/abl an/at electrode/nn configuration/nn are/ber curved/vbn concave/jj as/cs seen/vbn from/in the/at anode/nn aperture/nn ./.
+The/at field-flattening/jj property/nn of/in the/at biconcave/jj fiber/nn coupler/nn can/md be/be utilized/vbn to/to alleviate/vb the/at peripheral/jj resolution/nn losses/nns resulting/vbg with/in a/at flat/jj phosphor-screen/nn or/cc coupling/vbg member/nn ./.
+For/in the/at same/ap reason/nn ,/, the/at output/nn fiber/nn plate/nn is/bez planoconcave/jj ,/, its/pp$ exposed/vbn flat/jj side/nn permitting/vbg contact/nn photography/nn if/cs a/at permanent/jj record/nn is/bez desired/vbn ./.
+As/cs it/pps will/md be/be shown/vbn later/rbr ,/, the/at field-flattening/jj properties/nns of/in the/at interstage/jj and/cc output/nn fiber/nn coupler/nn comprise/vb indeed/rb the/at main/jjs advantage/nn of/in such/abl a/at design/nn ./.
+
+
+	The/at second/od photocathode/nn and/cc both/abx phosphor/nn surfaces/nns are/ber deposited/vbn on/in the/at fiber/nn plate/nn substrates/nns ./.
+The/at photocathode/nn sensitivities/nns S/nn ,/, phosphor/nn efficiencies/nns P/nn ,/, and/cc anode/nn potentials/nns V/nn of/in the/at individual/jj stages/nns shall/md be/be distinguished/vbn by/in means/nn of/in subscripts/nns 1/cd ,/, and/cc 2/cd ,/, in/in the/at text/nn ,/, where/wrb required/vbn ./.
+Both/abx stages/nns are/ber assumed/vbn to/to have/hv unity/nn magnification/nn ./.
+
+
+
+Theoretical/jj-hl discussion/nn-hl of/in-hl flux/nn-hl gain/nn-hl 
+flux/nn-hl gain/nn-hl of/in-hl a/at-hl single/ap-hl stage/nn-hl 
+The/at luminous/jj gain/nn of/in a/at single/ap stage/nn with/in Af/nn (/( flux/nn gain/nn )/) is/bez ,/, to/in a/at first/od approximation/nn ,/, given/vbn by/in the/at product/nn of/in the/at photocathode/nn sensitivity/nn S/nn (/( amp/nn //in lumen/nn )/) ,/, the/at anode/nn potential/nn V/nn (/( volts/nns )/) ,/, and/cc the/at phosphor/nn conversion/nn efficiency/nn P/nn (/( lumen/watt/nn )/) ./.
+In/in general/jj ,/, P/nn is/bez a/at function/nn of/in V/nn and/cc the/at current/jj density/nn ,/, but/cc it/pps shall/md here/rb be/be assumed/vbn as/cs a/at constant/nn ./.
+
+
+	The/at luminous/jj efficiency/nn Af/nn of/in a/at photocathode/nn depends/vbz on/in the/at maximum/jj radiant/jj sensitivity/nn Af/nn and/cc on/in the/at spectral/jj distribution/nn of/in the/at incident/jj light/nn Af/nn by/in the/at relation/nn :/: Af/nn where/wrb Af/nn is/bez normalized/vbn radiant/jj photocathode/nn sensitivity/nn ./.
+Af/nn is/bez standard/jj visibility/nn function/nn ./.
+The/at luminous/jj flux/nn gain/nn of/in a/at single/ap stage/nn is/bez given/vbn by/in :/: Af/nn ./.
+If/cs the/at input/nn light/nn distribution/nn falls/vbz beyond/in the/at visible/jj range/nn ,/, Af/nn as/cs expected/vbn ,/, since/cs Af/nn ./.
+Such/jj cases/nns are/ber not/* considered/vbn here/rb ./.
+Efficiency/nn-hl of/in-hl fiber/nn-hl couplers/nns-hl 
+The/at efficiency/nn of/in fiber/nn optics/nn plates/nns depends/vbz on/in four/cd factors/nns :/: (/(-hl A/np-hl )/)-hl 
+numerical/jj aperture/nn (/( N.A./np )/) ;/. ;/.
+(/(-hl B/np-hl )/)-hl 
+end/nn (/( Fresnel/np reflection/nn )/) losses/nns (/( R/np )/) ;/. ;/.
+(/(-hl C/np-hl )/)-hl 
+internal/jj losses/nns (/( I.L./np )/) ;/. ;/.
+(/(-hl D/np-hl )/)-hl 
+packing/vbg efficiency/nn (/( F.R./np )/) ./.
+The/at numerical/jj aperture/nn of/in the/at fibers/nns is/bez given/vbn by/in :/: Af/nn where/wrb Af/nn ./.
+
+
+	The/at angle/nn Af/nn is/bez measured/vbn in/in the/at medium/nn of/in index/nn Af/nn ./.
+Settled/vbn phosphors/nns ,/, as/ql generally/rb used/vbn in/in image/nn intensifiers/nns ,/, have/hv low/jj optical/jj contact/nn with/in the/at substrate/nn surface/nn ,/, hence/rb Af/nn shall/md be/be assumed/vbn ./.
+The/at numerical/jj aperture/nn should/md be/be in/in general/jj close/rb to/in unity/nn ./.
+This/dt condition/nn can/md be/be satisfied/vbn ,/, e.g./rb ,/, with/in Af/nn and/cc Af/nn or/cc equivalent/jj glass/nn combinations/nns ./.
+
+
+	A/at sufficiently/ql good/jj approximation/nn for/in determining/vbg the/at end/nn reflection/nn losses/nns R/nn can/md be/be obtained/vbn from/in the/at angle/nn independent/jj Fresnel/np formula/nn :/: Af/nn ./.
+For/in phosphor/nn to/in fiber/nn and/cc fiber/nn to/in air/nn surfaces/nns ,/, and/cc assuming/vbg Af/nn ,/, we/ppss obtain/vb Af/nn percent/nn ./.
+This/dt value/nn may/md be/be reduced/vbn to/in 4.6/cd percent/nn by/in means/nn of/in a/at (/( very/ql thin/jj )/) glass/nn layer/nn of/in index/nn 1.5/cd ./.
+Hence/rb ,/, the/at Af/nn factor/nn for/in the/at output/nn fiber/nn coupler/nn is/bez Af/nn ./.
+
+
+	As/cs the/at index/nn of/in refraction/nn of/in photosensitive/jj surfaces/nns of/in the/at SbCs-type/nn lies/vbz around/in 2/cd ,/, the/at Fresnel/np losses/nns at/in the/at fiber-photocathode/nn interface/nn are/ber about/rb 0.5/cd percent/nn and/cc the/at Af/nn factor/nn for/in the/at interstage/jj coupler/nn is/bez 0.95/cd ./.
+It/pps might/md be/be anticipated/vbn that/cs multiple/jj coatings/nns will/md reduce/vb end/nn reflection/nn losses/nns even/ql further/rbr ./.
+
+
+	The/at internal/jj losses/nns are/ber due/jj to/in absorption/nn and/cc the/at small/jj but/cc finite/jj losses/nns suffered/vbn in/in the/at numerous/jj internal/jj reflections/nns due/jj to/in deviations/nns from/in the/at prescribed/vbn ,/, cylindrical/jj fiber/nn cross-section/nn and/cc minute/jj imperfections/nns of/in the/at core-jacket/nn interface/nn ./.
+These/dts losses/nns depend/vb on/in fiber/nn diameter/nn and/cc length/nn ,/, absorption/nn coefficient/nn ,/, the/at mean/jj value/nn of/in the/at loss/nn per/in internal/jj reflection/nn and/cc last/ap ,/, but/cc not/* least/ap ,/, on/in the/at angular/jj distribution/nn of/in the/at incident/jj light/nn ./.
+Explicit/jj expressions/nns (/( integral/jj averages/nns )/) are/ber given/vbn in/in the/at literature/nn ./.
+Lacking/vbg reliable/jj data/nn for/in some/dti of/in the/at variables/nns ,/, we/ppss are/ber relying/vbg on/in experimental/jj data/nn of/in about/rb 20/cd percent/nn internal/jj losses/nns for/in 1/4-inch/nn long/jj ,/, small/jj (/( 5/cd -/in 10/cd M/np )/) diameter/nn fibers/nns ./.
+This/dt relatively/ql high/jj value/nn is/bez probably/rb due/jj to/in the/at small/jj fiber/nn diameters/nns increasing/vbg the/at number/nn of/in internal/jj reflections/nns ./.
+Since/cs we/ppss are/ber considering/vbg here/rb relatively/ql small/jj diameter/nn (/( 1/cd -/in 1.5/cd inches/nns )/) fiber/nn plates/nns ,/, their/pp$ average/jj thickness/nn can/md be/be kept/vbn below/in 1/4/cd inch/nn and/cc their/pp$ internal/jj losses/nns may/md be/be assumed/vbn as/cs 15/cd percent/nn (/( per/in plate/nn )/) ./.
+
+
+	The/at packing/vbg efficiency/nn ,/, F.R./np ,/, of/in fiber/nn plates/nns did/dod not/* receive/vb much/ap attention/nn in/in the/at literature/nn ,/, probably/rb as/cs it/pps is/bez high/jj for/in the/at larger/jjr fibers/nns generally/rb used/vbn ,/, until/in rather/ql recently/rb ./.
+For/in circular/jj fibers/nns in/in a/at closely/rb packed/vbn hexagonal/jj array/nn ,/, the/at packing/vbg efficiency/nn is/bez given/vbn by/in :/: Af/nn where/wrb Af/nn ,/, and/cc 0.906/cd is/bez the/at ratio/nn of/in the/at area/nn of/in a/at circle/nn to/in that/dt of/in the/at circumscribed/vbn hexagon/nn ./.
+For/in the/at small/jj diameter/nn fibers/nns now/rb technically/rb feasible/jj and/cc required/vbn for/in about/rb 100/cd Af/nn resolution/nn ,/, Af/nn ./.
+The/at cladding/vbg thickness/nn is/bez about/rb 0.5/cd M/nn-tl ,/, hence/rb ,/, Af/nn and/cc Af/nn ./.
+
+
+	Thus/rb ,/, the/at efficiency/nn **yt/nn couplers/nns is/bez given/vbn by/in --/-- Af/nn or/cc approximately/rb 50/cd percent/nn each/dt ./.
+
+
+	It/pps must/md be/be remembered/vbn that/cs the/at fiber/nn plates/nns replace/vb a/at glass/nn window/nn and/cc a/at (/( mica/nn )/) membrane/nn ,/, in/in addition/nn to/in an/at optical/jj output/nn lens/nn system/nn ./.
+The/at efficiency/nn Af/nn of/in an/at Af/nn lens/nn at/in the/at magnification/nn Af/nn is/bez :/: Af/nn ./.
+Neglecting/vbg absorption/nn ,/, the/at end/nn losses/nns of/in the/at coupling/vbg membrane/nn and/cc the/at output/nn window/nn Af/nn would/md be/be 6/cd percent/nn and/cc 8/cd percent/nn ./.
+Thus/rb ,/, the/at combined/vbn efficiency/nn of/in the/at elements/nns replaced/vbn by/in the/at two/cd fiber/nn plates/nns (/( with/in a/at combined/vbn efficiency/nn of/in 0.25/cd )/) is/bez 0.043/cd or/cc about/rb six/cd times/nns less/ap than/cs that/dt of/in the/at two/cd fiber/nn plates/nns ./.
+Gain/nn-hl of/in-hl fiber/nn-hl coupled/vbn-hl image/nn-hl intensifiers/nns-hl 
+Including/in the/at brightness/nn gain/nn Af/nn due/jj to/in the/at Af/nn area/nn demagnification/nn ,/, the/at overall/jj gain/nn of/in a/at fiber/nn coupled/vbn double/jj stage/nn image/nn intensifier/nn is/bez :/: Af/nn ./.
+It/pps is/bez obvious/jj that/cs the/at careful/jj choice/nn of/in photocathode/nn which/wdt maximizes/vbz Af/nn for/in a/at given/vbn input/nn E/nn (/( in/in the/at case/nn of/in the/at second/od stage/nn ,/, for/in the/at first/od phosphor/nn screen/nn emission/nn )/) is/bez very/ql important/jj ./.
+The/at same/ap consideration/nn should/md govern/vb the/at choice/nn of/in the/at second-stage/nn phosphor/nn screen/nn for/in matching/vbg with/in the/at spectral/jj sensitivity/nn of/in the/at ultimate/jj sensor/nn (/( e.g./rb ,/, photographic/jj emulsion/nn )/) ./.
+
+
+	We/ppss have/hv evaluated/vbn the/at ``/`` matching/vbg integrals/nns ''/'' for/in two/cd types/nns of/in photocathodes/nns (/( S-11/jj and/cc S-20/nn )/) and/cc three/cd types/nns of/in light/nn input/nn ./.
+The/at input/nn light/nn distributions/nns considered/vbn are/ber P-11/nn and/cc P-20/nn phosphor/nn emission/nn and/cc the/at so-called/jj ``/`` night/nn light/nn ''/'' (/( N.L./np )/) as/cs given/vbn by/in H.W./np Babcock/np and/cc J./np J./np Johnson/np ./.
+The/at integrals/nns (/( in/in units/nns )/) are/ber listed/vbn in/in table/nn 14-1/cd ,/, below/rb ./.
+
+
+
+Theoretical/jj-hl discussion/nn-hl of/in-hl paraxial/jj-hl device/nn-hl resolution/nn-hl 
+resolution/nn-hl limitations/nns-hl in/in-hl a/at-hl single/ap-hl stage/nn-hl 
+The/at resolution/nn limitations/nns for/in a/at single/ap stage/nn are/ber given/vbn by/in the/at inherent/jj resolution/nn of/in the/at electron/nn optical/jj system/nn as/ql well/rb as/cs the/at resolution/nn capabilities/nns of/in the/at cathodoluminescent/jj viewing/vbg screen/nn ./.
+
+
+	The/at resolution/nn capabilities/nns of/in an/at electrostatic/jj system/nn depend/vb on/in both/abx the/at choice/nn of/in magnification/nn and/cc chromatic/jj aberrations/nns ./.
+It/pps has/hvz been/ben stated/vbn previously/rb that/cs a/at minifying/vbg electrostatic/jj system/nn yields/vbz a/at lower/jjr resolution/nn than/cs a/at magnifying/vbg system/nn or/cc a/at system/nn with/in unity/nn magnification/nn ./.
+
+
+	Furthermore/rb ,/, the/at chromatic/jj aberrations/nns depend/vb on/in the/at chosen/vbn high/jj voltage/nn ./.
+In/in general/jj ,/, a/at high/jj anode/nn voltage/nn reduces/vbz chromatic/jj aberrations/nns and/cc thus/rb increases/vbz the/at obtainable/jj resolution/nn ./.
+
+
+	The/at luminous/jj gain/nn of/in the/at discussed/vbn tube/nn was/bedz calculated/vbn from/in Eq./nn-tl (/( 6/cd-tl )/) for/in the/at 16/cd possible/jj combinations/nns of/in S-11/nn and/cc S-20/nn photocathodes/nns and/cc P-11/nn and/cc P-20/nn phosphor/nn screens/nns ,/, for/in night/nn light/nn and/cc P-20/nn light/nn input/nn ./.
+(/( The/at P-20/nn input/nn is/bez of/in interest/nn because/cs it/pps corresponds/vbz roughly/rb to/in the/at light/nn emission/nn of/in conventional/jj X-ray/nn-tl fluorescent/jj screens/nns )/) ./.
+The/at following/vbg efficiencies/nns obtained/vbn from/in JEDEC/nn and/cc RCA/nn specifications/nns were/bed used/vbn :/: Af/nn 
+
+	./.
+The/at following/vbg table/nn (/( 14-2/cd )/) lists/vbz the/at (/( luminous/jj )/) gain/nn values/nns computed/vbn according/rb to/in Eq./nn-tl (/( 6/cd-tl )/) with/in Af/nn ./.
+
+
+	The/at possibility/nn of/in a/at space/nn charge/nn blowup/nn of/in the/at screen/nn crossover/nn of/in the/at elementary/jj electron/nn bundles/nns has/hvz been/ben pointed/vbn out/rp ./.
+It/pps is/bez obvious/jj that/cs such/abl an/at influence/nn can/md only/rb be/be expected/vbn in/in the/at final/jj stage/nn of/in an/at image/nn intensifier/nn at/in rather/ql high/jj output/nn levels/nns ./.
+Space/nn charge/nn influences/nns will/md also/rb decrease/vb at/in increased/vbn voltages/nns ./.
+
+
+	Electrostatic/jj systems/nns of/in the/at pseudo-symmetric/jj type/nn have/hv been/ben tested/vbn for/in resolution/nn capabilities/nns by/in applying/vbg electronography/nn ./.
+A/at resolution/nn of/in 70/cd -/in 80/cd line-pairs/nns per/in millimeter/nn appears/vbz to/to be/be feasible/jj ./.
+
+
+	The/at inherent/jj resolution/nn of/in a/at cathodoluminescent/jj phosphor/nn screen/nn decreases/vbz with/in increasingly/ql aggregate/jj thickness/nn (/( with/in increasing/vbg anode/nn voltage/nn )/) ,/, decreases/vbz with/in decreasing/vbg porosity/nn (/( thus/rb the/at advantage/nn of/in cathodophoretic/jj phosphor/nn deposition/nn )/) and/cc might/md be/be impaired/vbn by/in the/at normally/rb used/vbn aluminum/nn mirror/nn ./.
+Thus/rb ,/, in/in general/jj ,/, elementary/jj light/nn optical/jj effects/nns ,/, light/nn scatter/nn ,/, and/cc electron/nn scatter/nn determine/vb the/at obtainable/jj resolution/nn limit/nn ./.
+It/pps should/md be/be noted/vbn that/cs photoluminescence/nn ,/, due/rb to/in ``/`` Bremsstrahlung/fw-nn ''/'' generated/vbn within/in the/at viewing/vbg screen/nn by/in electron/nn impact/nn ,/, appears/vbz to/to be/be important/jj only/rb if/cs anode/nn voltages/nns in/in excess/nn of/in 30/cd KV/nn are/ber utilized/vbn ./.
+It/pps has/hvz been/ben stated/vbn that/cs settled/vbn cathodoluminescent/jj phosphor/nn screens/nns may/md have/hv a/at limiting/vbg resolution/nn of/in 60/cd Af/nn at/in high/jj voltage/nn values/nns of/in approximately/rb 20/cd Aj/nn ./.
+For/in the/at further/jjr discussion/nn ,/, we/ppss shall/md thus/rb assume/vb an/at electron/nn optical/jj resolution/nn of/in 80/cd Af/nn and/cc phosphor/nn screen/nn resolution/nn of/in 60/cd Af/nn ./.
+

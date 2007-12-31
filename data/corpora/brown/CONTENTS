@@ -5,9 +5,6 @@ This directory contains the Brown Corpus, in Form C (tagged).  Each
 filename consists of a "c" (corpus form C), followed by a letter a-r
 designating the genre, followed by two digits.
 
-[For NLTK, these have been combined into single files, one for each of
-the following sections.]
-
 A. PRESS: REPORTAGE
 B. PRESS: EDITORIAL
 C. PRESS: REVIEWS
