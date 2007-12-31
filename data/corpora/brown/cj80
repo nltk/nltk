@@ -1,0 +1,177 @@
+
+
+	A/at gyro-stabilized/jj platform/nn system/nn ,/, using/vbg restrained/vbn gyros/nns ,/, is/bez well/ql suited/vbn for/in automatic/jj leveling/nn because/rb of/in the/at characteristics/nns of/in the/at gyro-platform-servo/nn combination/nn ./.
+The/at restrained/vbn gyro-stabilized/jj platform/nn with/in reasonable/jj response/nn characteristics/nns operates/vbz with/in an/at approximate/jj equation/nn of/in motion/nn ,/, neglecting/vbg transient/jj effects/nns ,/, as/cs follows/vbz :/: Af/nn where/wrb U/nn is/bez a/at torque/nn applied/vbn about/in the/at output/nn axis/nn of/in the/at controlling/vbg gyro/nn ./.
+
+
+	The/at platform/nn angle/nn **yf/nn is/bez the/at angle/nn about/in which/wdt the/at gyro/nn is/bez controlling/vbg ./.
+This/dt is/bez normally/rb termed/vbn the/at gyro/nn input/nn axis/nn ,/, 90-degrees/nns away/rb from/in the/at gyro/nn output/nn or/cc **yj/nn axis/nn ./.
+The/at gyro/nn angular/jj momentum/nn is/bez defined/vbn by/in H/nn ./.
+
+
+	Thus/rb if/cs the/at gyro/nn and/cc platform-controller/nn combination/nn maintains/vbz the/at platform/nn with/in zero/cd angular/jj deviation/nn about/in the/at **yf/nn axis/nn ,/, the/at system/nn can/md be/be rotated/vbn with/in an/at angular/jj velocity/nn Af/nn if/cs a/at torque/nn is/bez supplied/vbn to/in the/at gyro/nn output/nn axis/nn Aj/nn ./.
+It/pps is/bez assumed/vbn that/cs the/at gyros/nns are/ber designed/vbn with/in electrical/jj torquers/nns so/cs that/cs a/at torque/nn can/md be/be applied/vbn about/in their/pp$ output/nn axes/nns ./.
+
+
+	In/in the/at system/nn shown/vbn in/in Fig./nn-tl 7-1/cd-tl ,/, the/at accelerometer/nn output/nn is/bez amplified/vbn and/cc the/at resulting/vbg voltage/nn is/bez applied/vbn to/in the/at gyro/nn output-axis/nn torquer/nn ./.
+This/dt torque/nn causes/vbz the/at entire/jj system/nn to/to rotate/vb about/in the/at **yf/nn axis/nn ,/, since/cs the/at response/nn to/in Af/nn ./.
+If/cs the/at polarities/nns are/ber correct/jj ,/, the/at platform/nn rotates/vbz in/in such/abl a/at direction/nn as/cs to/to reduce/vb the/at accelerometer/nn output/nn to/in zero/cd ./.
+As/cs the/at accelerometer/nn output/nn is/bez decreasing/vbg ,/, the/at torque/nn applied/vbn to/in the/at gyro/nn output/nn axis/nn decreases/vbz and/cc ,/, therefore/rb ,/, the/at rate/nn decreases/vbz ./.
+Finally/rb ,/, when/wrb the/at accelerometer/nn output/nn is/bez zero/cd ,/, the/at entire/jj system/nn remains/vbz stationary/jj ,/, and/cc the/at platform/nn is/bez ,/, by/in definition/nn ,/, leveled/vbn ./.
+
+
+	A/at mathematical/jj block/nn diagram/nn for/in the/at leveling/vbg system/nn is/bez shown/vbn in/in Fig./nn-tl 7-2/cd-tl ./.
+The/at platform/nn is/bez initially/rb off/in level/jj by/in the/at angle/nn Aj/nn ./.
+The/at angle/nn generated/vbn by/in the/at platform/nn servo/nn **yf/nn multiplied/vbn by/in G/np is/bez the/at effective/jj acceleration/nn acting/vbg on/in the/at accelerometer/nn ./.
+Af/nn is/bez the/at scale/nn factor/nn of/in the/at accelerometer/nn (/( Af/nn )/) ./.
+The/at voltage/nn Af/nn is/bez amplified/vbn by/in Af/nn and/cc applied/vbn to/in the/at gyro/nn torquer/nn with/in scale/nn factor/nn Af/nn ./.
+Finally/rb ,/, the/at gyro-stabilized/jj platform/nn characteristic/nn is/bez represented/vbn by/in Af/nn ./.
+The/at system/nn as/cs indicated/vbn in/in Fig./nn-tl 7-2/cd-tl is/bez fundamental/jj and/cc simple/jj because/cs the/at transient/jj effects/nns of/in both/abx the/at platform/nn servo/nn and/cc the/at accelerometer/nn have/hv been/ben neglected/vbn ./.
+With/in these/dts factors/nns included/vbn ,/, an/at upper/jj limit/nn is/bez placed/vbn on/in the/at allowable/jj loop/nn gain/nn by/in stability/nn considerations/nns ./.
+In/in this/dt type/nn of/in system/nn ,/, a/at high/jj loop/nn gain/nn is/bez desirable/jj because/cs it/pps provides/vbz a/at fast/jj response/nn time/nn ./.
+
+
+	When/wrb the/at frequency/nn response/nn characteristics/nns of/in practical/jj components/nns are/ber considered/vbn ,/, their/pp$ effect/nn on/in stability/nn does/doz not/* present/vb the/at most/ql serious/jj limit/nn on/in the/at system/nn loop/nn gain/nn ./.
+The/at time/nn required/vbn for/in the/at system/nn to/to reach/vb a/at level/jj position/nn is/bez approximately/ql inversely/rb proportional/jj to/in the/at servo/nn loop/nn gain/nn ./.
+In/in addition/nn ,/, the/at cutoff/nn frequency/nn for/in input/nn accelerations/nns is/bez approximately/ql proportional/jj to/in the/at servo/nn loop/nn gain/nn ;/. ;/.
+i.e./rb ,/, high/jj loop/nn gain/nn causes/vbz the/at system/nn to/to respond/vb to/in horizontal/jj components/nns of/in accelerations/nns ./.
+This/dt problem/nn usually/rb determines/vbz the/at lower/jjr limit/nn of/in loop/nn gain/nn rather/rb than/cs response/nn time/nn ./.
+
+
+	It/pps must/md be/be noticed/vbn in/in Fig./nn-tl 7-1/cd-tl that/cs the/at accelerometer/nn responds/vbz to/in any/dti input/nn acceleration/nn ./.
+The/at equation/nn relating/vbg input/nn acceleration/nn to/in output/nn platform/nn angle/nn is/bez Af/nn ./.
+In/in practice/nn ,/, the/at preflight/jj leveling/vbg process/nn takes/vbz place/nn with/in the/at system/nn mounted/vbn in/in the/at airframe/nn ./.
+When/wrb the/at system/nn is/bez arranged/vbn for/in automatic/jj leveling/nn ,/, the/at platform/nn angles/nns respond/vb to/in any/dti horizontal/jj components/nns of/in acceleration/nn acting/vbg on/in the/at accelerometers/nns ./.
+There/ex are/ber many/ap such/jj components/nns of/in acceleration/nn present/rb due/rb to/in the/at effect/nn of/in wind/nn gusts/nns ,/, engine/nn noise/nn ,/, turbulence/nn around/in the/at vehicle/nn ,/, etc./rb ./.
+One/cd of/in the/at greatest/jjt problems/nns associated/vbn with/in automatic/jj leveling/nn is/bez establishing/vbg a/at true/jj level/nn in/in the/at presence/nn of/in high-level/nn acceleration/nn noise/nn ./.
+One/cd solution/nn to/in the/at problem/nn is/bez to/to operate/vb with/in a/at low/jj loop/nn gain/nn and/cc to/to include/vb low-pass/nn filters/nns ./.
+This/dt technique/nn causes/vbz the/at system/nn to/to respond/vb only/rb to/in low/jj frequency/nn acceleration/nn components/nns such/jj as/cs the/at platform/nn tilt/nn ./.
+Since/cs a/at lower/jjr loop/nn gain/nn and/cc low-pass/nn filtering/nn increases/vbz the/at response/nn time/nn ,/, a/at practical/jj compromise/nn must/md be/be reached/vbn ./.
+
+
+	One/cd of/in the/at most/ql desirable/jj solutions/nns is/bez achieved/vbn by/in the/at use/nn of/in a/at non-linear/jj amplifier/nn for/in Af/nn ./.
+The/at amplifier/nn is/bez designed/vbn so/cs that/cs its/pp$ gain/nn is/bez large/jj for/in accelerometer/nn signals/nns above/in a/at certain/ap threshold/nn level/nn ./.
+Below/in this/dt level/nn ,/, the/at amplifier/nn gain/nn Af/nn is/bez proportional/jj and/cc is/bez of/in small/jj value/nn ,/, in/in order/nn to/to provide/vb adequate/jj noise/nn filtering/nn ./.
+The/at effect/nn is/bez that/cs the/at platform/nn returns/vbz from/in an/at off-level/jj position/nn at/in a/at rapid/jj rate/nn until/cs it/pps is/bez nearly/ql level/jj ,/, at/in which/wdt point/nn the/at platform/nn is/bez controlled/vbn by/in a/at proportional/jj servo/nn with/in low/jj enough/qlp frequency/nn response/nn so/cs that/cs the/at noise/nn has/hvz little/ap effect/nn on/in the/at leveling/vbg process/nn ./.
+
+
+	When/wrb the/at system/nn is/bez on/in automatic/jj leveling/nn ,/, the/at gyro/nn drift/nn is/bez canceled/vbn by/in the/at output/nn of/in the/at leveling/vbg system/nn (/( amplifier/nn Af/nn )/) ./.
+The/at platform/nn actually/rb tilts/vbz off/in level/jj so/cs that/cs the/at accelerometer/nn output/nn ,/, when/wrb amplified/vbn by/in Af/nn ,/, will/md supply/vb the/at correct/jj current/nn to/in the/at gyro/nn torquer/nn to/to cancel/vb the/at gyro/nn drift/nn ./.
+The/at amount/nn of/in platform/nn dip/nn required/vbn depends/vbz upon/in the/at scale/nn factors/nns of/in the/at system/nn ./.
+
+
+
+7-3/cd ./.
+Practical/jj-hl leveling/vbg-hl considerations/nns-hl ./.-hl
+
+The/at automatic/jj leveling/vbg system/nn described/vbn in/in this/dt section/nn is/bez readily/rb adaptable/jj to/in a/at gyro-stabilized/jj platform/nn consisting/vbg of/in three/cd integrating/vbg gyros/nns ./.
+The/at system/nn requires/vbz some/dti switching/nn of/in flight/nn equipment/nn circuits/nns ./.
+However/rb ,/, the/at leveling/vbg operation/nn can/md be/be maintained/vbn and/cc controlled/vbn remotely/rb with/in no/at mechanical/jj or/cc optical/jj contact/nn with/in the/at platform/nn ./.
+
+
+	This/dt leveling/vbg system/nn will/md hold/vb the/at platform/nn on-level/jj ,/, automatically/rb ,/, as/ql long/rb as/cs the/at system/nn is/bez actuated/vbn ./.
+A/at useful/jj by-product/nn of/in this/dt system/nn is/bez that/cs the/at information/nn necessary/jj to/to set/vb the/at gyro/nn drift/nn biases/nns is/bez available/jj from/in the/at currents/nns necessary/jj to/to hold/vb the/at system/nn in/in level/jj ./.
+
+
+	The/at leveling/vbg process/nn can/md be/be accomplished/vbn manually/rb ,/, and/cc the/at results/nns are/ber as/ql satisfactory/jj as/cs those/dts obtained/vbn with/in automatic/jj equipment/nn ./.
+The/at process/nn consists/vbz in/in turning/vbg the/at platform/nn manually/rb until/cs the/at outputs/nns of/in both/abx accelerometers/nns are/ber zero/cd ./.
+The/at turning/nn is/bez accomplished/vbn by/in applying/vbg voltage/nn to/in the/at gyro/nn torquers/nns described/vbn above/rb ./.
+In/in brief/jj ,/, the/at human/nn replaces/vbz amplifier/nn Af/nn in/in Figs./nns-tl 7-1/cd-tl and/cc 7-2/cd-tl ./.
+
+
+	Manual/jj leveling/nn requires/vbz an/at appropriate/jj display/nn of/in the/at accelerometer/nn outputs/nns ./.
+If/cs high/jj accuracy/nn is/bez required/vbn in/in preflight/jj leveling/nn ,/, it/pps is/bez usually/rb necessary/jj to/to integrate/vb or/cc doubly/rb integrate/vb the/at accelerometer/nn outputs/nns (/( this/dt also/rb minimizes/vbz the/at noise/nn problem/nn )/) ./.
+With/in integration/nn ,/, the/at effect/nn of/in a/at small/jj acceleration/nn (/( or/cc small/jj platform/nn tilt/nn angle/nn )/) can/md be/be seen/vbn after/in a/at time/nn ./.
+However/rb ,/, skill/nn is/bez required/vbn on/in the/at part/nn of/in an/at operator/nn to/to level/vb a/at platform/nn to/in any/dti degree/nn of/in accuracy/nn ./.
+Also/rb ,/, it/pps requires/vbz more/ap time/nn as/cs compared/vbn to/in the/at automatic/jj approach/nn ./.
+
+
+	Manual/jj leveling/nn is/bez inconvenient/jj if/cs the/at platform/nn must/md be/be maintained/vbn accurately/rb level/jj for/in any/dti prolonged/vbn period/nn of/in time/nn ./.
+The/at operator/nn must/md continually/rb supply/vb the/at correct/jj amount/nn of/in turning/vbg current/nn to/in the/at gyro/nn torquers/nns so/cs that/cs the/at effect/nn of/in gyro/nn drift/nn is/bez canceled/vbn ./.
+This/dt process/nn is/bez especially/ql difficult/jj since/cs gyro/nn drifting/vbg is/bez typically/rb random/jj ./.
+
+
+
+7-4/cd-hl ./.-hl
+Platform/nn heading/nn ./.
+
+Platform/nn heading/nn consists/vbz of/in orienting/vbg the/at sensitive/jj axis/nn of/in the/at accelerometers/nns parallel/rb to/in the/at desired/vbn coordinate/nn system/nn of/in the/at navigator/nn ./.
+In/in simpler/jjr terms/nns ,/, it/pps amounts/vbz to/in pointing/vbg the/at platform/nn in/in the/at proper/jj direction/nn ./.
+
+
+	For/in purely/ql inertial/jj navigators/nns ,/, two/cd techniques/nns are/ber available/jj to/to accomplish/vb the/at platform/nn heading/nn :/: Use/nn of/in external/jj or/cc surveying/vbg equipment/nn to/to establish/vb proper/jj heading/nn ;/. ;/.
+
+Use/nn of/in the/at characteristics/nns of/in the/at platform/nn components/nns for/in an/at indication/nn of/in true/jj heading/nn ./.
+The/at choice/nn of/in the/at heading/nn technique/nn is/bez dependent/jj upon/in the/at accuracy/nn requirements/nns ,/, field/nn conditions/nns ,/, and/cc the/at time/nn available/jj to/to accomplish/vb the/at heading/nn ./.
+
+
+
+7-5/cd ./.
+External/jj-hl determination/nn-hl of/in-hl heading/vbg-hl --/---hl surveying/vbg-hl technique/nn-hl ./.-hl
+
+With/in the/at gyro-stabilized/jj platform/nn leveled/vbn ,/, it/pps can/md be/be headed/vbn in/in the/at proper/jj direction/nn by/in using/vbg surveying/vbg techniques/nns ./.
+The/at platform/nn accelerometers/nns must/md be/be slightly/ql modified/vbn for/in this/dt procedure/nn ./.
+Before/cs the/at accelerometers/nns are/ber mounted/vbn on/in the/at platform/nn ,/, the/at direction/nn of/in their/pp$ sensitive/jj axis/nn must/md be/be accurately/rb determined/vbn ./.
+A/at mirror/nn is/bez mounted/vbn on/in each/dt accelerometer/nn so/cs that/cs the/at plane/nn of/in the/at mirror/nn is/bez perpendicular/jj to/in the/at sensitive/jj axis/nn of/in the/at unit/nn ./.
+Transit/nn-hl ./.-hl
+
+A/at precision/nn transit/nn is/bez set/vbn up/rp so/cs that/cs it/pps is/bez aligned/vbn with/in respect/nn to/in true/jj north/nn ./.
+This/dt can/md be/be done/vbn to/in a/at high/jj degree/nn of/in accuracy/nn by/in existing/vbg surveying/vbg techniques/nns ./.
+With/in the/at transit/nn set/vbn up/rp ,/, a/at mirror/nn on/in one/cd of/in the/at accelerometers/nns is/bez sighted/vbn and/cc the/at platform/nn is/bez turned/vbn until/cs it/pps is/bez aligned/vbn ./.
+
+
+	The/at sighting/vbg procedure/nn includes/vbz the/at use/nn of/in a/at fixture/nn for/in the/at transit/nn to/to project/vb a/at beam/nn of/in light/nn ,/, which/wdt is/bez darkened/vbn by/in crossed/vbn hairs/nns ,/, on/in the/at accelerometer/nn mirror/nn ./.
+When/wrb the/at platform/nn is/bez aligned/vbn ,/, the/at reflected/vbn image/nn of/in the/at crossed/vbn hairs/nns can/md be/be seen/vbn exactly/rb superimposed/vbn upon/in the/at original/jj crossed/vbn hairs/nns ./.
+The/at images/nns can/md easily/rb be/be aligned/vbn with/in a/at high/jj degree/nn of/in accuracy/nn ./.
+The/at platform/nn is/bez turned/vbn as/cs required/vbn by/in supplying/vbg currents/nns to/in the/at appropriate/jj gyro/nn torquers/nns ./.
+
+
+	Although/cs this/dt technique/nn is/bez simple/jj and/cc satisfactory/jj ,/, one/cd practical/jj difficulty/nn does/doz exist/vb :/: the/at direction/nn of/in true/jj north/nn must/md be/be known/vbn for/in each/dt launch/nn point/nn ./.
+However/rb ,/, this/dt difficulty/nn is/bez not/* too/ql serious/jj if/cs it/pps is/bez realized/vbn that/cs a/at surveying/vbg team/nn can/md establish/vb a/at true/jj north/nn base/nn line/nn with/in a/at few/ap days'/nns$ work/nn ./.
+
+
+	In/in many/ap installations/nns ,/, the/at inertial/jj platform/nn is/bez raised/vbn off/in the/at ground/nn a/at considerable/jj height/nn when/wrb it/pps is/bez mounted/vbn in/in the/at vehicle/nn before/in flight/nn ./.
+With/in this/dt situation/nn ,/, it/pps is/bez difficult/jj to/to sight/vb in/rp on/in the/at platform/nn with/in surveying/vbg equipment/nn ./.
+If/cs the/at platform/nn is/bez not/* too/ql high/rb off/in the/at ground/nn ,/, a/at transit/nn can/md be/be mounted/vbn on/in a/at stand/nn to/to raise/vb it/ppo up/rp to/in the/at platform/nn ./.
+Obviously/rb ,/, the/at heading/nn accuracy/nn is/bez lessened/vbn by/in such/jj techniques/nns since/cs errors/nns are/ber introduced/vbn because/rb of/in motion/nn of/in the/at stand/nn ./.
+Autocollimator/nn-hl ./.-hl
+
+The/at transit/nn can/md be/be replaced/vbn by/in an/at autocollimator/nn ./.
+This/dt instrument/nn provides/vbz an/at electrical/jj signal/nn proportional/jj to/in the/at angular/jj deviations/nns of/in the/at platform/nn and/cc can/md be/be used/vbn to/to automatically/rb hold/vb the/at platform/nn on/in true/jj heading/nn ./.
+The/at electrical/jj signal/nn from/in the/at autocollimator/nn is/bez amplified/vbn and/cc supplied/vbn to/in the/at Z-gyro/nn torquer/nn ./.
+If/cs the/at polarity/nn is/bez correct/jj ,/, the/at platform/nn will/md turn/vb until/cs the/at heading/nn error/nn angle/nn is/bez zero/cd ./.
+Information/nn is/bez also/rb available/jj from/in this/dt autocollimator/nn system/nn to/to set/vb the/at drift/nn bias/nn for/in the/at Z-axis/nn gyro/nn ./.
+If/cs the/at Z/nn gyro/nn is/bez drifting/vbg ,/, a/at current/nn generated/vbn by/in the/at autocollimator/nn is/bez delivered/vbn to/in the/at gyro/nn torquer/nn to/to cancel/vb the/at drift/nn ./.
+If/cs the/at drift/nn error/nn is/bez systematic/jj ,/, it/pps can/md be/be canceled/vbn with/in a/at bias/nn circuit/nn which/wdt can/md be/be arranged/vbn and/cc adjusted/vbn to/to supply/vb the/at required/vbn compensating/vbg current/nn ./.
+Electrical/jj-hl pickoffs/nns-hl ./.-hl
+
+It/pps is/bez possible/jj to/to locate/vb an/at angular/jj electrical/jj pickoff/nn ,/, which/wdt will/md indicate/vb the/at angular/jj deviation/nn between/in the/at true/jj heading/nn direction/nn and/cc the/at platform/nn ./.
+Essentially/rb ,/, the/at stator/nn or/cc reference/nn portion/nn of/in the/at pickoff/nn is/bez established/vbn with/in respect/nn to/in the/at true/jj heading/nn direction/nn ,/, and/cc the/at platform/nn is/bez turned/vbn either/cc manually/rb or/cc automatically/rb until/cs the/at angular/jj electrical/jj pickoff/nn signal/nn is/bez reduced/vbn to/in zero/cd ./.
+
+
+
+7-6/cd-hl ./.-hl
+Gyrocompass/nn-hl heading/vbg-hl ./.
+
+Gyrocompass/nn alignment/nn is/bez an/at automatic/jj heading/nn system/nn which/wdt depends/vbz upon/in the/at characteristic/nn of/in one/cd gyro/nn to/to establish/vb true/jj heading/nn ./.
+For/in the/at case/nn of/in a/at purely/ql inertial/jj autonavigator/nn consisting/vbg of/in three/cd restrained/vbn gyros/nns ,/, a/at coordinate/nn system/nn is/bez used/vbn where/wrb the/at sensitive/jj axis/nn of/in the/at X/nn accelerometer/nn is/bez parallel/rb to/in the/at east-west/jj direction/nn at/in the/at base/nn point/nn ,/, and/cc the/at Y/nn accelerometer/nn sensitive/jj axis/nn is/bez parallel/rb to/in the/at north-south/jj direction/nn at/in the/at base/nn point/nn ./.
+The/at accelerometers/nns are/ber mounted/vbn rigidly/rb on/in the/at platform/nn ./.
+Thus/rb ,/, if/cs one/cd accelerometer/nn is/bez properly/rb aligned/vbn ,/, the/at other/ap is/bez also/rb ./.
+The/at input/nn axis/nn of/in the/at appropriate/jj gyros/nns are/ber parallel/rb to/in the/at sensitive/jj direction/nn of/in the/at accelerometers/nns ./.
+
+
+	Figure/nn-tl 7-3/cd-tl shows/vbz a/at platform/nn system/nn with/in the/at gyro/nn vectors/nns arranged/vbn as/cs described/vbn above/rb ./.
+The/at platform/nn is/bez leveled/vbn and/cc properly/rb headed/vbn ,/, so/cs that/cs the/at X-gyro/nn input/nn axis/nn is/bez parallel/rb to/in the/at east-west/jj direction/nn and/cc the/at Y-gyro/nn input/nn axis/nn is/bez parallel/rb to/in the/at north-south/jj direction/nn ./.
+
+
+	The/at input/nn axis/nn of/in the/at X/nn gyro/nn ,/, when/wrb pointing/vbg in/in the/at east-west/jj direction/nn ,/, is/bez always/rb perpendicular/jj to/in the/at spin/nn axis/nn of/in earth/nn ./.
+If/cs the/at platform/nn is/bez not/* properly/rb headed/vbn ,/, the/at X-gyro/nn input/nn axis/nn will/md see/vb a/at component/nn of/in the/at earth's/nn$ rotation/nn ./.
+The/at sensing/nn of/in this/dt rotation/nn by/in the/at X/nn gyro/nn can/md be/be utilized/vbn to/to direct/vb the/at platform/nn into/in proper/jj heading/nn ./.
+
+
+	In/in Fig./nn-tl 7-4/cd-tl ,/, the/at input/nn axis/nn of/in the/at three-axis/jj platform/nn is/bez shown/vbn at/in some/dti point/nn on/in the/at earth/nn ./.
+The/at point/nn is/bez at/in a/at latitude/nn **yl/nn ,/, and/cc the/at platform/nn is/bez at/in an/at error/nn in/in heading/vbg east/nr ./.
+The/at earth/nn is/bez spinning/vbg at/in an/at angular/jj velocity/nn **zq/nn equal/jj to/in one/cd revolution/nn per/in 24/cd hr./nns ./.
+When/wrb the/at platform/nn is/bez level/jj ,/, **ye/nn is/bez a/at rotation/nn about/in the/at Z/nn axis/nn of/in the/at platform/nn Af/nn ./.
+Since/cs the/at earth/nn is/bez rotating/vbg and/cc the/at unleveled/jj gyro-stabilized/jj platform/nn is/bez fixed/vbn with/in respect/nn to/in a/at reference/nn in/in space/nn ,/, an/at observer/nn on/in the/at earth/nn will/md see/vb the/at platform/nn rotating/vbg (/( with/in respect/nn to/in the/at earth/nn )/) ./.
+

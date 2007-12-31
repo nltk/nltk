@@ -1,0 +1,153 @@
+The/at following/vbg items/nns may/md be/be specified/vbn in/in actual/jj or/cc symbolic/jj form/nn in/in the/at operands/nns of/in those/dts instructions/nns which/wdt refer/vb to/in the/at particular/ap items/nns :/: channel/nn ,/, unit/nn ,/, combined/vbn channel/nn and/cc unit/nn ,/, combined/vbn arm/nn and/cc file/nn ,/, unit/nn record/nn synchronizers/nns ,/, inquiry/nn synchronizers/nns ,/, and/cc alteration/nn switches/nns ./.
+The/at declarative/jj operation/nn EQU/nn is/bez used/vbn to/to equate/vb symbolic/jj names/nns to/in item/nn numbers/nns (/( see/vb page/nn 85/cd )/) ./.
+Continuation/nn-hl cards/nns-hl 
+Certain/ap Autocoder/np statements/nns make/vb provision/nn for/in more/ap parameters/nns than/cs may/md be/be contained/vbn in/in the/at operand/nn (/( columns/nns 21/cd -/in 75/cd )/) of/in a/at single/ap line/nn on/in the/at Autocoder/np coding/vbg sheet/nn ./.
+When/wrb this/dt is/bez the/at case/nn ,/, the/at appropriate/jj section/nn of/in this/dt manual/nn will/md indicate/vb that/cs ``/`` Continuation/nn-tl Cards/nns-tl ''/'' may/md be/be used/vbn ./.
+Thus/rb ,/, when/wrb specifically/rb permitted/vbn ,/, the/at operand/nn of/in a/at given/vbn line/nn on/in the/at Autocoder/np coding/vbg sheet/nn may/md be/be continued/vbn in/in the/at operand/nn of/in from/in one/cd to/in four/cd additional/jj lines/nns which/wdt immediately/rb follow/vb ./.
+
+
+	The/at label/nn and/cc operation/nn columns/nns must/md be/be blank/jj and/cc the/at continuation/nn of/in the/at operand/nn must/md begin/vb in/in column/nn 21/cd ;/. ;/.
+i.e./rb ,/, it/pps must/md be/be left-justified/vbn in/in the/at operand/nn column/nn of/in the/at coding/vbg sheet/nn ./.
+The/at operand/nn need/md not/* extend/vb across/in the/at entire/jj operand/nn column/nn of/in either/cc the/at header/nn card/nn or/cc continuation/nn cards/nns but/cc may/md end/vb with/in the/at comma/nn following/vbg any/dti parameter/nn ./.
+Remarks/nns may/md appear/vb to/in the/at right/nr of/in the/at last/ap parameter/nn on/in each/dt card/nn provided/vbd they/ppss are/ber separated/vbn from/in the/at operand/nn by/in at/in least/ap two/cd blank/jj spaces/nns ./.
+
+
+	Illustrations/nns of/in the/at use/nn of/in continuation/nn cards/nns are/ber included/vbn throughout/in the/at examples/nns illustrating/vbg the/at various/ap statements/nns ./.
+
+
+	If/cs a/at continuation/nn card/nn follows/vbz a/at statement/nn that/wps does/doz not/* permit/vb continuation/nn cards/nns ,/, the/at compiler/nn will/md generate/vb a/at NOP/nn and/cc issue/vb an/at error/nn message/nn ./.
+Additional/jj restrictions/nns regarding/in the/at use/nn of/in continuation/nn cards/nns with/in macro-instructions/nns appear/vb on/in page/nn 106/cd ./.
+
+
+
+Reservation/nn-hl of/in-hl index/nn-hl words/nns-hl and/cc-hl electronic/jj-hl switches/nns-hl 
+The/at assignment/nn of/in actual/jj addresses/nns to/in symbolic/jj index/nn word/nn and/cc electronic/jj switch/nn names/nns occurs/vbz in/in Phase/nn-tl 3/cd-tl ,/, of/in the/at Autocoder/np processor/nn ./.
+The/at initial/jj availability/nn of/in index/nn words/nns and/cc electronic/jj switches/nns is/bez determined/vbn by/in a/at table/nn which/wdt is/bez included/vbn in/in the/at Compiler/nn-tl Systems/nns-tl Tape/nn-tl ./.
+This/dt table/nn originally/rb indicates/vbz that/cs index/nn words/nns 1/cd through/in 96/cd and/cc electronic/jj switches/nns 1/cd through/in 30/cd are/ber available/jj for/in assignment/nn to/in symbolic/jj references/nns ;/. ;/.
+index/nn words/nns 97/cd through/in 99/cd are/ber not/* available/jj ./.
+The/at initial/jj setting/nn of/in this/dt table/nn may/md be/be altered/vbn ,/, however/rb ,/, as/cs described/vbn in/in the/at 7070/7074/cd Data/nns-tl Processing/vbg-tl System/nn-tl Bulletin/nn-tl ``/`` IBM/np-tl 7070/7074/cd-tl Compiler/nn-tl System/nn-tl :/: Operating/vbg-tl Procedure/nn-tl ''/'' ,/, form/nn Aj/nn ./.
+
+
+	During/in the/at first/od pass/nn of/in Phase/nn-tl 3/cd-tl ,/, ,/, references/nns to/in the/at actual/jj addresses/nns of/in index/nn words/nns and/cc electronic/jj switches/nns are/ber collected/vbn and/cc the/at availability/nn table/nn is/bez updated/vbn ./.
+At/in the/at end/nn of/in this/dt pass/nn ,/, the/at table/nn indicates/vbz which/wdt index/nn words/nns and/cc electronic/jj switches/nns are/ber not/* available/jj for/in assignment/nn to/in symbolic/jj references/nns ./.
+
+
+	Both/abx index/nn words/nns and/cc electronic/jj switches/nns may/md have/hv been/ben made/vbn unavailable/jj before/in the/at start/nn of/in assignment/nn in/in one/cd of/in the/at following/vbg ways/nns ./.
+1/cd-hl ./.-hl
+
+The/at initial/jj setting/nn of/in the/at availability/nn table/nn indicated/vbd that/cs the/at index/nn word/nn or/cc electronic/jj switch/nn was/bedz not/* available/jj for/in assignment/nn ./.
+2/cd-hl ./.-hl
+
+The/at one-/cd or/cc two-digit/jj number/nn of/in the/at index/nn word/nn or/cc electronic/jj switch/nn was/bedz used/vbn in/in the/at operand/nn of/in a/at symbolic/jj machine/nn instruction/nn to/to specify/vb indexing/vbg or/cc as/cs a/at parameter/nn which/wdt is/bez always/rb an/at index/nn word/nn or/cc electronic/jj switch/nn ,/, e.g./rb ,/, 3/cd-hl ./.-hl
+
+The/at one-/cd or/cc two-digit/jj number/nn of/in the/at index/nn word/nn or/cc electronic/jj switch/nn was/bedz used/vbn in/in the/at operand/nn of/in an/at EQU/nn statement/nn ,/, e.g./rb ,/, 
+
+	When/wrb the/at index/nn words/nns or/cc electronic/jj switches/nns are/ber reserved/vbn because/rb of/in actual/jj usage/nn in/in the/at statements/nns described/vbn above/rb ,/, the/at position/nn or/cc order/nn of/in the/at statements/nns within/in the/at program/nn is/bez not/* important/jj ;/. ;/.
+any/dti such/jj reference/nn will/md make/vb the/at index/nn word/nn or/cc electronic/jj switch/nn unavailable/jj at/in the/at end/nn of/in this/dt pass/nn ./.
+
+
+	During/in the/at assignment/nn pass/nn of/in Phase/nn-tl 3/cd-tl ,/, ,/, index/nn words/nns and/cc electronic/jj switches/nns are/ber reserved/vbn as/cs they/ppss are/ber encountered/vbn during/in assignment/nn ./.
+Index/nn words/nns and/cc electronic/jj switches/nns may/md be/be reserved/vbn in/in the/at following/vbg ways/nns ./.
+The/at first/od two/cd methods/nns apply/vb to/in both/abx index/nn words/nns and/cc electronic/jj switches/nns ;/. ;/.
+the/at third/od applies/vbz only/rb to/in index/nn words/nns ./.
+1/cd-hl ./.-hl
+
+During/in the/at assignment/nn pass/nn ,/, each/dt instruction/nn is/bez examined/vbn for/in reference/nn to/in the/at symbolic/jj name/nn of/in an/at index/nn word/nn or/cc electronic/jj switch/nn ./.
+When/wrb such/abl a/at reference/nn is/bez found/vbn ,/, an/at actual/jj address/nn is/bez assigned/vbn and/cc the/at availability/nn table/nn is/bez changed/vbn so/cs that/cs the/at assigned/vbn index/nn word/nn or/cc switch/nn is/bez no/ql longer/rbr available/jj for/in later/jjr assignment/nn ./.
+2/cd-hl ./.-hl
+
+If/cs the/at one-/cd or/cc two-digit/jj address/nn of/in an/at index/nn word/nn or/cc electronic/jj switch/nn is/bez used/vbn or/cc is/bez included/vbn in/in the/at operand/nn of/in an/at XRESERVE/nn or/cc SRESERVE/nn statement/nn (/( see/vb page/nn 99/cd )/) ,/, the/at corresponding/jj index/nn word/nn or/cc electronic/jj switch/nn is/bez reserved/vbn ./.
+3/cd-hl ./.-hl
+
+If/cs a/at statement/nn has/hvz been/ben assigned/vbn an/at address/nn in/in the/at index/nn word/nn area/nn 
+by/in means/nns of/in an/at actual/jj label/nn or/cc 
+by/in means/nns of/in an/at origin/nn statement/nn which/wdt refers/vbz to/in an/at actual/jj address/nn ,/, the/at corresponding/jj index/nn word/nn will/md be/be reserved/vbn ./.
+These/dts entries/nns should/md normally/rb appear/vb at/in the/at beginning/nn of/in the/at program/nn or/cc immediately/rb following/vbg each/dt LITORIGIN/nn statement/nn ./.
+Otherwise/rb ,/, symbolic/jj names/nns may/md have/hv previously/rb been/ben assigned/vbn to/in these/dts same/ap index/nn words/nns ./.
+(/( This/dt method/nn does/doz not/* apply/vb to/in electronic/jj switches/nns ./.
+)/) 
+
+	The/at preceding/vbg methods/nns allow/vb efficient/jj use/nn of/in index/nn words/nns and/cc electronic/jj switches/nns during/in a/at sectionalized/vbn or/cc multi-phase/jj program/nn ,/, particularly/rb when/wrb used/vbn in/in conjunction/nn with/in the/at LITORIGIN/nn statement/nn ./.
+Extreme/jj caution/nn should/md be/be used/vbn ,/, however/rb ,/, to/to avoid/vb the/at conflicting/vbg usage/nn of/in an/at index/nn word/nn or/cc electronic/jj switch/nn which/wdt may/md result/vb from/in the/at assignment/nn of/in more/ap than/in one/cd name/nn or/cc function/nn to/in the/at same/ap address/nn ./.
+
+
+	If/cs the/at symbolic/jj name/nn or/cc actual/jj address/nn of/in an/at index/nn word/nn or/cc electronic/jj switch/nn appears/vbz or/cc is/bez included/vbn in/in the/at operand/nn of/in an/at XRELEASE/nn or/cc SRELEASE/nn statement/nn (/( see/vb page/nn 101/cd )/) ,/, the/at specified/vbn index/nn word/nn or/cc electronic/jj switch/nn will/md again/rb be/be made/vbn available/jj ,/, regardless/rb of/in the/at method/nn by/in which/wdt it/pps was/bedz reserved/vbn ./.
+It/pps will/md not/* ,/, however/rb ,/, be/be used/vbn for/in symbolic/jj assignment/nn until/cs all/abn other/ap index/nn words/nns or/cc electronic/jj switches/nns have/hv been/ben assigned/vbn for/in the/at first/od time/nn ./.
+
+
+	If/cs ,/, at/in any/dti time/nn during/in the/at assignment/nn pass/nn ,/, the/at compiler/nn finds/vbz that/cs there/ex are/ber no/at more/ap index/nn words/nns available/jj for/in assignment/nn ,/, the/at warning/vbg message/nn ``/`` No/at-tl More/ap-tl Index/nn-tl Words/nns-tl Available/jj-tl ''/'' will/md be/be placed/vbn in/in the/at object/nn program/nn listing/nn ,/, the/at table/nn will/md be/be altered/vbn to/to show/vb that/cs index/nn words/nns 1/cd through/in 96/cd are/ber available/jj ,/, and/cc the/at assignment/nn will/md continue/vb as/cs before/rb ./.
+If/cs the/at compiler/nn finds/vbz that/cs there/ex are/ber no/at more/ap electronic/jj switches/nns available/jj for/in assignment/nn ,/, the/at warning/vbg message/nn ``/`` No/at-tl More/ap-tl Electronic/jj-tl Switches/nns Available/jj-tl ''/'' will/md be/be placed/vbn in/in the/at object/nn program/nn listing/nn ,/, the/at table/nn will/md be/be altered/vbn to/to show/vb that/cs electronic/jj switches/nns 1/cd through/in 30/cd are/ber available/jj ,/, and/cc assignment/nn will/md continue/vb as/cs before/rb ./.
+The/at resultant/jj conflicting/vbg usage/nn of/in index/nn words/nns or/cc electronic/jj switches/nns may/md be/be avoided/vbn by/in reducing/vbg the/at number/nn of/in symbolic/jj names/nns used/vbn ,/, e.g./rb ,/, through/in the/at proper/jj use/nn of/in the/at EQU/nn ,/, XRELEASE/nn ,/, or/cc SRELEASE/nn statements/nns ./.
+
+
+	As/cs noted/vbn in/in Appendix/nn-tl C/np-tl ,/, index/nn words/nns 97/cd through/in 99/cd are/ber never/rb available/jj for/in assignment/nn to/in symbolic/jj names/nns by/in the/at compiler/nn ;/. ;/.
+also/rb ,/, index/nn words/nns 93/cd through/in 96/cd may/md have/hv been/ben made/vbn unavailable/jj for/in assignment/nn ./.
+
+
+
+Declarative/jj-hl statements/nns-hl 
+Autocoder/np declarative/jj statements/nns provide/vb the/at processor/nn with/in the/at necessary/jj information/nn to/to complete/vb the/at imperative/jj operations/nns properly/rb ./.
+Declarative/jj statements/nns are/ber never/rb executed/vbn in/in the/at object/nn program/nn and/cc should/md be/be separated/vbn from/in the/at program/nn instruction/nn area/nn ,/, placed/vbn preferably/rb at/in its/pp$ beginning/nn or/cc end/nn ./.
+Otherwise/rb ,/, special/jj care/nn must/md be/be taken/vbn to/to branch/vb around/in them/ppo so/cs that/cs the/at program/nn will/md not/* attempt/vb to/to execute/vb something/pn in/in a/at data/nn area/nn as/cs an/at instruction/nn ./.
+If/cs the/at compiler/nn does/doz encounter/vb such/jj statements/nns ,/, a/at warning/vbg message/nn will/md be/be issued/vbn ./.
+7070/7074/cd Autocoder/np includes/vbz the/at following/vbg declarative/jj statements/nns :/: DA/nn (/( Define/vb-tl Area/nn-tl )/) ,/, DC/nn (/( Define/vb-tl Constant/nn-tl )/) ,/, DRDW/nn (/( Define/vb-tl Record/nn-tl Definition/nn-tl Word/nn-tl )/) ,/, DSW/nn (/( Define/vb-tl Switch/nn-tl )/) ,/, DLINE/nn (/( Define/vb-tl Line/nn-tl )/) ,/, EQU/nn (/( Equate/vb-tl )/) ,/, CODE,DTF/nn (/( Define/vb-tl Tape/nn-tl File/nn-tl )/) ,/, DIOCS/nn (/( Define/vb-tl Input/Output/jj-tl Control/nn-tl System/nn-tl )/) ,/, and/cc DUF/nn (/( Descriptive/jj-tl Entry/nn-tl For/in-tl Unit/nn-tl Records/nns-tl )/) ./.
+DA/nn ,/, DC/nn ,/, DTF/nn ,/, and/cc DLINE/nn require/vb more/ap than/in one/cd entry/nn ./.
+
+
+	The/at DA/nn statement/nn is/bez used/vbn to/to name/vb and/cc define/vb the/at positions/nns and/cc length/nn of/in fields/nns within/in an/at area/nn ./.
+The/at DC/nn statement/nn is/bez used/vbn to/to name/vb and/cc enter/vb constants/nns into/in the/at object/nn program/nn ./.
+Since/cs the/at 7070/cd and/cc 7074/cd make/vb use/nn of/in record/nn definition/nn words/nns (/( RDWS/np )/) to/to read/vb ,/, write/vb ,/, move/vb ,/, and/cc otherwise/rb examine/vb blocks/nns of/in storage/nn ,/, the/at DA/nn and/cc DC/nn statements/nns provide/vb the/at option/nn of/in generating/vbg RDWS/nn automatically/rb ./.
+When/wrb so/rb instructed/vbn ,/, Autocoder/np will/md generate/vb one/cd or/cc more/ap RDWS/nn and/cc assign/vb them/ppo successive/jj locations/nns immediately/rb preceding/vbg the/at area/nn with/in which/wdt they/ppss are/ber to/to be/be associated/vbn ./.
+An/at RDW/nn will/md be/be of/in the/at form/nn Af/nn ,/, where/wrb xxxx/nn is/bez the/at starting/vbg location/nn of/in the/at area/nn and/cc yyyy/nn is/bez its/pp$ ending/vbg location/nn ./.
+These/dts addresses/nns are/ber calculated/vbn automatically/rb by/in the/at processor/nn ./.
+
+
+	In/in some/dti cases/nns ,/, it/pps may/md be/be more/ql advantageous/jj to/to assign/vb locations/nns to/in RDWS/nn associated/vbn with/in DA/nn and/cc DC/nn areas/nns in/in some/dti other/ap part/nn of/in storage/nn ,/, i.e./rb ,/, not/* immediately/rb preceding/vbg the/at DA/nn or/cc DC/nn areas/nns ./.
+The/at DRDW/nn statement/nn may/md be/be used/vbn for/in this/dt purpose/nn ./.
+The/at DRDW/nn statement/nn may/md also/rb be/be used/vbn to/to generate/vb an/at RDW/nn defining/vbg any/dti area/nn specified/vbn by/in the/at programmer/nn ./.
+
+
+	As/ql many/ap as/cs ten/cd digital/jj switches/nns may/md be/be named/vbn and/cc provided/vbn by/in the/at DSW/nn statement/nn for/in consideration/nn by/in the/at SETSW/nn and/cc logic/nn macro-instructions/nns ./.
+Each/dt switch/nn occupies/vbz one/cd digit/nn position/nn in/in a/at word/nn ,/, can/md be/be set/vbn on/rp or/cc off/rp ,/, and/cc is/bez considered/vbn as/cs logically/rb equivalent/jj to/in an/at electronic/jj switch/nn ./.
+It/pps cannot/md* ,/, however/rb ,/, be/be referred/vbn to/in by/in electronic/jj switch/nn commands/nns ,/, e.g./rb ,/, ESN/nn ,/, BSN/nn ,/, etc./rb ./.
+An/at individual/ap switch/nn or/cc the/at entire/jj set/nn of/in switches/nns in/in a/at word/nn may/md be/be tested/vbn or/cc altered/vbn as/cs desired/vbn ./.
+
+
+	Through/in use/nn of/in the/at DLINE/nn statement/nn ,/, a/at means/nn is/bez provided/vbn for/in specifying/vbg both/abx the/at editing/nn of/in fields/nns to/to be/be inserted/vbn in/in a/at print/nn line/nn area/nn and/cc the/at layout/nn of/in the/at area/nn itself/ppl ./.
+The/at area/nn may/md include/vb constant/jj information/nn supplied/vbn by/in the/at programmer/nn ./.
+The/at area/nn may/md also/rb be/be provided/vbn with/in additional/jj data/nn during/in the/at running/nn of/in the/at object/nn program/nn by/in means/nns of/in EDMOV/nn or/cc move/nn macro-instructions/nns ./.
+
+
+	The/at declarative/jj statement/nn EQU/nn permits/vbz the/at programmer/nn to/to equate/vb symbolic/jj names/nns to/in actual/jj index/nn words/nns ,/, electronic/jj switches/nns ,/, arm/nn and/cc file/nn numbers/nns ,/, tape/nn channel/nn and/cc unit/nn numbers/nns ,/, alteration/nn switches/nns ,/, etc./rb ,/, and/cc to/to equate/vb a/at symbol/nn to/in another/dt symbol/nn or/cc to/in an/at actual/jj address/nn ./.
+
+
+	The/at DIOCS/nn ,/, DTF/nn ,/, and/cc DUF/nn statements/nns are/ber used/vbn when/wrb required/vbn by/in the/at Input/Output/jj-tl Control/nn-tl System/nn-tl ./.
+DIOCS/np is/bez used/vbn to/to select/vb the/at major/jj methods/nns of/in processing/vbg to/to be/be used/vbn ,/, and/cc to/to name/vb the/at index/nn words/nns used/vbn by/in Aj/nn ./.
+Each/dt tape/nn file/nn must/md be/be described/vbn by/in Tape/nn-tl File/nn-tl Specifications/nns-tl ,/, produced/vbn by/in Aj/nn ./.
+In/in addition/nn to/in information/nn related/vbn to/in the/at file/nn and/cc its/pp$ records/nns ,/, the/at File/nn-tl Specifications/nns-tl contain/vb subroutine/nn locations/nns and/cc the/at location/nn of/in tape/nn label/nn information/nn ./.
+A/at DUF/nn entry/nn must/md be/be supplied/vbn for/in every/at unit/nn record/nn file/nn describing/vbg the/at type/nn of/in file/nn and/cc the/at unit/nn record/nn equipment/nn to/to be/be used/vbn ./.
+The/at DUF/nn also/rb supplies/vbz the/at locations/nns of/in subroutines/nns written/vbn by/in the/at user/nn that/wps are/ber unique/jj to/in the/at file/nn ./.
+
+
+	A/at full/jj description/nn of/in the/at DIOCS/nn ,/, DTF/nn ,/, and/cc DUF/nn statements/nns is/bez contained/vbn in/in the/at 7070/cd-tl Data/nns-tl Processing/vbg-tl System/nn-tl Bulletin/nn-tl ``/`` IBM/np-tl 7070/cd-tl Input/Output/jj-tl Control/nn-tl System/nn-tl ''/'' ,/, form/nn Aj/nn ./.
+Brief/jj descriptions/nns of/in these/dts three/cd declarative/jj statements/nns and/cc detailed/vbn descriptions/nns of/in the/at formats/nns and/cc functions/nns of/in each/dt of/in the/at other/ap 7070/7074/cd Autocoder/np declarative/jj statements/nns follow/vb below/rb ./.
+diocs/nn-hl --/---hl define/vb-hl input/output/nn-hl control/nn-hl system/nn-hl 
+When/wrb the/at Input/Output/jj-tl Control/nn-tl System/nn-tl is/bez to/to be/be used/vbn in/in a/at program/nn ,/, a/at DIOCS/nn statement/nn must/md be/be used/vbn to/to select/vb the/at major/jj methods/nns of/in processing/vbg to/to be/be used/vbn ./.
+This/dt statement/nn also/rb allows/vbz the/at naming/nn of/in the/at index/nn words/nns used/vbn by/in Aj/nn ./.
+Source/nn-hl program/nn-hl format/nn-hl 
+The/at basic/jj format/nn of/in the/at DIOCS/nn statement/nn is/bez as/cs follows/vbz :/: anylabel/np is/bez any/dti symbolic/jj label/nn ;/. ;/.
+it/pps may/md be/be omitted/vbn ./.
+The/at entry/nn DIOCS/nn must/md be/be written/vbn exactly/rb as/cs shown/vbn ./.
+
+
+	The/at first/od item/nn in/in the/at operand/nn ,/, IOCSIXF/nn ,/, is/bez used/vbn to/to specify/vb the/at first/od IOCS/nn index/nn word/nn for/in programs/nns using/vbg tape/nn files/nns ./.
+This/dt item/nn may/md be/be a/at symbolic/jj name/nn or/cc an/at actual/jj one-digit/nn or/cc two-digit/jj index/nn word/nn address/nn in/in the/at range/nn 3/cd -/in 94/cd ./.
+If/cs the/at first/od item/nn in/in the/at operand/nn is/bez omitted/vbn ,/, the/at symbolic/jj name/nn IOCSIXF/nn will/md be/be assigned/vbn ./.
+When/wrb an/at actual/jj index/nn word/nn or/cc a/at symbolic/jj address/nn is/bez specified/vbn ,/, Autocoder/np will/md equate/vb the/at name/nn IOCSIXF/nn to/in it/ppo ./.
+
+
+	The/at second/od item/nn in/in the/at operand/nn ,/, IOCSIXG/nn ,/, is/bez used/vbn to/to specify/vb the/at second/od IOCS/nn index/nn word/nn for/in programs/nns using/vbg tape/nn files/nns ./.
+This/dt item/nn may/md be/be a/at symbolic/jj name/nn or/cc an/at actual/jj one-digit/nn or/cc two-digit/jj index/nn word/nn address/nn in/in the/at range/nn 3/cd -/in 94/cd ./.
+If/cs the/at second/od item/nn in/in the/at operand/nn is/bez omitted/vbn ,/, the/at symbolic/jj name/nn IOCSIXG/nn will/md be/be assigned/vbn ./.
+When/wrb an/at actual/jj index/nn word/nn or/cc a/at symbolic/jj address/nn is/bez specified/vbn ,/, Autocoder/np will/md equate/vb IOCSIXG/nn to/in it/ppo ./.
+
