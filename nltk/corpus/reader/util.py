@@ -856,6 +856,7 @@ class ListCategorizedCorpus(CategorizedCorpus):
     """Corpora whose files are categorized by a list, e.g. reuters"""
 
     def __init__(self, file):
+        pass
         # for each line of the file: # for reuters, the file is cats.txt
         #     item, categories = line.split(' ', 1)
         #     for category in categories.split(' '):
