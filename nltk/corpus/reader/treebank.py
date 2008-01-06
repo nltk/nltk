@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Penn Treebank Reader
 #
-# Copyright (C) 2001-2007 University of Pennsylvania
+# Copyright (C) 2001-2008 University of Pennsylvania
 # Author: Steven Bird <sb@ldc.upenn.edu>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sf.net>
@@ -46,15 +46,15 @@ class TreebankCorpusReader(SyntaxCorpusReader):
             sent_tokenizer=RegexpTokenizer(self._CHUNK_SENT_RE, gaps=True),
             para_block_reader=tagged_treebank_para_block_reader)
 
-        # Make sure we have a consistent set of items:
-        if set(self._mrg_reader.items) != set(self._pos_reader.items):
-            raise ValueError('Items in "combined" and "tagged" '
+        # Make sure we have a consistent set of documents:
+        if set(self._mrg_reader.documents()) != set(self._pos_reader.documents()):
+            raise ValueError('Documents in "combined" and "tagged" '
                              'subdirectories do not match.')
-        for item in self._mrg_reader.items:
-            if not os.path.exists(os.path.join(root, 'raw', item)):
+        for document in self._mrg_reader.documents():
+            if not os.path.exists(os.path.join(root, 'raw', document)):
                 raise ValueError('File %r missing from "raw" subdirectory'
-                                 % item)
-        self._items = self._mrg_reader.items
+                                 % document)
+        self._documents = self._mrg_reader.documents()
 
     _CHUNK_SENT_RE = r'(?<=/\.)\s*(?![^\[]*\])'
     """Regexp that matches sentence boundaries in chunked ('.pos')
@@ -62,50 +62,44 @@ class TreebankCorpusReader(SyntaxCorpusReader):
        places a sentence bounary at the space after that token,
        *unless* the token is within a chunk."""
     
-    root = property(lambda self: self._root, doc="""
-        The directory where this corpus is stored..""")
-
-    items = property(lambda self: self._items, doc="""
-        A list of the documents in this corpus""")
-    
     # Delegate to one of our two sub-readers:
-    def words(self, items=None):
-        return self._pos_reader.words(items)
-    def sents(self, items=None):
-        return self._pos_reader.sents(items)
-    def paras(self, items=None):
-        return self._pos_reader.paras(items)
-    def tagged_words(self, items=None):
-        return self._pos_reader.tagged_words(items)
-    def tagged_sents(self, items=None):
-        return self._pos_reader.tagged_sents(items)
-    def tagged_paras(self, items=None):
-        return self._pos_reader.tagged_paras(items)
-    def chunked_words(self, items=None):
-        return self._pos_reader.chunked_words(items)
-    def chunked_sents(self, items=None):
-        return self._pos_reader.chunked_sents(items)
-    def chunked_paras(self, items=None):
-        return self._pos_reader.chunked_paras(items)
-    def parsed_sents(self, items=None):
-        return self._mrg_reader.parsed_sents(items)
+    def words(self, documents=None):
+        return self._pos_reader.words(documents)
+    def sents(self, documents=None):
+        return self._pos_reader.sents(documents)
+    def paras(self, documents=None):
+        return self._pos_reader.paras(documents)
+    def tagged_words(self, documents=None):
+        return self._pos_reader.tagged_words(documents)
+    def tagged_sents(self, documents=None):
+        return self._pos_reader.tagged_sents(documents)
+    def tagged_paras(self, documents=None):
+        return self._pos_reader.tagged_paras(documents)
+    def chunked_words(self, documents=None):
+        return self._pos_reader.chunked_words(documents)
+    def chunked_sents(self, documents=None):
+        return self._pos_reader.chunked_sents(documents)
+    def chunked_paras(self, documents=None):
+        return self._pos_reader.chunked_paras(documents)
+    def parsed_sents(self, documents=None):
+        return self._mrg_reader.parsed_sents(documents)
 
     # Read in the text file, and strip the .START prefix.
-    def text(self, items=None):
-        if items is None: items = self.items
-        if isinstance(items, basestring): items = [items]
-        filenames = [os.path.join(self._root, 'raw', item) for item in items]
+    def text(self, documents=None):
+        if documents is None: documents = self.documents()
+        if isinstance(documents, basestring): documents = [documents]
+        filenames = [os.path.join(self._root, 'raw', document) for document in documents]
         return concat([re.sub(r'\A\s*\.START\s*', '', open(filename).read())
                        for filename in filenames])
 
     #{ Deprecated since 0.8
     @deprecated("Use .raw() or .sents() or .tagged_sents() or "
                 ".parsed_sents() instead.")
-    def read(self, items=None, format='parsed'):
-        if format == 'parsed': return self.parsed_sents(items)
-        if format == 'raw': return self.raw(items)
-        if format == 'tokenized': return self.sents(items)
-        if format == 'tagged': return self.tagged_sents(items)
+    def read(self, documents=None, format='parsed'):
+        if format == 'parsed': return self.parsed_sents(documents)
+        if format == 'raw': return self.raw(documents)
+        if format == 'tokenized': return self.sents(documents)
+        if format == 'tagged': return self.tagged_sents(documents)
         if format == 'parsed_no_pos': raise ValueError('no longer supported')
         raise ValueError('bad format %r' % format)
     @deprecated("Use .parsed_sents() instead.")
@@ -118,7 +112,7 @@ class TreebankCorpusReader(SyntaxCorpusReader):
     def tagged(self, items=None):
         return self.tagged_sents(items)
     @deprecated("Operation no longer supported -- use .parsed_sents().")
-    def parsed_no_pos(self, items=None):
+    def parsed_no_pos(self, itemns=None):
         raise ValueError('format "parsed_no_pos" no longer supported')
     #}
     

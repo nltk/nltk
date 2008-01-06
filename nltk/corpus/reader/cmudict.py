@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Genesis Corpus Reader
 #
-# Copyright (C) 2001-2007 University of Pennsylvania
+# Copyright (C) 2001-2008 University of Pennsylvania
 # Author: Steven Bird <sb@ldc.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
@@ -51,38 +51,38 @@ import os
 from nltk.utilities import deprecated
 
 class CMUDictCorpusReader(CorpusReader):
-    def __init__(self, root, items, extension=''):
-        if isinstance(items, basestring):
-            items = find_corpus_items(root, items, extension)
+    def __init__(self, root, documents, extension=''):
+        if isinstance(documents, basestring):
+            documents = find_corpus_items(root, documents, extension)
         self._root = root
-        self.items = tuple(items)
+        self._documents = tuple(documents)
         self._extension = extension
 
-    def entries(self, items=None):
+    def entries(self, documents=None):
         """
         @return: the given cmudict lexicon as a list of entries
         containing (word, identifier, transcription) tuples.
         """
         return concat([StreamBackedCorpusView(filename, read_cmudict_block)
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
 
-    def raw(self, items=None):
+    def raw(self, documents=None):
         return concat([open(filename).read()
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
 
-    def words(self, item='cmudict'):
+    def words(self, documents='cmudict'):
         """
         @return: a list of all words defined in the given cmudict lexicon.
         """
         return [word for (word, num, transcription) in self.entries(item)]
 
-    def transcriptions(self, items=None):
+    def transcriptions(self, documents=None):
         """
         @return: the given cmudict lexicon as a dictionary, whose keys
         are upper case words and whose values are lists of
         pronunciation entries.
         """
-        lexicon = self.entries(items)
+        lexicon = self.entries(documents)
         d = {}
         for word, num, transcription in lexicon:
             if num == 1:
@@ -91,13 +91,6 @@ class CMUDictCorpusReader(CorpusReader):
                 d[word] += (transcription,)
         return d
         
-    def _item_filenames(self, items):
-        if items is None: items = self.items
-        if isinstance(items, basestring): items = [items]
-        return [os.path.join(self._root, '%s%s' % (item, self._extension))
-                for item in items]
-
-
     #{ Deprecated since 0.8
     @deprecated("Use .entries() or .transcriptions() instead.")
     def read(self, items='cmudict', format='listed'):
