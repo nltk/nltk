@@ -11,7 +11,7 @@ means of a "corpus reader" object from `nltk.corpus`:
     >>> import nltk.corpus
     >>> # The Brown corpus:
     >>> print nltk.corpus.brown # doctest: +ELLIPSIS
-    <TaggedCorpusReader in '.../corpora/brown'>
+    <LocationCategorizedTaggedCorpusReader in '.../corpora/brown'>
     >>> # The Penn Treebank Corpus:
     >>> print nltk.corpus.treebank # doctest: +ELLIPSIS
     <TreebankCorpusReader in '.../corpora/treebank'>
@@ -102,12 +102,12 @@ than just bare word strings.
     >>> print brown.tagged_sents() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [[('The', 'AT'), ('Fulton', 'NP-TL')...],
      [('The', 'AT'), ('jury', 'NN'), ('further', 'RBR')...]...]
-    >>> print brown.paras('c') # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print brown.paras(categories='c') # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [[['It', 'is', 'not', 'news', 'that', 'Nathan', 'Milstein'...],
       ['Certainly', 'not', 'in', 'Orchestra', 'Hall', 'where'...]],
      [['There', 'was', 'about', 'that', 'song', 'something', ...],
       ['Not', 'the', 'noblest', 'performance', 'we', 'have', ...], ...], ...]
-    >>> print brown.tagged_paras('c') # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print brown.tagged_paras(categories='c') # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [[[('It', 'PPS'), ('is', 'BEZ'), ('not', '*'), ...],
       [('Certainly', 'RB'), ('not', '*'), ('in', 'IN'), ...]],
      [[('There', 'EX'), ('was', 'BEDZ'), ('about', 'IN'), ...],
@@ -757,8 +757,10 @@ By default, they apply to all items in the corpus.
 The Brown Corpus uses the tagged corpus reader:
 
     >>> from nltk.corpus import brown
-    >>> brown.items # doctest: +ELLIPSIS
-    ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', ..., 'r')
+    >>> brown.documents() # doctest: +ELLIPSIS
+    ('ca01', 'ca02', 'ca03', 'ca04', 'ca05', 'ca06', 'ca07', ...)
+    >>> brown.categories() # doctest: +ELLIPSIS
+    ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r']
     >>> brown.root # doctest: +ELLIPSIS
     '...brown'
     >>> brown.words()

@@ -145,7 +145,7 @@ class TimitCorpusReader(CorpusReader):
         """
         self._speakerinfo = None
         self._root = root
-        self.items = tuple(find_corpus_items(root, '\w+-\w+/\w+', '.wav'))
+        self._documents = tuple(find_corpus_items(root, '\w+-\w+/\w+', '.wav'))
         self.speakers = tuple(sorted(set(item.split('/')[0]
                                          for item in self.items)))
 

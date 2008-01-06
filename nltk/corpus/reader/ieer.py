@@ -1,6 +1,6 @@
 # Natural Language Toolkit: IEER Corpus Reader
 #
-# Copyright (C) 2001-2007 University of Pennsylvania
+# Copyright (C) 2001-2008 University of Pennsylvania
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sf.net>
@@ -39,7 +39,7 @@ titles = {
     }
 
 #: A list of all documents in this corpus.
-items = sorted(titles)
+documents = sorted(titles)
 
 class IEERDocument:
     def __init__(self, text, docno=None, doctype=None,
@@ -63,36 +63,30 @@ class IEERDocument:
 class IEERCorpusReader(CorpusReader):
     """
     """
-    def __init__(self, root, items, extension=''):
+    def __init__(self, root, documents, extension=''):
         """
         @param root: The root directory for this corpus.
-        @param items: A list of items in this corpus.
-        @param extension: File extension for items in this corpus.
+        @param documents: A list of documents in this corpus.
+        @param extension: File extension for documents in this corpus.
         """
-        if isinstance(items, basestring):
-            items = find_corpus_items(root, items, extension)
+        if isinstance(documents, basestring):
+            documents = find_corpus_items(root, documents, extension)
         self._root = root
-        self.items = tuple(items)
+        self._documents = tuple(documents)
         self._extension = extension
         
-    def raw(self, items=None):
+    def raw(self, documents=None):
         return concat([open(filename).read()
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
     
-    def docs(self, items=None):
+    def docs(self, documents=None):
         return concat([StreamBackedCorpusView(filename, self._read_block)
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
     
-    def parsed_docs(self, items=None):
+    def parsed_docs(self, documents=None):
         return concat([StreamBackedCorpusView(filename, self._read_parsed_block)
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
 
-    def _item_filenames(self, items):
-        if items is None: items = self.items
-        if isinstance(items, basestring): items = [items]
-        return [os.path.join(self._root, '%s%s' % (item, self._extension))
-                for item in items]
-    
     def _read_parsed_block(self,stream):
         # TODO: figure out while empty documents are being returned
         return [self._parse(doc) for doc in self._read_block(stream) if self._parse(doc).docno is not None]

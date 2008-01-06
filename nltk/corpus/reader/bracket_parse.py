@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Penn Treebank Reader
 #
-# Copyright (C) 2001-2007 University of Pennsylvania
+# Copyright (C) 2001-2008 University of Pennsylvania
 # Author: Steven Bird <sb@ldc.upenn.edu>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sf.net>
@@ -25,12 +25,12 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
     Reader for corpora that consist of parenthesis-delineated parse
     trees.
     """
-    def __init__(self, root, items, extension='', comment_char=None,
+    def __init__(self, root, documents, extension='', comment_char=None,
                  detect_blocks='unindented_paren'):
         """
         @param root: The root directory for this corpus.
-        @param items: A list of items in this corpus.
-        @param extension: File extension for items in this corpus.
+        @param documents: A list of documents in this corpus.
+        @param extension: File extension for documents in this corpus.
         @param comment: The character which can appear at the start of a line to
           indicate that the rest of the line is a comment.
         @param detect_blocks: The method that is used to find blocks
@@ -38,10 +38,10 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
           parenthesis starts a new parse) or 'sexpr' (brackets are
           matched).
         """
-        if isinstance(items, basestring):
-            items = find_corpus_items(root, items, extension)
+        if isinstance(documents, basestring):
+            documents = find_corpus_items(root, documents, extension)
         self._root = root
-        self.items = tuple(items)
+        self._documents = tuple(documents)
         self._extension = extension
         self._comment_char = comment_char
         self._detect_blocks = detect_blocks
