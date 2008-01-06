@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Corpus Reader Utilities
 #
-# Copyright (C) 2001-2007 University of Pennsylvania
+# Copyright (C) 2001-2008 University of Pennsylvania
 # Author: Steven Bird <sb@ldc.upenn.edu>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sf.net>
@@ -725,36 +725,30 @@ class SyntaxCorpusReader(CorpusReader):
       - L{_read_block}, which reads a block from the input stream.
     """
 
-    def raw(self, items=None):
+    def raw(self, documents=None):
         return concat([open(filename).read()
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
 
-    def parsed_sents(self, items=None):
+    def parsed_sents(self, documents=None):
         return concat([StreamBackedCorpusView(filename, self._read_parsed_sent_block)
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
 
-    def tagged_sents(self, items=None):
+    def tagged_sents(self, documents=None):
         return concat([StreamBackedCorpusView(filename, self._read_tagged_sent_block)
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
 
-    def sents(self, items=None):
+    def sents(self, documents=None):
         return concat([StreamBackedCorpusView(filename, self._read_sent_block)
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
 
-    def tagged_words(self, items=None):
+    def tagged_words(self, documents=None):
         return concat([StreamBackedCorpusView(filename, self._read_tagged_word_block)
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
 
-    def words(self, items=None):
+    def words(self, documents=None):
         return concat([StreamBackedCorpusView(filename, self._read_word_block)
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
 
-    def _item_filenames(self, items):
-        if items is None: items = self.items
-        if isinstance(items, basestring): items = [items]
-        return [os.path.join(self._root, '%s%s' % (item, self._extension))
-                for item in items]
-        
 # block readers
 
     def _read_word_block(self, stream):
@@ -807,57 +801,3 @@ def _path_from(parent, child):
         assert os.path.split(child)[0] != child
     return path
 
-######################################################################
-#{ Corpora containing categorized items
-######################################################################
-
-class CategorizedCorpus(object):
-    """Parent class for categorized corpora, allowing us to map between
-    corpus categories and corpus items (two-way dict).  Derived classes use idiosyncratic
-    methods to define the defaultdicts used by this class."""
-    
-    def categories(self, item=None):
-        """List the categories defined for the corpus, or for the item if it is given."""
-        if item:
-            return self._item_to_categories[item]
-        else:
-            return self._category_to_items.keys()
-    
-    def items(self, category=None):
-        """List the items defined in the corpus, or the items in the given category."""
-        if category:
-            return self._category_to_items[category]
-        else:
-            return self._item_to_categories.keys()
-
-    def _add(self, item, category):
-        """Add the item of the given category to the dictionaries."""
-        if not self._item_to_categories:
-            self._item_to_categories = nltk.defaultdict(set)
-        if not self._category_to_items:
-            self._category_to_items = nltk.defaultdict(set)
-        self._item_to_categories[item].add(category)
-        self._category_to_items[category].add(item)
-
-class DirectoryCategorizedCorpus(CategorizedCorpus):
-    """Corpora whose files are categorized by directory, e.g. movie_reviews"""
-    # just an instance of FilenameCategorizedCorpus using pattern = "(.*)/.*" ? 
-
-class FilenameCategorizedCorpus(CategorizedCorpus):
-    """Corpora whose files are categorized by filename pattern, e.g. brown"""
-
-    def __init__(self, pattern):
-        """pattern is applied to each filename and its matching segment is the category"""
-        # for each item in the corpus:
-        #     category = re.match(pattern, item).group(1)     # for brown: pattern = "c(\a)\d\d", e.g. ca01 -> a
-        #     self._add(item, category)     
-        
-class ListCategorizedCorpus(CategorizedCorpus):
-    """Corpora whose files are categorized by a list, e.g. reuters"""
-
-    def __init__(self, file):
-        pass
-        # for each line of the file: # for reuters, the file is cats.txt
-        #     item, categories = line.split(' ', 1)
-        #     for category in categories.split(' '):
-        #         self._add(item, category)

@@ -24,33 +24,27 @@ from api import *
 import os
 
 class StringCategoryCorpusReader(CorpusReader):
-    def __init__(self, root, items, extension='', delimiter=' '):
+    def __init__(self, root, documents, extension='', delimiter=' '):
         """
         @param root: The root directory for this corpus.
-        @param items: A list of items in this corpus.
-        @param extension: File extension for items in this corpus.
+        @param documents: A list of documents in this corpus.
+        @param extension: File extension for documents in this corpus.
         @param delimiter: Field delimiter
         """
-        if isinstance(items, basestring):
-            items = find_corpus_items(root, items, extension)
+        if isinstance(documents, basestring):
+            documents = find_corpus_items(root, documents, extension)
         self._root = root
-        self.items = tuple(items)
+        self._documents = tuple(documents)
         self._extension = extension
         self._delimiter = delimiter
 
-    def tuples(self, items):
+    def tuples(self, documents):
         return concat([StreamBackedCorpusView(filename, self._read_tuple_block)
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
 
-    def raw(self, items):
+    def raw(self, documents):
         return concat([open(filename).read()
-                       for filename in self._item_filenames(items)])
-
-    def _item_filenames(self, items):
-        if items is None: items = self.items
-        if isinstance(items, basestring): items = [items]
-        return [os.path.join(self._root, '%s%s' % (item, self._extension))
-                for item in items]
+                       for filename in self.filenames(documents)])
 
     def _read_tuple_block(self, stream):
         line = stream.readline().strip()

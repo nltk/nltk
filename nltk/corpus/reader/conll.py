@@ -1,6 +1,6 @@
 # Natural Language Toolkit: CONLL Corpus Reader
 #
-# Copyright (C) 2001-2007 University of Pennsylvania
+# Copyright (C) 2001-2008 University of Pennsylvania
 # Author: Steven Bird <sb@ldc.upenn.edu>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sf.net>
@@ -17,55 +17,49 @@ import os
 from nltk.utilities import deprecated
 
 class ConllChunkCorpusReader(CorpusReader):
-    def __init__(self, root, items, extension, chunk_types):
-        if isinstance(items, basestring):
-            items = find_corpus_items(root, items, extension)
+    def __init__(self, root, documents, extension, chunk_types):
+        if isinstance(documents, basestring):
+            documents = find_corpus_items(root, documents, extension)
         self._root = root
-        self.items = tuple(items)
+        self._documents = tuple(documents)
         self._extension = extension
         self.chunk_types = tuple(chunk_types)
 
     # Add method for list of tuples
     # add method for list of list of tuples
 
-    def raw(self, items=None):
+    def raw(self, documents=None):
         return concat([open(filename).read()
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
 
-    def words(self, items=None):
+    def words(self, documents=None):
         return concat([ConllChunkCorpusView(filename, False, False, False)
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
 
-    def sents(self, items=None):
+    def sents(self, documents=None):
         return concat([ConllChunkCorpusView(filename, False, True, False)
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
 
-    def tagged_words(self, items=None):
+    def tagged_words(self, documents=None):
         return concat([ConllChunkCorpusView(filename, True, False, False)
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
 
-    def tagged_sents(self, items=None):
+    def tagged_sents(self, documents=None):
         return concat([ConllChunkCorpusView(filename, True, True, False)
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
 
-    def chunked_words(self, items=None, chunk_types=None):
+    def chunked_words(self, documents=None, chunk_types=None):
         if chunk_types is None: chunk_types = self.chunk_types
         return concat([ConllChunkCorpusView(filename, True, False, True,
                                             chunk_types)
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
 
-    def chunked_sents(self, items=None, chunk_types=None):
+    def chunked_sents(self, documents=None, chunk_types=None):
         if chunk_types is None: chunk_types = self.chunk_types
         return concat([ConllChunkCorpusView(filename, True, True, True,
                                             chunk_types)
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
 
-    def _item_filenames(self, items):
-        if items is None: items = self.items
-        if isinstance(items, basestring): items = [items]
-        return [os.path.join(self._root, '%s%s' % (item, self._extension))
-                for item in items]
-    
     #{ Deprecated since 0.8
     @deprecated("Use .raw() or .words() or .tagged_words() or "
                 ".chunked_sents() instead.")

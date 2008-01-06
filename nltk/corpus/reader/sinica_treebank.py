@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Sinica Treebank Reader
 #
-# Copyright (C) 2001-2007 University of Pennsylvania
+# Copyright (C) 2001-2008 University of Pennsylvania
 # Author: Steven Bird <sb@ldc.upenn.edu>
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
@@ -45,7 +45,7 @@ import os, re
 from nltk.utilities import deprecated
 
 #: A list of all documents in this corpus.
-items = ['parsed', 'tagged', 'tokenized', 'raw']
+documents = ['parsed', 'tagged', 'tokenized', 'raw']
 
 IDENTIFIER = re.compile(r'^#\S+\s')
 APPENDIX = re.compile(r'(?<=\))#.*$')
@@ -59,16 +59,16 @@ class SinicaTreebankCorpusReader(SyntaxCorpusReader):
     L{TreebankCorpusReader}, which combines this reader with readers
     for the other formats available in the treebank.
     """
-    def __init__(self, root, items, extension=''):
+    def __init__(self, root, documents, extension=''):
         """
         @param root: The root directory for this corpus.
-        @param items: A list of items in this corpus.
-        @param extension: File extension for items in this corpus.
+        @param documents: A list of documents in this corpus.
+        @param extension: File extension for documents in this corpus.
         """
-        if isinstance(items, basestring):
-            items = find_corpus_items(root, items, extension)
+        if isinstance(documents, basestring):
+            documents = find_corpus_items(root, documents, extension)
         self._root = root
-        self.items = tuple(items)
+        self._documents = tuple(documents)
         self._extension = extension
 
     def _read_block(self, stream):

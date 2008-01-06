@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Senseval 2 Corpus Reader
 #
-# Copyright (C) 2001-2007 University of Pennsylvania
+# Copyright (C) 2001-2008 University of Pennsylvania
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 #         Steven Bird <sb@csse.unimelb.edu.au> (modifications)
 # URL: <http://nltk.sf.net>
@@ -31,7 +31,7 @@ from nltk.etree import ElementTree
 from nltk.utilities import deprecated
 
 #: A list of all documents in this corpus.
-items = sorted(["hard", "interest", "line", "serve"])
+documents = sorted(["hard", "interest", "line", "serve"])
 
 class SensevalInstance(object):
     def __init__(self, word, position, context, senses):
@@ -45,28 +45,22 @@ class SensevalInstance(object):
                 (self.word, self.position, self.context, self.senses))
 
 class SensevalCorpusReader(CorpusReader):
-    def __init__(self, root, items, extension='.xml'):
+    def __init__(self, root, documents, extension='.xml'):
         """
         @param root: The root directory for this corpus.
-        @param items: A list of items in this corpus.
-        @param extension: File extension for items in this corpus.
+        @param documents: A list of documents in this corpus.
+        @param extension: File extension for documents in this corpus.
         """
-        if isinstance(items, basestring):
-            items = find_corpus_items(root, items, extension)
+        if isinstance(documents, basestring):
+            documents = find_corpus_items(root, documents, extension)
         self._root = root
-        self.items = tuple(items)
+        self._documents = tuple(documents)
         self._extension = extension
 
-    def instances(self, items=None):
+    def instances(self, documents=None):
         return concat([SensevalCorpusView(filename)
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
 
-    def _item_filenames(self, items):
-        if items is None: items = self.items
-        if isinstance(items, basestring): items = [items]
-        return [os.path.join(self._root, '%s%s' % (item, self._extension))
-                for item in items]
-    
     def _entry(self, tree):
         elts = []
         for lexelt in tree.findall('lexelt'):

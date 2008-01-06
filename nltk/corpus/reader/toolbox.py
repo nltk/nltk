@@ -2,7 +2,7 @@
 
 # Natural Language Toolkit: Toolbox Reader
 #
-# Copyright (C) 2001-2007 University of Pennsylvania
+# Copyright (C) 2001-2008 University of Pennsylvania
 # Author: Greg Aumann <greg_aumann@sil.org>
 #         Stuart Robinson <Stuart.Robinson@mpi.nl>
 #         Steven Bird <sb@csse.unimelb.edu.au>
@@ -21,38 +21,32 @@ from nltk.etree.ElementTree import TreeBuilder, Element
 from nltk.utilities import deprecated
 
 class ToolboxCorpusReader(CorpusReader):
-    def __init__(self, root, items, extension=''):
+    def __init__(self, root, documents, extension=''):
         """
         @param root: The root directory for this corpus.
-        @param items: A list of items in this corpus.
-        @param extension: File extension for items in this corpus.
+        @param documents: A list of documents in this corpus.
+        @param extension: File extension for documents in this corpus.
         """
-        if isinstance(items, basestring):
-            items = find_corpus_items(root, items, extension)
+        if isinstance(documents, basestring):
+            documents = find_corpus_items(root, documents, extension)
         self._root = root
-        self.items = tuple(items)
+        self._documents = tuple(documents)
         self._extension = extension
 
-    def xml(self, items, key=None):
+    def xml(self, documents, key=None):
         return concat([ToolboxData(filename).parse(key)
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
 
-    def fields(self, items, strip=True, unwrap=True, encoding=None,
+    def fields(self, documents, strip=True, unwrap=True, encoding=None,
                errors='strict', unicode_fields=None):
         return concat([list(ToolboxData(filename).fields(strip, unwrap,
                                                          encoding, errors,
                                                          unicode_fields))
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
 
-    def raw(self, items):
+    def raw(self, documents):
         return concat([open(filename).read()
-                       for filename in self._item_filenames(items)])
-
-    def _item_filenames(self, items):
-        if items is None: items = self.items
-        if isinstance(items, basestring): items = [items]
-        return [os.path.join(self._root, '%s%s' % (item, self._extension))
-                for item in items]
+                       for filename in self.filenames(documents)])
 
     #{ Deprecated since 0.8
     @deprecated("Use .xml() instead.")

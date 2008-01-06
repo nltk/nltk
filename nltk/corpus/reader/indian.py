@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Indian Language POS-Tagged Corpus Reader
 #
-# Copyright (C) 2001-2007 University of Pennsylvania
+# Copyright (C) 2001-2008 University of Pennsylvania
 # Author: Steven Bird <sb@ldc.upenn.edu>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 # URL: <http://nltk.sf.net>
@@ -29,43 +29,37 @@ class IndianCorpusReader(CorpusReader):
     """
     List of words, one per line.  Blank lines are ignored.
     """
-    def __init__(self, root, items, extension=''):
+    def __init__(self, root, documents, extension=''):
         """
         @param root: The root directory for this corpus.
-        @param items: A list of items in this corpus.
-        @param extension: File extension for items in this corpus.
+        @param documents: A list of documents in this corpus.
+        @param extension: File extension for documents in this corpus.
         """
-        if isinstance(items, basestring):
-            items = find_corpus_items(root, items, extension)
+        if isinstance(documents, basestring):
+            documents = find_corpus_items(root, documents, extension)
         self._root = root
-        self.items = tuple(items)
+        self._documents = tuple(documents)
         self._extension = extension
 
-    def words(self, items=None):
+    def words(self, documents=None):
         return concat([IndianCorpusView(filename, False, False)
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
 
-    def tagged_words(self, items=None):
+    def tagged_words(self, documents=None):
         return concat([IndianCorpusView(filename, True, False)
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
 
-    def sents(self, items=None):
+    def sents(self, documents=None):
         return concat([IndianCorpusView(filename, False, True)
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
 
-    def tagged_sents(self, items=None):
+    def tagged_sents(self, documents=None):
         return concat([IndianCorpusView(filename, True, True)
-                       for filename in self._item_filenames(items)])
+                       for filename in self.filenames(documents)])
 
-    def raw(self, items=None):
+    def raw(self, documents=None):
         return concat([open(filename).read()
-                       for filename in self._item_filenames(items)])
-
-    def _item_filenames(self, items):
-        if items is None: items = self.items
-        if isinstance(items, basestring): items = [items]
-        return [os.path.join(self._root, '%s%s' % (item, self._extension))
-                for item in items]
+                       for filename in self.filenames(documents)])
 
     #{ Deprecated since 0.8
     @deprecated("Use .raw() or .words() or .tagged_words() instead.")
