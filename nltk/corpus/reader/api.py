@@ -53,7 +53,7 @@ class CorpusReader(object):
         assert not(documents and categories), "Must not specify both documents and categories"
         if categories:
             if isinstance(categories, basestring): categories = [categories]
-            return list(reduce(set.union, [self.filenames(documents=self.documents(category)) for category in categories]))
+            return sorted(reduce(set.union, [set(self.filenames(documents=self.documents(category))) for category in categories]))
         if documents is None: documents = self.documents()
         if isinstance(documents, basestring): documents = [documents]            
         return [os.path.join(self._root, '%s%s' % (document, self._extension)) for document in documents]        
@@ -76,7 +76,7 @@ class CategorizedCorpus(object):
         """List the categories defined for the corpus, or for the document if it is given."""
         if documents:
             if isinstance(documents, basestring): documents = [documents]
-            return sorted(reduce(set.union, [self._d2c[document] for document in documents]))
+            return sorted(reduce(set.union, [set(self._d2c[document]) for document in documents]))
         else:
             try:
                 return self._categories
@@ -88,7 +88,7 @@ class CategorizedCorpus(object):
         """List the documents of the corpus, or the documents of the given category."""
         if categories:
             if isinstance(categories, basestring): categories = [categories]
-            return sorted(reduce(set.union, [self._c2d[category] for category in categories]))
+            return sorted(reduce(set.union, [set(self._c2d[category]) for category in categories]))
         else:
             return self._documents
 
