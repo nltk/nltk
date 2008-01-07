@@ -171,7 +171,7 @@ class StreamBackedCorpusView(AbstractCorpusView):
 
     The constructor to C{StreamBackedCorpusView} takes two arguments:
     a corpus filename; and a block reader.  A X{block reader} is a
-    function that reads and reads zero or more tokens from a stream,
+    function that reads zero or more tokens from a stream,
     and returns them as a list.  A very simple example of a block
     reader is:
 
@@ -187,7 +187,7 @@ class StreamBackedCorpusView(AbstractCorpusView):
     blocks handled by the block reader.  Smaller block sizes will
     increase the memory requirements of the corpus view's internal
     data structures (by 2 integers per block).  On the other hand,
-    larger block sizes may decrase performance for random access to
+    larger block sizes may decrease performance for random access to
     the corpus.  (But note that larger block sizes will I{not}
     decrease performance for iteration.)
     
@@ -220,23 +220,22 @@ class StreamBackedCorpusView(AbstractCorpusView):
         closed, the file object will be automatically re-opened.
         
     @warning: If the contents of the file are modified during the
-        lifetime of the C{CorpusView}, then the C{CorpusView}'s beahvior
+        lifetime of the C{CorpusView}, then the C{CorpusView}'s behavior
         is undefined.
 
     @ivar _block_reader: The function used to read 
         a single block from the underlying file stream.
     @ivar _toknum: A list containing the token index of each block
-        that has been process.  In particular, C{_toknum[i]} is the
+        that has been processed.  In particular, C{_toknum[i]} is the
         token index of the first token in block C{i}.  Together
         with L{_filepos}, this forms a partial mapping between token
         indices and file positions.
     @ivar _filepos: A list containing the file position of each block
-        that has been process.  In particular, C{_toknum[i]} is the
+        that has been processed.  In particular, C{_toknum[i]} is the
         file position of the first character in block C{i}.  Together
         with L{_toknum}, this forms a partial mapping between token
         indices and file positions.
-    @ivar _stream: The stream used to access the underlying corpus
-        file.
+    @ivar _stream: The stream used to access the underlying corpus file.
     @ivar _len: The total number of tokens in the corpus, if known;
         or C{None}, if the number of tokens is not yet known.
     @ivar _eofpos: The character position of the last character in the
@@ -333,7 +332,7 @@ class StreamBackedCorpusView(AbstractCorpusView):
     # do some locking.
     def iterate_from(self, start_tok):
         # Decide where in the file we should start.  If `start` is in
-        # our mapping, then we can jump streight to the correct block;
+        # our mapping, then we can jump straight to the correct block;
         # otherwise, start at the last block we've processed.
         if start_tok < self._toknum[-1]:
             i = bisect.bisect_right(self._toknum, start_tok)-1

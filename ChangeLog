@@ -1,15 +1,16 @@
 
-Version 0.9.1 2008-01-03
+Version 0.9.1 2008-01-07
 
 NLTK:
-- RTE corpus reader
-- Movie reviews corpus reader
+- new interface for text categorization corpora
+- new corpus readers: RTE, Movie Reviews, Question Classification, Brown Corpus
 
 Data:
 - Question classification data, included with permission of Li & Roth
 - Reuters 21578 Corpus, ApteMod version, from CPAN
-- Movie reviews corpus (sentiment polarity), included with permission of Lillian Lee
-- RTE corpus
+- Movie Reviews corpus (sentiment polarity), included with permission of Lillian Lee
+- Corpus for Recognising Textual Entailment (RTE) Challenges 1, 2 and 3
+- Brown Corpus (reverted to original file structure: ca01-cr09)
 
 Contrib:
 - theorem_prover: Prover9, tableau, docs (Dan Garrette, Ewan Klein)
@@ -20,6 +21,7 @@ Contrib:
 	
 Book:
 - many improvements in early chapters in response to reader feedback
+- updates for revised corpus readers
 - moved unicode section to chapter 3
 - work on engineering.txt (not included in 0.9.1)
 
