@@ -43,6 +43,8 @@ class CorpusReader(object):
 
     def filenames(self, documents=None, categories=None):
         """
+        The filenames for the specified documents, including full path.
+
         @param documents: The individual documents
         @type documents: C{str} or C{list}
         @param categories: The categories of documents
@@ -54,9 +56,10 @@ class CorpusReader(object):
         if categories:
             if isinstance(categories, basestring): categories = [categories]
             return sorted(reduce(set.union, [set(self.filenames(documents=self.documents(category))) for category in categories]))
-        if documents is None: documents = self.documents()
-        if isinstance(documents, basestring): documents = [documents]            
-        return [os.path.join(self._root, '%s%s' % (document, self._extension)) for document in documents]        
+        else:
+            if documents is None: documents = self.documents()
+            if isinstance(documents, basestring): documents = [documents]            
+            return [os.path.join(self._root, '%s%s' % (document, self._extension)) for document in documents]        
 
 
 ######################################################################
