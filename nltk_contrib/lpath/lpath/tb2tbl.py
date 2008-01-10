@@ -1,13 +1,13 @@
 import sys
 import os
 import codecs
+import socket
+import re
 
 from optparse import OptionParser
 import platform
-import pwd
 from nltk_contrib.lpath.at_lite.table import TableModel
 from nltk_contrib.lpath.at_lite.tree import TreeModel
-import re
 
 def tb2tbl(tree,a,b):
     #conn.begin()
@@ -82,7 +82,7 @@ if platform.system() == 'Windows':
         return s
 else:
     # os.getlogin() seems to have some bug
-    default_user = pwd.getpwuid(os.getuid())[0]
+    default_user = os.path.basename(os.path.expanduser("~"))
     def getpass():
         import termios
         tty = file('/dev/tty')
@@ -114,7 +114,7 @@ optpar.add_option("-f", "--file-filter", dest="filter",
                   help="use REGEX to filter treebank file names. "
                   "Ignored if treebank data is given from standard input",
                   metavar="REGEX")
-optpar.add_option("-H", "--host", dest="host", default=os.uname()[1],
+optpar.add_option("-H", "--host", dest="host", default=socket.gethostname(),
                   help="LPath database is hosted by HOST",
                   metavar="HOST")
 optpar.add_option("-n", "--num-trees", dest="numtree", default=0,
