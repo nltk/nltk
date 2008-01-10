@@ -14,7 +14,7 @@ except ImportError:
 from lpathtree_qt import *
 
 
-__all__ = ["LPathDB", "LPathDbI", "LPathOracleDB", "LPathMySQLDB"]
+__all__ = ["LPathDB", "LPathDbI", "LPathPgSqlDB", "LPathOracleDB", "LPathMySQLDB"]
 
 class Prefetcher(QThread):
     def __init__(self, conn, indexSql, tableName, maxQueue=25, callback=None):
@@ -51,7 +51,7 @@ class Prefetcher(QThread):
             if len(self.queue) >= self.maxQueue:
                 time.sleep(1)
                 continue
-            sql = self.sqlTemplate % row
+            sql = self.sqlTemplate % tuple(row)
             queryCursor.execute(sql.encode('utf-8'))
             tab = queryCursor.fetchall()
             self.lock.lock()
@@ -217,6 +217,19 @@ class LPathDB(LPathDbI):
         
     def getNumTreesInMem(self):
         return self.prefetcher.getNumTrees()
+
+class LPathPgSqlDB(LPathDB):
+    def __init__(self, conn, conn2, user):
+        LPathDB.__init__(self, conn, conn2)
+        self.user = user
+
+    def listTables(self):
+        cur = self.conn.cursor()
+        cur.execute("select tablename from pg_tables where tableowner=%s",
+                    (self.user,))
+        L = [x[0] for x in cur.fetchall()]
+        cur.close()
+        return L
     
 class LPathOracleDB(LPathDB):
     def __init__(self, conn, conn2, user):

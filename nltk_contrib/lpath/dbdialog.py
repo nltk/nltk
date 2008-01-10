@@ -65,7 +65,8 @@ class PgsqlPanel(QWidget, ConnectionPanelI):
             del conninfo['password']
         try:
             conn = PgSQL.connect(**conninfo)
-            return LPathDB(conn)
+            conn2 = PgSQL.connect(**conninfo)
+            return LPathPgSqlDB(conn, conn2, conninfo["user"].ascii())
         except PgSQL.libpq.DatabaseError, e:
             try:
                 enc = os.environ['LANG'].split('.')[-1]
