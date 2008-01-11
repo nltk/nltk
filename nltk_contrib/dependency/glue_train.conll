@@ -1,0 +1,53 @@
+1	John	_	pn	_	_	2	subj	_	_
+2	runs	_	iv	_	_	0	ROOT	_	_
+
+1	John	_	pn	_	_	2	subj	_	_
+2	sees	_	tv	_	_	0	ROOT	_	_
+3	Mary	_	pn	_	_	2	obj	_	_
+
+1	every	_	univ_quant	_	_	2	spec	_	_
+2	girl	_	n	_	_	3	subj	_	_
+3	chases	_	tv	_	_	0	ROOT	_	_
+4	a	_	ex_quant	_	_	5	spec	_	_
+5	dog	_	n	_	_	3	obj	_	_
+
+1	John	_	pn	_	_	2	subj	_	_
+2	believes	_	tv_comp	_	_	0	ROOT	_	_
+3	Mary	_	pn	_	_	4	subj	_	_
+4	walks	_	iv	_	_	2	comp	_	_
+
+1	John	_	pn	_	_	2	subj	_	_
+2	gives	_	dtv	_	_	0	ROOT	_	_
+3	David	_	pn	_	_	2	obj	_	_
+4	a	_	ex_quant	_	_	5	spec	_	_
+5	sandwich	_	n	_	_	2	theme	_	_
+
+1	John	_	pn	_	_	2	subj	_	_
+2	tries	_	equi	_	_	0	ROOT	_	_
+3	to	_	inf	_	_	4	inf	_	_
+4	speak	_	iv	_	_	2	xcomp	_	_
+
+1	John	_	pn	_	_	2	subj	_	_
+2	persuades	_	obj_equi	_	_	0	ROOT	_	_
+3	David	_	pn	_	_	2	obj	_	_
+4	to	_	inf	_	_	5	inf	_	_
+5	speak	_	iv	_	_	2	xcomp	_	_
+
+1	John	_	pn	_	_	2	subj	_	_
+2	tries	_	equi	_	_	0	ROOT	_	_
+3	to	_	inf	_	_	4	inf	_	_
+4	find	_	tv	_	_	2	xcomp	_	_
+5	a	_	ex_quant	_	_	5	spec	_	_
+6	unicorn	_	n	_	_	4	obj	_	_
+
+1	John	_	pn	_	_	2	subj	_	_
+2	seems	_	raising	_	_	0	ROOT	_	_
+3	to	_	inf	_	_	4	inf	_	_
+4	vanish	_	iv	_	_	2	xcomp	_	_
+
+1	a	_	ex_quant	_	_	2	spec	_	_
+2	unicorn	_	n	_	_	3	subj	_	_
+3	seems	_	raising	_	_	0	ROOT	_	_
+4	to	_	inf	_	_	5	inf	_	_
+5	approach	_	iv	_	_	3	xcomp	_	_
+

@@ -1,3 +1,11 @@
+# Natural Language Toolkit: Glue Semantics with Discourse Represtation Theory (DRT) 
+#                           as meaning language 
+#
+# Author: Dan Garrette <dhgarrette@gmail.com>
+#
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
+
 from nltk_contrib.drt import DRT
 import linearlogic
 import lfg
@@ -177,9 +185,9 @@ class GlueDict(dict):
             glueformulas.append(gf)
         return glueformulas
 
-def parse_to_meaning(sentence, remove_duplicates=False):
+def parse_to_meaning(sentence, remove_duplicates=False, dependency=False, verbose=False):
     readings = []
-    for agenda in parse_to_compiled(sentence):
+    for agenda in parse_to_compiled(sentence, dependency, verbose):
         readings.extend(get_readings(agenda, remove_duplicates))
     return readings
 
@@ -249,27 +257,25 @@ def _add_to_reading_list(glueformula, reading_list, remove_duplicates=False):
     if add_reading:
         reading_list.append(glueformula.meaning)
     
-
-def parse_to_compiled(sentence='a man sees Mary'):
-    parsetrees = parse(sentence)
-    fstructs = [pt_to_fstruct(pt) for pt in parsetrees]
+def parse_to_compiled(sentence='a man sees Mary', dependency=False, verbose=False):
+    if dependency:
+        fstructs = [lfg.FStructure.read_depgraph(dep_graph) for dep_graph in dep_parse(sentence, verbose)]
+    else:
+        fstructs = [lfg.FStructure.read_parsetree(pt, [0]) for pt in earley_parse(sentence)]
     gfls = [fstruct_to_glue(f) for f in fstructs]
     return [gfl_to_compiled(gfl) for gfl in gfls]
 
-def parse_to_glue(sentence='a man sees Mary'):
-    parsetrees = parse(sentence)
-    fstructs = [pt_to_fstruct(pt) for pt in parsetrees]
-    return [fstruct_to_glue(f) for f in fstructs]
+def dep_parse(sentence='every cat leaves', verbose=False):
+    from nltk_contrib.dependency import malt
+    dep_graphs = [malt.parse(sentence, verbose)]
+    return dep_graphs
 
-def parse(sentence='a man sees Mary'):
+def earley_parse(sentence='every cat leaves'):
     from nltk.parse import load_earley
     cp = load_earley(r'grammars/gluesemantics.fcfg')
     tokens = sentence.split()
     trees = cp.nbest_parse(tokens)
     return trees
-
-def pt_to_fstruct(pt):
-    return lfg.FStructure(pt, [0])
 
 def fstruct_to_glue(fstruct):
     glue_pos_dict = GlueDict()
@@ -290,7 +296,7 @@ def compile_demo():
         GlueFormula('m', '((d -o (c -o b)) -o a)'),
         GlueFormula('m', '((d -o e) -o ((c -o b) -o a))'),
         GlueFormula('m', '(((d -o c) -o b) -o a)'),
-        GlueFormula('m', '((((e -o d) -o c) -o b) -o a)'),
+        GlueFormula('m', '((((e -o d) -o c) -o b) -o a)')
     ]
 
     for i in range(len(examples)):
@@ -509,10 +515,15 @@ def testPnApp():
     print '      \'it seems that john vanishes\': %s' % seems_john_vanish.simplify().infixify()
 
 if __name__ == '__main__':
-      proof_demo()
-      print "\n\n\n"
-      compiled_proof_demo()
-      print "\n\n\n"
-      demo()
-      #print "\n\n\n"
-      #testPnApp()
+    proof_demo()
+    print "\n\n\n"
+    compiled_proof_demo()
+    print "\n\n\n"
+    demo()
+    #print "\n\n\n"
+    #testPnApp()
+      
+    for reading in parse_to_meaning('John sees Mary', dependency=True, verbose=True):
+        print reading.simplify().infixify()
+    for reading in parse_to_meaning('John sees Mary', dependency=True, verbose=True):
+        print reading.simplify().infixify()

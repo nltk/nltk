@@ -1,3 +1,10 @@
+# Natural Language Toolkit: Linear Logic 
+#
+# Author: Dan Garrette <dhgarrette@gmail.com>
+#
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
+
 from nltk.utilities import Counter
 
 import glue

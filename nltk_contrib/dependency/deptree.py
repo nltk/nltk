@@ -68,6 +68,7 @@ class DepGraph(object):
 				#not required, but useful for inspection
 				node['address'] = count        
 				node['word'] = word
+				node['tag'] = tag
 				node['head'] = head
 				node['rel']= rel
 				node['deps'] = []
@@ -189,7 +190,7 @@ Nov.    NNP     9       VMOD
 .       .       9       VMOD
 """)
 	tree = dg.deptree()
-	print tree.pp()
+	print tree.pprint()
 	if nx:
 		#currently doesn't work
 		try:

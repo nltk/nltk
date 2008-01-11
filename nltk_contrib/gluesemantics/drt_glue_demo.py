@@ -1,3 +1,11 @@
+# Natural Language Toolkit: GUI Demo for Glue Semantics with Discourse 
+#                           Represtation Theory (DRT) as meaning language 
+#
+# Author: Dan Garrette <dhgarrette@gmail.com>
+#
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
+
 from nltk.draw.tree import *
 from nltk.draw import *
 from nltk import parse, tokenize
