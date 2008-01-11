@@ -10,23 +10,24 @@ from nltk.sem.logic import ApplicationExpression, Operator, LogicParser
 
 from nltk_contrib.theorem_prover import tableau, prover9
 
-def attempt_proof(expression, prover_name='Prover9'):
+def attempt_proof(goal, premises=[], prover_name='Prover9'):
     """
-    Try to prove an expression of First Order Logic. 
+    Try to prove a theorem of First Order Logic. 
     
-    @param expression: Input expression to prove
-    @type expression: L{logic.Expression}
+    @param goal: Input expression to prove
+    @type goal: L{logic.Expression}
+    @param premises: Input expressions to use as premises in the proof
+    @type premises: L{list} of logic.Expression objects
     @type prover_name: C{str}
     @param prover_name: Name of the prover to use.
-    
+
     """
-    #assert isinstance(expression, DRT.Expression)
 
     if prover_name == 'tableau':
-        return tableau.attempt_proof(expression)
+        return tableau.attempt_proof(goal, premises)
     
     elif prover_name == 'Prover9':
-        return prover9.attempt_proof(expression)
+        return prover9.attempt_proof(goal, premises)
 
 
 def demo_drt_glue_remove_duplicates(show_example=-1):
@@ -54,7 +55,7 @@ def demo_drt_glue_remove_duplicates(show_example=-1):
         example_num += 1
     if not hit:
         print 'example not found'
-        
+  
 def demo():
     from nltk_contrib.drt import DRT
 
@@ -66,11 +67,11 @@ def demo():
     b = lp.parse(r'some x.((walks x) and (man x))')
     bicond = ApplicationExpression(ApplicationExpression(Operator('iff'), a), b)
     print "Trying to prove:\n '%s <-> %s'" % (a.infixify(), b.infixify())
-    print 'tableau: %s' % attempt_proof(bicond, 'tableau')
-    print 'Prover9: %s' % attempt_proof(bicond, 'Prover9')
+    print 'tableau: %s' % attempt_proof(bicond, prover_name='tableau')
+    print 'Prover9: %s' % attempt_proof(bicond, prover_name='Prover9')
     print '\n'
     
     demo_drt_glue_remove_duplicates()
-    
+
 if __name__ == '__main__': 
     demo()

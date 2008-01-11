@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Tableau-based Theorem Prover 
+# Natural Language Toolkit: First-order Tableau-based Theorem Prover 
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
@@ -124,7 +124,7 @@ class Agenda(object):
         #if current is a negation
         elif isinstance(current.first, Operator) and str(current.first.operator) == 'not':
             negated = current.second
-                
+            
             #if current is a negated AllExpression
             if isinstance(negated, AllExpression):
                 return Categories.N_ALL
@@ -394,48 +394,56 @@ class Categories:
     ALL    = 16
 
 def testTableau():
-    f = LogicParser().parse(r'((man x) implies (not (not (man x))))')
-    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-    f = LogicParser().parse(r'(not ((man x) and (not (man x))))')
-    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-    f = LogicParser().parse(r'((man x) or (not (man x)))')
-    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-    f = LogicParser().parse(r'((man x) implies (man x))')
-    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-    f = LogicParser().parse(r'(not ((man x) and (not (man x))))')
-    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-    f = LogicParser().parse(r'((man x) or (not (man x)))')
-    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-    f = LogicParser().parse(r'((man x) implies (man x))')
-    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-    f = LogicParser().parse(r'((man x) iff (man x))')
-    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-    f = LogicParser().parse(r'(not ((man x) iff (not (man x))))')
-    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-    p1 = LogicParser().parse(r'all x.((man x) implies (mortal x))')
-    p2 = LogicParser().parse(r'(man Socrates)')
-    c = LogicParser().parse(r'(mortal Socrates)')
-    print '%s, %s |- %s: %s' % (p1.infixify(), p2.infixify(), c.infixify(), attempt_proof(c, [p1,p2]))
-    p1 = LogicParser().parse(r'all x.((man x) implies (walks x))')
-    p2 = LogicParser().parse(r'(man John)')
-    c = LogicParser().parse(r'some y.(walks y)')
-    print '%s, %s |- %s: %s' % (p1.infixify(), p2.infixify(), c.infixify(), attempt_proof(c, [p1,p2]))
-    f = LogicParser().parse('all x.(man x)')
-    print '%s |- %s: %s' % (f.infixify(), f.infixify(), attempt_proof(f, [f]))
-    p = LogicParser().parse(r'((x = y) and (walks y))')
-    c = LogicParser().parse(r'(walks x)')
+#    f = LogicParser().parse(r'((man x) implies (not (not (man x))))')
+#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
+#    f = LogicParser().parse(r'(not ((man x) and (not (man x))))')
+#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
+#    f = LogicParser().parse(r'((man x) or (not (man x)))')
+#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
+#    f = LogicParser().parse(r'((man x) implies (man x))')
+#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
+#    f = LogicParser().parse(r'(not ((man x) and (not (man x))))')
+#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
+#    f = LogicParser().parse(r'((man x) or (not (man x)))')
+#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
+#    f = LogicParser().parse(r'((man x) implies (man x))')
+#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
+#    f = LogicParser().parse(r'((man x) iff (man x))')
+#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
+#    f = LogicParser().parse(r'(not ((man x) iff (not (man x))))')
+#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
+#    p1 = LogicParser().parse(r'all x.((man x) implies (mortal x))')
+#    p2 = LogicParser().parse(r'(man Socrates)')
+#    c = LogicParser().parse(r'(mortal Socrates)')
+#    print '%s, %s |- %s: %s' % (p1.infixify(), p2.infixify(), c.infixify(), attempt_proof(c, [p1,p2]))
+#    p1 = LogicParser().parse(r'all x.((man x) implies (walks x))')
+#    p2 = LogicParser().parse(r'(man John)')
+#    c = LogicParser().parse(r'some y.(walks y)')
+#    print '%s, %s |- %s: %s' % (p1.infixify(), p2.infixify(), c.infixify(), attempt_proof(c, [p1,p2]))
+#    f = LogicParser().parse('all x.(man x)')
+#    print '%s |- %s: %s' % (f.infixify(), f.infixify(), attempt_proof(f, [f]))
+#    p = LogicParser().parse(r'((x = y) and (walks y))')
+#    c = LogicParser().parse(r'(walks x)')
+#    print '%s |- %s: %s' % (p.infixify(), c.infixify(), attempt_proof(c, [p]))
+#    p = LogicParser().parse(r'((x = y) and ((y = z) and (z = w)))')
+#    c = LogicParser().parse(r'(x = w)')
+#    print '%s |- %s: %s' % (p.infixify(), c.infixify(), attempt_proof(c, [p]))
+#    f = LogicParser().parse('all x.all y.((x = y) implies (y = x))')
+#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
+#    f = LogicParser().parse('all x.all y.all z.(((x = y)and(y = z))implies(x = z))')
+#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
+#    f = LogicParser().parse('(not(all x.some y.(F y x) and some x.all y.(not(F y x))))')
+#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
+#    f = LogicParser().parse('some x.all y.(sees x y)')
+#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
+
+    p = LogicParser().parse(r'some a1.some a2.((believe a1 john a2) and (walk a2 mary))')
+    c = LogicParser().parse(r'some a0.(walk a0 mary)')
     print '%s |- %s: %s' % (p.infixify(), c.infixify(), attempt_proof(c, [p]))
-    p = LogicParser().parse(r'((x = y) and ((y = z) and (z = w)))')
-    c = LogicParser().parse(r'(x = w)')
+    
+    p = LogicParser().parse(r'some a1.some a2.((believe a1 john a2) and (walk a2 mary))')
+    c = LogicParser().parse(r'some x.some a3.some a4.((believe a3 x a4) and (walk a4 mary))')
     print '%s |- %s: %s' % (p.infixify(), c.infixify(), attempt_proof(c, [p]))
-    f = LogicParser().parse('all x.all y.((x = y) implies (y = x))')
-    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-    f = LogicParser().parse('all x.all y.all z.(((x = y)and(y = z))implies(x = z))')
-    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-    f = LogicParser().parse('(not(all x.some y.(F y x) and some x.all y.(not(F y x))))')
-    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-    f = LogicParser().parse('some x.all y.(sees x y)')
-    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
 
 if __name__ == '__main__':
     testTableau()

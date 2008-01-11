@@ -1,3 +1,10 @@
+# Natural Language Toolkit: Glue Semantics 
+#
+# Author: Dan Garrette <dhgarrette@gmail.com>
+#
+# URL: <http://nltk.sf.net>
+# For license information, see LICENSE.TXT
+
 from nltk.sem import logic
 import linearlogic
 from nltk.parse import *
@@ -18,7 +25,6 @@ class GlueFormula:
                 raise RuntimeError, 'Meaning expression %s' % (meaning)
         else:
             raise RuntimeError, 'Meaning term neither string or expression: %s' % (meaning)
-            
             
         if isinstance(glue, str):
             try:
@@ -187,9 +193,9 @@ class GlueDict(dict):
             glueformulas.append(gf)
         return glueformulas
 
-def parse_to_meaning(sentence):
+def parse_to_meaning(sentence, dependency=False, verbose=False):
     readings = []
-    for agenda in parse_to_compiled(sentence):
+    for agenda in parse_to_compiled(sentence, dependency, verbose):
         readings.extend(get_readings(agenda))
     return readings
 
@@ -243,26 +249,25 @@ def get_readings(agenda):
                 readings.append(gf.meaning)
     return readings
         
-def parse_to_compiled(sentence='every big gray cat leaves'):
-    parsetrees = parse(sentence)
-    fstructs = [pt_to_fstruct(pt) for pt in parsetrees]
+def parse_to_compiled(sentence='every cat leaves', dependency=False, verbose=False):
+    if dependency:
+        fstructs = [lfg.FStructure.read_depgraph(dep_graph) for dep_graph in dep_parse(sentence, verbose)]
+    else:
+        fstructs = [lfg.FStructure.read_parsetree(pt, [0]) for pt in earley_parse(sentence)]
     gfls = [fstruct_to_glue(f) for f in fstructs]
     return [gfl_to_compiled(gfl) for gfl in gfls]
 
-def parse_to_glue(sentence='every big gray cat leaves'):
-    parsetrees = parse(sentence)
-    fstructs = [pt_to_fstruct(pt) for pt in parsetrees]
-    return [fstruct_to_glue(f) for f in fstructs]
+def dep_parse(sentence='every cat leaves', verbose=False):
+    from nltk_contrib.dependency import malt
+    dep_graphs = [malt.parse(sentence, verbose)]
+    return dep_graphs
 
-def parse(sentence='a man sees Mary'):
+def earley_parse(sentence='every cat leaves'):
     from nltk.parse import load_earley
     cp = load_earley(r'grammars/gluesemantics.fcfg')
     tokens = sentence.split()
     trees = cp.nbest_parse(tokens)
     return trees
-
-def pt_to_fstruct(pt):
-    return lfg.FStructure(pt, [0])
 
 def fstruct_to_glue(fstruct):
     glue_pos_dict = GlueDict()
@@ -434,3 +439,6 @@ if __name__ == '__main__':
     compiled_proof_demo()
     print "\n\n"
     demo()
+
+    for reading in parse_to_meaning('John sees Mary', dependency=True, verbose=True):
+        print reading.simplify().infixify()
