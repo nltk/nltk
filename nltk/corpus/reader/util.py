@@ -501,7 +501,6 @@ class ConcatenatedCorpusView(AbstractCorpusView):
 
             # Move on to the next piece.
             piecenum += 1
-            start_tok = self._offsets[piecenum]
         
 def concat(docs):
     """
