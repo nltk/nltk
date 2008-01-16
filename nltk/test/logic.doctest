@@ -1,16 +1,150 @@
 =========================
  Logic & Lambda Calculus
 =========================
-   >>> from nltk.sem import *
+    >>> from nltk.sem import *
 
 Test for equality under alpha-conversion. 
 
-   >>> lp = LogicParser()
-   >>> e1 = lp.parse('some x.(P x)')
-   >>> print e1
-   some x.(P x)
-   >>> e2 = e1.alpha_convert(Variable('z'))
-   >>> print e2
-   some z.(P z)
-   >>> e1 == e2
-   True
+    >>> lp = LogicParser()
+    >>> e1 = lp.parse('some x.(P x)')
+    >>> print e1
+    some x.(P x)
+    >>> e2 = e1.alpha_convert(Variable('z'))
+    >>> print e2
+    some z.(P z)
+    >>> e1 == e2
+    True
+
+    
+    >>> l = lp.parse(r'(\x.\x.(x x) 1)').simplify()
+    >>> id = lp.parse(r'\x.(x x)')
+    >>> l == id
+    True
+
+Test numerals
+
+    >>> zero = lp.parse(r'\f x.x')
+    >>> one = lp.parse(r'\f x.(f x)')
+    >>> two = lp.parse(r'\f x.(f (f x))')
+    >>> three = lp.parse(r'\f x.(f (f (f x)))')
+    >>> four = lp.parse(r'\f x.(f (f (f (f x))))')
+    >>> succ = lp.parse(r'\n f x.(f (n f x))')
+    >>> plus = lp.parse(r'\m n f x.(m f (n f x))')
+    >>> mult = lp.parse(r'\m n f.(m (n f))')
+    >>> pred = lp.parse(r'\n f x.(n \g h.(h (g f)) \u.x \u.u)')
+    >>> v1 = ApplicationExpression(succ, zero).simplify()
+    >>> v1 == one
+    True
+    >>> v2 = ApplicationExpression(succ, v1).simplify()
+    >>> v2 == two
+    True
+    >>> v3 = ApplicationExpression(ApplicationExpression(plus, v1), v2).simplify()
+    >>> v3 == three
+    True
+    >>> v4 = ApplicationExpression(ApplicationExpression(mult, v2), v2).simplify()
+    >>> v4 == four
+    True
+    >>> v5 = ApplicationExpression(pred, ApplicationExpression(pred, v4)).simplify()
+    >>> v5 == two
+    True
+    
+``betaConversionTestSuite.pl``
+------------------------------
+
+From B&B's *Representation and Inference for Natural Language*.
+
+    >>> x1 = lp.parse(r'(\p.(p mia) \x.(walk x))').simplify()
+    >>> x2 = lp.parse(r'(walk mia)').simplify()
+    >>> x1 == x2
+    True
+    
+    >>> x1 = lp.parse(r'some x.(and (man x) (\p.some x.(and (woman x) (p x)) \y.(love x y)))').simplify()
+    >>> x2 = lp.parse(r'some x.(and (man x) some y.(and (woman y) (love x y)))').simplify()
+    >>> x1 == x2
+    True
+    >>> x1 = lp.parse(r'(\a.(sleep a) mia)').simplify()
+    >>> x2 = lp.parse(r'(sleep mia)').simplify()
+    >>> x1 == x2
+    True
+    >>> x1 = lp.parse(r'(\a.\b.(like b a) mia)').simplify()
+    >>> x2 = lp.parse(r'\b.(like b mia)').simplify()
+    >>> x1 == x2
+    True
+    >>> x1 = lp.parse(r'\a.(\b.(like b a) vincent)').simplify()
+    >>> x2 = lp.parse(r'\a.(like vincent a)').simplify()
+    >>> x1 == x2
+    True
+    >>> x1 = lp.parse(r'\a.(and (\b.(like b a) vincent) (sleep a))').simplify()
+    >>> x2 = lp.parse(r'\a.(and (like vincent a) (sleep a))').simplify()
+    >>> x1 == x2
+    True
+
+    >>> x1 = lp.parse(r'(\a.\b.(like b a) mia vincent)').simplify()
+    >>> x2 = lp.parse(r'(like vincent mia)').simplify()
+    >>> x1 == x2
+    True
+    
+    >>> x1 = lp.parse(r'(p (\a.(sleep a) vincent))').simplify()
+    >>> x2 = lp.parse(r'(p (sleep vincent))').simplify()
+    >>> x1 == x2
+    True
+    
+    >>> x1 = lp.parse(r'\a.(a (\b.(sleep b) vincent))').simplify()
+    >>> x2 = lp.parse(r'\a.(a (sleep vincent))').simplify()
+    >>> x1 == x2
+    True
+    
+    >>> x1 = lp.parse(r'\a.(a (sleep vincent))').simplify()
+    >>> x2 = lp.parse(r'\a.(a (sleep vincent))').simplify()
+    >>> x1 == x2
+    True
+    
+    >>> x1 = lp.parse(r'(\a.(a vincent) \b.(sleep b))').simplify()
+    >>> x2 = lp.parse(r'(sleep vincent)').simplify()
+    >>> x1 == x2
+    True
+    
+    >>> x1 = lp.parse(r'(\a.(believe mia (a vincent)) \b.(sleep b))').simplify()
+    >>> x2 = lp.parse(r'(believe mia (sleep vincent))').simplify()
+    >>> x1 == x2
+    True
+    
+    >>> x1 = lp.parse(r'(\a.(and (a vincent) (a mia)) \b.(sleep b))').simplify()
+    >>> x2 = lp.parse(r'(and (sleep vincent) (sleep mia))').simplify()
+    >>> x1 == x2
+    True
+    
+    >>> x1 = lp.parse(r'(\a.\b.(and (\c.(c (a vincent)) \d.(probably d)) (\c.(c (b mia)) \d.(improbably d))) \e.(walk e) \e.(talk e))').simplify()
+    >>> x2 = lp.parse(r'(and (probably (walk vincent)) (improbably (talk mia)))').simplify()
+    >>> x1 == x2
+    True
+    
+    >>> x1 = lp.parse(r'(\a.\b.(\c.(c a b) \d.\e.(love d e)) jules mia)').simplify()
+    >>> x2 = lp.parse(r'(love jules mia)').simplify()
+    >>> x1 == x2
+    True
+    
+    >>> x1 = lp.parse(r'(\a.\b.some c.(and (a c) (b c)) \d.(boxer d) \d.(sleep d))').simplify()
+    >>> x2 = lp.parse(r'some c.(and (boxer c) (sleep c))').simplify()
+    >>> x1 == x2
+    True
+    
+    >>> x1 = lp.parse(r'(\a.(z a) \c.\a.(like a c))').simplify()
+    >>> x2 = lp.parse(r'(z \c.\a.(like a c))').simplify()
+    >>> x1 == x2
+    True
+    
+    >>> x1 = lp.parse(r'(\a.\b.(a b) \c.\b.(like b c))').simplify()
+    >>> x2 = lp.parse(r'\b.(\c.\b.(like b c) b)').simplify()
+    >>> x1 == x2
+    True
+    
+    >>> x1 = lp.parse(r'(\a.\b.(\c.(c a b) \b.\a.(loves b a)) jules mia)').simplify()
+    >>> x2 = lp.parse(r'(loves jules mia)').simplify()
+    >>> x1 == x2
+    True
+    
+    >>> x1 = lp.parse(r'(\a.\b.(and some b.(a b) (a b)) \c.(boxer c) vincent)').simplify()
+    >>> x2 = lp.parse(r'(and some b.(boxer b) (boxer vincent))').simplify()
+    >>> x1 == x2
+    True
