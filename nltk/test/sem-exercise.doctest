@@ -1,0 +1,209 @@
+.. |date| date::
+
+===================
+Semantics Exercises
+===================
+
+:Author: Ewan Klein
+:Date: |date|
+:Title: Semantics Exercises
+
+The first lot of exercises concentrate on translating simple English expressions into 
+logical form and checking that they are parsable by the
+``LogicParser`` in NLTK. If you have experience of this kind of
+translation exercise, you may still find it useful to check that you
+understand the syntax expected by the parser.
+
+Logical Form: Propositions
+--------------------------
+
+Translate the following English sentences in propositional logic and
+verify that they parse in the ``nltk.sem`` module. Provide a key which
+shows how the propositional variables in your translation correspond
+to expressions of English.
+
+In order to invoke the parser give the following instruction to the
+Python interpreter:
+
+    >>> from nltk.sem import *
+    >>> lp = LogicParser()
+
+Here's an example to get you started.
+
+#. If Kim sings, Lee does not.
+
+Key: k = 'Kim sings', l = 'Lee sings'
+
+    >>> lp.parse('(k implies (not l))')
+    ApplicationExpression('(implies k)', '(not l)')
+
+This output provides some information about the kind of expression
+that the parser has recognized. In order to suppress, this use
+``print`` to get a more succinct result:
+    
+    >>> print lp.parse('(k implies (not l))')
+    (implies k (not l))
+
+In order to get the Boolean connectives in infix notation, we can
+invoke the ``infixify()`` method:
+    
+    >>> print lp.parse('(k implies (not l))').infixify()
+    (k implies (not l))
+
+If the parser gives an error or an unexpected result, the most likely
+reason is that you have omitted some brackets or added in some
+superfluous ones.
+
+Now try the following:
+
+#. It's not the case that Suzie will be happy if Peter or Rob comes
+
+    >>> print lp.parse('(not ((petecome or robcome) implies suziehappy))').infixify()
+    (not ((petecome or robcome) implies suziehappy))
+
+#. Nobody coughed or sneezed.
+
+    >>> print lp.parse('(not (cough or sneeze))').infixify()
+    (not (cough or sneeze))
+
+#. If you don't come if I call, I won't come if you call.
+
+    >>> print lp.parse('((not (icall implies youcome)) implies (not (youcall implies icome)))').infixify()
+    ((not (icall implies youcome)) implies (not (youcall implies icome)))
+
+
+Logical Form: Predicates
+------------------------
+
+In the next example, we have decomposed the clauses into predicates
+and arguments:
+
+#. Lee likes Fido and Kim hates Rover.
+
+    >>> print lp.parse('((like fido lee) and (hate rover kim))').infixify()
+    ((like fido lee) and (hate rover kim))
+
+Here are some more examples. Don't try to be too faithful to the
+English; getting a 'correct' analysis in terms of compositional
+semantics can be quite subtle.
+
+#. Lee is taller than Kim.
+
+    >>> print lp.parse('(taller kim lee)').infixify()
+    (taller kim lee)
+
+#. Fluffy washes herself.
+
+    >>> print lp.parse('(wash fluffy fluffy)').infixify()
+    (wash fluffy fluffy)
+        
+#. Dana saw Seth, but Kim didn't.
+
+    >>> print lp.parse('((saw seth dana) and (not (saw seth kim)))').infixify()
+    ((saw seth dana) and (not (saw seth kim)))
+
+#. Fido is a faithful friend.
+
+    >>> print lp.parse('((faithful fido) and (friend fido))').infixify()
+    ((faithful fido) and (friend fido))
+
+#. Lee and Claude are near each other.
+
+    >>> print lp.parse('((near claude lee) and (near lee claude))').infixify()
+    ((near claude lee) and (near lee claude))
+
+Quantifiers
+-----------
+
+Here's an example of quantification.
+
+#. Everybody loves somebody.
+
+    >>> print lp.parse('some x. all y. (love x y)')
+    some x.all y.(love x y)
+
+Give translations of the following English examples. You may want to
+use the connective ``'iff'``, which stands for the biconditional.
+
+#. Kim loves someone and someone loves Kim.
+
+    >>> print lp.parse('(some x. (love x kim) and some y. (love kim y))').infixify()
+    (some x.(love x kim) and some y.(love kim y))
+
+#. Kim loves someone who loves Kim.
+
+    >>> print lp.parse('(some x. (love x kim) and (love kim x))').infixify()
+    (some x.(love x kim) and (love kim x))
+
+#. Nobody loves Kim.
+
+    >>> print lp.parse('(not some x. (love kim x))').infixify()
+    (not some x.(love kim x))
+
+#. Kim loves somebody other than Kim.
+
+    >>> print lp.parse('(some x. (love x kim) and (not (x = kim)))').infixify()
+    (some x.(love x kim) and (not (x = kim)))
+
+#. Nobody other than Kim loves Lee.
+
+    >>> print lp.parse('all x. (not (x = kim) iff (not (love lee x)))').infixify()
+    all x.((not (x = kim)) iff (not (love lee x)))
+
+#. Kim loves everyone except for Lee.
+
+    >>> print lp.parse('(all x. (love x kim) iff (not (x = kim)))').infixify()
+    (all x.(love x kim) iff (not (x = kim)))
+
+
+#. Exactly one person walks.
+
+    >>> print lp.parse('some x. ((walk x) and all y. ((walk y) implies (y = x)))').infixify()
+    some x.((walk x) and all y.((walk y) implies (y = x)))
+
+
+
+Logical Form: Lambda Abstracts
+------------------------------
+
+Lambda abstraction gives us a method of constructing a function from
+any open formula. For example, ``(wash fluffy fluffy)`` can be
+converted into all the following:
+
+#.
+  (a) \\x. (wash x fluffy) --> 'be an x such that Fluffy loves x'
+  (b) \\x. (wash fluffy x) --> 'be an x such that x loves Fluffy'
+  (c) \\x. (wash x x) --> 'be an x such x loves x'
+
+Can you think of more idiomatic translations of these?
+
+We also parse expressions like these:
+
+    >>> print lp.parse('\\x. (wash x x)').infixify()
+    \x.(wash x x)
+
+Because ``'\'`` is interpreted as a special character in Python, we
+either have to escape it with another ``'\'`` as just shown, or else
+use so-called raw strings of the form ``r'...'``, as here:
+ 
+    >>> print lp.parse(r'\x. (wash x x)').infixify()
+    \x.(wash x x)
+
+Give translations for the following using lambda abstraction.
+
+#. feed Fido and give Rover water
+
+    >>> print lp.parse('\\x. ((feed fido x) and (give rover water x))').infixify()
+    \x.((feed fido x) and (give rover water x))
+    
+#. be given 'War and Peace' by Kim
+
+    >>> print lp.parse('\\x. (give x wp kim)')
+    \x.(give x wp kim)
+
+#. be loved by everyone
+
+    >>> print lp.parse('\\x. all y. (love x y)')
+    \x.all y.(love x y)
+
+  
