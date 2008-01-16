@@ -6,33 +6,33 @@
 Characteristic Functions
 ========================
 
-Within L{models}, Curried characteristic functions are implemented as
-a subclass of dictionaries, using the L{CharFun} constructor.
+Within ``sem.models``, Curried characteristic functions are implemented as
+a subclass of dictionaries, using the ``CharFun`` constructor.
 
    >>> cf = CharFun({'d1' : CharFun({'d2': True}), 'd2' : CharFun({'d1': True})})
 
-Values of a L{CharFun} are accessed by indexing in the usual way:
+Values of a ``CharFun`` are accessed by indexing in the usual way:
 
    >>> cf['d1']
    {'d2': True}
    >>> cf['d1']['d2']
    True
 
-L{CharFun}s are 'sparse' data structures in the sense that they omit
-entries of the form C{e: False}. In fact, they
+``CharFun``\ s are 'sparse' data structures in the sense that they omit
+entries of the form ``{e: False}``. In fact, they
 behave just like ordinary dictionaries on keys which are
-out of their domain, rather than yielding the value C{False}:
+out of their domain, rather than yielding the value ``False``:
 
    >>> cf['not in domain']
    Traceback (most recent call last):
    ...
    KeyError: 'not in domain'
 
-The assignment of C{False} values is delegated to a wrapper method
-L{app} of the L{Model} class. L{app} embodies the Closed World
-assumption; i.e., where C{m} is an instance of L{Model}. In the
-following example, C{m.app(cf, 'd1')} yields the value C{False} since
-although C{'d1'} belongs to the domain of the model, it is not in the
+The assignment of ``False`` values is delegated to a wrapper method
+``app`` of the ``Model`` class. ``app`` embodies the Closed World
+assumption; i.e., where ``m`` is an instance of ``Model``. In the
+following example, ``m.app(cf, 'd1')`` yields the value ``False`` since
+although ``'d1'`` belongs to the domain of the model, it is not in the
 extension of the value of 'boy'. 
 
    >>> val = Valuation()
@@ -51,7 +51,7 @@ extension of the value of 'boy'.
    False
 
 If however we apply a function to an object that is not in the domain,
-an 'Undefined' exception is raised.
+an ``'Undefined'`` exception is raised.
 
    >>> m.app(cf, 'not in domain')
    Traceback (most recent call last):
@@ -59,8 +59,8 @@ an 'Undefined' exception is raised.
    Undefined: {'b1': True, 'b2': True} can't be applied as a function to 'not in domain'
 
 In practise, it will often be more convenient for a user to specify
-interpretations as M{n}-ary relations (i.e., sets of M{n}-tuples) rather
-than as M{n}-ary functions. L{CharFun} provides a C{read} method which
+interpretations as *n*-ary relations (i.e., sets of *n*-tuples) rather
+than as *n*-ary functions. ``CharFun`` provides a ``read()`` method which
 will convert such relations into Curried characteristic functions:
 
    >>> s = set([('d1', 'd2'), ('d3', 'd4')])
@@ -70,7 +70,7 @@ will convert such relations into Curried characteristic functions:
    {'d4': {'d3': True}, 'd2': {'d1': True}}
 
 
-C{read} will raise an exception if the set is not in fact a
+``read`` will raise an exception if the set is not in fact a
 relation (i.e., contains tuples of different lengths):
 
   >>> wrong = set([('d1', 'd2'), ('d2', 'd1', 'd3')])
@@ -87,9 +87,9 @@ However, unary relations can be parsed to characteristic functions.
   >>> cf
   {'d2': True, 'd1': True}
 
-The function L{flatten} returns a set of the entities used as keys in
-a L{CharFun} instance. The same information can be accessed via the
-C{domain} attribute of L{CharFun}.
+The function ``flatten`` returns a set of the entities used as keys in
+a ``CharFun`` instance. The same information can be accessed via the
+``domain`` attribute of ``CharFun``.
 
    >>> cf = CharFun({'d1' : {'d2': True}, 'd2' : {'d1': True}})
    >>> flatten(cf)
@@ -103,14 +103,14 @@ Valuations and Assignments
 Valuations
 ----------
 
-A I{Valuation} is a mapping from non-logical constants to appropriate semantic
-values in the model. Valuations are created using the L{Valuation} constructor.
+A *Valuation* is a mapping from non-logical constants to appropriate semantic
+values in the model. Valuations are created using the ``Valuation`` constructor.
 
    >>> val = Valuation({'Fido' : 'd1', 'dog' : {'d1' : True, 'd2' : True}})
    >>> val
    {'Fido': 'd1', 'dog': {'d2': True, 'd1': True}}
 
-As with L{CharFun}, an instance of L{Valuation} will read valuations using
+As with ``CharFun``, an instance of ``Valuation`` will read valuations using
 relations rather than characteristic functions as interpretations.
 
    >>> setval = [('adam', 'b1'), ('betty', 'g1'),
@@ -129,7 +129,7 @@ relations rather than characteristic functions as interpretations.
              'g1': {'b1': True},
              'g2': {'b2': True}}}
 
-Valuations have a C{domain} attribute, like L{CharFun}, and also a C{symbols}
+Valuations have a ``domain`` attribute, like ``CharFun``, and also a ``symbols``
 attribute.
 
    >>> val.domain
@@ -141,10 +141,10 @@ attribute.
 Assignments
 -----------
 
-A variable I{Assignment} is a mapping from individual variables to
+A variable *Assignment* is a mapping from individual variables to
 entities in the domain. Individual variables are indicated with the
 letters 'x', 'y', 'w' and 'z', optionally followed by an integer
-(e.g., 'x0', 'y332').  Assignments are created using the L{Assignment}
+(e.g., 'x0', 'y332').  Assignments are created using the ``Assignment``
 constructor, which also takes the domain as a parameter.
 
    >>> dom = set(['u1', 'u2', 'u3', 'u4'])
@@ -152,13 +152,13 @@ constructor, which also takes the domain as a parameter.
    >>> g3
    {'y': 'u2', 'x': 'u1'}
 
-There is also a C{print} format for assignments which uses a notation
+There is also a ``print`` format for assignments which uses a notation
 closer to that in logic textbooks:
    
    >>> print g3
    g[u2/y][u1/x]
 
-Initialization of an L{Assignment} instance checks that the variable
+Initialization of an ``Assignment`` instance checks that the variable
 really is an individual variable and also that the value belongs to
 the domain of discourse:
 
@@ -171,7 +171,7 @@ the domain of discourse:
     ...
     AssertionError: 'u5' is not in the domain: set(['u4', 'u1', 'u3', 'u2'])
 
-It is also possible to update an assignment using the L{add} method:
+It is also possible to update an assignment using the ``add`` method:
 
     >>> dom = set(['u1', 'u2', 'u3', 'u4'])
     >>> g4 = Assignment(dom, {})
@@ -189,7 +189,7 @@ It is also possible to update an assignment using the L{add} method:
     AssertionError: u5 is not in the domain set(['u4', 'u1', 'u3', 'u2'])
 
 Variables (and their values) can be selectively removed from an
-assignment with the L{purge} method:
+assignment with the ``purge()`` method:
 
     >>> g4
     {'y': 'u3', 'x': 'u2', 'x0': 'u4'}
@@ -197,7 +197,7 @@ assignment with the L{purge} method:
     >>> g4
     {'y': 'u3', 'x0': 'u4'}
 
-With no arguments,  L{purge} is equivalent to C{clear} on a dictionary:
+With no arguments,  ``purge()`` is equivalent to ``clear()`` on a dictionary:
 
     >>> g4.purge()
     >>> g4
@@ -209,7 +209,7 @@ With no arguments,  L{purge} is equivalent to C{clear} on a dictionary:
 Models
 ======
 
-The L{Model} constructor takes two parameters, a C{set} and a L{Valuation}.
+The ``Model`` constructor takes two parameters, a ``set`` and a ``Valuation``.
 
    >>> val = Valuation()
    >>> v = [('adam', 'b1'), ('betty', 'g1'), ('fido', 'd1'),
@@ -221,8 +221,8 @@ The L{Model} constructor takes two parameters, a C{set} and a L{Valuation}.
    >>> g = Assignment(dom, {'x': 'b1', 'y': 'g2'})
    >>> symbols = ['adam', 'girl', 'love', 'walks', 'x', 'y', 'z']
    
-The top-level method of a L{Model} instance is L{evaluate}, which
-assigns a semantic value to expressions of the L{logic} module, under an assignment C{g}:
+The top-level method of a ``Model`` instance is ``evaluate}, which
+assigns a semantic value to expressions of the ``logic`` module, under an assignment ``g``:
 
     >>> m.evaluate('all x. ((boy x) implies (not (girl x)))', g)
     True
@@ -230,27 +230,27 @@ assigns a semantic value to expressions of the L{logic} module, under an assignm
 evaluate
 --------
 
-L{evaluate} calls a recursive function L{satisfy}, which in turn calls
-a function L{i} to interpret non-logical constants and individual
-variables. L{i} first tries to call the model's L{Valuation} and if
-that fails, calls the variable assignment C{g}. Any atomic expression
-which cannot be assigned a value by L{i} raises an C{Undefined}
-exception; this is caught by L{evaluate}, which returns the string
-'Undefined'.
+``evaluate`` calls a recursive function ``satisfy``, which in turn calls
+a function ``i`` to interpret non-logical constants and individual
+variables. ``i`` first tries to call the model's ``Valuation`` and if
+that fails, calls the variable assignment ``g``. Any atomic expression
+which cannot be assigned a value by ``i`` raises an ``Undefined``
+exception; this is caught by ``evaluate``, which returns the string
+``'Undefined'``.
 
     >>> m.evaluate('(walk adam)', g, trace=2)
         (checking whether 'walk' is an individual variable)
     'Undefined'
 
 
-Boolean operators such as M{not}, M{and} and M{implies} are
+Boolean operators such as *not*, *and* and *implies* are
 implemented as dictionaries. For example:
 
     >>> m.AND
     {False: {False: False, True: False}, True: {False: False, True: True}}
 
-A formula such as '(p and q)' is interpreted by indexing
-the value of 'and' with the values of the two propositional arguments,
+A formula such as ``'(p and q)'`` is interpreted by indexing
+the value of ``'and'`` with the values of the two propositional arguments,
 in the following manner:
 
    >>> val1 = Valuation({'p': True, 'q': True, 'r': False})
@@ -263,8 +263,8 @@ in the following manner:
 satisfy
 -------
 
-The L{satisfy} method assigns semantic values to arbitrary expressions
-according to their syntactic structure, as determined by L{decompose}.
+The ``satisfy()`` method assigns semantic values to arbitrary expressions
+according to their syntactic structure, as determined by ``decompose()``.
 
 
 
