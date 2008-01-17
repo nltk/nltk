@@ -492,7 +492,7 @@ class ConcatenatedCorpusView(AbstractCorpusView):
                 self._open_piece = piece
 
             # Get everything we can from this piece.
-            for tok in piece.iterate_from(start_tok-offset):
+            for tok in piece.iterate_from(max(0, start_tok-offset)):
                 yield tok
 
             # Update the offset table.
