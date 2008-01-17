@@ -648,8 +648,8 @@ entailment value is mapped to an integer 1 (True) or 0 (False).
 The RTE corpus also supports an ``xml()`` method which produces ElementTrees.
 
     >>> xmltree = rte.xml('rte3_dev')
-    >>> xmltree
-    <Element entailment-corpus at 4ad4b70>
+    >>> xmltree # doctest: +ELLIPSIS
+    <Element entailment-corpus at ...>
     >>> xmltree[7].findtext('t') # doctest: +NORMALIZE_WHITESPACE
     "Mrs. Bush's approval ratings have remained very high, above 80%,
     even as her husband's have recently dropped below 50%."
@@ -888,6 +888,9 @@ Check that concatenation works as intended.
     >>> list(c123) == l123
     True
 
+    >>> (c1+c2+c3)[100] == l123[100]
+    True
+
 Slicing
 -------
 First, do some tests with fairly small slices.  These will all
@@ -1036,5 +1039,14 @@ this was fixed in svn 5279
     []
 
 
+svn 5624 & 5265 fixed a bug in ConcatenatedCorpusView, which caused it
+to return the wrong items when indexed starting at any index beyond
+the first file.
 
+    >>> import nltk
+    >>> sents = nltk.corpus.brown.sents()
+    >>> print sents[6000]
+    ['Cholesterol', 'and', 'thyroid']
+    >>> print sents[6000]
+    ['Cholesterol', 'and', 'thyroid']
 
