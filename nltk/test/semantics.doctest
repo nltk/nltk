@@ -124,8 +124,8 @@ relations rather than characteristic functions as interpretations.
    {'adam': 'b1',
     'betty': 'g1',
     'boy': {'b1': True, 'b2': True},
-    'girl': {'g2': True, 'g1': True},
-    'love': {'b1': {'g2': True, 'g1': True},
+    'girl': {'g1': True, 'g2': True},
+    'love': {'b1': {'g1': True, 'g2': True},
              'g1': {'b1': True},
              'g2': {'b2': True}}}
 
@@ -204,8 +204,6 @@ With no arguments,  ``purge()`` is equivalent to ``clear()`` on a dictionary:
     {}
 
 
-
-
 Models
 ======
 
@@ -224,8 +222,8 @@ The ``Model`` constructor takes two parameters, a ``set`` and a ``Valuation``.
 The top-level method of a ``Model`` instance is ``evaluate}, which
 assigns a semantic value to expressions of the ``logic`` module, under an assignment ``g``:
 
-    >>> m.evaluate('all x. ((boy x) implies (not (girl x)))', g)
-    True
+   >>> m.evaluate('all x. ((boy x) implies (not (girl x)))', g)
+   True
 
 evaluate
 --------
@@ -267,6 +265,8 @@ The ``satisfy()`` method assigns semantic values to arbitrary expressions
 according to their syntactic structure, as determined by ``decompose()``.
 
 
+Unit Tests
+==========
 
 Unit tests for parsing logical expressions
 ------------------------------------------
@@ -345,7 +345,6 @@ characteristic functions.
     >>> flatten(cf) == cf.domain
     True
 
-
     >>> s1 = set([('d1', 'd2'), ('d1', 'd1'), ('d2', 'd1')])
     >>> cf1 = CharFun()
     >>> cf1.read(s1)
@@ -420,15 +419,15 @@ Parse a valuation from a string.
 
 .. doctest-ignore::
     >>> print val
-    {'bark': {'d2': True, 'd1': True},
+    {'bark': {'d1': True, 'd2': True},
      'boy': {'b1': True, 'b2': True},
      'chase': {'d1': {'g1': True},
                'd2': {'g2': True},
                'g1': {'b1': True, 'b2': True}},
-     'dog': {'d2': True, 'd1': True},
+     'dog': {'d1': True, 'd2': True},
      'fido': 'd1',
-     'girl': {'g2': True, 'g1': True},
-     'in': {'n': {'d2': True, 'b1': True, 'b2': True}},
+     'girl': {'g1': True, 'g2': True},
+     'in': {'n': {'b1': True, 'b2': True, 'd2': True}},
      'john': 'b1',
      'mary': 'g1',
      'noosa': 'n',
@@ -438,8 +437,8 @@ Parse a valuation from a string.
              'n': {'g2': True}},
      'suzie': 'g2',
      'tess': 'd2',
-     'walk': {'d1': True, 'b1': True, 'g2': True},
-     'with': {'b1': {'g1': True, 'd1': True},
+     'walk': {'b1': True, 'd1': True, 'g2': True},
+     'with': {'b1': {'d1': True, 'g1': True},
               'd1': {'b1': True},
               'g1': {'b1': True}}}
     
@@ -465,6 +464,143 @@ Unit tests for function argument application in a Model
     ...
     Undefined: {'b1': True, 'b2': True} can't be applied as a function to 'foo'
 
+
+Model Tests
+===========
+
+Propositional Model Test
+------------------------
+
+    >>> tests = [
+    ...     ('(p and q)', True),
+    ...     ('(p and r)', False),
+    ...     ('(not p)', False),
+    ...     ('(not r)', True),
+    ...     ('(not (not p))', True),
+    ...     ('(not (p and r))', True),
+    ...     ('(p or r)', True),
+    ...     ('(r or p)', True),
+    ...     ('(r or r)', False),
+    ...     ('((not p) or r))', False),
+    ...     ('(p or (not p))', True),
+    ...     ('(p implies q)', True),
+    ...     ('(p implies r)', False),
+    ...     ('(r implies p)', True),
+    ...     ('(p iff p)', True),
+    ...     ('(r iff r)', True),
+    ...     ('(p iff r)', False),
+    ...     ]
+    >>> val = Valuation({'p': True, 'q': True, 'r': False})
+    >>> dom = set([])
+    >>> m = Model(dom, val, prop=True)
+    >>> g = Assignment(dom)
+    >>> for (sent, testvalue) in tests:
+    ...     semvalue = m.evaluate(sent, g)
+    ...     if semvalue == testvalue:
+    ...         print '*',
+    * * * * * * * * * * * * * * * * *
+
+
+Test of i Function
+------------------
+
+    >>> val = Valuation()
+    >>> v = [('adam', 'b1'), ('betty', 'g1'), ('fido', 'd1'),
+    ...      ('girl', set(['g1', 'g2'])), ('boy', set(['b1', 'b2'])), ('dog', set(['d1'])),
+    ...      ('love', set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')]))]
+    >>> val.read(v)
+    >>> dom = val.domain
+    >>> m = Model(dom, val)
+    >>> g = Assignment(dom, {'x': 'b1', 'y': 'g2'})
+    >>> symbols = ['adam', 'girl', 'love', 'walks', 'x', 'y', 'z']
+    >>> for s in symbols:
+    ...     try:
+    ...         print "'%s' gets value %s" % (s, m.i(s, g))
+    ...     except Undefined:
+    ...         print "'%s' is Undefined" % s
+    'adam' gets value b1
+    'girl' gets value {'g2': True, 'g1': True}
+    'love' gets value {'b1': {'g2': True, 'g1': True}, 'g1': {'b1': True}, 'g2': {'b2': True}}
+    'walks' is Undefined
+    'x' gets value b1
+    'y' gets value g2
+    'z' is Undefined
+
+Test for formulas in Model
+--------------------------
+
+    >>> tests = [
+    ...     ('(love adam betty)', True),
+    ...     ('(adam = mia)', 'Undefined'),
+    ...     ('\\x. ((boy x) or (girl x))', {'b2': True, 'g2': True, 'g1': True, 'b1': True}),
+    ...     ('\\x y. ((boy x) and (love y x))', {'b1': {'g1': True}, 'b2': {'g2': True}}),
+    ...     ('\\x. some y. ((boy x) and (love y x))', {'b1': True, 'b2': True}),
+    ...     ('some z1. (boy z1)', True),
+    ...     ('some x. ((boy x) and (not (x = adam)))', True),
+    ...     ('some x. ((boy x) and all y. (love x y))', False),
+    ...     ('all x. ((boy x) or (girl x))', False),
+    ...     ('all x. ((girl x) implies some y. (boy y) and (love y x))', False),
+    ...     ('some x. ((boy x) and all y. ((girl y) implies (love x y)))', True), 
+    ...     ('some x. ((boy x) and all y. ((girl y) implies (love y x)))', False), 
+    ...     ('all x. ((dog x) implies (not (girl x)))', True),
+    ...     ('some x. some y. ((love y x) and (love y x))', True),
+    ...     ]
+    >>> for (sent, testvalue) in tests:
+    ...     semvalue = m.evaluate(sent, g)
+    ...     if semvalue == testvalue:
+    ...         print '*',
+    ...     else:
+    ...         print sent, semvalue
+    * * * * * * * * * * * * * *
+
+Satisfier Tests
+---------------
+
+    >>> formulas = [
+    ...     '(boy x)',
+    ...     '(x = x)',
+    ...     '((boy x) or (girl x))',
+    ...     '((boy x) and (girl x))',
+    ...     '(love x adam)',
+    ...     '(love adam x)',
+    ...     '(not (x = adam))',
+    ...     'some z22. (love z22 x)',
+    ...     'some y. (love x y)',
+    ...     'all y. ((girl y) implies (love y x))',
+    ...     'all y. ((girl y) implies (love x y))',
+    ...     'all y. ((girl y) implies ((boy x) and (love x y)))',
+    ...     '((boy x) and all y. ((girl y) implies (love y x)))',
+    ...     '((boy x) and all y. ((girl y) implies (love x y)))',
+    ...     '((boy x) and some y. ((girl y) and (love x y)))',
+    ...     '((girl x) implies (dog x))',
+    ...     'all y. ((dog y) implies (x = y))',
+    ...     '(not some y. (love x y))',
+    ...     'some y. ((love y adam) and (love x y))'
+    ...     ]
+    >>> for f in formulas:
+    ...     try:
+    ...         print "'%s' gets value: %s" % (f, m.evaluate(f, g))
+    ...     except Undefined:
+    ...         print "'%s' is Undefined" % f
+    '(boy x)' gets value: True
+    '(x = x)' gets value: True
+    '((boy x) or (girl x))' gets value: True
+    '((boy x) and (girl x))' gets value: False
+    '(love x adam)' gets value: False
+    '(love adam x)' gets value: False
+    '(not (x = adam))' gets value: False
+    'some z22. (love z22 x)' gets value: True
+    'some y. (love x y)' gets value: True
+    'all y. ((girl y) implies (love y x))' gets value: False
+    'all y. ((girl y) implies (love x y))' gets value: True
+    'all y. ((girl y) implies ((boy x) and (love x y)))' gets value: True
+    '((boy x) and all y. ((girl y) implies (love y x)))' gets value: False
+    '((boy x) and all y. ((girl y) implies (love x y)))' gets value: True
+    '((boy x) and some y. ((girl y) and (love x y)))' gets value: True
+    '((girl x) implies (dog x))' gets value: True
+    'all y. ((dog y) implies (x = y))' gets value: False
+    '(not some y. (love x y))' gets value: False
+    'some y. ((love y adam) and (love x y))' gets value: True
 
 Tests based on the Blackburn & Bos testsuite
 --------------------------------------------
