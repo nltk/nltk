@@ -1,4 +1,4 @@
-from nltk_contrib.drt.DRT import *
+from nltk_contrib.drt import *
 
 def resolve(drs):
     assert isinstance(drs, AbstractDRS)
