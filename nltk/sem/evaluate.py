@@ -434,7 +434,7 @@ class Model(object):
         try:
             value = self.satisfy(expr, g, trace=trace)
             if trace:
-                 print "'%s' evaluates to %s under M, %s" %  (expr, value, g)
+                print "'%s' evaluates to %s under M, %s" %  (expr, value, g)
             return value
         except Undefined:
             return 'Undefined'
@@ -694,7 +694,7 @@ class Model(object):
         except AttributeError:
             pass
         try: 
-            first, second = parsed.op, parsed.args
+            first, second = parsed.op, map(str, parsed.args)
             #print 'first is %s, second is %s' % (first, second)
             return (first, second)
         except AttributeError:
