@@ -93,20 +93,20 @@ python:
 
 numpy:
 	mkdir -p python/{mac,win,unix}
-	wget -N -P python/mac  $(PYMAC)/numpy-1.0.3.1-py2.5-macosx10.4-2007-08-27.dmg
-	wget -N -P python/win  $(NUMPY)/numpy-1.0.3.1.win32-py2.5.exe?download
-	wget -N -P python/unix $(NUMPY)/numpy-1.0.3.1.tar.gz?download
-	mv python/win/numpy-1.0.3.1.win32-py2.5.exe?download python/win/numpy-1.0.3.1.win32-py2.5.exe
-	mv python/unix/numpy-1.0.3.1.tar.gz?download python/unix/numpy-1.0.3.1.tar.gz
+	wget -N -P python/mac  $(PYMAC)/numpy-1.0.4-py2.5-macosx10.4-2007-11-07.dmg
+	wget -N -P python/win  $(NUMPY)/numpy-1.0.4.win32-p3-py2.5.exe?download
+	wget -N -P python/unix $(NUMPY)/numpy-1.0.4.tar.gz?download
+	mv python/win/numpy-1.0.4.win32-p3-py2.5.exe?downloadd python/win/numpy-1.0.4.win32-p3-py2.5.exe
+	mv python/unix/numpy-1.0.4.tar.gz?download python/unix/numpy-1.0.4.tar.gz
 	touch .numpy.done
 
 pylab:
 	mkdir -p python/{mac,win,unix}
-	wget -N -P python/mac  $(PYMAC)/matplotlib-0.90.1-py2.5-macosx10.4-2007-06-04.dmg
-	wget -N -P python/win  $(PYLAB)/matplotlib-0.90.1.win32-py2.5.exe?download
-	wget -N -P python/unix $(PYLAB)/matplotlib-0.90.1.tar.gz?download
-	mv python/win/matplotlib-0.90.1.win32-py2.5.exe?download python/win/matplotlib-0.90.1.win32-py2.5.exe
-	mv python/unix/matplotlib-0.90.1.tar.gz?download python/unix/matplotlib-0.90.1.tar.gz
+	wget -N -P python/mac  $(PYMAC)/matplotlib-0.91.1-py2.5-macosx10.4-2007-12-04.dmg
+	wget -N -P python/win  $(PYLAB)/matplotlib-0.91.2.win32-py2.5.exe?download
+	wget -N -P python/unix $(PYLAB)/matplotlib-0.91.2.tar.gz
+	mv python/win/matplotlib-0.91.2.win32-py2.5.exe?download python/win/matplotlib-0.91.2.win32-py2.5.exe
+	mv python/unix/matplotlib-0.91.2.tar.gz?download python/unix/matplotlib-0.91.2.tar.gz
 	touch .pylab.done
 
 iso:	.dist.done .python.done .numpy.done .pylab.done
