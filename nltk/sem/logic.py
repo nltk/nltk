@@ -551,7 +551,7 @@ class ApplicationExpression(Expression):
 
     def _arglist(self):
         """Uncurry the argument list."""
-        arglist = [str(self.second)]
+        arglist = [self.second]
         if isinstance(self.first, ApplicationExpression):
             arglist.extend(self.first._arglist())
         return arglist
