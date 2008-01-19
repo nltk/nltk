@@ -544,15 +544,16 @@ Now, find ``e1`` such that the following hold:
     (bark fido)
 
 
-In this case, we are treating the subject as the functor and the verb
-as the argument. Devise a translation for *barks* that makes it the
-functor and the subject the argument. In other words, find an
-appropriate value of *e1* for the following result to be obtained:
+In the preceding examples, we have treated the subject as the functor
+and the verb as the argument. Devise a translation for *barks* that
+makes it the functor and the subject the argument. In other words,
+find an appropriate value of *e1* for the following result to be
+obtained:
 
 ..
     >>> e1 = lp.parse('\\X.(X bark)')
 
-(6.1)
+(6.6)
     
     >>> e2 = lp.parse('\\P. all x. ((dog x) implies (P x))')
     >>> e3 = ApplicationExpression(e1, e2)
