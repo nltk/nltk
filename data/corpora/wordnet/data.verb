@@ -12102,7 +12102,7 @@
 02423183 41 v 03 let 0 allow 0 permit 0 002 ! 02450505 v 0101 ~ 02423513 v 0000 02 + 25 00 + 35 00 | make it possible through a specific action or lack of action for something to happen; "This permits the water to rush in"; "This sealed door won't allow the water come into the basement"; "This will permit the rain to run off"  
 02423513 41 v 01 pass b 001 @ 02423183 v 0000 01 + 08 00 | allow to go without comment or censure; "the insult passed as if unnoticed"  
 02423650 41 v 02 give_up 0 allow 1 000 01 + 08 00 | allow the other (baseball) team to score; "give up a run"  
-02423762 41 v 03 inhibit 0 bottle_up 0 suppress 0 005 @ 02422663 v 0000 + 01147950 n 0301 ~ 02422663 v 0000 ~ 02422967 v 0000 ~ 02423999 v 0000 01 + 08 00 | control and refrain from showing; of emotions, desires, impulses, or behavior  
+02423762 41 v 03 inhibit 0 bottle_up 0 suppress 0 005 @ 00612841 v 0000 + 01147950 n 0301 ~ 02422663 v 0000 ~ 02422967 v 0000 ~ 02423999 v 0000 01 + 08 00 | control and refrain from showing; of emotions, desires, impulses, or behavior  
 02423999 41 v 01 choke 0 001 @ 02423762 v 0000 01 + 08 00 | check or slow down the action or effect of; "She choked her anger"  
 02424128 41 v 06 repress 0 quash 0 keep_down 0 subdue 0 subjugate 1 reduce 3 005 @ 02424652 v 0000 + 10668450 n 0401 + 02004176 a 0102 + 13996571 n 0101 + 00420712 n 0101 03 + 08 00 + 09 00 + 10 00 | put down by force or intimidation; "The government quashes any attempt of an uprising"; "China keeps down her dissidents very efficiently"; "The rich landowners subjugated the peasants working the land"  
 02424533 41 v 01 dragoon 1 002 @ 02496816 v 0000 + 10029831 n 0101 02 + 09 00 + 11 00 | subjugate by imposing troops  
