@@ -469,23 +469,27 @@ class Trie:
 # Breadth-First Search
 ##########################################################################
 
-# Adapted from a Python cookbook entry; original version by David Eppstein
-def breadth_first(tree, children=iter, depth=-1):
+def breadth_first(tree, children=iter, depth=-1, queue=None):
     """Traverse the nodes of a tree in breadth-first order.
-    The first argument should be the tree root; children
-    should be a function taking as argument a tree node and
-    returning an iterator of the node's children.
+    (No need to check for cycles.)
+    The first argument should be the tree root;
+    children should be a function taking as argument a tree node
+    and returning an iterator of the node's children.
     """
-    yield tree
-    last = tree
-    if depth != 0:
-        for node in breadth_first(tree, children, depth-1):
-            for child in children(node):
-                yield child
-                last = child
-            if last == node:
-                return
-
+    if queue == None:
+        queue = []
+    queue.append(tree)
+    
+    while queue:
+        node = queue.pop(0)
+        yield node
+        if depth != 0:
+            try:
+                queue += children(node)
+                depth -= 1
+            except:
+                pass
+        
 ##########################################################################
 # Guess Character Encoding
 ##########################################################################

@@ -1,9 +1,10 @@
 
-Version 0.9.1 2008-01-07
+Version 0.9.1 2008-01-20
 
 NLTK:
 - new interface for text categorization corpora
 - new corpus readers: RTE, Movie Reviews, Question Classification, Brown Corpus
+- bugfix in ConcatenatedCorpusView that caused iteration to fail if it didn't start from the beginning of the corpus
 
 Data:
 - Question classification data, included with permission of Li & Roth
@@ -13,7 +14,7 @@ Data:
 - Brown Corpus (reverted to original file structure: ca01-cr09)
 
 Contrib:
-- theorem_prover: Prover9, tableau, docs (Dan Garrette, Ewan Klein)
+- theorem_prover: Prover9, tableau, MaltParser, glue semantics, docs (Dan Garrette, Ewan Klein)
 - drt: improved drawing, conversion to FOL (Dan Garrette)
 - gluesemantics: GUI demonstration, abstracted LFG code, documentation (Dan Garrette)
 - readability: various text readability scores (Thomas Jakobsen, Thomas Skardal)
