@@ -191,23 +191,11 @@ def _toProver9String_ApplicationExpression(current):
             return '(%s %s %s)' % (firstStr, opStr, secondStr)
     else:
         accum = '%s(' % toProver9String(current.fun)
-        for arg in args(current):
+        for arg in current.args:
             accum += '%s, ' % toProver9String(arg)
         return '%s)' % accum[0:-2]
     
-    
-def args(appEx):
-    """
-    Uncurry the argument list.  
-    This is an 'overload' of logic.ApplicationExpression._args() 
-    because this version returns a list of Expressions instead 
-    of str objects.
-    """
-    assert isinstance(appEx, ApplicationExpression)
-    if isinstance(appEx.first, ApplicationExpression):
-        return args(appEx.first) + [appEx.second]
-    else:
-        return [appEx.second]
+
 
 def _toProver9String_Operator(current):
     if(current.operator == 'and'):
@@ -238,47 +226,38 @@ def testToProver9Input(expr):
         p = LogicParser().parse(t)
         print toProver9String(p.simplify().infixify());
         
-def testAttempt_proof():
+def testAttempt_proof(arguments):
+    for (goal, assumptions) in arguments:
+        g = LogicParser().parse(goal)
+        alist = [LogicParser().parse(a) for a in assumptions]
+        p = Prover9(g, assumptions=alist).prove()
+        #alist = [str(a.infixify()) for a in alist]
+        for a in alist:
+            print '   %s' % a.infixify()
+        print '|- %s: %s\n' % (g.infixify(), p)
     
-    f = LogicParser().parse(r'((man x) iff (not (not (man x))))')
-    p = Prover9(f).prove()
-    print '|- %s: %s' % (f.infixify(), p)
-    #f = LogicParser().parse(r'(not ((man x) and (not (man x))))')
-    #print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-    #f = LogicParser().parse(r'((man x) or (not (man x)))')
-    #print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-    #f = LogicParser().parse(r'((man x) implies (man x))')
-    #print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-    #f = LogicParser().parse(r'(not ((man x) and (not (man x))))')
-    #print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-    #f = LogicParser().parse(r'((man x) or (not (man x)))')
-    #print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-    #f = LogicParser().parse(r'((man x) implies (man x))')
-    #print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-    #f = LogicParser().parse(r'((man x) iff (man x))')
-    #print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-    #f = LogicParser().parse(r'(not ((man x) iff (not (man x))))')
-    #print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-    p1 = LogicParser().parse(r'all x.((man x) implies (mortal x))')
-    p2 = LogicParser().parse(r'(man Socrates)')
-    g = LogicParser().parse(r'(mortal Socrates)')
-    proof = Prover9(g, assumptions=[p1, p2]).prove()
-    print '%s, %s |- %s: %s' % (p1.infixify(), p2.infixify(), g.infixify(), proof)
-    #f = LogicParser().parse(r'((all x.((man x) implies (walks x)) and (man Socrates)) implies some y.(walks y))')
-    #print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-    #f = LogicParser().parse('(all x.(man x) implies all x.(man x))')
-    #print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-    #f = LogicParser().parse('some x.all y.(sees x y)')
-    #print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-    #p = LogicParser().parse(r'some e1.((see e1) and (subj e1 john) and some e2.((pred e1 e2) and (walk e2) and (subj e2 mary)))')
-    #g = LogicParser().parse(r'some e3.((walk e3) and (subj e3 mary))')
-    #print '%s |- %s: %s' % (p.infixify(), g.infixify(), attempt_proof(g, [p]))
-    #p = LogicParser().parse(r'some e1.((see e1) and (subj e1 john) and some e2.((pred e1 e2) and (walk e2) and (subj e2 mary)))')
-    #g = LogicParser().parse(r'some x e1.((see e1) and (subj e1 x) and some e2.((pred e1 e2) and (walk e2) and (subj e2 mary)))')
-    #print '%s |- %s: %s' % (p.infixify(), g.infixify(), attempt_proof(g, [p]))
+arguments = [
+    ('((man x) iff (not (not (man x))))', []),
+    ('(not ((man x) and (not (man x))))', []),
+    ('((man x) or (not (man x)))', []),
+    ('((man x) and (not (man x)))', []),
+    ('((man x) implies (man x))', []),
+    ('(not ((man x) and (not (man x))))', []),
+    ('((man x) or (not (man x)))', []),
+    ('((man x) implies (man x))', []),
+    ('((man x) iff (man x))', []),
+    ('(not ((man x) iff (not (man x))))', []),
+    ('(mortal Socrates)', ['all x.((man x) implies (mortal x))', '(man Socrates)']),
+    ('((all x.((man x) implies (walks x)) and (man Socrates)) implies some y.(walks y))', []),
+    ('(all x.(man x) implies all x.(man x))', []),
+    ('some x.all y.(sees x y)', []),
+    ('some e3.((walk e3) and (subj e3 mary))', 
+        ['some e1.((see e1) and (subj e1 john) and some e2.((pred e1 e2) and (walk e2) and (subj e2 mary)))']),
+    ('some x e1.((see e1) and (subj e1 x) and some e2.((pred e1 e2) and (walk e2) and (subj e2 mary)))', 
+       ['some e1.((see e1) and (subj e1 john) and some e2.((pred e1 e2) and (walk e2) and (subj e2 mary)))'])
+]
 
-if __name__ == '__main__':
-    expressions = [r'some x y.(sees x y)',
+expressions = [r'some x y.(sees x y)',
                r'some x.((man x) and (walks x))',
                r'\x.((man x) and (walks x))',
                r'\x y.(sees x y)',
@@ -289,6 +268,9 @@ if __name__ == '__main__':
                r'some x.((PRO x) and (sees John x))',
                r'some x.((man x) and (not (walks x)))',
                r'all x.((man x) implies (walks x))']
+    
+if __name__ == '__main__':
+    
     testToProver9Input(expressions)
-    print '\n\n'
-    testAttempt_proof()
+    print '\n'
+    testAttempt_proof(arguments)
