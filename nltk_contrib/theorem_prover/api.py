@@ -27,4 +27,6 @@ class ProverI(object):
         @param assumptions: Assumptions for the proof
         @type assumptions: C{list} of strings
         """
+        raise NotImplementedError('add_assumptions')
+    
     

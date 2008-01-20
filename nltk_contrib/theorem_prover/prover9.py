@@ -73,7 +73,7 @@ class Prover9(ProverI):
         self._infile = ''
         self._ontologyfile = ''
         self._outfile = '' 
-        self._p9_assumptions = None
+        self._p9_assumptions = []
         self._p9_ontology = None
         self._p9_goal = convert_to_prover9(self._goal)
         if self._assumptions is not None:
@@ -94,7 +94,7 @@ class Prover9(ProverI):
         self._outfile = os.path.join(p9_dir, filename + '.out')
         f = open(self._infile, 'w')
         
-        if self._p9_assumptions is not None:
+        if self._p9_assumptions:
             f.write('formulas(assumptions).\n')
             for p9_assumption in self._p9_assumptions:
                 f.write('    %s.\n' % p9_assumption)
@@ -131,6 +131,24 @@ class Prover9(ProverI):
                 
         tp_result = os.system(execute_string)
         return tp_result == 0
+    
+    def show_proof(self):
+        """
+        Print out a Prover9 proof.
+        """
+        if self._outfile:
+            for l in open(self._outfile):
+                print l,
+        else:
+            print "You have to call prove() first to get a proof!"
+        return None
+    
+            
+    def add_assumptions(self, new_assumptions):
+        """
+        """
+        self._p9_assumptions += convert_to_prover9(new_assumptions)
+        return None
 
 
 def convert_to_prover9(input):
@@ -271,6 +289,18 @@ expressions = [r'some x y.(sees x y)',
     
 if __name__ == '__main__':
     
-    testToProver9Input(expressions)
-    print '\n'
-    testAttempt_proof(arguments)
+    #testToProver9Input(expressions)
+    #print '\n'
+    #testAttempt_proof(arguments)
+    g = LogicParser().parse('((man x) iff (not (not (man x))))')
+    prover = Prover9(g)
+    prover.prove()
+    #prover.show_proof()
+    g = LogicParser().parse('(mortal Socrates)')
+    prover = Prover9(g)
+    print prover.prove()
+    a1 = LogicParser().parse('all x.((man x) implies (mortal x))')
+    a2 = LogicParser().parse('(man Socrates)')
+    prover.add_assumptions([a1, a2])
+    print prover.prove()
+    
