@@ -26,7 +26,7 @@ def attempt_proof(goal, premises=[], prover_name='Prover9'):
     if prover_name == 'tableau':
         return tableau.attempt_proof(goal, premises)
     
-    elif prover_name == 'Prover9':
+    elif prover_name.lower() == 'prover9':
         return prover9.attempt_proof(goal, premises)
 
 
