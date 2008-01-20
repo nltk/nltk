@@ -14,8 +14,10 @@ _prover9_path = None
 _prover9_executable = None
 
 _prover9_search = ['.',
+                   '/usr/local/bin/prover9',
                    '/usr/local/bin/prover9/bin',
                    '/usr/local/bin',
+                   '/usr/bin',
                    '/usr/local/prover9',
                    '/usr/local/share/prover9']
 
