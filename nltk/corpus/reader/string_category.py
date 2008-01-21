@@ -24,27 +24,22 @@ from api import *
 import os
 
 class StringCategoryCorpusReader(CorpusReader):
-    def __init__(self, root, documents, extension='', delimiter=' '):
+    def __init__(self, delimiter=' '):
         """
         @param root: The root directory for this corpus.
-        @param documents: A list of documents in this corpus.
-        @param extension: File extension for documents in this corpus.
+        @param files: A list or regexp specifying the files in this corpus.
         @param delimiter: Field delimiter
         """
-        if isinstance(documents, basestring):
-            documents = find_corpus_items(root, documents, extension)
-        self._root = root
-        self._documents = tuple(documents)
-        self._extension = extension
+        CorpusReader.__init__(self, root, files)
         self._delimiter = delimiter
 
-    def tuples(self, documents):
+    def tuples(self, files):
         return concat([StreamBackedCorpusView(filename, self._read_tuple_block)
-                       for filename in self.filenames(documents)])
+                       for filename in self.abspaths(files)])
 
-    def raw(self, documents):
+    def raw(self, files):
         return concat([open(filename).read()
-                       for filename in self.filenames(documents)])
+                       for filename in self.abspaths(files)])
 
     def _read_tuple_block(self, stream):
         line = stream.readline().strip()

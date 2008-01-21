@@ -64,58 +64,61 @@ from nltk.corpus.reader import *
 import chat80
 
 abc = LazyCorpusLoader(
-    'abc', PlaintextCorpusReader, r'(?!\.svn).*', '.txt')
+    'abc', PlaintextCorpusReader, r'(?!\.svn).*\.txt')
 alpino = LazyCorpusLoader(
     'alpino', AlpinoCorpusReader)
 brown = LazyCorpusLoader(
-    'brown', LocationCategorizedTaggedCorpusReader, r'c[a-z]\d\d', '', pattern=r'c([a-z])\d\d')
+    'brown', CategorizedTaggedCorpusReader, r'c[a-z]\d\d',
+    cat_pattern=r'c([a-z])\d\d')
 cess_cat = LazyCorpusLoader(
-    'cess_cat', BracketParseCorpusReader, r'(?!\.svn).*', '.tbf')
+    'cess_cat', BracketParseCorpusReader, r'(?!\.svn).*\.tbf')
 cess_esp = LazyCorpusLoader(
-    'cess_esp', BracketParseCorpusReader, r'(?!\.svn).*', '.tbf')
+    'cess_esp', BracketParseCorpusReader, r'(?!\.svn).*\.tbf')
 cmudict = LazyCorpusLoader(
     'cmudict', CMUDictCorpusReader, ['cmudict'])
 conll2000 = LazyCorpusLoader(
     'conll2000', ConllChunkCorpusReader,
-    ['train', 'test'], '.txt', ('NP','VP','PP'))
+    ['train.txt', 'test.txt'], ('NP','VP','PP'))
 conll2002 = LazyCorpusLoader(
-    'conll2002', ConllChunkCorpusReader, '.*\.(test|train).*', '',
+    'conll2002', ConllChunkCorpusReader, '.*\.(test|train).*', 
     ('LOC', 'PER', 'ORG', 'MISC'))
 floresta = LazyCorpusLoader(
-    'floresta', BracketParseCorpusReader, r'(?!\.svn).*', '.ptb', '#')
+    'floresta', BracketParseCorpusReader, r'(?!\.svn).*\.ptb', '#')
 genesis = LazyCorpusLoader(
-    'genesis', PlaintextCorpusReader, r'(?!\.svn).*', '.txt')
+    'genesis', PlaintextCorpusReader, r'(?!\.svn).*\.txt')
 gutenberg = LazyCorpusLoader(
-    'gutenberg', GutenbergCorpusReader, r'(?!\.svn).*', '.txt')
+    'gutenberg', GutenbergCorpusReader, r'(?!\.svn).*\.txt')
 ieer = LazyCorpusLoader(
     'ieer', IEERCorpusReader, r'(?!README|\.svn).*')
 inaugural = LazyCorpusLoader(
-    'inaugural', PlaintextCorpusReader, r'(?!\.svn).*', '.txt')
+    'inaugural', PlaintextCorpusReader, r'(?!\.svn).*\.txt')
 # [XX] This should probably just use TaggedCorpusReader:
 indian = LazyCorpusLoader(
-    'indian', IndianCorpusReader, r'(?!\.svn).*', '.pos')
+    'indian', IndianCorpusReader, r'(?!\.svn).*\.pos')
 mac_morpho = LazyCorpusLoader(
-    'mac_morpho', MacMorphoCorpusReader, r'(?!\.svn).*', '.txt')
+    'mac_morpho', MacMorphoCorpusReader, r'(?!\.svn).*\.txt')
 movie_reviews = LazyCorpusLoader(
-    'movie_reviews', LocationCategorizedPlaintextCorpusReader, r'(?!\.svn).*', '.txt', pattern=r'(neg|pos)/.*')
+    'movie_reviews', CategorizedPlaintextCorpusReader,
+    r'(?!\.svn).*\.txt', cat_pattern=r'(neg|pos)/.*')
 names = LazyCorpusLoader(
-    'names', WordListCorpusReader, r'(?!\.svn).*', '.txt')
+    'names', WordListCorpusReader, r'(?!\.svn).*\.txt')
 ppattach = LazyCorpusLoader(
     'ppattach', PPAttachmentCorpusReader, ['training', 'test', 'devset'])
 qc = LazyCorpusLoader(
     'qc', StringCategoryCorpusReader, ['train.txt', 'test.txt'])
 reuters = LazyCorpusLoader(
-    'reuters', ListCategorizedPlaintextCorpusReader, '(training|test).*', '', catfile='cats.txt')
+    'reuters', CategorizedPlaintextCorpusReader, '(training|test).*',
+    cat_file='cats.txt')
 rte = LazyCorpusLoader(
-    'rte', RTECorpusReader, r'(?!\.svn).*', '.xml')
+    'rte', RTECorpusReader, r'(?!\.svn).*\.xml')
 senseval = LazyCorpusLoader(
-    'senseval', SensevalCorpusReader, r'(?!\.svn).*', '.pos')
+    'senseval', SensevalCorpusReader, r'(?!\.svn).*\.pos')
 shakespeare = LazyCorpusLoader(
-    'shakespeare', XMLCorpusReader, r'(?!\.svn).*', '.xml')
+    'shakespeare', XMLCorpusReader, r'(?!\.svn).*\.xml')
 sinica_treebank = LazyCorpusLoader(
     'sinica_treebank', SinicaTreebankCorpusReader, ['parsed'])
 state_union = LazyCorpusLoader(
-    'state_union', PlaintextCorpusReader, r'(?!\.svn).*', '.txt')
+    'state_union', PlaintextCorpusReader, r'(?!\.svn).*\.txt')
 stopwords = LazyCorpusLoader(
     'stopwords', WordListCorpusReader, r'(?!README|\.svn).*')
 timit = LazyCorpusLoader(

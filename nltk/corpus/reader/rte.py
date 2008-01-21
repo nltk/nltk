@@ -77,38 +77,29 @@ class RTEPair:
             return '<RTEPair: id=%s>' % self.id
 
 
+# [xx] This could use more documentation!
 class RTECorpusReader(XMLCorpusReader):
     """
     Corpus reader for corpora in RTE challenges.
     """
-    def __init__(self, root, documents, extension=''):
-        """
-        @param root: The root directory for this corpus.
-        @param documents: A list of documents in this corpus.
-        @param extension: File extension for documents in this corpus.
-        """
-        if isinstance(documents, basestring):
-            documents = find_corpus_items(root, documents, extension)
-        self._root = root
-        self._documents = tuple(documents)
-        self._extension = extension
-
-    def xml(self, documents=None):
+    def xml(self, files=None):
         return concat([ElementTree.parse(filename).getroot()
-                   for filename in self.filenames(documents)])   
+                   for filename in self.abspaths(files)])   
 
     def _read_etree(self, doc):
         try:
             challenge = doc.attrib['challenge']
         except KeyError:
             challenge = None
-        return [RTEPair(pair, challenge=challenge) for pair in doc.getiterator("pair")]
+        return [RTEPair(pair, challenge=challenge)
+                for pair in doc.getiterator("pair")]
 
 
-    def pairs(self, documents=None):
-        doc = self.xml(documents)
+    def pairs(self, files=None):
+        doc = self.xml(files)
         if doc.tag == 'documents':
-            return concat([self._read_etree(corpus) for corpus in doc.getchildren()])
+            return concat([self._read_etree(corpus)
+                           for corpus in doc.getchildren()])
         else:
             return self._read_etree(doc)
 

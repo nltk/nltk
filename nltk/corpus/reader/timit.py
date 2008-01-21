@@ -6,6 +6,7 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
+# [xx] this docstring is out-of-date:
 """
 Read tokens, phonemes and audio data from the NLTK TIMIT Corpus.
 
@@ -24,15 +25,15 @@ This corpus contains selected portion of the TIMIT corpus.
 Module contents
 ---------------
 
-The timit module provides 4 functions and 4 data items.
+The timit corpus reader provides 4 functions and 4 data items.
 
-* items
+* utterances
 
-  List of items in the corpus.  There are total 160 items, each of which
-  corresponds to a unique utterance of a speaker.  Here's an example of an
-  item in the list:
+  List of utterances in the corpus.  There are total 160 utterances,
+  each of which corresponds to a unique utterance of a speaker.
+  Here's an example of an utterance identifier in the list:
 
-      dr1-fvmh0:sx206
+      dr1-fvmh0/sx206
         - _----  _---
         | |  |   | |
         | |  |   | |
@@ -51,8 +52,8 @@ The timit module provides 4 functions and 4 data items.
   Note that if you split an item ID with colon and take the first element of
   the result, you will get a speaker ID.
 
-      >>> itemid = dr1-fvmh0:sx206
-      >>> spkrid,sentid = itemid.split(':')
+      >>> itemid = dr1-fvmh0/sx206
+      >>> spkrid,sentid = itemid.split('/')
       >>> spkrid
       'dr1-fvmh0'
       
@@ -139,15 +140,56 @@ class TimitCorpusReader(CorpusReader):
       - <utterance-id>.phn: phonetic transcription of utterances
       - <utterance-id>.wav: utterance sound file
     """
+    
+    _FILE_RE = (r'(\w+-\w+/\w+\.(phn|txt|wav|wrd))|' +
+                r'timitdic\.txt|spkrinfo\.txt')
+    """A regexp matchin files that are used by this corpus reader."""
+    _UTTERANCE_RE = r'\w+-\w+/\w+\.txt'
+    
     def __init__(self, root):
         """
         Construct a new TIMIT corpus reader in the given directory.
+        @param root: The root directory for this corpus.
         """
+        CorpusReader.__init__(self, root,
+                              find_corpus_files(root, self._FILE_RE))
+
+        self._utterances = [name[:-4] for name in
+                            find_corpus_files(root, self._UTTERANCE_RE)]
+        """A list of the utterance identifiers for all utterances in
+        this corpus."""
+
         self._speakerinfo = None
         self._root = root
-        self._documents = tuple(find_corpus_items(root, '\w+-\w+/\w+', '.wav'))
-        self.speakers = tuple(sorted(set(item.split('/')[0]
-                                         for item in self.items)))
+        self.speakers = tuple(sorted(set(u.split('/')[0]
+                                         for u in self._utterances)))
+
+    def utterances(self, dialect=None, sex=None, spkrid=None,
+                   sent_type=None, sentid=None):
+        """
+        @return: A list of the utterance identifiers for all
+        utterances in this corpus, or for the given speaker, dialect
+        region, gender, sentence type, or sentence number, if
+        specified.
+        """
+        if isinstance(dialect, basestring): dialect = [dialect]
+        if isinstance(sex, basestring): sex = [sex]
+        if isinstance(spkrid, basestring): spkrid = [spkrid]
+        if isinstance(sent_type, basestring): sent_type = [sent_type]
+        if isinstance(sentid, basestring): sentid = [sentid]
+            
+        utterances = list(self._utterances)
+        if dialect is not None:
+            utterances = [u for u in utterances if u[2] in dialect]
+        if sex is not None:
+            utterances = [u for u in utterances if u[4] in sex]
+        if spkrid is not None:
+            utterances = [u for u in utterances if u[:9] in spkrid]
+        if sent_type is not None:
+            utterances = [u for u in utterances if u[11] in sent_type]
+        if sentid is not None:
+            utterances = [u for u in utterances if u[10:] in spkrid]
+        return tuple(utterances)
 
     def transcription_dict(self):
         """
@@ -162,28 +204,28 @@ class TimitCorpusReader(CorpusReader):
             _transcriptions[m.group(1)] = m.group(2).split()
         return _transcriptions
 
-    def spkrid(self, itemid):
-        return itemid.split('/')[0]
+    def spkrid(self, utterance):
+        return utterance.split('/')[0]
 
-    def sentid(self, itemid):
-        return itemid.split('/')[1]
+    def sentid(self, utterance):
+        return utterance.split('/')[1]
 
-    def itemid(self, spkrid, sentid):
+    def utterance(self, spkrid, sentid):
         return '%s/%s' % (spkrid, sentid)
 
-    def spkritems(self, speaker):
+    def spkrutterances(self, speaker):
         """
-        @return: A list of all utterance items associated with a given
+        @return: A list of all utterances associated with a given
         speaker.
         """
-        return [item for item in self.items
-                if item.startswith(speaker+'/')]
+        return [utterance for utterance in self._utterances
+                if utterance.startswith(speaker+'/')]
 
     def spkrinfo(self, speaker):
         """
         @return: A dictionary mapping .. something.
         """
-        if speaker in self.items:
+        if speaker in self._utterances:
             speaker = self.spkrid(speaker)
         
         if self._speakerinfo is None:
@@ -196,49 +238,49 @@ class TimitCorpusReader(CorpusReader):
 
         return self._speakerinfo[speaker]
 
-    def phones(self, items=None):
+    def phones(self, utterances=None):
         return [line.split()[-1]
-                for filename in self._item_filenames(items, '.phn')
+                for filename in self._utterance_filenames(utterances, '.phn')
                 for line in open(filename) if line.strip()]
 
-    def phone_times(self, items=None):
+    def phone_times(self, utterances=None):
         """
         offset is represented as a number of 16kHz samples!
         """
         return [(line.split()[2], int(line.split()[0]), int(line.split()[1]))
-                for filename in self._item_filenames(items, '.phn')
+                for filename in self._utterance_filenames(utterances, '.phn')
                 for line in open(filename) if line.strip()]
 
-    def words(self, items=None):
+    def words(self, utterances=None):
         return [line.split()[-1]
-                for filename in self._item_filenames(items, '.wrd')
+                for filename in self._utterance_filenames(utterances, '.wrd')
                 for line in open(filename) if line.strip()]
 
-    def word_times(self, items=None):
+    def word_times(self, utterances=None):
         return [(line.split()[2], int(line.split()[0]), int(line.split()[1]))
-                for filename in self._item_filenames(items, '.wrd')
+                for filename in self._utterance_filenames(utterances, '.wrd')
                 for line in open(filename) if line.strip()]
 
-    def sents(self, items=None):
+    def sents(self, utterances=None):
         return [[line.split()[-1]
                  for line in open(filename) if line.strip()]
-                for filename in self._item_filenames(items, '.wrd')]
+                for filename in self._utterance_filenames(utterances, '.wrd')]
 
-    def sent_times(self, items=None):
+    def sent_times(self, utterances=None):
         return [(line.split(None,2)[-1].strip(),
                  int(line.split()[0]), int(line.split()[1]))
-                for filename in self._item_filenames(items, '.txt')
+                for filename in self._utterance_filenames(utterances, '.txt')
                 for line in open(filename) if line.strip()]
 
-    def phone_trees(self, items=None):
-        if items is None: items = self.items
-        if isinstance(items, basestring): items = [items]
+    def phone_trees(self, utterances=None):
+        if utterances is None: utterances = self._utterances
+        if isinstance(utterances, basestring): utterances = [utterances]
         
         trees = []
-        for item in items:
-            word_times = self.word_times(item)
-            phone_times = self.phone_times(item)
-            sent_times = self.sent_times(item)
+        for utterance in utterances:
+            word_times = self.word_times(utterance)
+            phone_times = self.phone_times(utterance)
+            sent_times = self.sent_times(utterance)
     
             while sent_times:
                 (sent, sent_start, sent_end) = sent_times.pop(0)
@@ -255,13 +297,13 @@ class TimitCorpusReader(CorpusReader):
                     trees[-1].append(phone_times.pop(0)[0])
         return trees
 
-    def wav(self, item, start=0, end=None):
+    def wav(self, utterance, start=0, end=None):
         # We wait to import until here because the wave module wants
         # to import the stdlib chunk module, and will get confused
         # if it sees *our* chunk module instead.
         import wave
         
-        wav_data = open(os.path.join(self._root, item+'.wav')).read()
+        wav_data = open(os.path.join(self._root, utterance+'.wav')).read()
         
         # If they want the whole thing, return it as-is.
         if start==0 and end is None:
@@ -269,7 +311,7 @@ class TimitCorpusReader(CorpusReader):
 
         # Select the piece we want using the 'wave' module.
         else:
-            w = wave.open(os.path.join(self._root, item+'.wav'))
+            w = wave.open(os.path.join(self._root, utterance+'.wav'))
             # Skip past frames before start.
             w.readframes(start)
             # Read the frames we want.
@@ -287,23 +329,23 @@ class TimitCorpusReader(CorpusReader):
             tf.seek(0)
             return tf.read()
 
-    def audiodata(self, item, start=0, end=None):
+    def audiodata(self, utterance, start=0, end=None):
         assert(end is None or end > start)
         headersize = 44
-        fnam = os.path.join(self._root, item+'.wav')
+        fnam = os.path.join(self._root, utterance+'.wav')
         if end is None:
             data = open(fnam).read()
         else:
             data = open(fnam).read(headersize+end*2)
         return data[headersize+start*2:]
 
-    def _item_filenames(self, items, extension):
-        if items is None: items = self.items
-        if isinstance(items, basestring): items = [items]
-        return [os.path.join(self._root, '%s%s' % (item, extension))
-                for item in items]
+    def _utterance_filenames(self, utterances, extension):
+        if utterances is None: utterances = self.utterances
+        if isinstance(utterances, basestring): utterances = [utterances]
+        return [os.path.join(self._root, '%s%s' % (utterance, extension))
+                for utterance in utterances]
 
-    def play(self, item, start=0, end=None):
+    def play(self, utterance, start=0, end=None):
         """
         Play the given audio samples.
         
@@ -318,7 +360,7 @@ class TimitCorpusReader(CorpusReader):
                 dsp.setfmt(ossaudiodev.AFMT_S16_LE)
                 dsp.channels(1)
                 dsp.speed(16000)
-                dsp.write(self.audiodata(item, start, end))
+                dsp.write(self.audiodata(utterance, start, end))
                 dsp.close()
             except IOError, e:
                 print >>sys.stderr, ("can't acquire the audio device; please "
@@ -332,7 +374,7 @@ class TimitCorpusReader(CorpusReader):
         try:
             import pygame.mixer, StringIO
             pygame.mixer.init(16000)
-            f = StringIO.StringIO(self.wav(item, start, end))
+            f = StringIO.StringIO(self.wav(utterance, start, end))
             pygame.mixer.Sound(f).play()
             while pygame.mixer.get_busy():
                 time.sleep(0.01)
@@ -344,15 +386,21 @@ class TimitCorpusReader(CorpusReader):
         print >>sys.stderr, ("you must install pygame or ossaudiodev "
                              "for audio playback.")
 
+    #{ Deprecated since 0.9.1
+    @deprecated("Use utterances(spkrid=...) instead.")
+    def spkritems(self, spkrid):
+        return self.utterances(spkrid=spkrid)
+    #}
+
     #{ Deprecated since 0.8
     @deprecated("Use .sents() or .sent_times() instead.")
-    def tokenized(self, items=None, offset=True):
-        if offset: return self.sent_times(items)
-        else: return self.sents(items)
+    def tokenized(self, utterances=None, offset=True):
+        if offset: return self.sent_times(utterances)
+        else: return self.sents(utterances)
     @deprecated("Use .phones() or .phone_times() instead.")
-    def phonetic(self, items=None, offset=True):
-        if offset: return self.phone_times(items)
-        else: return self.phones(items)
+    def phonetic(self, utterances=None, offset=True):
+        if offset: return self.phone_times(utterances)
+        else: return self.phones(utterances)
     #}
 
 class SpeakerInfo:
