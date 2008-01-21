@@ -68,20 +68,27 @@ example if the explicitly supplied path is incorrect, it will raise an error.
 Using Prover9
 ~~~~~~~~~~~~~
 
+The input to ``Prover9`` must be ``Expression``\ s of nltk.sem.logic.
     >>> from nltk.sem import LogicParser
     >>> g = LogicParser().parse('((man x) iff (not (not (man x))))')
+
+A ``Prover9`` instance is initialized with a goal and, possibly, some
+assumptions. The ``prove()`` method attempts to find a proof of the goal,
+given the list of assumptions (in this case, none).
+
+    >>> prover = TP.Prover9(g)
+    >>> prover.prove()
+    True
+
+We can also call the ``prove()`` method directly:
+
+    >>> g = LogicParser().parse('all x. ((man x) implies (man x))')
     >>> print TP.Prover9(g).prove()
     True
-    >>> g = LogicParser().parse('all x. ((man x) implies (man x))')
-    >>> prover = TP.Prover9(g)
-    >>> print prover.prove()
-    True
-
-
-
-The command ``prover.show_proof()`` will print out the
-extensive proof information provided by Prover9, shown in abbreviated
-form here::
+    
+Given a ``Prover9`` instance ``prover``, the method
+``prover.show_proof()`` will print out the extensive proof information
+provided by Prover9, shown in abbreviated form here::
 
     ============================== Prover9 ===============================
     Prover9 (32) version Dec-2007, Dec 2007.
@@ -109,13 +116,63 @@ form here::
     <BLANKLINE>
     Process 6317 exit (max_proofs) Mon Jan 21 15:23:28 2008
 
+
+As mentioned earlier, we can explicitly specify the assumptions for
+the proof, as shown here.
+
     >>> g = LogicParser().parse('(mortal Socrates)')
-    >>> prover = TP.Prover9(g)
+    >>> a1 = LogicParser().parse('all x.((man x) implies (mortal x))')
+    >>> prover = TP.Prover9(g, assumptions=[a1])
+    >>> prover.assumptions()
+    ['all x.((man x) implies (mortal x))']
+
+However, the assumptions are not sufficient to derive the goal:
+
+    ['all x.((man x) implies (mortal x))']
     >>> print prover.prove()
     False
-    >>> a1 = LogicParser().parse('all x.((man x) implies (mortal x))')
-    >>> a2 = LogicParser().parse('(man Socrates)')
-    >>> prover.add_assumptions([a1, a2])
+
+So let's add another assumption:
+
+    >>> a2 = LogicParser().parse('(man Socrates)')    
+    >>> prover.add_assumptions([a2])
+    >>> prover.assumptions()
+    ['all x.((man x) implies (mortal x))', '(man Socrates)']
+    >>> print prover.prove()
+    True
+
+We can also show the assumptions in ``Prover9`` format.
+
+    >>> prover.assumptions(output_format='Prover9')
+    ['all x (man(x) -> mortal(x))', 'man(Socrates)']
+
+    >>> prover.assumptions(output_format='Spass')
+    Traceback (most recent call last):
+      . . .
+    NameError: Unrecognized value for 'output_format': Spass
+
+Assumptions can be retracted from the list of assumptions.
+
+    >>> prover.retract_assumptions([a1])
+    >>> prover.assumptions()
+    ['(man Socrates)']
+    >>> prover.retract_assumptions([a1])
+
+Statements can be load from a file and parsed. We can then add these
+a statements as new assumptions.
+
+    >>> g = LogicParser().parse('all x. ((boxer1 x) implies (not (boxer2 x)))')
+    >>> prover = TP.Prover9(g)
+    >>> new = prover.load('onto1.fol')
+    >>> for a in new:
+    ...     print a.infixify()
+    all x.((boxer2 x) implies (dog x))
+    all x.((boxer1 x) implies (person x))
+    all x.(not ((dog x) and (person x)))
+    all x.(not ((kitchen x) and (garden x)))
+    all x.((kitchen x) implies (location x))
+    all x.((garden x) implies (location x))
+    >>> prover.add_assumptions(new)
     >>> print prover.prove()
     True
 
