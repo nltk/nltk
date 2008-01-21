@@ -15,7 +15,7 @@ from api import ProverI
 _prover9_path = None
 _prover9_executable = None
 
-_prover9_search = ['.',
+prover9_search = ['.',
                    '/usr/local/bin/prover9',
                    '/usr/local/bin/prover9/bin',
                    '/usr/local/bin',
@@ -32,13 +32,13 @@ def config_prover9(path=None, verbose=True):
     """
     
     global _prover9_path, _prover9_executable
-    _prover_path = None
+    _prover9_path = None
 
     if path is not None:
         searchpath = (path,)
 
     if  path is  None:
-        searchpath = _prover9_search
+        searchpath = prover9_search
         if 'PROVER9HOME' in os.environ:
             searchpath.insert(0, os.environ['PROVER9HOME'])
 
@@ -58,7 +58,7 @@ def config_prover9(path=None, verbose=True):
     
     
 class Prover9(ProverI):
-    def __init__(self, goal, assumptions=None, ontology=None, **options):
+    def __init__(self, goal, assumptions=[], ontology=None, **options):
         """
         @param goal: Input expression to prove
         @type goal: L{logic.Expression}
@@ -76,7 +76,7 @@ class Prover9(ProverI):
         self._p9_assumptions = []
         self._p9_ontology = None
         self._p9_goal = convert_to_prover9(self._goal)
-        if self._assumptions is not None:
+        if self._assumptions:
             self._p9_assumptions = convert_to_prover9(self._assumptions)
         if self._ontology is not None:    
             self._p9_ontology = convert_to_prover9(self._ontology)
@@ -85,7 +85,7 @@ class Prover9(ProverI):
     
     def prover9_files(self, filename='prover9', p9_dir=None):
         """
-        
+        Generate names for the input and output files and write to the input file.
         """     
         # If no directory specified, use system temp directory
         if p9_dir is None:
@@ -146,10 +146,27 @@ class Prover9(ProverI):
             
     def add_assumptions(self, new_assumptions):
         """
+        Add new assumptions to the assumption list.
+        
+        @param new_assumptions: new assumptions
+        @type new_assumptions: C{list} of L{sem.logic.Expression}s
         """
-        self._p9_assumptions += convert_to_prover9(new_assumptions)
+        self._assumptions += new_assumptions
+        self._p9_assumptions += convert_to_prover9(self._assumptions)
         return None
-
+    
+    def assumptions(self, output_format='nltk'):
+        """
+        List the current assumptions.
+        
+        """
+        if output_format.lower() == 'nltk':
+            print [str(a.infixify()) for a in self._assumptions]
+ 
+        elif output_format.lower() == 'prover9':
+            print self._p9_assumptions
+        else:
+            raise NameError("Unrecognized value for 'output_format': %s" % output_format)
 
 def convert_to_prover9(input):
     if isinstance(input, list):
@@ -289,18 +306,20 @@ expressions = [r'some x y.(sees x y)',
     
 if __name__ == '__main__':
     
-    #testToProver9Input(expressions)
-    #print '\n'
-    #testAttempt_proof(arguments)
-    g = LogicParser().parse('((man x) iff (not (not (man x))))')
-    prover = Prover9(g)
-    prover.prove()
-    #prover.show_proof()
+    testToProver9Input(expressions)
+    print '\n'
+    testAttempt_proof(arguments)
     g = LogicParser().parse('(mortal Socrates)')
     prover = Prover9(g)
     print prover.prove()
+    prover.assumptions()
     a1 = LogicParser().parse('all x.((man x) implies (mortal x))')
     a2 = LogicParser().parse('(man Socrates)')
     prover.add_assumptions([a1, a2])
+    prover.assumptions()
+    prover.assumptions(output_format='Prover9')
     print prover.prove()
+    
+ 
+    
     
