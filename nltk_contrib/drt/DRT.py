@@ -156,7 +156,7 @@ class DRS(AbstractDRS):
         # required because referents on the left side of an implication are accessable to the right
         #===============================================================================
         for cond in r_conds:
-            if isinstance(cond, ApplicationDRS) and isinstance(cond.first.first, DrsOperator) and cond.first.first.operator == 'implies':
+            if isinstance(cond, ApplicationDRS) and isinstance(cond.first, ApplicationDRS) and isinstance(cond.first.first, DrsOperator) and cond.first.first.operator == 'implies':
                 for ref in cond.first.second.get_refs():
                     if ref.variable in expression.free():
                         r_conds.remove(cond)
@@ -181,9 +181,26 @@ class DRS(AbstractDRS):
         return self.refs
     
     def resolve_anaphora(self, trail=[]):
-        r_conds = [cond.resolve_anaphora(trail + [self]) for cond in self.conds]
+        r_conds = []
+        for cond in self.conds:
+            r_cond = cond.resolve_anaphora(trail + [self])
+            
+            # if the condition is of the form '(x = [])' then do not include it
+            if not DRS._isNullResolution(r_cond):
+                r_conds.append(r_cond)
+                
         return self.__class__(self.refs, r_conds)
     
+    def _isNullResolution(self):
+        return isinstance(self, ApplicationExpression) and \
+               isinstance(self.first, ApplicationExpression) and \
+               isinstance(self.first.first, FolOperator) and \
+               self.first.first.operator == Tokens.EQ and \
+               ((isinstance(self.second, PossibleAntecedents) and not self.second) or \
+                (isinstance(self.first.second, PossibleAntecedents) and not self.first.second))
+
+    _isNullResolution = staticmethod(_isNullResolution)
+
     def simplify(self):
         r_refs = [ref.simplify() for ref in self.refs]
         r_conds = [cond.simplify() for cond in self.conds]
@@ -1352,8 +1369,8 @@ class Parser:
     def make_Application(self, first, second):
         first_simp = first.simplify()
         second_simp = second.simplify()
-        if (isinstance(first, ApplicationDRS) and isinstance(first_simp.first, DrsOperator) and first_simp.first.operator == Tokens.DRS_CONC and isinstance(second, AbstractDRS)) or \
-           (isinstance(second, ApplicationDRS) and isinstance(second_simp.first, DrsOperator) and second_simp.first.operator == Tokens.DRS_CONC and isinstance(first, AbstractDRS)):
+        if (isinstance(first_simp, ApplicationDRS) and isinstance(first_simp.first, DrsOperator) and first_simp.first.operator == Tokens.DRS_CONC and isinstance(second_simp, AbstractDRS)) or \
+           (isinstance(second_simp, ApplicationDRS) and isinstance(second_simp.first, DrsOperator) and second_simp.first.operator == Tokens.DRS_CONC and isinstance(first_simp, AbstractDRS)):
             return ConcatenationDRS(first, second)
         elif isinstance(first, DrsOperator) or isinstance(first, AbstractDRS):
             return ApplicationDRS(first, second)
@@ -1495,6 +1512,10 @@ def testResolve_anaphora():
     print '    resolves to: ' + str(drs.simplify().resolve_anaphora().infixify()) + '\n'
 
     drs = Parser().parse(r'drs([],[((drs([x],[]) + drs([],[(dog x)])) implies drs([y],[(walks y), (PRO y)]))])')
+    print '    ' + str(drs.infixify())
+    print '    resolves to: ' + str(drs.simplify().resolve_anaphora().infixify()) + '\n'
+
+    drs = Parser().parse(r'drs([x],[(walks x), (PRO x)])')
     print '    ' + str(drs.infixify())
     print '    resolves to: ' + str(drs.simplify().resolve_anaphora().infixify()) + '\n'
 

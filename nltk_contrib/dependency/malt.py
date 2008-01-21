@@ -141,10 +141,22 @@ def pos_tag(sentence, verbose=False):
     words = tokenize.WhitespaceTokenizer().tokenize(sentence)
     tagged_words = []
     for word in words:
-        tag = {'John': 'pn',
-               'Mary': 'pn',
-               'sees': 'tv'
-               }[word]
+        try:
+            tag = {'john'  : 'pn',
+                   'mary'  : 'pn',
+                   'sees'  : 'tv',
+                   'own'   : 'tv',
+                   'have'  : 'tv',
+                   'walks' : 'iv',
+                   'a'     : 'ex_quant',
+                   'an'    : 'ex_quant',
+                   'every' : 'univ_quant',
+                   'dog'   : 'n',
+                   'car'   : 'n',
+                   'auto'  : 'n'
+                   }[word.lower()]
+        except:
+            raise KeyError('\'%s\' is not in the Part-of-Speech lookup' % word )
         tagged_words.append((word, tag))
     return tagged_words
 
@@ -162,7 +174,7 @@ def train(verbose=False):
     
     mco_file = 'glue'
     dep_path = '%s/nltk_contrib/dependency' % os.environ['PYTHONPATH']
-    input_file =  '%s/in.conll' % dep_path
+    input_file =  '%s/glue_train.conll' % dep_path
     
     win_path = os.path.exists('c:\\')
     if win_path:
@@ -197,7 +209,8 @@ def train(verbose=False):
 
 
 if __name__ == '__main__':
-    print parse('John sees Mary', verbose=True)
-    
-    #train()
+    train(True)
+
+    parse('John sees Mary', verbose=True)
+    parse('a dog walks', verbose=True)
     
