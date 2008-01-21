@@ -33,37 +33,89 @@ class YCOECorpusReader(CorpusReader):
     Corpus reader for the York-Toronto-Helsinki Parsed Corpus of Old
     English Prose (YCOE), a 1.5 million word syntactically-annotated
     corpus of Old English prose texts.
-
-    
     """
     def __init__(self, root):
-        self._root = root
         self._psd_reader = YCOEParseCorpusReader(
             os.path.join(root, 'psd'), '.*', '.psd')
         self._pos_reader = YCOETaggedCorpusReader(
             os.path.join(root, 'pos'), '.*', '.pos')
 
         # Make sure we have a consistent set of items:
-        if set(self._psd_reader.items) != set(self._pos_reader.items):
+        documents = set(f[:-4] for f in self._psd_reader.files())
+        if set(f[:-4] for f in self._pos_reader.files()) != documents:
             raise ValueError('Items in "psd" and "pos" '
                              'subdirectories do not match.')
-        self.items = self._psd_reader.items
 
+        files = sorted(['%s.psd' % doc for doc in documents] +
+                       ['%s.pos' % doc for doc in documents])
+        CorpusReader.__init__(self, root, files)
+        self._documents = tuple(sorted(documents))
+
+    def documents(self, files=None):
+        """
+        Return a list of document identifiers for all documents in
+        this corpus, or for the documents with the given file(s) if
+        specified.
+        """
+        if files is None:
+            return self._documents
+        if isinstance(files, basestring):
+            files = [files]
+        for f in files:
+            if f not in self._files:
+                raise KeyError('File id %s not found' % files)
+        # Strip off the '.pos' and '.psd' extensions.
+        return sorted(set(f[:-4] for f in files))
+
+    def files(self, documents=None):
+        """
+        Return a list of file identifiers for the files that make up
+        this corpus, or that store the given document(s) if specified.
+        """
+        if documents is None:
+            return self._files
+        elif isinstance(documents, basestring):
+            documents = [documents]
+        return sorted(set(['%s.pos' % doc for doc in documents] +
+                          ['%s.psd' % doc for doc in documents]))
+
+    def _getfiles(self, documents, subcorpus):
+        """
+        Helper that selects the appropraite files for a given set of
+        documents from a given subcorpus (pos or psd).
+        """
+        if documents is None:
+            documents = self._documents
+        else:
+            if isinstance(documents, basestring):
+                documents = [documents]
+            for document in documents:
+                if document not in self._documents:
+                    if document[-4:] in ('.pos', '.psd'):
+                        raise ValueError(
+                            'Expected a document identifier, not a file '
+                            'identifier.  (Use corpus.documents() to get '
+                            'a list of document identifiers.')
+                    else:
+                        raise ValueError('Document identifier %s not found'
+                                         % document)
+        return ['%s.%s' % (d, subcorpus) for d in documents]
+    
     # Delegate to one of our two sub-readers:
-    def words(self, items=None):
-        return self._pos_reader.words(items)
-    def sents(self, items=None):
-        return self._pos_reader.sents(items)
-    def paras(self, items=None):
-        return self._pos_reader.paras(items)
-    def tagged_words(self, items=None):
-        return self._pos_reader.tagged_words(items)
-    def tagged_sents(self, items=None):
-        return self._pos_reader.tagged_sents(items)
-    def tagged_paras(self, items=None):
-        return self._pos_reader.tagged_paras(items)
-    def parsed_sents(self, items=None):
-        return self._psd_reader.parsed_sents(items)
+    def words(self, documents=None):
+        return self._pos_reader.words(self._getfiles(documents, 'pos'))
+    def sents(self, documents=None):
+        return self._pos_reader.sents(self._getfiles(documents, 'pos'))
+    def paras(self, documents=None):
+        return self._pos_reader.paras(self._getfiles(documents, 'pos'))
+    def tagged_words(self, documents=None):
+        return self._pos_reader.tagged_words(self._getfiles(documents, 'pos'))
+    def tagged_sents(self, documents=None):
+        return self._pos_reader.tagged_sents(self._getfiles(documents, 'pos'))
+    def tagged_paras(self, documents=None):
+        return self._pos_reader.tagged_paras(self._getfiles(documents, 'pos'))
+    def parsed_sents(self, documents=None):
+        return self._psd_reader.parsed_sents(self._getfiles(documents, 'psd'))
 
     #{ Deprecated since 0.8
     @deprecated("Use .raw() or .words() or .tagged_words() or "
@@ -98,10 +150,10 @@ class YCOEParseCorpusReader(BracketParseCorpusReader):
         return BracketParseCorpusReader._parse(self, t)
 
 class YCOETaggedCorpusReader(TaggedCorpusReader):
-    def __init__(self, root, items, extension):
+    def __init__(self, root, items):
         gaps_re = r'(?u)\(?<=/\.)\s+|\s*\S*_CODE\s*|\s*\S*_ID\s*'
         sent_tokenizer = RegexpTokenizer(gaps_re, gaps=True)
-        TaggedCorpusReader.__init__(self, root, items, extension, sep='_',
+        TaggedCorpusReader.__init__(self, root, items, sep='_',
                                     sent_tokenizer=sent_tokenizer)
         
 #: A list of all documents and their titles in ycoe.

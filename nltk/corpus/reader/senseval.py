@@ -30,9 +30,6 @@ from xmldocs import XMLCorpusReader
 from nltk.etree import ElementTree
 from nltk.utilities import deprecated
 
-#: A list of all documents in this corpus.
-documents = sorted(["hard", "interest", "line", "serve"])
-
 class SensevalInstance(object):
     def __init__(self, word, position, context, senses):
         self.word = word
@@ -45,21 +42,9 @@ class SensevalInstance(object):
                 (self.word, self.position, self.context, self.senses))
 
 class SensevalCorpusReader(CorpusReader):
-    def __init__(self, root, documents, extension='.xml'):
-        """
-        @param root: The root directory for this corpus.
-        @param documents: A list of documents in this corpus.
-        @param extension: File extension for documents in this corpus.
-        """
-        if isinstance(documents, basestring):
-            documents = find_corpus_items(root, documents, extension)
-        self._root = root
-        self._documents = tuple(documents)
-        self._extension = extension
-
-    def instances(self, documents=None):
+    def instances(self, files=None):
         return concat([SensevalCorpusView(filename)
-                       for filename in self.filenames(documents)])
+                       for filename in self.abspaths(files)])
 
     def _entry(self, tree):
         elts = []

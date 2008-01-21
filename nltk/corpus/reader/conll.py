@@ -17,48 +17,44 @@ import os
 from nltk.utilities import deprecated
 
 class ConllChunkCorpusReader(CorpusReader):
-    def __init__(self, root, documents, extension, chunk_types):
-        if isinstance(documents, basestring):
-            documents = find_corpus_items(root, documents, extension)
-        self._root = root
-        self._documents = tuple(documents)
-        self._extension = extension
+    def __init__(self, root, files, chunk_types):
+        CorpusReader.__init__(self, root, files)
         self.chunk_types = tuple(chunk_types)
 
     # Add method for list of tuples
     # add method for list of list of tuples
 
-    def raw(self, documents=None):
+    def raw(self, files=None):
         return concat([open(filename).read()
-                       for filename in self.filenames(documents)])
+                       for filename in self.abspaths(files)])
 
-    def words(self, documents=None):
+    def words(self, files=None):
         return concat([ConllChunkCorpusView(filename, False, False, False)
-                       for filename in self.filenames(documents)])
+                       for filename in self.abspaths(files)])
 
-    def sents(self, documents=None):
+    def sents(self, files=None):
         return concat([ConllChunkCorpusView(filename, False, True, False)
-                       for filename in self.filenames(documents)])
+                       for filename in self.abspaths(files)])
 
-    def tagged_words(self, documents=None):
+    def tagged_words(self, files=None):
         return concat([ConllChunkCorpusView(filename, True, False, False)
-                       for filename in self.filenames(documents)])
+                       for filename in self.abspaths(files)])
 
-    def tagged_sents(self, documents=None):
+    def tagged_sents(self, files=None):
         return concat([ConllChunkCorpusView(filename, True, True, False)
-                       for filename in self.filenames(documents)])
+                       for filename in self.abspaths(files)])
 
-    def chunked_words(self, documents=None, chunk_types=None):
+    def chunked_words(self, files=None, chunk_types=None):
         if chunk_types is None: chunk_types = self.chunk_types
         return concat([ConllChunkCorpusView(filename, True, False, True,
                                             chunk_types)
-                       for filename in self.filenames(documents)])
+                       for filename in self.abspaths(files)])
 
-    def chunked_sents(self, documents=None, chunk_types=None):
+    def chunked_sents(self, files=None, chunk_types=None):
         if chunk_types is None: chunk_types = self.chunk_types
         return concat([ConllChunkCorpusView(filename, True, True, True,
                                             chunk_types)
-                       for filename in self.filenames(documents)])
+                       for filename in self.abspaths(files)])
 
     #{ Deprecated since 0.8
     @deprecated("Use .raw() or .words() or .tagged_words() or "

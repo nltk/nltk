@@ -11,6 +11,7 @@ from itertools import islice
 from api import CorpusReader
 from nltk import tokenize
 from nltk.etree import ElementTree
+from nltk.utilities import deprecated
 
 # Maximize the number of open files allowed (for CESS and Reuters Corpora)
 if os.name == 'posix':
@@ -713,6 +714,7 @@ def _parse_sexpr_block(block):
 #{ Treebank readers
 ######################################################################
 
+#[xx] is it worth it to factor this out?
 class SyntaxCorpusReader(CorpusReader):
     """
     An abstract base class for reading corpora consisting of
@@ -721,34 +723,45 @@ class SyntaxCorpusReader(CorpusReader):
       - L{__init__}, which specifies the location of the corpus
         and a method for detecting the sentence blocks in corpus files.
       - L{_read_block}, which reads a block from the input stream.
+      - L{_word}, which takes a block and returns a list of list of words.
+      - L{_tag}, which takes a block and returns a list of list of tagged
+        words.
+      - L{_parse}, which takes a block and returns a list of parsed
+        sentences.
     """
 
-    def raw(self, documents=None):
+    def raw(self, files=None):
         return concat([open(filename).read()
-                       for filename in self.filenames(documents)])
+                       for filename in self.abspaths(files)])
 
-    def parsed_sents(self, documents=None):
-        return concat([StreamBackedCorpusView(filename, self._read_parsed_sent_block)
-                       for filename in self.filenames(documents)])
+    def parsed_sents(self, files=None):
+        return concat([StreamBackedCorpusView(filename,
+                                              self._read_parsed_sent_block)
+                       for filename in self.abspaths(files)])
 
-    def tagged_sents(self, documents=None):
-        return concat([StreamBackedCorpusView(filename, self._read_tagged_sent_block)
-                       for filename in self.filenames(documents)])
+    def tagged_sents(self, files=None):
+        return concat([StreamBackedCorpusView(filename,
+                                              self._read_tagged_sent_block)
+                       for filename in self.abspaths(files)])
 
-    def sents(self, documents=None):
-        return concat([StreamBackedCorpusView(filename, self._read_sent_block)
-                       for filename in self.filenames(documents)])
+    def sents(self, files=None):
+        return concat([StreamBackedCorpusView(filename,
+                                              self._read_sent_block)
+                       for filename in self.abspaths(files)])
 
-    def tagged_words(self, documents=None):
-        return concat([StreamBackedCorpusView(filename, self._read_tagged_word_block)
-                       for filename in self.filenames(documents)])
+    def tagged_words(self, files=None):
+        return concat([StreamBackedCorpusView(filename,
+                                              self._read_tagged_word_block)
+                       for filename in self.abspaths(files)])
 
-    def words(self, documents=None):
-        return concat([StreamBackedCorpusView(filename, self._read_word_block)
-                       for filename in self.filenames(documents)])
+    def words(self, files=None):
+        return concat([StreamBackedCorpusView(filename,
+                                              self._read_word_block)
+                       for filename in self.abspaths(files)])
 
-# block readers
-
+    #------------------------------------------------------------
+    #{ Block Readers
+    
     def _read_word_block(self, stream):
         return sum(self._read_sent_block(stream), [])
 
@@ -767,25 +780,44 @@ class SyntaxCorpusReader(CorpusReader):
         trees = [self._parse(t) for t in self._read_block(stream)]
         return [tree for tree in trees if tree is not None]
 
+    #} End of Block Readers
+    #------------------------------------------------------------
+
+    #{ Deprecated since 0.8
+    @deprecated("Use .raw() or .sents() or .tagged_sents() or "
+                ".parsed_sents() instead.")
+    def read(self, items=None, format='parsed'):
+        if format == 'parsed': return self.parsed_sents(items)
+        if format == 'raw': return self.raw(items)
+        if format == 'tokenized': return self.sents(items)
+        if format == 'tagged': return self.tagged_sents(items)
+        raise ValueError('bad format %r' % format)
+    @deprecated("Use .parsed_sents() instead.")
+    def parsed(self, items=None):
+        return self.parsed_sents(items)
+    @deprecated("Use .sents() instead.")
+    def tokenized(self, items=None):
+        return self.sents(items)
+    @deprecated("Use .tagged_sents() instead.")
+    def tagged(self, items=None):
+        return self.tagged_sents(items)
+    #}
+
 
 ######################################################################
 #{ Finding Corpus Items
 ######################################################################
 
-def find_corpus_items(root, regexp, extension=''):
+def find_corpus_files(root, regexp):
     items = []
     
-    regexp += re.escape(extension) + '$'
+    regexp += '$'
     for dirname, subdirs, filenames in os.walk(root):
         prefix = ''.join('%s/' % p for p in _path_from(root, dirname))
         items += [prefix+filename for filename in filenames
                   if re.match(regexp, prefix+filename)]
         # Don't visit svn directories:
         if '.svn' in subdirs: subdirs.remove('.svn')
-        
-    # Strip extension.
-    if extension:
-        items = [item[:-len(extension)] for item in items]
         
     return tuple(sorted(items))
     

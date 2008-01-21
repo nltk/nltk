@@ -25,24 +25,19 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
     Reader for corpora that consist of parenthesis-delineated parse
     trees.
     """
-    def __init__(self, root, documents, extension='', comment_char=None,
+    def __init__(self, root, files, comment_char=None,
                  detect_blocks='unindented_paren'):
         """
         @param root: The root directory for this corpus.
-        @param documents: A list of documents in this corpus.
-        @param extension: File extension for documents in this corpus.
-        @param comment: The character which can appear at the start of a line to
-          indicate that the rest of the line is a comment.
+        @param files: A list or regexp specifying the files in this corpus.
+        @param comment: The character which can appear at the start of
+            a line to indicate that the rest of the line is a comment.
         @param detect_blocks: The method that is used to find blocks
           in the corpus; can be 'unindented_paren' (every unindented
           parenthesis starts a new parse) or 'sexpr' (brackets are
           matched).
         """
-        if isinstance(documents, basestring):
-            documents = find_corpus_items(root, documents, extension)
-        self._root = root
-        self._documents = tuple(documents)
-        self._extension = extension
+        CorpusReader.__init__(self, root, files)
         self._comment_char = comment_char
         self._detect_blocks = detect_blocks
 
@@ -56,13 +51,12 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
             toks = read_regexp_block(stream, start_re=r'^\(')
             # Strip any comments out of the tokens.
             if self._comment_char:
-                toks = [re.sub('(?m)^%s.*'%re.escape(self._comment_char), '', tok)
+                toks = [re.sub('(?m)^%s.*'%re.escape(self._comment_char),
+                               '', tok)
                         for tok in toks]
             return toks
         else:
             assert 0, 'bad block type'
-    
-# low-level string processing
     
     def _normalize(self, t):
         # If there's an empty set of brackets surrounding the actual
@@ -105,10 +99,9 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
     Reader for the Alpino Dutch Treebank.
     """
     def __init__(self, root):
-        BracketParseCorpusReader.__init__(self, root, 'alpino', extension='.xml', detect_blocks='blankline')
+        BracketParseCorpusReader.__init__(self, root, 'alpino\.xml',
+                                          detect_blocks='blankline')
 
-# low-level string processing
-    
     def _normalize(self, t):
         if t[:10] != "<alpino_ds":
             return ""

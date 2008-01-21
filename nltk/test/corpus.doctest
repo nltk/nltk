@@ -11,7 +11,7 @@ means of a "corpus reader" object from `nltk.corpus`:
     >>> import nltk.corpus
     >>> # The Brown corpus:
     >>> print nltk.corpus.brown # doctest: +ELLIPSIS
-    <LocationCategorizedTaggedCorpusReader in '.../corpora/brown'>
+    <CategorizedTaggedCorpusReader in '.../corpora/brown'>
     >>> # The Penn Treebank Corpus:
     >>> print nltk.corpus.treebank # doctest: +ELLIPSIS
     <TreebankCorpusReader in '.../corpora/treebank'>
@@ -25,10 +25,10 @@ Most corpora consist of a set of documents (or other pieces of text).
 A list of identifiers for these documents is accessed via the ``documents()``
 method of the corpus reader:
 
-    >>> print nltk.corpus.treebank.items() # doctest: +ELLIPSIS
+    >>> print nltk.corpus.treebank.documents() # doctest: +ELLIPSIS
     ('wsj_0001', 'wsj_0002', 'wsj_0003', 'wsj_0004', ...)
-    >>> print nltk.corpus.inaugural.items() # doctest: +ELLIPSIS
-    ('1789-Washington', '1793-Washington', '1797-Adams', ...)
+    >>> print nltk.corpus.inaugural.files() # doctest: +ELLIPSIS
+    ('1789-Washington.txt', '1793-Washington.txt', '1797-Adams.txt', ...)
 
 Each corpus reader provides a variety of methods to read data from the
 corpus, depending on the format of the corpus.  For example, plaintext
@@ -36,13 +36,13 @@ corpora support methods to read the corpus as raw text, a list of
 words, a list of sentences, or a list of paragraphs.
 
     >>> from nltk.corpus import inaugural
-    >>> inaugural.raw('1789-Washington') # doctest: +ELLIPSIS
+    >>> inaugural.raw('1789-Washington.txt') # doctest: +ELLIPSIS
     'Fellow-Citizens of the Senate ...
-    >>> inaugural.words('1789-Washington')
+    >>> inaugural.words('1789-Washington.txt')
     ['Fellow', '-', 'Citizens', 'of', 'the', 'Senate', ...]
-    >>> inaugural.sents('1789-Washington') # doctest: +ELLIPSIS
+    >>> inaugural.sents('1789-Washington.txt') # doctest: +ELLIPSIS
     [['Fellow', '-', 'Citizens'...], ['Among', 'the', 'vicissitudes'...]...]
-    >>> inaugural.paras('1789-Washington') # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> inaugural.paras('1789-Washington.txt') # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [[['Fellow', '-', 'Citizens'...]],
      [['Among', 'the', 'vicissitudes'...],
       ['On', 'the', 'one', 'hand', ',', 'I'...]...]...]
@@ -52,9 +52,9 @@ name or a list of document item names.  When given a list of document
 item names, the reader methods will concatenate together the contents
 of the individual documents.  
 
-    >>> l1 = len(inaugural.words('1789-Washington'))
-    >>> l2 = len(inaugural.words('1793-Washington'))
-    >>> l3 = len(inaugural.words(['1789-Washington', '1793-Washington']))
+    >>> l1 = len(inaugural.words('1789-Washington.txt'))
+    >>> l2 = len(inaugural.words('1793-Washington.txt'))
+    >>> l3 = len(inaugural.words(['1789-Washington.txt', '1793-Washington.txt']))
     >>> print '%s+%s == %s' % (l1, l2, l3)
     1538+147 == 1685
 
@@ -175,7 +175,7 @@ corpus defines the `parsed_docs` method, which returns the documents
 in a given item as `IEERDocument` objects:
 
     >>> from nltk.corpus import ieer
-    >>> ieer.items() # doctest: +NORMALIZE_WHITESPACE
+    >>> ieer.files() # doctest: +NORMALIZE_WHITESPACE
     ('APW_19980314', 'APW_19980424', 'APW_19980429',
      'NYT_19980315', 'NYT_19980403', 'NYT_19980407')
     >>> docs = ieer.parsed_docs('APW_19980314')
@@ -215,7 +215,7 @@ NLTK data package includes a 10% sample of the Penn Treebank (in
 Reading the Penn Treebank:
 
     >>> from nltk.corpus import treebank
-    >>> print treebank.items() # doctest: +ELLIPSIS
+    >>> print treebank.documents() # doctest: +ELLIPSIS
     ('wsj_0001', 'wsj_0002', 'wsj_0003', 'wsj_0004', ...)
     >>> print treebank.words('wsj_0003')
     ['A', 'form', 'of', 'asbestos', 'once', 'used', 'to', ...]
@@ -304,21 +304,21 @@ lists.  These are accessed just like text corpora.  The following
 examples illustrate the use of the wordlist corpora:
 
     >>> from nltk.corpus import names, stopwords, words
-    >>> words.items()
+    >>> words.files()
     ('en', 'en-basic')
     >>> words.words('en') # doctest: +ELLIPSIS
     ['Aarhus', 'Aaron', 'Ababa', 'aback', 'abaft', 'abandon', ...]
     
-    >>> stopwords.items() # doctest: +ELLIPSIS
+    >>> stopwords.files() # doctest: +ELLIPSIS
     ('danish', 'dutch', 'english', 'french', ...)
     >>> stopwords.words('english') # doctest: +ELLIPSIS
     ['a', "a's", 'able', 'about', 'above', 'according', ...]
     
-    >>> names.items()
-    ('female', 'male')
-    >>> names.words('male') # doctest: +ELLIPSIS
+    >>> names.files()
+    ('female.txt', 'male.txt')
+    >>> names.words('male.txt') # doctest: +ELLIPSIS
     ['Aamir', 'Aaron', 'Abbey', 'Abbie', 'Abbot', 'Abbott', ...]
-    >>> names.words('female') # doctest: +ELLIPSIS
+    >>> names.words('female.txt') # doctest: +ELLIPSIS
     ['Abagael', 'Abagail', 'Abbe', 'Abbey', 'Abbi', 'Abbie', ...]
 
 The CMU Pronunciation Dictionary corpus contains pronounciation
@@ -377,7 +377,7 @@ of documents, allowing us to map from (one or more) documents to (one or more) c
 We can go back the other way using the optional argument of the ``documents()``
 method:
 
-    >>> reuters.items('barley') # doctest: +ELLIPSIS
+    >>> reuters.files('barley') # doctest: +ELLIPSIS
     ['test/15618', 'test/15649', 'test/15676', 'test/15728', 'test/15871', ...]
     
 Both the ``categories()`` and ``documents()`` methods return a sorted list containing
@@ -415,9 +415,10 @@ of word senses that apply to the word occurrence; and the word's
 context.
 
     >>> from nltk.corpus import senseval
-    >>> senseval.items()
-    ('hard', 'interest', 'line', 'serve')
-    >>> senseval.instances('hard') # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> senseval.files()
+    ('hard.pos', 'interest.pos', 'line.pos', 'serve.pos')
+    >>> senseval.instances('hard.pos')
+    ... # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [SensevalInstance(word='hard-a',
         position=20,
         context=[('``', '``'), ('he', 'PRP'), ...('hard', 'JJ'), ...],
@@ -430,7 +431,7 @@ context.
 The following code looks at instances of the word 'interest', and
 displays their local context (2 words on each side) and word sense(s):
 
-    >>> for inst in senseval.instances('interest')[:10]:
+    >>> for inst in senseval.instances('interest.pos')[:10]:
     ...     p = inst.position
     ...     left = ' '.join(w for (w,t) in inst.context[p-2:p])
     ...     word = ' '.join(w for (w,t) in inst.context[p:p+1])
@@ -470,9 +471,9 @@ as XML files.  These corpora are returned as ElementTree objects:
 
     >>> from nltk.corpus import shakespeare
     >>> from nltk.etree import ElementTree
-    >>> shakespeare.items() # doctest: +ELLIPSIS
-    ('a_and_c', 'dream', 'hamlet', 'j_caesar', 'macbeth', ...)
-    >>> play = shakespeare.xml('dream')
+    >>> shakespeare.files() # doctest: +ELLIPSIS
+    ('a_and_c.xml', 'dream.xml', 'hamlet.xml', 'j_caesar.xml', ...)
+    >>> play = shakespeare.xml('dream.xml')
     >>> print play # doctest: +ELLIPSIS
     <Element PLAY at ...>
     >>> print '%s: %s' % (play[0].tag, play[0].text)
@@ -551,12 +552,12 @@ down into small speech samples, each of which is available as a wave
 file, a phonetic transcription, and a tokenized word list.
 
     >>> from nltk.corpus import timit
-    >>> print timit.items() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print timit.utterances() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     ('dr1-fvmh0/sa1', 'dr1-fvmh0/sa2', 'dr1-fvmh0/si1466',
      'dr1-fvmh0/si2096', 'dr1-fvmh0/si836', 'dr1-fvmh0/sx116',
      'dr1-fvmh0/sx206', 'dr1-fvmh0/sx26', 'dr1-fvmh0/sx296', ...)
 
-    >>> item = timit.items()[5]
+    >>> item = timit.utterances()[5]
     >>> print timit.phones(item) # doctest: +NORMALIZE_WHITESPACE
     ['h#', 'k', 'l', 'ae', 's', 'pcl', 'p', 'dh', 'ax',
      's', 'kcl', 'k', 'r', 'ux', 'ix', 'nx', 'y', 'ax',
@@ -616,8 +617,8 @@ speaker and sentence identifier for a given speech sample:
                 comments='BEST NEW ENGLAND ACCENT SO FAR')
 
     >>> # List the speech samples from the same speaker:
-    >>> timit.spkritems(timit.spkrid(item)) # doctest: +ELLIPSIS
-    ['dr1-fvmh0/sa1', 'dr1-fvmh0/sa2', 'dr1-fvmh0/si1466', ...]
+    >>> timit.utterances(spkrid=timit.spkrid(item)) # doctest: +ELLIPSIS
+    ('dr1-fvmh0/sa1', 'dr1-fvmh0/sa2', 'dr1-fvmh0/si1466', ...)
 
 
 The RTE (Recognizing Textual Entailment) corpus was derived from the
@@ -625,9 +626,9 @@ RTE1, RTE2 and RTE3 datasets (dev and test data), and consists of a
 list of XML-formatted 'text'/'hypothesis' pairs.
 
     >>> from nltk.corpus import rte
-    >>> print rte.items()
-    ('rte1_dev', 'rte1_test', 'rte2_dev', 'rte2_test', 'rte3_dev', 'rte3_test')
-    >>> rtepairs = rte.pairs('rte2_test')
+    >>> print rte.files() # doctest: +ELLIPSIS
+    ('rte1_dev.xml', 'rte1_test.xml', 'rte2_dev.xml', ..., 'rte3_test.xml')
+    >>> rtepairs = rte.pairs('rte2_test.xml')
     >>> print rtepairs  # doctest: +ELLIPSIS
     [<RTEPair: gid=2-8>, <RTEPair: gid=2-9>, <RTEPair: gid=2-15>, ...]
 
@@ -647,7 +648,7 @@ entailment value is mapped to an integer 1 (True) or 0 (False).
 
 The RTE corpus also supports an ``xml()`` method which produces ElementTrees.
 
-    >>> xmltree = rte.xml('rte3_dev')
+    >>> xmltree = rte.xml('rte3_dev.xml')
     >>> xmltree # doctest: +ELLIPSIS
     <Element entailment-corpus at ...>
     >>> xmltree[7].findtext('t') # doctest: +NORMALIZE_WHITESPACE
@@ -698,12 +699,12 @@ The list of documents can be specified explicitly, or implicitly (using a
 regexp).  The extension argument will be added to filenames, but not
 included in item names.
 
-    >>> corpus = PlaintextCorpusReader(root, ['a', 'b'], '.txt')
-    >>> corpus.items()
-    ('a', 'b')
-    >>> corpus = PlaintextCorpusReader(root, '.*', '.txt')
-    >>> corpus.items()
-    ('a', 'b')
+    >>> corpus = PlaintextCorpusReader(root, ['a.txt', 'b.txt'])
+    >>> corpus.files()
+    ('a.txt', 'b.txt')
+    >>> corpus = PlaintextCorpusReader(root, '.*\.txt')
+    >>> corpus.files()
+    ('a.txt', 'b.txt')
 
 The directory containing the corpus is corpus.root:
 
@@ -720,11 +721,11 @@ We can get a list of words, or the raw string:
 Check that reading individual documents works, and reading all documents at
 once works:
 
-    >>> len(corpus.words()), [len(corpus.words(d)) for d in corpus.items]
+    >>> len(corpus.words()), [len(corpus.words(d)) for d in corpus.files()]
     (46, [40, 6])
-    >>> corpus.words('a')
+    >>> corpus.words('a.txt')
     ['This', 'is', 'the', 'first', 'sentence', '.', 'Here', ...]
-    >>> corpus.words('b')
+    >>> corpus.words('b.txt')
     ['This', 'is', 'the', 'second', 'file', '.']
     >>> corpus.words()[:4], corpus.words()[-4:]
     (['This', 'is', 'the', 'first'], ['the', 'second', 'file', '.'])
@@ -740,20 +741,20 @@ Test the plaintext corpora that come with nltk:
     >>> for corpus in (abc, genesis, inaugural, state_union,
     ...                webtext, udhr):
     ...     print corpus
-    ...     print '  ', `corpus.items()`[:60]
+    ...     print '  ', `corpus.files()`[:60]
     ...     print '  ', `corpus.words()[:10]`[:60]
     ...     # doctest: +ELLIPSIS
     <PlaintextCorpusReader in '...abc'>
-       ('rural', 'science')
+       ('rural.txt', 'science.txt')
        ['PM', 'denies', 'knowledge', 'of', 'AWB', 'kickbacks', 'The
     <PlaintextCorpusReader in '...genesis'>
-       ('english-kjv', 'english-web', 'finnish', 'french', 'german'
+       ('english-kjv.txt', 'english-web.txt', 'finnish.txt', 'frenc
        ['In', 'the', 'beginning', 'God', 'created', 'the', 'heaven'
     <PlaintextCorpusReader in '...inaugural'>
-       ('1789-Washington', '1793-Washington', '1797-Adams', '1801-J
+       ('1789-Washington.txt', '1793-Washington.txt', '1797-Adams.t
        ['Fellow', '-', 'Citizens', 'of', 'the', 'Senate', 'and', 'o
     <PlaintextCorpusReader in '...state_union'>
-       ('1945-Truman', '1946-Truman', '1947-Truman', '1948-Truman',
+       ('1945-Truman.txt', '1946-Truman.txt', '1947-Truman.txt', '1
        ['PRESIDENT', 'HARRY', 'S', '.', 'TRUMAN', "'", 'S', 'ADDRES
     <PlaintextCorpusReader in '...webtext'>
        ('overheard', 'pirates', 'singles', 'wine')
@@ -786,7 +787,7 @@ By default, they apply to all documents in the corpus.
 
     >>> from nltk.corpus.reader.tagged import TaggedCorpusReader
     >>> corpus = TaggedCorpusReader(root, list('ab'))
-    >>> corpus.items()
+    >>> corpus.files()
     ('a', 'b')
     >>> corpus.root == root
     True
@@ -804,11 +805,11 @@ By default, they apply to all documents in the corpus.
     [[[('This', 'DET'), ...], ...], [[('This', 'DET'), ...], ...], ...]
     >>> corpus.raw()[:40]
     'This/det is/verb the/det first/adj sente'
-    >>> len(corpus.words()), [len(corpus.words(d)) for d in corpus.items()]
+    >>> len(corpus.words()), [len(corpus.words(d)) for d in corpus.files()]
     (38, [32, 6])
-    >>> len(corpus.sents()), [len(corpus.sents(d)) for d in corpus.items()]
+    >>> len(corpus.sents()), [len(corpus.sents(d)) for d in corpus.files()]
     (6, [5, 1])
-    >>> len(corpus.paras()), [len(corpus.paras(d)) for d in corpus.items()]
+    >>> len(corpus.paras()), [len(corpus.paras(d)) for d in corpus.files()]
     (3, [2, 1])
     >>> corpus.words('a')
     ['This', 'is', 'the', 'first', 'sentence', '.', 'Here', ...]
@@ -819,7 +820,7 @@ By default, they apply to all documents in the corpus.
 The Brown Corpus uses the tagged corpus reader:
 
     >>> from nltk.corpus import brown
-    >>> brown.items() # doctest: +ELLIPSIS
+    >>> brown.files() # doctest: +ELLIPSIS
     ('ca01', 'ca02', 'ca03', 'ca04', 'ca05', 'ca06', 'ca07', ...)
     >>> brown.categories() # doctest: +ELLIPSIS
     ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r']
