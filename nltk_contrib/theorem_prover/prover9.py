@@ -55,32 +55,40 @@ def config_prover9(path=None, verbose=True):
         raise LookupError("Unable to find Prover9 executable in '%s'\n" 
             "Use 'config_prover9(path=<path>) '," 
             " or set the PROVER9HOME environment variable to a valid path." % join(searchpath))
-    
-    
+
+# Following is not yet used. Return code for 2 actually realized as 512. 
+
+#p9_return_codes = {0: True,
+                   #1: "(FATAL)",	#A fatal error occurred (user's syntax error or Prover9's bug).
+                   #2: False,            # (SOS_EMPTY) Prover9 ran out of things to do (sos list exhausted).
+                   #3: "(MAX_MEGS)", 	# The max_megs (memory limit) parameter was exceeded.
+                   #4: "(MAX_SECONDS)", 	# The max_seconds parameter was exceeded.
+                   #5: "(MAX_GIVEN)", 	# The max_given parameter was exceeded.
+                   #6: "(MAX_KEPT)", 	# The max_kept parameter was exceeded.
+                   #7: "(ACTION)", 	# A Prover9 action terminated the search.
+                   #101: "(SIGSEGV)", 	# Prover9 crashed, most probably due to a bug.   
+ #}
+
 class Prover9(ProverI):
-    def __init__(self, goal, assumptions=[], ontology=None, **options):
+    def __init__(self, goal, assumptions=[], timeout=60):
         """
         @param goal: Input expression to prove
         @type goal: L{logic.Expression}
         @param assumptions: Input expressions to use as assumptions in the proof
         @type assumptions: L{list} of logic.Expression objects
-        @param options: options to pass to Prover9
+        @param timeout: number of seconds before timeout; set to 0 for no timeout.
+        @type timeout: C{int}
         """
         config_prover9(verbose=False)
         self._goal = goal        
         self._assumptions = assumptions
-        self._ontology = ontology
         self._infile = ''
-        self._ontologyfile = ''
         self._outfile = '' 
         self._p9_assumptions = []
-        self._p9_ontology = None
         self._p9_goal = convert_to_prover9(self._goal)
         if self._assumptions:
             self._p9_assumptions = convert_to_prover9(self._assumptions)
-        if self._ontology is not None:    
-            self._p9_ontology = convert_to_prover9(self._ontology)
-        self._options = options
+        self._timeout = timeout
         
     
     def prover9_files(self, filename='prover9', p9_dir=None):
@@ -94,6 +102,9 @@ class Prover9(ProverI):
         self._outfile = os.path.join(p9_dir, filename + '.out')
         f = open(self._infile, 'w')
         
+        if self._timeout > 0:
+            f.write('assign(max_seconds, %d).\n' % self._timeout)
+            
         if self._p9_assumptions:
             f.write('formulas(assumptions).\n')
             for p9_assumption in self._p9_assumptions:
@@ -104,17 +115,6 @@ class Prover9(ProverI):
         f.write('    %s.\n' % self._p9_goal)
         f.write('end_of_list.\n')
         f.close()
-        
-        if self._p9_ontology is not None:
-            self._ontologyfile = os.path.join(p9_dir, 'p9ontology.in')
-            f = open(self._ontologyfile, 'w')
-            f.write('formulas(assumptions).\n')
-            for fmla in self._p9_ontology:
-                f.write('    %s.\n' % fmla)
-            f.write('end_of_list.\n\n')
-    
-            f.write('formulas(goals).\nend_of_list.\n')
-            f.close()        
             
         return None
     
@@ -122,12 +122,11 @@ class Prover9(ProverI):
         """
         Use Prover9 to prove a theorem.
         @return: C{True} if the proof was successful 
-        (i.e. returns value of 0), else C{False}
-        
+        (i.e. returns value of 0), else C{False}        
         """
         self.prover9_files()
-        execute_string = '%s -f %s %s > %s 2>> %s' % \
-            (_prover9_executable, self._ontologyfile, self._infile, self._outfile, self._outfile)
+        execute_string = '%s -f %s > %s 2>> %s' % \
+            (_prover9_executable, self._infile, self._outfile, self._outfile)
                 
         tp_result = os.system(execute_string)
         return tp_result == 0
@@ -152,13 +151,31 @@ class Prover9(ProverI):
         @type new_assumptions: C{list} of L{sem.logic.Expression}s
         """
         self._assumptions += new_assumptions
-        self._p9_assumptions += convert_to_prover9(self._assumptions)
+        self._p9_assumptions += convert_to_prover9(new_assumptions)
+        return None
+    
+    def retract_assumptions(self, retracted, debug=False):
+        """
+        Retract assumptions from the assumption list.
+        
+        @param debug: If True, give warning when C{retracted} is not present on assumptions list.
+        @type debug: C{bool}
+        @param retracted: assumptions to be retracted
+        @type retracted: C{list} of L{sem.logic.Expression}s
+        """
+        
+        result = set(self._assumptions) - set(retracted)
+        if debug and result == set(self._assumptions):
+            print Warning("Assumptions list has not been changed:")
+            self.assumptions()
+            
+        self._assumptions = list(result)
+        self._p9_assumptions = convert_to_prover9(self._assumptions)
         return None
     
     def assumptions(self, output_format='nltk'):
         """
-        List the current assumptions.
-        
+        List the current assumptions.       
         """
         if output_format.lower() == 'nltk':
             print [str(a.infixify()) for a in self._assumptions]
@@ -167,8 +184,26 @@ class Prover9(ProverI):
             print self._p9_assumptions
         else:
             raise NameError("Unrecognized value for 'output_format': %s" % output_format)
+        
+        
+    def load(self, filename):
+        """
+        Load and parse a file of logical statements.
+        These must be parsable by LogicParser.
+        """
+        statements = open(filename).readlines()
+        lp = LogicParser()
+        result = []
+        for s in statements:
+            result.append(lp.parse(s))
+        return result                 
+       
+        
 
 def convert_to_prover9(input):
+    """
+    Convert C{logic.Expression}s to Prover9 format.
+    """
     if isinstance(input, list):
         result = []
         for s in input:
@@ -257,16 +292,21 @@ def _toProver9String_Constant(current):
 
     
 def testToProver9Input(expr):
+    """
+    Test that parsing works OK.
+    """
     for t in expr:
         p = LogicParser().parse(t)
         print toProver9String(p.simplify().infixify());
         
 def testAttempt_proof(arguments):
+    """
+    Try some proofs and exhibit the results.
+    """
     for (goal, assumptions) in arguments:
         g = LogicParser().parse(goal)
         alist = [LogicParser().parse(a) for a in assumptions]
         p = Prover9(g, assumptions=alist).prove()
-        #alist = [str(a.infixify()) for a in alist]
         for a in alist:
             print '   %s' % a.infixify()
         print '|- %s: %s\n' % (g.infixify(), p)
@@ -309,16 +349,7 @@ if __name__ == '__main__':
     testToProver9Input(expressions)
     print '\n'
     testAttempt_proof(arguments)
-    g = LogicParser().parse('(mortal Socrates)')
-    prover = Prover9(g)
-    print prover.prove()
-    prover.assumptions()
-    a1 = LogicParser().parse('all x.((man x) implies (mortal x))')
-    a2 = LogicParser().parse('(man Socrates)')
-    prover.add_assumptions([a1, a2])
-    prover.assumptions()
-    prover.assumptions(output_format='Prover9')
-    print prover.prove()
+
     
  
     
