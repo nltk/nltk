@@ -10,14 +10,14 @@ from nltk.sem.logic import ApplicationExpression, Operator, LogicParser
 
 from nltk_contrib.theorem_prover import tableau, prover9
 
-def prove(goal, premises=[], prover_name='Prover9'):
+def prove(goal, assumptions=[], prover_name='Prover9'):
     """
     Try to prove a theorem of First Order Logic. 
     
     @param goal: Input expression to prove
     @type goal: L{logic.Expression}
-    @param premises: Input expressions to use as premises in the proof
-    @type premises: L{list} of logic.Expression objects
+    @param assumptions: Input expressions to use as assumptions in the proof
+    @type assumptions: C{list} of L{logic.Expression} objects
     @type prover_name: C{str}
     @param prover_name: Name of the prover to use.
 
@@ -29,7 +29,7 @@ def prove(goal, premises=[], prover_name='Prover9'):
         prover_module = prover9.Prover9
 
     prover = prover_module(goal)
-    prover.add_assumptions(premises)
+    prover.add_assumptions(assumptions)
     return prover.prove()
 
 def demo_drt_glue_remove_duplicates(show_example=-1):
