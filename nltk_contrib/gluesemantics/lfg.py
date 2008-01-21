@@ -12,20 +12,24 @@ class FStructure(dict):
     read_depgraph = staticmethod(read_depgraph)
     
     def _read_depgraph(node, depgraph, current_label=[0], parent=None):
-        self = FStructure()
-        
-        self.label = ['f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','a','b','c','d','e'][current_label[0]]
-        current_label[0] += 1
-
-        self.parent = parent
-        
-        self.pred = (node['word'], node['tag'])
-
-        children = [depgraph.nodelist[idx] for idx in node['deps']]
-        for child in children:
-            self[child['rel']] = FStructure._read_depgraph(child, depgraph, current_label, self)
-
-        return self
+        if node['rel'].lower() == 'spec':
+            return (node['word'], node['tag'])
+            
+        else:
+            self = FStructure()
+            
+            self.label = ['f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','a','b','c','d','e'][current_label[0]]
+            current_label[0] += 1
+    
+            self.parent = parent
+            
+            self.pred = (node['word'], node['tag'])
+    
+            children = [depgraph.nodelist[idx] for idx in node['deps']]
+            for child in children:
+                self[child['rel']] = FStructure._read_depgraph(child, depgraph, current_label, self)
+    
+            return self
 
     _read_depgraph = staticmethod(_read_depgraph)
     
@@ -187,7 +191,7 @@ class FStructure(dict):
 
     read_parsetree = staticmethod(read_parsetree)
 
-    def to_glueformula_list(self, glue_pos_dict, labels_added=[], current_subj=None):
+    def to_glueformula_list(self, glue_pos_dict, labels_added=[], current_subj=None, verbose=False):
         from nltk.tree import Tree
         glueformulas = []
 
@@ -210,7 +214,7 @@ class FStructure(dict):
                 for entry in self[feature]:
                     glueformulas.extend(entry.to_glueformula_list(glue_pos_dict, labels_added))
             else:
-                raise Exception, 'feature %s is not an FStruct, a list, or a Tree' % feature
+                raise Exception, 'feature %s is not an FStruct, a list, or a tuple' % feature
 
         return glueformulas
 
@@ -291,7 +295,7 @@ class FStructure(dict):
                     accum += '%s' % entry
                 accum += '}'
             else: # ERROR
-                raise Exception, 'feature %s (%s) is not an FStruct, a list, or a Tree' % (feature, self[feature])
+                raise Exception, 'feature %s (%s) is not an FStruct, a list, or a tuple' % (feature, self[feature])
         return accum+']'
 
     def __str__(self, indent=3):
@@ -314,34 +318,40 @@ class FStructure(dict):
             elif isinstance(self[feature], list):
                 accum += '\n%s%s {%s}' % (' '*(indent), feature, ('\n%s' % (' '*(indent+len(feature)+2))).join(self[feature]))
             else: # ERROR
-                raise Exception, 'feature %s is not an FStruct, a list, or a Tree' % feature
+                raise Exception, 'feature %s is not an FStruct, a list, or a tuple' % feature
         return accum+']'
 
 def demo_read_depgraph():
     from nltk_contrib.dependency import DepGraph
-    dg1 = DepGraph().read("""Esso    NNP    2    SUB
-said    VBD    0    ROOT
-the    DT    5    NMOD
-Whiting    NNP    5    NMOD
-field    NN    6    SUB
-started    VBD    2    VMOD
-production    NN    6    OBJ
-Tuesday    NNP    6    VMOD
+    dg1 = DepGraph().read("""Esso	NNP	2	SUB
+said	VBD	0	ROOT
+the	DT	5	NMOD
+Whiting	NNP	5	NMOD
+field	NN	6	SUB
+started	VBD	2	VMOD
+production	NN	6	OBJ
+Tuesday	NNP	6	VMOD
 """)
-    dg2 = DepGraph().read("""John    NNP    2    SUB
-sees    VBP    0    ROOT
-Mary    NNP    2    OBJ
+    dg2 = DepGraph().read("""John	NNP	2	SUB
+sees	VBP	0	ROOT
+Mary	NNP	2	OBJ
 """)
-    dg3 = DepGraph().read("""every    DT    2    SPEC
-girl    DT    3    SUBJ
-chases    TV    0    ROOT
-a    DT    5    SPEC
-dog    NNP    3    OBJ
+    dg3 = DepGraph().read("""a	DT	2	SPEC
+man	N	3	SUBJ
+walks	IV	0	ROOT
+""")
+    dg4 = DepGraph().read("""every	DT	2	SPEC
+girl	N	3	SUBJ
+chases	TV	0	ROOT
+a	DT	5	SPEC
+dog	NNP	3	OBJ
 """)
 
-    depgraphs = [dg1,dg2,dg3]
-    for dg in depgraphs:
-        print FStructure.read_depgraph(dg)
+#    depgraphs = [dg1,dg2,dg3,dg4]
+#    for dg in depgraphs:
+#        print FStructure.read_depgraph(dg)
+
+    print FStructure.read_depgraph(dg3)
         
 def demo_depparse():
     from nltk_contrib.dependency import malt

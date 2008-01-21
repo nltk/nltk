@@ -103,14 +103,19 @@ class GlueFormula:
         return self.__str__()
 
 class GlueDict(dict):
-    def read_file(self, empty_first = True):
+    def read_file(self, empty_first=True, dependency=False):
         if empty_first: 
             self.clear()
 
+        if dependency:
+            filename = 'drt_glue_event.semtype'
+        else:
+            filename = 'drt_glue.semtype'
+
         try:
-            f = open(data.find('grammars/drt_glue.semtype'))
+            f = open(data.find('grammars/%s' % filename))
         except LookupError:
-            f = open('drt_glue.semtype')
+            f = open(filename)
         lines = f.readlines()
         f.close()
 
@@ -188,10 +193,10 @@ class GlueDict(dict):
 def parse_to_meaning(sentence, remove_duplicates=False, dependency=False, verbose=False):
     readings = []
     for agenda in parse_to_compiled(sentence, dependency, verbose):
-        readings.extend(get_readings(agenda, remove_duplicates))
+        readings.extend(get_readings(agenda, remove_duplicates, verbose))
     return readings
 
-def get_readings(agenda, remove_duplicates=False):
+def get_readings(agenda, remove_duplicates=False, verbose=False):
     readings = []
     agenda_length = len(agenda)
     atomics = dict()
@@ -262,8 +267,8 @@ def parse_to_compiled(sentence='a man sees Mary', dependency=False, verbose=Fals
         fstructs = [lfg.FStructure.read_depgraph(dep_graph) for dep_graph in dep_parse(sentence, verbose)]
     else:
         fstructs = [lfg.FStructure.read_parsetree(pt, [0]) for pt in earley_parse(sentence)]
-    gfls = [fstruct_to_glue(f) for f in fstructs]
-    return [gfl_to_compiled(gfl) for gfl in gfls]
+    gfls = [fstruct_to_glue(f, verbose, dependency) for f in fstructs]
+    return [gfl_to_compiled(gfl, verbose) for gfl in gfls]
 
 def dep_parse(sentence='every cat leaves', verbose=False):
     from nltk_contrib.dependency import malt
@@ -277,15 +282,29 @@ def earley_parse(sentence='every cat leaves'):
     trees = cp.nbest_parse(tokens)
     return trees
 
-def fstruct_to_glue(fstruct):
+def fstruct_to_glue(fstruct, verbose=False, dependency=False):
     glue_pos_dict = GlueDict()
-    glue_pos_dict.read_file()
-    return fstruct.to_glueformula_list(glue_pos_dict, [], None)
+    glue_pos_dict.read_file(dependency=dependency)
+    
+    glueformulas = fstruct.to_glueformula_list(glue_pos_dict, [], None, verbose=verbose)
+    
+    if verbose:
+        print fstruct
+        for gf in glueformulas: 
+            print gf
+            
+    return glueformulas
 
-def gfl_to_compiled(gfl):
+def gfl_to_compiled(gfl, verbose=False):
     return_list = []
     for gf in gfl:
         return_list.extend(gf.compile([len(return_list)+1]))
+    
+    if verbose:
+        print 'Compiled Glue Premises:'
+        for cgf in return_list:
+            print cgf    
+    
     return return_list
         
 
@@ -431,8 +450,8 @@ def examples():
                 'a unicorn seems to approach',
 #                'every big cat leaves',
 #                'every gray cat leaves',
-                'every big gray cat leaves',
-                'a former senator leaves',
+#                'every big gray cat leaves',
+#                'a former senator leaves',
                 'John likes a cat',
                 'John likes every cat',
                 'he likes a dog',
@@ -525,5 +544,5 @@ if __name__ == '__main__':
       
     for reading in parse_to_meaning('John sees Mary', dependency=True, verbose=True):
         print reading.simplify().infixify()
-    for reading in parse_to_meaning('John sees Mary', dependency=True, verbose=True):
+    for reading in parse_to_meaning('a dog walks', dependency=True, verbose=True):
         print reading.simplify().infixify()

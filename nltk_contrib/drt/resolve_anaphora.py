@@ -1,6 +1,10 @@
 from nltk_contrib.drt import *
 
 def resolve(drs):
+    print drs
+    print drs.__class__
+    print AbstractDRS
+    print isinstance(drs, AbstractDRS)
     assert isinstance(drs, AbstractDRS)
     return _resolve(drs, [])
 
@@ -27,9 +31,24 @@ def _resolve(current, trail):
 
 
 def _resolve_DRS(current, trail):
-    r_conds = [_resolve(cond, trail + [current]) for cond in current.conds]
+    r_conds = []
+    for cond in current.conds:
+        r_cond = _resolve(cond, trail + [current])
+        
+        # if the condition is of the form '(x = [])' then do not include it
+        if not _isNullResolution(r_cond):
+            r_conds.append(r_cond)
+            
     return current.__class__(current.refs, r_conds)
     
+def _isNullResolution(current):
+    return isinstance(current, ApplicationExpression) and \
+           isinstance(current.first, ApplicationExpression) and \
+           isinstance(current.first.first, FolOperator) and \
+           current.first.first.operator == Tokens.EQ and \
+           ((isinstance(current.second, PossibleAntecedents) and not current.second) or \
+            (isinstance(current.first.second, PossibleAntecedents) and not current.first.second))
+
 def _resolve_LambdaDRS(current, trail):
     return current.__class__(current.variable, _resolve(current.term, trail + [current]))
 
