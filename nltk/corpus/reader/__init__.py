@@ -32,7 +32,7 @@ from nltk.corpus.reader.rte import *
 from nltk.corpus.reader.string_category import *
 
 __all__ = [
-    'PlaintextCorpusReader', 'find_corpus_items',
+    'PlaintextCorpusReader', 'find_corpus_files',
     'TaggedCorpusReader', 'CMUDictCorpusReader',
     'ConllChunkCorpusReader', 'WordListCorpusReader',
     'GutenbergCorpusReader', 'XMLCorpusReader',
@@ -44,7 +44,6 @@ __all__ = [
     'MacMorphoCorpusReader', 'SyntaxCorpusReader',
     'AlpinoCorpusReader', 'RTECorpusReader',
     'StringCategoryCorpusReader',
-    'ListCategorizedPlaintextCorpusReader',
-    'LocationCategorizedTaggedCorpusReader',
-    'LocationCategorizedPlaintextCorpusReader'
+    'CategorizedTaggedCorpusReader',
+    'CategorizedPlaintextCorpusReader',
 ]

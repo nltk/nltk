@@ -51,38 +51,34 @@ import os
 from nltk.utilities import deprecated
 
 class CMUDictCorpusReader(CorpusReader):
-    def __init__(self, root, documents, extension=''):
-        if isinstance(documents, basestring):
-            documents = find_corpus_items(root, documents, extension)
-        self._root = root
-        self._documents = tuple(documents)
-        self._extension = extension
-
-    def entries(self, documents=None):
+    def entries(self):
         """
-        @return: the given cmudict lexicon as a list of entries
+        @return: the cmudict lexicon as a list of entries
         containing (word, identifier, transcription) tuples.
         """
         return concat([StreamBackedCorpusView(filename, read_cmudict_block)
-                       for filename in self.filenames(documents)])
+                       for filename in self.abspaths()])
 
-    def raw(self, documents=None):
+    def raw(self):
+        """
+        @return: the cmudict lexicon as a raw string.
+        """
         return concat([open(filename).read()
-                       for filename in self.filenames(documents)])
+                       for filename in self.abspaths()])
 
-    def words(self, documents='cmudict'):
+    def words(self):
         """
-        @return: a list of all words defined in the given cmudict lexicon.
+        @return: a list of all words defined in the cmudict lexicon.
         """
-        return [word for (word, num, transcription) in self.entries(item)]
+        return [word for (word, num, transcription) in self.entries()]
 
-    def transcriptions(self, documents=None):
+    def transcriptions(self):
         """
-        @return: the given cmudict lexicon as a dictionary, whose keys
-        are upper case words and whose values are lists of
-        pronunciation entries.
+        @return: the cmudict lexicon as a dictionary, whose keys are
+        upper case words and whose values are tuples of pronunciation
+        entries.
         """
-        lexicon = self.entries(documents)
+        lexicon = self.entries()
         d = {}
         for word, num, transcription in lexicon:
             if num == 1:

@@ -63,33 +63,23 @@ class IEERDocument:
 class IEERCorpusReader(CorpusReader):
     """
     """
-    def __init__(self, root, documents, extension=''):
-        """
-        @param root: The root directory for this corpus.
-        @param documents: A list of documents in this corpus.
-        @param extension: File extension for documents in this corpus.
-        """
-        if isinstance(documents, basestring):
-            documents = find_corpus_items(root, documents, extension)
-        self._root = root
-        self._documents = tuple(documents)
-        self._extension = extension
-        
-    def raw(self, documents=None):
+    def raw(self, files=None):
         return concat([open(filename).read()
-                       for filename in self.filenames(documents)])
+                       for filename in self.abspaths(files)])
     
-    def docs(self, documents=None):
+    def docs(self, files=None):
         return concat([StreamBackedCorpusView(filename, self._read_block)
-                       for filename in self.filenames(documents)])
+                       for filename in self.abspaths(files)])
     
-    def parsed_docs(self, documents=None):
-        return concat([StreamBackedCorpusView(filename, self._read_parsed_block)
-                       for filename in self.filenames(documents)])
+    def parsed_docs(self, files=None):
+        return concat([StreamBackedCorpusView(filename,
+                                              self._read_parsed_block)
+                       for filename in self.abspaths(files)])
 
     def _read_parsed_block(self,stream):
         # TODO: figure out while empty documents are being returned
-        return [self._parse(doc) for doc in self._read_block(stream) if self._parse(doc).docno is not None]
+        return [self._parse(doc) for doc in self._read_block(stream)
+                if self._parse(doc).docno is not None]
   
     def _parse(self, doc):
         val = chunk.ieerstr2tree(doc, top_node="DOCUMENT")

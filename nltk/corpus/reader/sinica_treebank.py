@@ -44,9 +44,6 @@ from nltk import tokenize, tree
 import os, re
 from nltk.utilities import deprecated
 
-#: A list of all documents in this corpus.
-documents = ['parsed', 'tagged', 'tokenized', 'raw']
-
 IDENTIFIER = re.compile(r'^#\S+\s')
 APPENDIX = re.compile(r'(?<=\))#.*$')
 TAGWORD = re.compile(r':([^:()|]+):([^:()|]+)')
@@ -59,18 +56,6 @@ class SinicaTreebankCorpusReader(SyntaxCorpusReader):
     L{TreebankCorpusReader}, which combines this reader with readers
     for the other formats available in the treebank.
     """
-    def __init__(self, root, documents, extension=''):
-        """
-        @param root: The root directory for this corpus.
-        @param documents: A list of documents in this corpus.
-        @param extension: File extension for documents in this corpus.
-        """
-        if isinstance(documents, basestring):
-            documents = find_corpus_items(root, documents, extension)
-        self._root = root
-        self._documents = tuple(documents)
-        self._extension = extension
-
     def _read_block(self, stream):
         sent = stream.readline()
         sent = IDENTIFIER.sub('', sent)
@@ -86,22 +71,3 @@ class SinicaTreebankCorpusReader(SyntaxCorpusReader):
     def _word(self, sent):
         return WORD.findall(sent)
 
-    #{ Deprecated since 0.8
-    @deprecated("Use .raw() or .sents() or .tagged_sents() or "
-                ".parsed_sents() instead.")
-    def read(self, items=None, format='parsed'):
-        if format == 'parsed': return self.parsed_sents(items)
-        if format == 'raw': return self.raw(items)
-        if format == 'tokenized': return self.sents(items)
-        if format == 'tagged': return self.tagged_sents(items)
-        raise ValueError('bad format %r' % format)
-    @deprecated("Use .parsed_sents() instead.")
-    def parsed(self, items=None):
-        return self.parsed_sents(items)
-    @deprecated("Use .sents() instead.")
-    def tokenized(self, items=None):
-        return self.sents(items)
-    @deprecated("Use .tagged_sents() instead.")
-    def tagged(self, items=None):
-        return self.tagged_sents(items)
-    #}

@@ -14,25 +14,13 @@ class WordListCorpusReader(CorpusReader):
     """
     List of words, one per line.  Blank lines are ignored.
     """
-    def __init__(self, root, documents, extension=''):
-        """
-        @param root: The root directory for this corpus.
-        @param documents: A list of documents in this corpus.
-        @param extension: File extension for documents in this corpus.
-        """
-        if isinstance(documents, basestring):
-            documents = find_corpus_items(root, documents, extension)
-        self._root = root
-        self._documents = tuple(documents)
-        self._extension = extension
-
-    def words(self, documents=None):
+    def words(self, files=None):
         return concat([[w for w in open(filename).read().split('\n') if w]
-                       for filename in self.filenames(documents)])
+                       for filename in self.abspaths(files)])
 
-    def raw(self, documents=None):
+    def raw(self, files=None):
         return concat([open(filename).read()
-                       for filename in self.filenames(documents)])
+                       for filename in self.abspaths(files)])
 
     #{ Deprecated since 0.8
     @deprecated("Use .raw() or .words() instead.")

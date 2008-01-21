@@ -32,7 +32,7 @@ class TaggedCorpusReader(CorpusReader):
     constructor.  Part of speech tags are case-normalized to upper
     case.
     """
-    def __init__(self, root, documents, extension='',
+    def __init__(self, root, files, 
                  sep='/', word_tokenizer=WhitespaceTokenizer(),
                  sent_tokenizer=RegexpTokenizer('\n', gaps=True),
                  para_block_reader=read_blankline_block):
@@ -44,40 +44,25 @@ class TaggedCorpusReader(CorpusReader):
             >>> reader = TaggedCorpusReader(root, '.*', '.txt')
         
         @param root: The root directory for this corpus.
-        @param documents: A list of documents in this corpus.  This list can
-            either be specified explicitly, as a list of strings; or
-            implicitly, as a regular expression over file paths.  The
-            filename for each document will be constructed by joining the
-            reader's root to the filename, and adding the extension.
-        @param extension: File extension for documents in this corpus.
-            This extension will be concatenated to document names to form
-            file names.  If C{documents} is specified as a regular
-            expression, then the escaped extension will automatically
-            be added to that regular expression.
+        @param files: A list or regexp specifying the files in this corpus.
         """
-        if not os.path.isdir(root):
-            raise ValueError('Root directory %r not found!' % root)
-        if isinstance(documents, basestring):
-            documents = find_corpus_items(root, documents, extension)
-        self._documents = tuple(documents)
-        self._root = root
-        self._extension = extension
+        CorpusReader.__init__(self, root, files)
         self._sep = sep
         self._word_tokenizer = word_tokenizer
         self._sent_tokenizer = sent_tokenizer
         self._para_block_reader = para_block_reader
 
-    def raw(self, documents=None, categories=None):
+    def raw(self, files=None):
         """
-        @return: the given document or documents as a single string.
+        @return: the given file or files as a single string.
         @rtype: C{str}
         """
         return concat([open(filename).read()
-                       for filename in self.filenames(documents, categories)])
+                       for filename in self.abspaths(files)])
 
-    def words(self, documents=None, categories=None):
+    def words(self, files=None):
         """
-        @return: the given document or documents as a list of words
+        @return: the given file or files as a list of words
             and punctuation symbols.
         @rtype: C{list} of C{str}
         """
@@ -85,11 +70,11 @@ class TaggedCorpusReader(CorpusReader):
                                         self._sep, self._word_tokenizer,
                                         self._sent_tokenizer,
                                         self._para_block_reader)
-                       for filename in self.filenames(documents, categories)])
+                       for filename in self.abspaths(files)])
 
-    def sents(self, documents=None, categories=None):
+    def sents(self, files=None):
         """
-        @return: the given document or documents as a list of
+        @return: the given file or files as a list of
             sentences or utterances, each encoded as a list of word
             strings.
         @rtype: C{list} of (C{list} of C{str})
@@ -98,11 +83,11 @@ class TaggedCorpusReader(CorpusReader):
                                         self._sep, self._word_tokenizer,
                                         self._sent_tokenizer,
                                         self._para_block_reader)
-                       for filename in self.filenames(documents, categories)])
+                       for filename in self.abspaths(files)])
 
-    def paras(self, documents=None, categories=None):
+    def paras(self, files=None):
         """
-        @return: the given document or documents as a list of
+        @return: the given file or files as a list of
             paragraphs, each encoded as a list of sentences, which are
             in turn encoded as lists of word strings.
         @rtype: C{list} of (C{list} of (C{list} of C{str}))
@@ -111,11 +96,11 @@ class TaggedCorpusReader(CorpusReader):
                                         self._sep, self._word_tokenizer,
                                         self._sent_tokenizer,
                                         self._para_block_reader)
-                       for filename in self.filenames(documents, categories)])
+                       for filename in self.abspaths(files)])
 
-    def tagged_words(self, documents=None, categories=None):
+    def tagged_words(self, files=None):
         """
-        @return: the given document or documents as a list of tagged
+        @return: the given file or files as a list of tagged
             words and punctuation symbols, encoded as tuples
             C{(word,tag)}.
         @rtype: C{list} of C{(str,str)}
@@ -124,11 +109,11 @@ class TaggedCorpusReader(CorpusReader):
                                         self._sep, self._word_tokenizer,
                                         self._sent_tokenizer,
                                         self._para_block_reader)
-                       for filename in self.filenames(documents, categories)])
+                       for filename in self.abspaths(files)])
 
-    def tagged_sents(self, documents=None, categories=None):
+    def tagged_sents(self, files=None):
         """
-        @return: the given document or documents as a list of
+        @return: the given file or files as a list of
             sentences, each encoded as a list of C{(word,tag)} tuples.
             
         @rtype: C{list} of (C{list} of C{(str,str)})
@@ -137,11 +122,11 @@ class TaggedCorpusReader(CorpusReader):
                                         self._sep, self._word_tokenizer,
                                         self._sent_tokenizer,
                                         self._para_block_reader)
-                       for filename in self.filenames(documents, categories)])
+                       for filename in self.abspaths(files)])
 
-    def tagged_paras(self, documents=None, categories=None):
+    def tagged_paras(self, files=None):
         """
-        @return: the given document or documents as a list of
+        @return: the given file or files as a list of
             paragraphs, each encoded as a list of sentences, which are
             in turn encoded as lists of C{(word,tag)} tuples.
         @rtype: C{list} of (C{list} of (C{list} of C{(str,str)}))
@@ -150,7 +135,7 @@ class TaggedCorpusReader(CorpusReader):
                                         self._sep, self._word_tokenizer,
                                         self._sent_tokenizer,
                                         self._para_block_reader)
-                       for filename in self.filenames(documents, categories)])
+                       for filename in self.abspaths(files)])
 
     #{ Deprecated since 0.8
     @deprecated("Use .raw() or .words() or .sents() or .paras() or "
@@ -175,15 +160,52 @@ class TaggedCorpusReader(CorpusReader):
         else: return 'Operation no longer supported.'
     #}
     
+class CategorizedTaggedCorpusReader(CategorizedCorpusReader,
+                                    TaggedCorpusReader):
+    """
+    A reader for part-of-speech tagged corpora whose documents are
+    divided into categories based on their file identifiers.
+    """
+    def __init__(self, *args, **kwargs):
+        """
+        Initialize the corpus reader.  Categorization arguments
+        (C{cat_pattern}, C{cat_map}, and C{cat_file}) are passed to
+        the L{CategorizedCorpusReader constructor
+        <CategorizedCorpusReader.__init__>}.  The remaining arguments
+        are passed to the L{TaggedCorpusReader constructor
+        <TaggedCorpusReader.__init__>}.
+        """
+        CategorizedCorpusReader.__init__(self, kwargs)
+        TaggedCorpusReader.__init__(self, *args, **kwargs)
 
-class LocationCategorizedTaggedCorpusReader(LocationCategorizedCorpus, TaggedCorpusReader):
-    
-    def __init__(self, root, *args, **kwargs):
-        pattern = kwargs['pattern']
-        del kwargs['pattern']
-        TaggedCorpusReader.__init__(self, root, *args, **kwargs)
-        LocationCategorizedCorpus.__init__(self, pattern)
-
+    def _resolve(self, files, categories):
+        if files is not None and categories is not None:
+            raise ValueError('Specify files or categories, not both')
+        if categories is not None:
+            return self.files(categories)
+        else:
+            return self._files
+    def raw(self, files=None, categories=None):
+        return TaggedCorpusReader.raw(
+            self, self._resolve(files, categories))
+    def words(self, files=None, categories=None):
+        return TaggedCorpusReader.words(
+            self, self._resolve(files, categories))
+    def sents(self, files=None, categories=None):
+        return TaggedCorpusReader.sents(
+            self, self._resolve(files, categories))
+    def paras(self, files=None, categories=None):
+        return TaggedCorpusReader.paras(
+            self, self._resolve(files, categories))
+    def tagged_words(self, files=None, categories=None):
+        return TaggedCorpusReader.tagged_words(
+            self, self._resolve(files, categories))
+    def tagged_sents(self, files=None, categories=None):
+        return TaggedCorpusReader.tagged_sents(
+            self, self._resolve(files, categories))
+    def tagged_paras(self, files=None, categories=None):
+        return TaggedCorpusReader.tagged_paras(
+            self, self._resolve(files, categories))
 
 class TaggedCorpusView(StreamBackedCorpusView):
     """
@@ -233,9 +255,9 @@ class MacMorphoCorpusReader(TaggedCorpusReader):
     L{self.paras()} and L{self.tagged_paras()} contains a single
     sentence.
     """
-    def __init__(self, root, documents, extension):
+    def __init__(self, root, files):
         TaggedCorpusReader.__init__(
-            self, root, documents, extension, sep='_',
+            self, root, files, sep='_',
             word_tokenizer=LineTokenizer(),
             sent_tokenizer=RegexpTokenizer('.*\n'),
             para_block_reader=self._read_block)

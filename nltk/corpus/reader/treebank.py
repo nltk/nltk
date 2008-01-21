@@ -23,7 +23,7 @@ from nltk.corpus.reader.chunked import ChunkedCorpusReader
 from nltk.tokenize import *
 from nltk.tree import Tree
 from nltk import chunk
-import os.path
+import os.path, re
 from nltk.utilities import deprecated
 
 class TreebankCorpusReader(SyntaxCorpusReader):
@@ -38,23 +38,29 @@ class TreebankCorpusReader(SyntaxCorpusReader):
     L{BracketParseCorpusReader} instead.
     """
     def __init__(self, root):
-        self._root = root
         self._mrg_reader = BracketParseCorpusReader(
-            os.path.join(root, 'combined'), '.*', '.mrg')
+            os.path.join(root, 'combined'), '.*\.mrg')
         self._pos_reader = ChunkedCorpusReader(
-            os.path.join(root, 'tagged'), '.*', '.pos',
+            os.path.join(root, 'tagged'), '.*\.pos',
             sent_tokenizer=RegexpTokenizer(self._CHUNK_SENT_RE, gaps=True),
             para_block_reader=tagged_treebank_para_block_reader)
 
         # Make sure we have a consistent set of documents:
-        if set(self._mrg_reader.documents()) != set(self._pos_reader.documents()):
+        documents = set(f[:-4] for f in self._mrg_reader.files())
+        if set(f[:-4] for f in self._pos_reader.files()) != documents:
             raise ValueError('Documents in "combined" and "tagged" '
                              'subdirectories do not match.')
-        for document in self._mrg_reader.documents():
+        for document in documents:
             if not os.path.exists(os.path.join(root, 'raw', document)):
                 raise ValueError('File %r missing from "raw" subdirectory'
                                  % document)
-        self._documents = self._mrg_reader.documents()
+        
+        files = sorted(['combined/%s.mrg' % doc for doc in documents] +
+                       ['tagged/%s.pos' % doc for doc in documents] +
+                       ['raw/%s' % doc for doc in documents])
+        CorpusReader.__init__(self, root, files)
+        self._documents = tuple(sorted(documents))
+        
 
     _CHUNK_SENT_RE = r'(?<=/\.)\s*(?![^\[]*\])'
     """Regexp that matches sentence boundaries in chunked ('.pos')
@@ -62,42 +68,101 @@ class TreebankCorpusReader(SyntaxCorpusReader):
        places a sentence bounary at the space after that token,
        *unless* the token is within a chunk."""
     
+    def documents(self, files=None):
+        """
+        Return a list of document identifiers for all documents in
+        this corpus, or for the documents with the given file(s) if
+        specified.
+        """
+        if files is None:
+            return self._documents
+        if isinstance(files, basestring):
+            files = [files]
+        for f in files:
+            if f not in self._files:
+                raise KeyError('File id %s not found' % files)
+        # File id -> document id
+        return sorted(set([re.sub(r'\w+/([^.]*)(\.mrg|\.pos)?', r'\1', f)
+                           for f in files]))
+
+    def files(self, documents=None):
+        """
+        Return a list of file identifiers for the files that make up
+        this corpus, or that store the given document(s) if specified.
+        """
+        if documents is None:
+            return self._files
+        elif isinstance(documents, basestring):
+            documents = [documents]
+        return sorted(set(['combined/%s.mrg' % doc for doc in documents] +
+                          ['tagged/%s.pos' % doc for doc in documents] +
+                          ['raw/%s' % doc for doc in documents]))
+
+    def _getfiles(self, documents, subcorpus):
+        """
+        Helper that selects the appropraite files for a given set of
+        documents from a given subcorpus (pos, mrg, or raw).
+        """
+        if documents is None:
+            documents = self._documents
+        else:
+            if isinstance(documents, basestring):
+                documents = [documents]
+            for document in documents:
+                if document not in self._documents:
+                    if (document.startswith('tagged/') or
+                        document.startswith('combined/') or
+                        document.startswith('raw/')):
+                        raise ValueError(
+                            'Expected a document identifier, not a file '
+                            'identifier.  (Use corpus.documents() to get '
+                            'a list of document identifiers.')
+                    else:
+                        raise ValueError('Document identifier %s not found'
+                                         % document)
+        return ['%s.%s' % (d, subcorpus) for d in documents]
+
     # Delegate to one of our two sub-readers:
     def words(self, documents=None):
-        return self._pos_reader.words(documents)
+        return self._pos_reader.words(self._getfiles(documents, 'pos'))
     def sents(self, documents=None):
-        return self._pos_reader.sents(documents)
+        return self._pos_reader.sents(self._getfiles(documents, 'pos'))
     def paras(self, documents=None):
-        return self._pos_reader.paras(documents)
+        return self._pos_reader.paras(self._getfiles(documents, 'pos'))
     def tagged_words(self, documents=None):
-        return self._pos_reader.tagged_words(documents)
+        return self._pos_reader.tagged_words(self._getfiles(documents, 'pos'))
     def tagged_sents(self, documents=None):
-        return self._pos_reader.tagged_sents(documents)
+        return self._pos_reader.tagged_sents(self._getfiles(documents, 'pos'))
     def tagged_paras(self, documents=None):
-        return self._pos_reader.tagged_paras(documents)
+        return self._pos_reader.tagged_paras(self._getfiles(documents, 'pos'))
     def chunked_words(self, documents=None):
-        return self._pos_reader.chunked_words(documents)
+        return self._pos_reader.chunked_words(self._getfiles(documents, 'pos'))
     def chunked_sents(self, documents=None):
-        return self._pos_reader.chunked_sents(documents)
+        return self._pos_reader.chunked_sents(self._getfiles(documents, 'pos'))
     def chunked_paras(self, documents=None):
-        return self._pos_reader.chunked_paras(documents)
+        return self._pos_reader.chunked_paras(self._getfiles(documents, 'pos'))
     def parsed_sents(self, documents=None):
-        return self._mrg_reader.parsed_sents(documents)
+        return self._mrg_reader.parsed_sents(self._getfiles(documents, 'mrg'))
 
     # Read in the text file, and strip the .START prefix.
     def text(self, documents=None):
-        if documents is None: documents = self.documents()
-        if isinstance(documents, basestring): documents = [documents]
-        filenames = [os.path.join(self._root, 'raw', document) for document in documents]
+        if documents is None: documents = self._documents
+        filenames = [os.path.join(self._root, 'raw', d) for d in documents]
         return concat([re.sub(r'\A\s*\.START\s*', '', open(filename).read())
                        for filename in filenames])
 
+    #{ Deprecated since 0.9.1
+    @deprecated("Use corpus.documents() instead")
+    def _get_items(self): return self.documents()
+    items = property(_get_items)
+    #}
+    
     #{ Deprecated since 0.8
-    @deprecated("Use .raw() or .sents() or .tagged_sents() or "
+    @deprecated("Use .text() or .sents() or .tagged_sents() or "
                 ".parsed_sents() instead.")
     def read(self, documents=None, format='parsed'):
         if format == 'parsed': return self.parsed_sents(documents)
-        if format == 'raw': return self.raw(documents)
+        if format == 'raw': return self.text(documents)
         if format == 'tokenized': return self.sents(documents)
         if format == 'tagged': return self.tagged_sents(documents)
         if format == 'parsed_no_pos': raise ValueError('no longer supported')
