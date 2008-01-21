@@ -1,3 +1,3 @@
 from prover import *
-from prover9new import *
+from prover9 import *
 from tableau import *

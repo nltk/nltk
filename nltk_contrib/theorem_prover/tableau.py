@@ -6,20 +6,57 @@
 # For license information, see LICENSE.TXT
 
 from nltk.sem.logic import *
+from api import ProverI
 
 class ProverParseError(Exception): pass
 
-def attempt_proof(goal, premises=[], assume_false=True, debug=(False, 0)):
-    try:
-        agenda = Agenda()
-        agenda.put_all([negate(goal)]+premises)
-        return _attempt_proof(agenda, set([]), set([]), debug)
-    except RuntimeError, e:
-        if assume_false and str(e).startswith('maximum recursion depth exceeded'):
-            return False
-        else:
-            raise e
+class Tableau(ProverI):
+    def __init__(self, goal, assumptions=[], **options):
+        """
+        @param goal: Input expression to prove
+        @type goal: L{logic.Expression}
+        @param assumptions: Input expressions to use as assumptions in the proof
+        @type assumptions: L{list} of logic.Expression objects
+        @param options: options to pass to Prover9
+        """
+        self._goal = goal        
+        self._assumptions = assumptions
+        self._options = options
+        self._assume_false=True
+
+    def prove(self):
+        tp_result = None
+        try:
+            agenda = Agenda()
+            agenda.put_all([negate(self._goal)]+self._assumptions)
+            tp_result = _attempt_proof(agenda, set([]), set([]))
+        except RuntimeError, e:
+            if self._assume_false and str(e).startswith('maximum recursion depth exceeded'):
+                tp_result = False
+            else:
+                raise e
+        return tp_result
         
+    def show_proof(self):
+        """
+        Print out the proof.
+        """
+        tp_result = None
+        try:
+            agenda = Agenda()
+            agenda.put_all([negate(self._goal)]+self._assumptions)
+            tp_result = _attempt_proof(agenda, set([]), set([]), (True, 0))
+        except RuntimeError, e:
+            if self._assume_false and str(e).startswith('maximum recursion depth exceeded'):
+                tp_result = False
+            else:
+                raise e
+        return tp_result
+    
+    def add_assumptions(self, new_assumptions):
+        self._assumptions += new_assumptions
+        return None
+
 class Agenda(object):
     def __init__(self):
         self.sets = tuple(set([]) for i in range(17))
@@ -439,11 +476,13 @@ def testTableau():
 
     p = LogicParser().parse(r'some a1.some a2.((believe a1 john a2) and (walk a2 mary))')
     c = LogicParser().parse(r'some a0.(walk a0 mary)')
-    print '%s |- %s: %s' % (p.infixify(), c.infixify(), attempt_proof(c, [p]))
+    prover = Tableau(c, [p])
+    print '%s |- %s: %s' % (p.infixify(), c.infixify(), prover.prove())
     
     p = LogicParser().parse(r'some a1.some a2.((believe a1 john a2) and (walk a2 mary))')
     c = LogicParser().parse(r'some x.some a3.some a4.((believe a3 x a4) and (walk a4 mary))')
-    print '%s |- %s: %s' % (p.infixify(), c.infixify(), attempt_proof(c, [p]))
+    prover = Tableau(c, [p])
+    print '%s |- %s: %s' % (p.infixify(), c.infixify(), prover.prove())
 
 if __name__ == '__main__':
     testTableau()

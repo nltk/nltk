@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Interface to Theorem Provers 
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
-#              Ewan Klein <ewan@inf.ed.ac.uk>
-
+#         Ewan Klein <ewan@inf.ed.ac.uk>
+#
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
@@ -10,7 +10,7 @@ from nltk.sem.logic import ApplicationExpression, Operator, LogicParser
 
 from nltk_contrib.theorem_prover import tableau, prover9
 
-def attempt_proof(goal, premises=[], prover_name='Prover9'):
+def prove(goal, premises=[], prover_name='Prover9'):
     """
     Try to prove a theorem of First Order Logic. 
     
@@ -24,11 +24,13 @@ def attempt_proof(goal, premises=[], prover_name='Prover9'):
     """
 
     if prover_name == 'tableau':
-        return tableau.attempt_proof(goal, premises)
-    
+        prover_module = tableau.Tableau
     elif prover_name.lower() == 'prover9':
-        return prover9.attempt_proof(goal, premises)
+        prover_module = prover9.Prover9
 
+    prover = prover_module(goal)
+    prover.add_assumptions(premises)
+    return prover.prove()
 
 def demo_drt_glue_remove_duplicates(show_example=-1):
     from nltk_contrib.gluesemantics import drt_glue
@@ -67,8 +69,8 @@ def demo():
     b = lp.parse(r'some x.((walks x) and (man x))')
     bicond = ApplicationExpression(ApplicationExpression(Operator('iff'), a), b)
     print "Trying to prove:\n '%s <-> %s'" % (a.infixify(), b.infixify())
-    print 'tableau: %s' % attempt_proof(bicond, prover_name='tableau')
-    print 'Prover9: %s' % attempt_proof(bicond, prover_name='Prover9')
+    print 'tableau: %s' % prove(bicond, prover_name='tableau')
+    print 'Prover9: %s' % prove(bicond, prover_name='Prover9')
     print '\n'
     
     demo_drt_glue_remove_duplicates()

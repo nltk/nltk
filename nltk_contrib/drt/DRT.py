@@ -116,7 +116,7 @@ class AbstractDRS(Expression):
         f1 = self.simplify().toFol();
         f2 = other.simplify().toFol();
         bicond = ApplicationExpression(ApplicationExpression(FolOperator('iff'), f1), f2)
-        return prover.attempt_proof(bicond)
+        return prover.prove(bicond)
 
     def draw(self, x=3, y=3, canvas=None, use_parens=None):
         raise NotImplementedError
