@@ -1368,7 +1368,7 @@ class EarleyChartParser(ParserI):
         if missing:
             missing = ', '.join('%r' % (w,) for w in missing)
             raise ValueError("Grammar does not cover some of the "
-                             "input words: %r." +missing)
+                             "input words: " + missing)
             
 ########################################################################
 ##  Generic Chart Parser
