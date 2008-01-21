@@ -12,12 +12,12 @@ an ``Expression`` and, optionally, a name of a theorem prover.  The default is
 ``'Prover9'`` , but the tableau prover may be used by specifying ``'tableau'``.
 
 
-    >>> from nltk_contrib.theorem_prover import prover
+    >>> from nltk_contrib import theorem_prover as TP
     >>> from nltk_contrib.drt import DRT
     >>> f = DRT.Parser().parse('drs([],[(drs([],[(man x)]) implies drs([],[(man x)]))])').toFol()
     >>> print f
     (implies (man x) (man x))
-    >>> prover.attempt_proof(f)
+    >>> TP.Prover9(f).prove()
     True
 
 
@@ -38,34 +38,88 @@ Install these into an appropriate location. To see where NLTK's
 ``theorem_prover`` module will look by default on a Unix-like system, you can
 inspect the ``_prover9_search`` variable:
 
-    >>> prover._prover9_search
-    ['.', '/usr/local/bin', '/usr/local/prover9', '/usr/local/share/prover9']
+    >>> TP.prover9_search
+    ['.', '/usr/local/bin/prover9', '/usr/local/bin/prover9/bin', '/usr/local/bin', '/usr/bin', '/usr/local/prover9', '/usr/local/share/prover9']
 
 In order to make sure that NLTK has successfully located Prover9, use the
 ``config_prover9()`` function.
 
-    >>> prover.config_prover9()
+    >>> TP.config_prover9()
     [Found Prover9: /usr/local/bin/prover9]
 
 You can also give an explicit path to this function:
 
-    >>> prover.config_prover9('/usr/local/bin')
+    >>> TP.config_prover9('/usr/local/bin')
     [Found Prover9: /usr/local/bin/prover9]
 
 ..   zap the global variable
 
-      >>> prover._prover9_path = None
+      >>> TP.prover9_path = None
 
 If ``config_prover9()`` fails to find the Prover9 executable, for
 example if the explicitly supplied path is incorrect, it will raise an error.
 
-    >>> prover.config_prover9('/nonexistent/path')    
+    >>> TP.config_prover9('/nonexistent/path')    
     Traceback (most recent call last):
       . . .
     LookupError: Unable to find Prover9 executable in '/nonexistent/path'
     Use 'config_prover9(path=<path>) ', or set the PROVER9HOME environment variable to a valid path.
 
-    
+Using Prover9
+~~~~~~~~~~~~~
+
+    >>> from nltk.sem import LogicParser
+    >>> g = LogicParser().parse('((man x) iff (not (not (man x))))')
+    >>> print TP.Prover9(g).prove()
+    True
+    >>> g = LogicParser().parse('all x. ((man x) implies (man x))')
+    >>> prover = TP.Prover9(g)
+    >>> print prover.prove()
+    True
+
+
+
+The command ``prover.show_proof()`` will print out the
+extensive proof information provided by Prover9, shown in abbreviated
+form here::
+
+    ============================== Prover9 ===============================
+    Prover9 (32) version Dec-2007, Dec 2007.
+    Process 6317 was started by ewan on isalpha.local,
+    Mon Jan 21 15:23:28 2008
+    The command was "/usr/local/bin/prover9 -f /var/...
+
+    ============================== end of head ===========================
+    <BLANKLINE>
+    ============================== INPUT =================================
+    <BLANKLINE>
+    % Reading from file /var/...
+    <BLANKLINE>
+    <BLANKLINE>
+    formulas(goals).
+    (all x (man(x) -> man(x))).
+    end_of_list.
+
+    ...
+    ============================== end of search =========================
+    <BLANKLINE>
+    THEOREM PROVED
+    <BLANKLINE>
+    Exiting with 1 proof.
+    <BLANKLINE>
+    Process 6317 exit (max_proofs) Mon Jan 21 15:23:28 2008
+
+    >>> g = LogicParser().parse('(mortal Socrates)')
+    >>> prover = TP.Prover9(g)
+    >>> print prover.prove()
+    False
+    >>> a1 = LogicParser().parse('all x.((man x) implies (mortal x))')
+    >>> a2 = LogicParser().parse('(man Socrates)')
+    >>> prover.add_assumptions([a1, a2])
+    >>> print prover.prove()
+    True
+
+
 ------------
 DRS Equality
 ------------
@@ -90,8 +144,8 @@ For example, the ``drt_glue`` module generates two readings for the sentence
     >>> 
     >>> for drs in readings: print drs.simplify()
     ...
-    drs([z1,x],[(= z1 John),(= x Mary),(sees z1 x)])
-    drs([z2,x],[(= z2 Mary),(= x John),(sees x z2)])
+    DRS([z1,x],[(= z1 John),(= x Mary),(sees z1 x)])
+    DRS([z2,x],[(= z2 Mary),(= x John),(sees x z2)])
 
 However, it is easy to tell that these two readings are logically the
 same, and therefore one of them is superfluous.  We can use the theorem prover
