@@ -23,6 +23,9 @@ all: dist
 doc:
 	$(MAKE) -C doc all
 
+contribdoc:
+	$(MAKE) -C contribdoc all
+
 ########################################################################
 # TESTING
 ########################################################################
@@ -43,7 +46,7 @@ demotest:
 
 .PHONY: dist codedist docdist datadist exampledist .dist.done
 
-dist: codedist docdist exampledist datadist
+dist: codedist docdist exampledist datadist contribdocdist
 	touch .dist.done
 
 codedist: gztardist zipdist rpmdist wininstdist dmgdist
@@ -61,6 +64,9 @@ dmgdist:
 
 docdist:
 	find doc -print | egrep -v '.svn' | zip dist/nltk-doc-$(NLTK_VERSION).zip -@
+
+contribdocdist:
+	find doc_contrib -print | egrep -v '.svn' | zip dist/nltk-contribdoc-$(NLTK_VERSION).zip -@
 
 exampledist:
 	find examples -print | egrep -v '.svn' | zip dist/nltk-examples-$(NLTK_VERSION).zip -@
