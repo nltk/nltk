@@ -915,9 +915,9 @@ def pcfg_demo():
     parser.trace(3)
 
     # doesn't work as tokens are different:
-    #sent = treebank.tokenized('wsj_0001')[0]
+    #sent = treebank.tokenized('wsj_0001.mrg')[0]
 
-    sent = treebank.parsed_sents('wsj_0001')[0].leaves()
+    sent = treebank.parsed_sents('wsj_0001.mrg')[0].leaves()
     print sent
     for parse in parser.nbest_parse(sent):
         print parse
