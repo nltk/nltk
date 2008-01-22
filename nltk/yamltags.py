@@ -25,7 +25,8 @@ def metaloader(classpath):
 
 def register_tag(tag, classpath):
     yaml.add_constructor(u'!'+tag, metaloader(classpath))
-    yaml.add_constructor(u'tag:nltk.sourceforge.net,2007:'+tag, metaloader(classpath))
+    yaml.add_constructor(u'tag:nltk.sourceforge.net,2007:'+tag,
+                         metaloader(classpath))
 
 register_tag(u'tag.Unigram', 'nltk.tag.unigram.Unigram')
 register_tag(u'tag.Brill', 'nltk.tag.brill.Brill')
