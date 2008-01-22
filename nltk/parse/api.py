@@ -8,7 +8,7 @@
 #
 
 import itertools
-from nltk.utilities import deprecated, Deprecated, overridden
+from nltk.internals import deprecated, Deprecated, overridden
 
 class ParserI(object):
     """

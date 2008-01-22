@@ -42,7 +42,7 @@ from util import *
 from api import *
 from nltk import tokenize
 import os
-from nltk.utilities import deprecated
+from nltk.internals import deprecated
 
 class PPAttachment:
     def __init__(self, sent, verb, noun1, prep, noun2, attachment):

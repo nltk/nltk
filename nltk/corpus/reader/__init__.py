@@ -22,7 +22,6 @@ from nltk.corpus.reader.xmldocs import *
 from nltk.corpus.reader.ppattach import *
 from nltk.corpus.reader.senseval import *
 from nltk.corpus.reader.ieer import *
-from nltk.corpus.reader.treebank import *
 from nltk.corpus.reader.sinica_treebank import *
 from nltk.corpus.reader.bracket_parse import *
 from nltk.corpus.reader.indian import *
@@ -38,7 +37,7 @@ __all__ = [
     'ConllChunkCorpusReader', 'WordListCorpusReader',
     'GutenbergCorpusReader', 'XMLCorpusReader',
     'PPAttachmentCorpusReader', 'SensevalCorpusReader',
-    'IEERCorpusReader', 'TreebankCorpusReader',
+    'IEERCorpusReader', 'ChunkedCorpusReader',
     'SinicaTreebankCorpusReader', 'BracketParseCorpusReader',
     'IndianCorpusReader', 'ToolboxCorpusReader',
     'TimitCorpusReader', 'YCOECorpusReader',
@@ -46,6 +45,5 @@ __all__ = [
     'AlpinoCorpusReader', 'RTECorpusReader',
     'StringCategoryCorpusReader',
     'CategorizedTaggedCorpusReader',
-    'CategorizedPlaintextCorpusReader',
-    'ChunkedCorpusReader'
+    'CategorizedPlaintextCorpusReader'
 ]

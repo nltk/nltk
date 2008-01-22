@@ -18,7 +18,7 @@ from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from StringIO import StringIO
 from nltk.etree.ElementTree import TreeBuilder, Element
-from nltk.utilities import deprecated
+from nltk.internals import deprecated
 
 class ToolboxCorpusReader(CorpusReader):
     def xml(self, files, key=None):

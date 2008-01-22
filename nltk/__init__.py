@@ -47,10 +47,11 @@ __maintainer_email__ = "sb@csse.unimelb.edu.au"
 __author__ = __maintainer__
 __author_email__ = __maintainer_email__
 
-# Import top-level utilities into top-level namespace
+# Import top-level functionality into top-level namespace
 
 from compat import *
 from cfg import *
+from containers import *
 from evaluate import *
 from featstruct import *
 from olac import *
@@ -68,17 +69,7 @@ from parse import *
 from chunk import *
 from stem import *
 from classify import *
+from misc import *
 
 import chat, chunk, corpus, draw, parse, sem, stem, tag, tokenize, wordnet
 
-# __all__ = ["chunk", "corpus", "draw", "parse",
-#            "sem", "stem", "tag", "tokenize", "wordnet"]\
-#           + compat.__all__\
-#           + cfg.__all__\
-#           + evaluate.__all__\
-#           + featstruct.__all__\
-#           + olac.__all__\
-#           + probability.__all__\
-#           + tree.__all__\
-#           + utilities.__all__\
-#           + yamltags.__all__

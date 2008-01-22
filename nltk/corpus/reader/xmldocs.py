@@ -14,7 +14,7 @@ Corpus reader for corpora whose documents are xml files.
 from api import CorpusReader
 from util import *
 from nltk.etree import ElementTree
-from nltk.utilities import deprecated
+from nltk.internals import deprecated
 
 class XMLCorpusReader(CorpusReader):
     """

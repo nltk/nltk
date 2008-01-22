@@ -8,7 +8,7 @@
 
 from util import *
 from api import *
-from nltk.utilities import deprecated
+from nltk.internals import deprecated
 
 class WordListCorpusReader(CorpusReader):
     """

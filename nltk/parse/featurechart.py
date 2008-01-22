@@ -17,11 +17,10 @@ from nltk.parse.api import *
 from nltk.parse.chart import *
 from nltk.featstruct import FeatStruct, unify, FeatStructParser
 from nltk.sem.logic import SubstituteBindingsI, unique_variable
-from nltk import cfg
+from nltk import cfg, defaultdict
 from nltk.cfg import FeatStructNonterminal
-from nltk import defaultdict
+from nltk.internals import Counter
 import nltk.data
-from nltk.utilities import Counter
 
 def load_earley(filename, trace=0, cache=False, verbose=False,
                 chart_class=Chart):

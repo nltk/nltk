@@ -169,7 +169,7 @@ __all__ = [
 ######################################################################
 #{ Deprecated
 ######################################################################
-from nltk.utilities import Deprecated
+from nltk.internals import Deprecated
 class ChunkParseI(ChunkParserI, Deprecated):
     """Use nltk.ChunkParserI instead."""
 class RegexpChunk(RegexpChunkParser, Deprecated):

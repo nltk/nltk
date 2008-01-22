@@ -15,7 +15,7 @@ from util import *
 from nltk.tag import str2tuple
 from nltk.tokenize import *
 import os
-from nltk.utilities import deprecated
+from nltk.internals import deprecated
 
 class TaggedCorpusReader(CorpusReader):
     """

@@ -38,7 +38,7 @@ __all__ = [
 ######################################################################
 #{ Deprecated
 ######################################################################
-from nltk.utilities import Deprecated
+from nltk.internals import Deprecated
 class StemI(StemmerI, Deprecated):
     """Use nltk.StemmerI instead."""
 class Regexp(RegexpStemmer, Deprecated):

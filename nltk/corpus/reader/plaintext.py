@@ -14,7 +14,7 @@ import nltk.data
 from nltk.tokenize import *
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
-from nltk.utilities import deprecated
+from nltk.internals import deprecated
 
 class PlaintextCorpusReader(CorpusReader):
     """

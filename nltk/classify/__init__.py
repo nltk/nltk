@@ -64,7 +64,7 @@ from util import *
 from naivebayes import *
 from decisiontree import *
 from weka import *
-from nltk.utilities import deprecated, Deprecated
+from nltk.internals import deprecated, Deprecated
 
 __all__ = [
     # Classifier Interfaces
@@ -92,7 +92,7 @@ except ImportError:
 ######################################################################
 #{ Deprecated
 ######################################################################
-from nltk.utilities import Deprecated
+from nltk.internals import Deprecated
 class ClassifyI(ClassifierI, Deprecated):
     """Use nltk.ClassifierI instead."""
 

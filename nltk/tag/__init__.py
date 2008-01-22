@@ -50,7 +50,7 @@ except ImportError:
 ######################################################################
 #{ Deprecated
 ######################################################################
-from nltk.utilities import Deprecated
+from nltk.internals import Deprecated
 class TagI(TaggerI, Deprecated):
     """Use nltk.TaggerI instead."""
 class SequentialBackoff(SequentialBackoffTagger, Deprecated):

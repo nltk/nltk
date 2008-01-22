@@ -12,7 +12,7 @@ API for corpus readers.
 
 import os, re
 from nltk import defaultdict
-from nltk.utilities import deprecated
+from nltk.internals import deprecated
 import nltk.corpus.reader.util
 
 class CorpusReader(object):

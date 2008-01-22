@@ -6,7 +6,7 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk.utilities import deprecated
+from nltk.internals import deprecated
 
 def str2tuple(s, sep='/'):
     """

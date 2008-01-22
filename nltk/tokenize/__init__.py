@@ -15,7 +15,7 @@ from simple import *
 from regexp import *
 from punkt import *
 from sexpr import *
-from nltk.utilities import deprecated
+from nltk.internals import deprecated
 
 __all__ = ['WhitespaceTokenizer', 'SpaceTokenizer', 'TabTokenizer',
            'LineTokenizer', 'RegexpTokenizer', 'BlanklineTokenizer',

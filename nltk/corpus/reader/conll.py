@@ -14,7 +14,7 @@ from util import *
 from api import *
 from nltk import chunk, tree
 import os
-from nltk.utilities import deprecated
+from nltk.internals import deprecated
 
 class ConllChunkCorpusReader(CorpusReader):
     def __init__(self, root, files, chunk_types):

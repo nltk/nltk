@@ -266,6 +266,79 @@ class ConfusionMatrix(object):
 
         return str
 
+##########################################################################
+# Windowdiff
+# Pevzner, L., and Hearst, M., A Critique and Improvement of an Evaluation Metric for Text Segmentation,
+# Computational Linguistics,, 28 (1), March 2002, pp. 19-36
+##########################################################################
+
+def windowdiff(seg1, seg2, k, boundary="1"):
+    """
+    Compute the windowdiff score for a pair of segmentations.  A segmentation is any sequence
+    over a vocabulary of two items (e.g. "0", "1"), where the specified boundary value is used
+    to mark the edge of a segmentation.
+
+    @param seg1: a segmentation
+    @type seg1: C{string} or C{list}
+    @param seg2: a segmentation
+    @type seg2: C{string} or C{list}
+    @param k: window width
+    @type k: C{int}
+    @param boundary: boundary value
+    @type boundary: C{string} or C{int} or C{bool}
+    @rtype: C{int}
+    """
+
+    if len(seg1) != len(seg2):
+        raise ValueError, "Segmentations have unequal length"
+    wd = 0
+    for i in range(len(seg1) - k):
+        wd += abs(seg1[i:i+k+1].count(boundary) - seg2[i:i+k+1].count(boundary))
+    return wd
+
+# Edit Distance (Levenshtein)
+
+def _edit_dist_init(len1, len2):
+    lev = []
+    for i in range(len1):
+        lev.append([0] * len2)  # initialize 2-D array to zero
+    for i in range(len1):
+        lev[i][0] = i           # column 0: 0,1,2,3,4,...
+    for j in range(len2):
+        lev[0][j] = j           # row 0: 0,1,2,3,4,...
+    return lev
+
+def _edit_dist_step(lev, i, j, c1, c2):
+    a = lev[i-1][j  ] + 1            # skipping s1[i]
+    b = lev[i-1][j-1] + (c1 != c2)   # matching s1[i] with s2[j]
+    c = lev[i  ][j-1] + 1            # skipping s2[j]
+    lev[i][j] = min(a,b,c)           # pick the cheapest
+
+def edit_dist(s1, s2):
+    """
+    Calculate the Levenshtein edit-distance between two strings.
+    The edit distance is the number of characters that need to be
+    substituted, inserted, or deleted, to transform s1 into s2.  For
+    example, transforming "rain" to "shine" requires three steps,
+    consisting of two substitutions and one insertion:
+    "rain" -> "sain" -> "shin" -> "shine".  These operations could have
+    been done in other orders, but at least three steps are needed.
+
+    @param s1, s2: The strings to be analysed
+    @type s1, s2: C{string}
+    @rtype C{int}
+    """
+    # set up a 2-D array
+    len1 = len(s1); len2 = len(s2)
+    lev = _edit_dist_init(len1+1, len2+1)
+
+    # iterate over the array
+    for i in range(len1):
+        for j in range (len2):
+            _edit_dist_step(lev, i+1, j+1, s1[i], s2[j])
+    return lev[len1][len2]
+
+
 def demo():
     print '-'*75
     reference = 'DET NN VB DET JJ NN NN IN DET NN'.split()
@@ -290,4 +363,5 @@ if __name__ == '__main__':
     demo()
 
 __all__ = ['ConfusionMatrix', 'accuracy', 'demo',
-           'f_measure', 'log_likelihood', 'precision', 'recall']
+           'f_measure', 'log_likelihood', 'precision', 'recall',
+           'edit_dist', 'windowdiff']

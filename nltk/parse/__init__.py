@@ -67,7 +67,7 @@ __all__ = [
 ######################################################################
 #{ Deprecated
 ######################################################################
-from nltk.utilities import Deprecated
+from nltk.internals import Deprecated
 class ParseI(ParserI, Deprecated):
     """Use nltk.ParserI instead."""
 class AbstractParse(AbstractParser, Deprecated):
