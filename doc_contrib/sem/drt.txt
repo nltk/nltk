@@ -1,5 +1,5 @@
 .. -*- mode: rst -*-
-.. include:: ../doc/definitions.txt
+.. include:: ../../doc/definitions.txt
 
 .. standard global imports
 
