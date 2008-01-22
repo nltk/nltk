@@ -602,7 +602,7 @@ def bracket_parse(s):
                 if tree.node == '':
                     tree = tree[0]
                 return tree
-            stack[-2].append(stack[-1])
+            stack[-2].append(stack[-1]) # [xx] might get index out of range
             stack.pop()
 
         # Leaf token.
