@@ -1,7 +1,7 @@
 # Contrib Docs Makefile
 # Adapted from Docs Makefile
 #
-# Copyright (C) 2001-2007 University of Pennsylvania
+# Copyright (C) 2001-2008 University of Pennsylvania
 # Author: Steven Bird <sb@csse.unimelb.edu.au>
 #         Edward Loper <edloper@gradient.cis.upenn.edu>
 #         Ewan Klein <ewan@inf.ed.ac.uk>
@@ -24,13 +24,13 @@ TEX := $(DOCS:.txt=.tex)
 BIBTEX_FILE = refs.bib
 
 PYTHON = python
-PDFLATEX = TEXINPUTS=".:../doc:" pdflatex -halt-on-error
+PDFLATEX = TEXINPUTS=".:../../doc:" pdflatex -halt-on-error
 EXAMPLES = ../examples.py
-RST = ../doc/rst.py
+RST = ../../doc/rst.py
 #RST2REF = $(RST) --ref
 RST2HTML = $(RST) --html
 RST2LATEX = $(RST) --latex --$(PAPER_SIZE) --latex_stylesheet_path=$(LATEX_STYLESHEET_PATH) --bibtex_file=$(BIBTEX_FILE)
-DOCTEST = PYTHONPATH=../.. $(PYTHON) ../nltk/test/doctest_driver.py
+DOCTEST = PYTHONPATH=../.. $(PYTHON) ../../nltk/test/doctest_driver.py
 BIBTEX = bibtex -terse
 
 # <http://www.spinellis.gr/sw/textproc/bib2xhtml/>
@@ -40,7 +40,7 @@ BIBTEX = bibtex -terse
 # BETA = $(WEB)/beta
 # RSYNC_OPTS = -arvz -e ssh --relative --cvs-exclude
 
-LATEX_STYLESHEET_PATH = ../doc/definitions.sty
+LATEX_STYLESHEET_PATH = ../../doc/definitions.sty
 
 .SUFFIXES: .txt .html .pdf .errs .py
 
