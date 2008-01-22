@@ -15,6 +15,7 @@ from nltk.corpus.reader.util import *
 from nltk.corpus.reader.tagged import *
 from nltk.corpus.reader.cmudict import *
 from nltk.corpus.reader.conll import *
+from nltk.corpus.reader.chunked import *
 from nltk.corpus.reader.wordlist import *
 from nltk.corpus.reader.gutenberg import *
 from nltk.corpus.reader.xmldocs import *
@@ -46,4 +47,5 @@ __all__ = [
     'StringCategoryCorpusReader',
     'CategorizedTaggedCorpusReader',
     'CategorizedPlaintextCorpusReader',
+    'ChunkedCorpusReader'
 ]

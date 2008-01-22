@@ -264,8 +264,8 @@ def in_demo(trace=0):
     print "in(ORG, LOC) -- just the clauses:"
     print "=" * 45
 
-    for item in ieer.items:
-        for doc in ieer.parsed_docs(item):
+    for file in ieer.files():
+        for doc in ieer.parsed_docs(file):
             if trace:
                 print doc.docno
                 print "=" * 15
@@ -312,8 +312,8 @@ def roles_demo(trace=0):
     print "has_role(PER, ORG) -- raw rtuples:"
     print "=" * 45
     
-    for item in ieer.items:
-        for doc in ieer.parsed_docs(item):
+    for file in ieer.files():
+        for doc in ieer.parsed_docs(file):
             lcon = rcon = False
             if trace:
                 print doc.docno
@@ -330,8 +330,8 @@ def roles_demo(trace=0):
     #print "NER in Headlines"
     #print "=" * 45
  
-    #for item in ieer.items:
-           #for doc in ieer.parsed_docs(item):
+    #for file in ieer.files():
+           #for doc in ieer.parsed_docs(file):
                #tree = doc.headline
                #if isinstance(tree, Tree):
                    #print doc.docno, tree.pprint()

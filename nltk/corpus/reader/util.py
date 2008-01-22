@@ -831,3 +831,23 @@ def _path_from(parent, child):
         assert os.path.split(child)[0] != child
     return path
 
+######################################################################
+#{ Paragraph structure in Treebank files
+######################################################################
+
+def tagged_treebank_para_block_reader(stream):
+    # Read the next paragraph.
+    para = ''
+    while True:
+        line = stream.readline()
+        # End of paragraph:
+        if re.match('======+\s*$', line):
+            if para.strip(): return [para]
+        # End of file:
+        elif line == '':
+            if para.strip(): return [para]
+            else: return []
+        # Content line:
+        else:
+            para += line
+            
