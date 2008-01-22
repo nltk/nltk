@@ -117,7 +117,7 @@ class HiddenMarkovModelTagger(TaggerI):
         self._symbols = symbols
         self._outputs = outputs
         self._priors = priors
-	self._cache = None
+        self._cache = None
 
     def probability(self, sequence):
         """
@@ -191,7 +191,7 @@ class HiddenMarkovModelTagger(TaggerI):
         return self._outputs[state].logprob(symbol)
 
     def _create_cache(self):
-	if not self._cache:
+        if not self._cache:
             N = len(self._states)
             M = len(self._symbols)
             P = zeros(N, float32)
@@ -224,7 +224,7 @@ class HiddenMarkovModelTagger(TaggerI):
         symbols = [token[_TEXT] for token in unlabeled_sequence]
         T = len(symbols)
         N = len(self._states)
-	self._create_cache()
+        self._create_cache()
         P, O, X, S = self._cache
     
         V = zeros((T, N), float32)
@@ -697,9 +697,9 @@ class HiddenMarkovModelTrainer(object):
 
             logprob = 0
             for sequence in unlabeled_sequences:
-		sequence = list(sequence)
-		if not sequence:
-		    continue
+                sequence = list(sequence)
+                if not sequence:
+                    continue
 
                 # compute forward and backward probabilities
                 alpha = model._forward_probability(sequence)
@@ -927,11 +927,11 @@ def test_pos(model, sentences, display=False):
 
     count = correct = 0
     for sentence in sentences:
-	orig_tags = [token[_TAG] for token in sentence]
+        orig_tags = [token[_TAG] for token in sentence]
         sentence = [(token[_TEXT], None) for token in sentence]
         new_tags = model.best_path(sentence)
         if display:
-	    print 'Untagged:'
+            print 'Untagged:'
             print sentence
             print 'HMM-tagged:'
             print new_tags

@@ -112,7 +112,7 @@ def demo():
     print
     print 'Tokenize s-expressions:'
     for x in SExprTokenizer('[]').tokenize(example):
-	print x
+        print x
 
 if __name__ == '__main__':
     demo()

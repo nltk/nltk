@@ -1013,7 +1013,7 @@ class MutableProbDist(ProbDistI):
         try:
             import numpy
         except ImportError:
-	    print "Error: Please install numpy; for instructions see http://nltk.sf.net/install.html"
+            print "Error: Please install numpy; for instructions see http://nltk.sf.net/install.html"
             exit()
         self._samples = samples
         self._sample_dict = dict((samples[i], i) for i in range(len(samples)))
