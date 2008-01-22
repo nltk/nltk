@@ -323,28 +323,32 @@ class FStructure(dict):
 
 def demo_read_depgraph():
     from nltk_contrib.dependency import DepGraph
-    dg1 = DepGraph().read("""Esso	NNP	2	SUB
-said	VBD	0	ROOT
-the	DT	5	NMOD
-Whiting	NNP	5	NMOD
-field	NN	6	SUB
-started	VBD	2	VMOD
-production	NN	6	OBJ
-Tuesday	NNP	6	VMOD
+    dg1 = DepGraph().read("""\
+Esso       NNP     2       SUB
+said    VBD     0       ROOT
+the     DT      5       NMOD
+Whiting NNP     5       NMOD
+field   NN      6       SUB
+started VBD     2       VMOD
+production      NN      6       OBJ
+Tuesday NNP     6       VMOD
 """)
-    dg2 = DepGraph().read("""John	NNP	2	SUB
-sees	VBP	0	ROOT
-Mary	NNP	2	OBJ
+    dg2 = DepGraph().read("""\
+John       NNP     2       SUB
+sees    VBP     0       ROOT
+Mary    NNP     2       OBJ
 """)
-    dg3 = DepGraph().read("""a	DT	2	SPEC
-man	N	3	SUBJ
-walks	IV	0	ROOT
+    dg3 = DepGraph().read("""\
+a  DT      2       SPEC
+man     N       3       SUBJ
+walks   IV      0       ROOT
 """)
-    dg4 = DepGraph().read("""every	DT	2	SPEC
-girl	N	3	SUBJ
-chases	TV	0	ROOT
-a	DT	5	SPEC
-dog	NNP	3	OBJ
+    dg4 = DepGraph().read("""\
+every      DT      2       SPEC
+girl    N       3       SUBJ
+chases  TV      0       ROOT
+a       DT      5       SPEC
+dog     NNP     3       OBJ
 """)
 
 #    depgraphs = [dg1,dg2,dg3,dg4]

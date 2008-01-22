@@ -26,7 +26,8 @@ def feature(functions):
     the features.
     """
         
-    return lambda tokens: list((feature,function(tokens)) for (feature, function) in functions.items())
+    return lambda tokens: [(feature,function(tokens)) for
+                           (feature, function) in functions.items()]
 
 
 def get_features(str):
@@ -43,7 +44,8 @@ def stem_feature(stemmer):
     return feature({'stem': stemmer})
 
 # def context_feature():
-# Meet the need that motivated BagOfContainedWordsFeatureDetector and SetOfContainedWordsFeatureDetector
+# Meet the need that motivated BagOfContainedWordsFeatureDetector
+# and SetOfContainedWordsFeatureDetector
 
 
 ######################################################################
@@ -54,7 +56,8 @@ def demo():
     from nltk.corpus import brown
     from nltk import detect
 
-    detector = detect.feature({'initial': lambda t:[t[0]], 'len': lambda t:[len(t)]})
+    detector = detect.feature({'initial': lambda t:[t[0]],
+                               'len': lambda t:[len(t)]})
 
     for sent in brown.words('a')[:10]:
         print detector(sent)

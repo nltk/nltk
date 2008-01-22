@@ -686,7 +686,7 @@ def decide_initial(accum):
             if re.search(r'^[A-Z]', token):
                 normtoken = normalize(token, False)
                 #And the token never occurs with a lowercase first letter in the corpus, 
-				#reclassify the potential initial as an abbreviation
+                #reclassify the potential initial as an abbreviation
                 if normtoken in orthography_data:
                     if (orthography_data[normtoken][0] == types[normtoken]):
                         accum[center] = re.sub(r'\<S\>$', '<A>', accum[center])

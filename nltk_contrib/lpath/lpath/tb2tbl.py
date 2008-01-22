@@ -38,9 +38,9 @@ def connectdb(opts):
             dsn = "%s/%s@%s" % (user,opts.passwd,suffix)
             conn = cx_Oracle.connect(dsn)
             return conn
-	elif opts.servertype == 'mysql':
-	    import MySQLdb
-	    try:
+        elif opts.servertype == 'mysql':
+            import MySQLdb
+            try:
                 conn = MySQLdb.connect(host=opts.host, port=opts.port, db=opts.db,
                                        user=opts.user, passwd=opts.passwd)
             except DatabaseError, e:

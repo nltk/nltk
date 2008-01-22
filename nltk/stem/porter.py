@@ -479,8 +479,8 @@ class PorterStemmer(StemmerI):
         ## --NLTK--
         ## Don't print results as we go (commented out the next line)
         #print p[i:j+1]
-	if j == None:
-	    j = len(p) - 1
+        if j == None:
+            j = len(p) - 1
         
         # copy the parameters into statics
         self.b = p

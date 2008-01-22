@@ -396,7 +396,7 @@ class Category(Nonterminal, FeatureI, SubstituteBindingsI):
         # other semantic value enclosed by '< >'; return value given by the lambda expr parser
         match = _PARSE_RE['semantics'].match(s, position)
         if match is not None:
-            return ParserSubstitute(match.group(1)).next(), match.end()	
+            return ParserSubstitute(match.group(1)).next(), match.end()
         
         # String value
         if s[position] in "'\"":

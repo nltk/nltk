@@ -59,14 +59,14 @@ def config_prover9(path=None, verbose=True):
 # Following is not yet used. Return code for 2 actually realized as 512. 
 
 #p9_return_codes = {0: True,
-                   #1: "(FATAL)",	#A fatal error occurred (user's syntax error or Prover9's bug).
-                   #2: False,            # (SOS_EMPTY) Prover9 ran out of things to do (sos list exhausted).
-                   #3: "(MAX_MEGS)", 	# The max_megs (memory limit) parameter was exceeded.
-                   #4: "(MAX_SECONDS)", 	# The max_seconds parameter was exceeded.
-                   #5: "(MAX_GIVEN)", 	# The max_given parameter was exceeded.
-                   #6: "(MAX_KEPT)", 	# The max_kept parameter was exceeded.
-                   #7: "(ACTION)", 	# A Prover9 action terminated the search.
-                   #101: "(SIGSEGV)", 	# Prover9 crashed, most probably due to a bug.   
+                   #1: "(FATAL)",       #A fatal error occurred (user's syntax error or Prover9's bug).
+                   #2: False,           # (SOS_EMPTY) Prover9 ran out of things to do (sos list exhausted).
+                   #3: "(MAX_MEGS)",    # The max_megs (memory limit) parameter was exceeded.
+                   #4: "(MAX_SECONDS)", # The max_seconds parameter was exceeded.
+                   #5: "(MAX_GIVEN)",   # The max_given parameter was exceeded.
+                   #6: "(MAX_KEPT)",    # The max_kept parameter was exceeded.
+                   #7: "(ACTION)",      # A Prover9 action terminated the search.
+                   #101: "(SIGSEGV)",   # Prover9 crashed, most probably due to a bug.   
  #}
 
 class Prover9(ProverI):

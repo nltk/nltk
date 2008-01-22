@@ -69,14 +69,14 @@ def stringcomp (fx, fy):
             for i in range(len(fx)-length+1):
                 pattern = fx[i:i+length]
                 pattern_prev_ssnc = ssnc
-		fx_removed = False
+                fx_removed = False
                 while True:
                     index = fy.find(pattern)
                     if index != -1:
                         ssnc += (2.*length)**2
-			if fx_removed == False:
+                        if fx_removed == False:
                             fx = fx[:i] + fx[i+length:]
-			    fx_removed = True
+                            fx_removed = True
                         fy = fy[:index] + fy[index+length:]
                     else:
                         break
@@ -99,7 +99,7 @@ def demo ():
     for country in ["canada", "brazil", "egypt", "thailand", "austria"]:
         score = stringcomp("australia", country)
         if score > max_score:
-	    best_match = country
+            best_match = country
             max_score = score
         print "(comparison between 'australia' and '%s': %.2f)" % (country, score)
     print "Word most similar to 'australia' is '%s' (score: %.2f)" % (best_match, max_score)

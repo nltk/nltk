@@ -981,29 +981,29 @@ class RegexpParser(ChunkParserI):
 
             # New stage begins
             if ':' in line:
-	        if rules != []:
+                if rules != []:
                     parser = RegexpChunkParser(rules, chunk_node=lhs, trace=trace)
                     self._stages.append(parser)
                 lhs, line = line.split(":")
                 lhs = lhs.strip()
-	        rules = []
+                rules = []
 
             line = line.strip()
             if not line: continue
 
             # Pattern bodies: chunk, chink, split, merge
             if line[0] == '{' and line[-1] == '}':
-	        rules.append(ChunkRule(line[1:-1], comment))
+                rules.append(ChunkRule(line[1:-1], comment))
             elif line[0] == '}' and line[-1] == '{':
-	        rules.append(ChinkRule(line[1:-1], comment))
+                rules.append(ChinkRule(line[1:-1], comment))
             elif '}{' in line:
-	        left, right = line.split('}{')
-	        rules.append(SplitRule(left, right, comment))
+                left, right = line.split('}{')
+                rules.append(SplitRule(left, right, comment))
             elif '{}' in line:
-	        left, right = line.split('{}')
-	        rules.append(MergeRule(left, right, comment))
-	    else:
-	        raise ValueError, 'Illegal chunk pattern: %s' % line
+                left, right = line.split('{}')
+                rules.append(MergeRule(left, right, comment))
+            else:
+                raise ValueError, 'Illegal chunk pattern: %s' % line
         if rules != []:
             parser = RegexpChunkParser(rules, chunk_node=lhs, top_node=top_node, trace=trace)
             self._stages.append(parser)
@@ -1102,7 +1102,7 @@ def demo_eval(chunkparser, text):
         for chunk in missed[:10]:
             print '  ', ' '.join(c.__str__() for c in chunk)
         if len(chunkscore.missed()) > 10:
-	    print '  ...'
+            print '  ...'
 
     # Incorrect chunks.
     if chunkscore.incorrect():
@@ -1111,7 +1111,7 @@ def demo_eval(chunkparser, text):
         for chunk in incorrect[:10]:
             print '  ', ' '.join(c.__str__() for c in chunk)
         if len(chunkscore.incorrect()) > 10:
-	    print '  ...'
+            print '  ...'
     
     print '\\'+('='*75)+'/'
     print

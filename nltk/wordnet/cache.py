@@ -109,7 +109,7 @@ class _LRUCache:
         @type  loadfn: function reference
         @param loadfn: a function used to load the cached entry
 
-	@return: a cached item
+        @return: a cached item
         """
         value = None
 

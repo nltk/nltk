@@ -277,7 +277,7 @@ class TreeEdge(EdgeI):
 
     # Comparisons & hashing
     def __cmp__(self, other):
-	if self.__class__ != other.__class__: return -1
+        if self.__class__ != other.__class__: return -1
         return cmp((self._span, self.lhs(), self.rhs(), self._dot),
                    (other._span, other.lhs(), other.rhs(), other._dot))
     def __hash__(self):
