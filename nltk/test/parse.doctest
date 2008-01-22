@@ -277,8 +277,8 @@ Create a set of probabilistic CFG productions.
 Induce some productions using parsed Treebank data.
 
     >>> productions = []
-    >>> for item in treebank.items[:2]:
-    ...     for t in treebank.parsed_sents(item):
+    >>> for doc in treebank.documents()[:2]:
+    ...     for t in treebank.parsed_sents(doc):
     ...         productions += t.productions()
 
     >>> grammar = cfg.induce_pcfg(S, productions)

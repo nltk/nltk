@@ -151,8 +151,8 @@ signature <ORG, LOC>.
 
     >>> import re
     >>> IN = re.compile(r'.*\bin\b(?!\b.+ing\b)')
-    >>> for item in ieer.items:
-    ...     for doc in ieer.parsed_docs(item):
+    >>> for file in ieer.files():
+    ...     for doc in ieer.parsed_docs(file):
     ...         for rel in relextract.relextract('ORG', 'LOC', doc, pattern = IN):
     ...             print relextract.show_raw_rtuple(rel)  # doctest: +ELLIPSIS
     [ORG: 'Christian Democrats'] ', the leading political forces in' [LOC: 'Italy']
@@ -203,8 +203,8 @@ of roles that a PERSON can occupy in an ORGANIZATION.
     ... ,\sof\sthe?\s*  # "X, of (the) Y"
     ... """
     >>> ROLES = re.compile(roles, re.VERBOSE)
-    >>> for item in ieer.items:
-    ...     for doc in ieer.parsed_docs(item):
+    >>> for file in ieer.files():
+    ...     for doc in ieer.parsed_docs(file):
     ...         for rel in relextract.relextract('PER', 'ORG', doc, pattern=ROLES):
     ...             print relextract.show_raw_rtuple(rel) # doctest: +ELLIPSIS
     [PER: 'Kivutha Kibwana'] ', of the' [ORG: 'National Convention Assembly']

@@ -156,13 +156,13 @@ the LCS has multiple paths to the root, the longer path is used for
 the purposes of the calculation.
 
     >>> N['poodle'][0].wup_similarity(N['dalmatian'][1])
-    0.9285714285714286
+    0.93333333333333335
 
     >>> N['dog'][0].wup_similarity(N['cat'][0])
-    0.84615384615384615
+    0.8571428571428571
 
     >>> V['run'][0].wup_similarity(V['walk'][0])
-    0.40000000000000002
+    0.5714285714285714
 
     >>> V['run'][0].wup_similarity(V['think'][0])
     -1
