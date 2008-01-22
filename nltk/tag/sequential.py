@@ -264,8 +264,7 @@ class NgramTagger(ContextTagger, yaml.YAMLObject):
         self._n = n
         
         if (train and model) or (not train and not model):
-            raise ValueError('Must specify either training data or '
-                             'trained model'
+            raise ValueError('Must specify either training data or trained model.')
         ContextTagger.__init__(self, model, backoff)
         if train:
             self._train(train, cutoff, verbose)
