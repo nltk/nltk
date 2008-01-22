@@ -48,8 +48,8 @@ function is applied to each token before it is fed to the classifier:
     ...     return dict([('contains-word(%s)'%w,True) for w in document])
 
     >>> Classify each Gutenberg document.
-    >>> for doc_name in gutenberg.items:
-    ...     doc = gutenberg.tokenized(doc_name)
+    >>> for file in gutenberg.files():
+    ...     doc = gutenberg.tokenized(file)
     ...     print doc_name, classifier.classify(document_features(doc))
 
 Training Classifiers

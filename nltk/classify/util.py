@@ -218,8 +218,8 @@ def names_demo(trainer, features=names_demo_features):
     import random
 
     # Construct a list of classified names, using the names corpus.
-    namelist = ([(name, 'male') for name in names.words('male')] + 
-                [(name, 'female') for name in names.words('female')])
+    namelist = ([(name, 'male') for name in names.words('male.txt')] + 
+                [(name, 'female') for name in names.words('female.txt')])
 
     # Randomly split the names into a test & train set.
     random.seed(123456)
