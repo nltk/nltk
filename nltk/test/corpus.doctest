@@ -4,6 +4,7 @@
 
 Overview
 ~~~~~~~~
+
 The NLTK data package includes a diverse set of corpora, which can be
 read using the `nltk.corpus` package.  Each corpus is accessed by
 means of a "corpus reader" object from `nltk.corpus`:
@@ -66,6 +67,7 @@ typically load all documents in the corpus.
 
 Plaintext Corpora
 ~~~~~~~~~~~~~~~~~
+
 Here are the first few words from each of NLTK's plaintext corpora:
 
     >>> nltk.corpus.abc.words()
@@ -86,6 +88,7 @@ Here are the first few words from each of NLTK's plaintext corpora:
 
 Tagged Corpora
 ~~~~~~~~~~~~~~
+
 In addition to the plaintext corpora, NLTK's data package also
 contains a wide variety of annotated corpora.  For example, the Brown
 Corpus is annotated with part-of-speech tags, and defines additional
@@ -126,6 +129,7 @@ Indian text annotated with part-of-speech tags:
 
 Chunked Corpora
 ~~~~~~~~~~~~~~~
+
 The CoNLL corpora also provide chunk structures, which are encoded as
 flat trees.  The CoNLL 2000 Corpus includes phrasal chunks; and the
 CoNLL 2002 Corpus includes named entity chunks.  
@@ -208,6 +212,7 @@ in a given item as `IEERDocument` objects:
 
 Parsed Corpora
 ~~~~~~~~~~~~~~
+
 The Treebank corpora provide a syntactic parse for each sentence.  The
 NLTK data package includes a 10% sample of the Penn Treebank (in
 ``treebank``), as well as the Sinica Treebank (in ``sinica_treebank``).
@@ -299,6 +304,7 @@ when you try to access it:
       
 Word Lists and Lexicons
 ~~~~~~~~~~~~~~~~~~~~~~~
+
 The NLTK data package also includes a number of lexicons and word
 lists.  These are accessed just like text corpora.  The following
 examples illustrate the use of the wordlist corpora:
@@ -374,18 +380,17 @@ of documents, allowing us to map from (one or more) documents to (one or more) c
     >>> reuters.categories(['training/9865', 'training/9880'])
     ['barley', 'corn', 'grain', 'money-fx', 'wheat']
 
-We can go back the other way using the optional argument of the ``documents()``
-method:
+We can go back the other way using the optional argument of the ``files()`` method:
 
     >>> reuters.files('barley') # doctest: +ELLIPSIS
     ['test/15618', 'test/15649', 'test/15676', 'test/15728', 'test/15871', ...]
     
-Both the ``categories()`` and ``documents()`` methods return a sorted list containing
+Both the ``categories()`` and ``files()`` methods return a sorted list containing
 no duplicates.
 
 In addition to mapping between categories and documents, these corpora permit
 direct access to their contents via the categories.  Instead of accessing a subset
-of a corpus by specifying one or more documents, we can identify one or more categories, e.g.:
+of a corpus by specifying one or more files, we can identify one or more categories, e.g.:
 
     >>> brown.tagged_words(categories='a')
     [('The', 'AT'), ('Fulton', 'NP-TL'), ...]
@@ -400,13 +405,14 @@ Note that it is an error to specify both documents and categories.
 In the context of a text categorization system, we can easily test if the
 category assigned to a document is correct as follows:
 
-    >>> def classify(doc): return 'a'
+    >>> def classify(doc): return 'a'   # Trivial classifier
     >>> doc = 'ca01'
     >>> classify(doc) in brown.categories(doc)
     True
 
 Other Corpora
 ~~~~~~~~~~~~~
+
 The Senseval 2 corpus is a word sense disambiguation corpus.  Each
 item in the corpus corresponds to a single ambiguous word.  For each
 of these words, the corpus contains a list of instances, corresponding
@@ -657,6 +663,7 @@ The RTE corpus also supports an ``xml()`` method which produces ElementTrees.
 
 Regression Tests
 ~~~~~~~~~~~~~~~~
+
 The following helper functions are used to create and then delete
 testing corpora that are stored in temporary directories.  These
 testing corpora are used to make sure the readers work correctly.
@@ -841,6 +848,7 @@ The Brown Corpus uses the tagged corpus reader:
     
 Corpus View Regression Tests
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Select some corpus files to play with:
 
     >>> import nltk.data
