@@ -127,13 +127,13 @@ timit = LazyCorpusLoader(
 toolbox = LazyCorpusLoader(
     'toolbox', ToolboxCorpusReader, r'(?!.*(README|\.svn)).*\.(dic|txt)')
 treebank = LazyCorpusLoader(
-    'treebank', BracketParseCorpusReader, r'combined/wsj_.*\.mrg')
+    'treebank/combined', BracketParseCorpusReader, r'wsj_.*\.mrg')
 treebank_chunk = LazyCorpusLoader(
-    'treebank', ChunkedCorpusReader, r'tagged/wsj_.*\.pos',
+    'treebank/tagged', ChunkedCorpusReader, r'wsj_.*\.pos',
     sent_tokenizer=RegexpTokenizer(r'(?<=/\.)\s*(?![^\[]*\])', gaps=True),
     para_block_reader=reader.tagged_treebank_para_block_reader)
 treebank_raw = LazyCorpusLoader(
-    'treebank', PlaintextCorpusReader, r'raw/wsj_.*')
+    'treebank/raw', PlaintextCorpusReader, r'wsj_.*')
 udhr = LazyCorpusLoader(
     'udhr', PlaintextCorpusReader, r'(?!README|\.svn).*')
 webtext = LazyCorpusLoader(
