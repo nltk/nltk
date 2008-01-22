@@ -1,0 +1,930 @@
+%
+\def\BPmessage{Proof Tree (bussproofs) style macros. Version 1.0.}
+% bussproofs.sty.  Version 1.0
+%     (c) 1994,1995,1996,2004,2005,2006. Copyright retained by Samuel R. Buss.
+%
+% ==== Legal statement: ====
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%  http://www.latex-project.org/lppl.txt.
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/1 or later.
+%
+% This work has the LPPL maintenance status 'maintained'.
+%
+% The Current Maintainer of the work is Sam Buss.
+% 
+% This work consists of bussproofs.sty.
+%  =====
+% Informal summary of legal situation:
+%     This software may be used and distributed freely, except that
+%     if you make changes, you must change the file name to be different
+%     than bussproofs.sty to avoid compatibility problems.
+% The terms of the LaTeX Public License are the legally controlling terms
+%     and override any contradictory terms of the "informal situation".
+%
+%     Please report comments and bugs to sbuss@ucsd.edu.
+%
+%  Thanks to Felix Joachimski for making changes to let these macros
+%   work in plain TeX in addition to LaTeX.  Nothing has been done
+%   to see if they work in AMSTeX.  The comments below mostly
+%   are written for LaTeX, however.
+%  July 2004, version 0.7
+%       - bug fix, right labels with descenders inserted too much space.
+%         Thanks to Peter Smith for finding this bug,
+%     see http://www.phil.cam.ac.uk/teaching_staff/Smith/LaTeX/
+%  March 2005, version 0.8.
+%   Added a default definition for \fCenter at Denis Kosygin's
+%   suggestion.
+%  September 2005, version 0.9.
+%       Fixed some subtle spacing problems, by adding %'s to the end of
+%   few lines where they were inadvertantly omitted.  Thanks to
+%   Arnold Beckmann for finding and fixing this problem.
+%  April 2006, version 0.9.1.  Updated comments and testbp2.tex file.
+%       No change to the actual macros.
+%  June 2006, version 1.0.  The first integer numbered release.
+%       New feature: root of proof may now be at the bottom instead of
+%       at just the top.  Thanks to Alex Hertel for the suggestion to implement
+%       this.
+
+% A good exposition of how to use bussproofs.sty (version 0.9) has been written
+%  by Peter Smith and is available on the internet.
+% The comments below also describe the features of bussproofs.sty,
+%  including user-modifiable parameters.
+
+%  bussproofs.sty allows the construction of proof trees in the
+%     style of the sequent calculus and many other proof systems
+%     One novel feature of these macros is they support the horizontal
+%     alignment according to some center point specified with the
+%     command \fCenter.  This is the style often used in sequent
+%     calculus proofs.
+%     Proofs are specified in left-to-right traversal order.
+%       For example a proof
+%               A   B
+%                               -----
+%                          D      C
+%                         ---------
+%                             E
+%
+%     if given in the order D,A,B,C,E.  Each line in the proof is
+%     specified according to the arity of the inference which generates
+%     it.  Thus, E would be specified with a \BinaryInf  or  \BinaryInfC
+%     command.
+%
+%     The above proof tree could be displayed with the commands:
+%
+%               \AxiomC{D}
+%               \AxiomC{A}
+%               \AxiomC{B}
+%               \BinaryInfC{C}
+%               \BinaryInfC{E}
+%               \DisplayProof
+%
+%     Inferences in a proof may be nullary (axioms), unary, binary, or
+%     trinary.
+%
+%     IMPORTANT:  You must give the \DisplayProof command to make the proof
+%      be printed.  To display a centered proof on a line by itself,
+%      put the proof inside \begin{center} ... \end{center}.
+%
+%     There are two styles for specifying horizontal centering of
+%     lines (formulas or sequents) in a proof.  One format \AxiomC{...}
+%     just centers the formula {...} in the usual way.  The other
+%     format is \Axiom$...\fCenter...$.  Here,  the \fCenter specifies
+%     the center of the formula.  (It is permissable for \fCenter to
+%     generate typeset material; in fact, I usually define it to generate
+%     the sequent arrow.)  In unary inferences, the \fCenter
+%     positions will be vertically aligned in the upper and lower lines of
+%     the inference.  Unary, Binary, Trinary inferences are specified
+%     with the same format as Axioms.  The two styles of centering
+%     lines may be combined in a single proof.
+%
+%     By using the optional \EnableBpAbbreviations command, various
+%   abbreviated two letter commands are enabled.  This allows
+%   \AX and \AXC for \Axiom and \AxiomC, (resp.),
+%   \DP for \DisplayProof,
+%   \BI and \BIC for \BinaryInf and \BinaryInfC,
+%   \UI and \UIC for \UnaryInf  and \UnaryInfC,
+%   \TI and \TIC for \TrinaryInf and \TrinaryInfC,
+%   \LL and \RL for \LeftLabel and \RightLabel.
+%     The enabling of these short abbreviations is OPTIONAL, since
+%       there is the possibility of conflicting with names from other
+%       macro packages.
+%
+%     By default, the inferences have single horizontal lines (scores)
+%       This can be overridden using the \doubleLine, \noLine commands.
+%       These two commands affect only the next inference.  You can make
+%   make a permanent override that applies to the rest of the current
+%       proof using \alwaysDoubleLine and \alwaysNoLine.  \singleLine
+%   and \alwaysSingleLine work in the analogous way.
+%
+%     The macros do their best to give good placements of for the
+%     parts of the proof.  Several macros allow you to override the
+%     defaults.  These are \insertBetweenHyps{...} which overrides
+%     the default spacing between hypotheses of Binary and Trinary
+%     inferences with {...}.  And \kernHyps{...} specifies a distance
+%     to shift the whole block of hypotheses to the right (modifying
+%     the default center position.
+%       Other macros set the vertical placement of the whole proof.
+%     The default is to try to do a good job of placement for inferences
+%     included in text.  Two other useful macros are: \bottomAlignProof
+%     which aligns the hbox output by \DisplayProof according to the base
+%     of the bottom line of the proof, and \centerAlignProof which
+%     does a precise center vertical alignment.
+%
+%     Often, one wishes to place a label next to an inference, usually
+%   to specify the type of inference.  These labels can be placed
+%       by using the commands \LeftLabel{...} and \RightLabel{...}
+%       immediately before the command which specifies the inference.
+%       For example, to generate
+%
+%                       A     B
+%                      --------- X
+%                          C
+%
+%       use the commands  
+%             \AxiomC{A}
+%             \AxiomC{B}
+%             \RightLabel{X}
+%             \BinaryInfC{C}
+%             \DisplayProof
+%
+%     The \DisplayProof command just displays the proof as a text
+%   item.  This allows you to put proofs anywhere normal text
+%   might appear; for example, in a paragraph, in a table, in
+%   a tabbing environment, etc.  When displaying a proof as inline text,
+%   you should write \DisplayProof{}  (with curly brackets) so that
+%   LaTeX will not "eat" the white space following the \DisplayProof
+%   command.
+%     For displaying proofs in a centered display:  Do not use the \[...\]
+%   construction (nor $$...$$).  Instead use
+%   \begin{center} ... \DisplayProof\end{center}.
+%     Actually there is a better construction to use instead of the
+%   \begin{center}...\DisplayProof\end{center}.  This is to
+%   write
+%       \begin{prooftree} ... \end{prooftree}.
+%       Note there is no \DisplayProof used for this: the
+%   \end{prooftree} automatically supplies the \DisplayProof
+%   command.
+%
+%     Warning: Any commands that set line types or set vertical or
+%   horizontal alignment that are given AFTER the \DisplayProof
+%   command will affect the next proof, no matter how distant.
+
+
+
+
+% Usages:
+% =======
+%
+%   \Axiom$<antecedent>\fCenter<succedent>$
+%
+%   \AxiomC{<whole sequent or formula}
+%
+%   Note that the use of surrounding {}'s is mandatory in \AxiomC and
+%   is prohibited in $\Axiom.  On the other hand, the $'s are optional
+%   in \AxiomC and are mandatory in \Axiom.  To typeset the argument
+%   to \AxiomC in math mode, you must use $'s (or \(...\) ).
+%
+%   \UnaryInf$<antecendent>\fCenter<succedent>$
+%
+%   \UnaryInfC{<whole sequent or formula>}
+%
+%   \BinaryInf$<antecendent>\fCenter<succedent>$
+%
+%   \BinaryInfC{<whole sequent or formula>}
+%
+%   \TrinaryInf$<antecendent>\fCenter<succedent>$
+%
+%   \TrinaryInfC{<whole sequent or formula>}
+%
+%   \LeftLabel{<text>} - Puts <text> as a label to the left
+%             of the next inference line.  (Works even if
+%             \noLine is used too.)
+%
+%   \RightLabel{<text>} - Puts <text> as a label to the right of the
+%             next inference line.  (Also works with \noLine.)
+%
+%   \DisplayProof - outputs the whole proof tree (and finishes it).
+%           The proof tree is output as an hbox.
+%
+%
+%   \kernHyps{<dimen>}  - Slides the upper hypotheses right distance <dimen>
+%             (This is similar to shifting conclusion left)
+%           - kernHyps works with Unary, Binary and Trinary
+%             inferences and with centered or uncentered sequents.
+%           - Negative values for <dimen> are permitted.
+%
+%   \insertBetweenHyps{...} - {...} will be inserted between the upper
+%             hypotheses of a Binary or Trinary Inferences.
+%                         It is possible to use negative horizontal space
+%                 to push them closer together (and even overlap).
+%             This command affects only the next inference.
+%
+%   \doubleLine         - Makes the current (ie, next) horizontal line doubled
+%
+%   \alwaysDoubleLine   - Makes lines doubled for rest of proof
+%
+%   \singleLine     - Makes the current (ie, next) line single
+%
+%   \alwaysSingleLine   - Undoes \alwaysDoubleLine or \alwaysNoLine.
+%
+%   \noLine     - Make no line at all at current (ie next) inference.
+%
+%   \alwaysNoLine       - Makes no lines for rest of proof. (Untested)
+%
+%   \solidLine      - Does solid horizontal line for current inference
+%
+%   \dottedLine     - Does dotted horizontal line for current inference
+%
+%   \dashedLine     - Does dashed horizontal line for current inference
+%
+%   \alwaysSolidLine    - Makes the indicated change in line type, permanently
+%   \alwaysDashedLine       until end of proof or until overridden.
+%   \alwaysDottedLine
+%
+%   \bottomAlignProof   - Vertically align proof according to its bottom line.
+%   \centerAlignProof   - Vertically align proof proof precisely in its center.
+%   \normalAlignProof   - Overrides earlier bottom/center AlignProof commands.
+%             The default alignment will look good in most cases,
+%               whether the proof is displayed or is
+%               in-line.  Other alignments may be more
+%               appropriate when putting proofs in tables or
+%               pictures, etc.  For custom alignments, use
+%               TeX's raise commands.
+%
+%   \rootAtTop  - specifies that proofs have their root a the top.  That it,
+%                 proofs will be "upside down".
+%   \rootAtBottom - (default) Specifies that proofs have root at the bottom
+%         The \rootAtTop and \rootAtBottom commands apply *only* to the
+%         current proof.  If you want to make them persistent, use one of
+%         the next two commands:
+%   \alwaysRootAtTop
+%   \alwaysRootAtBottom (default)
+%
+
+% Optional short abbreviations for commands:
+\def\EnableBpAbbreviations{%
+    \let\AX\Axiom
+    \let\AXC\AxiomC
+    \let\UI\UnaryInf
+    \let\UIC\UnaryInfC
+    \let\BI\BinaryInf
+    \let\BIC\BinaryInfC
+    \let\TI\TrinaryInf
+    \let\TIC\TrinaryInfC
+    \let\LL\LeftLabel
+    \let\RL\RightLabel
+    \let\DP\DisplayProof
+}
+
+% Parameters which control the style of the proof trees.
+% The user may wish to override these parameters locally or globally.
+%   BUT DON'T CHANGE THE PARAMETERS BY CHANGING THIS FILE (to avoid
+%   future incompatibilities).  Instead, you should change them in your
+%   TeX document right after including this style file in the 
+%   header material of your LaTeX document.  
+
+\def\ScoreOverhang{4pt}         % How much underlines extend out
+\def\ScoreOverhangLeft{\ScoreOverhang}
+\def\ScoreOverhangRight{\ScoreOverhang}
+
+\def\extraVskip{2pt}            % Extra space above and below lines
+\def\ruleScoreFiller{\hrule}        % Horizontal rule filler.
+\def\dottedScoreFiller{\hbox to4pt{\hss.\hss}}
+\def\dashedScoreFiller{\hbox to2.8mm{\hss\vrule width1.4mm height0.4pt depth0.0pt\hss}}
+\def\defaultScoreFiller{\ruleScoreFiller}  % Default horizontal filler.
+\def\defaultBuildScore{\buildSingleScore}  % In \singleLine mode at start.
+
+\def\defaultHypSeparation{\hskip.2in}   % Used if \insertBetweenHyps isn't given
+
+\def\labelSpacing{3pt}      % Horizontal space separating labels and lines
+
+\def\proofSkipAmount{\vskip.8ex plus.8ex minus.4ex}
+            % Space above and below a prooftree display.
+
+\def\defaultRootPosition{\buildRootBottom} % Default: Proofs root at bottom
+%\def\defaultRootPosition{\buildRootTop}  % Makes all proofs upside down
+
+\ifx\fCenter\undefined
+\def\fCenter{\relax}
+\fi
+
+%
+% End of user-modifiable parameters.
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Here are some internal paramenters and defaults.  Not really intended
+%  to be user-modifiable.
+
+\def\theHypSeparation{\defaultHypSeparation}
+\def\alwaysScoreFiller{\defaultScoreFiller} % Horizontal filler.
+\def\alwaysBuildScore{\defaultBuildScore}
+\def\theScoreFiller{\alwaysScoreFiller} % Horizontal filler.
+\def\buildScore{\alwaysBuildScore}   %This command builds the score.
+\def\hypKernAmt{0pt}    % Initial setting for kerning the hypotheses.
+
+\def\defaultLeftLabel{}
+\def\defaultRightLabel{}
+
+\def\myTrue{Y}
+\def\bottomAlignFlag{N}
+\def\centerAlignFlag{N}
+\def\defaultRootAtBottomFlag{Y}
+\def\rootAtBottomFlag{Y}
+
+% End of internal parameters and defaults.
+
+\expandafter\ifx\csname newenvironment\endcsname\relax%
+% If in TeX:
+\message{\BPmessage}
+\def\makeatletter{\catcode`\@=11\relax}
+\def\makeatother{\catcode`\@=12\relax}
+\makeatletter
+\def\newcount{\alloc@0\count\countdef\insc@unt}
+\def\newdimen{\alloc@1\dimen\dimendef\insc@unt}
+\def\newskip{\alloc@2\skip\skipdef\insc@unt}
+\def\newbox{\alloc@4\box\chardef\insc@unt}
+\makeatother
+\else
+% If in LaTeX
+\typeout{\BPmessage}
+\newenvironment{prooftree}%
+{\begin{center}\proofSkipAmount \leavevmode}%
+{\DisplayProof \proofSkipAmount \end{center} }
+\fi
+
+\def\thecur#1{\csname#1\number\theLevel\endcsname}
+
+\newcount\theLevel    % This counter is the height of the stack.
+\global\theLevel=0      % Initialized to zero
+\newcount\myMaxLevel
+\global\myMaxLevel=0
+\newbox\myBoxA      % Temporary storage boxes
+\newbox\myBoxB
+\newbox\myBoxC
+\newbox\myBoxD
+\newbox\myBoxLL     % Boxes for the left label and the right label.
+\newbox\myBoxRL
+\newdimen\thisAboveSkip     %Internal use: amount to skip above line
+\newdimen\thisBelowSkip     %Internal use: amount to skip below line
+\newdimen\newScoreStart     % More temporary storage.
+\newdimen\newScoreEnd
+\newdimen\newCenter
+\newdimen\displace
+\newdimen\leftLowerAmt%     Amount to lower left label
+\newdimen\rightLowerAmt%    Amount to lower right label
+\newdimen\scoreHeight%      Score height
+\newdimen\scoreDepth%       Score Depth
+\newdimen\htLbox%
+\newdimen\htRbox%
+\newdimen\htAbox%
+\newdimen\htCbox%
+
+\setbox\myBoxLL=\hbox{\defaultLeftLabel}%
+\setbox\myBoxRL=\hbox{\defaultRightLabel}%
+
+\def\allocatemore{%
+    \ifnum\theLevel>\myMaxLevel%
+        \expandafter\newbox\curBox%
+        \expandafter\newdimen\curScoreStart%
+        \expandafter\newdimen\curCenter%
+        \expandafter\newdimen\curScoreEnd%
+        \global\advance\myMaxLevel by1%
+    \fi%
+}
+
+\def\prepAxiom{%
+    \advance\theLevel by1%
+    \edef\curBox{\thecur{myBox}}%
+    \edef\curScoreStart{\thecur{myScoreStart}}%
+    \edef\curCenter{\thecur{myCenter}}%
+    \edef\curScoreEnd{\thecur{myScoreEnd}}%
+    \allocatemore%
+}
+
+\def\Axiom$#1\fCenter#2${%
+    % Get level and correct names set.
+    \prepAxiom%
+    % Define the boxes
+    \setbox\myBoxA=\hbox{$\mathord{#1}\fCenter\mathord{\relax}$}%
+    \setbox\myBoxB=\hbox{$#2$}%
+    \global\setbox\curBox=%
+         \hbox{\hskip\ScoreOverhangLeft\relax%
+        \unhcopy\myBoxA\unhcopy\myBoxB\hskip\ScoreOverhangRight\relax}%
+    % Set the relevant dimensions for the boxes
+    \global\curScoreStart=0pt \relax
+    \global\curScoreEnd=\wd\curBox \relax
+    \global\curCenter=\wd\myBoxA \relax
+    \global\advance \curCenter by \ScoreOverhangLeft%
+    \ignorespaces
+}
+
+\def\AxiomC#1{      % Note argument not in math mode
+    % Get level and correct names set.
+    \prepAxiom%
+        % Define the box.
+    \setbox\myBoxA=\hbox{#1}%
+    \global\setbox\curBox =%
+        \hbox{\hskip\ScoreOverhangLeft\relax%
+                        \unhcopy\myBoxA\hskip\ScoreOverhangRight\relax}%
+    % Set the relevant dimensions for the boxes
+        \global\curScoreStart=0pt \relax
+        \global\curScoreEnd=\wd\curBox \relax
+        \global\curCenter=.5\wd\curBox \relax
+        \global\advance \curCenter by \ScoreOverhangLeft%
+    \ignorespaces
+}
+
+\def\prepUnary{%
+    \ifnum \theLevel<1
+        \errmessage{Hypotheses missing!}
+    \fi%
+    \edef\curBox{\thecur{myBox}}%
+    \edef\curScoreStart{\thecur{myScoreStart}}%
+    \edef\curCenter{\thecur{myCenter}}%
+    \edef\curScoreEnd{\thecur{myScoreEnd}}%
+}
+
+\def\UnaryInf$#1\fCenter#2${%
+    \prepUnary%
+    \buildConclusion{#1}{#2}%
+    \joinUnary%
+    \resetInferenceDefaults%
+    \ignorespaces%
+}
+
+\def\UnaryInfC#1{
+    \prepUnary%
+    \buildConclusionC{#1}%
+    %Align and join the curBox and the new box into one vbox.
+    \joinUnary%
+    \resetInferenceDefaults%
+    \ignorespaces%
+}
+
+\def\prepBinary{%
+    \ifnum\theLevel<2
+        \errmessage{Hypotheses missing!}
+    \fi%
+    \edef\rcurBox{\thecur{myBox}}%   Set up names of right hypothesis
+    \edef\rcurScoreStart{\thecur{myScoreStart}}%
+    \edef\rcurCenter{\thecur{myCenter}}%
+    \edef\rcurScoreEnd{\thecur{myScoreEnd}}%
+    \advance\theLevel by-1%
+    \edef\lcurBox{\thecur{myBox}}% Set up names of left hypothesis
+    \edef\lcurScoreStart{\thecur{myScoreStart}}%
+    \edef\lcurCenter{\thecur{myCenter}}%
+    \edef\lcurScoreEnd{\thecur{myScoreEnd}}%
+}
+
+\def\BinaryInf$#1\fCenter#2${%
+    \prepBinary%
+    \buildConclusion{#1}{#2}%
+    \joinBinary%
+    \resetInferenceDefaults%
+    \ignorespaces%
+}
+
+\def\BinaryInfC#1{%
+    \prepBinary%
+    \buildConclusionC{#1}%
+    \joinBinary%
+    \resetInferenceDefaults%
+    \ignorespaces%
+}
+
+\def\prepTrinary{%
+    \ifnum\theLevel<3
+        \errmessage{Hypotheses missing!}
+    \fi%
+    \edef\rcurBox{\thecur{myBox}}%   Set up names of right hypothesis
+    \edef\rcurScoreStart{\thecur{myScoreStart}}%
+    \edef\rcurCenter{\thecur{myCenter}}%
+    \edef\rcurScoreEnd{\thecur{myScoreEnd}}%
+    \advance\theLevel by-1%
+    \edef\ccurBox{\thecur{myBox}}% Set up names of center hypothesis
+    \edef\ccurScoreStart{\thecur{myScoreStart}}%
+    \edef\ccurCenter{\thecur{myCenter}}%
+    \edef\ccurScoreEnd{\thecur{myScoreEnd}}%
+    \advance\theLevel by-1%
+    \edef\lcurBox{\thecur{myBox}}% Set up names of left hypothesis
+    \edef\lcurScoreStart{\thecur{myScoreStart}}%
+    \edef\lcurCenter{\thecur{myCenter}}%
+    \edef\lcurScoreEnd{\thecur{myScoreEnd}}%
+}
+
+\def\TrinaryInf$#1\fCenter#2${%
+    \prepTrinary%
+    \buildConclusion{#1}{#2}%
+    \joinTrinary%
+    \resetInferenceDefaults%
+    \ignorespaces%
+}
+
+\def\TrinaryInfC#1{%
+    \prepTrinary%
+    \buildConclusionC{#1}%
+    \joinTrinary%
+    \resetInferenceDefaults%
+    \ignorespaces%
+}
+
+\def\buildConclusion#1#2{% Build lower sequent w/ center at \fCenter position.
+    % Define the boxes
+        \setbox\myBoxA=\hbox{$\mathord{#1}\fCenter\mathord{\relax}$}%
+        \setbox\myBoxB=\hbox{$#2$}%
+    % Put them together in \myBoxC
+    \setbox\myBoxC =%
+          \hbox{\hskip\ScoreOverhangLeft\relax%
+        \unhcopy\myBoxA\unhcopy\myBoxB\hskip\ScoreOverhangRight\relax}%
+    % Calculate the center of the \myBoxC string.
+    \newScoreStart=0pt \relax%
+    \newCenter=\wd\myBoxA \relax%
+    \advance \newCenter by \ScoreOverhangLeft%
+    \newScoreEnd=\wd\myBoxC%
+}
+
+\def\buildConclusionC#1{% Build lower sequent w/o \fCenter present.
+        % Define the box.
+    \setbox\myBoxA=\hbox{#1}%
+    \setbox\myBoxC =%
+        \hbox{\hbox{\hskip\ScoreOverhangLeft\relax%
+                        \unhcopy\myBoxA\hskip\ScoreOverhangRight\relax}}%
+    % Calculate kerning to line up centers
+    \newScoreStart=0pt \relax%
+    \newCenter=.5\wd\myBoxC \relax%
+    \newScoreEnd=\wd\myBoxC%
+        \advance \newCenter by \ScoreOverhangLeft%
+}
+
+\def\joinUnary{%Align and join \curBox and \myBoxC into a single vbox
+    \global\advance\curCenter by -\hypKernAmt%
+    \ifnum\curCenter<\newCenter%
+        \displace=\newCenter%
+        \advance \displace by -\curCenter%
+        \kernUpperBox%
+    \else%
+        \displace=\curCenter%
+        \advance \displace by -\newCenter%
+        \kernLowerBox%
+    \fi%
+        \ifnum \newScoreStart < \curScoreStart %
+        \global \curScoreStart = \newScoreStart \fi%
+    \ifnum \curScoreEnd < \newScoreEnd %
+        \global \curScoreEnd = \newScoreEnd \fi%
+    % Leave room for the left label.
+    \ifnum \curScoreStart<\wd\myBoxLL%
+        \global\displace = \wd\myBoxLL%
+        \global\advance\displace by -\curScoreStart%
+        \kernUpperBox%
+        \kernLowerBox%
+    \fi%
+    % Draw the score
+    \buildScore%
+    % Form the score and labels into a box.
+    \buildScoreLabels%
+    % Form the new box and its dimensions
+    \ifx\rootAtBottomFlag\myTrue%  
+        \buildRootBottom%
+    \else%
+        \buildRootTop%
+    \fi%
+    \global \curScoreStart=\newScoreStart%
+    \global \curScoreEnd=\newScoreEnd%
+    \global \curCenter=\newCenter%
+}
+
+\def\buildRootBottom{%         
+    \global \setbox \curBox =%
+        \vbox{\box\curBox%
+            \vskip\thisAboveSkip \relax%
+            \nointerlineskip\box\myBoxD%
+            \vskip\thisBelowSkip \relax%
+            \nointerlineskip\box\myBoxC}%
+}
+
+\def\buildRootTop{%
+    \global \setbox \curBox =%
+        \vbox{\box\myBoxC%
+            \vskip\thisAboveSkip \relax%
+            \nointerlineskip\box\myBoxD%
+            \vskip\thisBelowSkip \relax%
+            \nointerlineskip\box\curBox}%
+}
+
+\def\kernUpperBox{%
+        \global\setbox\curBox =%
+            \hbox{\hskip\displace\box\curBox}%
+        \global\advance \curScoreStart by \displace%
+        \global\advance \curScoreEnd by \displace%
+        \global\advance\curCenter by \displace%
+}
+
+\def\kernLowerBox{%
+        \global\setbox\myBoxC =%
+            \hbox{\hskip\displace\unhbox\myBoxC}%
+        \global\advance \newScoreStart by \displace%
+        \global\advance \newScoreEnd by \displace%
+        \global\advance\newCenter by \displace%
+}
+
+\def\joinBinary{% Construct the binary inference into a vbox.
+    % Join the two hypotheses's boxes into one hbox.
+    \setbox\myBoxA=\hbox{\theHypSeparation}%
+    \lcurScoreEnd=\rcurScoreEnd%
+    \advance\lcurScoreEnd by\wd\lcurBox%
+    \advance\lcurScoreEnd by\wd\myBoxA%
+    \displace=\lcurScoreEnd%
+    \advance\displace by -\lcurScoreStart%
+    \lcurCenter=.5\displace%
+    \advance\lcurCenter by\lcurScoreStart%
+    \ifx\rootAtBottomFlag\myTrue%
+        \setbox\lcurBox=%
+            \hbox{\box\lcurBox\unhcopy\myBoxA\box\rcurBox}%
+    \else%
+        \htLbox = \ht\lcurBox%
+        \htAbox = \ht\myBoxA%
+        \htRbox = \ht\rcurBox%
+        \setbox\lcurBox=%
+            \hbox{\lower\htLbox\box\lcurBox%
+                  \lower\htAbox\box\myBoxA\lower\htRbox\box\rcurBox}%
+    \fi%
+    % Adjust center of upper hypotheses according to how much
+    %   the lower sequent is off-center.
+    \displace=\newCenter%
+    \advance\displace by -.5\newScoreStart%
+    \advance\displace by -.5\newScoreEnd%
+    \advance\lcurCenter by \displace%
+    %Align and join the curBox and the two hypotheses's box into one vbox.
+    \edef\curBox{\lcurBox}%
+    \edef\curScoreStart{\lcurScoreStart}%
+    \edef\curScoreEnd{\lcurScoreEnd}%
+    \edef\curCenter{\lcurCenter}%
+    \joinUnary%
+}
+
+\def\joinTrinary{% Construct the trinary inference into a vbox.
+    % Join the three hypotheses's boxes into one hbox.
+    \setbox\myBoxA=\hbox{\theHypSeparation}%
+    \lcurScoreEnd=\rcurScoreEnd%
+    \advance\lcurScoreEnd by\wd\lcurBox%
+    \advance\lcurScoreEnd by\wd\ccurBox%
+    \advance\lcurScoreEnd by2\wd\myBoxA%
+    \displace=\lcurScoreEnd%
+    \advance\displace by -\lcurScoreStart%
+    \lcurCenter=.5\displace%
+    \advance\lcurCenter by\lcurScoreStart%
+    \ifx\rootAtBottomFlag\myTrue%
+        \setbox\lcurBox=%
+            \hbox{\box\lcurBox\unhcopy\myBoxA\box\ccurBox%
+                      \unhcopy\myBoxA\box\rcurBox}%
+    \else%
+        \htLbox = \ht\lcurBox%
+        \htAbox = \ht\myBoxA%
+        \htCbox = \ht\ccurBox%
+        \htRbox = \ht\rcurBox%
+        \setbox\lcurBox=%
+            \hbox{\lower\htLbox\box\lcurBox%
+                  \lower\htAbox\box\myBoxA\lower\htCbox\box\ccurBox%
+                  \lower\htAbox\box\myBoxA\lower\htRbox\box\rcurBox}%
+    \fi%
+    % Adjust center of upper hypotheses according to how much
+    %   the lower sequent is off-center.
+    \displace=\newCenter%
+    \advance\displace by -.5\newScoreStart%
+    \advance\displace by -.5\newScoreEnd%
+    \advance\lcurCenter by \displace%
+    %Align and join the curBox and the two hypotheses's box into one vbox.
+    \edef\curBox{\lcurBox}%
+    \edef\curScoreStart{\lcurScoreStart}%
+    \edef\curScoreEnd{\lcurScoreEnd}%
+    \edef\curCenter{\lcurCenter}%
+    \joinUnary%
+}
+
+\def\DisplayProof{%
+    % Display (and purge) the proof tree.
+    % Choose the appropriate vertical alignment.
+    \ifnum \theLevel=1 \relax \else%x
+        \errmessage{Proof tree badly specified.}%
+    \fi%
+    \edef\curBox{\thecur{myBox}}%
+    \ifx\bottomAlignFlag\myTrue%
+        \displace=0pt%
+    \else%
+        \displace=.5\ht\curBox%
+        \ifx\centerAlignFlag\myTrue\relax
+        \else%
+                \advance\displace by -3pt%
+        \fi%
+    \fi%
+    \leavevmode%
+    \lower\displace\hbox{\copy\curBox}%
+    \global\theLevel=0%
+    \global\def\alwaysBuildScore{\defaultBuildScore}% Restore "always"
+    \global\def\alwaysScoreFiller{\defaultScoreFiller}% Restore "always"
+    \global\def\bottomAlignFlag{N}%
+    \global\def\centerAlignFlag{N}%
+    \resetRootPosition
+    \resetInferenceDefaults%
+    \ignorespaces
+}
+
+\def\buildSingleScore{% Make an hbox with a single score.
+    \displace=\curScoreEnd%
+    \advance \displace by -\curScoreStart%
+    \global\setbox \myBoxD =%
+        \hbox to \displace{\expandafter\xleaders\theScoreFiller\hfill}%
+    %\global\setbox \myBoxD =%
+        %\hbox{\hskip\curScoreStart\relax \box\myBoxD}%
+}
+
+\def\buildDoubleScore{% Make an hbox with a double score.
+    \buildSingleScore%
+    \global\setbox\myBoxD=%
+        \hbox{\hbox to0pt{\copy\myBoxD\hss}\raise2pt\copy\myBoxD}%
+}
+
+\def\buildNoScore{% Make an hbox with no score (raise a little anyway)
+    \global\setbox\myBoxD=\hbox{\vbox{\vskip1pt}}%
+}
+
+\def\doubleLine{%
+    \gdef\buildScore{\buildDoubleScore}% Set next score to this type
+    \ignorespaces
+}
+\def\alwaysDoubleLine{%
+    \gdef\alwaysBuildScore{\buildDoubleScore}% Do double for rest of proof.
+    \gdef\buildScore{\buildDoubleScore}% Set next score to be double
+    \ignorespaces
+}
+\def\singleLine{%
+    \gdef\buildScore{\buildSingleScore}% Set next score to be single
+    \ignorespaces
+}
+\def\alwaysSingleLine{%
+    \gdef\alwaysBuildScore{\buildSingleScore}% Do single for rest of proof.
+    \gdef\buildScore{\buildSingleScore}% Set next score to be single
+    \ignorespaces
+}
+\def\noLine{%
+    \gdef\buildScore{\buildNoScore}% Set next score to this type
+    \ignorespaces
+}
+\def\alwaysNoLine{%
+    \gdef\alwaysBuildScore{\buildNoScore}%Do nolines for rest of proof.
+    \gdef\buildScore{\buildNoScore}% Set next score to be blank
+    \ignorespaces
+}
+\def\solidLine{%
+    \gdef\theScoreFiller{\ruleScoreFiller}% Use solid horizontal line.
+    \ignorespaces
+}
+\def\alwaysSolidLine{%
+    \gdef\alwaysScoreFiller{\ruleScoreFiller}% Do solid for rest of proof
+    \gdef\theScoreFiller{\ruleScoreFiller}% Use solid horizontal line.
+    \ignorespaces
+}
+\def\dottedLine{%
+    \gdef\theScoreFiller{\dottedScoreFiller}% Use dotted horizontal line.
+    \ignorespaces
+}
+\def\alwaysDottedLine{%
+    \gdef\alwaysScoreFiller{\dottedScoreFiller}% Do dotted for rest of proof
+    \gdef\theScoreFiller{\dottedScoreFiller}% Use dotted horizontal line.
+    \ignorespaces
+}
+\def\dashedLine{%
+    \gdef\theScoreFiller{\dashedScoreFiller}% Use dashed horizontal line.
+    \ignorespaces
+}
+\def\alwaysDashedLine{%
+    \gdef\alwaysScoreFiller{\dashedScoreFiller}% Do dashed for rest of proof
+    \gdef\theScoreFiller{\dashedScoreFiller}% Use dashed horizontal line.
+    \ignorespaces
+}
+\def\kernHyps#1{%
+    \gdef\hypKernAmt{#1}%
+    \ignorespaces
+}
+\def\insertBetweenHyps#1{%
+    \gdef\theHypSeparation{#1}%
+    \ignorespaces
+}
+
+\def\centerAlignProof{%
+    \def\centerAlignFlag{Y}%
+    \def\bottomAlignFlag{N}%
+    \ignorespaces
+}
+\def\bottomAlignProof{%
+    \def\centerAlignFlag{N}%
+    \def\bottomAlignFlag{Y}%
+    \ignorespaces
+}
+\def\normalAlignProof{%
+    \def\centerAlignFlag{N}%
+    \def\bottomAlignFlag{N}%
+    \ignorespaces
+}
+
+\def\LeftLabel#1{%
+    \global\setbox\myBoxLL=\hbox{{#1}\hskip\labelSpacing}%
+    \ignorespaces
+}
+\def\RightLabel#1{%
+    \global\setbox\myBoxRL=\hbox{\hskip\labelSpacing #1}%
+    \ignorespaces
+}
+
+\def\buildScoreLabels{%
+    \scoreHeight = \ht\myBoxD%
+    \scoreDepth = \dp\myBoxD%
+    \leftLowerAmt=\ht\myBoxLL%
+    \advance \leftLowerAmt by -\dp\myBoxLL%
+    \advance \leftLowerAmt by -\scoreHeight%
+    \advance \leftLowerAmt by \scoreDepth%
+    \leftLowerAmt=.5\leftLowerAmt%
+    \rightLowerAmt=\ht\myBoxRL%
+    \advance \rightLowerAmt by -\dp\myBoxRL%
+    \advance \rightLowerAmt by -\scoreHeight%
+    \advance \rightLowerAmt by \scoreDepth%
+    \rightLowerAmt=.5\rightLowerAmt%
+    \displace = \curScoreStart%
+    \advance\displace by -\wd\myBoxLL%
+    \global\setbox\myBoxD =%
+        \hbox{\hskip\displace%
+            \lower\leftLowerAmt\copy\myBoxLL%
+            \box\myBoxD%
+            \lower\rightLowerAmt\copy\myBoxRL}%
+    \global\thisAboveSkip = \ht\myBoxLL%
+    \global\advance \thisAboveSkip by -\leftLowerAmt%
+    \global\advance \thisAboveSkip by -\scoreHeight%
+    \ifnum \thisAboveSkip<0 %
+        \global\thisAboveSkip=0pt%
+    \fi%
+    \displace = \ht\myBoxRL%
+    \advance \displace by -\rightLowerAmt%
+    \advance \displace by -\scoreHeight%
+    \ifnum \displace<0 %
+        \displace=0pt%
+    \fi%
+    \ifnum \displace>\thisAboveSkip %
+        \global\thisAboveSkip=\displace%
+    \fi%
+    \global\thisBelowSkip = \dp\myBoxLL%
+    \global\advance\thisBelowSkip by \leftLowerAmt%
+    \global\advance\thisBelowSkip by -\scoreDepth%
+    \ifnum\thisBelowSkip<0 %
+        \global\thisBelowSkip = 0pt%
+    \fi%
+    \displace = \dp\myBoxRL%
+    \advance\displace by \rightLowerAmt%
+    \advance\displace by -\scoreDepth%
+    \ifnum\displace<0 %
+        \displace = 0pt%
+    \fi%
+    \ifnum\displace>\thisBelowSkip%
+        \global\thisBelowSkip = \displace%
+    \fi%
+    \global\thisAboveSkip = -\thisAboveSkip%
+    \global\thisBelowSkip = -\thisBelowSkip%
+    \global\advance\thisAboveSkip by\extraVskip% Extra space above line
+    \global\advance\thisBelowSkip by\extraVskip% Extra space below line
+}
+
+\def\resetInferenceDefaults{%
+    \global\def\theHypSeparation{\defaultHypSeparation}%
+    \global\setbox\myBoxLL=\hbox{\defaultLeftLabel}%
+    \global\setbox\myBoxRL=\hbox{\defaultRightLabel}%
+    \global\def\buildScore{\alwaysBuildScore}%
+    \global\def\theScoreFiller{\alwaysScoreFiller}%
+    \gdef\hypKernAmt{0pt}% Restore to zero kerning.
+}
+
+
+\def\rootAtBottom{%
+    \global\def\rootAtBottomFlag{Y}%
+}
+
+\def\rootAtTop{%
+    \global\def\rootAtBottomFlag{N}%
+}
+
+\def\resetRootPosition{%
+    \global\edef\rootAtBottomFlag{\defaultRootAtBottomFlag}
+}
+
+\def\alwaysRootAtBottom{%
+    \global\def\defaultRootAtBottomFlag{Y}
+    \rootAtBottom
+}
+
+\def\alwaysRootAtTop{%
+    \global\def\defaultRootAtBottomFlag{N}
+    \rootAtTop
+}
+

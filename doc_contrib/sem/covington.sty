@@ -1,0 +1,509 @@
+%%% File covington.sty
+%%%
+%%% Michael A. Covington
+%%% Artificial Intelligence Programs
+%%% The University of Georgia
+%%% Athens, Georgia 30602-7415 USA
+%%% mcovingt@aisun1.ai.uga.edu
+%%%
+%%% You may copy and distribute this file freely.
+%%% (If you modify it, please change its name and add your own comments.)
+%%%
+%%% See covington.tex for documentation.
+
+\typeout{* covington.sty : Covington's linguistic macros, 2001 March 27 *}
+
+%%%
+%%% Preferences about how text is laid out
+%%%
+
+\renewcommand{\textfloatsep}{0.7in}
+\raggedbottom
+
+%%%
+%%% Stacked accents
+%%%
+
+% This is adapted from the \diatop macro in wsuipa.sty, which was
+% originally designed by Jean-Pierre Paillet.
+
+\def\twoacc[#1|#2]{\leavevmode{\setbox1=\hbox{{#1{}}}%
+                     \setbox2=\hbox{{#2{}}}%
+                     \dimen0=\ifdim\wd1>\wd2\wd1\else\wd2\fi%
+                     \dimen1=\ht2\advance\dimen1by-0.8ex%
+                     \setbox1=\hbox to1\dimen0{\hss#1\hss}%
+                     \rlap{\raise1\dimen1\box1}%
+                     \hbox to1\dimen0{\hss#2\hss}}}%
+
+% Example of usage: \twoacc[\^|\={a}]
+% Special cases:
+
+\def\acm#1{\twoacc[\'|\={#1}]}   % acute over macron
+\def\grm#1{\twoacc[\`|\={#1}]}   % grave over macron
+\def\cim#1{\twoacc[\^|\={#1}]}   % circumflex over macron
+
+%%%
+%%% Example numbering
+%%%
+
+% Example numbering uses the same counter as LaTeX's equation numbering.
+% Thus, you can use \label and \ref to refer to numbered examples in
+% exactly the same way as with equations.
+
+% \exampleno  increments the counter and gives you its current value.
+%             You can use it anywhere to generate an example number.
+%
+%             For example, to display a sentence with a number at the
+%             right margin, do this:
+%
+%             \begin{flushleft}
+%             This is a sentence.  \hfill (\exampleno)
+%             \end{flushleft}
+
+\newcommand{\exampleno}{\refstepcounter{equation}\theequation}
+
+%%%
+%%% The 'example' environment
+%%%
+
+% example     is an environment for displaying a single numbered 
+%             example, preceded by its number.  Example of use:
+%
+%             \begin{example}
+%             This is an example.
+%             \end{example}
+%
+%             This is actually a special case of 'examples' where
+%             the first \item is automatically supplied.
+%
+%             To display sub-examples with numbers such as
+%             (3)(a), (3)(b), etc., you can use 'itemize', thus:
+%             \begin{example}
+%              \begin{itemize}
+%              \item[(a)] This is the first example.
+%              \item[(b)] This is the second example.
+%              \end{itemize}
+%             \end{example}
+
+\newenvironment{example}{\begin{examples}\item}{\end{examples}}
+
+%%%
+%%% The 'examples' environment
+%%%
+
+% examples    is an environment for displaying a series of examples
+%             together, each with its own example number.  Usage:
+%
+%             \begin{examples}
+%             \item This is the first example.
+%             \item This is the second example.
+%             \end{examples}
+%
+% Thanks to Darrel Hankerson of Auburn University, and numerous others
+% across the net, for help with this macro.
+
+\newcounter{equationsave}          % used in trick with equation number
+
+\newenvironment{examples}%         % define "example" environment
+{%
+\begin{list}{(\theequation)}%
+{%
+\setcounter{equationsave}{\arabic{equation}}%
+\usecounter{equation}%                          % sets it to zero, unwantedly
+\setcounter{equation}{\arabic{equationsave}}%   % restores previous value
+\setlength{\listparindent}{0pt}%
+\def\makelabel##1{##1\hfil}%       % put labels flushleft in space available
+}%
+\raggedright}%                     % text is flushleft, not justified
+{\end{list}}
+
+%%%
+%%% Sentences with word-by-word glosses
+%%%
+
+% See covingtn.tex for full documentation.  Some examples:
+%
+% Displayed sentence with gloss and translation:
+%
+%             \gll Dit is een Nederlands voorbeeld.
+%                  This is a Dutch example.
+%             \glt `This is an example in Dutch.'
+%             \glend
+%
+% Same, using bracketing where words do not correspond one-to-one:
+%
+%             \gll Dit is een voorbeeldje     in het Nederlands.
+%                  This is a {little example} in {}  Dutch.
+%             \glt `This is a little example in Dutch.'
+%             \glend
+%
+% Same, with example number added at right:
+%
+%             \gll Dit is een voorbeeldje     in het Nederlands.
+%                  This is a {little example} in {}  Dutch.
+%             \glt `This is a little example in Dutch.' \hfill (\exampleno)
+%             \glend
+%
+% Same, with number but no (line reserved for) translation:
+%
+%             \gll Dit is een voorbeeldje     in het Nederlands.
+%                  This is a {little example} in {}  Dutch.
+%             \gln \hfill (\exampleno)
+%             \glend
+%
+% If you want to align 3 lines rather than two, use \glll instead of \gll.
+%
+% Layout is critical between \gll (or \glll) and \glt (or \gln).
+% After \glt, environment is essentially the same as 'flushleft'.
+%
+% Thanks to Marcel R. van der Goot for permission to reproduce code.
+%
+% Modified 1992 Nov 8 to force single spacing regardless of 
+% baselinestretch.
+
+\@ifundefined{new@fontshape}%
+   {\def\@selfnt{\ifx\@currsize\normalsize\@normalsize\else\@currsize\fi}}
+   {\def\@selfnt{\selectfont}}
+   % Thanks to Hans-Peter Kolb for this macro.
+
+\def\gll                 % Introduces 2-line text-and-gloss.
+   {\begin{flushleft}
+\vskip\baselineskip%      % Added 1992 Nov 8 to force single spacing
+\def\baselinestretch{1}%
+\@selfnt%
+\vskip-\baselineskip%
+    \bgroup
+    \catcode`\^^M=12
+    \twosent
+   }
+
+\def\glll                 % Introduces 3-line text-and-gloss.
+   {\begin{flushleft}
+\vskip\baselineskip%      % Added 1992 Nov 8 to force single spacing
+\def\baselinestretch{1}%
+\@selfnt%
+\vskip-\baselineskip%
+    \bgroup
+    \catcode`\^^M=12
+    \threesent
+   }
+
+\def\glt{{\hskip -\glossglue}\unhbox\gline\smallskip\newline}  % \newline was \\
+                           % Introduces translation.
+                           % Required even if no translation follows.
+
+\def\gln{{\hskip -\glossglue}\unhbox\gline\hfill}
+                           % Alternative to glt, when one wants to
+                           % put a number but no translation.
+
+\def\glend{\end{flushleft}}  % Ends the gloss environment.
+
+% The following TeX code is adapted, with permission, from:
+% gloss.tex: Macros for vertically aligning words in consecutive sentences.
+% Version: 1.0  release: 26 November 1990
+% Copyright (c) 1991 Marcel R. van der Goot (marcel@cs.caltech.edu).
+% Original gloss.tex and gloss.doc are available from
+% csvax.cs.caltech.edu [131.215.131.131] in pub/tex
+% and many other anonymous ftp archives.
+
+\newbox\lineone % boxes with words from first line
+\newbox\linetwo
+\newbox\linethree
+\newbox\wordone % a word from the first line (hbox)
+\newbox\wordtwo
+\newbox\wordthree
+\newbox\gline % the constructed double line (hbox)
+\newskip\glossglue % extra glue between glossed pairs or triples
+% \glossglue = 0pt plus 2pt minus 1pt % allow stretch/shrink between words
+\glossglue = 5pt plus 2pt minus 1pt % allow stretch/shrink between words
+\newif\ifnotdone
+
+\let\eachwordone=\it
+\let\eachwordtwo=\rm
+\let\eachwordthree=\rm
+
+\def\lastword#1#2#3% #1 = \each, #2 = line box, #3 = word box
+   {\setbox#2=\vbox{\unvbox#2%
+                    \global\setbox#3=\lastbox
+                   }%
+    \ifvoid#3\global\setbox#3=\hbox{#1\strut{} }\fi
+        % extra space following \strut in case #1 needs a space
+   }
+
+\def\testdone
+   {\ifdim\ht\lineone=0pt
+         \ifdim\ht\linetwo=0pt \notdonefalse % tricky space after pt
+         \else\notdonetrue
+         \fi
+    \else\notdonetrue
+    \fi
+   }
+
+{\catcode`\^^M=12 \endlinechar=-1 % 12 = other
+\gdef\getwords(#1,#2)#3 #4^^M% #1=linebox, #2=\each, #3=1st word, #4=remainder
+   {\setbox#1=\vbox{\hbox{#2\strut#3 }% adds space
+                    \unvbox#1%
+                   }%
+    \def\more{#4}%
+    \ifx\more\empty\let\more=\donewords
+    \else\let\more=\getwords
+    \fi
+    \more(#1,#2)#4^^M%
+   }
+
+\gdef\donewords(#1,#2)^^M{}%
+
+\gdef\twosent#1^^M#2^^M% #1 = first line, #2 = second line
+   {\getwords(\lineone,\eachwordone)#1 ^^M%
+    \getwords(\linetwo,\eachwordtwo)#2 ^^M%
+    \loop\lastword{\eachwordone}{\lineone}{\wordone}%
+         \lastword{\eachwordtwo}{\linetwo}{\wordtwo}%
+         \global\setbox\gline=\hbox{\unhbox\gline
+                                    \hskip\glossglue
+                                    \vtop{\box\wordone   % vtop was vbox
+                                          \nointerlineskip
+                                          \box\wordtwo
+                                         }%
+                                   }%
+         \testdone
+         \ifnotdone
+    \repeat
+    \egroup % matches \bgroup in \gloss
+   }
+
+\gdef\threesent#1^^M#2^^M#3^^M% #1 = first line, #2 = second line, #3 = third
+   {\getwords(\lineone,\eachwordone)#1 ^^M%
+    \getwords(\linetwo,\eachwordtwo)#2 ^^M%
+    \getwords(\linethree,\eachwordthree)#3 ^^M%
+    \loop\lastword{\eachwordone}{\lineone}{\wordone}%
+         \lastword{\eachwordtwo}{\linetwo}{\wordtwo}%
+         \lastword{\eachwordthree}{\linethree}{\wordthree}%
+         \global\setbox\gline=\hbox{\unhbox\gline
+                                    \hskip\glossglue
+                                    \vtop{\box\wordone   % vtop was vbox
+                                          \nointerlineskip
+                                          \box\wordtwo
+                                          \nointerlineskip
+                                          \box\wordthree
+                                         }%
+                                   }%
+         \testdone
+         \ifnotdone
+    \repeat
+    \egroup % matches \bgroup in \gloss
+   }
+} % restore \catcode`\^^M
+
+%\def\gloss   % raw TeX macro for 2 aligned lines
+%   {\bgroup
+%    \catcode`\^^M=12
+%    \twosent
+%   }
+
+
+%%%
+%%% Phrase-structure rules
+%%%
+
+% \psr         To print S -> NP VP, use: \psr{S}{NP~VP}
+
+\newcommand{\psr}[2]{\mbox{\it #1 $\rightarrow$ #2}}
+
+
+%%%
+%%% Feature structures
+%%%
+
+% \fs         To print a feature structure by itself, type for example
+%             \fs{case:nom \\ person:P}
+%
+% \lfs        To print the same feature structure with the category
+%             label N at the top, type:
+%             \lfs{N}{case:nom \\ person:P}
+
+%    Modified 1990 Dec 5 so that features are left aligned.
+%    Modified 2001 Mar 27 so that italics are used without the user typing \it.
+\newcommand{\fs}[1]
+{
+    \mbox{\small 
+          $
+          \it 
+          \left[
+          \!\!
+          \begin{array}{l}
+          #1
+          \end{array}
+          \!\!
+          \right]
+          $}
+}
+
+%     Modified 1990 Dec 5 so that features are left aligned.
+\newcommand{\lfs}[2]
+   {
+     \mbox{$
+           \it
+           \!\!
+           \begin{array}[t]{c}
+           #1
+           \\
+           \mbox{\small%
+                 $
+                 \it
+                 \left[
+                 \!\!
+                 \begin{array}{l}
+                 #2
+                 \end{array}
+                 \!\!
+                 \right]
+                 $}
+           \end{array}
+           \!\!
+           $}
+   }
+
+
+%%%
+%%% Discourse representation structures
+%%%
+
+% \drs        typesets a DRS in box notation a la Kamp.
+%             Arguments:
+%             1. List of discourse variables joined by ~
+%             2. List of conditions joined by \\
+%
+%             Example:   \drs{X}{donkey(X)\\green(X)}
+%
+%             Example:   \drs{~}{purple(X,Y)}
+%
+%             Example:   \drs{X}
+%                            {named(X,`Pedro') \\
+%                             \drs{Y}{donkey(Y)\\owns(X,Y)}~~
+%                             {\large $\Rightarrow$}~
+%                             \drs{~}{feeds(X,Y)}
+%                            }
+
+% \sdrs       like \drs but first argument is a sentence
+%             to be displayed above the drs.
+%
+%             Example:   \sdrs{A donkey is green.}{X}{donkey(X)\\green(X)}
+
+% \ifdrs      forms 2 DRSes joined with a big arrow.
+%             Usually used for DRSes nested within another.
+%
+%             Example:   \ifdrs{X}{donkey(X)\\hungry(X)}
+%                              {~}{feeds(Pedro,X)}
+
+% \alifdrs    is like \ifdrs but shifted to the left so that an
+%             embedded `if' structure will line up with ordinary
+%             DRS conditions.
+
+% \negdrs     forms a DRS preceded by the negation symbol.
+%
+%             Example:   \negdrs{X}{donkey(X)\\green(X)}
+
+
+\newcommand{\drs}[2]
+{
+    {
+    \it
+    \begin{tabular}{|l|}
+    \hline
+    ~ \vspace{-2ex} \\
+    #1
+    \\
+    ~ \vspace{-2ex} \\
+    \hline
+    ~ \vspace{-2ex} \\
+    #2
+    \\
+    ~ \\    % can't vspace here or the line will come out wrong
+    \hline
+    \end{tabular}
+    }
+}
+
+\newcommand{\sdrs}[3]
+{\begin{tabular}{l}
+\mbox{\it #1} \\
+~ \\
+\drs{#2}{#3}
+\end{tabular}}
+
+\newcommand{\ifdrs}[4]
+{
+  \mbox{\drs{#1}{#2}~~{\large $\Rightarrow$}~\drs{#3}{#4}}
+}
+
+\newcommand{\alifdrs}[4]
+{
+  \mbox{$\!\!\!$\drs{#1}{#2}~~{\large $\Rightarrow$}~\drs{#3}{#4}}
+}
+
+\newcommand{\negdrs}[2]
+{
+  \mbox{{\large $\neg$}\drs{#1}{#2}}
+}
+
+
+%
+% Exercises, reference lists, and miscellany
+%
+
+% exercise    Environment for exercises, numbered by subsection.
+%             Optional argument for describing the exercise
+%             ("Project" or the like).
+
+% \bx         Abbreviation for \begin{exercise}
+% \ex         Abbreviation for \end{exercise}
+
+% reflist     Environment for hanging-indented list
+%             (suitable for LSA-style reference list).
+%             Does NOT require \item before entries.
+
+% \sentence   Displays its argument, flushleft, italicized.
+
+% \either     Displays its arguments as alternatives between
+%             large curly brackets.  Good for alternatives
+%             within sentences or PS-rules.
+
+\newtheorem{exercise}{Exercise}[subsection]
+
+% Exercise numbering resets to 0 not only at the start of
+% a subsection, but also at the start of a section or chapter
+% even if it is not divided into subsections.
+\@addtoreset{exercise}{section}
+\@addtoreset{exercise}{chapter}
+
+\newcommand{\bx}{\begin{exercise}}
+\newcommand{\ex}{\end{exercise}}
+
+\@ifundefined{reflist}{
+\newenvironment{reflist}{\begin{list}{}%
+{\setlength{\labelwidth}{0pt}
+ \setlength{\labelsep}{0pt}
+ \setlength{\leftmargin}{3em}
+ \setlength{\itemindent}{-3em}
+ \setlength{\listparindent}{-3em}
+ \setlength{\itemsep}{6pt}}\item}{\end{list}}
+}
+% Modified 1992 Nov 8 to skip defining reflist if reflist is already
+% defined.  Permits using uga.sty with covingtn.sty.
+
+\newcommand{\sentence}[1]
+     {\begin{flushleft}{\it #1}\end{flushleft}}
+
+\newcommand{\either}[2]
+{
+     $
+     \left\{
+     \begin{array}{l}
+     \makebox{#1} \\
+     \makebox{#2} \\
+     \end{array}
+     \right\}
+     $
+}
+
+%%%%%%%%%%%%%%%%% End of Covington's Macros %%%%%%%%%%%%%%%%%
