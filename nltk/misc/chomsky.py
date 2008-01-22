@@ -20,7 +20,8 @@ leadins = """To characterize a linguistic level L,
     We will bring evidence in favor of the following thesis:
     To provide a constituent structure for T(Z,K),
     From C1, it follows that
-    For any transformation which is sufficiently diversified in application to be of any interest,
+    For any transformation which is sufficiently diversified in \
+application to be of any interest,
     Analogously,
     Clearly,
     Note that
@@ -32,9 +33,11 @@ leadins = """To characterize a linguistic level L,
     We have already seen that
     By combining adjunctions and certain deformations,
     I suggested that these results would follow from the assumption that
-    If the position of the trace in (99c) were only relatively inaccessible to movement,
+    If the position of the trace in (99c) were only relatively \
+inaccessible to movement,
     However, this assumption is not correct, since
-    Comparing these examples with their parasitic gap counterparts in (96) and (97), we see that
+    Comparing these examples with their parasitic gap counterparts in \
+(96) and (97), we see that
     In the discussion of resumptive pronouns following (81),
     So far,
     Nevertheless,
@@ -56,7 +59,8 @@ subjects = """ the notion of level of grammaticalness
     the natural general principle that will subsume this case
     an important property of these three types of EC
     any associated supporting element
-    the appearance of parasitic gaps in domains relatively inaccessible to ordinary extraction
+    the appearance of parasitic gaps in domains relatively inaccessible \
+to ordinary extraction
     the speaker-hearer's linguistic intuition
     the descriptive power of the base component
     the earlier discussion of deviance
@@ -89,9 +93,11 @@ verbs = """can be defined in such a way as to impose
 #List of VERBs chosen for autorecursive obfuscation.
 
 objects = """ problems of phonemic and morphological analysis.
-    a corpus of utterance tokens upon which conformity has been defined by the paired utterance test.
+    a corpus of utterance tokens upon which conformity has been defined \
+by the paired utterance test.
     the traditional practice of grammarians.
-    the levels of acceptability from fairly high (e.g. (99a)) to virtual gibberish (e.g. (98d)).
+    the levels of acceptability from fairly high (e.g. (99a)) to virtual \
+gibberish (e.g. (98d)).
     a stipulation to place the constructions into these various categories.
     a descriptive fact.
     a parasitic gap construction.
@@ -103,7 +109,8 @@ objects = """ problems of phonemic and morphological analysis.
     a general convention regarding the forms of the grammar.
     an abstract underlying order.
     an important distinction in language use.
-    the requirement that branching is not tolerated within the dominance scope of a complex symbol.
+    the requirement that branching is not tolerated within the dominance \
+scope of a complex symbol.
     the strong generative capacity of the theory."""
 # List of OBJECTs selected for profound sententiousness.
 

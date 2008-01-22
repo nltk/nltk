@@ -45,13 +45,15 @@ def check(word, dir, x, y, grid, rows, cols):
             return False
         return step(word, x, lambda i:x, y, lambda i:y-i, grid)
 
-def wordfinder(words, rows=20, cols=20, attempts=50, alph='ABCDEFGHIJKLMNOPQRSTUVWXYZ'):
+def wordfinder(words, rows=20, cols=20, attempts=50,
+               alph='ABCDEFGHIJKLMNOPQRSTUVWXYZ'):
     """
-    Attempt to arrange words into a letter-grid with the specified number of
-    rows and columns.  Try each word in several positions and directions, until
-    it can be fitted into the grid, or the maximum number of allowable attempts
-    is exceeded.  Returns a tuple consisting of the grid and the words that were
-    successfully placed.
+    Attempt to arrange words into a letter-grid with the specified
+    number of rows and columns.  Try each word in several positions
+    and directions, until it can be fitted into the grid, or the
+    maximum number of allowable attempts is exceeded.  Returns a tuple
+    consisting of the grid and the words that were successfully
+    placed.
 
     @param words: the list of words to be put into the grid
     @type words: C(list)
