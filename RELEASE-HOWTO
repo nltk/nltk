@@ -48,11 +48,12 @@ The build requires docutils, pdflatex, python imaging library, epydoc
   1. Check out a clean copy of the subversion repository (or make clean)
      and install locally with python setup.py install; make clean
   2. make doc (slow; see doc/ for the results)
-  3. make dist (fast; see dist/ for the results; may need "sudo make dist")
+  3. make contribdoc
+  4. make dist (fast; see dist/ for the results; may need "sudo make dist")
      - remove source rpm
-  4. make python numpy wordnet (potentially slow; to download all python distros if necessary)
-  5. make iso (fast; see dist/ for the iso image)
-  6. list distributions and compare size with previous distribution
+  5. make python numpy wordnet (potentially slow; to download all python distros if necessary)
+  6. make iso (fast; see dist/ for the iso image)
+  7. list distributions and compare size with previous distribution
 
 -rw-r--r--   1 root  sb    1568039 Oct 12 16:53 nltk-0.9-1.noarch.rpm
 -rw-r--r--   1 root  sb   55594038 Oct 12 16:54 nltk-0.9.dmg

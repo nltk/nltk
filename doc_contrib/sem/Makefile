@@ -10,7 +10,7 @@
 
 PAPER_SIZE = a4
 
-DOCS =  gluesem.txt drt.txt
+DOCS =  gluesem.txt drt.txt prover.txt hole.txt
 
 #REF_EXTENSION = .ref
 
@@ -25,7 +25,7 @@ BIBTEX_FILE = refs.bib
 
 PYTHON = python
 PDFLATEX = TEXINPUTS=".:../../doc:" pdflatex -halt-on-error
-EXAMPLES = ../examples.py
+EXAMPLES = ../../doc/examples.py
 RST = ../../doc/rst.py
 #RST2REF = $(RST) --ref
 RST2HTML = $(RST) --html
