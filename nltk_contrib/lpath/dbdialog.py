@@ -175,7 +175,7 @@ class DatabaseConnectionDialog(QDialog):
         self.conpans = {"--":self.conpanNone,
                        "PostgreSQL":self.conpanPostgreSQL,
                        "Oracle":self.conpanOracle,
-		       "MySQL":self.conpanMySQL}
+                       "MySQL":self.conpanMySQL}
         self.conpan = None
         self.conpanNone()
 
@@ -186,7 +186,7 @@ class DatabaseConnectionDialog(QDialog):
         combo.insertItem("--")
         if CAP_PGSQL: combo.insertItem("PostgreSQL")
         if CAP_ORACLE: combo.insertItem("Oracle")
-	if CAP_MYSQL: combo.insertItem("MySQL")
+        if CAP_MYSQL: combo.insertItem("MySQL")
 
         layout.addWidget(hbox)
         layout.addWidget(self.wstack)

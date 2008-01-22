@@ -316,17 +316,17 @@ def main():
 
     opts = OptionParser(usage=usage)
     opts.add_option("-c", "--components",
-	action="store_true", dest="show_components", default=0,
-	help="show hole semantics components")
+        action="store_true", dest="show_components", default=0,
+        help="show hole semantics components")
     opts.add_option("-r", "--raw",
-	action="store_true", dest="show_raw", default=0,
-	help="show the raw hole semantics expression")
+        action="store_true", dest="show_raw", default=0,
+        help="show the raw hole semantics expression")
     opts.add_option("-d", "--drawtrees",
-	action="store_true", dest="draw_trees", default=0,
-	help="show formula trees in a GUI window")
+        action="store_true", dest="draw_trees", default=0,
+        help="show formula trees in a GUI window")
     opts.add_option("-v", "--verbose",
-	action="count", dest="verbosity", default=0,
-	help="show more information during parse")
+        action="count", dest="verbosity", default=0,
+        help="show more information during parse")
 
     (options, args) = opts.parse_args()
 

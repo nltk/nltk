@@ -478,14 +478,14 @@ def relation_section(rel_name, word, synset_keys):
             w = pos_match((None,None,synset.pos))[0][wrd]
             oppo = None
             for syns in w:
-            	for wlr in syns.relations(CLASSIF_REGIONAL,True):
+                for wlr in syns.relations(CLASSIF_REGIONAL,True):
                     if not isinstance(wlr, tuple): continue
                     syn,i = wlr[1]
                     syns,j = wlr[0]
                     if syn == synset and syns.words[j] == wrd:
-             			form = (syn.pos,syn.offset,i)
-             			oppo = (syns.pos,syns.offset,j)
-             			break
+                                form = (syn.pos,syn.offset,i)
+                                oppo = (syns.pos,syns.offset,j)
+                                break
                 if oppo: break
             if oppo:
                 s += collect_one(word, \
@@ -1290,7 +1290,7 @@ class MyHtmlFrame(wx.Frame):
                 dn = dn[0]
             html += '<tr><th align="left">' + '%s' % ('--- ' + dn) + '</th>'
             for y in rk[1]:
-            	r_counts[y[1]] = rel_counts[y]
+                r_counts[y[1]] = rel_counts[y]
             r_counts[len(col_heads) - 1] = sum(r_counts)
             html += ''.join('<td align="right">' + '%6d ' % rc + '</td>'
                              for rc in r_counts) + '</tr>'
@@ -1318,7 +1318,7 @@ class MyHtmlFrame(wx.Frame):
             html += '<tr><th align="center">' + dn + '</th>'
             rel_word_examples = [''] * 4
             for y in rk[1]:
-            	rel_word_examples[y[1]] = rel_words[y]
+                rel_word_examples[y[1]] = rel_words[y]
             hlp = ''.join('<td align="center"><a href="?' + x + '">' + x.replace('_', ' ') +
                             '</a></td>' for x in rel_word_examples)
             hlp = hlp.replace('<a href="?"></a>','-')

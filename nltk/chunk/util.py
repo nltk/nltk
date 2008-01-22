@@ -142,7 +142,7 @@ class ChunkScore(object):
         @type guessed: chunk structure
         @param guessed: The chunked sentence to be scored.
         """
-	     
+
         self._correct |= _chunksets(correct, self._count)
         self._guessed |= _chunksets(guessed, self._count)
         self._count += 1
