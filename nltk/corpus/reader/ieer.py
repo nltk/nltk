@@ -25,7 +25,7 @@ from util import *
 from api import *
 from nltk import chunk
 import os
-from nltk.utilities import deprecated
+from nltk.internals import deprecated
 
 #: A dictionary whose keys are the names of documents in this corpus;
 #: and whose values are descriptions of those documents' contents.

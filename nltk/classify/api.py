@@ -24,7 +24,7 @@ classification}, in which:
     - The number of categories is finite.
     - Each text belongs to zero or more categories.
 """
-from nltk.utilities import deprecated, overridden
+from nltk.internals import deprecated, overridden
 
 ##//////////////////////////////////////////////////////
 #{ Classification Interfaces

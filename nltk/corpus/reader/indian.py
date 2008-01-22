@@ -22,7 +22,7 @@ from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from nltk import tokenize
 import os
-from nltk.utilities import deprecated
+from nltk.internals import deprecated
 import nltk.tag.util # for str2tuple
 
 class IndianCorpusReader(CorpusReader):

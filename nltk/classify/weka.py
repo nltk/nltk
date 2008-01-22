@@ -10,7 +10,7 @@
 import time, tempfile, os, os.path, subprocess, re
 from nltk.classify.api import *
 from nltk.probability import *
-from nltk.utilities import java, config_java
+from nltk.internals import java, config_java
 
 """
 Classifiers that make use of the external 'Weka' package.

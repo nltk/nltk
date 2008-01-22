@@ -42,7 +42,7 @@ from util import *
 from api import *
 from nltk import tokenize, tree
 import os, re
-from nltk.utilities import deprecated
+from nltk.internals import deprecated
 
 IDENTIFIER = re.compile(r'^#\S+\s')
 APPENDIX = re.compile(r'(?<=\))#.*$')

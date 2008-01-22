@@ -48,7 +48,7 @@ ZH      seizure S IY ZH ER
 from util import *
 from api import *
 import os
-from nltk.utilities import deprecated
+from nltk.internals import deprecated
 
 class CMUDictCorpusReader(CorpusReader):
     def entries(self):

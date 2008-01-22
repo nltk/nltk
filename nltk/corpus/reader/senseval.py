@@ -28,7 +28,7 @@ from nltk.tokenize import *
 import os, re, xml.sax
 from xmldocs import XMLCorpusReader
 from nltk.etree import ElementTree
-from nltk.utilities import deprecated
+from nltk.internals import deprecated
 
 class SensevalInstance(object):
     def __init__(self, word, position, context, senses):

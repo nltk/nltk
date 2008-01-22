@@ -11,7 +11,7 @@ Interface for tagging each token in a sentence with supplementary
 information, such as its part of speech.
 """
 
-from nltk.utilities import overridden
+from nltk.internals import overridden
 
 class TaggerI(object):
     """

@@ -8,7 +8,7 @@
 """
 Tokenizer Interface
 """
-import nltk.utilities
+from nltk.internals import overridden
 
 class TokenizerI(object):
     """
@@ -24,7 +24,7 @@ class TokenizerI(object):
         
         @return: C{list} of C{str}
         """
-        if nltk.utilities.overridden(self.batch_tokenize):
+        if overridden(self.batch_tokenize):
             return self.batch_tokenize([s])[0]
         else:
             raise NotImplementedError()

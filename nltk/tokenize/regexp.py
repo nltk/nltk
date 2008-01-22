@@ -14,7 +14,7 @@ expressions that can match either tokens or separators between tokens.
 
 import re, sre_constants
 from nltk.tokenize.api import *
-from nltk.utilities import convert_regexp_to_nongrouping
+from nltk.internals import convert_regexp_to_nongrouping
 
 class RegexpTokenizer(TokenizerI):
     """
