@@ -243,13 +243,15 @@ class NgramTagger(ContextTagger, yaml.YAMLObject):
     """
     yaml_tag = '!nltk.NgramTagger'
     
-    def __init__(self, n, train=None, model=None, backoff=None, cutoff=1, verbose=False):
+    def __init__(self, n, train=None, model=None, backoff=None,
+                 cutoff=1, verbose=False):
         """
-        Train a new C{NgramTagger} using the given training data or the supplied model.
-        In particular, construct a new tagger whose table maps from each
-        context C{(tag[i-n:i-1], word[i])} to the most frequent tag
-        for that context.  But exclude any contexts that are already
-        tagged perfectly by the backoff tagger.
+        Train a new C{NgramTagger} using the given training data or
+        the supplied model.  In particular, construct a new tagger
+        whose table maps from each context C{(tag[i-n:i-1], word[i])}
+        to the most frequent tag for that context.  But exclude any
+        contexts that are already tagged perfectly by the backoff
+        tagger.
         
         @param train: A tagged corpus.  Each item should be
             a C{list} of C{(word, tag)} tuples.
@@ -262,7 +264,8 @@ class NgramTagger(ContextTagger, yaml.YAMLObject):
         self._n = n
         
         if (train and model) or (not train and not model):
-            raise ValueError, 'Must specify either training data or trained model'
+            raise ValueError('Must specify either training data or '
+                             'trained model'
         ContextTagger.__init__(self, model, backoff)
         if train:
             self._train(train, cutoff, verbose)
@@ -279,7 +282,8 @@ class UnigramTagger(NgramTagger):
     """
     yaml_tag = '!nltk.UnigramTagger'
 
-    def __init__(self, train=None, model=None, backoff=None, cutoff=1, verbose=False):
+    def __init__(self, train=None, model=None, backoff=None,
+                 cutoff=1, verbose=False):
         NgramTagger.__init__(self, 1, train, model, backoff, cutoff, verbose)
 
     def context(self, tokens, index, history):
@@ -296,7 +300,8 @@ class BigramTagger(NgramTagger):
     """
     yaml_tag = '!nltk.BigramTagger'
 
-    def __init__(self, train=None, model=None, backoff=None, cutoff=1, verbose=False):
+    def __init__(self, train=None, model=None, backoff=None,
+                 cutoff=1, verbose=False):
         NgramTagger.__init__(self, 2, train, model, backoff, cutoff, verbose)
 
 
@@ -310,7 +315,8 @@ class TrigramTagger(NgramTagger):
     """
     yaml_tag = '!nltk.TrigramTagger'
 
-    def __init__(self, train=None, model=None, backoff=None, cutoff=1, verbose=False):
+    def __init__(self, train=None, model=None, backoff=None,
+                 cutoff=1, verbose=False):
         NgramTagger.__init__(self, 3, train, model, backoff, cutoff, verbose)
 
 
@@ -340,7 +346,8 @@ class AffixTagger(ContextTagger, yaml.YAMLObject):
             
         """
         if (train and model) or (not train and not model):
-            raise ValueError, 'Must specify either training data or trained model'
+            raise ValueError('Must specify either training data or '
+                             'trained model')
         ContextTagger.__init__(self, model, backoff)
 
         self._affix_length = affix_length

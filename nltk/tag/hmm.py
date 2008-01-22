@@ -67,7 +67,9 @@ of EM.
 """
 
 from nltk.tag.api import *
-from nltk import FreqDist, ConditionalFreqDist, ConditionalProbDist, DictionaryProbDist, DictionaryConditionalProbDist, LidstoneProbDist, MutableProbDist, MLEProbDist
+from nltk import FreqDist, ConditionalFreqDist, ConditionalProbDist, \
+     DictionaryProbDist, DictionaryConditionalProbDist, LidstoneProbDist, \
+     MutableProbDist, MLEProbDist
 
 from numpy import *
 import re
@@ -349,7 +351,8 @@ class HiddenMarkovModelTagger(TaggerI):
             if cum_p <= p <= cum_p + add_p:
                 return sample
             cum_p += add_p
-        raise Exception('Invalid probability distribution - does not sum to one')
+        raise Exception('Invalid probability distribution - '
+                        'does not sum to one')
 
     def entropy(self, unlabeled_sequence):
         """
@@ -373,9 +376,9 @@ class HiddenMarkovModelTagger(TaggerI):
         we use the forward and backward probabilities (alpha, beta) giving:
 
         H = log Z - sum_s0 alpha_0(s0) beta_0(s0) / Z * log Pr(s0)
-                  + sum_t,si,sj alpha_t(si) Pr(sj | si) Pr(O_t+1 | sj) beta_t(sj)
+                + sum_t,si,sj alpha_t(si) Pr(sj | si) Pr(O_t+1 | sj) beta_t(sj)
                                 / Z * log Pr(sj | si)
-                  + sum_t,st alpha_t(st) beta_t(st) / Z * log Pr(O_t | st)
+                + sum_t,st alpha_t(st) beta_t(st) / Z * log Pr(O_t | st)
 
         This simply uses alpha and beta to find the probabilities of partial
         sequences, constrained to include the given state(s) at some point in
@@ -403,8 +406,9 @@ class HiddenMarkovModelTagger(TaggerI):
             for i0, s0 in enumerate(self._states):
                 for i1, s1 in enumerate(self._states):
                     p = 2**(alpha[t0, i0] + self._transitions[s0].logprob(s1) +
-                            self._outputs[s1].logprob(unlabeled_sequence[t1][_TEXT]) + 
-                               beta[t1, i1] - normalisation)
+                            self._outputs[s1].logprob(
+                                unlabeled_sequence[t1][_TEXT]) + 
+                            beta[t1, i1] - normalisation)
                     entropy -= p * self._transitions[s0].logprob(s1) 
                     #print 'p(s_%d = %s, s_%d = %s) =' % (t0, s0, t1, s1), p
 
@@ -412,7 +416,8 @@ class HiddenMarkovModelTagger(TaggerI):
         for t in range(T):
             for i, state in enumerate(self._states):
                 p = 2**(alpha[t, i] + beta[t, i] - normalisation)
-                entropy -= p * self._outputs[state].logprob(unlabeled_sequence[t][_TEXT]) 
+                entropy -= p * self._outputs[state].logprob(
+                    unlabeled_sequence[t][_TEXT]) 
                 #print 'p(s_%d = %s) =' % (t, state), p
 
         return entropy
@@ -465,7 +470,8 @@ class HiddenMarkovModelTagger(TaggerI):
         #ps = zeros((T, N), float64)
         #for labelling, lp in zip(labellings, log_probs):
             #for t in range(T):
-                #ps[t, self._states.index(labelling[t])] += 2**(lp - normalisation)
+                #ps[t, self._states.index(labelling[t])] += \
+                #    2**(lp - normalisation)
 
         #for t in range(T):
             #print 'prob[%d] =' % t, ps[t]
@@ -580,8 +586,8 @@ class HiddenMarkovModelTagger(TaggerI):
         return beta
 
     def __repr__(self):
-        return '<HiddenMarkovModelTagger %d states and %d output symbols>' \
-                % (len(self._states), len(self._symbols))
+        return ('<HiddenMarkovModelTagger %d states and %d output symbols>'
+                % (len(self._states), len(self._symbols)))
 
 class HiddenMarkovModelTrainer(object):
     """
@@ -649,8 +655,8 @@ class HiddenMarkovModelTrainer(object):
             sequences of observations
         @type unlabeled_sequences: list
         @param kwargs: may include the following parameters::
-            model - a HiddenMarkovModelTagger instance used to begin the Baum-Welch
-                algorithm
+            model - a HiddenMarkovModelTagger instance used to begin
+                the Baum-Welch algorithm
             max_iterations - the maximum number of EM iterations
             convergence_logprob - the maximum change in log probability to
                 allow convergence
@@ -762,7 +768,8 @@ class HiddenMarkovModelTrainer(object):
                 si = self._states[i]
                 for j in range(N):
                     sj = self._states[j]
-                    model._transitions[si].update(sj, A_numer[i,j] - A_denom[i])
+                    model._transitions[si].update(sj, A_numer[i,j] -
+                                                  A_denom[i])
                 for k in range(M):
                     ok = self._symbols[k]
                     model._outputs[si].update(ok, B_numer[i,k] - B_denom[i])
@@ -1037,7 +1044,8 @@ def demo_bw():
 
     # train on those examples, starting with the model that generated them
     trainer = HiddenMarkovModelTrainer(states, symbols)
-    hmm = trainer.train_unsupervised(training, model=model, max_iterations=1000)
+    hmm = trainer.train_unsupervised(training, model=model,
+                                     max_iterations=1000)
     
 if __name__ == '__main__':
     demo() 

@@ -1191,8 +1191,9 @@ def error_list (train_sents, test_sents, radius=2):
     @param tokens: The tagged corpus
     @type tokens: C{list} of C{tuple}
     @param radius: How many tokens on either side of a wrongly-tagged token
-        to include in the error string.  For example, if C{radius}=2, each error
-        string will show the incorrect token plus two tokens on either side.
+        to include in the error string.  For example, if C{radius}=2,
+        each error string will show the incorrect token plus two
+        tokens on either side.
     @type radius: int
     """
     hdr = (('%25s | %s | %s\n' + '-'*26+'+'+'-'*24+'+'+'-'*26) %
@@ -1224,15 +1225,18 @@ def demo(num_sents=100, max_rules=200, min_score=3,
     @type num_sents: L{int}
     @param max_rules: maximum number of rule instances to create
     @type max_rules: L{int}
-    @param min_score: the minimum score for a rule in order for it to be considered
+    @param min_score: the minimum score for a rule in order for it to
+        be considered
     @type min_score: L{int}
     @param error_output: the file where errors will be saved
     @type error_output: L{string}
     @param rule_output: the file where rules will be saved
     @type rule_output: L{string}
-    @param randomize: whether the training data should be a random subset of the corpus
+    @param randomize: whether the training data should be a random subset
+        of the corpus
     @type randomize: L{boolean}
-    @param train: the fraction of the the corpus to be used for training (1=all)
+    @param train: the fraction of the the corpus to be used for training
+        (1=all)
     @type train: L{float}
     @param trace: the level of diagnostic tracing output to produce (0-4)
     @type trace: L{int}

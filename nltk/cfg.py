@@ -233,7 +233,8 @@ class Production(object):
         @type rhs: sequence of (C{Nonterminal} and (terminal))
         """
         if isinstance(rhs, (str, unicode)):
-            raise TypeError, 'production right hand side should be a list, not a string'
+            raise TypeError('production right hand side should be a list, '
+                            'not a string')
         self._lhs = lhs
         self._rhs = tuple(rhs)
         self._hash = hash((self._lhs, self._rhs))
@@ -517,13 +518,15 @@ class WeightedProduction(Production, ImmutableProbabilisticMixIn):
 
 class WeightedGrammar(Grammar):
     """
-    A probabilistic context-free grammar.  A Weighted Grammar consists of a start
-    state and a set of weighted productions.  The set of terminals and
-    nonterminals is implicitly specified by the productions.
+    A probabilistic context-free grammar.  A Weighted Grammar consists
+    of a start state and a set of weighted productions.  The set of
+    terminals and nonterminals is implicitly specified by the
+    productions.
 
-    PCFG productions should be C{WeightedProduction}s.  C{WeightedGrammar}s impose
-    the constraint that the set of productions with any given
-    left-hand-side must have probabilities that sum to 1.
+    PCFG productions should be C{WeightedProduction}s.
+    C{WeightedGrammar}s impose the constraint that the set of
+    productions with any given left-hand-side must have probabilities
+    that sum to 1.
 
     If you need efficient key-based access to productions, you can use
     a subclass to implement it.
@@ -556,7 +559,8 @@ class WeightedGrammar(Grammar):
             probs[production.lhs()] = (probs.get(production.lhs(), 0) +
                                        production.prob())
         for (lhs, p) in probs.items():
-            if not ((1-WeightedGrammar.EPSILON) < p < (1+WeightedGrammar.EPSILON)):
+            if not ((1-WeightedGrammar.EPSILON) < p <
+                    (1+WeightedGrammar.EPSILON)):
                 raise ValueError("Productions for %r do not sum to 1" % lhs)
 
 # Contributed by Nathan Bodenstab <bodenstab@cslu.ogi.edu>
@@ -577,14 +581,18 @@ def induce_pcfg(start, productions):
     @type productions: C{list} of L{Production}
     """
 
-    pcount = {} # Production count: the number of times a given production occurs
-    lcount = {} # LHS-count: counts the number of times a given lhs occurs
+    # Production count: the number of times a given production occurs
+    pcount = {}
+    
+    # LHS-count: counts the number of times a given lhs occurs
+    lcount = {} 
 
     for prod in productions:
         lcount[prod.lhs()] = lcount.get(prod.lhs(), 0) + 1
         pcount[prod]       = pcount.get(prod,       0) + 1
 
-    prods = [WeightedProduction(p.lhs(), p.rhs(), prob=float(pcount[p]) / lcount[p.lhs()])\
+    prods = [WeightedProduction(p.lhs(), p.rhs(),
+                                prob=float(pcount[p]) / lcount[p.lhs()])
              for p in pcount]
     return WeightedGrammar(start, prods)
 
@@ -605,7 +613,8 @@ _PARSE_PCFG_RE = re.compile(r'''^\s*                 # leading whitespace
                                   \s*)               # trailing space
                                   *$''',             # zero or more copies
                             re.VERBOSE)
-_SPLIT_PCFG_RE = re.compile(r'''(\w+(?:/\w+)?|\[[01]?\.\d+\]|[-=]+>|"[^"]+"|'[^']+'|\|)''')
+_SPLIT_PCFG_RE = re.compile(r'(\w+(?:/\w+)?|\[[01]?\.\d+\]|[-=]+>|"[^"]+"'
+                            r"|'[^']+'|\|)")
 
 def parse_pcfg_production(s):
     """
@@ -905,7 +914,9 @@ def pcfg_demo():
     parser = pchart.InsideChartParser(grammar)
     parser.trace(3)
 
-#    sent = treebank.tokenized('wsj_0001')[0]   # doesn't work as tokens are different!
+    # doesn't work as tokens are different:
+    #sent = treebank.tokenized('wsj_0001')[0]
+
     sent = treebank.parsed_sents('wsj_0001')[0].leaves()
     print sent
     for parse in parser.nbest_parse(sent):
@@ -925,7 +936,8 @@ def demo():
 if __name__ == '__main__':
     demo()
 
-__all__ = ['Grammar', 'ImmutableProbabilisticMixIn', 'Nonterminal', 'Production',
-  'WeightedGrammar', 'WeightedProduction', 'cfg_demo', 'demo', 'induce_pcfg',
-  'nonterminals', 'parse_cfg', 'parse_cfg_production', 'parse_pcfg',
-  'parse_fcfg', 'parse_pcfg_production', 'pcfg_demo', 'toy_pcfg1', 'toy_pcfg2']
+__all__ = ['Grammar', 'ImmutableProbabilisticMixIn', 'Nonterminal',
+           'Production', 'WeightedGrammar', 'WeightedProduction',
+           'cfg_demo', 'demo', 'induce_pcfg', 'nonterminals', 'parse_cfg',
+           'parse_cfg_production', 'parse_pcfg', 'parse_fcfg',
+           'parse_pcfg_production', 'pcfg_demo', 'toy_pcfg1', 'toy_pcfg2']
