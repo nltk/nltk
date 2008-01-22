@@ -122,7 +122,7 @@ from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from nltk.tree import Tree
 import sys, os, re, tempfile, time
-from nltk.utilities import deprecated
+from nltk.internals import deprecated
 
 class TimitCorpusReader(CorpusReader):
     """

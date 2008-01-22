@@ -766,7 +766,7 @@ def parse_fcfg(input, features=None):
     grammar = Grammar(start, grammatical_productions, lexicon)
     return grammar
 
-from nltk.utilities import deprecated
+from nltk.internals import deprecated
 @deprecated("Use nltk.cfg.parse_fcfg() instead.")
 def parse_featcfg(input): 
     return parse_fcfg(input)

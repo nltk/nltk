@@ -24,7 +24,7 @@ The class of C{Expression} has various subclasses:
   
 """
 
-from nltk.utilities import Counter
+from nltk.internals import Counter
 
 ######################################################################
 # Variables & Bindings

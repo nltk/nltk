@@ -11,7 +11,7 @@ from itertools import islice
 from api import CorpusReader
 from nltk import tokenize
 from nltk.etree import ElementTree
-from nltk.utilities import deprecated
+from nltk.internals import deprecated
 
 # Maximize the number of open files allowed (for CESS and Reuters Corpora)
 if os.name == 'posix':

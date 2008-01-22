@@ -22,7 +22,7 @@ import re, yaml
 from nltk import FreqDist, ConditionalFreqDist
 from nltk.tag.api import *
 from nltk.tag.util import *
-from nltk.utilities import deprecated, Deprecated
+from nltk.internals import deprecated, Deprecated
 
 ######################################################################
 #{ Abstract Base Classes
