@@ -19,7 +19,9 @@ Classifiers that make use of the external 'Weka' package.
 _weka_classpath = None
 _weka_search = ['.',
                 '/usr/share/weka',
-                '/usr/lib/weka',]
+                '/usr/local/share/weka',
+                '/usr/lib/weka',
+                '/usr/local/lib/weka',]
 def config_weka(classpath=None):
     global _weka_classpath
 
