@@ -5,7 +5,34 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-import locale, re
+import locale, re, types, textwrap, pydoc
+
+######################################################################
+# Short usage message
+######################################################################
+
+def usage(obj, selfname='self'):
+    import inspect
+    str(obj) # In case it's lazy, this will load it.
+    
+    if not isinstance(obj, (types.TypeType, types.ClassType)):
+        obj = obj.__class__
+
+    print '%s supports the following operations:' % obj.__name__
+    for (name, method) in sorted(pydoc.allmethods(obj).items()):
+        if name.startswith('_'): continue
+        if getattr(method, '__deprecated__', False): continue
+            
+        args, varargs, varkw, defaults = inspect.getargspec(method)
+        if (args and args[0]=='self' and
+            (defaults is None or len(args)>len(defaults))):
+            args = args[1:]
+            name = '%s.%s' % (selfname, name)
+        argspec = inspect.formatargspec(
+            args, varargs, varkw, defaults)
+        print textwrap.fill('%s%s' % (name, argspec),
+                            initial_indent='  - ',
+                            subsequent_indent=' '*(len(name)+5))
 
 ##########################################################################
 # PRETTY PRINTING
