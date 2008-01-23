@@ -200,9 +200,12 @@ def testBuild_model(arguments):
         for a in alist:
             print '   %s' % a.infixify()
         print '|- %s: %s\n' % (g.infixify(), p)
+
+        
     
 arguments = [
-    ('(mortal Socrates)', ['all x.((man x) implies (mortal x))', '(man Socrates)'])
+    ('(mortal Socrates)', ['all x.((man x) implies (mortal x))', '(man Socrates)']) ,
+    ('(not (mortal Socrates))', ['all x.((man x) implies (mortal x))', '(man Socrates)'])
 ]
 
 if __name__ == '__main__':
