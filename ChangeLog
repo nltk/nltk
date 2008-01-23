@@ -1,5 +1,5 @@
 
-Version 0.9.1 2008-01-20
+Version 0.9.1 2008-01-23
 
 NLTK:
 - new interface for text categorization corpora
@@ -12,9 +12,11 @@ Data:
 - Movie Reviews corpus (sentiment polarity), included with permission of Lillian Lee
 - Corpus for Recognising Textual Entailment (RTE) Challenges 1, 2 and 3
 - Brown Corpus (reverted to original file structure: ca01-cr09)
-
+- Penn Treebank corpus sample (simplified implementation, new readers treebank_raw and treebank_chunk)
+- Minor redesign of corpus readers, to use filenames instead of "items" to identify parts of a corpus
+	
 Contrib:
-- theorem_prover: Prover9, tableau, MaltParser, glue semantics, docs (Dan Garrette, Ewan Klein)
+- theorem_prover: Prover9, tableau, MaltParser, Mace4, glue semantics, docs (Dan Garrette, Ewan Klein)
 - drt: improved drawing, conversion to FOL (Dan Garrette)
 - gluesemantics: GUI demonstration, abstracted LFG code, documentation (Dan Garrette)
 - readability: various text readability scores (Thomas Jakobsen, Thomas Skardal)

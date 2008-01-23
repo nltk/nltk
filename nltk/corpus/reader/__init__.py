@@ -45,5 +45,6 @@ __all__ = [
     'AlpinoCorpusReader', 'RTECorpusReader',
     'StringCategoryCorpusReader',
     'CategorizedTaggedCorpusReader',
-    'CategorizedPlaintextCorpusReader'
+    'CategorizedPlaintextCorpusReader',
+    'tagged_treebank_para_block_reader'
 ]
