@@ -56,7 +56,7 @@ X{aliased}.  This is encoded by binding one variable to the other.
 import re, copy
 from nltk.sem.logic import Variable, Expression, SubstituteBindingsI
 from nltk.sem.logic import LogicParser
-import nltk.utilities
+import nltk.internals
 
 ######################################################################
 # Feature Structure
@@ -1868,7 +1868,7 @@ class FeatStructParser(object):
         return self.partial_parse(s, position, reentrances)
 
     def parse_str_value(self, s, position, reentrances, match):
-        return nltk.utilities.parse_str(s, position)
+        return nltk.internals.parse_str(s, position)
 
     def parse_int_value(self, s, position, reentrances, match):
         return int(match.group()), match.end()
@@ -1969,7 +1969,7 @@ def display_unification(fs1, fs2, indent='  '):
             print repr(bindings).center(linelen)
     return result
 
-def demo(trace=False):
+def interactivedemo(trace=False):
     import random, sys
 
     HELP = '''
@@ -2069,6 +2069,37 @@ def demo(trace=False):
         input = sys.stdin.readline().strip()
         if input in ('q', 'Q', 'x', 'X'): return
 
+def demo(trace=False):
+    """
+    Just for testing
+    """
+    #import random
+    
+    # parser breaks with values like '3rd'
+    fstruct_strings = [
+        '[agr=[number=sing, gender=masc]]',
+        '[agr=[gender=masc, person=3]]',
+        '[agr=[gender=fem, person=3]]',
+        '[subj=[agr=(1)[]], agr->(1)]',
+        '[obj=?x]', '[subj=?x]',
+        '[/=None]', '[/=NP]',
+        '[cat=NP]', '[cat=VP]', '[cat=PP]',
+        '[subj=[agr=[gender=?y]], obj=[agr=[gender=?y]]]',
+        '[gender=masc, agr=?C]',
+        '[gender=?S, agr=[gender=?S,person=3]]'
+        ]
+    all_fstructs = [FeatStruct(fss) for fss in fstruct_strings]    
+    #MAX_CHOICES = 5
+    #if len(all_fstructs) > MAX_CHOICES:
+        #fstructs = random.sample(all_fstructs, MAX_CHOICES)
+        #fstructs.sort()
+    #else:
+        #fstructs = all_fstructs
+                
+    for fs1 in all_fstructs:
+        for fs2 in all_fstructs:
+            print "\n*******************\nfs1 is:\n%s\n\nfs2 is:\n%s\n\nresult is:\n%s" % (fs1, fs2, unify(fs1, fs2))
+ 
 
 if __name__ == '__main__':
-    pass #demo()
+    demo()
