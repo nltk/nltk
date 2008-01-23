@@ -327,5 +327,5 @@ def brown_information_content(output_filename, compounds_filename, \
 
     outfile.close()
     
-brown_information_content('brown_ic.dat', None)
-
+if __name__ == '__main__':
+    brown_information_content('brown_ic.dat', None)
