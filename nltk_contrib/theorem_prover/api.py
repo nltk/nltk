@@ -1,7 +1,8 @@
 # Natural Language Toolkit: Classifier Interface
 #
-# 
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
+#         Dan Garrette <dhgarrette@gmail.com>
+#
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
@@ -21,7 +22,6 @@ class ProverI(object):
         """
         raise NotImplementedError()
     
-    
     def add_assumptions(self, assumptions):
         """
         @param assumptions: Assumptions for the proof
@@ -29,4 +29,23 @@ class ProverI(object):
         """
         raise NotImplementedError('add_assumptions')
     
+    
+class ModelBuilderI(object):
+    """
+    Interface for trying to establish a proof from assumptions.
+    """
+    
+    def build_model(self):
+        """
+        @return: Whether the model building was successful or not.
+        @rtype: C{bool} 
+        """
+        raise NotImplementedError()
+    
+    def add_assumptions(self, assumptions):
+        """
+        @param assumptions: Assumptions for the proof
+        @type assumptions: C{list} of strings
+        """
+        raise NotImplementedError('add_assumptions')
     
