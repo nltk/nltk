@@ -1179,7 +1179,7 @@ def demo():
     print "Demonstration of empty grammar:"
     
     cp = chunk.RegexpParser("")
-    print chunk.accuracy(cp, conll2000.chunked_sents('test',
+    print chunk.accuracy(cp, conll2000.chunked_sents('test.txt',
                                                      chunk_types=('NP',)))
 
     print
@@ -1192,7 +1192,7 @@ def demo():
       <DT|JJ>{}<NN.*>     # merge det/adj with nouns
     """
     cp = chunk.RegexpParser(grammar)
-    print chunk.accuracy(cp, conll2000.chunked_sents('test')[:5])
+    print chunk.accuracy(cp, conll2000.chunked_sents('test.txt')[:5])
 
     print
     print "Demonstration of tagged token input"
