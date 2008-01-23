@@ -38,7 +38,10 @@ doctest:
 	$(PYTHON) $(DOCTEST_DRIVER) $(DOCTEST_FLAGS) $(DOCTEST_FILES)
 
 demotest:
-	find nltk -name "*.py" -exec python '{}' \;
+	find nltk -name "*.py"\
+          -and -not -path *misc* \
+          -and -not -name brown_ic.py \
+          -exec echo ==== '{}' ==== \; -exec python -S '{}' \;
 
 ########################################################################
 # DISTRIBUTIONS
@@ -102,7 +105,7 @@ numpy:
 	wget -N -P python/mac  $(PYMAC)/numpy-1.0.4-py2.5-macosx10.4-2007-11-07.dmg
 	wget -N -P python/win  $(NUMPY)/numpy-1.0.4.win32-p3-py2.5.exe?download
 	wget -N -P python/unix $(NUMPY)/numpy-1.0.4.tar.gz?download
-	mv python/win/numpy-1.0.4.win32-p3-py2.5.exe?downloadd python/win/numpy-1.0.4.win32-p3-py2.5.exe
+	mv python/win/numpy-1.0.4.win32-p3-py2.5.exe?download python/win/numpy-1.0.4.win32-p3-py2.5.exe
 	mv python/unix/numpy-1.0.4.tar.gz?download python/unix/numpy-1.0.4.tar.gz
 	touch .numpy.done
 
