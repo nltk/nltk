@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 import subprocess, os.path, re, warnings, textwrap
-import pydoc, inspect, types
+import types
 
 ######################################################################
 # Regular Expression Processing
@@ -258,6 +258,7 @@ def parse_number(s, start_position):
 ######################################################################
 
 def usage(obj, selfname='self'):
+    import inspect, pydoc
     str(obj) # In case it's lazy, this will load it.
     
     if not isinstance(obj, (types.TypeType, types.ClassType)):
