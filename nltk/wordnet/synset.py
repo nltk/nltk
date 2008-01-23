@@ -13,7 +13,7 @@ from util import *
 from similarity import *
 from dictionary import *
 from lexname import Lexname
-from nltk.compat import defaultdict
+from nltk import defaultdict
 
 class Word(object):
     def __init__(self, line):

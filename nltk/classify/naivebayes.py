@@ -32,7 +32,7 @@ sum to one::
                        SUM[l]( P(l) * P(f1|l) * ... * P(fn|l) )
 """
 
-from nltk.classify.api import *
+from api import *
 from nltk.probability import *
 from nltk import defaultdict
 

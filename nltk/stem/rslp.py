@@ -32,7 +32,7 @@
 # e/ou melhor para o português. Também sugiro utilizar-se a lista de discussão
 # do NLTK para o português para qualquer debate.
 
-from nltk.stem.api import *
+from api import *
 from nltk import data
 
 class RSLPStemmer(StemmerI):

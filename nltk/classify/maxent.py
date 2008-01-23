@@ -18,9 +18,8 @@ equal to the actual frequency in the data.
 """
 
 import nltk.classify.util # for accuracy & log_likelihood
-from nltk.classify.api import *
-from nltk.classify.util import SparseBinaryVectorEncoding, GISEncoding
-from nltk.classify.util import attested_labels
+from api import *
+from util import SparseBinaryVectorEncoding, GISEncoding, attested_labels
 from nltk.probability import *
 from nltk import defaultdict
 import numpy, time

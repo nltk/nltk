@@ -56,7 +56,7 @@ overall result.  Here's a list of substanitive differences:
 
 import re, math
 from nltk import defaultdict
-from nltk.tokenize.api import TokenizerI
+from api import TokenizerI
 from nltk.probability import FreqDist
 
 ######################################################################
