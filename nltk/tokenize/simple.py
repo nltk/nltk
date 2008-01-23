@@ -19,7 +19,7 @@ But if you are tokenizing a string yourself, consider using string
 C{split()} method directly instead.
 """
 
-from nltk.tokenize.api import *
+from api import *
 
 class WhitespaceTokenizer(TokenizerI):
     r"""

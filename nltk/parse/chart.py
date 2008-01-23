@@ -9,10 +9,8 @@
 #
 # $Id$
 
-from nltk.parse.api import *
-from nltk.tree import Tree
-from nltk import cfg
-from nltk.compat import defaultdict
+from api import *
+from nltk import Tree, cfg, defaultdict
 
 """
 Data classes and parser implementations for \"chart parsers\", which

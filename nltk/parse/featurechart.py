@@ -13,8 +13,8 @@ feature structures as nodes.
 """
 
 import yaml
-from nltk.parse.api import *
-from nltk.parse.chart import *
+from api import *
+from chart import *
 from nltk.featstruct import FeatStruct, unify, FeatStructParser
 from nltk.sem.logic import SubstituteBindingsI, unique_variable
 from nltk import cfg, defaultdict
