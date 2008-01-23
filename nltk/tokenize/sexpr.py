@@ -14,7 +14,7 @@ A tokenizer that divides strings into s-expressions.  E.g.:
 """
 
 import re
-from nltk.tokenize.api import *
+from api import *
 
 class SExprTokenizer(TokenizerI):
     """

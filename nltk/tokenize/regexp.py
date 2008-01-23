@@ -13,7 +13,7 @@ expressions that can match either tokens or separators between tokens.
 """
 
 import re, sre_constants
-from nltk.tokenize.api import *
+from api import *
 from nltk.internals import convert_regexp_to_nongrouping
 
 class RegexpTokenizer(TokenizerI):

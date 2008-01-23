@@ -7,8 +7,8 @@
 # For license information, see LICENSE.TXT
 
 import re, types
-from nltk.chunk.api import *
-from nltk.chunk.util import *
+from api import *
+from util import *
 from nltk import Tree
 
 ##//////////////////////////////////////////////////////

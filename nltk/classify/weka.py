@@ -8,7 +8,7 @@
 # $Id: naivebayes.py 2063 2004-07-17 21:02:24Z edloper $
 
 import time, tempfile, os, os.path, subprocess, re
-from nltk.classify.api import *
+from api import *
 from nltk.probability import *
 from nltk.internals import java, config_java
 
