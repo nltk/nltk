@@ -131,7 +131,7 @@ treebank = LazyCorpusLoader(
 treebank_chunk = LazyCorpusLoader(
     'treebank/tagged', ChunkedCorpusReader, r'wsj_.*\.pos',
     sent_tokenizer=RegexpTokenizer(r'(?<=/\.)\s*(?![^\[]*\])', gaps=True),
-    para_block_reader=reader.tagged_treebank_para_block_reader)
+    para_block_reader=tagged_treebank_para_block_reader)
 treebank_raw = LazyCorpusLoader(
     'treebank/raw', PlaintextCorpusReader, r'wsj_.*')
 udhr = LazyCorpusLoader(
