@@ -76,7 +76,7 @@ class Cosine(AbstractClassify):
 
     def _cosine(self, sample):
         """
-        @param salmple: sample to be classified
+        @param sample: sample to be classified
         @return: Dictionary class to probability
             
             function uses sample to create a frequency distribution
