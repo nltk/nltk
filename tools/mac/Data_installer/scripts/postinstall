@@ -1,3 +1,3 @@
 #!/bin/bash
-echo export NLTK_CORPORA=/usr/share/nltk >> /.bashrc
+echo export NLTK_DATA=/usr/share/nltk >> /.bashrc
 source /.bashrc
