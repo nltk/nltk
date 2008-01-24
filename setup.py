@@ -46,9 +46,10 @@ setup(
                 'nltk_contrib.drt',
                 'nltk_contrib.fst',
                 'nltk_contrib.gluesemantics',
+                'nltk_contrib.theorem_prover',
                 'nltk_contrib.lpath',
                 'nltk_contrib.readability',
-                'nltk_contrib.theorem_prover',
+                'nltk_contrib.rte',
                 'nltk_contrib.toolbox',
                 'nltk_contrib.wordnet'
                 ],
