@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<META http-equiv="Content-Script-Type" content="text/javascript">
+                    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Untitled Document</title>
+	</head>
+	<body>
+	<form name="formName" onSubmit="return functionName()">
+	        Current Word:&nbsp;<input type="text" id="currentWord" size="10" disabled>
+			Next Word:&nbsp;<input type="text" id="nextWord" name="nextWord" size="10">
+			<input name="searchButton" onClick="search();" type="submit" value="Search">
+			<input name="helpButton" onclick="help();" type="button" value="Help">
+			<input name="DIButton" onclick="databaseInfo();" type="button" value="Show Database Info">
+			<input name="shutdownButton" onclick="shutdown();" type="button" value="Shutdown the Server">
+	</form>
+<script language="JavaScript">
+
+function showWordAndTitle() {
+    var hlp = parent.frameName2.document.title;
+	parent.document.title = hlp;
+	window.document.formName.currentWord.value = hlp.substr(hlp.indexOf(":")+2, hlp.length);
+}
+function search() {
+	parent.frameName2.location.href = "N" + window.document.formName.nextWord.value;
+	window.document.formName.currentWord.value = window.document.formName.nextWord.value;
+    window.document.formName.nextWord.value = "";
+	//parent.frameName2.document.body.innerHTML = window.document.formName.nextWord.value;
+	//alert(parent.document.getElementById("nextWord").value);
+}	
+function help() {
+        parent.frameName2.location.href = "help.html";
+	}	
+function databaseInfo() {
+	parent.frameName2.location.href = "NLTK Wordnet Browser Database Info.html";
+}	
+function shutdown() {
+        parent.frameName2.location.href = "SHUTDOWN THE SERVER";
+	}	
+function functionName(){
+	//alert("functionName");
+	//parent.frameName2.location.href = window.document.formName.nextWord.value;
+	return false;
+}
+</script>
+</body>
+</html>
