@@ -1,10 +1,43 @@
 Jussi Salmela
-    This directory contains Wordnet oriented stuff.
-    It contains my wxbrowse.py and those original wordnet files that
-    I've changed either to correct bugs or to enhance functionality.
-    At least some, maybe all, of the changes have been incorporated
-    into the official ....\nlt\wordnet branch
 
+
+==========================================================
+2008-01-24
+
+
+A radical change:
+
+1. Copy wxbrowse.py to wxbrowse_OLD.py
+
+2. Split wxbrowse.py into 2 files: wxbrowse.py & browseutil.py:
+    - wxbrowse.py is the GUI part
+    - browseutil.py contains general routines needed in browsing
+
+3. Make a LOT of changes in files of step 2 for step 4
+
+4. Create new files:
+    - browserver.py A "browser-server" (see below)
+    - new HTML files: index.html, index_2.html, start.html
+                            upper.html, upper_2.html
+                            
+
+
+After all this: 2 ways to browse the wordnet database:
+
+1. python wxbrowse.py: the old way using wxPython
+
+2. python browserver port-num:
+        2.1 Launches the default browser (if not running) and creates
+             a new tab trying to make connection to:
+             http://localhost:port-num/
+        2.2 Starts the HTTP server for port-num serving the browsing
+             requests for the wordnet database
+    The default port-num is 8000
+
+The second way is still at an early stage, though functional. And,
+as always when making a LOT of changes, even the old functionality,
+meaning wxbrowse.py may have suffered. The second way makes it
+possible to browse the database without installing wxPython.
 
 
 ==========================================================
