@@ -94,7 +94,7 @@ def demo():
     """
     Demo of the random guesser for RTE
     """
-    gold = rte.pairs(('rte1_test', 'rte2_test', 'rte3_test'))
+    gold = rte.pairs(('rte1_test.xml', 'rte2_test.xml', 'rte3_test.xml'))
 
     tagger = RTEGuesser()
     print "=" * 20
