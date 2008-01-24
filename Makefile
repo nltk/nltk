@@ -121,16 +121,18 @@ pylab:
 iso:	.dist.done .python.done .numpy.done .pylab.done
 	rm -rf iso nltk-$(NLTK_VERSION)
 	mkdir -p iso/{mac,win,unix}
-	cp dist/nltk-$(NLTK_VERSION).dmg           iso/mac/
-	cp dist/nltk-$(NLTK_VERSION).win32.exe     iso/win/
-	cp dist/nltk-$(NLTK_VERSION).tar.gz        iso/unix/
-	cp dist/nltk-$(NLTK_VERSION)-1.noarch.rpm  iso/unix/
-	cp dist/nltk-data-$(NLTK_VERSION).zip      iso
-	cp dist/nltk-doc-$(NLTK_VERSION).zip       iso
-	cp *.txt *.html                            iso
-	cp python/mac/*                            iso/mac/
-	cp python/win/*                            iso/win/
-	cp python/unix/*                           iso/unix/
+	cp dist/nltk-$(NLTK_VERSION).dmg            iso/mac/
+	cp dist/nltk-$(NLTK_VERSION).win32.exe      iso/win/
+	cp dist/nltk-$(NLTK_VERSION).tar.gz         iso/unix/
+	cp dist/nltk-$(NLTK_VERSION)-1.noarch.rpm   iso/unix/
+	cp dist/nltk-data-$(NLTK_VERSION).zip       iso
+	cp dist/nltk-doc-$(NLTK_VERSION).zip        iso
+	cp dist/nltk-contribdoc-$(NLTK_VERSION).zip iso
+	cp dist/nltk-examples-$(NLTK_VERSION).zip   iso
+	cp *.txt *.html                             iso
+	cp python/mac/*                             iso/mac/
+	cp python/win/*                             iso/win/
+	cp python/unix/*                            iso/unix/
 	ln -f -s iso nltk-$(NLTK_VERSION)
 	mkisofs -f -r -o dist/nltk-$(NLTK_VERSION).iso nltk-$(NLTK_VERSION)
 
