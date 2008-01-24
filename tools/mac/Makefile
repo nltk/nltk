@@ -16,9 +16,8 @@ PM = /Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMa
 
 .PHONY: pkg data-root lib-root clean
 
-dmg:#	$(NLTK_MPKG)
+dmg:	$(NLTK_MPKG)
 	rm -f $(NLTK_DMG) $(NLTK_VERSION)
-	ln -s ../../nltk $(NLTK_VERSION)
 	hdiutil create $(NLTK_DMG) -srcfolder $(NLTK_VERSION)
 	mv $(NLTK_VERSION).dmg $(DIST)
 
