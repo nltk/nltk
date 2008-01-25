@@ -12,12 +12,12 @@ an ``Expression`` and, optionally, a name of a theorem prover.  The default is
 ``'Prover9'`` , but the tableau prover may be used by specifying ``'tableau'``.
 
 
-    >>> from nltk_contrib import theorem_prover as TP
+    >>> from nltk_contrib import inference
     >>> from nltk_contrib.drt import DRT
     >>> f = DRT.Parser().parse('drs([],[(drs([],[(man x)]) implies drs([],[(man x)]))])').toFol()
     >>> print f
     (implies (man x) (man x))
-    >>> TP.Prover9(f).prove()
+    >>> inference.Prover9(f).prove()
     True
 
 
@@ -34,32 +34,35 @@ You can download Prover9 from http://www.cs.unm.edu/~mccune/prover9/.
 
 Extract the source code into a suitable directory and follow the
 instructions in the ``README.make`` file to compile the executables.
-Install these into an appropriate location. To see where NLTK's
-``theorem_prover`` module will look by default on a Unix-like system, you can
-inspect the ``_prover9_search`` variable:
+Install these into an appropriate location.
 
-    >>> TP.prover9_search
-    ['.', '/usr/local/bin/prover9', '/usr/local/bin/prover9/bin', '/usr/local/bin', '/usr/bin', '/usr/local/prover9', '/usr/local/share/prover9']
+..
+    To see where NLTK's
+    ``theorem_prover`` module will look by default on a Unix-like system, you can
+    inspect the ``_prover9_search`` variable:
 
-In order to make sure that NLTK has successfully located Prover9, use the
-``config_prover9()`` function.
+	>>> inference.Prover9Parent.prover9_search
+	['.', '/usr/local/bin/prover9', '/usr/local/bin/prover9/bin', '/usr/local/bin', '/usr/bin', '/usr/local/prover9', '/usr/local/share/prover9']
 
-    >>> TP.config_prover9()
-    [Found Prover9: /usr/local/bin/prover9]
+    In order to make sure that NLTK has successfully located Prover9, use the
+    ``config_prover9()`` function.
 
-You can also give an explicit path to this function:
+	>>> inference.Prover9().config_prover9()
+	[Found Prover9: /usr/local/bin/prover9]
 
-    >>> TP.config_prover9('/usr/local/bin')
-    [Found Prover9: /usr/local/bin/prover9]
+    You can also give an explicit path to this function:
+
+	>>> inference.config_prover9('/usr/local/bin')
+	[Found Prover9: /usr/local/bin/prover9]
 
 ..   zap the global variable
 
-      >>> TP.prover9_path = None
+      >>> inference.prover9_path = None
 
 If ``config_prover9()`` fails to find the Prover9 executable, for
 example if the explicitly supplied path is incorrect, it will raise an error.
 
-    >>> TP.config_prover9('/nonexistent/path')    
+    >>> inference.config_prover9('/nonexistent/path')    
     Traceback (most recent call last):
       . . .
     LookupError: Unable to find Prover9 executable in '/nonexistent/path'
@@ -76,14 +79,14 @@ A ``Prover9`` instance is initialized with a goal and, possibly, some
 assumptions. The ``prove()`` method attempts to find a proof of the goal,
 given the list of assumptions (in this case, none).
 
-    >>> prover = TP.Prover9(g)
+    >>> prover = inference.Prover9(g)
     >>> prover.prove()
     True
 
 We can also call the ``prove()`` method directly:
 
     >>> g = LogicParser().parse('all x. ((man x) implies (man x))')
-    >>> print TP.Prover9(g).prove()
+    >>> print inference.Prover9(g).prove()
     True
     
 Given a ``Prover9`` instance ``prover``, the method
@@ -122,7 +125,7 @@ the proof, as shown here.
 
     >>> g = LogicParser().parse('(mortal Socrates)')
     >>> a1 = LogicParser().parse('all x.((man x) implies (mortal x))')
-    >>> prover = TP.Prover9(g, assumptions=[a1])
+    >>> prover = inference.Prover9(g, assumptions=[a1])
     >>> prover.assumptions()
     ['all x.((man x) implies (mortal x))']
 
@@ -162,7 +165,7 @@ Statements can be load from a file and parsed. We can then add these
 a statements as new assumptions.
 
     >>> g = LogicParser().parse('all x. ((boxer1 x) implies (not (boxer2 x)))')
-    >>> prover = TP.Prover9(g)
+    >>> prover = inference.Prover9(g)
     >>> new = prover.load('onto1.fol')
     >>> for a in new:
     ...     print a.infixify()
