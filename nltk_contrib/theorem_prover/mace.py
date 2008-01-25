@@ -12,53 +12,9 @@ from string import join
 from nltk.sem.logic import *
 from api import ModelBuilderI
 from nltk_contrib.theorem_prover import prover9
+from nltk_contrib.theorem_prover.prover9 import Prover9Parent
 
-_prover9_path = None
-_mace_executable = None
-
-prover9_search = ['.',
-                   '/usr/local/bin/prover9',
-                   '/usr/local/bin/prover9/bin',
-                   '/usr/local/bin',
-                   '/usr/bin',
-                   '/usr/local/prover9',
-                   '/usr/local/share/prover9']
-
-def config_mace(path=None, verbose=True):
-    """
-    Configure the location of Mace Executable
-    
-    @param path: Path to the Mace executable
-    @type path: C{str}
-    """
-    
-    global _prover9_path, _mace_executable
-    _prover9_path = None
-
-    if path is not None:
-        searchpath = (path,)
-
-    if  path is  None:
-        searchpath = prover9_search
-        if 'PROVER9HOME' in os.environ:
-            searchpath.insert(0, os.environ['PROVER9HOME'])
-
-    for path in searchpath:
-        exe = os.path.join(path, 'mace4')
-        if os.path.exists(exe):
-            _prover9_path = path
-            _mace_executable = exe
-            if verbose:
-                print '[Found Mace4: %s]' % _mace_executable
-            break
-  
-    if _prover9_path is None:
-        raise LookupError("Unable to find Mace4 executable in '%s'\n" 
-            "Use 'config_mace(path=<path>) '," 
-            " or set the PROVER9HOME environment variable to a valid path." % join(searchpath))
-
-
-class Mace(ModelBuilderI):
+class Mace(ModelBuilderI, Prover9Parent):
     def __init__(self, goal, assumptions=[], timeout=60):
         """
         @param goal: Input expression to prove
@@ -68,9 +24,10 @@ class Mace(ModelBuilderI):
         @param timeout: number of seconds before timeout; set to 0 for no timeout.
         @type timeout: C{int}
         """
-        config_mace()
-        self._goal = goal        
+        self.config_prover9()
+        self._goal = goal
         self._assumptions = assumptions
+        self._p9_dir = ''
         self._infile = ''
         self._outfile = '' 
         self._p9_assumptions = []
@@ -78,135 +35,167 @@ class Mace(ModelBuilderI):
         if self._assumptions:
             self._p9_assumptions = prover9.convert_to_prover9(self._assumptions)
         self._timeout = timeout
-        
-        
-    def prover9_files(self, filename='prover9', p9_dir=None):
-        """
-        Generate names for the input and output files and write to the input file.
-        """     
-        # If no directory specified, use system temp directory
-        if p9_dir is None:
-            p9_dir = tempfile.gettempdir()
-        self._infile = os.path.join(p9_dir, filename + '.in')
-        self._outfile = os.path.join(p9_dir, filename + '.out')
-        f = open(self._infile, 'w')
-        
-        if self._timeout > 0:
-            f.write('assign(max_seconds, %d).\n' % self._timeout)
-            
-        if self._p9_assumptions:
-            f.write('formulas(assumptions).\n')
-            for p9_assumption in self._p9_assumptions:
-                f.write('    %s.\n' % p9_assumption)
-            f.write('end_of_list.\n\n')
     
-        f.write('formulas(goals).\n')
-        f.write('    %s.\n' % self._p9_goal)
-        f.write('end_of_list.\n')
-        f.close()
-            
-        return None
-    
+    def get_executable(self):
+        return 'mace4'
+
     def build_model(self):
         """
-        Use Prover9 to prove a theorem.
-        @return: C{True} if the proof was successful 
-        (i.e. returns value of 0), else C{False}
+        Use Mace4 to build a model
+        @return: A model if one is generated; None otherwise.
+        @rtype: C{nltk.sem.evaluate.Valuation} 
         """
-        self.prover9_files()
+        from nltk.sem import Valuation
         
-        execute_string = '%s -f %s > %s 2>> %s' % \
-            (_mace_executable, self._infile, self._outfile, self._outfile)
+        self.prover9_files('mace')
+        exe = os.path.join(self._executable_path, self.get_executable())
+        execute_string = '%s -c -f %s > %s 2>> %s' % \
+            (exe, self._infile, self._outfile, self._outfile)
                 
+        valuation = None
+                
+        result = os.system(execute_string)
+        if result == 0:
+            self.transform_output('standard')
+            
+            d = {}
+            for line in open(os.path.join(self._p9_dir, 'mace.standard.out')):
+                l = line.strip()
+                if l.startswith('interpretation'):
+                    num_entities = int(l[l.index('(')+1:l.index(',')].strip())
+                elif l.startswith('function') and l.find('_') == -1:
+                    name = l[l.index('(')+1:l.index(',')].strip()
+                    d[name] = Mace.make_model_var(int(l[l.index('[')+1:l.index(']')].strip()))
+                elif l.startswith('relation'):
+                    name = l[l.index('(')+1:l.index('(', l.index('(')+1)].strip()
+                    values = [int(v.strip()) for v in l[l.index('[')+1:l.index(']')].split(',')]
+                    d[name] = Mace.make_model_dict(num_entities, values)
+                    
+            valuation = Valuation(d)
+                    
+        return valuation
+        
+    def make_model_dict(num_entities, values):
+        if len(values) == 1:
+            return values[0] == 1
+        else:
+            d = {}
+            for i in range(num_entities):
+                size = len(values) / num_entities
+                d[Mace.make_model_var(i)] = \
+                    Mace.make_model_dict(num_entities, values[i*size:(i+1)*size])
+            return d
+        
+    make_model_dict = staticmethod(make_model_dict)
+                
+    def make_model_var(value):
+        return ['a','b','c','d','e','f','g','h','i','j','k','l','m','n',
+                'o','p','q','r','s','t','u','v','w','x','y','z'][value]
+        
+    make_model_var = staticmethod(make_model_var)
+                
+    def model_found(self):
+        """
+        Use Mace4 to build a model
+        @return: C{True} if the proof was successful 
+        (i.e. returns value of 0), else C{False}        
+        """
+        self.prover9_files('mace')
+        exe = os.path.join(self._executable_path, self.get_executable())
+        execute_string = '%s -c -f %s > %s 2>> %s' % \
+            (exe, self._infile, self._outfile, self._outfile)
         result = os.system(execute_string)
         return result == 0
     
-    def show_proof(self):
+    def show_output(self, format=None):
         """
         Print out a Prover9 proof.
         """
         if self._outfile:
-            for l in open(self._outfile):
-                print l,
+            if not format:
+                for l in open(self._outfile):
+                    print l,
+            else:
+                for l in open(self.transform_output(format)):
+                    print l,
+            print ''
         else:
-            print "You have to call prove() first to get a proof!"
+            print "You have to call build_model() first to get a model!"
         return None
     
-            
-    def add_assumptions(self, new_assumptions):
+    def transform_output(self, format):
         """
-        Add new assumptions to the assumption list.
+        Transform the output file into any interpformat format
+        """
+        output_file = None
         
-        @param new_assumptions: new assumptions
-        @type new_assumptions: C{list} of L{sem.logic.Expression}s
-        """
-        self._assumptions += new_assumptions
-        self._p9_assumptions += convert_to_prover9(new_assumptions)
-        return None
-    
-    def retract_assumptions(self, retracted, debug=False):
-        """
-        Retract assumptions from the assumption list.
-        
-        @param debug: If True, give warning when C{retracted} is not present on assumptions list.
-        @type debug: C{bool}
-        @param retracted: assumptions to be retracted
-        @type retracted: C{list} of L{sem.logic.Expression}s
-        """
-        
-        result = set(self._assumptions) - set(retracted)
-        if debug and result == set(self._assumptions):
-            print Warning("Assumptions list has not been changed:")
-            self.assumptions()
-            
-        self._assumptions = list(result)
-        self._p9_assumptions = convert_to_prover9(self._assumptions)
-        return None
-    
-    def assumptions(self, output_format='nltk'):
-        """
-        List the current assumptions.       
-        """
-        if output_format.lower() == 'nltk':
-            print [str(a.infixify()) for a in self._assumptions]
- 
-        elif output_format.lower() == 'prover9':
-            print self._p9_assumptions
+        if self._outfile:
+            if format in ['standard', 'standard2', 'portable', 'tabular', 
+                          'raw', 'cooked', 'xml', 'tex']:
+                output_file = os.path.join(self._p9_dir, 'mace.' + format + '.out')
+                
+                exe = os.path.join(self._executable_path, 'interpformat')
+                execute_string = '%s %s -f %s > %s 2>> %s' % \
+                    (exe, format, self._outfile, output_file, output_file)
+                os.system(execute_string)
+            else:
+                print "The specified format does not exist"
         else:
-            raise NameError("Unrecognized value for 'output_format': %s" % output_format)
+            print "You have to call build_model() first to get a model!"
+            
+        return output_file
         
-        
-    def load(self, filename):
-        """
-        Load and parse a file of logical statements.
-        These must be parsable by LogicParser.
-        """
-        statements = open(filename).readlines()
-        lp = LogicParser()
-        result = []
-        for s in statements:
-            result.append(lp.parse(s))
-        return result                 
-       
 
-def testBuild_model(arguments):
+def test_build_model(arguments):
+    g = LogicParser().parse('all x.(man x)')
+    alist = [LogicParser().parse(a) for a in ['(man John)', 
+                                              '(man Socrates)', 
+                                              '(man Bill)', 
+                                              'some x.((not (x = John)) and ((man x) and (sees John x)))',
+                                              'some x.((not (x = Bill)) and (man x))',
+                                              'all x.some y.((man x) implies (gives Socrates x y))']]
+    
+    m = Mace(g, assumptions=alist)
+    for a in alist:
+        print '   %s' % a.infixify()
+    print '|- %s: %s\n' % (g.infixify(), m.model_found())
+    #m.show_output('standard')
+    #m.show_output('cooked')
+    print m.build_model(), '\n'
+
+def test_model_found(arguments):
     """
     Try some proofs and exhibit the results.
     """
     for (goal, assumptions) in arguments:
         g = LogicParser().parse(goal)
         alist = [LogicParser().parse(a) for a in assumptions]
-        p = Mace(g, assumptions=alist).build_model()
+        found = Mace(g, assumptions=alist).model_found()
         for a in alist:
             print '   %s' % a.infixify()
-        print '|- %s: %s\n' % (g.infixify(), p)
+        print '|- %s: %s\n' % (g.infixify(), found)
 
+def test_transform_output(argument_pair):
+    g = LogicParser().parse(argument_pair[0])
+    alist = [LogicParser().parse(a) for a in argument_pair[1]]
+    m = Mace(g, assumptions=alist)
+    found = m.model_found()
+    for a in alist:
+        print '   %s' % a.infixify()
+    print '|- %s: %s\n' % (g.infixify(), found)
+    for format in ['standard', 'portable', 'xml', 'cooked']:
+        m.transform_output(format)
         
+def test_make_model_dict():
+    print Mace.make_model_dict(num_entities=3, values=[1,0,1])
+    print Mace.make_model_dict(num_entities=3, values=[0,0,0,0,0,0,1,0,0])
     
 arguments = [
-    ('(mortal Socrates)', ['all x.((man x) implies (mortal x))', '(man Socrates)']) ,
+    ('(mortal Socrates)', ['all x.((man x) implies (mortal x))', '(man Socrates)']),
     ('(not (mortal Socrates))', ['all x.((man x) implies (mortal x))', '(man Socrates)'])
 ]
 
 if __name__ == '__main__':
-    testBuild_model(arguments)
+    test_model_found(arguments)
+    test_build_model(arguments)
+    test_transform_output(arguments[1])
