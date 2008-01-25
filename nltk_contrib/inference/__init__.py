@@ -1,5 +1,5 @@
 from api import *
 from mace import *
 from prover9 import *
-from prover import *
+from inference import *
 from tableau import *

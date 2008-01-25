@@ -2,7 +2,7 @@ from nltk.corpus import rte
 from nltk import evaluate
 from nltk import wordnet
 from nltk.sem import logic
-from nltk_contrib.theorem_prover import prover
+from nltk_contrib.inference import inference
 
 
 class RTEInferenceTagger(object):
@@ -191,7 +191,7 @@ def demo(verbose=False):
         print 'Text: ', text_ex
         print 'Hyp:  ', hyp_ex
 
-    result = prover.get_prover(hyp_ex, [text_ex]).prove()
+    result = inference.get_prover(hyp_ex, [text_ex]).prove()
     print 'T -> H: %s\n' % result
 
     if not result:
@@ -202,17 +202,17 @@ def demo(verbose=False):
         for bk_ex in bk_exs:
             print bk_ex.infixify()
             
-        result = prover.get_prover(hyp_ex, [text_ex]+bk_exs).prove()
+        result = inference.get_prover(hyp_ex, [text_ex]+bk_exs).prove()
         print '(T & BK) -> H: %s' % result
 
         # Check if the background knowledge axioms are inconsistant
-        if not result:
-            result = prover.prove([text_ex]+bk_exs)
-            print '~(BK & T): %s' % result
-    
-        if not result:
-            result = prover.prove(hyp_ex, [text_ex])
-            print '~(BK & T & H): %s' % result
+#        if not result:
+#            result = inference.prove([text_ex]+bk_exs)
+#            print '~(BK & T): %s' % result
+#    
+#        if not result:
+#            result = inference.prove(hyp_ex, [text_ex])
+#            print '~(BK & T & H): %s' % result
     
     
 if __name__ == '__main__':
