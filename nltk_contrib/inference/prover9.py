@@ -345,6 +345,9 @@ expressions = [r'some x y.(sees x y)',
                r'all x.((man x) implies (walks x))']
     
 if __name__ == '__main__':
+    from nltk_contrib.inference import Prover9Parent
+    p = Prover9Parent()
+    p.config_prover9()
     test_convert_to_prover9(expressions)
     print '\n'
     test_prove(arguments)

@@ -1,4 +1,4 @@
-from nltk.utilities import Counter
+from nltk.internals import Counter
 from Tkinter import Canvas
 from Tkinter import Tk
 from tkFont import Font

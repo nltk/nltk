@@ -5,7 +5,7 @@
 # URL: <http://nltk.sf.net>
 # For license information, see LICENSE.TXT
 
-from nltk.utilities import Counter
+from nltk.internals import Counter
 
 import glue
 import drt_glue
