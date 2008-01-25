@@ -19,43 +19,65 @@ class Tableau(ProverI):
         @type assumptions: L{list} of logic.Expression objects
         @param options: options to pass to Prover9
         """
-        self._goal = goal        
+        self._goal = goal
         self._assumptions = assumptions
         self._options = options
         self._assume_false=True
 
-    def prove(self):
+    def prove(self, debug=False):
         tp_result = None
         try:
             agenda = Agenda()
-            agenda.put_all([negate(self._goal)]+self._assumptions)
-            tp_result = _attempt_proof(agenda, set([]), set([]))
+            agenda.put_all([negate(self._goal)] + self._assumptions)
+            tp_result = _attempt_proof(agenda, set([]), set([]), (debug, 0))
         except RuntimeError, e:
             if self._assume_false and str(e).startswith('maximum recursion depth exceeded'):
                 tp_result = False
             else:
-                raise e
+                if debug:
+                    print e
+                else:
+                    raise e
         return tp_result
         
     def show_proof(self):
         """
         Print out the proof.
         """
-        tp_result = None
-        try:
-            agenda = Agenda()
-            agenda.put_all([negate(self._goal)]+self._assumptions)
-            tp_result = _attempt_proof(agenda, set([]), set([]), (True, 0))
-        except RuntimeError, e:
-            if self._assume_false and str(e).startswith('maximum recursion depth exceeded'):
-                tp_result = False
-            else:
-                raise e
-        return tp_result
+        self.prove(True)
     
     def add_assumptions(self, new_assumptions):
+        """
+        Add new assumptions to the assumption list.
+        
+        @param new_assumptions: new assumptions
+        @type new_assumptions: C{list} of L{sem.logic.Expression}s
+        """
         self._assumptions += new_assumptions
-        return None
+    
+    def retract_assumptions(self, retracted, debug=False):
+        """
+        Retract assumptions from the assumption list.
+        
+        @param debug: If True, give warning when C{retracted} is not present on assumptions list.
+        @type debug: C{bool}
+        @param retracted: assumptions to be retracted
+        @type retracted: C{list} of L{sem.logic.Expression}s
+        """
+        
+        result = set(self._assumptions) - set(retracted)
+        if debug and result == set(self._assumptions):
+            print Warning("Assumptions list has not been changed:")
+            self.assumptions()
+        self._assumptions = list(result)
+    
+    def assumptions(self, output_format='nltk'):
+        """
+        List the current assumptions.       
+        """
+        for a in self._assumptions:
+            print a.infixify()
+
 
 class Agenda(object):
     def __init__(self):
@@ -431,58 +453,56 @@ class Categories:
     ALL    = 16
 
 def testTableau():
-#    f = LogicParser().parse(r'((man x) implies (not (not (man x))))')
-#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-#    f = LogicParser().parse(r'(not ((man x) and (not (man x))))')
-#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-#    f = LogicParser().parse(r'((man x) or (not (man x)))')
-#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-#    f = LogicParser().parse(r'((man x) implies (man x))')
-#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-#    f = LogicParser().parse(r'(not ((man x) and (not (man x))))')
-#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-#    f = LogicParser().parse(r'((man x) or (not (man x)))')
-#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-#    f = LogicParser().parse(r'((man x) implies (man x))')
-#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-#    f = LogicParser().parse(r'((man x) iff (man x))')
-#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-#    f = LogicParser().parse(r'(not ((man x) iff (not (man x))))')
-#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-#    p1 = LogicParser().parse(r'all x.((man x) implies (mortal x))')
-#    p2 = LogicParser().parse(r'(man Socrates)')
-#    c = LogicParser().parse(r'(mortal Socrates)')
-#    print '%s, %s |- %s: %s' % (p1.infixify(), p2.infixify(), c.infixify(), attempt_proof(c, [p1,p2]))
-#    p1 = LogicParser().parse(r'all x.((man x) implies (walks x))')
-#    p2 = LogicParser().parse(r'(man John)')
-#    c = LogicParser().parse(r'some y.(walks y)')
-#    print '%s, %s |- %s: %s' % (p1.infixify(), p2.infixify(), c.infixify(), attempt_proof(c, [p1,p2]))
-#    f = LogicParser().parse('all x.(man x)')
-#    print '%s |- %s: %s' % (f.infixify(), f.infixify(), attempt_proof(f, [f]))
-#    p = LogicParser().parse(r'((x = y) and (walks y))')
-#    c = LogicParser().parse(r'(walks x)')
-#    print '%s |- %s: %s' % (p.infixify(), c.infixify(), attempt_proof(c, [p]))
-#    p = LogicParser().parse(r'((x = y) and ((y = z) and (z = w)))')
-#    c = LogicParser().parse(r'(x = w)')
-#    print '%s |- %s: %s' % (p.infixify(), c.infixify(), attempt_proof(c, [p]))
-#    f = LogicParser().parse('all x.all y.((x = y) implies (y = x))')
-#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-#    f = LogicParser().parse('all x.all y.all z.(((x = y)and(y = z))implies(x = z))')
-#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-#    f = LogicParser().parse('(not(all x.some y.(F y x) and some x.all y.(not(F y x))))')
-#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
-#    f = LogicParser().parse('some x.all y.(sees x y)')
-#    print '|- %s: %s' % (f.infixify(), attempt_proof(f))
+    f = LogicParser().parse(r'((man x) implies (not (not (man x))))')
+    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
+    f = LogicParser().parse(r'(not ((man x) and (not (man x))))')
+    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
+    f = LogicParser().parse(r'((man x) or (not (man x)))')
+    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
+    f = LogicParser().parse(r'((man x) implies (man x))')
+    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
+    f = LogicParser().parse(r'(not ((man x) and (not (man x))))')
+    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
+    f = LogicParser().parse(r'((man x) or (not (man x)))')
+    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
+    f = LogicParser().parse(r'((man x) implies (man x))')
+    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
+    f = LogicParser().parse(r'((man x) iff (man x))')
+    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
+    f = LogicParser().parse(r'(not ((man x) iff (not (man x))))')
+    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
+    p1 = LogicParser().parse(r'all x.((man x) implies (mortal x))')
+    p2 = LogicParser().parse(r'(man Socrates)')
+    c = LogicParser().parse(r'(mortal Socrates)')
+    print '%s, %s |- %s: %s' % (p1.infixify(), p2.infixify(), c.infixify(), Tableau(c, [p1,p2]).prove())
+    p1 = LogicParser().parse(r'all x.((man x) implies (walks x))')
+    p2 = LogicParser().parse(r'(man John)')
+    c = LogicParser().parse(r'some y.(walks y)')
+    print '%s, %s |- %s: %s' % (p1.infixify(), p2.infixify(), c.infixify(), Tableau(c, [p1,p2]).prove())
+    f = LogicParser().parse('all x.(man x)')
+    print '%s |- %s: %s' % (f.infixify(), f.infixify(), Tableau(f, [f]).prove())
+    p = LogicParser().parse(r'((x = y) and (walks y))')
+    c = LogicParser().parse(r'(walks x)')
+    print '%s |- %s: %s' % (p.infixify(), c.infixify(), Tableau(c, [p]).prove())
+    p = LogicParser().parse(r'((x = y) and ((y = z) and (z = w)))')
+    c = LogicParser().parse(r'(x = w)')
+    print '%s |- %s: %s' % (p.infixify(), c.infixify(), Tableau(c, [p]).prove())
+    f = LogicParser().parse('all x.all y.((x = y) implies (y = x))')
+    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
+    f = LogicParser().parse('all x.all y.all z.(((x = y)and(y = z))implies(x = z))')
+    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
+    f = LogicParser().parse('(not(all x.some y.(F y x) and some x.all y.(not(F y x))))')
+    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
+    f = LogicParser().parse('some x.all y.(sees x y)')
+    print '|- %s: %s' % (f.infixify(), Tableau(f).prove())
 
-    p = LogicParser().parse(r'some a1.some a2.((believe a1 john a2) and (walk a2 mary))')
-    c = LogicParser().parse(r'some a0.(walk a0 mary)')
-    prover = Tableau(c, [p])
-    print '%s |- %s: %s' % (p.infixify(), c.infixify(), prover.prove())
+    p = LogicParser().parse(r'some e1.some e2.((believe e1 john e2) and (walk e2 mary))')
+    c = LogicParser().parse(r'some e0.(walk e0 mary)')
+    print '%s |- %s: %s' % (p.infixify(), c.infixify(), Tableau(c, [p]).prove())
     
-    p = LogicParser().parse(r'some a1.some a2.((believe a1 john a2) and (walk a2 mary))')
-    c = LogicParser().parse(r'some x.some a3.some a4.((believe a3 x a4) and (walk a4 mary))')
-    prover = Tableau(c, [p])
-    print '%s |- %s: %s' % (p.infixify(), c.infixify(), prover.prove())
+    p = LogicParser().parse(r'some e1.some e2.((believe e1 john e2) and (walk e2 mary))')
+    c = LogicParser().parse(r'some x.some e3.some e4.((believe e3 x e4) and (walk e4 mary))')
+    print '%s |- %s: %s' % (p.infixify(), c.infixify(), Tableau(c,[p]).prove())
 
 if __name__ == '__main__':
     testTableau()

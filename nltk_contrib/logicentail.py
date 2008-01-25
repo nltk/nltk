@@ -87,7 +87,7 @@ class RTEInferenceTagger(object):
         ######################################
         # synonym: all x.((synonym x) implies (word x))
         # hypernym: all x.((word x) implies (hypernym x))
-        # synset-sister: all x.((word x) and (not (sister x)))
+        # synset-sister: all x.((word x) implies (not (sister x)))
         ######################################            
         
         for synonym_text in synonyms:
@@ -146,6 +146,11 @@ class RTEInferenceTagger(object):
         return (logic.LogicParser().parse(exp_text), dist)
 
     def _create_axiom_synset_sisters(self, text1, word1_synset, text2, word2_synset, pos):
+        """
+        Return an expression of the form 'all x.((word x) implies (not (sister x)))'.
+        The reverse is not needed because it is equal to 'all x.((not (word x)) or (not (sister x)))'
+        """
+        
         text2 = text2.split('(')[0];
 
         dist = 1#word1_synset.shortest_path_distance(word2_synset)
@@ -153,7 +158,7 @@ class RTEInferenceTagger(object):
         text1 = text1.replace('.', '')
         text2 = text2.replace('.', '')
 
-        exp_text = 'all x.((%s x) and (not (%s x)))' % (text1, text2)
+        exp_text = 'all x.((%s x) implies (not (%s x)))' % (text1, text2)
         return (logic.LogicParser().parse(exp_text), dist)
     
     
@@ -186,25 +191,29 @@ def demo(verbose=False):
         print 'Text: ', text_ex
         print 'Hyp:  ', hyp_ex
 
-    result = prover.prove(hyp_ex, [text_ex])
-    print 'T -> H: %s' % result
+    result = prover.get_prover(hyp_ex, [text_ex]).prove()
+    print 'T -> H: %s\n' % result
 
     if not result:
         bk = tagger._generate_BK(text, hyp, verbose)
         bk_exs = [bk_pair[0] for bk_pair in bk]
         
-        result = prover.prove(hyp_ex, [text_ex]+bk_exs)
+        print 'Generated Background Knowledge:'
+        for bk_ex in bk_exs:
+            print bk_ex.infixify()
+            
+        result = prover.get_prover(hyp_ex, [text_ex]+bk_exs).prove()
         print '(T & BK) -> H: %s' % result
 
         # Check if the background knowledge axioms are inconsistant
-#        if not result:
-#            result = prover.prove([text_ex]+bk_exs)
-#            print '~(BK & T): %s' % result
-#    
-#        if not result:
-#            result = prover.prove(hyp_ex, [text_ex])
-#            print '~(BK & T & H): %s' % result
+        if not result:
+            result = prover.prove([text_ex]+bk_exs)
+            print '~(BK & T): %s' % result
+    
+        if not result:
+            result = prover.prove(hyp_ex, [text_ex])
+            print '~(BK & T & H): %s' % result
     
     
 if __name__ == '__main__':
-    demo(True)
+    demo(False)

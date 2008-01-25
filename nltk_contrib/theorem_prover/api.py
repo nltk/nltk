@@ -32,13 +32,20 @@ class ProverI(object):
     
 class ModelBuilderI(object):
     """
-    Interface for trying to establish a proof from assumptions.
+    Interface for trying to establish a model of a counterexample for a theorem
     """
     
-    def build_model(self):
+    def model_found(self):
         """
         @return: Whether the model building was successful or not.
         @rtype: C{bool} 
+        """
+        raise NotImplementedError()
+    
+    def build_model(self):
+        """
+        @return: A model if one is generated; None otherwise.
+        @rtype: C{nltk.sem.evaluate.Valuation} 
         """
         raise NotImplementedError()
     

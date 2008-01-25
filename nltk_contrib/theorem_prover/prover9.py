@@ -12,49 +12,6 @@ from string import join
 from nltk.sem.logic import *
 from api import ProverI
 
-_prover9_path = None
-_prover9_executable = None
-
-prover9_search = ['.',
-                   '/usr/local/bin/prover9',
-                   '/usr/local/bin/prover9/bin',
-                   '/usr/local/bin',
-                   '/usr/bin',
-                   '/usr/local/prover9',
-                   '/usr/local/share/prover9']
-
-def config_prover9(path=None, verbose=True):
-    """
-    Configure the location of Prover9 Executable
-    
-    @param path: Path to the Prover9 executable
-    @type path: C{str}
-    """
-    
-    global _prover9_path, _prover9_executable
-    _prover9_path = None
-
-    if path is not None:
-        searchpath = (path,)
-
-    if  path is  None:
-        searchpath = prover9_search
-        if 'PROVER9HOME' in os.environ:
-            searchpath.insert(0, os.environ['PROVER9HOME'])
-
-    for path in searchpath:
-        exe = os.path.join(path, 'prover9')
-        if os.path.exists(exe):
-            _prover9_path = path
-            _prover9_executable = exe
-            if verbose:
-                print '[Found Prover9: %s]' % _prover9_executable
-            break
-  
-    if _prover9_path is None:
-        raise LookupError("Unable to find Prover9 executable in '%s'\n" 
-            "Use 'config_prover9(path=<path>) '," 
-            " or set the PROVER9HOME environment variable to a valid path." % join(searchpath))
 
 # Following is not yet used. Return code for 2 actually realized as 512. 
 
@@ -69,28 +26,46 @@ def config_prover9(path=None, verbose=True):
                    #101: "(SIGSEGV)",   # Prover9 crashed, most probably due to a bug.   
  #}
 
-class Prover9(ProverI):
-    def __init__(self, goal, assumptions=[], timeout=60):
+class Prover9Parent:
+    def config_prover9(self, path=None, verbose=False):
         """
-        @param goal: Input expression to prove
-        @type goal: L{logic.Expression}
-        @param assumptions: Input expressions to use as assumptions in the proof
-        @type assumptions: L{list} of logic.Expression objects
-        @param timeout: number of seconds before timeout; set to 0 for no timeout.
-        @type timeout: C{int}
-        """
-        config_prover9(verbose=False)
-        self._goal = goal        
-        self._assumptions = assumptions
-        self._infile = ''
-        self._outfile = '' 
-        self._p9_assumptions = []
-        self._p9_goal = convert_to_prover9(self._goal)
-        if self._assumptions:
-            self._p9_assumptions = convert_to_prover9(self._assumptions)
-        self._timeout = timeout
+        Configure the location of Prover9 Executable
         
+        @param path: Path to the Prover9 executable
+        @type path: C{str}
+        """
+        
+        self._executable_path = None
     
+        prover9_search = ['.',
+                          '/usr/local/bin/prover9',
+                          '/usr/local/bin/prover9/bin',
+                          '/usr/local/bin',
+                          '/usr/bin',
+                          '/usr/local/prover9',
+                          '/usr/local/share/prover9']
+    
+        if path is not None:
+            searchpath = (path,)
+    
+        if  path is  None:
+            searchpath = prover9_search
+            if 'PROVER9HOME' in os.environ:
+                searchpath.insert(0, os.environ['PROVER9HOME'])
+    
+        for path in searchpath:
+            exe = os.path.join(path, self.get_executable())
+            if os.path.exists(exe):
+                self._executable_path = path
+                if verbose:
+                    print '[Found %s: %s]' % (self.get_executable(), exe)
+                break
+      
+        if self._executable_path is None:
+            raise LookupError("Unable to find Prover9 executable in '%s'\n" 
+                "Use 'config_prover9(path=<path>) '," 
+                " or set the PROVER9HOME environment variable to a valid path." % join(searchpath))
+
     def prover9_files(self, filename='prover9', p9_dir=None):
         """
         Generate names for the input and output files and write to the input file.
@@ -98,6 +73,7 @@ class Prover9(ProverI):
         # If no directory specified, use system temp directory
         if p9_dir is None:
             p9_dir = tempfile.gettempdir()
+        self._p9_dir = p9_dir
         self._infile = os.path.join(p9_dir, filename + '.in')
         self._outfile = os.path.join(p9_dir, filename + '.out')
         f = open(self._infile, 'w')
@@ -113,36 +89,10 @@ class Prover9(ProverI):
     
         f.write('formulas(goals).\n')
         f.write('    %s.\n' % self._p9_goal)
-        f.write('end_of_list.\n')
         f.close()
             
         return None
     
-    def prove(self):
-        """
-        Use Prover9 to prove a theorem.
-        @return: C{True} if the proof was successful 
-        (i.e. returns value of 0), else C{False}        
-        """
-        self.prover9_files()
-        execute_string = '%s -f %s > %s 2>> %s' % \
-            (_prover9_executable, self._infile, self._outfile, self._outfile)
-                
-        tp_result = os.system(execute_string)
-        return tp_result == 0
-    
-    def show_proof(self):
-        """
-        Print out a Prover9 proof.
-        """
-        if self._outfile:
-            for l in open(self._outfile):
-                print l,
-        else:
-            print "You have to call prove() first to get a proof!"
-        return None
-    
-            
     def add_assumptions(self, new_assumptions):
         """
         Add new assumptions to the assumption list.
@@ -178,13 +128,13 @@ class Prover9(ProverI):
         List the current assumptions.       
         """
         if output_format.lower() == 'nltk':
-            print [str(a.infixify()) for a in self._assumptions]
- 
+            for a in self._assumptions:
+                print a.infixify()
         elif output_format.lower() == 'prover9':
-            print self._p9_assumptions
+            for a in self._p9_assumptions:
+                print a
         else:
             raise NameError("Unrecognized value for 'output_format': %s" % output_format)
-        
         
     def load(self, filename):
         """
@@ -198,7 +148,6 @@ class Prover9(ProverI):
             result.append(lp.parse(s))
         return result                 
        
-        
 
 def convert_to_prover9(input):
     """
@@ -290,16 +239,67 @@ def _toProver9String_Variable(current):
 def _toProver9String_Constant(current):
     return current.name
 
+
+class Prover9(Prover9Parent, ProverI):
+    def __init__(self, goal, assumptions=[], timeout=60):
+        """
+        @param goal: Input expression to prove
+        @type goal: L{logic.Expression}
+        @param assumptions: Input expressions to use as assumptions in the proof
+        @type assumptions: L{list} of logic.Expression objects
+        @param timeout: number of seconds before timeout; set to 0 for no timeout.
+        @type timeout: C{int}
+        """
+        self.config_prover9()
+        self._goal = goal       
+        self._assumptions = assumptions
+        self._p9_dir = ''
+        self._infile = ''
+        self._outfile = '' 
+        self._p9_assumptions = []
+        self._p9_goal = convert_to_prover9(self._goal)
+        if self._assumptions:
+            self._p9_assumptions = convert_to_prover9(self._assumptions)
+        self._timeout = timeout
     
-def testToProver9Input(expr):
+    def get_executable(self):
+        return 'prover9'
+
+    def prove(self):
+        """
+        Use Prover9 to prove a theorem.
+        @return: C{True} if the proof was successful 
+        (i.e. returns value of 0), else C{False}        
+        """
+        self.prover9_files()
+        exe = os.path.join(self._executable_path, self.get_executable())
+        execute_string = '%s -f %s > %s 2>> %s' % \
+            (exe, self._infile, self._outfile, self._outfile)
+        
+        tp_result = os.system(execute_string)
+        return tp_result == 0
+    
+    def show_proof(self):
+        """
+        Print out a Prover9 proof.
+        """
+        if self._outfile:
+            for l in open(self._outfile):
+                print l,
+        else:
+            print "You have to call prove() first to get a proof!"
+        return None
+
+    
+def test_convert_to_prover9(expr):
     """
     Test that parsing works OK.
     """
     for t in expr:
-        p = LogicParser().parse(t)
-        print toProver9String(p.simplify().infixify());
+        e = LogicParser().parse(t)
+        print convert_to_prover9(e)
         
-def testAttempt_proof(arguments):
+def test_prove(arguments):
     """
     Try some proofs and exhibit the results.
     """
@@ -345,12 +345,6 @@ expressions = [r'some x y.(sees x y)',
                r'all x.((man x) implies (walks x))']
     
 if __name__ == '__main__':
-    
-    testToProver9Input(expressions)
+    test_convert_to_prover9(expressions)
     print '\n'
-    testAttempt_proof(arguments)
-
-    
- 
-    
-    
+    test_prove(arguments)
