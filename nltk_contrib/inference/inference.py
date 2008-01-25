@@ -8,7 +8,7 @@
 
 from nltk.sem.logic import ApplicationExpression, Operator, LogicParser
 
-from nltk_contrib.theorem_prover import *
+from nltk_contrib.inference import *
 
 def get_prover(goal, assumptions=[], prover_name='Prover9'):
     """

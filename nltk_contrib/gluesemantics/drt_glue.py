@@ -10,7 +10,7 @@ from nltk_contrib.drt import DRT
 import linearlogic
 import lfg
 from nltk import data
-from nltk_contrib.theorem_prover.tableau import ProverParseError
+from nltk_contrib.inference.tableau import ProverParseError
 
 class GlueFormula:
     def __init__(self, meaning, glue, indices=set([])):

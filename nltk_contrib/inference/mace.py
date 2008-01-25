@@ -11,8 +11,8 @@ import tempfile
 from string import join
 from nltk.sem.logic import *
 from api import ModelBuilderI
-from nltk_contrib.theorem_prover import prover9
-from nltk_contrib.theorem_prover.prover9 import Prover9Parent
+from nltk_contrib.inference import prover9
+from nltk_contrib.inference.prover9 import Prover9Parent
 
 class Mace(ModelBuilderI, Prover9Parent):
     def __init__(self, goal, assumptions=[], timeout=60):
