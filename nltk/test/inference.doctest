@@ -24,50 +24,24 @@ an ``Expression`` and, optionally, a name of a theorem prover.  The default is
 -------
 Prover9
 -------
-
 Prover9 Installation
 ~~~~~~~~~~~~~~~~~~~~
 
 You can download Prover9 from http://www.cs.unm.edu/~mccune/prover9/.
 
-.. Extract the source code into '/usr/share/nltk/tools/prover/'.
+
 
 Extract the source code into a suitable directory and follow the
-instructions in the ``README.make`` file to compile the executables.
-Install these into an appropriate location.
+instructions in the Prover9 ``README.make`` file to compile the executables.
+Install these into an appropriate location; the
+``prover9_search`` variable is currently configured to look in the
+following locations::
 
-..
-    To see where NLTK's
-    ``theorem_prover`` module will look by default on a Unix-like system, you can
-    inspect the ``_prover9_search`` variable:
+    ['.', '/usr/local/bin/prover9', '/usr/local/bin/prover9/bin',
+    '/usr/local/bin', '/usr/bin', '/usr/local/prover9',
+    '/usr/local/share/prover9']
 
-	>>> inference.Prover9Parent.prover9_search
-	['.', '/usr/local/bin/prover9', '/usr/local/bin/prover9/bin', '/usr/local/bin', '/usr/bin', '/usr/local/prover9', '/usr/local/share/prover9']
-
-    In order to make sure that NLTK has successfully located Prover9, use the
-    ``config_prover9()`` function.
-
-	>>> inference.Prover9().config_prover9()
-	[Found Prover9: /usr/local/bin/prover9]
-
-    You can also give an explicit path to this function:
-
-	>>> inference.config_prover9('/usr/local/bin')
-	[Found Prover9: /usr/local/bin/prover9]
-
-..   zap the global variable
-
-      >>> inference.prover9_path = None
-
-If ``config_prover9()`` fails to find the Prover9 executable, for
-example if the explicitly supplied path is incorrect, it will raise an error.
-
-    >>> inference.config_prover9('/nonexistent/path')    
-    Traceback (most recent call last):
-      . . .
-    LookupError: Unable to find Prover9 executable in '/nonexistent/path'
-    Use 'config_prover9(path=<path>) ', or set the PROVER9HOME environment variable to a valid path.
-
+    
 Using Prover9
 ~~~~~~~~~~~~~
 
@@ -127,7 +101,7 @@ the proof, as shown here.
     >>> a1 = LogicParser().parse('all x.((man x) implies (mortal x))')
     >>> prover = inference.Prover9(g, assumptions=[a1])
     >>> prover.assumptions()
-    ['all x.((man x) implies (mortal x))']
+    all x.((man x) implies (mortal x))
 
 However, the assumptions are not sufficient to derive the goal:
 
@@ -140,14 +114,16 @@ So let's add another assumption:
     >>> a2 = LogicParser().parse('(man Socrates)')    
     >>> prover.add_assumptions([a2])
     >>> prover.assumptions()
-    ['all x.((man x) implies (mortal x))', '(man Socrates)']
+    all x.((man x) implies (mortal x))
+    (man Socrates)
     >>> print prover.prove()
     True
 
 We can also show the assumptions in ``Prover9`` format.
 
     >>> prover.assumptions(output_format='Prover9')
-    ['all x (man(x) -> mortal(x))', 'man(Socrates)']
+    all x (man(x) -> mortal(x))
+    man(Socrates)
 
     >>> prover.assumptions(output_format='Spass')
     Traceback (most recent call last):
@@ -158,7 +134,7 @@ Assumptions can be retracted from the list of assumptions.
 
     >>> prover.retract_assumptions([a1])
     >>> prover.assumptions()
-    ['(man Socrates)']
+    (man Socrates)
     >>> prover.retract_assumptions([a1])
 
 Statements can be load from a file and parsed. We can then add these
