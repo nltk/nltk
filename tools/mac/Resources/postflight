@@ -7,13 +7,7 @@
 
 TMP=/tmp/nltk-installer/
 cd $TMP
-DIST=`/bin/ls -t | /usr/bin/head -1`
-
-if test -e $DIST; then
-  cd $DIST
-  /usr/bin/sudo /Library/Frameworks/Python.framework/Versions/Current/bin/python ./setup.py install
-else
-  echo "Cannot find source directory:" $TMP/$DIST
+/usr/bin/sudo /Library/Frameworks/Python.framework/Versions/Current/bin/python ./setup.py install
 
 # Clean up after ourselves by deleting /tmp/nltk-installer?
 # rm -rf $TMP
