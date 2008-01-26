@@ -1,4 +1,10 @@
 #!/bin/bash
+
+# $0 = script path
+# $1 = package path
+# $2 = default location
+# $3 = target volume
+
 TMP=/tmp/nltk-installer/
 cd $TMP
 DIST=`/bin/ls -t | /usr/bin/head -1`
