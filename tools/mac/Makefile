@@ -12,7 +12,7 @@ DIST = ../../dist
 NLTK_VERSION = nltk-$(shell python -c 'import nltk; print nltk.__version__')
 NLTK_ZIP = $(DIST)/$(NLTK_VERSION).zip
 NLTK_PKG = $(NLTK_VERSION)/$(NLTK_VERSION).pkg
-NLTK_DMG = $(NLTK_VERSION).dmg
+NLTK_TIGER_DMG = $(NLTK_VERSION)-macosx10.4.dmg
 ROOT = ./MyRoot
 LIB_PATH = $(ROOT)/tmp
 LIB_PATH_VERSION = $(LIB_PATH)/$(NLTK_VERSION)
@@ -22,12 +22,12 @@ PM = /Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMa
 
 .PHONY: clean
 
-$(NLTK_DMG): copy nltk.pmproj
+$(NLTK_TIGER_DMG): copy nltk.pmproj
 	mkdir -p $(NLTK_VERSION)
 	$(PM) ./nltk.pmproj -p $(NLTK_PKG)
-	rm -f $(NLTK_DMG)
-	hdiutil create $(NLTK_DMG) -srcfolder $(NLTK_VERSION)
-	cp $(NLTK_DMG) $(DIST)
+	rm -f $(NLTK_TIGER_DMG)
+	hdiutil create $(NLTK_TIGER_DMG) -srcfolder $(NLTK_VERSION)
+	cp $(NLTK_TIGER_DMG) $(DIST)
 
 copy:
 	rm -rf $(ROOT)
