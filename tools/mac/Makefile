@@ -11,25 +11,26 @@ PYTHON = python
 DIST = ../../dist
 NLTK_VERSION = nltk-$(shell python -c 'import nltk; print nltk.__version__')
 NLTK_ZIP = $(DIST)/$(NLTK_VERSION).zip
-NLTK_MPKG = $(NLTK_VERSION)/$(NLTK_VERSION).mpkg
+NLTK_PKG = $(NLTK_VERSION)/$(NLTK_VERSION).pkg
 NLTK_DMG = $(NLTK_VERSION).dmg
-LIB_PATH = ./nltk/root/tmp
+ROOT = ./MyRoot
+LIB_PATH = $(ROOT)/tmp
 LIB_PATH_VERSION = $(LIB_PATH)/$(NLTK_VERSION)
 LIB_PATH_INST = $(LIB_PATH)/nltk-installer/
-DATA_PATH = ./nltk/root/usr/share/nltk/
+DATA_PATH = $(ROOT)/usr/share/nltk/
 PM = /Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker -build -proj
 
 .PHONY: clean
 
 $(NLTK_DMG): copy nltk.pmproj
 	mkdir -p $(NLTK_VERSION)
-	$(PM) ./nltk.pmproj -p $(NLTK_MPKG)
+	$(PM) ./nltk.pmproj -p $(NLTK_PKG)
 	rm -f $(NLTK_DMG)
 	hdiutil create $(NLTK_DMG) -srcfolder $(NLTK_VERSION)
 	cp $(NLTK_DMG) $(DIST)
 
 copy:
-	rm -rf ./nltk/root
+	rm -rf $(ROOT)
 	mkdir -p $(DATA_PATH) $(LIB_PATH_INST)
 	unzip $(NLTK_ZIP) -d $(LIB_PATH)
 	mv $(LIB_PATH_VERSION)/* $(LIB_PATH_INST)
