@@ -1,3 +1,0 @@
-#!/bin/bash
-echo export NLTK_DATA=/usr/share/nltk >> /.bashrc
-source /.bashrc
