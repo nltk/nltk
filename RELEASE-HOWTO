@@ -43,7 +43,7 @@ E. LINK CHECKING
 @@@ BUILD
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-The build requires docutils, pdflatex, python imaging library, epydoc
+The build requires docutils, pdflatex, python imaging library, epydoc, cdrtools
 
   1. Check out a clean copy of the subversion repository (or make clean)
      and install locally with python setup.py install; make clean
@@ -55,15 +55,16 @@ The build requires docutils, pdflatex, python imaging library, epydoc
   6. make iso (fast; see dist/ for the iso image)
   7. list distributions and compare size with previous distribution
 
--rw-r--r--   1 root  sb    1568039 Oct 12 16:53 nltk-0.9-1.noarch.rpm
--rw-r--r--   1 root  sb   55594038 Oct 12 16:54 nltk-0.9.dmg
--rw-r--r--   1 sb    sb  237801472 Oct 12 17:02 nltk-0.9.iso
--rw-r--r--   1 root  sb     702674 Oct 12 16:53 nltk-0.9.tar.gz
--rw-r--r--   1 root  sb     884034 Oct 12 16:53 nltk-0.9.win32.exe
--rw-r--r--   1 sb    sb     831503 Oct 12 16:53 nltk-0.9.zip
--rw-r--r--   1 root  sb   62990054 Oct 12 16:55 nltk-data-0.9.zip
--rw-r--r--   1 root  sb   37739738 Oct 12 16:54 nltk-doc-0.9.zip
--rw-r--r--   1 root  sb      85739 Oct 12 16:54 nltk-examples-0.9.zip
+-rw-r--r--  1 sb  staff    1653361 Jan 24 16:29 nltk-0.9.1-1.noarch.rpm
+-rw-r--r--  1 sb  staff   71630043 Jan 26 23:33 nltk-0.9.1-macosx10.4.dmg
+-rw-r--r--  1 sb  staff  269330432 Jan 27 13:04 nltk-0.9.1.iso
+-rw-r--r--  1 sb  staff     741477 Jan 24 16:35 nltk-0.9.1.tar.gz
+-rw-r--r--  1 sb  staff     935000 Jan 24 16:35 nltk-0.9.1.win32.exe
+-rw-r--r--  1 sb  staff     883432 Jan 24 16:35 nltk-0.9.1.zip
+-rw-r--r--  1 sb  staff    1772964 Jan 24 16:35 nltk-contribdoc-0.9.1.zip
+-rw-r--r--  1 sb  staff   72793386 Jan 24 16:37 nltk-data-0.9.1.zip
+-rw-r--r--  1 sb  staff   48597248 Jan 24 16:38 nltk-doc-0.9.1.zip
+-rw-r--r--  1 sb  staff      85739 Jan 24 16:38 nltk-examples-0.9.1.zip
 
   (test the distributions?)
 
