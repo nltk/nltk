@@ -62,7 +62,8 @@ can be accessed using C{nltk.corpus.I{corpus}.olac()}.
 from nltk.corpus.util import LazyCorpusLoader
 from nltk.corpus.reader import *
 from nltk.tokenize import RegexpTokenizer
-import chat80
+import nltk.corpus.chat80
+import re
 
 abc = LazyCorpusLoader(
     'abc', PlaintextCorpusReader, r'(?!\.svn).*\.txt')
@@ -128,6 +129,10 @@ toolbox = LazyCorpusLoader(
     'toolbox', ToolboxCorpusReader, r'(?!.*(README|\.svn)).*\.(dic|txt)')
 treebank = LazyCorpusLoader(
     'treebank/combined', BracketParseCorpusReader, r'wsj_.*\.mrg')
+propbank = LazyCorpusLoader(
+    'propbank', PropbankCorpusReader, 'prop.txt', 'frames/*\.xml',
+    lambda filename: re.sub(r'^wsj/\d\d/', '', filename),
+    treebank) # Must be defined *after* treebank corpus.
 treebank_chunk = LazyCorpusLoader(
     'treebank/tagged', ChunkedCorpusReader, r'wsj_.*\.pos',
     sent_tokenizer=RegexpTokenizer(r'(?<=/\.)\s*(?![^\[]*\])', gaps=True),

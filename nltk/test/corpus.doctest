@@ -15,19 +15,19 @@ means of a "corpus reader" object from `nltk.corpus`:
     <CategorizedTaggedCorpusReader in '.../corpora/brown'>
     >>> # The Penn Treebank Corpus:
     >>> print nltk.corpus.treebank # doctest: +ELLIPSIS
-    <TreebankCorpusReader in '.../corpora/treebank'>
+    <BracketParseCorpusReader in '.../corpora/treebank/combined'>
     >>> # The Name Genders Corpus:
     >>> print nltk.corpus.names # doctest: +ELLIPSIS
     <WordListCorpusReader in '.../corpora/names'>
     >>> print nltk.corpus.inaugural # doctest: +ELLIPSIS
     <PlaintextCorpusReader in '.../corpora/inaugural'>
 
-Most corpora consist of a set of documents (or other pieces of text).
-A list of identifiers for these documents is accessed via the ``documents()``
-method of the corpus reader:
+Most corpora consist of a set of files, each containing a document (or
+other pieces of text).  A list of identifiers for these files is
+accessed via the ``files()`` method of the corpus reader:
 
-    >>> print nltk.corpus.treebank.documents() # doctest: +ELLIPSIS
-    ('wsj_0001', 'wsj_0002', 'wsj_0003', 'wsj_0004', ...)
+    >>> print nltk.corpus.treebank.files() # doctest: +ELLIPSIS
+    ('wsj_0001.mrg', 'wsj_0002.mrg', 'wsj_0003.mrg', 'wsj_0004.mrg', ...)
     >>> print nltk.corpus.inaugural.files() # doctest: +ELLIPSIS
     ('1789-Washington.txt', '1793-Washington.txt', '1797-Adams.txt', ...)
 
@@ -220,21 +220,13 @@ NLTK data package includes a 10% sample of the Penn Treebank (in
 Reading the Penn Treebank:
 
     >>> from nltk.corpus import treebank
-    >>> print treebank.documents() # doctest: +ELLIPSIS
-    ('wsj_0001', 'wsj_0002', 'wsj_0003', 'wsj_0004', ...)
-    >>> print treebank.words('wsj_0003')
+    >>> print treebank.files() # doctest: +ELLIPSIS
+    ('wsj_0001.mrg', 'wsj_0002.mrg', 'wsj_0003.mrg', 'wsj_0004.mrg', ...)
+    >>> print treebank.words('wsj_0003.mrg')
     ['A', 'form', 'of', 'asbestos', 'once', 'used', 'to', ...]
-    >>> print treebank.tagged_words('wsj_0003')
+    >>> print treebank.tagged_words('wsj_0003.mrg')
     [('A', 'DT'), ('form', 'NN'), ('of', 'IN'), ...]
-    >>> print treebank.chunked_sents('wsj_0003')[0] # doctest: +ELLIPSIS
-    (S
-      (NP A/DT form/NN)
-      of/IN
-      (NP asbestos/NN)
-      once/RB
-      ...
-      ./.)
-    >>> print treebank.parsed_sents('wsj_0003')[0] # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    >>> print treebank.parsed_sents('wsj_0003.mrg')[0] # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     (S
       (S-TPC-1
         (NP-SBJ
@@ -409,6 +401,138 @@ category assigned to a document is correct as follows:
     >>> doc = 'ca01'
     >>> classify(doc) in brown.categories(doc)
     True
+
+Propbank Corpus
+~~~~~~~~~~~~~~~
+The Propbank corpus provides predicate-argument annotation for the
+entire treebank.  Each verb in the treebank is annotated by a single
+instance in the propbank corpus, containing information about the
+location of the verb, and the location and identity of its arguments:
+
+    >>> from nltk.corpus import propbank
+    >>> pb_instances = propbank.instances()
+    >>> print pb_instances # doctest: +NORMALIZE_WHITESPACE
+    [<PropbankInstance: wsj_0001.mrg, sent 0, word 8>,
+     <PropbankInstance: wsj_0001.mrg, sent 1, word 10>, ...]
+
+Each propbank instance defines the following member variables:
+
+  - Location information: `filename`, `sentnum`, `wordnum`
+  - Annotator information: `tagger`
+  - Inflection information: `inflection`
+  - Verb (aka predicate) location: `predicate`
+  - Argument locations and types: `arguments`
+
+The following examples show the types of these arguments:
+
+    >>> inst = pb_instances[103]
+    >>> (inst.filename, inst.sentnum, inst.wordnum)
+    ('wsj_0004.mrg', 8, 16)
+    >>> inst.tagger
+    'gold'
+    >>> inst.inflection
+    <PropbankInflection: vp--a>
+    >>> infl = inst.inflection
+    >>> infl.form, infl.tense, infl.aspect, infl.person, infl.voice
+    ('v', 'p', '-', '-', 'a')
+    >>> inst.predicate
+    PropbankTreePointer(16, 0)
+    >>> inst.arguments # doctest: +NORMALIZE_WHITESPACE
+    ((PropbankTreePointer(0, 2), 'ARG1'),
+     (PropbankTreePointer(13, 1), 'ARGM-DIS'),
+     (PropbankTreePointer(17, 1), 'ARG4-to'),
+     (PropbankTreePointer(20, 1), 'ARG3-from'))
+
+The location of the predicate and of the arguments are encoded using
+`PropbankTreePointer` objects, as well as `PropbankChainTreePointer`
+objects and `PropbankSplitTreePointer` objects.  A
+`PropbankTreePointer` consists of a `wordnum` and a `height`:
+
+    >>> print inst.predicate.wordnum, inst.predicate.height
+    16 0
+
+This identifies the tree constituent that is headed by the word that
+is the `wordnum`\ 'th token in the sentence, and whose span is found
+by going `height` nodes up in the tree.  This type of pointer is only
+useful if we also have the corresponding tree structure, since it
+includes empty elements such as traces in the word number count.  The
+trees for 10% of the standard propbank corpus are contained in the
+`treebank` corpus:
+
+    >>> tree = inst.tree
+
+    >>> from nltk.corpus import treebank
+    >>> assert tree == treebank.parsed_sents(inst.filename)[inst.sentnum]
+
+    >>> inst.predicate.select(tree)
+    Tree('VBD', ['rose'])
+    >>> for (argloc, argid) in inst.arguments:
+    ...     print '%-10s %s' % (argid, argloc.select(tree).pprint(500)[:50])
+    ARG1       (NP-SBJ (NP (DT The) (NN yield)) (PP (IN on) (NP (
+    ARGM-DIS   (PP (IN for) (NP (NN example)))
+    ARG4-to    (PP-DIR (TO to) (NP (CD 8.04) (NN %)))
+    ARG3-from  (PP-DIR (IN from) (NP (CD 7.90) (NN %)))
+
+Propbank tree pointers can be converted to standard tree locations,
+which are usually easier to work with, using the `treepos()` method:
+
+    >>> treepos = inst.predicate.treepos(tree)
+    >>> print treepos, tree[treepos]
+    (4, 0) (VBD rose)
+
+In some cases, argument locations will be encoded using
+`PropbankChainTreePointer`\ s (for trace chains) or
+`PropbankSplitTreePointer`\ s (for discontinuous constituents).  Both
+of these objects contain a single member variable, `pieces`,
+containing a list of the constituent pieces.  They also define the
+method `select()`, which will return a tree containing all the
+elements of the argument.  (A new head node is created, labeled
+"*CHAIN*" or "*SPLIT*", since the argument is not a single constituent
+in the original tree).  Sentence #6 contains an example of an argument
+that is both discontinuous and contains a chain:
+
+    >>> inst = pb_instances[6]
+    >>> inst.frameset
+    'expose.01'
+    >>> argloc, argid = inst.arguments[2]
+    >>> argloc
+    <PropbankChainTreePointer: 22:1,24:0,25:1*27:0>
+    >>> argloc.pieces
+    [<PropbankSplitTreePointer: 22:1,24:0,25:1>, PropbankTreePointer(27, 0)]
+    >>> argloc.pieces[0].pieces
+    ... # doctest: +NORMALIZE_WHITESPACE
+    [PropbankTreePointer(22, 1), PropbankTreePointer(24, 0),
+     PropbankTreePointer(25, 1)]
+    >>> print argloc.select(inst.tree)
+    (*CHAIN*
+      (*SPLIT* (NP (DT a) (NN group)) (IN of) (NP (NNS workers)))
+      (-NONE- *))
+
+Note that the standard corpus distribution only contains 10% of the
+treebank, so the parse trees are not availalbe for instances starting
+at 9353:
+
+    >>> inst = pb_instances[9352]
+    >>> inst.filename
+    'wsj_0199.mrg'
+    >>> print inst.tree # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
+    (S (NP-SBJ (NNP Trinity)) (VP (VBD said) (SBAR (-NONE- 0) ...))
+    >>> print inst.predicate.select(inst.tree)
+    (VB begin)
+
+    >>> inst = pb_instances[9353]
+    >>> inst.filename
+    'wsj_0200.mrg'
+    >>> print inst.tree
+    None
+    >>> print inst.predicate.select(inst.tree)
+    Traceback (most recent call last):
+      . . .
+    ValueError: Parse tree not avaialable
+
+However, if you supply your own version of the treebank corpus (by
+putting it before the nltk-provided version on C{nltk.data.path}),
+then you can access the trees for all instances.
 
 Other Corpora
 ~~~~~~~~~~~~~
