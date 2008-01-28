@@ -13,8 +13,11 @@ Corpus reader for corpora whose documents are xml files.
 
 from api import CorpusReader
 from util import *
-from nltk.etree import ElementTree
 from nltk.internals import deprecated
+
+# Use the c version of ElementTree, which is faster, if possible:
+try: from xml.etree import cElementTree as ElementTree
+except ImportError: from nltk.etree import ElementTree
 
 class XMLCorpusReader(CorpusReader):
     """
