@@ -103,15 +103,7 @@ class GlueFormula:
         return self.__str__()
 
 class GlueDict(dict):
-    def read_file(self, empty_first=True, dependency=False):
-        if empty_first: 
-            self.clear()
-
-        if dependency:
-            filename = 'drt_glue_event.semtype'
-        else:
-            filename = 'drt_glue.semtype'
-
+    def __init__(self, filename='drt_glue.semtype'):
         try:
             f = open(data.find('grammars/%s' % filename))
         except LookupError:
@@ -119,18 +111,21 @@ class GlueDict(dict):
         lines = f.readlines()
         f.close()
 
-        for line in lines:                          # example: 'n : (\\x.(<word> x), (v-r))'
-                                                    #     lambdacalc -^  linear logic -^
+        for line in lines:                          # example: 'verb : (\\x.(<word> x), ( subj -o f )) : [subj]'
+                                                    #             lambdacalc -^  linear logic -^
             line = line.strip()                     # remove trailing newline
             if not len(line): continue              # skip empty lines
             if line[0] == '#': continue             # skip commented out lines
 
-            parts = line.split(' : ', 1)            # ['n', '(\\x.(<word> x), (v-r))']
+            parts = line.split(' : ')               # ['verb', '(\\x.(<word> x), ( subj -o f ))', '[subj]']
 
             glue_formulas = []
             parenCount = 0
             tuple_start = 0
             tuple_comma = 0
+            
+            relationships = None
+            
             for i in range(len(parts[1])):
                 if parts[1][i] == '(':
                     if parenCount == 0:             # if it's the first '(' of a tuple
@@ -141,7 +136,10 @@ class GlueDict(dict):
                     if parenCount == 0:             # if it's the last ')' of a tuple
                         meaning_term =  parts[1][tuple_start:tuple_comma]   # '\\x.(<word> x)'
                         glue_term =     parts[1][tuple_comma+1:i]           # '(v-r)'
-                        glue_formulas.append([meaning_term, glue_term])    # add the GlueFormula to the list
+                        glue_formulas.append([meaning_term, glue_term])     # add the GlueFormula to the list
+                        
+                        if len(parts) > 2:
+                            relationships  = frozenset([r.strip() for r in parts[2][parts[2].index('[')+1:parts[2].index(']')].split(',')])
                 elif parts[1][i] == ',' or parts[1][i] == ':':
                     if parenCount == 1:             # if it's a comma separating the parts of the tuple
                         tuple_comma = i             # then save the index
@@ -149,21 +147,34 @@ class GlueDict(dict):
                     if parenCount != 0:             # if the line hasn't parsed correctly so far
                         raise RuntimeError, 'Formula syntax is incorrect for entry %s' % (line)
                     break                           # break to the next line
-            self[parts[0]] = glue_formulas          # add the glue entry to the dictionary
-
-    def __str__(self):
-        accum = ''
-        for entry in self:
-            accum += '%s : ' % entry
-            first = True
-            for gf in self[entry]:
-                if not first:
-                    accum += ' '*(len(entry)+3)
-                accum += '%s\n' % (gf)
-        return accum
+            
+            if parts[0] in self:
+                self[parts[0]][relationships] = glue_formulas
+            else:
+                self[parts[0]] = {relationships: glue_formulas} # add the glue entry to the dictionary
 
     def lookup(self, sem, word, current_subj, fstruct):
-        lookup = self[sem]
+        relationships = frozenset([r for r in fstruct])
+        try:
+            lookup = self[sem][relationships]
+        except KeyError:
+            # An exact match is not found, so find the best match where
+            # 'best' is defined as the glue entry whose relationship set has the
+            # most relations of any possible relationship set that is a subset
+            # of the actual fstruct 
+            best_match = frozenset()
+            for relset_option in set(self[sem])-set([None]) :
+                if len(relset_option) > len(best_match) and relset_option < relationships:
+                    best_match = relset_option
+            if not best_match:
+                if None in self[sem]:
+                    best_match = None
+                else:
+                    raise KeyError, 'There is no GlueDict entry for sem type \'' + \
+                                    str(sem) + '\' with the relationship set \'' + \
+                                    str(relationships) + '\''
+            lookup = self[sem][best_match]
+                
         glueformulas = []
 
         for entry in lookup:
@@ -283,8 +294,12 @@ def earley_parse(sentence='every cat leaves'):
     return trees
 
 def fstruct_to_glue(fstruct, verbose=False, dependency=False):
-    glue_pos_dict = GlueDict()
-    glue_pos_dict.read_file(dependency=dependency)
+    if dependency:
+        filename = 'drt_glue_event.semtype'
+    else:
+        filename = 'drt_glue.semtype'
+
+    glue_pos_dict = GlueDict(filename)
     
     glueformulas = fstruct.to_glueformula_list(glue_pos_dict, [], None, verbose=verbose)
     
@@ -541,8 +556,10 @@ if __name__ == '__main__':
     demo()
     #print "\n\n\n"
     #testPnApp()
+    print ''  
       
-    for reading in parse_to_meaning('John sees Mary', dependency=True, verbose=True):
+    print 'DRT-Glue using MaltParser:'
+    for reading in parse_to_meaning('John sees Mary', dependency=True, verbose=False):
         print reading.simplify().infixify()
-    for reading in parse_to_meaning('a dog walks', dependency=True, verbose=True):
+    for reading in parse_to_meaning('a dog walks', dependency=True, verbose=False):
         print reading.simplify().infixify()
