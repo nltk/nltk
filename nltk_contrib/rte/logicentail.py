@@ -11,16 +11,61 @@ class RTEInferenceTagger(object):
     based on the degree of word overlap.
     """
     def __init__(self, threshold=33, stop=True, stemming=False):
-            self.threshold = threshold
-            self.stemming = stemming
-            self.stop = stop
-            self.stopwords = set(['a', 'the', 'it', 'they', 'of', 'in', 'is', 'are', 'were', 'and'])
+        self.threshold = threshold
+        self.stemming = stemming
+        self.stop = stop
+        self.stopwords = set(['a', 'the', 'it', 'they', 'of', 'in', 'is', 'are', 'were', 'and'])
     
     def tag(self, rtepair, verbose=False):
         """
         Tag a RTEPair as to whether the hypothesis can be inferred from the text.
         """
-        return _tag(rtepair.text, rtepair.hyp, verbose)
+        text_drs_list = drt_glue.parse_to_meaning(text, dependency=True, verbose=verbose)
+        if text_drs_list:
+            text_ex = text_drs_list[0].simplify().toFol()
+        else:
+            print 'ERROR: No readings were be generated for the Text'
+        
+        hyp_drs_list  = drt_glue.parse_to_meaning(hyp, dependency=True, verbose=verbose)
+        if hyp_drs_list:
+            hyp_ex = hyp_drs_list[0].simplify().toFol()
+        else:
+            print 'ERROR: No readings were be generated for the Hypothesis'
+
+        #1. proof T -> H
+        #2. proof (BK & T) -> H
+        #3. proof :(BK & T)
+        #4. proof :(BK & T & H)
+        #5. satisfy BK & T
+        #6. satisfy BK & T & H
+            
+        result = inference.get_prover(hyp_ex, [text_ex]).prove()
+        print 'prove: T -> H: %s' % result
+        
+        if not result:
+            bk = tagger._generate_BK(text, hyp, verbose)
+            bk_exs = [bk_pair[0] for bk_pair in bk]
+            
+            print 'Generated Background Knowledge:'
+            for bk_ex in bk_exs:
+                print bk_ex.infixify()
+            print ''
+                
+            result = inference.get_prover(hyp_ex, [text_ex]+bk_exs).prove()
+            print 'prove: (T & BK) -> H: %s' % result
+            
+            if not result:
+                # Check if the background knowledge axioms are inconsistant
+                inconsistent = inference.get_prover(assumptions=bk_exs+[text_ex]).prove()
+                consistent = inference.get_model_builder(assumptions=bk_exs+[text_ex]).model_found()
+                print 'prove: (BK & T): %s' % inconsistent
+                print 'satisfy: (BK & T): %s' % consistent
+
+                if consistent:
+                    inconsistent = inference.get_prover(assumptions=bk_exs+[text_ex, hyp_ex]).prove()
+                    consistent = inference.get_model_builder(assumptions=bk_exs+[text_ex, hyp_ex]).model_found()
+                    print 'prove: (BK & T & H): %s' % inconsistent
+                    print 'satisfy: (BK & T & H): %s' % consistent
         
     def _tag(self, text, hyp, verbose=False):
         self._generate_BK(text, hyp, verbose)
@@ -176,44 +221,78 @@ def demo(verbose=False):
 #    hyp_ex = logic.LogicParser().parse('some e x y.((david x) and ((have e) and ((subj e x) and ((obj e y) and (auto y)))))))')
 
     text_drs_list = drt_glue.parse_to_meaning(text, dependency=True, verbose=verbose)
-    if(text_drs_list):
+    if text_drs_list:
         text_ex = text_drs_list[0].simplify().toFol()
     else:
         print 'ERROR: No readings were be generated for the Text'
     
     hyp_drs_list  = drt_glue.parse_to_meaning(hyp, dependency=True, verbose=verbose)
-    if(hyp_drs_list):
+    if hyp_drs_list:
         hyp_ex = hyp_drs_list[0].simplify().toFol()
     else:
         print 'ERROR: No readings were be generated for the Hypothesis'
 
-    if verbose:
-        print 'Text: ', text_ex
-        print 'Hyp:  ', hyp_ex
+    print 'Text: ', text_ex
+    print 'Hyp:  ', hyp_ex
+    print ''
 
-    result = inference.get_prover(hyp_ex, [text_ex]).prove()
-    print 'T -> H: %s\n' % result
-
-    if not result:
-        bk = tagger._generate_BK(text, hyp, verbose)
-        bk_exs = [bk_pair[0] for bk_pair in bk]
+    #1. proof T -> H
+    #2. proof (BK & T) -> H
+    #3. proof :(BK & T)
+    #4. proof :(BK & T & H)
+    #5. satisfy BK & T
+    #6. satisfy BK & T & H
         
-        print 'Generated Background Knowledge:'
-        for bk_ex in bk_exs:
-            print bk_ex.infixify()
-            
-        result = inference.get_prover(hyp_ex, [text_ex]+bk_exs).prove()
-        print '(T & BK) -> H: %s' % result
+    result = inference.get_prover(hyp_ex, [text_ex]).prove()
+    print 'prove: T -> H: %s' % result
+    if result:
+        print 'Logical entailment\n'
+    else:
+        print 'No logical entailment\n'
 
-        # Check if the background knowledge axioms are inconsistant
-#        if not result:
-#            result = inference.prove([text_ex]+bk_exs)
-#            print '~(BK & T): %s' % result
-#    
-#        if not result:
-#            result = inference.prove(hyp_ex, [text_ex])
-#            print '~(BK & T & H): %s' % result
+    bk = tagger._generate_BK(text, hyp, verbose)
+    bk_exs = [bk_pair[0] for bk_pair in bk]
     
+    print 'Generated Background Knowledge:'
+    for bk_ex in bk_exs:
+        print bk_ex.infixify()
+    print ''
+        
+    result = inference.get_prover(hyp_ex, [text_ex]+bk_exs).prove()
+    print 'prove: (T & BK) -> H: %s' % result
+    if result:
+        print 'Logical entailment\n'
+    else:
+        print 'No logical entailment\n'
+
+    # Check if the background knowledge axioms are inconsistant
+    result = inference.get_prover(assumptions=bk_exs+[text_ex]).prove()
+    print 'prove: (BK & T): %s' % result
+    if result:
+        print 'Inconsistency -> Entailment unknown\n'
+    else:
+        print 'No inconsistency\n'
+
+    result = inference.get_prover(assumptions=bk_exs+[text_ex, hyp_ex]).prove()
+    print 'prove: (BK & T & H): %s' % result
+    if result:
+        print 'Inconsistency -> Entailment unknown\n'
+    else:
+        print 'No inconsistency\n'
+
+    result = inference.get_model_builder(assumptions=bk_exs+[text_ex]).model_found()
+    print 'satisfy: (BK & T): %s' % result
+    if result:
+        print 'No inconsistency\n'
+    else:
+        print 'Inconsistency -> Entailment unknown\n'
+
+    result = inference.get_model_builder(assumptions=bk_exs+[text_ex, hyp_ex]).model_found()
+    print 'satisfy: (BK & T & H): %s' % result
+    if result:
+        print 'No inconsistency\n'
+    else:
+        print 'Inconsistency -> Entailment unknown\n'
     
 if __name__ == '__main__':
     demo(False)

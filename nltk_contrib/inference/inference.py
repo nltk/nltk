@@ -13,7 +13,7 @@ import tableau
 import prover9
 import mace
 
-def get_prover(goal, assumptions=[], prover_name='Prover9'):
+def get_prover(goal=None, assumptions=[], prover_name='Prover9'):
     """
     @param goal: Input expression to prove
     @type goal: L{logic.Expression}
@@ -27,7 +27,7 @@ def get_prover(goal, assumptions=[], prover_name='Prover9'):
     
     return prover_module(goal, assumptions)
 
-def get_model_builder(goal, assumptions=[], model_builder_name='Prover9'):
+def get_model_builder(goal=None, assumptions=[], model_builder_name='mace'):
     """
     @param goal: Input expression to prove
     @type goal: L{logic.Expression}
