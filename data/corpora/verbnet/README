@@ -1,0 +1,18 @@
+VERBNET LEXICON, VERSION 2.1
+
+VerbNet (VN) (Kipper-Schuler 2006) is the largest on-line verb lexicon
+currently available for English. It is a hierarchical
+domain-independent, broad-coverage verb lexicon with mappings to other
+lexical resources such as WordNet (Miller, 1990; Fellbaum, 1998), Xtag
+(XTAG Research Group, 2001), and FrameNet (Baker et al.,
+1998). VerbNet is organized into verb classes extending Levin (1993)
+classes through refinement and addition of subclasses to achieve
+syntactic and semantic coherence among members of a class. Each verb
+class in VN is completely described by thematic roles, selectional
+restrictions on the arguments, and frames consisting of a syntactic
+description and semantic predicates with a temporal function, in a
+manner similar to the event decomposition of Moens and Steedman
+(1988).
+
+http://verbs.colorado.edu/~mpalmer/projects/verbnet.html
+

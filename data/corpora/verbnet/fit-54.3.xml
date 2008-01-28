@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="fit-54.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="carry" wn="carry%2:42:03 carry%2:31:12 carry%2:36:08 carry%2:34:01"/>
+        <MEMBER name="contain" wn="contain%2:42:14"/>
+        <MEMBER name="fit" wn="fit%2:42:02 fit%2:42:03"/>
+        <MEMBER name="feed" wn="feed%2:34:02"/>
+        <MEMBER name="hold" wn="hold%2:42:05 hold%2:42:14"/>
+        <MEMBER name="house" wn="house%2:41:00"/>
+        <MEMBER name="seat" wn="seat%2:42:00"/>
+        <MEMBER name="serve" wn="serve%2:41:00"/>
+        <MEMBER name="sleep" wn="sleep%2:42:00"/>
+        <MEMBER name="store" wn=""/>
+        <MEMBER name="take" wn="take%2:42:15"/>
+        <MEMBER name="use" wn="use%2:34:01"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Value">
+            <SELRESTRS/>
+        </THEMROLE>
+        <THEMROLE type="Location">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="3.6" primary="Location Subject Alternation" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Each room sleeps five people.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Value">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="capacity">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Location"/>
+                        <ARG type="ThemRole" value="Value"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="NP-PP" secondary="Location-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>We sleep five people in each room.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Value">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="in">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="capacity">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Location"/>
+                        <ARG type="ThemRole" value="Value"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>

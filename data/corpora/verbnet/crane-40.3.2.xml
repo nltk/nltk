@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="crane-40.3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="arch" wn="arch%2:38:00"/>
+        <MEMBER name="bare" wn="bare%2:35:00"/>
+        <MEMBER name="bat" wn="bat%2:29:00"/>
+        <MEMBER name="beat" wn="beat%2:35:10"/>
+        <MEMBER name="blow" wn="blow%2:29:01"/>
+        <MEMBER name="clench" wn="clench%2:35:02"/>
+        <MEMBER name="click" wn="click%2:35:00"/>
+        <MEMBER name="close" wn="close%2:35:00"/>
+        <MEMBER name="cock" wn="cock%2:38:01"/>
+        <MEMBER name="crane" wn="crane%2:29:00"/>
+        <MEMBER name="crook" wn="crook%2:38:00"/>
+        <MEMBER name="cross" wn="cross%2:38:04"/>
+        <MEMBER name="drum" wn=""/>
+        <MEMBER name="flap" wn="flap%2:38:03"/>
+        <MEMBER name="flash" wn="flash%2:39:02"/>
+        <MEMBER name="flex" wn="flex%2:38:01"/>
+        <MEMBER name="flick" wn="flick%2:35:02"/>
+        <MEMBER name="flutter" wn="flutter%2:29:00"/>
+        <MEMBER name="fold" wn="fold%2:35:00"/>
+        <MEMBER name="gnash" wn="gnash%2:29:00"/>
+        <MEMBER name="grind" wn="grind%2:35:00"/>
+        <MEMBER name="hang" wn="hang%2:38:03"/>
+        <MEMBER name="hunch" wn="hunch%2:38:00"/>
+        <MEMBER name="kick" wn="kick%2:38:00 kick%2:38:01"/>
+        <MEMBER name="knit" wn="?knit%2:35:00"/>
+        <MEMBER name="open" wn="open%2:35:00"/>
+        <MEMBER name="pucker" wn="pucker%2:35:00"/>
+        <MEMBER name="purse" wn="purse%2:30:00 purse%2:35:00"/>
+        <MEMBER name="raise" wn="raise%2:38:00 raise%2:38:02"/>
+        <MEMBER name="roll" wn="roll%2:38:00"/>
+        <MEMBER name="rub" wn=""/>
+        <MEMBER name="shake" wn="shake%2:38:00 shake%2:30:01"/>
+        <MEMBER name="show" wn="?show%2:39:02"/>
+        <MEMBER name="shuffle" wn="shuffle%2:38:00"/>
+        <MEMBER name="smack" wn="smack%2:34:00"/>
+        <MEMBER name="snap" wn="snap%2:35:02"/>
+        <MEMBER name="stamp" wn="?stamp%2:38:00"/>
+        <MEMBER name="stretch" wn="stretch%2:29:01"/>
+        <MEMBER name="toss" wn=""/>
+        <MEMBER name="turn" wn="turn%2:38:13"/>
+        <MEMBER name="twiddle" wn="twiddle%2:35:00"/>
+        <MEMBER name="twitch" wn="?twitch%2:38:01"/>
+        <MEMBER name="wag" wn="wag%2:38:00"/>
+        <MEMBER name="waggle" wn="waggle%2:38:00"/>
+        <MEMBER name="wiggle" wn="wiggle%2:38:00"/>
+        <MEMBER name="wring" wn="wring%2:35:00"/>
+        <MEMBER name="wrinkle" wn="wrinkle%2:35:01 wrinkle%2:35:02"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Patient">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="body_part"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Theme">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="communication"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Cause">
+            <SELRESTRS/>
+        </THEMROLE>
+        <THEMROLE type="Recipient">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <!--Each verb specifies what body part is allowed as the Patient-->
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Basic Transitive" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>Jennifer craned her neck.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Patient">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="?Recipient"/>
+                        <ARG type="ThemRole" value="?Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="NP-PP" secondary="Recipient-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Jennifer wagged her finger at the naughty child.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Patient">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="dest_dir"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Recipient">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Recipient"/>
+                        <ARG type="ThemRole" value="?Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="NP-PP" secondary="Cause-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Jennifer rolled her eyes at his behavior.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Patient">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="at">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Cause">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="transfer_info">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="?Recipient"/>
+                        <ARG type="ThemRole" value="?Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="in_reaction_to">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Cause"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>
+

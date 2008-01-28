@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="fill-9.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="adorn" wn="adorn%2:36:00 adorn%2:42:00"/>
+        <MEMBER name="anoint" wn="anoint%2:29:00"/>
+        <MEMBER name="bandage" wn="bandage%2:35:03 bandage%2:29:00"/>
+        <MEMBER name="bathe" wn="bathe%2:35:00"/>
+        <MEMBER name="bestrew" wn="bestrew%2:35:00"/>
+        <MEMBER name="bind" wn="bind%2:35:00 bind%2:35:08 bind%2:35:07 bind%2:35:01"/>
+        <MEMBER name="blanket" wn="blanket%2:35:00 blanket%2:42:00"/>
+        <MEMBER name="block" wn="block%2:35:00 block%2:39:00 block%2:33:00"/>
+        <MEMBER name="blot" wn="blot%2:35:00"/>
+        <MEMBER name="bombard" wn="bombard%2:35:00 bombard%2:33:00"/>
+        <MEMBER name="carpet" wn="?carpet%2:42:00 carpet%2:35:01 carpet%2:35:00"/>
+        <MEMBER name="choke" wn="choke%2:35:00 choke%2:35:02 choke%2:29:04 choke%2:35:01 choke%2:35:03"/>
+        <MEMBER name="cloak" wn=""/>
+        <MEMBER name="clog" wn="clog%2:35:00 clog%2:30:00"/>
+        <MEMBER name="clutter" wn="clutter%2:30:00"/>
+        <MEMBER name="coat" wn="coat%2:35:00 coat%2:29:00 coat%2:35:01"/>
+        <MEMBER name="contaminate" wn="contaminate%2:30:00"/>
+        <MEMBER name="cover" wn="cover%2:35:00 cover%2:35:01 cover%2:35:14 cover%2:29:15"/>
+        <MEMBER name="dam" wn="dam%2:35:00"/>
+        <MEMBER name="dapple" wn="dapple%2:30:00"/>
+        <MEMBER name="deck" wn="deck%2:42:00 deck%2:36:00"/>
+        <MEMBER name="decorate" wn="decorate%2:36:00 decorate%2:42:00 decorate%2:35:00"/>
+        <MEMBER name="deluge" wn="deluge%2:35:00 deluge%2:30:00"/>
+        <MEMBER name="dirty" wn="dirty%2:35:00"/>
+        <MEMBER name="douse" wn="douse%2:43:00 douse%2:42:09 douse%2:38:00 douse%2:35:00 douse%2:30:00"/>
+        <MEMBER name="dot" wn="dot%2:42:00 dot%2:35:00"/>
+        <MEMBER name="drench" wn="drench%2:30:00"/>
+        <MEMBER name="edge" wn="edge%2:40:00"/>
+        <MEMBER name="embellish" wn="embellish%2:32:00 embellish%2:42:00 embellish%2:36:00 embellish%2:30:00"/>
+        <MEMBER name="emblazon" wn="emblazon%2:36:01 emblazon%2:36:00"/>
+        <MEMBER name="encircle" wn="encircle%2:35:12 encircle%2:35:00"/>
+        <MEMBER name="encrust" wn="encrust%2:35:00 encrust%2:35:01 encrust%2:30:00"/>
+        <MEMBER name="endow" wn="endow%2:41:00"/>
+        <MEMBER name="enrich" wn="enrich%2:30:00 enrich%2:40:00"/>
+        <MEMBER name="entangle" wn="entangle%2:42:00 entangle%2:35:00"/>
+        <MEMBER name="face" wn="face%2:35:00 face%2:35:01"/>
+        <MEMBER name="festoon" wn="festoon%2:36:00"/>
+        <MEMBER name="fill" wn="fill%2:30:01 fill%2:42:00 fill%2:30:02 fill%2:30:00"/>
+        <MEMBER name="fleck" wn="fleck%2:35:00"/>
+        <MEMBER name="flood" wn="flood%2:35:00 flood%2:30:00 flood%2:40:00"/>
+        <MEMBER name="frame" wn="frame%2:35:00 frame%2:42:00"/>
+        <MEMBER name="garland" wn="garland%2:36:00"/>
+        <MEMBER name="garnish" wn="garnish%2:36:00"/>
+        <MEMBER name="grace" wn=""/>
+        <MEMBER name="imbue" wn="imbue%2:30:01"/>
+        <MEMBER name="impregnate" wn="impregnate%2:30:00 impregnate%2:29:00"/>
+        <MEMBER name="infect" wn="infect%2:29:00"/>
+        <MEMBER name="inlay" wn=""/>
+        <MEMBER name="interlace" wn="interlace%2:35:00"/>
+        <MEMBER name="interlard" wn="interlard%2:30:00"/>
+        <MEMBER name="interleave" wn="interleave%2:30:00"/>
+        <MEMBER name="intersperse" wn="intersperse%2:35:02 intersperse%2:30:00"/>
+        <MEMBER name="interweave" wn="interweave%2:35:00"/>
+        <MEMBER name="inundate" wn="inundate%2:35:00 inundate%2:30:00"/>
+        <MEMBER name="lard" wn="lard%2:36:00 lard%2:32:00"/>
+        <MEMBER name="lash" wn="lash%2:35:02"/>
+        <MEMBER name="line" wn="line%2:35:00 line%2:30:00 line%2:30:01"/>
+        <MEMBER name="litter" wn="litter%2:42:00 litter%2:35:00"/>
+        <MEMBER name="mask" wn="mask%2:35:00 mask%2:35:02"/>
+        <MEMBER name="mottle" wn="mottle%2:36:00 mottle%2:30:00"/>
+        <MEMBER name="ornament" wn="ornament%2:36:00"/>
+        <MEMBER name="pad" wn="pad%2:32:00 pad%2:35:00 pad%2:30:00"/>
+        <MEMBER name="pave" wn="pave%2:35:00"/>
+        <MEMBER name="plate" wn="plate%2:35:00"/>
+        <MEMBER name="plug" wn="plug%2:35:01"/>
+        <MEMBER name="replenish" wn="replenish%2:30:00"/>
+        <MEMBER name="repopulate" wn=""/>
+        <MEMBER name="riddle" wn="riddle%2:35:00"/>
+        <MEMBER name="ring" wn="ring%2:35:03"/>
+        <MEMBER name="ripple" wn="?ripple%2:38:00"/>
+        <MEMBER name="robe" wn="robe%2:29:00"/>
+        <MEMBER name="saturate" wn="saturate%2:30:04"/>
+        <MEMBER name="season" wn="season%2:39:00"/>
+        <MEMBER name="shroud" wn="shroud%2:42:02 shroud%2:35:00"/>
+        <MEMBER name="smother" wn="smother%2:35:02 smother%2:42:00"/>
+        <MEMBER name="soak" wn="soak%2:30:01 soak%2:30:00"/>
+        <MEMBER name="soil" wn="soil%2:35:00"/>
+        <MEMBER name="speckle" wn="speckle%2:35:00"/>
+        <MEMBER name="splotch" wn="splotch%2:35:00"/>
+        <MEMBER name="spot" wn="spot%2:35:01 spot%2:35:00"/>
+        <MEMBER name="staff" wn="staff%2:33:00"/>
+        <MEMBER name="stipple" wn="stipple%2:36:00 stipple%2:36:01 stipple%2:36:02 stipple%2:35:00"/>
+        <MEMBER name="stop_up" wn="stop_up%2:35:00"/>
+        <MEMBER name="stud" wn="stud%2:35:00"/>
+        <MEMBER name="suffuse" wn="suffuse%2:30:01"/>
+        <MEMBER name="sully" wn=""/>
+        <MEMBER name="surround" wn="surround%2:35:00 surround%2:35:01 surround%2:33:00 surround%2:33:01"/>
+        <MEMBER name="swaddle" wn="swaddle%2:35:00"/>
+        <MEMBER name="swathe" wn="swathe%2:35:00"/>
+        <MEMBER name="taint" wn="taint%2:29:00"/>
+        <MEMBER name="tile" wn="tile%2:35:00"/>
+        <MEMBER name="trim" wn="trim%2:36:01 trim%2:36:00"/>
+        <MEMBER name="veil" wn="veil%2:35:00"/>
+        <MEMBER name="vein" wn="vein%2:36:00"/>
+        <MEMBER name="inject" wn="inject%2:29:00 inject%2:35:00 inject%2:34:01 inject%2:34:00"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Theme">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="concrete"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Destination">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="location"/>
+                <SELRESTR Value="-" type="region"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="NP-PP" secondary="with-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Leslie staffed the store with employees.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Destination">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="with">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="location">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Destination"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="location">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Destination"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="NP-PP" secondary="in-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Leigh swaddled the baby in blankets.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Destination">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="in">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="location">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Destination"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="location">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Destination"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="3.5" primary="Locatum Subject Alternation" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The employees staffed the store.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Destination">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="location">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Destination"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Transitive" secondary="Destination Object" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>Leslie staffed the store.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Destination">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="?Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="location">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="ThemRole" value="?Theme"/>
+                        <ARG type="ThemRole" value="Destination"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="location">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="?Theme"/>
+                        <ARG type="ThemRole" value="Destination"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES>
+        <VNSUBCLASS ID="fill-9.8-1">
+            <MEMBERS>
+                <MEMBER name="pollute" wn="pollute%2:30:00"/>
+                <MEMBER name="stain" wn="stain%2:30:01 stain%2:30:00 stain%2:30:04"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="Basic Intransitive" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>CFC's pollute.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="location">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="ThemRole" value="?Destination"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+    </SUBCLASSES>
+</VNCLASS>

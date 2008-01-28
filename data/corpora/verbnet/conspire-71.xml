@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="conspire-71" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="collaborate" wn=""/>
+        <MEMBER name="collude" wn=""/>
+        <MEMBER name="conspire" wn=""/>
+        <MEMBER name="discriminate" wn=""/>
+        <MEMBER name="lesgislate" wn=""/>
+        <MEMBER name="partner" wn=""/>
+        <MEMBER name="protest" wn=""/>
+        <MEMBER name="rebel" wn=""/>
+        <MEMBER name="retaliate" wn=""/>
+        <MEMBER name="scheme" wn=""/>
+        <MEMBER name="sin" wn=""/>
+        <MEMBER name="team_up" wn=""/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Actor1">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Actor2">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Actor">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Theme">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="Basic Intransitive" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>John and Sarah conspired.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Actor">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="conspire">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor_i"/>
+                        <ARG type="ThemRole" value="Actor_j"/>
+                        <ARG type="ThemRole" value="?Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="PP" secondary="with-PP" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>John conspired with Sarah.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Actor1">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="with">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Actor2">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="conspire">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor1"/>
+                        <ARG type="ThemRole" value="Actor2"/>
+                        <ARG type="ThemRole" value="?Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="PP" secondary="against-PP" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>John conspired against her.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Actor1">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="against">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Actor2">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="conspire">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor1"/>
+                        <ARG type="ThemRole" value="Actor2"/>
+                        <ARG type="ThemRole" value="?Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="TO-INFN-SC" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>The US conspired to overthrow the UN.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Actor">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="sc_to_inf"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="conspire">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Actor_i"/>
+                        <ARG type="ThemRole" value="Actor_j"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>

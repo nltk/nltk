@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="pit-10.7" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="bark" wn="bark%2:35:00"/>
+        <MEMBER name="beard" wn=""/>
+        <MEMBER name="bone" wn="bone%2:30:00"/>
+        <MEMBER name="burl" wn="burl%2:30:00"/>
+        <MEMBER name="core" wn="core%2:35:00"/>
+        <MEMBER name="gill" wn=""/>
+        <MEMBER name="gut" wn="gut%2:35:00"/>
+        <MEMBER name="head" wn=""/>
+        <MEMBER name="hull" wn="hull%2:30:00"/>
+        <MEMBER name="husk" wn="husk%2:30:00"/>
+        <MEMBER name="lint" wn=""/>
+        <MEMBER name="louse" wn=""/>
+        <MEMBER name="milk" wn="milk%2:30:00"/>
+        <MEMBER name="peel" wn="peel%2:35:00"/>
+        <MEMBER name="pinion" wn="pinion%2:30:00"/>
+        <MEMBER name="pip" wn=""/>
+        <MEMBER name="pit" wn="pit%2:30:00"/>
+        <MEMBER name="pith" wn=""/>
+        <MEMBER name="pod" wn="pod%2:30:00"/>
+        <MEMBER name="poll" wn=""/>
+        <MEMBER name="pulp" wn="pulp%2:35:01"/>
+        <MEMBER name="rind" wn=""/>
+        <MEMBER name="scale" wn="scale%2:35:00"/>
+        <MEMBER name="scalp" wn="scalp%2:30:00"/>
+        <MEMBER name="seed" wn="seed%2:30:01"/>
+        <MEMBER name="shell" wn="shell%2:30:00"/>
+        <MEMBER name="shuck" wn="shuck%2:30:00"/>
+        <MEMBER name="skin" wn="skin%2:35:01 skin%2:35:00"/>
+        <MEMBER name="snail" wn="snail%2:35:00"/>
+        <MEMBER name="stalk" wn=""/>
+        <MEMBER name="stem" wn=""/>
+        <MEMBER name="stone" wn="stone%2:30:00"/>
+        <MEMBER name="string" wn="string%2:35:03"/>
+        <MEMBER name="tail" wn="tail%2:35:00 tail%2:35:01"/>
+        <MEMBER name="tassel" wn=""/>
+        <MEMBER name="vein" wn=""/>
+        <MEMBER name="weed" wn="weed%2:30:00"/>
+        <MEMBER name="wind" wn=""/>
+        <MEMBER name="worm" wn=""/>
+        <MEMBER name="zest" wn=""/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Theme">
+            <SELRESTRS/>
+        </THEMROLE>
+        <THEMROLE type="Source">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="concrete"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <!--Theme is an inalienable possession of Source
+        Theme is always realized in the verb-->
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Basic Transitive" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>The cook boned the fish.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Source">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="location">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="ThemRole" value="?Theme"/>
+                        <ARG type="ThemRole" value="Source"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="location">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="?Theme"/>
+                        <ARG type="ThemRole" value="Source"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>

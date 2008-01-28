@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="investigate-35.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="canvass" wn="canvass%2:41:01 canvass%2:41:00"/>
+        <MEMBER name="explore" wn="explore%2:31:02"/>
+        <MEMBER name="examine" wn="examine%2:31:00 examine%2:39:00 examine%2:32:01"/>
+        <MEMBER name="frisk" wn="frisk%2:35:00"/>
+        <MEMBER name="inspect" wn="inspect%2:39:00 inspect%2:38:00"/>
+        <MEMBER name="investigate" wn="investigate%2:32:00 investigate%2:32:01"/>
+        <MEMBER name="monitor" wn=""/>
+        <MEMBER name="observe" wn="observe%2:41:00"/>
+        <MEMBER name="quiz" wn="quiz%2:32:00"/>
+        <MEMBER name="raid" wn="raid%2:41:00"/>
+        <MEMBER name="ransack" wn="ransack%2:40:00 ransack%2:35:02"/>
+        <MEMBER name="riffle" wn="riffle%2:39:10"/>
+        <MEMBER name="scan" wn="scan%2:39:01 scan%2:39:00 scan%2:35:00"/>
+        <MEMBER name="scrutinize" wn="scrutinize%2:39:00 scrutinize%2:31:00"/>
+        <MEMBER name="survey" wn="survey%2:31:00 survey%2:39:00 survey%2:39:13"/>
+        <MEMBER name="tap" wn="tap%2:39:00"/>
+        <MEMBER name="test" wn=""/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Location">
+            <SELRESTRS/>
+        </THEMROLE>
+        <THEMROLE type="Theme">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="NP-PP" secondary="Location Object, Theme-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>We investigated the area for bombs.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="for">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="search">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Location"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="" primary="Transitive" secondary="Location Object" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>We inspected the area.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="search">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Location"/>
+                        <ARG type="ThemRole" value="?Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>

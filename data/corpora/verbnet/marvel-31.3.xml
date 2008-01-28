@@ -1,0 +1,534 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="marvel-31.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS/>
+    <THEMROLES>
+        <THEMROLE type="Experiencer">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Cause">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="5.1" primary="Passive" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The beauty of the Grand Canyon has been marveled over by countless tourists.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Cause">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="by">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Experiencer">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="emotional_state">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="VerbSpecific" value="Emotion"/>
+                        <ARG type="ThemRole" value="Experiencer"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="in_reaction_to">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Cause"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+            <!--some verbs-->
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="" primary="Basic Intransitive" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>I will suffer.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Experiencer">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="emotional_state">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="VerbSpecific" value="Emotion"/>
+                        <ARG type="ThemRole" value="Experiencer"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="in_reaction_to">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="?Cause"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES>
+        <VNSUBCLASS ID="marvel-31.3-1">
+            <MEMBERS>
+                <MEMBER name="cheer" wn="cheer%2:32:00"/>
+                <MEMBER name="cringe" wn="cringe%2:38:01 cringe%2:38:00"/>
+                <MEMBER name="enthuse" wn="enthuse%2:32:00"/>
+                <MEMBER name="exult" wn="exult%2:37:00 exult%2:32:00"/>
+                <MEMBER name="fume" wn="fume%2:37:00"/>
+                <MEMBER name="gladden" wn="gladden%2:37:00"/>
+                <MEMBER name="madden" wn=""/>
+                <MEMBER name="marvel" wn="marvel%2:32:12 marvel%2:32:00"/>
+                <MEMBER name="rage" wn="rage%2:42:01 rage%2:37:00"/>
+                <MEMBER name="rejoice" wn="rejoice%2:37:00 rejoice%2:37:02"/>
+                <MEMBER name="sadden" wn="sadden%2:37:00"/>
+                <MEMBER name="sicken" wn=""/>
+                <MEMBER name="swoon" wn="swoon%2:29:00"/>
+                <MEMBER name="thrill" wn="?thrill%2:37:02"/>
+                <MEMBER name="wonder" wn="wonder%2:32:12"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="PP" secondary="Cause-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>Megan marveled at the Grand Canyon.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Experiencer">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <PREP value="at">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Cause">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="emotional_state">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="VerbSpecific" value="Emotion"/>
+                                <ARG type="ThemRole" value="Experiencer"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="in_reaction_to">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Cause"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+        <VNSUBCLASS ID="marvel-31.3-2">
+            <MEMBERS>
+                <MEMBER name="bother" wn="bother%2:41:00"/>
+                <MEMBER name="care" wn="care%2:37:02 care%2:37:12"/>
+                <MEMBER name="fret" wn="fret%2:37:03 fret%2:37:00"/>
+                <MEMBER name="mind" wn="mind%2:31:02"/>
+                <MEMBER name="moon" wn="moon%2:41:01"/>
+                <MEMBER name="rage" wn="rage%2:42:01 rage%2:37:00"/>
+                <MEMBER name="rejoice" wn="rejoice%2:37:00 rejoice%2:37:02"/>
+                <MEMBER name="rhapsodize" wn="rhapsodize%2:32:00"/>
+                <MEMBER name="worry" wn="worry%2:37:00 worry%2:37:12"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="PP" secondary="Cause-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>We cared about the opera.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Experiencer">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <PREP value="about">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Cause">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="emotional_state">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="VerbSpecific" value="Emotion"/>
+                                <ARG type="ThemRole" value="Experiencer"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="in_reaction_to">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Cause"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+        <VNSUBCLASS ID="marvel-31.3-3">
+            <MEMBERS>
+                <MEMBER name="bleed" wn=""/>
+                <MEMBER name="care" wn="care%2:37:02 care%2:37:12"/>
+                <MEMBER name="cry" wn="cry%2:29:00"/>
+                <MEMBER name="fear" wn="?fear%2:37:03"/>
+                <MEMBER name="feel" wn=""/>
+                <MEMBER name="grieve" wn="grieve%2:37:00"/>
+                <MEMBER name="mourn" wn="mourn%2:37:00"/>
+                <MEMBER name="weep" wn="weep%2:29:00"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="PP" secondary="Cause-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>I grieve for my departed Juliet.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Experiencer">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <PREP value="for">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Cause">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="emotional_state">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="VerbSpecific" value="Emotion"/>
+                                <ARG type="ThemRole" value="Experiencer"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="in_reaction_to">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Cause"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+        <VNSUBCLASS ID="marvel-31.3-4">
+            <MEMBERS>
+                <MEMBER name="ache" wn="?ache%2:37:06"/>
+                <MEMBER name="hurt" wn="hurt%2:29:02"/>
+                <MEMBER name="suffer" wn="suffer%2:37:00 suffer%2:29:00 suffer%2:29:03"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="PP" secondary="Cause-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>I suffered from occasional blackouts.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Experiencer">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <PREP value="from">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Cause">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="emotional_state">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="VerbSpecific" value="Emotion"/>
+                                <ARG type="ThemRole" value="Experiencer"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="in_reaction_to">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Cause"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+        <VNSUBCLASS ID="marvel-31.3-5">
+            <MEMBERS>
+                <MEMBER name="bask" wn="bask%2:37:13"/>
+                <MEMBER name="delight" wn="delight%2:34:00"/>
+                <MEMBER name="exult" wn="exult%2:37:00 exult%2:32:00"/>
+                <MEMBER name="glory" wn="glory%2:32:00"/>
+                <MEMBER name="luxuriate" wn="luxuriate%2:34:14"/>
+                <MEMBER name="rejoice" wn="rejoice%2:37:00 rejoice%2:37:02"/>
+                <MEMBER name="revel" wn="revel%2:34:00"/>
+                <MEMBER name="wallow" wn="wallow%2:34:01 wallow%2:37:00 wallow%2:34:00"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="PP" secondary="Cause-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>I delighted in such pleasant pursuits.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Experiencer">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <PREP value="in">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Cause">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="emotional_state">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="VerbSpecific" value="Emotion"/>
+                                <ARG type="ThemRole" value="Experiencer"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="in_reaction_to">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Cause"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+        <VNSUBCLASS ID="marvel-31.3-6">
+            <MEMBERS>
+                <MEMBER name="approve" wn="approve%2:32:00 approve%2:31:00"/>
+                <MEMBER name="beware" wn="beware%2:31:00"/>
+                <MEMBER name="despair" wn="despair%2:37:00"/>
+                <MEMBER name="disapprove" wn="disapprove%2:31:00 disapprove%2:32:00"/>
+                <MEMBER name="sicken" wn=""/>
+                <MEMBER name="tire" wn="tire%2:29:00"/>
+                <MEMBER name="weary" wn="weary%2:29:01"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="PP" secondary="Cause-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>I certainly approved of Mary's acquaitance.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Experiencer">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <PREP value="of">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Cause">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="emotional_state">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="VerbSpecific" value="Emotion"/>
+                                <ARG type="ThemRole" value="Experiencer"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="in_reaction_to">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Cause"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+        <VNSUBCLASS ID="marvel-31.3-7">
+            <MEMBERS>
+                <MEMBER name="groove" wn=""/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="PP" secondary="Cause-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>I grooved on David Lynch films.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Experiencer">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <PREP value="on">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Cause">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="emotional_state">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="VerbSpecific" value="Emotion"/>
+                                <ARG type="ThemRole" value="Experiencer"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="in_reaction_to">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Cause"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+        <VNSUBCLASS ID="marvel-31.3-8">
+            <MEMBERS>
+                <MEMBER name="anger" wn="anger%2:37:01"/>
+                <MEMBER name="anguish" wn="anguish%2:37:02"/>
+                <MEMBER name="delight" wn="delight%2:34:00"/>
+                <MEMBER name="enthuse" wn="enthuse%2:32:00"/>
+                <MEMBER name="exult" wn="exult%2:37:00 exult%2:32:00"/>
+                <MEMBER name="fret" wn="fret%2:37:03 fret%2:37:00"/>
+                <MEMBER name="fume" wn="fume%2:37:00"/>
+                <MEMBER name="gloat" wn="gloat%2:32:00 gloat%2:39:00"/>
+                <MEMBER name="grieve" wn="grieve%2:37:00"/>
+                <MEMBER name="gush" wn="gush%2:32:00"/>
+                <MEMBER name="hallucinate" wn=""/>
+                <MEMBER name="hunger" wn="hunger%2:34:01"/>
+                <MEMBER name="marvel" wn="marvel%2:32:12 marvel%2:32:00"/>
+                <MEMBER name="meditate" wn=""/>
+                <MEMBER name="moon" wn="moon%2:41:01"/>
+                <MEMBER name="mope" wn="mope%2:37:00"/>
+                <MEMBER name="mourn" wn="mourn%2:37:00"/>
+                <MEMBER name="muse" wn=""/>
+                <MEMBER name="obsess" wn="obsess%2:37:03"/>
+                <MEMBER name="puzzle" wn="puzzle%2:37:03"/>
+                <MEMBER name="rage" wn="rage%2:42:01 rage%2:37:00"/>
+                <MEMBER name="rave" wn="rave%2:32:00"/>
+                <MEMBER name="reflect" wn=""/>
+                <MEMBER name="rejoice" wn="rejoice%2:37:00 rejoice%2:37:02"/>
+                <MEMBER name="rhapsodize" wn="rhapsodize%2:32:00"/>
+                <MEMBER name="ruminate" wn=""/>
+                <MEMBER name="salivate" wn="salivate%2:37:00"/>
+                <MEMBER name="seethe" wn="seethe%2:37:00"/>
+                <MEMBER name="triumph" wn=""/>
+                <MEMBER name="wonder" wn="wonder%2:32:12"/>
+                <MEMBER name="worry" wn=""/>
+                <MEMBER name="sorrow" wn="sorrow%2:37:00"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="PP" secondary="Cause-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>I anguished over Aslan's pain.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Experiencer">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <PREP value="over">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Cause">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="emotional_state">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="VerbSpecific" value="Emotion"/>
+                                <ARG type="ThemRole" value="Experiencer"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="in_reaction_to">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Cause"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+        <VNSUBCLASS ID="marvel-31.3-9">
+            <MEMBERS>
+                <MEMBER name="react" wn="react%2:31:00"/>
+                <MEMBER name="thrill" wn="?thrill%2:37:02"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="PP" secondary="Cause-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>I reacted to the experience violently.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Experiencer">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <PREP value="to">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Cause">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="emotional_state">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="VerbSpecific" value="Emotion"/>
+                                <ARG type="ThemRole" value="Experiencer"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="in_reaction_to">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Cause"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+    </SUBCLASSES>
+</VNCLASS>

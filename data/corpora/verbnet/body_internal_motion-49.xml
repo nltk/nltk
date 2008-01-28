@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="body_internal_motion-49" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="buck" wn="buck%2:38:00"/>
+        <MEMBER name="fidget" wn="fidget%2:38:00"/>
+        <MEMBER name="flap" wn="flap%2:38:03 flap%2:38:02"/>
+        <MEMBER name="gyrate" wn="gyrate%2:38:00 gyrate%2:38:01"/>
+        <MEMBER name="kick" wn="kick%2:38:00 kick%2:35:08"/>
+        <MEMBER name="rock" wn="rock%2:38:00"/>
+        <MEMBER name="squirm" wn="squirm%2:38:00"/>
+        <MEMBER name="sway" wn="sway%2:38:00 sway%2:38:01 sway%2:38:06"/>
+        <MEMBER name="teeter" wn="teeter%2:38:00"/>
+        <MEMBER name="totter" wn="totter%2:38:02 totter%2:38:01 totter%2:38:00"/>
+        <MEMBER name="twitch" wn="twitch%2:29:00 twitch%2:38:01 twitch%2:35:02"/>
+        <MEMBER name="waggle" wn="waggle%2:38:00 waggle%2:38:01"/>
+        <MEMBER name="wiggle" wn="wiggle%2:38:00"/>
+        <MEMBER name="wobble" wn="wobble%2:38:00 wobble%2:38:02"/>
+        <MEMBER name="wriggle" wn="wriggle%2:38:00"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Patient">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="refl"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="Basic Intransitive" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Sylvia fidgeted.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="body_motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.4" primary="NP-PP" secondary="Result-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Sylvia fidgeted herself into a tizzy.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Patient">
+                    <SELRESTRS/>
+                </NP>
+                <PREP value="into">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Oblique">
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="state"/>
+                    </SELRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="body_motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Pred">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>

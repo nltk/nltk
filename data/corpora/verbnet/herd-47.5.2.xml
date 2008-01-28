@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="herd-47.5.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="accumulate" wn="accumulate%2:40:00 accumulate%2:30:00"/>
+        <MEMBER name="aggregate" wn="aggregate%2:35:00"/>
+        <MEMBER name="amass" wn="amass%2:30:00 amass%2:40:00"/>
+        <MEMBER name="assemble" wn="assemble%2:41:00 assemble%2:41:03"/>
+        <MEMBER name="cluster" wn="cluster%2:38:00 cluster%2:35:00"/>
+        <MEMBER name="collect" wn="collect%2:40:00 collect%2:35:00 collect%2:35:01"/>
+        <MEMBER name="congregate" wn="congregate%2:38:00"/>
+        <MEMBER name="convene" wn="convene%2:38:00 convene%2:32:00"/>
+        <MEMBER name="flock" wn="flock%2:38:01 flock%2:38:00"/>
+        <MEMBER name="gather" wn="gather%2:35:00 gather%2:41:00 gather%2:30:00 gather%2:41:02"/>
+        <MEMBER name="group" wn="group%2:31:00 group%2:33:00"/>
+        <MEMBER name="herd" wn="herd%2:38:01 herd%2:38:00 herd%2:42:00"/>
+        <MEMBER name="huddle" wn="huddle%2:38:01"/>
+        <MEMBER name="mass" wn="mass%2:38:00"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Theme">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="concrete"/>
+                <SELRESTR Value="+" type="plural"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="Intransitive" secondary="" xtag="0.1"/>
+            <EXAMPLES>
+                <EXAMPLE>The kids are assembling.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED bool="!" value="together">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="Constant" value="physical"/>
+                        <ARG type="ThemRole" value="Theme_i"/>
+                        <ARG type="ThemRole" value="Theme_j"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="together">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="Constant" value="physical"/>
+                        <ARG type="ThemRole" value="Theme_i"/>
+                        <ARG type="ThemRole" value="Theme_j"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+            <!--some verbs-->
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="1.1.2" primary="NP" secondary="Causative variant" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>The teacher gathered the kids.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="together">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="Constant" value="physical"/>
+                        <ARG type="ThemRole" value="Theme_i"/>
+                        <ARG type="ThemRole" value="Theme_j"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="together">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="Constant" value="physical"/>
+                        <ARG type="ThemRole" value="Theme_i"/>
+                        <ARG type="ThemRole" value="Theme_j"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="" primary="Together Reciprocal Alternation Transitive" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The teacher gathered the kids together.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <LEX value="together"/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="together">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="Constant" value="physical"/>
+                        <ARG type="VerbSpecific" value="Theme_i"/>
+                        <ARG type="VerbSpecific" value="Theme_j"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="together">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="Constant" value="physical"/>
+                        <ARG type="VerbSpecific" value="Theme_i"/>
+                        <ARG type="VerbSpecific" value="Theme_j"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>

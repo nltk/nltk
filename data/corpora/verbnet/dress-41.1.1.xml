@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="dress-41.1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="bathe" wn="bathe%2:29:00 bathe%2:29:01"/>
+        <MEMBER name="change" wn="change%2:30:03 change%2:30:06"/>
+        <MEMBER name="clothe" wn=""/>
+        <MEMBER name="disrobe" wn="disrobe%2:29:01"/>
+        <MEMBER name="dress" wn="dress%2:29:00 dress%2:29:01 dress%2:29:07"/>
+        <MEMBER name="exercise" wn="exercise%2:29:01 exercise%2:29:00"/>
+        <MEMBER name="preen" wn="preen%2:29:00"/>
+        <MEMBER name="primp" wn="primp%2:29:00"/>
+        <MEMBER name="shave" wn="shave%2:29:00 shave%2:35:01"/>
+        <MEMBER name="shower" wn="shower%2:29:00"/>
+        <MEMBER name="strip" wn="strip%2:40:03 strip%2:30:12"/>
+        <MEMBER name="sunbathe" wn=""/>
+        <MEMBER name="undress" wn="undress%2:29:00 undress%2:30:00"/>
+        <MEMBER name="wash" wn="wash%2:29:00 wash%2:35:00"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Patient">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="refl"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="1.2.3" primary="Intransitive" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Marlene dressed.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="take_care_of">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="?Patient"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Transitive" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Marlene dressed the baby.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Patient">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="take_care_of">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Unspecified Reflexive Object" secondary="Reflexive variant" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Marlene dressed herself.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Patient">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="refl"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="take_care_of">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>
+
+
+
+
+
+
+
+
+
+
+

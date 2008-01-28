@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="settle-89" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="settle" wn=""/>
+        <MEMBER name="concur" wn=""/>
+        <MEMBER name="contract" wn=""/>
+        <MEMBER name="harmonize" wn=""/>
+        <MEMBER name="bargain" wn=""/>
+        <MEMBER name="consent" wn=""/>
+        <MEMBER name="cohere" wn=""/>
+        <MEMBER name="jibe" wn=""/>
+        <MEMBER name="square" wn=""/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Actor">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Proposition">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="Basic Intransitive" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>Eventually, they settled.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Actor">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="plural"/>
+                    </SYNRESTRS>
+                </NP>
+                <VERB/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="agree">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="ThemRole" value="Actor"/>
+                        <ARG type="ThemRole" value="?Proposition"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="P-WHAT-TO-INF" secondary="on-PP" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>They settled on what to do.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Actor">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="plural"/>
+                    </SYNRESTRS>
+                </NP>
+                <VERB/>
+                <PREP value="on">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Proposition">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="what_inf"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="agree">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="ThemRole" value="Actor"/>
+                        <ARG type="ThemRole" value="Proposition"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>
+
+
+

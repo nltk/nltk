@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="care-88" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="mind" wn=""/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Experiencer">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Cause">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="Basic Intransitive" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>He doesn't care.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Experiencer">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="emotional_state">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="VerbSpecific" value="Emotion"/>
+                        <ARG type="ThemRole" value="Experiencer"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="S" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>He doesn't care that she comes.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Experiencer">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Cause">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="that_comp"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="emotional_state">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="VerbSpecific" value="Emotion"/>
+                        <ARG type="ThemRole" value="Experiencer"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="in_reaction_to">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Cause"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="WH-S" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>He doesn't care whether she comes.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Experiencer">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Cause">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="wh_comp"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="emotional_state">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="VerbSpecific" value="Emotion"/>
+                        <ARG type="ThemRole" value="Experiencer"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="in_reaction_to">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Cause"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES>
+        <VNSUBCLASS ID="care-88-1">
+            <MEMBERS>
+                <MEMBER name="care" wn=""/>
+                <MEMBER name="worry" wn=""/>
+                <MEMBER name="wonder" wn=""/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="P-WHAT-S" secondary="about-PP" xtag="0.1"/>
+                    <EXAMPLES>
+                        <EXAMPLE>He doesn't care about what he should do.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Experiencer">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <PREP value="about">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Cause">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="what_extract"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="emotional_state">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="VerbSpecific" value="Emotion"/>
+                                <ARG type="ThemRole" value="Experiencer"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="in_reaction_to">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Cause"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="WHAT-S" secondary="" xtag="0.1"/>
+                    <EXAMPLES>
+                        <EXAMPLE>I don't care what he does.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Experiencer">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Cause">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="what_extract"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="emotional_state">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="VerbSpecific" value="Emotion"/>
+                                <ARG type="ThemRole" value="Experiencer"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="in_reaction_to">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Cause"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="P-WH-S" secondary="about-PP" xtag="0.2"/>
+                    <EXAMPLES>
+                        <EXAMPLE>He doesn't care about how/whether she comes.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Experiencer">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <PREP value="about">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Cause">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="wh_comp"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="emotional_state">
+                            <ARGS>
+                                <ARG type="Event" value="result(E)"/>
+                                <ARG type="VerbSpecific" value="Emotion"/>
+                                <ARG type="ThemRole" value="Experiencer"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="in_reaction_to">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Cause"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+    </SUBCLASSES>
+</VNCLASS>
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="debone-10.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <!--Perhaps combine pit-10.7 and debone-10.8-->
+    <MEMBERS>
+        <MEMBER name="deaccent" wn=""/>
+        <MEMBER name="debark" wn=""/>
+        <MEMBER name="debone" wn="debone%2:30:00"/>
+        <MEMBER name="debowel" wn=""/>
+        <MEMBER name="debug" wn="debug%2:30:00"/>
+        <MEMBER name="debur" wn=""/>
+        <MEMBER name="declaw" wn="declaw%2:30:00"/>
+        <MEMBER name="defang" wn="defang%2:30:00"/>
+        <MEMBER name="defat" wn=""/>
+        <MEMBER name="defeather" wn=""/>
+        <MEMBER name="deflea" wn=""/>
+        <MEMBER name="deflesh" wn=""/>
+        <MEMBER name="deflower" wn=""/>
+        <MEMBER name="defoam" wn=""/>
+        <MEMBER name="defog" wn=""/>
+        <MEMBER name="deforest" wn="deforest%2:30:00"/>
+        <MEMBER name="defrost" wn="defrost%2:30:00"/>
+        <MEMBER name="defuzz" wn=""/>
+        <MEMBER name="degas" wn="degas%2:30:00"/>
+        <MEMBER name="degerm" wn=""/>
+        <MEMBER name="deglaze" wn=""/>
+        <MEMBER name="degrease" wn=""/>
+        <MEMBER name="degrit" wn=""/>
+        <MEMBER name="degum" wn=""/>
+        <MEMBER name="degut" wn=""/>
+        <MEMBER name="dehair" wn=""/>
+        <MEMBER name="dehead" wn=""/>
+        <MEMBER name="dehorn" wn="dehorn%2:30:00"/>
+        <MEMBER name="dehull" wn=""/>
+        <MEMBER name="dehusk" wn=""/>
+        <MEMBER name="deice" wn="deice%2:30:00"/>
+        <MEMBER name="deink" wn=""/>
+        <MEMBER name="delint" wn=""/>
+        <MEMBER name="delouse" wn="delouse%2:30:00"/>
+        <MEMBER name="deluster" wn=""/>
+        <MEMBER name="demast" wn=""/>
+        <MEMBER name="derat" wn=""/>
+        <MEMBER name="derib" wn=""/>
+        <MEMBER name="derind" wn=""/>
+        <MEMBER name="desalt" wn="desalt%2:30:00"/>
+        <MEMBER name="descale" wn="descale%2:35:00"/>
+        <MEMBER name="desex" wn="desex%2:29:00"/>
+        <MEMBER name="desprout" wn=""/>
+        <MEMBER name="destarch" wn=""/>
+        <MEMBER name="destress" wn="destress%2:30:00"/>
+        <MEMBER name="detassel" wn=""/>
+        <MEMBER name="detusk" wn="detusk%2:30:00"/>
+        <MEMBER name="devein" wn=""/>
+        <MEMBER name="dewater" wn=""/>
+        <MEMBER name="dewax" wn=""/>
+        <MEMBER name="deworm" wn=""/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Theme">
+            <SELRESTRS/>
+        </THEMROLE>
+        <THEMROLE type="Source">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="concrete"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <!--Theme is an inalienable possession of Source-->
+        <!--Theme is realized in the verb (with a de- prefix)-->
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Basic Transitive" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>The cook deboned the fish.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Source">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="location">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="VerbSpecific" value="Theme"/>
+                        <ARG type="ThemRole" value="Source"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="location">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="VerbSpecific" value="Theme"/>
+                        <ARG type="ThemRole" value="Source"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>
+

@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="see-30.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="smell" wn="smell%2:39:01"/>
+        <MEMBER name="taste" wn="taste%2:34:00 taste%2:39:00 taste%2:39:01"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Experiencer">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Stimulus">
+            <SELRESTRS/>
+        </THEMROLE>
+        <THEMROLE type="Predicate">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Basic Transitive" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>I saw the play.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Experiencer">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Stimulus">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="perceive">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Experiencer"/>
+                        <ARG type="ThemRole" value="Stimulus"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="in_reaction_to">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Stimulus"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.5" primary="S" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>I can see that you are feeling great.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Experiencer">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Stimulus">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="that_comp"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="perceive">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Experiencer"/>
+                        <ARG type="ThemRole" value="Stimulus"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="in_reaction_to">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Stimulus"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="2.13.2" primary="Attribute Object Possessor-Attribute Factoring Alternation" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>I sensed the eagerness in him.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Experiencer">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Stimulus">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="in">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Oblique">
+                    <SELRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="perceive">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Experiencer"/>
+                        <ARG type="ThemRole" value="Stimulus"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="in_reaction_to">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Stimulus"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="HOW-S" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>I saw how he arrived.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Experiencer">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Stimulus">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="how_extract"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="perceive">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Experiencer"/>
+                        <ARG type="ThemRole" value="Stimulus"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="in_reaction_to">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Stimulus"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="WHAT-S" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>I saw what they did.</EXAMPLE>
+                
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Experiencer">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Stimulus">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="what_extract"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="perceive">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Experiencer"/>
+                        <ARG type="ThemRole" value="Stimulus"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="in_reaction_to">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Stimulus"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES>
+        <VNSUBCLASS ID="see-30.1-1">
+            <MEMBERS>
+                <MEMBER name="detect" wn="detect%2:39:00"/>
+                <MEMBER name="discern" wn="discern%2:39:00"/>
+                <MEMBER name="feel" wn="feel%2:31:00 feel%2:39:00 feel%2:29:00 feel%2:35:00"/>
+                <MEMBER name="sense" wn="sense%2:39:00"/>
+                <MEMBER name="perceive" wn=""/>
+                <MEMBER name="notice" wn="notice%2:39:04 notice%2:39:00"/>
+                <MEMBER name="see" wn="see%2:39:00 see%2:39:02 see%2:36:00 see%2:39:03 see%2:32:00 see%2:41:11 see%2:41:12 see%2:41:10 see%2:39:11 see%2:39:13"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="NP-INF-OC" secondary="" xtag="0.2"/>
+                    <EXAMPLES>
+                        <EXAMPLE>I saw her bake the cake.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Experiencer">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Stimulus">
+                            <SYNRESTRS/>
+                        </NP>
+                        <NP value="Predicate">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="oc_bare_inf"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="perceive">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Experiencer"/>
+                                <ARG type="ThemRole" value="Stimulus"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="in_reaction_to">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Stimulus"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="NP-ING-OC" secondary="" xtag="0.2"/>
+                    <EXAMPLES>
+                        <EXAMPLE>I saw him laughing.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Experiencer">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Stimulus">
+                            <SYNRESTRS/>
+                        </NP>
+                        <NP value="Predicate">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="oc_ing"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="perceive">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Experiencer"/>
+                                <ARG type="ThemRole" value="Stimulus"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="in_reaction_to">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Stimulus"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="POSSING" secondary="" xtag="0.2"/>
+                    <EXAMPLES>
+                        <EXAMPLE>I saw their laughing and joking.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Experiencer">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Stimulus">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="pos_ing"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="perceive">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Experiencer"/>
+                                <ARG type="ThemRole" value="Stimulus"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="in_reaction_to">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Stimulus"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES>
+                <VNSUBCLASS ID="see-30.1-1-1">
+                    <MEMBERS>
+                        <MEMBER name="hear" wn="hear%2:39:00 hear%2:31:00 hear%2:39:01 hear%2:39:05"/>
+                    </MEMBERS>
+                    <THEMROLES/>
+                    <FRAMES>
+                        <FRAME>
+                            <DESCRIPTION descriptionNumber="" primary="PP" secondary="Stimulus-PP" xtag=""/>
+                            <EXAMPLES>
+                                <EXAMPLE>The entire class heard about/of the sermon.</EXAMPLE>
+                            </EXAMPLES>
+                            <SYNTAX>
+                                <NP value="Experiencer">
+                                    <SYNRESTRS/>
+                                </NP>
+                                <VERB/>
+                                <PREP value="about of">
+                                    <SELRESTRS/>
+                                </PREP>
+                                <NP value="Stimulus">
+                                    <SYNRESTRS/>
+                                </NP>
+                            </SYNTAX>
+                            <SEMANTICS>
+                                <PRED value="perceive">
+                                    <ARGS>
+                                        <ARG type="Event" value="during(E)"/>
+                                        <ARG type="ThemRole" value="Experiencer"/>
+                                        <ARG type="ThemRole" value="Stimulus"/>
+                                    </ARGS>
+                                </PRED>
+                                <PRED value="in_reaction_to">
+                                    <ARGS>
+                                        <ARG type="Event" value="E"/>
+                                        <ARG type="ThemRole" value="Stimulus"/>
+                                    </ARGS>
+                                </PRED>
+                            </SEMANTICS>
+                        </FRAME>
+                    </FRAMES>
+                    <SUBCLASSES/>
+                </VNSUBCLASS>
+            </SUBCLASSES>
+        </VNSUBCLASS>
+    </SUBCLASSES>
+</VNCLASS>
+
+
+
+
+

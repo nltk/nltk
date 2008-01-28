@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="force-59" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="bullock" wn=""/>
+        <MEMBER name="bamboozle" wn=""/>
+        <MEMBER name="coax" wn=""/>
+        <MEMBER name="coerce" wn=""/>
+        <MEMBER name="commission" wn=""/>
+        <MEMBER name="compel" wn=""/>
+        <MEMBER name="dare" wn=""/>
+        <MEMBER name="draw" wn=""/>
+        <MEMBER name="encourage" wn=""/>
+        <MEMBER name="entice" wn=""/>
+        <MEMBER name="force" wn=""/>
+        <MEMBER name="impel" wn=""/>
+        <MEMBER name="incite" wn=""/>
+        <MEMBER name="induce" wn=""/>
+        <MEMBER name="inveigle" wn=""/>
+        <MEMBER name="jolt" wn=""/>
+        <MEMBER name="lead" wn=""/>
+        <MEMBER name="mislead" wn=""/>
+        <MEMBER name="motivate" wn=""/>
+        <MEMBER name="obligate" wn=""/>
+        <MEMBER name="oblige" wn=""/>
+        <MEMBER name="press" wn=""/>
+        <MEMBER name="pressure" wn=""/>
+        <MEMBER name="prod" wn=""/>
+        <MEMBER name="prompt" wn=""/>
+        <MEMBER name="push" wn=""/>
+        <MEMBER name="rush" wn=""/>
+        <MEMBER name="rouse" wn=""/>
+        <MEMBER name="soothe" wn=""/>
+        <MEMBER name="spur" wn=""/>
+        <MEMBER name="sweet-talk" wn=""/>
+        <MEMBER name="tempt" wn=""/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Patient">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Proposition">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Basic Transitive" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>I forced him.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Patient">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="force">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                        <ARG type="ThemRole" value="?Proposition"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="NP-P-ING-OC" secondary="into-PP" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>I forced him into coming.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Patient">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="into">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Proposition">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="oc_ing"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="force">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                        <ARG type="ThemRole" value="Proposition"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="NP-PP" secondary="into-PP" xtag="0.1"/>
+            <EXAMPLES>
+                <EXAMPLE>I forced John into the chairmanship.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Patient">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="into">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Proposition">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="-" type="sentential"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="force">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Patient"/>
+                        <ARG type="ThemRole" value="Proposition"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES>
+        <VNSUBCLASS ID="force-59-1">
+            <MEMBERS>
+                <MEMBER name="allure" wn=""/>
+                <MEMBER name="annoy" wn=""/>
+                <MEMBER name="arm-twist" wn=""/>
+                <MEMBER name="bluff" wn=""/>
+                <MEMBER name="blackmail" wn=""/>
+                <MEMBER name="bounce" wn=""/>
+                <MEMBER name="bribe" wn=""/>
+                <MEMBER name="bully" wn=""/>
+                <MEMBER name="cajole" wn=""/>
+                <MEMBER name="cheat" wn=""/>
+                <MEMBER name="con" wn=""/>
+                <MEMBER name="deceive" wn=""/>
+                <MEMBER name="delude" wn=""/>
+                <MEMBER name="draw" wn=""/>
+                <MEMBER name="dupe" wn=""/>
+                <MEMBER name="ensnare" wn=""/>
+                <MEMBER name="entrap" wn=""/>
+                <MEMBER name="flatter" wn=""/>
+                <MEMBER name="fool" wn=""/>
+                <MEMBER name="frighten" wn=""/>
+                <MEMBER name="guide" wn=""/>
+                <MEMBER name="harass" wn=""/>
+                <MEMBER name="harry" wn=""/>
+                <MEMBER name="hijack" wn=""/>
+                <MEMBER name="hoodwink" wn=""/>
+                <MEMBER name="seduce" wn=""/>
+                <MEMBER name="lure" wn=""/>
+                <MEMBER name="manipulate" wn=""/>
+                <MEMBER name="organize" wn=""/>
+                <MEMBER name="panic" wn=""/>
+                <MEMBER name="set" wn=""/>
+                <MEMBER name="shame" wn=""/>
+                <MEMBER name="shock" wn=""/>
+                <MEMBER name="stimulate" wn=""/>
+                <MEMBER name="talk" wn=""/>
+                <MEMBER name="tease" wn=""/>
+                <MEMBER name="terrify" wn=""/>
+                <MEMBER name="trap" wn=""/>
+                <MEMBER name="trick" wn=""/>
+                <MEMBER name="wheedle" wn=""/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="NP-TO-INF-OC" secondary="" xtag="0.1"/>
+                    <EXAMPLES>
+                        <EXAMPLE>I forced him to come.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Agent">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Patient">
+                            <SYNRESTRS/>
+                        </NP>
+                        <NP value="Proposition">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="oc_to_inf"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="force">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Agent"/>
+                                <ARG type="ThemRole" value="Patient"/>
+                                <ARG type="ThemRole" value="Proposition"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+    </SUBCLASSES>
+</VNCLASS>
+
+
+
+
+
+
+
+
+
+
+
+
