@@ -9,7 +9,7 @@
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from nltk.tree import bracket_parse, Tree
-import os.path, sys
+import sys
 
 """
 Corpus reader for corpora that consist of parenthesis-delineated parse trees.
