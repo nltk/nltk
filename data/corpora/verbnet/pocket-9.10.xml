@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="pocket-9.10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="archive" wn="archive%2:35:00"/>
+        <MEMBER name="bag" wn="bag%2:35:00"/>
+        <MEMBER name="bank" wn="bank%2:40:00"/>
+        <MEMBER name="beach" wn="beach%2:38:00"/>
+        <MEMBER name="bed" wn="bed%2:35:01"/>
+        <MEMBER name="bench" wn="bench%2:41:00"/>
+        <MEMBER name="billet" wn="billet%2:42:00"/>
+        <MEMBER name="bin" wn="bin%2:35:00"/>
+        <MEMBER name="bottle" wn="bottle%2:40:00 bottle%2:35:00"/>
+        <MEMBER name="box" wn="box%2:35:02"/>
+        <MEMBER name="cage" wn="cage%2:41:00"/>
+        <MEMBER name="can" wn="can%2:30:00"/>
+        <MEMBER name="case" wn="case%2:35:01"/>
+        <MEMBER name="cellar" wn=""/>
+        <MEMBER name="cloister" wn="cloister%2:42:00 cloister%2:30:00"/>
+        <MEMBER name="coop" wn=""/>
+        <MEMBER name="corral" wn="corral%2:35:00"/>
+        <MEMBER name="crate" wn="crate%2:35:00"/>
+        <MEMBER name="file" wn="file%2:32:00"/>
+        <MEMBER name="fork" wn="fork%2:35:00"/>
+        <MEMBER name="garage" wn="garage%2:40:00"/>
+        <MEMBER name="hangar" wn=""/>
+        <MEMBER name="house" wn="house%2:41:00"/>
+        <MEMBER name="imprison" wn=""/>
+        <MEMBER name="jail" wn="jail%2:41:00"/>
+        <MEMBER name="jar" wn="jar%2:35:10"/>
+        <MEMBER name="jug" wn="jug%2:30:00"/>
+        <MEMBER name="kennel" wn="kennel%2:41:00"/>
+        <MEMBER name="pasture" wn="pasture%2:35:10"/>
+        <MEMBER name="pen" wn=""/>
+        <MEMBER name="pillory" wn="pillory%2:41:00"/>
+        <MEMBER name="pocket" wn="pocket%2:40:00"/>
+        <MEMBER name="pot" wn="pot%2:35:00"/>
+        <MEMBER name="sheathe" wn="sheathe%2:35:00"/>
+        <MEMBER name="shelve" wn="shelve%2:35:10"/>
+        <MEMBER name="shoulder" wn="shoulder%2:35:02"/>
+        <MEMBER name="skewer" wn="skewer%2:35:00"/>
+        <MEMBER name="snare" wn="snare%2:35:00"/>
+        <MEMBER name="spindle" wn=""/>
+        <MEMBER name="spit" wn="spit%2:35:00"/>
+        <MEMBER name="spool" wn="spool%2:35:00"/>
+        <MEMBER name="string" wn="string%2:35:02"/>
+        <MEMBER name="tassel" wn=""/>
+        <MEMBER name="tin" wn="tin%2:30:00"/>
+        <MEMBER name="trap" wn="trap%2:35:00"/>
+        <MEMBER name="tree" wn="tree%2:38:00"/>
+        <MEMBER name="warehouse" wn="warehouse%2:40:00"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="human"/>
+                <SELRESTR Value="+" type="organization"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Theme">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="concrete"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Location">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="concrete"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Basic Transitive" secondary="Theme Object" xtag="0.2"/>
+            <!-- Location specified by verb-->
+            <EXAMPLES>
+                <EXAMPLE>Lydia pocketed the change.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="location">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="location">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="NP-PP" secondary="Location-PP" xtag=""/>
+            <!-- Location must be a hyponym of verb's zero-related nominal, or specify additional information-->
+            <!-- Acceptability is marginal-->
+            <EXAMPLES>
+                <EXAMPLE>Lydia pocketed the change in her left pocket.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="in on under">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED bool="!" value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES>
+        <VNSUBCLASS ID="pocket-9.10-1">
+            <MEMBERS>
+                <MEMBER name="berth" wn="berth%2:35:00"/>
+                <MEMBER name="dock" wn="dock%2:35:00"/>
+                <MEMBER name="drydock" wn="drydock%2:35:00"/>
+                <MEMBER name="land" wn="land%2:38:01 land%2:38:03"/>
+                <MEMBER name="ground" wn="ground%2:35:08 ground%2:35:00"/>
+                <MEMBER name="lodge" wn="lodge%2:42:00"/>
+                <MEMBER name="stable" wn="stable%2:41:00"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="PP" secondary="locative-PP" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>I landed in Russia.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <PREP value="in on under">
+                            <SELRESTRS/>
+                        </PREP>
+                        <NP value="Location">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="motion">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED bool="!" value="Prep">
+                            <ARGS>
+                                <ARG type="Event" value="start(E)"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="ThemRole" value="Location"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="Prep">
+                            <ARGS>
+                                <ARG type="Event" value="end(E)"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="ThemRole" value="Location"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="Basic Intransitive" secondary="" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>The plane landed.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="motion">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="" primary="ADVP" secondary="here/there" xtag=""/>
+                    <EXAMPLES>
+                        <EXAMPLE>I landed there.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Location">
+                            <SYNRESTRS/>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="motion">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="location">
+                            <ARGS>
+                                <ARG type="Event" value="end(E)"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                                <ARG type="ThemRole" value="Location"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                    <!--discoures has to provide specific Destination and configuration (Prep) of Theme wrt Destination-->
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+    </SUBCLASSES>
+</VNCLASS>

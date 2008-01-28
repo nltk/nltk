@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="entity_specific_modes_being-47.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <!--Each member adds a predicate for what the Theme is doing while it exists-->
+        <MEMBER name="billow" wn="billow%2:38:02"/>
+        <MEMBER name="bloom" wn="bloom%2:30:00"/>
+        <MEMBER name="blossom" wn="blossom%2:30:01"/>
+        <MEMBER name="blow" wn="blow%2:43:00"/>
+        <MEMBER name="breathe" wn="breathe%2:29:00"/>
+        <MEMBER name="bristle" wn="bristle%2:38:00"/>
+        <MEMBER name="bulge" wn="bulge%2:42:00"/>
+        <MEMBER name="burn" wn="burn%2:43:01"/>
+        <MEMBER name="cascade" wn="cascade%2:38:00"/>
+        <MEMBER name="corrode" wn="corrode%2:30:01"/>
+        <MEMBER name="decay" wn="decay%2:30:02"/>
+        <MEMBER name="decompose" wn="decompose%2:30:01"/>
+        <MEMBER name="effervesce" wn="effervesce%2:30:00"/>
+        <MEMBER name="erode" wn="erode%2:30:01"/>
+        <MEMBER name="ferment" wn="ferment%2:30:00"/>
+        <MEMBER name="fester" wn="fester%2:29:00"/>
+        <MEMBER name="fizz" wn="fizz%2:30:00"/>
+        <MEMBER name="flow" wn="flow%2:38:00 flow%2:35:04"/>
+        <MEMBER name="flower" wn="flower%2:30:00"/>
+        <MEMBER name="foam" wn="foam%2:30:05"/>
+        <MEMBER name="froth" wn="froth%2:30:00 froth%2:30:01"/>
+        <MEMBER name="germinate" wn="germinate%2:30:00"/>
+        <MEMBER name="grow" wn="grow%2:30:02 grow%2:30:04"/>
+        <MEMBER name="mold" wn="mold%2:30:00"/>
+        <MEMBER name="moult" wn=""/>
+        <MEMBER name="propagate" wn="propagate%2:38:01 propagate%2:29:00"/>
+        <MEMBER name="rage" wn="rage%2:42:00"/>
+        <MEMBER name="respire" wn=""/>
+        <MEMBER name="ripple" wn="ripple%2:39:00"/>
+        <MEMBER name="roil" wn="roil%2:38:00"/>
+        <MEMBER name="rot" wn="rot%2:30:00"/>
+        <MEMBER name="rust" wn="rust%2:30:00"/>
+        <MEMBER name="seethe" wn="seethe%2:30:03 seethe%2:30:00"/>
+        <MEMBER name="smoke" wn="smoke%2:43:00"/>
+        <MEMBER name="smolder" wn="smolder%2:30:00"/>
+        <MEMBER name="spread" wn="spread%2:42:00"/>
+        <MEMBER name="sprout" wn="sprout%2:30:00 sprout%2:29:01"/>
+        <MEMBER name="stagnate" wn="stagnate%2:42:00"/>
+        <MEMBER name="stream" wn="stream%2:38:01 stream%2:29:00 stream%2:38:00"/>
+        <MEMBER name="suppurate" wn=""/>
+        <MEMBER name="sweep" wn="sweep%2:42:03"/>
+        <MEMBER name="tarnish" wn=""/>
+        <MEMBER name="trickle" wn="trickle%2:38:00"/>
+        <MEMBER name="wilt" wn="wilt%2:30:00"/>
+        <MEMBER name="wither" wn="wither%2:30:00"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Theme">
+            <SELRESTRS/>
+        </THEMROLE>
+        <THEMROLE type="Location">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="location"/>
+                <SELRESTR Value="-" type="region"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="Basic Intransitive" secondary="" xtag="0.1"/>
+            <EXAMPLES>
+                <EXAMPLE>The beer foamed.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="exist">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="PP" secondary="locative-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>A fire raged in the mountains.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="loc"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="exist">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="6.1" primary="NP" secondary="Expletive-there Subject" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>There raged a fire.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <LEX value="there"/>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="-" type="definite"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="exist">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="6.2" primary="Locative Inversion" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>All through the mountains raged a fire.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="loc"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="exist">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="2.3" primary="PP" secondary="Location Subject, with-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The garden flowered with roses.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP value="with">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="exist">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="location">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>
+

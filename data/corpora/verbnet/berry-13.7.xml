@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="berry-13.7" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="antique" wn="antique%2:40:00"/>
+        <MEMBER name="berry" wn="berry%2:35:00"/>
+        <MEMBER name="birdnest" wn="birdnest%2:35:00"/>
+        <MEMBER name="blackberry" wn="blackberry%2:35:00"/>
+        <MEMBER name="clam" wn="clam%2:35:00"/>
+        <MEMBER name="crab" wn="crab%2:33:00"/>
+        <MEMBER name="fish" wn="fish%2:33:00"/>
+        <MEMBER name="fowl" wn="fowl%2:33:01 fowl%2:33:00"/>
+        <MEMBER name="grouse" wn="grouse%2:33:00"/>
+        <MEMBER name="hay" wn=""/>
+        <MEMBER name="log" wn="log%2:35:00"/>
+        <MEMBER name="mushroom" wn="mushroom%2:35:00"/>
+        <MEMBER name="nest" wn="nest%2:35:01"/>
+        <MEMBER name="nut" wn="nut%2:35:00"/>
+        <MEMBER name="oyster" wn="oyster%2:35:00"/>
+        <MEMBER name="pearl" wn="pearl%2:35:00"/>
+        <MEMBER name="prawn" wn="prawn%2:35:00"/>
+        <MEMBER name="rabbit" wn="rabbit%2:33:00"/>
+        <MEMBER name="seal" wn="seal%2:33:00"/>
+        <MEMBER name="shark" wn="shark%2:33:00"/>
+        <MEMBER name="shrimp" wn="shrimp%2:33:00"/>
+        <MEMBER name="snail" wn="snail%2:35:00"/>
+        <MEMBER name="snipe" wn="snipe%2:33:01"/>
+        <MEMBER name="sponge" wn="sponge%2:35:03"/>
+        <MEMBER name="whale" wn="whale%2:33:00"/>
+        <MEMBER name="whelk" wn="whelk%2:33:00"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="Basic Intransitive" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The children berry in the summer.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="has_possession">
+                    <ARGS>
+                        <ARG type="Event" value="start(E)"/>
+                        <ARG type="ThemRole" value="?Source"/>
+                        <ARG type="ThemRole" value="?Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="transfer">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="?Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="has_possession">
+                    <ARGS>
+                        <ARG type="Event" value="end(E)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="?Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>

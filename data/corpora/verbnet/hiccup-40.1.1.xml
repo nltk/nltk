@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="hiccup-40.1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <!--each verb adds a manner predicate-->
+        <MEMBER name="belch" wn="belch%2:29:00"/>
+        <MEMBER name="blush" wn="blush%2:29:00"/>
+        <MEMBER name="burp" wn="burp%2:29:00"/>
+        <MEMBER name="eruct" wn=""/>
+        <MEMBER name="fart" wn=""/>
+        <MEMBER name="flush" wn="flush%2:29:00"/>
+        <MEMBER name="hiccup" wn="hiccup%2:29:00"/>
+        <MEMBER name="pant" wn="pant%2:29:00"/>
+        <MEMBER name="sneeze" wn="sneeze%2:29:00"/>
+        <MEMBER name="sniffle" wn="sniffle%2:29:00"/>
+        <MEMBER name="snore" wn="snore%2:29:00"/>
+        <MEMBER name="snuff" wn=""/>
+        <MEMBER name="snuffle" wn="snuffle%2:29:00"/>
+        <MEMBER name="swallow" wn="swallow%2:34:00"/>
+        <MEMBER name="wheeze" wn="wheeze%2:29:00"/>
+        <MEMBER name="yawn" wn="yawn%2:29:00"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="Intransitive" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Paul hiccuped.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="body_process">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="involuntary">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>
+

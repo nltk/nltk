@@ -1,0 +1,698 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="run-51.3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <!--Each member also adds a manner predicate such as manner(during(E),Theme,running)-->
+        <MEMBER name="amble" wn="amble%2:38:00"/>
+        <MEMBER name="backpack" wn="backpack%2:38:00"/>
+        <MEMBER name="bolt" wn="bolt%2:38:02"/>
+        <MEMBER name="bounce" wn="bounce%2:38:00 bounce%2:35:03 bounce%2:38:02"/>
+        <MEMBER name="bound" wn="bound%2:38:01"/>
+        <MEMBER name="bowl" wn="bowl%2:38:00"/>
+        <MEMBER name="canter" wn="canter%2:38:00 canter%2:38:01 canter%2:38:03"/>
+        <MEMBER name="carom" wn="carom%2:38:00 carom%2:35:00"/>
+        <MEMBER name="cavort" wn="cavort%2:38:00"/>
+        <MEMBER name="charge" wn="charge%2:33:00 charge%2:38:00"/>
+        <MEMBER name="clamber" wn="clamber%2:38:00"/>
+        <MEMBER name="climb" wn="climb%2:38:00 climb%2:38:01"/>
+        <MEMBER name="clump" wn="clump%2:38:00"/>
+        <MEMBER name="coast" wn="coast%2:38:00"/>
+        <MEMBER name="crawl" wn="crawl%2:38:00"/>
+        <MEMBER name="creep" wn="creep%2:38:00 creep%2:38:04"/>
+        <MEMBER name="dart" wn="dart%2:38:01 dart%2:38:00"/>
+        <MEMBER name="dash" wn="dash%2:38:00"/>
+        <MEMBER name="dodder" wn="dodder%2:38:00"/>
+        <MEMBER name="drift" wn="drift%2:38:02 drift%2:38:04 drift%2:38:05 drift%2:38:06 drift%2:35:03"/>
+        <MEMBER name="file" wn="file%2:38:00"/>
+        <MEMBER name="flit" wn="flit%2:38:00"/>
+        <MEMBER name="float" wn="float%2:38:00 float%2:38:01"/>
+        <MEMBER name="fly" wn="fly%2:38:00 fly%2:38:02 fly%2:38:07 fly%2:38:03"/>
+        <MEMBER name="frolic" wn="frolic%2:38:00"/>
+        <MEMBER name="gallop" wn="gallop%2:38:00 gallop%2:38:01 gallop%2:38:03"/>
+        <MEMBER name="gambol" wn="gambol%2:38:00"/>
+        <MEMBER name="glide" wn="glide%2:38:00 glide%2:38:02"/>
+        <MEMBER name="goose_step" wn="goose_step%2:38:00"/>
+        <MEMBER name="hasten" wn="?hasten%2:30:00 hasten%2:38:00"/>
+        <MEMBER name="hike" wn="hike%2:38:00"/>
+        <MEMBER name="hobble" wn="hobble%2:38:00"/>
+        <MEMBER name="hop" wn="hop%2:38:00 hop%2:38:04 hop%2:38:02 hop%2:38:01"/>
+        <MEMBER name="hurry" wn="hurry%2:38:00"/>
+        <MEMBER name="hurtle" wn="hurtle%2:38:01 hurtle%2:38:00 hurtle%2:35:00"/>
+        <MEMBER name="inch" wn="inch%2:38:00"/>
+        <MEMBER name="jog" wn="jog%2:38:01"/>
+        <MEMBER name="journey" wn="journey%2:38:00 journey%2:38:01"/>
+        <MEMBER name="jump" wn="jump%2:38:00 jump%2:38:01"/>
+        <MEMBER name="leap" wn="leap%2:38:00 leap%2:38:10"/>
+        <MEMBER name="limp" wn="limp%2:38:00 limp%2:38:01"/>
+        <MEMBER name="lollop" wn="lollop%2:38:00"/>
+        <MEMBER name="lope" wn="lope%2:38:00"/>
+        <MEMBER name="lumber" wn="lumber%2:38:00"/>
+        <MEMBER name="lurch" wn="lurch%2:38:03 lurch%2:38:00 lurch%2:38:01"/>
+        <MEMBER name="march" wn="march%2:38:01 march%2:38:04 march%2:38:00 march%2:38:10"/>
+        <MEMBER name="meander" wn="meander%2:38:00"/>
+        <MEMBER name="mince" wn="mince%2:38:00"/>
+        <MEMBER name="mosey" wn="mosey%2:38:00"/>
+        <MEMBER name="nip" wn=""/>
+        <MEMBER name="pad" wn="pad%2:38:00"/>
+        <MEMBER name="parade" wn="parade%2:38:00"/>
+        <MEMBER name="perambulate" wn="perambulate%2:38:00"/>
+        <MEMBER name="plod" wn="plod%2:38:00"/>
+        <MEMBER name="prance" wn="prance%2:38:00"/>
+        <MEMBER name="promenade" wn="promenade%2:38:01 promenade%2:38:00"/>
+        <MEMBER name="prowl" wn="prowl%2:38:00"/>
+        <MEMBER name="race" wn="race%2:38:00 race%2:38:10"/>
+        <MEMBER name="ramble" wn="ramble%2:38:01"/>
+        <MEMBER name="roam" wn="roam%2:38:00"/>
+        <MEMBER name="roll" wn="roll%2:38:00 roll%2:29:06"/>
+        <MEMBER name="romp" wn="romp%2:38:00 romp%2:38:01"/>
+        <MEMBER name="rove" wn="rove%2:38:00"/>
+        <MEMBER name="run" wn="run%2:38:00 run%2:38:04 run%2:38:10 run%2:38:05"/>
+        <MEMBER name="rush" wn="rush%2:38:00 rush%2:38:10"/>
+        <MEMBER name="sashay" wn="sashay%2:38:01 sashay%2:38:00"/>
+        <MEMBER name="saunter" wn="saunter%2:38:00"/>
+        <MEMBER name="scamper" wn="scamper%2:38:00"/>
+        <MEMBER name="scoot" wn="scoot%2:38:00"/>
+        <MEMBER name="scram" wn="scram%2:38:00"/>
+        <MEMBER name="scramble" wn="scramble%2:38:00 scramble%2:38:01"/>
+        <MEMBER name="scud" wn="scud%2:38:00"/>
+        <MEMBER name="scurry" wn="scurry%2:38:00"/>
+        <MEMBER name="scutter" wn=""/>
+        <MEMBER name="scuttle" wn="scuttle%2:38:00"/>
+        <MEMBER name="shamble" wn="shamble%2:38:00"/>
+        <MEMBER name="shuffle" wn="shuffle%2:38:00"/>
+        <MEMBER name="sidle" wn="sidle%2:38:01 sidle%2:38:00"/>
+        <MEMBER name="skedaddle" wn="skedaddle%2:38:00"/>
+        <MEMBER name="skip" wn="skip%2:38:00 skip%2:35:00"/>
+        <MEMBER name="skitter" wn="skitter%2:38:00 skitter%2:38:01 skitter%2:35:01"/>
+        <MEMBER name="skulk" wn="skulk%2:38:00"/>
+        <MEMBER name="sleepwalk" wn="sleepwalk%2:38:00"/>
+        <MEMBER name="slide" wn="slide%2:38:01 slide%2:38:00 slide%2:38:02"/>
+        <MEMBER name="slink" wn="slink%2:38:00"/>
+        <MEMBER name="slither" wn="slither%2:38:00"/>
+        <MEMBER name="slog" wn="slog%2:38:00"/>
+        <MEMBER name="slouch" wn="slouch%2:38:00"/>
+        <MEMBER name="sneak" wn="sneak%2:38:00"/>
+        <MEMBER name="somersault" wn="somersault%2:38:00"/>
+        <MEMBER name="speed" wn="speed%2:38:03 speed%2:30:00 speed%2:30:02"/>
+        <MEMBER name="stagger" wn="stagger%2:38:00 stagger%2:38:01"/>
+        <MEMBER name="step" wn=""/>
+        <MEMBER name="stomp" wn="stomp%2:38:00"/>
+        <MEMBER name="stray" wn="stray%2:38:01 stray%2:38:00"/>
+        <MEMBER name="streak" wn="streak%2:38:00 streak%2:38:01"/>
+        <MEMBER name="stride" wn="stride%2:38:00 stride%2:38:03"/>
+        <MEMBER name="stroll" wn="stroll%2:38:00"/>
+        <MEMBER name="strut" wn="strut%2:38:00"/>
+        <MEMBER name="stumble" wn="stumble%2:38:01 stumble%2:38:00"/>
+        <MEMBER name="stump" wn="stump%2:38:00"/>
+        <MEMBER name="swagger" wn="swagger%2:38:00"/>
+        <MEMBER name="sweep" wn="sweep%2:38:00 sweep%2:35:03"/>
+        <MEMBER name="swim" wn="swim%2:38:00"/>
+        <MEMBER name="tack" wn="tack%2:38:00"/>
+        <MEMBER name="tear" wn="tear%2:38:00"/>
+        <MEMBER name="tiptoe" wn="tiptoe%2:38:00"/>
+        <MEMBER name="toddle" wn="toddle%2:38:00"/>
+        <MEMBER name="toil" wn=""/>
+        <MEMBER name="totter" wn="totter%2:38:02 totter%2:38:01 totter%2:38:00"/>
+        <MEMBER name="tour" wn=""/>
+        <MEMBER name="traipse" wn="traipse%2:38:00"/>
+        <MEMBER name="tramp" wn="tramp%2:38:00 tramp%2:38:01 tramp%2:38:03 tramp%2:38:02"/>
+        <MEMBER name="travel" wn="travel%2:38:00 travel%2:38:02"/>
+        <MEMBER name="trek" wn="trek%2:38:01"/>
+        <MEMBER name="troop" wn="troop%2:38:00"/>
+        <MEMBER name="trot" wn="trot%2:38:00 trot%2:38:01 trot%2:38:02"/>
+        <MEMBER name="trudge" wn="trudge%2:38:01"/>
+        <MEMBER name="trundle" wn="trundle%2:38:00"/>
+        <MEMBER name="vault" wn="vault%2:38:01 vault%2:38:00"/>
+        <MEMBER name="waddle" wn="waddle%2:38:00"/>
+        <MEMBER name="wade" wn="wade%2:38:00"/>
+        <MEMBER name="walk" wn="walk%2:38:00 walk%2:38:03 walk%2:38:01 walk%2:38:05 ?walk%2:38:02"/>
+        <MEMBER name="wander" wn="wander%2:38:00 wander%2:38:02"/>
+        <MEMBER name="whiz" wn=""/>
+        <MEMBER name="zigzag" wn="zigzag%2:38:00"/>
+        <MEMBER name="zoom" wn="zoom%2:38:00"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Agent">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Theme">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="animate"/>
+                <SELRESTR Value="+" type="machine"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Location">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="concrete"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="Basic Intransitive" secondary="inchoative" xtag="0.1"/>
+            <!-- stump doesn't take it-->
+            <EXAMPLES>
+                <EXAMPLE>The horse jumped.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="PP" secondary="over-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The horse jumped over the fence.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="spatial"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="1.1.2.2" primary="NP-PP" secondary="Induced Action with accompanied motion, path-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Tom jumped the horse over the fence.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="spatial"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E0)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="E0"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E0"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="equals">
+                    <ARGS>
+                        <ARG type="Event" value="E0"/>
+                        <ARG type="Event" value="E1"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E1)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="E1"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="1.1.2.2" primary="NP-PP" secondary="Induced Action without accompanied motion, path-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The lion tamer jumped the lions through the loop.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="spatial"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="1.1.2.2" primary="NP" secondary="Induced Action with accompanied motion" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Tom jumped the horse.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E0)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E0"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="equals">
+                    <ARGS>
+                        <ARG type="Event" value="E0"/>
+                        <ARG type="Event" value="E1"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E1)"/>
+                        <ARG type="ThemRole" value="Agent"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="1.1.2.2" primary="NP" secondary="Induced Action without accompanied motion" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The lion tamer jumped the lions.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="1.4.1" primary="Locative Preposition Drop" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The horse jumped the stream.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Location">
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="concrete"/>
+                    </SELRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="via">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.4" primary="NP-PP" secondary="Result-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Tom ran the soles off his shoes.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Oblique1">
+                    <SELRESTRS/>
+                </NP>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="path"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Oblique2">
+                    <SELRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Pred">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="ThemRole" value="Oblique1"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.4" primary="NP-PP" secondary="Result-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>We walked ourselves into a state of exhaustion.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Oblique1">
+                    <SELRESTRS/>
+                </NP>
+                <PREP value="to into">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Oblique2">
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="state"/>
+                    </SELRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Pred">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="ThemRole" value="Oblique1"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.4" primary="NP-ADJP" secondary="Resultative" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Tom walked the dog exhausted.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <ADJ/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Pred">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.4" primary="NP-PP" secondary="Result-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Tom walked the dog to exhaustion.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Agent">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="to into">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Oblique">
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="state"/>
+                    </SELRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="cause">
+                    <ARGS>
+                        <ARG type="ThemRole" value="Agent"/>
+                        <ARG type="Event" value="E"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Pred">
+                    <ARGS>
+                        <ARG type="Event" value="result(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="6.1" primary="PP-NP" secondary="Expletive-there Subject" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>There jumped out of the box a little white rabbit.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <LEX value="there"/>
+                <VERB/>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="path"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Location">
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="concrete"/>
+                    </SELRESTRS>
+                </NP>
+                <NP value="Theme">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="-" type="definite"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="6.1" primary="NP-PP" secondary="Expletive-there Subject" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>There jumped a little white rabbit out of the box.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <LEX value="there"/>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="-" type="definite"/>
+                    </SYNRESTRS>
+                </NP>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="path"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="6.2" primary="Locative Inversion" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Out of the box jumped a little white rabbit.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="path"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="motion">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>

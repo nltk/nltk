@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="admire-31.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="admire" wn="admire%2:37:00"/>
+        <MEMBER name="adore" wn="adore%2:37:00"/>
+        <MEMBER name="appreciate" wn="appreciate%2:37:00 appreciate%2:40:00"/>
+        <MEMBER name="bear" wn=""/>
+        <MEMBER name="bewail" wn=""/>
+        <MEMBER name="cherish" wn="cherish%2:37:00"/>
+        <MEMBER name="deify" wn=""/>
+        <MEMBER name="disbelieve" wn=""/>
+        <MEMBER name="esteem" wn="esteem%2:31:01"/>
+        <MEMBER name="exalt" wn="exalt%2:32:00"/>
+        <MEMBER name="fancy" wn="fancy%2:37:00"/>
+        <MEMBER name="favor" wn="favor%2:41:01 favor%2:41:03 favor%2:41:00"/>
+        <MEMBER name="grudge" wn=""/>
+        <MEMBER name="idolize" wn="idolize%2:37:00"/>
+        <MEMBER name="miss" wn="miss%2:37:00"/>
+        <MEMBER name="prefer" wn=""/>
+        <MEMBER name="affirm" wn=""/>
+        <MEMBER name="reaffirm" wn=""/>
+        <MEMBER name="prize" wn="prize%2:40:00 prize%2:31:00"/>
+        <MEMBER name="respect" wn="respect%2:31:00"/>
+        <MEMBER name="relish" wn="relish%2:37:00"/>
+        <MEMBER name="revere" wn="revere%2:37:01 revere%2:37:00"/>
+        <MEMBER name="savor" wn="savor%2:37:00"/>
+        <MEMBER name="stand" wn="stand%2:31:00"/>
+        <MEMBER name="support" wn="support%2:41:00 support%2:41:01 support%2:31:04"/>
+        <MEMBER name="tolerate" wn="tolerate%2:31:00"/>
+        <MEMBER name="treasure" wn="treasure%2:40:00 treasure%2:37:00"/>
+        <MEMBER name="trust" wn="trust%2:31:00"/>
+        <MEMBER name="value" wn="value%2:40:00 value%2:31:01"/>
+        <MEMBER name="venerate" wn="venerate%2:37:00"/>
+        <MEMBER name="worship" wn="worship%2:37:00 worship%2:37:01"/>
+        <MEMBER name="abhor" wn="abhor%2:37:00"/>
+        <MEMBER name="deplore" wn="deplore%2:32:00 deplore%2:32:01"/>
+        <MEMBER name="distrust" wn="distrust%2:31:00"/>
+        <MEMBER name="dread" wn="dread%2:37:00"/>
+        <MEMBER name="envy" wn="envy%2:37:01 envy%2:37:00"/>
+        <MEMBER name="execrate" wn="execrate%2:37:00"/>
+        <MEMBER name="lament" wn="lament%2:32:00"/>
+        <MEMBER name="loathe" wn="loathe%2:37:00"/>
+        <MEMBER name="mourn" wn="mourn%2:37:00"/>
+        <MEMBER name="pity" wn="pity%2:37:00"/>
+        <MEMBER name="resent" wn="resent%2:37:01"/>
+        <MEMBER name="rue" wn="rue%2:37:00"/>
+        <MEMBER name="believe" wn="believe%2:31:04"/>
+        <MEMBER name="suffer" wn="suffer%2:37:00 suffer%2:29:00 suffer%2:29:03"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Theme">
+            <SELRESTRS/>
+        </THEMROLE>
+        <THEMROLE type="Experiencer">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Predicate">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.2" primary="Basic Transitive" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The tourists admired the paintings.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Experiencer">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="emotional_state">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="VerbSpecific" value="Emotion"/>
+                        <ARG type="ThemRole" value="Experiencer"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="in_reaction_to">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="2.13.1" primary="NP-PP" secondary="Possessor Object, Predicate-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>I admired him for his honesty.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Experiencer">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SELRESTRS/>
+                </NP>
+                <PREP value="for">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Predicate">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="emotional_state">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="VerbSpecific" value="Emotion"/>
+                        <ARG type="ThemRole" value="Experiencer"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="in_reaction_to">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="2.13.2" primary="NP-PP" secondary="Predicate Object, Possessor-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>I admired the honesty in him.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Experiencer">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Predicate">
+                    <SYNRESTRS/>
+                </NP>
+                <PREP value="in">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Theme">
+                    <SELRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="emotional_state">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="VerbSpecific" value="Emotion"/>
+                        <ARG type="ThemRole" value="Experiencer"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="in_reaction_to">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.5" primary="S" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>The children liked that the clown had a red nose.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Experiencer">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="that_comp"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="emotional_state">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="VerbSpecific" value="Emotion"/>
+                        <ARG type="ThemRole" value="Experiencer"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="in_reaction_to">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+            <!--some verbs-->
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="ING-SC/BE-ING" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>I loved writing.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Experiencer">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="be_sc_ing"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="emotional_state">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="VerbSpecific" value="Emotion"/>
+                        <ARG type="ThemRole" value="Experiencer"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="in_reaction_to">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="8.1" primary="POSSING" secondary="" xtag="0.2"/>
+            <EXAMPLES>
+                <EXAMPLE>I loved him writing novels.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Experiencer">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS>
+                        <SYNRESTR Value="+" type="poss_ing"/>
+                    </SYNRESTRS>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="emotional_state">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="VerbSpecific" value="Emotion"/>
+                        <ARG type="ThemRole" value="Experiencer"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="in_reaction_to">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES>
+        <VNSUBCLASS ID="admire-31.2-1">
+            <MEMBERS>
+                <MEMBER name="despise" wn="despise%2:37:00"/>
+                <MEMBER name="detest" wn="detest%2:37:00"/>
+                <MEMBER name="disdain" wn="disdain%2:37:00"/>
+                <MEMBER name="dislike" wn="dislike%2:37:00"/>
+                <MEMBER name="regret" wn="regret%2:37:00 regret%2:37:01 regret%2:32:00 regret%2:32:02"/>
+                <MEMBER name="like" wn="like%2:37:05 like%2:37:04"/>
+                <MEMBER name="love" wn="love%2:37:00 love%2:37:02 love%2:37:01"/>
+                <MEMBER name="enjoy" wn="enjoy%2:37:00 enjoy%2:37:01 enjoy%2:34:00"/>
+                <MEMBER name="fear" wn="fear%2:37:00 fear%2:37:13 fear%2:37:01"/>
+                <MEMBER name="hate" wn="hate%2:37:00"/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="8.1" primary="TO-INF-SC" secondary="" xtag="0.1"/>
+                    <EXAMPLES>
+                        <EXAMPLE>I loved to write.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Experiencer">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                        <NP value="Theme">
+                            <SYNRESTRS>
+                                <SYNRESTR Value="+" type="sc_to_inf"/>
+                            </SYNRESTRS>
+                        </NP>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="emotional_state">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="VerbSpecific" value="Emotion"/>
+                                <ARG type="ThemRole" value="Experiencer"/>
+                            </ARGS>
+                        </PRED>
+                        <PRED value="in_reaction_to">
+                            <ARGS>
+                                <ARG type="Event" value="E"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES/>
+        </VNSUBCLASS>
+    </SUBCLASSES>
+</VNCLASS>
+
+
+
+
+
+
+
+
+
+

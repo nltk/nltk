@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="weather-57" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="blow" wn="blow%2:43:00"/>
+        <MEMBER name="clear" wn="clear%2:43:00"/>
+        <MEMBER name="drizzle" wn="drizzle%2:43:00"/>
+        <MEMBER name="fog" wn=""/>
+        <MEMBER name="freeze" wn="freeze%2:43:10"/>
+        <MEMBER name="gust" wn=""/>
+        <MEMBER name="hail" wn="hail%2:43:00"/>
+        <MEMBER name="howl" wn="howl%2:32:01"/>
+        <MEMBER name="lightning" wn=""/>
+        <MEMBER name="mist" wn="mist%2:30:00"/>
+        <MEMBER name="mizzle" wn="mizzle%2:43:00"/>
+        <MEMBER name="pelt" wn="pelt%2:43:00"/>
+        <MEMBER name="pour" wn="pour%2:43:00"/>
+        <MEMBER name="precipitate" wn="precipitate%2:43:00"/>
+        <MEMBER name="rain" wn="rain%2:43:00"/>
+        <MEMBER name="roar" wn="roar%2:32:01"/>
+        <MEMBER name="shower" wn="shower%2:43:00"/>
+        <MEMBER name="sleet" wn="sleet%2:43:00"/>
+        <MEMBER name="snow" wn="snow%2:43:00"/>
+        <MEMBER name="spit" wn="spit%2:43:00"/>
+        <MEMBER name="spot" wn=""/>
+        <MEMBER name="sprinkle" wn="sprinkle%2:43:00"/>
+        <MEMBER name="storm" wn="storm%2:43:01 storm%2:43:00"/>
+        <MEMBER name="swelter" wn="swelter%2:29:01"/>
+        <MEMBER name="teem" wn=""/>
+        <MEMBER name="thaw" wn="?thaw%2:30:00"/>
+        <MEMBER name="thunder" wn="thunder%2:43:00"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Theme">
+            <SELRESTRS logic="or">
+                <SELRESTR Value="+" type="concrete"/>
+                <SELRESTR Value="+" type="force"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.7" primary="Intransitive" secondary="Expletive Subject" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>It's raining.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <LEX value="it"/>
+                <LEX value="[+be]"/>
+                <VERB/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="weather">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="VerbSpecific" value="Weather_type"/>
+                        <ARG type="ThemRole" value="?Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.7" primary="NP" secondary="Expletive Subject, Theme Object" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>It's raining cats and dogs.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <LEX value="it"/>
+                <LEX value="[+be]"/>
+                <VERB/>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="weather">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="VerbSpecific" value="Weather_type"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.7" primary="PP" secondary="Expletive Subject, Theme-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>It was pelting with rain.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <LEX value="it[+be]"/>
+                <VERB/>
+                <PREP value="with">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="weather">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="VerbSpecific" value="Weather_type"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>

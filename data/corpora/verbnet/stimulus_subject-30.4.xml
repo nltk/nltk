@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="stimulus_subject-30.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="feel" wn="feel%2:42:00 feel%2:39:09"/>
+        <MEMBER name="look" wn="look%2:39:01 look%2:29:00 look%2:42:02"/>
+        <MEMBER name="smell" wn="smell%2:39:00 smell%2:39:02"/>
+        <MEMBER name="sound" wn="sound%2:39:03"/>
+        <MEMBER name="taste" wn="taste%2:39:02 taste%2:39:12"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Experiencer">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="animate"/>
+            </SELRESTRS>
+        </THEMROLE>
+        <THEMROLE type="Stimulus">
+            <SELRESTRS/>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="ADJ" secondary="" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>That pea soup tasted delicious.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Stimulus">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <ADJ/>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="Pred">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Stimulus"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="perceive">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="?Experiencer"/>
+                        <ARG type="ThemRole" value="Stimulus"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="in_reaction_to">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Stimulus"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="PP" secondary="Experiencer-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>That pea soup tasted delicious to me.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Stimulus">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <ADJ/>
+                <PREP value="to">
+                    <SELRESTRS/>
+                </PREP>
+                <NP value="Experiencer">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="perceive">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Experiencer"/>
+                        <ARG type="ThemRole" value="Stimulus"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Pred">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Stimulus"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="in_reaction_to">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Stimulus"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES/>
+</VNCLASS>

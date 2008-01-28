@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE VNCLASS SYSTEM "vn_class-3.dtd">
+<VNCLASS ID="exist-47.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vn_schema-3.xsd">
+    <MEMBERS>
+        <MEMBER name="overspread" wn="overspread%2:42:00"/>
+    </MEMBERS>
+    <THEMROLES>
+        <THEMROLE type="Theme">
+            <SELRESTRS/>
+        </THEMROLE>
+        <THEMROLE type="Location">
+            <SELRESTRS>
+                <SELRESTR Value="+" type="location"/>
+                <SELRESTR Value="-" type="region"/>
+            </SELRESTRS>
+        </THEMROLE>
+    </THEMROLES>
+    <FRAMES>
+        <FRAME>
+            <DESCRIPTION descriptionNumber="0.1" primary="PP" secondary="locative-PP" xtag=""/>
+            <EXAMPLES>
+                <EXAMPLE>Unicorns don't exist on Earth.</EXAMPLE>
+            </EXAMPLES>
+            <SYNTAX>
+                <NP value="Theme">
+                    <SYNRESTRS/>
+                </NP>
+                <VERB/>
+                <PREP>
+                    <SELRESTRS>
+                        <SELRESTR Value="+" type="loc"/>
+                    </SELRESTRS>
+                </PREP>
+                <NP value="Location">
+                    <SYNRESTRS/>
+                </NP>
+            </SYNTAX>
+            <SEMANTICS>
+                <PRED value="exist">
+                    <ARGS>
+                        <ARG type="Event" value="during(E)"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                    </ARGS>
+                </PRED>
+                <PRED value="Prep">
+                    <ARGS>
+                        <ARG type="Event" value="E"/>
+                        <ARG type="ThemRole" value="Theme"/>
+                        <ARG type="ThemRole" value="Location"/>
+                    </ARGS>
+                </PRED>
+            </SEMANTICS>
+        </FRAME>
+    </FRAMES>
+    <SUBCLASSES>
+        <VNSUBCLASS ID="exist-47.1-1">
+            <MEMBERS>
+                <MEMBER name="coexist" wn="coexist%2:42:01 coexist%2:42:00"/>
+                <MEMBER name="?correspond" wn="correspond%2:42:01"/>
+                <MEMBER name="?depend" wn=""/>
+                <MEMBER name="dwell" wn="dwell%2:42:01 dwell%2:42:00"/>
+                <MEMBER name="exist" wn="exist%2:42:00 exist%2:42:01"/>
+                <MEMBER name="extend" wn="extend%2:42:03 extend%2:42:01 extend%2:30:06"/>
+                <MEMBER name="flourish" wn="flourish%2:30:01"/>
+                <MEMBER name="languish" wn="languish%2:30:00 languish%2:29:00"/>
+                <MEMBER name="linger" wn="linger%2:42:02 linger%2:42:00"/>
+                <MEMBER name="live" wn="live%2:42:08 live%2:42:04 live%2:42:01"/>
+                <MEMBER name="loom" wn="loom%2:42:02 loom%2:42:06"/>
+                <MEMBER name="lurk" wn="lurk%2:42:01 lurk%2:42:00 lurk%2:33:00"/>
+                <MEMBER name="persist" wn="persist%2:42:00"/>
+                <MEMBER name="predominate" wn="predominate%2:42:00"/>
+                <MEMBER name="prevail" wn="prevail%2:42:02 prevail%2:42:01 prevail%2:42:00"/>
+                <MEMBER name="prosper" wn="prosper%2:40:00"/>
+                <MEMBER name="remain" wn="remain%2:30:00 remain%2:42:03 remain%2:42:05"/>
+                <MEMBER name="reside" wn="reside%2:42:00 reside%2:42:01 reside%2:42:12"/>
+                <MEMBER name="shelter" wn=""/>
+                <MEMBER name="stay" wn="stay%2:30:00 stay%2:38:00 stay%2:42:02 stay%2:38:01"/>
+                <MEMBER name="thrive" wn="thrive%2:30:00 thrive%2:40:00"/>
+                <MEMBER name="tower" wn="tower%2:42:00"/>
+                <MEMBER name="wait" wn="wait%2:42:00"/>
+                <MEMBER name="persevere" wn=""/>
+            </MEMBERS>
+            <THEMROLES/>
+            <FRAMES>
+                <FRAME>
+                    <DESCRIPTION descriptionNumber="0.1" primary="Basic Intransitive" secondary="" xtag="0.1"/>
+                    <EXAMPLES>
+                        <EXAMPLE>Unicorns don't exist.</EXAMPLE>
+                    </EXAMPLES>
+                    <SYNTAX>
+                        <NP value="Theme">
+                            <SYNRESTRS/>
+                        </NP>
+                        <VERB/>
+                    </SYNTAX>
+                    <SEMANTICS>
+                        <PRED value="exist">
+                            <ARGS>
+                                <ARG type="Event" value="during(E)"/>
+                                <ARG type="ThemRole" value="Theme"/>
+                            </ARGS>
+                        </PRED>
+                    </SEMANTICS>
+                </FRAME>
+            </FRAMES>
+            <SUBCLASSES>
+                <VNSUBCLASS ID="exist-47.1-1-1">
+                    <MEMBERS>
+                        <MEMBER name="endure" wn="endure%2:42:00 endure%2:42:08"/>
+                        <MEMBER name="survive" wn="survive%2:42:01 survive%2:42:02 survive%2:42:00"/>
+                    </MEMBERS>
+                    <THEMROLES/>
+                    <FRAMES>
+                        <FRAME>
+                            <DESCRIPTION descriptionNumber="" primary="Basic Transitive" secondary="" xtag=""/>
+                            <EXAMPLES>
+                                <EXAMPLE>I endured the routine heavy traffic.</EXAMPLE>
+                            </EXAMPLES>
+                            <SYNTAX>
+                                <NP value="Theme">
+                                    <SYNRESTRS/>
+                                </NP>
+                                <VERB/>
+                                <NP value="Location">
+                                    <SYNRESTRS/>
+                                </NP>
+                            </SYNTAX>
+                            <SEMANTICS>
+                                <PRED value="exist">
+                                    <ARGS>
+                                        <ARG type="Event" value="during(E)"/>
+                                        <ARG type="ThemRole" value="Theme"/>
+                                    </ARGS>
+                                </PRED>
+                                <PRED value="Prep">
+                                    <ARGS>
+                                        <ARG type="Event" value="E"/>
+                                        <ARG type="ThemRole" value="Theme"/>
+                                        <ARG type="ThemRole" value="Location"/>
+                                    </ARGS>
+                                </PRED>
+                            </SEMANTICS>
+                        </FRAME>
+                    </FRAMES>
+                    <SUBCLASSES/>
+                </VNSUBCLASS>
+            </SUBCLASSES>
+        </VNSUBCLASS>
+    </SUBCLASSES>
+</VNCLASS>

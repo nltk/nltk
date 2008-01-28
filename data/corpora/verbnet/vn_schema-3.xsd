@@ -1,0 +1,743 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+
+<!-- SECTION I.  
+	  
+	  This part of the Schema defines the structure of a VerbNet file.
+	  Alterations should be made with great care. -->   
+  
+
+<xsd:element name="VNCLASS">
+  <xsd:complexType>
+    <xsd:sequence>
+      <xsd:element ref="MEMBERS"/>
+      <xsd:element ref="THEMROLES"/>
+      <xsd:element ref="FRAMES"/>
+      <xsd:element ref="SUBCLASSES"/>
+    </xsd:sequence>
+    <xsd:attribute name="ID" use="required" type="xsd:ID"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="MEMBERS"><xsd:complexType><xsd:sequence>
+  <xsd:element name="MEMBER" minOccurs="0" maxOccurs="unbounded"><xsd:complexType>
+    <xsd:attribute name="name" use="required" type="xsd:string"/>
+    <xsd:attribute name="wn" use="required" type="wnType"/>
+  </xsd:complexType></xsd:element>
+</xsd:sequence></xsd:complexType></xsd:element>
+
+<xsd:element name="THEMROLES"><xsd:complexType><xsd:sequence>
+  <xsd:element name="THEMROLE" minOccurs="0" maxOccurs="unbounded">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="SELRESTRS"/>
+      </xsd:sequence>
+      <xsd:attribute name="type" use="required" type="themRoleType"/>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:sequence></xsd:complexType></xsd:element>
+
+<xsd:element name="SELRESTRS"><xsd:complexType>
+  <xsd:choice minOccurs="0" maxOccurs="unbounded">
+    <xsd:element name="SELRESTR"><xsd:complexType>
+      <xsd:attribute name="Value" use="required" type="selrestrValueType"/>
+      <xsd:attribute name="type" use="required" type="selrestrType"/>
+    </xsd:complexType></xsd:element>
+    <xsd:element ref="SELRESTRS"/> 
+  </xsd:choice>  
+  <xsd:attribute name="logic" use="optional" type="xsd:string"/>
+</xsd:complexType></xsd:element>          
+
+<xsd:element name="SYNRESTRS"><xsd:complexType>
+  <xsd:choice minOccurs="0" maxOccurs="unbounded">
+    <xsd:element name="SYNRESTR"><xsd:complexType>
+      <xsd:attribute name="Value" use="required" type="selrestrValueType"/>
+      <xsd:attribute name="type" use="required" type="synrestrType"/>
+    </xsd:complexType></xsd:element>
+    <xsd:element ref="SYNRESTRS"/> 
+  </xsd:choice>  
+  <xsd:attribute name="logic" use="optional" type="xsd:string"/>
+</xsd:complexType></xsd:element>          
+
+<xsd:element name="FRAMES"><xsd:complexType><xsd:sequence>
+  <xsd:element name="FRAME" minOccurs="0" maxOccurs="unbounded"><xsd:complexType>
+    <xsd:sequence>
+      <xsd:element name="DESCRIPTION"><xsd:complexType>
+        <xsd:attribute name="descriptionNumber" use="required" type="xsd:string"/>
+        <xsd:attribute name="primary" use="required" type="primaryDescriptionType"/>
+        <xsd:attribute name="secondary" use="optional" type="xsd:string"/>
+	<xsd:attribute name="xtag" use="required" type="xsd:string"/>
+      </xsd:complexType></xsd:element>  
+      <xsd:element name="EXAMPLES"><xsd:complexType><xsd:sequence>
+        <xsd:element name="EXAMPLE" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence></xsd:complexType></xsd:element>
+      <xsd:element ref="SYNTAX"/>
+      <xsd:element ref="SEMANTICS"/>       
+    </xsd:sequence>
+  </xsd:complexType></xsd:element>
+</xsd:sequence></xsd:complexType></xsd:element>
+
+<xsd:element name="SYNTAX"><xsd:complexType>
+  <xsd:sequence>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="NP"><xsd:complexType>
+        <xsd:choice>
+          <xsd:element ref="SELRESTRS"/>
+          <xsd:element ref="SYNRESTRS"/>
+        </xsd:choice>
+        <xsd:attribute name="value" use="required" type="xsd:string"/>
+      </xsd:complexType></xsd:element>
+      <xsd:element name="ADV"/>
+      <xsd:element name="ADJ"/>
+      <xsd:element name="PREP"><xsd:complexType>
+        <xsd:sequence>
+          <xsd:element name="SELRESTRS"><xsd:complexType>
+            <xsd:choice minOccurs="0" maxOccurs="unbounded">
+              <xsd:element name="SELRESTR"><xsd:complexType>
+                <xsd:attribute name="Value" use="required" type="selrestrValueType"/>
+                <xsd:attribute name="type" use="required" type="preprestrType"/>
+              </xsd:complexType></xsd:element>
+              <xsd:element ref="SELRESTRS"/> 
+            </xsd:choice>  
+            <xsd:attribute name="logic" use="optional" type="xsd:string"/>
+          </xsd:complexType></xsd:element> 
+        </xsd:sequence>
+        <xsd:attribute name="value" use="optional" type="xsd:string"/>
+      </xsd:complexType></xsd:element>
+      <xsd:element name="LEX"><xsd:complexType>
+        <xsd:attribute name="value" use="required" type="xsd:string"/>
+      </xsd:complexType></xsd:element>
+    </xsd:choice>
+    <xsd:element name="VERB"/>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="NP"><xsd:complexType>
+        <xsd:choice>
+          <xsd:element ref="SELRESTRS"/>
+          <xsd:element ref="SYNRESTRS"/>
+        </xsd:choice>
+        <xsd:attribute name="value" use="required" type="npType"/>
+      </xsd:complexType></xsd:element>
+      <xsd:element name="ADV"/>
+      <xsd:element name="ADJ"/>
+      <xsd:element name="PREP"><xsd:complexType>
+        <xsd:sequence>
+          <xsd:element name="SELRESTRS"><xsd:complexType>
+            <xsd:choice minOccurs="0" maxOccurs="unbounded">
+              <xsd:element name="SELRESTR"><xsd:complexType>
+                <xsd:attribute name="Value" use="required" type="selrestrValueType"/>
+                <xsd:attribute name="type" use="required" type="preprestrType"/>
+              </xsd:complexType></xsd:element>
+              <xsd:element ref="SELRESTRS"/> 
+            </xsd:choice>  
+            <xsd:attribute name="logic" use="optional" type="xsd:string"/>
+          </xsd:complexType></xsd:element>          
+        </xsd:sequence>
+        <xsd:attribute name="value" use="optional" type="xsd:string"/>
+      </xsd:complexType></xsd:element>
+      <xsd:element name="LEX"><xsd:complexType>
+        <xsd:attribute name="value" use="required" type="xsd:string"/>
+      </xsd:complexType></xsd:element>
+    </xsd:choice>
+  </xsd:sequence>  
+</xsd:complexType></xsd:element>
+
+<xsd:element name="SEMANTICS"><xsd:complexType>
+  <xsd:sequence minOccurs="1" maxOccurs="unbounded">
+    <xsd:element name="PRED"><xsd:complexType>    
+      <xsd:sequence>
+        <xsd:element name="ARGS"><xsd:complexType>
+          <xsd:sequence minOccurs="1" maxOccurs="unbounded">
+            <xsd:element ref="ARG"/>
+          </xsd:sequence>
+        </xsd:complexType></xsd:element>
+      </xsd:sequence>
+      <xsd:attribute name="bool" use="optional" type="xsd:string"/>
+      <xsd:attribute name="value" use="required" type="predType"/>
+    </xsd:complexType></xsd:element>    
+  </xsd:sequence>
+</xsd:complexType></xsd:element>
+
+<xsd:element name="ARG"><xsd:complexType>
+  <xsd:attribute name="type" use="required" type="argType"/>
+  <xsd:attribute name="value" use="required" type="xsd:string"/>
+</xsd:complexType></xsd:element>  
+
+<xsd:element name="SUBCLASSES"><xsd:complexType><xsd:sequence>
+  <xsd:element ref="VNSUBCLASS" minOccurs="0" maxOccurs="unbounded"/>
+</xsd:sequence></xsd:complexType></xsd:element>
+
+<xsd:element name="VNSUBCLASS"> 
+  <xsd:complexType>
+    <xsd:sequence>
+      <xsd:element ref="MEMBERS"/>
+      <xsd:element ref="THEMROLES"/>
+      <xsd:element ref="FRAMES"/>
+      <xsd:element ref="SUBCLASSES"/>
+    </xsd:sequence>
+    <xsd:attribute name="ID" use="required" type="xsd:ID"/>
+  </xsd:complexType>
+</xsd:element>       
+
+
+
+
+<!-- SECTION II.
+
+	  This section defines the VerbNet data types.  This part of the
+	  document should be updated when the data types are expanded --> 
+
+
+<!-- Each Wordnet SenseKey must conform to this RE -->
+<xsd:simpleType name="auxWordnetType">
+  <xsd:restriction base="xsd:string">
+    <xsd:pattern value="\??([a-z]|\-|_)+%2:\d{2}:\d{2}"/>
+  </xsd:restriction>
+</xsd:simpleType>
+
+<!-- The "wn" attribute must contain a list of the above patterns -->
+<xsd:simpleType name="wnType">
+  <xsd:list itemType="auxWordnetType"/>
+</xsd:simpleType>
+
+<!-- These are NP's (appearing in syntax and semantics) which are not thematic
+     roles -->
+<xsd:simpleType name="auxnpType">
+  <xsd:restriction base="xsd:string">
+    <xsd:enumeration value="Oblique"/>
+    <xsd:enumeration value="Oblique1"/>
+    <xsd:enumeration value="Oblique2"/>
+    <xsd:enumeration value="NP"/>
+  </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="npType">
+  <xsd:union memberTypes="auxnpType themRoleType"/>
+</xsd:simpleType>
+
+<xsd:simpleType name="themRoleType">
+  <xsd:restriction base="xsd:string">		   
+    <xsd:enumeration value="Topic"/>
+    <xsd:enumeration value="Experiencer"/>
+    <xsd:enumeration value="Stimulus"/>
+    <xsd:enumeration value="Cause"/>
+    <xsd:enumeration value="Actor"/>
+    <xsd:enumeration value="Actor1"/>
+    <xsd:enumeration value="Actor2"/>
+    <xsd:enumeration value="Agent"/>	
+    <xsd:enumeration value="Asset"/>
+    <xsd:enumeration value="Attribute"/>
+    <xsd:enumeration value="Benefactor"/>
+    <xsd:enumeration value="Beneficiary"/>
+    <xsd:enumeration value="Content"/>
+    <xsd:enumeration value="Destination"/>
+    <xsd:enumeration value="Instrument"/>
+    <xsd:enumeration value="Location"/>
+    <xsd:enumeration value="Material"/>
+    <xsd:enumeration value="Patient"/>
+    <xsd:enumeration value="Patient1"/>
+    <xsd:enumeration value="Patient2"/>
+    <xsd:enumeration value="Predicate"/>
+    <xsd:enumeration value="Proposition"/>
+    <xsd:enumeration value="Product"/>
+    <xsd:enumeration value="Recipient"/>
+    <xsd:enumeration value="Source"/>
+    <xsd:enumeration value="Theme"/>
+    <xsd:enumeration value="Theme1"/>
+    <xsd:enumeration value="Theme2"/>
+    <xsd:enumeration value="Time"/>
+    <xsd:enumeration value="Extent"/>
+    <xsd:enumeration value="Value"/>
+  </xsd:restriction>  
+</xsd:simpleType>
+
+<xsd:simpleType name="selrestrValueType">
+  <xsd:restriction base="xsd:string">
+    <xsd:enumeration value="+"/>
+    <xsd:enumeration value="-"/>
+  </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="selrestrType">
+  <xsd:restriction base="xsd:string">
+    <xsd:enumeration value="scalar"/>
+    <xsd:enumeration value="concrete"/>
+    <xsd:enumeration value="abstract"/>
+    <xsd:enumeration value="location"/>
+    <xsd:enumeration value="organization"/>
+    <xsd:enumeration value="currency"/>
+    <xsd:enumeration value="idea"/>
+    <xsd:enumeration value="sound"/>
+    <xsd:enumeration value="communication"/>
+    <xsd:enumeration value="quotation"/>
+    <xsd:enumeration value="region"/>
+    <xsd:enumeration value="place"/>
+    <xsd:enumeration value="concrete"/>
+    <xsd:enumeration value="company"/>
+    <xsd:enumeration value="natural"/>
+    <xsd:enumeration value="phys_obj"/>
+    <xsd:enumeration value="plant"/>
+    <xsd:enumeration value="animal"/>
+    <xsd:enumeration value="human"/>
+    <xsd:enumeration value="animate"/>
+    <xsd:enumeration value="body_part"/>
+    <xsd:enumeration value="comestible"/>
+    <xsd:enumeration value="artifact"/>
+    <xsd:enumeration value="tool"/>
+    <xsd:enumeration value="garment"/>
+    <xsd:enumeration value="machine"/>
+    <xsd:enumeration value="int_control"/>
+    <xsd:enumeration value="force"/>
+    <xsd:enumeration value="vehicle"/>
+    <xsd:enumeration value="substance"/>
+    <xsd:enumeration value="solid"/>
+    <xsd:enumeration value="elongated"/>
+    <xsd:enumeration value="pointy"/>
+    <xsd:enumeration value="refl"/>
+    <xsd:enumeration value="rigid"/>
+    <xsd:enumeration value="nonrigid"/>
+    <xsd:enumeration value="state"/>
+    <xsd:enumeration value="plural"/>
+    <xsd:enumeration value="time"/>
+  </xsd:restriction>    
+</xsd:simpleType>
+ 
+<xsd:simpleType name="preprestrType">
+  <xsd:restriction base="xsd:string">
+    <xsd:enumeration value="path"/>
+    <xsd:enumeration value="src"/>
+    <xsd:enumeration value="dest_dir"/>	
+    <xsd:enumeration value="dest_conf"/>
+    <xsd:enumeration value="loc"/>
+    <xsd:enumeration value="plural"/>
+    <xsd:enumeration value="spatial"/>
+    <xsd:enumeration value="dir"/>
+    <xsd:enumeration value="dest"/>
+  </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="synrestrType">
+  <xsd:restriction base="xsd:string">
+    <xsd:enumeration value="sentential"/>
+    <xsd:enumeration value="indicative"/>
+    <xsd:enumeration value="that_comp"/>
+    <xsd:enumeration value="tensed_that"/>
+    <xsd:enumeration value="null_comp"/>
+    <xsd:enumeration value="wh_comp"/>
+    <xsd:enumeration value="wheth_comp"/>
+    <xsd:enumeration value="if_comp"/>
+    <xsd:enumeration value="extracted"/>
+    <xsd:enumeration value="what_extract"/>
+    <xsd:enumeration value="why_extract"/>
+    <xsd:enumeration value="who_extract"/>
+    <xsd:enumeration value="how_extract"/>
+    <xsd:enumeration value="where_extract"/>
+    <xsd:enumeration value="when_extract"/>
+    <xsd:enumeration value="infinitival"/>
+    <xsd:enumeration value="to_inf"/>
+    <xsd:enumeration value="control_to_inf"/>
+    <xsd:enumeration value="sc_to_inf"/>
+    <xsd:enumeration value="oc_to_inf"/>
+    <xsd:enumeration value="ac_to_inf"/>
+    <xsd:enumeration value="vc_to_inf"/>
+    <xsd:enumeration value="rs_to_inf"/>
+    <xsd:enumeration value="bare_inf"/>
+    <xsd:enumeration value="control_bare_inf"/>
+    <xsd:enumeration value="ac_bare_inf"/>
+    <xsd:enumeration value="oc_bare_inf"/>
+    <xsd:enumeration value="rs_bare_inf"/>
+    <xsd:enumeration value="wh_inf"/>
+    <xsd:enumeration value="how_inf"/>
+    <xsd:enumeration value="when_inf"/>
+    <xsd:enumeration value="where_inf"/>
+    <xsd:enumeration value="what_inf"/>
+    <xsd:enumeration value="wheth_inf"/>
+    <xsd:enumeration value="for_comp"/>
+    <xsd:enumeration value="small_clause"/>
+    <xsd:enumeration value="gerund"/>
+    <xsd:enumeration value="control_ing"/>
+    <xsd:enumeration value="sc_ing"/>
+    <xsd:enumeration value="be_ing_sc"/>
+    <xsd:enumeration value="poss_ing_sc"/>
+    <xsd:enumeration value="oc_ing"/>
+    <xsd:enumeration value="ac_ing"/>
+    <xsd:enumeration value="poss_ing"/>
+    <xsd:enumeration value="np_omit_ing"/>
+    <xsd:enumeration value="ppart"/>
+    <xsd:enumeration value="quotation"/>	
+    <xsd:enumeration value="plural"/>
+    <xsd:enumeration value="poss"/>
+    <xsd:enumeration value="definite"/>
+    <xsd:enumeration value="adv_loc"/>
+    <xsd:enumeration value="genitive"/>
+    <xsd:enumeration value="refl"/>
+  </xsd:restriction>
+</xsd:simpleType>    
+
+<xsd:simpleType name="predType">
+  <xsd:restriction base="xsd:string">
+    <xsd:enumeration value="abstain"/>
+    <xsd:enumeration value="admit"/>
+    <xsd:enumeration value="Adv"/>
+    <xsd:enumeration value="alive"/>
+    <xsd:enumeration value="allow"/>
+    <xsd:enumeration value="apart"/>
+    <xsd:enumeration value="apply_heat"/>
+    <xsd:enumeration value="apply_material"/>
+    <xsd:enumeration value="associate"/>
+    <xsd:enumeration value="attached"/>
+    <xsd:enumeration value="attempt"/>
+    <xsd:enumeration value="benefit"/>
+    <xsd:enumeration value="body_motion"/>
+    <xsd:enumeration value="body_process"/>
+    <xsd:enumeration value="body_reflex"/>
+    <xsd:enumeration value="capacity"/>
+    <xsd:enumeration value="cause"/>
+    <xsd:enumeration value="change_value"/>
+    <xsd:enumeration value="command"/>
+    <xsd:enumeration value="conspire"/>
+    <xsd:enumeration value="contact"/>
+    <xsd:enumeration value="cooked"/>
+    <xsd:enumeration value="cooperate"/>
+    <xsd:enumeration value="cost"/>
+    <xsd:enumeration value="covered"/>
+    <xsd:enumeration value="created_image"/>
+    <xsd:enumeration value="dedicate"/>
+    <xsd:enumeration value="degradation_material_integrity"/>
+    <xsd:enumeration value="delay"/>
+    <xsd:enumeration value="depend"/>
+    <xsd:enumeration value="designated"/>
+    <xsd:enumeration value="desire"/>
+    <xsd:enumeration value="destroyed"/>
+    <xsd:enumeration value="different"/>
+    <xsd:enumeration value="direction"/>
+    <xsd:enumeration value="disappear"/>
+    <xsd:enumeration value="discomfort"/>
+    <xsd:enumeration value="emit"/>
+    <xsd:enumeration value="emotional_state"/>
+    <xsd:enumeration value="end"/> 
+    <xsd:enumeration value="equals"/>
+    <xsd:enumeration value="exert_force"/>
+    <xsd:enumeration value="exist"/>
+    <xsd:enumeration value="experience"/>
+    <xsd:enumeration value="express"/>
+    <xsd:enumeration value="filled_with"/>
+    <xsd:enumeration value="flinch"/>
+    <xsd:enumeration value="forbid"/>
+    <xsd:enumeration value="force"/>
+    <xsd:enumeration value="free"/>
+    <xsd:enumeration value="future_possession"/>
+    <xsd:enumeration value="give_birth"/>
+    <xsd:enumeration value="harmed"/>
+    <xsd:enumeration value="has_possession"/>
+    <xsd:enumeration value="have_opinion"/>
+    <xsd:enumeration value="help"/>
+    <xsd:enumeration value="hold"/>
+    <xsd:enumeration value="in"/>
+    <xsd:enumeration value="indicate"/>
+    <xsd:enumeration value="in_reaction_to"/>
+    <xsd:enumeration value="involuntary"/>
+    <xsd:enumeration value="linger"/>
+    <xsd:enumeration value="location"/>
+    <xsd:enumeration value="made_of"/>
+    <xsd:enumeration value="manner"/>
+    <xsd:enumeration value="masquerade"/>
+    <xsd:enumeration value="meets"/>
+    <xsd:enumeration value="mingled"/>
+    <xsd:enumeration value="motion"/>
+    <xsd:enumeration value="nonagentive_cause"/>
+    <xsd:enumeration value="occur"/>
+    <xsd:enumeration value="occurred"/>
+    <xsd:enumeration value="perform"/>
+    <xsd:enumeration value="perceive"/>
+    <xsd:enumeration value="physical_form"/>
+    <xsd:enumeration value="position"/>
+    <xsd:enumeration value="property"/>
+    <xsd:enumeration value="Prep"/>
+    <xsd:enumeration value="Prop"/>
+    <xsd:enumeration value="Pred"/>
+    <xsd:enumeration value="rotational_motion"/>
+    <xsd:enumeration value="rushed"/>
+    <xsd:enumeration value="search"/>
+    <xsd:enumeration value="sleep"/>
+    <xsd:enumeration value="spend"/>
+    <xsd:enumeration value="state"/>
+    <xsd:enumeration value="suffocate"/>
+    <xsd:enumeration value="take_care_of"/>
+    <xsd:enumeration value="take_in"/>
+    <xsd:enumeration value="together"/>
+    <xsd:enumeration value="transfer"/>
+    <xsd:enumeration value="transfer_info"/>
+    <xsd:enumeration value="urge"/>
+    <xsd:enumeration value="use"/>
+    <xsd:enumeration value="value"/>
+    <xsd:enumeration value="visible"/>
+    <xsd:enumeration value="via"/>
+    <xsd:enumeration value="amount_changed"/>
+    <xsd:enumeration value="wear"/>
+    <xsd:enumeration value="continue"/>
+    <xsd:enumeration value="avoid"/>
+    <xsd:enumeration value="begin"/>
+    <xsd:enumeration value="assess"/>
+    <xsd:enumeration value="appear"/>
+    <xsd:enumeration value="weather"/>
+    <xsd:enumeration value="social_interaction"/>
+    <xsd:enumeration value="believe"/>
+    <xsd:enumeration value="financial_relationship"/>
+    <xsd:enumeration value="describe"/>
+    <xsd:enumeration value="hide"/>
+    <xsd:enumeration value="declare"/>
+    <xsd:enumeration value="conflict"/>
+    <xsd:enumeration value="about"/>
+
+  </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="primaryDescriptionType">
+  <xsd:restriction base="xsd:string">
+    <xsd:enumeration value="Apart Reciprocal Alternation Transitive"/>
+    <xsd:enumeration value="Apart Reciprocal Alternation Intransitive"/>
+    <xsd:enumeration value="As Alternation"/>
+    <xsd:enumeration value="Attribute Object Possessor-Attribute Factoring Alternation"/>
+    <xsd:enumeration value="Basic Intransitive"/>
+    <xsd:enumeration value="Basic Transitive"/>
+    <xsd:enumeration value="Benefactive Alternation"/>
+    <xsd:enumeration value="Body-Part Possessor Ascension Alternation"/>
+    <xsd:enumeration value="Causative"/>
+    <xsd:enumeration value="Causative/Inchoative Alternation"/>
+    <xsd:enumeration value="Characteristic Property of Instrument"/>
+    <xsd:enumeration value="Collective NP Subject"/>
+    <xsd:enumeration value="Conative"/>
+    <xsd:enumeration value="Dative"/> 
+    <xsd:enumeration value="Direct Speech"/>
+    <xsd:enumeration value="Expletive Construction"/>
+    <xsd:enumeration value="Fulfilling Alternation"/>
+    <xsd:enumeration value="Image Impression Alternation"/>
+    <xsd:enumeration value="Induced Action"/>
+    <xsd:enumeration value="Infinitival Copular Clause"/>
+    <xsd:enumeration value="Instrument Subject Alternation"/>
+    <xsd:enumeration value="Intransitive"/>
+    <xsd:enumeration value="Location Subject Alternation"/>
+    <xsd:enumeration value="Locative Alternation"/>
+    <xsd:enumeration value="Locative Inversion"/>
+    <xsd:enumeration value="Locative Preposition Drop"/>
+    <xsd:enumeration value="Locatum Subject Alternation"/>
+    <xsd:enumeration value="Material/Product Alternation Transitive"/>
+    <xsd:enumeration value="Material/Product Alternation Intransitive"/>
+    <xsd:enumeration value="Middle Construction"/>
+    <xsd:enumeration value="Passive"/>
+    <xsd:enumeration value="Possessor Subject Possessor-Attribute Factoring Alternation"/>
+    <xsd:enumeration value="PRO-Arb Object Alternation"/>
+    <xsd:enumeration value="Raw Material Subject Alternation"/>
+    <xsd:enumeration value="Reflexive of Appearance Alternation"/>
+    <xsd:enumeration value="Resultative"/>
+    <xsd:enumeration value="Sentential Complement"/>
+    <xsd:enumeration value="Simple Reciprocal Alternation Transitive"/>
+    <xsd:enumeration value="Simple Reciprocal Alternation Intransitive"/>
+    <xsd:enumeration value="Substance/Source Alternation"/>
+    <xsd:enumeration value="Sum of Money Subject Alternation"/>
+    <xsd:enumeration value="There-insertion"/>
+    <xsd:enumeration value="Through/With Alternation"/>
+    <xsd:enumeration value="Together Reciprocal Alternation Transitive"/>
+    <xsd:enumeration value="Together Reciprocal Alternation Intransitive"/>
+    <xsd:enumeration value="Total Transformation Alternation Transitive"/>
+    <xsd:enumeration value="Total Transformation Alternation Intransitive"/>
+    <xsd:enumeration value="Transitive"/>
+    <xsd:enumeration value="Understood Body-Part Object Alternation"/>
+    <xsd:enumeration value="Understood Reciprocal Object Alternation"/>
+    <xsd:enumeration value="Understood Reflexive Object Alternation"/>
+    <xsd:enumeration value="Unintentional Interpretation of Object"/>
+    <xsd:enumeration value="Unspecified Object Alternation"/>
+    <xsd:enumeration value="Unspecified Reflexive Object Alternation"/>
+    <xsd:enumeration value="Way Object Alternation"/>
+    <xsd:enumeration value="With/against Alternation"/>
+    <xsd:enumeration value="With Preposition Drop Alternation"/>
+
+    <xsd:enumeration value="AS-NP"/>
+    <xsd:enumeration value="EXTRAP-NP-S"/>
+    <xsd:enumeration value="S-SUBJ-NP-OBJ"/>
+    <xsd:enumeration value="TO-INF-SUBJ-NP-OBJ"/>
+    <xsd:enumeration value="EXTRAP-TO-INF"/>
+    <xsd:enumeration value="EXTRAP-FOR-TO-INF"/>
+    <xsd:enumeration value="EXTRAP-NP-TO-INF"/>
+    <xsd:enumeration value="EXTRAP-TO-NP"/>
+    <xsd:enumeration value="EXTRAP-TO-NP-TO-INF"/>
+    <xsd:enumeration value="S-SUBJ-TO-NP"/>
+    <xsd:enumeration value="FOR-TO-INF"/>
+    <xsd:enumeration value="HOW-S"/>
+    <xsd:enumeration value="HOW-TO-INF"/>
+    <xsd:enumeration value="INF-AC"/>
+    <xsd:enumeration value="ING-NP-OMIT"/>
+    <xsd:enumeration value="ING-SC/BE-ING-SC"/>
+    <xsd:enumeration value="ING-AC"/>
+    <xsd:enumeration value="INTRANS"/>
+    <xsd:enumeration value="INTRANS-RECIP(SUBJ-PL/COORD)"/>
+    <xsd:enumeration value="NP"/>
+    <xsd:enumeration value="NP-ADJP"/>
+    <xsd:enumeration value="NP-ADJP-PRED"/>
+    <xsd:enumeration value="NP-ADVP"/>
+    <xsd:enumeration value="NP-AVDP-PRED"/>
+    <xsd:enumeration value="NP-AS-NP"/>
+    <xsd:enumeration value="NP-AS-NP-SC"/>
+    <xsd:enumeration value="NP-FOR-NP"/>
+    <xsd:enumeration value="NP-INF"/>
+    <xsd:enumeration value="NP-INF-OC"/>
+    <xsd:enumeration value="NP-ING"/>
+    <xsd:enumeration value="NP-ING-OC"/>
+    <xsd:enumeration value="NP-ING-SC"/>
+    <xsd:enumeration value="NP-NP"/>
+    <xsd:enumeration value="NP-NP-PRED"/>
+    <xsd:enumeration value="NP-P-ING"/>
+    <xsd:enumeration value="NP-P-ING-OC"/>
+    <xsd:enumeration value="NP-P-ING-SC"/>
+    <xsd:enumeration value="NP-P-ING-AC"/>
+    <xsd:enumeration value="NP-P-NP-ING"/>
+    <xsd:enumeration value="NP-P-POSSING"/>
+    <xsd:enumeration value="NP-P-WH-S"/>
+    <xsd:enumeration value="NP-P-WHAT-S"/>
+    <xsd:enumeration value="NP-P-WHAT-TO-INF"/>
+    <xsd:enumeration value="NP-P-WH-TO-INF"/>
+    <xsd:enumeration value="NP-PP"/>
+    <xsd:enumeration value="NP-PP-PRED"/>
+    <xsd:enumeration value="NP-PRED-RS"/>
+    <xsd:enumeration value="NP-S"/>
+    <xsd:enumeration value="NP-TO-INF-OC"/>
+    <xsd:enumeration value="NP-TO-INF-SC"/>
+    <xsd:enumeration value="NP-TO-INF-VC"/>
+    <xsd:enumeration value="NP-TO-NP"/>
+    <xsd:enumeration value="NP-TOBE"/>
+    <xsd:enumeration value="NP-VEN-NP-OMIT"/>
+    <xsd:enumeration value="NP-WH-S"/>
+    <xsd:enumeration value="NP-WHAT-S"/>
+    <xsd:enumeration value="NP-WH-TO-INF"/>
+    <xsd:enumeration value="NP-WHAT-TO-INF"/>
+    <xsd:enumeration value="P-ING-SC"/>
+    <xsd:enumeration value="P-ING-AC"/>
+    <xsd:enumeration value="P-NP-ING"/>
+    <xsd:enumeration value="P-NP-TO-INF(-SC)"/>
+    <xsd:enumeration value="P-NP-TO-INF-OC"/>
+    <xsd:enumeration value="P-NP-TO-INF-VC"/>
+    <xsd:enumeration value="P-POSSING"/>
+    <xsd:enumeration value="P-WH-S"/>
+    <xsd:enumeration value="P-WHAT-S"/>
+    <xsd:enumeration value="P-WH-TO-INF"/>
+    <xsd:enumeration value="P-WHAT-TO-INF"/>
+    <xsd:enumeration value="PART"/>
+    <xsd:enumeration value="PART-ING-SC"/>
+    <xsd:enumeration value="PART-NP/NP-PART"/>
+    <xsd:enumeration value="PART-NP-PP"/>
+    <xsd:enumeration value="PART-PP"/>
+    <xsd:enumeration value="PART-WH-S"/>
+    <xsd:enumeration value="PART-WH-S"/>
+    <xsd:enumeration value="PART-WH-TO-INF"/>
+    <xsd:enumeration value="PART-WHAT-TO-INF"/>
+    <xsd:enumeration value="PART-THAT-S"/>
+    <xsd:enumeration value="POSSING"/>
+    <xsd:enumeration value="POSSING-PP"/>
+    <xsd:enumeration value="ING-PP"/>
+    <xsd:enumeration value="PP"/>
+    <xsd:enumeration value="PP-FOR-TO-INF"/>
+    <xsd:enumeration value="PP-HOW-S"/>
+    <xsd:enumeration value="PP-HOW-TO-INF"/>
+    <xsd:enumeration value="PP-P-WH-S"/>
+    <xsd:enumeration value="PP-P-WHAT-S"/>
+    <xsd:enumeration value="PP-P-WHAT-TO-INF"/>
+    <xsd:enumeration value="PP-P-WH-TO-INF"/>
+    <xsd:enumeration value="PP-PP"/>
+    <xsd:enumeration value="PP-PRED-RS"/>
+    <xsd:enumeration value="PP-THAT-S"/>
+    <xsd:enumeration value="PP-THAT-S-SUBJUNCT"/>
+    <xsd:enumeration value="PP-TO-INF-RS"/>
+    <xsd:enumeration value="PP-WH-S"/>
+    <xsd:enumeration value="PP-WHAT-S"/>
+    <xsd:enumeration value="PP-WH-TO-INF"/>
+    <xsd:enumeration value="PP-WHAT-TO-INF"/>
+    <xsd:enumeration value="S"/>
+    <xsd:enumeration value="S-SUBJ-S-OBJ"/>
+    <xsd:enumeration value="S-SUBJUNCT"/>
+    <xsd:enumeration value="SEEM-S"/>
+    <xsd:enumeration value="SEEM-TO-NP-S"/>
+    <xsd:enumeration value="THAT-S"/>
+    <xsd:enumeration value="TO-INF-AC"/>
+    <xsd:enumeration value="TO-INF-RS"/>
+    <xsd:enumeration value="TO-INF-SC"/>
+    <xsd:enumeration value="WH-S"/>
+    <xsd:enumeration value="WHAT-S"/>
+    <xsd:enumeration value="WH-TO-INF"/>
+    <xsd:enumeration value="WHAT-TO_INF"/>
+    <xsd:enumeration value="NP-PART-PP"/>
+    <xsd:enumeration value="PART-PP-PP"/>
+    <xsd:enumeration value="NP-PP-PP"/>
+    <xsd:enumeration value="NP"/>
+    <xsd:enumeration value="NP-NP"/>
+    <xsd:enumeration value="S-SUBJ"/>
+    <xsd:enumeration value="INF"/>
+    <xsd:enumeration value="NP-as-NP"/>
+  </xsd:restriction>
+</xsd:simpleType>   
+
+<xsd:simpleType name="argType">
+  <xsd:restriction base="xsd:string">
+    <xsd:enumeration value="Constant"/>
+    <xsd:enumeration value="Event"/>
+    <xsd:enumeration value="ThemRole"/>
+    <xsd:enumeration value="VerbSpecific"/>
+  </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="argConstantType">
+  <xsd:restriction base="xsd:string">
+    <xsd:enumeration value="abstract"/>
+    <xsd:enumeration value="abstract/physical"/>
+    <xsd:enumeration value="directedmotion"/>
+    <xsd:enumeration value="forceful"/>
+    <xsd:enumeration value="from"/>
+    <xsd:enumeration value="illegal"/>
+    <xsd:enumeration value="physical"/>
+    <xsd:enumeration value="physical/abstract"/>
+    <xsd:enumeration value="toward"/>
+  </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="argEventType">
+  <xsd:restriction base="xsd:string">
+    <xsd:enumeration value="E"/>
+    <xsd:enumeration value="E0"/>
+    <xsd:enumeration value="E1"/>
+    <xsd:enumeration value="during(E)"/>
+    <xsd:enumeration value="during(E0)"/>
+    <xsd:enumeration value="during(E1)"/>
+    <xsd:enumeration value="end(E)"/>
+    <xsd:enumeration value="end(E0)"/>
+    <xsd:enumeration value="end(E1)"/>
+    <xsd:enumeration value="result(E)"/>
+    <xsd:enumeration value="result(E0)"/>
+    <xsd:enumeration value="result(E1)"/>
+    <xsd:enumeration value="start(E)"/>
+    <xsd:enumeration value="start(E0)"/>
+    <xsd:enumeration value="start(E1)"/>
+  </xsd:restriction>
+</xsd:simpleType>
+
+
+<xsd:simpleType name="argVerbSpecificType">
+  <xsd:restriction base="xsd:string">
+    <xsd:enumeration value="Direction"/>
+    <xsd:enumeration value="Endstate"/>
+    <xsd:enumeration value="Form"/>
+    <xsd:enumeration value="Material"/>
+    <xsd:enumeration value="Motion"/>
+    <xsd:enumeration value="Pos"/>
+    <xsd:enumeration value="Prep"/>
+    <xsd:enumeration value="Prop"/>
+  </xsd:restriction>
+</xsd:simpleType>
+
+
+</xsd:schema>
+
+
+
+
+
+
