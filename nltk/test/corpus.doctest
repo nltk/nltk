@@ -223,7 +223,7 @@ Reading the Penn Treebank:
     >>> print treebank.files() # doctest: +ELLIPSIS
     ('wsj_0001.mrg', 'wsj_0002.mrg', 'wsj_0003.mrg', 'wsj_0004.mrg', ...)
     >>> print treebank.words('wsj_0003.mrg')
-    ['A', 'form', 'of', 'asbestos', 'once', 'used', 'to', ...]
+    ['A', 'form', 'of', 'asbestos', 'once', 'used', '*', ...]
     >>> print treebank.tagged_words('wsj_0003.mrg')
     [('A', 'DT'), ('form', 'NN'), ('of', 'IN'), ...]
     >>> print treebank.parsed_sents('wsj_0003.mrg')[0] # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
