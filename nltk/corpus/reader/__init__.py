@@ -30,6 +30,7 @@ from nltk.corpus.reader.timit import *
 from nltk.corpus.reader.ycoe import *
 from nltk.corpus.reader.rte import *
 from nltk.corpus.reader.string_category import *
+from nltk.corpus.reader.propbank import *
 
 __all__ = [
     'PlaintextCorpusReader', 'find_corpus_files',
@@ -46,5 +47,6 @@ __all__ = [
     'StringCategoryCorpusReader',
     'CategorizedTaggedCorpusReader',
     'CategorizedPlaintextCorpusReader',
-    'tagged_treebank_para_block_reader'
+    'tagged_treebank_para_block_reader',
+    'PropbankCorpusReader',
 ]
